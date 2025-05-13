@@ -82,7 +82,7 @@ declare module 'sap/ui/fl/Scenario' {
 declare module 'sap/ui/fl/Utils' {
     import type ManagedObject from 'sap/ui/base/ManagedObject';
     import type Controller from 'sap/ui/core/mvc/Controller';
-    import type Component from 'sap/ui/core/Component'
+    import type Component from 'sap/ui/core/Component';
 
     interface Utils {
         checkControlId(control: ManagedObject): boolean;
@@ -94,6 +94,7 @@ declare module 'sap/ui/fl/Utils' {
     interface ControlView {
         getId(): string;
         getController(): Controller;
+        getControllerModuleName?: () => string;
     }
 
     const Utils: Utils;
@@ -118,7 +119,12 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
         getItem(key: string): unknown;
         getItems(): Promise<unknown[]>;
         fileChangeRequestNotifier:
-            | (<T extends object>(fileName: string, kind: 'create' | 'delete', change?: T) => void)
+            | (<T extends object, U extends object>(
+                  fileName: string,
+                  kind: 'create' | 'delete',
+                  change?: T,
+                  additionalChangeInfo?: U
+              ) => void)
             | undefined;
     }
 

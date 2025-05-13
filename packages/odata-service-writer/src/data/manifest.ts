@@ -260,7 +260,7 @@ function addRemoteAnnotationDataSources(
                     )}',Version='0001')/$value/`,
                     type: 'ODataAnnotation',
                     settings: {
-                        localUri: `localService/${serviceName}/${remoteAnnotation.technicalName}.xml`
+                        localUri: `localService/${serviceName}/${remoteAnnotation.name}.xml`
                     }
                 };
                 createdAnnotations.push(remoteAnnotation.name);
@@ -273,7 +273,7 @@ function addRemoteAnnotationDataSources(
             )}',Version='0001')/$value/`,
             type: 'ODataAnnotation',
             settings: {
-                localUri: `localService/${serviceName}/${serviceRemoteAnnotations.technicalName}.xml`
+                localUri: `localService/${serviceName}/${serviceRemoteAnnotations.name}.xml`
             }
         };
         createdAnnotations.push(serviceRemoteAnnotations.name);

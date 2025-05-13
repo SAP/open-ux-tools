@@ -6,13 +6,13 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n';
+import type { ConnectedSystem } from '../../../../types';
 import { promptNames } from '../../../../types';
 import { PromptState, convertODataVersionType, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
-import { newSystemPromptNames } from '../new-system/types';
+import { type NewSystemAnswers, newSystemPromptNames } from '../new-system/types';
 import { suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
-import type { NewSystemAnswers } from '../new-system/questions';
 
 /**
  * Convert the system connection scheme (Service Key, Rentrance Ticket, etc) to the store specific authentication type.
@@ -41,12 +41,14 @@ function systemAuthTypeToAuthenticationType(
  * @param connectValidator a connection validator instance used to validate the system url
  * @param promptNamespace The namespace for the prompt, used to identify the prompt instance and namespaced answers.
  * @param requiredOdataVersion The required OData version for the system connection, only catalogs supporting the specifc odata version will be used.
+ * @param cachedConnectedSystem
  * @returns the system url prompt
  */
 export function getSystemUrlQuestion<T extends Answers>(
     connectValidator: ConnectionValidator,
     promptNamespace?: string,
-    requiredOdataVersion?: OdataVersion
+    requiredOdataVersion?: OdataVersion,
+    cachedConnectedSystem?: ConnectedSystem
 ): InputQuestion<T> {
     const promptName = `${promptNamespace ? promptNamespace + ':' : ''}${newSystemPromptNames.newSystemUrl}`;
     const newSystemUrlQuestion = {
@@ -60,17 +62,27 @@ export function getSystemUrlQuestion<T extends Answers>(
         },
         validate: async (url) => {
             PromptState.resetConnectedSystem();
+            // Backend systems validation supports using a cached connections from a previous step execution to prevent re-authentication (e.g. re-opening a browser window)
+            // Only in the case or re-entrance tickets will we reuse an existing connection.
+            if (
+                cachedConnectedSystem &&
+                cachedConnectedSystem.backendSystem?.url === url &&
+                cachedConnectedSystem.backendSystem?.authenticationType === 'reentranceTicket'
+            ) {
+                connectValidator.setConnectedSystem(cachedConnectedSystem);
+            }
             const valResult = await connectValidator.validateUrl(url, {
                 isSystem: true,
                 odataVersion: convertODataVersionType(requiredOdataVersion)
             });
-            // If basic auth not required we should have an active connection (could be a re-entrance ticket supported system url)
+            // If basic auth not required we should have an active connection and be authenticated
             if (valResult === true) {
-                if (!connectValidator.validity.authRequired && connectValidator.serviceProvider) {
+                if (connectValidator.validity.authenticated && connectValidator.serviceProvider) {
                     PromptState.odataService.connectedSystem = {
                         serviceProvider: removeCircularFromServiceProvider(connectValidator.serviceProvider)
                     };
                 } else {
+                    // otherwise we need to try basic auth
                     connectValidator.systemAuthType = 'basic';
                 }
             }

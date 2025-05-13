@@ -1,5 +1,165 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.3.15
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.3
+-   @sap-ux/inquirer-common@0.6.43
+
+## 2.3.14
+
+### Patch Changes
+
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/project-input-validator@0.5.6
+
+## 2.3.13
+
+### Patch Changes
+
+-   f2aca4a: Fix, adds `ignoreCertError` to prompt state
+
+## 2.3.12
+
+### Patch Changes
+
+-   f1608ab: Fixes for `ignoreCertErrors` not set
+
+## 2.3.11
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/axios-extension@1.20.2
+    -   @sap-ux/fiori-generator-shared@0.11.3
+    -   @sap-ux/project-input-validator@0.5.5
+    -   @sap-ux/telemetry@0.5.78
+    -   @sap-ux/inquirer-common@0.6.42
+
+## 2.3.10
+
+### Patch Changes
+
+-   Updated dependencies [1a01c5e]
+    -   @sap-ux/axios-extension@1.20.2
+
+## 2.3.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.41
+
+## 2.3.8
+
+### Patch Changes
+
+-   38519fa: Fix for cached connection crash
+
+## 2.3.7
+
+### Patch Changes
+
+-   Updated dependencies [a3a43b2]
+    -   @sap-ux/axios-extension@1.20.1
+
+## 2.3.6
+
+### Patch Changes
+
+-   ab4e908: handle list destinations error
+
+## 2.3.5
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.40
+
+## 2.3.4
+
+### Patch Changes
+
+-   26f9280: Adds connection caching to prevent re-auth via browser
+
+## 2.3.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/telemetry@0.5.77
+-   @sap-ux/axios-extension@1.20.0
+-   @sap-ux/fiori-generator-shared@0.11.2
+-   @sap-ux/project-input-validator@0.5.4
+-   @sap-ux/inquirer-common@0.6.39
+
+## 2.3.2
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/fiori-generator-shared@0.11.1
+    -   @sap-ux/project-input-validator@0.5.3
+    -   @sap-ux/telemetry@0.5.76
+    -   @sap-ux/inquirer-common@0.6.38
+
+## 2.3.1
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/inquirer-common@0.6.37
+    -   @sap-ux/project-access@1.29.19
+    -   @sap-ux/telemetry@0.5.75
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/project-input-validator@0.5.2
+
+## 2.3.0
+
+### Minor Changes
+
+-   afd26c8: Use globalFilterEntitySet instead of globalFilterEntityType
+
+## 2.2.36
+
+### Patch Changes
+
+-   Updated dependencies [e5f4915]
+    -   @sap-ux/guided-answers-helper@0.2.2
+    -   @sap-ux/inquirer-common@0.6.36
+
+## 2.2.35
+
+### Patch Changes
+
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+
+## 2.2.34
+
+### Patch Changes
+
+-   1bc1cf2: Fix for v2 annotations not downloaded for generic destinations (full/partial urls)
+
+## 2.2.33
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+
+## 2.2.32
+
+### Patch Changes
+
+-   Updated dependencies [9392ebd]
+    -   @sap-ux/telemetry@0.5.74
+    -   @sap-ux/fiori-generator-shared@0.10.2
+    -   @sap-ux/inquirer-common@0.6.35
+
 ## 2.2.31
 
 ### Patch Changes

@@ -152,6 +152,7 @@ describe('questions', () => {
             (question) => question.name === `abapOnPrem:${newSystemPromptNames.newSystemUrl}`
         );
         const systemUrl = 'https://example.com';
+        connectionValidatorMock.validity.authenticated = true;
         expect(await (systemUrlQuestion?.validate as Function)(systemUrl)).toBe(true);
         expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith('https://example.com', {
             isSystem: true,

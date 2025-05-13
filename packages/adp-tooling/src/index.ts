@@ -10,6 +10,7 @@ export * from './abap';
 export * from './source';
 export * from './preview/adp-preview';
 export * from './writer/writer-config';
+export * from './writer/descriptor-content';
 export * from './ui5';
 export { getCustomConfig } from './writer/project-utils';
 export { generate, migrate } from './writer';

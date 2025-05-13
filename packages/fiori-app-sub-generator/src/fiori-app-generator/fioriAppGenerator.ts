@@ -178,12 +178,22 @@ export class FioriAppGenerator extends Generator {
                 let serviceAnswers = await promptOdataServiceAnswers(
                     options,
                     FioriAppGenerator.logger as Logger,
-                    this.env.adapter as unknown as Adapter
+                    this.env.adapter as unknown as Adapter,
+                    cachedService?.connectedSystem
                 );
-                /** Back button issue temp fix */
+                /** Back button handling */
                 // Persist derived state to facilitate backwards navigation
                 if (getHostEnvironment() !== hostEnvironment.cli) {
                     if (serviceAnswers.source === DatasourceType.none || serviceAnswers.edmx) {
+                        // When navigating back YUI re-applies the answers from the previous steps up to the current step, however on Windows it removes some required properties
+                        // of the service answers property: `ConnectedSystem`, so we need to re-apply them from our own cache.
+                        if (
+                            cachedService?.connectedSystem &&
+                            JSON.stringify(serviceAnswers.connectedSystem?.backendSystem) ===
+                                JSON.stringify(cachedService?.connectedSystem?.backendSystem)
+                        ) {
+                            serviceAnswers.connectedSystem = cachedService?.connectedSystem;
+                        }
                         addToCache(this.appWizard, { service: serviceAnswers }, FioriAppGenerator.logger);
                     } else {
                         serviceAnswers =
@@ -258,12 +268,13 @@ export class FioriAppGenerator extends Generator {
                     );
                 this.state.project = Object.assign(this.state.project ?? {}, ui5AppAnswers, {
                     ui5Version: ui5AppAnswers?.ui5Version || localUI5Version,
-                    localUI5Version,
-                    flpAppId: getFlpId(
-                        getAppId(ui5AppAnswers.namespace ?? '', ui5AppAnswers?.name),
-                        this.state.floorplan === FloorplanFF.FF_SIMPLE ? defaultNavActionDisplay : defaultNavActionTile
-                    )
+                    localUI5Version
                 });
+                // Some extensions may reference this before the writing phase where normally the flpAppId is set
+                this.state.project.flpAppId = getFlpId(
+                    getAppId(this.state.project.name, ui5AppAnswers.namespace ?? ''),
+                    this.state.floorplan === FloorplanFF.FF_SIMPLE ? defaultNavActionDisplay : defaultNavActionTile
+                );
             }
 
             if (this.state.project?.addDeployConfig) {
@@ -382,6 +393,7 @@ export class FioriAppGenerator extends Generator {
                 EnableEslint: project.enableEslint,
                 EnableTypeScript: project.enableTypeScript,
                 EnableCodeAssist: project.enableCodeAssist,
+                EnableVirtualEndpoints: project.enableVirtualEndpoints,
                 ToolsId: appConfig.app.sourceTemplate?.toolsId
             });
 
@@ -407,6 +419,7 @@ export class FioriAppGenerator extends Generator {
                     enableCodeAssist: this.state.project?.enableCodeAssist ?? false,
                     // Assumption that npm workspaces will be enabled if cds ui5 plugin is a depenedency
                     useNpmWorkspaces: !!(
+                        this.state.project.enableTypeScript || // If typescript is enabled, it is required that the CAP project will be updated to use NPM workspaces
                         this.state.service.capService?.cdsUi5PluginInfo?.isCdsUi5PluginEnabled ||
                         this.state.service.capService?.cdsUi5PluginInfo?.hasCdsUi5Plugin ||
                         this.state.service.capService?.cdsUi5PluginInfo?.isWorkspaceEnabled

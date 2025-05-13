@@ -1,5 +1,46 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/telemetry@0.5.78
+
+## 0.11.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/telemetry@0.5.77
+
+## 0.11.1
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/telemetry@0.5.76
+
+## 0.11.0
+
+### Minor Changes
+
+-   1ca4004: updates for use for fiori tools preview middleware and use of virtual endpoints
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/telemetry@0.5.75
+
+## 0.10.2
+
+### Patch Changes
+
+-   Updated dependencies [9392ebd]
+    -   @sap-ux/telemetry@0.5.74
+
 ## 0.10.1
 
 ### Patch Changes

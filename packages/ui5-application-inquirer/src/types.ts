@@ -16,6 +16,7 @@ export interface UI5ApplicationAnswers {
     enableCodeAssist?: boolean;
     skipAnnotations?: boolean;
     enableTypeScript?: boolean;
+    enableVirtualEndpoints?: boolean;
     showAdvanced?: boolean;
 }
 
@@ -55,6 +56,7 @@ export enum promptNames {
     enableCodeAssist = 'enableCodeAssist',
     skipAnnotations = 'skipAnnotations',
     enableTypeScript = 'enableTypeScript',
+    enableVirtualEndpoints = 'enableVirtualEndpoints',
     showAdvanced = 'showAdvanced'
 }
 
@@ -131,6 +133,7 @@ type NamePromptOptions = {
 type booleanPromptKeys =
     | 'addDeployConfig'
     | 'addFlpConfig'
+    | 'enableVirtualEndpoints'
     | 'enableEslint'
     | 'skipAnnotations'
     | 'enableTypeScript'

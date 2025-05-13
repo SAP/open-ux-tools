@@ -9,7 +9,12 @@ import cloneDeep from 'lodash/cloneDeep';
 import type { FioriElementsApp } from './types';
 import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
-import { setAppDefaults, setDefaultTemplateSettings, getTemplateOptions } from './data/defaults';
+import {
+    setAppDefaults,
+    setDefaultTemplateSettings,
+    getTemplateOptions,
+    setVirtualEndpointDefaults
+} from './data/defaults';
 import {
     TemplateTypeAttributes,
     minSupportedUI5Version,
@@ -92,12 +97,18 @@ async function generate<T extends {}>(
     // Add new files from templates e.g.
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
-    const jsIgnoreGlob = ['**/*.ts'];
+    const isTypeScriptEnabled = feApp.appOptions?.typescript === true;
 
-    let ignore = jsIgnoreGlob;
-    if (feApp.appOptions?.typescript === true) {
-        ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
+    const ignore = [
+        ...(isTypeScriptEnabled ? getTypeScriptIgnoreGlob(feApp, coercedUI5Version) : ['**/*.ts']),
+        // if using virtual endpoints for preview, ignore the files within webapp/test (flpSandbox.html, changes_loader (v2), changes_preview (v2))
+        ...(feApp.appOptions?.useVirtualPreviewEndpoints ? ['**/webapp/test/**'] : [])
+    ];
+
+    if (feApp.appOptions?.useVirtualPreviewEndpoints) {
+        setVirtualEndpointDefaults(feApp);
     }
+
     // Determine if the project type is 'EDMXBackend'.
     const isEdmxProjectType = feApp.app.projectType === 'EDMXBackend';
     // Get resource bootstrap URLs based on the project type
@@ -190,11 +201,11 @@ async function generate<T extends {}>(
                 localOnly: !feApp.service?.url,
                 addMock: !!feApp.service?.metadata,
                 addTest,
-                sapClient: feApp.service?.client,
                 flpAppId: feApp.app.flpAppId,
-                startFile: data?.app?.startFile,
-                localStartFile: data?.app?.localStartFile,
-                generateIndex: feApp.appOptions?.generateIndex
+                startFile: feApp.app?.startFile,
+                localStartFile: feApp.app?.localStartFile,
+                generateIndex: feApp.appOptions?.generateIndex,
+                supportVirtualEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints // no need for search params if virtual endpoints are used
             })
         });
     } else {

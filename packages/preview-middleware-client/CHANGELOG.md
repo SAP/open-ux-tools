@@ -1,5 +1,41 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.21
+
+### Patch Changes
+
+-   c89bdc2: fix: new column is not visible after using `Add Custom Table Column` Quick Action
+
+## 0.13.20
+
+### Patch Changes
+
+-   9e7fa23: fix: Issues for Adaptation Projects using TypeScipt
+
+## 0.13.19
+
+### Patch Changes
+
+-   258ecca: refactor: Enhance XML Fragment context menu control with addXMLPlugin Integration
+
+## 0.13.18
+
+### Patch Changes
+
+-   091c3e9: fix: reuse component api consumption in Adaptation Editor
+
+## 0.13.17
+
+### Patch Changes
+
+-   838d2de: fix: nested Quick Actions not working if there are sections with only one child (e.g Change Table Columns)
+
+## 0.13.16
+
+### Patch Changes
+
+-   8fe1ab6: fix: added telemetry tracking for context menu
+
 ## 0.13.15
 
 ### Patch Changes

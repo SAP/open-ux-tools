@@ -123,7 +123,8 @@ describe('Test service url validators', () => {
                     Version: '0001',
                     Uri: 'https://some.host:1234/service/path'
                 }
-            ]
+            ],
+            ignoreCertError: false
         });
     });
 

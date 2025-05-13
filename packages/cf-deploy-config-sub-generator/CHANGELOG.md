@@ -1,5 +1,158 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.60
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+    -   @sap-ux/inquirer-common@0.6.43
+    -   @sap-ux/deploy-config-generator-shared@0.0.47
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.37
+
+## 0.1.59
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/cf-deploy-config-writer@0.2.13
+    -   @sap-ux/fiori-generator-shared@0.11.3
+    -   @sap-ux/deploy-config-generator-shared@0.0.47
+    -   @sap-ux/inquirer-common@0.6.42
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.36
+
+## 0.1.58
+
+### Patch Changes
+
+-   Updated dependencies [b339248]
+    -   @sap-ux/cf-deploy-config-writer@0.2.12
+
+## 0.1.57
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.41
+-   @sap-ux/cf-deploy-config-inquirer@0.2.35
+-   @sap-ux/deploy-config-generator-shared@0.0.46
+
+## 0.1.56
+
+### Patch Changes
+
+-   Updated dependencies [42d73c0]
+    -   @sap-ux/cf-deploy-config-writer@0.2.11
+
+## 0.1.55
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.40
+-   @sap-ux/cf-deploy-config-inquirer@0.2.34
+-   @sap-ux/deploy-config-generator-shared@0.0.46
+
+## 0.1.54
+
+### Patch Changes
+
+-   65e178f: align npm modules
+-   Updated dependencies [65e178f]
+    -   @sap-ux/deploy-config-generator-shared@0.0.46
+    -   @sap-ux/cf-deploy-config-writer@0.2.10
+
+## 0.1.53
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/cf-deploy-config-writer@0.2.9
+    -   @sap-ux/ui5-config@0.27.2
+    -   @sap-ux/project-access@1.29.21
+    -   @sap-ux/fiori-generator-shared@0.11.2
+    -   @sap-ux/inquirer-common@0.6.39
+    -   @sap-ux/deploy-config-generator-shared@0.0.45
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.33
+
+## 0.1.52
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/cf-deploy-config-writer@0.2.8
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/ui5-config@0.27.1
+    -   @sap-ux/fiori-generator-shared@0.11.1
+    -   @sap-ux/deploy-config-generator-shared@0.0.44
+    -   @sap-ux/inquirer-common@0.6.38
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.32
+
+## 0.1.51
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/deploy-config-generator-shared@0.0.43
+    -   @sap-ux/inquirer-common@0.6.37
+    -   @sap-ux/cf-deploy-config-writer@0.2.7
+    -   @sap-ux/project-access@1.29.19
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.31
+
+## 0.1.50
+
+### Patch Changes
+
+-   Updated dependencies [5f18839]
+    -   @sap-ux/cf-deploy-config-writer@0.2.6
+
+## 0.1.49
+
+### Patch Changes
+
+-   Updated dependencies [6578d86]
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.30
+
+## 0.1.48
+
+### Patch Changes
+
+-   Updated dependencies [e0937db]
+    -   @sap-ux/cf-deploy-config-writer@0.2.5
+
+## 0.1.47
+
+### Patch Changes
+
+-   Updated dependencies [ce3fd7a]
+    -   @sap-ux/cf-deploy-config-writer@0.2.4
+
+## 0.1.46
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+-   @sap-ux/cf-deploy-config-inquirer@0.2.29
+-   @sap-ux/deploy-config-generator-shared@0.0.42
+
+## 0.1.45
+
+### Patch Changes
+
+-   d809536: update text label and handle options
+-   Updated dependencies [d809536]
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.28
+
+## 0.1.44
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.10.2
+-   @sap-ux/inquirer-common@0.6.35
+-   @sap-ux/deploy-config-generator-shared@0.0.42
+-   @sap-ux/cf-deploy-config-inquirer@0.2.27
+
 ## 0.1.43
 
 ### Patch Changes

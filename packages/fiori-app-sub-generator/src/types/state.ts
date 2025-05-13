@@ -20,6 +20,7 @@ export interface Project {
     namespace?: string;
     title: string;
     description: string;
+    enableVirtualEndpoints?: boolean; // whether to use virtual endpoints for preview
     ui5Theme: string;
     ui5Version: string;
     ui5FrameworkUrl?: string; // URL providing ui5 libraries, set to default if not provided
@@ -41,10 +42,10 @@ export interface Credentials {
 }
 
 /**
- * To be replaced with `@sap-ux/odata-service-inquirer`'s `OdataService` type once all data source flows are migrated ro open-ux-tools
+ * Fiori sub app generators internal representation of a service.
+ * May be possible to replace this type with `@sap-ux/odata-service-inquirer` `service` type in future.
  *
  */
-
 export interface Service {
     host?: string;
     client?: string;
