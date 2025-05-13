@@ -68,7 +68,7 @@
         "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
         "errorCustomerEmptyValue": "{{value}} should contain at least one character in addition to '{{prefix}}'",
         "errorInvalidDataSourceURI": "Invalid URI. The URI must start and end with '/' and contain no spaces.",
-        "appDoesNotSupportManifest": "The selected application is not supported by the adaptation project. Please select a different application. For more information, see SAPUI5 Adaptation Project documentation.",
+        "appDoesNotSupportManifest": "The selected application is not supported by SAPUI5 Adaptation Project as it does not have manifest.json file. The SAPUI5 Adaptation Project only supports such applications. Please select a different application.",
         "ui5VersionNotReachableError": "The URL of the SAPUI5 version you have selected is not reachable. The URL <URL> should be made accessible through cloud connector and the destination configuration so it can be consumed within the SAPUI5 adaptation project and its SAPUI5 Adaptation Editor.",
         "ui5VersionOutdatedError": "The SAPUI5 version you have selected is not compatible with the SAPUI5 Adaptation Editor. Please select a different version.",
         "ui5VersionDoesNotExistGeneric": "An error occurred when validating the SAPUI5 version: {{error}}. Please select a different version.",

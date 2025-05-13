@@ -10,7 +10,6 @@ import {
     getVersionToBeUsed,
     shouldSetMinUI5Version
 } from '../ui5';
-import { t } from '../i18n';
 import { FlexLayer } from '../types';
 import { getProviderConfig } from '../abap';
 import { getCustomConfig } from './project-utils';
