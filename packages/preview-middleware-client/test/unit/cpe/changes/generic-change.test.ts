@@ -46,11 +46,11 @@ describe('GENERIC_CHANGE_HANDLER', () => {
             changeType: 'configuration',
             properties: [
                 {
-                    label: 'Service Name',
+                    label: 'SERVICE NAME',
                     value: 'dataSource1'
                 },
                 {
-                    label: 'Annotation File',
+                    label: 'ANNOTATION FILE',
                     value: 'annotations/annotation1.xml'
                 }
             ]
@@ -67,7 +67,7 @@ describe('GENERIC_CHANGE_HANDLER', () => {
             },
             texts: {
                 newText: {
-                    value: 'New Text',
+                    value: 'NEW TEXT',
                     type: 'Type1'
                 }
             }
@@ -80,15 +80,15 @@ describe('GENERIC_CHANGE_HANDLER', () => {
             controlId: 'control1',
             properties: [
                 {
-                    label: 'Selector Id',
+                    label: 'SELECTOR ID',
                     value: 'control1'
                 },
                 {
-                    label: 'New value',
-                    value: 'New Text'
+                    label: 'NEW VALUE',
+                    value: 'NEW TEXT'
                 },
                 {
-                    label: 'Text Type',
+                    label: 'TEXT TYPE',
                     value: 'Type1'
                 }
             ]
@@ -125,19 +125,19 @@ describe('GENERIC_CHANGE_HANDLER', () => {
             controlId: 'control2',
             properties: [
                 {
-                    label: 'Target Id',
+                    label: 'TARGET ID',
                     value: 'targetControl1'
                 },
                 {
-                    label: 'Move from',
+                    label: 'MOVE FROM',
                     value: '1'
                 },
                 {
-                    label: 'Move to',
+                    label: 'MOVE TO',
                     value: '2'
                 },
                 {
-                    label: 'Control Id',
+                    label: 'CONTROL ID',
                     value: 'control2'
                 }
             ]

@@ -180,12 +180,12 @@ describe('ChangeService', () => {
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         properties: [
                             {
-                                'label': 'Selector Id',
+                                'label': 'SELECTOR ID',
                                 'value':
                                     'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry'
                             },
-                            { 'label': 'New value', 'value': 'Test123' },
-                            { 'label': 'Text Type', 'value': 'XFLD' }
+                            { 'label': 'NEW VALUE', 'value': 'Test123' },
+                            { 'label': 'TEXT TYPE', 'value': 'XFLD' }
                         ],
                         title: 'Rename Control'
                     },

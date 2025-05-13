@@ -44,9 +44,6 @@ export function getFormattedDateAndTime(timestamp: number): string {
  * @returns string | undefined
  */
 export function getValueIcon(value: string | number | boolean | undefined): string | undefined {
-    if (!value) {
-        return undefined;
-    }
     if (typeof value === 'string') {
         if (value.trim().startsWith('{') && value.trim().endsWith('}')) {
             return IconName.expression;
@@ -62,4 +59,5 @@ export function getValueIcon(value: string | number | boolean | undefined): stri
             return IconName.boolFalse;
         }
     }
+    return undefined;
 }
