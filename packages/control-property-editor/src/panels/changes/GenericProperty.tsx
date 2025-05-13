@@ -8,10 +8,17 @@ interface GenericPropertyProps {
 }
 
 const GenericProperty: React.FC<GenericPropertyProps> = ({ value, label }) => {
+    const convertedLabel = convertCamelCaseToPascalCase(label);
     return (
         <>
-            <span className={styles.genericPropLabel}>{convertCamelCaseToPascalCase(label)}:</span>
-            <span className={styles.genericPropValue}>{typeof value === 'object' ? '[Object]' : value}</span>
+            <span className={styles.genericPropLabel} title={convertedLabel}>
+                {convertedLabel}:
+            </span>
+            {(value !== undefined || value !== null) && (
+                <span className={styles.genericPropValue} title={value?.toString()}>
+                    {value}
+                </span>
+            )}
         </>
     );
 };

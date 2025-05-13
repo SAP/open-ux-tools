@@ -33,9 +33,12 @@ function hasValue(value: string | number | boolean | undefined): boolean {
 export function DisplayAsIcon(props: Readonly<DisplayAsIconProps>): ReactElement {
     const { label, value } = props;
     const valueIcon = getValueIcon(value);
+    const convertedLabel = convertCamelCaseToPascalCase(label);
     return (
         <>
-            <span className={styles.label}>{convertCamelCaseToPascalCase(label)}</span>
+            <span className={styles.label} title={convertedLabel}>
+                {convertedLabel}
+            </span>
             {hasValue(value) && (
                 <UIIcon
                     style={{ paddingRight: '2px', paddingLeft: '2px', width: '16px', height: '16px' }}
@@ -43,8 +46,14 @@ export function DisplayAsIcon(props: Readonly<DisplayAsIconProps>): ReactElement
                     className={styles.text}
                 />
             )}
-            {valueIcon && <UIIcon className={'ui-cpe-icon-light-theme'} iconName={valueIcon} />}
-            {hasValue(value) && <span className={styles.text}>{value}</span>}
+            {valueIcon && (
+                <UIIcon title={value?.toString()} className={'ui-cpe-icon-light-theme'} iconName={valueIcon} />
+            )}
+            {hasValue(value) && (
+                <span className={styles.text} title={value?.toString()}>
+                    {value}
+                </span>
+            )}
         </>
     );
 }
