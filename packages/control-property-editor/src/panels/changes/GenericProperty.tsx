@@ -14,8 +14,8 @@ const GenericProperty: React.FC<GenericPropertyProps> = ({ value, label }) => {
             <span className={styles.genericPropLabel} title={convertedLabel}>
                 {convertedLabel}:
             </span>
-            {(value !== undefined || value !== null) && (
-                <span className={styles.genericPropValue} title={value?.toString()}>
+            {value !== undefined && value !== null && (
+                <span className={styles.genericPropValue} title={value.toString()}>
                     {value}
                 </span>
             )}

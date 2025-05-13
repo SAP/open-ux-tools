@@ -236,9 +236,9 @@ function handleControlChange(change: SavedControlChange | PendingControlChange):
 /**
  * Handles grouped changes by initializing a control group with a list of changes that share the same controlId.
  *
- * @param {Change} change - The initial change object to start the group.
+ * @param {SavedGenericChange | PendingGenericChange} change - The initial change object to start the group.
  * @param {number} i - The index of the initial change in the list.
- * @returns {ControlGroupProps} A control group object containing grouped changes.
+ * @returns {GenericGroupProps} A control group object containing grouped changes.
  */
 function handleGenericGroupeChange(change: SavedGenericChange | PendingGenericChange, i: number): GenericGroupProps {
     const { subtitle } = change;
@@ -348,9 +348,9 @@ function filterGroup(model: Item[], query: string): Item[] {
 }
 
 /**
- * Checks if item is of type {@link ConfigGroupProps}.
+ * Checks if item is of type {@link GenericGroupProps}.
  *
- * @param item ControlGroupProps | UnknownChangeProps | ConfigGroupProps
+ * @param item GenericGroupProps | UnknownChangeProps
  * @returns boolean
  */
 function isGenericChangeGroup(item: GenericGroupProps | UnknownChangeProps): item is GenericGroupProps {
