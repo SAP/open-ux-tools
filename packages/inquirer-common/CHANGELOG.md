@@ -1,5 +1,12 @@
 # @sap-ux/inquirer-common
 
+## 0.6.43
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+
 ## 0.6.42
 
 ### Patch Changes
