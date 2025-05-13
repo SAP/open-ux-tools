@@ -133,7 +133,7 @@ interface GenericChangeHandlerReturnType {
     controlId?: string | string[];
     changeType?: string;
     subtitle?: string;
-    properties: { label: string; value?: PropertyValue | undefined; displayValueWithIcon?: boolean }[];
+    properties: { label: string; value?: PropertyValue; displayValueWithIcon?: boolean }[];
 }
 export type ChangeHandler<Change> = (
     change: Change,

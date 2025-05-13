@@ -172,7 +172,7 @@ export interface PendingGenericChange {
     controlName?: string;
     properties: {
         label: string;
-        value?: PropertyValue | undefined;
+        value?: PropertyValue;
         displayValueWithIcon?: boolean;
     }[];
 }
