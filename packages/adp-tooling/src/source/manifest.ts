@@ -50,21 +50,22 @@ export function getAch(manifest: Manifest | undefined): string {
  * - If the manifest is empty, it returns None.
  */
 export function getApplicationType(manifest?: Manifest): ApplicationType {
-    if (Object.keys(manifest ?? {}).length > 0) {
-        const appInfo = manifest?.['sap.app'];
-        const isSmartTemplate = !!manifest?.['sap.ui.generic.app'];
-        const hasSmartTemplateId = appInfo?.sourceTemplate?.id?.toLowerCase() === 'ui5template.smarttemplate';
-
-        if (manifest?.['sap.ovp']) {
-            return ApplicationType.FIORI_ELEMENTS_OVP;
-        } else if (hasSmartTemplateId || isSmartTemplate) {
-            return ApplicationType.FIORI_ELEMENTS;
-        } else {
-            return ApplicationType.FREE_STYLE;
-        }
-    } else {
+    if (!manifest || Object.keys(manifest).length === 0) {
         return ApplicationType.NONE;
     }
+
+    if (manifest['sap.ovp']) {
+        return ApplicationType.FIORI_ELEMENTS_OVP;
+    }
+
+    const isSmartTemplate = !!manifest['sap.ui.generic.app'];
+    const hasSmartTemplateId = manifest['sap.app']?.sourceTemplate?.id?.toLowerCase() === 'ui5template.smarttemplate';
+
+    if (hasSmartTemplateId || isSmartTemplate) {
+        return ApplicationType.FIORI_ELEMENTS;
+    }
+
+    return ApplicationType.FREE_STYLE;
 }
 
 /**
