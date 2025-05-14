@@ -1,5 +1,11 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.0.42
+
+### Patch Changes
+
+-   d41992e: use namespace correctly for transport and metadata requests
+
 ## 0.0.41
 
 ### Patch Changes
