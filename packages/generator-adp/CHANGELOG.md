@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.2.3
+
+### Patch Changes
+
+-   2ba9fe9: feat: Improve ADP generator writer by refactoring its logic
+-   Updated dependencies [2ba9fe9]
+    -   @sap-ux/adp-tooling@0.13.45
+
 ## 0.2.2
 
 ### Patch Changes

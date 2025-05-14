@@ -1,5 +1,16 @@
 # @sap-ux/create
 
+## 0.12.76
+
+### Patch Changes
+
+-   2ba9fe9: feat: Improve ADP generator writer by refactoring its logic
+-   Updated dependencies [2ba9fe9]
+    -   @sap-ux/adp-tooling@0.13.45
+    -   @sap-ux/flp-config-inquirer@0.2.90
+    -   @sap-ux/preview-middleware@0.19.43
+    -   @sap-ux/app-config-writer@0.5.54
+
 ## 0.12.75
 
 ### Patch Changes
