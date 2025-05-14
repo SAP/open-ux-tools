@@ -51,6 +51,14 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         configWithDefaults.flp.inboundId = `${configWithDefaults.app.id}.InboundID`;
     }
 
+    if (configWithDefaults.customConfig?.adp.environment === 'C' && configWithDefaults.flp) {
+        enhanceManifestChangeContentWithFlpConfig(
+            configWithDefaults.flp as InternalInboundNavigation,
+            configWithDefaults.app.id,
+            configWithDefaults.app.content
+        );
+    }
+
     return configWithDefaults;
 }
 
@@ -68,14 +76,6 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     }
 
     const fullConfig = setDefaults(config);
-
-    if (fullConfig.customConfig?.adp.environment === 'C' && fullConfig.flp) {
-        enhanceManifestChangeContentWithFlpConfig(
-            fullConfig.flp as InternalInboundNavigation,
-            fullConfig.app.id,
-            fullConfig.app.content
-        );
-    }
 
     writeI18nModels(basePath, fullConfig.app.i18nModels, fs);
     writeTemplateToFolder(baseTmplPath, join(basePath), fullConfig, fs);
