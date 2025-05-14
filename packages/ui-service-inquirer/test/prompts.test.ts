@@ -254,7 +254,7 @@ describe('getSystemQuestions', () => {
                 showCreateDuringDeploy: false
             },
             ui5AbapRepo: {
-                default: 'ztestapp'
+                default: ''
             }
         });
         expect(q.transportInputChoice.choices!()).toMatchSnapshot();
