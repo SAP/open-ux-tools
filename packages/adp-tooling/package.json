@@ -76,6 +76,6 @@
         "cross-env": "^7.0.3"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }

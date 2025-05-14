@@ -28,7 +28,7 @@
         "!generators/**/*.map"
     ],
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     },
     "dependencies": {
         "@sap-ux/abap-deploy-config-inquirer": "workspace:*",

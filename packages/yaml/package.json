@@ -38,6 +38,6 @@
         "@types/lodash": "4.14.202"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }
