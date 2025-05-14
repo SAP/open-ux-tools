@@ -26,7 +26,7 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     },
     "dependencies": {
         "vscode-languageserver-types": "3.17.2"

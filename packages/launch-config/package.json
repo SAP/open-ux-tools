@@ -28,7 +28,7 @@
         "package.json"
     ],
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     },
     "dependencies": {
         "@sap-ux/project-access": "workspace:*",

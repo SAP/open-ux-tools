@@ -55,6 +55,6 @@
         "jest-extended": "3.2.4"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }
