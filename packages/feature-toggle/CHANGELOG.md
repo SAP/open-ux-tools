@@ -1,5 +1,11 @@
 # @sap-ux/feature-toggle
 
+## 0.2.4
+
+### Patch Changes
+
+-   5585f0d: feat: add fiori-ai rap generation toggle
+
 ## 0.2.3
 
 ### Patch Changes
