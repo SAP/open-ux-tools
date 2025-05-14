@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.5.3
+
+### Patch Changes
+
+-   aeb23b0: fix: support new cds parser
+
 ## 0.5.2
 
 ### Patch Changes
