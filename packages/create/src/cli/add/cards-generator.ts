@@ -18,11 +18,7 @@ export function addCardsEditorConfigCommand(cmd: Command): void {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
             }
-            await addCardsGeneratorConfig(
-                path ?? process.cwd(),
-                !!options.simulate,
-                options.config
-            );
+            await addCardsGeneratorConfig(path ?? process.cwd(), !!options.simulate, options.config);
         });
 }
 
@@ -33,11 +29,7 @@ export function addCardsEditorConfigCommand(cmd: Command): void {
  * @param simulate - if true, do not write but just show what would be changed; otherwise write
  * @param yamlPath - path to the ui5*.yaml file passed by cli
  */
-async function addCardsGeneratorConfig(
-    basePath: string,
-    simulate: boolean,
-    yamlPath: string
-): Promise<void> {
+async function addCardsGeneratorConfig(basePath: string, simulate: boolean, yamlPath: string): Promise<void> {
     const logger = getLogger();
     try {
         logger.debug(`Called add cards-generator-config for path '${basePath}', simulate is '${simulate}'`);

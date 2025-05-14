@@ -959,7 +959,7 @@ export class FlpSandbox {
             const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
             const integrationCard = getIntegrationCard(manifests);
             this.fs.write(filePath, JSON.stringify(integrationCard.manifest, null, 2));
-    
+
             const entitySet = integrationCard.entitySet;
             const sapCardsAp = (this.manifest['sap.cards.ap'] ??= {});
             sapCardsAp.embeds ??= {};
@@ -973,11 +973,11 @@ export class FlpSandbox {
                     ]
                 }
             } satisfies ManifestNamespace.EmbedsSettings;
-    
+
             const appAccess = await createApplicationAccess(path.resolve(), this.fs);
             await appAccess.updateManifestJSON(this.manifest, this.fs);
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
-        } catch(error) {
+        } catch (error) {
             this.logger.error(`Files could not be created/updated. Error: ${error}`);
             this.sendResponse(res, 'text/plain', 500, 'Files could not be created/updated.');
         }
