@@ -70,7 +70,12 @@ export function hidePrompts(
     if (promptOptions ?? isCapProject) {
         Object.keys(prompts).forEach((key) => {
             const promptKey = key as keyof typeof promptNames;
+            let hidePrompt = false;
+            if (typeof promptOptions?.[promptKey]?.hide === 'function') {
+                hidePrompt = (promptOptions?.[promptKey] as any).hide(isCapProject);
+            }
             if (
+                !hidePrompt &&
                 !promptOptions?.[promptKey]?.hide &&
                 // Target directory is determined by the CAP project. `enableEsLint` and `targetFolder` are not available for CAP projects
                 !([promptNames.targetFolder, promptNames.enableEslint].includes(promptNames[promptKey]) && isCapProject)

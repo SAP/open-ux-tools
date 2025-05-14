@@ -2,7 +2,6 @@ import type { IPrompt as Step } from '@sap-devx/yeoman-ui-types';
 import type { Annotations } from '@sap-ux/axios-extension';
 import { TemplateType as FETemplateType } from '@sap-ux/fiori-elements-writer';
 import { TemplateType as FFTemplateType } from '@sap-ux/fiori-freestyle-writer';
-import type { PromptSeverityMessage } from '@sap-ux/inquirer-common';
 import type { DeployConfig, FLPConfig } from '@sap-ux/fiori-generator-shared';
 import type { CapRuntime, EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
@@ -10,7 +9,7 @@ import {
     promptNames as ui5AppInquirerPromptNames,
     type UI5ApplicationPromptOptions
 } from '@sap-ux/ui5-application-inquirer';
-import type { Answers, Question } from 'inquirer';
+import type { Answers } from 'inquirer';
 import { LEGACY_CAP_TYPE_JAVA, LEGACY_CAP_TYPE_NODE } from './constants';
 import { type ALPOptions, type Project, type Service, type Floorplan, FloorplanFE, FloorplanFF } from './state';
 

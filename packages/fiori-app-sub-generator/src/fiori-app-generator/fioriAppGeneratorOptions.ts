@@ -4,11 +4,11 @@ import type {
     FioriGeneratorSettings,
     FioriStep,
     Floorplan,
-    FioriGeneratorPromptExtension,
     FioriAppGeneratorPromptSettings,
     State,
     YeomanUiStepConfig
 } from '../types';
+import type { UI5ApplicationPromptOptions } from '@sap-ux/ui5-application-inquirer';
 
 /**
  * Fiori generator specific options, for internal use only.
@@ -35,7 +35,7 @@ export interface FioriAppGeneratorOptions extends Generator.GeneratorOptions, Fi
     /**
      * Customer provided extensions used to customize existing questions
      */
-    extensions?: FioriGeneratorPromptExtension;
+    extensions?: UI5ApplicationPromptOptions;
     /**
      * The floorplan (app type) that will be created
      */

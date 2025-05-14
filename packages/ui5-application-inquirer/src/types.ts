@@ -127,11 +127,10 @@ type NamePromptOptions = {
     defaultValue?: string;
 };
 
-export type HideFn = (answers: UI5ApplicationAnswers, isCapProject: boolean) => boolean;
-
 type AddDeployPromptOptions = Omit<UI5ApplicationCommonPromptOptions, 'hide'> & {
-    hide?: boolean | HideFn;
+    hide?: boolean | ((isCap: boolean) => boolean);
 };
+
 /**
  * These are boolean value prompt option keys
  */

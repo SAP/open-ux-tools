@@ -24,14 +24,7 @@ import type { Question } from 'inquirer';
 import merge from 'lodash/merge';
 import { join } from 'path';
 import type { Adapter } from 'yeoman-environment';
-import type {
-    FioriAppGeneratorPromptSettings,
-    Floorplan,
-    Project,
-    FioriGeneratorPromptExtension,
-    Service,
-    YeomanUiStepConfig
-} from '../types';
+import type { FioriAppGeneratorPromptSettings, Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
 import { Features, defaultPromptValues } from '../types';
 import { getMinSupportedUI5Version, t, validateNextStep } from '../utils';
 
@@ -89,7 +82,7 @@ type PromptUI5AppAnswersOptions = {
     service: Partial<Service>;
     promptSettings?: FioriAppGeneratorPromptSettings;
     floorplan: Floorplan;
-    promptExtension?: FioriGeneratorPromptExtension;
+    promptExtension?: UI5ApplicationPromptOptions;
 };
 
 /**
@@ -230,7 +223,7 @@ export async function createUI5ApplicationPromptOptions(
     projectName?: Project['name'],
     targetFolder?: Project['targetFolder'],
     promptSettings?: FioriAppGeneratorPromptSettings,
-    extensions?: FioriGeneratorPromptExtension
+    extensions?: UI5ApplicationPromptOptions
 ): Promise<UI5ApplicationPromptOptions> {
     // prompt settings may be additionally provided e.g. set by adaptors
     const ui5VersionPromptOptions: UI5ApplicationPromptOptions['ui5Version'] = {
