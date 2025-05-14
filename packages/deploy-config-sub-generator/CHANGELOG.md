@@ -1,5 +1,55 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.2.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.0
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.0
+    -   @sap-ux/deploy-config-generator-shared@0.1.0
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/odata-service-inquirer@2.4.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/store@1.1.0
+
+## 0.1.37
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-sub-generator@0.0.75
+-   @sap-ux/cf-deploy-config-sub-generator@0.1.60
+-   @sap-ux/inquirer-common@0.6.43
+-   @sap-ux/odata-service-inquirer@2.3.15
+-   @sap-ux/deploy-config-generator-shared@0.0.47
+
+## 0.1.36
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.3.14
+
+## 0.1.35
+
+### Patch Changes
+
+-   Updated dependencies [f2aca4a]
+    -   @sap-ux/odata-service-inquirer@2.3.13
+
+## 0.1.34
+
+### Patch Changes
+
+-   Updated dependencies [f1608ab]
+    -   @sap-ux/odata-service-inquirer@2.3.12
+
 ## 0.1.33
 
 ### Patch Changes

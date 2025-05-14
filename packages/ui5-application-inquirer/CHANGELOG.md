@@ -1,5 +1,38 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.13.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-input-validator@0.6.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/ui5-info@0.11.0
+
+## 0.12.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.43
+
+## 0.12.8
+
+### Patch Changes
+
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/project-input-validator@0.5.6
+
+## 0.12.7
+
+### Patch Changes
+
+-   b94e186: fix typescript workspace warning for non cap projects
+
 ## 0.12.6
 
 ### Patch Changes

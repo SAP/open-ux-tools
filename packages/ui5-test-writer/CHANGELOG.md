@@ -1,5 +1,17 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/ui5-application-writer@1.5.0
+    -   @sap-ux/logger@0.7.0
+
 ## 0.6.7
 
 ### Patch Changes

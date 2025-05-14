@@ -1,5 +1,61 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/ui-service-inquirer@0.1.0
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/system-access@0.6.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/telemetry@0.6.0
+    -   @sap-ux/logger@0.7.0
+
+## 0.0.42
+
+### Patch Changes
+
+-   d41992e: use namespace correctly for transport and metadata requests
+-   Updated dependencies [d41992e]
+    -   @sap-ux/ui-service-inquirer@0.0.42
+
+## 0.0.41
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+    -   @sap-ux/axios-extension@1.20.3
+    -   @sap-ux/inquirer-common@0.6.43
+    -   @sap-ux/system-access@0.5.39
+    -   @sap-ux/ui-service-inquirer@0.0.41
+
+## 0.0.40
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.0.40
+
+## 0.0.39
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.0.39
+
+## 0.0.38
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.0.38
+
 ## 0.0.37
 
 ### Patch Changes

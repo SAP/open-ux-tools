@@ -3,7 +3,15 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { initI18n, t } from '../../../src/i18n';
-import { SourceManifest, isSyncLoadedView, isV4Application } from '../../../src';
+import {
+    ApplicationType,
+    SourceManifest,
+    getAch,
+    getApplicationType,
+    getFioriId,
+    isSyncLoadedView,
+    isV4Application
+} from '../../../src';
 
 describe('SourceManifest', () => {
     let sourceManifest: SourceManifest;
@@ -150,5 +158,108 @@ describe('isSyncLoadedView', () => {
 
     it('returns false if ui5Settings is undefined', () => {
         expect(isSyncLoadedView(undefined)).toBe(false);
+    });
+});
+
+describe('getFioriId', () => {
+    it('should return the registration ID as string if present', () => {
+        const manifest = {
+            'sap.fiori': {
+                registrationIds: ['F1234']
+            }
+        } as Manifest;
+
+        const result = getFioriId(manifest);
+        expect(result).toBe('F1234');
+    });
+
+    it('should return multiple registration IDs as comma-separated string', () => {
+        const manifest = {
+            'sap.fiori': {
+                registrationIds: ['F1234', 'F5678']
+            }
+        } as Manifest;
+
+        const result = getFioriId(manifest);
+        expect(result).toBe('F1234,F5678');
+    });
+
+    it('should return empty string if registrationIds are missing', () => {
+        const manifest = {
+            'sap.fiori': {}
+        } as Manifest;
+
+        const result = getFioriId(manifest);
+        expect(result).toBe('');
+    });
+});
+
+describe('getAch', () => {
+    it('should return the ACH value as string if present', () => {
+        const manifest = {
+            'sap.app': {
+                ach: 'CA-F1234'
+            }
+        } as Manifest;
+
+        const result = getAch(manifest);
+        expect(result).toBe('CA-F1234');
+    });
+
+    it('should return empty string if ACH is missing', () => {
+        const manifest = {
+            'sap.app': {}
+        } as Manifest;
+
+        const result = getAch(manifest);
+        expect(result).toBe('');
+    });
+});
+
+describe('getApplicationType', () => {
+    it('should return NONE when manifest is undefined', () => {
+        expect(getApplicationType(undefined)).toBe(ApplicationType.NONE);
+    });
+
+    it('should return NONE when manifest is an empty object', () => {
+        expect(getApplicationType({} as Manifest)).toBe(ApplicationType.NONE);
+    });
+
+    it('should return FIORI_ELEMENTS_OVP when manifest has sap.ovp', () => {
+        const manifest = {
+            'sap.app': {},
+            'sap.ovp': {}
+        } as unknown as Manifest;
+
+        expect(getApplicationType(manifest)).toBe(ApplicationType.FIORI_ELEMENTS_OVP);
+    });
+
+    it('should return FIORI_ELEMENTS when manifest has sap.ui.generic.app', () => {
+        const manifest = {
+            'sap.app': {},
+            'sap.ui.generic.app': {}
+        } as unknown as Manifest;
+
+        expect(getApplicationType(manifest)).toBe(ApplicationType.FIORI_ELEMENTS);
+    });
+
+    it('should return FIORI_ELEMENTS when sap.app.sourceTemplate.id is smarttemplate', () => {
+        const manifest = {
+            'sap.app': {
+                sourceTemplate: {
+                    id: 'ui5template.smarttemplate'
+                }
+            }
+        } as unknown as Manifest;
+
+        expect(getApplicationType(manifest)).toBe(ApplicationType.FIORI_ELEMENTS);
+    });
+
+    it('should return FREE_STYLE for fallback case with populated manifest', () => {
+        const manifest = {
+            'sap.app': {}
+        } as unknown as Manifest;
+
+        expect(getApplicationType(manifest)).toBe(ApplicationType.FREE_STYLE);
     });
 });

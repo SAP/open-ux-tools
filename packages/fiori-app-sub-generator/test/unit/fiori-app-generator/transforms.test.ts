@@ -56,7 +56,8 @@ describe('Test transform state', () => {
                         name: 'some-backend-system'
                     } as BackendSystem,
                     serviceProvider: {} as ServiceProvider
-                }
+                },
+                ignoreCertError: true
             }
         };
 
@@ -65,6 +66,7 @@ describe('Test transform state', () => {
             authenticationType: AuthenticationType.ReentranceTicket
         });
         expect(feApp.app.projectType).toStrictEqual('EDMXBackend');
+        expect(feApp.service.ignoreCertError).toBe(true);
 
         // Deprecated Destination Auth type 'SAML_ASSERTION'
         state.service!.destinationAuthType = DestinationAuthType.SAML_ASSERTION;

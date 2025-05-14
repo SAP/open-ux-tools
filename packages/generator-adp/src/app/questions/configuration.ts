@@ -12,13 +12,21 @@ import {
     isV4Application,
     getRelevantVersions,
     fetchPublicVersions,
-    checkSystemVersionPattern
+    checkSystemVersionPattern,
+    getAch,
+    getFioriId
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import { validateEmptyString } from '@sap-ux/project-input-validator';
+import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { InputQuestion, ListQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type {
+    ConfirmQuestion,
+    InputQuestion,
+    ListQuestion,
+    PasswordQuestion,
+    YUIQuestion
+} from '@sap-ux/inquirer-common';
 import type {
     ConfigAnswers,
     FlexUISupportedSystem,
@@ -26,20 +34,31 @@ import type {
     SystemLookup,
     UI5Version
 } from '@sap-ux/adp-tooling';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 import type {
+    AchPromptOptions,
     ApplicationPromptOptions,
     ConfigPromptOptions,
     ConfigQuestion,
+    FioriIdPromptOptions,
     PasswordPromptOptions,
+    ShouldCreateExtProjectPromptOptions,
     SystemPromptOptions,
     UsernamePromptOptions
 } from '../types';
 import { t } from '../../utils/i18n';
 import { configPromptNames } from '../types';
+import { getExtProjectMessage } from './helper/message';
 import { getApplicationChoices } from './helper/choices';
-import { showApplicationQuestion, showCredentialQuestion } from './helper/conditions';
+import { validateExtensibilityGenerator } from './helper/validators';
 import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
+import {
+    showApplicationQuestion,
+    showCredentialQuestion,
+    showExtensionProjectQuestion,
+    showInternalQuestions
+} from './helper/conditions';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -82,6 +101,10 @@ export class ConfigPrompter {
      * Flag indicating whether the selected application is supported.
      */
     private isApplicationSupported: boolean;
+    /**
+     * Error message to be shown in the confirm extension project prompt.
+     */
+    private appValidationErrorMessage: string | undefined;
     /**
      * Indicates whether views are loaded synchronously.
      */
@@ -161,6 +184,15 @@ export class ConfigPrompter {
     }
 
     /**
+     * Indicates whether the application is supported by Adaptation Project.
+     *
+     * @returns {boolean} True if the application is supported.
+     */
+    public get isAppSupported(): boolean {
+        return this.isApplicationSupported;
+    }
+
+    /**
      * Creates an instance of ConfigPrompter.
      *
      * @param {SystemLookup} systemLookup - The source system class to retrieve system endpoints.
@@ -187,7 +219,12 @@ export class ConfigPrompter {
             [configPromptNames.application]: this.getApplicationListPrompt(
                 promptOptions?.[configPromptNames.application]
             ),
-            [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli()
+            [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli(),
+            [configPromptNames.fioriId]: this.getFioriIdPrompt(),
+            [configPromptNames.ach]: this.getAchPrompt(),
+            [configPromptNames.shouldCreateExtProject]: this.getShouldCreateExtProjectPrompt(
+                promptOptions?.[configPromptNames.shouldCreateExtProject]
+            )
         };
 
         const questions: ConfigQuestion[] = Object.entries(keyedPrompts)
@@ -358,6 +395,84 @@ export class ConfigPrompter {
     }
 
     /**
+     * Creates an input prompt for entering the Fiori ID.
+     *
+     * @param {FioriIdPromptOptions} _ - Optional configuration for Fiori ID prompt.
+     * @returns {InputQuestion<ConfigAnswers>} An input prompt for the Fiori ID.
+     */
+    private getFioriIdPrompt(_?: FioriIdPromptOptions): InputQuestion<ConfigAnswers> {
+        return {
+            type: 'input',
+            name: 'fioriId',
+            message: t('prompts.fioriIdLabel'),
+            guiOptions: {
+                hint: t('prompts.fioriIdHint'),
+                breadcrumb: true
+            },
+            when: (answers) => showInternalQuestions(answers, this.isCustomerBase, this.isApplicationSupported),
+            default: () => getFioriId(this.appManifest),
+            store: false
+        } as InputQuestion<ConfigAnswers>;
+    }
+
+    /**
+     * Generates an input prompt for entering the Application Component Hierarchy code for a project.
+     *
+     * @param {AchPromptOptions} _ - Optional configuration for ACH prompt.
+     * @returns {InputQuestion<ConfigAnswers>} An input prompt for Application Component Hierarchy code.
+     */
+    private getAchPrompt(_?: AchPromptOptions): InputQuestion<ConfigAnswers> {
+        return {
+            type: 'input',
+            name: 'ach',
+            message: t('prompts.achLabel'),
+            guiOptions: {
+                hint: t('prompts.achHint'),
+                breadcrumb: true,
+                mandatory: true
+            },
+            when: (answers) => showInternalQuestions(answers, this.isCustomerBase, this.isApplicationSupported),
+            default: () => getAch(this.appManifest),
+            validate: (value: string) => validateAch(value, this.isCustomerBase),
+            store: false
+        } as InputQuestion<ConfigAnswers>;
+    }
+
+    /**
+     * Generates a confirmation prompt to decide whether to create an extension project based on the application's
+     * sync capabilities and support status.
+     *
+     * @param {ShouldCreateExtProjectPromptOptions} _ - Optional configuration for the confirm extension project prompt.
+     * @returns The confirm extension project prompt as a {@link ConfigQuestion}.
+     */
+    private getShouldCreateExtProjectPrompt(_?: ShouldCreateExtProjectPromptOptions): ConfirmQuestion<ConfigAnswers> {
+        return {
+            type: 'confirm',
+            name: configPromptNames.shouldCreateExtProject,
+            message: () =>
+                getExtProjectMessage(
+                    this.isApplicationSupported,
+                    this.containsSyncViews,
+                    this.appValidationErrorMessage
+                ),
+            default: false,
+            guiOptions: {
+                applyDefaultWhenDirty: true
+            },
+            when: (answers: ConfigAnswers) =>
+                showExtensionProjectQuestion(
+                    answers,
+                    this.flexUISystem,
+                    this.isCloudProject,
+                    this.isApplicationSupported,
+                    this.containsSyncViews
+                ),
+            validate: (value: boolean) =>
+                validateExtensibilityGenerator(value, this.isApplicationSupported, this.containsSyncViews)
+        };
+    }
+
+    /**
      * Validates the selected application.
      *
      * Checks if the application is provided and then evaluates support based on its manifest.
@@ -370,7 +485,24 @@ export class ConfigPrompter {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
 
-        return this.validateAppData(app);
+        const validationResult = await this.validateAppData(app);
+
+        if (!isAppStudio()) {
+            return validationResult;
+        }
+
+        const isKnownUnsupported =
+            validationResult === t('error.appDoesNotSupportManifest') ||
+            validationResult === t('error.appDoesNotSupportFlexibility');
+
+        if (isKnownUnsupported) {
+            this.logger.error(validationResult);
+            this.appValidationErrorMessage = validationResult;
+            this.isApplicationSupported = false;
+            return true;
+        }
+
+        return validationResult;
     }
 
     /**
@@ -470,7 +602,6 @@ export class ConfigPrompter {
             }
             this.isApplicationSupported = true;
         } catch (e) {
-            this.isApplicationSupported = false;
             this.logger.debug(`Application failed validation. Reason: ${e.message}`);
             return e.message;
         }
@@ -571,7 +702,7 @@ export class ConfigPrompter {
 
         const ui5 = this.appManifest?.['sap.ui5'];
         if (ui5?.flexEnabled === false) {
-            throw new Error(t('error.appDoesNotSupportAdaptation'));
+            throw new Error(t('error.appDoesNotSupportFlexibility'));
         }
     }
 
