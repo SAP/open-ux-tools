@@ -1,5 +1,49 @@
 # @sap-ux/adp-tooling
 
+## 0.14.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-input-validator@0.6.0
+    -   @sap-ux/odata-service-writer@0.27.0
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/system-access@0.6.0
+    -   @sap-ux/nodejs-utils@0.2.0
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/store@1.1.0
+    -   @sap-ux/i18n@0.3.0
+
+## 0.13.45
+
+### Patch Changes
+
+-   2ba9fe9: feat: Improve ADP generator writer by refactoring its logic
+
+## 0.13.44
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.3
+-   @sap-ux/inquirer-common@0.6.43
+-   @sap-ux/system-access@0.5.39
+
+## 0.13.43
+
+### Patch Changes
+
+-   6cb23c8: feat: Add the Extension Project functionality and internal support information
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/project-input-validator@0.5.6
+
 ## 0.13.42
 
 ### Patch Changes

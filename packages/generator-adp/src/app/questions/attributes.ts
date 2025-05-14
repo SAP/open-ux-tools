@@ -230,16 +230,15 @@ function getUi5VersionValidationPromptForCli(): YUIQuestion<AttributesAnswers> {
 /**
  * Creates the TypeScript enablement confirm prompt.
  *
- * @param {EnableTypeScriptPromptOptions} [options] - Optional prompt options to control visibility.
+ * @param {EnableTypeScriptPromptOptions} [_] - Optional prompt options to control visibility.
  * @returns {AttributesQuestion} The prompt configuration for TypeScript confirmation.
  */
-function getEnableTypeScriptPrompt(options?: EnableTypeScriptPromptOptions): AttributesQuestion {
+function getEnableTypeScriptPrompt(_?: EnableTypeScriptPromptOptions): AttributesQuestion {
     return {
         type: 'confirm',
         name: attributePromptNames.enableTypeScript,
         message: 'Enable TypeScript',
         default: false,
-        when: options?.hide ?? true,
         guiOptions: {
             breadcrumb: true
         }

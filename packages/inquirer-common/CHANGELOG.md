@@ -1,5 +1,29 @@
 # @sap-ux/inquirer-common
 
+## 0.7.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/guided-answers-helper@0.3.0
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/telemetry@0.6.0
+    -   @sap-ux/ui5-info@0.11.0
+    -   @sap-ux/logger@0.7.0
+
+## 0.6.43
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+
 ## 0.6.42
 
 ### Patch Changes

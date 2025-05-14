@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/deploy-config-sub-generator",
     "description": "Main generator for configuring ABAP or Cloud Foundry deployment configuration",
-    "version": "0.1.33",
+    "version": "0.2.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -67,6 +67,6 @@
         "yeoman-test": "6.3.0"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }

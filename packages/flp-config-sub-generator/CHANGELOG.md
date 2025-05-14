@@ -1,5 +1,48 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.2.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/deploy-config-generator-shared@0.1.0
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/flp-config-inquirer@0.3.0
+    -   @sap-ux/app-config-writer@0.6.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/i18n@0.3.0
+
+## 0.1.74
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.2.90
+-   @sap-ux/app-config-writer@0.5.54
+
+## 0.1.73
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+    -   @sap-ux/inquirer-common@0.6.43
+    -   @sap-ux/app-config-writer@0.5.54
+    -   @sap-ux/deploy-config-generator-shared@0.0.47
+    -   @sap-ux/flp-config-inquirer@0.2.89
+
+## 0.1.72
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.2.88
+-   @sap-ux/app-config-writer@0.5.53
+
 ## 0.1.71
 
 ### Patch Changes

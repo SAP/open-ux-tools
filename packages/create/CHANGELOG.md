@@ -1,5 +1,70 @@
 # @sap-ux/create
 
+## 0.13.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.0
+    -   @sap-ux/cards-editor-config-writer@0.5.0
+    -   @sap-ux/abap-deploy-config-writer@0.1.0
+    -   @sap-ux/mockserver-config-writer@0.9.0
+    -   @sap-ux/odata-service-writer@0.27.0
+    -   @sap-ux/flp-config-inquirer@0.3.0
+    -   @sap-ux/preview-middleware@0.20.0
+    -   @sap-ux/app-config-writer@0.6.0
+    -   @sap-ux/cap-config-writer@0.10.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/system-access@0.6.0
+    -   @sap-ux/adp-tooling@0.14.0
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/logger@0.7.0
+
+## 0.12.76
+
+### Patch Changes
+
+-   2ba9fe9: feat: Improve ADP generator writer by refactoring its logic
+-   Updated dependencies [2ba9fe9]
+    -   @sap-ux/adp-tooling@0.13.45
+    -   @sap-ux/flp-config-inquirer@0.2.90
+    -   @sap-ux/preview-middleware@0.19.43
+    -   @sap-ux/app-config-writer@0.5.54
+
+## 0.12.75
+
+### Patch Changes
+
+-   Updated dependencies [a49ed05]
+    -   @sap-ux/preview-middleware@0.19.42
+    -   @sap-ux/app-config-writer@0.5.54
+
+## 0.12.74
+
+### Patch Changes
+
+-   @sap-ux/preview-middleware@0.19.41
+-   @sap-ux/abap-deploy-config-inquirer@1.3.2
+-   @sap-ux/adp-tooling@0.13.44
+-   @sap-ux/app-config-writer@0.5.54
+-   @sap-ux/system-access@0.5.39
+-   @sap-ux/flp-config-inquirer@0.2.89
+-   @sap-ux/abap-deploy-config-writer@0.0.110
+
+## 0.12.73
+
+### Patch Changes
+
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/adp-tooling@0.13.43
+    -   @sap-ux/flp-config-inquirer@0.2.88
+    -   @sap-ux/preview-middleware@0.19.40
+    -   @sap-ux/app-config-writer@0.5.53
+
 ## 0.12.72
 
 ### Patch Changes

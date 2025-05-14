@@ -15,3 +15,4 @@ export const cdsUri = '/sap/bc/adt/ddic/ddl/sources/';
 export const UI_SERVICE_CACHE = '$ui-service-cache';
 export const SERVICE_GENERATION_SUCCESS = 'SERVICE_GENERATION_SUCCESS';
 export const SERVICE_GENERATION_FAIL = 'SERVICE_GENERATION_FAIL';
+export const SAP_NAMESPACE = 'sap';
