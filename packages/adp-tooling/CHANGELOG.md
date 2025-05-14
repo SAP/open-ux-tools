@@ -1,5 +1,19 @@
 # @sap-ux/adp-tooling
 
+## 0.13.45
+
+### Patch Changes
+
+-   2ba9fe9: feat: Improve ADP generator writer by refactoring its logic
+
+## 0.13.44
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.3
+-   @sap-ux/inquirer-common@0.6.43
+-   @sap-ux/system-access@0.5.39
+
 ## 0.13.43
 
 ### Patch Changes
