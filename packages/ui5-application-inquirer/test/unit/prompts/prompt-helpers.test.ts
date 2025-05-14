@@ -137,7 +137,7 @@ describe('prompt-helpers', () => {
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.skipAnnotations }]));
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.ui5Version }]));
 
-        // More testing of promp options (hide fn)
+        // More testing of prompt options (hide fn)
         promptOpts = {
             [promptNames.addDeployConfig]: {
                 hide: (isCap) => {
