@@ -119,8 +119,8 @@ describe('prompt-helpers', () => {
         expect(filteredPrompts).not.toContainEqual({ name: promptNames.targetFolder });
         expect(filteredPrompts).not.toContainEqual({ name: promptNames.enableEslint });
 
-        // Hide prompts based on propmt options
-        const promptOpts: UI5ApplicationPromptOptions = {
+        // Hide prompts based on prompt options
+        let promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.addDeployConfig]: {
                 hide: true
             },
@@ -136,5 +136,17 @@ describe('prompt-helpers', () => {
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.addDeployConfig }]));
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.skipAnnotations }]));
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.ui5Version }]));
+
+        // More testing of promp options (hide fn)
+        promptOpts = {
+            [promptNames.addDeployConfig]: {
+                hide: (isCap) => {
+                    return isCap;
+                }
+            }
+        };
+        filteredPrompts = hidePrompts(prompts, promptOpts, true);
+        expect(filteredPrompts.length).toEqual(12);
+        expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.addDeployConfig }]));
     });
 });

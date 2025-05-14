@@ -186,7 +186,10 @@ type stringValuePromptOptions = Record<stringValuePrompts, UI5ApplicationCommonP
  * Provide the correct type checking for boolean value prompts and validator callback options
  *
  */
-type booleanValuePromptOtions = Record<booleanValuePrompts, UI5ApplicationCommonPromptOptions> &
+type booleanValuePromptOtions = Record<
+    Exclude<booleanValuePrompts, typeof promptNames.addDeployConfig>,
+    UI5ApplicationCommonPromptOptions
+> &
     Record<booleanValuePrompts, { validatorCallback?: (answer: boolean, promptName: string) => void }> &
     Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>> &
     Record<promptNames.enableTypeScript, EnableTypeScriptPromptOptions> &
