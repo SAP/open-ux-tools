@@ -1,5 +1,13 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.0.42
+
+### Patch Changes
+
+-   d41992e: use namespace correctly for transport and metadata requests
+-   Updated dependencies [d41992e]
+    -   @sap-ux/ui-service-inquirer@0.0.42
+
 ## 0.0.41
 
 ### Patch Changes
