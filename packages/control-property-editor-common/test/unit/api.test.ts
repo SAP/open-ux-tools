@@ -123,28 +123,38 @@ describe('createExternalAction', () => {
                 {
                     controlId: 'testPendingId',
                     isActive: true,
-                    propertyName: 'testPendingProp',
                     type: 'pending',
-                    value: 'test',
                     controlName: 'test',
-                    kind: 'property',
+                    kind: 'generic',
                     changeType: 'propertyChange',
                     fileName: 'fileName1',
-                    propertyType: PropertyType.ControlProperty
+                    properties: [
+                        {
+                            label: 'testPendingProp',
+                            value: 'test',
+                            displayValueWithIcon: true
+                        }
+                    ],
+                    title: 'Test'
                 }
             ],
             saved: [
                 {
                     controlId: 'testSavedId',
-                    propertyName: 'testSavedProp',
                     type: 'saved',
-                    value: 'test',
                     fileName: 'testSaveId.change',
-                    kind: 'property',
+                    kind: 'generic',
                     changeType: 'propertyChange',
                     controlName: 'button',
                     timestamp: 12343310032023,
-                    propertyType: PropertyType.ControlProperty
+                    properties: [
+                        {
+                            label: 'testSavedProp',
+                            value: 'test',
+                            displayValueWithIcon: true
+                        }
+                    ],
+                    title: 'Button'
                 }
             ]
         };

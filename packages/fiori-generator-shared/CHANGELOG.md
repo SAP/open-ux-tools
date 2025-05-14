@@ -1,5 +1,18 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/telemetry@0.6.0
+
 ## 0.11.3
 
 ### Patch Changes

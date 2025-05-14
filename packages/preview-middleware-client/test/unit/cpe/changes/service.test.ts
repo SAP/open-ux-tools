@@ -44,6 +44,7 @@ describe('ChangeService', () => {
         sendActionMock = jest.fn();
         subscribeMock = jest.fn<void, [ActionHandler]>();
         fetchMock.mockClear();
+        jest.spyOn(Utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(false);
     });
 
     afterEach(() => {
@@ -94,10 +95,10 @@ describe('ChangeService', () => {
                         creation: '2021-12-21T17:13:37.301Z'
                     },
                     change4: {
-                        changeType: 'renameLabel',
+                        changeType: 'rename',
                         fileName: 'id_1640106755570_205_propertyChange',
                         texts: {
-                            formText: {
+                            newText: {
                                 value: 'Test123',
                                 type: 'XFLD'
                             }
@@ -129,69 +130,80 @@ describe('ChangeService', () => {
         const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
-        await service.syncOutlineChanges();
 
         expect(fetchMock).toHaveBeenCalledWith('/preview/api/changes?_=123');
-        expect(sendActionMock).toHaveBeenNthCalledWith(2, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(1, {
             type: '[ext] change-stack-modified',
             payload: {
                 pending: [],
                 saved: [
                     {
-                        controlIds: [],
-                        fileName: 'id_1640106755570_204_appdescr_fe_changePageConfiguration',
-                        kind: 'configuration',
-                        propertyName: 'enableAddCardToInsights',
-                        propertyPath: 'LineItem/tableSettings',
-                        timestamp: 1640193817301,
+                        kind: 'generic',
                         type: 'saved',
-                        value: true
+                        fileName: 'id_1640106755570_204_appdescr_fe_changePageConfiguration',
+                        changeType: 'configuration',
+                        timestamp: 1640193817301,
+                        controlId: [],
+                        properties: [
+                            { 'label': 'enableAddCardToInsights', 'value': true, 'displayValueWithIcon': true }
+                        ],
+                        title: 'Configuration',
+                        subtitle: 'LineItem/tableSettings'
                     },
                     {
-                        changeType: 'codeExt',
                         type: 'saved',
                         kind: 'unknown',
+                        changeType: 'codeExt',
                         fileName: 'id_1640106755570_204_propertyChange',
                         timestamp: 1640106817301
                     },
                     {
-                        changeType: 'propertyChange',
+                        kind: 'generic',
                         type: 'saved',
-                        kind: 'property',
                         fileName: 'id_1640106755570_204_propertyChange',
-                        controlName: 'Button',
-                        controlId:
-                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        propertyName: 'enabled',
-                        value: '{i18n>CREATE_OBJECT2}',
-                        timestamp: 1640106817301
-                    },
-                    {
-                        changeType: 'renameLabel',
-                        controlId:
-                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        fileName: 'id_1640106755570_205_propertyChange',
-                        kind: 'control',
+                        changeType: 'property',
                         timestamp: 1640106817301,
-                        type: 'saved'
-                    },
-                    {
-                        changeType: 'propertyChange',
-                        type: 'saved',
-                        kind: 'property',
-                        fileName: 'id_1640106755570_203_propertyChange',
-                        controlName: 'Button',
                         controlId:
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        propertyName: 'enabled',
-                        value: true,
-                        timestamp: 1640106757301
+                        properties: [
+                            { 'label': 'enabled', 'value': '{i18n>CREATE_OBJECT2}', 'displayValueWithIcon': true }
+                        ],
+                        title: 'Button'
+                    },
+                    {
+                        kind: 'generic',
+                        type: 'saved',
+                        fileName: 'id_1640106755570_205_propertyChange',
+                        changeType: 'rename',
+                        timestamp: 1640106817301,
+                        controlId:
+                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+                        properties: [
+                            {
+                                'label': 'SELECTOR ID',
+                                'value':
+                                    'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry'
+                            },
+                            { 'label': 'NEW VALUE', 'value': 'Test123' },
+                            { 'label': 'TEXT TYPE', 'value': 'XFLD' }
+                        ],
+                        title: 'Rename Control'
+                    },
+                    {
+                        kind: 'generic',
+                        type: 'saved',
+                        fileName: 'id_1640106755570_203_propertyChange',
+                        changeType: 'property',
+                        timestamp: 1640106757301,
+                        controlId:
+                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+                        properties: [{ 'label': 'enabled', 'value': true, 'displayValueWithIcon': true }],
+                        title: 'Button'
                     }
                 ]
             }
         });
     });
-
     test('Sync Outline Changes', async () => {
         fetchMock.mockResolvedValue({
             json: () =>
@@ -228,11 +240,11 @@ describe('ChangeService', () => {
                         creation: '2021-12-21T17:13:37.301Z'
                     },
                     change4: {
-                        changeType: 'renameLabel',
+                        changeType: 'rename',
                         fileName: 'id_1640106755570_205_propertyChange',
                         texts: {
-                            formText: {
-                                value: 'Test123',
+                            newText: {
+                                value: 'hello',
                                 type: 'XFLD'
                             }
                         },
@@ -264,37 +276,62 @@ describe('ChangeService', () => {
                         timestamp: 1640106817301
                     },
                     {
-                        changeType: 'propertyChange',
+                        changeType: 'property',
                         type: 'saved',
-                        kind: 'property',
+                        kind: 'generic',
                         fileName: 'id_1640106755570_204_propertyChange',
-                        controlName: 'Button',
                         controlId:
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        propertyName: 'enabled',
-                        value: '{i18n>CREATE_OBJECT2}',
-                        timestamp: 1640106817301
+                        timestamp: 1640106817301,
+                        properties: [
+                            {
+                                displayValueWithIcon: true,
+                                label: 'enabled',
+                                value: '{i18n>CREATE_OBJECT2}'
+                            }
+                        ],
+                        title: 'Button'
                     },
                     {
-                        changeType: 'renameLabel',
+                        changeType: 'rename',
                         controlId:
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
                         fileName: 'id_1640106755570_205_propertyChange',
-                        kind: 'control',
+                        kind: 'generic',
                         timestamp: 1640106817301,
-                        type: 'saved'
+                        type: 'saved',
+                        properties: [
+                            {
+                                label: 'SELECTOR ID',
+                                value: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry'
+                            },
+                            {
+                                label: 'NEW VALUE',
+                                value: 'hello'
+                            },
+                            {
+                                label: 'TEXT TYPE',
+                                value: 'XFLD'
+                            }
+                        ],
+                        title: 'Rename Control'
                     },
                     {
-                        changeType: 'propertyChange',
+                        changeType: 'property',
                         type: 'saved',
-                        kind: 'property',
+                        kind: 'generic',
                         fileName: 'id_1640106755570_203_propertyChange',
-                        controlName: 'Button',
                         controlId:
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        propertyName: 'enabled',
-                        value: true,
-                        timestamp: 1640106757301
+                        timestamp: 1640106757301,
+                        properties: [
+                            {
+                                displayValueWithIcon: true,
+                                label: 'enabled',
+                                value: true
+                            }
+                        ],
+                        title: 'Button'
                     }
                 ]
             }
@@ -302,6 +339,9 @@ describe('ChangeService', () => {
     });
 
     test('no command stack', async () => {
+        fetchMock.mockResolvedValue({
+            json: () => Promise.resolve()
+        });
         rtaMock.getCommandStack.mockReturnValue({
             getCommands: jest.fn().mockReturnValue([]),
             getAllExecutedCommands: jest.fn().mockReturnValue([])
@@ -310,53 +350,11 @@ describe('ChangeService', () => {
 
         await service.init(sendActionMock, subscribeMock);
         await (rtaMock.attachUndoRedoStackModified as jest.Mock).mock.calls[0][0]();
-
         expect(sendActionMock).toHaveBeenCalledWith({
             type: '[ext] change-stack-modified',
             payload: {
                 pending: [],
-                saved: [
-                    {
-                        changeType: 'codeExt',
-                        type: 'saved',
-                        kind: 'unknown',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        timestamp: 1640106817301
-                    },
-                    {
-                        changeType: 'propertyChange',
-                        type: 'saved',
-                        kind: 'property',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        controlName: 'Button',
-                        controlId:
-                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        propertyName: 'enabled',
-                        value: '{i18n>CREATE_OBJECT2}',
-                        timestamp: 1640106817301
-                    },
-                    {
-                        changeType: 'renameLabel',
-                        controlId:
-                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        fileName: 'id_1640106755570_205_propertyChange',
-                        kind: 'control',
-                        timestamp: 1640106817301,
-                        type: 'saved'
-                    },
-                    {
-                        changeType: 'propertyChange',
-                        type: 'saved',
-                        kind: 'property',
-                        fileName: 'id_1640106755570_203_propertyChange',
-                        controlName: 'Button',
-                        controlId:
-                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        propertyName: 'enabled',
-                        value: true,
-                        timestamp: 1640106757301
-                    }
-                ]
+                saved: []
             }
         });
     });
@@ -379,7 +377,7 @@ describe('ChangeService', () => {
                         creation: '2021-12-21T17:13:37.301Z'
                     },
                     change3: {
-                        changeType: 'addXML',
+                        changeType: 'anotherType',
                         fileName: 'unknown',
                         creation: '2021-12-21T17:14:37.301Z',
                         selector: {
@@ -404,21 +402,26 @@ describe('ChangeService', () => {
                         type: 'saved',
                         kind: 'control',
                         fileName: 'unknown',
-                        changeType: 'addXML',
+                        changeType: 'anotherType',
                         timestamp: 1640106877301,
                         controlId: 'SEPMRA_C_PD_Product--template::ListReport::TableToolbar'
                     },
                     {
                         type: 'saved',
-                        kind: 'property',
-                        changeType: 'propertyChange',
+                        kind: 'generic',
+                        changeType: 'property',
                         fileName: 'id_1640106755570_204_propertyChange',
-                        controlName: 'Button',
                         controlId:
                             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        propertyName: 'enabled',
-                        value: '{i18n>CREATE_OBJECT2}',
-                        timestamp: 1640106817301
+                        timestamp: 1640106817301,
+                        properties: [
+                            {
+                                label: 'enabled',
+                                value: '{i18n>CREATE_OBJECT2}',
+                                displayValueWithIcon: true
+                            }
+                        ],
+                        title: 'Button'
                     }
                 ]
             }
@@ -1319,7 +1322,7 @@ describe('ChangeService', () => {
 
     test('undo/redo stack changed', async () => {
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
-        JsControlTreeModifierMock.bySelector.mockReturnValue(mockControl);
+        JsControlTreeModifierMock.bySelector.mockReturnValue(undefined);
         JsControlTreeModifierMock.getControlIdBySelector.mockImplementation((selector): string => {
             return selector;
         });
@@ -1344,7 +1347,7 @@ describe('ChangeService', () => {
                     getMetadata: jest.fn().mockReturnValue({ getName: jest.fn().mockReturnValue('sap.m.Button') })
                 }),
                 getSelector: jest.fn().mockReturnValue({
-                    id: !toggle ? 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button' : undefined,
+                    id: !toggle ? Object.fromEntries(cache).selector.id : undefined,
                     name: 'ExtensionPoint1'
                 }),
                 getChangeType: (): any => {
@@ -1352,42 +1355,41 @@ describe('ChangeService', () => {
                 },
                 getParent: jest.fn().mockReturnValue({
                     getElement: jest.fn().mockReturnValue({
-                        getId: () => 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'
+                        getId: () => Object.fromEntries(cache).selector.id
                     })
                 }),
                 getPreparedChange: jest.fn().mockReturnValue({
                     getSelector: jest.fn().mockReturnValue({
-                        id: !toggle ? 'ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button' : undefined
+                        id: !toggle ? Object.fromEntries(cache).selector.id : undefined
                     }),
                     getChangeType: jest.fn().mockReturnValue(cache.get('changeType')),
                     getLayer: jest.fn().mockReturnValue('CUSTOMER'),
-                    getDefinition: jest.fn().mockReturnValue({
-                        fileName: 'testFileName'
-                    })
+                    getDefinition: jest.fn().mockReturnValue(Object.fromEntries(cache))
                 })
             };
         }
         const commands = [
             createCommand(
                 new Map<string, any>([
-                    ['selector', { id: 'control1' }],
+                    ['selector', { id: 'control1', type: 'button' }],
                     ['changeType', 'propertyChange'],
-                    ['propertyName', 'text'],
-                    ['newValue', 'abc']
+                    ['fileName', 'test'],
+                    ['content', { property: 'text', newValue: 'abc' }]
                 ])
             ),
             createCommand(
                 new Map<string, any>([
-                    ['selector', { id: 'control1' }],
+                    ['selector', { id: 'control2', type: 'button' }],
                     ['changeType', 'propertyBindingChange'],
-                    ['propertyName', 'text'],
-                    ['newBinding', '{i18n>DELETE}']
+                    ['fileName', 'test2'],
+                    ['content', { property: 'text', newValue: '{i18n>DELETE}' }]
                 ])
             ),
             createCommand(
                 new Map<string, any>([
                     ['selector', { name: 'ExtensionPointName' }],
-                    ['changeType', 'addXMLAtExtensionPoint']
+                    ['changeType', 'addXMLAtExtensionPoint'],
+                    ['fileName', 'testFileName']
                 ]),
                 true
             )
@@ -1408,28 +1410,36 @@ describe('ChangeService', () => {
                 saved: [],
                 pending: [
                     {
-                        changeType: 'propertyChange',
-                        controlId: 'appComponentListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        changeType: 'property',
+                        controlId: 'control1',
                         isActive: true,
-                        propertyName: 'text',
-                        controlName: 'Button',
-                        fileName: 'testFileName',
+                        title: 'button',
+                        fileName: 'test',
                         type: 'pending',
-                        kind: 'property',
-                        propertyType: 'controlProperty',
-                        value: 'abc'
+                        kind: 'generic',
+                        properties: [
+                            {
+                                label: 'text',
+                                value: 'abc',
+                                displayValueWithIcon: true
+                            }
+                        ]
                     },
                     {
-                        changeType: 'propertyBindingChange',
-                        controlId: 'appComponentListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button',
+                        changeType: 'property',
+                        controlId: 'control2',
                         isActive: true,
-                        propertyName: 'text',
-                        controlName: 'Button',
-                        fileName: 'testFileName',
+                        title: 'button',
+                        fileName: 'test2',
                         type: 'pending',
-                        kind: 'property',
-                        value: '{i18n>DELETE}',
-                        propertyType: 'controlProperty'
+                        kind: 'generic',
+                        properties: [
+                            {
+                                label: 'text',
+                                value: '{i18n>DELETE}',
+                                displayValueWithIcon: true
+                            }
+                        ]
                     },
                     {
                         changeType: 'addXMLAtExtensionPoint',
@@ -1507,7 +1517,7 @@ describe('ChangeService', () => {
                     })
                 }),
                 getPreparedChange: (): { getDefinition: () => { fileName: string } } => {
-                    return { getDefinition: () => ({ fileName: 'testFileName' }) };
+                    return { getDefinition: jest.fn().mockReturnValue(Object.fromEntries(cache)) };
                 }
             };
         }
@@ -1516,7 +1526,7 @@ describe('ChangeService', () => {
                 new Map<string, any>([
                     ['changeType', 'appdescr_ui_generic_app_changePageConfiguration'],
                     [
-                        'parameters',
+                        'content',
                         {
                             'entityPropertyChange': {
                                 'propertyPath': 'controlConfig/settings',
@@ -1533,7 +1543,7 @@ describe('ChangeService', () => {
                 new Map<string, any>([
                     ['changeType', 'appdescr_ui_generic_app_changePageConfiguration'],
                     [
-                        'parameters',
+                        'content',
                         {
                             'entityPropertyChange': {
                                 'propertyPath': 'controlConfig/settings/useDateRange',
@@ -1562,24 +1572,36 @@ describe('ChangeService', () => {
                 saved: [],
                 pending: [
                     {
-                        controlIds: ['ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'],
+                        controlId: [],
                         isActive: true,
-                        fileName: 'testFileName',
                         type: 'pending',
-                        kind: 'configuration',
-                        propertyName: 'someSetting',
-                        propertyPath: 'controlConfig/settings',
-                        value: true
+                        kind: 'generic',
+                        properties: [
+                            {
+                                label: 'someSetting',
+                                value: true,
+                                displayValueWithIcon: true
+                            }
+                        ],
+                        changeType: 'configuration',
+                        title: 'Configuration',
+                        subtitle: 'controlConfig/settings'
                     },
                     {
-                        controlIds: ['ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'],
+                        controlId: [],
                         isActive: true,
-                        fileName: 'testFileName',
                         type: 'pending',
-                        kind: 'configuration',
-                        propertyName: 'useDateRange',
-                        propertyPath: 'controlConfig/settings/useDateRange',
-                        value: true
+                        kind: 'generic',
+                        properties: [
+                            {
+                                label: 'useDateRange',
+                                value: true,
+                                displayValueWithIcon: true
+                            }
+                        ],
+                        changeType: 'configuration',
+                        title: 'Configuration',
+                        subtitle: 'controlConfig/settings/useDateRange'
                     }
                 ]
             }
@@ -1619,7 +1641,7 @@ describe('ChangeService', () => {
                     })
                 }),
                 getPreparedChange: (): { getDefinition: () => { fileName: string } } => {
-                    return { getDefinition: () => ({ fileName: 'testFileName' }) };
+                    return { getDefinition: jest.fn().mockReturnValue(Object.fromEntries(cache)) };
                 }
             };
         }
@@ -1629,15 +1651,17 @@ describe('ChangeService', () => {
                     ['selector', { id: 'control1' }],
                     ['changeType', 'appdescr_fe_changePageConfiguration'],
                     [
-                        'parameters',
+                        'content',
                         {
                             'entityPropertyChange': {
                                 'propertyPath': 'controlConfig/settings',
                                 'operation': 'upsert',
                                 'propertyValue': 'hello'
-                            }
+                            },
+                            'page': 'testPage'
                         }
-                    ]
+                    ],
+                    ['fileName', 'testFile']
                 ])
             )
         ];
@@ -1658,14 +1682,21 @@ describe('ChangeService', () => {
                 saved: [],
                 pending: [
                     {
-                        controlIds: ['ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'],
+                        controlId: [],
                         isActive: true,
-                        fileName: 'testFileName',
                         type: 'pending',
-                        kind: 'configuration',
-                        propertyName: 'settings',
-                        propertyPath: 'controlConfig',
-                        value: 'hello'
+                        kind: 'generic',
+                        fileName: 'testFile',
+                        properties: [
+                            {
+                                displayValueWithIcon: true,
+                                label: 'settings',
+                                value: 'hello'
+                            }
+                        ],
+                        title: 'Configuration',
+                        changeType: 'configuration',
+                        subtitle: 'controlConfig'
                     }
                 ]
             }

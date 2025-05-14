@@ -108,7 +108,15 @@ import {
 } from './change';
 import { preprocessChanges } from './preprocessor';
 import type { CompilerToken } from './cds-compiler-tokens';
-import { findLastTokenBeforePosition, findFirstTokenAfterPosition } from './cds-compiler-tokens';
+import {
+    findLastTokenBeforePosition,
+    findFirstTokenAfterPosition,
+    matchTokenByStart,
+    createTokenRange,
+    isOldToken,
+    tokenLine,
+    tokenColumn
+} from './cds-compiler-tokens';
 import { getIndentLevelFromPointer, getIndentLevelFromNode } from './indent';
 
 const printOptions: typeof defaultPrintOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
@@ -910,19 +918,24 @@ function convertToCompoundAnnotation(
     const indentText = '    '.repeat(indentLevel + 1);
     const closingIndent = '    '.repeat(indentLevel);
     const contentIndent: TextEdit[] = [];
+    const startTokenLine = tokenLine(startToken);
+    const startTokenCharacter = tokenColumn(startToken);
+    const endTokenLine = tokenLine(endToken);
+    const endTokenCharacter = tokenColumn(endToken);
     if (indentContent) {
-        for (let index = startToken.line; index < endToken.line; index++) {
+        for (let index = startTokenLine + 1; index <= endTokenLine; index++) {
             contentIndent.push(TextEdit.insert(Position.create(index, 0), '    '));
         }
     }
 
     // if annotation ends with ';' we need to insert closing ')' before ';' otherwise we need to insert it after the last token
     // sometimes element annotations many end without ';'
-    const endCharacter = afterEndToken.text === ';' ? afterEndToken.column : endToken.column + endToken.text.length;
+    const afterEndTokenCharacter = tokenColumn(afterEndToken);
+    const endCharacter = afterEndToken.text === ';' ? afterEndTokenCharacter : endTokenCharacter + endToken.text.length;
     return [
-        TextEdit.insert(Position.create(startToken.line - 1, startToken.column + 1), `(\n${indentText}`),
+        TextEdit.insert(Position.create(startTokenLine, startTokenCharacter + 1), `(\n${indentText}`),
         ...contentIndent,
-        TextEdit.insert(Position.create(endToken.line - 1, endCharacter), `\n${closingIndent})`)
+        TextEdit.insert(Position.create(endTokenLine, endCharacter), `\n${closingIndent})`)
     ];
 }
 
@@ -1051,12 +1064,10 @@ function extractCommasFromCompilerTokens<T extends { range?: Range }>(
 ): Token[] {
     const result: Token[] = [];
     const { start, end } = range;
-    const startTokenIndex = tokens.findIndex(
-        (token) => token.line === start.line + 1 && token.column === start.character
-    );
+    const startTokenIndex = tokens.findIndex(matchTokenByStart(start));
     for (let i = startTokenIndex; i < tokens.length; i++) {
         const token = tokens[i];
-        const tokenRange = Range.create(token.line - 1, token.column, token.line - 1, token.column + token.text.length);
+        const tokenRange = createTokenRange(token);
         if (token.text === ',' && !items.some((item) => item.range && rangeContained(item.range, tokenRange))) {
             // we are only interested in commas separating items -> ignore commas that are inside an item
             result.push({
@@ -1065,7 +1076,14 @@ function extractCommasFromCompilerTokens<T extends { range?: Range }>(
                 range: tokenRange
             });
         }
-        if ((token.line === end.line + 1 && token.column >= end.character) || token.line > end.line + 1) {
+        if (isOldToken(token)) {
+            if ((token.line === end.line + 1 && token.column >= end.character) || token.line > end.line + 1) {
+                break;
+            }
+        } else if (
+            (token.location.line === end.line + 1 && token.location.col >= end.character + 1) ||
+            token.location.line > end.line + 1
+        ) {
             break;
         }
     }

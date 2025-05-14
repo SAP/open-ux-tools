@@ -1,5 +1,18 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.4.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-input-validator@0.6.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/ui5-info@0.11.0
+
 ## 0.3.76
 
 ### Patch Changes

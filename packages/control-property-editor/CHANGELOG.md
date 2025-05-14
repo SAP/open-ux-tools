@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.6.5
+
+### Patch Changes
+
+-   e856125: Fix: Generic handling for change type and new UI component for displaying
+
 ## 0.6.4
 
 ### Patch Changes

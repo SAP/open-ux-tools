@@ -31,8 +31,13 @@ function adaptedUrl(url: string, root: string): string {
     result = isGhost ? url.slice(1) : url;
     const path = fileURLToPath(result);
     result = toUnifiedUri(relative(root, path));
+    result = normalizeCdsVersionInPath(result);
     result = (isGhost ? GHOST_FILENAME_PREFIX : '') + result;
     return result;
+}
+
+export function normalizeCdsVersionInPath(path: string): string {
+    return path.replaceAll(/cds-maintenance|cds-latest|cds-next/g, 'CDS_ROOT');
 }
 
 export function serialize(schema: RawSchema, root: string): string {

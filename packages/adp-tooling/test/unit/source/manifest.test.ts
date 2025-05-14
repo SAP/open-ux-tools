@@ -3,7 +3,15 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { initI18n, t } from '../../../src/i18n';
-import { SourceManifest, getAch, getFioriId, isSyncLoadedView, isV4Application } from '../../../src';
+import {
+    ApplicationType,
+    SourceManifest,
+    getAch,
+    getApplicationType,
+    getFioriId,
+    isSyncLoadedView,
+    isV4Application
+} from '../../../src';
 
 describe('SourceManifest', () => {
     let sourceManifest: SourceManifest;
@@ -205,5 +213,53 @@ describe('getAch', () => {
 
         const result = getAch(manifest);
         expect(result).toBe('');
+    });
+});
+
+describe('getApplicationType', () => {
+    it('should return NONE when manifest is undefined', () => {
+        expect(getApplicationType(undefined)).toBe(ApplicationType.NONE);
+    });
+
+    it('should return NONE when manifest is an empty object', () => {
+        expect(getApplicationType({} as Manifest)).toBe(ApplicationType.NONE);
+    });
+
+    it('should return FIORI_ELEMENTS_OVP when manifest has sap.ovp', () => {
+        const manifest = {
+            'sap.app': {},
+            'sap.ovp': {}
+        } as unknown as Manifest;
+
+        expect(getApplicationType(manifest)).toBe(ApplicationType.FIORI_ELEMENTS_OVP);
+    });
+
+    it('should return FIORI_ELEMENTS when manifest has sap.ui.generic.app', () => {
+        const manifest = {
+            'sap.app': {},
+            'sap.ui.generic.app': {}
+        } as unknown as Manifest;
+
+        expect(getApplicationType(manifest)).toBe(ApplicationType.FIORI_ELEMENTS);
+    });
+
+    it('should return FIORI_ELEMENTS when sap.app.sourceTemplate.id is smarttemplate', () => {
+        const manifest = {
+            'sap.app': {
+                sourceTemplate: {
+                    id: 'ui5template.smarttemplate'
+                }
+            }
+        } as unknown as Manifest;
+
+        expect(getApplicationType(manifest)).toBe(ApplicationType.FIORI_ELEMENTS);
+    });
+
+    it('should return FREE_STYLE for fallback case with populated manifest', () => {
+        const manifest = {
+            'sap.app': {}
+        } as unknown as Manifest;
+
+        expect(getApplicationType(manifest)).toBe(ApplicationType.FREE_STYLE);
     });
 });

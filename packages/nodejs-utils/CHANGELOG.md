@@ -1,5 +1,16 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/btp-utils@1.1.0
+
 ## 0.1.9
 
 ### Patch Changes

@@ -102,6 +102,10 @@ export class ConfigPrompter {
      */
     private isApplicationSupported: boolean;
     /**
+     * Error message to be shown in the confirm extension project prompt.
+     */
+    private appValidationErrorMessage: string | undefined;
+    /**
      * Indicates whether views are loaded synchronously.
      */
     private containsSyncViews = false;
@@ -445,7 +449,12 @@ export class ConfigPrompter {
         return {
             type: 'confirm',
             name: configPromptNames.shouldCreateExtProject,
-            message: () => getExtProjectMessage(this.isApplicationSupported, this.containsSyncViews),
+            message: () =>
+                getExtProjectMessage(
+                    this.isApplicationSupported,
+                    this.containsSyncViews,
+                    this.appValidationErrorMessage
+                ),
             default: false,
             guiOptions: {
                 applyDefaultWhenDirty: true
@@ -482,11 +491,13 @@ export class ConfigPrompter {
             return validationResult;
         }
 
-        if (
+        const isKnownUnsupported =
             validationResult === t('error.appDoesNotSupportManifest') ||
-            validationResult === t('error.appDoesNotSupportAdaptation')
-        ) {
+            validationResult === t('error.appDoesNotSupportFlexibility');
+
+        if (isKnownUnsupported) {
             this.logger.error(validationResult);
+            this.appValidationErrorMessage = validationResult;
             this.isApplicationSupported = false;
             return true;
         }
@@ -691,7 +702,7 @@ export class ConfigPrompter {
 
         const ui5 = this.appManifest?.['sap.ui5'];
         if (ui5?.flexEnabled === false) {
-            throw new Error(t('error.appDoesNotSupportAdaptation'));
+            throw new Error(t('error.appDoesNotSupportFlexibility'));
         }
     }
 

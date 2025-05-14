@@ -7,7 +7,7 @@ import { PrintPattern, resolveTarget } from '@sap-ux/cds-odata-annotation-conver
 import type { Annotation } from '@sap-ux/cds-annotation-parser';
 
 import { getTokenRange } from './utils';
-import type { CompilerToken } from './cds-compiler-tokens';
+import { tokenColumn, tokenLine, type CompilerToken } from './cds-compiler-tokens';
 
 interface IndexRange {
     start: number;
@@ -552,7 +552,7 @@ function canIncludePrecedingComment(tokens: CompilerToken[], options: Options): 
     // comments are "associated" with current annotation only if they spans the whole line
     // (otherwise it is considered line end comment of previous content)
     const precedingNonCommentToken = getNeighboringToken(tokens, beforeTokenIndex, -1);
-    return !precedingNonCommentToken || precedingNonCommentToken.line < commentToken.line;
+    return !precedingNonCommentToken || tokenLine(precedingNonCommentToken) < tokenLine(commentToken);
 }
 
 /**
@@ -581,11 +581,11 @@ function canIncludeSubsequentComment(deletionRange: DeletionRange, tokens: Compi
     }
     // token represents a comment
     // comments are "associated" with current range only if it is in same line as range end and next non-comment token is in next line
-    if (commentToken.line > tokens[deletionRange.tokenRange.end].line) {
+    if (tokenLine(commentToken) > tokenLine(tokens[deletionRange.tokenRange.end])) {
         return false;
     } // comment not in same line
     const nextToken = getNeighboringToken(tokens, afterTokenIndex, +1);
-    return !nextToken || nextToken.line > commentToken.line; // make sure no further non-comment token after comment
+    return !nextToken || tokenLine(nextToken) > tokenLine(commentToken); // make sure no further non-comment token after comment
 }
 
 /**
@@ -889,7 +889,7 @@ function getPositionFromToken(token: CompilerToken | undefined, endPosition = fa
         return undefined;
     }
     const offset = endPosition ? token.text.length : 0;
-    return Position.create(token.line - 1, token.column + offset);
+    return Position.create(tokenLine(token), tokenColumn(token) + offset);
 }
 
 function getRangeFromTokenRange(
@@ -929,7 +929,7 @@ function includeSiblingSeparator(
         // include line comment in same line
         const commentToken = tokens[deletionRange.tokenRange.end + 1];
         if (commentToken?.text.startsWith('//')) {
-            if (tokens[deletionRange.tokenRange.end].line === commentToken.line) {
+            if (tokenLine(tokens[deletionRange.tokenRange.end]) === tokenLine(commentToken)) {
                 ++deletionRange.tokenRange.end;
             }
         }

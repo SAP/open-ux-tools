@@ -6,6 +6,7 @@ declare module 'sap/ui/fl/Selector' {
     export default interface Selector {
         id: string;
         idIsLocal: boolean;
+        type?: string;
     }
 }
 declare module 'sap/ui/fl/Layer' {

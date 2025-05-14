@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-library-reference-sub-generator",
     "description": "Generator for adding reference libraries to a project",
-    "version": "0.0.64",
+    "version": "0.1.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -53,6 +53,6 @@
         "yeoman-test": "6.3.0"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }
