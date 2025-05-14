@@ -10,8 +10,8 @@ import {
     OdataVersion,
     promptNames as odataServiceInqPromptNames
 } from '@sap-ux/odata-service-inquirer';
+import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions } from '@sap-ux/ui5-application-inquirer';
 import * as ui5ApplicationInquirer from '@sap-ux/ui5-application-inquirer';
-import type { UI5ApplicationAnswers } from '@sap-ux/ui5-application-inquirer';
 import { promptNames } from '@sap-ux/ui5-application-inquirer';
 import * as ui5Info from '@sap-ux/ui5-info';
 import 'jest-extended';
@@ -23,7 +23,7 @@ import {
     promptOdataServiceAnswers,
     promptUI5ApplicationAnswers
 } from '../../../src/fiori-app-generator/prompting';
-import { type FioriGeneratorPromptExtension, type Service, FloorplanFE } from '../../../src/types';
+import { type Service, FloorplanFE } from '../../../src/types';
 import { initI18nFioriAppSubGenerator, t } from '../../../src/utils/i18n';
 import * as stepsHelper from '../../../src/utils/stepsHelper';
 
@@ -96,7 +96,7 @@ describe('prompting.ts', () => {
                     "default": false,
                   },
                   "enableTypeScript": {
-                    "defaultValue": false,
+                    "default": false,
                   },
                   "enableVirtualEndpoints": {
                     "hide": false,
@@ -326,7 +326,7 @@ describe('prompting.ts', () => {
                 message: 'msg',
                 severity: Severity.information
             });
-            const promptExtensions: FioriGeneratorPromptExtension = {
+            const promptExtensions: UI5ApplicationPromptOptions = {
                 addDeployConfig: {
                     default: true,
                     validate: validateExtFunc,
@@ -384,7 +384,7 @@ describe('prompting.ts', () => {
                     addFlpConfig: { validatorCallback: expect.toBeFunction() },
                     enableCodeAssist: { advancedOption: true, default: false },
                     enableEslint: { advancedOption: true, default: false },
-                    enableTypeScript: { defaultValue: false },
+                    enableTypeScript: { default: false },
                     enableVirtualEndpoints: { hide: false },
                     name: { defaultValue: undefined },
                     skipAnnotations: { advancedOption: true, default: false, hide: true },

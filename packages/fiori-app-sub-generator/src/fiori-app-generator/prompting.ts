@@ -255,47 +255,45 @@ export async function createUI5ApplicationPromptOptions(
         };
     }
     // Add more prompt options as required
-    const promptOptions = merge(
-        {
-            [ui5AppInquirerPromptNames.name]: {
-                defaultValue: projectName
-            },
-            [ui5AppInquirerPromptNames.targetFolder]: defaultTargetFolderOption,
-            [ui5AppInquirerPromptNames.ui5Version]: ui5VersionPromptOptions,
-            [ui5AppInquirerPromptNames.skipAnnotations]: {
-                hide: !service.capService
-            },
-            [ui5AppInquirerPromptNames.addDeployConfig]: {
-                validatorCallback: (addDeployConfigAnswer: boolean) => {
-                    validateNextStep(
-                        addDeployConfigAnswer,
-                        t('steps.projectAttributesConfig.title'),
-                        appGenStepConfigList,
-                        t('steps.deployConfig.title')
-                    );
-                }
-            },
-            [ui5AppInquirerPromptNames.addFlpConfig]: {
-                validatorCallback: (addFlpConfigAnswer: boolean) => {
-                    validateNextStep(
-                        addFlpConfigAnswer,
-                        t('steps.projectAttributesConfig.title'),
-                        appGenStepConfigList,
-                        t('steps.flpConfig.title')
-                    );
-                }
-            },
-            [ui5AppInquirerPromptNames.enableTypeScript]: {
-                defaultValue: defaultPromptValues[ui5AppInquirerPromptNames.enableTypeScript]
-            },
-            [ui5AppInquirerPromptNames.enableVirtualEndpoints]: {
-                hide: service.capService?.capType === 'Java'
+    const preMergedPromptOpts: UI5ApplicationPromptOptions = {
+        [ui5AppInquirerPromptNames.name]: {
+            defaultValue: projectName
+        },
+        [ui5AppInquirerPromptNames.targetFolder]: defaultTargetFolderOption,
+        [ui5AppInquirerPromptNames.ui5Version]: ui5VersionPromptOptions,
+        [ui5AppInquirerPromptNames.skipAnnotations]: {
+            hide: !service.capService
+        },
+        [ui5AppInquirerPromptNames.addDeployConfig]: {
+            validatorCallback: (addDeployConfigAnswer: boolean) => {
+                validateNextStep(
+                    addDeployConfigAnswer,
+                    t('steps.projectAttributesConfig.title'),
+                    appGenStepConfigList,
+                    t('steps.deployConfig.title')
+                );
             }
-        } as UI5ApplicationPromptOptions,
-        promptSettings as UI5ApplicationPromptOptions
-    );
+        },
+        [ui5AppInquirerPromptNames.addFlpConfig]: {
+            validatorCallback: (addFlpConfigAnswer: boolean) => {
+                validateNextStep(
+                    addFlpConfigAnswer,
+                    t('steps.projectAttributesConfig.title'),
+                    appGenStepConfigList,
+                    t('steps.flpConfig.title')
+                );
+            }
+        },
+        [ui5AppInquirerPromptNames.enableTypeScript]: {
+            default: defaultPromptValues[ui5AppInquirerPromptNames.enableTypeScript]
+        },
+        [ui5AppInquirerPromptNames.enableVirtualEndpoints]: {
+            hide: service.capService?.capType === 'Java'
+        }
+    };
+    const promptOptions = merge(preMergedPromptOpts, promptSettings);
 
-    // Configure the prompts which should be hidden behind the ad
+    // Configure the prompts which should be hidden behind the advanced option switch
     const advancedPrompts = [
         ui5AppInquirerPromptNames.enableCodeAssist,
         ui5AppInquirerPromptNames.skipAnnotations,

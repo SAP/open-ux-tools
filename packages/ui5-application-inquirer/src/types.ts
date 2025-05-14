@@ -93,7 +93,7 @@ type EnableTypeScriptPromptOptions = Omit<PromptDefaultValue<boolean>, 'default'
     /**
      * Callback function to determine the default value for TypeScript
      */
-    default?: (answers: UI5ApplicationAnswers & { capCdsInfo?: CdsUi5PluginInfo }) => boolean;
+    default?: boolean | ((answers: UI5ApplicationAnswers & { capCdsInfo?: CdsUi5PluginInfo }) => boolean);
 };
 
 type TargetFolderPromptOptions = {
@@ -127,7 +127,7 @@ type NamePromptOptions = {
     defaultValue?: string;
 };
 
-type AddDeployPromptOptions = Omit<UI5ApplicationCommonPromptOptions, 'hide'> & {
+export type AddDeployPromptOptions = Omit<UI5ApplicationCommonPromptOptions, 'hide'> & {
     hide?: boolean | ((isCap: boolean) => boolean);
 };
 
@@ -186,20 +186,8 @@ type stringValuePromptOptions = Record<stringValuePrompts, UI5ApplicationCommonP
  * Provide the correct type checking for boolean value prompts and validator callback options
  *
  */
-type booleanValuePromptOtions = Record<
-    booleanValuePrompts,
-    {
-        /**
-         * Callback function can be provided which will be executed on input validation.
-         * This may be used, for example, to trigger conditional steps in Yeoman UI.
-         *
-         * @param answer
-         * @param promptName
-         * @returns
-         */
-        validatorCallback?: (answer: boolean, promptName: string) => void;
-    } & UI5ApplicationCommonPromptOptions
-> &
+type booleanValuePromptOtions = Record<booleanValuePrompts, UI5ApplicationCommonPromptOptions> &
+    Record<booleanValuePrompts, { validatorCallback?: (answer: boolean, promptName: string) => void }> &
     Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>> &
     Record<promptNames.enableTypeScript, EnableTypeScriptPromptOptions> &
     Record<promptNames.addDeployConfig, AddDeployPromptOptions>;
