@@ -101,15 +101,6 @@ function applyPromptOptionDefaults(
             let defaultValue;
             if (promptKey === promptNames.ui5Theme) {
                 defaultValue = getDefaultUI5Theme(answers.ui5Version);
-            } else if (promptKey === promptNames.enableTypeScript) {
-                // TypeScript default value is dependent on the CdsUi5PluginInfo
-                const enableTypeScriptOpts = promptOpt as UI5ApplicationPromptOptions['enableTypeScript'];
-                // If an enableTypeScript default function is provided, use it to determine the default value
-                // otherwise override with the provided default value
-                defaultValue =
-                    typeof enableTypeScriptOpts?.default === 'function'
-                        ? enableTypeScriptOpts.default({ ...answers, capCdsInfo })
-                        : defaultValueOrFunc;
             } else if (defaultValueOrFunc !== undefined) {
                 defaultValue = getDefaultValue(answers, defaultValueOrFunc);
             } else if (promptOpt.advancedOption) {

@@ -84,18 +84,6 @@ type UI5VersionPromptOptions = {
     defaultChoice?: UI5VersionChoice;
 };
 
-/**
- * Options for the enable TypeScript prompt. This allows for a default value to be determined based on the answers provided
- * and additonal runtime cds information if available. This effectively constains the prompt options for the enable TypeScript prompt
- * to be a function that returns a boolean value since enable TypeScript prompt default is conditional.
- */
-type EnableTypeScriptPromptOptions = Omit<PromptDefaultValue<boolean>, 'default'> & {
-    /**
-     * Callback function to determine the default value for TypeScript
-     */
-    default?: boolean | ((answers: UI5ApplicationAnswers & { capCdsInfo?: CdsUi5PluginInfo }) => boolean);
-};
-
 type TargetFolderPromptOptions = {
     /**
      * The default target folder path to be used in combination with the prompt default function and the name prompt validation.
@@ -160,6 +148,7 @@ type DefaultValueInputPrompts =
     | promptNames.ui5Version
     | promptNames.targetFolder;
 type DefaultValueConfirmPrompts =
+    | promptNames.enableTypeScript
     | promptNames.enableCodeAssist
     | promptNames.enableEslint
     | promptNames.skipAnnotations
@@ -192,7 +181,6 @@ type booleanValuePromptOtions = Record<
 > &
     Record<booleanValuePrompts, { validatorCallback?: (answer: boolean, promptName: string) => void }> &
     Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>> &
-    Record<promptNames.enableTypeScript, EnableTypeScriptPromptOptions> &
     Record<promptNames.addDeployConfig, AddDeployPromptOptions>;
 
 export type UI5ApplicationQuestion = YUIQuestion<UI5ApplicationAnswers> &

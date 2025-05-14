@@ -553,13 +553,6 @@ describe('getQuestions', () => {
         let enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
         // default
         expect(enableTypeScriptQuestion?.default).toEqual(false);
-        questions = getQuestions([], {
-            enableTypeScript: {
-                default: () => true
-            }
-        });
-        enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
-        expect(enableTypeScriptQuestion?.default()).toEqual(true);
         expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual(undefined);
 
         // when
