@@ -22,9 +22,11 @@ export interface EntityChoiceOptions {
     defaultMainEntityIndex?: number;
     convertedMetadata?: ConvertedMetadata;
     odataVersion?: OdataVersion;
+    hasResultContextAnnotation?: boolean;
 }
 
 export type EntitySetFilter = 'filterDraftEnabled' | 'filterAggregateTransformationsOnly';
+
 /**
  * Returns the entity choice options for use in a list inquirer prompt.
  *
@@ -52,6 +54,7 @@ export function getEntityChoices(
     let defaultMainEntityIndex: number | undefined;
     let convertedMetadata: ConvertedMetadata | undefined;
     let odataVersion: OdataVersion | undefined;
+    let hasResultContextAnnotation: boolean | undefined;
     try {
         convertedMetadata = convert(parse(edmx));
         const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
@@ -73,7 +76,14 @@ export function getEntityChoices(
         } else {
             entitySets = convertedMetadata.entitySets;
         }
-
+        debugger;
+        const targetEntitySet = entitySets.find(
+            (entitySet) => entitySet.entityType?.annotations?.Common?.ResultContext !== undefined
+        );
+        console.log('--targetEntitySet?.entityType?.annotations?.Common?.ResultContext', targetEntitySet?.entityType?.annotations?.Common?.ResultContext)
+        hasResultContextAnnotation = Boolean(targetEntitySet?.entityType?.annotations?.Common?.ResultContext);
+          
+        //entitySets[0].entityType.annotations.Common.ResultContext
         entitySets.forEach((entitySet, index) => {
             const choice: ListChoiceOptions<EntityAnswer> = {
                 name: entitySet.name,
@@ -101,7 +111,8 @@ export function getEntityChoices(
         draftRootIndex,
         defaultMainEntityIndex,
         convertedMetadata,
-        odataVersion
+        odataVersion,
+        hasResultContextAnnotation
     };
 }
 

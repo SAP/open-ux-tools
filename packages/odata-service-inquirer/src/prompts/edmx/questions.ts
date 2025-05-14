@@ -135,7 +135,7 @@ export function getEntitySelectionQuestions(
         let navigationEntityChoices: ListChoiceOptions<NavigationEntityAnswer>[];
         entityQuestions.push({
             when: (answers: EntitySelectionAnswers) => {
-                if (answers.mainEntity) {
+                if (answers.mainEntity && !entityChoices.hasResultContextAnnotation) {
                     navigationEntityChoices = getNavigationEntityChoices(
                         convertedMetadata,
                         odataVersion,
