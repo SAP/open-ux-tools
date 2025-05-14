@@ -83,4 +83,19 @@ describe('CF Writer App - Application Frontend', () => {
         expect(unitTestFs.read(join(rootPath, 'package.json'))).toMatchSnapshot();
         expect(fs.readFileSync(join(rootPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
     });
+
+    test('Generate deployment configs - Append HTML5 to an existing app frontend router', async () => {
+        const rootName = 'existingappfrontend';
+        const rootPath = join(outputDir, rootName);
+        const appPath = join(rootPath, 'basicapp');
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(rootPath);
+        fsExtra.copySync(join(__dirname, `../sample/appfrontendbase`), rootPath); // Base mta
+        fsExtra.copySync(join(__dirname, `../sample/basicapp`), appPath); // Base -> App
+        await generateAppConfig({ appPath, addManagedAppRouter: false, addAppFrontendRouter: false }, unitTestFs);
+        expect(unitTestFs.read(join(appPath, 'xs-app.json'))).toMatchSnapshot();
+        expect(unitTestFs.read(join(rootPath, 'xs-security.json'))).toMatchSnapshot();
+        expect(unitTestFs.read(join(rootPath, 'package.json'))).toMatchSnapshot();
+        expect(fs.readFileSync(join(rootPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
+    });
 });

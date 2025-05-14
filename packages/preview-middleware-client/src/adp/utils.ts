@@ -141,10 +141,10 @@ interface ControllerInfo {
  * @param control UI5 control.
  * @returns The controller name and view ID.
  */
-
 export function getControllerInfoForControl(control: ManagedObject): ControllerInfo {
     const view = FlexUtils.getViewForControl(control);
-    const controllerName = view.getController().getMetadata().getName();
+    const moduleName = view?.getControllerModuleName?.();
+    const controllerName = moduleName ? `module:${moduleName}` : view.getController()?.getMetadata().getName();
     const viewId = view.getId();
     return { controllerName, viewId };
 }
@@ -172,7 +172,7 @@ export async function getReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo): 
         return reuseComponentChecker;
     }
 
-    let reuseComponentApi: IsReuseComponentApi;
+    let reuseComponentApi: typeof IsReuseComponentApi;
     if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
         reuseComponentApi = (await import('sap/ui/rta/util/isReuseComponent')).default;
     }
@@ -186,7 +186,7 @@ export async function getReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo): 
         const component = FlexUtils.getComponentForControl(ui5Control);
 
         if (reuseComponentApi) {
-            return reuseComponentApi.isReuseComponent(component);
+            return reuseComponentApi(component);
         }
 
         if (!component) {

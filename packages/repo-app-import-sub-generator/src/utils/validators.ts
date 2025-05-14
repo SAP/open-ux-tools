@@ -1,7 +1,15 @@
 import { t } from '../utils/i18n';
-import type { QfaJsonConfig } from '../app/types';
 import RepoAppDownloadLogger from '../utils/logger';
 import { PromptState } from '../prompts/prompt-state';
+import type { AppIndex } from '@sap-ux/axios-extension';
+import { HELP_NODES } from '@sap-ux/guided-answers-helper';
+import type { ValidationLink } from '@sap-ux/inquirer-common';
+import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import type { AppInfo, QuickDeployedAppConfig, QfaJsonConfig } from '../app/types';
+import { downloadApp, hasQfaJson } from '../utils/download-utils';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import { MessageType } from '@sap-devx/yeoman-ui-types';
+import { qfaJsonFileName } from '../utils/constants';
 
 /**
  * Validates the metadata section of the app configuration.
@@ -92,3 +100,61 @@ export const validateQfaJsonFile = (config: QfaJsonConfig): boolean => {
 export const isValidPromptState = (targetFolder: string, appId?: string): boolean => {
     return !!(PromptState.systemSelection.connectedSystem?.serviceProvider && appId && targetFolder);
 };
+
+/**
+ * Generates a help link for the "App Not Found" error.
+ *
+ * @returns {Promise<ValidationLink>} - A promise resolving to a validation link for the error.
+ */
+async function generateAppNotFoundHelpLink(): Promise<ValidationLink> {
+    return ErrorHandler.getHelpLink(
+        HELP_NODES.ADT_APP_NOT_FOUND_ERROR,
+        ERROR_TYPE.INTERNAL_SERVER_ERROR,
+        t('error.noAppsDeployed')
+    );
+}
+
+/**
+ * Validates the app selection and handles app download if applicable.
+ *
+ * @param answers - The selected app information.
+ * @param appList - The list of available apps.
+ * @param quickDeployedAppConfig - The quick deployed app configuration.
+ * @param appWizard - The app wizard instance.
+ * @returns A promise resolving to a boolean or a validation error message.
+ */
+export async function validateAppSelection(
+    answers: AppInfo,
+    appList: AppIndex,
+    quickDeployedAppConfig?: QuickDeployedAppConfig,
+    appWizard?: AppWizard
+): Promise<string | boolean | ValidationLink> {
+    // Quick deploy config exists but no apps found
+    if (quickDeployedAppConfig?.appId && appList.length === 0) {
+        return await generateAppNotFoundHelpLink();
+    }
+
+    // No apps available at all
+    if (appList.length === 0) {
+        return await generateAppNotFoundHelpLink();
+    }
+
+    // Valid app selected, try to download
+    if (answers?.appId) {
+        try {
+            await downloadApp(answers.repoName);
+            const isQfaJsonPresent: boolean = hasQfaJson();
+            if (!isQfaJsonPresent) {
+                appWizard?.showError(
+                    t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }),
+                    MessageType.notification
+                );
+            }
+            return isQfaJsonPresent;
+        } catch (error) {
+            return t('error.appDownloadErrors.appDownloadFailure', { error: error.message });
+        }
+    }
+
+    return false;
+}

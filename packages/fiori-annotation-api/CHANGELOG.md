@@ -1,5 +1,57 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/cds-odata-annotation-converter@0.5.7
+
+## 0.5.1
+
+### Patch Changes
+
+-   2024a9f: chore: update `@sap/ux-cds-compiler-facade` dependency
+-   Updated dependencies [2024a9f]
+    -   @sap-ux/cds-odata-annotation-converter@0.5.7
+
+## 0.5.0
+
+### Minor Changes
+
+-   2a16531: feat: for XML projects relax metadata reference check in annotation files.
+
+### Patch Changes
+
+-   Updated dependencies [2a16531]
+    -   @sap-ux/odata-annotation-core@0.2.3
+    -   @sap-ux/cds-annotation-parser@0.2.9
+    -   @sap-ux/cds-odata-annotation-converter@0.5.6
+    -   @sap-ux/xml-odata-annotation-converter@0.3.3
+
+## 0.4.27
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.26
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.25
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/cds-odata-annotation-converter@0.5.5
+
 ## 0.4.24
 
 ### Patch Changes

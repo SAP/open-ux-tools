@@ -861,8 +861,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       http-proxy-middleware:
-        specifier: 2.0.7
-        version: 2.0.7(@types/express@4.17.21)
+        specifier: 2.0.9
+        version: 2.0.9(@types/express@4.17.21)
       https-proxy-agent:
         specifier: 5.0.1
         version: 5.0.1
@@ -1050,8 +1050,8 @@ importers:
         specifier: workspace:*
         version: link:../text-document-utils
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.16.1
-        version: 1.16.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.17.1
+        version: 1.17.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
         specifier: 20.6.1
         version: 20.6.1
@@ -1120,18 +1120,12 @@ importers:
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
-      '@sap-ux/i18n':
-        specifier: workspace:*
-        version: link:../i18n
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap-ux/ui5-config':
-        specifier: workspace:*
-        version: link:../ui5-config
       hasbin:
         specifier: 1.2.3
         version: 1.2.3
@@ -1142,9 +1136,6 @@ importers:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
-      '@jest/types':
-        specifier: 29.6.3
-        version: 29.6.3
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -1160,15 +1151,9 @@ importers:
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
-      '@types/yeoman-environment':
-        specifier: 2.10.11
-        version: 2.10.11
       '@types/yeoman-generator':
         specifier: 5.2.11
         version: 5.2.11
@@ -1269,6 +1254,9 @@ importers:
       memfs:
         specifier: 3.4.13
         version: 3.4.13
+      unionfs:
+        specifier: 4.4.0
+        version: 4.4.0
 
   packages/control-property-editor:
     devDependencies:
@@ -1339,8 +1327,8 @@ importers:
         specifier: 7.33.2
         version: 7.33.2(eslint@8.57.0)
       http-proxy-middleware:
-        specifier: 2.0.7
-        version: 2.0.7(@types/express@4.17.21)
+        specifier: 2.0.9
+        version: 2.0.9(@types/express@4.17.21)
       i18next:
         specifier: 20.6.1
         version: 20.6.1
@@ -1529,9 +1517,6 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
-      '@types/vscode':
-        specifier: 1.73.1
-        version: 1.73.1
       '@types/yeoman-generator':
         specifier: 5.2.11
         version: 5.2.11
@@ -1544,9 +1529,6 @@ importers:
       '@sap-ux/abap-deploy-config-sub-generator':
         specifier: workspace:*
         version: link:../abap-deploy-config-sub-generator
-      '@sap-ux/axios-extension':
-        specifier: workspace:*
-        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -1559,15 +1541,9 @@ importers:
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
-      '@sap-ux/i18n':
-        specifier: workspace:*
-        version: link:../i18n
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
-      '@sap-ux/nodejs-utils':
-        specifier: workspace:*
-        version: link:../nodejs-utils
       '@sap-ux/odata-service-inquirer':
         specifier: workspace:*
         version: link:../odata-service-inquirer
@@ -1589,16 +1565,10 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
-      '@jest/types':
-        specifier: 29.6.3
-        version: 29.6.3
       '@sap-ux/cf-deploy-config-inquirer':
         specifier: workspace:*
         version: link:../cf-deploy-config-inquirer
@@ -1611,9 +1581,6 @@ importers:
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
         version: link:../jest-file-matchers
-      '@sap-ux/logger':
-        specifier: workspace:*
-        version: link:../logger
       '@sap/mta-lib':
         specifier: 1.7.4
         version: 1.7.4
@@ -1626,21 +1593,12 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.1
-        version: 2.0.1
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
-      '@types/yeoman-environment':
-        specifier: 2.10.11
-        version: 2.10.11
       '@types/yeoman-generator':
         specifier: 5.2.11
         version: 5.2.11
@@ -1916,8 +1874,8 @@ importers:
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.16.1
-        version: 1.16.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.17.1
+        version: 1.17.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       '@xml-tools/ast':
         specifier: 5.0.5
         version: 5.0.5
@@ -3310,6 +3268,9 @@ importers:
       '@sap-ux/fiori-tools-settings':
         specifier: workspace:*
         version: link:../fiori-tools-settings
+      '@sap-ux/guided-answers-helper':
+        specifier: workspace:*
+        version: link:../guided-answers-helper
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
@@ -4414,8 +4375,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       http-proxy-middleware:
-        specifier: 2.0.7
-        version: 2.0.7(@types/express@4.17.21)
+        specifier: 2.0.9
+        version: 2.0.9(@types/express@4.17.21)
       https-proxy-agent:
         specifier: 5.0.1
         version: 5.0.1
@@ -9148,13 +9109,13 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@sap/ux-cds-compiler-facade@1.16.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
-    resolution: {integrity: sha512-H3RoeqJtuKT8fvtzgURbsWM2aCdktYt2XtFaciNW896UQIdMSVhi2EKD1oVGE8b8doP7i1i5J+I6Vw8dGuzYAA==}
+  /@sap/ux-cds-compiler-facade@1.17.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
+    resolution: {integrity: sha512-T0t00oBJHIf2Ykm84sqfRCzaYIn0vgUlBGno5XsBXgB6ZuoP07RGCMRNfeg+fPvhpODUA12CFaBKs5pjyj+YlA==}
     engines: {node: '>=18.16.0'}
     peerDependencies:
       '@sap-ux/odata-annotation-core': '>=0.2.2'
       '@sap-ux/odata-annotation-core-types': '>=0.4.2'
-      '@sap-ux/project-access': '>=1.29.0'
+      '@sap-ux/project-access': '>=1.29.18'
     dependencies:
       '@sap-ux/odata-annotation-core': link:packages/odata-annotation-core
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
@@ -16964,8 +16925,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /http-proxy-middleware@2.0.7(@types/express@4.17.21):
-    resolution: {integrity: sha512-fgVY8AV7qU7z/MmXJ/rxwbrtQH4jBQ9m7kp3llF0liB7glmFeVZFBepQb32T3y8n8k2+AEYuMPCpinYW+/CuRA==}
+  /http-proxy-middleware@2.0.9(@types/express@4.17.21):
+    resolution: {integrity: sha512-c1IyJYLYppU574+YI7R4QyX2ystMtVXZwIdzazUIPIJsHuWNd+mho2j+bKoHftndicGj9yh+xjd+l0yj7VeT1Q==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       '@types/express': ^4.17.13

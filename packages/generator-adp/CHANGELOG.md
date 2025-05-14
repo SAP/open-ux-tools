@@ -1,5 +1,150 @@
 # @sap-ux/generator-adp
 
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+    -   @sap-ux/axios-extension@1.20.3
+    -   @sap-ux/inquirer-common@0.6.43
+    -   @sap-ux/adp-tooling@0.13.44
+    -   @sap-ux/system-access@0.5.39
+
+## 0.2.1
+
+### Patch Changes
+
+-   6cb23c8: feat: Add the Extension Project functionality and internal support information
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/adp-tooling@0.13.43
+    -   @sap-ux/project-input-validator@0.5.6
+
+## 0.2.0
+
+### Minor Changes
+
+-   fc8d7da: feat(generator-adp): Make possible to configure the Adaptation project generator from a json
+
+## 0.1.21
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/adp-tooling@0.13.42
+    -   @sap-ux/axios-extension@1.20.2
+    -   @sap-ux/fiori-generator-shared@0.11.3
+    -   @sap-ux/project-input-validator@0.5.5
+    -   @sap-ux/system-access@0.5.38
+    -   @sap-ux/inquirer-common@0.6.42
+
+## 0.1.20
+
+### Patch Changes
+
+-   Updated dependencies [1a01c5e]
+    -   @sap-ux/axios-extension@1.20.2
+    -   @sap-ux/adp-tooling@0.13.41
+    -   @sap-ux/system-access@0.5.38
+
+## 0.1.19
+
+### Patch Changes
+
+-   Updated dependencies [9e7fa23]
+    -   @sap-ux/adp-tooling@0.13.40
+
+## 0.1.18
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.41
+-   @sap-ux/adp-tooling@0.13.39
+
+## 0.1.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.38
+
+## 0.1.16
+
+### Patch Changes
+
+-   Updated dependencies [a3a43b2]
+    -   @sap-ux/axios-extension@1.20.1
+    -   @sap-ux/adp-tooling@0.13.37
+    -   @sap-ux/system-access@0.5.37
+
+## 0.1.15
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.40
+-   @sap-ux/adp-tooling@0.13.36
+
+## 0.1.14
+
+### Patch Changes
+
+-   Updated dependencies [258ecca]
+    -   @sap-ux/adp-tooling@0.13.35
+
+## 0.1.13
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.34
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/axios-extension@1.20.0
+-   @sap-ux/fiori-generator-shared@0.11.2
+-   @sap-ux/project-input-validator@0.5.4
+-   @sap-ux/system-access@0.5.36
+-   @sap-ux/inquirer-common@0.6.39
+
+## 0.1.12
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/adp-tooling@0.13.33
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/fiori-generator-shared@0.11.1
+    -   @sap-ux/project-input-validator@0.5.3
+    -   @sap-ux/system-access@0.5.36
+    -   @sap-ux/inquirer-common@0.6.38
+
+## 0.1.11
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/inquirer-common@0.6.37
+    -   @sap-ux/adp-tooling@0.13.32
+    -   @sap-ux/project-access@1.29.19
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/project-input-validator@0.5.2
+    -   @sap-ux/system-access@0.5.36
+
+## 0.1.10
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+-   @sap-ux/adp-tooling@0.13.31
+
+## 0.1.9
+
+### Patch Changes
+
+-   2db2c33: feat(generator-adp): Add Project Attributes page
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+    -   @sap-ux/adp-tooling@0.13.30
+
 ## 0.1.8
 
 ### Patch Changes

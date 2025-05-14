@@ -52,6 +52,9 @@ export function getConfigQuestions(logger: Logger, options?: ServiceConfigOption
                 abapTarget: abapTarget,
                 serviceProvider: PromptState.systemSelection.connectedSystem?.serviceProvider
             },
+            transportCreated: {
+                description: t('prompts.options.transportDescription')
+            },
             transportInputChoice: {
                 showCreateDuringDeploy: false
             },
@@ -93,8 +96,11 @@ function getServiceNameQuestion(logger: Logger, options?: ServiceConfigOptions):
                         PromptState.serviceConfig.content =
                             (await PromptState.systemSelection.objectGenerator?.getContent(packageValue)) ?? '';
                         const content = JSON.parse(PromptState.serviceConfig?.content);
-                        if (defaultOrShowDraftQuestion(options?.useDraftEnabled)) {
-                            content.businessObject.projectionBehavior.withDraft = true;
+                        if (
+                            defaultOrShowDraftQuestion(options?.useDraftEnabled) &&
+                            content.businessObject?.projectionBehavior?.withDraft
+                        ) {
+                            PromptState.serviceConfig.showDraftEnabled = true;
                         }
                         PromptState.serviceConfig.content = JSON.stringify(content);
                         PromptState.serviceConfig.serviceName =
@@ -140,6 +146,7 @@ function getServiceNameQuestion(logger: Logger, options?: ServiceConfigOptions):
 function getDraftEnabledQuestion(logger: Logger): Question<UiServiceAnswers> {
     let draftEnabled = true;
     return {
+        when: (): boolean => PromptState.serviceConfig.showDraftEnabled,
         name: 'draftEnabled',
         type: 'confirm',
         message: t('prompts.draftEnabled'),

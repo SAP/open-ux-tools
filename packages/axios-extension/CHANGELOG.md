@@ -1,5 +1,24 @@
 # @sap-ux/axios-extension
 
+## 1.20.3
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+
+## 1.20.2
+
+### Patch Changes
+
+-   1a01c5e: Update README.adoc showing how to use proxy credentials
+
+## 1.20.1
+
+### Patch Changes
+
+-   a3a43b2: Append warning message if the BSP properties do not match the deployed BSP properties
+
 ## 1.20.0
 
 ### Minor Changes

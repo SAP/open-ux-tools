@@ -4,10 +4,11 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { FlexLayer } from '../types';
 import { getProviderConfig } from '../abap';
+import { getI18nDescription } from './i18n';
 import { getCustomConfig } from './project-utils';
-import type { AdpWriterConfig, ConfigAnswers } from '../types';
-import { getNewModelEnhanceWithChange } from './descriptor-content';
-import { UI5VersionInfo, getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../ui5';
+import { getManifestContent } from './descriptor-content';
+import { getFormattedVersion, getLatestVersion, getOfficialBaseUI5VersionUrl, getVersionToBeUsed } from '../ui5';
+import type { AdpWriterConfig, AttributesAnswers, CloudApp, ConfigAnswers, OnpremApp, UI5Version } from '../types';
 
 interface ConfigOptions {
     /**
@@ -19,22 +20,25 @@ interface ConfigOptions {
      */
     configAnswers: ConfigAnswers;
     /**
+     * User-provided project attribute answers.
+     */
+    attributeAnswers: AttributesAnswers;
+    /**
      * The FlexLayer indicating the deployment layer (e.g., CUSTOMER_BASE or VENDOR).
      */
     layer: FlexLayer;
     /**
-     * Default project parameters.
-     */
-    defaults: {
-        /**
-         * The default namespace for the project.
-         */
-        namespace: string;
-    };
-    /**
      * The package.json information used to generate custom configuration.
      */
     packageJson: Package;
+    /**
+     * Public UI5 Versions.
+     */
+    publicVersions: UI5Version;
+    /**
+     * System UI5 Version.
+     */
+    systemVersion: string | undefined;
     /**
      * Logger instance for debugging and error reporting.
      */
@@ -55,7 +59,8 @@ interface ConfigOptions {
  * @returns {Promise<AdpWriterConfig>} A promise that resolves to the generated ADP writer configuration.
  */
 export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig> {
-    const { configAnswers, defaults, layer, logger, packageJson, provider } = options;
+    const { configAnswers, attributeAnswers, layer, logger, packageJson, provider, publicVersions, systemVersion } =
+        options;
     const ato = await provider.getAtoInfo();
     const operationsType = ato.operationsType ?? 'P';
 
@@ -65,19 +70,40 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     const isCloudProject = await provider.isAbapCloud();
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
-    const ui5Info = UI5VersionInfo.getInstance(layer);
-    const ui5Version = isCloudProject ? ui5Info.getLatestVersion() : ui5Info.getVersionToBeUsed('', isCustomerBase);
+    const ui5Version = isCloudProject
+        ? getLatestVersion(publicVersions)
+        : getVersionToBeUsed(attributeAnswers.ui5Version, isCustomerBase, publicVersions);
+
+    const { namespace, title, enableTypeScript } = attributeAnswers;
+    const {
+        application: { id, bspName },
+        fioriId,
+        ach
+    } = configAnswers;
+
+    const app: OnpremApp | CloudApp = {
+        id: namespace,
+        reference: id,
+        layer,
+        title,
+        content: getManifestContent(layer, systemVersion, publicVersions, fioriId, ach),
+        i18nDescription: getI18nDescription(layer, title)
+    };
+
+    if (isCloudProject) {
+        const lrep = provider.getLayeredRepository();
+        const { activeLanguages: languages } = await lrep.getSystemInfo();
+
+        Object.assign(app, {
+            bspName,
+            languages
+        });
+    }
 
     return {
-        app: {
-            id: defaults.namespace,
-            reference: configAnswers.application.id,
-            layer,
-            title: '',
-            content: [getNewModelEnhanceWithChange()]
-        },
+        app,
         ui5: {
-            minVersion: ui5Version?.split(' ')[0],
+            minVersion: ui5Version?.split(' ')?.[0],
             version: getFormattedVersion(ui5Version),
             frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version)
         },
@@ -85,7 +111,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         target,
         options: {
             fioriTools: true,
-            enableTypeScript: false
+            enableTypeScript
         }
     };
 }

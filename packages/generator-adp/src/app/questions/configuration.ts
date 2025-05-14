@@ -1,5 +1,4 @@
 import {
-    UI5VersionInfo,
     FlexLayer,
     getConfiguredProvider,
     getEndpointNames,
@@ -10,32 +9,59 @@ import {
     SourceManifest,
     isAppSupported,
     isSyncLoadedView,
-    isV4Application
+    isV4Application,
+    getRelevantVersions,
+    fetchPublicVersions,
+    checkSystemVersionPattern,
+    getAch,
+    getFioriId
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import { validateEmptyString } from '@sap-ux/project-input-validator';
+import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { InputQuestion, ListQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import type { ConfigAnswers, FlexUISupportedSystem, SourceApplication, SystemLookup } from '@sap-ux/adp-tooling';
+import type {
+    ConfirmQuestion,
+    InputQuestion,
+    ListQuestion,
+    PasswordQuestion,
+    YUIQuestion
+} from '@sap-ux/inquirer-common';
+import type {
+    ConfigAnswers,
+    FlexUISupportedSystem,
+    SourceApplication,
+    SystemLookup,
+    UI5Version
+} from '@sap-ux/adp-tooling';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 import type {
+    AchPromptOptions,
     ApplicationPromptOptions,
     ConfigPromptOptions,
     ConfigQuestion,
+    FioriIdPromptOptions,
     PasswordPromptOptions,
+    ShouldCreateExtProjectPromptOptions,
     SystemPromptOptions,
     UsernamePromptOptions
 } from '../types';
 import { t } from '../../utils/i18n';
 import { configPromptNames } from '../types';
+import { getExtProjectMessage } from './helper/message';
 import { getApplicationChoices } from './helper/choices';
-import { showApplicationQuestion, showCredentialQuestion } from './helper/conditions';
+import { validateExtensibilityGenerator } from './helper/validators';
 import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
+import {
+    showApplicationQuestion,
+    showCredentialQuestion,
+    showExtensionProjectQuestion,
+    showInternalQuestions
+} from './helper/conditions';
 
 /**
  * A stateful prompter class that creates configuration questions.
- * This class accepts the needed dependencies and keeps track of state (e.g. the ApplicationManager instance).
  * It exposes a single public method {@link getPrompts} to retrieve the configuration questions.
  */
 export class ConfigPrompter {
@@ -92,9 +118,39 @@ export class ConfigPrompter {
      */
     private isPartiallySupported = false;
     /**
-     * UI5 version manager for handling version-related validations.
+     * UI5 versions in string format.
      */
-    private readonly ui5Info: UI5VersionInfo;
+    private ui5Versions: string[];
+    /**
+     * Publicly available UI5 versions.
+     */
+    private publicVersions: UI5Version;
+    /**
+     * System UI5 version.
+     */
+    private systemVersion: string | undefined;
+
+    /**
+     * Returns the needed ui5 properties from calling the CDN.
+     *
+     * @returns Object with properties related to ui5.
+     */
+    public get ui5(): { ui5Versions: string[]; systemVersion: string | undefined; publicVersions: UI5Version } {
+        return {
+            ui5Versions: this.ui5Versions,
+            systemVersion: this.systemVersion,
+            publicVersions: this.publicVersions
+        };
+    }
+
+    /**
+     * Returns flag indicating if the project is a cloud project.
+     *
+     * @returns Whether system is cloud-ready.
+     */
+    public get isCloud(): boolean {
+        return !!this.isCloudProject;
+    }
 
     /**
      * Returns the configured abap provider instance.
@@ -110,8 +166,8 @@ export class ConfigPrompter {
      *
      * @returns Application manifest.
      */
-    public get manifest(): Manifest {
-        return this.manifest;
+    public get manifest(): Manifest | undefined {
+        return this.appManifest;
     }
 
     /**
@@ -124,6 +180,15 @@ export class ConfigPrompter {
     }
 
     /**
+     * Indicates whether the application is supported by Adaptation Project.
+     *
+     * @returns {boolean} True if the application is supported.
+     */
+    public get isAppSupported(): boolean {
+        return this.isApplicationSupported;
+    }
+
+    /**
      * Creates an instance of ConfigPrompter.
      *
      * @param {SystemLookup} systemLookup - The source system class to retrieve system endpoints.
@@ -132,7 +197,6 @@ export class ConfigPrompter {
      */
     constructor(private readonly systemLookup: SystemLookup, layer: FlexLayer, private readonly logger: ToolsLogger) {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
-        this.ui5Info = UI5VersionInfo.getInstance(layer);
     }
 
     /**
@@ -151,7 +215,12 @@ export class ConfigPrompter {
             [configPromptNames.application]: this.getApplicationListPrompt(
                 promptOptions?.[configPromptNames.application]
             ),
-            [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli()
+            [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli(),
+            [configPromptNames.fioriId]: this.getFioriIdPrompt(),
+            [configPromptNames.ach]: this.getAchPrompt(),
+            [configPromptNames.shouldCreateExtProject]: this.getShouldCreateExtProjectPrompt(
+                promptOptions?.[configPromptNames.shouldCreateExtProject]
+            )
         };
 
         const questions: ConfigQuestion[] = Object.entries(keyedPrompts)
@@ -322,6 +391,79 @@ export class ConfigPrompter {
     }
 
     /**
+     * Creates an input prompt for entering the Fiori ID.
+     *
+     * @param {FioriIdPromptOptions} _ - Optional configuration for Fiori ID prompt.
+     * @returns {InputQuestion<ConfigAnswers>} An input prompt for the Fiori ID.
+     */
+    private getFioriIdPrompt(_?: FioriIdPromptOptions): InputQuestion<ConfigAnswers> {
+        return {
+            type: 'input',
+            name: 'fioriId',
+            message: t('prompts.fioriIdLabel'),
+            guiOptions: {
+                hint: t('prompts.fioriIdHint'),
+                breadcrumb: true
+            },
+            when: (answers) => showInternalQuestions(answers, this.isCustomerBase, this.isApplicationSupported),
+            default: () => getFioriId(this.appManifest),
+            store: false
+        } as InputQuestion<ConfigAnswers>;
+    }
+
+    /**
+     * Generates an input prompt for entering the Application Component Hierarchy code for a project.
+     *
+     * @param {AchPromptOptions} _ - Optional configuration for ACH prompt.
+     * @returns {InputQuestion<ConfigAnswers>} An input prompt for Application Component Hierarchy code.
+     */
+    private getAchPrompt(_?: AchPromptOptions): InputQuestion<ConfigAnswers> {
+        return {
+            type: 'input',
+            name: 'ach',
+            message: t('prompts.achLabel'),
+            guiOptions: {
+                hint: t('prompts.achHint'),
+                breadcrumb: true,
+                mandatory: true
+            },
+            when: (answers) => showInternalQuestions(answers, this.isCustomerBase, this.isApplicationSupported),
+            default: () => getAch(this.appManifest),
+            validate: (value: string) => validateAch(value, this.isCustomerBase),
+            store: false
+        } as InputQuestion<ConfigAnswers>;
+    }
+
+    /**
+     * Generates a confirmation prompt to decide whether to create an extension project based on the application's
+     * sync capabilities and support status.
+     *
+     * @param {ShouldCreateExtProjectPromptOptions} _ - Optional configuration for the confirm extension project prompt.
+     * @returns The confirm extension project prompt as a {@link ConfigQuestion}.
+     */
+    private getShouldCreateExtProjectPrompt(_?: ShouldCreateExtProjectPromptOptions): ConfirmQuestion<ConfigAnswers> {
+        return {
+            type: 'confirm',
+            name: configPromptNames.shouldCreateExtProject,
+            message: () => getExtProjectMessage(this.isApplicationSupported, this.containsSyncViews),
+            default: false,
+            guiOptions: {
+                applyDefaultWhenDirty: true
+            },
+            when: (answers: ConfigAnswers) =>
+                showExtensionProjectQuestion(
+                    answers,
+                    this.flexUISystem,
+                    this.isCloudProject,
+                    this.isApplicationSupported,
+                    this.containsSyncViews
+                ),
+            validate: (value: boolean) =>
+                validateExtensibilityGenerator(value, this.isApplicationSupported, this.containsSyncViews)
+        };
+    }
+
+    /**
      * Validates the selected application.
      *
      * Checks if the application is provided and then evaluates support based on its manifest.
@@ -334,7 +476,22 @@ export class ConfigPrompter {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
 
-        return this.validateAppData(app);
+        const validationResult = await this.validateAppData(app);
+
+        if (!isAppStudio()) {
+            return validationResult;
+        }
+
+        if (
+            validationResult === t('error.appDoesNotSupportManifest') ||
+            validationResult === t('error.appDoesNotSupportAdaptation')
+        ) {
+            this.logger.error(validationResult);
+            this.isApplicationSupported = false;
+            return true;
+        }
+
+        return validationResult;
     }
 
     /**
@@ -360,7 +517,12 @@ export class ConfigPrompter {
 
         try {
             this.abapProvider = await getConfiguredProvider(options, this.logger);
-            await this.getSystemData();
+            const validationResult = await this.handleSystemDataValidation();
+
+            if (typeof validationResult === 'string') {
+                return validationResult;
+            }
+
             this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
             this.isLoginSuccessful = true;
             return true;
@@ -414,7 +576,7 @@ export class ConfigPrompter {
     /**
      * Validates the selected application to ensure it is supported.
      *
-     * @param {Application} app - The application to validate.
+     * @param {SourceApplication} app - The application to validate.
      * @returns {Promise<boolean | string>} True if the application is valid, otherwise an error message.
      */
     private async validateAppData(app: SourceApplication): Promise<boolean | string> {
@@ -429,7 +591,6 @@ export class ConfigPrompter {
             }
             this.isApplicationSupported = true;
         } catch (e) {
-            this.isApplicationSupported = false;
             this.logger.debug(`Application failed validation. Reason: ${e.message}`);
             return e.message;
         }
@@ -440,13 +601,12 @@ export class ConfigPrompter {
     /**
      * Evaluate if the application version supports certain features.
      *
-     * @param {Application} application - The application data.
+     * @param {SourceApplication} application - The application data.
      */
     private evaluateAppSupport(application: SourceApplication): void {
-        const systemVersion = this.ui5Info.systemVersion;
-        const isFullSupport = this.ui5Info.isVersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
+        const isFullSupport = !!this.systemVersion && !isFeatureSupportedVersion('1.96.0', this.systemVersion);
         const isPartialSupport =
-            this.ui5Info.isVersionDetected && isFullSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
+            !!this.systemVersion && isFullSupport && isFeatureSupportedVersion('1.90.0', this.systemVersion);
 
         this.setSupportFlags(application, isFullSupport, isPartialSupport);
     }
@@ -456,7 +616,7 @@ export class ConfigPrompter {
      *
      * @returns A promise that resolves when system data is fetched.
      */
-    private async getSystemData(): Promise<void> {
+    private async loadSystemData(): Promise<void> {
         try {
             this.isCloudProject = await this.abapProvider.isAbapCloud();
             this.flexUISystem = await getFlexUISupportedSystem(this.abapProvider, this.isCustomerBase);
@@ -466,14 +626,26 @@ export class ConfigPrompter {
     }
 
     /**
+     * Fetches and processes SAPUI5 version data from the system and public sources.
+     *
+     * @returns {Promise<void>} A promise that resolves once all version data is loaded and assigned.
+     */
+    private async loadUI5Versions(): Promise<void> {
+        const version = await getSystemUI5Version(this.abapProvider);
+        this.systemVersion = checkSystemVersionPattern(version);
+        this.publicVersions = await fetchPublicVersions();
+        this.ui5Versions = await getRelevantVersions(this.systemVersion, this.isCustomerBase, this.publicVersions);
+    }
+
+    /**
      * Handles the fetching and validation of system data.
      *
      * @returns {Promise<boolean | string>} True if successful, or an error message if an error occurs.
      */
     private async handleSystemDataValidation(): Promise<boolean | string> {
         try {
-            await this.getSystemData();
-            await this.validateSystemVersion();
+            await this.loadSystemData();
+            await this.loadUI5Versions();
 
             if (!this.isCustomerBase && this.isCloudProject) {
                 return t('error.cloudSystemsForInternalUsers');
@@ -483,22 +655,6 @@ export class ConfigPrompter {
         } catch (e) {
             this.logger.debug(`Validating system failed. Reason: ${e.message}`);
             return e.message;
-        }
-    }
-
-    /**
-     * Validates the UI5 system version based on the provided value or fetches all relevant versions if no value is provided.
-     * Updates the internal state with the fetched versions and the detection status.
-     *
-     * @returns {Promise<void>} Resolves after checking system ui5 version.
-     */
-    private async validateSystemVersion(): Promise<void> {
-        try {
-            const version = await getSystemUI5Version(this.abapProvider);
-            await this.ui5Info.getRelevantVersions(version);
-        } catch (e) {
-            this.logger.debug(`Could not fetch system version: ${e.message}`);
-            await this.ui5Info.getRelevantVersions();
         }
     }
 

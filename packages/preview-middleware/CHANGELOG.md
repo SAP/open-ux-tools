@@ -1,5 +1,134 @@
 # @sap-ux/preview-middleware
 
+## 0.19.41
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+    -   @sap-ux/adp-tooling@0.13.44
+    -   @sap-ux/system-access@0.5.39
+
+## 0.19.40
+
+### Patch Changes
+
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/adp-tooling@0.13.43
+
+## 0.19.39
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/adp-tooling@0.13.42
+    -   @sap-ux/system-access@0.5.38
+
+## 0.19.38
+
+### Patch Changes
+
+-   c89bdc2: fix: new column is not visible after using `Add Custom Table Column` Quick Action
+
+## 0.19.37
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.41
+-   @sap-ux/system-access@0.5.38
+
+## 0.19.36
+
+### Patch Changes
+
+-   9e7fa23: fix: Issues for Adaptation Projects using TypeScipt
+-   Updated dependencies [9e7fa23]
+    -   @sap-ux/adp-tooling@0.13.40
+
+## 0.19.35
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.39
+
+## 0.19.34
+
+### Patch Changes
+
+-   e00e43f: adjust readme
+
+## 0.19.33
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.38
+
+## 0.19.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.37
+-   @sap-ux/system-access@0.5.37
+
+## 0.19.31
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.36
+
+## 0.19.30
+
+### Patch Changes
+
+-   258ecca: refactor: Enhance XML Fragment context menu control with addXMLPlugin Integration
+-   Updated dependencies [258ecca]
+    -   @sap-ux/adp-tooling@0.13.35
+
+## 0.19.29
+
+### Patch Changes
+
+-   091c3e9: fix: reuse component api consumption in Adaptation Editor
+
+## 0.19.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.34
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.27
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/adp-tooling@0.13.33
+    -   @sap-ux/system-access@0.5.36
+
+## 0.19.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.32
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.31
+
+## 0.19.24
+
+### Patch Changes
+
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/adp-tooling@0.13.30
+
 ## 0.19.23
 
 ### Patch Changes

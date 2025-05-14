@@ -1,9 +1,9 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Package } from '@sap-ux/project-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import { FlexLayer, UI5VersionInfo, getProviderConfig, getConfig } from '../../../src';
-import type { ConfigAnswers, SourceApplication } from '../../../src';
+import { FlexLayer, getProviderConfig, getConfig } from '../../../src';
+import type { AttributesAnswers, ConfigAnswers, Language, SourceApplication, VersionDetail } from '../../../src';
 
 jest.mock('../../../src/abap/config.ts', () => ({
     getProviderConfig: jest.fn()
@@ -14,24 +14,36 @@ const systemDetails = {
     url: 'some-url'
 };
 
+const activeLanguages: Language[] = [{ sap: 'value', i18n: 'DE' }];
+const adaptationProjectTypes: AdaptationProjectType[] = [AdaptationProjectType.CLOUD_READY];
+
 const getAtoInfoMock = jest.fn().mockResolvedValue({ operationsType: 'P' });
 const isAbapCloudMock = jest.fn();
+const getSystemInfoMock = jest.fn().mockResolvedValue({ adaptationProjectTypes, activeLanguages });
 const mockAbapProvider = {
     getAtoInfo: getAtoInfoMock,
-    isAbapCloud: isAbapCloudMock
+    isAbapCloud: isAbapCloudMock,
+    getLayeredRepository: jest.fn().mockReturnValue({
+        getSystemInfo: getSystemInfoMock
+    })
 } as unknown as AbapServiceProvider;
 
 const getProviderConfigMock = getProviderConfig as jest.Mock;
 
 const configAnswers: ConfigAnswers = {
-    application: { id: '1' } as SourceApplication,
+    application: { id: '1', bspName: 'bsp.name' } as SourceApplication,
     system: 'SYS010',
     password: '',
     username: ''
 };
 
-const defaults = {
-    namespace: 'customer.app.variant1'
+const attributeAnswers: AttributesAnswers = {
+    namespace: 'customer.app.variant1',
+    enableTypeScript: false,
+    projectName: 'app.variant1',
+    targetFolder: '/some-path',
+    title: '',
+    ui5Version: '1.134.1'
 };
 
 describe('getConfig', () => {
@@ -40,15 +52,14 @@ describe('getConfig', () => {
     });
 
     it('returns the correct config with provided parameters when system is cloud ready', async () => {
-        jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
-            getLatestVersion: jest.fn().mockReturnValue('1.135.0')
-        } as unknown as UI5VersionInfo);
         isAbapCloudMock.mockResolvedValue(true);
         const config = await getConfig({
             provider: mockAbapProvider,
             configAnswers,
+            attributeAnswers,
             layer: FlexLayer.CUSTOMER_BASE,
-            defaults,
+            publicVersions: { latest: { version: '1.135.0' } as VersionDetail },
+            systemVersion: undefined,
             packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
             logger: {} as ToolsLogger
         });
@@ -59,7 +70,20 @@ describe('getConfig', () => {
                 reference: '1',
                 layer: 'CUSTOMER_BASE',
                 title: '',
-                content: [expect.any(Object)]
+                bspName: 'bsp.name',
+                languages: activeLanguages,
+                i18nDescription: expect.stringContaining('SAP Fiori application keys'),
+                content: [
+                    {
+                        changeType: 'appdescr_ui5_addNewModelEnhanceWith',
+                        content: {
+                            bundleUrl: 'i18n/i18n.properties',
+                            fallbackLocale: '',
+                            modelId: 'i18n',
+                            supportedLocales: ['']
+                        }
+                    }
+                ]
             },
             customConfig: {
                 adp: {

@@ -1,5 +1,43 @@
 # @sap-ux/project-input-validator
 
+## 0.5.6
+
+### Patch Changes
+
+-   6cb23c8: feat: Add the Extension Project functionality and internal support information
+
+## 0.5.5
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+
+## 0.5.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+
+## 0.5.3
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+
+## 0.5.1
+
+### Patch Changes
+
+-   2db2c33: feat(generator-adp): Add Project Attributes page
+
 ## 0.5.0
 
 ### Minor Changes
