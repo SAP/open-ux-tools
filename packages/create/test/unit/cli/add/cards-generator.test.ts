@@ -1,5 +1,4 @@
 import * as tracer from '../../../../src/tracing/trace';
-import * as common from '../../../../src/common';
 import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
 import { addCardsEditorConfigCommand } from '../../../../src/cli/add/cards-generator';
 import { Command } from 'commander';
@@ -32,7 +31,6 @@ const testArgv = (args: string[]) => ['', '', 'cards-editor', appRoot, ...args];
 
 describe('add/cards-generator', () => {
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
-    const npmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => undefined);
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -58,7 +56,6 @@ describe('add/cards-generator', () => {
         // Flow check
         expect(enableCardGeneratorConfigMock).toBeCalled();
         expect(traceSpy).toBeCalled();
-        expect(npmInstallSpy).not.toBeCalled();
     });
 
     test('add cards-generator --skip-install', async () => {
@@ -70,6 +67,5 @@ describe('add/cards-generator', () => {
         // Flow check
         expect(enableCardGeneratorConfigMock).toBeCalled();
         expect(traceSpy).not.toBeCalled();
-        expect(npmInstallSpy).not.toBeCalled();
     });
 });

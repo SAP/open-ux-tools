@@ -94,7 +94,7 @@ export const PREVIEW_URL = {
 } as const;
 
 export const CARD_GENERATOR_DEFAULT = {
-    previewGeneratorSandbox: '/test/flpGeneratorSandbox.html',
+    previewGeneratorSandbox: '/test/flpCardGeneratorSandbox.html',
     cardsStore: '/cards/store',
     i18nStore: '/editor/i18n'
 } as const;

@@ -38,4 +38,17 @@ describe('enableCardGenerator', () => {
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
     });
+
+    test('Valid LROP without cardGenerator config', async () => {
+        const basePath = join(__dirname, '../../fixtures/lrop-v4');
+        const fs = create(createStorage());
+        await enableCardGeneratorConfig(basePath, 'ui5-without-generator.yaml', undefined, fs);
+
+        if (process.env.UX_DEBUG) {
+            fs.commit(() => {});
+        }
+
+        expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
+        expect(fs.read(join(basePath, 'ui5-without-generator.yaml'))).toMatchSnapshot();
+    });
 });

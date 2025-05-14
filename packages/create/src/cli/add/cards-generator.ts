@@ -2,8 +2,6 @@ import type { Command } from 'commander';
 import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
-import { runNpmInstallCommand } from '../../common';
-import { isAbsolute, join } from 'path';
 
 /**
  * Add the cards-editor command.
@@ -23,8 +21,7 @@ export function addCardsEditorConfigCommand(cmd: Command): void {
             await addCardsGeneratorConfig(
                 path ?? process.cwd(),
                 !!options.simulate,
-                options.config,
-                !!options.skipInstall
+                options.config
             );
         });
 }
@@ -35,26 +32,20 @@ export function addCardsEditorConfigCommand(cmd: Command): void {
  * @param basePath - path to application root
  * @param simulate - if true, do not write but just show what would be changed; otherwise write
  * @param yamlPath - path to the ui5*.yaml file passed by cli
- * @param skipInstall - if true, do not run npm install
  */
 async function addCardsGeneratorConfig(
     basePath: string,
     simulate: boolean,
-    yamlPath: string,
-    skipInstall: boolean
+    yamlPath: string
 ): Promise<void> {
     const logger = getLogger();
     try {
         logger.debug(`Called add cards-generator-config for path '${basePath}', simulate is '${simulate}'`);
-        const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
-        await validateBasePath(basePath, ui5ConfigPath);
+        await validateBasePath(basePath);
 
-        const fs = await enableCardGeneratorConfig(basePath, ui5ConfigPath, logger);
+        const fs = await enableCardGeneratorConfig(basePath, yamlPath, logger);
         if (!simulate) {
-            await new Promise((resolve) => fs.commit(resolve));
-            if (!skipInstall) {
-                runNpmInstallCommand(basePath, [], { logger });
-            }
+            fs.commit(() => logger.info(`Card Generator configuration written.`));
         } else {
             await traceChanges(fs);
         }

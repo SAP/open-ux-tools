@@ -123,7 +123,7 @@ describe('FlpSandbox', () => {
                 {
                     editors: {
                         cardGenerator: {
-                            path: 'test/flpGeneratorSandbox.html'
+                            path: 'test/flpCardGeneratorSandbox.html'
                         }
                     }
                 },
@@ -755,7 +755,7 @@ describe('FlpSandbox', () => {
         const mockConfig = {
             editors: {
                 cardGenerator: {
-                    path: '/test/flpGeneratorSandbox.html'
+                    path: '/test/flpCardGeneratorSandbox.html'
                 }
             }
         };
@@ -786,7 +786,7 @@ describe('FlpSandbox', () => {
             await setupMiddleware(mockConfig as MiddlewareConfig);
         });
 
-        test('GET /test/flpGeneratorSandbox.html', async () => {
+        test('GET /test/flpCardGeneratorSandbox.html', async () => {
             const response = await server.get(
                 `${CARD_GENERATOR_DEFAULT.previewGeneratorSandbox}?sap-ui-xx-viewCache=false`
             );
@@ -852,6 +852,12 @@ describe('FlpSandbox', () => {
             expect(projectAccessMock).toBeCalled();
             expect(response.status).toBe(201);
             expect(response.text).toBe('Files were updated/created');
+        });
+
+        test('POST /cards/store without payload', async () => {
+            const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send();
+            expect(response.status).toBe(500);
+            expect(response.text).toBe('Files could not be created/updated.');
         });
 
         test('POST /editor/i18n with payload', async () => {
