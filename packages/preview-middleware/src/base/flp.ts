@@ -410,9 +410,7 @@ export class FlpSandbox {
         // connect API (karma test runner) has no request query property
         if ('query' in req && 'redirect' in res && !req.query['sap-ui-xx-viewCache']) {
             const url =
-                'ui5-patched-router' in req
-                    ? join(req['ui5-patched-router']?.baseUrl ?? '', this.flpConfig.path)
-                    : this.flpConfig.path;
+                'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', req.path) : req.path;
             // Redirect to the same URL but add the necessary parameter
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
