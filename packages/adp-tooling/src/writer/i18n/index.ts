@@ -3,13 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import type { Manifest } from '@sap-ux/project-access';
 
-import {
-    RESOURCE_BUNDLE_TEXT,
-    TRANSLATION_UUID_TEXT,
-    BASE_I18N_DESCRIPTION,
-    MAIN_I18N_PATH,
-    PROPERTIES_TEXT
-} from '../..';
+import { RESOURCE_BUNDLE_TEXT, TRANSLATION_UUID_TEXT, BASE_I18N_DESCRIPTION, MAIN_I18N_PATH } from '../..';
 import { FlexLayer, type ResourceModel, type SapModel } from '../../types';
 
 /**
@@ -40,13 +34,16 @@ export function getI18nDescription(layer: FlexLayer, appTitle?: string): string 
  * - The file path for each model is constructed using the provided base path and model's specified path.
  */
 export function writeI18nModels(basePath: string, i18nModels: ResourceModel[] | undefined, fs: Editor): void {
-    if (i18nModels) {
-        i18nModels.forEach((i18nModel) => {
-            if (i18nModel.key !== 'i18n' && i18nModel.path !== MAIN_I18N_PATH && i18nModel.content) {
-                const i18nPath = basePath + '/webapp/' + i18nModel.path;
-                fs.write(i18nPath, i18nModel.content);
-            }
-        });
+    if (!i18nModels?.length) {
+        return;
+    }
+
+    for (const { key, path, content } of i18nModels) {
+        const isMainFile = key === 'i18n' || path === MAIN_I18N_PATH;
+        if (!isMainFile && content) {
+            const i18nPath = `${basePath}/webapp/${path}`;
+            fs.write(i18nPath, content);
+        }
     }
 }
 
@@ -66,9 +63,9 @@ export function extractResourceModelPath(ui5Model: SapModel, modelObjectKey: str
         const bundleName = ui5Model.settings?.bundleName;
         if (bundleName?.indexOf(appId) === 0) {
             const fileLocation = bundleName.slice(appId.length, bundleName.length);
-            resourceModelPath = fileLocation.replace(/\./g, '/').substring(1, fileLocation.length) + PROPERTIES_TEXT;
+            resourceModelPath = fileLocation.replace(/\./g, '/').substring(1, fileLocation.length) + '.properties';
         } else {
-            resourceModelPath = `i18n/${modelObjectKey}${PROPERTIES_TEXT}`;
+            resourceModelPath = `i18n/${modelObjectKey}.properties`;
         }
     }
 

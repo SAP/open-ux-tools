@@ -3,7 +3,8 @@ import type {
     UI5Config,
     CustomTask,
     AbapTarget,
-    FioriToolsProxyConfigBackend
+    FioriToolsProxyConfigBackend,
+    FioriToolsProxyConfigUI5
 } from '@sap-ux/ui5-config';
 
 import type {
@@ -140,6 +141,15 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
     backendConfig.url ??= VSCODE_URL;
     backendConfig.path = '/sap';
 
+    const ui5ConfigOptions: Partial<FioriToolsProxyConfigUI5> = {
+        url: config?.ui5?.frameworkUrl
+    };
+
+    const version = config?.ui5?.version;
+    if (version) {
+        ui5ConfigOptions.version = version;
+    }
+
     ui5Config.addFioriToolsAppReloadMiddleware();
     ui5Config.addCustomMiddleware([
         {
@@ -155,10 +165,7 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
     ]);
     ui5Config.addFioriToolsProxydMiddleware(
         {
-            ui5: {
-                url: config?.ui5?.frameworkUrl,
-                version: config?.ui5?.version ?? config?.ui5?.minVersion //default to latest if version is not set
-            },
+            ui5: ui5ConfigOptions,
             backend: [backendConfig as FioriToolsProxyConfigBackend]
         },
         'fiori-tools-preview'
