@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.19.42
+
+### Patch Changes
+
+-   a49ed05: Fix: Generic handling for change type and new UI component for displaying
+
 ## 0.19.41
 
 ### Patch Changes
