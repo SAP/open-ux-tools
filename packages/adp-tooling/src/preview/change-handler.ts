@@ -17,7 +17,7 @@ import { getAdpConfig, getVariant } from '../base/helper';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import { generateChange } from '../writer/editors';
-import { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
 const CUSTOM_ACTION = 'CUSTOM_ACTION';
