@@ -17,6 +17,7 @@ import { getAdpConfig, getVariant } from '../base/helper';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import { generateChange } from '../writer/editors';
+import { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
 const CUSTOM_ACTION = 'CUSTOM_ACTION';
@@ -255,13 +256,15 @@ export function addXmlFragment(
  * @param {AddXMLChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
+ *@param {AbapServiceProvider} provider - abap provider.
  */
 export async function addAnnotationFile(
     basePath: string,
     projectRoot: string,
     change: AnnotationFileChange,
     fs: Editor,
-    logger: Logger
+    logger: Logger,
+    provider?: AbapServiceProvider
 ): Promise<void> {
     const { dataSourceId, annotations, dataSource } = change.content;
     const annotationDataSourceKey = annotations[0];
@@ -269,7 +272,7 @@ export async function addAnnotationFile(
     annotationUriSegments.shift();
     const fullPath = join(basePath, DirName.Changes, ...annotationUriSegments);
     try {
-        const manifestService = await getManifestService(projectRoot, logger);
+        const manifestService = await getManifestService(projectRoot, logger, provider);
         const metadata = await manifestService.getDataSourceMetadata(dataSourceId);
         const datasoruces = await manifestService.getManifestDataSources();
         const namespaces = getAnnotationNamespaces({ metadata });
@@ -299,11 +302,25 @@ export async function addAnnotationFile(
  *
  * @param {string} basePath - The base path of the project.
  * @param {Logger} logger - The logging instance.
+ * @param {AbapServiceProvider} provider - abap provider.
  * @returns Promise<ManifestService>
  */
-async function getManifestService(basePath: string, logger: Logger): Promise<ManifestService> {
+async function getManifestService(
+    basePath: string,
+    logger: Logger,
+    provider?: AbapServiceProvider
+): Promise<ManifestService> {
+    if (!provider) {
+        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
+        provider = await createAbapServiceProvider(
+            target,
+            {
+                ignoreCertErrors
+            },
+            true,
+            logger
+        );
+    }
     const variant = await getVariant(basePath);
-    const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
-    const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
     return await ManifestService.initMergedManifest(provider, basePath, variant, logger as unknown as ToolsLogger);
 }
