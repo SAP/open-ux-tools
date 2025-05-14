@@ -1,5 +1,16 @@
 # @sap-ux/fe-fpm-cli
 
+## 0.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fe-fpm-writer@0.34.0
+
 ## 0.0.89
 
 ### Patch Changes
