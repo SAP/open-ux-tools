@@ -174,30 +174,36 @@ describe('main redux slice', () => {
                     changeStackModified({
                         pending: [
                             {
-                                kind: 'property',
+                                kind: 'generic',
                                 type: 'pending',
-                                controlName: 'Button',
-                                propertyType: PropertyType.ControlProperty,
                                 controlId: 'control1',
                                 isActive: true,
-                                propertyName: 'text',
-                                value: '{i18n>DELETE}',
-                                changeType: 'propertyChange',
-                                fileName: 'testFile1'
+                                changeType: 'property',
+                                fileName: 'testFile1',
+                                title: 'Button',
+                                properties: [
+                                    {
+                                        label: 'Text',
+                                        value: '{i18n>DELETE}'
+                                    }
+                                ]
                             }
                         ],
                         saved: [
                             {
                                 controlId: 'control1',
-                                controlName: 'Button',
-                                propertyName: 'text',
-                                propertyType: PropertyType.ControlProperty,
+                                title: 'Button',
                                 type: 'saved',
-                                kind: 'property',
+                                kind: 'generic',
                                 fileName: 'file',
                                 timestamp: 123,
-                                value: 'abc',
-                                changeType: 'propertyChange'
+                                changeType: 'property',
+                                properties: [
+                                    {
+                                        label: 'Text',
+                                        value: 'abc'
+                                    }
+                                ]
                             }
                         ]
                     })
@@ -206,34 +212,40 @@ describe('main redux slice', () => {
                 changes: {
                     controls: {
                         control1: {
-                            controlName: 'Button',
                             pending: 1,
                             saved: 1,
+                            controlName: undefined,
                             properties: {
-                                text: {
+                                Text: {
                                     lastChange: {
-                                        kind: 'property',
-                                        changeType: 'propertyChange',
-                                        controlName: 'Button',
+                                        kind: 'generic',
+                                        title: 'Button',
+                                        properties: [
+                                            {
+                                                label: 'Text',
+                                                value: '{i18n>DELETE}'
+                                            }
+                                        ],
+                                        changeType: 'property',
                                         controlId: 'control1',
                                         fileName: 'testFile1',
                                         isActive: true,
-                                        propertyName: 'text',
-                                        propertyType: 'controlProperty',
-                                        type: 'pending',
-                                        value: '{i18n>DELETE}'
+                                        type: 'pending'
                                     },
                                     lastSavedChange: {
-                                        changeType: 'propertyChange',
+                                        changeType: 'property',
                                         controlId: 'control1',
-                                        controlName: 'Button',
-                                        kind: 'property',
+                                        kind: 'generic',
+                                        properties: [
+                                            {
+                                                label: 'Text',
+                                                value: 'abc'
+                                            }
+                                        ],
                                         fileName: 'file',
-                                        propertyName: 'text',
-                                        propertyType: 'controlProperty',
                                         timestamp: 123,
                                         type: 'saved',
-                                        value: 'abc'
+                                        title: 'Button'
                                     },
                                     pending: 1,
                                     saved: 1
@@ -243,30 +255,36 @@ describe('main redux slice', () => {
                     },
                     pending: [
                         {
-                            kind: 'property',
-                            changeType: 'propertyChange',
+                            changeType: 'property',
+                            kind: 'generic',
                             type: 'pending',
-                            controlName: 'Button',
                             controlId: 'control1',
                             fileName: 'testFile1',
                             isActive: true,
-                            propertyType: 'controlProperty',
-                            propertyName: 'text',
-                            value: '{i18n>DELETE}'
+                            properties: [
+                                {
+                                    label: 'Text',
+                                    value: '{i18n>DELETE}'
+                                }
+                            ],
+                            title: 'Button'
                         }
                     ],
                     saved: [
                         {
-                            changeType: 'propertyChange',
+                            changeType: 'property',
                             controlId: 'control1',
-                            controlName: 'Button',
-                            propertyName: 'text',
-                            propertyType: 'controlProperty',
                             type: 'saved',
-                            kind: 'property',
+                            kind: 'generic',
                             fileName: 'file',
                             timestamp: 123,
-                            value: 'abc'
+                            properties: [
+                                {
+                                    label: 'Text',
+                                    value: 'abc'
+                                }
+                            ],
+                            title: 'Button'
                         }
                     ]
                 }
@@ -286,26 +304,39 @@ describe('main redux slice', () => {
                     changeStackModified({
                         pending: [
                             {
-                                kind: 'configuration',
+                                kind: 'generic',
                                 type: 'pending',
-                                controlIds: ['control1', 'control5'],
+                                controlId: ['control1', 'control5'],
                                 isActive: true,
-                                propertyName: 'configProperty1',
-                                value: '{i18n>DELETE}',
                                 fileName: 'testFile1',
-                                propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings'
+                                changeType: 'configuration',
+                                title: 'Test Title',
+                                properties: [
+                                    {
+                                        label: 'configProperty1',
+                                        value: '{i18n>DELETE}',
+                                        displayValueWithIcon: true
+                                    }
+                                ]
                             }
                         ],
                         saved: [
                             {
-                                controlIds: ['control2', 'control4'],
-                                propertyName: 'configProperty2',
+                                controlId: ['control2', 'control4'],
                                 type: 'saved',
-                                kind: 'configuration',
+                                kind: 'generic',
                                 fileName: 'file',
                                 timestamp: 123,
-                                value: 'abc',
-                                propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings'
+                                subtitle: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                                changeType: 'configuration',
+                                properties: [
+                                    {
+                                        label: 'configProperty2',
+                                        value: 'abc',
+                                        displayValueWithIcon: true
+                                    }
+                                ],
+                                title: 'Config Change'
                             }
                         ]
                     })
@@ -319,14 +350,20 @@ describe('main redux slice', () => {
                             properties: {
                                 configProperty1: {
                                     lastChange: {
-                                        controlIds: ['control1', 'control5'],
+                                        title: 'Test Title',
+                                        controlId: ['control1', 'control5'],
                                         fileName: 'testFile1',
                                         isActive: true,
-                                        kind: 'configuration',
-                                        propertyName: 'configProperty1',
-                                        propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                                        changeType: 'configuration',
+                                        kind: 'generic',
                                         type: 'pending',
-                                        value: '{i18n>DELETE}'
+                                        properties: [
+                                            {
+                                                label: 'configProperty1',
+                                                value: '{i18n>DELETE}',
+                                                displayValueWithIcon: true
+                                            }
+                                        ]
                                     },
                                     pending: 1,
                                     saved: 0
@@ -340,14 +377,21 @@ describe('main redux slice', () => {
                             properties: {
                                 configProperty2: {
                                     lastSavedChange: {
-                                        controlIds: ['control2', 'control4'],
+                                        controlId: ['control2', 'control4'],
+                                        changeType: 'configuration',
                                         fileName: 'file',
-                                        kind: 'configuration',
-                                        propertyName: 'configProperty2',
-                                        propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                                        kind: 'generic',
+                                        subtitle: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
                                         timestamp: 123,
                                         type: 'saved',
-                                        value: 'abc'
+                                        title: 'Config Change',
+                                        properties: [
+                                            {
+                                                label: 'configProperty2',
+                                                value: 'abc',
+                                                displayValueWithIcon: true
+                                            }
+                                        ]
                                     },
                                     pending: 0,
                                     saved: 1
@@ -361,14 +405,21 @@ describe('main redux slice', () => {
                             properties: {
                                 configProperty2: {
                                     lastSavedChange: {
-                                        controlIds: ['control2', 'control4'],
+                                        controlId: ['control2', 'control4'],
+                                        kind: 'generic',
+                                        title: 'Config Change',
                                         fileName: 'file',
-                                        kind: 'configuration',
-                                        propertyName: 'configProperty2',
-                                        propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                                        changeType: 'configuration',
+                                        subtitle: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
                                         timestamp: 123,
                                         type: 'saved',
-                                        value: 'abc'
+                                        properties: [
+                                            {
+                                                label: 'configProperty2',
+                                                value: 'abc',
+                                                displayValueWithIcon: true
+                                            }
+                                        ]
                                     },
                                     pending: 0,
                                     saved: 1
@@ -382,14 +433,20 @@ describe('main redux slice', () => {
                             properties: {
                                 configProperty1: {
                                     lastChange: {
-                                        controlIds: ['control1', 'control5'],
+                                        kind: 'generic',
+                                        title: 'Test Title',
+                                        controlId: ['control1', 'control5'],
                                         fileName: 'testFile1',
                                         isActive: true,
-                                        kind: 'configuration',
-                                        propertyName: 'configProperty1',
-                                        propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                                        changeType: 'configuration',
                                         type: 'pending',
-                                        value: '{i18n>DELETE}'
+                                        properties: [
+                                            {
+                                                label: 'configProperty1',
+                                                value: '{i18n>DELETE}',
+                                                displayValueWithIcon: true
+                                            }
+                                        ]
                                     },
                                     pending: 1,
                                     saved: 0
@@ -400,26 +457,39 @@ describe('main redux slice', () => {
                     },
                     pending: [
                         {
-                            controlIds: ['control1', 'control5'],
+                            controlId: ['control1', 'control5'],
+                            title: 'Test Title',
                             fileName: 'testFile1',
                             isActive: true,
-                            kind: 'configuration',
-                            propertyName: 'configProperty1',
-                            propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                            kind: 'generic',
+                            changeType: 'configuration',
                             type: 'pending',
-                            value: '{i18n>DELETE}'
+                            properties: [
+                                {
+                                    label: 'configProperty1',
+                                    value: '{i18n>DELETE}',
+                                    displayValueWithIcon: true
+                                }
+                            ]
                         }
                     ],
                     saved: [
                         {
-                            controlIds: ['control2', 'control4'],
+                            controlId: ['control2', 'control4'],
                             fileName: 'file',
-                            kind: 'configuration',
-                            propertyName: 'configProperty2',
-                            propertyPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                            title: 'Config Change',
+                            kind: 'generic',
+                            subtitle: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
                             timestamp: 123,
                             type: 'saved',
-                            value: 'abc'
+                            changeType: 'configuration',
+                            properties: [
+                                {
+                                    label: 'configProperty2',
+                                    value: 'abc',
+                                    displayValueWithIcon: true
+                                }
+                            ]
                         }
                     ]
                 }

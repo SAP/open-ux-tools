@@ -1,5 +1,31 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.4.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/ui5-application-writer@1.5.0
+    -   @sap-ux/odata-service-writer@0.27.0
+    -   @sap-ux/cap-config-writer@0.10.0
+    -   @sap-ux/ui5-test-writer@0.7.0
+    -   @sap-ux/fe-fpm-writer@0.34.0
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/annotation-generator@0.3.32
+
+## 2.3.8
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.31
+-   @sap-ux/fe-fpm-writer@0.33.29
+
 ## 2.3.7
 
 ### Patch Changes
