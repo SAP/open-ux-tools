@@ -308,6 +308,20 @@ describe('LayeredRepositoryService', () => {
             expect(systemInfo).toEqual(mockResult);
         });
 
+        test('does NOT encode language and cloudPackage request params', async () => {
+            const language = 'EN';
+            const cloudPackage = 'path/to/cloud-package0';
+            nock(server)
+                .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))
+                .reply(200, (path) => {
+                    expect(path).toContain(`sap-language=${language}`);
+                    expect(path).toContain(`package=${cloudPackage}`);
+                    return mockResult;
+                });
+            const systemInfo = await service.getSystemInfo(language, cloudPackage);
+            expect(systemInfo).toEqual(mockResult);
+        });
+
         test('throws error when request fails', async () => {
             nock(server)
                 .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))

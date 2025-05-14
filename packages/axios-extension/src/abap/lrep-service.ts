@@ -1,13 +1,14 @@
-import type { Service } from '../base/service-provider';
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse, CustomParamsSerializer } from 'axios';
 import { Axios } from 'axios';
-import { LogLevel } from '@sap-ux/logger';
-import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'fs';
-import { isAxiosError } from '../base/odata-request-error';
+import { URLSearchParams } from 'url';
+import type { Logger } from '@sap-ux/logger';
+import { LogLevel } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { TransportConfig } from './ui5-abap-repository-service';
+import { isAxiosError } from '../base/odata-request-error';
+import type { Service } from '../base/service-provider';
 import { logError } from './message';
+import type { TransportConfig } from './ui5-abap-repository-service';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 /**
@@ -134,6 +135,14 @@ function isBuffer(input: string | Buffer): input is Buffer {
 }
 
 /**
+ * Decodes url parameters.
+ *
+ * @param params An object containing the parameters to be decoded.
+ * @returns The deocded parameters as a string.
+ */
+const decodeUrlParams: CustomParamsSerializer = (params: URLSearchParams) => decodeURIComponent(params.toString());
+
+/**
  * Path suffix for all DTA actions.
  */
 const DTA_PATH_SUFFIX = '/dta_folder/';
@@ -182,7 +191,7 @@ export class LayeredRepositoryService extends Axios implements Service {
 
         try {
             const response = await this.put(path, appDescriptorVariant, {
-                paramsSerializer: (params) => decodeURIComponent(params.toString()),
+                paramsSerializer: decodeUrlParams,
                 params,
                 headers: {
                     'Content-Type': 'application/zip'
@@ -308,14 +317,16 @@ export class LayeredRepositoryService extends Axios implements Service {
      */
     public async getSystemInfo(language: string = 'EN', cloudPackage?: string): Promise<SystemInfo> {
         try {
-            const params = {
+            const params = new URLSearchParams({
                 'sap-language': language
-            };
+            });
             if (cloudPackage) {
-                params['package'] = cloudPackage;
+                params.append('package', cloudPackage);
             }
-
-            const response = await this.get(`${DTA_PATH_SUFFIX}system_info`, { params });
+            const response = await this.get(`${DTA_PATH_SUFFIX}system_info`, {
+                params,
+                paramsSerializer: decodeUrlParams
+            });
             this.tryLogResponse(response, 'Successful getting system info.');
             return JSON.parse(response.data) as SystemInfo;
         } catch (error) {
