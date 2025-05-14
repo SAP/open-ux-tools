@@ -31,7 +31,8 @@ async function updateMiddlewareConfigWithGeneratorPath(
         previewMiddleware.configuration ??= {};
 
         const middlewareConfig = previewMiddleware.configuration as PreviewConfig;
-        const cardGeneratorPath = middlewareConfig?.editors?.cardGenerator?.path ?? 'test/flpCardGeneratorSandbox.html';
+        const cardGeneratorPath =
+            middlewareConfig?.editors?.cardGenerator?.path ?? '/test/flpCardGeneratorSandbox.html';
 
         middlewareConfig.editors ??= {};
         middlewareConfig.editors.cardGenerator = {
@@ -64,7 +65,7 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
     const intent = getIntentFromPreviewConfig(previewMiddleware?.configuration) ?? '#app-preview';
     const cardGeneratorPath =
         (previewMiddleware?.configuration as PreviewConfig)?.editors?.cardGenerator?.path ??
-        'test/flpCardGeneratorSandbox.html';
+        '/test/flpCardGeneratorSandbox.html';
     const cliForPreview = await getCLIForPreview(basePath, yamlPath ?? '', fs);
 
     packageJson.scripts ??= {};

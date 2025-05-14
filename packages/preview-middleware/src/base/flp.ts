@@ -167,8 +167,13 @@ export class FlpSandbox {
         );
         this.addStandardRoutes();
 
-        if (this.cardGenerator?.path) {
-            this.addCardGeneratorMiddlewareRoute();
+        const cardGeneratorPath = this.cardGenerator?.path;
+        if (cardGeneratorPath) {
+            if (!cardGeneratorPath.startsWith('/')) {
+                this.cardGenerator.path = `/${cardGeneratorPath}`;
+            }
+
+            await this.addCardGeneratorMiddlewareRoute();
             await this.addStoreCardManifestRoute();
             await this.addStoreI18nKeysRoute();
         }
@@ -466,7 +471,7 @@ export class FlpSandbox {
      *
      * @private
      */
-    private addCardGeneratorMiddlewareRoute(): void {
+    private async addCardGeneratorMiddlewareRoute(): Promise<void> {
         const previewGeneratorPath = this.cardGenerator?.path ?? CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
         this.logger.debug(`Add route for ${previewGeneratorPath}`);
         this.router.get(

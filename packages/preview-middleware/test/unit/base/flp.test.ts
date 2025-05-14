@@ -123,7 +123,7 @@ describe('FlpSandbox', () => {
                 {
                     editors: {
                         cardGenerator: {
-                            path: 'test/flpCardGeneratorSandbox.html'
+                            path: '/test/flpCardGeneratorSandbox.html'
                         }
                     }
                 },
@@ -755,7 +755,7 @@ describe('FlpSandbox', () => {
         const mockConfig = {
             editors: {
                 cardGenerator: {
-                    path: '/test/flpCardGeneratorSandbox.html'
+                    path: 'test/flpCardGeneratorSandbox.html'
                 }
             }
         };
