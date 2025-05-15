@@ -17,7 +17,7 @@ import * as editors from '../../../src/writer/editors';
 import { AdpPreview } from '../../../src';
 import * as manifestService from '../../../src/base/abap/manifest-service';
 import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
-import { addXmlFragment, tryFixChange } from '../../../src/preview/change-handler';
+import { addXmlFragment, tryFixChange, addControllerExtension } from '../../../src/preview/change-handler';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -43,7 +43,8 @@ jest.mock('os', () => ({
 jest.mock('../../../src/preview/change-handler', () => ({
     ...jest.requireActual('../../../src/preview/change-handler'),
     tryFixChange: jest.fn(),
-    addXmlFragment: jest.fn()
+    addXmlFragment: jest.fn(),
+    addControllerExtension: jest.fn()
 }));
 
 jest.mock('@sap-ux/store', () => {
@@ -66,6 +67,7 @@ const renderFileMock = renderFile as jest.Mock;
 
 const tryFixChangeMock = tryFixChange as jest.Mock;
 const addXmlFragmentMock = addXmlFragment as jest.Mock;
+const addControllerExtensionMock = addControllerExtension as jest.Mock;
 
 const mockProject = {
     byGlob: jest.fn().mockResolvedValue([])
@@ -473,6 +475,14 @@ describe('AdaptationProject', () => {
             reference: 'some.reference'
         } as unknown as CommonChangeProperties;
 
+        const addCodeExtChange = {
+            changeType: 'codeExt',
+            content: {
+                codeRef: 'coding/test.js',
+                view: 'view'
+            }
+        } as unknown as CommonChangeProperties;
+
         beforeEach(() => {
             jest.clearAllMocks();
         });
@@ -501,6 +511,18 @@ describe('AdaptationProject', () => {
 
             expect(tryFixChange).not.toHaveBeenCalled();
             expect(addXmlFragment).not.toHaveBeenCalled();
+        });
+
+        it('should add an Controller Extension if type is "write" and change is addCodeExtChange', async () => {
+            await adp.onChangeRequest('write', addCodeExtChange, mockFs, mockLogger);
+
+            expect(addControllerExtensionMock).toHaveBeenCalledWith(
+                '/projects/adp.project',
+                '/adp.project/webapp',
+                addCodeExtChange,
+                mockFs,
+                mockLogger
+            );
         });
     });
 
