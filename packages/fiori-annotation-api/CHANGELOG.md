@@ -1,5 +1,20 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/cds-annotation-parser@0.2.10
+    -   @sap-ux/cds-odata-annotation-converter@0.5.8
+    -   @sap-ux/odata-annotation-core@0.2.4
+    -   @sap-ux/odata-annotation-core-types@0.4.3
+    -   @sap-ux/xml-odata-annotation-converter@0.3.4
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/odata-vocabularies@0.4.8
+
 ## 0.5.3
 
 ### Patch Changes
