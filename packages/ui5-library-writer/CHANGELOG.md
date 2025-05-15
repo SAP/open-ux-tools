@@ -1,5 +1,17 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/ui5-config@0.28.0
+
 ## 0.5.65
 
 ### Patch Changes

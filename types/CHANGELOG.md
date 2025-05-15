@@ -1,5 +1,11 @@
 # @sap-ux/types
 
+## 1.3.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
 ## 1.2.1
 
 ### Patch Changes
