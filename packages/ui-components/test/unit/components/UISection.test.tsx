@@ -41,6 +41,14 @@ describe('<Section />', () => {
         expect(wrapper.find('.' + className).length).toBeGreaterThan(0);
     });
 
+    it('Test "bodyClassName" property', () => {
+        const bodyClassName = 'dummyClass';
+        wrapper.setProps({
+            bodyClassName
+        });
+        expect(wrapper.find('.' + bodyClassName).length).toBeGreaterThan(0);
+    });
+
     it('Test "title" property', () => {
         const title = 'dummy title';
         wrapper.setProps({
