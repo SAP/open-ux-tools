@@ -633,7 +633,7 @@ describe('generate', () => {
                     Object {
                       "model": "",
                       "name": "mainService",
-                      "path": "/V2/Northwind/Northwind.svc/",
+                      "path": "/V2/Northwind/Northwind.svc",
                       "previewSettings": Object {
                         "path": "/V2",
                         "url": "https://services.odata.org",
