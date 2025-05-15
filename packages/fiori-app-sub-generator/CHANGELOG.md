@@ -1,5 +1,50 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/ui5-application-inquirer@0.13.0
+    -   @sap-ux/fiori-freestyle-writer@2.4.0
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/odata-service-inquirer@2.4.0
+    -   @sap-ux/fiori-elements-writer@2.4.0
+    -   @sap-ux/fiori-tools-settings@0.2.0
+    -   @sap-ux/odata-service-writer@0.27.0
+    -   @sap-ux/cap-config-writer@0.10.0
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/launch-config@0.10.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/telemetry@0.6.0
+    -   @sap-ux/ui5-info@0.11.0
+    -   @sap-ux/store@1.1.0
+    -   @sap-ux/annotation-generator@0.3.32
+
+## 0.0.40
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.31
+-   @sap-ux/fiori-elements-writer@2.3.8
+-   @sap-ux/odata-service-inquirer@2.3.15
+
+## 0.0.39
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+    -   @sap-ux/axios-extension@1.20.3
+    -   @sap-ux/odata-service-inquirer@2.3.15
+    -   @sap-ux/ui5-application-inquirer@0.12.9
+
 ## 0.0.38
 
 ### Patch Changes

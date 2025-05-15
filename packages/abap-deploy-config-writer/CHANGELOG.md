@@ -1,5 +1,24 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/system-access@0.6.0
+    -   @sap-ux/ui5-config@0.28.0
+
+## 0.0.110
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.39
+
 ## 0.0.109
 
 ### Patch Changes

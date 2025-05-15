@@ -1,5 +1,27 @@
 # @sap-ux/app-config-writer
 
+## 0.6.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/store@1.1.0
+
+## 0.5.54
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.3
+
 ## 0.5.53
 
 ### Patch Changes

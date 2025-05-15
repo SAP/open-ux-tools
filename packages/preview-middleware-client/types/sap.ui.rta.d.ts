@@ -291,6 +291,13 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getDomRef(): Element | null;
     }
 
+    export interface AppComponent {
+        getManifest(): Manifest;
+        getRootControl(): {
+            getPages(): FEAppPage[];
+        };
+    }
+
     export default class RuntimeAuthoring {
         constructor(_: RTAOptions) {}
 
@@ -307,12 +314,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getDefaultPlugins: () => { [key: string]: uknown; contextMenu: ContextMenu };
         getPlugins: () => { [key: string]: uknown; contextMenu: ContextMenu };
         setPlugins: (defaultPlugins: object) => void;
-        getRootControlInstance: () => {
-            getManifest(): Manifest;
-            getRootControl(): {
-                getPages(): FEAppPage[];
-            };
-        } & Component;
+        getRootControlInstance: () => AppComponent & Component;
         stop: (bSkipSave, bSkipRestart) => Promise<void>;
         attachStop: (handler: (event: Event) => void) => void;
         attachStart: (handler: (event: Event) => void) => void;
