@@ -193,7 +193,9 @@ async function setDefaultPreviewSettings(basePath: string, service: OdataService
  * @param {boolean} update - whether the service update is running (if true, skips unique service name generation and makes sure that '' model is updated for the mainService)
  */
 export async function enhanceData(basePath: string, service: OdataService, fs: Editor, update = false): Promise<void> {
-    setDefaultServicePath(service);
+    if (!update) {
+        setDefaultServicePath(service);
+    }
     await setDefaultServiceName(basePath, service, fs, update);
     await setDefaultServiceModel(basePath, service, fs, update);
     // set service type to EDMX if not defined

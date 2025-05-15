@@ -1,5 +1,22 @@
 # @sap-ux/project-input-validator
 
+## 0.6.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+
+## 0.6.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+
 ## 0.5.6
 
 ### Patch Changes

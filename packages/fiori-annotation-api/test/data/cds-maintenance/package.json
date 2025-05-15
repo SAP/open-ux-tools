@@ -1,0 +1,8 @@
+{
+    "name": "cds",
+    "version": "1.0.0",
+    "description": "Test CDS maintenance version",
+    "dependencies": {
+        "@sap/cds": "7.9.4"
+    }
+}

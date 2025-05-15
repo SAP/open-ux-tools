@@ -1,9 +1,13 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import type { AdpWriterConfig, InternalInboundNavigation } from '../types';
+
+import { getManifestContent } from './manifest';
 import { enhanceManifestChangeContentWithFlpConfig } from './options';
+import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
 import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
+import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types';
+import { getApplicationType } from '../source';
 
 const baseTmplPath = join(__dirname, '../../templates');
 
@@ -24,15 +28,35 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         customConfig: config.customConfig ? { ...config.customConfig } : undefined
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
-    configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
+    configWithDefaults.app.layer ??= FlexLayer.CUSTOMER_BASE;
 
     configWithDefaults.package ??= config.package ? { ...config.package } : {};
     configWithDefaults.package.name ??= config.app.id.toLowerCase().replace(/\./g, '-');
     configWithDefaults.package.description ??= configWithDefaults.app.title;
+    configWithDefaults.app.i18nModels ??= getI18nModels(
+        configWithDefaults.app.manifest,
+        configWithDefaults.app.layer,
+        configWithDefaults.app.reference,
+        configWithDefaults.app.title
+    );
+    configWithDefaults.app.i18nDescription ??= getI18nDescription(
+        configWithDefaults.app.layer,
+        configWithDefaults.app.title
+    );
+    configWithDefaults.app.appType ??= getApplicationType(configWithDefaults.app.manifest);
+    configWithDefaults.app.content ??= getManifestContent(configWithDefaults);
 
     if (configWithDefaults.flp && !configWithDefaults.flp.inboundId) {
         configWithDefaults.flp.addInboundId = true;
         configWithDefaults.flp.inboundId = `${configWithDefaults.app.id}.InboundID`;
+    }
+
+    if (configWithDefaults.customConfig?.adp.environment === 'C' && configWithDefaults.flp) {
+        enhanceManifestChangeContentWithFlpConfig(
+            configWithDefaults.flp as InternalInboundNavigation,
+            configWithDefaults.app.id,
+            configWithDefaults.app.content
+        );
     }
 
     return configWithDefaults;
@@ -53,13 +77,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
 
     const fullConfig = setDefaults(config);
 
-    if (fullConfig.customConfig?.adp.environment === 'C' && fullConfig.flp) {
-        enhanceManifestChangeContentWithFlpConfig(
-            fullConfig.flp as InternalInboundNavigation,
-            fullConfig.app.id,
-            fullConfig.app.content
-        );
-    }
+    writeI18nModels(basePath, fullConfig.app.i18nModels, fs);
     writeTemplateToFolder(baseTmplPath, join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);

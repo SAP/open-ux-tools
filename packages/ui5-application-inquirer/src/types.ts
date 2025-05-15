@@ -1,4 +1,3 @@
-import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { CommonPromptOptions, PromptDefaultValue, UI5VersionChoice, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
@@ -84,18 +83,6 @@ type UI5VersionPromptOptions = {
     defaultChoice?: UI5VersionChoice;
 };
 
-/**
- * Options for the enable TypeScript prompt. This allows for a default value to be determined based on the answers provided
- * and additonal runtime cds information if available. This effectively constains the prompt options for the enable TypeScript prompt
- * to be a function that returns a boolean value since enable TypeScript prompt default is conditional.
- */
-type EnableTypeScriptPromptOptions = Omit<PromptDefaultValue<boolean>, 'default'> & {
-    /**
-     * Callback function to determine the default value for TypeScript
-     */
-    default?: (answers: UI5ApplicationAnswers & { capCdsInfo?: CdsUi5PluginInfo }) => boolean;
-};
-
 type TargetFolderPromptOptions = {
     /**
      * The default target folder path to be used in combination with the prompt default function and the name prompt validation.
@@ -127,6 +114,10 @@ type NamePromptOptions = {
     defaultValue?: string;
 };
 
+export type AddDeployPromptOptions = Omit<UI5ApplicationCommonPromptOptions, 'hide'> & {
+    hide?: boolean | ((isCap: boolean) => boolean);
+};
+
 /**
  * These are boolean value prompt option keys
  */
@@ -155,7 +146,12 @@ type DefaultValueInputPrompts =
     | promptNames.namespace
     | promptNames.ui5Version
     | promptNames.targetFolder;
-type DefaultValueConfirmPrompts = promptNames.enableCodeAssist | promptNames.enableEslint | promptNames.skipAnnotations;
+type DefaultValueConfirmPrompts =
+    | promptNames.enableTypeScript
+    | promptNames.enableCodeAssist
+    | promptNames.enableEslint
+    | promptNames.skipAnnotations
+    | promptNames.addDeployConfig;
 
 /**
  * Defines prompt/question default values and/or whether or not they should be shown.
@@ -179,21 +175,12 @@ type stringValuePromptOptions = Record<stringValuePrompts, UI5ApplicationCommonP
  *
  */
 type booleanValuePromptOtions = Record<
-    booleanValuePrompts,
-    {
-        /**
-         * Callback function can be provided which will be executed on input validation.
-         * This may be used, for example, to trigger conditional steps in Yeoman UI.
-         *
-         * @param answer
-         * @param promptName
-         * @returns
-         */
-        validatorCallback?: (answer: boolean, promptName: string) => void;
-    } & UI5ApplicationCommonPromptOptions
+    Exclude<booleanValuePrompts, typeof promptNames.addDeployConfig>,
+    UI5ApplicationCommonPromptOptions
 > &
+    Record<booleanValuePrompts, { validatorCallback?: (answer: boolean, promptName: string) => void }> &
     Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>> &
-    Record<promptNames.enableTypeScript, EnableTypeScriptPromptOptions>;
+    Record<promptNames.addDeployConfig, AddDeployPromptOptions>;
 
 export type UI5ApplicationQuestion = YUIQuestion<UI5ApplicationAnswers> &
     Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
