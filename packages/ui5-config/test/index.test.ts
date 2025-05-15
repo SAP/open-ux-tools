@@ -381,6 +381,41 @@ describe('UI5Config', () => {
             );
         });
     });
+
+    describe('updateBackendToFioriToolsProxydMiddleware', () => {
+        test('add proxy with backend first and then call update for existing backend', () => {
+            ui5Config.addFioriToolsProxydMiddleware({
+                backend: [{ url, path }],
+                ui5: {}
+            });
+            let fioriToolsProxyMiddleware = ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
+            ui5Config.updateBackendToFioriToolsProxydMiddleware({ path, url: 'updated' });
+            fioriToolsProxyMiddleware = ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
+            expect(fioriToolsProxyMiddleware?.configuration.backend).toStrictEqual([
+                {
+                    path,
+                    url: 'updated'
+                }
+            ]);
+        });
+
+        test('add proxy with backend first and then call update for unexisting backend', () => {
+            ui5Config.addFioriToolsProxydMiddleware({
+                backend: [{ url, path }],
+                ui5: {}
+            });
+            let fioriToolsProxyMiddleware = ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
+            ui5Config.updateBackendToFioriToolsProxydMiddleware({ path: 'dummy', url: 'updated' });
+            fioriToolsProxyMiddleware = ui5Config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
+            expect(fioriToolsProxyMiddleware?.configuration.backend).toStrictEqual([
+                {
+                    path,
+                    url
+                }
+            ]);
+        });
+    });
+
     describe('removeBackendFromFioriToolsProxydMiddleware', () => {
         test('add proxy with backend first and then call remove for existing backend', () => {
             ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
