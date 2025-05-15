@@ -2,7 +2,7 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import hasStableId from 'mock/sap/ui/rta/util/hasStableId';
-import FlUtils from 'sap/ui/fl/Utils';
+import FlUtils from 'mock/sap/ui/fl/Utils';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import {
     initDialogs,
@@ -155,7 +155,7 @@ describe('Dialogs', () => {
 
 
         it('should return simple text if the control is a reuse component in OnPremise', async () => {
-            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId1') });
+            FlUtils.getViewForControl.mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId1') });
             const resources = await getTextBundle();
             const overlay = {
                 getElement: () => ({
@@ -172,7 +172,7 @@ describe('Dialogs', () => {
         });
 
         it('should return simple text if the control is not a reuse component in Cloud', async () => {
-            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId1') });
+            FlUtils.getViewForControl.mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId1') });
             const resources = await getTextBundle();
             const overlay = {
                 getElement: () => ({
@@ -188,7 +188,7 @@ describe('Dialogs', () => {
         });
 
         it('should return extra text if the control is a reuse component in Cloud', async () => {
-            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId1') });
+            FlUtils.getViewForControl.mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId1') });
             const resources = await getTextBundle();
             const overlay = {
                 getElement: () => ({
@@ -205,8 +205,8 @@ describe('Dialogs', () => {
             expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
         });
 
-        it('shoud return extra text if the control is part of a sync view', async () => {
-            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('syncViewId1') });
+        it('should return extra text if the control is part of a sync view', async () => {
+            FlUtils.getViewForControl.mockReturnValue({ getId: jest.fn().mockReturnValue('syncViewId1') });
             const resources = await getTextBundle();
             const overlay = {
                 getElement: () => ({
