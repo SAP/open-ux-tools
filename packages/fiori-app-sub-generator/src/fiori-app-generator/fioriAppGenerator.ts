@@ -259,7 +259,6 @@ export class FioriAppGenerator extends Generator {
                             targetFolder: this.state.project?.targetFolder,
                             service: this.state.service,
                             floorplan: this.state.floorplan,
-                            hideUI5VersionPrompt: generatorOptions.hideUI5VersionPrompt,
                             promptSettings: generatorOptions.promptSettings,
                             promptExtension: generatorOptions.extensions
                         },

@@ -151,9 +151,12 @@ async function setDefaultPreviewSettings(basePath: string, service: OdataService
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
  * @param {Editor} fs - the memfs editor instance
+ * @param {boolean} update - whether the service update is running
  */
-export async function enhanceData(basePath: string, service: OdataService, fs: Editor): Promise<void> {
-    setDefaultServicePath(service);
+export async function enhanceData(basePath: string, service: OdataService, fs: Editor, update = false): Promise<void> {
+    if (!update) {
+        setDefaultServicePath(service);
+    }
     await setDefaultServiceName(basePath, service, fs);
     await setDefaultServiceModel(basePath, service, fs);
     // set service type to EDMX if not defined
