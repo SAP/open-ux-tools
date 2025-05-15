@@ -186,7 +186,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
         test.afterEach(async ({ projectCopy }) => {
             try {
                 const changesDirectory = join(projectCopy, 'webapp', 'changes');
-                await rm(changesDirectory, { recursive: true });
+                // await rm(changesDirectory, { recursive: true });
             } catch (e) {
                 // ignore error
             }
@@ -208,28 +208,20 @@ test.describe(`@quick-actions @fe-v2`, () => {
             await expect(editor.toolbar.saveButton).toBeDisabled();
 
             await expect
-                .poll(
-                    async () => {
-                        const changesDirectory = join(projectCopy, 'webapp', 'changes');
-                        const changes = await readdir(changesDirectory);
-                        if (changes.length) {
-                            const text = await readFile(join(changesDirectory, changes[0]), { encoding: 'utf-8' });
-                            return JSON.parse(text);
-                        }
-                        return {};
-                    },
-                    {
-                        message: 'make sure change file is created'
-                    }
-                )
+                .poll(async () => readChanges(projectCopy), {
+                    message: 'make sure change file is created'
+                })
                 .toEqual(
                     expect.objectContaining({
-                        fileType: 'change',
-                        changeType: 'propertyChange',
-                        content: expect.objectContaining({ property: 'showClearOnFB', newValue: true })
+                        changes: expect.arrayContaining([
+                            expect.objectContaining({
+                                fileType: 'change',
+                                changeType: 'propertyChange',
+                                content: expect.objectContaining({ property: 'showClearOnFB', newValue: true })
+                            })
+                        ])
                     })
                 );
-
             await editor.quickActions.disableClearButton.click();
 
             await expect(lr.clearButton).toBeHidden();
@@ -237,31 +229,19 @@ test.describe(`@quick-actions @fe-v2`, () => {
             await editor.toolbar.saveButton.click();
 
             await expect(editor.toolbar.saveButton).toBeDisabled();
-
             await expect
-                .poll(
-                    async () => {
-                        const changesDirectory = join(projectCopy, 'webapp', 'changes');
-                        try {
-                            const changes = await readdir(changesDirectory);
-                            if (changes.length) {
-                                const text = await readFile(join(changesDirectory, changes[0]), { encoding: 'utf-8' });
-                                return JSON.parse(text);
-                            }
-                        } catch (e) {
-                            // ignore error
-                        }
-                        return {};
-                    },
-                    {
-                        message: 'make sure change file is updated'
-                    }
-                )
+                .poll(async () => readChanges(projectCopy), {
+                    message: 'make sure change file is created'
+                })
                 .toEqual(
                     expect.objectContaining({
-                        fileType: 'change',
-                        changeType: 'propertyChange',
-                        content: expect.objectContaining({ property: 'showClearOnFB', newValue: false })
+                        changes: expect.arrayContaining([
+                            expect.objectContaining({
+                                fileType: 'change',
+                                changeType: 'propertyChange',
+                                content: expect.objectContaining({ property: 'showClearOnFB', newValue: false })
+                            })
+                        ])
                     })
                 );
         });
@@ -287,6 +267,27 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 if (lt(ui5Version, '1.136.0')) {
                     await expect(page.getByText('Changes detected!')).toBeVisible();
                 }
+
+                await expect
+                    .poll(async () => readChanges(projectCopy), {
+                        message: 'make sure change file is created'
+                    })
+                    .toEqual(
+                        expect.objectContaining({
+                            coding: expect.objectContaining({
+                                ['TestController.js']: expect.stringMatching(
+                                    /ControllerExtension\.extend\("adp\.fiori\.elements\.v2\.TestController"/
+                                )
+                            }),
+                            changes: expect.arrayContaining([
+                                expect.objectContaining({
+                                    fileType: 'change',
+                                    changeType: 'codeExt',
+                                    content: expect.objectContaining({ codeRef: 'coding/TestController.js' })
+                                })
+                            ])
+                        })
+                    );
 
                 await expect
                     .poll(
