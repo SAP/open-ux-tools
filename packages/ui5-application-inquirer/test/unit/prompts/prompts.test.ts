@@ -549,7 +549,7 @@ describe('getQuestions', () => {
     });
 
     test('getQuestions, prompt: `enableTypeScript`', () => {
-        let questions = getQuestions([]);
+        const questions = getQuestions([]);
         let enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
         // default
         expect(enableTypeScriptQuestion?.default).toEqual(false);

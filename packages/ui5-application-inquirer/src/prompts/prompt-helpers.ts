@@ -4,8 +4,8 @@ import { join } from 'path';
 import { coerce, gte } from 'semver';
 import { defaultProjectNumber, t } from '../i18n';
 import {
-    type AddDeployPromptOptions,
     promptNames,
+    type AddDeployPromptOptions,
     type UI5ApplicationCommonPromptOptions,
     type UI5ApplicationPromptOptions,
     type UI5ApplicationQuestion

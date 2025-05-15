@@ -63,7 +63,7 @@ async function prompt(
     const answers = await adapter.prompt<UI5ApplicationAnswers>(ui5AppPrompts);
     // Apply default values to prompts in case they have not been executed
     if (promptOptions) {
-        const defaultAnswers = applyPromptOptionDefaults(answers, ui5AppPrompts, promptOptions, capCdsInfo);
+        const defaultAnswers = applyPromptOptionDefaults(answers, ui5AppPrompts, promptOptions);
         Object.assign(answers, defaultAnswers);
     }
 
@@ -77,14 +77,12 @@ async function prompt(
  * @param answers the answers from previous prompting, only answers without a value will be considered for defaulting
  * @param ui5AppPrompts the prompts that were used to prompt the user, will be used to apply default values if not answered or no default provided
  * @param promptOptions the prompt options which may provide default values or functions
- * @param capCdsInfo will be passed as additional answer to default functions that depend on it to determine the default value
  * @returns the default values for the unanswered prompts, based on the prompt options
  */
 function applyPromptOptionDefaults(
     answers: Partial<UI5ApplicationAnswers>,
     ui5AppPrompts: UI5ApplicationQuestion[],
-    promptOptions: UI5ApplicationPromptOptions,
-    capCdsInfo?: CdsUi5PluginInfo
+    promptOptions: UI5ApplicationPromptOptions
 ): Partial<UI5ApplicationAnswers> {
     const defaultAnswers: Partial<UI5ApplicationAnswers> = {};
     Object.entries(promptOptions).forEach(([key, promptOpt]) => {
