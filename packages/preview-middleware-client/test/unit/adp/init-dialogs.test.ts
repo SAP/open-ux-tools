@@ -155,6 +155,7 @@ describe('Dialogs', () => {
 
 
         it('should return simple text if the control is a reuse component in OnPremise', async () => {
+            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId1') });
             const resources = await getTextBundle();
             const overlay = {
                 getElement: () => ({
@@ -164,13 +165,14 @@ describe('Dialogs', () => {
                 })
             } as ElementOverlay;
             isReuseComponentMock.mockReturnValueOnce(true);
-            const result = getExtendControllerItemText(overlay, isReuseComponentMock, false, resources);
+            const result = getExtendControllerItemText(overlay, [], isReuseComponentMock, false, resources);
 
             expect(result).toBe('Extend with Controller');
             expect(isReuseComponentMock).not.toHaveBeenCalled();
         });
 
         it('should return simple text if the control is not a reuse component in Cloud', async () => {
+            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId1') });
             const resources = await getTextBundle();
             const overlay = {
                 getElement: () => ({
@@ -179,13 +181,14 @@ describe('Dialogs', () => {
                     }
                 })
             } as ElementOverlay;
-            const result = getExtendControllerItemText(overlay, isReuseComponentMock, true, resources);
+            const result = getExtendControllerItemText(overlay, [], isReuseComponentMock, true, resources);
 
             expect(result).toBe('Extend with Controller');
             expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
         });
 
         it('should return extra text if the control is a reuse component in Cloud', async () => {
+            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId1') });
             const resources = await getTextBundle();
             const overlay = {
                 getElement: () => ({
@@ -196,10 +199,27 @@ describe('Dialogs', () => {
             } as ElementOverlay;
             isReuseComponentMock.mockReturnValueOnce(true);
 
-            const result = getExtendControllerItemText(overlay, isReuseComponentMock, true, resources);
+            const result = getExtendControllerItemText(overlay, [], isReuseComponentMock, true, resources);
 
             expect(result).toBe('Extend with Controller (This action is disabled because the control is a reuse component)');
             expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
+        });
+
+        it('shoud return extra text if the control is part of a sync view', async () => {
+            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('syncViewId1') });
+            const resources = await getTextBundle();
+            const overlay = {
+                getElement: () => ({
+                    getId: () => {
+                        return 'controlId1';
+                    }
+                })
+            } as ElementOverlay;
+            const syncViewsIds = ['syncViewId1', 'syncViewId2'];
+
+            const result = getExtendControllerItemText(overlay, syncViewsIds, isReuseComponentMock, false, resources);
+
+            expect(result).toBe('Extend with Controller (This action is disabled because the controls are part of a synchronous view)');
         });
     });
 

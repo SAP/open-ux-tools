@@ -422,7 +422,7 @@ describe('FE V2 quick actions', () => {
                                     id: 'listReport0-add-controller-to-page',
                                     title: 'Add Controller to Page',
                                     enabled: false,
-                                    tooltip: 'This action is disabled because a pending change for controller extension has been found. '
+                                    tooltip: 'This action is disabled because a pending change for a controller extension has been found. '
                                 }
                             ]
                         }
