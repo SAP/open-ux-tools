@@ -1,0 +1,45 @@
+.header {
+    font-weight: 700;
+    line-height: 18px;
+    font-size: 13px;
+}
+.header,
+.item {
+    padding: 5px 15px 0px 15px;
+}
+.subHeader {
+    width: 255px;
+    line-height: 18px;
+    overflow: hidden;
+    padding: 0px 15px 0px 15px;
+}
+.item:hover {
+    background-color: var(--vscode-dropdown-background);
+    color: var(--vscode-dropdown-foreground);
+    outline: 1px dashed var(--vscode-contrastActiveBorder);
+    .actions {
+        visibility: visible;
+    }
+}
+
+.subText {
+    color: var(--vscode-foreground);
+    font-size: 11px;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0%;
+}
+
+.actions {
+    visibility: hidden;
+}
+
+.textHeader {
+    font-size: '13px';
+    font-weight: '700';
+    text-overflow: 'ellipsis';
+    white-space: 'nowrap';
+    overflow-x: 'hidden';
+    line-height: '18px';
+    letter-spacing: '0%';
+}

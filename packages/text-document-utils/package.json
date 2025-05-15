@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/text-document-utils",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "Library for text document utility functions and types",
     "repository": {
         "type": "git",
@@ -26,7 +26,7 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     },
     "dependencies": {
         "vscode-languageserver-types": "3.17.2"

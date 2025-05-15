@@ -1,5 +1,21 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/ui5-library-reference-inquirer@0.4.0
+    -   @sap-ux/ui5-library-reference-writer@0.2.0
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/telemetry@0.6.0
+
 ## 0.0.64
 
 ### Patch Changes

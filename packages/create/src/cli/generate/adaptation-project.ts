@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 import chalk from 'chalk';
 import { getLogger, traceChanges } from '../../tracing';
 import type { AdpWriterConfig, PromptDefaults } from '@sap-ux/adp-tooling';
-import { promptGeneratorInput, generate } from '@sap-ux/adp-tooling';
+import { promptGeneratorInput, generate, FlexLayer } from '@sap-ux/adp-tooling';
 import { runNpmInstallCommand } from '../../common';
 import { join } from 'path';
 
@@ -101,7 +101,7 @@ function createConfigFromDefaults(defaults: PromptDefaults): AdpWriterConfig {
             app: {
                 id: defaults.id,
                 reference: defaults.reference,
-                layer: 'CUSTOMER_BASE'
+                layer: FlexLayer.CUSTOMER_BASE
             },
             target: {
                 url: defaults.url,
