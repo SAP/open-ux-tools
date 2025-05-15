@@ -1,5 +1,11 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.1
+
 ## 0.1.0
 
 ### Minor Changes
