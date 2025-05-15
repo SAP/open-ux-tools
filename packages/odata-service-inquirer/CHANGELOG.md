@@ -1,5 +1,32 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.4.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-input-validator@0.6.0
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/guided-answers-helper@0.3.0
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/telemetry@0.6.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/store@1.1.0
+
+## 2.3.15
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.3
+-   @sap-ux/inquirer-common@0.6.43
+
 ## 2.3.14
 
 ### Patch Changes

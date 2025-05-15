@@ -1,5 +1,28 @@
 # @sap-ux/deploy-tooling
 
+## 0.16.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-input-validator@0.6.0
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/system-access@0.6.0
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+
+## 0.15.62
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.3
+-   @sap-ux/system-access@0.5.39
+
 ## 0.15.61
 
 ### Patch Changes

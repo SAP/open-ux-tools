@@ -1,5 +1,11 @@
 # @sap-ux/yaml
 
+## 0.17.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
 ## 0.16.0
 
 ### Minor Changes

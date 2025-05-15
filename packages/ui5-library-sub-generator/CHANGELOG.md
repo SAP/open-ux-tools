@@ -1,5 +1,27 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/fiori-tools-settings@0.2.0
+    -   @sap-ux/ui5-library-inquirer@0.4.0
+    -   @sap-ux/ui5-library-writer@0.6.0
+    -   @sap-ux/nodejs-utils@0.2.0
+    -   @sap-ux/ui5-info@0.11.0
+
+## 0.0.90
+
+### Patch Changes
+
+-   @sap-ux/ui5-library-inquirer@0.3.76
+
 ## 0.0.89
 
 ### Patch Changes
