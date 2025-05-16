@@ -1,5 +1,21 @@
 # @sap-ux/preview-middleware
 
+## 0.20.2
+
+### Patch Changes
+
+-   5f3aa03: feat: Integration of ExtendControllerPlugin in Adaptation Editor
+-   Updated dependencies [5f3aa03]
+    -   @sap-ux/adp-tooling@0.14.2
+
+## 0.20.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.1
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/system-access@0.6.0
+
 ## 0.20.0
 
 ### Minor Changes
