@@ -2,6 +2,7 @@
     "error": {
         "requiredProjectFileNotFound": "Invalid project structure. Cannot find required file {{-path}}",
         "requiredProjectPropertyNotFound": "Required project property: {{-property}} was not found in file: {{-path}}",
+        "requiredServiceAlreadyExists": "A service with the {{-uri}} URI already exists. Choose another service.",
         "unparseableXML": "Unparseable XML was specified: {{-error}}"
     }
 }

@@ -38,13 +38,27 @@ describe('generate', () => {
         });
 
         it('faulty manifest.json', async () => {
-            //fs.delete(join(testDir, 'webapp/manifest.json'));
             fs.writeJSON(join(testDir, 'webapp/manifest.json'), {});
             await expect(generate(testDir, config, fs)).rejects.toEqual(
                 Error(
                     t('error.requiredProjectPropertyNotFound', {
                         property: `'sap.app'.id`,
                         path: join(testDir, 'webapp/manifest.json')
+                    })
+                )
+            );
+        });
+
+        it('service URI already exists', async () => {
+            const existingURI = 'dummy/';
+            fs.writeJSON(join(testDir, 'webapp/manifest.json'), {
+                'sap.app': { id: 'error', dataSources: { existing: { uri: existingURI } } }
+            });
+            const service = { ...config, path: 'dummy' };
+            await expect(generate(testDir, service, fs)).rejects.toEqual(
+                Error(
+                    t('error.requiredServiceAlreadyExists', {
+                        uri: existingURI
                     })
                 )
             );
@@ -222,6 +236,59 @@ describe('generate', () => {
                     join(testDir, 'webapp', 'localService', 'mainService', `${config.annotations.technicalName}.xml`)
                 )
             ).toBe(config.annotations.xml);
+            // verify the updated package.json
+            expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+                devDependencies: {
+                    '@sap-ux/ui5-middleware-fe-mockserver': '2',
+                    '@sap/ux-ui5-tooling': '1'
+                },
+                scripts: {
+                    'start-mock': `fiori run --config ./ui5-mock.yaml --open \"/\"`
+                },
+                ui5: {
+                    dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
+                }
+            });
+        });
+
+        it('Valid OData V2 service, service name exists, generate unique', async () => {
+            // Test to verify that service names are generated unique if necessary
+            const existingName = 'existing';
+            const config = {
+                ...commonConfig,
+                version: OdataVersion.v2,
+                name: existingName
+            };
+            fs.writeJSON(join(testDir, 'webapp/manifest.json'), {
+                'sap.app': {
+                    id: 'correct',
+                    dataSources: { [existingName]: { type: 'OData' }, mainService: { type: 'OData' } }
+                }
+            });
+            await generate(testDir, config, fs);
+            // verify updated manifest.json
+            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+            expect(manifest?.['sap.app']?.dataSources).toStrictEqual({
+                existing: {
+                    type: 'OData'
+                },
+                existing1: {
+                    type: 'OData',
+                    uri: '/sap/odata/testme/',
+                    settings: {
+                        annotations: [],
+                        localUri: 'localService/existing1/metadata.xml',
+                        odataVersion: '2.0'
+                    }
+                },
+                mainService: {
+                    type: 'OData'
+                }
+            });
+            expect(fs.exists(join(testDir, 'webapp', 'localService', 'existing1', 'metadata.xml'))).toBe(true);
+            // Make sure files for other services are touched/created
+            expect(fs.exists(join(testDir, 'webapp', 'localService', 'existing', 'metadata.xml'))).toBe(false);
+            expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(false);
             // verify the updated package.json
             expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
                 devDependencies: {
@@ -554,19 +621,19 @@ describe('generate', () => {
                 `);
                 fs.delete(join('webapp', 'manifest.json'));
             });
-            test('model called mainService is being added, "" should be used for model', async () => {
+            test('mainService is being updated, "" should be used for model', async () => {
                 // mainService model already exists
                 fs.writeJSON(join('webapp', 'manifest.json'), {
                     'sap.app': { dataSources: { mainService: { type: 'OData' } } },
                     'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
                 });
                 const configCopy = cloneDeep(Object.assign({}, config, { name: 'mainService' }));
-                await enhanceData('', configCopy, fs);
+                await enhanceData('', configCopy, fs, true);
                 expect(configCopy).toMatchInlineSnapshot(`
                     Object {
                       "model": "",
                       "name": "mainService",
-                      "path": "/V2/Northwind/Northwind.svc/",
+                      "path": "/V2/Northwind/Northwind.svc",
                       "previewSettings": Object {
                         "path": "/V2",
                         "url": "https://services.odata.org",

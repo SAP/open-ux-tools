@@ -1,5 +1,5 @@
 import { join } from 'path';
-import type { OdataService, EdmxAnnotationsInfo } from '../types';
+import type { OdataService, EdmxAnnotationsInfo, DataSources } from '../types';
 import { ServiceType } from '../types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
 import type { Manifest } from '@sap-ux/project-access';
@@ -19,14 +19,41 @@ function setDefaultServicePath(service: OdataService): void {
 }
 
 /**
+ * Generates a unique name for the service.
+ *
+ * @param {OdataService} dataSources - dataSources from manifest.json.
+ * @param {string} serviceName - The service name whose name needs to be modified.
+ * @returns Unique service name.
+ */
+function generateUniqueServiceName(dataSources: DataSources, serviceName: string): string {
+    let tmpSrvName = serviceName;
+    let uniqueNameCount = 1;
+    let doesExist = true; // Ensure data source name is unique
+    do {
+        if (dataSources?.[tmpSrvName]) {
+            tmpSrvName = `${serviceName}${uniqueNameCount++}`; // Try with a new name
+        } else {
+            doesExist = false;
+        }
+    } while (doesExist);
+    return tmpSrvName;
+}
+
+/**
  * Sets the default name for a given service.
  * Default serivce name is used only for first service.
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - The service object whose name needs to be set or modified.
- * @param fs - the memfs editor instance
+ * @param {Editor} fs - the memfs editor instance
+ * @param {boolean} update - whether the service update is running
  */
-async function setDefaultServiceName(basePath: string, service: OdataService, fs: Editor): Promise<void> {
+async function setDefaultServiceName(
+    basePath: string,
+    service: OdataService,
+    fs: Editor,
+    update: boolean
+): Promise<void> {
     const manifestPath = join(await getWebappPath(basePath, fs), FileName.Manifest);
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
     // Check if manifest has already any dataSources defined, DEFAULT_DATASOURCE_NAME should be used for the first service
@@ -36,6 +63,8 @@ async function setDefaultServiceName(basePath: string, service: OdataService, fs
         const oDataSources = Object.values(dataSources).filter((dataSource) => dataSource.type === 'OData');
         if (oDataSources.length === 0) {
             service.name = DEFAULT_DATASOURCE_NAME;
+        } else if (service.name && !update) {
+            service.name = generateUniqueServiceName(dataSources, service.name);
         }
     } else {
         // No existing dataSources - no existing services, use default name
@@ -50,9 +79,15 @@ async function setDefaultServiceName(basePath: string, service: OdataService, fs
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - The service object whose model needs to be set or modified
- * @param fs - the memfs editor instance
+ * @param {Editor} fs - the memfs editor instance
+ * @param {boolean} update - whether the service update is running (if true, makes sure that '' model is updated for the mainService)
  */
-async function setDefaultServiceModel(basePath: string, service: OdataService, fs: Editor): Promise<void> {
+async function setDefaultServiceModel(
+    basePath: string,
+    service: OdataService,
+    fs: Editor,
+    update: boolean
+): Promise<void> {
     const manifestPath = join(await getWebappPath(basePath, fs), 'manifest.json');
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
     if (!service.model) {
@@ -61,12 +96,16 @@ async function setDefaultServiceModel(basePath: string, service: OdataService, f
         if (models) {
             // Filter dataSource models by dataSource property
             const servicesModels = Object.values(models).filter((model) => model.dataSource);
-            service.model =
+            if (
                 servicesModels.length === 0 ||
-                (servicesModels.find((serviceModel) => serviceModel.dataSource === DEFAULT_DATASOURCE_NAME) &&
-                    service.name === DEFAULT_DATASOURCE_NAME) // model for mainService is ""
-                    ? ''
-                    : service.name;
+                (update &&
+                    servicesModels.find((serviceModel) => serviceModel.dataSource === DEFAULT_DATASOURCE_NAME) &&
+                    service.name === DEFAULT_DATASOURCE_NAME)
+            ) {
+                service.model = '';
+            } else if (service.name) {
+                service.model = service.name;
+            }
         } else {
             // No models defined, that means first one is being added, set model to ''
             service.model = '';
@@ -151,14 +190,14 @@ async function setDefaultPreviewSettings(basePath: string, service: OdataService
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
  * @param {Editor} fs - the memfs editor instance
- * @param {boolean} update - whether the service update is running
+ * @param {boolean} update - whether the service update is running (if true, skips unique service name generation and makes sure that '' model is updated for the mainService)
  */
 export async function enhanceData(basePath: string, service: OdataService, fs: Editor, update = false): Promise<void> {
     if (!update) {
         setDefaultServicePath(service);
     }
-    await setDefaultServiceName(basePath, service, fs);
-    await setDefaultServiceModel(basePath, service, fs);
+    await setDefaultServiceName(basePath, service, fs, update);
+    await setDefaultServiceModel(basePath, service, fs, update);
     // set service type to EDMX if not defined
     service.type = service.type ?? ServiceType.EDMX;
     /**
