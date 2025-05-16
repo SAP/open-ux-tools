@@ -17,6 +17,7 @@ import {
     type CapServiceAnswers
 } from './types';
 import { validateCapPath } from './validators';
+import { realpath } from 'fs/promises';
 
 /**
  * Find the specified choice in the list of CAP project choices and return its index.
@@ -58,6 +59,7 @@ export function getLocalCapProjectPrompts(
     let selectedCapProject: CapProjectPaths | undefined;
     let capServiceChoices: CapServiceChoice[];
     let defaultServiceIndex = 0;
+    let validCapPath: string | boolean = false;
     PromptState.reset();
 
     const prompts: (ListQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | Question)[] = [
@@ -93,9 +95,12 @@ export function getLocalCapProjectPrompts(
             },
             guiOptions: { mandatory: true, breadcrumb: t('prompts.capProject.breadcrumb') },
             validate: async (projectPath: string): Promise<string | boolean> => {
-                const validCapPath = await validateCapPath(projectPath);
+                validCapPath = await validateCapPath(projectPath);
                 // Load the cap paths if the path is valid
                 if (validCapPath === true) {
+                    if (validCapPath === true && process.platform === 'win32') {
+                        projectPath = await realpath(projectPath);
+                    }
                     selectedCapProject = Object.assign(
                         { path: projectPath } as CapProjectRootPath,
                         await getCapCustomPaths(projectPath)

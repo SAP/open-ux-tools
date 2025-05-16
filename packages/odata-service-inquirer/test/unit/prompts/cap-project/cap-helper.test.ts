@@ -11,6 +11,7 @@ import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-project/types';
 import os from 'os';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
+import fs from 'fs';
 
 const initMockCapModelAndServices = {
     model: {},
@@ -96,6 +97,12 @@ describe('cap-helper', () => {
 
         // Multiple CAP projects found, some of which have the same folder names
         findCapProjectsSpy.mockResolvedValue(['/test/mock/1/bookshop', '/test/mock/2/bookshop', '/test/mock/flight']);
+        jest.spyOn(sapuxProjectAccess, 'getCapCustomPaths').mockResolvedValue({
+            app: 'app/',
+            db: 'db/',
+            srv: 'srv/'
+        });
+        jest.spyOn(fs.promises, 'realpath').mockImplementation(async (p) => Promise.resolve(String(p)));
         choices = await getCapProjectChoices(['/test/mock/']);
         expect(choices).toMatchInlineSnapshot(`
             [
@@ -136,6 +143,71 @@ describe('cap-helper', () => {
             ]
         `);
         expect(findCapProjectsSpy).toHaveBeenCalledWith({ 'wsFolders': ['/test/mock/'] });
+    });
+
+    test('getCapProjectChoices (Windows paths)', async () => {
+        const pathSep = '\\'; // Windows path separator
+        const drive = 'C:'; // Windows drive letter
+    
+        // Zero state test
+        const findCapProjectsSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjects').mockResolvedValue([]);
+        let choices = await getCapProjectChoices([`${drive}${pathSep}test${pathSep}mock${pathSep}`]);
+        expect(choices).toMatchInlineSnapshot(`
+            [
+              {
+                "name": "Manually select CAP project folder path",
+                "value": "enterCapPath",
+              },
+            ]
+        `);
+    
+        // Multiple CAP projects found, some of which have the same folder names
+        findCapProjectsSpy.mockResolvedValue([
+            `${drive}${pathSep}test${pathSep}mock${pathSep}1${pathSep}bookshop`,
+            `${drive}${pathSep}test${pathSep}mock${pathSep}2${pathSep}bookshop`,
+            `${drive}${pathSep}test${pathSep}mock${pathSep}flight`
+        ]);
+    
+        choices = await getCapProjectChoices([`${pathSep}test${pathSep}mock${pathSep}`]);
+        expect(choices).toMatchInlineSnapshot(`
+            [
+              {
+                "name": "C:\\test\\mock\\1\\bookshop",
+                "value": {
+                  "app": "app/",
+                  "db": "db/",
+                  "folderName": "C:\\test\\mock\\1\\bookshop",
+                  "path": "C:\\test\\mock\\1\\bookshop",
+                  "srv": "srv/",
+                },
+              },
+              {
+                "name": "C:\\test\\mock\\2\\bookshop",
+                "value": {
+                  "app": "app/",
+                  "db": "db/",
+                  "folderName": "C:\\test\\mock\\2\\bookshop",
+                  "path": "C:\\test\\mock\\2\\bookshop",
+                  "srv": "srv/",
+                },
+              },
+              {
+                "name": "C:\\test\\mock\\flight",
+                "value": {
+                  "app": "app/",
+                  "db": "db/",
+                  "folderName": "C:\\test\\mock\\flight",
+                  "path": "C:\\test\\mock\\flight",
+                  "srv": "srv/",
+                },
+              },
+              {
+                "name": "Manually select CAP project folder path",
+                "value": "enterCapPath",
+              },
+            ]
+        `);
+        expect(findCapProjectsSpy).toHaveBeenCalledWith({ wsFolders: [`${drive}${pathSep}test${pathSep}mock${pathSep}`] });
     });
 
     test('getCapEdmx', async () => {

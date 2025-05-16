@@ -6,6 +6,8 @@ import type { Editor } from 'mem-fs-editor';
 import { applyBaseConfigToFEApp } from '../common';
 import type { Logger } from '@sap-ux/logger';
 import { t } from '../../src/i18n';
+import { win32 } from 'path';
+import * as path from 'path';
 
 jest.mock('@sap-ux/annotation-generator', () => ({
     ...jest.requireActual('@sap-ux/annotation-generator'),
@@ -36,6 +38,54 @@ describe('writeAnnotations', () => {
         appInfo.appOptions.addAnnotations = true;
         await writeAnnotations('base', appInfo, fs);
 
+        expect(generateAnnotations).toHaveBeenCalledWith(
+            fs,
+            {
+                serviceName: 'mainService',
+                appName: 'test',
+                project: join('test')
+            },
+            {
+                entitySetName: 'Travel',
+                annotationFilePath: join('test', 'path', 'test', 'annotations.cds'),
+                addFacets: true,
+                addLineItems: true,
+                addValueHelps: true
+            }
+        );
+    });
+
+    it('should generate annotations file with correct content', async () => {
+        const appInfo = applyBaseConfigToFEApp('test', TemplateType.ListReportObjectPage);
+        appInfo.appOptions.addAnnotations = true;
+        appInfo.service.capService = {
+            serviceName: 'mainService',
+            projectPath: 'test',
+            appPath: 'test/path',
+            cdsUi5PluginInfo: {
+                isCdsUi5PluginEnabled: false,
+                hasMinCdsVersion: false,
+                isWorkspaceEnabled: false,
+                hasCdsUi5Plugin: false
+            }
+        };
+    
+        // Mock the `fs.write` method
+        (fs.write as jest.Mock).mockImplementation((filePath, content) => {
+            const expectedFilePath = join('test', 'path', 'test', 'annotations.cds');
+            if (filePath === expectedFilePath) {
+                // Verify the content of the annotations file
+                expect(content).toMatch(/UI\.LineItem/);
+                expect(content).toMatch(/\$Type\s*:\s*'UI\.DataField'/);
+                expect(content).toMatch(/Label\s*:\s*'requestid'/);
+                expect(content).toMatch(/Value\s*:\s*requestid/);
+            } else {
+                throw new Error(`Unexpected file path: ${filePath}`);
+            }
+        });
+
+        await writeAnnotations('test/path', appInfo, fs);
+    
         expect(generateAnnotations).toHaveBeenCalledWith(
             fs,
             {

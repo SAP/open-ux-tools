@@ -14,6 +14,7 @@ import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
 import type { CapProjectChoice, CapProjectPaths, CapProjectRootPath } from './types';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
+import { realpath } from 'fs/promises';
 
 export const enterCapPathChoiceValue = 'enterCapPath';
 
@@ -33,7 +34,7 @@ async function getCapProjectPaths(
 
     for (const root of capProjectRoots) {
         const folderName = basename(root);
-        capRootPaths.push({ folderName, path: root });
+        capRootPaths.push({ folderName, path: await realpath(root) });
         folderNameCount.set(folderName, (folderNameCount.get(folderName) ?? 0) + 1);
     }
     capRootPaths.sort((a, b) => a.folderName.localeCompare(b.folderName));
