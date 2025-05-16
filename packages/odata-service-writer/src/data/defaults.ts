@@ -21,8 +21,8 @@ function setDefaultServicePath(service: OdataService): void {
 /**
  * Generates a unique name for the service.
  *
- * @param {OdataService} dataSources - The service object whose path needs to be set or modified.
- * @param {string} serviceName - The service object whose path needs to be set or modified.
+ * @param {OdataService} dataSources - dataSources from manifest.json.
+ * @param {string} serviceName - The service name whose name needs to be modified.
  * @returns Unique service name.
  */
 function generateUniqueServiceName(dataSources: DataSources, serviceName: string): string {
