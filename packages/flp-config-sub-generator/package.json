@@ -45,7 +45,7 @@
     },
     "devDependencies": {
         "@jest/types": "29.6.3",
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "8.2.11",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/yeoman-generator": "5.2.11",
