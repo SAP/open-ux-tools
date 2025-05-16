@@ -4,6 +4,7 @@ import type { RequestHandler } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { MiddlewareParameters, BackendMiddlewareConfig } from './base/types';
 import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
+import express from 'express';
 
 /**
  * Hides the proxy credentials for displaying the proxy configuration in the console.
@@ -20,11 +21,12 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
             proxy = proxy.replace(proxy.slice(forwardSlashIndex + 2, atIndex), '***:***');
         }
     }
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     return proxy || 'none';
 }
 
 /**
- * UI5 middleware allowing to to proxy backends.
+ * UI5 middleware allowing to proxy backends.
  *
  * @param params input parameters for UI5 middleware
  * @param params.options configuration options
@@ -37,6 +39,7 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
 
     await initI18n();
     dotenv.config();
+    const router = express.Router();
 
     const backend = options.configuration.backend;
     const configOptions = options.configuration.options ?? {};
@@ -51,14 +54,7 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
                 proxy: formatProxyForLogging(backend.proxy)
             })}\noptions: ${JSON.stringify(configOptions)}'`
         );
-
-        return (req, res, next) => {
-            if (req.path.startsWith(backend.path)) {
-                proxyFn(req, res, next);
-            } else {
-                next();
-            }
-        };
+        return router.use(backend.path, proxyFn);
     } catch (e) {
         const message = `Failed to register backend for ${backend.path}. Check configuration in yaml file. \n\t${e}`;
         logger.error(message);
