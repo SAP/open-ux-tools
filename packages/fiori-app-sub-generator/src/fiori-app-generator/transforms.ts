@@ -93,6 +93,10 @@ export function transformTemplateType(
             mainEntityName: entityRelatedConfig.mainEntity.entitySetName
         };
 
+        if (entityRelatedConfig.mainEntity.parameterisedNavigationPropertyName) {
+            _entityConfig.parameterisedNavigationPropertyName = entityRelatedConfig.mainEntity.parameterisedNavigationPropertyName;
+        }
+
         if (entityRelatedConfig?.navigationEntity?.navigationPropertyName) {
             _entityConfig.navigationEntity = {
                 EntitySet: entityRelatedConfig.navigationEntity?.entitySetName,
@@ -358,5 +362,6 @@ function getBaseAppConfig(
             ? TemplateSettingsFF<BasicAppSettings>
             : TemplateSettingsFE<unknown>
     };
+    debugger;
     return appConfig;
 }

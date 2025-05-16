@@ -9,6 +9,9 @@ import LoggerHelper from '../logger-helper';
 export type EntityAnswer = {
     entitySetName: string;
     entitySetType: string;
+    // The navigation property name linking a parameterised entity set.
+    // Populated only if the entity set has a `Common.ResultContext` annotation.
+    parameterisedNavigationPropertyName?: string;
 };
 
 export type NavigationEntityAnswer = {
@@ -22,11 +25,62 @@ export interface EntityChoiceOptions {
     defaultMainEntityIndex?: number;
     convertedMetadata?: ConvertedMetadata;
     odataVersion?: OdataVersion;
-    hasResultContextAnnotation?: boolean;
 }
 
 export type EntitySetFilter = 'filterDraftEnabled' | 'filterAggregateTransformationsOnly';
 
+/**
+ * Finds the navigation property name that links a parameterised entity set to its target entity set.
+ *
+ * This function checks if the given entity set has the `Common.ResultContext` annotation, indicating
+ * that it is a parameterised entity. It then searches for a navigation property that:
+ * - Points to a target entity (`containsTarget === true`).
+ * - Has a partner navigation property named `Parameters` (linking back to the parameters entity).
+ * - Has a `targetTypeName` that matches the provided `targetEntityTypeName`.
+ *
+ * If such a navigation property is found, its name is returned and skips navigation entity selection prompt
+ * Otherwise, `null` is returned.
+ *
+ * @param entitySet - The entity set to search for navigation properties.
+ * @param targetEntityTypeName - The fully qualified name of the target entity type to match.
+ * @returns The name of the matching navigation property, or `null` if no match is found.
+ */
+function getNavigationPropertyForParameterisedEntity(
+    entitySet: EntitySet,
+    entityTypes?: any // todo: replace with the correct type
+): string | null {
+    // Check if the entity type has the Common.ResultContext annotation
+    const hasResultContextAnnotation = Boolean(
+        entitySet?.entityType?.annotations?.Common?.ResultContext
+    );
+
+    if (!hasResultContextAnnotation) {
+        // If the entity set is not parameterised, no parametrised navigation is expected
+        return null;
+    };
+
+    // Get all navigation properties of the parameterised entity type
+    const navigationProperties = entitySet?.entityType?.navigationProperties ?? [];
+    // Find the first navigation property that meets the criteria - todo: confirm with someone if this is correct.
+    for (const navigationProperty of navigationProperties) {
+        if (
+            navigationProperty.containsTarget === true &&// Points to a target entity
+            navigationProperty.partner // The partner navigation property name is defined
+        ) {
+            const isMatchingEntitySet = entityTypes.filter(
+                (entityType: any) => entityType.fullyQualifiedName === navigationProperty.targetTypeName
+              );
+            // Check if the target type name matches the provided entity type name
+            if (isMatchingEntitySet) {
+                // Return the navigation property name 
+                return navigationProperty.name;
+            }
+        }
+    }
+
+    // If no matching navigation property is found, return null
+    return null;
+}
 /**
  * Returns the entity choice options for use in a list inquirer prompt.
  *
@@ -54,7 +108,6 @@ export function getEntityChoices(
     let defaultMainEntityIndex: number | undefined;
     let convertedMetadata: ConvertedMetadata | undefined;
     let odataVersion: OdataVersion | undefined;
-    let hasResultContextAnnotation: boolean | undefined;
     try {
         convertedMetadata = convert(parse(edmx));
         const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
@@ -76,20 +129,16 @@ export function getEntityChoices(
         } else {
             entitySets = convertedMetadata.entitySets;
         }
-        debugger;
-        const targetEntitySet = entitySets.find(
-            (entitySet) => entitySet.entityType?.annotations?.Common?.ResultContext !== undefined
-        );
-        console.log('--targetEntitySet?.entityType?.annotations?.Common?.ResultContext', targetEntitySet?.entityType?.annotations?.Common?.ResultContext)
-        hasResultContextAnnotation = Boolean(targetEntitySet?.entityType?.annotations?.Common?.ResultContext);
-          
-        //entitySets[0].entityType.annotations.Common.ResultContext
         entitySets.forEach((entitySet, index) => {
+            const parameterisedNavigationPropertyName = getNavigationPropertyForParameterisedEntity(entitySet, convertedMetadata?.entityTypes);
             const choice: ListChoiceOptions<EntityAnswer> = {
                 name: entitySet.name,
                 value: {
                     entitySetName: entitySet.name,
-                    entitySetType: entitySet.entityTypeName // Fully qualified entity type name
+                    entitySetType: entitySet.entityTypeName, // Fully qualified entity type name
+                    ...(parameterisedNavigationPropertyName && {
+                        parameterisedNavigationPropertyName
+                    }) // parameterised navigation property name
                 }
             };
             choices.push(choice);
@@ -111,8 +160,7 @@ export function getEntityChoices(
         draftRootIndex,
         defaultMainEntityIndex,
         convertedMetadata,
-        odataVersion,
-        hasResultContextAnnotation
+        odataVersion
     };
 }
 

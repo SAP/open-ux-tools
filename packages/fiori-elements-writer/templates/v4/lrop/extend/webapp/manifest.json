@@ -7,11 +7,19 @@
                     "name": "<%- entityConfig.mainEntityName %>List",
                     "target": "<%- entityConfig.mainEntityName %>List"
                 },<% } %>
+                <% if (entityConfig.parameterisedNavigationPropertyName) { %>
                 {
-                    "pattern": "<%- entityConfig.mainEntityName %>({key}):?query:",
+                    "pattern": "<%- entityConfig.mainEntityName %>({key})/<%- entityConfig.parameterisedNavigationPropertyName %>({key2}):?query:",
                     "name": "<%- entityConfig.mainEntityName %>ObjectPage",
                     "target": "<%- entityConfig.mainEntityName %>ObjectPage"
-                }<% if (entityConfig.navigationEntity && entityConfig.navigationEntity.EntitySet) { %>,
+                }<% } else { %>
+                            {
+                                "pattern": "<%- entityConfig.mainEntityName %>({key}):?query:",
+                                "name": "<%- entityConfig.mainEntityName %>ObjectPage",
+                                "target": "<%- entityConfig.mainEntityName %>ObjectPage"
+                            }
+                            <% } %>
+                <% if (entityConfig.navigationEntity && entityConfig.navigationEntity.EntitySet) { %>,
                     {
                         "pattern": "<%- entityConfig.mainEntityName %>({key})/<%- entityConfig.navigationEntity.Name %>({key2}):?query:",
                         "name": "<%- entityConfig.navigationEntity.EntitySet %>ObjectPage",
