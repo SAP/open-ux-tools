@@ -1,4 +1,4 @@
-import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { Inbound } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 import {
@@ -8,7 +8,6 @@ import {
     getSubTitlePrompt,
     getOverwritePrompt,
     getCreateAnotherInboundPrompt,
-    getEmptyInboundsLabelPrompt,
     getInboundIdsPrompt,
     getParameterStringPrompt
 } from './questions';
@@ -28,8 +27,7 @@ import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } fr
  * @returns {FLPConfigQuestion[]} An array of FLPConfigQuestion objects to be used for prompting the user.
  */
 export function getQuestions(
-    inbounds?: ManifestNamespace.Inbound,
-    appId?: string,
+    inbounds?: Inbound[],
     promptOptions?: FLPConfigPromptOptions
 ): FLPConfigQuestion[] {
     const inboundKeys = Object.keys(inbounds ?? {});
@@ -38,8 +36,8 @@ export function getQuestions(
     const silentOverwrite = promptOptions?.silentOverwrite ?? false;
 
     const keyedPrompts: Record<promptNames, FLPConfigQuestion> = {
-        [promptNames.inboundId]: getInboundIdsPrompt(inboundKeys),
-        [promptNames.emptyInboundsInfo]: getEmptyInboundsLabelPrompt(inboundKeys, appId),
+        [promptNames.inboundId]: getInboundIdsPrompt(inbounds ?? []),
+        // [promptNames.emptyInboundsInfo]: getEmptyInboundsLabelPrompt(inboundKeys, appId),
         [promptNames.semanticObject]: getSemanticObjectPrompt(isCLI, promptOptions?.[promptNames.semanticObject]),
         [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action]),
         [promptNames.overwrite]: getOverwritePrompt(

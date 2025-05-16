@@ -1,6 +1,6 @@
 import isNil from 'lodash/isNil';
 
-import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { Inbound } from '@sap-ux/axios-extension';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 
 import { initI18n } from './i18n';
@@ -17,13 +17,12 @@ import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from
  * @returns {Promise<FLPConfigQuestion[]>} A promise that resolves to an array of FLP configuration questions.
  */
 async function getPrompts(
-    inbounds?: ManifestNamespace.Inbound,
-    appId?: string,
+    inbounds?: Inbound[],
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigQuestion[]> {
     await initI18n();
 
-    return getQuestions(inbounds, appId, promptOptions);
+    return getQuestions(inbounds, promptOptions);
 }
 
 /**
@@ -37,11 +36,10 @@ async function getPrompts(
  */
 async function prompt(
     adapter: InquirerAdapter,
-    inbounds?: ManifestNamespace.Inbound,
-    appId?: string,
+    inbounds?: Inbound[],
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigAnswers> {
-    const flpPrompts = await getPrompts(inbounds, appId, promptOptions);
+    const flpPrompts = await getPrompts(inbounds, promptOptions);
 
     const answers = await adapter.prompt<FLPConfigAnswers>(flpPrompts);
     // Apply default values to prompts in case they have not been executed

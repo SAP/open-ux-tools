@@ -7,14 +7,13 @@ import {
     type AxiosError,
     type AxiosRequestConfig,
     type ProviderConfiguration,
+    type AbapServiceProvider,
+    type Inbound,
     isAxiosError
 } from '@sap-ux/axios-extension';
 import {
-    ManifestService,
     getVariant,
     getAdpConfig,
-    getInboundsFromManifest,
-    getRegistrationIdFromManifest,
     isCFEnvironment,
     generateInboundConfig,
     type InternalInboundNavigation,
@@ -32,7 +31,7 @@ import {
     type YeomanEnvironment
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { FileName, getAppType } from '@sap-ux/project-access';
+import { FileName, getAppType, ManifestNamespace } from '@sap-ux/project-access';
 import AdpFlpConfigLogger from '../utils/logger';
 import { t, initI18n } from '../utils/i18n';
 import {
@@ -48,6 +47,7 @@ import {
     getCredentialsFromStore
 } from '@sap-ux/system-access';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import { getTileQuestions } from './questions';
 
 /**
  * Generator for adding a FLP configuration to an adaptation project.
@@ -63,7 +63,6 @@ export default class extends Generator {
     private readonly vscode: any;
     private readonly toolsLogger: ToolsLogger;
     private readonly projectRootPath: string = '';
-    private manifest: Manifest;
     private answers: FLPConfigAnswers;
     private logger: ILogWrapper;
     private authenticationRequired: boolean = false;
@@ -72,6 +71,8 @@ export default class extends Generator {
     private configuredSystem: string | undefined;
     private ui5Yaml: AdpPreviewConfig;
     private credentials: CredentialsAnswers;
+    private provider: AbapServiceProvider;
+    private inbounds: Inbound[];
 
     /**
      * Creates an instance of the generator.
@@ -83,7 +84,6 @@ export default class extends Generator {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.launchAsSubGen = !!opts.launchAsSubGen;
-        this.manifest = opts.manifest;
         this.toolsLogger = new ToolsLogger();
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
         this.options = opts;
@@ -113,17 +113,16 @@ export default class extends Generator {
         if (!this.configuredSystem) {
             return;
         }
+        this.provider = await this._getAbapServiceProvider();
 
-        if (!this.manifest) {
-            try {
-                this.manifest = await this._getManifest();
-            } catch (error) {
-                this.authenticationRequired = this._checkAuthRequired(error);
-                if (this.authenticationRequired) {
-                    return;
-                }
-                this._handleFetchingError(error);
+        try {
+            this.inbounds = await this._getAppInbounds();
+        } catch (error) {
+            this.authenticationRequired = this._checkAuthRequired(error);
+            if (this.authenticationRequired) {
+                return;
             }
+            this._handleFetchingError(error);
         }
         // Add telemetry to be sent once adp-flp-config is generated
         await TelemetryHelper.initTelemetrySettings({
@@ -144,12 +143,11 @@ export default class extends Generator {
         if (this.abort) {
             return;
         }
-        const inbounds = getInboundsFromManifest(this.manifest);
-        const appId = getRegistrationIdFromManifest(this.manifest);
-        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(inbounds, appId, {
+
+        const tileAnswers = await this.prompt(getTileQuestions());
+        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(this.inbounds, {
             overwrite: { hide: true },
-            createAnotherInbound: { hide: true },
-            emptyInboundsInfo: { hide: isCli() }
+            createAnotherInbound: { hide: true }
         });
         this.answers = await this.prompt(prompts);
     }
@@ -186,25 +184,26 @@ export default class extends Generator {
     }
 
     /**
-     * Retrieves the merged manifest for the project.
+     * Retrieves the list of tile inbounds of the application.
      *
-     * @returns {Promise<Manifest>} The project manifest.
+     * @returns {Promise<Inbound[]>} list of tile inbounds of the application.
      */
-    private async _getManifest(): Promise<Manifest> {
+    private async _getAppInbounds(): Promise<Inbound[]> {
+        const variant = await getVariant(this.projectRootPath, this.fs);
+        const lrepService = await this.provider.getLayeredRepository();
+        const inbounds = (await lrepService.getSystemInfo(undefined, undefined, variant.reference))
+            .inbounds as Inbound[];
+        const tileInbounds = inbounds.filter((inbound: Inbound) => inbound.hideLauncher === false);
+        return tileInbounds;
+    }
+
+    private async _getAbapServiceProvider(): Promise<AbapServiceProvider> {
         const { target, ignoreCertErrors = false } = this.ui5Yaml;
         const requestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = { ignoreCertErrors };
         if (this.credentials) {
             requestOptions['auth'] = { username: this.credentials.username, password: this.credentials.password };
         }
-        const provider = await createAbapServiceProvider(target, requestOptions, false, this.toolsLogger);
-        const variant = await getVariant(this.projectRootPath);
-        const manifestService = await ManifestService.initMergedManifest(
-            provider,
-            this.projectRootPath,
-            variant,
-            this.toolsLogger
-        );
-        return manifestService.getManifest();
+        return await createAbapServiceProvider(target, requestOptions, false, this.toolsLogger);
     }
 
     /**
@@ -217,7 +216,8 @@ export default class extends Generator {
             async (credentials: CredentialsAnswers): Promise<ValidationLink | string | boolean> => {
                 this.credentials = credentials;
                 try {
-                    this.manifest = await this._getManifest();
+                    this.provider = await this._getAbapServiceProvider();
+                    this.inbounds = await this._getAppInbounds();
                 } catch (error) {
                     if (!isAxiosError(error)) {
                         this.logger.error(`Manifest fetching failed: ${error}`);
@@ -249,7 +249,7 @@ export default class extends Generator {
     private _handleFetchingError(error: AxiosError): void {
         if (isAxiosError(error)) {
             this.logger.error(
-                `Manifest fetching failed: ${error}. Status: ${error.response?.status}. URI: ${error.request?.path}`
+                `Application info fetching failed: ${error}. Status: ${error.response?.status}. URI: ${error.request?.path}`
             );
 
             const errorHelp = this._getErrorHandlerMessage(error);
@@ -262,8 +262,8 @@ export default class extends Generator {
             }
             return;
         }
-        this.logger.error(`Manifest fetching failed: ${error}`);
-        throw new Error(t('error.fetchingManifest'));
+        this.logger.error(`Application info fetching failed: ${error}`);
+        throw new Error(t('error.fetchingApplicationInfo'));
     }
 
     /**

@@ -6,7 +6,7 @@ import type { ListQuestionOptions } from 'inquirer';
  */
 export enum promptNames {
     inboundId = 'inboundId',
-    emptyInboundsInfo = 'emptyInboundsInfo',
+    // emptyInboundsInfo = 'emptyInboundsInfo',
     semanticObject = 'semanticObject',
     action = 'action',
     overwrite = 'overwrite',
@@ -21,7 +21,6 @@ export enum promptNames {
  */
 export interface FLPConfigAnswers {
     [promptNames.inboundId]?: string;
-    [promptNames.emptyInboundsInfo]?: string;
     [promptNames.semanticObject]: string;
     [promptNames.action]: string;
     [promptNames.overwrite]?: boolean;
@@ -128,7 +127,6 @@ type FLPConfigCommonInquirerOptions = {
  * The options for the FLP config inquirer & the prompts.
  */
 type flpConfigPromptOptions = Record<promptNames.inboundId, InboundIdPromptOptions> &
-    Record<promptNames.emptyInboundsInfo, EmptyInboundsLabelOptions> &
     Record<promptNames.semanticObject, SemanticObjectPromptOptions> &
     Record<promptNames.action, ActionPromptOptions> &
     Record<promptNames.overwrite, OverwritePromptOptions> &
