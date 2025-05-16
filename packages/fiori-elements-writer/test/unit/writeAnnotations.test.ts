@@ -6,8 +6,6 @@ import type { Editor } from 'mem-fs-editor';
 import { applyBaseConfigToFEApp } from '../common';
 import type { Logger } from '@sap-ux/logger';
 import { t } from '../../src/i18n';
-import { win32 } from 'path';
-import * as path from 'path';
 
 jest.mock('@sap-ux/annotation-generator', () => ({
     ...jest.requireActual('@sap-ux/annotation-generator'),

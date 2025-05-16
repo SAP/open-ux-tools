@@ -148,7 +148,7 @@ describe('cap-helper', () => {
     test('getCapProjectChoices (Windows paths)', async () => {
         const pathSep = '\\'; // Windows path separator
         const drive = 'C:'; // Windows drive letter
-    
+
         // Zero state test
         const findCapProjectsSpy = jest.spyOn(sapuxProjectAccess, 'findCapProjects').mockResolvedValue([]);
         let choices = await getCapProjectChoices([`${drive}${pathSep}test${pathSep}mock${pathSep}`]);
@@ -160,14 +160,14 @@ describe('cap-helper', () => {
               },
             ]
         `);
-    
+
         // Multiple CAP projects found, some of which have the same folder names
         findCapProjectsSpy.mockResolvedValue([
             `${drive}${pathSep}test${pathSep}mock${pathSep}1${pathSep}bookshop`,
             `${drive}${pathSep}test${pathSep}mock${pathSep}2${pathSep}bookshop`,
             `${drive}${pathSep}test${pathSep}mock${pathSep}flight`
         ]);
-    
+
         choices = await getCapProjectChoices([`${pathSep}test${pathSep}mock${pathSep}`]);
         expect(choices).toMatchInlineSnapshot(`
             [
@@ -207,7 +207,9 @@ describe('cap-helper', () => {
               },
             ]
         `);
-        expect(findCapProjectsSpy).toHaveBeenCalledWith({ wsFolders: [`${drive}${pathSep}test${pathSep}mock${pathSep}`] });
+        expect(findCapProjectsSpy).toHaveBeenCalledWith({
+            wsFolders: [`${drive}${pathSep}test${pathSep}mock${pathSep}`]
+        });
     });
 
     test('getCapEdmx', async () => {
