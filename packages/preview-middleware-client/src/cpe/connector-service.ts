@@ -45,6 +45,7 @@ export class WorkspaceConnectorService {
             changeType?: string;
             content?: {
                 fragmentPath?: string;
+                codeRef?: string;
             };
         };
         if (

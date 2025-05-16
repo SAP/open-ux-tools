@@ -2,7 +2,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { getUi5Version } from '../../../utils/version';
-import { getAllSyncViewsIds, getControllerInfoForControl, getReuseComponentChecker } from '../../utils';
+import { getAllSyncViewsIds, getControllerInfoForControl, getReuseComponentChecker, checkForExistingChange } from '../../utils';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import type {
     QuickActionContext,
@@ -13,6 +13,8 @@ import { isControllerExtensionEnabledForControl } from '../../init-dialogs';
 import { getExistingController } from '../../api-handler';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import type { EnablementValidatorResult } from '../enablement-validator';
+import { getTextBundle } from '../../../i18n';
 
 export const ADD_CONTROLLER_TO_PAGE_TYPE = 'add-controller-to-page';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
@@ -25,10 +27,25 @@ export class AddControllerToPageQuickAction
     implements SimpleQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(ADD_CONTROLLER_TO_PAGE_TYPE, CONTROL_TYPES, '', context, [DIALOG_ENABLEMENT_VALIDATOR]);
+        super(ADD_CONTROLLER_TO_PAGE_TYPE, CONTROL_TYPES, '', context, [
+            DIALOG_ENABLEMENT_VALIDATOR,
+            {
+                run: async (): Promise<EnablementValidatorResult> => {
+                    const controllerName = getControllerInfoForControl(this.context.view).controllerName;
+                    const i18n = await getTextBundle();
+                    if (checkForExistingChange(this.context.rta, 'codeExt', 'selector.controllerName', controllerName)) {
+                        return {
+                            type: 'error',
+                            message: i18n.getText('ADP_QUICK_ACTION_CONTROLLER_PENDING_CHANGE_EXISTS')
+                        };
+                    }
+                }
+            }
+        ]);
     }
 
     private controllerExists = false;
+    forceRefreshAfterExecution = true;
 
     async initialize(): Promise<void> {
         const version = await getUi5Version();
@@ -43,7 +60,12 @@ export class AddControllerToPageQuickAction
             const controlInfo = getControllerInfoForControl(control);
             const data = await getExistingController(controlInfo.controllerName);
             this.controllerExists = data?.controllerExists;
-            const isActiveAction = isControllerExtensionEnabledForControl(control, syncViewsIds, isReuseComponent, this.context.flexSettings.isCloud);
+            const isActiveAction = isControllerExtensionEnabledForControl(
+                control,
+                syncViewsIds,
+                isReuseComponent,
+                this.context.flexSettings.isCloud
+            );
             this.control = isActiveAction ? control : undefined;
             break;
         }
