@@ -115,6 +115,10 @@ export type TestConfigDefaults = {
     };
 };
 
+export type CardGeneratorConfig = {
+    path?: string;
+};
+
 /**
  * Middleware configuration.
  */
@@ -127,6 +131,7 @@ export interface MiddlewareConfig {
     rta?: InternalRtaConfig;
     editors?: {
         rta?: RtaConfig;
+        cardGenerator?: CardGeneratorConfig;
     };
     adp?: AdpPreviewConfig;
     debug?: boolean;
@@ -249,3 +254,24 @@ export const FLPHomePageDefaults = {
     catalogId: 'homeCatalog',
     sectionId: 'homeAppsSection'
 };
+
+export interface MultiCardsPayload {
+    type: string;
+    manifest: CardManifest;
+    entitySet: string;
+}
+
+export interface I18nEntry {
+    key: string;
+    value: string;
+    comment?: string;
+    annotation?: string;
+}
+
+export interface CardManifest {
+    'sap.insights': {
+        versions?: {
+            dtpMiddleware?: string;
+        };
+    };
+}
