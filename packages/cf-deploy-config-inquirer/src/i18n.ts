@@ -8,18 +8,17 @@ export const defaultProjectNumber = 1;
  * Initialize i18next with the translations for this module.
  */
 export async function initI18nCfDeployConfigInquirer(): Promise<void> {
-    await i18next.init(
-        {
-            lng: 'en',
-            fallbackLng: 'en',
-            interpolation: {
-                defaultVariables: {
-                    defaultProjectNumber
-                }
+    await i18next.init({
+        lng: 'en',
+        fallbackLng: 'en',
+        interpolation: {
+            defaultVariables: {
+                defaultProjectNumber
             }
-        },
-        () => i18next.addResourceBundle('en', cfInquirerNamespace, translations)
-    );
+        }
+    });
+
+    i18next.addResourceBundle('en', cfInquirerNamespace, translations);
 }
 
 /**

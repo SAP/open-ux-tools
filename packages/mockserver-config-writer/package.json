@@ -30,7 +30,7 @@
     "dependencies": {
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "i18next": "20.6.1",
+        "i18next": "24.2.3",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0"
     },
