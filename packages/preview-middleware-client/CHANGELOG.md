@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.14.2
+
+### Patch Changes
+
+-   b49c43f: fix: added apptype to quickactions and contextmenu
+
 ## 0.14.1
 
 ### Patch Changes
