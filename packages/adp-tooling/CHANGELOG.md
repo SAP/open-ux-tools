@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.14.2
+
+### Patch Changes
+
+-   5f3aa03: feat: Integration of ExtendControllerPlugin in Adaptation Editor
+
 ## 0.14.1
 
 ### Patch Changes
