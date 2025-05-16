@@ -4,7 +4,7 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
 import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
 import type AppComponentV4 from 'sap/fe/core/AppComponent';
-
+import * as cpeCommon from '@sap-ux-private/control-property-editor-common';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
 const mockChangeService = {
     syncOutlineChanges: jest.fn()
@@ -52,6 +52,7 @@ import * as versionUtils from 'open/ux/preview/client/utils/version';
 import * as utils from 'open/ux/preview/client/utils/fe-v4';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
+import * as appUtils from '../../../../src/utils/application';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -396,6 +397,18 @@ describe('FE V4 quick actions', () => {
         });
 
         describe('add controller to the page', () => {
+            let reportTelemetrySpy: jest.SpyInstance;
+            beforeEach(() => {
+                jest.clearAllMocks();
+
+                reportTelemetrySpy = jest.spyOn(cpeCommon, 'reportTelemetry');
+                jest.spyOn(appUtils, 'getApplicationType').mockReturnValue('fe-v4');
+                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue({
+                    major: 1,
+                    minor: 127,
+                    patch: 0
+                });
+            });
             test('initialize and execute action', async () => {
                 jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const pageView = new XMLView();
@@ -520,6 +533,16 @@ describe('FE V4 quick actions', () => {
                     {},
                     { actionName: 'add-controller-to-page', telemetryEventIdentifier }
                 );
+
+                expect(reportTelemetrySpy).toHaveBeenCalledWith(
+                   {
+                        category: 'QuickAction',
+                        quickActionSteps: 2,
+                        actionName: 'add-controller-to-page',
+                        telemetryEventIdentifier,
+                        ui5Version: '1.127.0',
+                        appType: 'fe-v4'
+                    })
             });
 
             test('initialize and execute action with existing controller change', async () => {
@@ -877,7 +900,7 @@ describe('FE V4 quick actions', () => {
                             actions: [
                                 {
                                     'kind': 'nested',
-                                    id: 'listReport0-create_table_action',
+                                    id: 'listReport0-create-table-action',
                                     title: 'Add Custom Table Action',
                                     enabled: true,
                                     children: [
@@ -895,7 +918,7 @@ describe('FE V4 quick actions', () => {
                 );
 
                 await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'listReport0-create_table_action', kind: 'nested', path: '0' })
+                    executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
             });
         });
