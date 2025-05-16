@@ -42,6 +42,7 @@ export function RightPanel(): ReactElement {
                 scrollable={true}
                 layout={UISectionLayout.Standard}
                 className="editor__quickactions"
+                bodyClassName="app-panel-scroller"
                 height="100%">
                 <QuickActionList />
             </UISections.Section>
