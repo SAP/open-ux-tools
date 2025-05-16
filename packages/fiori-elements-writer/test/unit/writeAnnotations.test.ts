@@ -67,7 +67,7 @@ describe('writeAnnotations', () => {
                 hasCdsUi5Plugin: false
             }
         };
-    
+
         // Mock the `fs.write` method
         (fs.write as jest.Mock).mockImplementation((filePath, content) => {
             const expectedFilePath = join('test', 'path', 'test', 'annotations.cds');
@@ -83,7 +83,7 @@ describe('writeAnnotations', () => {
         });
 
         await writeAnnotations('test/path', appInfo, fs);
-    
+
         expect(generateAnnotations).toHaveBeenCalledWith(
             fs,
             {
