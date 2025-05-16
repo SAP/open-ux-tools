@@ -19,6 +19,7 @@ import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 import { AddFragmentData } from '../../../../src/adp/add-fragment';
 import * as addXMLAdditionalInfo from '../../../../src/cpe/additional-change-info/add-xml-additional-info';
 import { CommunicationService } from '../../../../src/cpe/communication-service';
+import * as adpUtils from '../../../../src/adp/utils';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -301,8 +302,6 @@ describe('AddFragment', () => {
                     .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
 
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
-
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
@@ -333,8 +332,6 @@ describe('AddFragment', () => {
                     .fn()
                     .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
-
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
@@ -367,8 +364,6 @@ describe('AddFragment', () => {
                     .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
 
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
-
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
@@ -399,8 +394,6 @@ describe('AddFragment', () => {
                     .fn()
                     .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
-
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
@@ -435,14 +428,13 @@ describe('AddFragment', () => {
                     .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
 
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
-
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
 
         test('does not crash if composite command exists in command stack', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
             const command = {
@@ -484,6 +476,7 @@ describe('AddFragment', () => {
         });
 
         test('sets error when the fragment name already exists in command stack', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -530,6 +523,7 @@ describe('AddFragment', () => {
         });
 
         test('sets error when the fragment name already exists in command stack (command is "composite")', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -580,6 +574,7 @@ describe('AddFragment', () => {
         });
 
         test('sets create button to true when the fragment name is valid', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             rtaMock.getCommandStack.mockReturnValue({
                 getCommands: jest.fn().mockReturnValue([])

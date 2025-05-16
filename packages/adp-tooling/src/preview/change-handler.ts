@@ -6,14 +6,14 @@ import type {
     AnnotationFileChange,
     CommonAdditionalChangeInfoProperties
 } from '../types';
-import { ChangeType } from '../types';
+import { ChangeType, TemplateFileName } from '../types';
 import { basename, join } from 'path';
 import { DirName, FileName } from '@sap-ux/project-access';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { render } from 'ejs';
 import { randomBytes } from 'crypto';
 import { ManifestService } from '../base/abap/manifest-service';
-import { getAdpConfig, getVariant } from '../base/helper';
+import { getAdpConfig, getVariant, isTypescriptSupported } from '../base/helper';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import { generateChange } from '../writer/editors';
@@ -201,6 +201,16 @@ export function isAddXMLChange(change: CommonChangeProperties): change is AddXML
 }
 
 /**
+ * Determines whether a given change is of type `codeExt`.
+ *
+ * @param {CommonChangeProperties} change - The change object to check.
+ * @returns {boolean} `true` if the `changeType` is `codeExt`, indicating the change is of type `codeExtChange`.
+ */
+export function isCodeExtChange(change: CommonChangeProperties): change is CodeExtChange {
+    return change.changeType === 'codeExt';
+}
+
+/**
  * Determines whether a given change is of type `AnnotationFileChange`.
  *
  * @param {CommonChangeProperties} change - The change object to check.
@@ -249,11 +259,47 @@ export function addXmlFragment(
 }
 
 /**
+ * Asynchronously adds an controller extension to the project if it doesn't already exist.
+ *
+ * @param {string} rootPath - The root path of the project.
+ * @param {string} basePath - The base path of the project.
+ * @param {CodeExtChange} change - The change data, including the fragment path.
+ * @param {Editor} fs - The mem-fs-editor instance.
+ * @param {Logger} logger - The logging instance.
+ */
+export async function addControllerExtension(
+    rootPath: string,
+    basePath: string,
+    change: CodeExtChange,
+    fs: Editor,
+    logger: Logger
+): Promise<void> {
+    const { codeRef } = change.content;
+    const isTsSupported = isTypescriptSupported(rootPath, fs);
+    const fileName = basename(codeRef, '.js');
+    const fullName = `${fileName}.${isTsSupported ? 'ts' : 'js'}`;
+    const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
+    const tmplPath = join(__dirname, '../../templates/rta', tmplFileName);
+    try {
+        const text = fs.read(tmplPath);
+        const id = (await getVariant(rootPath))?.id;
+        const extensionPath = `${id}.${fileName}`;
+        const templateData = isTsSupported ? { name: fileName, ns: id } : { extensionPath };
+
+        const template = render(text, templateData);
+        fs.write(join(basePath, DirName.Changes, DirName.Coding, fullName), template);
+    } catch (error) {
+        logger.error(`Failed to create controller extension "${codeRef}": ${error}`);
+        throw new Error(`Failed to create controller extension: ${error.message}`);
+    }
+}
+
+/**
  * Asynchronously adds an XML fragment to the project if it doesn't already exist.
  *
  * @param {string} basePath - The base path of the project.
  * @param {string} projectRoot - The root path of the project.
- * @param {AddXMLChange} change - The change data, including the fragment path.
+ * @param {AnnotationFileChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
  *@param {AbapServiceProvider} provider - abap provider.

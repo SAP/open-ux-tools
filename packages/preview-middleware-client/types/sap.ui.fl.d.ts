@@ -60,6 +60,7 @@ declare module 'sap/ui/fl/Change' {
         getLayer: () => Layer;
         getContent: () => ContentType;
         setContent: (newContent: ContentType) => void;
+        getProperty: (propertyName: string) => string;
     }
     const Change: Change;
     export default Change;
