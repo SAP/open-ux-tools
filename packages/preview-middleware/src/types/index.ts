@@ -271,7 +271,7 @@ export interface I18nEntry {
 export interface CardManifest {
     'sap.insights': {
         versions?: {
-            dtMiddleware?: string;
+            dtpMiddleware?: string;
         };
     };
 }

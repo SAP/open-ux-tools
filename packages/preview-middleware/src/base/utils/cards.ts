@@ -7,7 +7,7 @@ const CARD_TYPES = {
 };
 
 /**
- * Prepares an integration card manifest for saving by adding the `dtMiddleware` version to the card manifest.
+ * Prepares an integration card manifest for saving by adding the design time preview middleware i.e.`dtpMiddleware` version to the card manifest.
  *
  * @param {CardManifest} cardManifest - The card manifest object to be updated.
  * @returns {void}
@@ -17,10 +17,10 @@ function prepareIntegrationCardForSaving(cardManifest: CardManifest): void {
     const insights = cardManifest?.['sap.insights'];
     if (!insights.versions) {
         insights.versions = {
-            dtMiddleware: version
+            dtpMiddleware: version
         };
     } else {
-        insights.versions.dtMiddleware = version;
+        insights.versions.dtpMiddleware = version;
     }
 }
 

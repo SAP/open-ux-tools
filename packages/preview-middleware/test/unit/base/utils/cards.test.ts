@@ -51,7 +51,7 @@ describe('Common utilities', () => {
             'sap.insights': {
                 'versions': {
                     'ui5': '1.121.0-202403281300',
-                    'dtMiddleware': packageJson.version
+                    'dtpMiddleware': packageJson.version
                 },
                 'templateName': 'ObjectPage',
                 'parentAppId': 'sales.order.wd20',
