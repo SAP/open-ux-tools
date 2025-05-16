@@ -362,6 +362,5 @@ function getBaseAppConfig(
             ? TemplateSettingsFF<BasicAppSettings>
             : TemplateSettingsFE<unknown>
     };
-    debugger;
     return appConfig;
 }
