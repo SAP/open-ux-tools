@@ -232,7 +232,8 @@ export class FlpSandbox {
     }
 
     /**
-     * Deletes the workspace connector in case of a not supported UI5 versions.
+     * Deletes the Fiori Tools local connector (WorkspaceConnector) in case of a not supported UI5 versions.
+     * As an alternative the Fiori Tools fake connector (FakeLrepConnector) will be used as defined in preview-middleware-client/src/flp/initConnectors.ts.
      *
      * @param ui5VersionMajor - the major version of UI5
      * @param ui5VersionMinor - the minor version of UI5
@@ -242,10 +243,10 @@ export class FlpSandbox {
         if (ui5VersionMajor === 1 && ui5VersionMinor < 78) {
             this.templateConfig.ui5.flex?.splice(1, 1);
             this.logger.debug(
-                `The Fiori Tools fake connector is being used because the current UI5 version does not support a workspace connector.`
+                `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it. The Fiori Tools fake connector (FakeLrepConnector) will be used instead.`
             );
         } else {
-            this.logger.debug(`The Fiori Tools workspace connector is being used.`);
+            this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
         }
     }
 

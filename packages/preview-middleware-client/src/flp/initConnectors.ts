@@ -3,8 +3,8 @@ import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 /**
  * Initializes UI5 connectors based on the current UI5 version.
  *
- * For UI5 versions below 1.72, this function dynamically requires and executes a FakeLrepConnector.
- * For UI5 versions 1.72 and above, it defines a local connector that reuses the WorkspaceConnector.
+ * For UI5 versions below 1.78, this function dynamically requires and executes a FakeLrepConnector.
+ * For UI5 versions 1.78 and above, a local connector that reuses the WorkspaceConnector is being defined in preview-middleware/src/base/config.ts.
  * This setup allows for flexibility in using different connectors based on the UI5 version.
  *
  * @example
