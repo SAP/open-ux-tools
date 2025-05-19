@@ -15,7 +15,12 @@
             "!{projectRoot}/**/*.spec.ts",
             "!{projectRoot}/**/*.test.ts"
         ],
-        "sharedGlobals": [{ "runtime": "node --version", "os": "node --eval \"console.log(process.platform)\"" }]
+        "sharedGlobals": [
+            {
+                "runtime": "node --version",
+                "os": "node --eval \"console.log(process.platform)\""
+            }
+        ]
     },
     "targetDefaults": {
         "build": {
