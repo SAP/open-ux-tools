@@ -3,4 +3,4 @@
 '@sap-ux/fiori-elements-writer': patch
 ---
 
-Keep the correct drive letter in Windows paths
+Fix for drive letter casing mismatch when selecting CAP projects on Windows
