@@ -288,4 +288,27 @@ describe('getLocalCapProjectPrompts', () => {
             }
         `);
     });
+    test('prompt: capProjectPath - handles Windows platform specific logic', async () => {
+        const capPrompts = await getLocalCapProjectPrompts();
+        const capProjectPathPrompt = capPrompts.find((prompt) => prompt.name === capInternalPromptNames.capProjectPath);
+
+        // Mock platform as 'win32'
+        const originalPlatform = process.platform;
+        Object.defineProperty(process, 'platform', {
+            value: 'win32'
+        });
+
+        const validateCapPathSpy = jest.spyOn(capValidators, 'validateCapPath').mockResolvedValue(true);
+        const realpathSpy = jest.spyOn(require('fs/promises'), 'realpath').mockResolvedValue('/resolved/windows/path');
+
+        const result = await (capProjectPathPrompt!.validate as Function)('C:\\some\\windows\\path');
+        expect(result).toEqual(true);
+        expect(validateCapPathSpy).toHaveBeenCalledWith('C:\\some\\windows\\path');
+        expect(realpathSpy).toHaveBeenCalledWith('C:\\some\\windows\\path');
+
+        // Restore original platform
+        Object.defineProperty(process, 'platform', {
+            value: originalPlatform
+        });
+    });
 });

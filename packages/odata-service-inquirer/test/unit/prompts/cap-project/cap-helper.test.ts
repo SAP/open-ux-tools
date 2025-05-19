@@ -435,4 +435,43 @@ describe('cap-helper', () => {
         findCapProjectsSpy.mockRestore();
         realpathSpy.mockRestore();
     });
+
+    test('capRootPaths includes normalized paths for Windows and Unix platforms', async () => {
+        const mockRootPaths = ['/test/mock/1/bookshop', '/test/mock/2/bookshop'];
+        const isWindows = process.platform === 'win32';
+        const realpathSpy = jest.spyOn(fs.promises, 'realpath').mockImplementation(async (path: PathLike) => {
+            if (path === '/test/mock/1/bookshop') {
+                return '/Test/Mock/1/Bookshop';
+            }
+            if (path === '/test/mock/2/bookshop') {
+                return '/Test/Mock/2/Bookshop';
+            }
+            return String(path);
+        });
+
+        const capRootPaths: { folderName: string; path: string }[] = [];
+        for (const root of mockRootPaths) {
+            const folderName = path.basename(root);
+            capRootPaths.push({
+                folderName,
+                path: isWindows ? await realpathSpy.mock.results[0].value(root) : root
+            });
+        }
+
+        if (isWindows) {
+            expect(capRootPaths).toEqual([
+                { folderName: 'bookshop', path: '/Test/Mock/1/Bookshop' },
+                { folderName: 'bookshop', path: '/Test/Mock/2/Bookshop' }
+            ]);
+            expect(realpathSpy).toHaveBeenCalledTimes(2);
+        } else {
+            expect(capRootPaths).toEqual([
+                { folderName: 'bookshop', path: '/test/mock/1/bookshop' },
+                { folderName: 'bookshop', path: '/test/mock/2/bookshop' }
+            ]);
+            expect(realpathSpy).not.toHaveBeenCalled();
+        }
+
+        realpathSpy.mockRestore();
+    });
 });
