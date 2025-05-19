@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.14.3
+
+### Patch Changes
+
+-   c9b65f0: Migrate code from cards-editor-middleware to preview-middleware.
+
 ## 0.14.2
 
 ### Patch Changes

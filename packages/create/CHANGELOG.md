@@ -1,5 +1,16 @@
 # @sap-ux/create
 
+## 0.13.4
+
+### Patch Changes
+
+-   c9b65f0: Replace usage of cards-editor-config-writer with app-config-writer.
+    Added UI5.yaml config path option for cards-editor command.
+-   Updated dependencies [c9b65f0]
+-   Updated dependencies [c9b65f0]
+    -   @sap-ux/preview-middleware@0.20.4
+    -   @sap-ux/app-config-writer@0.6.2
+
 ## 0.13.3
 
 ### Patch Changes
