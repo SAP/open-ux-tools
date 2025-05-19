@@ -59,7 +59,7 @@ describe('writeAnnotations', () => {
         appInfo.service.capService = {
             serviceName: 'mainService',
             projectPath: 'test',
-            appPath: 'test/path',
+            appPath: join('test', 'path'),
             cdsUi5PluginInfo: {
                 isCdsUi5PluginEnabled: false,
                 hasMinCdsVersion: false,
@@ -82,7 +82,7 @@ describe('writeAnnotations', () => {
             }
         });
 
-        await writeAnnotations('test/path', appInfo, fs);
+        await writeAnnotations(join('test','path'), appInfo, fs);
 
         expect(generateAnnotations).toHaveBeenCalledWith(
             fs,
