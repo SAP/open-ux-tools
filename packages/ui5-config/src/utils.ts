@@ -48,7 +48,7 @@ export function getEsmTypesVersion(minUI5Version?: string) {
  */
 export function getTypesVersion(minUI5Version?: string) {
     const version = semVer.coerce(minUI5Version);
-    if (!version) {
+    if (!version || minUI5Version?.toLowerCase().includes('snapshot')) {
         return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
     } else if (semVer.lt(version, UI5_DEFAULT.TYPES_VERSION_SINCE)) {
         return `~${UI5_DEFAULT.TYPES_VERSION_SINCE}`;
@@ -66,7 +66,7 @@ export function getTypesVersion(minUI5Version?: string) {
  * @returns string representing the types package name.
  */
 export function getTypesPackage(ui5Version?: string) {
-    if (ui5Version?.toLowerCase() === 'snapshot' || ui5Version?.toLowerCase() === 'snapshot-untested') {
+    if (ui5Version?.toLowerCase().includes('snapshot')) {
         return UI5_DEFAULT.TYPES_PACKAGE_NAME;
     }
 
