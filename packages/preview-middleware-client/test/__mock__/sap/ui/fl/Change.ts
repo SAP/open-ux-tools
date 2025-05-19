@@ -26,4 +26,5 @@ export default class Change<ContentType> {
     });
     public setContent = jest.fn();
     public getJson = jest.fn();
+    public getProperty = jest.fn();
 }
