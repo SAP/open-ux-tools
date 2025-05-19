@@ -36,7 +36,7 @@ describe('Test validators', () => {
             if (path === bookshopPath) {
                 return resolvedPath;
             }
-            throw new Error('Path not found');
+            return path.toString(); // Ensure a valid string is always returned
         });
 
         const result = await validateCapPath(bookshopPath);
