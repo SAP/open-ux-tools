@@ -11,7 +11,8 @@ import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-project/types';
 import os from 'os';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
-import fs, { PathLike } from 'fs';
+import type { PathLike } from 'fs';
+import fs from 'fs';
 
 const initMockCapModelAndServices = {
     model: {},
@@ -386,7 +387,7 @@ describe('cap-helper', () => {
             db: 'db/',
             srv: 'srv/'
         });
-    
+
         const realpathSpy = jest.spyOn(fs.promises, 'realpath').mockImplementation(async (path: PathLike) => {
             if (path === 'c:\\test\\mock\\BOOKSHOP') {
                 return 'C:\\Test\\Mock\\Bookshop';
@@ -396,9 +397,9 @@ describe('cap-helper', () => {
             }
             return String(path);
         });
-    
+
         const choices = await getCapProjectChoices(['C:\\test\\mock\\']);
-    
+
         if (isWindows) {
             expect(realpathSpy).toHaveBeenCalledTimes(2);
             expect(choices).toEqual([
@@ -430,7 +431,7 @@ describe('cap-helper', () => {
         } else {
             expect(realpathSpy).not.toHaveBeenCalled();
         }
-    
+
         findCapProjectsSpy.mockRestore();
         realpathSpy.mockRestore();
     });

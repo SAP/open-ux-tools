@@ -34,7 +34,7 @@ async function getCapProjectPaths(
 
     for (const root of capProjectRoots) {
         const folderName = basename(root);
-        capRootPaths.push({ folderName, path: process.platform === 'win32' ? await realpath(root): root  });
+        capRootPaths.push({ folderName, path: process.platform === 'win32' ? await realpath(root) : root });
         folderNameCount.set(folderName, (folderNameCount.get(folderName) ?? 0) + 1);
     }
     capRootPaths.sort((a, b) => a.folderName.localeCompare(b.folderName));
