@@ -71,7 +71,11 @@ describe('writeAnnotations', () => {
         // Mock the `fs.write` method
         (fs.write as jest.Mock).mockImplementation((filePath, content) => {
             const expectedFilePath = join('test', 'path', 'test', 'annotations.cds');
-            if (filePath === expectedFilePath) {
+            expect(filePath).toEqual(expectedFilePath);
+            expect(content).toMatch(/UI\.LineItem/);
+            expect(content).toMatch(/\$Type\s*:\s*'UI\.DataField'/);
+            expect(content).toMatch(/Label\s*:\s*'requestid'/);
+            expect(content).toMatch(/Value\s*:\s*requestid/);
                 // Verify the content of the annotations file
                 expect(content).toMatch(/UI\.LineItem/);
                 expect(content).toMatch(/\$Type\s*:\s*'UI\.DataField'/);
