@@ -14,6 +14,7 @@ import type { CapCustomPaths } from '@sap-ux/project-access';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import { type CdsVersionInfo } from '@sap-ux/project-access';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { promises as fsPromises } from 'fs';
 
 jest.mock('../../../../src/utils', () => ({
     ...jest.requireActual('../../../../src/utils'),
@@ -299,7 +300,7 @@ describe('getLocalCapProjectPrompts', () => {
         });
 
         const validateCapPathSpy = jest.spyOn(capValidators, 'validateCapPath').mockResolvedValue(true);
-        const realpathSpy = jest.spyOn(require('fs/promises'), 'realpath').mockResolvedValue('/resolved/windows/path');
+        const realpathSpy = jest.spyOn(fsPromises, 'realpath').mockResolvedValue('/resolved/windows/path');
 
         const result = await (capProjectPathPrompt!.validate as Function)('C:\\some\\windows\\path');
         expect(result).toEqual(true);
