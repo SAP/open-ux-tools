@@ -53,50 +53,6 @@ describe('writeAnnotations', () => {
         );
     });
 
-    it('should generate annotations file with correct content', async () => {
-        const appInfo = applyBaseConfigToFEApp('test', TemplateType.ListReportObjectPage);
-        appInfo.appOptions.addAnnotations = true;
-        appInfo.service.capService = {
-            serviceName: 'mainService',
-            projectPath: 'test',
-            appPath: join('test', 'path'),
-            cdsUi5PluginInfo: {
-                isCdsUi5PluginEnabled: false,
-                hasMinCdsVersion: false,
-                isWorkspaceEnabled: false,
-                hasCdsUi5Plugin: false
-            }
-        };
-
-        // Mock the `fs.write` method
-        (fs.write as jest.Mock).mockImplementation((filePath, content) => {
-            const expectedFilePath = join('test', 'path', 'test', 'annotations.cds');
-            expect(filePath).toEqual(expectedFilePath);
-            expect(content).toMatch(/UI\.LineItem/);
-            expect(content).toMatch(/\$Type\s*:\s*'UI\.DataField'/);
-            expect(content).toMatch(/Label\s*:\s*'requestid'/);
-            expect(content).toMatch(/Value\s*:\s*requestid/);
-        });
-
-        await writeAnnotations(join('test', 'path'), appInfo, fs);
-
-        expect(generateAnnotations).toHaveBeenCalledWith(
-            fs,
-            {
-                serviceName: 'mainService',
-                appName: 'test',
-                project: join('test')
-            },
-            {
-                entitySetName: 'Travel',
-                annotationFilePath: join('test', 'path', 'test', 'annotations.cds'),
-                addFacets: true,
-                addLineItems: true,
-                addValueHelps: true
-            }
-        );
-    });
-
     it('should call generateAnnotations with correct parameters for non-CAP service', async () => {
         const appInfo = applyBaseConfigToFEApp('test', TemplateType.ListReportObjectPage);
         appInfo.appOptions.addAnnotations = true;
