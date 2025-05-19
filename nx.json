@@ -79,5 +79,10 @@
         }
     },
     "defaultBase": "main",
-    "nxCloudId": "63723103eb505e0e8ebeb550"
+    "nxCloudId": "63723103eb505e0e8ebeb550",
+    "parallel": 4,
+    "tui": {
+        "enabled": false,
+        "autoExit": true
+    }
 }
