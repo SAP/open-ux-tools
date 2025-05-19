@@ -75,7 +75,7 @@ describe('writeAnnotations', () => {
             expect(content).toMatch(/UI\.LineItem/);
             expect(content).toMatch(/\$Type\s*:\s*'UI\.DataField'/);
             expect(content).toMatch(/Label\s*:\s*'requestid'/);
-            expect(content).toMatch(/Value\s*:\s*requestid/);                
+            expect(content).toMatch(/Value\s*:\s*requestid/);
         });
 
         await writeAnnotations(join('test', 'path'), appInfo, fs);
