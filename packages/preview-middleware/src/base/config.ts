@@ -77,6 +77,7 @@ export interface TemplateConfig {
     features?: { feature: string; isEnabled: boolean }[];
     locateReuseLibsScript?: boolean;
     enhancedHomePage?: boolean;
+    enableCardGenerator?: boolean;
 }
 
 /**
@@ -90,6 +91,12 @@ export const PREVIEW_URL = {
         ns: 'open.ux.preview.client'
     },
     api: '/preview/api'
+} as const;
+
+export const CARD_GENERATOR_DEFAULT = {
+    previewGeneratorSandbox: '/test/flpCardGeneratorSandbox.html',
+    cardsStore: '/cards/store',
+    i18nStore: '/editor/i18n'
 } as const;
 
 /**
@@ -362,7 +369,8 @@ export function createFlpTemplateConfig(
             bootstrapOptions: ''
         },
         locateReuseLibsScript: config.libs,
-        enhancedHomePage: config.enhancedHomePage
+        enhancedHomePage: config.enhancedHomePage,
+        enableCardGenerator: false
     } satisfies TemplateConfig;
 }
 
