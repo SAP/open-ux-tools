@@ -46,6 +46,8 @@ import Model from 'sap/ui/model/Model';
 import { EntityContainer, EntitySet, EntityType, NavigationProperty } from 'sap/ui/model/odata/ODataMetaModel';
 import * as utils from 'open/ux/preview/client/adp/quick-actions/fe-v2/utils';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
+import * as appUtils from 'open/ux/preview/client/utils/application';
+import * as cpeCommon from '@sap-ux-private/control-property-editor-common';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -54,6 +56,7 @@ const mockTelemetryEventIdentifier = () => {
 };
 
 describe('FE V2 quick actions', () => {
+    jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
     const mockChangeService = {
@@ -65,7 +68,6 @@ describe('FE V2 quick actions', () => {
         jest.spyOn(DialogFactory, 'createDialog').mockResolvedValue();
         jest.clearAllMocks();
     });
-
     afterEach(() => {
         fetchMock.mockRestore();
     });
@@ -192,6 +194,14 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('add controller to the page', () => {
+            mockTelemetryEventIdentifier();
+            let reportTelemetrySpy: jest.SpyInstance;
+            beforeEach(() => {
+                jest.clearAllMocks();
+
+                reportTelemetrySpy = jest.spyOn(cpeCommon, 'reportTelemetry');
+                jest.spyOn(appUtils, 'getApplicationType').mockReturnValue('fe-v2');
+            });
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
@@ -296,6 +306,141 @@ describe('FE V2 quick actions', () => {
                                     id: 'listReport0-add-controller-to-page',
                                     title: 'Add Controller to Page',
                                     enabled: true
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
+                );
+
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'ControllerExtension',
+                    undefined,
+                    {},
+                    expect.objectContaining({ actionName: 'add-controller-to-page' })
+                );
+
+                expect(reportTelemetrySpy).toHaveBeenCalledWith({
+                    category: 'QuickAction',
+                    actionName: 'add-controller-to-page',
+                    telemetryEventIdentifier,
+                    quickActionSteps: 2,
+                    ui5Version: '1.130.0',
+                    appType: 'fe-v2'
+                });
+            });
+
+            test('initialize and execute action for existing controller change', async () => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValueOnce(true);
+                const pageView = new XMLView();
+                FlexUtils.getViewForControl.mockImplementation(() => {
+                    return {
+                        getId: () => 'MyView',
+                        getController: () => {
+                            return {
+                                getMetadata: () => {
+                                    return {
+                                        getName: () => 'MyController'
+                                    };
+                                }
+                            };
+                        }
+                    };
+                });
+                fetchMock.mockResolvedValue({
+                    json: jest
+                        .fn()
+                        .mockReturnValueOnce({
+                            controllerExists: false,
+                            controllerPath: '',
+                            controllerPathFromRoot: '',
+                            isRunningInBAS: false
+                        })
+                        .mockReturnValueOnce({ controllers: [] }),
+                    text: jest.fn(),
+                    ok: true
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'DynamicPage') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => pageView
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component as unknown as ComponentMock;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.f.DynamicPage': [
+                        {
+                            controlId: 'DynamicPage'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    'kind': 'simple',
+                                    id: 'listReport0-add-controller-to-page',
+                                    title: 'Add Controller to Page',
+                                    enabled: false,
+                                    tooltip: 'This action is disabled because a pending change for a controller extension has been found. '
                                 }
                             ]
                         }
@@ -2181,6 +2326,7 @@ describe('FE V2 quick actions', () => {
         });
         describe('add custom section', () => {
             test('initialize and execute action', async () => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
@@ -2289,19 +2435,22 @@ describe('FE V2 quick actions', () => {
                                     kind: 'simple',
                                     id: 'objectPage0-add-controller-to-page',
                                     enabled: true,
-                                    title: 'Add Controller to Page'
+                                    title: 'Add Controller to Page',
+                                    tooltip: undefined
                                 },
                                 {
                                     kind: 'simple',
                                     id: 'objectPage0-op-add-header-field',
                                     title: 'Add Header Field',
-                                    enabled: true
+                                    enabled: true,
+                                    tooltip: undefined
                                 },
                                 {
                                     kind: 'simple',
                                     id: 'objectPage0-op-add-custom-section',
                                     title: 'Add Custom Section',
-                                    enabled: true
+                                    enabled: true,
+                                    tooltip: undefined
                                 }
                             ]
                         }

@@ -164,12 +164,7 @@ describe('ui5-application-inquirer API', () => {
                 hide: true
             },
             [promptNames.enableTypeScript]: {
-                default: (answers) => {
-                    if (answers.capCdsInfo?.hasCdsUi5Plugin) {
-                        return true;
-                    }
-                    return false;
-                }
+                default: true
             },
             [promptNames.enableCodeAssist]: {
                 advancedOption: true,
@@ -204,7 +199,7 @@ describe('ui5-application-inquirer API', () => {
         expect(answers).toEqual({
             description: 'Annotations inc.',
             enableCodeAssist: false,
-            enableTypeScript: false,
+            enableTypeScript: true,
             skipAnnotations: false,
             ui5Theme: 'sap_fiori_3',
             ui5Version: '1.64.0'

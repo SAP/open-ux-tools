@@ -1,5 +1,28 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.2.0
+
+### Minor Changes
+
+-   66b88e1: updates types for ui5 app inquirer
+
+### Patch Changes
+
+-   Updated dependencies [5e0020b]
+-   Updated dependencies [66b88e1]
+    -   @sap-ux/odata-service-writer@0.27.1
+    -   @sap-ux/ui5-application-inquirer@0.14.0
+    -   @sap-ux/fiori-elements-writer@2.4.1
+    -   @sap-ux/fiori-freestyle-writer@2.4.1
+    -   @sap-ux/odata-service-inquirer@2.4.1
+    -   @sap-ux/launch-config@0.10.1
+    -   @sap-ux/project-access@1.30.1
+    -   @sap-ux/telemetry@0.6.1
+    -   @sap-ux/annotation-generator@0.3.33
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/cap-config-writer@0.10.1
+    -   @sap-ux/fiori-generator-shared@0.12.1
+
 ## 0.1.0
 
 ### Minor Changes

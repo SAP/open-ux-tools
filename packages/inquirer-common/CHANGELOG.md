@@ -1,5 +1,13 @@
 # @sap-ux/inquirer-common
 
+## 0.7.1
+
+### Patch Changes
+
+-   66b88e1: updates types for ui5 app inquirer
+    -   @sap-ux/telemetry@0.6.1
+    -   @sap-ux/fiori-generator-shared@0.12.1
+
 ## 0.7.0
 
 ### Minor Changes

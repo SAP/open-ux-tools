@@ -1,5 +1,53 @@
 # @sap-ux/create
 
+## 0.13.4
+
+### Patch Changes
+
+-   c9b65f0: Replace usage of cards-editor-config-writer with app-config-writer.
+    Added UI5.yaml config path option for cards-editor command.
+-   Updated dependencies [c9b65f0]
+-   Updated dependencies [c9b65f0]
+    -   @sap-ux/preview-middleware@0.20.4
+    -   @sap-ux/app-config-writer@0.6.2
+
+## 0.13.3
+
+### Patch Changes
+
+-   Updated dependencies [b49c43f]
+    -   @sap-ux/preview-middleware@0.20.3
+    -   @sap-ux/app-config-writer@0.6.1
+
+## 0.13.2
+
+### Patch Changes
+
+-   Updated dependencies [5f3aa03]
+    -   @sap-ux/adp-tooling@0.14.2
+    -   @sap-ux/preview-middleware@0.20.2
+    -   @sap-ux/flp-config-inquirer@0.3.2
+    -   @sap-ux/app-config-writer@0.6.1
+
+## 0.13.1
+
+### Patch Changes
+
+-   Updated dependencies [5e0020b]
+    -   @sap-ux/odata-service-writer@0.27.1
+    -   @sap-ux/ui5-config@0.28.1
+    -   @sap-ux/adp-tooling@0.14.1
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.1
+    -   @sap-ux/abap-deploy-config-writer@0.1.1
+    -   @sap-ux/app-config-writer@0.6.1
+    -   @sap-ux/cards-editor-config-writer@0.5.1
+    -   @sap-ux/mockserver-config-writer@0.9.1
+    -   @sap-ux/project-access@1.30.1
+    -   @sap-ux/flp-config-inquirer@0.3.1
+    -   @sap-ux/preview-middleware@0.20.1
+    -   @sap-ux/cap-config-writer@0.10.1
+    -   @sap-ux/system-access@0.6.0
+
 ## 0.13.0
 
 ### Minor Changes
