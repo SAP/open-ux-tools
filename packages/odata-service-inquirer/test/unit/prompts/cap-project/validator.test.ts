@@ -1,10 +1,6 @@
-import { validateCapPath } from '../../../../src/prompts/datasources/cap-project/validators';
 import path from 'path';
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
-import { realpath } from 'fs/promises';
-import fsPromises from 'fs/promises';
-import type { PathLike } from 'fs';
-import os from 'os';
+import { validateCapPath } from '../../../../src/prompts/datasources/cap-project/validators';
 
 describe('Test validators', () => {
     beforeAll(async () => {
