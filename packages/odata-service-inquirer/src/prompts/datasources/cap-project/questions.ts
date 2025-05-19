@@ -98,7 +98,9 @@ export function getLocalCapProjectPrompts(
                 validCapPath = await validateCapPath(projectPath);
                 // Load the cap paths if the path is valid
                 if (validCapPath === true) {
-                    if (validCapPath === true && process.platform === 'win32') {
+                    // On Windows the path my have been returned with a different casing.
+                    // Use `realPath` to generate the same casing as used by cds compiler facade.
+                    if (process.platform === 'win32') {
                         projectPath = await realpath(projectPath);
                     }
                     selectedCapProject = Object.assign(

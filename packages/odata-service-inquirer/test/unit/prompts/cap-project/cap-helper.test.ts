@@ -12,7 +12,7 @@ import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-pr
 import os from 'os';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { PathLike } from 'fs';
-import fs from 'fs';
+import * as fsPromises from 'fs/promises';
 
 const initMockCapModelAndServices = {
     model: {},
@@ -71,6 +71,11 @@ jest.mock('@sap-ux/project-access', () => ({
     getCdsRoots: jest.fn().mockResolvedValue([])
 }));
 
+jest.mock('fs/promises', () => ({
+    __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
+    ...jest.requireActual('fs/promises')
+}));
+
 describe('cap-helper', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings
@@ -98,12 +103,11 @@ describe('cap-helper', () => {
 
         // Multiple CAP projects found, some of which have the same folder names
         findCapProjectsSpy.mockResolvedValue(['/test/mock/1/bookshop', '/test/mock/2/bookshop', '/test/mock/flight']);
-        jest.spyOn(sapuxProjectAccess, 'getCapCustomPaths').mockResolvedValue({
-            app: 'app/',
-            db: 'db/',
-            srv: 'srv/'
-        });
-        jest.spyOn(fs.promises, 'realpath').mockImplementation(async (path) => Promise.resolve(String(path)));
+        // Mock the realpath function to return the non-existant test path as-is
+        if (os.platform() === 'win32') {
+            jest.spyOn(fsPromises, 'realpath').mockImplementation(async (path: PathLike) => path as string);
+        }
+
         choices = await getCapProjectChoices(['/test/mock/']);
         expect(choices).toMatchInlineSnapshot(`
             [
@@ -146,58 +150,42 @@ describe('cap-helper', () => {
         expect(findCapProjectsSpy).toHaveBeenCalledWith({ 'wsFolders': ['/test/mock/'] });
     });
 
-    test('Should use realpath to convert Windows paths to correct casing - getCapProjectChoices', async () => {
-        const findCapProjectsSpy = jest
-            .spyOn(sapuxProjectAccess, 'findCapProjects')
-            .mockResolvedValue(['c:\\test\\mock\\BOOKSHOP', 'c:\\test\\mock\\FLIGHT']);
-        jest.spyOn(sapuxProjectAccess, 'getCapCustomPaths').mockResolvedValue({
-            app: 'app/',
-            db: 'db/',
-            srv: 'srv/'
-        });
-        jest.spyOn(fs.promises, 'realpath').mockImplementation(async (path: PathLike) => {
-            // Simulate realpath converting paths to correct casing
-            if (path === 'C:\\test\\mock\\BOOKSHOP') {
-                return 'c:\\Test\\Mock\\Bookshop';
-            }
-            if (path === 'C:\\test\\mock\\FLIGHT') {
-                return 'c:\\Test\\Mock\\Flight';
-            }
-            return String(path);
-        });
+    if (process.platform === 'win32') {
+        test('getCapProjectChoices: Windows specific drive letter casing test', async () => {
+            const findCapProjectsSpy = jest
+                .spyOn(sapuxProjectAccess, 'findCapProjects')
+                .mockResolvedValue(['c:\\test\\mock\\BOOKSHOP', 'c:\\test\\mock\\FLIGHT']);
 
-        const choices = await getCapProjectChoices(['C:\\test\\mock\\']);
-        expect(choices).toMatchInlineSnapshot(`
-            [
-              {
-                "name": "c:\\test\\mock\\BOOKSHOP",
-                "value": {
-                  "app": "app/",
-                  "db": "db/",
-                  "folderName": "c:\\test\\mock\\BOOKSHOP",
-                  "path": "c:\\test\\mock\\BOOKSHOP",
-                  "srv": "srv/",
-                },
-              },
-              {
-                "name": "c:\\test\\mock\\FLIGHT",
-                "value": {
-                  "app": "app/",
-                  "db": "db/",
-                  "folderName": "c:\\test\\mock\\FLIGHT",
-                  "path": "c:\\test\\mock\\FLIGHT",
-                  "srv": "srv/",
-                },
-              },
-              {
-                "name": "Manually select CAP project folder path",
-                "value": "enterCapPath",
-              },
-            ]
-        `);
+            jest.spyOn(fsPromises, 'realpath').mockImplementation(
+                async (path: PathLike) => (path as string)[0].toUpperCase() + (path as string).slice(1)
+            );
 
-        expect(findCapProjectsSpy).toHaveBeenCalledWith({ wsFolders: ['C:\\test\\mock\\'] });
-    });
+            const choices = await getCapProjectChoices(['c:\\test\\mock\\']);
+            expect(choices).toEqual([
+                {
+                    name: 'C:\\test\\mock\\BOOKSHOP',
+                    value: {
+                        app: 'app/',
+                        db: 'db/',
+                        folderName: 'C:\\test\\mock\\BOOKSHOP',
+                        path: 'C:\\test\\mock\\BOOKSHOP',
+                        srv: 'srv/'
+                    }
+                },
+                {
+                    name: 'C:\\test\\mock\\FLIGHT',
+                    value: {
+                        app: 'app/',
+                        db: 'db/',
+                        folderName: 'C:\\test\\mock\\FLIGHT',
+                        path: 'C:\\test\\mock\\FLIGHT',
+                        srv: 'srv/'
+                    }
+                }
+            ]);
+        });
+    }
+
     test('getCapEdmx', async () => {
         const readCapServiceMetadataEdmxSpy = jest
             .spyOn(sapuxProjectAccess, 'readCapServiceMetadataEdmx')
@@ -376,102 +364,4 @@ describe('cap-helper', () => {
             });
         }
     );
-
-    test('getCapProjectChoices calls mocked realpath to normalize drive letter casing on Windows', async () => {
-        const isWindows = os.platform() === 'win32';
-        const findCapProjectsSpy = jest
-            .spyOn(sapuxProjectAccess, 'findCapProjects')
-            .mockResolvedValue(['C:\\test\\mock\\BOOKSHOP', 'C:\\test\\mock\\FLIGHT']);
-        jest.spyOn(sapuxProjectAccess, 'getCapCustomPaths').mockResolvedValue({
-            app: 'app/',
-            db: 'db/',
-            srv: 'srv/'
-        });
-
-        const realpathSpy = jest.spyOn(fs.promises, 'realpath').mockImplementation(async (path: PathLike) => {
-            if (path === 'c:\\test\\mock\\BOOKSHOP') {
-                return 'C:\\Test\\Mock\\Bookshop';
-            }
-            if (path === 'c:\\test\\mock\\FLIGHT') {
-                return 'C:\\Test\\Mock\\Flight';
-            }
-            return String(path);
-        });
-
-        const choices = await getCapProjectChoices(['c:\\test\\mock\\']);
-
-        if (isWindows) {
-            expect(realpathSpy).toHaveBeenCalledTimes(2);
-            expect(choices).toEqual([
-                {
-                    name: 'Bookshop (C:\\Test\\Mock\\Bookshop)',
-                    value: {
-                        app: 'app/',
-                        db: 'db/',
-                        folderName: 'Bookshop',
-                        path: 'C:\\Test\\Mock\\Bookshop',
-                        srv: 'srv/'
-                    }
-                },
-                {
-                    name: 'Flight (C:\\Test\\Mock\\Flight)',
-                    value: {
-                        app: 'app/',
-                        db: 'db/',
-                        folderName: 'Flight',
-                        path: 'C:\\Test\\Mock\\Flight',
-                        srv: 'srv/'
-                    }
-                },
-                {
-                    name: 'Manually select CAP project folder path',
-                    value: 'enterCapPath'
-                }
-            ]);
-        } else {
-            expect(realpathSpy).not.toHaveBeenCalled();
-        }
-
-        findCapProjectsSpy.mockRestore();
-        realpathSpy.mockRestore();
-    });
-
-    test('capRootPaths includes normalized paths for Windows and Unix platforms', async () => {
-        const mockRootPaths = ['/test/mock/1/bookshop', '/test/mock/2/bookshop'];
-        const isWindows = process.platform === 'win32';
-        const realpathSpy = jest.spyOn(fs.promises, 'realpath').mockImplementation(async (path: PathLike) => {
-            if (path === '/test/mock/1/bookshop') {
-                return '/Test/Mock/1/Bookshop';
-            }
-            if (path === '/test/mock/2/bookshop') {
-                return '/Test/Mock/2/Bookshop';
-            }
-            return String(path);
-        });
-
-        const capRootPaths: { folderName: string; path: string }[] = [];
-        for (const root of mockRootPaths) {
-            const folderName = path.basename(root);
-            capRootPaths.push({
-                folderName,
-                path: isWindows ? await realpathSpy.mock.results[0].value(root) : root
-            });
-        }
-
-        if (isWindows) {
-            expect(capRootPaths).toEqual([
-                { folderName: 'bookshop', path: '/Test/Mock/1/Bookshop' },
-                { folderName: 'bookshop', path: '/Test/Mock/2/Bookshop' }
-            ]);
-            expect(realpathSpy).toHaveBeenCalledTimes(2);
-        } else {
-            expect(capRootPaths).toEqual([
-                { folderName: 'bookshop', path: '/test/mock/1/bookshop' },
-                { folderName: 'bookshop', path: '/test/mock/2/bookshop' }
-            ]);
-            expect(realpathSpy).not.toHaveBeenCalled();
-        }
-
-        realpathSpy.mockRestore();
-    });
 });

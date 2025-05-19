@@ -34,6 +34,8 @@ async function getCapProjectPaths(
 
     for (const root of capProjectRoots) {
         const folderName = basename(root);
+        // On Windows the path my have been returned with a different casing.
+        // Use `realPath` to generate the same casing as used by cds compiler facade.
         capRootPaths.push({ folderName, path: process.platform === 'win32' ? await realpath(root) : root });
         folderNameCount.set(folderName, (folderNameCount.get(folderName) ?? 0) + 1);
     }
