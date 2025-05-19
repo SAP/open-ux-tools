@@ -150,7 +150,7 @@ describe('cap-helper', () => {
         expect(findCapProjectsSpy).toHaveBeenCalledWith({ 'wsFolders': ['/test/mock/'] });
     });
 
-    if (process.platform === 'win32') {
+    if (os.platform() === 'win32') {
         test('getCapProjectChoices: Windows specific drive letter casing test', async () => {
             const findCapProjectsSpy = jest
                 .spyOn(sapuxProjectAccess, 'findCapProjects')

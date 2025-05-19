@@ -16,6 +16,7 @@ import * as capValidators from '../../../../src/prompts/datasources/cap-project/
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import { promptNames, type CapServiceChoice } from '../../../../src/types';
 import { PromptState, getPromptHostEnvironment } from '../../../../src/utils';
+import os from 'os';
 
 jest.mock('fs/promises', () => ({
     __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
@@ -203,7 +204,7 @@ describe('getLocalCapProjectPrompts', () => {
         expect(await (capProjectPathPrompt!.validate as Function)('/not/valid/cap/path')).toEqual('not valid');
 
         // Test use of `realpath` to align drive letter casing with cds compiler facade
-        if (process.platform === 'win32') {
+        if (os.platform() === 'win32') {
             // Validation should use `realpath` on Windows to ensure correct drive letter casing for cds compiler facade
             const realpathSpy = jest
                 .spyOn(fsPromises, 'realpath')
