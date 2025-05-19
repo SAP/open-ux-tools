@@ -156,8 +156,8 @@ describe('Setting defaults', () => {
                 localVersion: '1.80.0',
                 minUI5Version: 'snapshot-1.80',
                 descriptorVersion: '1.24.0',
-                typesVersion: '~1.80.0',
-                typesPackage: UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME,
+                typesVersion: '~1.136.0',
+                typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
@@ -177,8 +177,8 @@ describe('Setting defaults', () => {
                 localVersion: 'snapshot-1.98',
                 minUI5Version: 'snapshot-1.78.6',
                 descriptorVersion: '1.22.0',
-                typesVersion: '~1.78.0',
-                typesPackage: UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME,
+                typesVersion: '~1.136.0',
+                typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
                 ui5Theme: 'sap_fiori_3',
                 ui5Libs: defaultUI5Libs
             }
