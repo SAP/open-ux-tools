@@ -222,7 +222,9 @@ async function generate<T extends {}>(
             {
                 htmlTarget: feApp.appOptions?.generateIndex
                     ? 'index.html'
-                    : `test/flpSandbox.html?sap-ui-xx-viewCache=false#${feApp.app.flpAppId}`
+                    : `test/${
+                          feApp.appOptions.useVirtualPreviewEndpoints ? 'flp' : 'flpSandbox'
+                      }.html?sap-ui-xx-viewCache=false#${feApp.app.flpAppId}`
             },
             fs
         );
