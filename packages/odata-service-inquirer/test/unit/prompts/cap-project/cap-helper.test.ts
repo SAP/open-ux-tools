@@ -149,7 +149,7 @@ describe('cap-helper', () => {
     test('Should use realpath to convert Windows paths to correct casing - getCapProjectChoices', async () => {
         const findCapProjectsSpy = jest
             .spyOn(sapuxProjectAccess, 'findCapProjects')
-            .mockResolvedValue(['C:\\test\\mock\\BOOKSHOP', 'C:\\test\\mock\\FLIGHT']);
+            .mockResolvedValue(['c:\\test\\mock\\BOOKSHOP', 'c:\\test\\mock\\FLIGHT']);
         jest.spyOn(sapuxProjectAccess, 'getCapCustomPaths').mockResolvedValue({
             app: 'app/',
             db: 'db/',
@@ -170,22 +170,22 @@ describe('cap-helper', () => {
         expect(choices).toMatchInlineSnapshot(`
             [
               {
-                "name": "C:\\test\\mock\\BOOKSHOP",
+                "name": "c:\\test\\mock\\BOOKSHOP",
                 "value": {
                   "app": "app/",
                   "db": "db/",
-                  "folderName": "C:\\test\\mock\\BOOKSHOP",
-                  "path": "C:\\test\\mock\\BOOKSHOP",
+                  "folderName": "c:\\test\\mock\\BOOKSHOP",
+                  "path": "c:\\test\\mock\\BOOKSHOP",
                   "srv": "srv/",
                 },
               },
               {
-                "name": "C:\\test\\mock\\FLIGHT",
+                "name": "c:\\test\\mock\\FLIGHT",
                 "value": {
                   "app": "app/",
                   "db": "db/",
-                  "folderName": "C:\\test\\mock\\FLIGHT",
-                  "path": "C:\\test\\mock\\FLIGHT",
+                  "folderName": "c:\\test\\mock\\FLIGHT",
+                  "path": "c:\\test\\mock\\FLIGHT",
                   "srv": "srv/",
                 },
               },
