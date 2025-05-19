@@ -397,9 +397,9 @@ describe('cap-helper', () => {
             }
             return String(path);
         });
-
-        const choices = await getCapProjectChoices(['C:\\test\\mock\\']);
-
+    
+        const choices = await getCapProjectChoices(['c:\\test\\mock\\']);
+    
         if (isWindows) {
             expect(realpathSpy).toHaveBeenCalledTimes(2);
             expect(choices).toEqual([
