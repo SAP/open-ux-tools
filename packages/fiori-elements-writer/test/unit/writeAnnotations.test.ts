@@ -82,7 +82,7 @@ describe('writeAnnotations', () => {
             }
         });
 
-        await writeAnnotations(join('test','path'), appInfo, fs);
+        await writeAnnotations(join('test', 'path'), appInfo, fs);
 
         expect(generateAnnotations).toHaveBeenCalledWith(
             fs,
