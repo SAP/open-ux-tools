@@ -17,8 +17,7 @@
         ],
         "sharedGlobals": [
             {
-                "runtime": "node --version",
-                "os": "node --eval \"console.log(process.platform)\""
+                 "runtime": "node -p \"`${process.platform}_${process.arch}`\""
             }
         ]
     },
