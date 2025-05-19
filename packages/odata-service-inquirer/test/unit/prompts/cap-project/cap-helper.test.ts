@@ -154,7 +154,7 @@ describe('cap-helper', () => {
         test('getCapProjectChoices: Windows specific drive letter casing test', async () => {
             const findCapProjectsSpy = jest
                 .spyOn(sapuxProjectAccess, 'findCapProjects')
-                .mockResolvedValue(['c:\\test\\mock\\BOOKSHOP', 'c:\\test\\mock\\FLIGHT']);
+                .mockResolvedValue(['c:\\test\\mock\\bookshop', 'c:\\test\\mock\\flight']);
 
             jest.spyOn(fsPromises, 'realpath').mockImplementation(
                 async (path: PathLike) => (path as string)[0].toUpperCase() + (path as string).slice(1)
@@ -163,24 +163,28 @@ describe('cap-helper', () => {
             const choices = await getCapProjectChoices(['c:\\test\\mock\\']);
             expect(choices).toEqual([
                 {
-                    name: 'C:\\test\\mock\\BOOKSHOP',
+                    name: 'bookshop',
                     value: {
                         app: 'app/',
                         db: 'db/',
-                        folderName: 'C:\\test\\mock\\BOOKSHOP',
-                        path: 'C:\\test\\mock\\BOOKSHOP',
+                        folderName: 'bookshop',
+                        path: 'C:\\test\\mock\\bookshop',
                         srv: 'srv/'
                     }
                 },
                 {
-                    name: 'C:\\test\\mock\\FLIGHT',
+                    name: 'flight',
                     value: {
                         app: 'app/',
                         db: 'db/',
-                        folderName: 'C:\\test\\mock\\FLIGHT',
-                        path: 'C:\\test\\mock\\FLIGHT',
+                        folderName: 'flight',
+                        path: 'C:\\test\\mock\\flight',
                         srv: 'srv/'
                     }
+                },
+                {
+                    name: 'Manually select CAP project folder path',
+                    value: 'enterCapPath'
                 }
             ]);
         });
