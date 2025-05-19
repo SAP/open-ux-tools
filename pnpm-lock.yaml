@@ -2394,6 +2394,9 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
         version: 1.14.4
+      '@sap-ux/adp-flp-config-sub-generator':
+        specifier: workspace:*
+        version: link:../adp-flp-config-sub-generator
       '@sap-ux/adp-tooling':
         specifier: workspace:*
         version: link:../adp-tooling

@@ -107,7 +107,9 @@ export enum attributePromptNames {
     targetFolder = 'targetFolder',
     ui5Version = 'ui5Version',
     ui5ValidationCli = 'ui5ValidationCli',
-    enableTypeScript = 'enableTypeScript'
+    enableTypeScript = 'enableTypeScript',
+    addDeployConfig = 'addDeployConfig',
+    addFlpConfig = 'addFlpConfig'
 }
 
 export type AttributesQuestion = YUIQuestion<AttributesAnswers>;
@@ -138,6 +140,14 @@ export interface EnableTypeScriptPromptOptions {
     hide?: boolean;
 }
 
+export interface AddDeployConfigPromptOptions {
+    hide?: boolean;
+}
+
+export interface AddFlpConfigPromptOptions {
+    hide?: boolean;
+}
+
 export type AttributePromptOptions = Partial<{
     [attributePromptNames.projectName]: ProjectNamePromptOptions;
     [attributePromptNames.title]: ApplicationTitlePromptOptions;
@@ -146,6 +156,8 @@ export type AttributePromptOptions = Partial<{
     [attributePromptNames.ui5Version]: UI5VersionPromptOptions;
     [attributePromptNames.ui5ValidationCli]: CliValidationPromptOptions;
     [attributePromptNames.enableTypeScript]: EnableTypeScriptPromptOptions;
+    [attributePromptNames.addDeployConfig]: AddDeployConfigPromptOptions;
+    [attributePromptNames.addFlpConfig]: AddFlpConfigPromptOptions;
 }>;
 
 export interface ExtensionProjectData {

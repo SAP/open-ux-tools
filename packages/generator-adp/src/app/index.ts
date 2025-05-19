@@ -191,6 +191,8 @@ export default class extends Generator {
         this.attributeAnswers = await this.prompt(attributesQuestions);
 
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
+
+        this._callSubGens();
     }
 
     async writing(): Promise<void> {
@@ -256,6 +258,25 @@ export default class extends Generator {
             this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath: this._getProjectPath() });
         } catch (e) {
             this.appWizard.showError(e.message, MessageType.notification);
+        }
+    }
+
+    private _callSubGens(): void {
+        try {
+            if (this.attributeAnswers?.addFlpConfig) {
+                this.composeWith(require.resolve('@sap-ux/adp-flp-config-sub-generator/generators/app'), {
+                    launchAsSubGen: true,
+                    manifest: this.prompter.manifest,
+                    system: this.configAnswers.system,
+                    data: {
+                        projectRootPath: this._getProjectPath()
+                    },
+                    appWizard: this.appWizard
+                });
+            }
+        } catch (e) {
+            this.logger.error(e);
+            throw new Error(`Could not call sub-generator/s: ${e.message}`);
         }
     }
 

@@ -48,6 +48,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-ux/adp-flp-config-sub-generator": "workspace:*",
         "i18next": "23.5.1",
         "yeoman-generator": "5.10.0",
         "uuid": "10.0.0"

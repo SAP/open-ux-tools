@@ -14,7 +14,9 @@ import type {
     ApplicationTitlePromptOptions,
     NamespacePromptOptions,
     TargetFolderPromptOptions,
-    EnableTypeScriptPromptOptions
+    EnableTypeScriptPromptOptions,
+    AddDeployConfigPromptOptions,
+    AddFlpConfigPromptOptions
 } from '../types';
 import { t } from '../../utils/i18n';
 import { attributePromptNames } from '../types';
@@ -57,7 +59,11 @@ export function getPrompts(path: string, config: Config, promptOptions?: Attribu
         [attributePromptNames.ui5ValidationCli]: getUi5VersionValidationPromptForCli(),
         [attributePromptNames.enableTypeScript]: getEnableTypeScriptPrompt(
             promptOptions?.[attributePromptNames.enableTypeScript]
-        )
+        ),
+        [attributePromptNames.addDeployConfig]: getAddDeployConfigPrompt(
+            promptOptions?.[attributePromptNames.addDeployConfig]
+        ),
+        [attributePromptNames.addFlpConfig]: getFlpConfigPrompt(promptOptions?.[attributePromptNames.addFlpConfig])
     };
 
     const questions = Object.entries(keyedPrompts)
@@ -238,6 +244,42 @@ function getEnableTypeScriptPrompt(_?: EnableTypeScriptPromptOptions): Attribute
         type: 'confirm',
         name: attributePromptNames.enableTypeScript,
         message: 'Enable TypeScript',
+        default: false,
+        guiOptions: {
+            breadcrumb: true
+        }
+    } as ConfirmQuestion<AttributesAnswers>;
+}
+
+/**
+ * Creates the Add Deployment Config confirm prompt.
+ *
+ * @param {AddDeployConfigPromptOptions} [_] - Optional prompt options to control visibility.
+ * @returns {AttributesQuestion} The prompt configuration for Add Deployment config confirmation.
+ */
+export function getAddDeployConfigPrompt(_?: AddDeployConfigPromptOptions): AttributesQuestion {
+    return {
+        type: 'confirm',
+        name: attributePromptNames.addDeployConfig,
+        message: t('prompts.addDeployConfig'),
+        default: false,
+        guiOptions: {
+            breadcrumb: true
+        }
+    } as ConfirmQuestion<AttributesAnswers>;
+}
+
+/**
+ * Creates the Add FLP Config confirm prompt.
+ *
+ * @param {AddFlpConfigPromptOptions} [_] - Optional prompt options to control visibility.
+ * @returns {AttributesQuestion} The prompt configuration for Add FLP config confirmation.
+ */
+export function getFlpConfigPrompt(_?: AddFlpConfigPromptOptions): AttributesQuestion {
+    return {
+        type: 'confirm',
+        name: attributePromptNames.addFlpConfig,
+        message: t('prompts.addFlpConfig'),
         default: false,
         guiOptions: {
             breadcrumb: true

@@ -122,6 +122,8 @@ export interface AttributesAnswers {
     targetFolder: string;
     ui5Version: string;
     enableTypeScript: boolean;
+    addDeployConfig?: boolean;
+    addFlpConfig?: boolean;
 }
 
 export interface SourceApplication {
