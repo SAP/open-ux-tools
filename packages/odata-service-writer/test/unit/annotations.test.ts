@@ -34,7 +34,9 @@ describe('metadata parsing', () => {
     it('getAnnotationNamespaces: metadata parsing', () => {
         expect(() => {
             getAnnotationNamespaces({ metadata: invalidEdmx });
-        }).toThrow(t('error.unparseableXML'));
+        }).toThrowErrorMatchingInlineSnapshot(
+            `"Unparseable XML was specified: Error: boolean attribute '<Schema' is not allowed.:13:5"`
+        );
         expect(getAnnotationNamespaces({ metadata: missingSchema })).toEqual([]);
 
         expect(getAnnotationNamespaces({ metadata: multischemaMetadata })).toEqual([
