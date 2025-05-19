@@ -157,11 +157,11 @@ describe('cap-helper', () => {
         });
         jest.spyOn(fs.promises, 'realpath').mockImplementation(async (path: PathLike) => {
             // Simulate realpath converting paths to correct casing
-            if (path === 'c:\\test\\mock\\BOOKSHOP') {
-                return 'C:\\Test\\Mock\\Bookshop';
+            if (path === 'C:\\test\\mock\\BOOKSHOP') {
+                return 'c:\\Test\\Mock\\Bookshop';
             }
-            if (path === 'c:\\test\\mock\\FLIGHT') {
-                return 'C:\\Test\\Mock\\Flight';
+            if (path === 'C:\\test\\mock\\FLIGHT') {
+                return 'c:\\Test\\Mock\\Flight';
             }
             return String(path);
         });
