@@ -232,7 +232,7 @@ export class FlpSandbox {
     }
 
     /**
-     * Deletes the custom connector in case of a not supported UI5 versions.
+     * Deletes the workspace connector in case of a not supported UI5 versions.
      *
      * @param ui5VersionMajor - the major version of UI5
      * @param ui5VersionMinor - the minor version of UI5
