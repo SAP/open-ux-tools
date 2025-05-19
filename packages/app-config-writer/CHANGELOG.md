@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.6.2
+
+### Patch Changes
+
+-   c9b65f0: Migrate code from cards-editor-config-writer to app-config-writer
+
 ## 0.6.1
 
 ### Patch Changes
