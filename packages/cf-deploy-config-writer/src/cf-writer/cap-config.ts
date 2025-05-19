@@ -1,11 +1,10 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { updateRootPackage, addRoutingConfig } from '../utils';
-import { createCAPMTA, validateMtaConfig, isMTAFound } from '../mta-config';
+import { updateRootPackage } from '../utils';
+import { validateMtaConfig, isMTAFound, addRoutingConfig, generateCAPMTA } from '../mta-config';
 import LoggerHelper from '../logger-helper';
 import type { Logger } from '@sap-ux/logger';
-import type { CAPConfig, CFBaseConfig } from '../types';
-import { CDSDestinationService, CDSHTML5RepoService, CDSXSUAAService } from '../constants';
+import { type CAPConfig, type CFBaseConfig } from '../types';
 import { t } from '../i18n';
 import { getCapProjectType } from '@sap-ux/project-access';
 
@@ -26,10 +25,12 @@ export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?:
     }
     logger?.debug(`Generate CAP configuration using: \n ${JSON.stringify(config)}`);
     await validateConfig(config);
-    const cdsOptionalParams: string[] = [CDSXSUAAService, CDSDestinationService, CDSHTML5RepoService];
-    createCAPMTA(config.mtaPath, cdsOptionalParams);
+    await generateCAPMTA(config, fs);
+    // Delay, known issues with loading mta yaml after generation!
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     await addRoutingConfig(config, fs);
     await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
+    LoggerHelper.logger?.debug(t('debug.capGenerationCompleted'));
     return fs;
 }
 

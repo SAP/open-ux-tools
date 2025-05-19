@@ -32,10 +32,17 @@ export class AddCustomSectionQuickAction
         )[0] as ObjectPageLayout;
 
         const overlay = OverlayRegistry.getOverlay(objectPageLayout) || [];
-        await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
-            aggregation: 'sections',
-            title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
-        });
+        await DialogFactory.createDialog(
+            overlay,
+            this.context.rta,
+            DialogNames.ADD_FRAGMENT,
+            undefined,
+            {
+                aggregation: 'sections',
+                title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
+            },
+            { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+        );
         return [];
     }
 }

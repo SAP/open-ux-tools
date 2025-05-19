@@ -27,6 +27,7 @@ import {
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import https from 'https';
 import { t } from '../i18n';
+import type { ConnectedSystem } from '../types';
 import { SAP_CLIENT_KEY } from '../types';
 import LoggerHelper from './logger-helper';
 import { errorHandler } from './prompt-helpers';
@@ -238,6 +239,46 @@ export class ConnectionValidator {
     }
 
     /**
+     * Setting an existing connected system will prevent re-authentication.
+     * This should be used where the user has previously authenticated to prevent re-authentication (e.g. via browser) and the previous
+     * connected system is still valid. Only Abap connected backend systems are currently supported for cached connection use.
+     * For non-Abap backend systems, or basic auth connections, the user will be prompted to re-authenticate.
+     *
+     * @param connectedSystem A connected system object containing the service provider and backend system information. Not relevant for destination connections.
+     * @param connectedSystem.serviceProvider
+     * @param connectedSystem.backendSystem
+     */
+    public setConnectedSystem({ serviceProvider, backendSystem }: ConnectedSystem): void {
+        // Set the state using the provided ConnectedSystem to prevent re-authentication if this is a valid AbapServiceProvider connection only
+        if (!(serviceProvider as AbapServiceProvider).catalog) {
+            LoggerHelper.logger.debug(
+                'ConnectionValidator.setConnectedSystem(): Use of a cached connected system is only supported for AbapServiceProviders. Re-authorization will be required.'
+            );
+            return;
+        }
+        this._serviceProvider = serviceProvider;
+        this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
+        this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
+        this._validatedUrl = (backendSystem?.serviceKeys as ServiceInfo)?.url ?? backendSystem?.url;
+        this._connectedUserName = backendSystem?.userDisplayName;
+        this._validatedClient = backendSystem?.client;
+        this._refreshToken = backendSystem?.refreshToken;
+        this._serviceInfo = backendSystem?.serviceKeys as ServiceInfo;
+        this.validity.authenticated = true;
+        this.validity.reachable = true;
+        this.validity.urlFormat = true;
+        this.validity.authRequired = true;
+
+        if (backendSystem?.authenticationType === 'reentranceTicket') {
+            this.systemAuthType = 'reentranceTicket';
+        } else if (backendSystem?.serviceKeys) {
+            this.systemAuthType = 'serviceKey';
+        } else {
+            this.systemAuthType = 'basic';
+        }
+    }
+
+    /**
      * Calls a given service or system url to test its reachability and authentication requirements.
      * If the url is a system url, it will attempt to use the catalog service to get the service info.
      *
@@ -438,34 +479,45 @@ export class ConnectionValidator {
                 await this._catalogV4?.listServices();
             }
         } catch (error) {
-            // We will try the v4 catalog if v2 returns a 404 or an auth code. Try the v4 catalog with the credentials provided also
-            // as the user may not be authorized for the v2 catalog specifically.
-            if (
-                this._catalogV4 &&
-                !v4Requested &&
-                this.shouldAttemptV4Catalog((error as AxiosError).response?.status)
-            ) {
-                await this._catalogV4.listServices();
-            } else {
-                // Either the v2 or v4 catalog request failed for a specific odata version, or both failed where no odata verison was specified
-                // Do some root cause analysis to determine the end user help message
-                throw error;
-            }
+            await this.handleCatalogError(error, v4Requested);
         }
     }
 
     /**
-     * Check if we should attempt to use the v4 catalog service as a fallback.
+     * Determine if a v4 catalog request should be made based on the specified error and if the error originated from a v2 or v4 catalog request.
+     * If the error originated from a v2 catalog request and it is of type 401/403/404 then we try the v4 catalog.
+     * If the v4 catalog request fails, for any reason, and the v2 catalog request failed with 401/403 we will throw that (401/403) error,
+     * ultimately resulting in a basic auth prompt for the end-user.
+     * Otherwise the v4 catalog request error is thrown, which may also be a 401/403, again resulting in a basic auth prompt and re-validation.
+     * If both catalogs have returned 404 nothing else can be done, the error is thrown and reported.
      *
-     * @param statusCode http status code, if not provided will return false as we cannot determine the reason for v2 catalog request failure
-     * @returns true if we should attempt the v4 catalog service
+     * @param error - an error returned from either a v2 or v4 catalog listServices request.
+     * @param v4Requested - has the v4 catalog been requested
      */
-    private shouldAttemptV4Catalog(statusCode?: number): boolean {
-        if (!statusCode) {
-            return false;
+    private async handleCatalogError(error: unknown, v4Requested: boolean): Promise<void> {
+        const statusCode = (error as AxiosError).response?.status;
+        const errorType = statusCode ? ErrorHandler.getErrorType(statusCode) : undefined;
+
+        // Try the v4 catalog with the credentials provided
+        // as the user may not be authorized for the v2 catalog specifically.
+        const shouldFallbackToV4 =
+            statusCode && !v4Requested && (errorType === ERROR_TYPE.NOT_FOUND || errorType === ERROR_TYPE.AUTH);
+
+        if (this._catalogV4 && shouldFallbackToV4) {
+            try {
+                await this._catalogV4.listServices();
+            } catch (v4Error) {
+                // if original error was of type auth, throw it so the consumer can handle it accordingly e.g show basic auth prompts
+                if (errorType === ERROR_TYPE.AUTH) {
+                    throw error;
+                }
+                throw v4Error;
+            }
+        } else {
+            // Either the v2 or v4 catalog request failed for a specific odata version, or both failed where no odata verison was specified
+            // Do some root cause analysis to determine the end user help message
+            throw error;
         }
-        const errorType = ErrorHandler.getErrorType(statusCode);
-        return errorType === ERROR_TYPE.NOT_FOUND || errorType === ERROR_TYPE.AUTH;
     }
 
     /**
@@ -527,6 +579,13 @@ export class ConnectionValidator {
     ): Promise<ValidationResult> {
         if (!serviceInfo) {
             return false;
+        }
+        // If we are already authenticated and the url is the same, no need to re-authenticate as this may result in a browser based authentication
+        if (
+            serviceInfo.url === this.validatedUrl &&
+            JSON.stringify(serviceInfo.uaa) === JSON.stringify(this.serviceInfo?.uaa)
+        ) {
+            return this.getValidationResultFromStatusCode(200);
         }
         try {
             this.systemAuthType = 'serviceKey';
@@ -601,7 +660,7 @@ export class ConnectionValidator {
         this.resetConnectionState();
         this.resetValidity();
         // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest. This function lowercases the origin.
-        const destUrl = getDestinationUrlForAppStudio(destination.Name, servicePath).toLowerCase();
+        const destUrl = getDestinationUrlForAppStudio(destination.Name.toLowerCase(), servicePath);
         // Get the destination URL in the portable form <protocol>://<host>:<port>.
         // We remove trailing slashes (up to 10, infinite would allow DOS attack) from the host to avoid double slashes when appending the service path.
         this._destinationUrl = servicePath

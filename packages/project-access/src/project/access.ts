@@ -189,7 +189,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param memFs - optional mem-fs-editor instance
      */
     async updatePackageJSON(packageJson: Package, memFs?: Editor): Promise<void> {
-        await updatePackageJSON(join(this.app.appRoot, FileName.Package), packageJson, memFs);
+        await updatePackageJSON(join(this.app.appRoot, FileName.Package), packageJson, memFs ?? this.options?.fs);
     }
 
     /**
@@ -199,7 +199,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param memFs - optional mem-fs-editor instance
      */
     async updateManifestJSON(manifest: Manifest, memFs?: Editor): Promise<void> {
-        await updateManifestJSON(this.app.manifest, manifest, memFs);
+        await updateManifestJSON(this.app.manifest, manifest, memFs ?? this.options?.fs);
     }
 
     /**

@@ -5,16 +5,18 @@ jest.mock('crypto', () => ({
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import * as crypto from 'crypto';
+import * as path from 'path';
 
 import {
     addAnnotationFile,
     addXmlFragment,
+    addControllerExtension,
     isAddAnnotationChange,
     isAddXMLChange,
     moduleNameContentMap,
     tryFixChange
 } from '../../../src/preview/change-handler';
-import type { AddXMLChange, CommonChangeProperties, AnnotationFileChange } from '../../../src';
+import type { AddXMLChange, CommonChangeProperties, AnnotationFileChange, DescriptorVariant } from '../../../src';
 import * as manifestService from '../../../src/base/abap/manifest-service';
 import * as helper from '../../../src/base/helper';
 import * as editors from '../../../src/writer/editors';
@@ -190,18 +192,13 @@ describe('change-handler', () => {
             });
             it('should create Object Page custom section fragment', () => {
                 mockFs.exists.mockReturnValue(false);
-                const updatedChange = {
-                    ...change,
-                    content: {
-                        ...change.content,
-                        templateName: `OBJECT_PAGE_CUSTOM_SECTION`
-                    }
-                } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.objectPageSection %>"
 id="<%- ids.objectPageSubSection %>"
 id="<%- ids.hBox %>"`);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `OBJECT_PAGE_CUSTOM_SECTION`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -226,17 +223,12 @@ id="<%- ids.hBox %>"`);
 
             it('should create Object Page header field fragment', () => {
                 mockFs.exists.mockReturnValue(false);
-                const updatedChange = {
-                    ...change,
-                    content: {
-                        ...change.content,
-                        templateName: `OBJECT_PAGE_HEADER_FIELD`
-                    }
-                } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.vBoxContainer %>"
 id="<%- ids.label %>"`);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `OBJECT_PAGE_HEADER_FIELD`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -260,16 +252,11 @@ id="<%- ids.label %>"`);
 
             it('should create custom action fragment', () => {
                 mockFs.exists.mockReturnValue(false);
-                const updatedChange = {
-                    ...change,
-                    content: {
-                        ...change.content,
-                        templateName: `CUSTOM_ACTION`
-                    }
-                } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.toolbarActionButton %>`);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `CUSTOM_ACTION`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -296,7 +283,6 @@ id="<%- ids.toolbarActionButton %>`);
                     ...change,
                     content: {
                         ...change.content,
-                        templateName: `V2_SMART_TABLE_COLUMN`,
                         index: 1
                     }
                 } as unknown as AddXMLChange;
@@ -306,7 +292,9 @@ id="<%- ids.columnTitle %>
 id="<%- ids.customData %>
 id="<%- ids.index %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `V2_SMART_TABLE_COLUMN`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -333,17 +321,12 @@ id="<%- ids.index %>
 
             it('should create custom table cell fragment (V2 smart table)', () => {
                 mockFs.exists.mockReturnValue(false);
-                const updatedChange = {
-                    ...change,
-                    content: {
-                        ...change.content,
-                        templateName: `V2_SMART_TABLE_CELL`
-                    }
-                } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.text %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `V2_SMART_TABLE_CELL`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -367,18 +350,13 @@ id="<%- ids.text %>
 
             it('should create custom table column fragment (V4 smart table)', () => {
                 mockFs.exists.mockReturnValue(false);
-                const updatedChange = {
-                    ...change,
-                    content: {
-                        ...change.content,
-                        templateName: `V4_MDC_TABLE_COLUMN`
-                    }
-                } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.column %>
 id="<%- ids.text %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `V4_MDC_TABLE_COLUMN`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -420,7 +398,6 @@ id="<%- ids.text %>
                     ...change,
                     content: {
                         ...change.content,
-                        templateName: testCase.tableType,
                         index: 1
                     }
                 } as unknown as AddXMLChange;
@@ -431,7 +408,9 @@ id="<%- ids.text %>
 id="<%- ids.customData %>
 id="<%- ids.index %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: testCase.tableType
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -457,17 +436,12 @@ id="<%- ids.index %>
 
             it('should create custom page action', () => {
                 mockFs.exists.mockReturnValue(false);
-                const updatedChange = {
-                    ...change,
-                    content: {
-                        ...change.content,
-                        templateName: `TABLE_ACTION`
-                    }
-                } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.customToolbarAction %>"
 id="<%- ids.customActionButton %>"`);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `TABLE_ACTION`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -488,6 +462,94 @@ id=\\"btn-30303030\\""
 
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
             });
+        });
+    });
+
+    describe('addControllerExtension', () => {
+        const mockFs = {
+            read: jest.fn(),
+            write: jest.fn()
+        };
+
+        const mockLogger = {
+            error: jest.fn()
+        };
+
+        const rootPath = '/project/root';
+        const basePath = '/project/root/webapp';
+        const change = {
+            content: {
+                codeRef: 'controllers/MyController.js'
+            }
+        };
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should create a controller extension file for JavaScript', async () => {
+            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(false);
+            jest.spyOn(helper, 'getVariant').mockResolvedValue({ id: 'my.namespace' } as unknown as DescriptorVariant);
+            mockFs.read.mockReturnValue('<template content>');
+
+            await addControllerExtension(
+                rootPath,
+                basePath,
+                change as any,
+                mockFs as unknown as Editor,
+                mockLogger as unknown as Logger
+            );
+
+            expect(helper.isTypescriptSupported).toHaveBeenCalledWith(rootPath, mockFs);
+            expect(helper.getVariant).toHaveBeenCalledWith(rootPath);
+            expect(mockFs.read).toHaveBeenCalledWith(path.join(__dirname, '../../../templates/rta/controller.ejs'));
+            expect(mockFs.write).toHaveBeenCalledWith(
+                path.join(basePath, 'changes/coding/MyController.js'),
+                '<template content>'
+            );
+        });
+
+        it('should create a controller extension file for TypeScript', async () => {
+            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(true);
+            jest.spyOn(helper, 'getVariant').mockResolvedValue({ id: 'my.namespace' } as unknown as DescriptorVariant);
+            mockFs.read.mockReturnValue('<template content>');
+
+            await addControllerExtension(
+                rootPath,
+                basePath,
+                change as any,
+                mockFs as unknown as Editor,
+                mockLogger as unknown as Logger
+            );
+
+            expect(helper.isTypescriptSupported).toHaveBeenCalledWith(rootPath, mockFs);
+            expect(helper.getVariant).toHaveBeenCalledWith(rootPath);
+            expect(mockFs.read).toHaveBeenCalledWith(path.join(__dirname, '../../../templates/rta/ts-controller.ejs'));
+            expect(mockFs.write).toHaveBeenCalledWith(
+                path.join(basePath, 'changes/coding/MyController.ts'),
+                '<template content>'
+            );
+        });
+
+        it('should log an error if the controller extension creation fails', async () => {
+            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(false);
+            mockFs.read.mockImplementation(() => {
+                throw new Error('Read failed');
+            });
+
+            await expect(
+                addControllerExtension(
+                    rootPath,
+                    basePath,
+                    change as any,
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger
+                )
+            ).rejects.toThrow('Failed to create controller extension: Read failed');
+
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                expect.stringContaining('Failed to create controller extension "controllers/MyController.js"')
+            );
         });
     });
 

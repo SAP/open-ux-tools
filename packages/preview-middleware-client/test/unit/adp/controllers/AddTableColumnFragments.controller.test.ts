@@ -16,6 +16,9 @@ import type ManagedObject from 'sap/ui/base/ManagedObject';
 import AddTableColumnFragments from 'open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller';
 import SimpleForm from 'sap/ui/layout/form';
 import Control from 'sap/ui/core/Control';
+import * as adpUtils from 'open/ux/preview/client/adp/utils';
+import { getAdditionalChangeInfo } from '../../../../src/utils/additional-change-info';
+import { FlexChange } from 'open/ux/preview/client/flp/common';
 
 const mocks = {
     setValueStateMock: jest.fn(),
@@ -218,8 +221,6 @@ describe('AddTableColumnsFragments controller', () => {
                 mockFormInput(true, '', ValueState.Success)
             ] as unknown as Control[]);
 
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
-
             addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
             addFragment.onCellFragmentNameInputChange(event as unknown as Event);
             expect(mocks.setValueStateMock).toHaveBeenCalledTimes(2);
@@ -231,14 +232,13 @@ describe('AddTableColumnsFragments controller', () => {
 
         describe('duplicate fragment names', () => {
             test('sets error when column and cell fragments have the same name', () => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const event = mockInputEvent('Name1');
 
                 createDialog([
                     mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error]),
                     mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error])
                 ] as unknown as Control[]);
-
-                addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
                 addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -263,8 +263,6 @@ describe('AddTableColumnsFragments controller', () => {
                     mockFormInput(true, 'Delete', ValueState.Error, errorMsg)
                 ] as unknown as Control[]);
 
-                addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
-
                 addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
                 expect(mocks.setValueStateMock).toHaveBeenCalledTimes(1);
@@ -273,14 +271,13 @@ describe('AddTableColumnsFragments controller', () => {
             });
 
             test('clears errors on value change', () => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const event = mockInputEvent('Name2');
 
                 createDialog([
                     mockFormInput(true, 'Name2', [ValueState.Error, ValueState.Success], ['Duplicate name', '']),
                     mockFormInput(true, 'Delete', [ValueState.Error, ValueState.Success], ['Duplicate name', ''])
                 ] as unknown as Control[]);
-
-                addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
                 addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -299,8 +296,6 @@ describe('AddTableColumnsFragments controller', () => {
                 mockFormInput(true, 'Name2', ValueState.Success)
             ] as unknown as Control[]);
 
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
-
             addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
             expect(mocks.setValueStateMock).toHaveBeenCalledWith(ValueState.None);
@@ -314,8 +309,6 @@ describe('AddTableColumnsFragments controller', () => {
                 mockFormInput(true, ['Name1', 'Share2$5!'], [ValueState.Success, ValueState.Error]),
                 mockFormInput(true, 'Name2', ValueState.Success)
             ] as unknown as Control[]);
-
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
             addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -333,8 +326,6 @@ describe('AddTableColumnsFragments controller', () => {
                 mockFormInput(true, ['Name1', 'Name '], [ValueState.Success, ValueState.Error]),
                 mockFormInput(true, 'Name2', ValueState.Success)
             ] as unknown as Control[]);
-
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
             addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -355,8 +346,6 @@ describe('AddTableColumnsFragments controller', () => {
                 mockFormInput(true, 'Name2', ValueState.Success)
             ] as unknown as Control[]);
 
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
-
             addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
             expect(mocks.setValueStateMock).toHaveBeenCalledWith(ValueState.Error);
@@ -367,6 +356,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('does not crash if composite command exists in command stack', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
             const command = {
@@ -390,6 +380,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('sets error when the fragment name already exists in command stack', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -419,6 +410,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('sets error when the fragment name already exists in command stack (command is "composite")', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -452,6 +444,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('sets create button to true when the fragment name is valid', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             rtaMock.getCommandStack.mockReturnValue({
                 getCommands: jest.fn().mockReturnValue([])
@@ -634,7 +627,8 @@ describe('AddTableColumnsFragments controller', () => {
                     },
                     getPreparedChange: jest.fn().mockReturnValue({
                         getContent: () => content1,
-                        setContent: setContentMock
+                        setContent: setContentMock,
+                        getDefinition: jest.fn().mockReturnValue({ fileName: 'change1' })
                     })
                 },
                 {
@@ -644,7 +638,8 @@ describe('AddTableColumnsFragments controller', () => {
                     },
                     getPreparedChange: jest.fn().mockReturnValue({
                         getContent: () => content2,
-                        setContent: setContentMock
+                        setContent: setContentMock,
+                        getDefinition: jest.fn().mockReturnValue({ fileName: 'change2' })
                     })
                 }
             ]);
@@ -680,14 +675,15 @@ describe('AddTableColumnsFragments controller', () => {
             expect(commandStack[0]._oPreparedChange._oDefinition.moduleName).toBe(
                 'adp/app/changes/fragments/Name1.fragment.xml'
             );
-            expect(setContentMock.mock.calls[0][0]).toStrictEqual({
-                ...content1,
+            expect(getAdditionalChangeInfo({ fileName: 'change1' } as unknown as FlexChange)).toStrictEqual({
                 templateName: 'V2_SMART_TABLE_COLUMN'
             });
             expect(commandStack[1]._oPreparedChange._oDefinition.moduleName).toBe(
                 'adp/app/changes/fragments/Name2.fragment.xml'
             );
-            expect(setContentMock.mock.calls[1][0]).toStrictEqual({ ...content2, templateName: 'V2_SMART_TABLE_CELL' });
+            expect(getAdditionalChangeInfo({ fileName: 'change2' } as unknown as FlexChange)).toStrictEqual({
+                templateName: 'V2_SMART_TABLE_CELL'
+            });
             expect(CommandFactory.getCommandFor.mock.calls[0][1]).toBe('composite');
 
             expect(CommandFactory.getCommandFor.mock.calls[1][0].dummyAggregation).toBeUndefined();

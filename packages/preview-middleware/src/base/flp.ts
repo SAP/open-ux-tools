@@ -2,38 +2,60 @@ import type { ReaderCollection } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor as MemFsEditor } from 'mem-fs-editor';
-import { readFileSync } from 'fs';
 import { render } from 'ejs';
 import type http from 'http';
 import type { Request, Response, Router, NextFunction } from 'express';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type connect from 'connect';
-import { dirname, join, posix } from 'path';
+import path, { dirname, join, posix } from 'path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
-import { getWebappPath, type Manifest } from '@sap-ux/project-access';
+import {
+    getWebappPath,
+    type Manifest,
+    FileName,
+    type ManifestNamespace,
+    createApplicationAccess
+} from '@sap-ux/project-access';
 import {
     AdpPreview,
     type AdpPreviewConfig,
     type CommonChangeProperties,
     type DescriptorVariant,
-    type OperationType
+    type OperationType,
+    type CommonAdditionalChangeInfoProperties
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { RtaEditor, FlpConfig, InternalTestConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
+import type {
+    RtaEditor,
+    FlpConfig,
+    CompleteTestConfig,
+    MiddlewareConfig,
+    RtaConfig,
+    TestConfig,
+    CardGeneratorConfig,
+    MultiCardsPayload,
+    I18nEntry
+} from '../types';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
     PREVIEW_URL,
     type TemplateConfig,
+    type CustomConnector,
     createTestTemplateConfig,
     addApp,
     getAppName,
-    sanitizeRtaConfig
+    sanitizeRtaConfig,
+    CARD_GENERATOR_DEFAULT
 } from './config';
+import { generateCdm } from './cdm';
+import { readFileSync } from 'fs';
+import { getIntegrationCard } from './utils/cards';
+import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -53,7 +75,8 @@ type OnChangeRequestHandler = (
     type: OperationType,
     change: CommonChangeProperties,
     fs: MemFsEditor,
-    logger: Logger
+    logger: Logger,
+    extendedChange?: CommonAdditionalChangeInfoProperties
 ) => Promise<void>;
 
 type Ui5Version = {
@@ -76,6 +99,10 @@ export class FlpSandbox {
     public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
     private fs: MemFsEditor | undefined;
+    private readonly logger: Logger;
+    private readonly utils: MiddlewareUtils;
+    private readonly project: ReaderCollection;
+    private readonly cardGenerator?: CardGeneratorConfig;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -85,17 +112,16 @@ export class FlpSandbox {
      * @param utils middleware utilities provided by the UI5 CLI
      * @param logger logger instance
      */
-    constructor(
-        config: Partial<MiddlewareConfig>,
-        private readonly project: ReaderCollection,
-        private readonly utils: MiddlewareUtils,
-        private readonly logger: Logger
-    ) {
+    constructor(config: Partial<MiddlewareConfig>, project: ReaderCollection, utils: MiddlewareUtils, logger: Logger) {
+        this.logger = logger;
+        this.project = project;
+        this.utils = utils;
         this.flpConfig = getFlpConfigWithDefaults(config.flp);
         this.test = config.test;
         this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
         logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
+        this.cardGenerator = config.editors?.cardGenerator;
     }
 
     /**
@@ -140,6 +166,18 @@ export class FlpSandbox {
             this.logger
         );
         this.addStandardRoutes();
+
+        const cardGeneratorPath = this.cardGenerator?.path;
+        if (cardGeneratorPath) {
+            if (!cardGeneratorPath.startsWith('/')) {
+                this.cardGenerator.path = `/${cardGeneratorPath}`;
+            }
+
+            await this.addCardGeneratorMiddlewareRoute();
+            await this.addStoreCardManifestRoute();
+            await this.addStoreI18nKeysRoute();
+        }
+
         if (this.rta) {
             this.rta.options ??= {};
             this.rta.options.baseId = componentId ?? id;
@@ -154,7 +192,11 @@ export class FlpSandbox {
             this.createTestSuite(this.test);
         }
 
+        if (this.flpConfig.enhancedHomePage) {
+            this.addCDMRoute();
+        }
         await this.addRoutesForAdditionalApps();
+
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
@@ -191,6 +233,17 @@ export class FlpSandbox {
     }
 
     /**
+     * Overrides the custom connector to a non-existing dummy value.
+     * This is needed for UI5 versions 1.71 and below.
+     *
+     * @private
+     */
+    private overrideCustomConnector(): void {
+        (this.templateConfig.ui5.flex?.[1] as CustomConnector).applyConnector = 'FioriToolsNonexistentConnector';
+        (this.templateConfig.ui5.flex?.[1] as CustomConnector).writeConnector = 'FioriToolsNonexistentConnector';
+    }
+
+    /**
      * Generates the FLP sandbox for an editor.
      *
      * @param req the request
@@ -221,6 +274,10 @@ export class FlpSandbox {
         config.features = FeatureToggleAccess.getAllFeatureToggles();
 
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
+
+        if (ui5Version.major === 1 && ui5Version.minor <= 71) {
+            this.overrideCustomConnector();
+        }
 
         if (editor.developerMode === true) {
             config.ui5.bootstrapOptions = serializeUi5Configuration(this.getDeveloperModeConfig(ui5Version.major));
@@ -358,9 +415,7 @@ export class FlpSandbox {
         // connect API (karma test runner) has no request query property
         if ('query' in req && 'redirect' in res && !req.query['sap-ui-xx-viewCache']) {
             const url =
-                'ui5-patched-router' in req
-                    ? join(req['ui5-patched-router']?.baseUrl ?? '', this.flpConfig.path)
-                    : this.flpConfig.path;
+                'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', req.path) : req.path;
             // Redirect to the same URL but add the necessary parameter
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
@@ -409,6 +464,30 @@ export class FlpSandbox {
     }
 
     /**
+     * Adds a middleware route for the Card Generator in the FLP sandbox.
+     *
+     * This route dynamically updates the `templateConfig` with the Card Generator application details
+     * and serves the FLP sandbox HTML using the `flpGetHandler`.
+     *
+     * @private
+     */
+    private async addCardGeneratorMiddlewareRoute(): Promise<void> {
+        const previewGeneratorPath = this.cardGenerator?.path ?? CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
+        this.logger.debug(`Add route for ${previewGeneratorPath}`);
+        this.router.get(
+            previewGeneratorPath,
+            async (
+                req: EnhancedRequest | connect.IncomingMessage,
+                res: Response | http.ServerResponse,
+                next: NextFunction
+            ) => {
+                this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
+                await this.flpGetHandler(req, res, next);
+            }
+        );
+    }
+
+    /**
      * Read the UI5 version.
      * In case of an error, the default UI5 version '1.121.0' is returned.
      *
@@ -438,11 +517,17 @@ export class FlpSandbox {
             }
         }
         if (!version) {
-            this.logger.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
-            version = '1.121.0';
+            this.logger.error('Could not get UI5 version of application. Using 1.130.0 as fallback.');
+            version = '1.130.0';
         }
         const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
+
+        if ((major < 2 && minor < 123) || major >= 2 || label?.includes('legacy-free')) {
+            this.flpConfig.enhancedHomePage = this.templateConfig.enhancedHomePage = false;
+            this.logger.warn(`Feature enhancedHomePage disabled: UI5 version ${version} not supported.`);
+        }
+
         return {
             major,
             minor,
@@ -464,7 +549,8 @@ export class FlpSandbox {
             }.`
         );
         const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
-        return readFileSync(join(__dirname, `../../templates/flp/sandbox${filePrefix}.html`), 'utf-8');
+        const template = this.flpConfig.enhancedHomePage ? 'cdm' : 'sandbox';
+        return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.html`), 'utf-8');
     }
 
     /**
@@ -523,6 +609,20 @@ export class FlpSandbox {
     }
 
     /**
+     * Add routes for cdm.json required by FLP during bootstrapping via cdm.
+     *
+     */
+    private addCDMRoute(): void {
+        this.router.get(
+            '/cdm.json',
+            async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+                const json = generateCdm(this.templateConfig.apps);
+                this.sendResponse(res, 'application/json', 200, JSON.stringify(json));
+            }
+        );
+    }
+
+    /**
      * Handler for flex changes GET requests.
      *
      * @param res the response
@@ -549,12 +649,12 @@ export class FlpSandbox {
     private async flexPostHandler(req: Request, res: Response): Promise<void> {
         this.fs = this.fs ?? create(createStorage());
         try {
-            const change = req.body as CommonChangeProperties;
+            const body = req.body;
             if (this.onChangeRequest) {
-                await this.onChangeRequest('write', change, this.fs, this.logger);
+                await this.onChangeRequest('write', body.change, this.fs, this.logger, body.additionalChangeInfo);
             }
             const { success, message } = writeChange(
-                change,
+                body.change,
                 this.utils.getProject().getSourcePath(),
                 this.fs,
                 this.logger
@@ -641,7 +741,7 @@ export class FlpSandbox {
     private async testSuiteJsGetHandler(
         res: Response | http.ServerResponse,
         next: NextFunction,
-        config: InternalTestConfig,
+        config: CompleteTestConfig,
         initTemplate: string,
         testPaths: string[]
     ): Promise<void> {
@@ -745,7 +845,7 @@ export class FlpSandbox {
     private async testRunnerHtmlGetHandler(
         res: Response | http.ServerResponse,
         next: NextFunction,
-        config: InternalTestConfig,
+        config: CompleteTestConfig,
         htmlTemplate: string,
         id: string
     ): Promise<void> {
@@ -775,7 +875,7 @@ export class FlpSandbox {
     private async testRunnerJsGetHandler(
         res: Response | http.ServerResponse,
         next: NextFunction,
-        config: InternalTestConfig,
+        config: CompleteTestConfig,
         initTemplate: string,
         ns: string
     ): Promise<void> {
@@ -835,6 +935,113 @@ export class FlpSandbox {
             );
         }
     }
+
+    /**
+     * Stores the card manifest files in the webapp folder of the project and updates the application manifest.
+     *
+     * @param {Request} req - The HTTP request object containing the card manifest data in the body.
+     * @param {Response} res - The HTTP response object used to send the response back to the client.
+     * @returns {Promise<void>} A promise that resolves when the operation is complete.
+     */
+    private async storeCardManifestHandler(req: Request, res: Response): Promise<void> {
+        try {
+            const {
+                floorplan,
+                localPath,
+                fileName = FileName.Manifest,
+                manifests
+            } = req.body as {
+                floorplan: string;
+                localPath: string;
+                fileName?: string;
+                manifests: MultiCardsPayload[];
+            };
+            this.fs = this.fs ?? create(createStorage());
+            const webappPath = await getWebappPath(path.resolve(), this.fs);
+            const fullPath = join(webappPath, localPath);
+            const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
+            const integrationCard = getIntegrationCard(manifests);
+            this.fs.write(filePath, JSON.stringify(integrationCard.manifest, null, 2));
+
+            const entitySet = integrationCard.entitySet;
+            const sapCardsAp = (this.manifest['sap.cards.ap'] ??= {});
+            sapCardsAp.embeds ??= {};
+            sapCardsAp.embeds[floorplan] = {
+                default: entitySet,
+                manifests: {
+                    [entitySet]: [
+                        {
+                            localUri: localPath
+                        }
+                    ]
+                }
+            } satisfies ManifestNamespace.EmbedsSettings;
+
+            const appAccess = await createApplicationAccess(path.resolve(), this.fs);
+            await appAccess.updateManifestJSON(this.manifest, this.fs);
+            this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
+        } catch (error) {
+            this.logger.error(`Files could not be created/updated. Error: ${error}`);
+            this.sendResponse(res, 'text/plain', 500, 'Files could not be created/updated.');
+        }
+    }
+
+    /**
+     * Adds a route to store card manifest files, the files are stored in the webapp folder of the project.
+     * The application manifest.json file is updated with the new card manifests information within the sap.cards.ap.embeds.
+     *
+     * @returns {Promise<void>} A promise that resolves when the route is added.
+     */
+    async addStoreCardManifestRoute(): Promise<void> {
+        this.router.use(CARD_GENERATOR_DEFAULT.cardsStore, json());
+        this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.cardsStore}`);
+
+        this.router.post(CARD_GENERATOR_DEFAULT.cardsStore, async (req: Request, res: Response) => {
+            await this.storeCardManifestHandler(req, res);
+        });
+    }
+
+    /**
+     * Handles the storage of i18n keys in the i18n file.
+     *
+     * @param {Request} req - The HTTP request object containing the i18n key-value pairs in the body.
+     * @param {Response} res - The HTTP response object used to send the response back to the client.
+     * @returns {Promise<void>} A promise that resolves when the operation is complete.
+     */
+    private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
+        try {
+            this.fs = this.fs ?? create(createStorage());
+            const webappPath = await getWebappPath(path.resolve(), this.fs);
+            const i18nPath = this.manifest['sap.app'].i18n as string;
+            const filePath = i18nPath ? join(webappPath, i18nPath) : join(webappPath, 'i18n', 'i18n.properties');
+            const entries = (req.body as Array<I18nEntry>) || [];
+            entries.forEach((entry) => {
+                if (entry.comment) {
+                    entry.annotation = entry.comment;
+                }
+            });
+            await createPropertiesI18nEntries(filePath, entries);
+            this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
+        } catch (error) {
+            this.logger.error(`File could not be updated. Error: ${error}`);
+            this.sendResponse(res, 'text/plain', 500, 'File could not be updated.');
+        }
+    }
+
+    /**
+     * Adds a route to store i18n properties in the i18n file.
+     * This function updates the i18n file with new properties provided in the request body.
+     *
+     * @returns {Promise<void>} A promise that resolves when the route is added.
+     */
+    async addStoreI18nKeysRoute(): Promise<void> {
+        this.router.use(CARD_GENERATOR_DEFAULT.i18nStore, json());
+        this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.i18nStore}`);
+
+        this.router.post(CARD_GENERATOR_DEFAULT.i18nStore, async (req: Request, res: Response) => {
+            await this.storeI18nKeysHandler(req, res);
+        });
+    }
 }
 
 /**
@@ -890,7 +1097,8 @@ export async function initAdp(
             flp.rta.options = {
                 ...flp.rta.options,
                 projectId: variant.id,
-                scenario: 'ADAPTATION_PROJECT'
+                scenario: 'ADAPTATION_PROJECT',
+                isCloud: adp.isCloudProject
             };
             for (const editor of flp.rta.endpoints) {
                 editor.pluginScript ??= 'open/ux/preview/client/adp/init';

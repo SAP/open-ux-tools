@@ -42,7 +42,7 @@ export async function getAbapSystems(): Promise<{
             logger: LoggerHelper.logger,
             entityName: 'system'
         });
-        backendSystems = await systemStore.getAll();
+        backendSystems = await systemStore?.getAll();
         cachedBackendSystems = backendSystems;
     }
 
@@ -82,7 +82,7 @@ export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: s
     return Boolean(
         (abapSystem?.url &&
             abapSystem.url.trim()?.replace(/\/$/, '') === url?.trim()?.replace(/\/$/, '') &&
-            abapSystem.client === client) ??
+            abapSystem.client === client) ||
             (!!abapSystem?.destination && destination === abapSystem?.destination)
     );
 }
@@ -92,7 +92,6 @@ export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: s
  *
  * @param transportConfigParams - transport configuration parameters
  * @param transportConfigParams.backendTarget - backend target from prompt options
- * @param transportConfigParams.scp - scp
  * @param transportConfigParams.url - url
  * @param transportConfigParams.client - client
  * @param transportConfigParams.destination - destination
@@ -102,14 +101,12 @@ export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: s
  */
 export async function initTransportConfig({
     backendTarget,
-    scp,
     url,
     destination,
     credentials,
     errorHandler
 }: {
     backendTarget?: BackendTarget;
-    scp?: boolean;
     url?: string;
     client?: string;
     destination?: string;
@@ -124,7 +121,6 @@ export async function initTransportConfig({
     try {
         result = await getTransportConfigInstance({
             backendTarget,
-            scp,
             credentials
         });
     } catch (e) {

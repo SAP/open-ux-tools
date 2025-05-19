@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/create",
     "description": "SAP Fiori tools module to add or remove features",
-    "version": "0.12.13",
+    "version": "0.13.4",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -15,7 +15,7 @@
         "sap-ux": "./dist/index.js"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     },
     "scripts": {
         "build": "tsc --build",

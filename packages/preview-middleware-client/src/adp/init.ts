@@ -22,7 +22,18 @@ export default async function (rta: RuntimeAuthoring) {
 
     const ui5VersionInfo = await getUi5Version();
     const syncViewsIds = await getAllSyncViewsIds(ui5VersionInfo);
-    initDialogs(rta, syncViewsIds, ui5VersionInfo);
+
+    // Plugins need to be set before adding additional plugins to prevent overriding with the default
+    // and allow usage of getPlugins later in the flow
+    const defaultPlugins = rta.getDefaultPlugins();
+    rta.setPlugins(defaultPlugins);
+
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 136 })) {
+        await initDialogs(rta, syncViewsIds, ui5VersionInfo);
+    } else {
+        (await import('open/ux/preview/client/adp/add-fragment')).initAddXMLPlugin(rta);
+        (await import('open/ux/preview/client/adp/extend-controller')).initExtendControllerPlugin(rta);
+    }
 
     if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 78 })) {
         const ExtensionPointService = (await import('open/ux/preview/client/adp/extension-point')).default;

@@ -1,10 +1,15 @@
-import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
+import { type CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 import { getDefaultUI5Theme, getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import autocomplete from 'inquirer-autocomplete-prompt';
 import isNil from 'lodash/isNil';
 import { getQuestions } from './prompts';
-import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from './types';
+import type {
+    UI5ApplicationAnswers,
+    UI5ApplicationCommonPromptOptions,
+    UI5ApplicationPromptOptions,
+    UI5ApplicationQuestion
+} from './types';
 import { promptNames } from './types';
 import { initI18nUi5AppInquirer } from './i18n';
 /**
@@ -58,7 +63,7 @@ async function prompt(
     const answers = await adapter.prompt<UI5ApplicationAnswers>(ui5AppPrompts);
     // Apply default values to prompts in case they have not been executed
     if (promptOptions) {
-        const defaultAnswers = applyPromptOptionDefaults(answers, ui5AppPrompts, promptOptions, capCdsInfo);
+        const defaultAnswers = applyPromptOptionDefaults(answers, ui5AppPrompts, promptOptions);
         Object.assign(answers, defaultAnswers);
     }
 
@@ -72,14 +77,12 @@ async function prompt(
  * @param answers the answers from previous prompting, only answers without a value will be considered for defaulting
  * @param ui5AppPrompts the prompts that were used to prompt the user, will be used to apply default values if not answered or no default provided
  * @param promptOptions the prompt options which may provide default values or functions
- * @param capCdsInfo will be passed as additional answer to default functions that depend on it to determine the default value
  * @returns the default values for the unanswered prompts, based on the prompt options
  */
 function applyPromptOptionDefaults(
     answers: Partial<UI5ApplicationAnswers>,
     ui5AppPrompts: UI5ApplicationQuestion[],
-    promptOptions: UI5ApplicationPromptOptions,
-    capCdsInfo?: CdsUi5PluginInfo
+    promptOptions: UI5ApplicationPromptOptions
 ): Partial<UI5ApplicationAnswers> {
     const defaultAnswers: Partial<UI5ApplicationAnswers> = {};
     Object.entries(promptOptions).forEach(([key, promptOpt]) => {
@@ -96,15 +99,6 @@ function applyPromptOptionDefaults(
             let defaultValue;
             if (promptKey === promptNames.ui5Theme) {
                 defaultValue = getDefaultUI5Theme(answers.ui5Version);
-            } else if (promptKey === promptNames.enableTypeScript) {
-                // TypeScript default value is dependent on the CdsUi5PluginInfo
-                const enableTypeScriptOpts = promptOpt as UI5ApplicationPromptOptions['enableTypeScript'];
-                // If an enableTypeScript default function is provided, use it to determine the default value
-                // otherwise override with the provided default value
-                defaultValue =
-                    typeof enableTypeScriptOpts?.default === 'function'
-                        ? enableTypeScriptOpts.default({ ...answers, capCdsInfo })
-                        : defaultValueOrFunc;
             } else if (defaultValueOrFunc !== undefined) {
                 defaultValue = getDefaultValue(answers, defaultValueOrFunc);
             } else if (promptOpt.advancedOption) {
@@ -149,5 +143,6 @@ export {
     type InquirerAdapter,
     type PromptDefaultValue,
     type UI5ApplicationAnswers,
-    type UI5ApplicationPromptOptions
+    type UI5ApplicationPromptOptions,
+    type UI5ApplicationCommonPromptOptions
 };

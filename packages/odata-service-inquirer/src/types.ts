@@ -7,6 +7,7 @@ import type { ListChoiceOptions } from 'inquirer';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper';
 import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
+import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -90,23 +91,30 @@ export interface OdataServiceAnswers {
      * The connected system will allow downstream consumers to access the connected system without creating new connections.
      *
      */
-    connectedSystem?: {
-        /**
-         * Convienence property to pass the connected system
-         */
-        serviceProvider: ServiceProvider;
+    connectedSystem?: ConnectedSystem;
 
-        /**
-         * The persistable backend system representation of the connected service provider
-         * `newOrUpdated` is set to true if the system was newly created or updated during the connection validation process and should be considered for storage.
-         */
-        backendSystem?: BackendSystem & { newOrUpdated?: boolean };
+    /**
+     * If the user chose to ignore the certificate error when connecting to the service the value will be true.
+     */
+    [serviceUrlInternalPromptNames.ignoreCertError]?: boolean;
+}
 
-        /**
-         * The destination information for the connected system
-         */
-        destination?: Destination;
-    };
+export interface ConnectedSystem {
+    /**
+     * Convienence property to pass the connected system
+     */
+    serviceProvider: ServiceProvider;
+
+    /**
+     * The persistable backend system representation of the connected service provider
+     * `newOrUpdated` is set to true if the system was newly created or updated during the connection validation process and should be considered for storage.
+     */
+    backendSystem?: BackendSystem & { newOrUpdated?: boolean };
+
+    /**
+     * The destination information for the connected system
+     */
+    destination?: Destination;
 }
 
 /**
@@ -157,7 +165,7 @@ export enum promptNames {
 export const EntityPromptNames = {
     mainEntity: 'mainEntity',
     navigationEntity: 'navigationEntity',
-    filterEntityType: 'filterEntityType',
+    filterEntitySet: 'filterEntitySet',
     tableType: 'tableType',
     hierarchyQualifier: 'hierarchyQualifier',
     addFEOPAnnotations: 'addFEOPAnnotations',
@@ -173,7 +181,7 @@ export type EntityPromptNames = (typeof EntityPromptNames)[keyof typeof EntityPr
 export interface EntitySelectionAnswers {
     [EntityPromptNames.mainEntity]?: EntityAnswer;
     [EntityPromptNames.navigationEntity]?: NavigationEntityAnswer;
-    [EntityPromptNames.filterEntityType]?: EntityAnswer;
+    [EntityPromptNames.filterEntitySet]?: EntityAnswer;
 }
 
 export interface TableConfigAnswers {
@@ -275,9 +283,9 @@ export type SystemSelectionPromptOptions = {
      */
     useAutoComplete?: boolean;
     /**
-     * Include the Cloud Foundry Abap environments service in the system selection prompt, note this option is only supported on Business Application Studio.
-     * Even if this option is set to true, the choice will only be included if the prompts are executed in the Business Application Studio.
-     * Note that there is no implementation for this option in this module and handling of the prompt optin and subsequent prompting must be implemented by the consumer.
+     * Include the Cloud Foundry Abap environments service in the system selection prompt, only on Business Application Studio.
+     * On non-BAS environments e.g. VSCode, the option to connect with Cloud Foundry Abap environments is included by default
+     * via the 'New System' -> 'ABAP Environment on SAP Business Technology Platform' -> 'Discover a Cloud Foundry Service' option.
      */
     includeCloudFoundryAbapEnvChoice?: boolean;
     /**

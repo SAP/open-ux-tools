@@ -17,6 +17,7 @@
     "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": false,
+    "strictNullChecks": true,
     "target": "ES2022",
     "skipLibCheck": true,
     "resolveJsonModule": true,
@@ -90,6 +91,9 @@
       "path": "packages/deploy-config-generator-shared"
     },
     {
+      "path": "packages/deploy-config-sub-generator"
+    },
+    {
       "path": "packages/deploy-tooling"
     },
     {
@@ -108,6 +112,9 @@
       "path": "packages/fiori-annotation-api"
     },
     {
+      "path": "packages/fiori-app-sub-generator"
+    },
+    {
       "path": "packages/fiori-elements-writer"
     },
     {
@@ -124,6 +131,9 @@
     },
     {
       "path": "packages/flp-config-sub-generator"
+    },
+    {
+      "path": "packages/generator-adp"
     },
     {
       "path": "packages/guided-answers-helper"
@@ -192,6 +202,9 @@
       "path": "packages/reload-middleware"
     },
     {
+      "path": "packages/repo-app-import-sub-generator"
+    },
+    {
       "path": "packages/serve-static-middleware"
     },
     {
@@ -211,6 +224,12 @@
     },
     {
       "path": "packages/ui-prompting"
+    },
+    {
+      "path": "packages/ui-service-inquirer"
+    },
+    {
+      "path": "packages/ui-service-sub-generator"
     },
     {
       "path": "packages/ui5-application-inquirer"

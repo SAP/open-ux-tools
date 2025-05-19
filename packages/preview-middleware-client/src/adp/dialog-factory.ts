@@ -10,18 +10,31 @@ import AddTableColumnFragments from './controllers/AddTableColumnFragments.contr
 import ControllerExtension from './controllers/ControllerExtension.controller';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
 
-import { ExtensionPointData } from './extension-point';
+import type { ExtensionPointData } from './extension-point';
+import { AddFragmentData } from './add-fragment';
+import { ExtendControllerData } from './extend-controller';
 import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller';
+import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpage.controller';
+import { QuickActionTelemetryData } from '../cpe/quick-actions/quick-action-definition';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
     ADD_TABLE_COLUMN_FRAGMENTS = 'AddTableColumnFragments',
     CONTROLLER_EXTENSION = 'ControllerExtension',
     ADD_FRAGMENT_AT_EXTENSION_POINT = 'ExtensionPoint',
-    FILE_EXISTS = 'FileExistsDialog'
+    FILE_EXISTS = 'FileExistsDialog',
+    ADD_SUBPAGE = 'AddSubpage'
 }
 
-type Controller = AddFragment | AddTableColumnFragments | ControllerExtension | ExtensionPoint | FileExistsDialog;
+type Controller =
+    | AddFragment
+    | AddTableColumnFragments
+    | ControllerExtension
+    | ExtensionPoint
+    | FileExistsDialog
+    | AddSubpage;
+
+type DialogData = ExtensionPointData | AddFragmentData | ExtendControllerData;
 
 export const OPEN_DIALOG_STATUS_CHANGED = 'OPEN_DIALOG_STATUS_CHANGED';
 
@@ -42,15 +55,17 @@ export class DialogFactory {
      * @param overlay - Control overlay.
      * @param rta - Runtime Authoring instance.
      * @param dialogName - Dialog name.
-     * @param extensionPointData - Control ID.
+     * @param data - Data to be passed to the dialog.
      * @param options - Dialog options.
+     * @param telemetryData - Telemetry data.
      */
     public static async createDialog(
         overlay: UI5Element,
         rta: RuntimeAuthoring,
         dialogName: DialogNames,
-        extensionPointData?: ExtensionPointData,
-        options: Partial<AddFragmentOptions> | Partial<FileExistsDialogOptions> = {}
+        data?: DialogData,
+        options: Partial<AddFragmentOptions> | Partial<FileExistsDialogOptions> | AddSubpageOptions = {},
+        telemetryData?: QuickActionTelemetryData
     ): Promise<void> {
         if (this.isDialogOpen) {
             return;
@@ -60,13 +75,20 @@ export class DialogFactory {
 
         switch (dialogName) {
             case DialogNames.ADD_FRAGMENT:
-                controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta, {
-                    ...('aggregation' in options && { aggregation: options.aggregation }),
-                    ...('defaultAggregationArrayIndex' in options && {
-                        defaultAggregationArrayIndex: options.defaultAggregationArrayIndex
-                    }),
-                    title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
-                });
+                controller = new AddFragment(
+                    `open.ux.preview.client.adp.controllers.${dialogName}`,
+                    overlay,
+                    rta,
+                    {
+                        ...('aggregation' in options && { aggregation: options.aggregation }),
+                        ...('defaultAggregationArrayIndex' in options && {
+                            defaultAggregationArrayIndex: options.defaultAggregationArrayIndex
+                        }),
+                        title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
+                    },
+                    (data as AddFragmentData),
+                    telemetryData
+                );
                 break;
             case DialogNames.ADD_TABLE_COLUMN_FRAGMENTS:
                 controller = new AddTableColumnFragments(
@@ -76,14 +98,17 @@ export class DialogFactory {
                     {
                         ...('aggregation' in options && { aggregation: options.aggregation }),
                         title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
-                    }
+                    },
+                    telemetryData
                 );
                 break;
             case DialogNames.CONTROLLER_EXTENSION:
                 controller = new ControllerExtension(
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     overlay,
-                    rta
+                    rta,
+                    (data as ExtendControllerData),
+                    telemetryData
                 );
                 break;
             case DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT:
@@ -91,7 +116,7 @@ export class DialogFactory {
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     overlay,
                     rta,
-                    extensionPointData!
+                    (data as ExtensionPointData)
                 );
                 break;
             case DialogNames.FILE_EXISTS:
@@ -99,6 +124,12 @@ export class DialogFactory {
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     options as FileExistsDialogOptions
                 );
+                break;
+            case DialogNames.ADD_SUBPAGE:
+                controller = new AddSubpage(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta, {
+                    ...options,
+                    title: resources.getText(options.title ?? 'ADD_SUB_PAGE_DIALOG_TITLE')
+                } as AddSubpageOptions);
                 break;
         }
 

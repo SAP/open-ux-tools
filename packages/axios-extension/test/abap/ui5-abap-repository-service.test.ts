@@ -26,7 +26,7 @@ describe('Ui5AbapRepositoryService', () => {
     const validAppInfo: AppInfo = {
         Name: validApp,
         Package: 'my_package',
-        ZipArchive: 'EncodeZippedDataHere'
+        ZipArchive: 'EncodeZippedDataHere@!#'
     };
     const updateParams = `CodePage='UTF8'&CondenseMessagesInHttpResponseHeader=X&format=json`;
     const sapMessageHeader = JSON.stringify({
@@ -129,7 +129,7 @@ describe('Ui5AbapRepositoryService', () => {
             });
             expect(response.data).toBeDefined();
             expect(loggerMock.info).toHaveBeenCalledTimes(7); // Ensures the logFullURL method is called to support destinations
-            expect(loggerMock.warn).toHaveBeenCalledTimes(0);
+            expect(loggerMock.warn).toHaveBeenCalledTimes(1);
             expect(loggerMock.error).toHaveBeenCalledTimes(0);
         });
 

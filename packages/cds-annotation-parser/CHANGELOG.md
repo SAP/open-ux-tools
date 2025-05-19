@@ -1,5 +1,35 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.2.10
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/text-document-utils@0.3.0
+    -   @sap-ux/odata-annotation-core@0.2.4
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/odata-vocabularies@0.4.8
+
+## 0.2.9
+
+### Patch Changes
+
+-   Updated dependencies [2a16531]
+    -   @sap-ux/odata-annotation-core@0.2.3
+
+## 0.2.8
+
+### Patch Changes
+
+-   d873cbd: chore - Add repository metadata in package.json
+
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/odata-vocabularies@0.4.7
+
 ## 0.2.6
 
 ### Patch Changes

@@ -1,7 +1,6 @@
 import type { AbapTarget } from '@sap-ux/system-access';
-import type { ServiceProvider } from '@sap-ux/axios-extension';
+import type { ServiceProvider, SystemInfo } from '@sap-ux/axios-extension';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
-import type { Validator } from 'inquirer';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -57,6 +56,7 @@ export enum promptNames {
     destination = 'destination',
     destinationCliSetter = 'destinationCliSetter',
     targetSystem = 'targetSystem',
+    targetSystemLabel = 'targetSystemLabel',
     targetSystemCliSetter = 'targetSystemCliSetter',
     url = 'url',
     scp = 'scp',
@@ -106,11 +106,26 @@ export type DescriptionPromptOptions = {
     default?: string;
 };
 
-type PackagePromptOptions = {
+export type PackagePromptOptions = {
     /**
-     * Add custom validation
+     * Indicator for the validations to be performed on the package input.
      */
-    validate?: Validator<AbapDeployConfigAnswers>;
+    additionalValidation?: {
+        /**
+         * Check if the given package is appropriate to the system of the created project
+         */
+        shouldValidatePackageType?: boolean;
+
+        /**
+         * Check if the given package matches ui5AbapRepo starting preffix or namespace
+         */
+        shouldValidatePackageForStartingPrefix?: boolean;
+
+        /**
+         * Check if the given package matches appropriate format and special characters
+         */
+        shouldValidateFormatAndSpecialCharacters?: boolean;
+    };
 };
 
 export type PackageManualPromptOptions = PackagePromptOptions & {
@@ -125,6 +140,13 @@ export type TransportManualPromptOptions = {
      * Default transport value.
      */
     default?: string;
+};
+
+export type TransportCreatedPromptOptions = {
+    /**
+     * Custom description for the new transport request.
+     */
+    description?: string;
 };
 
 export type OverwritePromptOptions = {
@@ -152,19 +174,31 @@ export type PackageAutocompletePromptOptions = PackagePromptOptions & {
 
 export type TransportInputChoicePromptOptions = {
     /**
+     * If set to true, the prompt will be hidden if the target system is on-premise.
+     */
+    hideIfOnPremise?: boolean;
+    /**
      * This options determines if createDuringDeploy option should be shown in the list of transport choices.
      */
     showCreateDuringDeploy?: boolean;
+};
+
+export type TargetSystemPromptOptions = {
+    additionalValidation: {
+        shouldRestrictDifferentSystemType: boolean;
+    };
 };
 
 type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepoPromptOptions> &
     Record<promptNames.description, DescriptionPromptOptions> &
     Record<promptNames.packageManual, PackageManualPromptOptions> &
     Record<promptNames.transportManual, TransportManualPromptOptions> &
+    Record<promptNames.transportCreated, TransportCreatedPromptOptions> &
     Record<promptNames.overwrite, OverwritePromptOptions> &
     Record<promptNames.index, IndexPromptOptions> &
     Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions> &
-    Record<promptNames.transportInputChoice, TransportInputChoicePromptOptions>;
+    Record<promptNames.transportInputChoice, TransportInputChoicePromptOptions> &
+    Record<promptNames.targetSystem, TargetSystemPromptOptions>;
 
 /**
  * The options which are common for the abap deploy config inquirer.
@@ -270,3 +304,8 @@ export enum TransportChoices {
 }
 
 export type AbapDeployConfigQuestion = YUIQuestion<AbapDeployConfigAnswersInternal>;
+
+export type SystemInfoResult = {
+    systemInfo?: SystemInfo;
+    apiExist: boolean;
+};

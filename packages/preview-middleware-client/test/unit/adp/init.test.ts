@@ -11,6 +11,16 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 import Element from 'mock/sap/ui/core/Element';
 
+const addFragmentServiceMock = jest.fn();
+jest.mock('open/ux/preview/client/adp/add-fragment', () => ({
+    initAddXMLPlugin: addFragmentServiceMock
+}));
+
+const extendControllerServiceMock = jest.fn();
+jest.mock('open/ux/preview/client/adp/extend-controller', () => ({
+    initExtendControllerPlugin: extendControllerServiceMock
+}));
+
 describe('adp', () => {
     const addMenuItemSpy = jest.fn();
     let initOutlineSpy: jest.SpyInstance;
@@ -55,6 +65,7 @@ describe('adp', () => {
                 addMenuItem: addMenuItemSpy
             }
         });
+        rtaMock.getPlugins.mockReturnValue({});
     });
 
     afterEach(() => {
@@ -70,7 +81,7 @@ describe('adp', () => {
 
         expect(initOutlineSpy).toBeCalledTimes(1);
         expect(addMenuItemSpy).toBeCalledTimes(2);
-        expect(setPluginsSpy).toBeCalledTimes(1);
+        expect(setPluginsSpy).toBeCalledTimes(2);
         expect(enableTelemetry).toBeCalledTimes(2);
 
         const callBackFn = spyPostMessage.mock.calls[0][0];
@@ -130,7 +141,7 @@ describe('adp', () => {
             payload: []
         });
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
@@ -163,5 +174,24 @@ describe('adp', () => {
                 shouldHideIframe: false
             }
         });
+    });
+
+    test('init - use AddXMLPlugin and ExtendControllerPlugin for UI5 version higher than 1.136', async () => {
+        const mockUI5Element = {
+            getMetadata: jest.fn().mockReturnValue({
+                getName: jest.fn().mockReturnValue('XMLView')
+            }),
+            oAsyncState: undefined,
+            getId: jest.fn().mockReturnValue('application-app-preview-component---fin.ar.lineitems.display.appView')
+        };
+
+        Element.registry.filter.mockReturnValue([mockUI5Element]);
+
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.137.0' });
+
+        await init(rtaMock as unknown as RuntimeAuthoring);
+
+        expect(addFragmentServiceMock).toHaveBeenCalledWith(rtaMock)
+        expect(extendControllerServiceMock).toHaveBeenCalledWith(rtaMock);
     });
 });

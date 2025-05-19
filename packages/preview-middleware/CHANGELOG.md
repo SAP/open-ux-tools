@@ -1,5 +1,429 @@
 # @sap-ux/preview-middleware
 
+## 0.20.4
+
+### Patch Changes
+
+-   c9b65f0: Migrate code from cards-editor-middleware to preview-middleware.
+
+## 0.20.3
+
+### Patch Changes
+
+-   b49c43f: fix: added apptype to quickactions and contextmenu
+
+## 0.20.2
+
+### Patch Changes
+
+-   5f3aa03: feat: Integration of ExtendControllerPlugin in Adaptation Editor
+-   Updated dependencies [5f3aa03]
+    -   @sap-ux/adp-tooling@0.14.2
+
+## 0.20.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.1
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/system-access@0.6.0
+
+## 0.20.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/system-access@0.6.0
+    -   @sap-ux/adp-tooling@0.14.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+
+## 0.19.43
+
+### Patch Changes
+
+-   Updated dependencies [2ba9fe9]
+    -   @sap-ux/adp-tooling@0.13.45
+
+## 0.19.42
+
+### Patch Changes
+
+-   a49ed05: Fix: Generic handling for change type and new UI component for displaying
+
+## 0.19.41
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+    -   @sap-ux/adp-tooling@0.13.44
+    -   @sap-ux/system-access@0.5.39
+
+## 0.19.40
+
+### Patch Changes
+
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/adp-tooling@0.13.43
+
+## 0.19.39
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/adp-tooling@0.13.42
+    -   @sap-ux/system-access@0.5.38
+
+## 0.19.38
+
+### Patch Changes
+
+-   c89bdc2: fix: new column is not visible after using `Add Custom Table Column` Quick Action
+
+## 0.19.37
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.41
+-   @sap-ux/system-access@0.5.38
+
+## 0.19.36
+
+### Patch Changes
+
+-   9e7fa23: fix: Issues for Adaptation Projects using TypeScipt
+-   Updated dependencies [9e7fa23]
+    -   @sap-ux/adp-tooling@0.13.40
+
+## 0.19.35
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.39
+
+## 0.19.34
+
+### Patch Changes
+
+-   e00e43f: adjust readme
+
+## 0.19.33
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.38
+
+## 0.19.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.37
+-   @sap-ux/system-access@0.5.37
+
+## 0.19.31
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.36
+
+## 0.19.30
+
+### Patch Changes
+
+-   258ecca: refactor: Enhance XML Fragment context menu control with addXMLPlugin Integration
+-   Updated dependencies [258ecca]
+    -   @sap-ux/adp-tooling@0.13.35
+
+## 0.19.29
+
+### Patch Changes
+
+-   091c3e9: fix: reuse component api consumption in Adaptation Editor
+
+## 0.19.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.34
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.27
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/adp-tooling@0.13.33
+    -   @sap-ux/system-access@0.5.36
+
+## 0.19.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.32
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.31
+
+## 0.19.24
+
+### Patch Changes
+
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/adp-tooling@0.13.30
+
+## 0.19.23
+
+### Patch Changes
+
+-   838d2de: fix: nested Quick Actions not working if there are sections with only one child (e.g Change Table Columns)
+
+## 0.19.22
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.29
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.21
+
+### Patch Changes
+
+-   8fe1ab6: fix: added telemetry tracking for context menu
+
+## 0.19.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.28
+
+## 0.19.19
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/adp-tooling@0.13.27
+    -   @sap-ux/system-access@0.5.35
+
+## 0.19.18
+
+### Patch Changes
+
+-   a64c215: feat: Change Table Actions CPE quick action added for ADP projects with OData V2 and V4
+
+## 0.19.17
+
+### Patch Changes
+
+-   Updated dependencies [c4278fb]
+    -   @sap-ux/adp-tooling@0.13.26
+
+## 0.19.16
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.25
+
+## 0.19.15
+
+### Patch Changes
+
+-   fccd2c2: feat: refactor types
+
+## 0.19.14
+
+### Patch Changes
+
+-   Updated dependencies [c81864a]
+    -   @sap-ux/adp-tooling@0.13.24
+
+## 0.19.13
+
+### Patch Changes
+
+-   Updated dependencies [4f0eaae]
+    -   @sap-ux/adp-tooling@0.13.23
+
+## 0.19.12
+
+### Patch Changes
+
+-   3727441: fix: CPE Add Subpage Quick Action not displayed for SAP Fiori Elements for OData V4 applications in Adaptation Projects, if current page has `contextPath` defined in manifest instead of `entitySet`.
+
+## 0.19.11
+
+### Patch Changes
+
+-   9522deb: fix: Cannot create a Extension Point fragment when clicking create button in the dialog
+
+## 0.19.10
+
+### Patch Changes
+
+-   6095875: fix: Cannot create a Fragment and Controller Extension when clicking create button in the dialog
+
+## 0.19.9
+
+### Patch Changes
+
+-   ed6c364: Reuse component detection
+
+## 0.19.8
+
+### Patch Changes
+
+-   59ab22b: feat: Add Subpage CPE quick action added for ADP projects with OData V4.
+
+## 0.19.7
+
+### Patch Changes
+
+-   Updated dependencies [fbdf2d0]
+    -   @sap-ux/adp-tooling@0.13.22
+
+## 0.19.6
+
+### Patch Changes
+
+-   eebf808: feat: enable TypeScript compiler option `erasableSyntaxOnly`
+
+## 0.19.5
+
+### Patch Changes
+
+-   6cedb61: fix: enable telemetry for quickactions in adp
+
+## 0.19.4
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/adp-tooling@0.13.21
+    -   @sap-ux/system-access@0.5.34
+
+## 0.19.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.20
+
+## 0.19.2
+
+### Patch Changes
+
+-   Updated dependencies [93f07bc]
+    -   @sap-ux/adp-tooling@0.13.19
+
+## 0.19.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.18
+
+## 0.19.0
+
+### Minor Changes
+
+-   6e32009: feat: introduce enhanced flp homepage
+    -   controlled via boolean property `flp.enhancedHomePage`, which is false by default
+
+## 0.18.23
+
+### Patch Changes
+
+-   02874f7: feat: Feature toggle removed for Add Subpage CPE quick action
+
+## 0.18.22
+
+### Patch Changes
+
+-   e754cb0: fix: disable "Add New Annotation File" Quick Action with tooltip, when 'metadata' is not loaded
+-   Updated dependencies [e754cb0]
+    -   @sap-ux/adp-tooling@0.13.17
+
+## 0.18.21
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/adp-tooling@0.13.16
+    -   @sap-ux/system-access@0.5.33
+
+## 0.18.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.15
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/system-access@0.5.33
+
+## 0.18.19
+
+### Patch Changes
+
+-   b012c01: feat: Added new CPE Quick Action to create application subpages in V2 ADP projects
+
+## 0.18.18
+
+### Patch Changes
+
+-   1fd8b3f: fix: legacy free ui5 version handling
+
+## 0.18.17
+
+### Patch Changes
+
+-   f659540: fix: disable "Add Header Field" Quick Action when `showHeaderContent` is set to `false` for `ObjectPageLayout`
+
+## 0.18.16
+
+### Patch Changes
+
+-   32dafd7: feat: refactor lrep connectors used for preview
+
+## 0.18.15
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/adp-tooling@0.13.14
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/project-access@1.29.16
+
+## 0.18.14
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/adp-tooling@0.13.13
+    -   @sap-ux/system-access@0.5.32
+
+## 0.18.13
+
+### Patch Changes
+
+-   1c07ab9: Allow controller extensions for reuse components on OnPremise systems
+-   Updated dependencies [1c07ab9]
+    -   @sap-ux/adp-tooling@0.13.12
+
 ## 0.18.12
 
 ### Patch Changes

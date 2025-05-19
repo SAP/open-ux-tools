@@ -9,13 +9,21 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { LayeredRepositoryService, MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
-import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
+import type {
+    AdpPreviewConfig,
+    CommonChangeProperties,
+    DescriptorVariant,
+    OperationType,
+    CommonAdditionalChangeInfoProperties
+} from '../types';
 import type { Editor } from 'mem-fs-editor';
 import {
     addAnnotationFile,
     addXmlFragment,
     isAddAnnotationChange,
     isAddXMLChange,
+    isCodeExtChange,
+    addControllerExtension,
     moduleNameContentMap,
     tryFixChange
 } from './change-handler';
@@ -28,7 +36,7 @@ declare global {
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
-    CODE_EXT = '/adp/api/code_ext/:controllerName',
+    CODE_EXT = '/adp/api/code_ext',
     ANNOTATION = '/adp/api/annotation'
 }
 
@@ -47,6 +55,7 @@ export class AdpPreview {
 
     private lrep: LayeredRepositoryService | undefined;
     private descriptorVariantId: string | undefined;
+    private isCloud: boolean | undefined;
 
     /**
      * @returns merged manifest.
@@ -86,6 +95,17 @@ export class AdpPreview {
     }
 
     /**
+     * @returns {boolean} true if the project is an ABAP cloud project, false otherwise.
+     */
+    get isCloudProject(): boolean {
+        if (this.isCloud !== undefined) {
+            return this.isCloud;
+        } else {
+            throw new Error('Not initialized');
+        }
+    }
+
+    /**
      * Constructor taking the config and a logger as input.
      *
      * @param config adp config
@@ -98,9 +118,7 @@ export class AdpPreview {
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
-    ) {
-        this.routesHandler = new RoutesHandler(project, util, logger);
-    }
+    ) {}
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
@@ -116,9 +134,13 @@ export class AdpPreview {
             true,
             this.logger
         );
+        this.routesHandler = new RoutesHandler(this.project, this.util, provider, this.logger);
+
         this.lrep = provider.getLayeredRepository();
         // fetch a merged descriptor from the backend
         await this.lrep.getCsrfToken();
+        // check if the project is an ABAP cloud project
+        this.isCloud = await provider.isAbapCloud();
 
         await this.sync();
         return descriptorVariant.layer;
@@ -219,13 +241,15 @@ export class AdpPreview {
      * @param {CommonChangeProperties} change - An object containing properties common to all change types.
      * @param {Editor} fs - An instance of an editor interface for file system operations.
      * @param {Logger} logger - An instance of a logging interface for message logging.
+     * @param {CommonAdditionalChangeInfoProperties} [additionalChangeInfo] - An optional object containing extended change properties.
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     async onChangeRequest(
         type: OperationType,
         change: CommonChangeProperties,
         fs: Editor,
-        logger: Logger
+        logger: Logger,
+        additionalChangeInfo?: CommonAdditionalChangeInfoProperties
     ): Promise<void> {
         switch (type) {
             case 'read':
@@ -235,7 +259,16 @@ export class AdpPreview {
                 break;
             case 'write':
                 if (isAddXMLChange(change)) {
-                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger);
+                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger, additionalChangeInfo);
+                }
+                if (isCodeExtChange(change)) {
+                    await addControllerExtension(
+                        this.util.getProject().getRootPath(),
+                        this.util.getProject().getSourcePath(),
+                        change,
+                        fs,
+                        logger
+                    );
                 }
                 if (isAddAnnotationChange(change)) {
                     await addAnnotationFile(

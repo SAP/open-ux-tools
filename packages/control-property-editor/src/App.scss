@@ -55,6 +55,11 @@ body {
 .app-panel-scroller {
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-color: var(--vscode-scrollbarSlider-background) var( --vscode-scrollbar-shadow)
+}:hover {
+    scrollbar-color: var(--vscode-scrollbarSlider-hoverBackground) var( --vscode-scrollbar-shadow)
+}:active {
+    scrollbar-color: var(--vscode-scrollbarSlider-activeBackground) var( --vscode-scrollbar-shadow)
 }
 
 .app-panel-left {

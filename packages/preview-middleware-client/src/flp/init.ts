@@ -8,10 +8,14 @@ import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
+import initCdm from './initCdm';
 import initConnectors from './initConnectors';
 import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import { CommunicationService } from '../cpe/communication-service';
 import { getTextBundle } from '../i18n';
+import type Component from 'sap/ui/core/Component';
+import type Extension from 'sap/ushell/services/Extension';
+import type { CardGeneratorType } from 'sap/cards/ap/generator';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -251,22 +255,55 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
 }
 
 /**
+ * This function dynamically adds a "Generate Card" action to the SAP Fiori Launchpad for the given component instance.
+ * 
+ * @param componentInstance - The instance of the component for which the card generation action is being added.
+ * @param container - The SAP Fiori Launchpad container instance used to access services.
+ */
+function addCardGenerationUserAction(componentInstance : Component, container : typeof sap.ushell.Container) {
+    sap.ui.require([
+        'sap/cards/ap/generator/CardGenerator'
+    ], async (CardGenerator : CardGeneratorType) => {
+        const extensionService = await container.getServiceAsync<Extension>('Extension');
+        const controlProperties = {
+            icon: 'sap-icon://add',
+            id: 'generate_card',
+            text: 'Generate Card',
+            tooltip: 'Generate Card',
+            press: () => {
+                CardGenerator.initializeAsync(componentInstance);
+            }
+        };
+        const parameters = {
+            controlType: 'sap.ushell.ui.launchpad.ActionItem'
+        };
+        const generateCardAction = await extensionService.createUserAction(controlProperties, parameters);
+        generateCardAction.showForCurrentApp();
+    });
+}
+
+/**
  * Apply additional configuration and initialize sandbox.
  *
  * @param params init parameters read from the script tag
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
  * @param params.customInit path to the custom init module to be called
+ * @param params.enhancedHomePage boolean indicating if enhanced homepage is enabled
  * @returns promise
  */
 export async function init({
     appUrls,
     flex,
-    customInit
+    customInit,
+    enhancedHomePage,
+    enableCardGenerator
 }: {
     appUrls?: string | null;
     flex?: string | null;
     customInit?: string | null;
+    enhancedHomePage?: boolean | null;
+    enableCardGenerator?: boolean
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ??
@@ -316,6 +353,17 @@ export async function init({
             });
         });
     }
+    if (enableCardGenerator && !isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 121 })) {
+        container.attachRendererCreatedEvent(async function () {
+            const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
+            lifecycleService.attachAppLoaded((event) => {
+                const componentInstance = event.getParameter('componentInstance');
+                addCardGenerationUserAction(componentInstance as unknown as Component, container);
+            });
+        });
+    } else {  
+        Log.warning('Card generator is not supported for the current UI5 version.');
+    } 
 
     // reset app state if requested
     if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() !== 'true') {
@@ -340,8 +388,12 @@ export async function init({
     setI18nTitle(resourceBundle);
     registerSAPFonts();
 
+    if (enhancedHomePage) {
+        await initCdm(container);
+    }
+
     const renderer =
-        ui5VersionInfo.major < 2
+        (ui5VersionInfo.major < 2 && !ui5VersionInfo.label?.includes('legacy-free'))
             ? await container.createRenderer(undefined, true)
             : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
@@ -353,7 +405,9 @@ if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
-        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
+        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
+        enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage'),
+        enableCardGenerator: !!bootstrapConfig.getAttribute('data-open-ux-preview-enable-card-generator')
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);

@@ -1,5 +1,110 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.1
+
+## 0.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/nodejs-utils@0.2.0
+    -   @sap-ux/btp-utils@1.1.0
+
+## 0.0.47
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.11.3
+
+## 0.0.46
+
+### Patch Changes
+
+-   65e178f: align npm modules
+
+## 0.0.45
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.11.2
+
+## 0.0.44
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.11.1
+
+## 0.0.43
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+
+## 0.0.42
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.10.2
+
+## 0.0.41
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/fiori-generator-shared@0.10.1
+    -   @sap-ux/nodejs-utils@0.1.9
+
+## 0.0.40
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+
+## 0.0.39
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.11
+
+## 0.0.38
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.10
+
+## 0.0.37
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/fiori-generator-shared@0.9.9
+    -   @sap-ux/nodejs-utils@0.1.8
+
+## 0.0.36
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.8
+
+## 0.0.35
+
+### Patch Changes
+
+-   19a19dd: add new main deploy gen module
+
 ## 0.0.34
 
 ### Patch Changes

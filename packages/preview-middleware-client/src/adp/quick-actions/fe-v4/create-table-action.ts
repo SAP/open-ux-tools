@@ -1,7 +1,10 @@
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import {
+    QuickActionContext,
+    NestedQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById } from '../../../utils/core';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
@@ -9,7 +12,7 @@ import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { MDC_TABLE_TYPE } from '../control-types';
 import { preprocessActionExecution } from '../fe-v2/create-table-custom-column';
 
-export const CREATE_TABLE_ACTION = 'create_table_action';
+export const CREATE_TABLE_ACTION = 'create-table-action';
 
 /**
  * Quick Action for creating table action.
@@ -33,11 +36,18 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         if (controlOverlay) {
             controlOverlay.setSelected(true);
 
-            await DialogFactory.createDialog(controlOverlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
-                aggregation: 'actions',
-                defaultAggregationArrayIndex: 0,
-                title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-            });
+            await DialogFactory.createDialog(
+                controlOverlay,
+                this.context.rta,
+                DialogNames.ADD_FRAGMENT,
+                undefined,
+                {
+                    aggregation: 'actions',
+                    defaultAggregationArrayIndex: 0,
+                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                },
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+            );
         }
 
         return [];

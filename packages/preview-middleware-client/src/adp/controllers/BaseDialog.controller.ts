@@ -7,10 +7,9 @@ import { ValueState } from 'sap/ui/core/library';
 import Controller from 'sap/ui/core/mvc/Controller';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import MessageToast from 'sap/m/MessageToast';
 import CommandExecutor from '../command-executor';
-import { matchesFragmentName } from '../utils';
+import { checkForExistingChange } from '../utils';
 import type { Fragments } from '../api-handler';
 import { getError } from '../../utils/error';
 import ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
@@ -18,6 +17,9 @@ import { getControlById } from '../../utils/core';
 import ControlUtils from '../control-utils';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { reportTelemetry } from '@sap-ux-private/control-property-editor-common';
+import Log from 'sap/base/Log';
 
 type BaseDialogModel = JSONModel & {
     getProperty(sPath: '/fragmentList'): Fragments;
@@ -57,6 +59,17 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
     abstract onCreateBtnPress(event: Event): Promise<void> | void;
 
     abstract buildDialogData(): Promise<void> | void;
+
+    constructor(name: string, private readonly telemetryData?: QuickActionTelemetryData | undefined) {
+        super(name);
+    }
+    public async onCreateBtnPressHandler(): Promise<void> {
+        try {
+            await reportTelemetry({ category: 'Dialog', dialogName: this.dialog.getId(), ...this.telemetryData });
+        } catch (error) {
+            Log.error('Error in reporting Telemetry:', error);
+        }
+    }
 
     /**
      * Method is used in add fragment dialog controllers to get current control metadata which are needed on the dialog
@@ -154,7 +167,12 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
             return;
         }
 
-        const changeExists = this.checkForExistingChange(fragmentName);
+        const changeExists = checkForExistingChange(
+            this.rta,
+            'addXMLAtExtensionPoint',
+            'content.fragmentPath',
+            `${fragmentName}.fragment.xml`
+        );
 
         if (changeExists) {
             updateDialogState(
@@ -166,28 +184,6 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
 
         updateDialogState(ValueState.Success);
         this.model.setProperty('/newFragmentName', fragmentName);
-    }
-
-    /**
-     * Checks for the existence of a change associated with a specific fragment name in the RTA command stack.
-     *
-     * @param {string} fragmentName - The name of the fragment to check for existing changes.
-     * @returns {Promise<boolean>} A promise that resolves to `true` if a matching change is found, otherwise `false`.
-     */
-    checkForExistingChange(fragmentName: string): boolean {
-        const allCommands = this.rta.getCommandStack().getCommands();
-
-        return allCommands.some((command: FlexCommand) => {
-            if (typeof command.getCommands === 'function') {
-                const addXmlCommand = command
-                    .getCommands()
-                    .find((c: FlexCommand) => c?.getProperty('name') === 'addXMLAtExtensionPoint');
-
-                return addXmlCommand && matchesFragmentName(addXmlCommand, fragmentName);
-            } else {
-                return matchesFragmentName(command, fragmentName);
-            }
-        });
     }
 
     /**

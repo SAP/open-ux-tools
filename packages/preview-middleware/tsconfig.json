@@ -8,7 +8,8 @@
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "erasableSyntaxOnly": true
   },
   "references": [
     {
@@ -37,6 +38,9 @@
     },
     {
       "path": "../store"
+    },
+    {
+      "path": "../system-access"
     },
     {
       "path": "../ui5-info"

@@ -438,139 +438,169 @@ describe('generate', () => {
             });
         });
 
-        it('Enhance unspecified input data with defaults', async () => {
+        describe('Enhance unspecified input data with defaults', () => {
             const config = {
                 url: 'https://services.odata.org',
                 path: '/V2/Northwind/Northwind.svc',
                 version: OdataVersion.v2
             } as OdataService;
-            // No services are defined - mainService used for service name and '' for service model
-            let configCopy = cloneDeep(config);
-            await enhanceData('', configCopy, fs);
-            expect(configCopy).toMatchInlineSnapshot(`
-                Object {
-                  "model": "",
-                  "name": "mainService",
-                  "path": "/V2/Northwind/Northwind.svc/",
-                  "previewSettings": Object {
-                    "path": "/V2",
-                    "url": "https://services.odata.org",
-                  },
-                  "type": "edmx",
-                  "url": "https://services.odata.org",
-                  "version": "2",
-                }
-            `);
-
-            // Services already defined - actual service name and service model are used
-            configCopy = cloneDeep(Object.assign({}, config, { model: 'modelName', name: 'datasourceName' }));
-            fs.writeJSON(join('webapp', 'manifest.json'), {
-                'sap.app': { dataSources: { existingService: { type: 'OData' } } },
-                'sap.ui5': { models: { existingModel: { dataSource: 'existingService' } } }
+            test('No services are defined - mainService used for service name and "" for service model', async () => {
+                const configCopy = cloneDeep(config);
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "model": "",
+                      "name": "mainService",
+                      "path": "/V2/Northwind/Northwind.svc/",
+                      "previewSettings": Object {
+                        "path": "/V2",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
             });
-            await enhanceData('', configCopy, fs);
-            expect(configCopy).toMatchInlineSnapshot(`
-                Object {
-                  "model": "modelName",
-                  "name": "datasourceName",
-                  "path": "/V2/Northwind/Northwind.svc/",
-                  "previewSettings": Object {
-                    "path": "/V2",
-                    "url": "https://services.odata.org",
-                  },
-                  "type": "edmx",
-                  "url": "https://services.odata.org",
-                  "version": "2",
-                }
-            `);
-
-            fs.delete(join('webapp', 'manifest.json'));
-            // Undefined path does not throw but sets valid path
-            configCopy = cloneDeep(Object.assign({}, config, { path: undefined }));
-            await enhanceData('', configCopy, fs);
-            expect(configCopy).toMatchInlineSnapshot(`
-                Object {
-                  "model": "",
-                  "name": "mainService",
-                  "path": "/",
-                  "previewSettings": Object {
-                    "path": "/",
-                    "url": "https://services.odata.org",
-                  },
-                  "type": "edmx",
-                  "url": "https://services.odata.org",
-                  "version": "2",
-                }
-            `);
-
-            // Service and annotation names are the same
-            fs.writeJSON(join('webapp', 'manifest.json'), {
-                'sap.app': { dataSources: { exisitingSerivce: { type: 'OData' } } }
+            test('Services already defined - actual service name and service model are used', async () => {
+                const configCopy = cloneDeep(Object.assign({}, config, { model: 'modelName', name: 'datasourceName' }));
+                fs.writeJSON(join('webapp', 'manifest.json'), {
+                    'sap.app': { dataSources: { existingService: { type: 'OData' } } },
+                    'sap.ui5': { models: { existingModel: { dataSource: 'existingService' } } }
+                });
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "model": "modelName",
+                      "name": "datasourceName",
+                      "path": "/V2/Northwind/Northwind.svc/",
+                      "previewSettings": Object {
+                        "path": "/V2",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
+                fs.delete(join('webapp', 'manifest.json'));
             });
-            configCopy = cloneDeep(Object.assign({}, config, { name: 'aname', annotations: { name: 'aname' } }));
-            await enhanceData('', configCopy, fs);
-            expect(configCopy).toMatchInlineSnapshot(`
-                Object {
-                  "annotations": Object {
-                    "name": "aname_Annotation",
-                  },
-                  "model": "",
-                  "name": "aname",
-                  "path": "/V2/Northwind/Northwind.svc/",
-                  "previewSettings": Object {
-                    "path": "/V2",
-                    "url": "https://services.odata.org",
-                  },
-                  "type": "edmx",
-                  "url": "https://services.odata.org",
-                  "version": "2",
-                }
-            `);
-
-            // mainService model already exists
-            fs.writeJSON(join('webapp', 'manifest.json'), {
-                'sap.app': { dataSources: { mainService: { type: 'OData' } } },
-                'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
+            test('Undefined path does not throw but sets valid path', async () => {
+                const configCopy = cloneDeep(Object.assign({}, config, { path: undefined }));
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "model": "",
+                      "name": "mainService",
+                      "path": "/",
+                      "previewSettings": Object {
+                        "path": "/",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
             });
-            // model called mainService is being added, '' should be used for model
-            configCopy = cloneDeep(Object.assign({}, config, { name: 'mainService' }));
-            await enhanceData('', configCopy, fs);
-            expect(configCopy).toMatchInlineSnapshot(`
-                Object {
-                  "model": "",
-                  "name": "mainService",
-                  "path": "/V2/Northwind/Northwind.svc/",
-                  "previewSettings": Object {
-                    "path": "/V2",
-                    "url": "https://services.odata.org",
-                  },
-                  "type": "edmx",
-                  "url": "https://services.odata.org",
-                  "version": "2",
-                }
-            `);
-
-            // mainService model already exists
-            fs.writeJSON(join('webapp', 'manifest.json'), {
-                'sap.app': { dataSources: { mainService: { type: 'OData' } } },
-                'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
+            test('/sap path is not used for preview settings', async () => {
+                const ui5Yaml = (await UI5Config.newInstance(''))
+                    .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+                    .toString();
+                fs.write(ui5Yaml, join('', 'ui5.yaml'));
+                // "/sap" entry already exists, it should not be used
+                const configCopy = cloneDeep(Object.assign({}, config, { path: '/sap/test/path/' }));
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "model": "",
+                      "name": "mainService",
+                      "path": "/sap/test/path/",
+                      "previewSettings": Object {
+                        "path": "/sap",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
+                fs.delete(join('', 'ui5.yaml'));
             });
-            // model called differentService is being added, 'differentService' should be used for model
-            configCopy = cloneDeep(Object.assign({}, config, { model: 'differentService' }));
-            await enhanceData('', configCopy, fs);
-            expect(configCopy).toMatchInlineSnapshot(`
-                Object {
-                  "model": "differentService",
-                  "path": "/V2/Northwind/Northwind.svc/",
-                  "previewSettings": Object {
-                    "path": "/V2",
-                    "url": "https://services.odata.org",
-                  },
-                  "type": "edmx",
-                  "url": "https://services.odata.org",
-                  "version": "2",
-                }
-            `);
+            test('Service and annotation names are the same', async () => {
+                fs.writeJSON(join('webapp', 'manifest.json'), {
+                    'sap.app': { dataSources: { exisitingSerivce: { type: 'OData' } } }
+                });
+                const configCopy = cloneDeep(
+                    Object.assign({}, config, { name: 'aname', annotations: { name: 'aname' } })
+                );
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "annotations": Object {
+                        "name": "aname_Annotation",
+                      },
+                      "model": "",
+                      "name": "aname",
+                      "path": "/V2/Northwind/Northwind.svc/",
+                      "previewSettings": Object {
+                        "path": "/V2",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
+                fs.delete(join('webapp', 'manifest.json'));
+            });
+            test('model called mainService is being added, "" should be used for model', async () => {
+                // mainService model already exists
+                fs.writeJSON(join('webapp', 'manifest.json'), {
+                    'sap.app': { dataSources: { mainService: { type: 'OData' } } },
+                    'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
+                });
+                const configCopy = cloneDeep(Object.assign({}, config, { name: 'mainService' }));
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "model": "",
+                      "name": "mainService",
+                      "path": "/V2/Northwind/Northwind.svc/",
+                      "previewSettings": Object {
+                        "path": "/V2",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
+                fs.delete(join('webapp', 'manifest.json'));
+            });
+            test('model called differentService is being added, "differentService" should be used for model', async () => {
+                // mainService model already exists
+                fs.writeJSON(join('webapp', 'manifest.json'), {
+                    'sap.app': { dataSources: { mainService: { type: 'OData' } } },
+                    'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
+                });
+                const configCopy = cloneDeep(Object.assign({}, config, { model: 'differentService' }));
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "model": "differentService",
+                      "path": "/V2/Northwind/Northwind.svc/",
+                      "previewSettings": Object {
+                        "path": "/V2",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
+                fs.delete(join('webapp', 'manifest.json'));
+            });
         });
     });
 });
@@ -731,7 +761,7 @@ describe('update', () => {
             {
                 name: 'mainService',
                 url: 'https://localhost',
-                path: '/sap/uri/',
+                path: '/sap',
                 type: ServiceType.EDMX,
                 annotations: [
                     {
@@ -749,7 +779,7 @@ describe('update', () => {
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
         expect(manifest?.['sap.app']?.dataSources).toStrictEqual({
             mainService: {
-                uri: '/sap/uri/',
+                uri: '/sap',
                 type: 'OData',
                 settings: {
                     annotations: ['SEPMRA_PROD_MAN', 'annotation'],
@@ -821,7 +851,7 @@ describe('update', () => {
                   configuration:
                     mountPath: /
                     services:
-                      - urlPath: /sap/uri
+                      - urlPath: /sap
                         metadataPath: ./webapp/localService/mainService/metadata.xml
                         mockdataPath: ./webapp/localService/mainService/data
                         generateMockData: true
@@ -850,13 +880,305 @@ describe('update', () => {
                   configuration:
                     mountPath: /
                     services:
-                      - urlPath: /sap/uri
+                      - urlPath: /sap
                         metadataPath: ./webapp/localService/mainService/metadata.xml
                         mockdataPath: ./webapp/localService/mainService/data
                         generateMockData: true
                     annotations:
                       - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
                         urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            "
+        `);
+        // No changes in package.json expected
+        expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+            ui5: {
+                dependencies: []
+            }
+        });
+        // No removed annotation files expected
+        expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
+    });
+
+    it('Update an existing service with backend changes', async () => {
+        await update(
+            testDir,
+            {
+                name: 'mainService',
+                url: 'https://localhost/updated', // Changed URL
+                path: '/sap', // Backends are matched by path, use existing path
+                type: ServiceType.EDMX,
+                annotations: [
+                    {
+                        technicalName: 'SEPMRA_PROD_MAN',
+                        xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                    }
+                ] as EdmxAnnotationsInfo[],
+                metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                version: OdataVersion.v4,
+                localAnnotationsName: 'annotation'
+            },
+            fs
+        );
+        // verify updated manifest.json
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+        expect(manifest?.['sap.app']?.dataSources).toStrictEqual({
+            mainService: {
+                uri: '/sap',
+                type: 'OData',
+                settings: {
+                    annotations: ['SEPMRA_PROD_MAN', 'annotation'],
+                    localUri: 'localService/mainService/metadata.xml',
+                    odataVersion: '4.0'
+                }
+            },
+            SEPMRA_PROD_MAN: {
+                uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
+                type: 'ODataAnnotation',
+                settings: {
+                    localUri: 'localService/mainService/SEPMRA_PROD_MAN.xml'
+                }
+            },
+            annotation: {
+                type: 'ODataAnnotation',
+                uri: 'annotations/annotation.xml',
+                settings: {
+                    localUri: 'annotations/annotation.xml'
+                }
+            }
+        });
+        expect(manifest?.['sap.ui5']?.models).toStrictEqual({
+            '': {
+                dataSource: 'mainService',
+                preload: true,
+                settings: {
+                    autoExpandSelect: true,
+                    earlyRequests: true,
+                    operationMode: 'Server'
+                }
+            }
+        });
+        // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost/updated
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+            "
+        `);
+        expect(fs.read(join(testDir, 'ui5-local.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost/updated
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+                - name: sap-fe-mockserver
+                  beforeMiddleware: csp
+                  configuration:
+                    mountPath: /
+                    services:
+                      - urlPath: /sap
+                        metadataPath: ./webapp/localService/mainService/metadata.xml
+                        mockdataPath: ./webapp/localService/mainService/data
+                        generateMockData: true
+                    annotations:
+                      - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
+                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            "
+        `);
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost/updated
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+                - name: sap-fe-mockserver
+                  beforeMiddleware: csp
+                  configuration:
+                    mountPath: /
+                    services:
+                      - urlPath: /sap
+                        metadataPath: ./webapp/localService/mainService/metadata.xml
+                        mockdataPath: ./webapp/localService/mainService/data
+                        generateMockData: true
+                    annotations:
+                      - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
+                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            "
+        `);
+        // No changes in package.json expected
+        expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+            ui5: {
+                dependencies: []
+            }
+        });
+        // No removed annotation files expected
+        expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
+    });
+
+    it('Update an existing service without backend changes', async () => {
+        await update(
+            testDir,
+            {
+                name: 'mainService',
+                url: 'https://localhost/updated', // Changed URL
+                path: '/sap', // Backends are matched by path, use existing path
+                type: ServiceType.EDMX,
+                annotations: [
+                    {
+                        technicalName: 'SEPMRA_PROD_MAN',
+                        xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                    }
+                ] as EdmxAnnotationsInfo[],
+                metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                version: OdataVersion.v4,
+                localAnnotationsName: 'annotation'
+            },
+            fs,
+            false
+        );
+        // verify updated manifest.json
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+        expect(manifest?.['sap.app']?.dataSources).toStrictEqual({
+            mainService: {
+                uri: '/sap',
+                type: 'OData',
+                settings: {
+                    annotations: ['SEPMRA_PROD_MAN', 'annotation'],
+                    localUri: 'localService/mainService/metadata.xml',
+                    odataVersion: '4.0'
+                }
+            },
+            SEPMRA_PROD_MAN: {
+                uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
+                type: 'ODataAnnotation',
+                settings: {
+                    localUri: 'localService/mainService/SEPMRA_PROD_MAN.xml'
+                }
+            },
+            annotation: {
+                type: 'ODataAnnotation',
+                uri: 'annotations/annotation.xml',
+                settings: {
+                    localUri: 'annotations/annotation.xml'
+                }
+            }
+        });
+        expect(manifest?.['sap.ui5']?.models).toStrictEqual({
+            '': {
+                dataSource: 'mainService',
+                preload: true,
+                settings: {
+                    autoExpandSelect: true,
+                    earlyRequests: true,
+                    operationMode: 'Server'
+                }
+            }
+        });
+        // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+            "
+        `);
+        // See backend url are not changed
+        expect(fs.read(join(testDir, 'ui5-local.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+                - name: sap-fe-mockserver
+                  beforeMiddleware: csp
+                  configuration:
+                    mountPath: /
+                    services:
+                      - urlPath: /sap
+                        metadataPath: ./webapp/localService/mainService/metadata.xml
+                        mockdataPath: ./webapp/localService/mainService/data
+                        generateMockData: true
+                    annotations:
+                      - urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            "
+        `);
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+                - name: sap-fe-mockserver
+                  beforeMiddleware: csp
+                  configuration:
+                    mountPath: /
+                    services:
+                      - urlPath: /sap
+                        metadataPath: ./webapp/localService/mainService/metadata.xml
+                        mockdataPath: ./webapp/localService/mainService/data
+                        generateMockData: true
+                    annotations:
+                      - urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
             "
         `);
         // No changes in package.json expected
@@ -878,7 +1200,7 @@ describe('update', () => {
             {
                 name: 'mainService',
                 url: 'https://localhost',
-                path: '/sap/uri/',
+                path: '/sap',
                 type: ServiceType.EDMX,
                 annotations: [
                     {
@@ -901,7 +1223,7 @@ describe('update', () => {
             {
                 name: 'mainService',
                 url: 'https://localhost',
-                path: '/sap/uri/',
+                path: '/sap',
                 type: ServiceType.EDMX,
                 // Define new remote annotation for service
                 annotations: [
@@ -919,7 +1241,7 @@ describe('update', () => {
         const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
         expect(manifest?.['sap.app']?.dataSources).toStrictEqual({
             mainService: {
-                uri: '/sap/uri/',
+                uri: '/sap',
                 type: 'OData',
                 settings: {
                     annotations: ['DIFFERENT_ANNOTATION', 'annotation'],
@@ -991,7 +1313,7 @@ describe('update', () => {
                   configuration:
                     mountPath: /
                     services:
-                      - urlPath: /sap/uri
+                      - urlPath: /sap
                         metadataPath: ./webapp/localService/mainService/metadata.xml
                         mockdataPath: ./webapp/localService/mainService/data
                         generateMockData: true
@@ -1020,7 +1342,7 @@ describe('update', () => {
                   configuration:
                     mountPath: /
                     services:
-                      - urlPath: /sap/uri
+                      - urlPath: /sap
                         metadataPath: ./webapp/localService/mainService/metadata.xml
                         mockdataPath: ./webapp/localService/mainService/data
                         generateMockData: true

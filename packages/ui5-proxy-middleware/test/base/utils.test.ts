@@ -8,7 +8,7 @@ import {
     injectUI5Url,
     proxyRequestHandler,
     proxyResponseHandler,
-    setHtmlResponse,
+    sendResponse,
     proxyErrorHandler,
     updateProxyEnv
 } from '../../src/base/utils';
@@ -297,7 +297,7 @@ describe('utils', () => {
         });
     });
 
-    describe('setHtmlResponse', () => {
+    describe('sendResponse', () => {
         test('use livereload write if present', () => {
             const mockWrite = jest.fn();
             const mockEnd = jest.fn();
@@ -307,7 +307,7 @@ describe('utils', () => {
                 _livereload: true
             } as unknown as any;
             const html = '<html></html>';
-            setHtmlResponse(res, html);
+            sendResponse(res, html);
             expect(mockWrite).toHaveBeenCalledTimes(1);
             expect(mockWrite).toHaveBeenCalledWith(html);
             expect(mockEnd).toHaveBeenCalledTimes(1);
@@ -320,7 +320,7 @@ describe('utils', () => {
                 end: jest.fn()
             } as unknown as any;
             const html = '<html></html>';
-            setHtmlResponse(res, html);
+            sendResponse(res, html);
             expect(res.writeHead).toBeCalledTimes(1);
             expect(res.writeHead).toBeCalledWith(200, {
                 'Content-Type': 'text/html'
@@ -478,24 +478,64 @@ describe('utils', () => {
         respMock.write = jest.fn();
         respMock.end = jest.fn();
 
-        const html = '<html></html>';
+        const htmlSandbox1 = '<html><script src="../test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script></html>';
+        const htmlSandbox2 = '<html><script src="../resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script></html>';
 
         beforeEach(() => {
             nextMock.mockReset();
         });
 
-        test('HTML is modified and response is sent', async () => {
+        test('HTML is modified and response is sent (UI5 1.x)', async () => {
             byGlobMock.mockResolvedValueOnce([
                 {
-                    getString: () => html
+                    getString: () => htmlSandbox1
                 }
             ]);
 
-            await baseUtils.injectScripts({ url: 'test/flp.html' } as any, respMock, nextMock, [], rootProject);
+            await baseUtils.injectScripts({ url: 'test/flp.html' } as any, respMock, nextMock, [{path: '/test-resources', url: 'http://ui5.sap.com', version: '1.124.0'}], rootProject);
             expect(respMock.writeHead).toBeCalledTimes(1);
             expect(respMock.writeHead).toBeCalledWith(200, {
                 'Content-Type': 'text/html'
             });
+            expect(respMock.write).toBeCalledWith('<html><script src="http://ui5.sap.com/1.124.0/test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script></html>');
+            expect(respMock.end).toHaveBeenCalled();
+            expect(nextMock).not.toHaveBeenCalled();
+
+            expect(byGlobMock).toHaveBeenCalledWith('**/test/flp.html');
+        });
+
+        test('HTML is modified and response is sent (UI5 2.x backwards compatible)', async () => {
+            byGlobMock.mockResolvedValueOnce([
+                {
+                    getString: () => htmlSandbox2
+                }
+            ]);
+
+            await baseUtils.injectScripts({ url: 'test/flp.html' } as any, respMock, nextMock, [{path: '/test-resources', url: 'http://ui5.sap.com', version: '1.124.0'}], rootProject);
+            expect(respMock.writeHead).toBeCalledTimes(1);
+            expect(respMock.writeHead).toBeCalledWith(200, {
+                'Content-Type': 'text/html'
+            });
+            expect(respMock.write).toBeCalledWith('<html><script src="http://ui5.sap.com/1.124.0/resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script></html>');
+            expect(respMock.end).toHaveBeenCalled();
+            expect(nextMock).not.toHaveBeenCalled();
+
+            expect(byGlobMock).toHaveBeenCalledWith('**/test/flp.html');
+        });
+
+        test('HTML is modified and response is sent (UI5 2.x)', async () => {
+            byGlobMock.mockResolvedValueOnce([
+                {
+                    getString: () => htmlSandbox2
+                }
+            ]);
+
+            await baseUtils.injectScripts({ url: 'test/flp.html' } as any, respMock, nextMock, [{path: '/resources', url: 'http://ui5.sap.com', version: '1.124.0'}], rootProject);
+            expect(respMock.writeHead).toBeCalledTimes(1);
+            expect(respMock.writeHead).toBeCalledWith(200, {
+                'Content-Type': 'text/html'
+            });
+            expect(respMock.write).toBeCalledWith('<html><script src="http://ui5.sap.com/1.124.0/resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script></html>');
             expect(respMock.end).toHaveBeenCalled();
             expect(nextMock).not.toHaveBeenCalled();
 

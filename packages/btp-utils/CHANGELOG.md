@@ -1,5 +1,23 @@
 # @sap-ux/btp-utils
 
+## 1.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+## 1.0.3
+
+### Patch Changes
+
+-   d638daa: Update @sap/bas-sdk dependency
+
+## 1.0.2
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+
 ## 1.0.1
 
 ### Patch Changes

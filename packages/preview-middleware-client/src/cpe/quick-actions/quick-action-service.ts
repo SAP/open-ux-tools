@@ -11,7 +11,8 @@ import {
     QuickActionExecutionPayload,
     QuickActionGroup,
     updateQuickAction,
-    externalFileChange
+    externalFileChange,
+    reportTelemetry
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
@@ -22,6 +23,9 @@ import { OutlineService } from '../outline/service';
 import { getTextBundle, TextBundle } from '../../i18n';
 import { ChangeService } from '../changes';
 import { DialogFactory } from '../../adp/dialog-factory';
+import { getApplicationType } from '../../utils/application';
+import { getUi5Version } from '../../utils/version';
+
 
 /**
  * Service providing Quick Actions.
@@ -149,7 +153,20 @@ export class QuickActionService implements Service {
         }
     }
 
-    private executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
+    private async executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
+        try {
+            const versionInfo = await getUi5Version();
+            await reportTelemetry({
+                category: 'QuickAction',
+                actionName: actionInstance.type,
+                telemetryEventIdentifier: actionInstance.getTelemetryIdentifier(true),
+                quickActionSteps: actionInstance.quickActionSteps,
+                appType: getApplicationType(this.rta.getRootControlInstance().getManifest()),
+                ui5Version: `${versionInfo.major}.${versionInfo.minor}.${versionInfo.patch}`
+            });
+        } catch (error) {
+            Log.error('Error in reporting Telemetry:', error);
+        }
         if (payload.kind === SIMPLE_QUICK_ACTION_KIND && actionInstance.kind === SIMPLE_QUICK_ACTION_KIND) {
             return actionInstance.execute();
         }

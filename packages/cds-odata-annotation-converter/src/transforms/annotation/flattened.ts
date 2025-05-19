@@ -1,7 +1,8 @@
-import type { Identifier, AnnotationValue } from '@sap-ux/cds-annotation-parser';
+import type { Identifier, AnnotationValue, StringLiteral } from '@sap-ux/cds-annotation-parser';
+import { nodeRange, ReservedProperties, STRING_LITERAL_TYPE } from '@sap-ux/cds-annotation-parser';
 
 import type { Element, Range } from '@sap-ux/odata-annotation-core';
-import { Edm, createElementNode } from '@sap-ux/odata-annotation-core';
+import { DiagnosticSeverity, Edm, createAttributeNode, createElementNode } from '@sap-ux/odata-annotation-core';
 
 import type { Subtree } from './handler';
 
@@ -11,6 +12,7 @@ import { getPropertyType, getTerm } from './type-resolver';
 import type { Context, VisitorState } from './visitor-state';
 import { copyRange, createRange } from './range';
 import type { ComplexTypeProperty, Term } from '@sap-ux/odata-vocabularies';
+import { i18n } from '../../i18n';
 
 /**
  * Builds a tree from a flattened annotation structure and updates context with the final value type.
@@ -46,37 +48,36 @@ export function convertFlattenedPath(
     //             Property    Property      Enum Member
     let root: Element | undefined;
     let parent: Element | undefined;
-    const expandedStructures = convertToExpandedStructure(state, segments, value?.range);
+    const expandedStructures = convertToExpandedStructure(state, segments, value);
+    if (!expandedStructures.length) {
+        return;
+    }
+
     for (const expandedStructure of expandedStructures) {
         if (parent) {
-            const record: Element = createElementNode({
-                name: Edm.Record,
-                range: expandedStructure.element.range ?? undefined,
-                content: [expandedStructure.element],
-                contentRange: expandedStructure.element.range ?? undefined
-            });
-            // property content range should include only child range
-            parent.contentRange = record.range ?? undefined;
-            parent.content.push(record);
+            if (expandedStructure.kind === 'record-type') {
+                if (expandedStructure.element.range) {
+                    parent.contentRange = copyRange(expandedStructure.element.range);
+                }
+                parent.content.push(expandedStructure.element);
+            } else {
+                const record: Element = createElementNode({
+                    name: Edm.Record,
+                    range: expandedStructure.element.range ?? undefined,
+                    content: [expandedStructure.element],
+                    contentRange: expandedStructure.element.range ?? undefined
+                });
+                // property content range should include only child range
+                parent.contentRange = record.range ?? undefined;
+                parent.content.push(record);
+            }
         } else {
             root = expandedStructure.element;
         }
         parent = expandedStructure.element;
     }
 
-    const last = expandedStructures[expandedStructures.length - 1];
-    const newContext: Context = {
-        valueType: last.vocabularyObject?.type,
-        isCollection: last.vocabularyObject?.isCollection
-    };
-
-    if (last.kind === 'annotation') {
-        newContext.termType = last.vocabularyObject?.type;
-    } else {
-        newContext.propertyName = last.element.attributes[Edm.Property].value;
-    }
-
-    state.pushContext({ ...state.context, ...newContext });
+    state.pushContext({ ...state.context, ...createNewContext(expandedStructures) });
 
     if (!root || !parent) {
         return;
@@ -89,24 +90,50 @@ export function convertFlattenedPath(
 }
 
 interface ExpandedStructure {
-    kind: 'annotation' | 'property';
+    kind: 'annotation' | 'property' | 'record-type';
     name: string;
     element: Element;
     vocabularyObject?: Term | ComplexTypeProperty;
 }
 
 /**
+ * Creates a new context.
+ *
+ * @param expandedStructures expanded structure either annotation or property kind.
+ * @returns new context
+ */
+function createNewContext(expandedStructures: ExpandedStructure[]): Context {
+    const last = expandedStructures[expandedStructures.length - 1];
+    const newContext: Context = {
+        valueType: last.vocabularyObject?.type,
+        isCollection: last.vocabularyObject?.isCollection
+    };
+
+    if (last.kind === 'annotation') {
+        newContext.termType = last.vocabularyObject?.type;
+    } else if (last.kind === 'record-type') {
+        newContext.recordType = last.element.attributes[Edm.Type].value;
+    } else {
+        newContext.propertyName = last.element.attributes[Edm.Property].value;
+    }
+
+    return newContext;
+}
+
+/**
+ * Converts segments to expanded structure.
  *
  * @param state VisitorSate for which context will be updated with the inferred value types.
  * @param segments Array of identifiers representing flattened record structure.
- * @param valueRange element content/value range.
+ * @param value AnnotationValue
  * @returns expanded structure either annotation or property kind.
  */
 function convertToExpandedStructure(
     state: VisitorState,
     segments: Identifier[],
-    valueRange: Range | undefined
+    value: AnnotationValue | undefined
 ): ExpandedStructure[] {
+    const valueRange = value?.range;
     const expandedStructure: ExpandedStructure[] = [];
     const initialType = state.context.recordType ?? state.context.termType;
     const lastSegment = valueRange ? undefined : segments[segments.length - 1];
@@ -144,30 +171,49 @@ function convertToExpandedStructure(
             i += 2;
             continue;
         }
-
-        const flatProperty: Element = createElementNode({
-            name: Edm.PropertyValue,
-            range: propertyRange,
-            contentRange: propertyRange,
-            attributes: {
-                [Edm.Property]: createPropertyAttribute(segment.value, segment.range)
+        if (segment.value === ReservedProperties.Type) {
+            const hasSegmentAhead = segments[i + 1];
+            if (hasSegmentAhead) {
+                addDiagnosticForSegmentAfterType(state, segments.slice(i + 1), valueRange);
+                break;
             }
-        });
+            createRecordTypeAttribute(state, expandedStructure, segment, value, propertyRange);
+        } else {
+            const flatProperty: Element = createElementNode({
+                name: Edm.PropertyValue,
+                range: propertyRange,
+                contentRange: propertyRange,
+                attributes: {
+                    [Edm.Property]: createPropertyAttribute(segment.value, segment.range)
+                }
+            });
 
-        const parentType = expandedStructure[expandedStructure.length - 1]?.vocabularyObject?.type ?? initialType;
-        expandedStructure.push({
-            kind: 'property',
-            name: segment.value,
-            vocabularyObject: getPropertyType(state.vocabularyService, parentType, segment.value),
-            element: flatProperty
-        });
+            const parentType = expandedStructure[expandedStructure.length - 1]?.vocabularyObject?.type ?? initialType;
+            expandedStructure.push({
+                kind: 'property',
+                name: segment.value,
+                vocabularyObject: getPropertyType(state.vocabularyService, parentType, segment.value),
+                element: flatProperty
+            });
+        }
         i++;
     }
+    adjustLastSegmentRange(expandedStructure, valueRange);
 
+    return expandedStructure;
+}
+
+/**
+ * Adjusts the last segment range of the expanded structure.
+ *
+ * @param expandedStructure expanded structure either annotation or property kind.
+ * @param valueRange Value range
+ */
+function adjustLastSegmentRange(expandedStructure: ExpandedStructure[], valueRange?: Range): void {
     // the leaf element should only include the values range in it's contentRange
     const last = expandedStructure[expandedStructure.length - 1];
     if (last) {
-        if (valueRange) {
+        if (valueRange && last.kind !== 'record-type') {
             last.element.contentRange = copyRange(valueRange);
         } else {
             // content range should not be added in case value does not exist
@@ -175,6 +221,93 @@ function convertToExpandedStructure(
             delete last.element.contentRange;
         }
     }
+}
 
-    return expandedStructure;
+/**
+ * Adds a diagnostic for segments after $Type.
+ *
+ * @param state VisitorSate for which context will be updated with the inferred value types.
+ * @param segments Array of identifiers representing flattened record structure.
+ * @param valueRange value range
+ */
+function addDiagnosticForSegmentAfterType(state: VisitorState, segments: Identifier[], valueRange?: Range): void {
+    if (segments.length >= 1) {
+        const message = i18n.t('No_segments_after_type');
+        const lastSegment = segments[segments.length - 1];
+        const propertyRange = createRange(segments[0].range?.start, valueRange?.end ?? lastSegment?.range?.end);
+        if (propertyRange) {
+            state.addDiagnostic({
+                range: propertyRange,
+                severity: DiagnosticSeverity.Error,
+                message
+            });
+        }
+    }
+}
+/**
+ * Adds a diagnostic for non-string literal type and no value scenarios.
+ *
+ * @param state VisitorSate for which context will be updated with the inferred value types.
+ * @param value AnnotationValue
+ * @param segmentRange segment range
+ */
+function addDiagnosticForNonStringLiteralType(
+    state: VisitorState,
+    value?: AnnotationValue,
+    segmentRange?: Range
+): void {
+    if (value?.type !== STRING_LITERAL_TYPE && value?.range) {
+        const message = i18n.t('Type_value_must_be_string');
+        state.addDiagnostic({
+            range: value.range,
+            severity: DiagnosticSeverity.Error,
+            message
+        });
+    } else if (!value && segmentRange) {
+        state.addDiagnostic({
+            range: segmentRange,
+            severity: DiagnosticSeverity.Error,
+            message: i18n.t('Value_must_be_provided')
+        });
+    }
+}
+
+/**
+ * Add record's type to the expanded structure.
+ *
+ * @param state VisitorSate for which context will be updated with the inferred value types.
+ * @param expandedStructures expanded structure either annotation or property kind.
+ * @param segment Identifiers representing flattened record structure.
+ * @param value AnnotationValue
+ * @param propertyRange Range
+ */
+function createRecordTypeAttribute(
+    state: VisitorState,
+    expandedStructures: ExpandedStructure[],
+    segment: Identifier,
+    value?: AnnotationValue,
+    propertyRange?: Range
+): void {
+    if (value?.type === STRING_LITERAL_TYPE) {
+        const flatProperty: Element = createElementNode({
+            name: Edm.Record,
+            attributes: {
+                [Edm.Type]: createAttributeNode(
+                    Edm.Type,
+                    (value as StringLiteral)?.value,
+                    segment.range,
+                    nodeRange(value, false)
+                )
+            },
+            range: propertyRange
+        });
+
+        expandedStructures.push({
+            kind: 'record-type',
+            name: segment.value,
+            element: flatProperty
+        });
+        return;
+    }
+    addDiagnosticForNonStringLiteralType(state, value, segment.range);
 }

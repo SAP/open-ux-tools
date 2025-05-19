@@ -2,17 +2,9 @@ import { latestVersionString } from '@sap-ux/ui5-info';
 import { join } from 'path';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import * as promptHelpers from '../../../src/prompts/prompt-helpers';
-import {
-    appPathExists,
-    defaultAppName,
-    hidePrompts,
-    isVersionIncluded,
-    validateTargetFolder
-} from '../../../src/prompts/prompt-helpers';
+import { appPathExists, defaultAppName, hidePrompts, isVersionIncluded } from '../../../src/prompts/prompt-helpers';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../../../src/types';
 import { promptNames } from '../../../src/types';
-import * as projectValidators from '@sap-ux/project-input-validator';
-import * as validators from '../../../src/prompts/validators';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
     ...jest.requireActual('@sap-ux/project-input-validator'),
@@ -112,20 +104,23 @@ describe('prompt-helpers', () => {
             [promptNames.enableTypeScript]: {
                 name: promptNames.enableTypeScript
             },
+            [promptNames.enableVirtualEndpoints]: {
+                name: promptNames.enableVirtualEndpoints
+            },
             [promptNames.showAdvanced]: {
                 name: promptNames.showAdvanced
             }
         };
         // All prompts returned
-        expect(hidePrompts(prompts).length).toEqual(14);
+        expect(hidePrompts(prompts).length).toEqual(15);
         // Hide prompts that are not applicable for CAP projects
         let filteredPrompts = hidePrompts(prompts, {}, true);
-        expect(filteredPrompts.length).toEqual(12);
+        expect(filteredPrompts.length).toEqual(13);
         expect(filteredPrompts).not.toContainEqual({ name: promptNames.targetFolder });
         expect(filteredPrompts).not.toContainEqual({ name: promptNames.enableEslint });
 
-        // Hide prompts based on propmt options
-        const promptOpts: UI5ApplicationPromptOptions = {
+        // Hide prompts based on prompt options
+        let promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.addDeployConfig]: {
                 hide: true
             },
@@ -137,30 +132,21 @@ describe('prompt-helpers', () => {
             }
         };
         filteredPrompts = hidePrompts(prompts, promptOpts);
-        expect(filteredPrompts.length).toEqual(11);
+        expect(filteredPrompts.length).toEqual(12);
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.addDeployConfig }]));
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.skipAnnotations }]));
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.ui5Version }]));
-    });
-    test('validateTargetFolder', async () => {
-        // Test when name length > 2 and both validations pass
-        jest.spyOn(projectValidators, 'validateProjectFolder').mockReturnValue(true);
-        jest.spyOn(validators, 'validateFioriAppProjectFolder').mockResolvedValue(true);
-        const resultForValidCase = await validateTargetFolder('/some/target/path', 'validName', true);
-        expect(resultForValidCase).toBe(true);
-    });
-    test('validateTargetFolder - project folder validation error', async () => {
-        // Test when Project validation fails
-        const projectErrorMessage = 'Project validation error';
-        jest.spyOn(projectValidators, 'validateProjectFolder').mockReturnValue(projectErrorMessage);
-        const resultForProjectError = await validateTargetFolder('/some/target/path', 'validName');
-        expect(resultForProjectError).toBe(projectErrorMessage);
-    });
-    test('validateTargetFolder - fiori app project validation error', async () => {
-        // Test when Fiori validation fails
-        const fioriErrorMessage = 'Fiori validation error';
-        jest.spyOn(validators, 'validateFioriAppProjectFolder').mockResolvedValue(fioriErrorMessage);
-        const resultForFioriError = await validateTargetFolder('/some/target/path', 'validName', true);
-        expect(resultForFioriError).toBe(fioriErrorMessage);
+
+        // More testing of prompt options (hide fn)
+        promptOpts = {
+            [promptNames.addDeployConfig]: {
+                hide: (isCap) => {
+                    return isCap;
+                }
+            }
+        };
+        filteredPrompts = hidePrompts(prompts, promptOpts, true);
+        expect(filteredPrompts.length).toEqual(12);
+        expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.addDeployConfig }]));
     });
 });

@@ -4,9 +4,9 @@ import type { BackendSystem } from '@sap-ux/store';
 import type { Answers, InputQuestion, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import { promptNames } from '../../../../types';
-import { PromptState } from '../../../../utils';
+import { PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
-import type { SystemSelectionAnswerType } from '../system-selection';
+import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers';
 
 export enum BasicCredentialsPromptNames {
     systemUsername = 'systemUsername',
@@ -126,7 +126,7 @@ function updatePromptStateWithConnectedSystem(
     { username, password }: { username: string; password: string }
 ): void {
     PromptState.odataService.connectedSystem = {
-        serviceProvider
+        serviceProvider: removeCircularFromServiceProvider(serviceProvider)
     };
     // Update the existing backend system with the new credentials that may be used to update in the store.
     if (selectedSystem?.type === 'backendSystem') {

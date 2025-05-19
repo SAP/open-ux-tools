@@ -7,9 +7,7 @@ const COLORS = {
     warning: 'var(--vscode-notificationsWarningIcon-foreground)',
     error: 'var( --vscode-notificationsErrorIcon-foreground)',
     info: 'var(--vscode-notificationsInfoIcon-foreground)',
-    focus: 'var(--vscode-focusBorder)',
-    thumbOn: 'var(--vscode-button-foreground)',
-    thumbOff: 'var(--vscode-button-secondaryForeground)'
+    focus: 'var(--vscode-focusBorder)'
 };
 
 export enum UiIcons {
@@ -136,6 +134,7 @@ export enum UiIcons {
     SettingsHierarchy = 'SettingsHierarchy',
     SettingsWithChevron = 'SettingsWithChevron',
     Shape = 'Shape',
+    Shift = 'Shift',
     SidePanelRight = 'SidePanelRight',
     Sparkles = 'Sparkles',
     Sort = 'Sort',
@@ -1819,6 +1818,14 @@ export function initIcons(): void {
                     />
                 </svg>
             ),
+            [UiIcons.Shift]: (
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                        d="M9 9.40039C8.99979 9.72863 8.73459 10 8.40039 10H3.59961C3.26542 10 3.00021 9.72863 3 9.40039V7H1.13282C0.629418 6.99979 0.384087 6.371 0.773442 6.03418L1.36524 5.53711C1.96726 5.0439 2.59652 4.56298 3.2168 4.08789C4.04863 3.45077 4.86509 2.82429 5.60938 2.17774L5.69532 2.11524C5.87646 2.00703 6.10228 2.00197 6.28809 2.10254L6.37793 2.16211L11.2012 6.02051L11.2695 6.08496C11.5772 6.42448 11.3449 7 10.8574 7H9V9.40039ZM4 9H8V6.50977C8.00013 6.22829 8.22829 6.00013 8.50977 6H9.57422L6.00879 3.14746C5.30845 3.74009 4.56168 4.31602 3.82422 4.88086C3.33559 5.25512 2.85308 5.62719 2.38575 6H3.49024C3.77172 6.00013 3.99988 6.22829 4 6.50977V9Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
             [UiIcons.SidePanelRight]: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                     <path
@@ -1899,17 +1906,18 @@ export function initIcons(): void {
                 </svg>
             ),
             [UiIcons.SwitchOff]: (
-                <svg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L7 1" stroke={COLORS.thumbOff} strokeLinecap="round" />
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M9 5.5C9.27614 5.5 9.5 5.72386 9.5 6C9.5 6.27614 9.27614 6.5 9 6.5L3 6.5C2.72386 6.5 2.5 6.27614 2.5 6C2.5 5.72386 2.72386 5.5 3 5.5L9 5.5Z"
+                        fill={COLORS.default}
+                    />
                 </svg>
             ),
             [UiIcons.SwitchOn]: (
-                <svg width="8" height="6" viewBox="0 0 8 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
-                        d="M0.5 3.5L2.5 5.5L7.5 0.5"
-                        stroke={COLORS.thumbOn}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        d="M9.22461 3.08203C9.41869 2.95387 9.68265 2.97562 9.85352 3.14648C10.0244 3.31735 10.0461 3.58131 9.91797 3.77539L9.85352 3.85351L4.85351 8.85352C4.68265 9.02438 4.41869 9.04613 4.22461 8.91797L4.14648 8.85352L2.14648 6.85351L2.08203 6.77539C1.95387 6.58131 1.97562 6.31735 2.14648 6.14648C2.31735 5.97562 2.58131 5.95387 2.77539 6.08203L2.85351 6.14648L4.5 7.79297L9.14648 3.14648L9.22461 3.08203Z"
+                        fill={COLORS.default}
                     />
                 </svg>
             ),

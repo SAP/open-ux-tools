@@ -1,5 +1,52 @@
 # @sap-ux/ui5-config
 
+## 0.28.1
+
+### Patch Changes
+
+-   5e0020b: Support backend changes.
+
+## 0.28.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/yaml@0.17.0
+
+## 0.27.2
+
+### Patch Changes
+
+-   7590bc3: Remove legacy CF deploy task
+
+## 0.27.1
+
+### Patch Changes
+
+-   294bbe3: code cleanup with help from copilot
+
+## 0.27.0
+
+### Minor Changes
+
+-   1ca4004: updates for use for fiori tools preview middleware and use of virtual endpoints
+
+## 0.26.5
+
+### Patch Changes
+
+-   224494c: Improved add, delete and get methods for service backends.
+
+## 0.26.4
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+
 ## 0.26.3
 
 ### Patch Changes

@@ -1,5 +1,86 @@
 # @sap-ux/project-integrity
 
+## 0.2.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+
+## 0.2.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+
+## 0.1.21
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+
+## 0.1.20
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+
+## 0.1.19
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+
+## 0.1.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+
+## 0.1.17
+
+### Patch Changes
+
+-   3005a27: fix: make integrity check format free
+
+## 0.1.16
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+
+## 0.1.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.17
+
+## 0.1.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.16
+
+## 0.1.13
+
+### Patch Changes
+
+-   5148043: Fix to ensure writing of encoded integrity data
+
+## 0.1.12
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+
 ## 0.1.11
 
 ### Patch Changes

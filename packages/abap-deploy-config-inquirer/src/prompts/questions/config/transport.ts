@@ -37,7 +37,7 @@ export function getTransportRequestPrompts(
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
-            when: (): boolean => showTransportInputChoice(),
+            when: (): boolean => showTransportInputChoice(options.transportInputChoice),
             type: 'list',
             name: promptNames.transportInputChoice,
             message: t('prompts.config.transport.transportInputChoice.message'),
@@ -54,15 +54,16 @@ export function getTransportRequestPrompts(
                 input: TransportChoices,
                 previousAnswers: AbapDeployConfigAnswersInternal
             ): Promise<boolean | string> => {
-                const result = validateTransportChoiceInput(
+                const result = validateTransportChoiceInput({
                     useStandalone,
                     input,
                     previousAnswers,
-                    true,
-                    transportInputChoice,
-                    options.backendTarget,
-                    options.ui5AbapRepo?.default
-                );
+                    validateInputChanged: true,
+                    prevTransportInputChoice: transportInputChoice,
+                    backendTarget: options.backendTarget,
+                    ui5AbapRepoName: options.ui5AbapRepo?.default,
+                    transportDescription: options.transportCreated?.description
+                });
                 transportInputChoice = input;
                 return result;
             }
@@ -72,15 +73,14 @@ export function getTransportRequestPrompts(
             // Use this hidden question for calling ADT services.
             when: async (previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
                 if (!PromptState.isYUI) {
-                    const result = await validateTransportChoiceInput(
+                    const result = await validateTransportChoiceInput({
                         useStandalone,
-                        previousAnswers.transportInputChoice,
+                        input: previousAnswers.transportInputChoice,
                         previousAnswers,
-                        false,
-                        undefined,
-                        options.backendTarget,
-                        options.ui5AbapRepo?.default
-                    );
+                        validateInputChanged: false,
+                        backendTarget: options.backendTarget,
+                        ui5AbapRepoName: options.ui5AbapRepo?.default
+                    });
                     if (result !== true) {
                         throw new Error(result as string);
                     }
@@ -100,7 +100,7 @@ export function getTransportRequestPrompts(
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowTransportListQuestion(previousAnswers.transportInputChoice),
+                defaultOrShowTransportListQuestion(previousAnswers.transportInputChoice, options.transportInputChoice),
             type: 'list',
             name: promptNames.transportFromList,
             message: t('prompts.config.transport.common.transportRequest'),
@@ -113,7 +113,10 @@ export function getTransportRequestPrompts(
         } as ListQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowManualTransportQuestion(previousAnswers.transportInputChoice),
+                defaultOrShowManualTransportQuestion(
+                    previousAnswers.transportInputChoice,
+                    options.transportInputChoice
+                ),
             type: 'input',
             name: promptNames.transportManual,
             message: () =>

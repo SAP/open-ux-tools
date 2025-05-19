@@ -1,5 +1,65 @@
 # @sap-ux/ui-components
 
+## 1.26.4
+
+### Patch Changes
+
+-   739045a: feat(ui-components) export pivot
+
+## 1.26.3
+
+### Patch Changes
+
+-   46c775f: Icons update. Update icons "SwitchOff" and "SwitchOn"
+
+## 1.26.2
+
+### Patch Changes
+
+-   077eae5: feat(ui-components): UIIcons. Add new icon "Shift"
+
+## 1.26.1
+
+### Patch Changes
+
+-   698b7e3: Fixes space between empty table and Add button.
+
+## 1.26.0
+
+### Minor Changes
+
+-   e21805c: The icons <i>SwitchOff</i> and <i>SwitchOn</i> were standardized to 16×16 size. The UIToggle component was adjusted to use these icons.
+
+## 1.25.0
+
+### Minor Changes
+
+-   1c276ac: Remove font-family definitions from individual components and apply it globally.
+
+## 1.24.12
+
+### Patch Changes
+
+-   3a01535: UISections. Issue with window resize hiding section on fullscreen toggle event
+
+## 1.24.11
+
+### Patch Changes
+
+-   21292ad: Feat(UI components): issue #32314 - UITranslationInput inverted theme
+
+## 1.24.10
+
+### Patch Changes
+
+-   17847f9: UISections. Error `Cannot read properties of undefined (reading 'size')` is throws for section on initial rendering
+
+## 1.24.9
+
+### Patch Changes
+
+-   3190a55: UISections. Fixed incorrect position calculations when hiding sections with three or more sections present.
+
 ## 1.24.8
 
 ### Patch Changes

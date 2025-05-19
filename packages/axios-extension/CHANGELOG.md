@@ -1,5 +1,64 @@
 # @sap-ux/axios-extension
 
+## 1.21.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+
+## 1.20.3
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+
+## 1.20.2
+
+### Patch Changes
+
+-   1a01c5e: Update README.adoc showing how to use proxy credentials
+
+## 1.20.1
+
+### Patch Changes
+
+-   a3a43b2: Append warning message if the BSP properties do not match the deployed BSP properties
+
+## 1.20.0
+
+### Minor Changes
+
+-   28c6594: Added a new sub-generator: `@sap-ux/repo-app-download-sub-generator` to support downloading ABAP deployed Fiori apps from the repository. Enhanced `@sap-ux/axios-extension` to support Base64 download data.
+
+## 1.19.3
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+
+## 1.19.2
+
+### Patch Changes
+
+-   ced5edf: feat(generator-adp): Create a yeoman package for Adaptation Project generator
+
+## 1.19.1
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+
 ## 1.19.0
 
 ### Minor Changes

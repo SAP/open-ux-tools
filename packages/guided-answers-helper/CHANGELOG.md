@@ -1,5 +1,17 @@
 # @sap-ux/guided-answers-helper
 
+## 0.3.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+## 0.2.2
+
+### Patch Changes
+
+-   e5f4915: Added GA link and moved validate logic to a function
+
 ## 0.2.1
 
 ### Patch Changes

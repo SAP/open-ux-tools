@@ -38,6 +38,8 @@ import { ValueState } from 'sap/ui/core/library';
 import Input from 'sap/m/Input';
 import Control from 'sap/ui/core/Control';
 import ManagedObject from 'sap/ui/base/ManagedObject';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { setAdditionalChangeInfoForChangeFile } from '../../utils/additional-change-info';
 
 const radix = 10;
 
@@ -59,8 +61,14 @@ interface CreateFragmentProps {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsFragmentsModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions) {
-        super(name);
+    constructor(
+        name: string,
+        overlays: UI5Element,
+        rta: RuntimeAuthoring,
+        readonly options: AddFragmentOptions,
+        telemetryData?: QuickActionTelemetryData
+    ) {
+        super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel({
@@ -94,6 +102,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
+        await super.onCreateBtnPressHandler();
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
@@ -246,15 +255,13 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
      *
      * @param fragmentData Fragment Data
      */
-    private async createFragmentChange(fragmentData: CreateFragmentProps): Promise<string[] | undefined> {
+    private async createFragmentChange(fragmentData: CreateFragmentProps): Promise<void> {
         const { fragments, index } = fragmentData;
 
         const flexSettings = this.rta.getFlexSettings();
 
         const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
         const designMetadata = overlay.getDesignTimeMetadata();
-
-        const result: string[] = [];
 
         const compositeCommand = await this.commandExecutor.createCompositeCommand(this.runtimeControl);
 
@@ -276,22 +283,18 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
                 targetObject,
                 'addXML',
                 modifiedValue,
-                designMetadata,
-                flexSettings
+                flexSettings,
+                designMetadata
             );
 
             const templateName =
                 fragment.targetAggregation === COLUMNS_AGGREGATION ? `V2_SMART_TABLE_COLUMN` : 'V2_SMART_TABLE_CELL';
             const preparedChange = command.getPreparedChange();
-            const content = { ...preparedChange.getContent(), templateName };
-            preparedChange.setContent(content);
+            setAdditionalChangeInfoForChangeFile(preparedChange.getDefinition().fileName, { templateName });
             compositeCommand.addCommand(command, false);
-            result.push(templateName);
         }
 
         await this.commandExecutor.pushAndExecuteCommand(compositeCommand);
         CommunicationService.sendAction(setApplicationRequiresReload(true));
-
-        return result;
     }
 }

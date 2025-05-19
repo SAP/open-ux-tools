@@ -2,25 +2,27 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
-import { getTemplatePath, setMtaDefaults, validateVersion } from '../utils';
+import { addXSSecurityConfig, getTemplatePath, setMtaDefaults, validateVersion, runCommand } from '../utils';
 import {
-    MTAYamlFile,
     MTAVersion,
     MTADescription,
-    deployMode,
-    enableParallelDeployments,
     CDSAddMtaParams,
     CDSBinNotFound,
     CDSExecutable,
     MTABinNotFound,
-    MTAExecutable
+    MTAExecutable,
+    CDSXSUAAService,
+    CDSDestinationService,
+    CDSHTML5RepoService,
+    RouterModule
 } from '../constants';
-import type { mta } from '@sap/mta-lib';
-import { type MTABaseConfig, type CFBaseConfig } from '../types';
+import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, type CAPConfig, RouterModuleType } from '../types';
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
-import { spawnSync } from 'child_process';
 import { t } from '../i18n';
+import { type Editor } from 'mem-fs-editor';
+import { apiGetInstanceCredentials } from '@sap/cf-tools';
+import { FileName } from '@sap-ux/project-access';
 
 /**
  * Get the MTA ID, read from the root path specified.
@@ -47,10 +49,11 @@ export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefi
                 break;
             }
         } catch (error) {
-            await new Promise((resolve) => setTimeout(resolve, 300));
+            LoggerHelper.logger?.debug(t('debug.errorReadingMta', { error: error.message }));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
         }
     }
-    LoggerHelper.logger?.info(`Read mta.yaml with prefix ${mtaConfig?.prefix}`);
+    LoggerHelper.logger?.debug(t('debug.mtaReadWithPrefix', { prefix: mtaConfig?.prefix }));
     return mtaConfig;
 }
 
@@ -70,42 +73,17 @@ export function toMtaModuleName(appId: string): string {
  * @param config writer configuration
  */
 export function createMTA(config: MTABaseConfig): void {
-    const mtaTemplate = readFileSync(getTemplatePath(`app/${MTAYamlFile}`), 'utf-8');
+    const mtaId = `${config.mtaId.slice(0, 128)}`;
+    const mtaTemplate = readFileSync(getTemplatePath(`app/${FileName.MtaYaml}`), 'utf-8');
     const mtaContents = render(mtaTemplate, {
-        id: `${config.mtaId.slice(0, 128)}`,
+        id: mtaId,
         mtaDescription: config.mtaDescription ?? MTADescription,
         mtaVersion: config.mtaVersion ?? MTAVersion
     });
+    config.mtaId = mtaId;
     // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
-    writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
+    writeFileSync(join(config.mtaPath, FileName.MtaYaml), mtaContents);
     LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
-}
-
-/**
- *  Add the build parameters to the MTA configuration.
- *
- * @param mtaInstance MTA instance
- */
-export async function addMtaBuildParams(mtaInstance: MtaConfig): Promise<void> {
-    let params = await mtaInstance.getBuildParameters();
-    params = { ...(params || {}), ...{} } as mta.ProjectBuildParameters;
-    params['before-all'] ||= [];
-    const buildParams: mta.BuildParameters = { builder: 'custom', commands: ['npm install'] };
-    params['before-all'].push(buildParams);
-    await mtaInstance.updateBuildParams(params);
-}
-
-/**
- * Add the deployment parameters to the MTA configuration.
- *
- * @param mtaInstance MTA instance
- */
-export async function addMtaDeployParameters(mtaInstance: MtaConfig): Promise<void> {
-    let params = await mtaInstance.getParameters();
-    params = { ...(params || {}), ...{} } as mta.Parameters;
-    params[deployMode] = 'html5-repo';
-    params[enableParallelDeployments] = true;
-    await mtaInstance.updateParameters(params);
 }
 
 /**
@@ -128,26 +106,6 @@ export function doesCDSBinaryExist(): void {
     if (!sync(CDSExecutable)) {
         throw new Error(CDSBinNotFound);
     }
-}
-
-/**
- * Create MTA using `cds` binary to add mta and any optional services.
- *
- * @param cwd
- * @param options
- */
-export function createCAPMTA(cwd: string, options?: string[]): void {
-    let result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], { cwd });
-    if (result?.error) {
-        throw new Error(`Something went wrong creating mta.yaml! ${result.error}`);
-    }
-    // Ensure the package-lock is created otherwise mta build will fail
-    const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-    result = spawnSync(cmd, ['install', '--ignore-engines'], { cwd });
-    if (result?.error) {
-        throw new Error(`Something went wrong installing node modules! ${result.error}`);
-    }
-    LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
 }
 
 /**
@@ -177,8 +135,113 @@ export function validateMtaConfig(config: CFBaseConfig): void {
     ) {
         throw new Error(t('error.missingABAPServiceBindingDetails'));
     }
-
     setMtaDefaults(config);
+}
+
+/**
+ * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system i.e mta-lib.
+ *
+ * Note: this function is deprecated and will be removed in future releases since the cds binary currently does not support app frontend services.
+ *
+ * @param config writer configuration
+ * @param fs reference to a mem-fs editor
+ * @deprecated this function is deprecated and will be removed in future releases
+ */
+async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<void> {
+    const mtaTemplate = readFileSync(getTemplatePath(`frontend/${FileName.MtaYaml}`), 'utf-8');
+    const mtaContents = render(mtaTemplate, {
+        id: `${config.mtaId.slice(0, 128)}`,
+        mtaDescription: config.mtaDescription ?? MTADescription,
+        mtaVersion: config.mtaVersion ?? MTAVersion
+    });
+    // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
+    writeFileSync(join(config.mtaPath, FileName.MtaYaml), mtaContents);
+    // Add missing configurations
+    addXSSecurityConfig(config, fs, false);
+    LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
+}
+
+/**
+ *  Add standalone app router to the target folder.
+ *
+ * @param cfConfig writer configuration
+ * @param mtaInstance MTA configuration instance
+ * @param fs reference to a mem-fs editor
+ */
+async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfig, fs: Editor): Promise<void> {
+    await mtaInstance.addStandaloneRouter(true);
+    if (cfConfig.addConnectivityService) {
+        await mtaInstance.addConnectivityResource();
+    }
+    const { abapServiceName, abapService } = cfConfig.abapServiceProvider ?? {};
+    if (abapServiceName && abapService) {
+        await mtaInstance.addAbapService(abapServiceName, abapService);
+    }
+
+    fs.copyTpl(getTemplatePath(`router/package.json`), join(cfConfig.mtaPath, `${RouterModule}/${FileName.Package}`));
+
+    if (abapServiceName) {
+        let serviceKey;
+        try {
+            const instanceCredentials = await apiGetInstanceCredentials(abapServiceName);
+            serviceKey = instanceCredentials?.credentials;
+        } catch {
+            LoggerHelper.logger?.error(t('error.serviceKeyFailed'));
+        }
+        const endpoints = serviceKey?.endpoints ? Object.keys(serviceKey.endpoints) : [''];
+        const service = serviceKey ? serviceKey['sap.cloud.service'] : '';
+        fs.copyTpl(
+            getTemplatePath('router/xs-app-abapservice.json'),
+            join(cfConfig.mtaPath, `${RouterModule}/${FileName.XSAppJson}`),
+            { servicekeyService: service, servicekeyEndpoint: endpoints[0] }
+        );
+    } else {
+        fs.copyTpl(
+            getTemplatePath('router/xs-app-server.json'),
+            join(cfConfig.mtaPath, `${RouterModule}/${FileName.XSAppJson}`)
+        );
+    }
+}
+
+/**
+ * Add standalone | managed | frontend app router to the target folder.
+ *
+ * @param config writer configuration
+ * @param fs reference to a mem-fs editor
+ */
+export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promise<void> {
+    const mtaConfigInstance = await getMtaConfig(config.mtaPath);
+    if (mtaConfigInstance) {
+        if (config.routerType === RouterModuleType.Standard) {
+            await addStandaloneRouter(config, mtaConfigInstance, fs);
+        } else {
+            await mtaConfigInstance.addRouterType({ routerType: config.routerType, addMissingModules: false });
+        }
+        await mtaConfigInstance.save();
+        LoggerHelper.logger?.debug(t('debug.capMtaUpdated'));
+    }
+}
+
+/**
+ * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system i.e mta-lib.
+ *
+ * @param config writer configuration
+ * @param fs reference to a mem-fs editor
+ */
+export async function generateCAPMTA(config: CAPConfig, fs: Editor): Promise<void> {
+    if (config.routerType === RouterModuleType.AppFront) {
+        await createCAPMTAAppFrontend(config, fs);
+    } else {
+        const defaultOptions: CDSServiceType[] = [
+            CDSXSUAAService,
+            CDSDestinationService,
+            CDSHTML5RepoService
+        ] as CDSServiceType[];
+        const cdsParams = [...CDSAddMtaParams, ...defaultOptions];
+        LoggerHelper.logger?.debug(t('debug.creatingMta', { cdsParams: cdsParams.toString() }));
+        await runCommand(config.mtaPath, CDSExecutable, cdsParams, t('error.errorGeneratingMtaYaml'));
+        LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
+    }
 }
 
 export * from './mta';

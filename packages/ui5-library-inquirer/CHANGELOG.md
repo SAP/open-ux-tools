@@ -1,5 +1,161 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [66b88e1]
+    -   @sap-ux/inquirer-common@0.7.1
+    -   @sap-ux/project-input-validator@0.6.1
+
+## 0.4.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-input-validator@0.6.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/ui5-info@0.11.0
+
+## 0.3.76
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.43
+
+## 0.3.75
+
+### Patch Changes
+
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/project-input-validator@0.5.6
+
+## 0.3.74
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.5.5
+-   @sap-ux/inquirer-common@0.6.42
+
+## 0.3.73
+
+### Patch Changes
+
+-   Updated dependencies [2050952]
+    -   @sap-ux/ui5-info@0.10.1
+    -   @sap-ux/inquirer-common@0.6.41
+
+## 0.3.72
+
+### Patch Changes
+
+-   Updated dependencies [c64de75]
+    -   @sap-ux/ui5-info@0.10.0
+    -   @sap-ux/inquirer-common@0.6.40
+
+## 0.3.71
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.5.4
+-   @sap-ux/inquirer-common@0.6.39
+
+## 0.3.70
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.5.3
+-   @sap-ux/inquirer-common@0.6.38
+
+## 0.3.69
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.37
+-   @sap-ux/project-input-validator@0.5.2
+
+## 0.3.68
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+
+## 0.3.67
+
+### Patch Changes
+
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+
+## 0.3.66
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.35
+
+## 0.3.65
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.34
+
+## 0.3.64
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.33
+
+## 0.3.63
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/inquirer-common@0.6.32
+
+## 0.3.62
+
+### Patch Changes
+
+-   Updated dependencies [ab81490]
+    -   @sap-ux/project-input-validator@0.5.0
+
+## 0.3.61
+
+### Patch Changes
+
+-   Updated dependencies [c69752b]
+    -   @sap-ux/project-input-validator@0.4.0
+
+## 0.3.60
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.31
+
+## 0.3.59
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.30
+
+## 0.3.58
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/inquirer-common@0.6.29
+    -   @sap-ux/ui5-info@0.9.1
+
+## 0.3.57
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.28
+
 ## 0.3.56
 
 ### Patch Changes

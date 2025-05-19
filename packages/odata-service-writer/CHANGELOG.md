@@ -1,5 +1,104 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.1
+
+### Patch Changes
+
+-   5e0020b: Support backend changes.
+-   Updated dependencies [5e0020b]
+    -   @sap-ux/ui5-config@0.28.1
+    -   @sap-ux/mockserver-config-writer@0.9.1
+    -   @sap-ux/project-access@1.30.1
+
+## 0.27.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/mockserver-config-writer@0.9.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/ui5-config@0.28.0
+
+## 0.26.18
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/mockserver-config-writer@0.8.15
+
+## 0.26.17
+
+### Patch Changes
+
+-   8d4bca6: Write service annotations using `name` instead of `technicalName` to avoid sub folders
+
+## 0.26.16
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+    -   @sap-ux/mockserver-config-writer@0.8.14
+    -   @sap-ux/project-access@1.29.21
+
+## 0.26.15
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/ui5-config@0.27.1
+    -   @sap-ux/mockserver-config-writer@0.8.13
+
+## 0.26.14
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/mockserver-config-writer@0.8.12
+    -   @sap-ux/project-access@1.29.19
+
+## 0.26.13
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/mockserver-config-writer@0.8.11
+
+## 0.26.12
+
+### Patch Changes
+
+-   224494c: Improved add, delete and get methods for service backends.
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/mockserver-config-writer@0.8.10
+    -   @sap-ux/project-access@1.29.17
+
+## 0.26.11
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/mockserver-config-writer@0.8.9
+    -   @sap-ux/project-access@1.29.16
+
+## 0.26.10
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/mockserver-config-writer@0.8.8
+
 ## 0.26.9
 
 ### Patch Changes

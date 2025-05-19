@@ -1,5 +1,143 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.5.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/cds-odata-annotation-converter@0.5.8
+
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/cds-annotation-parser@0.2.10
+    -   @sap-ux/cds-odata-annotation-converter@0.5.8
+    -   @sap-ux/odata-annotation-core@0.2.4
+    -   @sap-ux/odata-annotation-core-types@0.4.3
+    -   @sap-ux/xml-odata-annotation-converter@0.3.4
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/odata-vocabularies@0.4.8
+
+## 0.5.3
+
+### Patch Changes
+
+-   aeb23b0: fix: support new cds parser
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/cds-odata-annotation-converter@0.5.7
+
+## 0.5.1
+
+### Patch Changes
+
+-   2024a9f: chore: update `@sap/ux-cds-compiler-facade` dependency
+-   Updated dependencies [2024a9f]
+    -   @sap-ux/cds-odata-annotation-converter@0.5.7
+
+## 0.5.0
+
+### Minor Changes
+
+-   2a16531: feat: for XML projects relax metadata reference check in annotation files.
+
+### Patch Changes
+
+-   Updated dependencies [2a16531]
+    -   @sap-ux/odata-annotation-core@0.2.3
+    -   @sap-ux/cds-annotation-parser@0.2.9
+    -   @sap-ux/cds-odata-annotation-converter@0.5.6
+    -   @sap-ux/xml-odata-annotation-converter@0.3.3
+
+## 0.4.27
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.26
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.25
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.24
+
+### Patch Changes
+
+-   Updated dependencies [fb49882]
+    -   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.23
+
+### Patch Changes
+
+-   7cda000: fix: writing empty path values results in a compile error in CDS projects
+-   Updated dependencies [7cda000]
+    -   @sap-ux/cds-odata-annotation-converter@0.5.4
+
+## 0.4.22
+
+### Patch Changes
+
+-   d873cbd: chore - Add repository metadata in package.json
+-   Updated dependencies [d873cbd]
+    -   @sap-ux/cds-annotation-parser@0.2.8
+    -   @sap-ux/cds-odata-annotation-converter@0.5.3
+
+## 0.4.21
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/cds-odata-annotation-converter@0.5.2
+
+## 0.4.20
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/cds-odata-annotation-converter@0.5.2
+
+## 0.4.19
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/odata-vocabularies@0.4.7
+    -   @sap-ux/cds-annotation-parser@0.2.7
+    -   @sap-ux/cds-odata-annotation-converter@0.5.2
+    -   @sap-ux/xml-odata-annotation-converter@0.3.2
+    -   @sap-ux/project-access@1.29.16
+
+## 0.4.18
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/cds-odata-annotation-converter@0.5.1
+
 ## 0.4.17
 
 ### Patch Changes

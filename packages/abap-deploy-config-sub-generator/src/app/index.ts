@@ -16,7 +16,7 @@ import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from '@sap-ux/
 import { generate as generateAbapDeployConfig } from '@sap-ux/abap-deploy-config-writer';
 import { initTelemetrySettings } from '@sap-ux/telemetry';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { FileName } from '@sap-ux/project-access';
+import { FileName, getAppType } from '@sap-ux/project-access';
 import { AuthenticationType } from '@sap-ux/store';
 import { t, handleProjectDoesNotExist, indexHtmlExists } from '../utils';
 import { getAbapQuestions } from './questions';
@@ -28,8 +28,8 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer/dist/constants';
 import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { AbapDeployConfigOptions } from './types';
-import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-inquirer';
+import type { AbapDeployConfigOptions, AbapDeployConfigPromptOptions } from './types';
+import type { AbapDeployConfigAnswersInternal, AbapDeployConfigQuestion } from '@sap-ux/abap-deploy-config-inquirer';
 
 /**
  * ABAP deploy config generator.
@@ -161,12 +161,26 @@ export default class extends DeploymentGenerator {
             return;
         }
         if (!this.launchDeployConfigAsSubGenerator) {
+            const appType = await getAppType(this.destinationPath());
+            const isAdp = appType === 'Fiori Adaptation';
+            const promptOptions: AbapDeployConfigPromptOptions = {
+                ui5AbapRepo: { hideIfOnPremise: isAdp },
+                transportInputChoice: { hideIfOnPremise: isAdp },
+                packageAutocomplete: {
+                    shouldValidatePackageForStartingPrefix: isAdp,
+                    shouldValidatePackageType: isAdp,
+                    shouldValidateFormatAndSpecialCharacters: isAdp
+                },
+                packageManual: { shouldValidatePackageForStartingPrefix: isAdp, shouldValidatePackageType: isAdp },
+                targetSystem: { shouldRestrictDifferentSystemType: isAdp }
+            };
+            const indexGenerationAllowed = this.indexGenerationAllowed && !isAdp;
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({
                 appRootPath: this.destinationRoot(),
                 connectedSystem: this.options.connectedSystem,
                 backendConfig: this.backendConfig,
                 configFile: this.options.config,
-                indexGenerationAllowed: this.indexGenerationAllowed,
+                indexGenerationAllowed,
                 showOverwriteQuestion: showOverwriteQuestion(
                     this.launchDeployConfigAsSubGenerator,
                     this.launchStandaloneFromYui,
@@ -174,7 +188,8 @@ export default class extends DeploymentGenerator {
                     this.configExists
                 ),
                 projectType: this.projectType,
-                logger: DeploymentGenerator.logger
+                logger: DeploymentGenerator.logger,
+                promptOptions
             });
             const prompAnswers = await this.prompt(abapDeployConfigPrompts);
             this.answers = reconcileAnswers(prompAnswers, abapAnswers);
@@ -316,6 +331,7 @@ export default class extends DeploymentGenerator {
     }
 }
 
+export { AbapDeployConfigQuestion, AbapDeployConfigAnswersInternal };
 export { getAbapQuestions } from './questions';
 export { indexHtmlExists } from '../utils';
-export { AbapDeployConfigOptions, DeployProjectType } from './types';
+export { AbapDeployConfigOptions, DeployProjectType, AbapDeployConfigPromptOptions } from './types';

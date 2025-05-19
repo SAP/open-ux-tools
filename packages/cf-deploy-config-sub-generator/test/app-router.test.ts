@@ -15,7 +15,9 @@ import * as cfConfigInquirer from '@sap-ux/cf-deploy-config-inquirer';
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -28,7 +30,9 @@ jest.mock('hasbin', () => ({
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        Mta: require('./utils/mock-mta').MockMta
+        get Mta() {
+            return jest.requireActual('./utils/mock-mta').MockMta;
+        }
     };
 });
 
@@ -259,6 +263,50 @@ describe('App router generator tests', () => {
         const expectMtaContent = testFixture.getContents('sap-ux-test/mta.managed.yaml');
         const expectMtaConfig = yaml.load(expectMtaContent);
         expect(mtaConfig).toEqual(expectMtaConfig);
+    });
+
+    it('Generate app router project with app frontend service', async () => {
+        hasbinSyncMock.mockReturnValue(true);
+        const targetFolder = (cwd = OUTPUT_DIR_PREFIX);
+        await expect(
+            yeomanTest
+                .create(
+                    AppRouterGenerator,
+                    {
+                        resolved: appRouterGenPath
+                    },
+                    {
+                        cwd: targetFolder
+                    }
+                )
+                .withOptions({ skipInstall: true })
+                .withPrompts({
+                    mtaPath: targetFolder,
+                    mtaId: sapUxTest,
+                    mtaDescription: 'Main MTA configuration for router',
+                    mtaVersion: '0.0.1',
+                    routerType: RouterModuleType.AppFront
+                })
+                .run()
+        ).resolves.not.toThrow();
+
+        const appRouterDir = join(`${targetFolder}/${sapUxTest}`);
+
+        const mtaContent = fs.readFileSync(`${appRouterDir}/mta.yaml`, 'utf-8');
+        const mtaConfig = yaml.load(mtaContent);
+        const expectMtaContent = testFixture.getContents('sap-ux-test/mta.appfront.yaml');
+        const expectMtaConfig = yaml.load(expectMtaContent);
+        expect(mtaConfig).toEqual(expectMtaConfig);
+        expect(fs.readFileSync(`${appRouterDir}/xs-security.json`, 'utf-8')).toMatchInlineSnapshot(`
+            "{
+              "xsappname": "sap-ux-test",
+              "tenant-mode": "dedicated",
+              "description": "Security profile of called application",
+              "scopes": [],
+              "role-templates": []
+            }
+            "
+        `);
     });
 
     it('Generate throws error when no mta exe found (CLI)', async () => {

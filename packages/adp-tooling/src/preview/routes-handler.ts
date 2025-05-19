@@ -10,12 +10,12 @@ import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
 import { TemplateFileName, HttpStatusCodes } from '../types';
-import { DirName, FileName } from '@sap-ux/project-access';
+import { DirName } from '@sap-ux/project-access';
 import { type CodeExtChange } from '../types';
 import { ManifestService } from '../base/abap/manifest-service';
 import type { DataSources } from '../base/abap/manifest-service';
-import { getAdpConfig, getVariant, isTypescriptSupported } from '../base/helper';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { getVariant, isTypescriptSupported } from '../base/helper';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 interface WriteControllerBody {
     controllerName: string;
@@ -33,12 +33,15 @@ interface AnnotationDataSourceMap {
     [key: string]: {
         serviceUrl: string;
         annotationDetails: AnnotationFileDetails;
+        metadataReadErrorMsg: string | undefined;
     };
 }
 export interface AnnotationDataSourceResponse {
     isRunningInBAS: boolean;
     annotationDataSourceMap: AnnotationDataSourceMap;
 }
+
+type ControllerInfo = { controllerName: string };
 
 /**
  * @description Handles API Routes
@@ -49,11 +52,13 @@ export default class RoutesHandler {
      *
      * @param project Reference to the root of the project
      * @param util middleware utilities provided by the UI5 CLI
+     * @param provider AbapServiceProvider instance
      * @param logger Logger instance
      */
     constructor(
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
+        private readonly provider: AbapServiceProvider,
         private readonly logger: ToolsLogger
     ) {}
 
@@ -127,11 +132,13 @@ export default class RoutesHandler {
      */
     public handleReadAllControllers = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const files = await this.readAllFilesByGlob('/**/changes/coding/*.js');
+            const files = await this.readAllFilesByGlob('/**/changes/coding/*.{js,ts}');
 
-            const fileNames = files.map((file) => ({
-                controllerName: file.getName()
-            }));
+            const fileNames = files.map((file) => {
+                const fullName = file.getName();
+                const name = fullName.replace(/\.(js|ts)$/, '');
+                return { controllerName: name } satisfies ControllerInfo;
+            });
 
             this.sendFilesResponse(res, {
                 controllers: fileNames,
@@ -156,8 +163,8 @@ export default class RoutesHandler {
         next: NextFunction
     ): Promise<void> => {
         try {
-            const params = req.params as { controllerName: string };
-            const controllerName = sanitize(params.controllerName);
+            const query = req.query as { name: string };
+            const controllerName = query.name;
             const codeExtFiles = await this.readAllFilesByGlob('/**/changes/*_codeExt.change');
 
             let controllerPathFromRoot = '';
@@ -290,11 +297,13 @@ export default class RoutesHandler {
 
             for (const dataSourceId in dataSources) {
                 if (dataSources[dataSourceId].type === 'OData') {
+                    const metadataReadErrorMsg = await this.getMetaDataReadErrorMsg(manifestService, dataSourceId);
                     apiResponse.annotationDataSourceMap[dataSourceId] = {
                         annotationDetails: {
                             annotationExistsInWS: false
                         },
-                        serviceUrl: dataSources[dataSourceId].uri
+                        serviceUrl: dataSources[dataSourceId].uri,
+                        metadataReadErrorMsg
                     };
                 }
                 this.fillAnnotationDataSourceMap(dataSources, dataSourceId, apiResponse.annotationDataSourceMap);
@@ -304,6 +313,25 @@ export default class RoutesHandler {
             this.handleErrorMessage(res, next, e);
         }
     };
+
+    /**
+     *
+     * @param manifestService
+     * @param dataSrouceID
+     * @returns error message with reason
+     */
+    private async getMetaDataReadErrorMsg(
+        manifestService: ManifestService,
+        dataSrouceID: string
+    ): Promise<string | undefined> {
+        let errorMessage;
+        try {
+            await manifestService.getDataSourceMetadata(dataSrouceID);
+        } catch (error) {
+            errorMessage = `Metadata: ${error.message as string}`;
+        }
+        return errorMessage;
+    }
 
     /**
      * Add local annotation details to api response.
@@ -353,12 +381,8 @@ export default class RoutesHandler {
         const project = this.util.getProject();
         const basePath = project.getRootPath();
         const variant = await getVariant(basePath);
-        const { target, ignoreCertErrors = false } = await getAdpConfig(
-            basePath,
-            path.join(basePath, FileName.Ui5Yaml)
-        );
-        const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, this.logger);
-        return await ManifestService.initMergedManifest(provider, basePath, variant, this.logger);
+
+        return await ManifestService.initMergedManifest(this.provider, basePath, variant, this.logger);
     }
 }
 

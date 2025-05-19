@@ -5,7 +5,7 @@ import type {
     DefaultIntent,
     FlpConfig,
     Intent,
-    InternalTestConfig,
+    CompleteTestConfig,
     MiddlewareConfig,
     RtaConfig,
     TestConfig
@@ -76,6 +76,8 @@ export interface TemplateConfig {
     };
     features?: { feature: string; isEnabled: boolean }[];
     locateReuseLibsScript?: boolean;
+    enhancedHomePage?: boolean;
+    enableCardGenerator?: boolean;
 }
 
 /**
@@ -89,6 +91,12 @@ export const PREVIEW_URL = {
         ns: 'open.ux.preview.client'
     },
     api: '/preview/api'
+} as const;
+
+export const CARD_GENERATOR_DEFAULT = {
+    previewGeneratorSandbox: '/test/flpCardGeneratorSandbox.html',
+    cardsStore: '/cards/store',
+    i18nStore: '/editor/i18n'
 } as const;
 
 /**
@@ -172,7 +180,8 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpCo
         apps: config.apps ?? [],
         libs: config.libs,
         theme: config.theme,
-        init: config.init
+        init: config.init,
+        enhancedHomePage: config.enhancedHomePage === true
     } satisfies FlpConfig;
     if (!flpConfig.path.startsWith('/')) {
         flpConfig.path = `/${flpConfig.path}`;
@@ -230,7 +239,7 @@ export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], 
  *          and its options, such as the layers it applies to and its service URL, if applicable.
  */
 function getFlexSettings(): TemplateConfig['ui5']['flex'] {
-    const localConnectorPath = 'custom.connectors.WorkspaceConnector';
+    const localConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
 
     return [
         { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
@@ -359,7 +368,9 @@ export function createFlpTemplateConfig(
             },
             bootstrapOptions: ''
         },
-        locateReuseLibsScript: config.libs
+        locateReuseLibsScript: config.libs,
+        enhancedHomePage: config.enhancedHomePage,
+        enableCardGenerator: false
     } satisfies TemplateConfig;
 }
 
@@ -371,7 +382,7 @@ export function createFlpTemplateConfig(
  * @param theme theme to be used
  * @returns configuration object for the test template
  */
-export function createTestTemplateConfig(config: InternalTestConfig, id: string, theme: string): TestTemplateConfig {
+export function createTestTemplateConfig(config: CompleteTestConfig, id: string, theme: string): TestTemplateConfig {
     return {
         id,
         framework: config.framework,

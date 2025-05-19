@@ -2,7 +2,8 @@ import { type Destination, isAppStudio } from '@sap-ux/btp-utils';
 import * as abapInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import { getAbapQuestions } from '../../../src/app/questions';
 import { readUi5Yaml } from '@sap-ux/project-access';
-import { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import type { BackendSystem } from '@sap-ux/store';
+import { AuthenticationType } from '@sap-ux/store';
 import { DefaultLogger, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -53,7 +54,22 @@ describe('Test getAbapQuestions', () => {
             backendConfig: undefined,
             indexGenerationAllowed: true,
             showOverwriteQuestion: false,
-            logger: DefaultLogger
+            logger: DefaultLogger,
+            promptOptions: {
+                ui5AbapRepo: { hideIfOnPremise: false },
+                transportInputChoice: { hideIfOnPremise: false },
+                packageAutocomplete: {
+                    shouldValidatePackageForStartingPrefix: false,
+                    shouldValidatePackageType: false,
+                    shouldValidateFormatAndSpecialCharacters: false
+                },
+                packageManual: {
+                    shouldValidatePackageForStartingPrefix: false,
+                    shouldValidatePackageType: false,
+                    shouldValidateFormatAndSpecialCharacters: false
+                },
+                targetSystem: { shouldRestrictDifferentSystemType: false }
+            }
         });
 
         expect(getPromptsSpy).toBeCalledWith(
@@ -70,13 +86,29 @@ describe('Test getAbapQuestions', () => {
                     serviceProvider: undefined,
                     type: 'application'
                 },
-                ui5AbapRepo: { default: undefined },
+                ui5AbapRepo: { default: undefined, hideIfOnPremise: false },
                 description: { default: undefined },
-                packageManual: { default: undefined },
+                packageManual: {
+                    default: undefined,
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
+                    }
+                },
                 transportManual: { default: undefined },
                 index: { indexGenerationAllowed: true },
-                packageAutocomplete: { useAutocomplete: true },
-                overwrite: { hide: true }
+                packageAutocomplete: {
+                    useAutocomplete: true,
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
+                    }
+                },
+                overwrite: { hide: true },
+                transportInputChoice: { hideIfOnPremise: false },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             },
             expect.any(Object),
             true
@@ -101,7 +133,22 @@ describe('Test getAbapQuestions', () => {
             },
             backendConfig: undefined,
             configFile: 'ui5-deploy.yaml',
-            logger: DefaultLogger
+            logger: DefaultLogger,
+            promptOptions: {
+                ui5AbapRepo: { hideIfOnPremise: false },
+                transportInputChoice: { hideIfOnPremise: false },
+                packageAutocomplete: {
+                    shouldValidatePackageForStartingPrefix: false,
+                    shouldValidatePackageType: false,
+                    shouldValidateFormatAndSpecialCharacters: false
+                },
+                packageManual: {
+                    shouldValidatePackageForStartingPrefix: false,
+                    shouldValidatePackageType: false,
+                    shouldValidateFormatAndSpecialCharacters: false
+                },
+                targetSystem: { shouldRestrictDifferentSystemType: false }
+            }
         });
 
         expect(getPromptsSpy).toBeCalledWith(
@@ -118,13 +165,29 @@ describe('Test getAbapQuestions', () => {
                     serviceProvider: undefined,
                     type: 'application'
                 },
-                ui5AbapRepo: { default: undefined },
+                ui5AbapRepo: { default: undefined, hideIfOnPremise: false },
                 description: { default: undefined },
-                packageManual: { default: undefined },
+                packageManual: {
+                    default: undefined,
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
+                    }
+                },
                 transportManual: { default: undefined },
                 index: { indexGenerationAllowed: false },
-                packageAutocomplete: { useAutocomplete: true },
-                overwrite: { hide: true }
+                packageAutocomplete: {
+                    useAutocomplete: true,
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
+                    }
+                },
+                overwrite: { hide: true },
+                transportInputChoice: { hideIfOnPremise: false },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             },
             expect.any(Object),
             false

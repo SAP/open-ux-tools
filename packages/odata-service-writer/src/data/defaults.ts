@@ -5,6 +5,7 @@ import { DEFAULT_DATASOURCE_NAME } from './constants';
 import type { Manifest } from '@sap-ux/project-access';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
+import { UI5Config } from '@sap-ux/ui5-config';
 
 /**
  * Sets the default path for a given service.
@@ -111,15 +112,51 @@ function setDefaultAnnotationsName(service: OdataService): void {
 }
 
 /**
+ * Sets default preview settings of a given service.
+ *
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {OdataService} service - The service object whose preview settings needs to be set or modified.
+ * @param {Editor} fs - the memfs editor instance
+ */
+async function setDefaultPreviewSettings(basePath: string, service: OdataService, fs: Editor): Promise<void> {
+    service.previewSettings = service.previewSettings ?? {};
+    service.previewSettings.path =
+        service.previewSettings.path ?? `/${service.path?.split('/').filter((s: string) => s !== '')[0] ?? ''}`;
+    service.previewSettings.url = service.previewSettings.url ?? service.url ?? 'http://localhost';
+    if (service.client && !service.previewSettings.client) {
+        service.previewSettings.client = service.client;
+    }
+    if (service.destination && !service.previewSettings.destination) {
+        service.previewSettings.destination = service.destination.name;
+        if (service.destination.instance) {
+            service.previewSettings.destinationInstance = service.destination.instance;
+        }
+    }
+    const ui5Yamlpath = join(basePath, FileName.Ui5Yaml);
+    if (fs.exists(ui5Yamlpath)) {
+        const yamlContents = fs.read(ui5Yamlpath);
+        const ui5Config = await UI5Config.newInstance(yamlContents);
+        const backends = ui5Config.getBackendConfigsFromFioriToolsProxydMiddleware();
+        // There should be only one /sap entry
+        if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
+            service.previewSettings.path = service.path;
+        }
+    }
+}
+
+/**
  * Enhances the provided OData service object with path, name and model information.
  * Directly modifies the passed object reference.
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
  * @param {Editor} fs - the memfs editor instance
+ * @param {boolean} update - whether the service update is running
  */
-export async function enhanceData(basePath: string, service: OdataService, fs: Editor): Promise<void> {
-    setDefaultServicePath(service);
+export async function enhanceData(basePath: string, service: OdataService, fs: Editor, update = false): Promise<void> {
+    if (!update) {
+        setDefaultServicePath(service);
+    }
     await setDefaultServiceName(basePath, service, fs);
     await setDefaultServiceModel(basePath, service, fs);
     // set service type to EDMX if not defined
@@ -134,17 +171,5 @@ export async function enhanceData(basePath: string, service: OdataService, fs: E
     }
 
     // enhance preview settings with service configuration
-    service.previewSettings = service.previewSettings ?? {};
-    service.previewSettings.path =
-        service.previewSettings.path ?? `/${service.path?.split('/').filter((s: string) => s !== '')[0] ?? ''}`;
-    service.previewSettings.url = service.previewSettings.url ?? service.url ?? 'http://localhost';
-    if (service.client && !service.previewSettings.client) {
-        service.previewSettings.client = service.client;
-    }
-    if (service.destination && !service.previewSettings.destination) {
-        service.previewSettings.destination = service.destination.name;
-        if (service.destination.instance) {
-            service.previewSettings.destinationInstance = service.destination.instance;
-        }
-    }
+    await setDefaultPreviewSettings(basePath, service, fs);
 }
