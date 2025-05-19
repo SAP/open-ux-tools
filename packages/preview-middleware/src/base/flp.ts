@@ -45,7 +45,6 @@ import {
     createFlpTemplateConfig,
     PREVIEW_URL,
     type TemplateConfig,
-    type CustomConnector,
     createTestTemplateConfig,
     addApp,
     getAppName,
@@ -240,14 +239,13 @@ export class FlpSandbox {
      * @private
      */
     private checkDeleteCustomConnector(ui5VersionMajor: number, ui5VersionMinor: number): void {
-        if (ui5VersionMajor === 1 && ui5VersionMinor <= 71) { //todo: check which minor version to be used
-            // todo: what's the difference between removing the connector and override with 'FioriToolsNonexistentConnector'?
-            //(this.templateConfig.ui5.flex?.[1] as CustomConnector).applyConnector = 'FioriToolsNonexistentConnector';
-            //(this.templateConfig.ui5.flex?.[1] as CustomConnector).writeConnector = 'FioriToolsNonexistentConnector';
+        if (ui5VersionMajor === 1 && ui5VersionMinor < 78) {
             this.templateConfig.ui5.flex?.splice(1, 1);
             this.logger.debug(
-                `The Fiori Tools custom connector is not being used because the current UI5 version does not support it.`
+                `The Fiori Tools fake connector is being used because the current UI5 version does not support a workspace connector.`
             );
+        } else {
+            this.logger.debug(`The Fiori Tools workspace connector is being used.`);
         }
     }
 
