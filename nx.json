@@ -17,7 +17,7 @@
         ],
         "sharedGlobals": [
             {
-                 "runtime": "node -p \"`${process.platform}_${process.arch}`\""
+                 "runtime": "node -p \"`${process.platform}_${process.arch}_${process.version}`\""
             }
         ]
     },
