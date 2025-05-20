@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.20.5
+
+### Patch Changes
+
+-   48872e8: fix(preview-middleware) fix template spacing
+
 ## 0.20.4
 
 ### Patch Changes
