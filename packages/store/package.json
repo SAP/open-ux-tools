@@ -27,8 +27,7 @@
     },
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "i18next": "24.2.3",
-        "i18next-fs-backend": "1.2.0",
+        "i18next": "25.2.0",
         "pluralize": "8.0.0",
         "reflect-metadata": "0.1.13"
     },
@@ -36,7 +35,6 @@
         "@zowe/secrets-for-zowe-sdk": "8.1.2"
     },
     "devDependencies": {
-        "@types/i18next-fs-backend": "1.1.2",
         "@types/pluralize": "0.0.30",
         "@types/qs": "6.9.1",
         "fast-check": "2.19.0",
