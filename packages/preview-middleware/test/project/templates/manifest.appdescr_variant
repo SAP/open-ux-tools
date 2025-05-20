@@ -1,0 +1,24 @@
+{
+  "fileName": "manifest",
+  "layer": "CUSTOMER_BASE",
+  "fileType": "appdescr_variant",
+  "reference": "project1",
+  "id": "adp.moock",
+  "namespace": "project1/adp.mock/",
+  "version": "${project.version}",
+  "content": [
+    {
+      "changeType": "appdescr_app_setTitle",
+      "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_setMinUI5Version",
+      "content": {
+        "minUI5Version": "1.71.0"
+      }
+    }
+  ]
+}

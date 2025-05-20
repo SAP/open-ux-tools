@@ -115,12 +115,14 @@ export const removeNodeModules = async (root: string): Promise<void> => {
  * destination project root is `/../my-package/test/fixtures-copy/my-project`.
  *
  * @param sourceProjectRoot source project root
+ * @param id unique id of the copy
  * @returns project destination root
  */
-export const getDestinationProjectRoot = (sourceProjectRoot: string): string => {
+export const getDestinationProjectRoot = (sourceProjectRoot: string, id?: string): string => {
     const currentProcess = process.cwd();
     const projectName = sourceProjectRoot.split(sep).pop() ?? 'unknown';
-    return join(currentProcess, 'test', 'fixtures-copy', projectName);
+    const projectId = id ? `${projectName}-${id}` : projectName;
+    return join(currentProcess, 'test', 'fixtures-copy', projectId);
 };
 
 /**
