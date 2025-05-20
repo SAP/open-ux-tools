@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 0.13.6
+
+### Patch Changes
+
+-   0748e90: fix create readme for cards-editor
+
 ## 0.13.5
 
 ### Patch Changes

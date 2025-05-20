@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.4.3
+
+### Patch Changes
+
+-   6cc19b7: Fix for drive letter casing mismatch when selecting CAP projects on Windows
+
 ## 2.4.2
 
 ### Patch Changes
