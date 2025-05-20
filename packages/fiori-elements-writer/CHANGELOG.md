@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.4.2
+
+### Patch Changes
+
+-   06d3ba3: fix html target for opa tests
+
 ## 2.4.1
 
 ### Patch Changes
