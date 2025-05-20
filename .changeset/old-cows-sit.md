@@ -43,4 +43,4 @@
 '@sap-ux/store': minor
 ---
 
-i18next upgrade to 24.2.3
+i18next upgrade to 25.2.0
