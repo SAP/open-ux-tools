@@ -216,10 +216,9 @@ Options:
 
 ### Proxy Support
 
-To enable support for TLS (Transport Layer Security) connections when using `HTTPS_PROXY`, update your environment by setting the `TOOLSUITE_FEATURES` environment variable with `sap.ux.enablePatchProxy`, as shown;
+To enable support for TLS (Transport Layer Security) connections, configure the environment variable `HTTPS_PROXY` as shown;
 
 ```bash
-export TOOLSUITE_FEATURES=sap.ux.enablePatchProxy
 export HTTPS_PROXY=<YOUR-PROXY:PORT>
 ```
 Example Scenario

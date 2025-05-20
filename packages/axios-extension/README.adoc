@@ -120,17 +120,15 @@ See more examples in link:./test/factory.test.ts[/test/factory.test.ts]
 
 ## Proxy Support
 
-To enable support for TLS (Transport Layer Security) connections when using `HTTPS_PROXY`, update your environment by setting the `TOOLSUITE_FEATURES` environment variable with `sap.ux.enablePatchProxy`, as shown;
+To enable support for TLS (Transport Layer Security), enable the `HTTPS_PROXY` environment variable, as shown;
 
 ```bash
-export TOOLSUITE_FEATURES=sap.ux.enablePatchProxy
 export HTTPS_PROXY=<YOUR-PROXY:PORT>
 ```
 
 In order to support credentials in the proxy URL, you can set the `HTTPS_PROXY` environment variable to include the username and password in the URL. For example:
 
 ```bash
-export TOOLSUITE_FEATURES=sap.ux.enablePatchProxy
 export HTTPS_PROXY=http://user:password@proxy.domain.com:3128
 ```
 
