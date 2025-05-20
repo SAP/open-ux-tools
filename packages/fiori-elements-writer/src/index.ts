@@ -3,7 +3,12 @@ import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
-import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
+import {
+    generate as addOdataService,
+    OdataVersion,
+    ServiceType,
+    type OdataService
+} from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import cloneDeep from 'lodash/cloneDeep';
 import type { FioriElementsApp } from './types';
@@ -56,6 +61,40 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
         ignore.push('**/ui5.d.ts');
     }
     return ignore;
+}
+
+/**
+ * Returns the OPA config.
+ *
+ * @param appOpts - relevant app options for retrieving the opa config
+ * @param appOpts.generateIndex - if an index.html file will be generated
+ * @param appOpts.useVirtualPreviewEndpoints - if virtual endpoints will be used for preview
+ * @param flpAppId - the flp app id
+ * @returns - the opa config { htmlTarget }
+ */
+function getOpaConfig(
+    { generateIndex, useVirtualPreviewEndpoints }: { generateIndex?: boolean; useVirtualPreviewEndpoints?: boolean },
+    flpAppId?: string
+): { htmlTarget: string } {
+    const flpTarget = useVirtualPreviewEndpoints ? 'flp' : 'flpSandbox';
+    const htmlTarget = generateIndex ? 'index.html' : `test/${flpTarget}.html?sap-ui-xx-viewCache=false#${flpAppId}`;
+    return {
+        htmlTarget
+    };
+}
+
+/**
+ * Determines if tests should be added.
+ * For now, only if v4 and we have metadata (and therefore a mock server config) or has a cds service.
+ *
+ * @param service - the service data
+ * @param addTests - app option to add tests
+ * @returns - boolean indicating if tests are to be added
+ */
+function shouldAddTest(service: Partial<OdataService>, addTests?: boolean): boolean {
+    return (
+        !!addTests && service?.version === OdataVersion.v4 && (!!service?.metadata || service?.type === ServiceType.CDS)
+    );
 }
 
 /**
@@ -188,11 +227,7 @@ async function generate<T extends {}>(
     extendManifestJson(fs, basePath, rootTemplatesPath, feApp);
 
     const packageJson: Package = JSON.parse(fs.read(packagePath));
-    // Add tests only if v4, for now, and we have metadata (and therefore a mock server config) or has a cds service
-    const addTest =
-        !!feApp.appOptions.addTests &&
-        feApp.service?.version === OdataVersion.v4 &&
-        (!!feApp.service?.metadata || feApp.service.type === ServiceType.CDS);
+    const addTest = shouldAddTest(feApp.service, feApp.appOptions?.addTests);
 
     if (isEdmxProjectType) {
         // Add scripts to package.json only for non-CAP projects
@@ -217,16 +252,16 @@ async function generate<T extends {}>(
     fs.writeJSON(packagePath, packageJson);
 
     if (addTest) {
-        generateOPAFiles(
-            basePath,
+        const opaConfig = getOpaConfig(
             {
-                htmlTarget: feApp.appOptions?.generateIndex
-                    ? 'index.html'
-                    : `test/flpSandbox.html?sap-ui-xx-viewCache=false#${feApp.app.flpAppId}`
+                generateIndex: feApp.appOptions?.generateIndex,
+                useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
             },
-            fs
+            feApp.app.flpAppId
         );
+        generateOPAFiles(basePath, opaConfig, fs);
     }
+
     if (feApp.service.capService) {
         const enableCdsUi5Plugin =
             !!feApp?.appOptions?.typescript || !!feApp?.service.capService?.cdsUi5PluginInfo?.isCdsUi5PluginEnabled;
