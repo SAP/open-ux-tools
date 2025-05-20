@@ -14,7 +14,7 @@ describe('Ui5 Mapping Strategy', () => {
             path.relative(__dirname, path.resolve(__dirname, '../fixtures/webapp/Component.js'))
         );
         expect(pathMappingFn('sap/ui/core/Component').split('@openui5')[1]).toBe(
-            path.join('/sap.ui.core/1.130.0/src/sap/ui/core/Component.js')
+            path.resolve('/sap.ui.core/1.130.0/src/sap/ui/core/Component.js')
         );
 
         const { pathMappingFn: secondpathMapping, ui5VersionInfo: secondUi5Version } = await initUi5MappingStrategy({
