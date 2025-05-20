@@ -138,7 +138,7 @@ function isBuffer(input: string | Buffer): input is Buffer {
  * Decodes url parameters.
  *
  * @param params An object containing the parameters to be decoded.
- * @returns The deocded parameters as a string.
+ * @returns The decoded parameters as a string.
  */
 const decodeUrlParams: CustomParamsSerializer = (params: URLSearchParams) => decodeURIComponent(params.toString());
 
