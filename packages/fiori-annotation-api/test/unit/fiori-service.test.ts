@@ -17,7 +17,7 @@ import type {
 } from '@sap-ux/vocabularies-types';
 import { getProject } from '@sap-ux/project-access';
 
-import type { Change, DeleteChange, InsertAnnotationChange, TextFile } from '../../src/types';
+import type { Change, DeleteChange, InsertAnnotationChange, TextFile, UpdateChange } from '../../src/types';
 import { ExpressionType, ChangeType } from '../../src/types';
 import { FioriAnnotationService } from '../../src/fiori-service';
 
@@ -3209,6 +3209,151 @@ rating : Rating;
                                     type: 'String',
                                     String: 'Test'
                                 }
+                            }
+                        }
+                    }
+                ]
+            });
+
+            createEditTestCase({
+                name: 'replace paths with multiple segments',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: files.annotations,
+                        content: {
+                            target: TARGET_INCIDENTS,
+                            type: 'annotation',
+                            value: {
+                                term: LINE_ITEM,
+                                collection: [
+                                    {
+                                        type: `${UI}.DataFieldForAnnotation`,
+                                        propertyValues: [
+                                            {
+                                                name: 'Target',
+                                                value: {
+                                                    type: 'AnnotationPath',
+                                                    AnnotationPath: `incidentFlow/@${UI}.Chart`
+                                                }
+                                            }
+                                        ],
+                                        annotations: [
+                                            {
+                                                term: `${UI}.Hidden`,
+                                                value: {
+                                                    type: 'Path',
+                                                    Path: 'priority'
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        type: `${UI}.DataFieldForIntentBasedNavigation`,
+                                        propertyValues: [
+                                            {
+                                                name: 'Mapping',
+                                                value: {
+                                                    type: 'Collection',
+                                                    Collection: [
+                                                        {
+                                                            type: `${COMMON}.SemanticObjectMappingType`,
+                                                            propertyValues: [
+                                                                {
+                                                                    name: 'LocalProperty',
+                                                                    value: {
+                                                                        type: 'PropertyPath',
+                                                                        PropertyPath: 'incidentFlow/processStep'
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        type: `${UI}.DataFieldWithNavigationPath`,
+                                        propertyValues: [
+                                            {
+                                                name: 'Target',
+                                                value: {
+                                                    type: 'NavigationPropertyPath',
+                                                    NavigationPropertyPath: `incidentFlow/incident`
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: `/collection/0/propertyValues/0/value`,
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'AnnotationPath',
+                                AnnotationPath: 'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem'
+                            }
+                        }
+                    },
+                    // only certain paths are read as `PropertyPath` based on vocabulary definitions as CDS does not distinguish between different path types
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: `/collection/1/propertyValues/0/value/Collection/0/propertyValues/0/value`,
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'PropertyPath',
+                                PropertyPath: 'incidentFlow/createdBy'
+                            }
+                        }
+                    },
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: `/collection/2/propertyValues/0/value`,
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'NavigationPropertyPath',
+                                NavigationPropertyPath: 'incidentFlow/createdBy'
+                            }
+                        }
+                    },
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: `/collection/0/annotations/0/value`,
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'Path',
+                                Path: 'incidentFlow/createdBy'
                             }
                         }
                     }
