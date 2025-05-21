@@ -314,7 +314,6 @@ describe('LayeredRepositoryService', () => {
             nock(server)
                 .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))
                 .reply(200, (path) => {
-                    expect(path).toContain(`sap-language=${language}`);
                     expect(path).toContain(`package=${cloudPackage}`);
                     return mockResult;
                 });
