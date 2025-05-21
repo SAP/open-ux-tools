@@ -317,6 +317,7 @@ Object {
       "com.sap.vocabularies.UI.v1.Importance",
       "com.sap.vocabularies.UI.v1.PartOfPreview",
       "com.sap.vocabularies.HTML5.v1.CssDefaults",
+      "com.sap.vocabularies.HTML5.v1.RowSpanForDuplicateValues",
       "com.sap.vocabularies.Common.v1.FieldControl",
     ],
   },
@@ -389,6 +390,7 @@ Object {
       "com.sap.vocabularies.UI.v1.Importance",
       "com.sap.vocabularies.UI.v1.PartOfPreview",
       "com.sap.vocabularies.HTML5.v1.CssDefaults",
+      "com.sap.vocabularies.HTML5.v1.RowSpanForDuplicateValues",
       "com.sap.vocabularies.Common.v1.FieldControl",
     ],
   },
@@ -509,6 +511,8 @@ describe('getComplexTypeProperty()', () => {
                   "com.sap.vocabularies.UI.v1.ConnectedFields",
                   "com.sap.vocabularies.UI.v1.DataPoint",
                   "com.sap.vocabularies.UI.v1.FieldGroup",
+                  "com.sap.vocabularies.UI.v1.PresentationVariant",
+                  "com.sap.vocabularies.UI.v1.SelectionPresentationVariant",
                 ],
               },
               "description": "Target MUST reference an annotation of terms Communication.Contact, Communication.Address, UI.DataPoint, UI.Chart, UI.FieldGroup, or UI.ConnectedFields",
@@ -608,6 +612,7 @@ SAPUI.Hidden
 SAPUI.Importance  
 SAPUI.PartOfPreview  
 HTML5.CssDefaults  
+HTML5.RowSpanForDuplicateValues  
 Common.FieldControl 
 ",
 ]

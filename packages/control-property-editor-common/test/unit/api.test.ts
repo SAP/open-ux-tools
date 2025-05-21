@@ -1,9 +1,11 @@
 import {
+    PropertyType,
     addExtensionPoint,
     changeProperty,
     changeStackModified,
     controlSelected,
     deletePropertyChanges,
+    externalFileChange,
     iconsLoaded,
     outlineChanged,
     propertyChangeFailed,
@@ -89,7 +91,8 @@ describe('createExternalAction', () => {
             controlName: 'input',
             value: 'oldValue',
             propertyName: 'testProp',
-            changeType: 'propertyChange'
+            changeType: 'propertyChange',
+            propertyType: PropertyType.ControlProperty
         };
         const changedProp = changeProperty(payload);
         expect(changedProp.type).toBe('[ext] change-property');
@@ -115,29 +118,46 @@ describe('createExternalAction', () => {
     });
 
     test('changeStackModified', () => {
-        const payload = {
+        const payload: ChangeStackModified = {
             pending: [
                 {
                     controlId: 'testPendingId',
                     isActive: true,
-                    propertyName: 'testPendingProp',
                     type: 'pending',
-                    value: 'test',
-                    controlName: 'test'
+                    controlName: 'test',
+                    kind: 'generic',
+                    changeType: 'propertyChange',
+                    fileName: 'fileName1',
+                    properties: [
+                        {
+                            label: 'testPendingProp',
+                            value: 'test',
+                            displayValueWithIcon: true
+                        }
+                    ],
+                    title: 'Test'
                 }
             ],
             saved: [
                 {
                     controlId: 'testSavedId',
-                    propertyName: 'testSavedProp',
                     type: 'saved',
-                    value: 'test',
                     fileName: 'testSaveId.change',
-                    kind: 'valid',
-                    timestamp: 12343310032023
+                    kind: 'generic',
+                    changeType: 'propertyChange',
+                    controlName: 'button',
+                    timestamp: 12343310032023,
+                    properties: [
+                        {
+                            label: 'testSavedProp',
+                            value: 'test',
+                            displayValueWithIcon: true
+                        }
+                    ],
+                    title: 'Button'
                 }
             ]
-        } as ChangeStackModified;
+        };
         const changedProp = changeStackModified(payload);
         expect(changedProp.type).toBe('[ext] change-stack-modified');
         expect(changedProp.payload).toStrictEqual(payload);
@@ -158,5 +178,13 @@ describe('createExternalAction', () => {
         const changedProp = addExtensionPoint(payload);
         expect(changedProp.type).toBe('[ext] add-extension-point');
         expect(changedProp.payload).toStrictEqual(payload);
+    });
+
+    test('externalFileChange', () => {
+        const payload = 'filePath';
+
+        const externalFile = externalFileChange(payload);
+        expect(externalFile.type).toBe('[ext] external-file-change');
+        expect(externalFile.payload).toStrictEqual('filePath');
     });
 });

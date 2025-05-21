@@ -1,5 +1,9 @@
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
 import { getNewSystemQuestions } from '../../../../src/prompts/datasources/sap-system/new-system/questions';
+import type { ConnectedSystem } from '../../../../src/types';
+import type { BackendSystem } from '@sap-ux/store';
+import * as abapOnBtpQuestions from '../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
 
 describe('questions', () => {
     beforeAll(async () => {
@@ -54,7 +58,7 @@ describe('questions', () => {
                   "mandatory": true,
                 },
                 "message": "Username",
-                "name": "abapSystemUsername",
+                "name": "abapOnPrem:systemUsername",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],
@@ -62,12 +66,13 @@ describe('questions', () => {
               {
                 "default": "",
                 "guiOptions": {
+                  "applyDefaultWhenDirty": true,
                   "mandatory": true,
                 },
                 "guiType": "login",
                 "mask": "*",
                 "message": "Password",
-                "name": "abapSystemPassword",
+                "name": "abapOnPrem:systemPassword",
                 "type": "password",
                 "validate": [Function],
                 "when": [Function],
@@ -141,7 +146,7 @@ describe('questions', () => {
               },
               {
                 "guiOptions": {
-                  "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform",
+                  "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
                   "mandatory": true,
                 },
                 "guiType": "file-browser",
@@ -204,5 +209,22 @@ describe('questions', () => {
               },
             ]
         `);
+    });
+
+    test('Should use cached connected systems for new Abap on BTP connections if provided', () => {
+        const backendSystemReentrance: BackendSystem = {
+            name: 'http://s4hc:1234',
+            url: 'http:/s4hc:1234',
+            authenticationType: 'reentranceTicket'
+        };
+        const cachedConnectedSystem: ConnectedSystem = {
+            serviceProvider: {
+                catalog: {}
+            } as unknown as AbapServiceProvider,
+            backendSystem: backendSystemReentrance
+        };
+        const getAbapOnBTPSystemQuestionsSpy = jest.spyOn(abapOnBtpQuestions, 'getAbapOnBTPSystemQuestions');
+        getNewSystemQuestions(undefined, cachedConnectedSystem);
+        expect(getAbapOnBTPSystemQuestionsSpy).toHaveBeenCalledWith(undefined, cachedConnectedSystem);
     });
 });

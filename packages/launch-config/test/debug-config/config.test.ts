@@ -1,11 +1,29 @@
 import { configureLaunchJsonFile } from '../../src/debug-config/config';
-import type { DebugOptions, LaunchConfig, LaunchJSON } from '../../src/types';
+import type { DebugOptions, LaunchConfig, LaunchJSON, FioriOptions } from '../../src/types';
 import path from 'path';
-import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../../src/types';
+import { join } from 'path';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+import { FileName } from '@sap-ux/project-access';
+import { TestPaths } from '../test-data/utils';
+import { handleWorkspaceConfig } from '../../src/debug-config/workspaceManager';
+import * as launchConfig from '../../src/launch-config-crud/create';
+
+// Mock workspaceManager
+jest.mock('../../src/debug-config/workspaceManager', () => ({
+    ...jest.requireActual('../../src/debug-config/workspaceManager'),
+    handleWorkspaceConfig: jest.fn()
+}));
+
+jest.mock('../../src/launch-config-crud/create', () => ({
+    ...jest.requireActual('../../src/launch-config-crud/create'),
+    updateWorkspaceFoldersIfNeeded: jest.fn()
+}));
 
 const projectName = 'project1';
 const cwd = `\${workspaceFolder}`;
+const projectPath = path.join(__dirname, projectName);
 
 // Base configuration template
 const baseConfigurationObj: Partial<LaunchConfig> = {
@@ -56,14 +74,12 @@ describe('debug config tests', () => {
     beforeEach(() => {
         configOptions = {
             vscode: vscodeMock,
-            projectPath: path.join(__dirname, projectName),
-            odataVersion: OdataVersion.v2,
+            odataVersion: '2.0',
             sapClientParam: '',
             flpAppId: 'project1-tile',
             isFioriElement: true,
-            flpSandboxAvailable: true,
-            datasourceType: DatasourceType.odataServiceUrl
-        };
+            flpSandboxAvailable: true
+        } as DebugOptions;
     });
 
     afterEach(() => {
@@ -72,7 +88,7 @@ describe('debug config tests', () => {
     });
 
     it('Should return the correct configuration for OData v2', () => {
-        const launchFile = configureLaunchJsonFile(cwd, configOptions);
+        const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
         expect(launchFile.configurations.length).toBe(3);
 
         expect(findConfiguration(launchFile, `Start ${projectName}`)).toEqual(liveConfigurationObj);
@@ -81,8 +97,8 @@ describe('debug config tests', () => {
     });
 
     it('Should return the correct configuration for OData v4', () => {
-        configOptions.odataVersion = OdataVersion.v4;
-        const launchFile = configureLaunchJsonFile(cwd, configOptions);
+        configOptions.odataVersion = '4.0';
+        const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
         expect(launchFile.configurations.length).toBe(3);
 
         expect(findConfiguration(launchFile, `Start ${projectName}`)).toEqual(liveConfigurationObj);
@@ -91,8 +107,8 @@ describe('debug config tests', () => {
     });
 
     it('Should return correct configuration for local metadata', () => {
-        configOptions.datasourceType = DatasourceType.metadataFile;
-        const launchFile = configureLaunchJsonFile(cwd, configOptions);
+        configOptions.addStartCmd = false;
+        const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
         expect(launchFile.configurations.length).toBe(2);
 
         expect(findConfiguration(launchFile, `Start ${projectName}`)).toBeUndefined();
@@ -102,10 +118,33 @@ describe('debug config tests', () => {
 
     it('Should return correct configuration when project is being migrated', () => {
         configOptions.isMigrator = true;
-        const launchFile = configureLaunchJsonFile(cwd, configOptions);
+        const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
+        const mockConfigWithMigrator = {
+            ...mockConfigurationObj,
+            args: ['--open', 'test/flpSandbox.html#project1-tile']
+        };
+        expect(findConfiguration(launchFile, `Start ${projectName} Mock`)).toEqual(mockConfigWithMigrator);
+    });
+
+    it('Should return correct configuration when project is being migrated and targetMockHtmlFile is test/flpSandboxMockServer.html', () => {
+        configOptions.isMigrator = true;
+        configOptions.targetMockHtmlFile = 'test/flpSandboxMockServer.html';
+        const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
         const mockConfigWithMigrator = {
             ...mockConfigurationObj,
             args: ['--open', 'test/flpSandboxMockServer.html#project1-tile']
+        };
+        expect(findConfiguration(launchFile, `Start ${projectName} Mock`)).toEqual(mockConfigWithMigrator);
+    });
+
+    it('Should return correct configuration when project is being migrated, targetMockHtmlFile and migratorMockIntent is provided', () => {
+        configOptions.isMigrator = true;
+        configOptions.targetMockHtmlFile = 'test/flpSandboxMockServer.html';
+        configOptions.migratorMockIntent = 'flpSandboxMockFlpIntent';
+        const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
+        const mockConfigWithMigrator = {
+            ...mockConfigurationObj,
+            args: ['--open', 'test/flpSandboxMockServer.html#flpSandboxMockFlpIntent']
         };
         expect(findConfiguration(launchFile, `Start ${projectName} Mock`)).toEqual(mockConfigWithMigrator);
     });
@@ -114,7 +153,7 @@ describe('debug config tests', () => {
         configOptions.isFioriElement = false;
         configOptions.flpSandboxAvailable = false;
         configOptions.flpAppId = '';
-        const launchFile = configureLaunchJsonFile(cwd, configOptions);
+        const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
         const localConfig = {
             ...localConfigurationObj,
             args: ['--config', './ui5-local.yaml', '--open', 'index.html']
@@ -124,7 +163,7 @@ describe('debug config tests', () => {
 
     it('Should return correct configuration when migrator mock intent is provided', () => {
         configOptions.migratorMockIntent = 'flpSandboxMockFlpIntent';
-        const launchFile = configureLaunchJsonFile(cwd, configOptions);
+        const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
         const localConfig = {
             ...localConfigurationObj,
             args: ['--config', './ui5-local.yaml', '--open', 'test/flpSandbox.html#flpSandboxMockFlpIntent']
@@ -133,12 +172,11 @@ describe('debug config tests', () => {
     });
 
     it('Should return correct configuration on BAS and sapClientParam is available', () => {
-        configOptions.odataVersion = OdataVersion.v2;
-        configOptions.datasourceType = DatasourceType.odataServiceUrl;
+        configOptions.odataVersion = '2.0';
         configOptions.sapClientParam = 'sapClientParam';
         configOptions.isAppStudio = true;
 
-        const launchFile = configureLaunchJsonFile(cwd, configOptions);
+        const launchFile = configureLaunchJsonFile(path.join(__dirname, projectName), cwd, configOptions);
         expect(launchFile.configurations.length).toBe(3);
 
         const projectPath = path.join(__dirname, 'project1');
@@ -162,5 +200,65 @@ describe('debug config tests', () => {
 
         const localConfigWithRunConfig = { ...localConfigurationObj, env: expectedEnv };
         expect(localConfigWithRunConfig).toEqual(findConfiguration(launchFile, `Start ${projectName} Local`));
+    });
+});
+
+describe('create', () => {
+    const memFs = create(createStorage());
+    const memFilePath = join(TestPaths.tmpDir, 'fe-projects', FileName.Package);
+    const memFileContent = '{}\n';
+    let mockVSCode: any;
+    let launchJSONPath: string;
+    let fioriOptions: FioriOptions;
+
+    afterEach(async () => {
+        memFs.delete(memFilePath);
+    });
+
+    beforeEach(() => {
+        memFs.writeJSON(memFilePath, memFileContent);
+        mockVSCode = {
+            workspace: {
+                workspaceFolders: [],
+                updateWorkspaceFolders: jest.fn()
+            }
+        };
+        launchJSONPath = join(TestPaths.tmpDir, '.vscode', 'launch.json');
+        (handleWorkspaceConfig as jest.Mock).mockReturnValue({
+            launchJsonPath: launchJSONPath,
+            workspaceFolderUri: launchJSONPath,
+            cwd: TestPaths.tmpDir,
+            appNotInWorkspace: true
+        });
+        fioriOptions = {
+            name: 'launch-config-test',
+            projectRoot: join(TestPaths.tmpDir, 'fe-projects'),
+            debugOptions: {
+                vscode: mockVSCode
+            } as DebugOptions
+        };
+    });
+
+    test('should call updateWorkspaceFolders if enableVSCodeReload is true', async () => {
+        await launchConfig.createLaunchConfig(
+            TestPaths.tmpDir,
+            { ...fioriOptions, enableVSCodeReload: true }, // reload enabled
+            memFs
+        );
+        expect(mockVSCode.workspace.updateWorkspaceFolders).toHaveBeenCalledTimes(1);
+    });
+
+    test('should not call updateWorkspaceFolders if enableVSCodeReload is false', async () => {
+        await launchConfig.createLaunchConfig(
+            TestPaths.tmpDir,
+            { ...fioriOptions, enableVSCodeReload: false }, // reload disabled,
+            memFs
+        );
+        expect(mockVSCode.workspace.updateWorkspaceFolders).not.toHaveBeenCalled();
+    });
+
+    test('should call updateWorkspaceFolders if enableVSCodeReload is not provided (defaults to true)', async () => {
+        await launchConfig.createLaunchConfig(TestPaths.tmpDir, fioriOptions, memFs);
+        expect(mockVSCode.workspace.updateWorkspaceFolders).toHaveBeenCalledTimes(1);
     });
 });

@@ -22,6 +22,7 @@ describe('Reuse lib templates', () => {
         typescript: false
     };
     const V1_113_0 = '1.113.0';
+    const V1_121_0 = '1.121.0';
     const configuration = [
         {
             name: 'lib-js',
@@ -44,6 +45,28 @@ describe('Reuse lib templates', () => {
                 frameworkVersion: V1_113_0,
                 author: undefined // to test default is added instead
             }
+        },
+        {
+            name: 'lib-js-1.121.0',
+            config: { ...ui5LibConfig, libraryName: 'myui5jslib121', frameworkVersion: V1_121_0 }
+        },
+        {
+            name: 'lib-ts-1.121.0',
+            config: {
+                ...ui5LibConfig,
+                libraryName: 'myui5tslib121',
+                frameworkVersion: V1_121_0,
+                typescript: true
+            }
+        },
+        {
+            name: 'lib-js-latest',
+            config: {
+                ...ui5LibConfig,
+                libraryName: 'myui5jsliblatest',
+                frameworkVersion: '',
+                typescript: false
+            }
         }
     ];
 
@@ -58,7 +81,7 @@ describe('Reuse lib templates', () => {
         const pkgData = fs.read(join(testOutputDir, projectFolder, 'package.json'));
         const packageJson = JSON.parse(pkgData);
         if (config.typescript === true) {
-            if (config.frameworkVersion === V1_113_0) {
+            if (config.frameworkVersion === V1_113_0 || config.frameworkVersion === V1_121_0) {
                 expect(packageJson.devDependencies).toHaveProperty('@sapui5/types');
             } else {
                 expect(packageJson.devDependencies).toHaveProperty('@sapui5/ts-types-esm');

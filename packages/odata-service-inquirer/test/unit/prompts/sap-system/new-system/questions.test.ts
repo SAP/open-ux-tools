@@ -1,7 +1,7 @@
 import { ODataService, type ServiceProvider } from '@sap-ux/axios-extension';
 import type { SapSystemType } from '../../../../../src';
 import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
-import { getUserSystemNameQuestion } from '../../../../../src/prompts/datasources/sap-system/new-system/questions';
+import { getUserSystemNameQuestion } from '../../../../../src/prompts/datasources/sap-system/shared-prompts/shared-prompts';
 import * as sapSystemValidators from '../../../../../src/prompts/datasources/sap-system/validators';
 import { PromptState } from '../../../../../src/utils';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
@@ -65,7 +65,7 @@ describe('Test new system prompt', () => {
         // Only connected systems should be stored
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
         const result = await connectValidator.validateAuth(serviceUrl, 'user01', 'pword01', { sapClient: '999' });
-        expect(result).toBe(true); // Connection is successful
+        expect(result).toEqual({ valResult: true }); // Connection is successful
 
         PromptState.odataService.connectedSystem = {
             serviceProvider: {} as ServiceProvider
@@ -82,7 +82,8 @@ describe('Test new system prompt', () => {
             serviceKeys: undefined,
             url: 'http://abap.on.prem:1234',
             userDisplayName: undefined,
-            username: 'user01'
+            username: 'user01',
+            newOrUpdated: true
         });
     });
 
@@ -96,7 +97,7 @@ describe('Test new system prompt', () => {
             'testPassword',
             { sapClient: '000' }
         );
-        expect(result).toBe(true); // Connection is successful
+        expect(result).toEqual({ valResult: true }); // Connection is successful
 
         const userSystemNamePrompt = getUserSystemNameQuestion(connectValidator);
 
@@ -128,7 +129,8 @@ describe('Test new system prompt', () => {
             serviceKeys: undefined,
             url: 'http://mock.abap.on.prem:4300',
             userDisplayName: undefined,
-            username: 'testUser'
+            username: 'testUser',
+            newOrUpdated: true
         });
     });
 });

@@ -19,7 +19,7 @@
         .ms-Dropdown-title {
             background: transparent;
             height: $dropdown-input-height;
-            line-height: $dropdown-input-height;
+            line-height: $dropdown-line-height;
             border: $dropdown-input-border-width solid transparent;
             padding: $dropdown-input-text-padding;
             @include base-font;

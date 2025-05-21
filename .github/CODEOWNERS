@@ -108,6 +108,9 @@
 # Module: text-document-utils
 /packages/text-document-utils/ @SAP/ux-tools-annotations
 
+# Module: jest-environment-ui5
+/packages/jest-environment-ui5/ @SAP/ux-tools-ui5-jest
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin
@@ -129,3 +132,8 @@
 /CONTRIBUTING.md @SAP/ux-tools-team
 /README.md @SAP/ux-tools-team
 
+
+# localisation texts
+**/i18n.json @SAP/ux-tools-text-reviewers
+**/*.i18n.json @SAP/ux-tools-text-reviewers
+packages/preview-middleware-client/src/messagebundle.properties @SAP/ux-tools-text-reviewers

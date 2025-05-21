@@ -14,13 +14,7 @@
       "path": "../logger"
     },
     {
-      "path": "../odata-service-inquirer"
-    },
-    {
       "path": "../project-access"
-    },
-    {
-      "path": "../store"
     },
     {
       "path": "../ui5-config"

@@ -1,0 +1,61 @@
+## Generated mta.yaml based on template version 0.4.0
+## appName = managedAppCAPProjectJava
+## language=java; multitenant=false
+_schema-version: '3.1'
+ID: managedAppCAPProjectJava
+version: 1.0.0-SNAPSHOT
+description: "managedAppCAPProjectJava application"
+parameters:
+  enable-parallel-deployments: true
+
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx -p @sap/cds-dk cds build --production
+
+modules:
+  # --------------------- SERVER MODULE ------------------------
+  - name: managedAppCAPProjectJava-srv
+    # ------------------------------------------------------------
+    type: java
+    path: srv
+    parameters:
+      buildpack: java_buildpack
+    properties:
+      SPRING_PROFILES_ACTIVE: cloud
+    build-parameters:
+      builder: custom
+      commands: [ mvn clean package ]
+      build-result: "target/*-exec.[wj]ar"
+    requires:
+      # Resources extracted from CAP configuration
+      - name: managedAppCAPProjectJava-db
+
+  # -------------------- SIDECAR MODULE ------------------------
+  - name: managedAppCAPProjectJava-db-deployer
+    # ------------------------------------------------------------
+    type: hdb
+    path: db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      # 'hana' and 'xsuaa' resources extracted from CAP configuration
+      - name: managedAppCAPProjectJava-db
+
+
+resources:
+  # services extracted from CAP configuration
+  # 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
+  # ------------------------------------------------------------
+  - name: managedAppCAPProjectJava-db
+    # ------------------------------------------------------------
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana  # or 'hanatrial' on trial landscapes
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: ${service-name}
+
+

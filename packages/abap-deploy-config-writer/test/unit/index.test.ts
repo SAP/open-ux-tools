@@ -1,18 +1,12 @@
 import { join } from 'path';
 import { generate } from '../../src';
 import fsExtra from 'fs-extra';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import type { AbapDeployConfig, BspApp } from '@sap-ux/ui5-config';
 import type { DeployConfigOptions } from '../../src/types';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
-}));
-const mockIsAppStudio = isAppStudio as jest.Mock;
-
 describe('generate', () => {
     const outputDir = join(__dirname, '../test-output');
-    const debug = true ?? !!process.env['UX_DEBUG'];
+    const debug = !!process.env['UX_DEBUG'];
 
     beforeAll(async () => {
         fsExtra.removeSync(outputDir);
@@ -31,7 +25,13 @@ describe('generate', () => {
     }> = [
         {
             name: 'test-js-app',
-            config,
+            config: {
+                ...config,
+                target: {
+                    ...config.target,
+                    authenticationType: 'reentranceTicket'
+                }
+            },
             isAppStudio: false
         },
         {
@@ -54,12 +54,16 @@ describe('generate', () => {
                 deployFile: 'deploy-config.yaml'
             },
             isAppStudio: false
+        },
+        {
+            name: 'test.ui5.typescript.library1',
+            config,
+            isAppStudio: false
         }
     ];
 
     test.each(testConfigs)('Generate deployment configs: $name', async ({ name, options, config, isAppStudio }) => {
         (config.app as BspApp).name = name;
-        mockIsAppStudio.mockReturnValueOnce(isAppStudio);
         const testPath = join(outputDir, name);
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(testPath);

@@ -59,6 +59,37 @@ async function testWriter(
  */
 describe('cds writer', () => {
     describe('insert target', () => {
+        test('annotate structured type', async () => {
+            const fixture = 'Service S { entity E { a: { x: String;} }; };';
+            await testWriter(
+                fixture,
+                [
+                    {
+                        type: 'insert-target',
+                        pointer: '',
+                        complexTypePathSegments: ['a', 'x'],
+                        target: {
+                            type: 'target',
+                            name: 'S.E/a_x',
+                            terms: [
+                                createElementNode({
+                                    name: Edm.Annotation,
+                                    attributes: {
+                                        [Edm.Term]: createAttributeNode(Edm.Term, 'Common.Text'),
+                                        [Edm.String]: createAttributeNode(Edm.String, 'test')
+                                    }
+                                })
+                            ]
+                        }
+                    }
+                ],
+                fixture +
+                    `
+annotate S.E : a.x with @Common.Text : 'test';
+
+`
+            );
+        });
         test('annotate service entity', async () => {
             const fixture = 'Service S { entity E {}; };';
             await testWriter(
@@ -905,6 +936,38 @@ annotate S.E with @UI.LineItem : [
         $Type : 'UI.DataField',
     },
 ];`
+            );
+        });
+        test('record in array with additional mismatching indentation', async () => {
+            const fixture = `
+      Service S { entity E {}; };
+      annotate S.E with @(UI : {
+        LineItem : []
+      });`;
+            await testWriter(
+                fixture,
+                [
+                    {
+                        type: 'insert-record',
+                        pointer: '/targets/0/assignments/0/items/items/0/value',
+                        element: createElementNode({
+                            name: Edm.Record,
+                            attributes: {
+                                [Edm.Type]: createAttributeNode(Edm.Term, 'UI.DataField')
+                            },
+                            content: []
+                        })
+                    }
+                ],
+                `
+      Service S { entity E {}; };
+      annotate S.E with @(UI : {
+        LineItem : [
+            {
+                $Type : 'UI.DataField',
+            },
+        ]
+      });`
             );
         });
         test('after entry with comment', async () => {

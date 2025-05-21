@@ -12,7 +12,8 @@ import type {
     Collection,
     PropertyPathExpression,
     PropertyValue,
-    RawAnnotation
+    RawAnnotation,
+    StringExpression
 } from '@sap-ux/vocabularies-types';
 import { getProject } from '@sap-ux/project-access';
 
@@ -24,7 +25,7 @@ import { createFsEditorForProject } from './virtual-fs';
 import type { ProjectTestModel } from './projects';
 import { PROJECTS } from './projects';
 import { getLocalEDMXService } from '../../src/xml';
-import { serialize } from './raw-metadata-serializer';
+import { normalizeCdsVersionInPath, serialize, serializeAnnotations } from './raw-metadata-serializer';
 
 import { CDSAnnotationServiceAdapter } from '../../src/cds/adapter';
 import type { CompilerMessage } from '@sap-ux/odata-annotation-core-types';
@@ -573,11 +574,18 @@ describe('fiori annotation service', () => {
 
     describe('getAllFiles', () => {
         const toolsRoot = join(__dirname, '..', '..', '..', '..', '..');
+        const testRoot = join(__dirname, '..');
 
         function toRelativePath(projectRoot: string, uri: string): string {
             const projectRootUri = pathToFileURL(projectRoot).toString();
             const toolsRootUri = pathToFileURL(toolsRoot).toString();
-            return uri.replace(projectRootUri, 'APP_ROOT').replace(toolsRootUri, 'REPOSITORY_ROOT');
+            const testRootUri = pathToFileURL(testRoot).toString();
+            return normalizeCdsVersionInPath(
+                uri
+                    .replace(projectRootUri, 'APP_ROOT')
+                    .replace(testRootUri, 'TEST_ROOT')
+                    .replace(toolsRootUri, 'REPOSITORY_ROOT')
+            );
         }
 
         function convertFilesForSnapshots(projectRoot: string, files: TextFile[]): TextFile[] {
@@ -654,6 +662,113 @@ describe('fiori annotation service', () => {
                         .join(posix.sep)
                 ).toMatchInlineSnapshot(`"webapp/localService/metadata.xml"`);
             });
+
+            test('missing metadata reference (no alias in metadata)', async () => {
+                const project = PROJECTS.V4_XML_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.annotations);
+                const content = fsEditor.read(path);
+                const testData = content.replace(
+                    `    <edmx:Reference Uri="/incident/$metadata">
+        <edmx:Include Namespace="IncidentService"/>
+    </edmx:Reference>`,
+                    ''
+                );
+                fsEditor.write(path, testData);
+                const service = await testRead(
+                    PROJECTS.V4_XML_START.root,
+                    [
+                        createLineItem(project.files.annotations, [], 'a', TARGET_INCIDENTS),
+                        createLineItem(project.files.annotations, [], 'b', 'Service.Incidents')
+                    ],
+                    'mainService',
+                    fsEditor
+                );
+                const metadata = service.getSchema();
+                for (const key of Object.keys(metadata.schema.annotations)) {
+                    // we only need to check that annotations from annotation are there (metadata annotations are not relevant here)
+                    if (!key.endsWith('annotation.xml')) {
+                        delete metadata.schema.annotations[key];
+                    }
+                }
+
+                expect(serializeAnnotations(metadata.schema.annotations, PROJECTS.V4_XML_START.root)).toMatchSnapshot();
+            });
+
+            test('missing metadata alias', async () => {
+                const project = PROJECTS.V4_XML_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const metadataPath = pathFromUri(project.files.metadata);
+
+                fsEditor.write(
+                    metadataPath,
+                    fsEditor
+                        .read(metadataPath)
+                        .replace('Namespace="IncidentService"', 'Namespace="IncidentService" Alias="Service"')
+                );
+
+                const service = await testRead(
+                    PROJECTS.V4_XML_START.root,
+                    [
+                        createLineItem(project.files.annotations, [], 'a', TARGET_INCIDENTS),
+                        createLineItem(project.files.annotations, [], 'b', 'Service.Incidents')
+                    ],
+                    'mainService',
+                    fsEditor
+                );
+                const metadata = service.getSchema();
+                for (const key of Object.keys(metadata.schema.annotations)) {
+                    // we only need to check that annotations from annotation are there (metadata annotations are not relevant here)
+                    if (!key.endsWith('annotation.xml')) {
+                        delete metadata.schema.annotations[key];
+                    }
+                }
+
+                expect(serializeAnnotations(metadata.schema.annotations, PROJECTS.V4_XML_START.root)).toMatchSnapshot();
+            });
+
+            test('missing metadata reference ', async () => {
+                const project = PROJECTS.V4_XML_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const metadataPath = pathFromUri(project.files.metadata);
+
+                fsEditor.write(
+                    metadataPath,
+                    fsEditor
+                        .read(metadataPath)
+                        .replace('Namespace="IncidentService"', 'Namespace="IncidentService" Alias="Service"')
+                );
+                const path = pathFromUri(project.files.annotations);
+                const content = fsEditor.read(path);
+                const testData = content.replace(
+                    `    <edmx:Reference Uri="/incident/$metadata">
+        <edmx:Include Namespace="IncidentService"/>
+    </edmx:Reference>`,
+                    ''
+                );
+                fsEditor.write(path, testData);
+                const service = await testRead(
+                    PROJECTS.V4_XML_START.root,
+                    [
+                        createLineItem(project.files.annotations, [], 'a', TARGET_INCIDENTS),
+                        createLineItem(project.files.annotations, [], 'b', 'Service.Incidents')
+                    ],
+                    'mainService',
+                    fsEditor
+                );
+                const metadata = service.getSchema();
+                for (const key of Object.keys(metadata.schema.annotations)) {
+                    // we only need to check that annotations from annotation are there (metadata annotations are not relevant here)
+                    if (!key.endsWith('annotation.xml')) {
+                        delete metadata.schema.annotations[key];
+                    }
+                }
+
+                expect(serializeAnnotations(metadata.schema.annotations, PROJECTS.V4_XML_START.root)).toMatchSnapshot();
+            });
         });
 
         describe('cds', () => {
@@ -661,6 +776,38 @@ describe('fiori annotation service', () => {
                 const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService');
                 const metadata = service.getSchema();
                 expect(serialize(metadata.schema, PROJECTS.V4_CDS_START.root)).toMatchSnapshot();
+            });
+
+            test('new file from memfs, no apps', async () => {
+                const project = PROJECTS.V4_CAP_NO_APPS;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const servicesFilePath = pathFromUri(project.files.services);
+                const newFileName = 'new-file';
+                const appName = 'incidents';
+                const testData = `using from './${appName}/${newFileName}';\n`;
+                const annotationFilePath = join(root, 'app', appName, `${newFileName}.cds`);
+                fsEditor.write(annotationFilePath, '');
+                fsEditor.write(servicesFilePath, testData);
+
+                const service = await testRead(project.root, [], 'IncidentService', fsEditor);
+                const annotations = service.getSchema().schema.annotations;
+
+                expect(annotations[pathToFileURL(servicesFilePath).toString()]).toHaveLength(0);
+                expect(annotations[pathToFileURL(annotationFilePath).toString()]).toHaveLength(0);
+            });
+            test('new file from memfs, existing service file', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.services);
+                const content = fsEditor.read(path);
+                const newFileName = 'new-file';
+                const testData = `using from './${newFileName}';\n${content}`;
+                fsEditor.write(join(root, 'app', `${newFileName}.cds`), '');
+                fsEditor.write(path, testData);
+                const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService', fsEditor);
+                expect(() => service.getSchema()).not.toThrowError();
             });
         });
     });
@@ -892,6 +1039,99 @@ describe('fiori annotation service', () => {
                 projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
                 getInitialChanges: (files) => [createChart(files.annotations)],
                 getChanges: (files) => [createChart(files.annotations, 'second')]
+            });
+
+            test('for inline structure element', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.schema);
+                const content = fsEditor.read(path);
+                const updatedSchemaFile = content.replace(
+                    'on processingThreshold.incident = $self;',
+                    `on processingThreshold.incident = $self;
+    rating : {
+        key pos : Integer;
+        name : String;
+    };
+`
+                );
+                fsEditor.write(path, updatedSchemaFile);
+                const text = await testEdit(
+                    root,
+                    [],
+                    [
+                        {
+                            kind: ChangeType.InsertAnnotation,
+                            content: {
+                                type: 'annotation',
+                                target: `${TARGET_INCIDENTS}/rating_name`,
+                                value: {
+                                    term: `${COMMON}.Text`,
+                                    value: {
+                                        type: 'Path',
+                                        Path: 'title'
+                                    }
+                                }
+                            },
+                            uri: project.files.annotations
+                        }
+                    ],
+                    'IncidentService',
+                    fsEditor,
+                    false
+                );
+
+                expect(text).toMatchSnapshot();
+            });
+
+            test('for complex type element', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.schema);
+                const content = fsEditor.read(path);
+                let updatedSchemaFile = content.replace(
+                    'type Criticality : Integer @(',
+                    `type Rating {
+  name : String(20);
+};
+type Criticality : Integer @(
+`
+                );
+                updatedSchemaFile = updatedSchemaFile.replace(
+                    'on processingThreshold.incident = $self;',
+                    `on processingThreshold.incident = $self;
+rating : Rating;
+`
+                );
+                fsEditor.write(path, updatedSchemaFile);
+                const text = await testEdit(
+                    root,
+                    [],
+                    [
+                        {
+                            kind: ChangeType.InsertAnnotation,
+                            content: {
+                                type: 'annotation',
+                                target: `${TARGET_INCIDENTS}/rating_name`,
+                                value: {
+                                    term: `${COMMON}.Text`,
+                                    value: {
+                                        type: 'Path',
+                                        Path: 'title'
+                                    }
+                                }
+                            },
+                            uri: project.files.annotations
+                        }
+                    ],
+                    'IncidentService',
+                    fsEditor,
+                    false
+                );
+
+                expect(text).toMatchSnapshot();
             });
         });
         describe('reference', () => {
@@ -1560,6 +1800,40 @@ describe('fiori annotation service', () => {
                     }
                 ]
             });
+
+            createEditTestCase({
+                name: 'of strings',
+                projectTestModels: TEST_TARGETS,
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        content: {
+                            target: targetName,
+                            type: 'annotation',
+                            value: {
+                                term: `${COMMON}.SideEffects`,
+                                record: {
+                                    type: `${COMMON}.SideEffectsType`,
+                                    propertyValues: [
+                                        {
+                                            name: 'TargetProperties',
+                                            value: {
+                                                type: 'Collection',
+                                                // AVT also allows plain string values even though it doesn't match types
+                                                // https://github.com/SAP/open-ux-odata/blob/c499009b388d2fe8d94762f619a33998491b4e68/packages/edmx-parser/src/parser.ts#L708-L710
+                                                Collection: [
+                                                    '_it/dummyTargetPropertyPath'
+                                                ] as unknown as StringExpression[]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        uri: files.annotations
+                    }
+                ]
+            });
         });
 
         describe('path', () => {
@@ -1941,6 +2215,42 @@ describe('fiori annotation service', () => {
                     }
                 ]
             });
+        });
+
+        createEditTestCase({
+            name: 'SideEffects annotation with empty target',
+            projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
+            getInitialChanges: (files) => [],
+            getChanges: (files) => [
+                {
+                    kind: ChangeType.InsertAnnotation,
+                    uri: files.annotations,
+                    content: {
+                        type: 'annotation',
+                        target: TARGET_INCIDENTS,
+                        value: {
+                            term: `${COMMON}.SideEffects`,
+                            record: {
+                                type: `${COMMON}.SideEffectsType`,
+                                propertyValues: [
+                                    {
+                                        name: 'TargetEntities',
+                                        value: {
+                                            type: 'Collection',
+                                            Collection: [
+                                                {
+                                                    type: 'NavigationPropertyPath',
+                                                    NavigationPropertyPath: ''
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
         });
 
         describe('SAP annotations for CDS projects', () => {
@@ -3132,6 +3442,69 @@ describe('fiori annotation service', () => {
                         }
                     }
                 ]
+            });
+        });
+        describe('annotation value', () => {
+            test('in complex type', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.schema);
+                const content = fsEditor.read(path);
+                let updatedSchemaFile = content.replace(
+                    'type Criticality : Integer @(',
+                    `type Rating {
+name : String(20);
+};
+type Criticality : Integer @(
+`
+                );
+                updatedSchemaFile = updatedSchemaFile.replace(
+                    'on processingThreshold.incident = $self;',
+                    `on processingThreshold.incident = $self;
+rating : Rating;
+`
+                );
+                fsEditor.write(path, updatedSchemaFile);
+                const text = await testEdit(
+                    root,
+                    [
+                        {
+                            kind: ChangeType.InsertAnnotation,
+                            uri: project.files.annotations,
+                            content: {
+                                target: 'IncidentService.Incidents/rating_name',
+                                type: 'annotation',
+                                value: {
+                                    term: 'com.sap.vocabularies.Common.v1.Text',
+                                    value: {
+                                        Path: 'description',
+                                        type: 'Path'
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            kind: ChangeType.Update,
+                            uri: project.files.annotations,
+                            reference: {
+                                target: 'IncidentService.Incidents/rating_name',
+                                term: 'com.sap.vocabularies.Common.v1.Text'
+                            },
+                            content: {
+                                type: 'primitive',
+                                expressionType: 'Path',
+                                value: 'title'
+                            },
+                            pointer: '/value/Path'
+                        }
+                    ],
+                    'IncidentService',
+                    fsEditor
+                );
+                expect(text).toMatchSnapshot();
             });
         });
     });

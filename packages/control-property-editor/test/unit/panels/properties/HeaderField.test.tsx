@@ -3,12 +3,8 @@ import { render } from '../../utils';
 import React from 'react';
 import type { HeaderFieldProps } from '../../../../src/panels/properties/HeaderField';
 import { HeaderField } from '../../../../src/panels/properties/HeaderField';
-import { initI18n } from '../../../../src/i18n';
 
 describe('HeaderField', () => {
-    beforeAll(() => {
-        initI18n();
-    });
     const headerFieldProps: HeaderFieldProps = {
         label: 'testLabel',
         documentation: {} as any,

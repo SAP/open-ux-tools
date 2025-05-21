@@ -1,11 +1,12 @@
 import type { FileBrowserQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { getCapCustomPaths } from '@sap-ux/project-access';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Question } from 'inquirer';
 import { t } from '../../../i18n';
 import type { CapServiceChoice, OdataServicePromptOptions } from '../../../types';
-import { promptNames, hostEnvironment } from '../../../types';
-import { PromptState, getHostEnvironment } from '../../../utils';
+import { promptNames } from '../../../types';
+import { PromptState, getPromptHostEnvironment } from '../../../utils';
 import { errorHandler } from '../../prompt-helpers';
 import { enterCapPathChoiceValue, getCapEdmx, getCapProjectChoices, getCapServiceChoices } from './cap-helpers';
 import {
@@ -16,6 +17,7 @@ import {
     type CapServiceAnswers
 } from './types';
 import { validateCapPath } from './validators';
+import { realpath } from 'fs/promises';
 
 /**
  * Find the specified choice in the list of CAP project choices and return its index.
@@ -57,6 +59,7 @@ export function getLocalCapProjectPrompts(
     let selectedCapProject: CapProjectPaths | undefined;
     let capServiceChoices: CapServiceChoice[];
     let defaultServiceIndex = 0;
+    let validCapPath: string | boolean = false;
     PromptState.reset();
 
     const prompts: (ListQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | Question)[] = [
@@ -92,9 +95,14 @@ export function getLocalCapProjectPrompts(
             },
             guiOptions: { mandatory: true, breadcrumb: t('prompts.capProject.breadcrumb') },
             validate: async (projectPath: string): Promise<string | boolean> => {
-                const validCapPath = await validateCapPath(projectPath);
+                validCapPath = await validateCapPath(projectPath);
                 // Load the cap paths if the path is valid
                 if (validCapPath === true) {
+                    // On Windows the path my have been returned with a different casing.
+                    // Use `realPath` to generate the same casing as used by cds compiler facade.
+                    if (process.platform === 'win32') {
+                        projectPath = await realpath(projectPath);
+                    }
                     selectedCapProject = Object.assign(
                         { path: projectPath } as CapProjectRootPath,
                         await getCapCustomPaths(projectPath)
@@ -159,7 +167,7 @@ export function getLocalCapProjectPrompts(
         } as ListQuestion<CapServiceAnswers>
     ];
 
-    if (getHostEnvironment() === hostEnvironment.cli) {
+    if (getPromptHostEnvironment() === hostEnvironment.cli) {
         prompts.push({
             when: async (answers: CapServiceAnswers): Promise<boolean> => {
                 if (answers?.capService) {

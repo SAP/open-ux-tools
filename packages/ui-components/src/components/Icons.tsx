@@ -1,5 +1,5 @@
 import React from 'react';
-import { registerIcons, initializeIcons } from '@fluentui/react';
+import { registerIcons, unregisterIcons, initializeIcons, setIconOptions } from '@fluentui/react';
 
 const COLORS = {
     'default': 'var(--vscode-icon-foreground, var(--vscode-foreground))',
@@ -53,6 +53,7 @@ export enum UiIcons {
     CustomFPMPage = 'CustomFPMPage',
     Data = 'Data',
     DataSource = 'DataSource',
+    DataSparkle = 'DataSparkle',
     Edit = 'Edit',
     Error = 'Error',
     ExpandGroup = 'ExpandGroup',
@@ -103,6 +104,7 @@ export enum UiIcons {
     ListReportPage = 'ListReportPage',
     MainEntity = 'MainEntity',
     MainEntitySmall = 'MainEntitySmall',
+    Manage = 'Manage',
     MeatballMenu = 'MeatballMenu',
     MessageSent = 'MessageSent',
     Mission = 'Mission',
@@ -132,6 +134,7 @@ export enum UiIcons {
     SettingsHierarchy = 'SettingsHierarchy',
     SettingsWithChevron = 'SettingsWithChevron',
     Shape = 'Shape',
+    Shift = 'Shift',
     SidePanelRight = 'SidePanelRight',
     Sparkles = 'Sparkles',
     Sort = 'Sort',
@@ -139,11 +142,14 @@ export enum UiIcons {
     Star = 'Star',
     StarActive = 'StarActive',
     Success = 'Success',
+    SwitchOff = 'SwitchOff',
+    SwitchOn = 'SwitchOn',
     Table = 'Table',
     Tags = 'Tags',
     Task = 'Task',
     Terminal = 'Terminal',
     TestGuides = 'TestGuides',
+    TextGrammarDismiss = 'TextGrammarDismiss',
     ThumbsDown = 'ThumbsDown',
     ThumbsUp = 'ThumbsUp',
     ToTheTop = 'ToTheTop',
@@ -783,6 +789,22 @@ export function initIcons(): void {
                     </g>
                 </svg>
             ),
+            [UiIcons.DataSparkle]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M4.001 12.5C4.006 13.111 5.562 13.997 8 13.997C8.59057 13.997 9.12945 13.945 9.60708 13.8575C9.95151 14.1066 10.2605 14.3746 10.5435 14.671C9.80713 14.8796 8.94193 14.997 8 14.997C5.157 14.997 3.013 13.927 3.002 12.508H3.001V12.502L3 12.497H3.001V3.5C3.001 2.075 5.15 1 8.001 1C10.852 1 13.001 2.075 13.001 3.5C13.001 3.5045 12.9998 3.509 12.9985 3.5135C12.9973 3.518 12.996 3.5225 12.996 3.527H13V8.14278C12.8303 7.79231 12.6652 7.4129 12.5 7C12.3348 7.4129 12.1697 7.79232 12 8.14278V5.021C11.104 5.62 9.682 6 8.001 6C6.32 6 4.897 5.619 4.001 5.02V12.5ZM12.001 3.5C12.001 2.889 10.443 2 8.001 2C5.559 2 4.001 2.889 4.001 3.5C4.001 4.111 5.559 5 8.001 5C10.443 5 12.001 4.111 12.001 3.5Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M9 12.5C9.45862 12.6834 9.85233 12.8669 10.1965 13.0656C10.9672 13.5108 11.4892 14.0328 11.9344 14.8036C12.1331 15.1477 12.3166 15.5414 12.5 16C12.6834 15.5414 12.8669 15.1477 13.0656 14.8035C13.5108 14.0328 14.0328 13.5108 14.8035 13.0656C15.1477 12.8669 15.5414 12.6834 16 12.5C15.5414 12.3166 15.1477 12.1331 14.8036 11.9344C14.0328 11.4892 13.5108 10.9672 13.0656 10.1965C12.8669 9.85233 12.6834 9.45862 12.5 9C12.3166 9.45862 12.1331 9.85233 11.9344 10.1964C11.4892 10.9672 10.9672 11.4892 10.1965 11.9344C9.85233 12.1331 9.45862 12.3166 9 12.5ZM11.1697 12.5C11.4296 12.6817 11.6705 12.8813 11.8946 13.1054C12.1187 13.3295 12.3183 13.5704 12.5 13.8303C12.6817 13.5704 12.8813 13.3295 13.1054 13.1054C13.3295 12.8813 13.5704 12.6817 13.8303 12.5C13.5704 12.3183 13.3295 12.1187 13.1054 11.8946C12.8813 11.6705 12.6817 11.4296 12.5 11.1697C12.3183 11.4296 12.1187 11.6705 11.8946 11.8946C11.6705 12.1187 11.4296 12.3183 11.1697 12.5Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
             [UiIcons.Edit]: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                     <path
@@ -1234,15 +1256,17 @@ export function initIcons(): void {
             [UiIcons.Info]: (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15ZM8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"
-                        fill={COLORS.info}
-                    />
-                    <path
+                        id="ico_info"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M7.5 5V4H8.5V5H7.5ZM7.5 12V6H8.5V12H7.5Z"
+                        fill={COLORS.info}
+                    />
+                    <path
+                        id="oval"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15ZM8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z"
                         fill={COLORS.info}
                     />
                 </svg>
@@ -1394,6 +1418,28 @@ export function initIcons(): void {
                     />
                     <path
                         d="M8.5 5L9.52862 7.08422L11.8287 7.41844L10.1643 9.04078L10.5572 11.3316L8.5 10.25L6.44275 11.3316L6.83565 9.04078L5.1713 7.41844L7.47138 7.08422L8.5 5Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
+            [UiIcons.Manage]: (
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M8.29168 3H4C3.44772 3 3 3.44772 3 4V10C3 10.5523 3.44772 11 4 11H6.22302C6.14883 10.6731 6.09244 10.3394 6.05493 10H4V4H7.51555C7.75093 3.64837 8.01043 3.31424 8.29168 3Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M20 16.4845C20.3516 16.2491 20.6858 15.9896 21 15.7083V20C21 20.5523 20.5523 21 20 21H14C13.4477 21 13 20.5523 13 20V17.777C13.3269 17.8512 13.6606 17.9076 14 17.9451V20H20V16.4845Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        d="M6.93552 13H4C3.44772 13 3 13.4477 3 14V20C3 20.5523 3.44772 21 4 21H10C10.5523 21 11 20.5523 11 20V17.0645C10.6534 16.8922 10.3195 16.6983 10 16.4845V20H4V14H7.51555C7.3017 13.6805 7.10777 13.3466 6.93552 13Z"
+                        fill={COLORS.default}
+                    />
+                    <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M21.017 9.726L19.22 10.366C19.086 10.413 18.979 10.514 18.925 10.645C18.871 10.776 18.875 10.923 18.935 11.051L19.741 12.746L18.731 13.755L17.037 12.95C16.91 12.889 16.762 12.885 16.63 12.939C16.5 12.993 16.398 13.1 16.35 13.233L15.72 15.004H14.294L13.664 13.233C13.617 13.1 13.516 12.993 13.385 12.939C13.255 12.885 13.106 12.889 12.979 12.95L11.263 13.764L10.264 12.766L11.08 11.049C11.141 10.921 11.144 10.774 11.09 10.643C11.036 10.512 10.929 10.411 10.796 10.364L9 9.725V8.316L10.796 7.677C10.93 7.63 11.037 7.529 11.091 7.398C11.145 7.267 11.141 7.12 11.08 6.992L10.256 5.256L11.245 4.268L12.98 5.093C13.107 5.155 13.255 5.159 13.386 5.104C13.517 5.05 13.619 4.943 13.666 4.81L14.309 3H15.708L16.351 4.809C16.399 4.943 16.5 5.05 16.631 5.104C16.762 5.159 16.911 5.155 17.037 5.093L18.748 4.281L19.75 5.283L18.936 6.993C18.876 7.121 18.872 7.268 18.926 7.399C18.98 7.53 19.087 7.631 19.221 7.678L21.017 8.318V9.726ZM15 10C14.449 10 14 9.552 14 9C14 8.448 14.449 8 15 8C15.551 8 16 8.448 16 9C16 9.552 15.551 10 15 10ZM21.684 7.495L20.078 6.922L20.805 5.394C20.895 5.203 20.856 4.975 20.706 4.826L19.205 3.325C19.056 3.175 18.828 3.134 18.638 3.227L17.108 3.953L16.533 2.333C16.462 2.133 16.273 2 16.061 2H13.956C13.745 2 13.556 2.133 13.485 2.332L12.909 3.953L11.355 3.213C11.163 3.122 10.936 3.162 10.787 3.311L9.299 4.799C9.15 4.949 9.11 5.176 9.201 5.368L9.939 6.921L8.333 7.493C8.134 7.563 8 7.751 8 7.963V10.078C8 10.289 8.134 10.478 8.333 10.548L9.939 11.12L9.209 12.655C9.118 12.846 9.158 13.074 9.307 13.223L10.805 14.721C10.955 14.871 11.183 14.911 11.373 14.819L12.908 14.09L13.47 15.672C13.541 15.872 13.73 16.004 13.941 16.004H16.073C16.285 16.004 16.474 15.872 16.544 15.672L17.107 14.09L18.62 14.81C18.812 14.903 19.039 14.862 19.188 14.712L20.698 13.203C20.847 13.053 20.887 12.826 20.796 12.634L20.077 11.122L21.684 10.549C21.884 10.479 22.017 10.29 22.017 10.079V7.965C22.017 7.753 21.884 7.565 21.684 7.495ZM15 7C13.897 7 13 7.897 13 9C13 10.103 13.897 11 15 11C16.103 11 17 10.103 17 9C17 7.897 16.103 7 15 7Z"
                         fill={COLORS.default}
                     />
                 </svg>
@@ -1772,6 +1818,14 @@ export function initIcons(): void {
                     />
                 </svg>
             ),
+            [UiIcons.Shift]: (
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                    <path
+                        d="M9 9.40039C8.99979 9.72863 8.73459 10 8.40039 10H3.59961C3.26542 10 3.00021 9.72863 3 9.40039V7H1.13282C0.629418 6.99979 0.384087 6.371 0.773442 6.03418L1.36524 5.53711C1.96726 5.0439 2.59652 4.56298 3.2168 4.08789C4.04863 3.45077 4.86509 2.82429 5.60938 2.17774L5.69532 2.11524C5.87646 2.00703 6.10228 2.00197 6.28809 2.10254L6.37793 2.16211L11.2012 6.02051L11.2695 6.08496C11.5772 6.42448 11.3449 7 10.8574 7H9V9.40039ZM4 9H8V6.50977C8.00013 6.22829 8.22829 6.00013 8.50977 6H9.57422L6.00879 3.14746C5.30845 3.74009 4.56168 4.31602 3.82422 4.88086C3.33559 5.25512 2.85308 5.62719 2.38575 6H3.49024C3.77172 6.00013 3.99988 6.22829 4 6.50977V9Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
             [UiIcons.SidePanelRight]: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                     <path
@@ -1851,6 +1905,22 @@ export function initIcons(): void {
                     />
                 </svg>
             ),
+            [UiIcons.SwitchOff]: (
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M9 5.5C9.27614 5.5 9.5 5.72386 9.5 6C9.5 6.27614 9.27614 6.5 9 6.5L3 6.5C2.72386 6.5 2.5 6.27614 2.5 6C2.5 5.72386 2.72386 5.5 3 5.5L9 5.5Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
+            [UiIcons.SwitchOn]: (
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M9.22461 3.08203C9.41869 2.95387 9.68265 2.97562 9.85352 3.14648C10.0244 3.31735 10.0461 3.58131 9.91797 3.77539L9.85352 3.85351L4.85351 8.85352C4.68265 9.02438 4.41869 9.04613 4.22461 8.91797L4.14648 8.85352L2.14648 6.85351L2.08203 6.77539C1.95387 6.58131 1.97562 6.31735 2.14648 6.14648C2.31735 5.97562 2.58131 5.95387 2.77539 6.08203L2.85351 6.14648L4.5 7.79297L9.14648 3.14648L9.22461 3.08203Z"
+                        fill={COLORS.default}
+                    />
+                </svg>
+            ),
             [UiIcons.Table]: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                     <path
@@ -1913,6 +1983,19 @@ export function initIcons(): void {
                         clipRule="evenodd"
                         d="M6 5C6 5.5 6.5 6 7 6H9C9.5 6 10 5.5 10 5V10C10 11.1046 9.10457 12 8 12C6.89543 12 6 11.1046 6 10V5ZM8 7.5C8 7.77614 7.77614 8 7.5 8C7.22386 8 7 7.77614 7 7.5C7 7.22386 7.22386 7 7.5 7C7.77614 7 8 7.22386 8 7.5ZM8.5 10C8.77614 10 9 9.77614 9 9.5C9 9.22386 8.77614 9 8.5 9C8.22386 9 8 9.22386 8 9.5C8 9.77614 8.22386 10 8.5 10Z"
                         fill={COLORS.success}
+                    />
+                </svg>
+            ),
+            [UiIcons.TextGrammarDismiss]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 1H1V2H15V1Z" fill={COLORS.default} />
+                    <path d="M15 4H1V5H15V4Z" fill={COLORS.default} />
+                    <path d="M1 7H15V8H1V7Z" fill={COLORS.default} />
+                    <path d="M9 10H1V11H9V10Z" fill={COLORS.default} />
+                    <path d="M1 13H9V14H1V13Z" fill={COLORS.default} />
+                    <path
+                        d="M10.1465 13.1465L11.7929 11.5L10.1465 9.85359L10.8536 9.14648L12.5 10.7929L14.1465 9.14648L14.8536 9.85359L13.2071 11.5L14.8536 13.1465L14.1465 13.8536L12.5 12.2071L10.8536 13.8536L10.1465 13.1465Z"
+                        fill={COLORS.default}
                     />
                 </svg>
             ),
@@ -2237,4 +2320,6 @@ export function initIcons(): void {
 }
 
 export { registerIcons as UIregisterIcons };
+export { unregisterIcons as UIunregisterIcons };
 export { initializeIcons as UIinitializeIcons };
+export { setIconOptions as UIsetIconOptions };

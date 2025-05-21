@@ -193,6 +193,12 @@ describe('getUI5Versions: Handle error cases while getting UI5 versions: ', () =
         expect(versions).toMatchSnapshot();
         expect(logWarnSpy).toBeCalledTimes(1);
     });
+
+    test('UI5 versions fallback for maintained versions, if request fails', async () => {
+        const versions = await getUI5Versions({ includeMaintained: true });
+        expect(versions).toMatchSnapshot();
+        expect(logWarnSpy).toBeCalledTimes(2);
+    });
 });
 
 describe('getUI5Versions: Handle fatal cases while getting UI5 versions: ', () => {

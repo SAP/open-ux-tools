@@ -13,11 +13,17 @@ import type {
 
 import type { TextBundle } from '../../i18n';
 import type { ControlTreeIndex } from '../types';
+import { ChangeService } from '../changes';
 
 export interface QuickActionActivationContext {
     controlIndex: ControlTreeIndex;
     actionService: ActionService;
     manifest: Manifest;
+}
+
+export interface QuickActionTelemetryData {
+    actionName: string;
+    telemetryEventIdentifier: string;
 }
 
 export interface QuickActionContext {
@@ -38,12 +44,8 @@ export interface QuickActionContext {
     rta: RuntimeAuthoring;
     flexSettings: FlexSettings;
     manifest: Manifest;
+    changeService: ChangeService;
 }
-
-export type QuickActionActivationData = {
-    isActive: boolean;
-    title: string;
-};
 
 interface QuickActionDefinitionBase {
     /**
@@ -61,13 +63,28 @@ interface QuickActionDefinitionBase {
      */
     readonly forceRefreshAfterExecution?: boolean;
     /**
+     * Indicates the number of user steps involved in the Quick Action flow.
+     * This value helps distinguish between single-step and multi-step quick actions for telemetry 
+    */
+    quickActionSteps?: number;
+    /**
      * Indicates that the Quick Action is applicable to the given context and should be displayed.
      */
-    isActive: boolean;
+    isApplicable: boolean;
     /**
-     * Initializes the action and checks if it should be enabled in current context.
+     * Initializes the action and checks if it should be displayed in current context.
      */
     initialize: () => void | Promise<void>;
+    /**
+     * Runs enablement validators to check if the action should be enabled.
+     */
+    runEnablementValidators: () => void | Promise<void>;
+    /**
+     * This method returns an identifier for telemetry used for grouping multiple events and differentiating
+     * between quick actions and other triggering points for fragment creation.
+     * @params update - flag for updating timestamp
+     */
+    getTelemetryIdentifier: (update?: boolean) => string | undefined;
 }
 
 export interface SimpleQuickActionDefinition extends QuickActionDefinitionBase {

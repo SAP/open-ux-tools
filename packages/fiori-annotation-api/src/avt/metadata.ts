@@ -86,6 +86,7 @@ class MetadataConverter {
             name: element.name,
             fullyQualifiedName: element.path,
             parameters: [],
+            returnCollection: false,
             isBound: false,
             sourceType: '', // not available here
             returnType: '',
@@ -95,6 +96,7 @@ class MetadataConverter {
             const subElementTargetKinds = this.metadataService.getEdmTargetKinds(subElement.path);
             if (isReturnParameter(subElementTargetKinds, subElement)) {
                 action.returnType = subElement.structuredType ?? subElement.edmPrimitiveType ?? '';
+                action.returnCollection = subElementTargetKinds.includes('Collection');
             } else if (subElementTargetKinds.includes('Parameter')) {
                 const parameter: ActionParameter = {
                     _type: 'ActionParameter',
@@ -296,6 +298,7 @@ function convertFunctionImportV2(
         _type: 'Action',
         name: element.name,
         fullyQualifiedName: element.path,
+        returnCollection: false,
         parameters: [],
         isBound: false, // always set to false in AVT!
         sourceType: '', // not available here
@@ -306,6 +309,7 @@ function convertFunctionImportV2(
         const parameterTargetKinds = metadataService.getEdmTargetKinds(parameterMdElement.path);
         if (isReturnParameter(parameterTargetKinds, parameterMdElement)) {
             action.returnType = parameterMdElement.structuredType ?? parameterMdElement.edmPrimitiveType ?? '';
+            action.returnCollection = parameterTargetKinds.includes('Collection');
         } else if (parameterTargetKinds.includes('Parameter')) {
             // Set action.sourceType to the type from the parameter '_it'
             if (parameterMdElement.name === '_it') {

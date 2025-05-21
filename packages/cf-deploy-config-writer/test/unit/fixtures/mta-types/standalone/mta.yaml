@@ -1,0 +1,41 @@
+_schema-version: "3.2"
+ID: standaloneApp
+description: Fiori elements app
+version: 0.0.1
+modules:
+  - name: standaloneApp-router
+    type: approuter.nodejs
+    path: router
+    requires:
+      - name: standaloneApp-html5-repo-runtime
+      - name: standaloneApp-uaa
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+resources:
+  - name: standaloneApp-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        tenant-mode: dedicated
+        xsappname: standaloneApp-${org}
+      service: xsuaa
+      service-plan: application
+  - name: standaloneApp-html5-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+  - name: standaloneApp-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install

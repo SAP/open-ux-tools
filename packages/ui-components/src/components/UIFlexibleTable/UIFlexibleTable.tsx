@@ -107,7 +107,7 @@ export function UIFlexibleTable<T>(props: Readonly<UIFlexibleTableProps<T>>): Re
         if (props.addRowButton?.onClick) {
             const result = props.addRowButton.onClick();
             if (result instanceof Promise) {
-                result.then((data) => setRowToNavigate(data?.scrollToRow)).catch(() => undefined);
+                result.then((data) => setRowToNavigate(data?.scrollToRow)).catch((): void => undefined);
             } else {
                 setRowToNavigate(result?.scrollToRow);
             }
@@ -273,7 +273,8 @@ export function UIFlexibleTable<T>(props: Readonly<UIFlexibleTableProps<T>>): Re
                                     primary
                                     disabled={props.isAddItemDisabled || props.isContentLoading || props.readonly}
                                     onClick={addNewRow}
-                                    title={props.addRowButton.title}>
+                                    title={props.addRowButton.title}
+                                    aria-label={props.addRowButton.ariaLabel ?? props.addRowButton.label}>
                                     {props.addRowButton.label}
                                 </UIDefaultButton>
                             </div>

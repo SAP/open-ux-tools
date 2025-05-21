@@ -1,10 +1,12 @@
 import { join } from 'path';
 import { checkDependencies, getReuseLibs, getLibraryDesc, getManifestDesc } from '../../src/library/helpers';
 import * as manifestJson from '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice/src/sap/reuse/ex/test/lib/attachmentservice/manifest.json';
-import type { Manifest, ReuseLib } from '../../src';
+import type { LibraryXml, Manifest, ReuseLib } from '../../src';
+import * as fileUtils from '../../src/file';
 
 describe('library utils', () => {
     test('should return library choices', async () => {
+        const findFilesSpy = jest.spyOn(fileUtils, 'findFiles');
         const libChoices = await getReuseLibs([
             {
                 projectRoot: join(__dirname, '../test-data/libs/sap.reuse.ex.test.lib.attachmentservice'),
@@ -20,6 +22,7 @@ describe('library utils', () => {
             }
         ]);
 
+        expect(findFilesSpy).toHaveBeenCalledTimes(3);
         expect(libChoices).toHaveLength(4);
         libChoices.sort((a, b) => a.name.localeCompare(b.name));
 
@@ -93,7 +96,7 @@ describe('library utils', () => {
             'library': {
                 documentation: 'test description'
             }
-        };
+        } as unknown as LibraryXml;
         const description = await getLibraryDesc(lib, 'mock/path');
         expect(description).toEqual('test description');
     });

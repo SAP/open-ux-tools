@@ -1,4 +1,4 @@
-// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
+// Last content update: Mon Feb 10 2025 23:35:57 GMT+0100 (Mitteleuropäische Normalzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -99,6 +99,19 @@ export default {
             '$Kind': 'Term',
             '@Org.OData.Core.V1.Description': 'A short, human-readable text suitable for tool tips in UIs',
             '@Org.OData.Core.V1.IsLanguageDependent': true
+        },
+        'DocumentationRef': {
+            '$Kind': 'Term',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'A URI referencing language-dependent documentation for the annotated model element',
+            '@Org.OData.Core.V1.Example': {
+                '@odata.type':
+                    'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml#Core.PrimitiveExampleValue',
+                'Description':
+                    'URN scheme to look up the documentation for an object with given type and id in a given system.\n              This example looks up the documentation for data element /iwbep/account in system G1Y_000.',
+                'Value': 'urn:sap-com:documentation:key?=type=DTEL&id=%2fiwbep%2faccount&origin=G1Y_000'
+            }
         },
         'Text': {
             '$Kind': 'Term',
@@ -226,14 +239,9 @@ export default {
             '$Collection': true,
             '$Type': 'Edm.PropertyPath',
             '$AppliesTo': ['EntityType'],
-            '@Org.OData.Core.V1.Revisions': [
-                {
-                    'Kind': 'Deprecated',
-                    'Description': 'Use term `AlternateKeys` from the OASIS Core vocabulary instead'
-                }
-            ],
-            '@Org.OData.Core.V1.Description':
-                'The listed properties form a secondary key. Multiple secondary keys are possible using different qualifiers.'
+            '@Org.OData.Core.V1.Description': 'The listed properties form a secondary key',
+            '@Org.OData.Core.V1.LongDescription':
+                'Multiple secondary keys are possible using different qualifiers.\n          Unlike [`Core.AlternateKeys`](https://github.com/oasis-tcs/odata-vocabularies/blob/main/vocabularies/Org.OData.Core.V1.md#AlternateKeys),\n          secondary keys need not support addressing an entity in a resource path.'
         },
         'MinOccurs': {
             '$Kind': 'Term',
@@ -306,7 +314,7 @@ export default {
         'SemanticObjectMapping': {
             '$Kind': 'Term',
             '$Collection': true,
-            '$Type': 'com.sap.vocabularies.Common.v1.SemanticObjectMappingType',
+            '$Type': 'com.sap.vocabularies.Common.v1.SemanticObjectMappingAbstract',
             '$AppliesTo': ['EntitySet', 'EntityType', 'Property'],
             '$BaseTerm': 'com.sap.vocabularies.Common.v1.SemanticObject',
             '@Org.OData.Core.V1.Description':
@@ -314,17 +322,31 @@ export default {
             '@Org.OData.Core.V1.LongDescription':
                 'This allows "renaming" of properties in the current context to match property names of the Semantic Object, e.g. `SenderPartyID` to `PartyID`. Only properties explicitly listed in the mapping are renamed, all other properties are available for intent-based navigation with their "local" name.'
         },
+        'SemanticObjectMappingAbstract': {
+            '$Kind': 'ComplexType',
+            '$Abstract': true,
+            '@Org.OData.Core.V1.Description':
+                'Maps a property of the Semantic Object to a property of the annotated entity type or a sibling property of the annotated property or a constant value',
+            'SemanticObjectProperty': {
+                '@Org.OData.Core.V1.Description': 'Name of the Semantic Object property'
+            }
+        },
         'SemanticObjectMappingType': {
             '$Kind': 'ComplexType',
-            '@Org.OData.Core.V1.Description':
-                'Maps a property of the annotated entity type or a sibling property of the annotated property to a property of the Semantic Object',
+            '$BaseType': 'com.sap.vocabularies.Common.v1.SemanticObjectMappingAbstract',
             'LocalProperty': {
                 '$Type': 'Edm.PropertyPath',
                 '@Org.OData.Core.V1.Description':
                     'Path to a local property that provides the value for the Semantic Object property'
-            },
-            'SemanticObjectProperty': {
-                '@Org.OData.Core.V1.Description': 'Name of the Semantic Object property'
+            }
+        },
+        'SemanticObjectMappingConstant': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'com.sap.vocabularies.Common.v1.SemanticObjectMappingAbstract',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            'Constant': {
+                '$Type': 'Edm.PrimitiveType',
+                '@Org.OData.Core.V1.Description': 'Constant value for the Semantic Object property'
             }
         },
         'SemanticObjectUnavailableActions': {
@@ -1213,7 +1235,7 @@ export default {
                 '$Nullable': true,
                 '@Org.OData.Core.V1.Description': 'Action that shares a draft document with other users',
                 '@Org.OData.Core.V1.LongDescription':
-                    'The action is bound to the draft document root node and has the following signature:\n\n            - `Users`: collection of structure with properties\n\n              - `UserID` of type `String` and\n\n              - `UserAccessRole` of type `String` with possible values `O` (owner, can perform all draft actions), and `E` (editor, can change the draft)\n\n            It restricts access to the listed users in their specified roles.'
+                    'The action is bound to the draft document root node and has the following signature:\n- `Users`: collection of structure with properties\n  - `UserID` of type `String` and\n  - `UserAccessRole` of type `String` with possible values `O` (owner, can perform all draft actions), and `E` (editor, can change the draft)\n\nIt restricts access to the listed users in their specified roles.\n\nIf this action is present, the client can receive notifications about changes to the\ncollaborative draft by opening a web socket connection at the [`WebSocketBaseURL`](#WebSocketBaseURL)\nfollowed by URL parameters\n- `relatedService` = base URL (relative to server root) of the OData service of the app\n- `draft` = draft UUID.'
             }
         },
         'DraftNode': {
@@ -1315,6 +1337,12 @@ export default {
                 '$Type': 'Edm.NavigationPropertyPath',
                 '@Org.OData.Core.V1.Description':
                     'Changes to one or more of these entities may affect the targets. An empty path means the annotation target.'
+            },
+            'SourceEvents': {
+                '$Collection': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description':
+                    'When the service raises one or more of these "events for side effects", the targets may be affected'
             },
             'TargetProperties': {
                 '$Collection': true,
@@ -1438,7 +1466,8 @@ export default {
         },
         'SortOrderType': {
             '$Kind': 'ComplexType',
-            '@Org.OData.Core.V1.Description': 'Exactly one of `Property` and `DynamicProperty` must be present',
+            '@Org.OData.Core.V1.Description':
+                'Exactly one of `Property`, `DynamicProperty` and `Expression` must be present',
             'Property': {
                 '$Type': 'Edm.PropertyPath',
                 '$Nullable': true,
@@ -1462,6 +1491,13 @@ export default {
                     'com.sap.vocabularies.Analytics.v1.AggregatedProperty',
                     'Org.OData.Aggregation.V1.CustomAggregate'
                 ]
+            },
+            'Expression': {
+                '$Type': 'Edm.PrimitiveType',
+                '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description':
+                    'Dynamic expression whose primitive result value is used to sort the instances'
             },
             'Descending': {
                 '$Type': 'Edm.Boolean',
@@ -1561,7 +1597,6 @@ export default {
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
             '$AppliesTo': ['EntityContainer'],
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 'Sorting and filtering of amounts in multiple currencies needs special consideration',
             '@Org.OData.Core.V1.LongDescription':
@@ -1592,7 +1627,17 @@ export default {
             '$AppliesTo': ['EntityContainer'],
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.IsURL': true,
-            '@Org.OData.Core.V1.Description': 'Base URL for WebSocket connections'
+            '@Org.OData.Core.V1.Description': 'Base URL for WebSocket connections',
+            '@Org.OData.Core.V1.LongDescription': 'This annotation MUST be unqualified.'
+        },
+        'WebSocketChannel': {
+            '$Kind': 'Term',
+            '$Nullable': true,
+            '$AppliesTo': ['EntityContainer'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description': 'Channel for WebSocket connections',
+            '@Org.OData.Core.V1.LongDescription':
+                'Messages sent over the channel follow the [ABAP Push Channel Protocol](https://community.sap.com/t5/application-development-blog-posts/specification-of-the-push-channel-protocol-pcp/ba-p/13137541).\nTo consume a channel, the client opens a web socket connection at the [`WebSocketBaseURL`](#WebSocketBaseURL)\nfollowed by URL parameters\n- parameter name = annotation qualifier, parameter value = channel ID (see below)\n- parameter name = `relatedService`, parameter value = base URL (relative to server root) of the OData service of the app\n\n<dl>Supported qualifiers and channel IDs:\n<dt>`sideEffects` <dd>Notifications about side effects to be triggered by the client (channel ID = non-null annotation value)\n</dl>'
         }
     }
 } as CSDL;

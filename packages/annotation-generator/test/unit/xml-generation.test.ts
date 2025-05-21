@@ -93,6 +93,17 @@ describe('annotation generation (XML)', () => {
         expect(content).toMatchSnapshot();
     });
 
+    test('generate line items hidden', async () => {
+        const options: GenerateAnnotationsOptions = {
+            entitySetName: 'IncidentFlow',
+            annotationFilePath: editableFileRelative,
+            addLineItems: true
+        };
+        await generateAnnotations(fsEditor, annoServiceParams, options);
+        const content = fsEditor.read(annotationFilePathAbsolute);
+        expect(content).toMatchSnapshot();
+    });
+
     test('do not generate facets if they already exist', async () => {
         const options: GenerateAnnotationsOptions = {
             entitySetName: 'Incidents',

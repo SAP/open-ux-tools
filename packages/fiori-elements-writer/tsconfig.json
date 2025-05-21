@@ -11,6 +11,12 @@
   },
   "references": [
     {
+      "path": "../annotation-generator"
+    },
+    {
+      "path": "../cap-config-writer"
+    },
+    {
       "path": "../eslint-plugin-fiori-tools"
     },
     {
@@ -18,6 +24,9 @@
     },
     {
       "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../logger"
     },
     {
       "path": "../odata-service-writer"

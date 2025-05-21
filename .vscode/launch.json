@@ -33,12 +33,12 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "examples/prompting-ui: Run Example",
+            "name": "examples/ui-prompting-examples: Run Example",
             "runtimeExecutable": "pnpm",
             "runtimeArgs": ["storybook"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "cwd": "${workspaceFolder}/examples/prompting-ui"
+            "cwd": "${workspaceFolder}/examples/ui-prompting-examples"
         },
         {
             "type": "node",
@@ -167,7 +167,8 @@
             "cwd": "${workspaceFolder}/packages/fiori-freestyle-writer",
             "env": {
                 "UX_DEBUG": "false",
-                "UX_DEBUG_FULL": "false"
+                "UX_DEBUG_FULL": "false",
+                "FIORI_TOOLS_DISABLE_SECURE_STORE": "true"
             }
         },
         {
@@ -182,7 +183,7 @@
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
             "cwd": "${workspaceFolder}/packages/nodejs-utils/"
-        }
+        },
         {
             "type": "node",
             "request": "launch",
@@ -342,6 +343,23 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "cds-odata-annotation-converter: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false", "--runInBand"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/cds-odata-annotation-converter",
+            "env": {
+                "UX_DEBUG": "false"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "xml-odata-annotation-converter: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
@@ -351,6 +369,23 @@
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
             "cwd": "${workspaceFolder}/packages/xml-odata-annotation-converter"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "adp-tooling: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false", "--runInBand"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/adp-tooling",
+            "env": {
+                "UX_DEBUG": "false"
+            }
         },
         {
             "type": "node",
@@ -394,6 +429,20 @@
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
             "cwd": "${workspaceFolder}/packages/system-access"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "repo-app-import-sub-generator: Launch Yeoman generators/app",
+            "program": "${workspaceFolder}/packages/repo-app-import-sub-generator/node_modules/yo/lib/cli.js",
+            "args": [
+              "${workspaceFolder}/packages/repo-app-import-sub-generator/generators/app/index.js"
+            ],
+            "env": {
+            },
+            "stopOnEntry": true,
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
         }
     ]
 }

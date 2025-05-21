@@ -32,7 +32,7 @@ async function removeMockserverConfiguration(basePath: string, force: boolean): 
     try {
         logger.debug(`Called remove mockserver-config for path '${basePath}', force is '${force}'`);
         await validateBasePath(basePath);
-        const fs = removeMockserverConfig(basePath);
+        const fs = await removeMockserverConfig(basePath);
         await traceChanges(fs);
         const hasDeletions = hasFileDeletes(fs);
         let doCommit = true;

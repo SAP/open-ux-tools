@@ -24,7 +24,7 @@ const severityMap = {
 const toolsExtensionFields = ['Tools/Extensions', 'Version'];
 
 /**
- * Column sequence of the destination table, first colun id, the column title
+ * Column sequence of the destination table, first column id, then column title
  */
 const destinationTableFields = new Map<string, string>([
     ['Name', 'Name'],
@@ -37,7 +37,8 @@ const destinationTableFields = new Map<string, string>([
     ['Type', 'Type'],
     ['Authentication', 'Authentication'],
     ['ProxyType', 'ProxyType'],
-    ['HTML5.DynamicDestination', 'HTML5.DynamicDestination']
+    ['HTML5.DynamicDestination', 'HTML5.DynamicDestination'],
+    ['HTML5.Timeout', 'HTML5.Timeout']
 ]);
 
 /**
@@ -213,6 +214,11 @@ function writeDestinationDetails(
         writer.addLine(`✅ &nbsp; ${t('markdownText.html5DynamicDestTrue')}`);
     } else {
         writer.addLine(`🚫 &nbsp; ${t('markdownText.setHtml5DynamicDest')}`);
+    }
+    if (destDetails.HTML5TimeoutDestination) {
+        writer.addLine(`✅ &nbsp; ${t('markdownText.html5TimeoutValue')}`);
+    } else {
+        writer.addLine(`🟡 &nbsp; ${t('markdownText.setHtml5TimeoutDest')}`);
     }
     if (urlServiceType) {
         writer.addLine(

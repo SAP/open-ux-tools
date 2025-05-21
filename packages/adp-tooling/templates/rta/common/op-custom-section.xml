@@ -1,0 +1,17 @@
+<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition
+    xmlns:uxap="sap.uxap"
+    xmlns:core='sap.ui.core'
+    xmlns='sap.m'
+>
+    <uxap:ObjectPageSection
+        id="<%- ids.objectPageSection %>"
+        title="New custom section"
+    >
+        <uxap:ObjectPageSubSection id="<%- ids.objectPageSubSection %>">
+            <HBox id="<%- ids.hBox %>">
+                <!--  add your xml here -->
+            </HBox>
+        </uxap:ObjectPageSubSection>
+    </uxap:ObjectPageSection>
+</core:FragmentDefinition>

@@ -1,4 +1,4 @@
-# @sap-ux/ui-components
+# @sap-ux/ui-prompting
 Library is a collection of react components to build ui based on `inquirer` interface.
 
 ## Installation

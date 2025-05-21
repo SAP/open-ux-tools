@@ -10,10 +10,6 @@ import { UIDropdown } from '../src/components/UIDropdown';
 import { UIComboBox } from '../src/components/UIComboBox';
 import { UICheckbox } from '../src/components/UICheckbox';
 
-import { initIcons } from '../src/components/Icons';
-
-initIcons();
-
 export default { title: 'Dialogs/Dialogs' };
 
 const stackTokens: IStackTokens = { childrenGap: 40 };

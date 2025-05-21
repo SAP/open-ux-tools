@@ -23,6 +23,7 @@ import type {
 } from '@sap-ux/vocabularies-types';
 import { CommonAnnotationTerms, CommonAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/Common';
 import type { EntityTypeAnnotations, PropertyAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
+import type { Hidden } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { UIAnnotationTerms, UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { join } from 'path';
 import { pathToFileURL } from 'url';
@@ -140,12 +141,12 @@ interface Context {
     ignoreChangedFileInitialContent: boolean;
 }
 
-async function adaptProject(projectOrRoot: string | Project): Promise<Project> {
+async function adaptProject(projectOrRoot: string | Project, fs?: Editor): Promise<Project> {
     if (typeof projectOrRoot === 'string') {
         // On Windows platform when called from the Application Wizard the root path may contain lowercase drive letter
         // This causes annotation generation error in Fiori annotation API, thus needs adaptation
         const root = adaptFilePath(projectOrRoot);
-        return await getProject(root);
+        return await getProject(root, fs);
     } else {
         return projectOrRoot;
     }
@@ -158,7 +159,7 @@ async function getContext(
     annotationServiceParams: AnnotationServiceParameters
 ): Promise<Context> {
     const { project, serviceName, appName, writeSapAnnotations = false } = annotationServiceParams;
-    const projectInstance = await adaptProject(project);
+    const projectInstance = await adaptProject(project, fs);
     const annotationService = await FioriAnnotationService.createService(
         projectInstance,
         serviceName,
@@ -421,11 +422,11 @@ function isPropertyFromCommonNodeModule(propName: string, locationUri?: string):
     return managedProperties.includes(propName) && locationUri.endsWith(commonNodeModulePath);
 }
 
-function isHidden(hiddenAnno?: Omit<RawAnnotation, 'annotations'>): boolean {
+function isHidden(hiddenAnno: Hidden | undefined): boolean {
     if (!hiddenAnno || hiddenAnno.qualifier) {
         return false;
     }
-    return !hiddenAnno.value || (hiddenAnno.value.type === 'Bool' && hiddenAnno.value.Bool !== false);
+    return hiddenAnno.valueOf() as boolean;
 }
 
 /**

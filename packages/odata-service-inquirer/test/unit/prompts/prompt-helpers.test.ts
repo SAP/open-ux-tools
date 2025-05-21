@@ -27,58 +27,45 @@ describe('prompt-helpers', () => {
         expect(getDatasourceTypeChoices()).toMatchInlineSnapshot(`
             [
               {
-                "name": "Connect to a SAP System",
+                "name": "Connect to a System",
                 "value": "sapSystem",
               },
               {
-                "name": "Connect to an OData Service Url",
+                "name": "Connect to an OData Service",
                 "value": "odataServiceUrl",
-              },
-              {
-                "name": "Connect to SAP Business Accelerator Hub",
-                "value": "businessHub",
               },
               {
                 "name": "Use a Local CAP Project",
                 "value": "capProject",
               },
               {
-                "name": "Upload a Metadata File",
+                "name": "Upload a Metadata Document",
                 "value": "metadataFile",
               },
             ]
         `);
 
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValueOnce(true);
-        expect(getDatasourceTypeChoices({ includeNone: true, includeProjectSpecificDest: true }))
-            .toMatchInlineSnapshot(`
+        expect(getDatasourceTypeChoices({ includeNone: true })).toMatchInlineSnapshot(`
             [
               {
                 "name": "None",
                 "value": "none",
               },
               {
-                "name": "Connect to a SAP System",
+                "name": "Connect to a System",
                 "value": "sapSystem",
               },
               {
-                "name": "Connect to an OData Service Url",
+                "name": "Connect to an OData Service",
                 "value": "odataServiceUrl",
-              },
-              {
-                "name": "Connect to SAP Business Accelerator Hub",
-                "value": "businessHub",
-              },
-              {
-                "name": "Connect to a Project Specific Destination",
-                "value": "projectSpecificDestination",
               },
               {
                 "name": "Use a Local CAP Project",
                 "value": "capProject",
               },
               {
-                "name": "Upload a Metadata File",
+                "name": "Upload a Metadata Document",
                 "value": "metadataFile",
               },
             ]

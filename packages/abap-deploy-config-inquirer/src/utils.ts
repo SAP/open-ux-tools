@@ -10,7 +10,6 @@ import type {
     AbapDeployConfigAnswersInternal,
     BackendTarget,
     Credentials,
-    DeployTaskConfig,
     InitTransportConfigResult,
     SystemConfig
 } from './types';
@@ -34,14 +33,16 @@ export async function getAbapSystems(): Promise<{
     let backendSystems;
 
     if (isAppStudio()) {
-        destinations = await listDestinations();
+        destinations = await listDestinations({
+            stripS4HCApiHosts: true
+        });
         cachedDestinations = destinations;
     } else {
         const systemStore = await getService<BackendSystem, BackendSystemKey>({
             logger: LoggerHelper.logger,
             entityName: 'system'
         });
-        backendSystems = await systemStore.getAll();
+        backendSystems = await systemStore?.getAll();
         cachedBackendSystems = backendSystems;
     }
 
@@ -81,7 +82,7 @@ export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: s
     return Boolean(
         (abapSystem?.url &&
             abapSystem.url.trim()?.replace(/\/$/, '') === url?.trim()?.replace(/\/$/, '') &&
-            abapSystem.client === client) ??
+            abapSystem.client === client) ||
             (!!abapSystem?.destination && destination === abapSystem?.destination)
     );
 }
@@ -91,7 +92,6 @@ export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: s
  *
  * @param transportConfigParams - transport configuration parameters
  * @param transportConfigParams.backendTarget - backend target from prompt options
- * @param transportConfigParams.scp - scp
  * @param transportConfigParams.url - url
  * @param transportConfigParams.client - client
  * @param transportConfigParams.destination - destination
@@ -101,15 +101,12 @@ export function isSameSystem(abapSystem?: SystemConfig, url?: string, client?: s
  */
 export async function initTransportConfig({
     backendTarget,
-    scp,
     url,
-    client,
     destination,
     credentials,
     errorHandler
 }: {
     backendTarget?: BackendTarget;
-    scp?: boolean;
     url?: string;
     client?: string;
     destination?: string;
@@ -121,18 +118,10 @@ export async function initTransportConfig({
         return result;
     }
 
-    const systemConfig = {
-        url,
-        client,
-        destination
-    };
-
     try {
         result = await getTransportConfigInstance({
             backendTarget,
-            scp,
-            credentials,
-            systemConfig
+            credentials
         });
     } catch (e) {
         result.error = e;
@@ -162,6 +151,7 @@ export async function queryPackages(
     backendTarget?: BackendTarget
 ): Promise<string[]> {
     const uppercaseInput = (input ?? '').toUpperCase();
+
     return listPackages(uppercaseInput, inputSystemConfig, backendTarget);
 }
 
@@ -173,38 +163,39 @@ export async function queryPackages(
  * @returns package name
  */
 export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswersInternal, statePackage?: string): string {
-    // Older versions of YUI do not have a packageInputChoice question
-    return statePackage || previousAnswers?.packageInputChoice === PackageInputChoices.ListExistingChoice
-        ? previousAnswers?.packageAutocomplete ?? ''
-        : previousAnswers?.packageManual ?? '';
+    return (
+        statePackage ??
+        (previousAnswers?.packageInputChoice === PackageInputChoices.ListExistingChoice
+            ? previousAnswers?.packageAutocomplete ?? ''
+            : previousAnswers?.packageManual ?? '')
+    );
 }
 
 /**
  * Determines the transport request from the various transport related prompts.
  *
- * @param previousAnswers - previous answers
+ * @param promptAnswers - previous answers
  * @returns transport request
  */
-function getTransportAnswer(previousAnswers?: AbapDeployConfigAnswersInternal): string {
+export function getTransportAnswer(promptAnswers?: AbapDeployConfigAnswersInternal): string {
     return (
-        previousAnswers?.transportManual ||
-        previousAnswers?.transportFromList ||
-        previousAnswers?.transportCreated ||
-        (previousAnswers?.transportInputChoice === TransportChoices.CreateDuringDeployChoice
+        promptAnswers?.transportManual ||
+        promptAnswers?.transportFromList ||
+        promptAnswers?.transportCreated ||
+        (promptAnswers?.transportInputChoice === TransportChoices.CreateDuringDeployChoice
             ? CREATE_TR_DURING_DEPLOY
             : '')
     );
 }
 
 /**
- * If a deploy config already exists in the project, check if the config
- * uses option to create transport request number during actual deploy process.
+ * Check if the transport matches placeholder used to create transport request number during actual deploy process.
  *
- * @param existingDeployTaskConfig - existing deploy task config
+ * @param transport - existing transport
  * @returns true if transport setting is set to 'CreateDuringDeployChoice'.
  */
-export function useCreateTrDuringDeploy(existingDeployTaskConfig?: DeployTaskConfig): boolean {
-    return existingDeployTaskConfig?.transport === CREATE_TR_DURING_DEPLOY;
+export function useCreateTrDuringDeploy(transport?: string): boolean {
+    return transport === CREATE_TR_DURING_DEPLOY;
 }
 
 /**
@@ -279,4 +270,26 @@ export function reconcileAnswers(
     }
 
     return reconciledAnswers;
+}
+
+/**
+ * If the prompts are being use standalone then the system configuration is derived from the prompt options rather than the state.
+ *
+ * @param useStandalone - whether the prompts are used standalone
+ * @param abapDeployConfig - abap deploy config answers derived from the state i.e system selection prompt answers
+ * @param backendTarget - backend target from abap deploy config prompt options
+ * @returns system configuration
+ */
+export function getSystemConfig(
+    useStandalone: boolean,
+    abapDeployConfig?: Partial<AbapDeployConfigAnswersInternal>,
+    backendTarget?: BackendTarget
+): SystemConfig {
+    const configSource = useStandalone ? backendTarget?.abapTarget : abapDeployConfig;
+
+    return {
+        url: configSource?.url,
+        client: configSource?.client,
+        destination: configSource?.destination
+    };
 }

@@ -1,4 +1,8 @@
 {
+    "scripts": {
+        "watch-one": "dummy1",
+        "watch-two": "dummy2"
+    },
     "cds": {},
     "sapux": ["apps/one", "apps\\two"]
 }

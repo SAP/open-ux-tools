@@ -59,6 +59,7 @@ export default function App(appProps: AppProps): ReactElement {
     const windowSize = useWindowSize();
     const dialogMessage = useSelector<RootState, ShowMessage | undefined>((state) => state.dialogMessage);
     const [dialogQueue, setDialogQueue] = useState<ShowMessage[]>([]);
+    const [suppressDialog, setSuppressDialog] = useState<boolean>(false);
     const containerRef = useCallback(
         (node) => {
             if (node === null) {
@@ -97,6 +98,7 @@ export default function App(appProps: AppProps): ReactElement {
     const closeAdpWarningDialog = (): void => {
         setDialogQueue((prevQueue) => prevQueue.slice(1));
         setShouldShowDialogMessage(dialogQueue.length !== 0);
+        setSuppressDialog(true);
     };
 
     useEffect(() => {
@@ -142,7 +144,7 @@ export default function App(appProps: AppProps): ReactElement {
                         }}
                     />
                 )}
-                {isAdpProject && !shouldHideIframe && dialogQueue.length > 0 && (
+                {isAdpProject && !shouldHideIframe && dialogQueue.length > 0 && !suppressDialog && (
                     <UIDialog
                         hidden={!shouldShowDialogMessage}
                         dialogContentProps={{

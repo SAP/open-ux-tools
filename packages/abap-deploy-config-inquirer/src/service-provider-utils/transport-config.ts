@@ -1,9 +1,9 @@
 import { AtoService } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
-import { deleteCachedServiceProvider, getOrCreateServiceProvider } from './abap-service-provider';
+import { AbapServiceProviderManager } from './abap-service-provider';
 import LoggerHelper from '../logger-helper';
 import type { AtoSettings } from '@sap-ux/axios-extension';
-import type { TransportConfig, InitTransportConfigResult, SystemConfig, Credentials, BackendTarget } from '../types';
+import type { TransportConfig, InitTransportConfigResult, Credentials, BackendTarget } from '../types';
 
 /**
  * Dummy transport configuration.
@@ -111,22 +111,19 @@ class DefaultTransportConfig implements TransportConfig {
      *
      * @param initParams - init transport config parameters
      * @param initParams.backendTarget - backend target from prompt options
-     * @param initParams.systemConfig - system configuration
      * @param initParams.credentials - user credentials
      * @returns init transport config result
      */
     public async init({
         backendTarget,
-        systemConfig,
         credentials
     }: {
         backendTarget?: BackendTarget;
-        systemConfig: SystemConfig;
         credentials?: Credentials;
     }): Promise<InitTransportConfigResult> {
         const result: InitTransportConfigResult = {};
         try {
-            const provider = await getOrCreateServiceProvider(systemConfig, backendTarget, credentials);
+            const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget, credentials);
             const atoService = await provider.getAdtService<AtoService>(AtoService);
             const atoSettings = await atoService?.getAtoInfo();
 
@@ -134,14 +131,13 @@ class DefaultTransportConfig implements TransportConfig {
                 result.error = this.handleAtoResponse(atoSettings);
             }
         } catch (err) {
-            deleteCachedServiceProvider();
-
+            AbapServiceProviderManager.deleteExistingServiceProvider();
             if (err.response?.status === 401) {
-                const auth: string = err.response.headers['www-authenticate'];
-
-                if (auth?.toLowerCase()?.startsWith('basic')) {
-                    result.transportConfigNeedsCreds = true;
-                }
+                const auth: string = err.response.headers?.['www-authenticate'];
+                result.transportConfigNeedsCreds = !!auth?.toLowerCase()?.startsWith('basic');
+                LoggerHelper.logger.debug(
+                    t('errors.debugAbapTargetSystemAuthFound', { isFound: !!result.transportConfigNeedsCreds })
+                );
             } else {
                 // Everything from network errors to service being inactive is a warning.
                 // Will be logged and the user is allowed to move on
@@ -149,7 +145,6 @@ class DefaultTransportConfig implements TransportConfig {
                 result.warning = err.message;
                 result.transportConfigNeedsCreds = false;
             }
-
             LoggerHelper.logger.debug(t('errors.debugAbapTargetSystem', { method: 'init', error: err.message }));
         }
         const initSuccessful = !result.error && !result.transportConfigNeedsCreds;
@@ -221,25 +216,15 @@ class DefaultTransportConfig implements TransportConfig {
  *
  * @param transportConfigOptions - transport configuration options
  * @param transportConfigOptions.backendTarget - backend target from prompt options
- * @param transportConfigOptions.scp - scp
- * @param transportConfigOptions.systemConfig - system configuration
  * @param transportConfigOptions.credentials - user credentials
  * @returns transport configuration instance
  */
 export async function getTransportConfigInstance({
     backendTarget,
-    scp,
-    credentials,
-    systemConfig
+    credentials
 }: {
     backendTarget?: BackendTarget;
-    scp?: boolean;
     credentials?: Credentials;
-    systemConfig: SystemConfig;
 }): Promise<InitTransportConfigResult> {
-    if (scp) {
-        return { transportConfig: new DummyTransportConfig() };
-    }
-
-    return new DefaultTransportConfig().init({ backendTarget, systemConfig, credentials });
+    return new DefaultTransportConfig().init({ backendTarget, credentials });
 }

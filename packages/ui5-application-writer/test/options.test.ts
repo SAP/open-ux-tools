@@ -79,11 +79,36 @@ describe('UI5 templates', () => {
             }
         });
     });
+    it('option: `loadReuseLibs` UI5 1.120.0', async () => {
+        const projectDir = join(outputDir, 'testapp_loadReuseLibs_1.120.0');
+        const fs = await generate(projectDir, {
+            ...baseAppConfig,
+            appOptions: {
+                loadReuseLibs: true
+            },
+            ui5: {
+                version: '1.120.0'
+            }
+        });
+        expect(fs.dump(projectDir)).toMatchSnapshot();
+        return new Promise((resolve) => {
+            // write out the files for debugging
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
 
     it('generates options: `sapux` with specific version', async () => {
         const projectDir = join(outputDir, 'testapp_options');
         const fs = await generate(projectDir, {
             ...baseAppConfig,
+            app: {
+                ...baseAppConfig.app,
+                flpAction: 'display'
+            },
             appOptions: {
                 sapux: true
             },
@@ -111,6 +136,28 @@ describe('UI5 templates', () => {
                     typescript: true,
                     sapux: true,
                     npmPackageConsumption: true
+                }
+            })
+        );
+        expect(fs.dump(projectDir)).toMatchSnapshot();
+        return new Promise((resolve) => {
+            // write out the files for debugging
+            if (debug) {
+                fs.commit(resolve);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+
+    it('option: `sapux and use virtual endpoints`', async () => {
+        const projectDir = join(outputDir, 'testapp_typescript');
+        const fs = await generate(
+            projectDir,
+            Object.assign(baseAppConfig, {
+                appOptions: {
+                    sapux: true,
+                    useVirtualPreviewEndpoints: true
                 }
             })
         );

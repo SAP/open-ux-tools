@@ -1,0 +1,10 @@
+<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition
+    xmlns:uxap="sap.uxap"
+    xmlns:core='sap.ui.core'
+    xmlns='sap.m'
+>
+     <VBox id="<%- ids.vBoxContainer %>">
+         <Label id="<%- ids.label %>" text="New Field"></Label>
+    </VBox>
+</core:FragmentDefinition>

@@ -3,16 +3,9 @@ import { screen } from '@testing-library/react';
 import { render } from '../../utils';
 import type { PropertyDocumentationProps } from '../../../../src/panels/properties/PropertyDocumentation';
 import { PropertyDocumentation } from '../../../../src/panels/properties/PropertyDocumentation';
-import { initI18n } from '../../../../src/i18n';
-
-import { mockResizeObserver } from '../../../utils/utils';
+import { PropertyType } from '@sap-ux-private/control-property-editor-common';
 
 describe('PropertyDoc', () => {
-    beforeAll(() => {
-        mockResizeObserver();
-        initI18n();
-    });
-
     test('no changes', () => {
         const props: PropertyDocumentationProps = {
             description: 'testDoc',
@@ -48,9 +41,12 @@ describe('PropertyDoc', () => {
                     id: 'control1'
                 } as any,
                 changes: {
-                    stack: [],
+                    pending: [],
+                    pendingChangeIds: [],
+                    saved: [],
                     controls: {
                         control1: {
+                            controlName: 'controlName1',
                             pending: 0,
                             saved: 1,
                             properties: {
@@ -58,11 +54,20 @@ describe('PropertyDoc', () => {
                                     saved: 0,
                                     pending: 1,
                                     lastChange: {
-                                        propertyName: 'testProperty',
-                                        value: 'c value',
+                                        kind: 'generic',
                                         type: 'pending',
                                         isActive: true,
-                                        controlId: 'control1'
+                                        controlId: 'control1',
+                                        changeType: 'property',
+                                        fileName: 'testFile1',
+                                        controlName: 'controlName1',
+                                        properties: [
+                                            {
+                                                label: 'testProperty',
+                                                value: 'c value'
+                                            }
+                                        ],
+                                        title: 'Random Title'
                                     }
                                 }
                             }
@@ -101,12 +106,18 @@ describe('PropertyDoc', () => {
                                     saved: 1,
                                     pending: 0,
                                     lastSavedChange: {
-                                        propertyName: 'testProperty',
-                                        value: 'old value',
+                                        kind: 'generic',
                                         type: 'saved',
                                         fileName: 'file',
                                         timestamp: 123,
-                                        controlId: 'control1'
+                                        controlId: 'control1',
+                                        changeType: 'property',
+                                        properties: [
+                                            {
+                                                label: 'testProperty',
+                                                value: 'old value'
+                                            }
+                                        ]
                                     }
                                 }
                             }
@@ -122,6 +133,6 @@ describe('PropertyDoc', () => {
 
         deleteButton.click();
 
-        expect(props.onDelete).toHaveBeenCalledWith('control1', 'testProperty');
+        expect(props.onDelete).toHaveBeenCalledWith('control1', 'testProperty', 'file');
     });
 });

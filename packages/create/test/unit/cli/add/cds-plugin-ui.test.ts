@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as capConfigWriterMock from '@sap-ux/cap-config-writer';
 import * as logger from '../../../../src/tracing/logger';
+import * as npmCommand from '@sap-ux/project-access';
 import { addAddCdsPluginUi5Command } from '../../../../src/cli/add/cds-plugin-ui';
 import { join } from 'path';
 
@@ -15,6 +16,7 @@ describe('Test command add cds-plugin-ui5', () => {
     let logLevelSpy: jest.SpyInstance;
     let spawnSpy: jest.SpyInstance;
     let command: Command;
+    let execNpmCommandSpy: jest.SpyInstance;
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
@@ -37,6 +39,7 @@ describe('Test command add cds-plugin-ui5', () => {
         } as Partial<Editor> as Editor;
         jest.spyOn(capConfigWriterMock, 'enableCdsUi5Plugin').mockResolvedValue(fsMock);
         spawnSpy = jest.spyOn(childProcess, 'spawnSync');
+        execNpmCommandSpy = jest.spyOn(npmCommand, 'execNpmCommand');
         command = new Command('add');
         addAddCdsPluginUi5Command(command);
     });
@@ -52,10 +55,7 @@ describe('Test command add cds-plugin-ui5', () => {
         expect(loggerMock.warn).not.toBeCalled();
         expect(loggerMock.error).not.toBeCalled();
         expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).toBeCalledWith(process.platform.startsWith('win') ? 'npm.cmd' : 'npm', ['install'], {
-            cwd: __dirname,
-            stdio: [0, 1, 2]
-        });
+        expect(execNpmCommandSpy).toBeCalledWith(['install'], { cwd: __dirname, logger: undefined });
     });
 
     test('Test create-fiori add cds-plugin-ui5 --simulate', async () => {

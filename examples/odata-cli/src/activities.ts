@@ -200,7 +200,7 @@ export async function testUiServiceGenerator(
         TEST_TRANSPORT: string;
     }
 ): Promise<void> {
-    const s4Cloud = await provider.isS4Cloud();
+    const s4Cloud = await provider.isAbapCloud();
     if (!s4Cloud) {
         logger.warn('Not an S/4 Cloud system. UI service generation might not be supported.');
     }

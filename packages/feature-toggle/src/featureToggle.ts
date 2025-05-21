@@ -80,6 +80,17 @@ export class FeatureToggleAccess {
                 });
             });
         }
+        // if TOOLSUITE_FEATURES env is set check if the feature is enabled there.
+        else if (process.env.TOOLSUITE_FEATURES) {
+            const envFeatures = process.env.TOOLSUITE_FEATURES.split(',');
+            for (const feature of envFeatures) {
+                const toggle: FeatureToggle = {
+                    feature,
+                    isEnabled: true
+                };
+                definedToggles.push(toggle);
+            }
+        }
         return definedToggles;
     }
 }

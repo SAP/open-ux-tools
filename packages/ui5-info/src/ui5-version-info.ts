@@ -4,7 +4,7 @@ import { executeNpmUI5VersionsCmd } from './commands';
 import axios from 'axios';
 import type { Logger } from '@sap-ux/logger';
 import { ToolsLogger } from '@sap-ux/logger';
-import { defaultUi5Versions } from './ui5-version-fallback';
+import { defaultUi5Versions, supportedUi5VersionFallbacks } from './ui5-version-fallback';
 import {
     defaultMinUi5Version,
     defaultVersion,
@@ -335,11 +335,19 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
 
     // Retrieve UI5 versions overview if maintained versions are to be included, note: overview and official versions are not the same
     if (filterOptions?.includeMaintained) {
-        ui5VersionsOverview = (await retrieveUI5VersionsCache(
-            ui5VersionsType.support,
-            filterOptions.useCache
-        )) as UI5Version[];
+        try {
+            ui5VersionsOverview = (await retrieveUI5VersionsCache(
+                ui5VersionsType.support,
+                filterOptions.useCache
+            )) as UI5Version[];
+        } catch (error) {
+            new ToolsLogger().warn(
+                `Request to '${ui5VersionRequestInfo.OfficialUrl}' for supported info on UI5 versions failed. Error was: '${error.message}'. Fallback to default supported UI5 versions`
+            );
+            ui5VersionsOverview = supportedUi5VersionFallbacks;
+        }
     }
+
     // Semantically filter the UI5 version, based on the support (maintained or not) and default version
     const isMaintained = (ui5: string) =>
         ui5VersionsOverview?.some(

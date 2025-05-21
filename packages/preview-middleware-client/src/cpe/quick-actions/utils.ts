@@ -63,16 +63,16 @@ function isDescendantOfPage(control: ManagedObject | null | undefined, rootContr
  * @param controlTypes - Relevant control types.
  * @returns A list of UI5 controls.
  */
-export function getRelevantControlFromActivePage(
+export function getRelevantControlFromActivePage<T extends UI5Element = UI5Element>(
     controlIndex: ControlTreeIndex,
     activePage: Control,
     controlTypes: string[]
-): UI5Element[] {
-    const relevantControls: UI5Element[] = [];
+): T[] {
+    const relevantControls: T[] = [];
     for (const type of controlTypes) {
         const controls = controlIndex[type] ?? [];
         for (const control of controls) {
-            const ui5Control = getControlById(control.controlId);
+            const ui5Control = getControlById<T>(control.controlId);
             const parent = ui5Control?.getParent();
             const isActionApplicable = isDescendantOfPage(parent, activePage);
 

@@ -412,7 +412,7 @@ describe('Use existing connection session', () => {
 
         const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloudStandalone as any);
         expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
-        expect(await provider.isS4Cloud()).toBe(false);
+        expect(await provider.isAbapCloud()).toBe(false);
         expect(attachUaaAuthInterceptorSpy).toBeCalledTimes(0);
         expect(Uaa.prototype.getAccessToken).toBeCalledTimes(0);
         expect(Uaa.prototype.getAccessTokenWithClientCredentials).toBeCalledTimes(0);
@@ -442,7 +442,7 @@ describe('Use existing connection session', () => {
         const cloneObj = cloneDeep(configForAbapOnCloud);
         delete cloneObj.service.uaa.username;
         const provider = createForAbapOnCloud(cloneObj as any);
-        expect(await provider.isS4Cloud()).toBe(true);
+        expect(await provider.isAbapCloud()).toBe(true);
         expect(await provider.user()).toBe('emailTest');
         expect(Uaa.prototype.getAccessToken).toBeCalledTimes(3);
         expect(Uaa.prototype.getAccessTokenWithClientCredentials).toBeCalledTimes(0);
@@ -468,7 +468,7 @@ describe('Use existing connection session', () => {
             }
         };
         const provider = createForAbapOnCloud(configForAbapOnCloudWithAuthentication as any);
-        expect(await provider.isS4Cloud()).toBe(false);
+        expect(await provider.isAbapCloud()).toBe(false);
         expect(await provider.user()).toBe('email');
         expect(Uaa.prototype.getAccessToken).toBeCalledTimes(0);
         expect(Uaa.prototype.getAccessTokenWithClientCredentials).toBeCalledTimes(2);

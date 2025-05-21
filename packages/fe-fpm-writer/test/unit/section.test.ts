@@ -53,7 +53,7 @@ describe('CustomSection', () => {
             fs.delete(testDir);
             fs.write(join(testDir, 'webapp/manifest.json'), JSON.stringify(manifest));
         });
-        test('with fragmentFile', () => {
+        test('with fragmentFile', async () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 fragmentFile: 'NewCustomSectionFragment'
@@ -62,7 +62,7 @@ describe('CustomSection', () => {
                 testDir,
                 `webapp/${testCustomSection.folder}/${testCustomSection.fragmentFile}.fragment.xml`
             );
-            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            await generateCustomSection(testDir, { ...testCustomSection }, fs);
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
                 updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
@@ -70,12 +70,12 @@ describe('CustomSection', () => {
             expect(settings.content).toMatchSnapshot();
             expect(fs.read(expectedSectionFragmentPath)).toMatchSnapshot();
         });
-        test('with handler, all properties', () => {
+        test('with handler, all properties', async () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 eventHandler: true
             };
-            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            await generateCustomSection(testDir, { ...testCustomSection }, fs);
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
                 updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
@@ -85,14 +85,14 @@ describe('CustomSection', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
             expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
         });
-        test('with existing handler, all properties', () => {
+        test('with existing handler, all properties', async () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 eventHandler: true
             };
             fs.write(expectedFragmentPath, 'dummyContent');
 
-            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            await generateCustomSection(testDir, { ...testCustomSection }, fs);
 
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
@@ -104,11 +104,11 @@ describe('CustomSection', () => {
             expect(fs.read(expectedFragmentPath)).toEqual('dummyContent');
         });
 
-        test('no handler, all properties', () => {
+        test('no handler, all properties', async () => {
             const testCustomSection: CustomSection = {
                 ...customSection
             };
-            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            await generateCustomSection(testDir, { ...testCustomSection }, fs);
 
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
@@ -119,12 +119,12 @@ describe('CustomSection', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
 
-        test('custom control', () => {
+        test('custom control', async () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 control: '<CustomXML text="" />'
             };
-            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            await generateCustomSection(testDir, { ...testCustomSection }, fs);
 
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
@@ -135,12 +135,12 @@ describe('CustomSection', () => {
             expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
         });
 
-        test('no handler, no fs, all properties', () => {
+        test('no handler, no fs, all properties', async () => {
             const testCustomSection: CustomSection = {
                 ...customSection
             };
 
-            const testFS = generateCustomSection(testDir, { ...testCustomSection });
+            const testFS = await generateCustomSection(testDir, { ...testCustomSection });
             const updatedManifest = testFS.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
                 updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
@@ -150,13 +150,13 @@ describe('CustomSection', () => {
             expect(testFS.read(expectedFragmentPath)).toMatchSnapshot();
         });
 
-        test('no handler, no fs, no folder, section name uppercase', () => {
+        test('no handler, no fs, no folder, section name uppercase', async () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 folder: undefined
             };
 
-            const testFS = generateCustomSection(testDir, { ...testCustomSection });
+            const testFS = await generateCustomSection(testDir, { ...testCustomSection });
             const fragmentPath = join(
                 testDir,
                 `webapp`,
@@ -167,14 +167,14 @@ describe('CustomSection', () => {
             expect(testFS.exists(fragmentPath)).toBeTruthy();
         });
 
-        test('no handler, no fs, no folder, section name lowercase', () => {
+        test('no handler, no fs, no folder, section name lowercase', async () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 folder: undefined,
                 name: 'newCustomSection'
             };
 
-            const testFS = generateCustomSection(testDir, { ...testCustomSection });
+            const testFS = await generateCustomSection(testDir, { ...testCustomSection });
             const fragmentPath = join(
                 testDir,
                 `webapp`,
@@ -185,14 +185,14 @@ describe('CustomSection', () => {
             expect(testFS.exists(fragmentPath)).toBeTruthy();
         });
 
-        test('no handler, no fs, no folder, section name uppercase', () => {
+        test('no handler, no fs, no folder, section name uppercase', async () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 folder: undefined,
                 name: 'NewCustomSection'
             };
 
-            const testFS = generateCustomSection(testDir, { ...testCustomSection });
+            const testFS = await generateCustomSection(testDir, { ...testCustomSection });
 
             const fragmentPath = join(
                 testDir,
@@ -204,14 +204,14 @@ describe('CustomSection', () => {
             expect(testFS.exists(fragmentPath)).toBeTruthy();
         });
 
-        test('no handler, no fs, folder upper case, section name lowercase', () => {
+        test('no handler, no fs, folder upper case, section name lowercase', async () => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 folder: 'Any',
                 name: 'newCustomSection'
             };
 
-            const testFS = generateCustomSection(testDir, { ...testCustomSection });
+            const testFS = await generateCustomSection(testDir, { ...testCustomSection });
             const fragmentPath = join(
                 testDir,
                 `webapp`,
@@ -221,7 +221,7 @@ describe('CustomSection', () => {
             expect(testFS.exists(fragmentPath)).toBeTruthy();
         });
 
-        test('different data and not existing target', () => {
+        test('different data and not existing target', async () => {
             const testCustomSection: CustomSection = {
                 target: 'dummy',
                 name: 'DummySection',
@@ -236,7 +236,7 @@ describe('CustomSection', () => {
                 testDir,
                 `webapp/${testCustomSection.folder}/${testCustomSection.name}.fragment.xml`
             );
-            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            await generateCustomSection(testDir, { ...testCustomSection }, fs);
 
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const targets = updatedManifest['sap.ui5']?.['routing']?.['targets'];
@@ -246,14 +246,14 @@ describe('CustomSection', () => {
         });
 
         const testVersions = ['1.85', '1.84', '1.86', '1.89', '1.90', '1.98'];
-        test.each(testVersions)('Versions %s, with handler, all properties', (minUI5Version) => {
+        test.each(testVersions)('Versions %s, with handler, all properties', async (minUI5Version) => {
             const testCustomSection: CustomSection = {
                 ...customSection,
                 eventHandler: true,
                 minUI5Version
             };
 
-            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            await generateCustomSection(testDir, { ...testCustomSection }, fs);
 
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
@@ -266,11 +266,11 @@ describe('CustomSection', () => {
         });
 
         const folderVariants = ['extensions/custom', 'extensions\\custom'];
-        test.each(folderVariants)('Existing folder variations - %s', (folderVariant) => {
+        test.each(folderVariants)('Existing folder variations - %s', async (folderVariant) => {
             const testCustomSection = JSON.parse(JSON.stringify(customSection));
             testCustomSection.folder = folderVariant;
 
-            generateCustomSection(testDir, { ...testCustomSection }, fs);
+            await generateCustomSection(testDir, { ...testCustomSection }, fs);
 
             const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
             const settings = (
@@ -284,41 +284,41 @@ describe('CustomSection', () => {
         });
 
         describe('Test property "eventHandler"', () => {
-            const generateCustomSectionWithEventHandler = (
+            const generateCustomSectionWithEventHandler = async (
                 sectionId: string,
                 eventHandler: string | EventHandlerConfiguration,
                 folder?: string
             ) => {
-                generateCustomSection(testDir, { ...customSection, name: sectionId, folder, eventHandler }, fs);
+                await generateCustomSection(testDir, { ...customSection, name: sectionId, folder, eventHandler }, fs);
             };
 
-            test('"eventHandler" is empty "object" - create new file with default function name', () => {
+            test('"eventHandler" is empty "object" - create new file with default function name', async () => {
                 const id = customSection.name;
-                generateCustomSectionWithEventHandler(id, {}, customSection.folder);
+                await generateCustomSectionWithEventHandler(id, {}, customSection.folder);
                 const xmlPath = join(testDir, `webapp/${customSection.folder}/${id}.fragment.xml`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
             });
 
-            test('"eventHandler" is "object" - create new file with custom file and function names', () => {
+            test('"eventHandler" is "object" - create new file with custom file and function names', async () => {
                 const extension = {
                     fnName: 'DummyOnAction',
                     fileName: 'dummyAction'
                 };
                 const id = customSection.name;
-                generateCustomSectionWithEventHandler(id, extension, customSection.folder);
+                await generateCustomSectionWithEventHandler(id, extension, customSection.folder);
                 const fragmentName = `${id}.fragment.xml`;
                 const xmlPath = join(testDir, `webapp/${customSection.folder}/${fragmentName}`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace(fragmentName, `${extension.fileName}.js`))).toMatchSnapshot();
             });
 
-            test('"eventHandler" is "object" - create new file with custom function name', () => {
+            test('"eventHandler" is "object" - create new file with custom function name', async () => {
                 const extension = {
                     fnName: 'DummyOnAction'
                 };
                 const id = customSection.name;
-                generateCustomSectionWithEventHandler(id, extension, customSection.folder);
+                await generateCustomSectionWithEventHandler(id, extension, customSection.folder);
                 const xmlPath = join(testDir, `webapp/${customSection.folder}/${id}.fragment.xml`);
                 expect(fs.read(xmlPath)).toMatchSnapshot();
                 expect(fs.read(xmlPath.replace('.fragment.xml', '.js'))).toMatchSnapshot();
@@ -346,7 +346,7 @@ describe('CustomSection', () => {
             ];
             test.each(positions)(
                 '"eventHandler" is object. Append new function to existing js file with $name',
-                ({ position, endOfLines }) => {
+                async ({ position, endOfLines }) => {
                     // Generate handler with single method - content should be updated during generating of custom section
                     fs.copyTpl(join(__dirname, '../../templates', 'common/EventHandler.js'), existingPath, {
                         eventHandlerFnName: 'onPress'
@@ -364,7 +364,7 @@ describe('CustomSection', () => {
                         }
                     };
 
-                    generateCustomSectionWithEventHandler(id, extension, folder);
+                    await generateCustomSectionWithEventHandler(id, extension, folder);
                     const xmlPath = join(testDir, 'webapp', folder, `${id}.fragment.xml`);
                     expect(fs.read(xmlPath)).toMatchSnapshot();
                     // Check update js file content
@@ -374,8 +374,8 @@ describe('CustomSection', () => {
         });
 
         describe('Test property custom "tabSizing"', () => {
-            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
-                generateCustomSection(
+            test.each(tabSizingTestCases)('$name', async ({ tabInfo, expectedAfterSave }) => {
+                await generateCustomSection(
                     testDir,
                     {
                         ...customSection,
@@ -387,7 +387,7 @@ describe('CustomSection', () => {
                 let result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
                 // Generate another section and check if new tab sizing recalculated correctly without passing tab size info
-                generateCustomSection(
+                await generateCustomSection(
                     testDir,
                     {
                         ...customSection,
@@ -441,8 +441,8 @@ describe('CustomSection', () => {
             }
         ];
         positionTests.forEach((testCase) => {
-            test(`Test 'position' property. ${testCase.name}`, () => {
-                generateCustomSection(
+            test(`Test 'position' property. ${testCase.name}`, async () => {
+                await generateCustomSection(
                     testDir,
                     {
                         ...customSection,

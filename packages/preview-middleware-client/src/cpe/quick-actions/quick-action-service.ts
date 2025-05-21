@@ -10,7 +10,9 @@ import {
     NESTED_QUICK_ACTION_KIND,
     QuickActionExecutionPayload,
     QuickActionGroup,
-    updateQuickAction
+    updateQuickAction,
+    externalFileChange,
+    reportTelemetry
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
@@ -19,6 +21,11 @@ import { QuickActionActivationContext, QuickActionContext, QuickActionDefinition
 import { QuickActionDefinitionRegistry } from './registry';
 import { OutlineService } from '../outline/service';
 import { getTextBundle, TextBundle } from '../../i18n';
+import { ChangeService } from '../changes';
+import { DialogFactory } from '../../adp/dialog-factory';
+import { getApplicationType } from '../../utils/application';
+import { getUi5Version } from '../../utils/version';
+
 
 /**
  * Service providing Quick Actions.
@@ -26,13 +33,14 @@ import { getTextBundle, TextBundle } from '../../i18n';
 export class QuickActionService implements Service {
     private sendAction: ActionSenderFunction = () => {};
     private actions: QuickActionDefinition[] = [];
+    private controlTreeIndex: ControlTreeIndex;
 
     private actionService: ActionService;
     private texts: TextBundle;
 
     /**
-     * Qucik action service constructor.zrf
-     * 
+     * Quick action service constructor.
+     *
      * @param rta - RTA object.
      * @param outlineService - Outline service instance.
      * @param registries - Quick action registries.
@@ -40,7 +48,8 @@ export class QuickActionService implements Service {
     constructor(
         private readonly rta: RuntimeAuthoring,
         private readonly outlineService: OutlineService,
-        private readonly registries: QuickActionDefinitionRegistry<string>[]
+        private readonly registries: QuickActionDefinitionRegistry<string>[],
+        private readonly changeService: ChangeService
     ) {}
 
     /**
@@ -72,16 +81,28 @@ export class QuickActionService implements Service {
                     this.sendAction(updateQuickAction(actionInstance.getActionObject()));
                 }
             }
+            if (externalFileChange.match(action)) {
+                await this.reloadQuickActions(this.controlTreeIndex);
+            }
         });
 
         this.outlineService.onOutlineChange(async (event) => {
+            this.controlTreeIndex = event.detail.controlIndex;
             await this.reloadQuickActions(event.detail.controlIndex);
+        });
+
+        this.changeService.onStackChange(async () => {
+            await this.reloadQuickActions(this.controlTreeIndex);
+        });
+
+        DialogFactory.onOpenDialogStatusChange(async () => {
+            await this.reloadQuickActions(this.controlTreeIndex);
         });
     }
 
     /**
      * Prepares a list of currently applicable Quick Actions and sends them to the UI.
-     * 
+     *
      * @param controlIndex - Control tree index.
      */
     public async reloadQuickActions(controlIndex: ControlTreeIndex): Promise<void> {
@@ -104,13 +125,14 @@ export class QuickActionService implements Service {
                     key,
                     rta: this.rta,
                     flexSettings: this.rta.getFlexSettings(),
-                    resourceBundle: this.texts
+                    resourceBundle: this.texts,
+                    changeService: this.changeService
                 };
                 for (const Definition of definitions) {
                     try {
                         const instance = new Definition(actionContext);
                         await instance.initialize();
-                        this.addAction(group, instance);
+                        await this.addAction(group, instance);
                     } catch {
                         Log.warning(`Failed to initialize ${Definition.name} quick action.`);
                     }
@@ -122,15 +144,29 @@ export class QuickActionService implements Service {
         this.sendAction(quickActionListChanged(groups));
     }
 
-    private addAction(group: QuickActionGroup, instance: QuickActionDefinition): void {
-        if (instance.isActive) {
+    private async addAction(group: QuickActionGroup, instance: QuickActionDefinition): Promise<void> {
+        if (instance.isApplicable) {
+            await instance.runEnablementValidators();
             const quickAction = instance.getActionObject();
             group.actions.push(quickAction);
             this.actions.push(instance);
         }
     }
 
-    private executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
+    private async executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
+        try {
+            const versionInfo = await getUi5Version();
+            await reportTelemetry({
+                category: 'QuickAction',
+                actionName: actionInstance.type,
+                telemetryEventIdentifier: actionInstance.getTelemetryIdentifier(true),
+                quickActionSteps: actionInstance.quickActionSteps,
+                appType: getApplicationType(this.rta.getRootControlInstance().getManifest()),
+                ui5Version: `${versionInfo.major}.${versionInfo.minor}.${versionInfo.patch}`
+            });
+        } catch (error) {
+            Log.error('Error in reporting Telemetry:', error);
+        }
         if (payload.kind === SIMPLE_QUICK_ACTION_KIND && actionInstance.kind === SIMPLE_QUICK_ACTION_KIND) {
             return actionInstance.execute();
         }

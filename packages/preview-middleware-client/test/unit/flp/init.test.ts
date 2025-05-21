@@ -10,11 +10,38 @@ import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import * as apiHandler from '../../../src/adp/api-handler';
 import { fetchMock, sapMock } from 'mock/window';
-import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
+import { CommunicationService } from '../../../src/cpe/communication-service';
+import type Component from 'sap/ui/core/Component';
+
+jest.mock('../../../src/i18n', () => {
+    return {
+        ...jest.requireActual('../../../src/i18n'),
+        getTextBundle: async () => {
+            return {
+                hasText: jest.fn().mockReturnValueOnce(true),
+                getText: jest
+                    .fn()
+                    .mockReturnValueOnce('The application was reloaded because of changes in a higher layer.')
+            };
+        }
+    };
+});
+
+Object.defineProperty(window, 'location', {
+    value: {
+        ...window.location,
+        reload: jest.fn()
+    },
+    writable: true
+});
 
 describe('flp/init', () => {
+    afterEach(() => {
+        sapMock.ushell.Container.getServiceAsync.mockReset();
+    });
     test('registerSAPFonts', () => {
         registerSAPFonts();
         expect(IconPoolMock.registerFont).toBeCalledTimes(2);
@@ -190,10 +217,24 @@ describe('flp/init', () => {
     });
 
     describe('init', () => {
+        const reloadSpy = jest.fn();
+        const location = window.location;
         beforeEach(() => {
             sapMock.ushell.Container.attachRendererCreatedEvent.mockReset();
             sapMock.ui.require.mockReset();
             jest.clearAllMocks();
+
+            Object.defineProperty(window, 'location', {
+                value: {
+                    reload: reloadSpy
+                }
+            });
+        });
+
+        afterEach(() => {
+            Object.defineProperty(window, 'location', {
+                value: location
+            });
         });
 
         test('nothing configured', async () => {
@@ -201,7 +242,7 @@ describe('flp/init', () => {
             await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
-            expect(sapMock.ushell.Container.getServiceAsync).toBeCalledWith('AppState');
+            expect(sapMock.ushell.Container.createRendererInternal).not.toBeCalled();
         });
 
         test('flex configured', async () => {
@@ -210,36 +251,27 @@ describe('flp/init', () => {
                 pluginScript: 'my/script'
             };
             VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.84.50' });
-            await init({ flex: JSON.stringify(flexSettings) });
-            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
-            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
-            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
-                .calls[0][0] as () => Promise<void>;
 
             // testing the nested callbacks
             const mockService = {
                 attachAppLoaded: jest.fn()
             };
             sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+            await init({ flex: JSON.stringify(flexSettings) });
 
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
             await rendererCb();
             expect(mockService.attachAppLoaded).toBeCalled();
-            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
+            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
 
+            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
             loadedCb({ getParameter: () => {} });
             expect(sapMock.ui.require).toBeCalledWith(
                 ['sap/ui/rta/api/startAdaptation', flexSettings.pluginScript],
                 expect.anything()
             );
-
-            const requireCb = sapMock.ui.require.mock.calls[0][1] as (
-                startAdaptation: StartAdaptation,
-                pluginScript?: RTAPlugin
-            ) => void;
-            const startAdpMock = jest.fn();
-            const plugnScriptMock = jest.fn();
-            requireCb(startAdpMock, plugnScriptMock);
-            expect(startAdpMock).toBeCalledWith(expect.anything(), plugnScriptMock);
         });
 
         test('flex configured & ui5 version is 1.71.60', async () => {
@@ -248,22 +280,22 @@ describe('flp/init', () => {
                 pluginScript: 'my/script'
             };
             VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.60' });
-            await init({ flex: JSON.stringify(flexSettings) });
-            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
-            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
-            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
-                .calls[0][0] as () => Promise<void>;
 
             // testing the nested callbacks
             const mockService = {
                 attachAppLoaded: jest.fn()
             };
             sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+            await init({ flex: JSON.stringify(flexSettings) });
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
+            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
 
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
             await rendererCb();
             expect(mockService.attachAppLoaded).toBeCalled();
-            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
 
+            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
             loadedCb({ getParameter: () => {} });
             expect(sapMock.ui.require).toBeCalledWith(
                 ['open/ux/preview/client/flp/initRta', flexSettings.pluginScript],
@@ -296,7 +328,89 @@ describe('flp/init', () => {
 
             await init({ customInit: customInit });
 
+            expect(sapMock.ushell.Container.createRendererInternal).toBeCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRenderer).not.toBeCalled();
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
+        });
+
+        test('custom init module configured & ui5 version is legacy-free', async () => {
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.0-legacy-free' });
+
+            await init({});
+
+            expect(sapMock.ushell.Container.createRendererInternal).toBeCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRenderer).not.toBeCalled();
+        });
+
+        test('handle higher layer changes', async () => {
+            const flexSettings = {
+                layer: 'VENDOR',
+                pluginScript: 'my/script'
+            };
+
+            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.84.50' });
+
+            // Mocking `sap.ui.require` to throw the correct error structure
+            sapMock.ui.require.mockImplementation((libs, callback) => {
+                if (libs[0] === 'open/ux/preview/client/flp/WorkspaceConnector') {
+                    callback({}); // WorkspaceConnector
+                    return;
+                }
+                callback(async () => {
+                    throw 'Reload triggered';
+                }, {});
+            });
+
+            const sendActionSpy = jest.spyOn(CommunicationService, 'sendAction');
+            await init({ flex: JSON.stringify(flexSettings) });
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
+            const mockService = {
+                attachAppLoaded: jest.fn().mockImplementation((callback) => {
+                    callback({ getParameter: jest.fn() });
+                })
+            };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+
+            await rendererCb();
+
+            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => Promise<void>;
+            await loadedCb({ getParameter: () => {} });
+
+            expect(sendActionSpy).toHaveBeenCalled();
+            expect(sendActionSpy).toHaveBeenNthCalledWith(1, {
+                type: '[ext] show-dialog-message',
+                payload: {
+                    message: 'The application was reloaded because of changes in a higher layer.',
+                    shouldHideIframe: false
+                }
+            });
+            expect(reloadSpy).toHaveBeenCalled();
+        });
+
+        test('cardGenerator mode is enabled', async () => {
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.124.50' });
+            const mockComponentInstance = {} as Component;
+            const mockService = {
+                attachAppLoaded: jest.fn().mockImplementation((callback: (event: any) => void) => {
+                    const mockEvent = {
+                        getParameter: jest.fn().mockReturnValue(mockComponentInstance)
+                    };
+                    callback(mockEvent);
+                }),
+                createUserAction: jest.fn()
+            };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+            await init({ enableCardGenerator: true });
+
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
+            await rendererCb();
+            expect(mockService.attachAppLoaded).toBeCalled();
+            expect(mockService.attachAppLoaded).toHaveBeenCalledTimes(1);
+            expect(mockService.attachAppLoaded.mock.calls[0][0]).toBeInstanceOf(Function);
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
+            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
         });
     });
 });

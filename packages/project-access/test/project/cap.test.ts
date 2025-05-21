@@ -1,9 +1,18 @@
-import { join, sep } from 'path';
+import path, { join, sep } from 'path';
 import * as childProcess from 'child_process';
+import { create as createStorage, type Store } from 'mem-fs';
+import { create, type Editor } from 'mem-fs-editor';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
-import { clearCdsModuleCache, clearGlobalCdsModulePromiseCache, getCapServiceName } from '../../src/project/cap';
+import {
+    clearCdsModuleCache,
+    clearGlobalCdsModulePromiseCache,
+    getCapServiceName,
+    checkCdsUi5PluginEnabled,
+    satisfiesMinCdsVersion,
+    hasMinCdsVersion
+} from '../../src/project/cap';
 import {
     getCapCustomPaths,
     getCapEnvironment,
@@ -16,11 +25,15 @@ import {
     getCapProjectType,
     readCapServiceMetadataEdmx,
     toReferenceUri,
-    isCapProject
+    isCapProject,
+    deleteCapApp
 } from '../../src';
 import * as file from '../../src/file';
 import os from 'os';
 import type { Logger } from '@sap-ux/logger';
+import { promises as fs } from 'fs';
+import { deleteFile, readFile, readJSON } from '../../src/file';
+import * as search from '../../src/project/search';
 
 jest.mock('child_process');
 const childProcessMock = jest.mocked(childProcess, { shallow: true });
@@ -37,9 +50,22 @@ const jestMockEnv = {
 };
 
 describe('Test getCapProjectType() & isCapProject()', () => {
+    let memFs: Editor;
+
+    beforeAll(() => {
+        const store = createStorage();
+        memFs = create(store);
+    });
+
     test('Test if valid CAP Node.js project is recognized', async () => {
         const capPath = join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix');
         expect(await getCapProjectType(capPath)).toBe('CAPNodejs');
+        expect(await isCapProject(capPath)).toBe(true);
+    });
+
+    test('Test if valid CAP Node.js project is recognized using mem-fs', async () => {
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix');
+        expect(await getCapProjectType(capPath, memFs)).toBe('CAPNodejs');
         expect(await isCapProject(capPath)).toBe(true);
     });
 
@@ -52,6 +78,31 @@ describe('Test getCapProjectType() & isCapProject()', () => {
     test('Test if invalid CAP project is recognized', async () => {
         expect(await getCapProjectType('INVALID_PROJECT')).toBeUndefined();
         expect(await isCapProject('INVALID_PROJECT')).toBe(false);
+    });
+
+    test('Test if undefined is retuned for empty project', async () => {
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'info', 'empty-project');
+        expect(await getCapProjectType(capPath)).toBe(undefined);
+    });
+
+    test('Test if undefined is retuned for empty project using mem-fs', async () => {
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'info', 'empty-project');
+        expect(await getCapProjectType(capPath, memFs)).toBe(undefined);
+    });
+
+    test('Test if getCapProjectType() considers deletions in memfs', async () => {
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'cap-app');
+        const memFsWithDeletion = create(createStorage());
+        memFsWithDeletion.delete(join(capPath, 'srv', 'keep'));
+        expect(await getCapProjectType(capPath, memFsWithDeletion)).toBe(undefined);
+    });
+
+    test('Test if getCapProjectType() considers addition in memfs', async () => {
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'cap-root', 'invalid-cap-root-no-srv');
+        const memFsWithAddition = create(createStorage());
+        memFsWithAddition.write(join(capPath, 'srv', 'keep'), '');
+        memFsWithAddition.write(join('/tmp/any/file/test'), 'test');
+        expect(await getCapProjectType(capPath, memFsWithAddition)).toBe('CAPNodejs');
     });
 });
 
@@ -124,6 +175,26 @@ describe('Test getCapModelAndServices()', () => {
                                 }
                             ],
                             'runtime': 'Node.js'
+                        },
+                        {
+                            'name': 'oDataV4Kind',
+                            'endpoints': [
+                                {
+                                    'path': 'url',
+                                    'kind': 'odata-v4'
+                                }
+                            ],
+                            'runtime': 'Node.js'
+                        },
+                        {
+                            'name': 'withRuntime',
+                            'endpoints': [
+                                {
+                                    'path': 'url',
+                                    'kind': 'websocket'
+                                }
+                            ],
+                            'runtime': 'Node.js'
                         }
                     ])
                 }
@@ -151,6 +222,11 @@ describe('Test getCapModelAndServices()', () => {
                 },
                 {
                     'name': 'withRuntime',
+                    'urlPath': 'url',
+                    'runtime': 'Node.js'
+                },
+                {
+                    'name': 'oDataV4Kind',
                     'urlPath': 'url',
                     'runtime': 'Node.js'
                 }
@@ -202,7 +278,7 @@ describe('Test getCapModelAndServices()', () => {
                             'endpoints': [
                                 {
                                     'path': 'url',
-                                    'kind': 'rest'
+                                    'kind': 'odata'
                                 }
                             ],
                             'runtime': 'Node.js'
@@ -223,14 +299,6 @@ describe('Test getCapModelAndServices()', () => {
         expect(capMS).toEqual({
             model: 'MODEL',
             services: [
-                {
-                    'name': 'Forwardslash',
-                    'urlPath': 'odata/service/with/forwardslash/'
-                },
-                {
-                    'name': 'Backslash',
-                    'urlPath': 'odata/service/with/backslash/'
-                },
                 {
                     'name': 'withRuntime',
                     'urlPath': 'url',
@@ -339,6 +407,41 @@ describe('Test getCapModelAndServices()', () => {
         const capMS = await getCapModelAndServices('ROOT_PATH');
 
         // Check results
+        expect(capMS.services).toEqual([]);
+        expect(capMS.cdsVersionInfo).toEqual({
+            home: undefined,
+            version: undefined,
+            root: undefined
+        });
+        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
+    });
+
+    test('Get model and services filtered by db, but services are empty', async () => {
+        // Mock setup
+        const cdsMock = {
+            env: {
+                'for': () => ({
+                    folders: {
+                        app: 'APP',
+                        db: 'DB',
+                        srv: 'SRV'
+                    }
+                })
+            },
+            load: jest.fn().mockImplementation(() => Promise.resolve('MODEL_NO_SERVICES')),
+            compile: {
+                to: {
+                    serviceinfo: jest.fn().mockImplementation(() => null)
+                }
+            }
+        };
+        jest.spyOn(projectModuleMock, 'loadModuleFromProject').mockImplementation(() => Promise.resolve(cdsMock));
+
+        // Test execution
+        const capMS = await getCapModelAndServices('ROOT_PATH');
+
+        // Check results
+        expect(capMS.model).toEqual('MODEL_NO_SERVICES');
         expect(capMS.services).toEqual([]);
         expect(capMS.cdsVersionInfo).toEqual({
             home: undefined,
@@ -722,12 +825,12 @@ describe('toReferenceUri', () => {
     });
     test('toReferenceUri with refUri starting with "../"', async () => {
         // mock reading of package json in root folder of sibling project
-        jest.spyOn(file, 'readFile').mockImplementation(async (uri) => {
+        jest.spyOn(file, 'readJSON').mockImplementation(async (uri) => {
             return uri ===
                 (os.platform() === 'win32'
                     ? '\\globalRoot\\monoRepo\\bookshop\\package.json'
                     : '/globalRoot/monoRepo/bookshop/package.json')
-                ? '{"name": "@capire/bookshop"}'
+                ? { 'name': '@capire/bookshop' }
                 : '';
         });
         // prepare
@@ -1089,6 +1192,467 @@ describe('getCapServiceName', () => {
                 'Service for uri: \'service/two\' not found. Available services: [{"name":"ServiceOne","urlPath":"service/one"}]'
             );
         }
+    });
+});
+
+describe('deleteCapApp', () => {
+    let memFs: Editor;
+    const capProject = join(__dirname, '../test-data/project/info/cap-project');
+    let deleteSpy: jest.SpyInstance;
+    let store: Store;
+    const getDeletedFiles = (): string[] => {
+        const deletedFiles: string[] = [];
+        // Iterate over the store to find files marked for deletion
+        store.each((file) => {
+            if (file.state === 'deleted') {
+                deletedFiles.push(file.path);
+            }
+        });
+        return deletedFiles;
+    };
+    beforeEach(() => {
+        jest.restoreAllMocks();
+        jest.requireActual('mem-fs-editor');
+        store = createStorage();
+        memFs = create(store);
+        memFs.copy(capProject, capProject);
+        deleteSpy = jest.spyOn(memFs, 'delete');
+    });
+
+    test('Delete app "one" from CAP', async () => {
+        // Execute test
+        await deleteCapApp(join(capProject, 'apps', 'one'), memFs);
+
+        // Check result
+        expect(memFs.exists(join(capProject, 'apps', 'one', 'package.json'))).toEqual(false);
+        expect(memFs.exists(join(capProject, 'apps', 'two', 'package.json'))).toEqual(true);
+        // Check deleted and not deleted folders
+        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'two'));
+        expect(getDeletedFiles()).toEqual([
+            join(capProject, 'apps', FileName.IndexCds),
+            join(capProject, 'apps', 'one', 'annotations.cds'),
+            join(capProject, 'apps', 'one', FileName.Package),
+            join(capProject, 'apps', 'one', FileName.Ui5Yaml),
+            join(capProject, 'apps', 'one', 'source', 'webapp', FileName.Manifest)
+        ]);
+        const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
+        expect(modifiedPackage?.scripts?.['watch-one']).toBeUndefined();
+        expect(modifiedPackage?.scripts?.['watch-two']).toBeDefined();
+        expect(modifiedPackage.sapux).toEqual(['apps\\two']);
+        const serviceCds = await readFile(join(capProject, 'apps', FileName.ServiceCds), memFs);
+        expect(serviceCds.indexOf('one')).toBe(-1);
+        expect(serviceCds.indexOf('two')).not.toBe(-1);
+        expect(serviceCds.indexOf('freestyle')).not.toBe(-1);
+        expect(memFs.exists(join(capProject, 'apps', FileName.IndexCds))).toBeFalsy();
+    });
+
+    test('Delete app "two" from CAP', async () => {
+        // Execute test
+        await deleteCapApp(join(capProject, 'apps', 'two'), memFs);
+
+        // Check result
+        expect(memFs.exists(join(capProject, 'apps', 'one', 'package.json'))).toEqual(true);
+        expect(memFs.exists(join(capProject, 'apps', 'two', 'package.json'))).toEqual(false);
+        // Check deleted and not deleted folders
+        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'two'));
+        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'one'));
+        expect(getDeletedFiles()).toEqual([
+            join(capProject, 'apps', 'two', 'annotations.cds'),
+            join(capProject, 'apps', 'two', FileName.Package),
+            join(capProject, 'apps', 'two', 'webapp', FileName.Manifest)
+        ]);
+        const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
+        expect(modifiedPackage?.scripts?.['watch-two']).toBeUndefined();
+        expect(modifiedPackage?.scripts?.['watch-one']).toBeDefined();
+        expect(modifiedPackage.sapux).toEqual(['apps/one']);
+        expect(memFs.exists(join(capProject, 'apps', FileName.ServiceCds))).toBeTruthy();
+        expect(memFs.exists(join(capProject, 'apps', FileName.IndexCds))).toBeTruthy();
+    });
+
+    test('Delete app "freestyle" from CAP', async () => {
+        // Execute test
+        await deleteCapApp(join(capProject, 'apps', 'freestyle'), memFs);
+
+        // Check result
+        expect(memFs.exists(join(capProject, 'apps', 'one', 'package.json'))).toEqual(true);
+        expect(memFs.exists(join(capProject, 'apps', 'two', 'package.json'))).toEqual(true);
+        expect(memFs.exists(join(capProject, 'apps', 'freestyle', 'package.json'))).toEqual(false);
+        // Check deleted and not deleted folders
+        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'freestyle'));
+        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'two'));
+    });
+
+    test('Delete all CAP apps,', async () => {
+        // Setup mock
+        const logggerMock = {
+            error: jest.fn(),
+            warn: jest.fn(),
+            info: jest.fn(),
+            debug: jest.fn()
+        } as unknown as Logger;
+
+        // Execute test
+        await deleteCapApp(join(capProject, 'apps', 'one'), memFs, logggerMock);
+        expect(logggerMock.info).toHaveBeenCalled();
+        expect(logggerMock.error).toHaveBeenCalledTimes(0);
+        await deleteCapApp(join(capProject, 'apps', 'two'), memFs, logggerMock);
+        jest.spyOn(fs, 'readdir').mockResolvedValueOnce([]);
+        await deleteCapApp(join(capProject, 'apps', 'freestyle'), memFs, logggerMock);
+
+        // Check result
+        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps'));
+        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'two'));
+        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'freestyle'));
+        const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
+        expect(modifiedPackage?.scripts?.['watch-one']).toBeUndefined();
+        expect(modifiedPackage?.scripts?.['watch-two']).toBeUndefined();
+        expect(modifiedPackage.sapux).toBeUndefined();
+    });
+
+    test('Delete app "one" from CAP without "sapux"', async () => {
+        const packageJsonPath = join(capProject, FileName.Package);
+        const packageJson = await readJSON<Partial<Package>>(packageJsonPath, memFs);
+        delete packageJson.sapux;
+        await memFs.writeJSON(packageJsonPath, packageJson);
+        // Execute test
+        await deleteCapApp(join(capProject, 'apps', 'one'), memFs);
+
+        // Check result
+        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'two'));
+        const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
+        expect(modifiedPackage?.scripts?.['watch-one']).toBeUndefined();
+        expect(modifiedPackage?.scripts?.['watch-two']).toBeDefined();
+        const serviceCds = await readFile(join(capProject, 'apps', FileName.ServiceCds), memFs);
+        expect(serviceCds.indexOf('one')).toBe(-1);
+        expect(serviceCds.indexOf('two')).not.toBe(-1);
+        expect(memFs.exists(join(capProject, 'apps', FileName.IndexCds))).toBeFalsy();
+    });
+
+    test('No project root found', async () => {
+        // Setup mock
+        const logggerMock = {
+            error: jest.fn(),
+            warning: jest.fn(),
+            info: jest.fn(),
+            debug: jest.fn()
+        } as unknown as Logger;
+        jest.spyOn(search, 'findCapProjectRoot').mockResolvedValueOnce('');
+
+        // Execute test
+        await expect(
+            async () => await deleteCapApp(join(capProject, 'apps', 'one'), memFs, logggerMock)
+        ).rejects.toThrowError(/Project root was not found for CAP application/);
+        expect(logggerMock.error).toBeCalled();
+    });
+
+    test('Delete app "one" from CAP, no services.cds, no index.cds', async () => {
+        // Setup mock
+        const logggerMock = {
+            error: jest.fn(),
+            warning: jest.fn(),
+            info: jest.fn(),
+            debug: jest.fn()
+        } as unknown as Logger;
+        await deleteFile(join(capProject, 'apps', FileName.ServiceCds), memFs);
+        await deleteFile(join(capProject, 'apps', FileName.IndexCds), memFs);
+
+        // Execute test
+        await deleteCapApp(join(capProject, 'apps', 'one'), memFs, logggerMock);
+
+        // Check result
+        expect(logggerMock.info).toBeCalled();
+        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'two'));
+        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'freestyle'));
+        const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
+        expect(modifiedPackage?.scripts?.['watch-one']).toBeUndefined();
+        expect(modifiedPackage?.scripts?.['watch-two']).toBeDefined();
+        expect(modifiedPackage.sapux).toEqual(['apps\\two']);
+    });
+
+    test('Delete app "one" from CAP - simulate cds file deletion failure', async () => {
+        // Setup mock
+        const logggerMock = {
+            error: jest.fn(),
+            warning: jest.fn(),
+            info: jest.fn(),
+            debug: jest.fn()
+        } as unknown as Logger;
+        // Simulate error while deleting cds file
+        jest.spyOn(memFs, 'delete').mockImplementation((path: unknown) => {
+            if (path === join(capProject, 'apps', FileName.IndexCds)) {
+                throw new Error('aaaa');
+            }
+        });
+
+        // Execute test
+        await deleteCapApp(join(capProject, 'apps', 'one'), memFs, logggerMock);
+
+        // Check result
+        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'two'));
+        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'freestyle'));
+        const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
+        expect(modifiedPackage?.scripts?.['watch-one']).toBeUndefined();
+        expect(modifiedPackage?.scripts?.['watch-two']).toBeDefined();
+        expect(modifiedPackage.sapux).toEqual(['apps\\two']);
+        const serviceCds = await readFile(join(capProject, 'apps', FileName.ServiceCds), memFs);
+        expect(serviceCds.indexOf('one')).toBe(-1);
+        expect(serviceCds.indexOf('two')).not.toBe(-1);
+        // Deletion failed because of mock
+        expect(memFs.exists(join(capProject, 'apps', FileName.IndexCds))).toBeTruthy();
+        // Check error log
+        expect(logggerMock.error).toBeCalledWith(
+            `Could not modify file '${join(capProject, 'apps', FileName.IndexCds)}'. Skipping this file.`
+        );
+    });
+});
+
+const fixturesPath = join(__dirname, '../fixture');
+
+describe('Test checkCdsUi5PluginEnabled()', () => {
+    test('Empty project should return false', async () => {
+        expect(await checkCdsUi5PluginEnabled(__dirname)).toBe(false);
+        expect(await checkCdsUi5PluginEnabled(__dirname, undefined, true)).toBe(false);
+    });
+
+    test('CAP project with valid cds-plugin-ui', async () => {
+        expect(await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'))).toBe(true);
+        expect(await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'), undefined, true)).toEqual({
+            hasCdsUi5Plugin: true,
+            hasMinCdsVersion: true,
+            isCdsUi5PluginEnabled: true,
+            isWorkspaceEnabled: true
+        });
+    });
+
+    test('CAP project with missing apps folder in workspaces', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.8.2' },
+            devDependencies: { 'cds-plugin-ui5': '0.0.1' },
+            workspaces: []
+        });
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(false);
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, true)).toEqual({
+            hasCdsUi5Plugin: true,
+            hasMinCdsVersion: true,
+            isCdsUi5PluginEnabled: false,
+            isWorkspaceEnabled: false
+        });
+    });
+
+    test('CAP project with workspaces config as object, but no apps folder', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.8.2' },
+            devDependencies: { 'cds-plugin-ui5': '0.0.1' },
+            workspaces: {}
+        });
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(false);
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, true)).toEqual({
+            hasCdsUi5Plugin: true,
+            hasMinCdsVersion: true,
+            isCdsUi5PluginEnabled: false,
+            isWorkspaceEnabled: false
+        });
+    });
+
+    test('CAP project with workspaces config as object, app folder in workspace', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.8.2' },
+            devDependencies: { 'cds-plugin-ui5': '0.0.1' },
+            workspaces: {
+                packages: ['app/*']
+            }
+        });
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(true);
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, true)).toEqual({
+            hasCdsUi5Plugin: true,
+            hasMinCdsVersion: true,
+            isCdsUi5PluginEnabled: true,
+            isWorkspaceEnabled: true
+        });
+    });
+
+    test('CAP project with cds version info greater than minimum cds requirement', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.8.2' },
+            devDependencies: { 'cds-plugin-ui5': '0.0.1' },
+            workspaces: {
+                packages: ['app/*']
+            }
+        });
+        const cdsVersionInfo = {
+            home: '/path',
+            version: '7.7.2',
+            root: '/path/root'
+        };
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(true);
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, true, cdsVersionInfo)).toEqual({
+            hasCdsUi5Plugin: true,
+            hasMinCdsVersion: true,
+            isCdsUi5PluginEnabled: true,
+            isWorkspaceEnabled: true
+        });
+    });
+});
+
+describe('Test satisfiesMinCdsVersion()', () => {
+    test('CAP project with valid @sap/cds version using caret(^)', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': '^6.7.0' }
+            })
+        ).toBe(true);
+    });
+
+    test('CAP project with invalid @sap/cds version using caret(^)', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': '^4' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using x-range', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': '6.x' }
+            })
+        ).toBe(true);
+    });
+
+    test('CAP project with invalid @sap/cds version using x-range', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': '4.x' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using greater than (>)', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': '>4.0.0' }
+            })
+        ).toBe(true);
+    });
+
+    test('CAP project with invalid @sap/cds version containing semver with letters', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': 'a.b.c' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with invalid @sap/cds version containing text', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': 'test' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using higher version', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': '6.8.4' }
+            })
+        ).toBe(true);
+    });
+
+    test('CAP project with valid @sap/cds version using higher version with caret (^)', async () => {
+        expect(satisfiesMinCdsVersion({ dependencies: { '@sap/cds': '^7' } })).toBe(true);
+    });
+
+    test('CAP project with missing @sap/cds', async () => {
+        expect(satisfiesMinCdsVersion({ dependencies: {} })).toBe(false);
+    });
+
+    test('CAP project with missing dependencies', async () => {
+        expect(satisfiesMinCdsVersion({})).toBe(false);
+    });
+});
+
+describe('Test hasMinCdsVersion()', () => {
+    test('CAP project with valid @sap/cds version using caret(^)', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '^6.7.0' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with invalid @sap/cds version using caret(^)', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '^4' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using x-range', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '6.x' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with invalid @sap/cds version using x-range', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '4.x' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using greater than (>)', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '>4.0.0' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with invalid @sap/cds version containing semver with letters', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': 'a.b.c' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with invalid @sap/cds version containing text', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': 'test' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using higher version', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '6.8.4' }
+            })
+        ).toBe(true);
+    });
+
+    test('CAP project with valid @sap/cds version using higher version with caret (^)', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '^7' }
+            })
+        ).toBe(true);
     });
 });
 

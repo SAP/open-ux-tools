@@ -13,7 +13,8 @@ import {
     Suffix,
     isFullUrlDestination,
     isHTML5DynamicConfigured,
-    ProxyType
+    ProxyType,
+    isAbapODataDestination
 } from '../src';
 import destinations from './mockResponses/destinations.json';
 
@@ -194,6 +195,34 @@ describe('destination', () => {
                     ProxyType: ProxyType.ON_PREMISE
                 })
             ).toBe(false);
+        });
+    });
+
+    describe('Test if destination is odata abap, cloud or on prem', () => {
+        const destination1: Destination = {
+            'Name': 'dest1',
+            'Type': 'HTTP',
+            'Authentication': 'NoAuthentication',
+            'ProxyType': 'OnPremise',
+            'Description': 'desc',
+            'WebIDEEnabled': 'true',
+            'sap-client': '010',
+            'WebIDEUsage': 'odata_abap, any_other_usage_expect_odatagen',
+            'Host': 'http://some/url'
+        };
+
+        it('Should return true if WebIDEUsage contains `odata_abap`', () => {
+            expect(isAbapODataDestination(destination1)).toBe(true);
+        });
+
+        it('Should return true if WebIDEUsage contains `odata_abap` and `odata_gen`', () => {
+            destination1.WebIDEUsage = 'odata_abap,odata_gen';
+            expect(isAbapODataDestination(destination1)).toBe(true);
+        });
+
+        it('Should return false if WebIDEUsage does not contains `odata_abap`', () => {
+            destination1.WebIDEUsage = 'odata_gen, any_other_values';
+            expect(isAbapODataDestination(destination1)).toBe(false);
         });
     });
 });

@@ -4,10 +4,6 @@ import { Text, Stack } from '@fluentui/react';
 import type { ChoiceGroupOption } from '../src/components/UIChoiceGroup';
 import { UIChoiceGroup } from '../src/components/UIChoiceGroup';
 
-import { initIcons } from '../src/components/Icons';
-
-initIcons();
-
 export default { title: 'Basic Inputs/ChoiceGroup' };
 
 const props: any = {

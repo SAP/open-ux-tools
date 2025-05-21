@@ -56,9 +56,8 @@ describe('validator-utils', () => {
         };
         expect(await createTransportNumber(createTransportParams, {})).toEqual(undefined);
 
-        const systemConfig = { url: 'http://mock.url', client: '123' };
         mockCreateTransportNumberFromService.mockResolvedValueOnce('NEWTR1');
-        expect(await createTransportNumberFromService(createTransportParams, systemConfig)).toEqual('NEWTR1');
+        expect(await createTransportNumberFromService(createTransportParams)).toEqual('NEWTR1');
     });
 
     describe('isAppNameValid', () => {
@@ -98,7 +97,7 @@ describe('validator-utils', () => {
             const output = isAppNameValid('/ns1/ns2/ns3/ztest');
             expect(output).toStrictEqual({
                 valid: false,
-                errorMessage: t('errors.validators.abapInvalidNamespace')
+                errorMessage: t('errors.validators.invalidNamespace')
             });
         });
 

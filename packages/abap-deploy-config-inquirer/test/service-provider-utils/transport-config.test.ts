@@ -1,22 +1,21 @@
-import { AtoSettings, TenantType } from '@sap-ux/axios-extension';
+import type { AtoSettings } from '@sap-ux/axios-extension';
+import { TenantType } from '@sap-ux/axios-extension';
 import { t } from '../../src/i18n';
 import { getTransportConfigInstance } from '../../src/service-provider-utils';
-import { getOrCreateServiceProvider } from '../../src/service-provider-utils/abap-service-provider';
+import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
 
 jest.mock('../../src/service-provider-utils/abap-service-provider', () => ({
     ...jest.requireActual('../../src/service-provider-utils/abap-service-provider'),
-    getOrCreateServiceProvider: jest.fn()
+    AbapServiceProviderManager: { getOrCreateServiceProvider: jest.fn(), deleteExistingServiceProvider: jest.fn() }
 }));
 
-const mockGetOrCreateServiceProvider = getOrCreateServiceProvider as jest.Mock;
+const mockGetOrCreateServiceProvider = AbapServiceProviderManager.getOrCreateServiceProvider as jest.Mock;
 
 describe('getTransportConfigInstance', () => {
     it('should return the dummy instance of TransportConfig', async () => {
         const transportConfigResult = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: true,
-            credentials: {},
-            systemConfig: {}
+            credentials: {}
         });
         expect(transportConfigResult.transportConfig?.getPackage()).toBe(undefined);
         expect(transportConfigResult.transportConfig?.getApplicationPrefix()).toBe(undefined);
@@ -42,9 +41,7 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResult = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
-            credentials: {},
-            systemConfig: {}
+            credentials: {}
         });
 
         expect(transportConfigResult.transportConfig?.getOperationsType()).toBe('P');
@@ -71,9 +68,7 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResult = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
-            credentials: {},
-            systemConfig: {}
+            credentials: {}
         });
 
         expect(transportConfigResult.error).toBe(t('errors.s4SystemNoExtensible'));
@@ -90,9 +85,7 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResult2 = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
-            credentials: {},
-            systemConfig: {}
+            credentials: {}
         });
 
         expect(transportConfigResult2.error).toBe(t('errors.incorrectAtoSettings'));
@@ -116,9 +109,7 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResult = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
-            credentials: {},
-            systemConfig: {}
+            credentials: {}
         });
 
         expect(transportConfigResult.transportConfig?.isTransportRequired()).toBe(false);
@@ -128,7 +119,7 @@ describe('getTransportConfigInstance', () => {
     });
 
     it('should handle errors and return transport config', async () => {
-        // 401
+        // 401 with headers
         const mockGetAdtService401 = {
             getAtoInfo: jest.fn().mockRejectedValueOnce({
                 message: 'Failed to get ATO info',
@@ -142,11 +133,27 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResult = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
-            credentials: {},
-            systemConfig: {}
+            credentials: {}
         });
         expect(transportConfigResult.transportConfigNeedsCreds).toBe(true);
+
+        // 401 without headers
+        const mockGetAdtService401WithoutHeaders = {
+            getAtoInfo: jest.fn().mockRejectedValueOnce({
+                message: 'Failed to get ATO info',
+                response: { status: 401 }
+            })
+        };
+
+        mockGetOrCreateServiceProvider.mockResolvedValueOnce({
+            getAdtService: jest.fn().mockResolvedValueOnce(mockGetAdtService401WithoutHeaders)
+        });
+
+        const transportConfigResultWithoutHeaders = await getTransportConfigInstance({
+            backendTarget: undefined,
+            credentials: {}
+        });
+        expect(transportConfigResultWithoutHeaders.transportConfigNeedsCreds).toBe(false);
 
         // 500 error
         const mockGetAdtService500 = {
@@ -162,9 +169,7 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResult2 = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
-            credentials: {},
-            systemConfig: {}
+            credentials: {}
         });
         expect(transportConfigResult2.transportConfigNeedsCreds).toBe(false);
         expect(transportConfigResult2.warning).toBe('Failed to get ATO info');

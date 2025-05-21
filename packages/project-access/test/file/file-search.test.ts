@@ -1,6 +1,6 @@
 import { join } from 'path';
 import { getFilePaths } from '../../src';
-import { findFiles, findFilesByExtension, findFileUp } from '../../src/file';
+import { findBy, findFiles, findFilesByExtension, findFileUp } from '../../src/file';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 
@@ -52,6 +52,11 @@ describe('findFiles', () => {
         test('Find files by extension, no mem-fs', async () => {
             const result = (await findFilesByExtension('.extension', root, [])).sort();
             expect(result).toEqual([join(root, 'childA/child.extension'), join(root, 'root.extension')]);
+        });
+
+        test('Find files by extension, no mem-fs, no traversal', async () => {
+            const result = (await findFilesByExtension('.extension', root, [], undefined, true)).sort();
+            expect(result).toEqual([join(root, 'root.extension')]);
         });
 
         test('Find files by extension with mem-fs', async () => {
@@ -110,6 +115,30 @@ describe('findFiles', () => {
             const filePaths = await getFilePaths(root);
 
             expect(filePaths).toEqual(expect.arrayContaining(expectedPaths));
+        });
+    });
+
+    describe('findBy()', () => {
+        test('findBy with file name including memFs', async () => {
+            const path = join(root, 'childA');
+            const memFs = create(createStorage());
+            memFs.write(join(__dirname, 'child'), 'test');
+            memFs.write(join(path, 'memfs-path', 'child'), 'test');
+
+            const result = await findBy({ fileNames: ['child'], root: path, memFs });
+            expect(result.sort()).toEqual([join(path, 'child'), join(path, 'memfs-path/child')].sort());
+        });
+
+        test('findBy with extension name including memFs', async () => {
+            const path = join(root, 'childA');
+            const memFs = create(createStorage());
+            memFs.write(join(__dirname, 'child.extension'), 'test');
+            memFs.write(join(path, 'memfs-path', 'child.extension'), 'test');
+
+            const result = await findBy({ extensionNames: ['.extension'], root: path, memFs });
+            expect(result.sort()).toEqual(
+                [join(path, 'child.extension'), join(path, 'memfs-path/child.extension')].sort()
+            );
         });
     });
 });

@@ -1,0 +1,40 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "generators"
+  },
+  "references": [
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../cf-deploy-config-inquirer"
+    },
+    {
+      "path": "../cf-deploy-config-writer"
+    },
+    {
+      "path": "../deploy-config-generator-shared"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../project-access"
+    }
+  ]
+}

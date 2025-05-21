@@ -3,8 +3,8 @@ import { getPackagePrompts } from '../../../../src/prompts/questions';
 import * as helpers from '../../../../src/prompts/helpers';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
-import { abapDeployConfigInternalPromptNames, PackageInputChoices } from '../../../../src/types';
-import { ListQuestion } from '@sap-ux/inquirer-common';
+import { promptNames, PackageInputChoices } from '../../../../src/types';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { PromptState } from '../../../../src/prompts/prompt-state';
 
@@ -57,6 +57,7 @@ describe('getPackagePrompts', () => {
                 "name": "packageAutocomplete",
                 "source": [Function],
                 "type": "autocomplete",
+                "validate": [Function],
                 "when": [Function],
               },
             ]
@@ -69,7 +70,7 @@ describe('getPackagePrompts', () => {
 
         const packagePrompts = getPackagePrompts({});
         const packageInputChoicePrompt = packagePrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageInputChoice
+            (prompt) => prompt.name === promptNames.packageInputChoice
         );
 
         if (packageInputChoicePrompt) {
@@ -101,10 +102,9 @@ describe('getPackagePrompts', () => {
         const validatePackageChoiceInputForCliSpy = jest.spyOn(validators, 'validatePackageChoiceInputForCli');
         validatePackageChoiceInputForCliSpy.mockResolvedValueOnce();
         // Cli
-        PromptState.isYUI = false;
-        const packagePromptsCli = getPackagePrompts({});
+        const packagePromptsCli = getPackagePrompts({}, false, false);
         const packageCliExecutionPromptCli = packagePromptsCli.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageCliExecution
+            (prompt) => prompt.name === promptNames.packageCliExecution
         );
 
         if (packageCliExecutionPromptCli) {
@@ -112,11 +112,9 @@ describe('getPackagePrompts', () => {
         }
 
         // Vscode
-        PromptState.isYUI = true;
-
-        const packagePrompts = getPackagePrompts({});
+        const packagePrompts = getPackagePrompts({}, true, true);
         const packageCliExecutionPrompt = packagePrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageCliExecution
+            (prompt) => prompt.name === promptNames.packageCliExecution
         );
 
         if (packageCliExecutionPrompt) {
@@ -131,9 +129,7 @@ describe('getPackagePrompts', () => {
         jest.spyOn(validators, 'validatePackage').mockResolvedValueOnce(true);
 
         const packagePrompts = getPackagePrompts({});
-        const packageManualPrompt = packagePrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageManual
-        );
+        const packageManualPrompt = packagePrompts.find((prompt) => prompt.name === promptNames.packageManual);
 
         if (packageManualPrompt) {
             expect((packageManualPrompt.when as Function)({ packageInputChoice: 'EnterManualChoice' })).toBe(true);
@@ -159,14 +155,14 @@ describe('getPackagePrompts', () => {
 
         const packagePrompts = getPackagePrompts({});
         const packageInputChoicePrompt = packagePrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageInputChoice
+            (prompt) => prompt.name === promptNames.packageInputChoice
         );
         if (packageInputChoicePrompt) {
             await (packageInputChoicePrompt.validate as Function)();
         }
 
         const packageAutocompletePrompt = packagePrompts.find(
-            (prompt) => prompt.name === abapDeployConfigInternalPromptNames.packageAutocomplete
+            (prompt) => prompt.name === promptNames.packageAutocomplete
         );
 
         if (packageAutocompletePrompt) {
@@ -178,6 +174,7 @@ describe('getPackagePrompts', () => {
                 await ((packageAutocompletePrompt as AutocompleteQuestionOptions).source as Function)()
             ).toStrictEqual(['TEST_PACKAGE_1', 'TEST_PACKAGE_2']);
             expect(((packageAutocompletePrompt as any).additionalInfo as Function)()).toBe('Test additional msg');
+            expect(await (packageAutocompletePrompt.validate as Function)({ name: '$TMP', value: '$TMP' })).toBe(true);
         }
     });
 });

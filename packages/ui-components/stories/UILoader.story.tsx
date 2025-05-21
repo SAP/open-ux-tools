@@ -3,13 +3,11 @@ import type { IStackTokens } from '@fluentui/react';
 import { Text, Stack, SpinnerSize } from '@fluentui/react';
 
 import { UILoader } from '../src/components/UILoader';
-import { initIcons } from '../src/components/Icons';
 import { UIDefaultButton } from '../src/components/UIButton';
 import { UIDialog } from '../src/components/UIDialog';
 
 export default { title: 'Progress/Loader' };
 
-initIcons();
 const stackTokens: IStackTokens = { childrenGap: 40 };
 
 export const Loaders = () => (

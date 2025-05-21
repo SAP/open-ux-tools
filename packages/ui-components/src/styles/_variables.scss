@@ -5,6 +5,7 @@ $font-size-base: var(--vscode-font-size);
 $font-weight-base: var(--vscode-font-weight);
 
 $base-element-height: 26px;
+$base-element-line-height: 24px;
 $button-font-size: $font-size-base;
 
 // Box shadows
@@ -15,6 +16,7 @@ $box-shadow-large: 0 10px 20px 0 var(--vscode-widget-shadow);
 // Dropdowns
 // colors
 $dropdown-input-height: $base-element-height;
+$dropdown-line-height: $base-element-line-height;
 $dropdown-input-color: var(--vscode-foreground);
 $dropdown-input-placeholder-color: var(--vscode-input-placeholderForeground);
 $dropdown-input-background: var(--vscode-input-background);

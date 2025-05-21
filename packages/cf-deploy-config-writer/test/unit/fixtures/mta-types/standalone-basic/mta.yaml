@@ -1,0 +1,17 @@
+_schema-version: "3.2"
+ID: standaloneBasic
+description: Fiori elements app
+version: 0.0.1
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install
+
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+
+modules: []
+
+resources: []

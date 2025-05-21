@@ -11,8 +11,10 @@ import {
     type DescriptorVariant,
     type InboundContent,
     type ManifestChangeProperties,
-    type PropertyValueType
+    type PropertyValueType,
+    ChangeTypeMap
 } from '../types';
+import { renderFile } from 'ejs';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
@@ -35,16 +37,18 @@ export function writeAnnotationChange(
     projectPath: string,
     timestamp: number,
     annotation: AnnotationsData['annotation'],
-    change: ManifestChangeProperties,
+    change: ManifestChangeProperties | undefined,
     fs: Editor
 ): void {
     try {
-        const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
-        const changeFilePath = path.join(changesFolderPath, DirName.Manifest, changeFileName);
         const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
 
-        writeChangeToFile(changeFilePath, change, fs);
+        if (change) {
+            const changeFileName = `${change.fileName}.change`;
+            const changeFilePath = path.join(changesFolderPath, changeFileName);
+            writeChangeToFile(changeFilePath, change, fs);
+        }
 
         if (!annotation.filePath) {
             const annotationsTemplate = path.join(
@@ -55,7 +59,14 @@ export function writeAnnotationChange(
                 'changes',
                 TemplateFileName.Annotation
             );
-            fs.copy(annotationsTemplate, path.join(annotationsFolderPath, annotation.fileName ?? ''));
+            const { namespaces, serviceUrl } = annotation;
+            const schemaNamespace = `local_${timestamp}`;
+            renderFile(annotationsTemplate, { namespaces, path: serviceUrl, schemaNamespace }, {}, (err, str) => {
+                if (err) {
+                    throw new Error('Error rendering template: ' + err.message);
+                }
+                fs.write(path.join(annotationsFolderPath, annotation.fileName ?? ''), str);
+            });
         } else {
             const selectedDir = path.dirname(annotation.filePath);
             if (selectedDir !== annotationsFolderPath) {
@@ -73,18 +84,11 @@ export function writeAnnotationChange(
  *
  * @param {string} projectPath - The root path of the project.
  * @param {ManifestChangeProperties} change - The change data to be written to the file.
- * @param {string} fileName - The name of the file to write the change data to.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @param {string} [dir] - An optional subdirectory within the 'changes' directory where the file will be written.
  * @returns {void}
  */
-export function writeChangeToFolder(
-    projectPath: string,
-    change: ManifestChangeProperties,
-    fileName: string,
-    fs: Editor,
-    dir = ''
-): void {
+export function writeChangeToFolder(projectPath: string, change: ManifestChangeProperties, fs: Editor, dir = ''): void {
     try {
         let targetFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
 
@@ -92,6 +96,7 @@ export function writeChangeToFolder(
             targetFolderPath = path.join(targetFolderPath, dir);
         }
 
+        const fileName = `${change.fileName}.change`;
         const filePath = path.join(targetFolderPath, fileName);
         writeChangeToFile(filePath, change, fs);
     } catch (e) {
@@ -212,7 +217,7 @@ export function findChangeWithInboundId(projectPath: string, inboundId: string):
     let changeObj: InboundChange | undefined;
     let filePath = '';
 
-    const pathToInboundChangeFiles = path.join(projectPath, DirName.Webapp, DirName.Changes, DirName.Manifest);
+    const pathToInboundChangeFiles = path.join(projectPath, DirName.Webapp, DirName.Changes);
 
     if (!existsSync(pathToInboundChangeFiles)) {
         return {
@@ -261,8 +266,16 @@ export function getChange(
     content: object,
     changeType: ChangeType
 ): ManifestChangeProperties {
+    const changeName = ChangeTypeMap[changeType];
+
+    if (!changeName) {
+        throw new Error(`Could not extract the change name from the change type: ${changeType}`);
+    }
+
+    const fileName = `id_${timestamp}_${changeName}`;
+
     return {
-        fileName: `id_${timestamp}`,
+        fileName,
         namespace: path.posix.join(namespace, DirName.Changes),
         layer,
         fileType: 'change',

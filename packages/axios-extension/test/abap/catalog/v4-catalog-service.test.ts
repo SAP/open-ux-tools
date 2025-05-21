@@ -9,6 +9,10 @@ describe('V4CatalogService', () => {
         nock.disableNetConnect();
     });
 
+    beforeEach(() => {
+        nock.cleanAll();
+    });
+
     afterAll(() => {
         nock.cleanAll();
         nock.enableNetConnect();
@@ -33,7 +37,7 @@ describe('V4CatalogService', () => {
             nock(server).get(`${V4CatalogService.PATH}/$metadata`).reply(200, join(__dirname, '<METADTA />'));
             nock(server)
                 .get((path) => path.startsWith(reqPath))
-                .replyWithFile(200, join(mockRespPath, 'v4ServiceGroups.json'));
+                .replyWithFile(200, join(mockRespPath, 'v4ServiceGroups.json'), { 'Content-Type': 'application/json' });
 
             const services = await catalog.listServices();
             expect(services).toBeDefined();
@@ -49,19 +53,25 @@ describe('V4CatalogService', () => {
             const catalog = provider.catalog(ODataVersion.v4);
 
             // mock response for paging
-            nock(server).get(`${V4CatalogService.PATH}/$metadata`).reply(200, join(__dirname, '<METADTA />'));
+            nock(server).get(`${V4CatalogService.PATH}/$metadata`).reply(200, join(__dirname, '<METADATA />'));
             nock(server)
-                .get((path) => path.startsWith(path))
-                .replyWithFile(200, join(mockRespPath, `v4ServiceGroupsPage-1.json`));
+                .get((path) => path.startsWith(reqPath) && !path.includes('$skiptoken'))
+                .replyWithFile(200, join(mockRespPath, `v4ServiceGroupsPage-1.json`), {
+                    'Content-Type': 'application/json'
+                });
             for (let index = 2; index <= 4; index++) {
                 nock(server)
-                    .get((path) => path.startsWith(path) && path.includes(`$skip=${5 * (index - 1)}`))
-                    .replyWithFile(200, join(mockRespPath, `v4ServiceGroupsPage-${index}.json`));
+                    .get((path) => path.startsWith(reqPath))
+                    .query((query) => {
+                        return query['$skiptoken'] === `${5 * (index - 1)}`;
+                    })
+                    .replyWithFile(200, join(mockRespPath, `v4ServiceGroupsPage-${index}.json`), {
+                        'Content-Type': 'application/json'
+                    });
             }
 
             const services = await catalog.listServices();
-            expect(services).toBeDefined();
-            expect(services.length).toBeGreaterThan(0);
+            expect(services.length).toEqual(31);
         });
 
         test('recommended service groups with paging', async () => {
@@ -72,12 +82,19 @@ describe('V4CatalogService', () => {
                 .get(`${V4CatalogService.PATH}/$metadata`)
                 .replyWithFile(200, join(__dirname, '../mockResponses/v4-catalog-metadata.xml'));
             nock(server)
-                .get((path) => path.startsWith(path))
-                .replyWithFile(200, join(mockRespPath, `v4RecommendedServiceGroupsPage-1.json`));
+                .get((path) => path.startsWith(reqPath))
+                .replyWithFile(200, join(mockRespPath, `v4RecommendedServiceGroupsPage-1.json`), {
+                    'Content-Type': 'application/json'
+                });
             for (let index = 2; index <= 4; index++) {
                 nock(server)
-                    .get((path) => path.startsWith(path) && path.includes(`$skip=${5 * (index - 1)}`))
-                    .replyWithFile(200, join(mockRespPath, `v4RecommendedServiceGroupsPage-${index}.json`));
+                    .get((path) => path.startsWith(reqPath))
+                    .query((query) => {
+                        return query['$skiptoken'] === `${5 * (index - 1)}`;
+                    })
+                    .replyWithFile(200, join(mockRespPath, `v4RecommendedServiceGroupsPage-${index}.json`), {
+                        'Content-Type': 'application/json'
+                    });
             }
 
             const services = await catalog.listServices();
@@ -86,9 +103,9 @@ describe('V4CatalogService', () => {
         });
 
         test('service returns an error', async () => {
-            nock(server).get(`${V4CatalogService.PATH}/$metadata`).reply(200, join(__dirname, '<METADTA />'));
+            nock(server).get(`${V4CatalogService.PATH}/$metadata`).reply(200, join(__dirname, '<METADATA />'));
             nock(server)
-                .get((path) => path.startsWith(path))
+                .get((path) => path.startsWith(reqPath))
                 .reply(200, {
                     error: {
                         code: '42',

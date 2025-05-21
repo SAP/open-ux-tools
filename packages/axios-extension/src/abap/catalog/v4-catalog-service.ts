@@ -29,6 +29,10 @@ export interface ServiceGroup {
     };
 }
 
+interface ServiceGroupResponse {
+    value: ServiceGroup[];
+}
+
 /**
  * OData V4 specific implmentation of SAP's catalog service
  */
@@ -76,19 +80,21 @@ export class V4CatalogService extends CatalogService {
                 ? V4_RECOMMENDED_ENTITYSET
                 : V4_CLASSIC_ENTITYSET;
         }
+        const params = new URLSearchParams([
+            ['$count', 'true'],
+            ['$expand', `DefaultSystem($expand=${this.entitySet})`]
+        ]);
 
-        const params: { [key: string]: string | boolean } = {
-            $count: true,
-            $expand: `DefaultSystem($expand=${this.entitySet})`
-        };
-
-        let response = await this.get<ServiceGroup[]>('/ServiceGroups', { params });
-        const serviceGroups = response.odata() || [];
-        // paging required
-        while (response.data['@odata.nextLink']) {
-            const nextLink = new URL(response.data['@odata.nextLink']);
-            response = await super.get('/ServiceGroups', { params: { ...params, ...nextLink.searchParams } });
-            serviceGroups.push(...response.odata());
+        const response = await this.get<ServiceGroupResponse>('/ServiceGroups', { params }, true);
+        let serviceGroupResponseOdata = response.odata();
+        const serviceGroups = serviceGroupResponseOdata.value;
+        // Page by using the backends nextLink search parameters for the next request
+        while (serviceGroupResponseOdata['@odata.nextLink']) {
+            const nextLink = new URL(serviceGroupResponseOdata['@odata.nextLink'], this.defaults.baseURL);
+            serviceGroupResponseOdata = (
+                await this.get<ServiceGroupResponse>('/ServiceGroups', { params: nextLink.searchParams }, true)
+            ).odata();
+            serviceGroups.push(...serviceGroupResponseOdata.value);
         }
 
         // check if the service responded with an odata error

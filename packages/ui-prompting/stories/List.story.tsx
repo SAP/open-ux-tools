@@ -74,6 +74,17 @@ const questions: PromptQuestion[] = [
             hint: 'Test description',
             placeholder: 'Test placeholder'
         }
+    },
+    {
+        message: 'With single option',
+        name: 'singleOption',
+        type: 'list',
+        choices: [
+            {
+                name: 'single',
+                value: 'single'
+            }
+        ]
     }
 ];
 

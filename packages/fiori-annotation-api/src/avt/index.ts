@@ -2,7 +2,7 @@ export { convertAnnotationFile, AnnotationListWithOrigins } from './annotations'
 export { convertMetadataToAvtSchema } from './metadata';
 export {
     convertAnnotationToInternal,
-    convertApplyToInternal,
+    convertDynamicExpressionToInternal,
     convertCollectionElement,
     convertCollectionToInternal,
     convertExpressionToInternal,

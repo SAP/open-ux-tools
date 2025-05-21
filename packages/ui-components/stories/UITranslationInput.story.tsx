@@ -4,7 +4,7 @@ import type { IStackTokens } from '@fluentui/react';
 import { Stack } from '@fluentui/react';
 import type { I18nBundle, TranslationEntry } from '../src/components/UITranslationInput';
 import { TranslationTextPattern, UITranslationInput } from '../src/components/UITranslationInput';
-import { initIcons, UiIcons } from '../src/components/Icons';
+import { UiIcons } from '../src/components/Icons';
 import { UITable } from '../src/components/UITable';
 import type { UIColumn } from '../src/components/UITable';
 import { UIIconButton } from '../src/components/UIButton';
@@ -26,9 +26,7 @@ interface CustomTranslationEntry extends TranslationEntry {
     dummyPath: string;
 }
 
-initIcons();
-
-const stackTokens: IStackTokens = { childrenGap: 40 };
+const stackTokens: IStackTokens = { childrenGap: 60 };
 
 const I18N_BUNDLE_KEY = 'ui-components-i18n-bundle';
 const getI18nBundle = (): I18nBundle<CustomTranslationEntry> => {
@@ -110,30 +108,32 @@ export const translationInput = () => {
                     }}
                 />
             </Stack>
-            <UITranslationInput
-                entries={i18nBundle}
-                id="test"
-                i18nPrefix="i18n"
-                allowedI18nPrefixes={['i18n', '@i18n']}
-                allowedPatterns={[
-                    TranslationTextPattern.SingleBracketBinding,
-                    TranslationTextPattern.DoubleBracketReplace
-                ]}
-                defaultPattern={TranslationTextPattern.SingleBracketBinding}
-                value={value}
-                onChange={onChange}
-                onCreateNewEntry={onCreateNewEntry}
-                onShowExistingEntry={onShowExistingEntry}
-                disabled={disabled}
-                busy={
-                    busy
-                        ? {
-                              busy,
-                              useMinWaitingTime: true
-                          }
-                        : undefined
-                }
-            />
+            <Stack style={{ width: '300px' }}>
+                <UITranslationInput
+                    entries={i18nBundle}
+                    id="test"
+                    i18nPrefix="i18n"
+                    allowedI18nPrefixes={['i18n', '@i18n']}
+                    allowedPatterns={[
+                        TranslationTextPattern.SingleBracketBinding,
+                        TranslationTextPattern.DoubleBracketReplace
+                    ]}
+                    defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                    value={value}
+                    onChange={onChange}
+                    onCreateNewEntry={onCreateNewEntry}
+                    onShowExistingEntry={onShowExistingEntry}
+                    disabled={disabled}
+                    busy={
+                        busy
+                            ? {
+                                  busy,
+                                  useMinWaitingTime: true
+                              }
+                            : undefined
+                    }
+                />{' '}
+            </Stack>
             <I18nTable tableData={tableData} onDelete={onDeleteEntry} />
         </Stack>
     );

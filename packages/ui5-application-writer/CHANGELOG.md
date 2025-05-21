@@ -1,5 +1,157 @@
 # @sap-ux/ui5-application-writer
 
+## 1.5.1
+
+### Patch Changes
+
+-   Updated dependencies [5e0020b]
+    -   @sap-ux/ui5-config@0.28.1
+
+## 1.5.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/ui5-config@0.28.0
+
+## 1.4.3
+
+### Patch Changes
+
+-   0d8918a: updates for cap and virtual endpoints
+
+## 1.4.2
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+
+## 1.4.1
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/ui5-config@0.27.1
+
+## 1.4.0
+
+### Minor Changes
+
+-   1ca4004: updates for use for fiori tools preview middleware and use of virtual endpoints
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+
+## 1.3.3
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+
+## 1.3.2
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/ui5-config@0.26.4
+
+## 1.3.1
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+
+## 1.3.0
+
+### Minor Changes
+
+-   88520b4: Export functions for Manifest Version Retrieval, and UI5 Version Info
+
+## 1.2.10
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+
+## 1.2.9
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+
+## 1.2.8
+
+### Patch Changes
+
+-   21f0b20: TBI - Prevent CRLF injection in logs
+
+## 1.2.7
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/ui5-config@0.26.0
+
+## 1.2.6
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+
+## 1.2.5
+
+### Patch Changes
+
+-   d0331b8: fix - locate-reuse-libs.js|ts - sanitize server response before logging
+
+## 1.2.4
+
+### Patch Changes
+
+-   7cf9ed0: Fix lint issue in templates
+
+## 1.2.3
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+
+## 1.2.2
+
+### Patch Changes
+
+-   b2de757: Fix @ui5/linter errors in locate-reuse-lib.js
+
+## 1.2.1
+
+### Patch Changes
+
+-   f626d47: remove @sap/ux-specification from generated apps
+
+## 1.2.0
+
+### Minor Changes
+
+-   484195d: Enhancements to FE & FF Configurations: The updates include adding the `start-variants-management` script to `package.json` for FE and FF. The OdataService interface now has an `ignoreCertError` property. UI5 application writer introduces the `sapuxLayer` property to `package.json` templates and adds `fiori-tools-preview middleware` to ui5, ui5-mock, and ui5-local.yaml. Additionally, the `addFioriToolsPreviewMiddleware` function has been added for YAML config integration.
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/ui5-config@0.25.0
+
 ## 1.1.6
 
 ### Patch Changes

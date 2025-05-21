@@ -9,6 +9,7 @@ import { defaultFontSize, sectionHeaderFontSize } from './constants';
 import { PropertyDocumentation } from './PropertyDocumentation';
 import type { PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
 import { Clipboard } from './Clipboard';
+import { useTranslation } from 'react-i18next';
 
 export interface HeaderFieldProps {
     label: string;
@@ -81,14 +82,23 @@ export function HeaderField(headerFieldProps: Readonly<HeaderFieldProps>): React
             </UITooltip>
             <TextField
                 id={label}
+                data-testid={label}
                 value={value}
                 readOnly={true}
+                title={value}
                 borderless
                 styles={{
                     field: {
                         color: 'var(--vscode-input-foreground)',
                         fontSize: defaultFontSize,
-                        backgroundColor: 'var(--vscode-sideBar-background)'
+                        backgroundColor: 'var(--vscode-sideBar-background)',
+                        border: '1px solid var(--vscode-input-border)',
+                        selectors: {
+                            ':hover': {
+                                borderColor: 'var(--vscode-focusBorder)'
+                            }
+                        },
+                        padding: 5
                     },
                     fieldGroup: {
                         color: 'var(--vscode-input-foreground)',
@@ -136,6 +146,7 @@ interface CopyButtonProps {
  * @returns ReactElement
  */
 function CopyButton(props: Readonly<CopyButtonProps>): ReactElement {
+    const { t } = useTranslation();
     const { label, onClick } = props;
 
     return (
@@ -143,6 +154,7 @@ function CopyButton(props: Readonly<CopyButtonProps>): ReactElement {
             id={`${label.replace(/\s/g, '')}--copy`}
             iconProps={{ iconName: UiIcons.Copy }}
             onClick={onClick}
+            title={t('COPY_ICON_TOOLTIP')}
         />
     );
 }

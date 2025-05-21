@@ -17,4 +17,5 @@ config.globals = {
 config.preset = 'ts-jest';
 config.transformIgnorePatterns = ['<rootDir>/node_modules/'];
 config.testMatch = ['**/test/unit/**/*.(test).ts(x)?'];
+config.setupFiles = ['./test/unit/setup.ts'];
 module.exports = config;

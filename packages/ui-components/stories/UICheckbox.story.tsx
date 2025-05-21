@@ -4,10 +4,6 @@ import { Text, Stack } from '@fluentui/react';
 
 import { UICheckbox } from '../src/components/UICheckbox';
 
-import { initIcons } from '../src/components/Icons';
-
-initIcons();
-
 export default { title: 'Basic Inputs/Checkbox' };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 

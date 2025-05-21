@@ -52,30 +52,30 @@ describe('CustomFilter', () => {
             fs.delete(testDir);
             fs.write(join(testDir, 'webapp/manifest.json'), testAppManifest);
         });
-        test('New custom filter (no eventhandler)', () => {
-            generateCustomFilter(testDir, filter, fs);
+        test('New custom filter (no eventhandler)', async () => {
+            await generateCustomFilter(testDir, filter, fs);
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.exists(getControllerPath(filter))).toBe(false);
             expect(fs.read(getExpectedFragmentPath(filter))).toMatchSnapshot();
         });
 
-        test('Create several new custom filters', () => {
+        test('Create several new custom filters', async () => {
             const secondFilter = {
                 name: 'NewCustomFilter2',
                 label: 'Test Custom Filter 2',
                 controlID: 'testID2',
                 property: 'Testing'
             };
-            generateCustomFilter(testDir, filter, fs);
+            await generateCustomFilter(testDir, filter, fs);
 
-            generateCustomFilter(testDir, secondFilter, fs);
+            await generateCustomFilter(testDir, secondFilter, fs);
             expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
             expect(fs.exists(getControllerPath(secondFilter))).toBe(false);
             expect(fs.read(getExpectedFragmentPath(secondFilter))).toMatchSnapshot();
         });
 
-        test('with new event handler as string', () => {
-            generateCustomFilter(
+        test('with new event handler as string', async () => {
+            await generateCustomFilter(
                 testDir,
                 {
                     ...filter,
@@ -87,10 +87,10 @@ describe('CustomFilter', () => {
             expect(fs.read(getExpectedFragmentPath(filter))).toMatchSnapshot();
         });
 
-        test('with existing event handler as string', () => {
+        test('with existing event handler as string', async () => {
             const controllerPath = 'my.test.App.ext.ExistingHandler.onTestFilter';
             fs.write(controllerPath, 'dummyContent');
-            generateCustomFilter(
+            await generateCustomFilter(
                 testDir,
                 {
                     ...filter,
@@ -103,8 +103,8 @@ describe('CustomFilter', () => {
             expect(fs.read(controllerPath)).toEqual('dummyContent');
         });
 
-        test('specific target folder, event handler as boolean', () => {
-            generateCustomFilter(
+        test('specific target folder, event handler as boolean', async () => {
+            await generateCustomFilter(
                 testDir,
                 {
                     ...filter,
@@ -118,12 +118,12 @@ describe('CustomFilter', () => {
         });
 
         describe('Test property "eventHandler"', () => {
-            const generateCustomFilterWithEventHandler = (
+            const generateCustomFilterWithEventHandler = async (
                 filterId: string,
                 eventHandler: string | EventHandlerConfiguration,
                 folder?: string
             ) => {
-                generateCustomFilter(
+                await generateCustomFilter(
                     testDir,
                     {
                         ...filter,
@@ -134,28 +134,28 @@ describe('CustomFilter', () => {
                 );
             };
 
-            test('"eventHandler" is empty "object" - create new file with default function name', () => {
-                generateCustomFilterWithEventHandler(filter.name, {});
+            test('"eventHandler" is empty "object" - create new file with default function name', async () => {
+                await generateCustomFilterWithEventHandler(filter.name, {});
 
                 expect(
                     fs.read(join(testDir, 'webapp', 'ext', 'newCustomFilter', 'NewCustomFilter.js'))
                 ).toMatchSnapshot();
             });
 
-            test('"eventHandler" is "object" - create new file with custom file and function names', () => {
+            test('"eventHandler" is "object" - create new file with custom file and function names', async () => {
                 const extension = {
                     fnName: 'DummyFilterItems',
                     fileName: 'dummyFilter'
                 };
                 const folder = join('ext', 'custom');
-                generateCustomFilterWithEventHandler(filter.name, extension, folder);
+                await generateCustomFilterWithEventHandler(filter.name, extension, folder);
 
                 expect(fs.read(join(testDir, 'webapp', 'ext', 'custom', `${extension.fileName}.js`))).toMatchSnapshot();
                 expect(fs.read(getExpectedFragmentPath({ ...filter, folder: folder }))).toMatchSnapshot();
             });
 
-            test('"eventHandler" is "object" - create new file with custom function name', () => {
-                generateCustomFilterWithEventHandler(filter.name, {
+            test('"eventHandler" is "object" - create new file with custom function name', async () => {
+                await generateCustomFilterWithEventHandler(filter.name, {
                     fnName: 'DummyOnAction'
                 });
 
@@ -164,8 +164,8 @@ describe('CustomFilter', () => {
                 ).toMatchSnapshot();
             });
 
-            test('"eventHandler" is "object", action with lowercase first letter', () => {
-                generateCustomFilterWithEventHandler(filter.name, {
+            test('"eventHandler" is "object", action with lowercase first letter', async () => {
+                await generateCustomFilterWithEventHandler(filter.name, {
                     fnName: 'dummyOnAction'
                 });
 
@@ -174,8 +174,11 @@ describe('CustomFilter', () => {
                 ).toMatchSnapshot();
             });
 
-            test(`"eventHandler" is String - no changes to handler file`, () => {
-                generateCustomFilterWithEventHandler(filter.name, 'my.test.App.ext.ExistingHandler.onCustomAction');
+            test(`"eventHandler" is String - no changes to handler file`, async () => {
+                await generateCustomFilterWithEventHandler(
+                    filter.name,
+                    'my.test.App.ext.ExistingHandler.onCustomAction'
+                );
 
                 expect(fs.exists(join(testDir, 'webapp', 'ext', 'newCustomFilter', 'NewCustomFilter.js'))).toBeFalsy();
             });
@@ -193,7 +196,7 @@ describe('CustomFilter', () => {
                 ['absolute position', 870, 18]
             ])(
                 '"eventHandler" is object. Append new function to existing js file with %s',
-                (_desc: string, position: number | FileContentPosition, appendLines?: number) => {
+                async (_desc: string, position: number | FileContentPosition, appendLines?: number) => {
                     const fileName = 'MyExistingFilter';
                     // Create existing file with existing filters
                     const folder = join('ext', 'fragments');
@@ -210,7 +213,7 @@ describe('CustomFilter', () => {
                     // Create third action - append existing js file
                     const filterName = 'CustomFilter2';
                     const fnName = 'onHandleSecondAction';
-                    generateCustomFilterWithEventHandler(
+                    await generateCustomFilterWithEventHandler(
                         filterName,
                         {
                             fnName,
@@ -264,8 +267,8 @@ describe('CustomFilter', () => {
             }
         ];
         positionTests.forEach((testCase) => {
-            test(`Test 'position' property. ${testCase.name}`, () => {
-                generateCustomFilter(
+            test(`Test 'position' property. ${testCase.name}`, async () => {
+                await generateCustomFilter(
                     testDir,
                     {
                         ...filter,
@@ -288,8 +291,8 @@ describe('CustomFilter', () => {
             }
         ];
         languages.forEach((languageConfig) => {
-            test(`Test 'typescript' property. ${languageConfig.name}`, () => {
-                generateCustomFilter(
+            test(`Test 'typescript' property. ${languageConfig.name}`, async () => {
+                await generateCustomFilter(
                     testDir,
                     {
                         ...filter,
@@ -303,7 +306,7 @@ describe('CustomFilter', () => {
             });
         });
 
-        test('Avoid overwrite for existing extension files', () => {
+        test('Avoid overwrite for existing extension files', async () => {
             const fileName = 'Existing';
             const target = join(testDir, 'different-folder');
             const folder = join('ext', 'different');
@@ -314,7 +317,7 @@ describe('CustomFilter', () => {
             fs.write(fragmentPath, 'fragmentContent');
             const handlerPath = join(target, `webapp/${folder}/${fileName}.js`);
             fs.write(handlerPath, 'handlerContent');
-            generateCustomFilter(
+            await generateCustomFilter(
                 target,
                 {
                     ...filter,

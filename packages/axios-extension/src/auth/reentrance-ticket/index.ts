@@ -38,9 +38,8 @@ export async function getReentranceTicket({
 
         // Open browser to handle SAML flow and return the reentrance ticket
         const scenario = process.env.FIORI_TOOLS_SCENARIO ?? 'FTO1';
-        const url = `${backend.uiHostname()}${ADT_REENTRANCE_ENDPOINT}?scenario=${scenario}&redirect-url=${redirectUrl(
-            redirectPort
-        )}`;
+        const endpoint = process.env.FIORI_TOOLS_REENTRANCE_ENDPOINT ?? ADT_REENTRANCE_ENDPOINT;
+        const url = `${backend.uiHostname()}${endpoint}?scenario=${scenario}&redirect-url=${redirectUrl(redirectPort)}`;
         open(url)?.catch((error) => logger.error(error));
     });
 }

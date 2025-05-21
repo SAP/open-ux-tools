@@ -1,7 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "include": [
-    "src",
+    "src/**/*.ts",
     "src/**/*.json"
   ],
   "compilerOptions": {
@@ -16,7 +16,19 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../cap-config-writer"
+    },
+    {
       "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-elements-writer"
+    },
+    {
+      "path": "../fiori-freestyle-writer"
+    },
+    {
+      "path": "../fiori-generator-shared"
     },
     {
       "path": "../guided-answers-helper"

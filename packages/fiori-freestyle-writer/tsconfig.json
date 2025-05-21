@@ -11,10 +11,16 @@
   },
   "references": [
     {
+      "path": "../cap-config-writer"
+    },
+    {
       "path": "../eslint-plugin-fiori-tools"
     },
     {
       "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../logger"
     },
     {
       "path": "../odata-service-writer"
@@ -24,6 +30,9 @@
     },
     {
       "path": "../ui5-config"
+    },
+    {
+      "path": "../ui5-test-writer"
     }
   ]
 }

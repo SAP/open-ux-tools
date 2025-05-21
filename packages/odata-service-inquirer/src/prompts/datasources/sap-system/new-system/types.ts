@@ -1,17 +1,16 @@
-import type { ODataVersion } from '@sap-ux/axios-extension';
-
-/**
- * Sap System service answer
- */
-export type ServiceAnswer = {
-    servicePath: string;
-    serviceODataVersion: ODataVersion;
-    toString: () => string;
-    serviceType?: string;
-};
+// eslint-disable-next-line
+import { promptNames, type SapSystemType } from '../../../../types';
 
 export const newSystemPromptNames = {
     newSystemType: 'newSystemType',
     newSystemUrl: 'newSystemUrl',
     newSystemAuthType: 'newSystemAuthType'
 } as const;
+
+/**
+ * Internal only answers to service URL prompting not returned with OdataServiceAnswers.
+ */
+export interface NewSystemAnswers {
+    [newSystemPromptNames.newSystemType]?: SapSystemType;
+    [promptNames.userSystemName]?: string;
+}

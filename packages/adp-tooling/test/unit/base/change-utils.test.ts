@@ -2,6 +2,13 @@ import path, { resolve } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { readFileSync, existsSync, readdirSync } from 'fs';
+import { renderFile } from 'ejs';
+
+jest.mock('ejs', () => ({
+    ...jest.requireActual('ejs'),
+    renderFile: jest.fn()
+}));
+const renderFileMock = renderFile as jest.Mock;
 
 import {
     type AnnotationsData,
@@ -24,7 +31,8 @@ jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
     existsSync: jest.fn(),
     readdirSync: jest.fn(),
-    readFileSync: jest.fn()
+    readFileSync: jest.fn(),
+    writeJSON: jest.fn()
 }));
 
 jest.mock('path', () => ({
@@ -39,8 +47,7 @@ describe('Change Utils', () => {
         });
 
         const projectPath = 'project';
-        const change = { key: 'value' };
-        const fileName = 'something.change';
+        const change = { key: 'value', fileName: 'something' };
         const writeJsonSpy = jest.fn();
         const mockFs = { writeJSON: writeJsonSpy };
 
@@ -48,11 +55,10 @@ describe('Change Utils', () => {
             writeChangeToFolder(
                 projectPath,
                 change as unknown as ManifestChangeProperties,
-                fileName,
                 mockFs as unknown as Editor
             );
 
-            expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(fileName), change);
+            expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(change.fileName), change);
         });
 
         it('should write change to the specified folder with subdirectory', () => {
@@ -60,12 +66,11 @@ describe('Change Utils', () => {
             writeChangeToFolder(
                 projectPath,
                 change as unknown as ManifestChangeProperties,
-                fileName,
                 mockFs as unknown as Editor,
                 dir
             );
 
-            expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(path.join(dir, fileName)), change);
+            expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(path.join(dir, change.fileName)), change);
         });
 
         it('should throw error when writing json fails', () => {
@@ -74,13 +79,12 @@ describe('Change Utils', () => {
                 throw new Error(errMsg);
             });
 
-            const expectedPath = path.join('project', 'webapp', 'changes', fileName);
+            const expectedPath = path.join('project', 'webapp', 'changes', `${change.fileName}.change`);
 
             expect(() => {
                 writeChangeToFolder(
                     projectPath,
                     change as unknown as ManifestChangeProperties,
-                    fileName,
                     mockFs as unknown as Editor
                 );
             }).toThrow(
@@ -139,6 +143,20 @@ describe('Change Utils', () => {
         };
         const mockContent = { key: 'value' };
 
+        it('should throw error when changeType is an empty string', () => {
+            const invalidChangeType = '' as unknown as ChangeType;
+            expect(() =>
+                getChange(mockData.projectData, mockData.timestamp, mockContent, invalidChangeType)
+            ).toThrowError(`Could not extract the change name from the change type: ${invalidChangeType}`);
+        });
+
+        it('should throw error when changeType is undefined', () => {
+            const invalidChangeType = undefined as unknown as ChangeType;
+            expect(() =>
+                getChange(mockData.projectData, mockData.timestamp, mockContent, invalidChangeType)
+            ).toThrowError(`Could not extract the change name from the change type: ${invalidChangeType}`);
+        });
+
         it('should return the correct change object structure', () => {
             const result = getChange(
                 mockData.projectData,
@@ -148,7 +166,7 @@ describe('Change Utils', () => {
             );
 
             expect(result).toEqual({
-                fileName: `id_${mockData.timestamp}`,
+                fileName: expect.stringContaining('_addAnnotationsToOData'),
                 namespace: `${mockData.projectData.namespace}/changes`,
                 layer: mockData.projectData.layer,
                 fileType: 'change',
@@ -320,7 +338,7 @@ describe('Change Utils', () => {
                 dataSource: '/sap/opu/odata/source'
             }
         } as AnnotationsData;
-        const mockChange = { key: 'value' };
+        const mockChange = { key: 'value', fileName: 'id_123456789_addAnnotationsToOData' };
         const writeJsonSpy = jest.fn();
         const writeSpy = jest.fn();
         const copySpy = jest.fn();
@@ -331,10 +349,22 @@ describe('Change Utils', () => {
         };
 
         it('should write the change file and an empty annotation file for NewEmptyFile option', () => {
+            renderFileMock.mockImplementation((templatePath, data, options, callback) => {
+                callback(undefined, 'test');
+            });
             writeAnnotationChange(
                 mockProjectPath,
                 123456789,
-                mockData.annotation as AnnotationsData['annotation'],
+                {
+                    ...(mockData.annotation as AnnotationsData['annotation']),
+                    namespaces: [
+                        {
+                            namespace: 'mockNamespace',
+                            alias: 'mockAlias'
+                        }
+                    ],
+                    serviceUrl: '/path/to/odata'
+                },
                 mockChange as unknown as ManifestChangeProperties,
                 mockFs as unknown as Editor
             );
@@ -344,10 +374,23 @@ describe('Change Utils', () => {
                 mockChange
             );
 
-            expect(copySpy).toHaveBeenCalledWith(
+            expect(renderFileMock).toHaveBeenCalledWith(
                 expect.stringContaining(path.join('templates', 'changes', 'annotation.xml')),
-                expect.stringContaining('mockAnnotation.xml')
+                expect.objectContaining({
+                    namespaces: [
+                        {
+                            namespace: 'mockNamespace',
+                            alias: 'mockAlias'
+                        }
+                    ],
+                    path: '/path/to/odata',
+                    schemaNamespace: `local_123456789`
+                }),
+                expect.objectContaining({}),
+                expect.any(Function)
             );
+
+            expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('mockAnnotation.xml'), 'test');
         });
 
         it('should copy the annotation file to the correct directory if not creating a new empty file', () => {
@@ -392,7 +435,7 @@ describe('Change Utils', () => {
         it('should throw error when write operation fails', () => {
             mockData.annotation.filePath = '';
 
-            mockFs.writeJSON.mockImplementation(() => {
+            mockFs.writeJSON.mockImplementationOnce(() => {
                 throw new Error('Failed to write JSON');
             });
 
@@ -409,10 +452,25 @@ describe('Change Utils', () => {
                     mockProjectPath,
                     'webapp',
                     'changes',
-                    'manifest',
                     'id_123456789_addAnnotationsToOData.change'
                 )}. Reason: Failed to write JSON`
             );
+        });
+
+        it('should throw an error if rendering the annotation file fails', () => {
+            renderFileMock.mockImplementation((templatePath, data, options, callback) => {
+                callback(new Error('Failed to render annotation file'), '');
+            });
+
+            expect(() => {
+                writeAnnotationChange(
+                    mockProjectPath,
+                    123456789,
+                    mockData.annotation as AnnotationsData['annotation'],
+                    mockChange as unknown as ManifestChangeProperties,
+                    mockFs as unknown as Editor
+                );
+            }).toThrow('Failed to render annotation file');
         });
     });
 });

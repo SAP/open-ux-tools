@@ -30,6 +30,10 @@ describe('read', () => {
         expect(allLaunchConfigs).toBeUndefined();
     });
 
+    it('should return undefined launch configurations if launch.json is empty', async () => {
+        expect(await getLaunchConfigs(TestPaths.emptyJson)).toBeUndefined();
+    });
+
     it('should throw an error if launch.json is invalid', async () => {
         try {
             await getLaunchConfigs(TestPaths.invalidJson);

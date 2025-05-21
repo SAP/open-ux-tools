@@ -1,0 +1,25 @@
+## SAP UX Tools generated mtaext file
+_schema-version: "3.2"
+ID: <%- mtaExtensionId %>
+extends: <%- appMtaId %>
+version: <%- mtaVersion %>
+
+resources:
+- name: <%- destinationServiceName %>
+  parameters:
+    config:
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: <%- destinationName %>
+            ProxyType: Internet
+            Type: HTTP
+            URL: <%- destinationUrl %>
+            URL.headers.<%- headerKey %>: <%- headerValue %>
+          - Authentication: NoAuthentication
+            Name: ui5
+            Type: HTTP
+            URL: https://ui5.sap.com
+            ProxyType: Internet
+          existing_destinations_policy: update

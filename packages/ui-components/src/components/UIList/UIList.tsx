@@ -14,13 +14,20 @@ import { UiIcons } from '../Icons';
 
 import './UIList.scss';
 
-export interface ListProps extends IGroupedListProps {
+export {
+    IGroup as UIGroup,
+    IGroupedListProps as UIGroupedListProps,
+    IGroupHeaderProps as UIGroupHeaderProps,
+    IGroupRenderProps as UIGroupRenderProps
+};
+
+export type ListProps = Omit<IGroupedListProps, 'onRenderCell'> & {
     groups: IGroup[];
     groupProps?: IGroupRenderProps;
     items: never[];
     onSelect: (value: IGroup) => void;
     onRenderCell: (nestingDepth?: number, item?: never, index?: number) => React.ReactNode;
-}
+};
 
 /**
  * UIList component
@@ -137,7 +144,7 @@ export class UIList extends React.Component<ListProps, {}> {
 
         return (
             <GroupedList
-                {...this.props}
+                {...(this.props as unknown as IGroupedListProps)}
                 className="uiList"
                 selectionMode={0}
                 compact={true}

@@ -9,7 +9,7 @@ It can be used either with the `ui5 serve` or the `fiori run` commands.
 ### `backend`
 | Option        | Type | Description |
 | ------------- | ------------- | ----------- |
-| `url`         | `string` mandatory (local)  | Mandatory URL pointing to the backend system. *Not required if destination is provided and the proxy is running SAP Business Application Studio |
+| `url`         | `string` mandatory (local)  | URL pointing to the backend system is mandatory, unless a destination is provided and the proxy is running on SAP Business Application Studio. Developers can append additional URL parameters if necessary |
 | `destination` | `string` mandatory (if no url) | Required if the backend system is available as destination in SAP Business Application Studio. |
 | `destinationInstance` | `string` optional | If a destination needs to be read by a specific instance of a destination service then you need to provide the id of the service as optional property `destinationInstance`.|
 | `path`        | `string` mandatory     | Path that is to be proxied |

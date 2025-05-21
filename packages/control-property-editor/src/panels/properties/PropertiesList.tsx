@@ -41,13 +41,6 @@ export function PropertiesList(): ReactElement {
         (item) => item.name === FilterName.showEditableProperties
     )[0].value as boolean;
     const [filterValue, setFilterValue] = useState('');
-    const doc = {
-        defaultValue: '-',
-        description: 'The unique identifier within a page, either configured or automatically generated.',
-        propertyName: 'id',
-        type: 'sap.ui.core.ID',
-        propertyType: 'ID'
-    };
     if (!control) {
         // Nothing selected, show message
         return <NoControlSelected />;
@@ -124,13 +117,13 @@ export function PropertiesList(): ReactElement {
     return (
         <>
             <div className="property-content">
-                <HeaderField label={t('CONTROL_ID_LABEL')} value={id} documentation={doc} hidden={false} />
+                <HeaderField label={t('CONTROL_ID_LABEL')} value={id} />
                 <HeaderField label={t('CONTROL_TYPE_LABEL')} value={type} />
             </div>
             <Separator
                 style={{
                     marginTop: '0px',
-                    marginBottom: '20px'
+                    marginBottom: '15px'
                 }}
             />
             <div className="filter-properties">

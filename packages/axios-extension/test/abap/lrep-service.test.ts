@@ -6,7 +6,6 @@ import { LayeredRepositoryService, createForAbap } from '../../src';
 import type { AxiosError } from '../../src';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
-import { describe } from 'node:test';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -264,11 +263,21 @@ describe('LayeredRepositoryService', () => {
     });
 
     describe('mergeAppDescriptorVariant', () => {
-        const mockResult = { hello: 'world' };
         test('merge valid app variant', async () => {
+            const mockResult = { hello: 'world', components: [{ url: '/webapp' }] };
             nock(server).put(`${LayeredRepositoryService.PATH}/appdescr_variant_preview/`).reply(200, mockResult);
 
             const mergedDescriptor = await service.mergeAppDescriptorVariant(Buffer.from('~test'));
+            expect(mergedDescriptor).toEqual(mockResult);
+        });
+
+        test('merge valid app variant with adjusted workspace path', async () => {
+            const mockResult = { hello: 'world', components: [{ url: '/' }] };
+            nock(server)
+                .put(`${LayeredRepositoryService.PATH}/appdescr_variant_preview/?workspacePath=//`)
+                .reply(200, mockResult);
+
+            const mergedDescriptor = await service.mergeAppDescriptorVariant(Buffer.from('~test'), '//');
             expect(mergedDescriptor).toEqual(mockResult);
         });
 

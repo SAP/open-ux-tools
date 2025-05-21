@@ -12,7 +12,8 @@ import {
     TransportChoices,
     type AbapSystemChoice,
     type AbapDeployConfigAnswersInternal,
-    type BackendTarget
+    type BackendTarget,
+    type SystemConfig
 } from '../types';
 import { AuthenticationType, type BackendSystem } from '@sap-ux/store';
 import type { ChoiceOptions, ListChoiceOptions } from 'inquirer';
@@ -77,7 +78,7 @@ async function getBackendTargetChoices(
     backendSystems: BackendSystem[] = []
 ): Promise<AbapSystemChoice[]> {
     let target: UrlAbapTarget | undefined;
-    let targetExists = false;
+    let targetExistsInStore = false;
 
     const choices: AbapSystemChoice[] = [
         {
@@ -93,15 +94,18 @@ async function getBackendTargetChoices(
     const systemChoices: AbapSystemChoice[] = Object.values(backendSystems)
         .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, caseFirst: 'lower' }))
         .map((system) => {
-            if (!targetExists) {
-                targetExists = system.url === target?.url && (system.client ?? '') === (target?.client ?? '');
+            let isDefault = false;
+            if (!targetExistsInStore && target?.url) {
+                isDefault = targetExistsInStore =
+                    system.url.trim().replace(/\/$/, '') === target.url.trim().replace(/\/$/, '') &&
+                    (system.client ?? '') === (target?.client ?? '');
             }
             return {
-                name: targetExists
+                name: isDefault
                     ? `${getBackendDisplayName({ backendSystem: system })} (Source system)`
                     : getBackendDisplayName({ backendSystem: system }) ?? '',
                 value: system.url,
-                isDefault: targetExists,
+                isDefault,
                 scp: !!system.serviceKeys,
                 isS4HC: system.authenticationType === AuthenticationType.ReentranceTicket,
                 client: system.client
@@ -110,10 +114,11 @@ async function getBackendTargetChoices(
 
     choices.push(...systemChoices);
 
-    if (!targetExists && target?.url && backendTarget?.systemName) {
+    // the backend system may have been added during generation but not yet saved in the store
+    // in this case we need to add it to the choices
+    if (!targetExistsInStore && target?.url && backendTarget?.systemName) {
         const systemName = backendTarget.systemName;
         const user = await (backendTarget.serviceProvider as AbapServiceProvider)?.user();
-        // add the target system to the list if it does not exist in the store yet
         choices.splice(1, 0, {
             name: `${getSystemDisplayName(
                 systemName,
@@ -194,9 +199,10 @@ export function getPackageInputChoices(): ListChoiceOptions[] {
 /**
  * Returns a list of transport choices.
  *
+ * @param showCreateDuringDeploy - show createDuringDeploy choice, defaults to true
  * @returns list of transport choices
  */
-export function getTransportChoices(): ListChoiceOptions[] {
+export function getTransportChoices(showCreateDuringDeploy = true): ListChoiceOptions[] {
     const manualChoice = {
         name: t('choices.transport.enterManually'),
         value: TransportChoices.EnterManualChoice
@@ -211,7 +217,12 @@ export function getTransportChoices(): ListChoiceOptions[] {
     };
     const createNewChoice = { name: t('choices.transport.createNew'), value: TransportChoices.CreateNewChoice };
 
-    return [manualChoice, listExistingChoice, createDuringDeployChoice, createNewChoice];
+    return [
+        manualChoice,
+        listExistingChoice,
+        ...(showCreateDuringDeploy ? [createDuringDeployChoice] : []),
+        createNewChoice
+    ];
 }
 
 /**
@@ -244,6 +255,7 @@ export function updatePromptStateUrl(
  *
  * @param isCli - is running in CLI
  * @param input - package input
+ * @param systemConfig - system configuration
  * @param previousAnswers - previous answers
  * @param backendTarget - backend target from abap deploy config prompt options
  * @returns results of query and message based on number of results
@@ -251,22 +263,16 @@ export function updatePromptStateUrl(
 export async function getPackageChoices(
     isCli: boolean,
     input: string,
+    systemConfig: SystemConfig,
     previousAnswers: AbapDeployConfigAnswersInternal,
     backendTarget?: BackendTarget
 ): Promise<{ packages: string[]; morePackageResultsMsg: string }> {
     let packages;
     let morePackageResultsMsg = '';
+
     // For YUI we need to ensure input is provided so the prompt is not re-rendered with no input
     if (isCli || input) {
-        packages = await queryPackages(
-            input,
-            {
-                url: PromptState.abapDeployConfig.url,
-                client: PromptState.abapDeployConfig.client,
-                destination: PromptState.abapDeployConfig.destination
-            },
-            backendTarget
-        );
+        packages = await queryPackages(input, systemConfig, backendTarget);
 
         morePackageResultsMsg =
             packages && packages.length === ABAP_PACKAGE_SEARCH_MAX_RESULTS

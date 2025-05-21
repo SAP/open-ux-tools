@@ -1,16 +1,24 @@
 import i18next from 'i18next';
 import type { TOptions } from 'i18next';
-import i18ntranslations from './translations/project-input-validator.i18n.json';
+
+import translations from './translations/project-input-validator.i18n.json';
 
 export const PROJECT_INPUT_VALIDATOR_NS = 'project-input-validator';
+
+/**
+ * Adds the `project-input-validator` resource bundle to i18next.
+ * May be required to load i18n translations after initialising in the consumer module.
+ */
+export function addi18nResourceBundle(): void {
+    i18next.addResourceBundle('en', PROJECT_INPUT_VALIDATOR_NS, translations);
+}
 
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18nProjectValidators(): Promise<void> {
-    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', PROJECT_INPUT_VALIDATOR_NS, i18ntranslations)
-    );
+    await i18next.init({ lng: 'en', fallbackLng: 'en' });
+    addi18nResourceBundle();
 }
 
 /**

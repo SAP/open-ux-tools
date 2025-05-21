@@ -1,5 +1,4 @@
 import { t } from '../../../i18n';
-
 import {
     defaultOrShowManualTransportQuestion,
     defaultOrShowTransportCreatedQuestion,
@@ -12,7 +11,7 @@ import { PromptState } from '../../prompt-state';
 import { transportName } from '../../../service-provider-utils/transport-list';
 import { defaultTransportListChoice, defaultTransportRequestChoice } from '../../defaults';
 import {
-    abapDeployConfigInternalPromptNames,
+    promptNames,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type TransportChoices
@@ -24,33 +23,47 @@ import { useCreateTrDuringDeploy } from '../../../utils';
  * Returns the transport prompts.
  *
  * @param options - abap deploy config prompt options
+ * @param useStandalone - whether the prompts are used standalone, defaults to true
+ * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host
  * @returns list of questions for transport prompting
  */
 export function getTransportRequestPrompts(
-    options: AbapDeployConfigPromptOptions
+    options: AbapDeployConfigPromptOptions,
+    useStandalone = true,
+    isYUI = false
 ): Question<AbapDeployConfigAnswersInternal>[] {
     let transportInputChoice: TransportChoices;
+    PromptState.isYUI = isYUI;
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
-            when: (): boolean => showTransportInputChoice(),
+            when: (): boolean => showTransportInputChoice(options.transportInputChoice),
             type: 'list',
-            name: abapDeployConfigInternalPromptNames.transportInputChoice,
+            name: promptNames.transportInputChoice,
             message: t('prompts.config.transport.transportInputChoice.message'),
             guiOptions: {
                 applyDefaultWhenDirty: true
             },
-            choices: () => getTransportChoices(),
+            choices: () => getTransportChoices(options.transportInputChoice?.showCreateDuringDeploy),
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultTransportRequestChoice(
                     previousAnswers.transportInputChoice,
-                    useCreateTrDuringDeploy(options.existingDeployTaskConfig)
+                    useCreateTrDuringDeploy(options.transportManual?.default)
                 ),
             validate: async (
                 input: TransportChoices,
                 previousAnswers: AbapDeployConfigAnswersInternal
             ): Promise<boolean | string> => {
-                const result = validateTransportChoiceInput(input, previousAnswers, true, transportInputChoice);
+                const result = validateTransportChoiceInput({
+                    useStandalone,
+                    input,
+                    previousAnswers,
+                    validateInputChanged: true,
+                    prevTransportInputChoice: transportInputChoice,
+                    backendTarget: options.backendTarget,
+                    ui5AbapRepoName: options.ui5AbapRepo?.default,
+                    transportDescription: options.transportCreated?.description
+                });
                 transportInputChoice = input;
                 return result;
             }
@@ -60,13 +73,14 @@ export function getTransportRequestPrompts(
             // Use this hidden question for calling ADT services.
             when: async (previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
                 if (!PromptState.isYUI) {
-                    const result = await validateTransportChoiceInput(
-                        previousAnswers.transportInputChoice,
+                    const result = await validateTransportChoiceInput({
+                        useStandalone,
+                        input: previousAnswers.transportInputChoice,
                         previousAnswers,
-                        false,
-                        undefined,
-                        options.backendTarget
-                    );
+                        validateInputChanged: false,
+                        backendTarget: options.backendTarget,
+                        ui5AbapRepoName: options.ui5AbapRepo?.default
+                    });
                     if (result !== true) {
                         throw new Error(result as string);
                     }
@@ -74,21 +88,21 @@ export function getTransportRequestPrompts(
                 return false;
             },
             type: 'input',
-            name: abapDeployConfigInternalPromptNames.transportCliExecution
+            name: promptNames.transportCliExecution
         },
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowTransportCreatedQuestion(previousAnswers.transportInputChoice),
-            name: abapDeployConfigInternalPromptNames.transportCreated,
+            name: promptNames.transportCreated,
             type: 'input',
             default: () => PromptState.transportAnswers.newTransportNumber,
             message: t('prompts.config.transport.transportCreated.message')
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowTransportListQuestion(previousAnswers.transportInputChoice),
+                defaultOrShowTransportListQuestion(previousAnswers.transportInputChoice, options.transportInputChoice),
             type: 'list',
-            name: abapDeployConfigInternalPromptNames.transportFromList,
+            name: promptNames.transportFromList,
             message: t('prompts.config.transport.common.transportRequest'),
             guiOptions: {
                 hint: t('prompts.config.transport.common.provideTransportRequest'),
@@ -99,9 +113,12 @@ export function getTransportRequestPrompts(
         } as ListQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowManualTransportQuestion(previousAnswers.transportInputChoice),
+                defaultOrShowManualTransportQuestion(
+                    previousAnswers.transportInputChoice,
+                    options.transportInputChoice
+                ),
             type: 'input',
-            name: abapDeployConfigInternalPromptNames.transportManual,
+            name: promptNames.transportManual,
             message: () =>
                 PromptState.transportAnswers.transportRequired
                     ? t('prompts.config.transport.common.transportRequestMandatory')
@@ -111,7 +128,7 @@ export function getTransportRequestPrompts(
                 breadcrumb: t('prompts.config.transport.common.transportRequest')
             },
             default: (previousAnswers: AbapDeployConfigAnswersInternal) =>
-                previousAnswers.transportManual || options.existingDeployTaskConfig?.transport,
+                previousAnswers.transportManual || options.transportManual?.default,
             validate: (input: string): boolean | string => validateTransportQuestion(input),
             filter: (input: string): string => input?.trim()?.toUpperCase()
         } as InputQuestion<AbapDeployConfigAnswersInternal>

@@ -7,8 +7,9 @@ import type { ControlTreeIndex } from 'open/ux/preview/client/cpe/types';
 import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
 
 import { sapCoreMock } from 'mock/window';
-import ComponentMock from 'mock/sap/ui/core/Component';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
+import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
+import * as v4Utils from '../../../../src/utils/fe-v4';
 
 jest.mock('../../../../src/cpe/outline/editable', () => {
     return {
@@ -28,9 +29,8 @@ describe('outline nodes', () => {
     const transformNodes = (
         nodes: OutlineViewNode[],
         scenario: Scenario,
-        reuseComponentsIds: Set<string> = new Set<string>(),
         controlIndex: ControlTreeIndex = {}
-    ): Promise<OutlineNode[]> => tn(nodes, scenario, reuseComponentsIds, controlIndex);
+    ): Promise<OutlineNode[]> => tn(nodes, scenario, controlIndex, {} as any, new Map());
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
             getProperty: jest
@@ -43,15 +43,50 @@ describe('outline nodes', () => {
         getProperty: jest.fn().mockReturnValueOnce('Component').mockReturnValueOnce('Component').mockReturnValue('')
     });
 
+    mockOverlay.getDesignTimeMetadata = jest.fn().mockReturnValue({
+        getData: jest
+            .fn()
+            .mockReturnValueOnce({
+                manifestPropertyPath: jest
+                    .fn()
+                    .mockReturnValue('controlConfiguration/@sap.ui.com.v1.LineItem/tableSettings')
+            })
+            .mockReturnValue(undefined)
+    });
+    jest.spyOn(v4Utils, 'getPageName').mockReturnValue('TestListReport');
     beforeAll(() => {
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
     });
 
     describe('transformNodes', () => {
+        test('table element with configuration setting', async () => {
+            expect(
+                await transformNodes(
+                    [
+                        {
+                            id: 'table',
+                            technicalName: 'sap.SmartTable',
+                            editable: false,
+                            type: 'element',
+                            visible: true
+                        }
+                    ],
+                    'UI_ADAPTATION'
+                )
+            ).toStrictEqual([
+                {
+                    children: [],
+                    controlId: 'table',
+                    controlType: 'sap.SmartTable',
+                    editable: false,
+                    name: 'Component',
+                    visible: true
+                }
+            ]);
+        });
         test('empty tree', async () => {
             expect(await transformNodes([], 'UI_ADAPTATION')).toStrictEqual([]);
         });
-
         test('single element', async () => {
             expect(
                 await transformNodes(
@@ -273,49 +308,6 @@ describe('outline nodes', () => {
                     ]
                 }
             ]);
-        });
-
-        test('fill reuse components', async () => {
-            ComponentMock.getComponentById = jest.fn().mockReturnValue({
-                getManifest: () => {
-                    return {
-                        ['sap.app']: {
-                            type: 'component'
-                        }
-                    };
-                }
-            });
-            const nodes: OutlineViewNode[] = [
-                {
-                    id: 'application-preview-app-component',
-                    technicalName: 'v2flex.Component',
-                    editable: false,
-                    type: 'element',
-                    visible: true,
-                    component: true,
-                    elements: [
-                        {
-                            id: 'application-preview-app-component',
-                            technicalName: 'rootControl',
-                            editable: false,
-                            type: 'aggregation',
-                            elements: [
-                                {
-                                    id: '__layout0',
-                                    technicalName: 'sap.f.FlexibleColumnLayout',
-                                    editable: false,
-                                    type: 'element',
-                                    visible: true
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ];
-            const reuseComponentsIds = new Set<string>();
-
-            await transformNodes(nodes, 'ADAPTATION_PROJECT', reuseComponentsIds);
-            expect(reuseComponentsIds.size).toBe(1);
         });
     });
 });

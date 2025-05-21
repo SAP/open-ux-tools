@@ -1,0 +1,5 @@
+<core:FragmentDefinition  xmlns:core='sap.ui.core' xmlns='sap.m'>
+   <actiontoolbar:ActionToolbarAction xmlns:actiontoolbar="sap.ui.mdc.actiontoolbar" id="<%- ids.customToolbarAction%>" >
+        <Button xmlns:m="sap.m" id="<%- ids.customActionButton %>" visible="true" text="New Action" />
+    </actiontoolbar:ActionToolbarAction>
+</core:FragmentDefinition>

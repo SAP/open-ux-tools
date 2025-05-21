@@ -5,34 +5,41 @@ import {
     showPackageInputChoiceQuestion
 } from '../../conditions';
 import { t } from '../../../i18n';
+import { getSystemConfig } from '../../../utils';
 import { getPackageChoices, getPackageInputChoices } from '../../helpers';
 import { defaultPackage, defaultPackageChoice } from '../../defaults';
-import { validatePackage, validatePackageChoiceInput, validatePackageChoiceInputForCli } from '../../validators';
+import { validatePackageChoiceInput, validatePackageChoiceInputForCli, validatePackage } from '../../validators';
 import {
-    abapDeployConfigInternalPromptNames,
+    promptNames,
     type PackageInputChoices,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions
 } from '../../../types';
-import type { InputQuestion, ListQuestion, Question } from 'inquirer';
+import type { InputQuestion, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 /**
  * Returns the package prompts.
  *
  * @param options - abap deploy config prompt options
+ * @param useStandalone - whether the prompts are used standalone, defaults to true
+ * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host
  * @returns list of list of questions for package prompting
  */
-export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
+export function getPackagePrompts(
+    options: AbapDeployConfigPromptOptions,
+    useStandalone = true,
+    isYUI = false
+): Question<AbapDeployConfigAnswersInternal>[] {
     let packageInputChoiceValid: boolean | string;
     let morePackageResultsMsg = '';
-    const isCli = !PromptState.isYUI;
+    PromptState.isYUI = isYUI;
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
-            when: (): boolean => showPackageInputChoiceQuestion(options.useAutocomplete),
+            when: (): boolean => showPackageInputChoiceQuestion(options?.packageAutocomplete?.useAutocomplete),
             type: 'list',
-            name: abapDeployConfigInternalPromptNames.packageInputChoice,
+            name: promptNames.packageInputChoice,
             message: t('prompts.config.package.packageInputChoice.message'),
             guiOptions: {
                 applyDefaultWhenDirty: true
@@ -43,11 +50,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             validate: async (input: PackageInputChoices): Promise<boolean | string> => {
                 packageInputChoiceValid = await validatePackageChoiceInput(
                     input,
-                    {
-                        url: PromptState.abapDeployConfig.url,
-                        client: PromptState.abapDeployConfig.client,
-                        destination: PromptState.abapDeployConfig.destination
-                    },
+                    getSystemConfig(useStandalone, PromptState.abapDeployConfig, options.backendTarget),
                     options.backendTarget
                 );
                 return packageInputChoiceValid;
@@ -55,28 +58,28 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
         } as ListQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: async (previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
-                if (isCli) {
+                if (!PromptState.isYUI) {
                     await validatePackageChoiceInputForCli(
-                        {
-                            url: PromptState.abapDeployConfig.url,
-                            client: PromptState.abapDeployConfig.client,
-                            destination: PromptState.abapDeployConfig.destination
-                        },
+                        getSystemConfig(useStandalone, PromptState.abapDeployConfig, options.backendTarget),
                         previousAnswers.packageInputChoice,
                         options.backendTarget
                     );
+
                     packageInputChoiceValid = true;
                 }
                 return false;
             },
             type: 'input',
-            name: abapDeployConfigInternalPromptNames.packageCliExecution
+            name: promptNames.packageCliExecution
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowManualPackageQuestion(previousAnswers.packageInputChoice, options.useAutocomplete),
+                defaultOrShowManualPackageQuestion(
+                    previousAnswers.packageInputChoice,
+                    options?.packageAutocomplete?.useAutocomplete
+                ),
             type: 'input',
-            name: abapDeployConfigInternalPromptNames.packageManual,
+            name: promptNames.packageManual,
             message: t('prompts.config.package.packageManual.message'),
             guiOptions: {
                 hint: t('prompts.config.package.packageManual.hint'),
@@ -84,18 +87,21 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 breadcrumb: true
             },
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
-                defaultPackage(previousAnswers.packageManual || options.existingDeployTaskConfig?.package),
+                defaultPackage(previousAnswers.packageManual || options.packageManual?.default, options?.packageManual),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-                await validatePackage(input, answers, options.backendTarget)
+                await validatePackage(input, answers, options.packageManual, options.ui5AbapRepo, options.backendTarget)
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 packageInputChoiceValid === true &&
-                defaultOrShowSearchPackageQuestion(previousAnswers.packageInputChoice, options.useAutocomplete),
+                defaultOrShowSearchPackageQuestion(
+                    previousAnswers.packageInputChoice,
+                    options?.packageAutocomplete?.useAutocomplete
+                ),
             type: 'autocomplete',
-            name: abapDeployConfigInternalPromptNames.packageAutocomplete,
+            name: promptNames.packageAutocomplete,
             message: `${t('prompts.config.package.packageAutocomplete.message')}${
-                isCli ? t('prompts.config.package.packageAutocomplete.messageTypeFilter') : ''
+                !PromptState.isYUI ? t('prompts.config.package.packageAutocomplete.messageTypeFilter') : ''
             }`,
             guiOptions: {
                 hint: t('prompts.config.package.packageAutocomplete.hint'),
@@ -106,11 +112,33 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 previousAnswers: AbapDeployConfigAnswersInternal,
                 input: string
             ): Promise<string[] | undefined> => {
-                const results = await getPackageChoices(isCli, input, previousAnswers, options.backendTarget);
+                const results = await getPackageChoices(
+                    !PromptState.isYUI,
+                    input,
+                    getSystemConfig(useStandalone, PromptState.abapDeployConfig, options.backendTarget),
+                    previousAnswers,
+                    options.backendTarget
+                );
                 morePackageResultsMsg = results.morePackageResultsMsg;
                 return results.packages;
             },
-            additionalInfo: () => morePackageResultsMsg
+            additionalInfo: () => morePackageResultsMsg,
+            validate: async (
+                input: string | ListChoiceOptions,
+                answers: AbapDeployConfigAnswersInternal
+            ): Promise<boolean | string> => {
+                // Autocomplete can the entire choice object as the answer, so we need to extract the value
+                const pkgValue: string = (input as ListChoiceOptions)?.value
+                    ? (input as ListChoiceOptions).value
+                    : input;
+                return await validatePackage(
+                    pkgValue,
+                    answers,
+                    options.packageAutocomplete,
+                    options.ui5AbapRepo,
+                    options.backendTarget
+                );
+            }
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
     ];
 

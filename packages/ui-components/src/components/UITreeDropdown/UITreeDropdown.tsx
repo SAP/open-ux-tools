@@ -62,7 +62,6 @@ interface TreeItemInfo {
 }
 
 export interface UITreeDropdownState {
-    hasSelected: boolean;
     originalItems: IContextualMenuItem[];
     isHidden: boolean;
     value?: string;
@@ -117,6 +116,8 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     // Hold original value which should be stored when contextmenu opened
     // Restore can happend if user presses Escape on keyboard
     private originalValue?: string;
+    // Flag which indicates that value was selected in dropdown menu
+    private hasSelected: boolean;
     /**
      * Initializes component properties.
      *
@@ -126,7 +127,6 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
         super(props);
         this.state = {
             query: '',
-            hasSelected: !!this.props.value,
             // value has to be set, otherwise react treats this as "uncontrolled" component
             // and displays warnings when value is set later on
             value: this.props.value ?? '',
@@ -139,6 +139,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
             isMenuOpen: false,
             valueChanged: false
         };
+        this.hasSelected = !!this.props.value;
         this.toggleMenu = this.toggleMenu.bind(this);
         this.onWindowKeyDown = this.onWindowKeyDown.bind(this);
         this.handleCustomDownKey = this.handleCustomDownKey.bind(this);
@@ -260,9 +261,8 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
      * @param {string} value
      */
     handleSelection = (value: string): void => {
-        this.setState({ hasSelected: true, value: value, valueChanged: false }, () =>
-            this.props.onParameterValueChange(value)
-        );
+        this.hasSelected = true;
+        this.setState({ value: value, valueChanged: false }, () => this.props.onParameterValueChange(value));
     };
     /**
      * Handle the keypress value.
@@ -429,8 +429,8 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     handleOnChangeValue = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
         const query = event.target as HTMLInputElement;
 
+        this.hasSelected = false;
         this.setState((prevState) => ({
-            hasSelected: false,
             value: query.value,
             items: prevState.originalItems.filter((item) => this.filterElement(query.value, item)),
             query: query.value,
@@ -460,7 +460,7 @@ export class UITreeDropdown extends React.Component<UITreeDropdownProps, UITreeD
     handleDismiss = (event?: Event | React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent): void => {
         if (event && 'key' in event && event.key === KEYBOARD_KEYS.Escape) {
             this.resetValue();
-        } else if (!this.state.hasSelected) {
+        } else if (!this.hasSelected) {
             this.props.onParameterValueChange('');
         }
 

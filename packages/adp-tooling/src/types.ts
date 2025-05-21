@@ -1,8 +1,9 @@
-import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace, Manifest } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
+import type { Destination } from '@sap-ux/btp-utils';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -15,7 +16,7 @@ export interface DescriptorVariant {
 export interface DescriptorVariantContent {
     changeType: string;
     content: Record<string, unknown>;
-    texts?: string;
+    texts?: string | { i18n?: string };
 }
 
 export interface ToolsSupport {
@@ -43,12 +44,20 @@ export interface OnpremApp {
     id: string;
     /** Reference associated with the ID of the base application. */
     reference: string;
-    layer?: UI5FlexLayer;
+    layer?: FlexLayer;
+    fioriId?: string;
+    ach?: string;
     title?: string;
     /** Optional: Application variant change content. */
     content?: Content[];
     /** Optional: Description about i18n.properties. */
     i18nDescription?: string;
+    /** Optional: I18n resource models derived from the manifest. */
+    i18nModels?: ResourceModel[];
+    /** Optional: Application type derived from the manifest. */
+    appType?: ApplicationType;
+    /** The manifest of the application */
+    manifest?: Manifest;
 }
 
 export interface CloudApp extends OnpremApp {
@@ -69,6 +78,7 @@ export interface AdpWriterConfig {
         minVersion?: string;
         version?: string;
         frameworkUrl?: string;
+        shouldSetMinVersion?: boolean;
     };
     package?: {
         name?: string;
@@ -85,7 +95,82 @@ export interface AdpWriterConfig {
          * Optional: if set to true then the generated project will be recognized by the SAP Fiori tools
          */
         fioriTools?: boolean;
+        /**
+         * Optional: if set to true then the generated project will support typescript
+         */
+        enableTypeScript?: boolean;
     };
+}
+
+/**
+ * Interface representing the answers collected from the configuration prompts of Adaptation Project generator.
+ */
+export interface ConfigAnswers {
+    system: string;
+    username: string;
+    password: string;
+    application: SourceApplication;
+    fioriId?: string;
+    ach?: string;
+    shouldCreateExtProject?: boolean;
+}
+
+export interface AttributesAnswers {
+    projectName: string;
+    title: string;
+    namespace: string;
+    targetFolder: string;
+    ui5Version: string;
+    enableTypeScript: boolean;
+}
+
+export interface SourceApplication {
+    id: string;
+    title: string;
+    ach: string;
+    registrationIds: string[];
+    fileType: string;
+    bspUrl: string;
+    bspName: string;
+}
+
+export interface FlexUISupportedSystem {
+    isUIFlex: boolean;
+    isOnPremise: boolean;
+}
+
+export interface UI5Version {
+    latest: VersionDetail;
+    [key: string]: VersionDetail;
+}
+
+export interface VersionDetail {
+    version: string;
+    support: string;
+    lts: boolean;
+}
+
+export interface ResourceModel {
+    key: string;
+    path: string;
+    content?: string;
+}
+
+export interface SapModel {
+    type?: string;
+    uri?: string;
+    settings?: {
+        bundleName?: string;
+    };
+}
+
+export interface Endpoint extends Partial<Destination> {
+    Name: string;
+    Url?: string;
+    Client?: string;
+    Credentials?: { username?: string; password?: string };
+    UserDisplayName?: string;
+    Scp?: boolean;
 }
 
 export interface ChangeInboundNavigation {
@@ -102,8 +187,8 @@ export interface NewInboundNavigation {
     semanticObject: string;
     /** Operations which can be performed on a semantic object. */
     action: string;
-    //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
-    additionalParameters?: object;
+    /** Defined instance of the semantic object (e.g. by specifying the employee ID). */
+    additionalParameters?: string;
     /** Title associated with the inbound navigation. */
     title: string;
     /** Optional: Subtitle associated with the inbound navigation. */
@@ -114,7 +199,7 @@ export interface InternalInboundNavigation extends NewInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
     /** Flag indicating if the new inbound navigation should be added. */
-    addInboundId: boolean;
+    addInboundId?: boolean;
 }
 
 export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;
@@ -159,6 +244,10 @@ export interface CommonChangeProperties {
     texts: Record<string, unknown>;
 }
 
+export interface CommonAdditionalChangeInfoProperties {
+    templateName?: string;
+}
+
 export interface ManifestChangeProperties {
     fileName: string;
     fileType: string;
@@ -180,6 +269,7 @@ export interface AddXMLChange extends CommonChangeProperties {
         targetAggregation: string;
         index: number;
         fragmentPath: string;
+        templateName?: string;
     };
     selector: {
         id: string;
@@ -199,9 +289,92 @@ export interface CodeExtChange extends CommonChangeProperties {
     };
 }
 
+export interface AnnotationFileChange extends CommonChangeProperties {
+    changeType: 'appdescr_app_addAnnotationsToOData';
+    creation: string;
+    content: {
+        dataSourceId: string;
+        annotations: string[];
+        annotationsInsertPosition: 'END';
+        dataSource: {
+            [fileName: string]: {
+                uri: string;
+                type: 'ODataAnnotation';
+            };
+        };
+    };
+}
+
+export interface ParamCheck {
+    shouldApply: boolean;
+    value: string | undefined;
+}
+
+export interface ParameterOptions {
+    required: boolean;
+    filter?: Value;
+    defaultValue?: Value;
+    renameTo?: string;
+}
+
+export interface Value {
+    value: string;
+    format: string;
+}
+
+export interface Parameter {
+    [key: string]: ParameterOptions;
+}
+
+export type ParameterRules = {
+    /**
+     * Function that checks whether param has empty value, e.g parameter defined in the following format has empty value: param1=
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    isEmptyParam(param: string): ParamCheck;
+    /**
+     * Function that define whether param is mandatory, param which is placed inside () is not mandatory
+     *
+     * @param {string} param - param string
+     * @returns {boolean} whether param string is mandatory or not
+     */
+    isMandatoryParam(param: string): boolean;
+    /**
+     * Function that checks whehter param has filter value, e.g parameter value placed inside <> indicates for filter value: param1=<value>
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    shouldHavеFilteredValue(param: string): ParamCheck;
+    /**
+     * Function that checks whether parameter has rename to value, e.g param1=>value
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    shouldRenameTo(param: string): ParamCheck;
+    /**
+     * Function thath checks whether parameter value should have reference as format value, e.g param1=%%value%%
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    isReference(param: string): ParamCheck;
+};
+
+export enum ApplicationType {
+    FIORI_ELEMENTS = 'FioriElements',
+    FIORI_ELEMENTS_OVP = 'FioriElementsOVP',
+    FREE_STYLE = 'FreeStyle',
+    NONE = ''
+}
+
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
     Controller = 'controller.ejs',
+    TSController = 'ts-controller.ejs',
     Annotation = 'annotation.xml'
 }
 
@@ -276,6 +449,18 @@ export const enum ChangeType {
 }
 
 /**
+ * A mapping of ChangeType values to their respective change names.
+ */
+export const ChangeTypeMap: Record<ChangeType, string> = {
+    [ChangeType.ADD_NEW_MODEL]: 'addNewModel',
+    [ChangeType.ADD_ANNOTATIONS_TO_ODATA]: 'addAnnotationsToOData',
+    [ChangeType.CHANGE_DATA_SOURCE]: 'changeDataSource',
+    [ChangeType.ADD_COMPONENT_USAGES]: 'addComponentUsages',
+    [ChangeType.ADD_LIBRARY_REFERENCE]: 'addLibraries',
+    [ChangeType.CHANGE_INBOUND]: 'changeInbound'
+} as const;
+
+/**
  * Maps a ChangeType to the corresponding data structure needed for that type of change.
  * This conditional type ensures type safety by linking each change type with its relevant data model.
  *
@@ -297,6 +482,8 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
 
 export interface AnnotationsData {
     variant: DescriptorVariant;
+    /** Flag for differentiating the annotation creation call from CLI and from CPE */
+    isCommand: boolean;
     annotation: {
         /** Optional name of the annotation file. */
         fileName?: string;
@@ -304,6 +491,8 @@ export interface AnnotationsData {
         dataSource: string;
         /** Optional path to the annotation file. */
         filePath?: string;
+        namespaces?: { namespace: string; alias: string }[];
+        serviceUrl?: string;
     };
 }
 
@@ -529,6 +718,17 @@ export interface CustomConfig {
         environment: OperationsType;
         support: ToolsSupport;
     };
+}
+
+export type CloudCustomTaskConfigTarget =
+    | DestinationAbapTarget
+    | (Pick<UrlAbapTarget, 'url' | 'client' | 'scp' | 'authenticationType'> & { ignoreCertErrors?: boolean });
+
+export interface CloudCustomTaskConfig {
+    type: string;
+    appName: string | undefined;
+    languages: Language[];
+    target: AbapTarget;
 }
 
 export interface InboundChangeContentAddInboundId {

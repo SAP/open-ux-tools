@@ -4,10 +4,6 @@ import { Text, Stack } from '@fluentui/react';
 
 import { UIDatePicker } from '../src/components/UIDatePicker';
 
-import { initIcons } from '../src/components/Icons';
-
-initIcons();
-
 export default { title: 'Basic Inputs/DatePicker' };
 const stackTokens: IStackTokens = { childrenGap: 40 };
 

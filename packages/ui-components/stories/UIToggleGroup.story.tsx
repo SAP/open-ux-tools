@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import type { IStackTokens } from '@fluentui/react';
 import { Text, Stack } from '@fluentui/react';
 import { UIToggleGroup } from '../src/components/UIToggleGroup';
-import { initIcons } from '../src/components/Icons';
-
-initIcons();
 
 export default { title: 'Basic Inputs/Toggle/Group' };
 const stackTokens: IStackTokens = { childrenGap: 40 };

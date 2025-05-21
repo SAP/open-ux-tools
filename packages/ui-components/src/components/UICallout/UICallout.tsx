@@ -18,11 +18,11 @@ export interface UICalloutProps extends ICalloutProps {
 import '../../styles/_shadows.scss';
 
 export const CALLOUT_STYLES = {
-    background: 'var(--vscode-editorSuggestWidget-background)',
+    background: 'var(--vscode-editorWidget-background)',
     boxShadow: 'var(--ui-box-shadow-small)',
-    text: 'var(--vscode-editorSuggestWidget-foreground)',
-    font: 'var(--vscode-font-family)',
-    borderRadius: 4
+    borderColor: 'var(--vscode-editorWidget-border)',
+    text: 'var(--vscode-editorWidget-foreground)',
+    borderRadius: 2
 };
 
 export enum UICalloutContentPadding {
@@ -54,8 +54,9 @@ export const getCalloutStyle = (props: UICalloutProps): ICalloutContentStyles =>
     return {
         root: {
             boxShadow: CALLOUT_STYLES.boxShadow,
-            backgroundColor: 'transparent',
+            backgroundColor: CALLOUT_STYLES.background,
             borderRadius: CALLOUT_STYLES.borderRadius,
+            border: `1px solid ${CALLOUT_STYLES.borderColor}`,
             ...extractRawStyles(props.styles, 'root')
         },
         beak: {
@@ -69,9 +70,8 @@ export const getCalloutStyle = (props: UICalloutProps): ICalloutContentStyles =>
             ...extractRawStyles(props.styles, 'beakCurtain')
         },
         calloutMain: {
-            backgroundColor: CALLOUT_STYLES.background,
+            backgroundColor: 'transparent',
             color: CALLOUT_STYLES.text,
-            fontFamily: CALLOUT_STYLES.font,
             borderRadius: CALLOUT_STYLES.borderRadius,
             minWidth: props.calloutMinWidth ?? 300,
             boxSizing: 'border-box',

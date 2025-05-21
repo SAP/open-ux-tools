@@ -1,0 +1,31 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../adp-tooling"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../project-input-validator"
+    }
+  ]
+}

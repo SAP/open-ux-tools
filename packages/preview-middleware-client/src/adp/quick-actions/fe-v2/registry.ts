@@ -13,19 +13,31 @@ import { AddControllerToPageQuickAction } from '../common/add-controller-to-page
 import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar';
 import { ChangeTableColumnsQuickAction } from './change-table-columns';
 import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
-
-type PageName = 'listReport' | 'objectPage';
+import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
+import { AddTableActionQuickAction } from '../fe-v2/create-table-action';
+import { AddTableCustomColumnQuickAction } from './create-table-custom-column';
+import { AddPageActionQuickAction } from '../common/create-page-action';
+import { EnableTableFilteringQuickAction } from './lr-enable-table-filtering';
+import { ToggleSemanticDateRangeFilterBar } from './lr-enable-semantic-date-range-filter-bar';
+import { EnableTableEmptyRowModeQuickAction } from './op-enable-empty-row-mode';
+import { AddNewAnnotationFile } from '../common/add-new-annotation-file';
+import { EnableObjectPageVariantManagementQuickAction } from './op-enable-variant-management';
+import { EnableListReportVariantManagementQuickAction } from './lr-enable-variant-management';
+import { AddNewSubpage } from '../fe-v2/add-new-subpage';
+import { ChangeTableActionsQuickAction } from './change-table-actions';
+type PageName = 'listReport' | 'objectPage' | 'analyticalListPage';
 
 const OBJECT_PAGE_TYPE = 'sap.suite.ui.generic.template.ObjectPage.view.Details';
 const LIST_REPORT_TYPE = 'sap.suite.ui.generic.template.ListReport.view.ListReport';
-
+const ANALYTICAL_LIST_PAGE_TYPE = 'sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage';
 /**
  * Quick Action provider for SAP Fiori Elements V2 applications.
  */
 export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegistry<PageName> {
     PAGE_NAME_MAP: Record<string, PageName> = {
         [LIST_REPORT_TYPE]: 'listReport',
-        [OBJECT_PAGE_TYPE]: 'objectPage'
+        [OBJECT_PAGE_TYPE]: 'objectPage',
+        [ANALYTICAL_LIST_PAGE_TYPE]: 'analyticalListPage'
     };
     getDefinitions(context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
         const activePages = this.getActivePageContent(context.controlIndex);
@@ -37,9 +49,18 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                 definitionGroups.push({
                     title: 'LIST REPORT',
                     definitions: [
-                        ToggleClearFilterBarQuickAction,
                         AddControllerToPageQuickAction,
-                        ChangeTableColumnsQuickAction
+                        AddPageActionQuickAction,
+                        ToggleClearFilterBarQuickAction,
+                        ToggleSemanticDateRangeFilterBar,
+                        EnableListReportVariantManagementQuickAction,
+                        ChangeTableActionsQuickAction,
+                        ChangeTableColumnsQuickAction,
+                        AddTableActionQuickAction,
+                        AddTableCustomColumnQuickAction,
+                        EnableTableFilteringQuickAction,
+                        AddNewAnnotationFile,
+                        AddNewSubpage
                     ],
                     view,
                     key: name + index
@@ -49,8 +70,37 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                     title: 'OBJECT PAGE',
                     definitions: [
                         AddControllerToPageQuickAction,
+                        AddPageActionQuickAction,
+                        AddHeaderFieldQuickAction,
+                        AddCustomSectionQuickAction,
+                        EnableObjectPageVariantManagementQuickAction,
+                        ChangeTableActionsQuickAction,
                         ChangeTableColumnsQuickAction,
-                        AddHeaderFieldQuickAction
+                        AddTableActionQuickAction,
+                        AddTableCustomColumnQuickAction,
+                        EnableTableEmptyRowModeQuickAction,
+                        AddNewAnnotationFile,
+                        AddNewSubpage
+                    ],
+                    view,
+                    key: name + index
+                });
+            } else if (name === 'analyticalListPage') {
+                definitionGroups.push({
+                    title: 'ANALYTICAL LIST PAGE',
+                    definitions: [
+                        AddControllerToPageQuickAction,
+                        AddPageActionQuickAction,
+                        ToggleClearFilterBarQuickAction,
+                        ToggleSemanticDateRangeFilterBar,
+                        EnableListReportVariantManagementQuickAction,
+                        ChangeTableActionsQuickAction,
+                        ChangeTableColumnsQuickAction,
+                        AddTableActionQuickAction,
+                        AddTableCustomColumnQuickAction,
+                        EnableTableFilteringQuickAction,
+                        AddNewAnnotationFile,
+                        AddNewSubpage
                     ],
                     view,
                     key: name + index

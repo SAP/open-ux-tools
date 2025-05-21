@@ -10,9 +10,10 @@ import {
     CHECKBOX_EDITOR_TYPE,
     DROPDOWN_EDITOR_TYPE,
     INPUT_EDITOR_TYPE,
+    PropertyType,
     STRING_VALUE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
-import { IconName, registerAppIcons } from '../../../../src/icons';
+import { IconName } from '../../../../src/icons';
 import { getValueForInputType, InputTypeToggle } from '../../../../src/panels/properties/InputTypeToggle';
 import type { InputTypeToggleOptionProps } from '../../../../src/panels/properties/types';
 import { InputType } from '../../../../src/panels/properties/types';
@@ -30,7 +31,8 @@ describe('InputTypeToggle', () => {
             value: true,
             isEnabled: false,
             name: 'testPropNameCheckbox',
-            readableName: 'testName'
+            readableName: 'testName',
+            propertyType: PropertyType.ControlProperty
         };
 
         let value = getValueForInputType(controlId, { ...propCheckbox }, InputType.booleanFalse);
@@ -50,7 +52,8 @@ describe('InputTypeToggle', () => {
                 { key: 'option1', text: 'option1' },
                 { key: 'option2', text: 'option2' }
             ],
-            readableName: 'testName'
+            readableName: 'testName',
+            propertyType: PropertyType.ControlProperty
         };
 
         value = getValueForInputType(controlId, { ...propDropDown }, InputType.expression);
@@ -66,7 +69,8 @@ describe('InputTypeToggle', () => {
             value: 'myString',
             isEnabled: true,
             name: 'testPropNameString',
-            readableName: 'testName'
+            readableName: 'testName',
+            propertyType: PropertyType.ControlProperty
         };
 
         value = getValueForInputType(controlId, { ...propString }, InputType.expression);
@@ -86,7 +90,8 @@ describe('InputTypeToggle', () => {
             isEnabled: true,
             name: propertyName,
             value,
-            readableName: 'testName'
+            readableName: 'testName',
+            propertyType: PropertyType.ControlProperty
         };
         const inputTypeProps: InputTypeToggleOptionProps = {
             inputType: InputType.booleanTrue,
@@ -96,7 +101,6 @@ describe('InputTypeToggle', () => {
         };
         const testId = `${propertyName}--InputTypeToggle--${InputType.booleanTrue}`;
 
-        registerAppIcons();
         const spyGetChangePropertyAction = jest.spyOn(slice, 'changeProperty');
 
         // act

@@ -26,7 +26,7 @@ export function addAddCdsPluginUi5Command(cmd: Command): void {
  * Add cds-plugin-ui5 and all prerequisites to a CAP project.
  *
  * @param basePath - CAP project root
- * @param simulate - if true, do not write but just show what would be change; otherwise write
+ * @param simulate - if true, do not write but just show what would be changed; otherwise write
  * @param skipInstall - if true, skip execution of npm install
  */
 async function addCdsPluginUi5(basePath: string, simulate: boolean, skipInstall: boolean): Promise<void> {

@@ -5,6 +5,7 @@ import { TextField } from '@fluentui/react';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
+import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 export { ITextField, ITextFieldProps } from '@fluentui/react';
 
@@ -37,7 +38,7 @@ const COLOR_STYLES = {
     }
 };
 
-type InputRenderProps = React.InputHTMLAttributes<HTMLInputElement> & React.RefAttributes<HTMLInputElement>;
+export type InputRenderProps = React.InputHTMLAttributes<HTMLInputElement> & React.RefAttributes<HTMLInputElement>;
 
 /**
  * UITextInput component
@@ -56,7 +57,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
     public constructor(props: UITextInputProps) {
         super(props);
 
-        this.onRenderDisabledInput = this.onRenderDisabledInput.bind(this);
+        this.onRenderInput = this.onRenderInput.bind(this);
     }
 
     /**
@@ -84,8 +85,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
         return {
             ...{
                 root: {
-                    height: 'auto',
-                    fontFamily: 'var(--vscode-font-family)'
+                    height: 'auto'
                 },
                 fieldGroup: [
                     // Common styles
@@ -153,11 +153,9 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         fontWeight: 'normal',
                         boxSizing: 'border-box',
                         borderRadius: COMMON_INPUT_STYLES.borderRadius,
-                        fontFamily: 'var(--vscode-font-family)',
                         selectors: {
                             '::placeholder': {
                                 fontSize: 13,
-                                fontFamily: 'var(--vscode-font-family)',
                                 color: 'var(--vscode-input-placeholderForeground)'
                             }
                         }
@@ -206,7 +204,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                             props.required && {
                                 selectors: {
                                     '::after': {
-                                        content: `' *'`,
+                                        content: REQUIRED_LABEL_INDICATOR,
                                         color: 'var(--vscode-inputValidation-errorBorder)',
                                         paddingRight: 12
                                     }
@@ -226,25 +224,46 @@ export class UITextInput extends React.Component<UITextInputProps> {
     };
 
     /**
-     * Method to render HTML input element.
+     * Method to extend HTML input element.
      * Custom rendering is used to use "readonly" attribute instead of "disabled" to make disabled field focusable.
      *
      * @param {InputRenderProps} [props] Input props.
      * @param {(props?: InputRenderProps) => JSX.Element | null} [defaultRender] Default renderer.
      * @returns {JSX.Element | null} Input element to render.
      */
-    private onRenderDisabledInput = (
+    private onRenderDisabledInput(
         props?: InputRenderProps,
         defaultRender?: (props?: InputRenderProps) => JSX.Element | null
-    ): JSX.Element | null => {
-        const inputProps = {
-            ...props,
-            disabled: undefined,
-            readOnly: true,
-            ['aria-disabled']: true
-        };
+    ): JSX.Element | null {
+        const inputProps = this.props.disabled
+            ? {
+                  ...props,
+                  disabled: undefined,
+                  readOnly: true,
+                  ['aria-disabled']: true
+              }
+            : props;
         return defaultRender?.(inputProps) || null;
-    };
+    }
+
+    /**
+     * Method to render HTML input element.
+     *
+     * @param {InputRenderProps} [props] Input props.
+     * @param {(props?: InputRenderProps) => JSX.Element | null} [defaultRender] Default renderer.
+     * @returns {JSX.Element | null} Input element to render.
+     */
+    private onRenderInput(
+        props?: InputRenderProps,
+        defaultRender?: (props?: InputRenderProps) => JSX.Element | null
+    ): JSX.Element | null {
+        if (this.props.onRenderInput) {
+            return this.props.onRenderInput(props, (renderProps?: InputRenderProps): JSX.Element | null => {
+                return this.onRenderDisabledInput(renderProps, defaultRender);
+            });
+        }
+        return this.onRenderDisabledInput(props, defaultRender);
+    }
 
     /**
      * @returns {JSX.Element}
@@ -254,8 +273,8 @@ export class UITextInput extends React.Component<UITextInputProps> {
         const textFieldStyles = this.getStyles;
         return (
             <TextField
-                onRenderInput={this.props.disabled ? this.onRenderDisabledInput : undefined}
                 {...this.props}
+                onRenderInput={this.onRenderInput}
                 errorMessage={messageInfo.message}
                 styles={textFieldStyles}
             />

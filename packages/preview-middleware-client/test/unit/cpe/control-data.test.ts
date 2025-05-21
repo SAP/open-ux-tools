@@ -3,6 +3,7 @@ import { buildControlData } from '../../../src/cpe/control-data';
 import { getNameMock } from 'mock/sap/ui/base/DataType';
 import { sapMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
+import { DesigntimeSetting, ManifestSettingsValue } from 'sap/ui/dt/DesignTimeMetadata';
 
 describe('controlData', () => {
     // prepare
@@ -210,5 +211,86 @@ describe('controlData', () => {
 
         // result.properties.name === 'blocked' and result.properties.name === 'text' are isEnabled: false for no stableId
         expect(result).toMatchSnapshot();
+    });
+
+    test('buildControlData - manifest properties', () => {
+        control.getId.mockImplementation(() => 'testTableId');
+        mockOverlay.isSelectable.mockReturnValue(true);
+        mockOverlay.getDesignTimeMetadata = jest.fn().mockReturnValue({
+            getData: jest.fn().mockReturnValue({
+                manifestSettingsValues: jest.fn().mockReturnValue({
+                    type: 'responsiveTable',
+                    header: 'USA table',
+                    frozenColumnCount: 12,
+                    enableExportExcel: false
+                } as ManifestSettingsValue),
+                manifestSettings: jest.fn().mockReturnValue([
+                    {
+                        id: 'type',
+                        description: 'table type',
+                        name: 'Table Type',
+                        value: 'gridTable',
+                        type: 'string',
+                        enums: [
+                            {
+                                id: 'analyticalTable',
+                                name: 'Analytical Table',
+                                description: 'this is a analytical table'
+                            },
+                            {
+                                id: 'treeTable',
+                                name: 'Tree Table',
+                                description: 'this is a tree table'
+                            },
+                            {
+                                id: 'gridTable',
+                                name: 'Grid Table',
+                                description: 'this is a grid table'
+                            },
+                            {
+                                id: 'responsiveTable',
+                                name: 'Responsive Table',
+                                description: 'this is a responsive table'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'header',
+                        description: 'table header',
+                        name: 'Header',
+                        value: 'Test Table',
+                        type: 'string'
+                    },
+                    {
+                        id: 'frozenColumnCount',
+                        description: 'Frozen Column Count',
+                        name: 'Frozen Column Count',
+                        value: 0,
+                        type: 'number'
+                    },
+                    {
+                        id: 'enableExportExcel',
+                        description: 'Enable Export Excel',
+                        name: 'Enable Export Excel',
+                        value: false,
+                        type: 'boolean'
+                    }
+                ] as DesigntimeSetting[]),
+                manifestPropertyPath: jest
+                    .fn()
+                    .mockReturnValue('controlConfiguration/@com.sap.UI.v1.LineItem/tableSettings')
+            })
+        });
+        // act
+        const result = buildControlData(
+            control as any,
+            { getConfigurationPropertyValue: jest.fn().mockReturnValue(undefined) } as any,
+            mockOverlay as any
+        );
+
+        expect({
+            ...result,
+            properties: result.properties.filter((item) => item.propertyType === 'configuration')
+        }).toMatchSnapshot();
     });
 });

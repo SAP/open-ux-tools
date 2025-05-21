@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Test enhanceYaml() Create new ui5-mock.yaml based on ui5.yaml 1`] = `
+exports[`Test enhanceYaml() Create new ui5-mock.yaml based on ui5.yaml and manifest without dataSources 1`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: \\"2.5\\"
@@ -21,16 +21,12 @@ server:
       beforeMiddleware: csp
       configuration:
         mountPath: /
-        services:
-          - urlPath: new/path/to/service
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
+        services: []
         annotations: []
 "
 `;
 
-exports[`Test enhanceYaml() Create new ui5-mock.yaml based on ui5.yaml, updated with annotations 1`] = `
+exports[`Test enhanceYaml() Create new ui5-mock.yaml based on ui5.yaml, updated with services and annotations 1`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: \\"2.5\\"
@@ -52,19 +48,17 @@ server:
       configuration:
         mountPath: /
         services:
-          - urlPath: new/path/to/service
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 "
 `;
 
-exports[`Test enhanceYaml() Create new ui5-mock.yaml with annotations from mock manifest.json 1`] = `
+exports[`Test enhanceYaml() Create new ui5-mock.yaml with services and annotations from mock manifest.json 1`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: \\"2.5\\"
@@ -93,19 +87,17 @@ server:
       configuration:
         mountPath: /
         services:
-          - urlPath: /path/for/new/config
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 "
 `;
 
-exports[`Test enhanceYaml() Create new ui5-mock.yaml without app name in manifest.json 1`] = `
+exports[`Test enhanceYaml() Create new ui5-mock.yaml without app name and dataSources in manifest.json 1`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: \\"2.5\\"
@@ -133,16 +125,12 @@ server:
       beforeMiddleware: csp
       configuration:
         mountPath: /
-        services:
-          - urlPath: /path/for/new/config
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
+        services: []
         annotations: []
 "
 `;
 
-exports[`Test enhanceYaml() Update old ui5-mock.yaml with given path 1`] = `
+exports[`Test enhanceYaml() Update old ui5-mock.yaml with service overwrite 1`] = `
 "specVersion: '2.0'
 metadata:
   name: 'app'
@@ -155,59 +143,65 @@ server:
       configuration:
         mountPath: /
         services:
-          - urlPath: path/to/service
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
-        annotations: []
-    - name: middleware-after
-"
-`;
-
-exports[`Test enhanceYaml() Update ui5-mock.yaml, path from manifest 1`] = `
-"specVersion: '2.0'
-metadata:
-  name: 'app'
-type: application
-server:
-  customMiddleware:
-    - name: middleware-before
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: ds/uri
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
-            generateMockData: true
-        annotations: []
-    - name: middleware-after
-"
-`;
-
-exports[`Test enhanceYaml() Update ui5-mock.yaml, path from manifest with annotations 1`] = `
-"specVersion: '2.0'
-metadata:
-  name: 'app'
-type: application
-server:
-  customMiddleware:
-    - name: middleware-before
-    - name: sap-fe-mockserver
-      beforeMiddleware: csp
-      configuration:
-        mountPath: /
-        services:
-          - urlPath: ''
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
           - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+    - name: middleware-after
+"
+`;
+
+exports[`Test enhanceYaml() Update ui5-mock.yaml, path and service name from manifest 1`] = `
+"specVersion: '2.0'
+metadata:
+  name: 'app'
+type: application
+server:
+  customMiddleware:
+    - name: middleware-before
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        services:
+          - urlPath: /some/previous/service/uri
+            metadataXmlPath: ./webapp/localService/previous-service/metadata.xml
+            mockdataRootPath: ./webapp/localService/previous-service/data
+            generateMockData: true
+          - urlPath: ds/uri
+            metadataPath: ./webapp/localService/ds/metadata.xml
+            mockdataPath: ./webapp/localService/ds/data
+            generateMockData: true
+        annotations: []
+    - name: middleware-after
+"
+`;
+
+exports[`Test enhanceYaml() Update ui5-mock.yaml, path and service name from manifest with annotations 1`] = `
+"specVersion: '2.0'
+metadata:
+  name: 'app'
+type: application
+server:
+  customMiddleware:
+    - name: middleware-before
+    - name: sap-fe-mockserver
+      beforeMiddleware: fiori-tools-proxy
+      configuration:
+        services:
+          - urlPath: /some/previous/service/uri
+            metadataXmlPath: ./webapp/localService/previous-service/metadata.xml
+            mockdataRootPath: ./webapp/localService/previous-service/data
+            generateMockData: true
+          - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
+            generateMockData: true
+        annotations:
+          - localPath: ./webapp/localService/SEPMRA_PROD_MAN.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
     - name: middleware-after
 "
 `;

@@ -1,3 +1,5 @@
+import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+
 import * as common from '@sap-ux-private/control-property-editor-common';
 
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
@@ -10,10 +12,15 @@ import * as flexChange from '../../../src/cpe/changes/flex-change';
 import { OutlineService } from '../../../src/cpe/outline/service';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import connector from '../../../src/flp/WorkspaceConnector';
-import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import { CommunicationService } from '../../../src/cpe/communication-service';
+import { RtaService } from '../../../src/cpe/rta-service';
+import { ChangeService } from '../../../src/cpe/changes';
+import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
+import { QuickActionService } from '../../../src/cpe/quick-actions/quick-action-service';
+import { SelectionService } from '../../../src/cpe/selection';
+import { ContextMenuService } from '../../../src/cpe/context-menu-service';
 
 describe('main', () => {
-    const sendActionMock = jest.fn();
     VersionInfo.load.mockResolvedValue({ version: '1.120.4' });
     const applyChangeSpy = jest
         .spyOn(flexChange, 'applyChange')
@@ -26,6 +33,12 @@ describe('main', () => {
                 )
         });
     const initOutlineSpy = jest.spyOn(OutlineService.prototype, 'init');
+    const rtaSpy = jest.spyOn(RtaService.prototype, 'init');
+    const changesServiceSpy = jest.spyOn(ChangeService.prototype, 'init');
+    const connectorServiceSpy = jest.spyOn(WorkspaceConnectorService.prototype, 'init');
+    const quickActionServiceSpy = jest.spyOn(QuickActionService.prototype, 'init');
+    const selectionServiceSpy = jest.spyOn(SelectionService.prototype, 'init');
+    const contextMenuServiceSpy = jest.spyOn(ContextMenuService.prototype, 'init');
 
     beforeAll(() => {
         const apiJson = {
@@ -54,6 +67,12 @@ describe('main', () => {
     afterEach(() => {
         applyChangeSpy.mockClear();
         initOutlineSpy.mockClear();
+        rtaSpy.mockClear();
+        changesServiceSpy.mockClear();
+        connectorServiceSpy.mockClear();
+        quickActionServiceSpy.mockClear();
+        selectionServiceSpy.mockClear();
+        contextMenuServiceSpy.mockClear();
     });
 
     sapCoreMock.byId.mockReturnValueOnce({
@@ -80,15 +99,15 @@ describe('main', () => {
         return mockIconResult;
     });
 
-    const spyPostMessage = jest.spyOn(common, 'startPostMessageCommunication').mockImplementation(() => {
-        return { sendAction: sendActionMock, dispose: jest.fn() };
-    });
+    const spyPostMessage = jest.spyOn(CommunicationService, 'subscribe');
 
     test('init - 1', async () => {
         initOutlineSpy.mockResolvedValue();
+        rtaSpy.mockResolvedValue();
         // const rta = new RuntimeAuthoringMock();
         await init(rta);
-        const callBackFn = spyPostMessage.mock.calls[0][1];
+        const callBackFn = spyPostMessage.mock.calls[2][0];
+        (callBackFn as any)('test');
         // apply change without error
         const payload = {
             controlId:
@@ -102,7 +121,6 @@ describe('main', () => {
         });
 
         // check delete notifier
-        sendActionMock.mockClear();
         await connector.storage.removeItem('sap.ui.fl.testFile');
 
         //assert
@@ -112,12 +130,37 @@ describe('main', () => {
     test('init - rta exception', async () => {
         const error = new Error('Cannot init outline');
         initOutlineSpy.mockRejectedValue(error);
+        rtaSpy.mockResolvedValue();
 
         // act
         await init(rta);
 
         // assert
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
-        expect(Log.error).toBeCalledWith('Service Initalization Failed: ', error);
+        expect(Log.error).toBeCalledWith('Service Initialization Failed: ', error);
+    });
+
+    test('init and appLoaed called', async () => {
+        CommunicationService.sendAction = jest.fn();
+
+        initOutlineSpy.mockResolvedValue();
+        rtaSpy.mockResolvedValue();
+        changesServiceSpy.mockResolvedValue();
+        connectorServiceSpy.mockResolvedValue();
+        selectionServiceSpy.mockResolvedValue('' as never);
+        quickActionServiceSpy.mockResolvedValue();
+        contextMenuServiceSpy.mockResolvedValue();
+
+        await init(rta);
+        await Promise.all([
+            initOutlineSpy,
+            rtaSpy,
+            changesServiceSpy,
+            contextMenuServiceSpy,
+            connectorServiceSpy,
+            selectionServiceSpy,
+            quickActionServiceSpy
+        ]);
+        expect(CommunicationService.sendAction).toBeCalledWith(common.appLoaded());
     });
 });

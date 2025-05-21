@@ -16,7 +16,7 @@ export async function generateFpmConfig<T extends {}>(
     fs: Editor
 ): Promise<void> {
     const config: FPMSettings = feApp.template.settings as unknown as FPMSettings;
-    generateCustomPage(
+    await generateCustomPage(
         basePath,
         {
             entity: config.entityConfig.mainEntityName,

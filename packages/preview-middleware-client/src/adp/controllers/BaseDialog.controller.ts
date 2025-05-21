@@ -7,12 +7,19 @@ import { ValueState } from 'sap/ui/core/library';
 import Controller from 'sap/ui/core/mvc/Controller';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import MessageToast from 'sap/m/MessageToast';
 import CommandExecutor from '../command-executor';
-import { matchesFragmentName } from '../utils';
+import { checkForExistingChange } from '../utils';
 import type { Fragments } from '../api-handler';
 import { getError } from '../../utils/error';
+import ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
+import { getControlById } from '../../utils/core';
+import ControlUtils from '../control-utils';
+import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { reportTelemetry } from '@sap-ux-private/control-property-editor-common';
+import Log from 'sap/base/Log';
 
 type BaseDialogModel = JSONModel & {
     getProperty(sPath: '/fragmentList'): Fragments;
@@ -43,10 +50,6 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
      */
     public dialog: Dialog;
     /**
-     * UI5 version
-     */
-    public ui5Version: string;
-    /**
      * RTA Command Executor
      */
     protected commandExecutor: CommandExecutor;
@@ -55,7 +58,69 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
 
     abstract onCreateBtnPress(event: Event): Promise<void> | void;
 
-    abstract buildDialogData(): Promise<void>;
+    abstract buildDialogData(): Promise<void> | void;
+
+    constructor(name: string, private readonly telemetryData?: QuickActionTelemetryData | undefined) {
+        super(name);
+    }
+    public async onCreateBtnPressHandler(): Promise<void> {
+        try {
+            await reportTelemetry({ category: 'Dialog', dialogName: this.dialog.getId(), ...this.telemetryData });
+        } catch (error) {
+            Log.error('Error in reporting Telemetry:', error);
+        }
+    }
+
+    /**
+     * Method is used in add fragment dialog controllers to get current control metadata which are needed on the dialog
+     * @returns control metadata and target aggregations
+     */
+    protected getControlMetadata(): { controlMetadata: ManagedObjectMetadata; targetAggregation: string[] } {
+        const selectorId = this.overlays.getId();
+
+        let controlMetadata: ManagedObjectMetadata;
+
+        const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
+        if (overlayControl) {
+            this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
+            controlMetadata = this.runtimeControl.getMetadata();
+        } else {
+            throw new Error('Cannot get overlay control');
+        }
+
+        const allAggregations = Object.keys(controlMetadata.getAllAggregations());
+        const hiddenAggregations = ['customData', 'layoutData', 'dependents'];
+        const targetAggregation = allAggregations.filter((item) => {
+            if (hiddenAggregations.indexOf(item) === -1) {
+                return item;
+            }
+            return false;
+        });
+        return { controlMetadata, targetAggregation };
+    }
+
+    /**
+     * Fills indexArray from selected control children
+     *
+     * @param selectedControlChildren Array of numbers
+     * @returns Array of key value pairs
+     */
+    protected fillIndexArray(selectedControlChildren: number[]) {
+        let indexArray: { key: number; value: number }[] = [];
+        if (selectedControlChildren.length === 0) {
+            indexArray.push({ key: 0, value: 0 });
+        } else {
+            indexArray = selectedControlChildren.map((elem, index) => {
+                return { key: index + 1, value: elem + 1 };
+            });
+            indexArray.unshift({ key: 0, value: 0 });
+            indexArray.push({
+                key: selectedControlChildren.length + 1,
+                value: selectedControlChildren.length + 1
+            });
+        }
+        return indexArray;
+    }
 
     /**
      * Handles fragment name input change
@@ -102,7 +167,12 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
             return;
         }
 
-        const changeExists = this.checkForExistingChange(fragmentName);
+        const changeExists = checkForExistingChange(
+            this.rta,
+            'addXMLAtExtensionPoint',
+            'content.fragmentPath',
+            `${fragmentName}.fragment.xml`
+        );
 
         if (changeExists) {
             updateDialogState(
@@ -114,28 +184,6 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
 
         updateDialogState(ValueState.Success);
         this.model.setProperty('/newFragmentName', fragmentName);
-    }
-
-    /**
-     * Checks for the existence of a change associated with a specific fragment name in the RTA command stack.
-     *
-     * @param {string} fragmentName - The name of the fragment to check for existing changes.
-     * @returns {Promise<boolean>} A promise that resolves to `true` if a matching change is found, otherwise `false`.
-     */
-    checkForExistingChange(fragmentName: string): boolean {
-        const allCommands = this.rta.getCommandStack().getCommands();
-
-        return allCommands.some((command: FlexCommand) => {
-            if (typeof command.getCommands === 'function') {
-                const addXmlCommand = command
-                    .getCommands()
-                    .find((c: FlexCommand) => c?.getProperty('name') === 'addXMLAtExtensionPoint');
-
-                return addXmlCommand && matchesFragmentName(addXmlCommand, fragmentName);
-            } else {
-                return matchesFragmentName(command, fragmentName);
-            }
-        });
     }
 
     /**
@@ -166,5 +214,32 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
         const error = getError(e);
         MessageToast.show(error.message, { duration: 5000 });
         throw error;
+    }
+
+    /**
+     * Handles the index field whenever a specific aggregation is chosen
+     *
+     * @param specialIndexAggregation string | number
+     */
+    protected specialIndexHandling(specialIndexAggregation: string | number): void {
+        const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
+        const aggregations = overlay.getDesignTimeMetadata().getData().aggregations;
+
+        if (
+            specialIndexAggregation in aggregations &&
+            'specialIndexHandling' in aggregations[specialIndexAggregation]
+        ) {
+            const controlType = this.runtimeControl.getMetadata().getName();
+            this.model.setProperty('/indexHandlingFlag', false);
+            this.model.setProperty('/specialIndexHandlingIcon', true);
+            this.model.setProperty(
+                '/iconTooltip',
+                `Index is defined by special logic of ${controlType} and can't be set here`
+            );
+        } else {
+            this.model.setProperty('/indexHandlingFlag', true);
+            this.model.setProperty('/specialIndexHandlingIcon', false);
+            this.model.setProperty('/specialIndexHandlingIconPressed', false);
+        }
     }
 }

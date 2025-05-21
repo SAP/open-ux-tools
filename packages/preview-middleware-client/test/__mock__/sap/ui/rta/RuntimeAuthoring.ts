@@ -14,6 +14,7 @@ class RuntimeAuthoringMock {
     public destroy = jest.fn();
     public start = jest.fn();
     public attachStop = jest.fn();
+    public attachStart = jest.fn();
     public stop = jest.fn();
     public attachUndoRedoStackModified = jest.fn();
     public attachModeChanged = jest.fn();
@@ -21,15 +22,18 @@ class RuntimeAuthoringMock {
         return newHandler;
     });
     public setPlugins = jest.fn();
+    public getPlugins = jest.fn();
     public canUndo = jest.fn();
     public canRedo = jest.fn();
     public canSave = jest.fn();
+    public getMode = jest.fn();
     public setMode = jest.fn();
     public undo = jest.fn();
     public redo = jest.fn();
     public save = jest.fn();
     public getRootControlInstance = jest.fn().mockReturnValue({
-        getManifest: jest.fn().mockReturnValue({})
+        getManifest: jest.fn().mockReturnValue({}),
+        getModel: jest.fn()
     });
     public _serializeToLrep = jest.fn();
 }

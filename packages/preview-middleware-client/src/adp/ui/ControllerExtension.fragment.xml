@@ -11,12 +11,14 @@
             editable="true"
             layout="ResponsiveGridLayout"
             labelSpanS="4"
-            singleContainerFullSize="false">
+            singleContainerFullSize="false"
+            visible="{/inputFormVisibility}">
             <f:content>
                 <Label text="Controller Name" />
                 <Input 
-                    description=".js" 
-                    value="{/newControllerName}" 
+                    id="controllerName"
+                    description="{/controllerExtension}"
+                    value="{/newControllerName}"
                     liveChange="onControllerNameInputChange">
                 </Input>
             </f:content>
@@ -25,11 +27,21 @@
             editable="true"
             layout="ResponsiveGridLayout"
             labelSpanS="12"
-            visible="false"
+            visible="{/existingControllerFormVisibility}"
             singleContainerFullSize="false">
             <f:content>
-                <Label text="An existing controller extension has been found. Please use the previously created extension controller" />
+                <Label text="{i18n>ADP_CONTROLLER_EXTENSION_EXISTS}" />
                 <Text text="{/controllerPathFromRoot}" />
+            </f:content>
+        </f:SimpleForm>
+        <f:SimpleForm
+            editable="true"
+            layout="ResponsiveGridLayout"
+            labelSpanS="12"
+            visible="{/pendingChangeFormVisibility}"
+            singleContainerFullSize="false">
+            <f:content>
+                <Text text="{i18n>ADP_CONTROLLER_PENDING_CHANGE_EXISTS}" />
             </f:content>
         </f:SimpleForm>
     </content>

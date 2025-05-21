@@ -21,10 +21,14 @@ export function Clipboard(clipBoardProps: ClipboardProps): ReactElement {
     return (
         <UICallout
             styles={{
+                root: {
+                    boxShadow: 'none'
+                },
                 calloutMain: {
                     minWidth: 0,
-                    padding: '5px 10px 5px 10px',
-                    outline: '1px solid var(--vscode-terminal-ansiGreen) !important',
+                    padding: '5px 10px 5px 5px',
+                    outline: '1px solid var(--vscode-charts-green) !important',
+                    borderRadius: '2px',
                     fontSize: defaultFontSize
                 }
             }}
@@ -34,7 +38,7 @@ export function Clipboard(clipBoardProps: ClipboardProps): ReactElement {
             directionalHint={9}
             contentPadding={UICalloutContentPadding.None}>
             <span data-testid="copied-to-clipboard-popup" style={{ display: 'flex', alignItems: 'center' }}>
-                <Icon iconName={UiIcons.Success} />
+                <Icon iconName={UiIcons.Success} style={{ display: 'flex' }} />
                 <span data-testid="copied-to-clipboard-message" style={{ marginLeft: '5px' }}>
                     {t('COPIED_TO_CLIPBOARD')}
                 </span>

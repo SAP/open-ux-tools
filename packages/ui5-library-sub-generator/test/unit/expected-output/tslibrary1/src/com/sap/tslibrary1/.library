@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<library xmlns="http://www.sap.com/sap.ui.library.xsd">
+	<name>com.sap.tslibrary1</name>
+	<vendor>Fiori tools</vendor>
+	<version>${version}</version>
+	<copyright>${copyright}</copyright>
+	<title>tslibrary1</title>
+	<documentation>Some description about tslibrary1</documentation>
+	<dependencies>
+		<dependency>
+			<libraryName>sap.ui.core</libraryName>
+		</dependency>
+	</dependencies>
+</library>

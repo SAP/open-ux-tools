@@ -20,6 +20,5 @@ export function initI18n(language = 'en'): void {
                 escapeValue: false
             }
         })
-        .then(() => console.log('i18n initialized'))
         .catch((error) => console.error(error));
 }

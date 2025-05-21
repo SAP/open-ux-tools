@@ -1,0 +1,71 @@
+_schema-version: '3.2'
+ID: sap-ux-test
+description: Main MTA configuration for router
+version: 0.0.1
+modules:
+    - name: sap-ux-test-router
+      type: approuter.nodejs
+      path: router
+      requires:
+          - name: sap-ux-test-html5-repo-runtime
+          - name: sap-ux-test-uaa
+          - name: sap-ux-test-destination-service
+            group: destinations
+            properties:
+                forwardAuthToken: false
+                name: ui5
+                url: https://ui5.sap.com
+          - name: sap-ux-test-connectivity
+      parameters:
+          disk-quota: 256M
+          memory: 256M
+resources:
+    - name: sap-ux-test-uaa
+      type: org.cloudfoundry.managed-service
+      parameters:
+          config:
+              tenant-mode: dedicated
+              xsappname: sap-ux-test-${space-guid}
+          service: xsuaa
+          service-plan: application
+    - name: sap-ux-test-html5-repo-runtime
+      type: org.cloudfoundry.managed-service
+      parameters:
+          service: html5-apps-repo
+          service-plan: app-runtime
+    - name: sap-ux-test-destination-service
+      type: org.cloudfoundry.managed-service
+      parameters:
+          config:
+              {
+                  HTML5Runtime_enabled: false,
+                  version: 1.0.0,
+                  init_data:
+                      {
+                          instance:
+                              {
+                                  existing_destinations_policy: update,
+                                  destinations:
+                                      [
+                                          {
+                                              Name: ui5,
+                                              Type: HTTP,
+                                              URL: https://ui5.sap.com,
+                                              ProxyType: Internet,
+                                              Authentication: NoAuthentication
+                                          }
+                                      ]
+                              }
+                      }
+              }
+          service: destination
+          service-name: sap-ux-test-destination-service
+          service-plan: lite
+    - name: sap-ux-test-connectivity
+      type: org.cloudfoundry.managed-service
+      parameters:
+          service: connectivity
+          service-plan: lite
+parameters:
+    deploy_mode: html5-repo
+    enable-parallel-deployments: true

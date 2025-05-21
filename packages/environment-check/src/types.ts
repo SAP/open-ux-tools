@@ -99,6 +99,7 @@ export interface EndpointResults {
     isSapUi5Repo?: boolean; // SAPUI5 repository service for deployment available
     isTransportRequests?: boolean; // Ability to retrieve available Transport Requests
     HTML5DynamicDestination?: boolean;
+    HTML5TimeoutDestination?: boolean;
 }
 
 interface Credentials {

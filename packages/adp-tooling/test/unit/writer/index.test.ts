@@ -39,8 +39,7 @@ describe('ADP writer', () => {
     const configWithI18n: AdpWriterConfig = {
         app: {
             id: 'my.test.app',
-            reference: 'the.original.app',
-            i18nDescription: 'some-description'
+            reference: 'the.original.app'
         },
         target: {
             url: 'http://sap.example'
@@ -111,6 +110,35 @@ describe('ADP writer', () => {
             ).toMatchSnapshot();
         });
 
+        test('enable TypeScript support', async () => {
+            const projectDir = join(outputDir, 'ts-support');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    deploy: {
+                        package: '$TMP'
+                    },
+                    options: {
+                        fioriTools: true,
+                        enableTypeScript: true
+                    },
+                    ui5: {
+                        version: '1.133.0'
+                    }
+                },
+                fs
+            );
+            expect(
+                fs.dump(
+                    projectDir,
+                    (file) =>
+                        file.dirname === projectDir &&
+                        ['package.json', 'ui5.yaml', 'ui5-deploy.yaml', 'tsconfig.json'].includes(file.basename)
+                )
+            ).toMatchSnapshot();
+        });
+
         test('S/4HANA cloud config', async () => {
             const projectDir = join(outputDir, 's4hana');
             Object.assign(config.app, {
@@ -130,7 +158,72 @@ describe('ADP writer', () => {
                         package: '$TMP'
                     },
                     options: {
-                        fioriTools: true
+                        fioriTools: true,
+                        enableTypeScript: false
+                    },
+                    ui5: {
+                        version: '1.133.0'
+                    },
+                    flp: {
+                        semanticObject: 'sampleObj',
+                        action: 'sampleAction',
+                        title: 'testTitle',
+                        subTitle: 'testSubTitle'
+                    },
+                    customConfig: {
+                        adp: {
+                            environment: 'C',
+                            support: {
+                                id: '@package/name',
+                                toolsId: 'uuidv4',
+                                version: '0.0.1'
+                            }
+                        }
+                    }
+                },
+                fs
+            );
+            expect(
+                fs.dump(
+                    projectDir,
+                    (file) =>
+                        file.dirname === projectDir &&
+                        ['package.json', 'ui5.yaml', 'ui5-deploy.yaml'].includes(file.basename)
+                )
+            ).toMatchSnapshot();
+        });
+
+        test('S/4HANA cloud config with target destination', async () => {
+            const configWithDestination: AdpWriterConfig = {
+                app: {
+                    id: 'my.test.app',
+                    reference: 'the.original.app'
+                },
+                target: {
+                    destination: 'DUMMY_DESTINATION'
+                }
+            };
+
+            const projectDir = join(outputDir, 's4hanaDestination');
+            Object.assign(configWithDestination.app, {
+                bspName: 'bsp.test.app',
+                languages: [
+                    {
+                        sap: 'testId',
+                        i18n: 'testKey'
+                    }
+                ]
+            });
+            await generate(
+                projectDir,
+                {
+                    ...configWithDestination,
+                    deploy: {
+                        package: '$TMP'
+                    },
+                    options: {
+                        fioriTools: true,
+                        enableTypeScript: false
                     },
                     ui5: {
                         version: '1.122.1'
@@ -174,10 +267,11 @@ describe('ADP writer', () => {
                         package: '$TMP'
                     },
                     options: {
-                        fioriTools: true
+                        fioriTools: true,
+                        enableTypeScript: false
                     },
                     ui5: {
-                        version: '1.122.1'
+                        version: '1.133.0'
                     },
                     flp: {
                         inboundId: 'sampleId',
@@ -229,7 +323,11 @@ describe('ADP writer', () => {
                 }
             },
             options: {
-                fioriTools: true
+                fioriTools: true,
+                enableTypeScript: false
+            },
+            ui5: {
+                version: '1.133.0'
             }
         };
         const migrateInputDir = join(__dirname, '../../fixtures/webide-adaptation-project');

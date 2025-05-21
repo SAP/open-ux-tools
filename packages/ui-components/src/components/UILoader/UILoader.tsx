@@ -1,8 +1,10 @@
 import React from 'react';
 import type { ISpinnerProps, ISpinnerStyles, IOverlayStyles } from '@fluentui/react';
-import { Spinner, Overlay } from '@fluentui/react';
+import { Spinner, Overlay, SpinnerSize } from '@fluentui/react';
 
 import './UILoader.scss';
+
+export { SpinnerSize as UISpinnerSize };
 
 export interface UILoaderProps extends ISpinnerProps {
     blockDOM?: boolean;

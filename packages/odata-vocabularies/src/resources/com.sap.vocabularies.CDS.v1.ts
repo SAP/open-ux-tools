@@ -58,7 +58,6 @@ export default {
         Description: {
             $Kind: 'Term',
             $Nullable: true,
-            $AppliesTo: ['EntityType', 'EntitySet', 'Property'],
             '@Org.OData.Core.V1.Description': `Used to add long descriptive texts, which may be used for usage infos shown on UIs and mapped to OData's @Core.Description.
                 Supports i18n by {i18n>...}; Note: don't use that for documenting your models, but use block comments instead.`,
             '@Org.OData.Core.V1.IsLanguageDependent': true

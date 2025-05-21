@@ -59,7 +59,8 @@ describe('AnnotationsWriter', () => {
                 fileName: '',
                 dataSource: '/sap/opu/odata/source',
                 filePath: '/mock/path/to/annotation/file.xml'
-            }
+            },
+            isCommand: true
         };
 
         const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
@@ -87,7 +88,8 @@ describe('AnnotationsWriter', () => {
                 fileName: '',
                 dataSource: '/sap/opu/odata/source',
                 filePath: ''
-            }
+            },
+            isCommand: true
         };
 
         const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
@@ -115,7 +117,8 @@ describe('AnnotationsWriter', () => {
                 fileName: '',
                 dataSource: '/sap/opu/odata/source',
                 filePath: 'file.xml'
-            }
+            },
+            isCommand: true
         };
 
         const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
@@ -203,13 +206,7 @@ describe('ComponentUsagesWriter', () => {
         jest.useRealTimers();
 
         expect(writeChangeToFolderMock).toHaveBeenCalledTimes(1);
-        expect(writeChangeToFolderMock).toHaveBeenCalledWith(
-            mockProjectPath,
-            expect.any(Object),
-            `id_${systemTime.getTime()}_addComponentUsages.change`,
-            {},
-            'manifest'
-        );
+        expect(writeChangeToFolderMock).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
     });
 });
 
@@ -273,13 +270,7 @@ describe('NewModelWriter', () => {
             ChangeType.ADD_NEW_MODEL
         );
 
-        expect(writeChangeToFolderMock).toHaveBeenCalledWith(
-            mockProjectPath,
-            expect.any(Object),
-            expect.stringContaining('_addNewModel.change'),
-            {},
-            'manifest'
-        );
+        expect(writeChangeToFolderMock).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
     });
 });
 
@@ -341,13 +332,7 @@ describe('DataSourceWriter', () => {
             expect.anything()
         );
 
-        expect(writeChangeToFolder).toHaveBeenCalledWith(
-            mockProjectPath,
-            expect.any(Object),
-            `id_${systemTime.getTime()}_changeDataSource.change`,
-            {},
-            'manifest'
-        );
+        expect(writeChangeToFolder).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
     });
 
     it('should add annotation change if annotationUri is provided', async () => {

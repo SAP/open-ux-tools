@@ -9,13 +9,12 @@ on:
   pull_request:
     branches:
       - main
-
 jobs:
   run-linters:
     strategy:
       matrix:
           os: [ubuntu-latest]
-          node-version: [18.x]
+          node-version: [20.x]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -44,8 +43,12 @@ jobs:
         run: pnpm install
       - name: Run build
         run: pnpm run build
+        env:
+          NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
       - name: Run lint:fix
         run: pnpm run lint:fix
+        env:
+          NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
       - name: Commit lint fixes if any
         run: |
                 git config --global user.name github-actions[bot]

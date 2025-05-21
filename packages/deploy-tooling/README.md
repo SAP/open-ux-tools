@@ -127,7 +127,7 @@ Options:
   --username                           ABAP Service username
   --password                           ABAP Service password
   --authentication-type                Authentication type for the app (e.g. 'basic', 'reentranceTicket'). Required for 'reentranceTicket'.
-  --create-transport                   Create a transport request during deployment
+  --create-transport                   Create a transport request during deployment/undeployment
   --transport <transport-request>      Transport number to record the change in the ABAP system
   --name <bsp-name>                    Project name of the app
   --no-strict-ssl                      Deactivate SSL certificate validation, enabled by default
@@ -213,3 +213,15 @@ Options:
   -v, --version                        version of the deploy tooling
   -h, --help                           display help for command
 ```
+
+### Proxy Support
+
+To enable support for TLS (Transport Layer Security) connections when using `HTTPS_PROXY`, update your environment by setting the `TOOLSUITE_FEATURES` environment variable with `sap.ux.enablePatchProxy`, as shown;
+
+```bash
+export TOOLSUITE_FEATURES=sap.ux.enablePatchProxy
+export HTTPS_PROXY=<YOUR-PROXY:PORT>
+```
+Example Scenario
+
+If you're using a proxy server to route your HTTPS traffic, the proxy server will need to create a secure, TLS-encrypted connection to the target server on your behalf. `tls.connect()` will be used to establish that encrypted tunnel between your client, the proxy, and the server.

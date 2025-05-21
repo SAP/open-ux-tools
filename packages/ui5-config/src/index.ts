@@ -1,5 +1,6 @@
 export { UI5Config } from './ui5config';
 export {
+    DataSourceConfig,
     Configuration,
     CustomItem,
     CustomTask,
@@ -21,4 +22,5 @@ export {
 } from './types';
 export { UI5_DEFAULT } from './defaults';
 export { mergeObjects, getEsmTypesVersion, getTypesVersion, getTypesPackage, replaceEnvVariables } from './utils';
-export { errorCode as yamlErrorCode, YAMLError } from '@sap-ux/yaml';
+export { errorCode as yamlErrorCode, YAMLError, NodeComment } from '@sap-ux/yaml';
+export { fioriToolsProxy } from './constants';

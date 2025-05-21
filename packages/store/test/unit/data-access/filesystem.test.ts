@@ -263,6 +263,22 @@ describe('data-access/filesystem', () => {
                 existingEntities
             );
         });
+
+        it('will not throw an error when entry is undefined', async () => {
+            const existingEntities = {
+                '1': { prop1: 41, prop2: '13' },
+                '2': { prop1: 42, prop2: '1' },
+                '3': { prop1: 42, prop2: '13', prop3: 1 },
+                '4': undefined
+            };
+            vol.fromNestedJSON({
+                [path.join(basedir(), 'dummies.json')]: JSON.stringify({
+                    dummies: existingEntities
+                })
+            });
+
+            await expect(() => getFilesystemStore(logger).readAll({ entityName: '4' })).not.toThrow();
+        });
     });
 
     describe('write', () => {

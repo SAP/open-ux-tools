@@ -18,6 +18,7 @@
     ]
   },
   "include": [
+    "src/**/*.json",
     "src/**/*.ts",
     "src/**/*.tsx",
     "test/**/*.ts",

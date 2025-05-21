@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Ui5 Mapping Strategy should map the files from the project to the file system 1`] = `
+Object {
+  "buildTimestamp": "202412051614",
+  "libraries": Array [
+    Object {
+      "buildTimestamp": "202412051614",
+      "name": "jest-environment-ui5-sample-app",
+      "scmRevision": "",
+      "version": "0.0.0",
+    },
+    Object {
+      "buildTimestamp": "202412051614",
+      "name": "sap.ui.core",
+      "scmRevision": "",
+      "version": "1.130.0",
+    },
+    Object {
+      "buildTimestamp": "202412051614",
+      "name": "sap.m",
+      "scmRevision": "",
+      "version": "1.130.0",
+    },
+    Object {
+      "buildTimestamp": "202412051614",
+      "name": "sap.ui.layout",
+      "scmRevision": "",
+      "version": "1.130.0",
+    },
+    Object {
+      "buildTimestamp": "202412051614",
+      "name": "sap.ui.unified",
+      "scmRevision": "",
+      "version": "1.130.0",
+    },
+  ],
+  "name": "SAPUI5 Distribution",
+  "scmRevision": "",
+  "version": "1.130.0",
+}
+`;

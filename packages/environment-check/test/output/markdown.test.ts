@@ -18,7 +18,8 @@ const data = {
                 v2: { results: [] },
                 v4: {}
             },
-            HTML5DynamicDestination: true
+            HTML5DynamicDestination: true,
+            HTML5TimeoutDestination: true
         },
         DEF: {
             catalogService: {

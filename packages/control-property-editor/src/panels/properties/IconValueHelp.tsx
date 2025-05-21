@@ -3,6 +3,7 @@ import { UIDialog, UIIconButton, UiIcons, UISearchBox, UITable, SelectionMode } 
 import type { CSSProperties, ReactElement } from 'react';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { IconDetails, PropertyType } from '@sap-ux-private/control-property-editor-common';
 
 import './SapUiIcon.scss';
 import { changeProperty } from '../../slice';
@@ -11,7 +12,6 @@ import { InputType } from './types';
 import { useDispatch } from 'react-redux';
 
 export interface IconValueHelpProps {
-    isIcon: boolean | undefined;
     icons:
         | {
               name: string;
@@ -21,8 +21,10 @@ export interface IconValueHelpProps {
         | [];
     value: string;
     controlId: string;
+    controlName: string;
     propertyName: string;
     disabled: boolean;
+    propertyType: PropertyType;
 }
 
 /**
@@ -32,7 +34,7 @@ export interface IconValueHelpProps {
  * @returns ReactElement
  */
 export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElement {
-    const { icons, value, propertyName, controlId, disabled } = iconValueHelpProps;
+    const { icons, value, propertyName, controlId, disabled, controlName, propertyType } = iconValueHelpProps;
     const dispatch = useDispatch();
     const [newValue, setNewValue] = useState(value || '');
     const { t } = useTranslation();
@@ -63,12 +65,10 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
             setItems(icons);
         }
     };
-    const onIconColumnRender = (item: IconColumnProps) => (
+    const onIconColumnRender = (item: IconDetails): ReactElement => (
         <IconColumn content={item.content} fontFamily={item.fontFamily} />
     );
-    const onLabelColumnRender = (item: LabelColumnProps) => (
-        <LabelColumn fontFamily={item.fontFamily} name={item.name} />
-    );
+    const onLabelColumnRender = (item: IconDetails): ReactElement => <LabelColumn name={item.name} />;
 
     const col1: UIColumn = {
         key: t('ICON'),
@@ -116,9 +116,12 @@ export function IconValueHelp(iconValueHelpProps: IconValueHelpProps): ReactElem
                     setItems(icons);
                     setCachedValue(controlId, propertyName, InputType.string, newValue);
                     const action = changeProperty({
+                        changeType: 'propertyChange',
+                        controlName,
                         controlId,
                         propertyName,
-                        value: newValue
+                        value: newValue,
+                        propertyType
                     });
                     dispatch(action);
                 }}
@@ -184,7 +187,6 @@ function IconColumn(props: IconColumnProps): React.JSX.Element {
 }
 interface LabelColumnProps {
     name: string;
-    fontFamily: string;
 }
 /**
  * React element for showing ui5 label column.
@@ -193,9 +195,8 @@ interface LabelColumnProps {
  * @returns ReactElement
  */
 function LabelColumn(props: LabelColumnProps): React.JSX.Element {
-    const { name, fontFamily } = props;
+    const { name } = props;
     const style: CSSProperties = {
-        fontFamily: fontFamily,
         fontSize: '13px',
         fontStyle: 'normal'
     };

@@ -1,5 +1,11 @@
 # @sap-ux/odata-entity-model
 
+## 0.3.1
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+
 ## 0.3.0
 
 ### Minor Changes

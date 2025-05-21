@@ -3,6 +3,7 @@ import { getDestinationUrlForAppStudio, WebIDEUsage, BAS_DEST_INSTANCE_CRED_HEAD
 import axios from 'axios';
 import nock from 'nock';
 import { create, createServiceForUrl, createForDestination, ServiceProvider, AbapServiceProvider } from '../src';
+import * as ProxyFromEnv from 'proxy-from-env';
 
 const server = 'https://sap.example';
 const servicePath = '/ns/myservice';
@@ -21,6 +22,21 @@ jest.mock('@sap-ux/btp-utils', () => {
     };
 });
 
+jest.mock('https-proxy-agent', () => {
+    const original = jest.requireActual('https-proxy-agent');
+    return {
+        ...original,
+        connect: jest.fn()
+    };
+});
+
+jest.mock('@sap-ux/feature-toggle', () => ({
+    ...jest.requireActual('@sap-ux/feature-toggle'),
+    isFeatureEnabled: jest.fn().mockImplementation((featureId) => featureId === 'sap.ux.enablePatchProxy')
+}));
+
+jest.mock('proxy-from-env');
+
 beforeAll(() => {
     nock.disableNetConnect();
     nock(server).get(`${servicePath}${metadataPath}?sap-client=${client}`).reply(200, expectedMetadata).persist(true);
@@ -31,6 +47,7 @@ afterAll(() => {
     nock.enableNetConnect();
 });
 test('create', async () => {
+    const getProxyForUrlSpy = jest.spyOn(ProxyFromEnv, 'getProxyForUrl').mockReturnValue(undefined);
     const response = await axios.get(`${server}${servicePath}${metadataPath}`, {
         params: { 'sap-client': client }
     });
@@ -53,6 +70,24 @@ test('create', async () => {
     const metadata = await service.metadata();
     expect(metadata).toBeDefined();
     expect(metadata).toBe(expectedMetadata);
+    expect(getProxyForUrlSpy).toHaveBeenNthCalledWith(1, `${server}${servicePath}${metadataPath}?sap-client=${client}`);
+    getProxyForUrlSpy.mockRestore();
+    expect(provider.defaults.proxy).toBeUndefined();
+    expect(provider.defaults.httpAgent).toBeUndefined();
+    expect(provider.defaults.httpsAgent).toBeDefined();
+});
+
+test('create with proxy', async () => {
+    const getProxyForUrlSpy = jest.spyOn(ProxyFromEnv, 'getProxyForUrl').mockReturnValue('http://proxy.example:8080');
+    const provider = create({
+        baseURL: server,
+        params: { 'sap-client': client }
+    });
+    expect(getProxyForUrlSpy).toHaveBeenNthCalledWith(1, `${server}`);
+    getProxyForUrlSpy.mockRestore();
+    expect(provider.defaults.proxy).toEqual(false);
+    expect(provider.defaults.httpAgent).toBeDefined();
+    expect(provider.defaults.httpsAgent).toBeDefined();
 });
 
 test('createForServiceUrl', async () => {

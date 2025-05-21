@@ -57,7 +57,8 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -123,6 +124,11 @@ server:
           overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -136,8 +142,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -178,6 +184,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -192,8 +203,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -234,6 +245,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -1335,7 +1351,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
     <edmx:DataServices xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" m:DataServiceVersion=\\"1.0\\">
@@ -1918,7 +1934,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -2189,7 +2205,7 @@ export function createDeviceModel () {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -2206,7 +2222,7 @@ export function createDeviceModel () {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -2244,9 +2260,9 @@ export function createDeviceModel () {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                dependency.componentId +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                dependency.url);
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -2259,7 +2275,7 @@ export function createDeviceModel () {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -2314,7 +2330,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -2756,7 +2772,8 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -2822,6 +2839,11 @@ server:
           overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -2835,8 +2857,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -2877,6 +2899,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -2891,8 +2918,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -2933,6 +2960,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -4034,7 +4066,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
     <edmx:DataServices xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" m:DataServiceVersion=\\"1.0\\">
@@ -4617,7 +4649,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -4888,7 +4920,7 @@ export function createDeviceModel () {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -4905,7 +4937,7 @@ export function createDeviceModel () {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -4943,9 +4975,9 @@ export function createDeviceModel () {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                dependency.componentId +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                dependency.url);
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -4958,7 +4990,7 @@ export function createDeviceModel () {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -5013,7 +5045,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -5455,7 +5487,8 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -5521,6 +5554,11 @@ server:
           overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -5534,8 +5572,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -5576,6 +5614,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -5590,8 +5633,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -5632,6 +5675,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -6733,7 +6781,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
     <edmx:DataServices xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" m:DataServiceVersion=\\"1.0\\">
@@ -7316,7 +7364,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -7587,7 +7635,7 @@ export function createDeviceModel () {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -7604,7 +7652,7 @@ export function createDeviceModel () {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -7642,9 +7690,9 @@ export function createDeviceModel () {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                dependency.componentId +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                dependency.url);
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -7657,7 +7705,7 @@ export function createDeviceModel () {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -7712,7 +7760,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -8154,7 +8202,8 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -8198,6 +8247,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -8211,8 +8265,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -8245,14 +8299,19 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -8285,6 +8344,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
 ",
     "state": "modified",
   },
@@ -9329,7 +9393,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
     <edmx:DataServices xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" m:DataServiceVersion=\\"1.0\\">
@@ -9912,7 +9976,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -10061,7 +10125,8 @@ function (JSONModel, Device) {
 
     return {
         /**
-         * Provides runtime info for the device the UI5 app is running on as JSONModel
+         * Provides runtime information for the device the UI5 app is running on as a JSONModel.
+         * @returns {sap.ui.model.json.JSONModel} The device model.
          */
         createDeviceModel: function () {
             var oModel = new JSONModel(Device);
@@ -10201,7 +10266,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -10218,7 +10283,7 @@ function (JSONModel, Device) {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -10256,9 +10321,9 @@ function (JSONModel, Device) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                dependency.componentId +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                dependency.url);
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -10271,7 +10336,7 @@ function (JSONModel, Device) {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -10326,7 +10391,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");
@@ -10710,7 +10775,8 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -10776,6 +10842,11 @@ server:
           overridesToOverride: true
         excludePatterns:
           - /Component-preload.js
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -10789,8 +10860,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -10831,6 +10902,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -10845,8 +10921,8 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -10887,6 +10963,11 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -11899,7 +11980,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\">
     <edmx:DataServices xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" m:DataServiceVersion=\\"1.0\\">
@@ -12482,7 +12563,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -12753,7 +12834,7 @@ export function createDeviceModel () {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         function getComponentUsageNames(compUsages, libOrCompKeysString) {
             var libOrCompKeysStringTmp = libOrCompKeysString;
             var compNames = Object.keys(compUsages).map(function (compUsageKey) {
@@ -12770,7 +12851,7 @@ export function createDeviceModel () {
                 }
             });
             return libOrCompKeysStringTmp;
-        }
+        };
         return new Promise(function (resolve, reject) {
             $.ajax(url)
                 .done(function (manifest) {
@@ -12808,9 +12889,9 @@ export function createDeviceModel () {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                dependency.componentId +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                dependency.url);
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -12823,7 +12904,7 @@ export function createDeviceModel () {
                 });
             }
         });
-    }
+    };
     /**
      * Registers the module paths for dependencies of the given component.
      * @param {string} manifestPath The the path to the app manifest path
@@ -12878,7 +12959,7 @@ function registerSAPFonts() {
     //Registering to the icon pool
     IconPool.registerFont(bSuiteTheme);
     });
-}
+};
 
 /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
 var currentScript = document.getElementById(\\"locate-reuse-libs\\");

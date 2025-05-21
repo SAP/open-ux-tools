@@ -18,9 +18,10 @@ import { UiIcons } from '../Icons';
 import type { UIMessagesExtendedProps, InputValidationMessageInfo } from '../../helper/ValidationMessage';
 import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/ValidationMessage';
 import { labelGlobalStyle } from '../UILabel';
-import { isDropdownEmpty, getCalloutCollisionTransformationProps } from '../UIDropdown';
+import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from '../UIDropdown';
 import { CalloutCollisionTransform } from '../UICallout';
 import { isHTMLInputElement } from '../../utilities';
+import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 export {
     IComboBoxOption as UIComboBoxOption,
@@ -66,6 +67,19 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
     isForceEnabled?: boolean;
     readOnly?: boolean;
     calloutCollisionTransformation?: boolean;
+    /**
+     * Determines whether the `key` property should be considered during search.
+     * By default, only the `text` property of an option is considered.
+     *
+     * @default false
+     */
+    searchByKeyEnabled?: boolean;
+    /**
+     * Custom filter function to apply custom filtering logic on top of the default search.
+     * Receives the current search term and an option, returning `true` if the option should be shown,
+     * `false` to hide it, or `undefined` to apply the default search filtering behavior.
+     */
+    customSearchFilter?: (searchTerm: string, option: IComboBoxOption) => boolean | undefined;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -174,16 +188,42 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 isGroupVisible = false;
             } else {
                 // Handle selectable item
-                const isHidden = option.text.toLowerCase().indexOf(this.query) === -1;
-                option.hidden = isHidden;
+                const isVisible = this.isOptionVisibleByQuery(option, this.query);
+                option.hidden = !isVisible;
                 if (this.isListHidden && !option.hidden) {
                     this.isListHidden = false;
                 }
                 // Groups should be visible if at least one item is visible within group
-                isGroupVisible = !isHidden || isGroupVisible;
+                isGroupVisible = isVisible || isGroupVisible;
             }
         }
         updateGroupVisibility();
+    }
+
+    /**
+     * Determines whether an option should be hidden based on the current search query.
+     * Applies a custom filter if `customSearchFilter` is provided, otherwise uses the default
+     * search logic to match the `text` property (and `key` if `searchByKeyEnabled` is enabled).
+     *
+     * @param option - The option to evaluate for visibility.
+     * @param query - The current search query string.
+     * @returns `true` if the option should be hidden, `false` if it should be visible.
+     */
+    private isOptionVisibleByQuery(option: IComboBoxOption, query: string): boolean {
+        let isVisible: boolean | undefined;
+        if (this.props.customSearchFilter) {
+            // Apply external custom search
+            isVisible = this.props.customSearchFilter(query, option);
+        }
+        if (isVisible === undefined) {
+            // Apply internal search
+            isVisible = option.text.toLowerCase().includes(query);
+            // Consider 'key' of option if property 'searchByKeyEnabled' is enabled
+            if (this.props.searchByKeyEnabled && !isVisible) {
+                isVisible = option.key.toString().toLowerCase().includes(query);
+            }
+        }
+        return isVisible;
     }
 
     /**
@@ -287,14 +327,14 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     };
 
     /**
-     * Method called on combobox item render.
-     * We should pass query to it and avoid rendering if it is hidden.
+     * Default renderer for combobox item when highlight mode is enabled.
+     * We should pass highlight query within props and avoid rendering if it is hidden.
      *
      * @param {IComboBoxOption} props Combobox item props.
      * @param {Function} defaultRender Combobox item default renderer.
      * @returns {JSX.Element | null} Element to render.
      */
-    private onRenderItem = (
+    private readonly _onRenderItem = (
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
@@ -317,6 +357,24 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             ) : null;
         }
         return null;
+    };
+
+    /**
+     * Method called on combobox item render.
+     * We should pass query to it and avoid rendering if it is hidden.
+     *
+     * @param {IComboBoxOption} props Combobox item props.
+     * @param {Function} defaultRender Combobox item default renderer.
+     * @returns {JSX.Element | null} Element to render.
+     */
+    private onRenderItem = (
+        props?: IComboBoxOption,
+        defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
+    ): JSX.Element | null => {
+        if (this.props.onRenderItem) {
+            return this.props.onRenderItem(props, this._onRenderItem.bind(this, props, defaultRender));
+        }
+        return this._onRenderItem(props, defaultRender);
     };
 
     /**
@@ -350,6 +408,24 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     };
 
     /**
+     * Default renderer for combobox item's option/label when highlight mode is enabled.
+     * We should use different componenet which support highlighting - 'ComboboxSearchOption'.
+     *
+     * @param {IComboBoxOption} props Combobox item props.
+     * @param {Function} defaultRender Combobox item default renderer.
+     * @returns {JSX.Element | null} Element to render.
+     */
+    private readonly _onRenderOption = (
+        props?: IComboBoxOption,
+        defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
+    ): JSX.Element | null => {
+        if (props && props.itemType !== SelectableOptionMenuItemType.Header) {
+            return <UIHighlightMenuOption text={props.text} query={this.query} />;
+        }
+        return defaultRender ? defaultRender(props) : null;
+    };
+
+    /**
      * Method called on combobox item's option/label render.
      * We should use different componenet which support highlighting - 'ComboboxSearchOption'.
      *
@@ -361,10 +437,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         props?: IComboBoxOption,
         defaultRender?: (props?: IComboBoxOption) => JSX.Element | null
     ): JSX.Element | null => {
-        if (props && props.itemType !== SelectableOptionMenuItemType.Header) {
-            return <UIHighlightMenuOption text={props.text} query={this.query} />;
+        if (this.props.onRenderOption) {
+            return this.props.onRenderOption(props, this._onRenderOption.bind(this, props, defaultRender));
         }
-        return defaultRender ? defaultRender(props) : null;
+        return this._onRenderOption(props, defaultRender);
     };
 
     /**
@@ -617,6 +693,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             autofill.readOnly = true;
             autofill.tabIndex = tabIndex;
         }
+        // This is a workaround for FluentUI not handling aria-invalid correctly for a ComboBox.
+        // For the time being we add logic here to set aria-invalid based on the presence of
+        // an errorMessage.
+        autofill['aria-invalid'] = this.props.errorMessage !== undefined && this.props.errorMessage !== '';
         return autofill;
     }
 
@@ -681,6 +761,26 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         },
                         onRenderIcon: this.onRenderIcon
                     }}
+                    styles={{
+                        label: {
+                            ...labelGlobalStyle,
+                            ...(this.props.disabled && {
+                                opacity: '0.4'
+                            }),
+                            ...(this.props.required && {
+                                selectors: {
+                                    '::after': {
+                                        content: REQUIRED_LABEL_INDICATOR,
+                                        color: 'var(--vscode-inputValidation-errorBorder)',
+                                        paddingRight: 12
+                                    }
+                                }
+                            })
+                        },
+
+                        errorMessage: [messageInfo.style]
+                    }}
+                    {...this.props}
                     calloutProps={{
                         calloutMaxHeight: 200,
                         popupProps: {
@@ -695,32 +795,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                                 }
                             })
                         },
-                        ...getCalloutCollisionTransformationProps(
-                            this.calloutCollisionTransform,
-                            this.props.multiSelect,
-                            this.props.calloutCollisionTransformation
-                        )
-                    }}
-                    styles={{
-                        label: {
-                            ...labelGlobalStyle,
-                            ...(this.props.disabled && {
-                                opacity: '0.4'
-                            }),
-                            ...(this.props.required && {
-                                selectors: {
-                                    '::after': {
-                                        content: `' *'`,
-                                        color: 'var(--vscode-inputValidation-errorBorder)',
-                                        paddingRight: 12
-                                    }
-                                }
-                            })
-                        },
 
-                        errorMessage: [messageInfo.style]
+                        ...this.props.calloutProps,
+                        ...getCalloutCollisionTransformationPropsForDropdown(this, this.calloutCollisionTransform)
                     }}
-                    {...this.props}
                     {...(this.props.highlight && {
                         onInput: this.onInput,
                         onMenuDismissed: this.reserQuery,

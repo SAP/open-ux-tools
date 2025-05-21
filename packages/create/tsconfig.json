@@ -28,6 +28,9 @@
       "path": "../cards-editor-config-writer"
     },
     {
+      "path": "../flp-config-inquirer"
+    },
+    {
       "path": "../inquirer-common"
     },
     {
@@ -35,6 +38,9 @@
     },
     {
       "path": "../mockserver-config-writer"
+    },
+    {
+      "path": "../odata-service-writer"
     },
     {
       "path": "../preview-middleware"

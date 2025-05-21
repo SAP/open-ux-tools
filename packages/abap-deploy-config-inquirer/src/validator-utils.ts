@@ -44,16 +44,6 @@ export function isValidClient(client: string): boolean {
 }
 
 /**
- * Returns true if the input does not exist, or if it exists but it is invalid.
- *
- * @param client - input string
- * @returns boolean
- */
-export function clientDoesNotExistOrInvalid(client?: string): boolean {
-    return Boolean(!client || (client && !isValidClient(client)));
-}
-
-/**
  * Returns the list of packages for the given input.
  *
  * @param input - input string
@@ -70,7 +60,7 @@ export async function listPackages(
         return [];
     }
 
-    return listPackagesFromService(input, systemConfig, backendTarget);
+    return listPackagesFromService(input, backendTarget);
 }
 
 /**
@@ -88,7 +78,7 @@ function validateAppName(name: string, prefix?: string): boolean | string {
     }
 
     if (name.split('/').length > 3) {
-        return t('errors.validators.abapInvalidNamespace');
+        return t('errors.validators.invalidNamespace');
     } else if (/^\/.*\/\w*$/g.test(name)) {
         const splitNames = name.split('/');
         let accumulatedMsg = '';
@@ -164,7 +154,7 @@ export async function getTransportList(
         return undefined;
     }
 
-    const transportList = await getTransportListFromService(packageName, appName, systemConfig, backendTarget);
+    const transportList = await getTransportListFromService(packageName, appName, backendTarget);
     return transportList?.length === 1 && transportList[0].transportReqNumber === '' ? [] : transportList;
 }
 
@@ -191,6 +181,5 @@ export async function createTransportNumber(
     if (!systemConfig.url && !systemConfig.destination) {
         return undefined;
     }
-
-    return createTransportNumberFromService(createTransportParams, systemConfig, backendTarget);
+    return createTransportNumberFromService(createTransportParams, backendTarget);
 }

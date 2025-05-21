@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import type { ReactElement } from 'react';
 import { UITextInput } from '../UIInput';
-import type { ITextFieldProps } from '../UIInput';
+import type { InputRenderProps, ITextFieldProps } from '../UIInput';
 import { UiIcons } from '../Icons';
 import { UITranslationButton } from './UITranslationButton';
 import type {
@@ -216,12 +216,29 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
         onUpdateValue
     ]);
 
+    const onRenderInput = useCallback(
+        (
+            props?: InputRenderProps,
+            defaultRender?: (props?: InputRenderProps) => JSX.Element | null
+        ): JSX.Element | null => {
+            if (defaultRender) {
+                return (
+                    <div className="ui-translatable__field" title={title}>
+                        {defaultRender({ ...props, title: undefined })}
+                    </div>
+                );
+            }
+            return null;
+        },
+        [title]
+    );
+
     return (
         <UITextInput
             {...props}
-            title={title}
             onRenderSuffix={value?.trim() ? onRenderSuffix : undefined}
             className={classNames}
+            onRenderInput={onRenderInput}
         />
     );
 };

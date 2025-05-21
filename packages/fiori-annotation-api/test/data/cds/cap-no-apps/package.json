@@ -1,0 +1,24 @@
+{
+    "name": "teched2020-iis360",
+    "version": "1.0.0",
+    "description": "A simple CAP project.",
+    "repository": "<Add your repository here>",
+    "license": "UNLICENSED",
+    "private": true,
+    "dependencies": {},
+    "devDependencies": {},
+    "cds": {
+        "requires": {
+            "db": {
+                "kind": "sql"
+            }
+        },
+        "odata": {
+            "version": "v4"
+        }
+    },
+    "scripts": {
+        "start": "cds run"
+    },
+    "sapux": []
+}

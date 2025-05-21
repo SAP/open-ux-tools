@@ -1,0 +1,15 @@
+{
+    "info": {
+        "mockOnlyWarning": "This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock"
+    },
+    "error": {
+        "logWrapperNotInitialised": "LogWrapper is not initialised",
+        "methodNotImplemented": "Method not implemented"
+    },
+    "debug": {
+        "loggingConfigured": "Logging has been configured at log level: {{logLevel}}"
+    },
+    "telemetry": {
+        "unknownOs": "Unknown"
+    }
+}

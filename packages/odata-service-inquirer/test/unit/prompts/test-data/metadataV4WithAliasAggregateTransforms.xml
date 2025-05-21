@@ -1,0 +1,1386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm" Version="4.0">
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="SAP__common" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="Org.OData.Measures.V1" Alias="SAP__measures" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CORE',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="Org.OData.Core.V1" Alias="SAP__core" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="SAP__capabilities" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="SAP__aggregation" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="Org.OData.Validation.V1" Alias="SAP__validation" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="SAP__CodeList" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="SAP__UI" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_HTML5',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="com.sap.vocabularies.HTML5.v1" Alias="SAP__HTML5" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PDF',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="com.sap.vocabularies.PDF.v1" Alias="SAP__PDF" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_SESSION',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="com.sap.vocabularies.Session.v1" Alias="SAP__session" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ODM',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="com.sap.vocabularies.ODM.v1" Alias="SAP__ODM" />
+   </edmx:Reference>
+   <edmx:Reference Uri="/sap/opu/odata/MOCK/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_HIERARCHY',Version='0001',SAP__Origin='LOCAL')/$value">
+      <edmx:Include Namespace="com.sap.vocabularies.Hierarchy.v1" Alias="SAP__hierarchy" />
+   </edmx:Reference>
+   <edmx:DataServices>
+      <Schema Namespace="com.sap.mock.srvd.z_mockaccountreconciliation.v0001" Alias="SAP__self">
+         <Annotation Term="SAP__core.SchemaVersion" String="1.0.0" />
+         <EntityType Name="C_MockAccountReconciliationType">
+            <Key>
+               <PropertyRef Name="MockCode" />
+               <PropertyRef Name="PurchasingDocument" />
+               <PropertyRef Name="PurchasingDocumentItem" />
+            </Key>
+            <Property Name="MockCode" Type="Edm.String" Nullable="false" MaxLength="4" />
+            <Property Name="MockCode_Text" Type="Edm.String" Nullable="false" MaxLength="25" />
+            <Property Name="PurchasingDocument" Type="Edm.String" Nullable="false" MaxLength="10" />
+            <Property Name="PurchasingDocumentItem" Type="Edm.String" Nullable="false" MaxLength="5" />
+            <Property Name="PurchasingDocumentItemUniqueID" Type="Edm.String" Nullable="false" MaxLength="15" />
+            <Property Name="MockCodeCurrency" Type="Edm.String" MaxLength="5" />
+            <Property Name="BalAmtInMockCodeCrcy" Type="Edm.Decimal" Precision="23" Scale="variable" />
+            <Property Name="MockAbsoluteAmtInCoCodeCrcy" Type="Edm.Decimal" Precision="23" Scale="variable" />
+            <Property Name="PurgDocOrderQuantityUnit" Type="Edm.String" MaxLength="3" />
+            <Property Name="ReferenceQuantityUnit" Type="Edm.String" MaxLength="3" />
+            <Property Name="MockQuantityInRefQtyUnit" Type="Edm.Decimal" Precision="23" Scale="3" />
+            <Property Name="MockAbsoluteQtyInRefQtyUnit" Type="Edm.Decimal" Precision="23" Scale="3" />
+            <Property Name="GoodsReceiptQtyInRefQtyUnit" Type="Edm.Decimal" Precision="23" Scale="3" />
+            <Property Name="InvoiceReceiptQtyInRefQtyUnit" Type="Edm.Decimal" Precision="23" Scale="3" />
+            <Property Name="PurchasingDocumentOrderQty" Type="Edm.Decimal" Precision="13" Scale="3" />
+            <Property Name="NumberOfGoodsReceipts" Type="Edm.Int32" Nullable="false" />
+            <Property Name="NumberOfInvoiceReceipts" Type="Edm.Int32" Nullable="false" />
+            <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" />
+            <Property Name="LastChangeDateTimeTimezone" Type="Edm.String" Nullable="false" MaxLength="64" />
+            <Property Name="LastChangedByUser" Type="Edm.String" Nullable="false" MaxLength="12" />
+            <Property Name="ResponsibleDepartment" Type="Edm.String" Nullable="false" MaxLength="30" />
+            <Property Name="ResponsiblePerson" Type="Edm.String" Nullable="false" MaxLength="12" />
+            <Property Name="MOCKClearingProcessStatus" Type="Edm.String" Nullable="false" MaxLength="2" />
+            <Property Name="MOCKClearingProcessStatus_Text" Type="Edm.String" Nullable="false" MaxLength="40" />
+            <Property Name="MOCKClearingProcessPriority" Type="Edm.String" Nullable="false" MaxLength="2" />
+            <Property Name="MOCKClearingProcessPriority_Text" Type="Edm.String" Nullable="false" MaxLength="20" />
+            <Property Name="HasNote" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="MOCKClearingProcessRootCause" Type="Edm.String" Nullable="false" MaxLength="3" />
+            <Property Name="MOCKClearingProcessRootCause_Text" Type="Edm.String" Nullable="false" MaxLength="128" />
+            <Property Name="LastChangeDate" Type="Edm.Date" />
+            <Property Name="LatestPostingIsAfterLastChange" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="SystemMessageIdentification" Type="Edm.String" Nullable="false" MaxLength="20" />
+            <Property Name="SystemMessageType" Type="Edm.String" Nullable="false" MaxLength="1" />
+            <Property Name="SystemMessageNumber" Type="Edm.String" Nullable="false" MaxLength="3" />
+            <Property Name="PrpsdResponsibleDepartment" Type="Edm.String" Nullable="false" MaxLength="30" />
+            <Property Name="ProposedResponsiblePerson" Type="Edm.String" Nullable="false" MaxLength="12" />
+            <Property Name="MOCKClrgProcessPrpsdStatus" Type="Edm.String" Nullable="false" MaxLength="2" />
+            <Property Name="MOCKClrgProcessPrpsdStatus_Text" Type="Edm.String" Nullable="false" MaxLength="40" />
+            <Property Name="MOCKClrgProcPrpsdPriority" Type="Edm.String" Nullable="false" MaxLength="2" />
+            <Property Name="MOCKClrgProcPrpsdPriority_Text" Type="Edm.String" Nullable="false" MaxLength="20" />
+            <Property Name="MOCKClrgProcessPrpsdRootCause" Type="Edm.String" Nullable="false" MaxLength="3" />
+            <Property Name="MOCKClrgProcessPrpsdRootCause_Text" Type="Edm.String" Nullable="false" MaxLength="128" />
+            <Property Name="PrpsdRespDeptMaxClProbability" Type="Edm.Decimal" Nullable="false" Precision="8" Scale="7" />
+            <Property Name="PrpsdRespPersonMaxClassProblty" Type="Edm.Decimal" Nullable="false" Precision="8" Scale="7" />
+            <Property Name="MOCKProposedStatusMaxClProblty" Type="Edm.Decimal" Nullable="false" Precision="8" Scale="7" />
+            <Property Name="MOCKProposedPrioMaxClProblty" Type="Edm.Decimal" Nullable="false" Precision="8" Scale="7" />
+            <Property Name="MOCKPrpsdRootCauseMaxClProblty" Type="Edm.Decimal" Nullable="false" Precision="8" Scale="7" />
+            <Property Name="MOCKProcPrpslLastChangeDteTime" Type="Edm.DateTimeOffset" />
+            <Property Name="Plant" Type="Edm.String" Nullable="false" MaxLength="4" />
+            <Property Name="PurchasingOrganization" Type="Edm.String" Nullable="false" MaxLength="4" />
+            <Property Name="PurchasingGroup" Type="Edm.String" Nullable="false" MaxLength="3" />
+            <Property Name="MaterialGroup" Type="Edm.String" Nullable="false" MaxLength="9" />
+            <Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="40" />
+            <Property Name="RequisitionerName" Type="Edm.String" Nullable="false" MaxLength="12" />
+            <Property Name="AccountAssignmentCategory" Type="Edm.String" Nullable="false" MaxLength="1" />
+            <Property Name="IsFinallyInvoiced" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="PurchasingDocumentDeletionCode" Type="Edm.String" Nullable="false" MaxLength="1" />
+            <Property Name="Supplier" Type="Edm.String" Nullable="false" MaxLength="10" />
+            <Property Name="SupplierName" Type="Edm.String" Nullable="false" MaxLength="80" />
+            <Property Name="CreatedByUser" Type="Edm.String" Nullable="false" MaxLength="12" />
+            <Property Name="LastChangeDays" Type="Edm.Int32" Nullable="false" />
+            <Property Name="LatestOpenItemPostingDate" Type="Edm.Date" />
+            <Property Name="OldestOpenItemPostingDate" Type="Edm.Date" />
+            <Property Name="NumberOfOpenItems" Type="Edm.Int32" Nullable="false" />
+            <Property Name="PurchasingDocumentItemText" Type="Edm.String" Nullable="false" MaxLength="40" />
+            <Property Name="ValuationArea" Type="Edm.String" Nullable="false" MaxLength="4" />
+            <Property Name="ValuationType" Type="Edm.String" Nullable="false" MaxLength="10" />
+            <Property Name="PurchasingDocumentItemCategory" Type="Edm.String" Nullable="false" MaxLength="1" />
+            <Property Name="PurchasingDocumentItemCategory_Text" Type="Edm.String" Nullable="false" MaxLength="20" />
+            <Property Name="NumberOfPurchaseOrderItems" Type="Edm.Int32" Nullable="false" />
+            <Property Name="PurchasingDocumentCategory" Type="Edm.String" Nullable="false" MaxLength="1" />
+            <Property Name="PurchasingDocumentCategory_Text" Type="Edm.String" Nullable="false" MaxLength="60" />
+            <Property Name="PurchasingDocumentType" Type="Edm.String" Nullable="false" MaxLength="4" />
+            <Property Name="PurchasingDocumentType_Text" Type="Edm.String" Nullable="false" MaxLength="20" />
+            <Property Name="InvoicingParty" Type="Edm.String" Nullable="false" MaxLength="10" />
+            <Property Name="InvoicingPartyName" Type="Edm.String" Nullable="false" MaxLength="80" />
+            <Property Name="GoodsReceiptGoodsAmtInCCCrcy" Type="Edm.Decimal" Precision="23" Scale="variable" />
+            <Property Name="GdsRcptDelivCostAmtInCCCrcy" Type="Edm.Decimal" Precision="23" Scale="variable" />
+            <Property Name="InvoiceRcptGoodsAmtInCCCrcy" Type="Edm.Decimal" Precision="23" Scale="variable" />
+            <Property Name="InvcRcptDelivCostAmtInCCCrcy" Type="Edm.Decimal" Precision="23" Scale="variable" />
+            <Property Name="GoodsReceiptGdsQtyInRefQtyUnit" Type="Edm.Decimal" Precision="23" Scale="3" />
+            <Property Name="GRDelivCostQtyInRefQtyUnit" Type="Edm.Decimal" Precision="23" Scale="3" />
+            <Property Name="InvoiceRcptGdsQtyInRefQtyUnit" Type="Edm.Decimal" Precision="23" Scale="3" />
+            <Property Name="InvcRcptDelivQtyInRefQtyUnit" Type="Edm.Decimal" Precision="23" Scale="3" />
+            <Property Name="GoodsMockAmountInCCCrcy" Type="Edm.Decimal" Precision="23" Scale="variable" />
+            <Property Name="GdsMockQuantityInRefQtyUnit" Type="Edm.Decimal" Precision="23" Scale="3" />
+            <Property Name="DeliveryCostBalAmtInCCCrcy" Type="Edm.Decimal" Precision="23" Scale="variable" />
+            <Property Name="DelivCostBalQtyInRefQtyUnit" Type="Edm.Decimal" Precision="23" Scale="3" />
+            <Property Name="GoodsReceiptAmountInCoCodeCrcy" Type="Edm.Decimal" Precision="23" Scale="variable" />
+            <Property Name="InvoiceRcptAmtInCoCodeCrcy" Type="Edm.Decimal" Precision="23" Scale="variable" />
+            <Property Name="HasNoGoodsReceiptPosted" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="HasNoInvoiceReceiptPosted" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="MOCKHasNoAmountDifference" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="IsGoodsRcptGoodsAmtSurplus" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="IsInvoiceGoodsAmountSurplus" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="IsGdsRcptDelivCostAmtSurplus" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="IsInvoiceDelivCostAmtSurplus" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="IsGoodsRcptGoodsQtySurplus" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="IsInvoiceGoodsQtySurplus" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="IsGdsRcptDelivCostQtySurplus" Type="Edm.Boolean" Nullable="false" />
+            <Property Name="IsInvoiceDelivCostQtySurplus" Type="Edm.Boolean" Nullable="false" />
+         </EntityType>
+         <EntityContainer Name="Container">
+            <EntitySet Name="C_MockAccountReconciliation" EntityType="com.sap.mock.srvd.z_mockaccountreconciliation.v0001.C_MockAccountReconciliationType" />
+         </EntityContainer>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MockCode">
+            <Annotation Term="SAP__common.Text" Path="MockCode_Text" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_companycodevh/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.companycode'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.SemanticObject" String="MockCode" />
+            <Annotation Term="SAP__common.Label" String="Mock Code" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MockCode_Text">
+            <Annotation Term="SAP__core.Computed" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MockCode</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Company Name" />
+            <Annotation Term="SAP__common.QuickInfo" String="Name of Mock Code or Company" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingDocument">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_purchasingdocumentstdvh/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.purchasingdocument'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.SemanticObject" String="PurchasingDocument" />
+            <Annotation Term="SAP__common.Label" String="Purchasing Document" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingDocumentItem">
+            <Annotation Term="SAP__common.IsDigitSequence" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_purchasingdocumentitemstdvh/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.purchasingdocumentitem'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Purchasing Doc. Item" />
+            <Annotation Term="SAP__common.Heading" String="Purchasing Document Item" />
+            <Annotation Term="SAP__common.QuickInfo" String="Purchasing Document Item" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingDocumentItemUniqueID">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.Label" String="Document Item" />
+            <Annotation Term="SAP__common.Heading" String="Item" />
+            <Annotation Term="SAP__common.QuickInfo" String="Concatenation of EBELN and EBELP" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=PURCHASINGDOCUMENTITEMUNIQUEID" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MockCodeCurrency">
+            <Annotation Term="SAP__common.IsCurrency" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.Label" String="Mock Code Currency" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/BalAmtInMockCodeCrcy">
+            <Annotation Term="SAP__measures.ISOCurrency" Path="MockCodeCurrency" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MockCodeCurrency</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Amount" />
+            <Annotation Term="SAP__common.Heading" String="Mock Amount in Mock Code Currency" />
+            <Annotation Term="SAP__common.QuickInfo" String="Total Mock Amount in Mock Code Currency" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MockAbsoluteAmtInCoCodeCrcy">
+            <Annotation Term="SAP__measures.ISOCurrency" Path="MockCodeCurrency" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MockCodeCurrency</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Absolute Amount In CoCode Crcy" />
+            <Annotation Term="SAP__common.Heading" String="Mock Absolute Amount In Mock Code Currency" />
+            <Annotation Term="SAP__common.QuickInfo" String="Mock Absolute Amount In Mock Code Currency" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurgDocOrderQuantityUnit">
+            <Annotation Term="SAP__common.IsUnit" />
+            <Annotation Term="SAP__common.Label" String="Order Unit" />
+            <Annotation Term="SAP__common.Heading" String="OUn" />
+            <Annotation Term="SAP__common.QuickInfo" String="Purchase Order Unit of Measure" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=BSTME" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/ReferenceQuantityUnit">
+            <Annotation Term="SAP__common.IsUnit" />
+            <Annotation Term="SAP__common.Label" String="Unit of Measure for Reference Quantity" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MockQuantityInRefQtyUnit">
+            <Annotation Term="SAP__measures.Unit" Path="ReferenceQuantityUnit" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>ReferenceQuantityUnit</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Quantity" />
+            <Annotation Term="SAP__common.Heading" String="Mock Quantity in Reference Quantity Unit" />
+            <Annotation Term="SAP__common.QuickInfo" String="Mock Quantity in Reference Quantity Unit" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MockAbsoluteQtyInRefQtyUnit">
+            <Annotation Term="SAP__measures.Unit" Path="ReferenceQuantityUnit" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>ReferenceQuantityUnit</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Absolute Mock Quantity" />
+            <Annotation Term="SAP__common.Heading" String="Absolute Mock Quantity in Reference Quantity Unit" />
+            <Annotation Term="SAP__common.QuickInfo" String="Absolute Mock Quantity in Reference Quantity Unit" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/GoodsReceiptQtyInRefQtyUnit">
+            <Annotation Term="SAP__measures.Unit" Path="ReferenceQuantityUnit" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>ReferenceQuantityUnit</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Goods Receipt Quantity" />
+            <Annotation Term="SAP__common.Heading" String="Goods Receipt Quantity in Reference Quantity Unit" />
+            <Annotation Term="SAP__common.QuickInfo" String="Quantity of Goods Received in Reference Quantity Unit" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=FIS_WEMNG_RRUNIT" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/InvoiceReceiptQtyInRefQtyUnit">
+            <Annotation Term="SAP__measures.Unit" Path="ReferenceQuantityUnit" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>ReferenceQuantityUnit</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Receipt Quantity" />
+            <Annotation Term="SAP__common.Heading" String="Mock Receipt Quantity in Reference Quantity Unit" />
+            <Annotation Term="SAP__common.QuickInfo" String="Invoiced Quantity in Reference Quantity Unit" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=FIS_REMNG_RRUNIT" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingDocumentOrderQty">
+            <Annotation Term="SAP__measures.Unit" Path="PurgDocOrderQuantityUnit" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>PurgDocOrderQuantityUnit</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Order Quantity" />
+            <Annotation Term="SAP__common.Heading" String="PO Quantity" />
+            <Annotation Term="SAP__common.QuickInfo" String="Purchase Order Quantity" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=BSTMG" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/LastChangeDateTime">
+            <Annotation Term="SAP__common.Timezone" Path="LastChangeDateTimeTimezone" />
+            <Annotation Term="SAP__common.Label" String="Last Changed On" />
+            <Annotation Term="SAP__common.Heading" String="MOCK Last Changed On" />
+            <Annotation Term="SAP__common.QuickInfo" String="MOCK Clearing Process Last Change Date Time" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/LastChangeDateTimeTimezone">
+            <Annotation Term="SAP__common.Label" String="Timezone for &quot;Last Changed On Time Stamp&quot;" />
+            <Annotation Term="SAP__common.IsTimezone" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.Heading" String="Time Zone" />
+            <Annotation Term="SAP__common.QuickInfo" String="Time Zone" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=TZNZONE" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/LastChangedByUser">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.Label" String="Last Changed By" />
+            <Annotation Term="SAP__common.Heading" String="User of Last Change in MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="User of Last Change in MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/ResponsiblePerson">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_mockresponsiblepersonvh/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.responsibleperson'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Processor" />
+            <Annotation Term="SAP__common.Heading" String="Processor of MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Processor of MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKClearingProcessStatus">
+            <Annotation Term="SAP__common.Text" Path="MOCKClearingProcessStatus_Text" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_mockprocessstatusstdvh/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.mockclearingprocessstatus'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Status" />
+            <Annotation Term="SAP__common.Heading" String="Status of MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="MOCK Clearing Process Status" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKClearingProcessStatus_Text">
+            <Annotation Term="SAP__core.Computed" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MOCKClearingProcessStatus</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Status Name" />
+            <Annotation Term="SAP__common.Heading" String="Status Name of MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Status Name of MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKClearingProcessPriority">
+            <Annotation Term="SAP__common.Text" Path="MOCKClearingProcessPriority_Text" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_mockprocesspriority/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.mockclearingprocesspriority'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Priority" />
+            <Annotation Term="SAP__common.Heading" String="Priority of MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Priority of MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKClearingProcessPriority_Text">
+            <Annotation Term="SAP__core.Computed" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MOCKClearingProcessPriority</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Priority Name" />
+            <Annotation Term="SAP__common.Heading" String="Priority Name of MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Priority Name of MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKClearingProcessRootCause">
+            <Annotation Term="SAP__common.Text" Path="MOCKClearingProcessRootCause_Text" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_mockprocessrootcause/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.mockclearingprocessrootcause'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Root Cause" />
+            <Annotation Term="SAP__common.Heading" String="Root Cause for MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Root Cause for MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKClearingProcessRootCause_Text">
+            <Annotation Term="SAP__core.Computed" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MOCKClearingProcessRootCause</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Root Cause Name" />
+            <Annotation Term="SAP__common.Heading" String="Root Cause Name for MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Root Cause Name for MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/SystemMessageIdentification">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.Label" String="Message Class" />
+            <Annotation Term="SAP__common.QuickInfo" String="Message identification" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MSGID" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/SystemMessageType">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.Label" String="Message Type" />
+            <Annotation Term="SAP__common.Heading" String="MT" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MSGTY" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/SystemMessageNumber">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.Label" String="Message" />
+            <Annotation Term="SAP__common.Heading" String="MsgNo" />
+            <Annotation Term="SAP__common.QuickInfo" String="Message number" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PrpsdResponsibleDepartment">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.Label" String="Proposed Processing Department" />
+            <Annotation Term="SAP__common.QuickInfo" String="Proposed Processing Department of MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/ProposedResponsiblePerson">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_mockresponsiblepersonvh/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.proposedresponsibleperson'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Proposed Processor" />
+            <Annotation Term="SAP__common.Heading" String="Proposed Processor of MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Proposed Processor of MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKClrgProcessPrpsdStatus">
+            <Annotation Term="SAP__common.Text" Path="MOCKClrgProcessPrpsdStatus_Text" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_mockprocessstatusstdvh/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.mockclrgprocessprpsdstatus'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Proposed Status" />
+            <Annotation Term="SAP__common.Heading" String="Proposed Status of MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Proposed Status of MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKClrgProcessPrpsdStatus_Text">
+            <Annotation Term="SAP__core.Computed" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MOCKClrgProcessPrpsdStatus</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Status Name" />
+            <Annotation Term="SAP__common.Heading" String="Status Name of MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Status Name of MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKClrgProcPrpsdPriority">
+            <Annotation Term="SAP__common.Text" Path="MOCKClrgProcPrpsdPriority_Text" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_mockprocesspriority/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.mockclrgprocprpsdpriority'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Proposed Priority" />
+            <Annotation Term="SAP__common.Heading" String="Proposed Priority of MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Proposed Priority of MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKClrgProcPrpsdPriority_Text">
+            <Annotation Term="SAP__core.Computed" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MOCKClrgProcPrpsdPriority</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Priority Name" />
+            <Annotation Term="SAP__common.Heading" String="Priority Name of MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Priority Name of MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKClrgProcessPrpsdRootCause">
+            <Annotation Term="SAP__common.Text" Path="MOCKClrgProcessPrpsdRootCause_Text" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_mockprocessrootcause/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.mockclrgprocessprpsdrootcause'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Proposed Root Cause" />
+            <Annotation Term="SAP__common.Heading" String="Proposed Root Cause of MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Proposed Root Cause of MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKClrgProcessPrpsdRootCause_Text">
+            <Annotation Term="SAP__core.Computed" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MOCKClrgProcessPrpsdRootCause</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Root Cause Name" />
+            <Annotation Term="SAP__common.Heading" String="Root Cause Name for MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Root Cause Name for MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/Plant">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_plant/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.plant'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Plant" />
+            <Annotation Term="SAP__common.Heading" String="Plnt" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=EWERK" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingOrganization">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_purchasingorganization/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.purchasingorganization'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Purchasing Organization" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingGroup">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_purchasinggroup/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.purchasinggroup'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Purchasing Group" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MaterialGroup">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_materialgroup/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.materialgroup'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Material Group" />
+            <Annotation Term="SAP__common.Heading" String="Matl Group" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MATKL" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/Material">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_materialstdvh/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.material'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.SemanticObject" String="Material" />
+            <Annotation Term="SAP__common.Label" String="Material" />
+            <Annotation Term="SAP__common.QuickInfo" String="Material Number" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MATNR" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/AccountAssignmentCategory">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_accountassignmentcategory/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.accountassignmentcategory'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Acct Assignment Cat." />
+            <Annotation Term="SAP__common.Heading" String="A" />
+            <Annotation Term="SAP__common.QuickInfo" String="Account Assignment Category" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=KNTTP" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingDocumentDeletionCode">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.Label" String="Deletion Indicator" />
+            <Annotation Term="SAP__common.Heading" String="D" />
+            <Annotation Term="SAP__common.QuickInfo" String="Deletion Indicator in Purchasing Document" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=ELOEK" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/Supplier">
+            <Annotation Term="SAP__common.Text" Path="SupplierName" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_supplier_vh/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.supplier'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.SemanticObject" String="Supplier" />
+            <Annotation Term="SAP__common.Label" String="Supplier" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/CreatedByUser">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.Label" String="Created By" />
+            <Annotation Term="SAP__common.QuickInfo" String="User of person who created a purchasing document" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MMPUR_ERNAM" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/ValuationArea">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.Label" String="Valuation Area" />
+            <Annotation Term="SAP__common.Heading" String="ValA" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=BWKEY" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/ValuationType">
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.Label" String="Valuation Type" />
+            <Annotation Term="SAP__common.Heading" String="Val. Type" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=BWTAR_D" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingDocumentItemCategory">
+            <Annotation Term="SAP__common.Text" Path="PurchasingDocumentItemCategory_Text" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_purgdocumentitemcategory/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.purchasingdocumentitemcategory'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Purchasing Document Item Category" />
+            <Annotation Term="SAP__common.QuickInfo" String="Item category in purchasing document" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingDocumentItemCategory_Text">
+            <Annotation Term="SAP__core.Computed" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>PurchasingDocumentItemCategory</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Text for Item Cat." />
+            <Annotation Term="SAP__common.QuickInfo" String="Text for Item Category" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=PTEXT_D" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingDocumentCategory">
+            <Annotation Term="SAP__common.Text" Path="PurchasingDocumentCategory_Text" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_purchasingdocumentcategory/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.purchasingdocumentcategory'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Purch. Doc. Category" />
+            <Annotation Term="SAP__common.Heading" String="C" />
+            <Annotation Term="SAP__common.QuickInfo" String="Purchasing Document Category" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=EBSTYP" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingDocumentCategory_Text">
+            <Annotation Term="SAP__core.Computed" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>PurchasingDocumentCategory</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Purchasing Document Category Name" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingDocumentType">
+            <Annotation Term="SAP__common.Text" Path="PurchasingDocumentType_Text" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_purchasingdocumenttype/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.purchasingdocumenttype'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Purchasing Doc. Type" />
+            <Annotation Term="SAP__common.Heading" String="Type" />
+            <Annotation Term="SAP__common.QuickInfo" String="Purchasing Document Type" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=ESART" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingDocumentType_Text">
+            <Annotation Term="SAP__core.Computed" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>PurchasingDocumentType</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Doc. Type Descript." />
+            <Annotation Term="SAP__common.QuickInfo" String="Short Description of Purchasing Document Type" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=BATXT" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/InvoicingParty">
+            <Annotation Term="SAP__common.Text" Path="InvoicingPartyName" />
+            <Annotation Term="SAP__common.IsUpperCase" />
+            <Annotation Term="SAP__common.ValueListReferences">
+               <Collection>
+                  <String>../../../../mock_srv/sap/i_supplier_vh/0001;ps='srvd-z_mockaccountreconciliation-0001';va='com.sap.mock.srvd.z_mockaccountreconciliation.v0001.et-z_mockaccountreconciliation.invoicingparty'/$metadata</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.SemanticObject" String="Supplier" />
+            <Annotation Term="SAP__common.Label" String="Invoicing Party" />
+            <Annotation Term="SAP__common.Heading" String="Inv. Pty" />
+            <Annotation Term="SAP__common.QuickInfo" String="Different Invoicing Party" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=LIFRE" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/GoodsReceiptGoodsAmtInCCCrcy">
+            <Annotation Term="SAP__measures.ISOCurrency" Path="MockCodeCurrency" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MockCodeCurrency</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Goods Receipt Amount (Goods)" />
+            <Annotation Term="SAP__common.Heading" String="Goods Receipt Amount in Mock Code Currency (Goods)" />
+            <Annotation Term="SAP__common.QuickInfo" String="Goods Receipt Amount in Mock Code Currency (Goods)" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/GdsRcptDelivCostAmtInCCCrcy">
+            <Annotation Term="SAP__measures.ISOCurrency" Path="MockCodeCurrency" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MockCodeCurrency</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Goods Receipt Amount (Mock Costs)" />
+            <Annotation Term="SAP__common.Heading" String="Goods Receipt Amount in CC Crcy (Mock Costs)" />
+            <Annotation Term="SAP__common.QuickInfo" String="Goods Receipt Amount in Mock Code Currency (Delivery Cost" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/InvoiceRcptGoodsAmtInCCCrcy">
+            <Annotation Term="SAP__measures.ISOCurrency" Path="MockCodeCurrency" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MockCodeCurrency</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Receipt Amount (Goods)" />
+            <Annotation Term="SAP__common.Heading" String="Mock Receipt Amount in CC Crcy (Goods)" />
+            <Annotation Term="SAP__common.QuickInfo" String="Mock Receipt Amount in Mock Code Currency (Goods)" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/InvcRcptDelivCostAmtInCCCrcy">
+            <Annotation Term="SAP__measures.ISOCurrency" Path="MockCodeCurrency" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MockCodeCurrency</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Receipt Amount (Mock Costs)" />
+            <Annotation Term="SAP__common.Heading" String="Mock Receipt Amount in CC Crcy (Mock Costs)" />
+            <Annotation Term="SAP__common.QuickInfo" String="Mock Receipt Amount in Mock Code Crcy (Mock Costs)" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/GoodsReceiptGdsQtyInRefQtyUnit">
+            <Annotation Term="SAP__measures.Unit" Path="ReferenceQuantityUnit" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>ReferenceQuantityUnit</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Goods Receipt Quantity (Goods)" />
+            <Annotation Term="SAP__common.QuickInfo" String="Goods Receipt Quantity (Goods) in Reference Quantity Unit" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/GRDelivCostQtyInRefQtyUnit">
+            <Annotation Term="SAP__measures.Unit" Path="ReferenceQuantityUnit" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>ReferenceQuantityUnit</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Goods Receipt Quantity (Mock Costs)" />
+            <Annotation Term="SAP__common.QuickInfo" String="Goods Receipt Quantity (Mock Costs) in Reference Quantit" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/InvoiceRcptGdsQtyInRefQtyUnit">
+            <Annotation Term="SAP__measures.Unit" Path="ReferenceQuantityUnit" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>ReferenceQuantityUnit</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Receipt Quantity (Goods)" />
+            <Annotation Term="SAP__common.QuickInfo" String="Mock Receipt Quantity (Goods) in Reference Quantity Unit" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/InvcRcptDelivQtyInRefQtyUnit">
+            <Annotation Term="SAP__measures.Unit" Path="ReferenceQuantityUnit" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>ReferenceQuantityUnit</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Receipt Quantity (Deliv. Costs)" />
+            <Annotation Term="SAP__common.Heading" String="Mock Receipt Quantity (Mock Costs)" />
+            <Annotation Term="SAP__common.QuickInfo" String="Invoice Quantity (Mock Costs) in Reference Quantity Unit" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/GoodsMockAmountInCCCrcy">
+            <Annotation Term="SAP__measures.ISOCurrency" Path="MockCodeCurrency" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MockCodeCurrency</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Amount (Goods)" />
+            <Annotation Term="SAP__common.Heading" String="Goods: Mock Amount in Mock Code Crcy" />
+            <Annotation Term="SAP__common.QuickInfo" String="Mock Amount in Mock Code Currency (Goods)" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/GdsMockQuantityInRefQtyUnit">
+            <Annotation Term="SAP__measures.Unit" Path="ReferenceQuantityUnit" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>ReferenceQuantityUnit</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Quantity (Goods)" />
+            <Annotation Term="SAP__common.Heading" String="Mock Quantity (Goods) in Reference Quantity Unit" />
+            <Annotation Term="SAP__common.QuickInfo" String="Mock Quantity (Goods) in Reference Quantity Unit" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/DeliveryCostBalAmtInCCCrcy">
+            <Annotation Term="SAP__measures.ISOCurrency" Path="MockCodeCurrency" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MockCodeCurrency</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Amount (Mock Costs)" />
+            <Annotation Term="SAP__common.Heading" String="Delivery Costs: Mock Amount in Mock Code Crcy" />
+            <Annotation Term="SAP__common.QuickInfo" String="Mock Amount in Mock Code Currency (Mock Costs)" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/DelivCostBalQtyInRefQtyUnit">
+            <Annotation Term="SAP__measures.Unit" Path="ReferenceQuantityUnit" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>ReferenceQuantityUnit</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Quantity (Mock Costs)" />
+            <Annotation Term="SAP__common.QuickInfo" String="Mock Quantity (Mock Costs) in Reference Quantity Unit" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/GoodsReceiptAmountInCoCodeCrcy">
+            <Annotation Term="SAP__measures.ISOCurrency" Path="MockCodeCurrency" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MockCodeCurrency</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Goods Receipt Amount" />
+            <Annotation Term="SAP__common.Heading" String="Goods Receipt Amount in Mock Code Currency" />
+            <Annotation Term="SAP__common.QuickInfo" String="Goods Receipt Amount in Mock Code Currency" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/InvoiceRcptAmtInCoCodeCrcy">
+            <Annotation Term="SAP__measures.ISOCurrency" Path="MockCodeCurrency" />
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>MockCodeCurrency</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Mock Receipt Amount" />
+            <Annotation Term="SAP__common.Heading" String="Mock Receipt Amount in Mock Code Currency" />
+            <Annotation Term="SAP__common.QuickInfo" String="Mock Receipt Amount in Mock Code Currency" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType">
+            <Annotation Term="SAP__common.Label" String="MOCK Account Reconciliation Monitor" />
+            <Annotation Term="SAP__aggregation.ApplySupported">
+               <Record>
+                  <PropertyValue Property="Transformations">
+                     <Collection>
+                        <String>filter</String>
+                        <String>identity</String>
+                        <String>orderby</String>
+                        <String>search</String>
+                        <String>skip</String>
+                        <String>top</String>
+                        <String>groupby</String>
+                        <String>aggregate</String>
+                        <String>concat</String>
+                     </Collection>
+                  </PropertyValue>
+                  <PropertyValue Property="GroupableProperties">
+                     <Collection>
+                        <PropertyPath>AccountAssignmentCategory</PropertyPath>
+                        <PropertyPath>MockCode</PropertyPath>
+                        <PropertyPath>MockCodeCurrency</PropertyPath>
+                        <PropertyPath>CreatedByUser</PropertyPath>
+                        <PropertyPath>MOCKClearingProcessPriority</PropertyPath>
+                        <PropertyPath>MOCKClearingProcessRootCause</PropertyPath>
+                        <PropertyPath>MOCKClearingProcessStatus</PropertyPath>
+                        <PropertyPath>MOCKClrgProcessPrpsdRootCause</PropertyPath>
+                        <PropertyPath>MOCKClrgProcessPrpsdStatus</PropertyPath>
+                        <PropertyPath>MOCKClrgProcPrpsdPriority</PropertyPath>
+                        <PropertyPath>MOCKHasNoAmountDifference</PropertyPath>
+                        <PropertyPath>MOCKProcPrpslLastChangeDteTime</PropertyPath>
+                        <PropertyPath>MOCKProposedPrioMaxClProblty</PropertyPath>
+                        <PropertyPath>MOCKProposedStatusMaxClProblty</PropertyPath>
+                        <PropertyPath>MOCKPrpsdRootCauseMaxClProblty</PropertyPath>
+                        <PropertyPath>HasNoGoodsReceiptPosted</PropertyPath>
+                        <PropertyPath>HasNoInvoiceReceiptPosted</PropertyPath>
+                        <PropertyPath>HasNote</PropertyPath>
+                        <PropertyPath>InvoicingParty</PropertyPath>
+                        <PropertyPath>InvoicingPartyName</PropertyPath>
+                        <PropertyPath>IsFinallyInvoiced</PropertyPath>
+                        <PropertyPath>IsGdsRcptDelivCostAmtSurplus</PropertyPath>
+                        <PropertyPath>IsGdsRcptDelivCostQtySurplus</PropertyPath>
+                        <PropertyPath>IsGoodsRcptGoodsAmtSurplus</PropertyPath>
+                        <PropertyPath>IsGoodsRcptGoodsQtySurplus</PropertyPath>
+                        <PropertyPath>IsInvoiceDelivCostAmtSurplus</PropertyPath>
+                        <PropertyPath>IsInvoiceDelivCostQtySurplus</PropertyPath>
+                        <PropertyPath>IsInvoiceGoodsAmountSurplus</PropertyPath>
+                        <PropertyPath>IsInvoiceGoodsQtySurplus</PropertyPath>
+                        <PropertyPath>LastChangeDate</PropertyPath>
+                        <PropertyPath>LastChangeDateTime</PropertyPath>
+                        <PropertyPath>LastChangeDateTimeTimezone</PropertyPath>
+                        <PropertyPath>LastChangeDays</PropertyPath>
+                        <PropertyPath>LastChangedByUser</PropertyPath>
+                        <PropertyPath>LatestOpenItemPostingDate</PropertyPath>
+                        <PropertyPath>LatestPostingIsAfterLastChange</PropertyPath>
+                        <PropertyPath>Material</PropertyPath>
+                        <PropertyPath>MaterialGroup</PropertyPath>
+                        <PropertyPath>OldestOpenItemPostingDate</PropertyPath>
+                        <PropertyPath>Plant</PropertyPath>
+                        <PropertyPath>ProposedResponsiblePerson</PropertyPath>
+                        <PropertyPath>PrpsdRespDeptMaxClProbability</PropertyPath>
+                        <PropertyPath>PrpsdResponsibleDepartment</PropertyPath>
+                        <PropertyPath>PrpsdRespPersonMaxClassProblty</PropertyPath>
+                        <PropertyPath>PurchasingDocument</PropertyPath>
+                        <PropertyPath>PurchasingDocumentCategory</PropertyPath>
+                        <PropertyPath>PurchasingDocumentDeletionCode</PropertyPath>
+                        <PropertyPath>PurchasingDocumentItem</PropertyPath>
+                        <PropertyPath>PurchasingDocumentItemCategory</PropertyPath>
+                        <PropertyPath>PurchasingDocumentItemText</PropertyPath>
+                        <PropertyPath>PurchasingDocumentItemUniqueID</PropertyPath>
+                        <PropertyPath>PurchasingDocumentType</PropertyPath>
+                        <PropertyPath>PurchasingGroup</PropertyPath>
+                        <PropertyPath>PurchasingOrganization</PropertyPath>
+                        <PropertyPath>PurgDocOrderQuantityUnit</PropertyPath>
+                        <PropertyPath>ReferenceQuantityUnit</PropertyPath>
+                        <PropertyPath>RequisitionerName</PropertyPath>
+                        <PropertyPath>ResponsibleDepartment</PropertyPath>
+                        <PropertyPath>ResponsiblePerson</PropertyPath>
+                        <PropertyPath>Supplier</PropertyPath>
+                        <PropertyPath>SupplierName</PropertyPath>
+                        <PropertyPath>SystemMessageIdentification</PropertyPath>
+                        <PropertyPath>SystemMessageNumber</PropertyPath>
+                        <PropertyPath>SystemMessageType</PropertyPath>
+                        <PropertyPath>MockCode_Text</PropertyPath>
+                        <PropertyPath>MOCKClearingProcessPriority_Text</PropertyPath>
+                        <PropertyPath>MOCKClearingProcessRootCause_Text</PropertyPath>
+                        <PropertyPath>MOCKClearingProcessStatus_Text</PropertyPath>
+                        <PropertyPath>MOCKClrgProcessPrpsdStatus_Text</PropertyPath>
+                        <PropertyPath>MOCKClrgProcessPrpsdRootCause_Text</PropertyPath>
+                        <PropertyPath>MOCKClrgProcPrpsdPriority_Text</PropertyPath>
+                        <PropertyPath>PurchasingDocumentCategory_Text</PropertyPath>
+                        <PropertyPath>PurchasingDocumentItemCategory_Text</PropertyPath>
+                        <PropertyPath>PurchasingDocumentType_Text</PropertyPath>
+                        <PropertyPath>ValuationArea</PropertyPath>
+                        <PropertyPath>ValuationType</PropertyPath>
+                     </Collection>
+                  </PropertyValue>
+               </Record>
+            </Annotation>
+            <Annotation Term="SAP__UI.TextArrangement" EnumMember="SAP__UI.TextArrangementType/TextLast" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="MockCodeCurrency" String="Edm.String" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="BalAmtInMockCodeCrcy" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="MockAbsoluteAmtInCoCodeCrcy" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="PurgDocOrderQuantityUnit" String="Edm.String" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="ReferenceQuantityUnit" String="Edm.String" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="MockQuantityInRefQtyUnit" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="MockAbsoluteQtyInRefQtyUnit" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="GoodsReceiptQtyInRefQtyUnit" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="InvoiceReceiptQtyInRefQtyUnit" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="PurchasingDocumentOrderQty" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="NumberOfGoodsReceipts" String="Edm.Int32" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="NumberOfInvoiceReceipts" String="Edm.Int32" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="NumberOfOpenItems" String="Edm.Int32" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="NumberOfPurchaseOrderItems" String="Edm.Int32" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="GoodsReceiptGoodsAmtInCCCrcy" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="GdsRcptDelivCostAmtInCCCrcy" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="InvoiceRcptGoodsAmtInCCCrcy" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="InvcRcptDelivCostAmtInCCCrcy" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="GoodsReceiptGdsQtyInRefQtyUnit" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="GRDelivCostQtyInRefQtyUnit" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="InvoiceRcptGdsQtyInRefQtyUnit" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="InvcRcptDelivQtyInRefQtyUnit" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="GoodsMockAmountInCCCrcy" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="GdsMockQuantityInRefQtyUnit" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="DeliveryCostBalAmtInCCCrcy" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="DelivCostBalQtyInRefQtyUnit" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="GoodsReceiptAmountInCoCodeCrcy" String="Edm.Decimal" />
+            <Annotation Term="SAP__aggregation.CustomAggregate" Qualifier="InvoiceRcptAmtInCoCodeCrcy" String="Edm.Decimal" />
+         </Annotations>
+         <Annotations Target="SAP__self.Container/C_MockAccountReconciliation">
+            <Annotation Term="SAP__capabilities.SearchRestrictions">
+               <Record>
+                  <PropertyValue Property="Searchable" Bool="false" />
+               </Record>
+            </Annotation>
+            <Annotation Term="SAP__capabilities.FilterRestrictions">
+               <Record>
+                  <PropertyValue Property="Filterable" Bool="true" />
+                  <PropertyValue Property="FilterExpressionRestrictions">
+                     <Collection>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="MockCode" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="PurchasingDocument" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="PurchasingDocumentItem" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="LastChangeDateTime" />
+                           <PropertyValue Property="AllowedExpressions" String="SingleRange" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="ResponsibleDepartment" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="ResponsiblePerson" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="MOCKClearingProcessStatus" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="MOCKClearingProcessPriority" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="HasNote" />
+                           <PropertyValue Property="AllowedExpressions" String="SingleValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="MOCKClearingProcessRootCause" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="LatestPostingIsAfterLastChange" />
+                           <PropertyValue Property="AllowedExpressions" String="SingleValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="PrpsdResponsibleDepartment" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="ProposedResponsiblePerson" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="MOCKClrgProcessPrpsdStatus" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="MOCKClrgProcPrpsdPriority" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="MOCKClrgProcessPrpsdRootCause" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="MOCKProcPrpslLastChangeDteTime" />
+                           <PropertyValue Property="AllowedExpressions" String="SingleRange" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="Plant" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="PurchasingOrganization" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="PurchasingGroup" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="MaterialGroup" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="Material" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="IsFinallyInvoiced" />
+                           <PropertyValue Property="AllowedExpressions" String="SingleValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="Supplier" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="LatestOpenItemPostingDate" />
+                           <PropertyValue Property="AllowedExpressions" String="SingleRange" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="PurchasingDocumentItemCategory" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="PurchasingDocumentCategory" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="PurchasingDocumentType" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                        <Record>
+                           <PropertyValue Property="Property" PropertyPath="InvoicingParty" />
+                           <PropertyValue Property="AllowedExpressions" String="MultiValue" />
+                        </Record>
+                     </Collection>
+                  </PropertyValue>
+                  <PropertyValue Property="NonFilterableProperties">
+                     <Collection>
+                        <PropertyPath>MOCKClearingProcessStatus_Text</PropertyPath>
+                        <PropertyPath>MOCKClearingProcessPriority_Text</PropertyPath>
+                        <PropertyPath>MOCKClearingProcessRootCause_Text</PropertyPath>
+                        <PropertyPath>MOCKClrgProcessPrpsdStatus_Text</PropertyPath>
+                        <PropertyPath>MOCKClrgProcPrpsdPriority_Text</PropertyPath>
+                        <PropertyPath>MOCKClrgProcessPrpsdRootCause_Text</PropertyPath>
+                        <PropertyPath>PrpsdRespDeptMaxClProbability</PropertyPath>
+                        <PropertyPath>PrpsdRespPersonMaxClassProblty</PropertyPath>
+                        <PropertyPath>MOCKProposedStatusMaxClProblty</PropertyPath>
+                        <PropertyPath>MOCKProposedPrioMaxClProblty</PropertyPath>
+                        <PropertyPath>MOCKPrpsdRootCauseMaxClProblty</PropertyPath>
+                        <PropertyPath>RequisitionerName</PropertyPath>
+                        <PropertyPath>SupplierName</PropertyPath>
+                        <PropertyPath>PurchasingDocumentItemCategory_Text</PropertyPath>
+                        <PropertyPath>PurchasingDocumentCategory_Text</PropertyPath>
+                        <PropertyPath>PurchasingDocumentType_Text</PropertyPath>
+                        <PropertyPath>InvoicingPartyName</PropertyPath>
+                     </Collection>
+                  </PropertyValue>
+               </Record>
+            </Annotation>
+            <Annotation Term="SAP__capabilities.InsertRestrictions">
+               <Record>
+                  <PropertyValue Property="Insertable" Bool="false" />
+               </Record>
+            </Annotation>
+            <Annotation Term="SAP__capabilities.DeleteRestrictions">
+               <Record>
+                  <PropertyValue Property="Deletable" Bool="false" />
+               </Record>
+            </Annotation>
+            <Annotation Term="SAP__capabilities.UpdateRestrictions">
+               <Record>
+                  <PropertyValue Property="Updatable" Bool="false" />
+                  <PropertyValue Property="QueryOptions">
+                     <Record>
+                        <PropertyValue Property="SelectSupported" Bool="true" />
+                     </Record>
+                  </PropertyValue>
+               </Record>
+            </Annotation>
+         </Annotations>
+         <Annotations Target="SAP__self.Container">
+            <Annotation Term="SAP__CodeList.CurrencyCodes">
+               <Record>
+                  <PropertyValue Property="Url" String="../../../../default/iwbep/common/0001/$metadata" />
+                  <PropertyValue Property="CollectionPath" String="Currencies" />
+               </Record>
+            </Annotation>
+            <Annotation Term="SAP__CodeList.UnitsOfMeasure">
+               <Record>
+                  <PropertyValue Property="Url" String="../../../../default/iwbep/common/0001/$metadata" />
+                  <PropertyValue Property="CollectionPath" String="UnitsOfMeasure" />
+               </Record>
+            </Annotation>
+            <Annotation Term="SAP__common.ApplyMultiUnitBehaviorForSortingAndFiltering" Bool="true" />
+            <Annotation Term="SAP__capabilities.FilterFunctions">
+               <Collection>
+                  <String>eq</String>
+                  <String>ne</String>
+                  <String>gt</String>
+                  <String>ge</String>
+                  <String>lt</String>
+                  <String>le</String>
+                  <String>and</String>
+                  <String>or</String>
+                  <String>contains</String>
+                  <String>startswith</String>
+                  <String>endswith</String>
+                  <String>any</String>
+                  <String>all</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__capabilities.SupportedFormats">
+               <Collection>
+                  <String>application/json</String>
+                  <String>application/pdf</String>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__PDF.Features">
+               <Record>
+                  <PropertyValue Property="DocumentDescriptionReference" String="../../../../default/iwbep/common/0001/$metadata" />
+                  <PropertyValue Property="DocumentDescriptionCollection" String="MyDocumentDescriptions" />
+                  <PropertyValue Property="ArchiveFormat" Bool="true" />
+                  <PropertyValue Property="Border" Bool="true" />
+                  <PropertyValue Property="CoverPage" Bool="true" />
+                  <PropertyValue Property="FitToPage" Bool="true" />
+                  <PropertyValue Property="FontName" Bool="true" />
+                  <PropertyValue Property="FontSize" Bool="true" />
+                  <PropertyValue Property="HeaderFooter" Bool="true" />
+                  <PropertyValue Property="IANATimezoneFormat" Bool="true" />
+                  <PropertyValue Property="Margin" Bool="true" />
+                  <PropertyValue Property="Padding" Bool="true" />
+                  <PropertyValue Property="ResultSizeDefault" Int="20000" />
+                  <PropertyValue Property="ResultSizeMaximum" Int="20000" />
+                  <PropertyValue Property="Signature" Bool="true" />
+                  <PropertyValue Property="TextDirectionLayout" Bool="true" />
+                  <PropertyValue Property="Treeview" Bool="true" />
+                  <PropertyValue Property="UploadToFileShare" Bool="true" />
+               </Record>
+            </Annotation>
+            <Annotation Term="SAP__capabilities.KeyAsSegmentSupported" />
+            <Annotation Term="SAP__capabilities.AsynchronousRequestsSupported" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/InvoicingPartyName">
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>InvoicingParty</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Invoicing Party Name" />
+            <Annotation Term="SAP__common.QuickInfo" String="Name of Invoicing Party" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/SupplierName">
+            <Annotation Term="SAP__aggregation.ContextDefiningProperties">
+               <Collection>
+                  <PropertyPath>Supplier</PropertyPath>
+               </Collection>
+            </Annotation>
+            <Annotation Term="SAP__common.Label" String="Name of Supplier" />
+            <Annotation Term="SAP__common.Heading" String="Supplier" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/HasNoGoodsReceiptPosted">
+            <Annotation Term="SAP__UI.HiddenFilter" />
+            <Annotation Term="SAP__common.Label" String="No Goods Receipt Posted" />
+            <Annotation Term="SAP__common.QuickInfo" String="There is no goods receipt posted." />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/HasNoInvoiceReceiptPosted">
+            <Annotation Term="SAP__UI.HiddenFilter" />
+            <Annotation Term="SAP__common.Label" String="No Mock Receipt Posted" />
+            <Annotation Term="SAP__common.QuickInfo" String="There is no invoice receipt posted." />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKHasNoAmountDifference">
+            <Annotation Term="SAP__UI.HiddenFilter" />
+            <Annotation Term="SAP__common.Label" String="No Amount Difference" />
+            <Annotation Term="SAP__common.QuickInfo" String="There is no goods receipt posted." />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/IsGoodsRcptGoodsAmtSurplus">
+            <Annotation Term="SAP__UI.HiddenFilter" />
+            <Annotation Term="SAP__common.Label" String="Is Goods Receipt Goods Amount Surplus" />
+            <Annotation Term="SAP__common.Heading" String="Goods Receipt Surplus Amount (Goods)" />
+            <Annotation Term="SAP__common.QuickInfo" String="There is goods amount surplus in goods receipts." />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/IsInvoiceGoodsAmountSurplus">
+            <Annotation Term="SAP__UI.HiddenFilter" />
+            <Annotation Term="SAP__common.Label" String="Is Invoice Goods Amount Surplus" />
+            <Annotation Term="SAP__common.Heading" String="Invoice Surplus Amount  (Goods)" />
+            <Annotation Term="SAP__common.QuickInfo" String="There is goods amount surplus in invoices." />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/IsGdsRcptDelivCostAmtSurplus">
+            <Annotation Term="SAP__UI.HiddenFilter" />
+            <Annotation Term="SAP__common.Label" String="Is GR Delivery Cost Amount Surplus" />
+            <Annotation Term="SAP__common.Heading" String="Goods Receipt Surplus Amount (Mock Costs)" />
+            <Annotation Term="SAP__common.QuickInfo" String="There is delivery cost amount surplus in goods receipts." />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/IsInvoiceDelivCostAmtSurplus">
+            <Annotation Term="SAP__UI.HiddenFilter" />
+            <Annotation Term="SAP__common.Label" String="Is Invoice Delivery Cost Amount Surplus" />
+            <Annotation Term="SAP__common.Heading" String="Invoice Surplus Amount  (Mock Costs)" />
+            <Annotation Term="SAP__common.QuickInfo" String="There is delivery cost amount surplus in invoices." />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/IsGoodsRcptGoodsQtySurplus">
+            <Annotation Term="SAP__UI.HiddenFilter" />
+            <Annotation Term="SAP__common.Label" String="Is Goods Receipt Goods Quantity Surplus" />
+            <Annotation Term="SAP__common.Heading" String="Goods Receipt Surplus Quantity (Goods)" />
+            <Annotation Term="SAP__common.QuickInfo" String="There is goods quantity surplus in goods receipts." />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/IsInvoiceGoodsQtySurplus">
+            <Annotation Term="SAP__UI.HiddenFilter" />
+            <Annotation Term="SAP__common.Label" String="Is Invoice Goods Quantity Surplus" />
+            <Annotation Term="SAP__common.Heading" String="Invoice Surplus Quantity (Goods)" />
+            <Annotation Term="SAP__common.QuickInfo" String="There is goods quantity surplus in invoices." />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/IsGdsRcptDelivCostQtySurplus">
+            <Annotation Term="SAP__UI.HiddenFilter" />
+            <Annotation Term="SAP__common.Label" String="Is GR Delivery Cost Quantity Surplus" />
+            <Annotation Term="SAP__common.Heading" String="Goods Receipt Surplus Quantity (Mock Costs)" />
+            <Annotation Term="SAP__common.QuickInfo" String="There is delivery cost quantity surplus in goods receipts." />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/IsInvoiceDelivCostQtySurplus">
+            <Annotation Term="SAP__UI.HiddenFilter" />
+            <Annotation Term="SAP__common.Label" String="Is Invoice Delivery Cost Qty Surplus" />
+            <Annotation Term="SAP__common.Heading" String="Invoice Surplus Quantity (Mock Costs)" />
+            <Annotation Term="SAP__common.QuickInfo" String="There is delivery cost quantity surplus in invoices." />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PrpsdRespDeptMaxClProbability">
+            <Annotation Term="SAP__UI.Hidden" />
+            <Annotation Term="SAP__common.Label" String="Processing Department Proposal Confidence" />
+            <Annotation Term="SAP__common.Heading" String="Maximum Class Problt of MOCK Clrg Proc Prpsd Resp Dept" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PrpsdRespPersonMaxClassProblty">
+            <Annotation Term="SAP__UI.Hidden" />
+            <Annotation Term="SAP__common.Label" String="Processor Proposal Confidence" />
+            <Annotation Term="SAP__common.Heading" String="Max Class Problt of MOCK Clrg Proc Proposed Resp Person" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKProposedStatusMaxClProblty">
+            <Annotation Term="SAP__UI.Hidden" />
+            <Annotation Term="SAP__common.Label" String="Status Proposal Confidence" />
+            <Annotation Term="SAP__common.Heading" String="Maximum Class Problty of MOCK Clrg Proc Prpsd Status" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKProposedPrioMaxClProblty">
+            <Annotation Term="SAP__UI.Hidden" />
+            <Annotation Term="SAP__common.Label" String="Priority Proposal Confidence" />
+            <Annotation Term="SAP__common.Heading" String="Maximum Class Problt of MOCK Clrg Proc Prpsd Priority" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKPrpsdRootCauseMaxClProblty">
+            <Annotation Term="SAP__UI.Hidden" />
+            <Annotation Term="SAP__common.Label" String="Root Cause Proposal Confidence" />
+            <Annotation Term="SAP__common.Heading" String="Maximum Class Problt of MOCK Clrg Proc Prpsd Root Cause" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/PurchasingDocumentItemText">
+            <Annotation Term="SAP__UI.Hidden" />
+            <Annotation Term="SAP__common.Label" String="Short Text" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=TXZ01" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/NumberOfGoodsReceipts">
+            <Annotation Term="SAP__common.Label" String="Number of Goods Receipts" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/NumberOfInvoiceReceipts">
+            <Annotation Term="SAP__common.Label" String="Number of Mock Receipts" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/ResponsibleDepartment">
+            <Annotation Term="SAP__common.Label" String="Processing Department" />
+            <Annotation Term="SAP__common.Heading" String="Processing Department of MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Processing Department of MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/HasNote">
+            <Annotation Term="SAP__common.Label" String="Notes" />
+            <Annotation Term="SAP__common.Heading" String="Notes Included in MOCK Clearing Process" />
+            <Annotation Term="SAP__common.QuickInfo" String="Notes Included in MOCK Clearing Process" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/LastChangeDate">
+            <Annotation Term="SAP__common.Label" String="Changed On" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/LatestPostingIsAfterLastChange">
+            <Annotation Term="SAP__common.Label" String="Latest Posting is After Last Change" />
+            <Annotation Term="SAP__common.Heading" String="Latest Posting Date is After Last Changed Date" />
+            <Annotation Term="SAP__common.QuickInfo" String="Latest Posting Date is After Last Changed Date" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/MOCKProcPrpslLastChangeDteTime">
+            <Annotation Term="SAP__common.Label" String="Proposals Last Updated On" />
+            <Annotation Term="SAP__common.Heading" String="MOCK Proposals Last Updated On" />
+            <Annotation Term="SAP__common.QuickInfo" String="MOCK Clearing Process Last Change Date Time" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/RequisitionerName">
+            <Annotation Term="SAP__common.Label" String="Requisitioner" />
+            <Annotation Term="SAP__common.Heading" String="Requisnr." />
+            <Annotation Term="SAP__common.QuickInfo" String="Name of requisitioner/requester" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=AFNAM" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/IsFinallyInvoiced">
+            <Annotation Term="SAP__common.Label" String="Final Invoice" />
+            <Annotation Term="SAP__common.Heading" String="FIn" />
+            <Annotation Term="SAP__common.QuickInfo" String="Final Invoice Indicator" />
+            <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=EREKZ" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/LastChangeDays">
+            <Annotation Term="SAP__common.Label" String="Last Change in Days" />
+            <Annotation Term="SAP__common.Heading" String="Number of days until the last change" />
+            <Annotation Term="SAP__common.QuickInfo" String="Number of days until the last change" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/LatestOpenItemPostingDate">
+            <Annotation Term="SAP__common.Label" String="Latest Posting Date" />
+            <Annotation Term="SAP__common.Heading" String="Posting Date of Latest Open Item" />
+            <Annotation Term="SAP__common.QuickInfo" String="Posting Date of Latest Open Item" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/OldestOpenItemPostingDate">
+            <Annotation Term="SAP__common.Label" String="Oldest Posting Date" />
+            <Annotation Term="SAP__common.Heading" String="Posting Date of Oldest Open Item" />
+            <Annotation Term="SAP__common.QuickInfo" String="Posting Date of Oldest Open Item" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/NumberOfOpenItems">
+            <Annotation Term="SAP__common.Label" String="Nr. of Open Items" />
+            <Annotation Term="SAP__common.Heading" String="Number of Open Items" />
+            <Annotation Term="SAP__common.QuickInfo" String="Number of Open Items" />
+         </Annotations>
+         <Annotations Target="SAP__self.C_MockAccountReconciliationType/NumberOfPurchaseOrderItems">
+            <Annotation Term="SAP__common.Label" String="Number of Purchasing Document Items" />
+         </Annotations>
+      </Schema>
+   </edmx:DataServices>
+</edmx:Edmx>

@@ -1,5 +1,43 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.8
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core-types@0.4.3
+
+## 0.4.7
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+
+## 0.4.6
+
+### Patch Changes
+
+-   3f273c9: update vocabularies
+
+## 0.4.5
+
+### Patch Changes
+
+-   54b6d61: fix: updateVocabularies
+
+## 0.4.4
+
+### Patch Changes
+
+-   8af1ba2: update vocabularies
+
+## 0.4.3
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/odata-annotation-core-types@0.4.2
+
 ## 0.4.2
 
 ### Patch Changes

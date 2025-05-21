@@ -1,6 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { PromptState } from './prompt-state';
-import { clientDoesNotExistOrInvalid } from '../validator-utils';
 import { findBackendSystemByUrl, initTransportConfig } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
 import { t } from '../i18n';
@@ -11,10 +10,12 @@ import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
+    type UI5AbapRepoPromptOptions,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type BackendTarget,
-    type TransportListItem
+    type TransportListItem,
+    type TransportInputChoicePromptOptions
 } from '../types';
 
 /**
@@ -53,52 +54,45 @@ export function showScpQuestion(previousAnswers: AbapDeployConfigAnswersInternal
 }
 
 /**
- * Client condition to determine if the client question should be shown.
+ * Client condition to determine if the client question should be shown. Validates the SCP confirmation and project configuration properties.
  *
- * @param isS4HanaCloudSystem - is S/4 HANA Cloud system
+ * @param scp - is SCP system
  * @returns boolean
  */
-function showClientCondition(isS4HanaCloudSystem?: boolean): boolean {
+function showClientCondition(scp?: boolean): boolean {
     return Boolean(
-        !isAppStudio() &&
-            clientDoesNotExistOrInvalid(PromptState.abapDeployConfig.client) &&
-            !PromptState.abapDeployConfig.scp &&
-            !isS4HanaCloudSystem
+        !isAppStudio() && !PromptState.abapDeployConfig?.isS4HC && !scp && !PromptState.abapDeployConfig?.scp
     );
 }
 
 /**
  * Determines if the client choice question should be shown.
  *
+ * @param previousAnswers - previous answers
  * @param client - client
- * @param isS4HanaCloudSystem - is S/4 HANA Cloud system
  * @returns boolean
  */
-export function showClientChoiceQuestion(client?: string, isS4HanaCloudSystem?: boolean): boolean {
+export function showClientChoiceQuestion(previousAnswers?: AbapDeployConfigAnswersInternal, client?: string): boolean {
     if (PromptState.isYUI || !client) {
         return false;
     }
-
-    return showClientCondition(isS4HanaCloudSystem);
+    return showClientCondition(previousAnswers?.scp) && previousAnswers?.targetSystem === TargetSystemType.Url;
 }
 
 /**
- * Determines if the client question should be shown.
- * Note: In some instances, when a yaml conf is parsed, double quoted properties i.e. client: "100" are saved as a number instead of a string.
+ * Determines if the client question should be shown under very specific conditions.
  *
- * @param clientChoice - client choice from previous answers
- * @param client - client
- * @param isS4HanaCloudSystem - is S/4 HANA Cloud system
+ * @param previousAnswers - previous answers
  * @returns boolean
  */
-export function showClientQuestion(clientChoice?: string, client?: string, isS4HanaCloudSystem?: boolean): boolean {
-    const clientCondition = showClientCondition(isS4HanaCloudSystem);
-
-    if (clientCondition && client) {
-        PromptState.abapDeployConfig.client = String(client);
-    }
-    const showOnCli = clientChoice === ClientChoiceValue.New || !client;
-    return !PromptState.isYUI ? showOnCli && clientCondition : clientCondition;
+export function showClientQuestion(previousAnswers?: AbapDeployConfigAnswersInternal): boolean {
+    const clientCondition = showClientCondition(previousAnswers?.scp);
+    const isTargetUrl = previousAnswers?.targetSystem === TargetSystemType.Url;
+    const showCli = !PromptState.isYUI
+        ? previousAnswers?.clientChoice === ClientChoiceValue.New || isTargetUrl
+        : isTargetUrl;
+    const showYui = PromptState.isYUI ? isTargetUrl : false;
+    return (showYui && clientCondition) || (showCli && clientCondition);
 }
 
 /**
@@ -115,7 +109,6 @@ export async function showUsernameQuestion(backendTarget?: BackendTarget): Promi
         warning
     } = await initTransportConfig({
         backendTarget: backendTarget,
-        scp: PromptState.abapDeployConfig.scp,
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
         destination: PromptState.abapDeployConfig.destination,
@@ -151,11 +144,16 @@ export function showPasswordQuestion(): boolean {
 /**
  * Determines if the UI5 app deploy config question should be shown (UI5 Abap Repo name & Description).
  *
- * @param hideUi5AbapRepoPrompt - option to hide the prompt if using a btp system
+ * @param ui5AbapPromptOptions - UI5 Abap Repo prompt options
  * @returns boolean
  */
-export function showUi5AppDeployConfigQuestion(hideUi5AbapRepoPrompt?: boolean): boolean {
-    if (hideUi5AbapRepoPrompt) {
+export function showUi5AppDeployConfigQuestion(ui5AbapPromptOptions?: UI5AbapRepoPromptOptions): boolean {
+    if (
+        !ui5AbapPromptOptions?.hide &&
+        ui5AbapPromptOptions?.hideIfOnPremise &&
+        !PromptState.abapDeployConfig?.scp &&
+        !PromptState.abapDeployConfig?.isS4HC
+    ) {
         return false;
     }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
@@ -227,6 +225,9 @@ export function defaultOrShowSearchPackageQuestion(packageInputChoice?: string, 
  * @returns boolean
  */
 function defaultOrShowTransportQuestion(): boolean {
+    if (PromptState.transportAnswers.transportRequired === false) {
+        return false;
+    }
     if (PromptState.transportAnswers.transportConfig?.getDefaultTransport() !== undefined) {
         PromptState.abapDeployConfig.transport = PromptState.transportAnswers.transportConfig.getDefaultTransport();
         return false;
@@ -241,9 +242,18 @@ function defaultOrShowTransportQuestion(): boolean {
 /**
  * Determines if the transport input choice question should be shown.
  *
+ * @param options - abap deploy config prompt options
  * @returns boolean
  */
-export function showTransportInputChoice(): boolean {
+export function showTransportInputChoice(options?: TransportInputChoicePromptOptions): boolean {
+    if (
+        options?.hideIfOnPremise === true &&
+        !PromptState.abapDeployConfig?.isS4HC &&
+        !PromptState.abapDeployConfig?.scp
+    ) {
+        return false;
+    }
+
     return defaultOrShowTransportQuestion();
 }
 
@@ -261,9 +271,13 @@ function isTransportListEmpty(transportList?: TransportListItem[]): boolean {
  * Determines if the transport list question should be shown.
  *
  * @param transportInputChoice - transportInputChoice from previous answers
+ * @param transportInputChoiceOptions - transportInputChoice options
  * @returns boolean
  */
-export function defaultOrShowTransportListQuestion(transportInputChoice?: string): boolean {
+export function defaultOrShowTransportListQuestion(
+    transportInputChoice?: string,
+    transportInputChoiceOptions?: TransportInputChoicePromptOptions
+): boolean {
     const showQuestion = defaultOrShowTransportQuestion();
     if (!showQuestion) {
         return false;
@@ -271,7 +285,8 @@ export function defaultOrShowTransportListQuestion(transportInputChoice?: string
 
     return (
         transportInputChoice === TransportChoices.ListExistingChoice &&
-        !isTransportListEmpty(PromptState.transportAnswers.transportList)
+        !isTransportListEmpty(PromptState.transportAnswers.transportList) &&
+        !(transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isS4HC === false)
     );
 }
 
@@ -296,10 +311,18 @@ export function defaultOrShowTransportCreatedQuestion(transportInputChoice?: str
  * Determines if the manual transport prompt should be shown.
  *
  * @param transportInputChoice - transportInputChoice from previous answers
+ * @param transportInputChoiceOptions - transportInputChoice options
  * @returns boolean
  */
-export function defaultOrShowManualTransportQuestion(transportInputChoice?: string): boolean {
-    return defaultOrShowTransportQuestion() && transportInputChoice === TransportChoices.EnterManualChoice;
+export function defaultOrShowManualTransportQuestion(
+    transportInputChoice?: string,
+    transportInputChoiceOptions?: TransportInputChoicePromptOptions
+): boolean {
+    return (
+        defaultOrShowTransportQuestion() &&
+        (transportInputChoice === TransportChoices.EnterManualChoice ||
+            (transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isS4HC === false))
+    );
 }
 
 /**
@@ -309,18 +332,6 @@ export function defaultOrShowManualTransportQuestion(transportInputChoice?: stri
  * @returns boolean
  */
 export function showIndexQuestion(options: AbapDeployConfigPromptOptions): boolean {
-    const condition = Boolean(options.indexGenerationAllowed && !PromptState.abapDeployConfig.index);
+    const condition = Boolean(options.index?.indexGenerationAllowed && !PromptState.abapDeployConfig.index);
     return condition && !PromptState.transportAnswers.transportConfigError && options.backendTarget?.type !== 'library';
-}
-
-/**
- * Determines if the overwrite prompt should be shown.
- *
- * @param options - abap deploy config prompt options
- * @returns boolean
- */
-export function showOverwriteQuestion(options: AbapDeployConfigPromptOptions): boolean {
-    return Boolean(
-        options.showOverwriteQuestion && !!options.existingDeployTaskConfig && !PromptState.abapDeployConfig.overwrite
-    );
 }

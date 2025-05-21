@@ -66,8 +66,8 @@ describe('ControllerExtension', () => {
             undefined
         ];
 
-        test.each(pageTypeTests)('New controller extension - %s', (pageType) => {
-            generateControllerExtension(
+        test.each(pageTypeTests)('New controller extension - %s', async (pageType) => {
+            await generateControllerExtension(
                 testDir,
                 {
                     ...controllerExtension,
@@ -82,8 +82,8 @@ describe('ControllerExtension', () => {
             expect(fs.read(expectedControllerPath)).toMatchSnapshot();
         });
 
-        test('New controller extension with page id', () => {
-            generateControllerExtension(
+        test('New controller extension with page id', async () => {
+            await generateControllerExtension(
                 testDir,
                 {
                     ...controllerExtension,
@@ -98,8 +98,8 @@ describe('ControllerExtension', () => {
             expect(fs.read(expectedControllerPath)).toMatchSnapshot();
         });
 
-        test(`New controller extension with manual target`, () => {
-            generateControllerExtension(
+        test(`New controller extension with manual target`, async () => {
+            await generateControllerExtension(
                 testDir,
                 {
                     ...controllerExtension,
@@ -199,12 +199,12 @@ describe('ControllerExtension', () => {
                 }
             ];
 
-            test.each(testCases)('$name', ({ controllerConfig }) => {
+            test.each(testCases)('$name', async ({ controllerConfig }) => {
                 const manifestWithExtensions = getManifest(getExtensions());
                 fs = create(createStorage());
                 fs.delete(testDir);
                 fs.write(join(testDir, 'webapp/manifest.json'), manifestWithExtensions);
-                generateControllerExtension(testDir, controllerConfig, fs);
+                await generateControllerExtension(testDir, controllerConfig, fs);
                 expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
                 expect(fs.exists(getControllerPath(controllerConfig))).toBeTruthy();
             });
@@ -232,7 +232,7 @@ describe('ControllerExtension', () => {
                 }
             ];
 
-            test.each(mixStateTestCases)('$name', ({ controllerConfig }) => {
+            test.each(mixStateTestCases)('$name', async ({ controllerConfig }) => {
                 const extension = getExtensions();
                 extension['sap.ui.controllerExtensions'][
                     'sap.fe.templates.ListReport.ListReportController'
@@ -241,7 +241,7 @@ describe('ControllerExtension', () => {
                 fs = create(createStorage());
                 fs.delete(testDir);
                 fs.write(join(testDir, 'webapp/manifest.json'), manifestWithExtensions);
-                generateControllerExtension(testDir, controllerConfig, fs);
+                await generateControllerExtension(testDir, controllerConfig, fs);
                 expect(fs.readJSON(join(testDir, 'webapp/manifest.json'))).toMatchSnapshot();
                 expect(fs.exists(getControllerPath(controllerConfig))).toBeTruthy();
             });
@@ -266,8 +266,8 @@ describe('ControllerExtension', () => {
                 const copyTarget = copySpy.mock.calls[callIndex][1] as string;
                 return copyTarget === target;
             };
-            test.each(pageTypeTests)('New controller extension - %s', (pageType) => {
-                generateControllerExtension(
+            test.each(pageTypeTests)('New controller extension - %s', async (pageType) => {
+                await generateControllerExtension(
                     testDir,
                     {
                         ...controllerExtension,
@@ -291,8 +291,8 @@ describe('ControllerExtension', () => {
                 'my.project.ext.view.Test'
             ];
 
-            test.each(manualExtensionsTests)('New controller extension with manual target - %s', (extension) => {
-                generateControllerExtension(
+            test.each(manualExtensionsTests)('New controller extension with manual target - %s', async (extension) => {
+                await generateControllerExtension(
                     testDir,
                     {
                         ...controllerExtension,
@@ -306,12 +306,12 @@ describe('ControllerExtension', () => {
                 expect(fs.read(expectedTestControllerPath)).toMatchSnapshot();
             });
 
-            test('Check "ControllerExtension.d.ts" file', () => {
+            test('Check "ControllerExtension.d.ts" file', async () => {
                 expect(fs.exists(expectedDeclarationFilePath)).toBeFalsy();
                 // Spy for copy method to detect how often it is called
                 const copySpy = jest.spyOn(fs, 'copy');
                 // Create extension controller
-                generateControllerExtension(
+                await generateControllerExtension(
                     testDir,
                     {
                         ...controllerExtension,
@@ -351,7 +351,7 @@ describe('ControllerExtension', () => {
                     },
                     typescript: true
                 };
-                generateControllerExtension(testDir, secondExtension as ControllerExtension, fs);
+                await generateControllerExtension(testDir, secondExtension as ControllerExtension, fs);
                 expect(fs.exists(expectedDeclarationFilePath)).toBeTruthy();
                 // Check how fs.copy method called - copy for 'Controller.ts' only, 'ControllerExtension.d.ts' was created on very first creation
                 expect(copySpy).toBeCalledTimes(1);
@@ -372,8 +372,8 @@ describe('ControllerExtension', () => {
         });
 
         describe('Test property custom "tabSizing"', () => {
-            test.each(tabSizingTestCases)('$name', ({ tabInfo, expectedAfterSave }) => {
-                generateControllerExtension(
+            test.each(tabSizingTestCases)('$name', async ({ tabInfo, expectedAfterSave }) => {
+                await generateControllerExtension(
                     testDir,
                     {
                         ...controllerExtension,
@@ -385,7 +385,7 @@ describe('ControllerExtension', () => {
                 let result = detectTabSpacing(updatedManifest);
                 expect(result).toEqual(expectedAfterSave);
                 // Generate another controller extension and check if new tab sizing recalculated correctly without passing tab size info
-                generateControllerExtension(
+                await generateControllerExtension(
                     testDir,
                     {
                         ...controllerExtension,
