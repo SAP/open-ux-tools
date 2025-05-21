@@ -330,6 +330,10 @@ export type ServiceSelectionPromptOptions = {
      * This is used to indicate that the service does not support collaborative draft.
      */
     showCollaborativeDraftWarning?: boolean;
+    /**
+     * A list of service ids which will be used to filter the service returned from the catalog service
+     */
+    serviceFilter?: string[];
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
 
 export type SystemNamePromptOptions = {
