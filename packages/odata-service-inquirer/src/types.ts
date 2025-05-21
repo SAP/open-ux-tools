@@ -331,7 +331,7 @@ export type ServiceSelectionPromptOptions = {
      */
     showCollaborativeDraftWarning?: boolean;
     /**
-     * A list of service ids which will be used to filter the service returned from the catalog service
+     * A list of service ids used to filter the catalog results
      */
     serviceFilter?: string[];
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
