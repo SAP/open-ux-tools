@@ -2,4 +2,4 @@
 '@sap-ux/axios-extension': patch
 ---
 
-Disable System info params encoding
+fix(axios): Disable System info params encoding
