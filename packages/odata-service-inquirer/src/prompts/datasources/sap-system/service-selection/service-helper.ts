@@ -96,9 +96,13 @@ function logServiceCatalogErrorsForHelp(
  * Get the service choices from the specified catalogs.
  *
  * @param catalogs catalogs to get the services from. There should be one per odata version required.
+ * @param serviceFilter list of service ids used for filtering the choices
  * @returns service choices based on the provided catalogs
  */
-export async function getServiceChoices(catalogs: CatalogService[]): Promise<ListChoiceOptions<ServiceAnswer>[]> {
+export async function getServiceChoices(
+    catalogs: CatalogService[],
+    serviceFilter?: string[]
+): Promise<ListChoiceOptions<ServiceAnswer>[]> {
     const requestErrors: Record<ODataVersion, unknown> | {} = {};
     const listServicesRequests = catalogs.map(async (catalog) => {
         try {
@@ -119,13 +123,16 @@ export async function getServiceChoices(catalogs: CatalogService[]): Promise<Lis
         }
     });
     const serviceInfos: ODataServiceInfo[][] = await Promise.all(listServicesRequests);
-    const flatServices = serviceInfos?.flat() ?? [];
+    let flatServices = serviceInfos?.flat() ?? [];
     LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
 
     if (flatServices.length === 0) {
         logServiceCatalogErrorsForHelp(requestErrors, catalogs.length);
     }
 
+    if (serviceFilter) {
+        flatServices = flatServices.filter((service) => serviceFilter.includes(service.id));
+    }
     return createServiceChoices(flatServices);
 }
 
