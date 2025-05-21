@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.4.2
+
+### Patch Changes
+
+-   6cc19b7: Fix for drive letter casing mismatch when selecting CAP projects on Windows
+
 ## 2.4.1
 
 ### Patch Changes

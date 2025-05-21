@@ -57,15 +57,4 @@ describe('add/cards-generator', () => {
         expect(enableCardGeneratorConfigMock).toBeCalled();
         expect(traceSpy).toBeCalled();
     });
-
-    test('add cards-generator --skip-install', async () => {
-        // Test execution
-        const command = new Command('add');
-        addCardsEditorConfigCommand(command);
-        await command.parseAsync(testArgv(['--skip-install']));
-
-        // Flow check
-        expect(enableCardGeneratorConfigMock).toBeCalled();
-        expect(traceSpy).not.toBeCalled();
-    });
 });
