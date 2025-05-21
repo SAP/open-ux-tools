@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.20.6
+
+### Patch Changes
+
+-   225e7d7: fix: Add message when controller extension pending change is created
+
 ## 0.20.5
 
 ### Patch Changes

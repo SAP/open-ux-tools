@@ -7,6 +7,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { ValueState } from 'mock/sap/ui/core/library';
 import { fetchMock, openMock, sapCoreMock } from 'mock/window';
+import MessageToast from 'mock/sap/m/MessageToast';
 
 import * as apiHandler from '../../../../src/adp/api-handler';
 
@@ -22,7 +23,6 @@ jest.mock('../../../../src/adp/command-executor', () => {
         pushAndExecuteCommand: jest.fn()
     }));
 });
-
 
 describe('ControllerExtension', () => {
     beforeAll(() => {
@@ -514,6 +514,10 @@ describe('ControllerExtension', () => {
             });
         });
 
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
         afterAll(() => {
             jest.restoreAllMocks();
         });
@@ -560,14 +564,17 @@ describe('ControllerExtension', () => {
             });
         });
 
-
-        test('creates new controller and a change for version >1.135', async () => {
+        test('creates new controller and a change for version >1.136', async () => {
             const getControlByIdMock = jest.spyOn(coreUtils, 'getControlById').mockReturnValueOnce(undefined);
-            jest.spyOn(utils, 'getUi5Version').mockResolvedValueOnce({major: 1, minor: 136, patch: 0});
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+            jest.spyOn(utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 136, patch: 0 });
             jest.spyOn(utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(false);
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
-                {} as unknown as UI5Element,
+                overlays as unknown as UI5Element,
                 {
                     getService: jest.fn(),
                     getFlexSettings: jest.fn()
@@ -596,6 +603,14 @@ describe('ControllerExtension', () => {
             });
 
             controllerExt.handleDialogClose = jest.fn();
+
+            await controllerExt.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
 
             await controllerExt.onCreateBtnPress(event as unknown as Event);
 
@@ -652,6 +667,10 @@ describe('ControllerExtension', () => {
                 codeRef: 'coding/testController.js',
                 viewId: 'viewId'
             });
+            expect(MessageToast.show).toHaveBeenCalledWith(
+                'Note: The `testController` controller extension will be created once you save the change.',
+                { 'duration': 8000 }
+            );
         });
 
         test('opens link to existing controller', async () => {
