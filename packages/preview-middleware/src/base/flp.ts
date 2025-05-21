@@ -423,8 +423,8 @@ export class FlpSandbox {
             return;
         }
         await this.setApplicationDependencies();
-        // inform the user if a html file exists on the filesystem
-        const filePath = 'query' in req ? req.path : new URL('http://dummyHost' + req.originalUrl!).pathname;
+        // get filepath from request. Use dummy url to extract it from originalUrl if needed
+        const filePath = 'query' in req ? req.path : new URL('http://dummyHost' + req.originalUrl!).pathname; //NOSONAR
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const file = await this.project.byPath(filePath);
         if (file) {
