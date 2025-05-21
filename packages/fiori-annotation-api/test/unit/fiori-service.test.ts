@@ -17,7 +17,7 @@ import type {
 } from '@sap-ux/vocabularies-types';
 import { getProject } from '@sap-ux/project-access';
 
-import type { Change, DeleteChange, InsertAnnotationChange, TextFile, UpdateChange } from '../../src/types';
+import type { Change, DeleteChange, InsertAnnotationChange, TextFile } from '../../src/types';
 import { ExpressionType, ChangeType } from '../../src/types';
 import { FioriAnnotationService } from '../../src/fiori-service';
 
