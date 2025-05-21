@@ -3353,7 +3353,7 @@ rating : Rating;
                             type: 'expression',
                             value: {
                                 type: 'Path',
-                                Path: 'incidentFlow/createdBy'
+                                Path: 'incidentFlow/incident/createdBy'
                             }
                         }
                     }

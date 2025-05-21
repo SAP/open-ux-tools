@@ -3910,7 +3910,7 @@ annotate service.Incidents with @(
         {
             $Type : 'UI.DataFieldForAnnotation',
             Target : 'incidentFlow/@UI.LineItem',
-            ![@UI.Hidden] : incidentFlow.createdBy,
+            ![@UI.Hidden] : incidentFlow.incident.createdBy,
         },
         {
             $Type : 'UI.DataFieldForIntentBasedNavigation',
@@ -3949,7 +3949,7 @@ exports[`fiori annotation service update property value replace paths with multi
                     <Collection>
                         <Record Type=\\"UI.DataFieldForAnnotation\\">
                             <PropertyValue Property=\\"Target\\" AnnotationPath=\\"incidentFlow/@UI.LineItem\\"/>
-                            <Annotation Term=\\"UI.Hidden\\" Path=\\"incidentFlow/createdBy\\"/>
+                            <Annotation Term=\\"UI.Hidden\\" Path=\\"incidentFlow/incident/createdBy\\"/>
                         </Record>
                         <Record Type=\\"UI.DataFieldForIntentBasedNavigation\\">
                             <PropertyValue Property=\\"Mapping\\">
