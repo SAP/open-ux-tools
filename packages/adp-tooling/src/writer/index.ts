@@ -31,7 +31,6 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
     configWithDefaults.package.description ??= configWithDefaults.app.title;
 
     if (configWithDefaults.flp && !configWithDefaults.flp.inboundId) {
-        configWithDefaults.flp.addInboundId = true;
         configWithDefaults.flp.inboundId = `${configWithDefaults.app.id}.InboundID`;
     }
 

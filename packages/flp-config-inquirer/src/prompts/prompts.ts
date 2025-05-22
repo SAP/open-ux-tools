@@ -1,4 +1,4 @@
-import type { Inbound } from '@sap-ux/axios-extension';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 import {
@@ -9,7 +9,8 @@ import {
     getOverwritePrompt,
     getCreateAnotherInboundPrompt,
     getInboundIdsPrompt,
-    getParameterStringPrompt
+    getParameterStringPrompt,
+    getIconPrompt
 } from './questions';
 import { promptNames } from '../types';
 import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
@@ -22,12 +23,11 @@ import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } fr
  * prompts can be customized through the provided `promptOptions` parameter.
  *
  * @param {ManifestNamespace.Inbound | undefined} [inbounds] - Existing inbounds for the application, if any.
- * @param {string | undefined} [appId] - Application ID for generating relevant prompts.
  * @param {FLPConfigPromptOptions | undefined} [promptOptions] - Optional configuration to control prompt behavior and defaults.
  * @returns {FLPConfigQuestion[]} An array of FLPConfigQuestion objects to be used for prompting the user.
  */
 export function getQuestions(
-    inbounds?: Inbound[],
+    inbounds?: ManifestNamespace.Inbound,
     promptOptions?: FLPConfigPromptOptions
 ): FLPConfigQuestion[] {
     const inboundKeys = Object.keys(inbounds ?? {});
@@ -36,8 +36,7 @@ export function getQuestions(
     const silentOverwrite = promptOptions?.silentOverwrite ?? false;
 
     const keyedPrompts: Record<promptNames, FLPConfigQuestion> = {
-        [promptNames.inboundId]: getInboundIdsPrompt(inbounds ?? []),
-        // [promptNames.emptyInboundsInfo]: getEmptyInboundsLabelPrompt(inboundKeys, appId),
+        [promptNames.inboundId]: getInboundIdsPrompt(inbounds ?? {}),
         [promptNames.semanticObject]: getSemanticObjectPrompt(isCLI, promptOptions?.[promptNames.semanticObject]),
         [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action]),
         [promptNames.overwrite]: getOverwritePrompt(
@@ -52,6 +51,7 @@ export function getQuestions(
             silentOverwrite,
             promptOptions?.[promptNames.subTitle]
         ),
+        [promptNames.icon]: getIconPrompt(promptOptions?.[promptNames.icon]),
         [promptNames.additionalParameters]: getParameterStringPrompt(inboundKeys),
         [promptNames.createAnotherInbound]: getCreateAnotherInboundPrompt(isCLI)
     };

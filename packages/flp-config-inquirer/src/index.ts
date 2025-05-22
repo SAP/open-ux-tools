@@ -1,6 +1,6 @@
 import isNil from 'lodash/isNil';
 
-import type { Inbound } from '@sap-ux/axios-extension';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 
 import { initI18n } from './i18n';
@@ -12,12 +12,11 @@ import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from
  * Retrieves the inquirer prompts for the FLP configuration.
  *
  * @param {ManifestNamespace.Inbound | undefined} inbounds - An object containing existing inbound keys to check for duplicates.
- * @param {string | undefined} appId - The application ID used to generate unique prompt keys.
  * @param {FLPConfigPromptOptions | undefined} promptOptions - Options that control prompt behavior. See {@link FLPConfigPromptOptions} for details.
  * @returns {Promise<FLPConfigQuestion[]>} A promise that resolves to an array of FLP configuration questions.
  */
 async function getPrompts(
-    inbounds?: Inbound[],
+    inbounds?: ManifestNamespace.Inbound,
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigQuestion[]> {
     await initI18n();
@@ -30,13 +29,12 @@ async function getPrompts(
  *
  * @param {InquirerAdapter} adapter - An instance of `InquirerAdapter` to handle prompting.
  * @param {ManifestNamespace.Inbound | undefined} inbounds - An object containing existing inbound keys to check for duplicates.
- * @param {string | undefined} appId - The application ID used to generate unique prompt keys.
  * @param {FLPConfigPromptOptions | undefined} promptOptions - Options that control prompt behavior. See {@link FLPConfigPromptOptions} for details.
  * @returns {Promise<FLPConfigAnswers>} A promise that resolves to the user's answers for the FLP configuration.
  */
 async function prompt(
     adapter: InquirerAdapter,
-    inbounds?: Inbound[],
+    inbounds?: ManifestNamespace.Inbound,
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigAnswers> {
     const flpPrompts = await getPrompts(inbounds, promptOptions);

@@ -68,19 +68,22 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
 
         const manifest = await getManifest(basePath, isAdp, fs, logger);
         const inbounds = getInboundsFromManifest(manifest);
-        const appId = getRegistrationIdFromManifest(manifest);
 
-        const config = await getUserConfig(inbounds, isAdp, appId);
+        const answers = await getUserAnswers(inbounds, isAdp);
 
-        if (!config) {
+        if (!answers) {
             logger.info('User chose not to overwrite existing inbound navigation configuration.');
             return;
         }
 
         if (isAdp) {
+            const config = {
+                inboundId: `${answers.semanticObject}-${answers.action}`,
+                ...answers
+            };
             await generateInboundConfig(basePath, config as InternalInboundNavigation, fs);
         } else {
-            await generateInboundNavigationConfig(basePath, config, true, fs);
+            await generateInboundNavigationConfig(basePath, answers, true, fs);
         }
 
         if (!simulate) {
@@ -151,14 +154,12 @@ async function retrieveMergedManifest(basePath: string, logger: ToolsLogger): Pr
  *
  * @param {ManifestNamespace.Inbound | undefined} inbounds - The existing inbounds if any.
  * @param {boolean} isAdp - Indicates whether the project is an ADP project.
- * @param {string} [appId] - The application ID used for generating prompts specific to the app.
  * @returns {Promise<FLPConfigAnswers | undefined>} A promise resolving to the user-provided configuration,
  * or `undefined` if the user opts not to overwrite.
  */
-async function getUserConfig(
+async function getUserAnswers(
     inbounds: ManifestNamespace.Inbound | undefined,
     isAdp: boolean,
-    appId?: string
 ): Promise<FLPConfigAnswers | undefined> {
     let promptOptions: FLPConfigPromptOptions;
 
@@ -166,14 +167,13 @@ async function getUserConfig(
         promptOptions = {
             inboundId: { hide: true },
             additionalParameters: { hide: true },
-            createAnotherInbound: { hide: true },
-            emptyInboundsInfo: { hide: true }
+            createAnotherInbound: { hide: true }
         };
     } else {
         promptOptions = { overwrite: { hide: true }, createAnotherInbound: { hide: true } };
     }
 
-    const prompts = await filterLabelTypeQuestions<FLPConfigAnswers>(await getPrompts(inbounds, appId, promptOptions));
+    const prompts = await filterLabelTypeQuestions<FLPConfigAnswers>(await getPrompts(inbounds, promptOptions));
     const config = await promptYUIQuestions(prompts, false);
 
     if (config?.subTitle === '') {

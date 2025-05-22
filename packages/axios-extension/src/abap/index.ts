@@ -11,7 +11,8 @@ export {
     MergedAppDescriptor,
     SystemInfo,
     AdaptationProjectType,
-    Inbound
+    Inbound,
+    InboundContent
 } from './lrep-service';
 export { AbapServiceProvider } from './abap-service-provider';
 export { AppIndex, AppIndexService, Ui5AppInfo, Ui5AppInfoContent, App } from './app-index-service';

@@ -1,4 +1,3 @@
-import type { Manifest } from '@sap-ux/project-access';
 import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
@@ -9,6 +8,7 @@ import {
     type ProviderConfiguration,
     type AbapServiceProvider,
     type Inbound,
+    type InboundContent,
     isAxiosError
 } from '@sap-ux/axios-extension';
 import {
@@ -31,7 +31,7 @@ import {
     type YeomanEnvironment
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { FileName, getAppType, ManifestNamespace } from '@sap-ux/project-access';
+import { FileName, getAppType } from '@sap-ux/project-access';
 import AdpFlpConfigLogger from '../utils/logger';
 import { t, initI18n } from '../utils/i18n';
 import {
@@ -47,6 +47,7 @@ import {
     getCredentialsFromStore
 } from '@sap-ux/system-access';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import { getTileQuestions } from './questions';
 
 /**
@@ -72,7 +73,8 @@ export default class extends Generator {
     private ui5Yaml: AdpPreviewConfig;
     private credentials: CredentialsAnswers;
     private provider: AbapServiceProvider;
-    private inbounds: Inbound[];
+    private inbounds: ManifestNamespace.Inbound;
+    private target: AbapTarget;
 
     /**
      * Creates an instance of the generator.
@@ -84,6 +86,7 @@ export default class extends Generator {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.launchAsSubGen = !!opts.launchAsSubGen;
+        this.target = opts.target;
         this.toolsLogger = new ToolsLogger();
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
         this.options = opts;
@@ -97,8 +100,11 @@ export default class extends Generator {
         await initI18n();
 
         // Check if the project is supported
-        if ((await getAppType(this.projectRootPath)) !== 'Fiori Adaptation' || isCFEnvironment(this.projectRootPath)) {
-            throw new Error(t('error.projectNotSupported'));
+        if (!this.launchAsSubGen) {
+            const isFioriAdaptation = (await getAppType(this.projectRootPath)) === 'Fiori Adaptation';
+            if (!isFioriAdaptation || isCFEnvironment(this.projectRootPath)) {
+                throw new Error(t('error.projectNotSupported'));
+            }
         }
 
         // Force the generator to overwrite existing files without additional prompting
@@ -157,7 +163,17 @@ export default class extends Generator {
             return;
         }
         try {
-            await generateInboundConfig(this.projectRootPath, this.answers as InternalInboundNavigation, this.fs);
+            const inboundId = `${this.answers.inboundId?.semanticObject}-${this.answers.inboundId?.action}`;
+            const config = {
+                inboundId,
+                semanticObject: this.answers.semanticObject,
+                action: this.answers.action,
+                title: this.answers.title,
+                subTitle: this.answers.subTitle,
+                icon: this.answers.icon,
+                additionalParameters: this.answers.additionalParameters
+            };
+            await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation, this.fs);
         } catch (error) {
             this.logger.error(`Writing phase failed: ${error}`);
             throw new Error(t('error.updatingApp'));
@@ -186,17 +202,32 @@ export default class extends Generator {
     /**
      * Retrieves the list of tile inbounds of the application.
      *
-     * @returns {Promise<Inbound[]>} list of tile inbounds of the application.
+     * @returns {Promise<ManifestNamespace.Inbound>} list of tile inbounds of the application.
      */
-    private async _getAppInbounds(): Promise<Inbound[]> {
+    private async _getAppInbounds(): Promise<ManifestNamespace.Inbound> {
         const variant = await getVariant(this.projectRootPath, this.fs);
         const lrepService = await this.provider.getLayeredRepository();
         const inbounds = (await lrepService.getSystemInfo(undefined, undefined, variant.reference))
             .inbounds as Inbound[];
-        const tileInbounds = inbounds.filter((inbound: Inbound) => inbound.hideLauncher === false);
-        return tileInbounds;
+        return inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
+            // Skip if hideLauncher is not false
+            if (!inbound?.content || inbound.content.hideLauncher !== false) {
+                return acc;
+            }
+            const { semanticObject, action } = inbound.content;
+            if (semanticObject && action) {
+                const key = `${semanticObject}-${action}`;
+                acc[key] = inbound.content;
+            }
+            return acc;
+        }, {} as { [key: string]: InboundContent });
     }
 
+    /**
+     * Creates and returns an instance of AbapServiceProvider using the current UI5 YAML configuration and credentials.
+     *
+     * @returns {Promise<AbapServiceProvider>} The ABAP service provider instance.
+     */
     private async _getAbapServiceProvider(): Promise<AbapServiceProvider> {
         const { target, ignoreCertErrors = false } = this.ui5Yaml;
         const requestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = { ignoreCertErrors };

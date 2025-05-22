@@ -115,11 +115,7 @@ interface Language {
     i18n: string;
 }
 
-export interface Inbound {
-    metadata: {
-        name: string;
-        deprecated: boolean;
-    };
+export interface InboundContent {
     semanticObject: string;
     action: string;
     hideLauncher: boolean;
@@ -137,6 +133,14 @@ export interface Inbound {
     };
     deviceTypes?: ManifestNamespace.DeviceType;
     signature: ManifestNamespace.SignatureDef;
+}
+
+export interface Inbound {
+    metadata: {
+        name: string;
+        deprecated: boolean;
+    };
+    content: InboundContent;
 }
 
 /**

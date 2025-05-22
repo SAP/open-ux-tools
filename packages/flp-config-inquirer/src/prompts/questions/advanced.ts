@@ -1,28 +1,31 @@
 import { parseParameters } from '@sap-ux/adp-tooling';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
+import type { InboundContent } from '@sap-ux/axios-extension';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
 import type { FLPConfigQuestion, FLPConfigAnswers } from '../../types';
-import type { Inbound } from '@sap-ux/axios-extension';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Creates the 'inboundId' prompt for FLP configuration.
  *
- * @param {Inbound[]} inbounds - List of existing inbounds to populate the prompt choices.
+ * @param {ManifestNamespace.Inbound} inbounds - List of existing inbounds to populate the prompt choices.
  * @returns {FLPConfigQuestion} The prompt configuration for selecting an inbound ID.
  */
-export function getInboundIdsPrompt(inbounds: Inbound[]): FLPConfigQuestion {
+export function getInboundIdsPrompt(inbounds: ManifestNamespace.Inbound): FLPConfigQuestion {
+    const choices = Object.entries(inbounds).map(([inboundId, data]) => ({
+        name: inboundId,
+        value: data
+    }));
     return {
         type: 'list',
         name: promptNames.inboundId,
         message: t('prompts.inboundIds'),
-        choices: inbounds.map((inbound) => ({
-            name: `${inbound.semanticObject}-${inbound.action}`,
-            value: inbound
-        })),
-        default: inbounds[0],
-        validate: validateEmptyString,
-        when: inbounds?.length > 0,
+        choices: choices,
+        default: () => choices[0]?.value,
+        validate: (value: InboundContent): boolean | string =>
+            validateEmptyString(value.semanticObject) && validateEmptyString(value.action),
+        when: choices?.length > 0,
         guiOptions: {
             hint: t('tooltips.inboundId'),
             breadcrumb: t('prompts.inboundIds'),

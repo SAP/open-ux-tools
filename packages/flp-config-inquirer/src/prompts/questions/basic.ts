@@ -9,7 +9,8 @@ import type {
     OverwritePromptOptions,
     SemanticObjectPromptOptions,
     SubTitlePromptOptions,
-    TitlePromptOptions
+    TitlePromptOptions,
+    IconPromptOptions
 } from '../../types';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
@@ -30,7 +31,12 @@ export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObject
             breadcrumb: true
         },
         message: t('prompts.semanticObject'),
-        default: options?.default,
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.semanticObject ?? '';
+        },
         filter: (val: string): string => val?.trim(),
         validate: (val) => validateText(val, isCLI, 30, ['_']),
         when: (answers: FLPConfigAnswers) => !answers?.inboundId
@@ -53,7 +59,12 @@ export function getActionPrompt(isCLI: boolean, options?: ActionPromptOptions): 
             breadcrumb: true
         },
         message: t('prompts.action'),
-        default: options?.default,
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.action ?? '';
+        },
         filter: (val: string): string => val?.trim(),
         validate: (val) => validateText(val, isCLI, 60, ['_']),
         when: (answers: FLPConfigAnswers) => !answers?.inboundId
@@ -130,7 +141,12 @@ export function getTitlePrompt(
             breadcrumb: true
         },
         message: t('prompts.title'),
-        default: options?.default,
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.title ?? '';
+        },
         filter: (val: string): string => val?.trim(),
         validate: (val) => validateText(val, isCLI, 0)
     };
@@ -157,7 +173,36 @@ export function getSubTitlePrompt(
             breadcrumb: t('prompts.subTitle')
         },
         message: t('prompts.subTitle'),
-        default: options?.default,
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.subTitle ?? '';
+        },
+        filter: (val: string): string => val?.trim()
+    };
+}
+
+/**
+ * Creates the 'icon' prompt for FLP configuration.
+ *
+ * @param {IconPromptOptions} [options] - Optional configuration for the icon prompt, including default values.
+ * @returns {FLPConfigQuestion} The prompt configuration for the icon.
+ */
+export function getIconPrompt(options?: IconPromptOptions): FLPConfigQuestion {
+    return {
+        name: promptNames.icon,
+        type: 'input',
+        guiOptions: {
+            breadcrumb: t('prompts.icon')
+        },
+        message: t('prompts.icon'),
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.icon ?? '';
+        },
         filter: (val: string): string => val?.trim()
     };
 }
