@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.20.7
+
+### Patch Changes
+
+-   2702f19: fix local flp file leading to error with virtual cards generator endpoint
+
 ## 0.20.6
 
 ### Patch Changes
