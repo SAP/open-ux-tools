@@ -13,7 +13,8 @@ import {
     type AttributesAnswers,
     type ConfigAnswers,
     type UI5Version,
-    SourceManifest
+    SourceManifest,
+    isCFEnvironment
 } from '@sap-ux/adp-tooling';
 import {
     TelemetryHelper,
@@ -58,6 +59,10 @@ export default class extends Generator {
      * A boolean flag indicating whether node_modules should be installed after project generation.
      */
     private readonly shouldInstallDeps: boolean;
+    /**
+     * A boolean flag indicating whether an extension project should be created.
+     */
+    private shouldCreateExtProject: boolean;
     /**
      * Generator prompts.
      */
@@ -140,14 +145,13 @@ export default class extends Generator {
     async initializing(): Promise<void> {
         await initI18n();
 
-        this.prompts.splice(0, 0, getWizardPages());
-
         this.layer = await getFlexLayer();
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
 
         this.systemLookup = new SystemLookup(this.toolsLogger);
 
         if (!this.jsonInput) {
+            this.prompts.splice(0, 0, getWizardPages());
             this.prompter = this._getOrCreatePrompter();
         }
 
@@ -173,6 +177,7 @@ export default class extends Generator {
             systemValidationCli: { hide: !isCLI }
         });
         this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
+        this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;
 
         this.logger.info(`System: ${this.configAnswers.system}`);
         this.logger.info(`Application: ${JSON.stringify(this.configAnswers.application, null, 2)}`);
@@ -187,9 +192,9 @@ export default class extends Generator {
         };
         const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
         const options: AttributePromptOptions = {
-            targetFolder: { default: defaultFolder },
+            targetFolder: { default: defaultFolder, hide: this.shouldCreateExtProject },
             ui5ValidationCli: { hide: !isCLI },
-            enableTypeScript: { hide: !!this.configAnswers.shouldCreateExtProject }
+            enableTypeScript: { hide: this.shouldCreateExtProject }
         };
         const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
 
@@ -208,7 +213,7 @@ export default class extends Generator {
                 await this._initFromJson();
             }
 
-            if (this.configAnswers.shouldCreateExtProject) {
+            if (this.shouldCreateExtProject) {
                 await this._generateExtensionProject();
                 return;
             }
@@ -240,10 +245,12 @@ export default class extends Generator {
     }
 
     async install(): Promise<void> {
+        if (!this.shouldInstallDeps || this.shouldCreateExtProject) {
+            return;
+        }
+
         try {
-            if (this.shouldInstallDeps) {
-                await installDependencies(this._getProjectPath());
-            }
+            await installDependencies(this._getProjectPath());
         } catch (e) {
             this.logger.error(`Installation of dependencies failed: ${e.message}`);
         } finally {
@@ -266,7 +273,10 @@ export default class extends Generator {
         }
 
         try {
-            this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath: this._getProjectPath() });
+            const fsPath = this._getProjectPath();
+            if (!isCFEnvironment(fsPath)) {
+                this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath });
+            }
         } catch (e) {
             this.appWizard.showError(e.message, MessageType.notification);
         } finally {

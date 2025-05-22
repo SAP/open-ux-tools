@@ -139,6 +139,7 @@ export interface NamespacePromptOptions {
 
 export interface TargetFolderPromptOptions {
     default?: string;
+    hide?: boolean;
 }
 
 export interface UI5VersionPromptOptions {
