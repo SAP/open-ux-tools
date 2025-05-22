@@ -6,7 +6,7 @@ import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview } fr
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
-import { updateMiddlewaresForPreview, sanitizePreviewMiddleware } from '../common/ui5-yaml';
+import { updateMiddlewaresForPreview } from '../common/ui5-yaml';
 
 /**
  * Updates the `ui5.yaml` file to add card generator path to preview middleware configuration.
