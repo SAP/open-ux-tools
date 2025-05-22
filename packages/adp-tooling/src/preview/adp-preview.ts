@@ -44,6 +44,9 @@ export const enum ApiRoutes {
  * Instance of an adaptation project handling requests and data transformation.
  */
 export class AdpPreview {
+    /**
+     * Instance of the ABAP provider
+     */
     private provider: AbapServiceProvider;
     /**
      * Merged descriptor variant with reference app manifest
