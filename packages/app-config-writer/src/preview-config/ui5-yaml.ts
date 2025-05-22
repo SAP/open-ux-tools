@@ -1,8 +1,8 @@
 import { basename, join } from 'path';
-import { createPreviewMiddlewareConfig } from '../common/ui5-yaml';
+import { createPreviewMiddlewareConfig, sanitizePreviewMiddleware } from '../common/ui5-yaml';
 import { ensurePreviewMiddlewareDependency, extractUrlDetails, isValidPreviewScript } from './package-json';
 import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml, type Package } from '@sap-ux/project-access';
-import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from '../common/utils';
+import { getPreviewMiddleware } from '../common/utils';
 import { renameSandbox, deleteFiles } from './preview-files';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
@@ -209,36 +209,6 @@ export function getTestPathForUi5TestRunner(scriptName: string): string | undefi
         url = extractUrl(testRunnerScript ?? '');
     }
     return url ? new URL(url).pathname : undefined;
-}
-
-/**
- * Sanitizes the preview middleware configuration.
- *
- * In case of an outdated preview configuration, the following changes will be applied:
- * - property 'ui5Theme' will be moved to 'flp.theme'.
- * - no longer used property 'component' will be removed.
- *
- * @param previewMiddleware - the preview middleware
- * @returns the sanitized preview middleware
- */
-function sanitizePreviewMiddleware(
-    previewMiddleware: CustomMiddleware<PreviewConfigOptions>
-): CustomMiddleware<PreviewConfig | undefined> {
-    if (!isFioriToolsDeprecatedPreviewConfig(previewMiddleware.configuration)) {
-        return previewMiddleware as CustomMiddleware<PreviewConfig>;
-    }
-    const ui5Theme = previewMiddleware.configuration.ui5Theme;
-    delete (previewMiddleware as CustomMiddleware<PreviewConfig | undefined>).configuration;
-
-    if (!ui5Theme) {
-        return previewMiddleware as unknown as CustomMiddleware<undefined>;
-    }
-
-    const configuration = {} as PreviewConfig;
-    configuration.flp = {};
-    configuration.flp.theme = ui5Theme;
-    previewMiddleware.configuration = configuration;
-    return previewMiddleware as CustomMiddleware<PreviewConfig>;
 }
 
 /**

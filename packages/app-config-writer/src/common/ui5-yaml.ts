@@ -5,7 +5,8 @@ import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { PreviewConfigOptions } from '../types';
 import type { CustomMiddleware, FioriAppReloadConfig, UI5Config } from '@sap-ux/ui5-config';
-import { getPreviewMiddleware } from '../common/utils';
+import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from './utils';
+import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 
 /**
  * Gets the reload middleware form the provided yamlConfig.
@@ -72,6 +73,8 @@ export async function updateMiddlewaresForPreview(
     if (!previewMiddleware) {
         logger?.warn(`No preview middleware found in ${ui5YamlFile}. Preview middleware will be added.`);
         previewMiddleware = createPreviewMiddlewareConfig(fs, basePath);
+    } else {
+        previewMiddleware = sanitizePreviewMiddleware(previewMiddleware) as CustomMiddleware<PreviewConfig>;
     }
     if (reloadMiddleware) {
         previewMiddleware.afterMiddleware = reloadMiddleware.name;
@@ -82,4 +85,34 @@ export async function updateMiddlewaresForPreview(
     ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
     fs.write(join(basePath, ui5YamlFile), ui5YamlConfig.toString());
     logger?.debug(`Updated preview middleware in ${ui5YamlFile}.`);
+}
+
+/**
+ * Sanitizes the preview middleware configuration.
+ *
+ * In case of an outdated preview configuration, the following changes will be applied:
+ * - property 'ui5Theme' will be moved to 'flp.theme'.
+ * - no longer used property 'component' will be removed.
+ *
+ * @param previewMiddleware - the preview middleware
+ * @returns the sanitized preview middleware
+ */
+export function sanitizePreviewMiddleware(
+    previewMiddleware: CustomMiddleware<PreviewConfigOptions>
+): CustomMiddleware<PreviewConfig | undefined> {
+    if (!isFioriToolsDeprecatedPreviewConfig(previewMiddleware.configuration)) {
+        return previewMiddleware as CustomMiddleware<PreviewConfig>;
+    }
+    const ui5Theme = previewMiddleware.configuration.ui5Theme;
+    delete (previewMiddleware as CustomMiddleware<PreviewConfig | undefined>).configuration;
+
+    if (!ui5Theme) {
+        return previewMiddleware as unknown as CustomMiddleware<undefined>;
+    }
+
+    const configuration = {} as PreviewConfig;
+    configuration.flp = {};
+    configuration.flp.theme = ui5Theme;
+    previewMiddleware.configuration = configuration;
+    return previewMiddleware as CustomMiddleware<PreviewConfig>;
 }
