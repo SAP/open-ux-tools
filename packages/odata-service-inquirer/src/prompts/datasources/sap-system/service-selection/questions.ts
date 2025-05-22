@@ -85,7 +85,8 @@ export function getSystemServiceQuestion(
                 if (connectValidator.catalogs[OdataVersion.v2] || connectValidator.catalogs[OdataVersion.v4]) {
                     serviceChoices = await createServiceChoicesFromCatalog(
                         connectValidator.catalogs,
-                        requiredOdataVersion
+                        requiredOdataVersion,
+                        promptOptions?.serviceFilter
                     );
                     previousSystemUrl = connectValidator.validatedUrl;
                     previousClient = connectValidator.validatedClient;
@@ -208,11 +209,13 @@ export function getSystemServiceQuestion(
  *
  * @param availableCatalogs catalogs that can be used to list services
  * @param requiredOdataVersion the required OData version to list services for, if not provided all available catalogs will be used
+ * @param serviceFilter list of service ids used for filtering the choices
  * @returns service choices
  */
 async function createServiceChoicesFromCatalog(
     availableCatalogs: Record<ODataVersion, CatalogService | undefined>,
-    requiredOdataVersion?: OdataVersion
+    requiredOdataVersion?: OdataVersion,
+    serviceFilter?: string[]
 ): Promise<ListChoiceOptions<ServiceAnswer>[]> {
     let catalogs: CatalogService[] = [];
     if (requiredOdataVersion && availableCatalogs[requiredOdataVersion]) {
@@ -220,5 +223,5 @@ async function createServiceChoicesFromCatalog(
     } else {
         catalogs = Object.values(availableCatalogs).filter((cat): cat is CatalogService => cat !== undefined);
     }
-    return await getServiceChoices(catalogs);
+    return await getServiceChoices(catalogs, serviceFilter);
 }
