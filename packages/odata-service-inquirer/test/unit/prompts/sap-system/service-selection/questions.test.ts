@@ -189,6 +189,26 @@ describe('Test new system prompt', () => {
             }
         ]);
 
+        // The service choices should be restricted based on the service filter prompt option
+        systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
+            serviceFilter: ['/DMO/FLIGHT']
+        });
+        serviceSelectionPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
+        );
+
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([
+            {
+                name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4',
+                value: {
+                    serviceODataVersion: '4',
+                    servicePath: '/sap/opu/odata4/dmo/flight/0001/?sap-client=000',
+                    serviceType: 'WEB_API',
+                    toString: expect.any(Function)
+                }
+            }
+        ]);
+
         // The services choices should be restricted to the specified required odata version
         systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
             requiredOdataVersion: OdataVersion.v2

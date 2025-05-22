@@ -11,6 +11,8 @@ import { errorHandler } from '../../../../src/prompts/prompt-helpers';
 import type { CapProjectPaths } from '../../../../src/prompts/datasources/cap-project/types';
 import os from 'os';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
+import type { PathLike } from 'fs';
+import * as fsPromises from 'fs/promises';
 
 const initMockCapModelAndServices = {
     model: {},
@@ -69,6 +71,11 @@ jest.mock('@sap-ux/project-access', () => ({
     getCdsRoots: jest.fn().mockResolvedValue([])
 }));
 
+jest.mock('fs/promises', () => ({
+    __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
+    ...jest.requireActual('fs/promises')
+}));
+
 describe('cap-helper', () => {
     beforeAll(async () => {
         // Wait for i18n to bootstrap so we can test localised strings
@@ -96,6 +103,11 @@ describe('cap-helper', () => {
 
         // Multiple CAP projects found, some of which have the same folder names
         findCapProjectsSpy.mockResolvedValue(['/test/mock/1/bookshop', '/test/mock/2/bookshop', '/test/mock/flight']);
+        // Mock the realpath function to return the non-existant test path as-is
+        if (os.platform() === 'win32') {
+            jest.spyOn(fsPromises, 'realpath').mockImplementation(async (path: PathLike) => path as string);
+        }
+
         choices = await getCapProjectChoices(['/test/mock/']);
         expect(choices).toMatchInlineSnapshot(`
             [
@@ -137,6 +149,46 @@ describe('cap-helper', () => {
         `);
         expect(findCapProjectsSpy).toHaveBeenCalledWith({ 'wsFolders': ['/test/mock/'] });
     });
+
+    if (os.platform() === 'win32') {
+        test('getCapProjectChoices: Windows specific drive letter casing test', async () => {
+            const findCapProjectsSpy = jest
+                .spyOn(sapuxProjectAccess, 'findCapProjects')
+                .mockResolvedValue(['c:\\test\\mock\\bookshop', 'c:\\test\\mock\\flight']);
+
+            jest.spyOn(fsPromises, 'realpath').mockImplementation(
+                async (path: PathLike) => (path as string)[0].toUpperCase() + (path as string).slice(1)
+            );
+
+            const choices = await getCapProjectChoices(['c:\\test\\mock\\']);
+            expect(choices).toEqual([
+                {
+                    name: 'bookshop',
+                    value: {
+                        app: 'app/',
+                        db: 'db/',
+                        folderName: 'bookshop',
+                        path: 'C:\\test\\mock\\bookshop',
+                        srv: 'srv/'
+                    }
+                },
+                {
+                    name: 'flight',
+                    value: {
+                        app: 'app/',
+                        db: 'db/',
+                        folderName: 'flight',
+                        path: 'C:\\test\\mock\\flight',
+                        srv: 'srv/'
+                    }
+                },
+                {
+                    name: 'Manually select CAP project folder path',
+                    value: 'enterCapPath'
+                }
+            ]);
+        });
+    }
 
     test('getCapEdmx', async () => {
         const readCapServiceMetadataEdmxSpy = jest

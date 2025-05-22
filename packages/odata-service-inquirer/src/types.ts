@@ -1,4 +1,4 @@
-import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
+import type { Annotations, ServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
@@ -330,6 +330,10 @@ export type ServiceSelectionPromptOptions = {
      * This is used to indicate that the service does not support collaborative draft.
      */
     showCollaborativeDraftWarning?: boolean;
+    /**
+     * A list of service ids ({@link ODataServiceInfo.id}), used to filter the catalog results
+     */
+    serviceFilter?: string[];
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
 
 export type SystemNamePromptOptions = {

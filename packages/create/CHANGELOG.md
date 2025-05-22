@@ -1,5 +1,64 @@
 # @sap-ux/create
 
+## 0.13.8
+
+### Patch Changes
+
+-   Updated dependencies [2702f19]
+    -   @sap-ux/preview-middleware@0.20.7
+    -   @sap-ux/app-config-writer@0.6.2
+
+## 0.13.7
+
+### Patch Changes
+
+-   Updated dependencies [225e7d7]
+    -   @sap-ux/preview-middleware@0.20.6
+    -   @sap-ux/app-config-writer@0.6.2
+
+## 0.13.6
+
+### Patch Changes
+
+-   0748e90: fix create readme for cards-editor
+
+## 0.13.5
+
+### Patch Changes
+
+-   Updated dependencies [48872e8]
+    -   @sap-ux/preview-middleware@0.20.5
+    -   @sap-ux/app-config-writer@0.6.2
+
+## 0.13.4
+
+### Patch Changes
+
+-   c9b65f0: Replace usage of cards-editor-config-writer with app-config-writer.
+    Added UI5.yaml config path option for cards-editor command.
+-   Updated dependencies [c9b65f0]
+-   Updated dependencies [c9b65f0]
+    -   @sap-ux/preview-middleware@0.20.4
+    -   @sap-ux/app-config-writer@0.6.2
+
+## 0.13.3
+
+### Patch Changes
+
+-   Updated dependencies [b49c43f]
+    -   @sap-ux/preview-middleware@0.20.3
+    -   @sap-ux/app-config-writer@0.6.1
+
+## 0.13.2
+
+### Patch Changes
+
+-   Updated dependencies [5f3aa03]
+    -   @sap-ux/adp-tooling@0.14.2
+    -   @sap-ux/preview-middleware@0.20.2
+    -   @sap-ux/flp-config-inquirer@0.3.2
+    -   @sap-ux/app-config-writer@0.6.1
+
 ## 0.13.1
 
 ### Patch Changes
