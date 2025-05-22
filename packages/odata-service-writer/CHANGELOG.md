@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.2
+
+### Patch Changes
+
+-   07eaebf: Generation of a unique service name (if such service exists) and error for existing service URI.
+
 ## 0.27.1
 
 ### Patch Changes
