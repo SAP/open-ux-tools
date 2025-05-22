@@ -68,14 +68,13 @@ export async function updateMiddlewaresForPreview(
     const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile, fs);
 
     let previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
-    const reloadMiddleware = await getEnhancedReloadMiddleware(ui5YamlConfig);
-
     if (!previewMiddleware) {
         logger?.warn(`No preview middleware found in ${ui5YamlFile}. Preview middleware will be added.`);
         previewMiddleware = createPreviewMiddlewareConfig(fs, basePath);
     } else {
         previewMiddleware = sanitizePreviewMiddleware(previewMiddleware) as CustomMiddleware<PreviewConfig>;
     }
+    const reloadMiddleware = await getEnhancedReloadMiddleware(ui5YamlConfig);
     if (reloadMiddleware) {
         previewMiddleware.afterMiddleware = reloadMiddleware.name;
         ui5YamlConfig.updateCustomMiddleware(reloadMiddleware);
