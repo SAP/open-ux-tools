@@ -4,6 +4,7 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { AttributesAnswers, ConfigAnswers } from '@sap-ux/adp-tooling';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
+import { ConfigPrompter } from './questions/configuration';
 
 export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
     /**
@@ -26,6 +27,14 @@ export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
      * A boolean flag indicating whether node_modules should be installed after project generation.
      */
     shouldInstallDeps?: boolean;
+}
+
+/**
+ * Values that are stashed in the App-Wizard cache.
+ */
+export interface State {
+    /** Re-use the heavy-weight ConfigPrompter when the user navigates back-and-forth. */
+    prompter?: ConfigPrompter;
 }
 
 /**

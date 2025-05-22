@@ -35,7 +35,7 @@
         "yeoman-generator"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@sap-devx/yeoman-ui-types": "1.16.9",
         "@sap-devx/feature-toggle-node": "2.0.3",
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",

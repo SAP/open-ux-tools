@@ -1,3 +1,5 @@
+import { type Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+
 import type { ConfirmQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { type AttributesAnswers, FlexLayer, validateUI5VersionExists } from '@sap-ux/adp-tooling';
 import {
@@ -21,14 +23,16 @@ import type {
 import { t } from '../../utils/i18n';
 import { attributePromptNames } from '../types';
 import { getProjectNameTooltip } from './helper/tooltip';
-import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values';
 import { getVersionAdditionalMessages } from './helper/additional-messages';
+import { updateWizardSteps, getDeployPage, getFlpPage } from '../../utils/steps';
+import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values';
 
 interface Config {
     isCloudProject: boolean;
     layer: FlexLayer;
     ui5Versions: string[];
     isVersionDetected: boolean;
+    prompts: YeomanUiSteps;
 }
 
 /**
@@ -40,7 +44,7 @@ interface Config {
  * @returns {AttributesQuestion[]} An array of prompt objects for basic info input.
  */
 export function getPrompts(path: string, config: Config, promptOptions?: AttributePromptOptions): AttributesQuestion[] {
-    const { isVersionDetected, ui5Versions, isCloudProject, layer } = config;
+    const { isVersionDetected, ui5Versions, isCloudProject, layer, prompts } = config;
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
     const keyedPrompts: Record<attributePromptNames, AttributesQuestion> = {
@@ -61,9 +65,14 @@ export function getPrompts(path: string, config: Config, promptOptions?: Attribu
             promptOptions?.[attributePromptNames.enableTypeScript]
         ),
         [attributePromptNames.addDeployConfig]: getAddDeployConfigPrompt(
+            prompts,
             promptOptions?.[attributePromptNames.addDeployConfig]
         ),
-        [attributePromptNames.addFlpConfig]: getFlpConfigPrompt(promptOptions?.[attributePromptNames.addFlpConfig])
+        [attributePromptNames.addFlpConfig]: getFlpConfigPrompt(
+            prompts,
+            isCloudProject,
+            promptOptions?.[attributePromptNames.addFlpConfig]
+        )
     };
 
     const questions = Object.entries(keyedPrompts)
@@ -257,7 +266,7 @@ function getEnableTypeScriptPrompt(_?: EnableTypeScriptPromptOptions): Attribute
  * @param {AddDeployConfigPromptOptions} [_] - Optional prompt options to control visibility.
  * @returns {AttributesQuestion} The prompt configuration for Add Deployment config confirmation.
  */
-export function getAddDeployConfigPrompt(_?: AddDeployConfigPromptOptions): AttributesQuestion {
+export function getAddDeployConfigPrompt(prompts: YeomanUiSteps, _?: AddDeployConfigPromptOptions): AttributesQuestion {
     return {
         type: 'confirm',
         name: attributePromptNames.addDeployConfig,
@@ -265,6 +274,10 @@ export function getAddDeployConfigPrompt(_?: AddDeployConfigPromptOptions): Attr
         default: false,
         guiOptions: {
             breadcrumb: true
+        },
+        validate: (value: boolean) => {
+            updateWizardSteps(prompts, getDeployPage(), t('yuiNavSteps.projectAttributesName'), value);
+            return true;
         }
     } as ConfirmQuestion<AttributesAnswers>;
 }
@@ -273,9 +286,14 @@ export function getAddDeployConfigPrompt(_?: AddDeployConfigPromptOptions): Attr
  * Creates the Add FLP Config confirm prompt.
  *
  * @param {AddFlpConfigPromptOptions} [_] - Optional prompt options to control visibility.
+ * @param {boolean} isCloudProject - Whether the project is for a cloud-based system.
  * @returns {AttributesQuestion} The prompt configuration for Add FLP config confirmation.
  */
-export function getFlpConfigPrompt(_?: AddFlpConfigPromptOptions): AttributesQuestion {
+export function getFlpConfigPrompt(
+    prompts: YeomanUiSteps,
+    isCloudProject: boolean,
+    _?: AddFlpConfigPromptOptions
+): AttributesQuestion {
     return {
         type: 'confirm',
         name: attributePromptNames.addFlpConfig,
@@ -283,6 +301,11 @@ export function getFlpConfigPrompt(_?: AddFlpConfigPromptOptions): AttributesQue
         default: false,
         guiOptions: {
             breadcrumb: true
+        },
+        when: () => isCloudProject,
+        validate: (value: boolean) => {
+            updateWizardSteps(prompts, getFlpPage(), t('yuiNavSteps.deployConfigName'), value);
+            return true;
         }
     } as ConfirmQuestion<AttributesAnswers>;
 }

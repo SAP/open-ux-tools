@@ -2392,8 +2392,8 @@ importers:
         specifier: 2.0.3
         version: 2.0.3
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.16.9
+        version: 1.16.9
       '@sap-ux/adp-flp-config-sub-generator':
         specifier: workspace:*
         version: link:../adp-flp-config-sub-generator

@@ -3,7 +3,11 @@
         "configurationName": "System and Application Selection",
         "configurationDescr": "Configure the system and select an application.",
         "projectAttributesName": "Project Attributes",
-        "projectAttributesDescr": "Configure the main project attributes."
+        "projectAttributesDescr": "Configure the main project attributes.",
+        "flpConfigName": "FLP Configuration",
+        "flpConfigDescr": "Configure Fiori Launchpad settings for {{- projectName}}",
+        "deployConfigName": "Deployment Configuration",
+        "deployConfigDescr": "Configure deployment settings."
     },
     "prompts": {
         "systemLabel": "System",
