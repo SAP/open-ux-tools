@@ -78,13 +78,11 @@ export function hidePrompts(
             const promptKey = key as keyof typeof promptNames;
             // Narrow the type as we are only dealing with `hide` options
             const promptOpt = promptOptions?.[promptKey] as UI5ApplicationCommonPromptOptions | AddDeployPromptOptions;
-            let hidePrompt = false;
-            if (typeof promptOpt?.hide === 'function') {
-                hidePrompt = promptOpt.hide(isCapProject);
-            }
+
+            const hidePrompt =
+                typeof promptOpt?.hide === 'function' ? promptOpt.hide(isCapProject) : promptOpt?.hide ?? false;
             if (
                 !hidePrompt &&
-                !promptOpt?.hide &&
                 // Target directory is determined by the CAP project. `enableEsLint` and `targetFolder` are not available for CAP projects
                 !([promptNames.targetFolder, promptNames.enableEslint].includes(promptNames[promptKey]) && isCapProject)
             ) {

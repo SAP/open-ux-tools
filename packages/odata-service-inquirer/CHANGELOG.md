@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.4.3
+
+### Patch Changes
+
+-   d1b5ab7: adds new service filter prompt option
+
+## 2.4.2
+
+### Patch Changes
+
+-   6cc19b7: Fix for drive letter casing mismatch when selecting CAP projects on Windows
+
 ## 2.4.1
 
 ### Patch Changes

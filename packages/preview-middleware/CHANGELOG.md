@@ -1,5 +1,29 @@
 # @sap-ux/preview-middleware
 
+## 0.20.7
+
+### Patch Changes
+
+-   2702f19: fix local flp file leading to error with virtual cards generator endpoint
+
+## 0.20.6
+
+### Patch Changes
+
+-   225e7d7: fix: Add message when controller extension pending change is created
+
+## 0.20.5
+
+### Patch Changes
+
+-   48872e8: fix(preview-middleware) fix template spacing
+
+## 0.20.4
+
+### Patch Changes
+
+-   c9b65f0: Migrate code from cards-editor-middleware to preview-middleware.
+
 ## 0.20.3
 
 ### Patch Changes
