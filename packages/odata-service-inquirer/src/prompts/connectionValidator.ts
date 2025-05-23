@@ -360,10 +360,6 @@ export class ConnectionValidator {
             } else {
                 throw e;
             }
-        } finally {
-            // If we reset this here then subsequent catalog requests will not be able to use the cert error bypass
-            // Reset global cert validation
-            // ConnectionValidator.setGlobalRejectUnauthorized(true);
         }
     }
 
