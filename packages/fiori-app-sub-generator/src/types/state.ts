@@ -10,7 +10,7 @@ import type {
     OdataVersion
 } from '@sap-ux/odata-service-inquirer';
 import type { ApiHubType, SapSystemSourceType } from '../types/constants';
-import type { Script } from './common';
+import type { Script, AbapCsn } from './common';
 
 export interface Project {
     targetFolder: string;
@@ -125,6 +125,10 @@ export interface State {
      * The template selected by the user, maybe FE or FF
      */
     floorplan: Floorplan;
+    /**
+     * ABAP CSN (Core Schema Notation) - for writing to .appGenInfo.json
+     */
+    abapCsn?: AbapCsn[];
 }
 
 /** Only used by headless */
