@@ -1046,6 +1046,8 @@ describe('FlpSandbox', () => {
             response = await server.get('/test/integration/opaTests.qunit.html').expect(200);
             expect(response.text).toMatchSnapshot();
             await server.get('/cdm.json').expect(404);
+            response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(response.text).toMatchSnapshot();
         });
 
         test('GET default routes with connect API when enhancedHomePage is enabled', async () => {

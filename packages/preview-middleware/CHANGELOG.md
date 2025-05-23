@@ -1,5 +1,30 @@
 # @sap-ux/preview-middleware
 
+## 0.20.9
+
+### Patch Changes
+
+-   Updated dependencies [8e44d02]
+    -   @sap-ux/adp-tooling@0.14.4
+
+## 0.20.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.3
+
+## 0.20.7
+
+### Patch Changes
+
+-   2702f19: fix local flp file leading to error with virtual cards generator endpoint
+
+## 0.20.6
+
+### Patch Changes
+
+-   225e7d7: fix: Add message when controller extension pending change is created
+
 ## 0.20.5
 
 ### Patch Changes
