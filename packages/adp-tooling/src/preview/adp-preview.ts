@@ -6,7 +6,7 @@ import type { NextFunction, Request, Response, Router, RequestHandler } from 'ex
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import type { LayeredRepositoryService, MergedAppDescriptor } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, LayeredRepositoryService, MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
 import type {
@@ -44,6 +44,10 @@ export const enum ApiRoutes {
  * Instance of an adaptation project handling requests and data transformation.
  */
 export class AdpPreview {
+    /**
+     * Instance of the ABAP provider
+     */
+    private provider: AbapServiceProvider;
     /**
      * Merged descriptor variant with reference app manifest
      */
@@ -128,19 +132,19 @@ export class AdpPreview {
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
         this.descriptorVariantId = descriptorVariant.id;
-        const provider = await createAbapServiceProvider(
+        this.provider = await createAbapServiceProvider(
             this.config.target,
             { ignoreCertErrors: this.config.ignoreCertErrors },
             true,
             this.logger
         );
-        this.routesHandler = new RoutesHandler(this.project, this.util, provider, this.logger);
+        this.routesHandler = new RoutesHandler(this.project, this.util, this.provider, this.logger);
 
-        this.lrep = provider.getLayeredRepository();
+        this.lrep = this.provider.getLayeredRepository();
         // fetch a merged descriptor from the backend
         await this.lrep.getCsrfToken();
         // check if the project is an ABAP cloud project
-        this.isCloud = await provider.isAbapCloud();
+        this.isCloud = await this.provider.isAbapCloud();
 
         await this.sync();
         return descriptorVariant.layer;
@@ -276,7 +280,8 @@ export class AdpPreview {
                         this.util.getProject().getRootPath(),
                         change,
                         fs,
-                        logger
+                        logger,
+                        this.provider
                     );
                 }
                 break;

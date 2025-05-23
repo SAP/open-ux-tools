@@ -8,15 +8,15 @@ import type {
 } from '../types';
 import { ChangeType, TemplateFileName } from '../types';
 import { basename, join } from 'path';
-import { DirName, FileName } from '@sap-ux/project-access';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { render } from 'ejs';
 import { randomBytes } from 'crypto';
 import { ManifestService } from '../base/abap/manifest-service';
-import { getAdpConfig, getVariant, isTypescriptSupported } from '../base/helper';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { getVariant, isTypescriptSupported } from '../base/helper';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import { generateChange } from '../writer/editors';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { DirName } from '@sap-ux/project-access';
 
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
 const CUSTOM_ACTION = 'CUSTOM_ACTION';
@@ -301,13 +301,15 @@ export async function addControllerExtension(
  * @param {AnnotationFileChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
+ *@param {AbapServiceProvider} provider - abap provider.
  */
 export async function addAnnotationFile(
     basePath: string,
     projectRoot: string,
     change: AnnotationFileChange,
     fs: Editor,
-    logger: Logger
+    logger: Logger,
+    provider: AbapServiceProvider
 ): Promise<void> {
     const { dataSourceId, annotations, dataSource } = change.content;
     const annotationDataSourceKey = annotations[0];
@@ -315,7 +317,13 @@ export async function addAnnotationFile(
     annotationUriSegments.shift();
     const fullPath = join(basePath, DirName.Changes, ...annotationUriSegments);
     try {
-        const manifestService = await getManifestService(projectRoot, logger);
+        const variant = await getVariant(basePath);
+        const manifestService = await ManifestService.initMergedManifest(
+            provider,
+            basePath,
+            variant,
+            logger as unknown as ToolsLogger
+        );
         const metadata = await manifestService.getDataSourceMetadata(dataSourceId);
         const datasoruces = await manifestService.getManifestDataSources();
         const namespaces = getAnnotationNamespaces({ metadata });
@@ -338,18 +346,4 @@ export async function addAnnotationFile(
         logger.error(`Failed to create Local Annotation File "${fullPath}": ${error}`);
         throw new Error('Failed to create Local Annotation File' + error.message);
     }
-}
-
-/**
- * Returns manifest service.
- *
- * @param {string} basePath - The base path of the project.
- * @param {Logger} logger - The logging instance.
- * @returns Promise<ManifestService>
- */
-async function getManifestService(basePath: string, logger: Logger): Promise<ManifestService> {
-    const variant = await getVariant(basePath);
-    const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
-    const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
-    return await ManifestService.initMergedManifest(provider, basePath, variant, logger as unknown as ToolsLogger);
 }
