@@ -885,10 +885,18 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
                     });
                 }
             } else {
+                const text =
+                    // annotation paths are currently converted to strings and for those separators do not need to be replaced
+                    annotationFileNode?.type === ELEMENT_TYPE &&
+                    (annotationFileNode.name === Edm.Path ||
+                        annotationFileNode.name === Edm.PropertyPath ||
+                        annotationFileNode.name === Edm.NavigationPropertyPath)
+                        ? newValue.text.replaceAll('/', '.')
+                        : newValue.text;
                 writer.addChange({
                     type: 'update-primitive-value',
                     pointer: pointer,
-                    newValue: newValue.text
+                    newValue: text
                 });
             }
         } else {
