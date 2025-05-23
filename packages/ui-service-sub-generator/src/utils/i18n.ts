@@ -5,9 +5,11 @@ import translations from '../translations/ui-service-generator.i18n.json';
 const uiServiceGeneratorNs = 'ui-service-generator';
 
 export async function initI18n(): Promise<void> {
-    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', uiServiceGeneratorNs, translations)
-    );
+    await i18next.init({
+        lng: 'en',
+        fallbackLng: 'en'
+    });
+    i18next.addResourceBundle('en', uiServiceGeneratorNs, translations);
 }
 
 /**
