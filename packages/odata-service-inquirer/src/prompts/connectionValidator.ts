@@ -468,7 +468,7 @@ export class ConnectionValidator {
                 LoggerHelper.attachAxiosLogger(abapProvider.interceptors);
                 await abapProvider.catalog(odataVerCatalog).listServices();
             } catch (error) {
-                const errorType = ErrorHandler.getErrorType(error?.response?.status || error?.code);
+                const errorType = ErrorHandler.getErrorType(error?.response?.status ?? error?.code);
                 if (error?.isAxiosError && ignorableCertErrors.includes(errorType)) {
                     LoggerHelper.logger.warn(
                         t('warnings.certificateErrors', { url: axiosConfig?.baseURL, error: errorType })
