@@ -2,7 +2,7 @@ import { generateReadMe, getHostEnvironment, hostEnvironment, type ReadMe } from
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { writeAPIHubKeyFiles, writeReadMe } from '../../../src/fiori-app-generator/writing';
+import { writeAPIHubKeyFiles, writeInfoFiles } from '../../../src/fiori-app-generator/writing';
 import type { ApiHubConfig, Project, Service } from '../../../src/types';
 import { ApiHubType, FloorplanFE, FloorplanFF, generatorName } from '../../../src/types';
 import { initI18nFioriAppSubGenerator, t } from '../../../src/utils';
@@ -17,7 +17,7 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
 });
 
 describe('`writing` tests', () => {
-    describe('`writeReadMe` tests', () => {
+    describe('`writeInfoFiles` tests', () => {
         // Test data
         const baseProject: Project = {
             name: 'someProjectName',
@@ -75,7 +75,7 @@ describe('`writing` tests', () => {
                 generationDate: 'Jan 01 1975',
                 generatorPlatform: 'CLI'
             };
-            await writeReadMe(
+            await writeInfoFiles(
                 {
                     project,
                     service,
@@ -84,13 +84,17 @@ describe('`writing` tests', () => {
                 '@sap/generator-fiori-elements',
                 '2.0.1',
                 '/target/path',
-                {} as Editor,
+                {
+                    write: jest.fn()
+                } as unknown as Editor,
                 readMe
             );
-            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
+            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {
+                write: expect.any(Function)
+            });
         });
 
-        it('`writeReadMe` should call `generateReadMe` with the correct params', async () => {
+        it('`writeInfoFiles` should call `generateReadMe` with the correct params', async () => {
             (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
 
             const expectedReadMe: ReadMe = {
@@ -121,7 +125,7 @@ describe('`writing` tests', () => {
                 source: DatasourceType.sapSystem
             };
 
-            await writeReadMe(
+            await writeInfoFiles(
                 {
                     project,
                     service,
@@ -130,9 +134,13 @@ describe('`writing` tests', () => {
                 '@sap/some-generator',
                 '123',
                 '/target/path',
-                {} as Editor
+                {
+                    write: jest.fn()
+                } as unknown as Editor
             );
-            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
+            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {
+                write: expect.any(Function)
+            });
         });
 
         it('should generate readme with CAP launch text', async () => {
@@ -174,7 +182,7 @@ describe('`writing` tests', () => {
                 servicePath: '/odata/service'
             };
 
-            await writeReadMe(
+            await writeInfoFiles(
                 {
                     project,
                     service,
@@ -183,12 +191,16 @@ describe('`writing` tests', () => {
                 '@sap/some-generator',
                 '1.0.0',
                 '/target/path',
-                {} as Editor,
+                {
+                    write: jest.fn()
+                } as unknown as Editor,
                 {
                     additionalEntries: [{ label: 'label1', value: 'value1' }]
                 }
             );
-            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
+            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {
+                write: expect.any(Function)
+            });
         });
 
         it('should generate readme with entity related entries', async () => {
@@ -235,7 +247,7 @@ describe('`writing` tests', () => {
                 servicePath: '/odata/service'
             };
 
-            await writeReadMe(
+            await writeInfoFiles(
                 {
                     project,
                     service,
@@ -258,17 +270,21 @@ describe('`writing` tests', () => {
                 '@sap/some-generator',
                 '1.0.0',
                 '/target/path',
-                {} as Editor,
+                {
+                    write: jest.fn()
+                } as unknown as Editor,
                 {
                     additionalEntries: [{ label: 'addLabel1', value: 'addValue1' }]
                 }
             );
-            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
+            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {
+                write: expect.any(Function)
+            });
             jest.clearAllMocks();
             await initI18nFioriAppSubGenerator();
 
             // Nav entity should be 'None'
-            await writeReadMe(
+            await writeInfoFiles(
                 {
                     project,
                     service,
@@ -291,7 +307,9 @@ describe('`writing` tests', () => {
                 '@sap/some-generator',
                 '1.0.0',
                 '/target/path',
-                {} as Editor,
+                {
+                    write: jest.fn()
+                } as unknown as Editor,
                 {
                     additionalEntries: [{ label: 'addLabel1', value: 'addValue1' }]
                 }
@@ -303,7 +321,9 @@ describe('`writing` tests', () => {
                 { label: 'Navigation Entity', value: 'None' },
                 { label: 'Filter Entity Type', value: 'filterEntitySetName1' }
             ];
-            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
+            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {
+                write: expect.any(Function)
+            });
         });
     });
 

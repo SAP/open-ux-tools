@@ -2,26 +2,29 @@ import type { ReadMe } from '@sap-ux/fiori-generator-shared';
 import { generateReadMe, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Editor } from 'mem-fs-editor';
 import { basename, join } from 'path';
-import type { ApiHubConfig, State } from '../types';
+import type { ApiHubConfig, State, AppGenInfo, AbapCsn } from '../types';
 import { DEFAULT_CAP_HOST } from '../types';
 import { getLaunchText, getReadMeDataSourceLabel, isBTPHosted, t } from '../utils';
 
 /**
- * Writes a README.md file based on project, service, and additional readme properties.
+ * Writes app related information files - README.md & .appGenInfo.json.
+ * The files are based on the project, service, and additional properties.
+ * `.appGenInfo.json` may also contain {@link AbapCsn} properties.
  *
  * @param state
  * @param state.project
  * @param state.service
  * @param state.floorplan
  * @param state.entityRelatedConfig
+ * @param state.abapCsn
  * @param generatorName
  * @param generatorVersion
  * @param targetPath
  * @param fs
  * @param readMe
  */
-export async function writeReadMe(
-    { project, service, floorplan, entityRelatedConfig }: State,
+export async function writeInfoFiles(
+    { project, service, floorplan, entityRelatedConfig, abapCsn }: State,
     generatorName: string,
     generatorVersion: string,
     targetPath: string,
@@ -102,7 +105,19 @@ export async function writeReadMe(
         additionalEntries: readMeCustom?.additionalEntries ?? [],
         launchText
     };
+    // readme
     generateReadMe(targetPath, readme, fs);
+
+    // .appGenInfo.json
+    const appGenInfo: AppGenInfo = {
+        generationParameters: readme
+    };
+
+    if (abapCsn) {
+        appGenInfo.abapCSN = abapCsn;
+    }
+
+    fs.write(join(`${targetPath}/.appGenInfo.json`), JSON.stringify(appGenInfo, null, 2));
 }
 
 /**
