@@ -1,8 +1,7 @@
-import type { FlpConfig } from '@sap-ux/preview-middleware';
+import type { FlpConfig, MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { type Package, FileName } from '@sap-ux/project-access';
-import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 
 export type Script = { name: string; value: string };
 
