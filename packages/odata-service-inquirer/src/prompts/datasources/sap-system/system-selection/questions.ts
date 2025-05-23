@@ -219,6 +219,12 @@ export async function getSystemConnectionQuestions(
                         severity: Severity.information
                     };
                 }
+                if (connectionValidator.ignoreCertError) {
+                    return {
+                        message: t('warnings.certErrorIgnoredByNodeSetting'),
+                        severity: Severity.warning
+                    };
+                }
             }
         } as ListQuestion<SystemSelectionAnswers>
     ];

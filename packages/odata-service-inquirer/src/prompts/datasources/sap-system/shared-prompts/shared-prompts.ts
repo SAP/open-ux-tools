@@ -13,6 +13,7 @@ import type { ConnectionValidator, SystemAuthType } from '../../../connectionVal
 import { type NewSystemAnswers, newSystemPromptNames } from '../new-system/types';
 import { suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Convert the system connection scheme (Service Key, Rentrance Ticket, etc) to the store specific authentication type.
@@ -87,6 +88,14 @@ export function getSystemUrlQuestion<T extends Answers>(
                 }
             }
             return valResult;
+        },
+        additionalMessages: () => {
+            if (connectValidator.ignoreCertError) {
+                return {
+                    message: t('warnings.certErrorIgnoredByNodeSetting'),
+                    severity: Severity.warning
+                };
+            }
         }
     } as InputQuestion<T>;
 

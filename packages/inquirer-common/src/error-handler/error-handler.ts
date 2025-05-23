@@ -78,7 +78,9 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: [
         /UNABLE_TO_GET_ISSUER_CERT/,
         /UNABLE_TO_GET_ISSUER_CERT_LOCALLY/,
-        /unable to get local issuer certificate/
+        /unable to get local issuer certificate/,
+        /UNABLE_TO_VERIFY_LEAF_SIGNATURE/,
+        /ERR_TLS_CERT_ALTNAME_INVALID/
     ],
     [ERROR_TYPE.CERT_EXPIRED]: [/CERT_HAS_EXPIRED/],
     [ERROR_TYPE.CERT_SELF_SIGNED]: [/DEPTH_ZERO_SELF_SIGNED_CERT/],

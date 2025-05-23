@@ -95,6 +95,7 @@ describe('questions', () => {
                 "validate": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "breadcrumb": true,
                   "hint": "Enter the URL of the SAP System",

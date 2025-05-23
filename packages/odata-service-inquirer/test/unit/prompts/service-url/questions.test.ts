@@ -10,6 +10,7 @@ import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 import type { ConfirmQuestion, InputQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 import * as serviceHelpers from '../../../../src/prompts/datasources/service-helpers/service-helpers';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 const validateUrlMockTrue = jest.fn().mockResolvedValue(true);
 const validateAuthTrue = jest.fn().mockResolvedValue({ valResult: true });
@@ -22,7 +23,8 @@ const connectionValidatorMock = {
     validateAuth: validateAuthTrue,
     odataService: odataServiceMock,
     serviceProvider: serviceProviderMock,
-    axiosConfig: {}
+    axiosConfig: {},
+    ignoreCertError: undefined
 };
 jest.mock('../../../../src/prompts/connectionValidator', () => {
     return {
@@ -151,6 +153,7 @@ describe('Service URL prompts', () => {
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
             expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
+            undefined,
             undefined
         );
         expect(validateUrlMockTrue).toHaveBeenCalledWith(serviceUrl);
@@ -166,7 +169,8 @@ describe('Service URL prompts', () => {
         expect(serviceValidatorSpy).toHaveBeenCalledWith(
             serviceUrl,
             expect.objectContaining({ 'axiosConfig': {}, 'odataService': {} }),
-            OdataVersion.v4
+            OdataVersion.v4,
+            undefined
         );
 
         // Should return true if can skip cert error
@@ -259,7 +263,7 @@ describe('Service URL prompts', () => {
             undefined,
             true
         );
-        expect(loggerSpy).toHaveBeenCalledWith(t('prompts.validationMessages.warningCertificateValidationDisabled'));
+        expect(loggerSpy).toHaveBeenCalledWith(t('warnings.warningCertificateValidationDisabled'));
 
         // Should return a validation message if there is a message returned by the ConnectionValidator
         serviceValidatorSpy.mockClear();
@@ -328,7 +332,7 @@ describe('Service URL prompts', () => {
             })
         ).toBe(false);
 
-        expect(loggerSpy).toHaveBeenCalledWith(t('prompts.validationMessages.warningCertificateValidationDisabled'));
+        expect(loggerSpy).toHaveBeenCalledWith(t('warnings.warningCertificateValidationDisabled'));
         expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith(serviceUrl, {
             forceReValidation: true,
             ignoreCertError: true
@@ -447,7 +451,7 @@ describe('Service URL prompts', () => {
         // Validations checks for backend annotations and sets the state used by `additionalMessages`
         expect(await serviceUrlQuestion?.validate?.('https://some.host:1234/service/path')).toBe(true);
         expect((serviceUrlQuestion?.additionalMessages as Function)()).toEqual({
-            message: t('prompts.warnings.noAnnotations'),
+            message: t('warnings.noAnnotations'),
             severity: 1
         });
 
@@ -461,7 +465,7 @@ describe('Service URL prompts', () => {
             })
         ).toBe(true);
         expect((ignoreCertErrorsPrompt?.additionalMessages as Function)()).toEqual({
-            message: t('prompts.warnings.noAnnotations'),
+            message: t('warnings.noAnnotations'),
             severity: 1
         });
 
@@ -473,7 +477,7 @@ describe('Service URL prompts', () => {
             })
         ).toBe(true);
         expect((passwordPrompt?.additionalMessages as Function)()).toEqual({
-            message: t('prompts.warnings.noAnnotations'),
+            message: t('warnings.noAnnotations'),
             severity: 1
         });
 
@@ -528,7 +532,7 @@ describe('Service URL prompts', () => {
         expect(await serviceUrlQuestion?.validate?.('https://some.host:1234/service/path')).toBe(true);
         // Option was not passed, so no additional message should be returned
         expect((serviceUrlQuestion?.additionalMessages as Function)()).toEqual({
-            message: t('prompts.warnings.collaborativeDraftMessage'),
+            message: t('warnings.collaborativeDraftMessage'),
             severity: 1
         });
         expect(showCollabDraftWarningSpy).toHaveBeenCalledWith({ version: '4.0' });
@@ -544,7 +548,7 @@ describe('Service URL prompts', () => {
             })
         ).toBe(true);
         expect((ignoreCertErrorsPrompt?.additionalMessages as Function)()).toEqual({
-            message: t('prompts.warnings.collaborativeDraftMessage'),
+            message: t('warnings.collaborativeDraftMessage'),
             severity: 1
         });
         expect(showCollabDraftWarningSpy).toHaveBeenCalledWith({ version: '4.0' });
@@ -558,10 +562,22 @@ describe('Service URL prompts', () => {
             })
         ).toBe(true);
         expect((passwordPrompt?.additionalMessages as Function)()).toEqual({
-            message: t('prompts.warnings.collaborativeDraftMessage'),
+            message: t('warnings.collaborativeDraftMessage'),
             severity: 1
         });
         expect(showCollabDraftWarningSpy).toHaveBeenCalledWith({ version: '4.0' });
         showCollabDraftWarningSpy.mockClear();
+    });
+
+    test('Should show `NODE_TLD_REJECT_UNAUTHORIZED` warning if set when bypassing certificate errors', async () => {
+        const questions = getServiceUrlQuestions();
+        const serviceUrlQuestion = questions.find((q) => q.name === promptNames.serviceUrl) as InputQuestion;
+        const systemUrl = 'https://example.com';
+        // @ts-expect-error ignore type error for mock
+        connectionValidatorMock.ignoreCertError = true;
+        expect(await (serviceUrlQuestion?.additionalMessages as Function)()).toEqual({
+            message: t('warnings.certErrorIgnoredByNodeSetting'),
+            severity: Severity.warning
+        });
     });
 });

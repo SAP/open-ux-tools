@@ -57,15 +57,7 @@
             "metadataInvalid": "The service metadata is invalid.",
             "metadataFilePathNotValid": "Metadata file does not exist or is not accessible. Please specify a valid file path.",
             "capProjectNotFound": "The folder you have selected does not seem to contain a valid CAP project. Please check and try again.",
-            "warningCertificateValidationDisabled": "User has disabled certificate validation",
             "annotationsNotFound": "Annotations not found for specified service"
-        },
-        "warnings": {
-            "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services, or not classified services, are not intended to be used for the generation of SAP Fiori UI applications",
-            "noServicesAvailable": "No services available for the selected system, see logs for further details.",
-            "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only",
-            "noAnnotations": "No backend annotations associated with this service were retrieved and may result in an invalid application being created",
-            "collaborativeDraftMessage": "The selected service is draft enabled but does not support collaborative draft."
         },
         "systemUrl": {
             "message": "System URL",
@@ -229,7 +221,16 @@
         "v2CatalogServiceNoAnnotations": "Error creating v2 catalog service object, annotations will not be available: {{-error}}"
     },
     "warnings": {
-        "largeMetadataDocument": "The metadata for this OData service is significantly large. It may take some time before this operation completes."
+        "largeMetadataDocument": "The metadata for this OData service is significantly large. It may take some time before this operation completes.",
+        "warningCertificateValidationDisabled": "User has disabled certificate validation",
+        "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services, or not classified services, are not intended to be used for the generation of SAP Fiori UI applications",
+        "noServicesAvailable": "No services available for the selected system, see logs for further details.",
+        "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only",
+        "noAnnotations": "No backend annotations associated with this service were retrieved and may result in an invalid application being created",
+        "collaborativeDraftMessage": "The selected service is draft enabled but does not support collaborative draft.",
+        "certificateErrors": "A certificate error is being returned when connecting to host: {{-url}}. Certificate error: {{error}}",
+        "allowingUnauthorizedCertsNode": "Setting the environment variable 'NODE_TLS_REJECT_UNAUTHORIZED' to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification. It is important to understand the security risks when using this setting.",
+        "certErrorIgnoredByNodeSetting": "An SSL certificate error is being ignored by the node setting 'NODE_TLS_REJECT_UNAUTHORIZED=0'. This makes TLS connections and HTTPS requests insecure by disabling certificate verification. See logs for the certificate error details."
     },
     "texts": {
         "suggestedSystemNameClient": ", client {{client}}",
