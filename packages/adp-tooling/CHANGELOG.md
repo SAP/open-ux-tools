@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 0.14.4
+
+### Patch Changes
+
+-   8e44d02: fix: reuse ABAP service provider in create annotation file handler
+
+## 0.14.3
+
+### Patch Changes
+
+-   Updated dependencies [07eaebf]
+    -   @sap-ux/odata-service-writer@0.27.2
+
 ## 0.14.2
 
 ### Patch Changes
