@@ -14,7 +14,7 @@ import {
 
 import type { Package } from '@sap-ux/project-access';
 import type { OperationsType } from '@sap-ux/axios-extension';
-import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
+import { UI5Config, UI5_DEFAULT, getEsmTypesVersion, getTypesPackage, getTypesVersion } from '@sap-ux/ui5-config';
 
 /**
  * Retrieves the package name and version from the package.json file located two levels up the directory tree.
@@ -71,10 +71,13 @@ export function writeTemplateToFolder(
     data: AdpWriterConfig,
     fs: Editor
 ): void {
+    const ui5Version = data.ui5?.version;
     const tmplPath = join(baseTmplPath, 'project', '**/*.*');
     const tsConfigPath = join(baseTmplPath, 'typescript', 'tsconfig.json');
-    const typesVersion = getEsmTypesVersion(data.ui5?.version);
-    const typesPackage = getTypesPackage(typesVersion);
+
+    const typesPackage = getTypesPackage(ui5Version);
+    const isTypesPackage = typesPackage === UI5_DEFAULT.TYPES_PACKAGE_NAME;
+    const typesVersion = isTypesPackage ? getTypesVersion(ui5Version) : getEsmTypesVersion(ui5Version);
 
     try {
         fs.copyTpl(tmplPath, projectPath, { ...data, typesPackage, typesVersion }, undefined, {
