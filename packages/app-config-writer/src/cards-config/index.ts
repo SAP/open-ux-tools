@@ -69,7 +69,7 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
     const cliForPreview = await getCLIForPreview(basePath, yamlPath ?? '', fs);
 
     packageJson.scripts ??= {};
-    packageJson.scripts['start-cards-generator'] = `${cliForPreview} --open '${cardGeneratorPath}${intent}'`;
+    packageJson.scripts['start-cards-generator'] = `${cliForPreview} --open "${cardGeneratorPath}${intent}"`;
     fs.writeJSON(packageJsonPath, packageJson);
 }
 
