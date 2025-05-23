@@ -35,7 +35,7 @@
         "yeoman-generator"
     ],
     "dependencies": {
-        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@sap-devx/yeoman-ui-types": "1.16.9",
         "@sap-devx/feature-toggle-node": "2.0.3",
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
@@ -48,6 +48,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-ux/adp-flp-config-sub-generator": "workspace:*",
         "i18next": "23.5.1",
         "yeoman-generator": "5.10.0",
         "uuid": "10.0.0"
