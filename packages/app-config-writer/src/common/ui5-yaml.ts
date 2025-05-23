@@ -5,7 +5,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { PreviewConfigOptions } from '../types';
 import type { CustomMiddleware, FioriAppReloadConfig, UI5Config } from '@sap-ux/ui5-config';
-import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from './utils';
+import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig, deleteFiles } from './utils';
 import type {
     DefaultFlpPath,
     DefaultIntent,
@@ -21,7 +21,6 @@ import {
     isTestPath,
     isFlpPath
 } from './package-json';
-import { deleteFiles } from './utils';
 
 type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
 
