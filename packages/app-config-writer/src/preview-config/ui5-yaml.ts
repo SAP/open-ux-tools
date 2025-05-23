@@ -1,7 +1,13 @@
 import { basename, join } from 'path';
-import { createPreviewMiddlewareConfig, sanitizePreviewMiddleware } from '../common/ui5-yaml';
+import {
+    createPreviewMiddlewareConfig,
+    updatePreviewMiddlewareConfig,
+    updateTestConfig,
+    DEFAULT_FLP_PATH,
+    TEST_CONFIG_DEFAULTS
+} from '../common/ui5-yaml';
 import { ensurePreviewMiddlewareDependency } from './package-json';
-import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
+import { FileName, getAllUi5YamlFileNames, readUi5Yaml } from '@sap-ux/project-access';
 import { getPreviewMiddleware } from '../common/utils';
 import {
     extractUrlDetails,
@@ -9,55 +15,13 @@ import {
     extractYamlConfigFileName,
     type Script,
     isTestPath,
-    getTestPathForUi5TestRunner,
     getScriptsFromPackageJson
 } from '../common/package-json';
-import { renameSandbox, deleteFiles } from './preview-files';
+import { renameSandbox } from './preview-files';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
-import type {
-    MiddlewareConfig as PreviewConfig,
-    DefaultFlpPath,
-    DefaultIntent,
-    TestConfigDefaults as PreviewTestConfigDefaults,
-    TestConfig
-} from '@sap-ux/preview-middleware';
-import type { PreviewConfigOptions } from '../types';
+import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
-
-type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
-
-type PreviewTestConfig = ArrayElement<Required<PreviewConfig>['test']>;
-
-const DEFAULT_FLP_PATH: DefaultFlpPath = '/test/flp.html';
-
-const DEFAULT_INTENT: DefaultIntent = {
-    object: 'app',
-    action: 'preview'
-};
-
-export const TEST_CONFIG_DEFAULTS: Record<string, Readonly<Required<PreviewTestConfig>>> = {
-    qunit: {
-        path: '/test/unitTests.qunit.html',
-        framework: 'QUnit'
-    },
-    opa5: {
-        path: '/test/opaTests.qunit.html',
-        framework: 'OPA5'
-    },
-    testsuite: {
-        path: '/test/testsuite.qunit.html',
-        framework: 'Testsuite'
-    }
-} as Omit<
-    PreviewTestConfigDefaults,
-    | PreviewTestConfigDefaults['testsuite']['init']
-    | PreviewTestConfigDefaults['testsuite']['pattern']
-    | PreviewTestConfigDefaults['opa5']['init']
-    | PreviewTestConfigDefaults['opa5']['pattern']
-    | PreviewTestConfigDefaults['qunit']['init']
-    | PreviewTestConfigDefaults['qunit']['pattern']
->;
 
 /**
  * Checks if a script can be converted based on the used UI5 yaml configuration file.
@@ -131,22 +95,6 @@ async function isUi5YamlFlpPathAlreadyConverted(
 }
 
 /**
- * Checks if the passed path is a FLP path.
- *
- * @param script - the script content
- * @param configuration - the preview configuration
- * @returns indicator if the path is an FLP path
- */
-function isFlpPath(script: Script, configuration: PreviewConfig): boolean {
-    const { path } = extractUrlDetails(script.value);
-    if (!path) {
-        return false;
-    }
-    const isRtaEditorPath = configuration.rta?.editors?.some((editor) => editor.path === path) ?? false;
-    return !isRtaEditorPath && !isTestPath(script, configuration);
-}
-
-/**
  * Processes the passed UI5 yaml configuration file and reads out the preview middleware configuration.
  *
  * If the preview middleware creation is not skipped and none is given, one will be created.
@@ -187,167 +135,6 @@ export async function processUi5YamlConfig(
     ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
     const yamlPath = join(basePath, ui5Yaml);
     fs.write(yamlPath, ui5YamlConfig.toString());
-}
-
-/**
- * Creates a preview middleware configuration.
- *
- * It will sanitize the given preview middleware configuration and construct the flp configuration out of the given intent and path.
- *
- * @param previewMiddleware - the preview middleware configuration
- * @param script - the content of the script from the package.json file
- * @param basePath - the base path
- * @param fs - file system reference
- * @param logger logger to report info to the user
- * @returns the preview middleware configuration
- */
-export async function updatePreviewMiddlewareConfig(
-    previewMiddleware: CustomMiddleware<PreviewConfigOptions>,
-    script: Script,
-    basePath: string,
-    fs: Editor,
-    logger?: ToolsLogger
-): Promise<CustomMiddleware<PreviewConfigOptions>> {
-    const { path, intent } = extractUrlDetails(script.value);
-    const defaultIntent = `${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`;
-    const newMiddlewareConfig = sanitizePreviewMiddleware(previewMiddleware);
-
-    //copy of configuration to avoid ending up with an empty configuration object in some cases
-    const configuration = { ...newMiddlewareConfig.configuration };
-
-    let writeConfig = false;
-    if (isFlpPath(script, configuration)) {
-        //adjust path but respect defaults
-        if (!path?.includes(DEFAULT_FLP_PATH)) {
-            configuration.flp = configuration.flp ?? {};
-            configuration.flp.path = path;
-            writeConfig = true;
-        }
-        //adjust intent but respect defaults
-        if (intent && `${intent?.object}-${intent?.action}` !== defaultIntent) {
-            configuration.flp = configuration.flp ?? {};
-            configuration.flp.intent = {
-                object: intent.object,
-                action: intent.action
-            };
-            writeConfig = true;
-        }
-    } else if (path && isTestPath(script, configuration)) {
-        configuration.test = await updateTestConfig(configuration.test, path, basePath, fs, logger);
-        writeConfig = true;
-    } else if (!path) {
-        const ui5TestRunnerPath = getTestPathForUi5TestRunner(script.name);
-        if (ui5TestRunnerPath) {
-            configuration.test = await updateTestConfig(configuration.test, ui5TestRunnerPath, basePath, fs);
-            writeConfig = true;
-        }
-    }
-
-    if (writeConfig) {
-        newMiddlewareConfig.configuration = configuration;
-    }
-
-    return newMiddlewareConfig as CustomMiddleware<PreviewConfig>;
-}
-
-/**
- * Sanitize the test script (*.qunit.[jt]s)
- * If the OPA5 test script uses the JourneyRunner, it will be renamed and added as pattern to the respective UI5 yaml configuration.
- * If the test script does not use the JourneyRunner, it will be deleted.
- *
- * @param fs - file system reference
- * @param basePath - base path to be used
- * @param path - the path to the test runner html file
- * @param newConfig - the new test configuration
- * @param logger logger to report info to the user
- */
-export async function sanitizeTestScript(
-    fs: Editor,
-    basePath: string,
-    path: string,
-    newConfig: TestConfig,
-    logger?: ToolsLogger
-): Promise<void> {
-    const jsTestScriptPath = join(await getWebappPath(basePath), path.replace('.html', '.js'));
-    const tsTestScriptPath = join(await getWebappPath(basePath), path.replace('.html', '.ts'));
-    const testScriptPath = fs.exists(jsTestScriptPath) ? jsTestScriptPath : tsTestScriptPath;
-    if (fs.exists(testScriptPath)) {
-        const file = fs.read(testScriptPath);
-        const usesJourneyRunner = file.includes('sap/fe/test/JourneyRunner');
-        if (usesJourneyRunner) {
-            const filePathRenamed = testScriptPath.replace(/(\.([jt])s)$/, '.custom$1');
-            fs.move(testScriptPath, filePathRenamed);
-            newConfig.pattern = `/test/**/${basename(filePathRenamed)}`;
-            logger?.info(
-                `Renamed '${basename(testScriptPath)}' to '${basename(
-                    filePathRenamed
-                )}'. This file creates the JourneyRunner for OPA5 tests. As the handling of journey runners is not part of the virtual OPA5 test runner endpoint, this file has been renamed and added to the respective UI5 YAML configuration.`
-            );
-        } else {
-            await deleteFiles(fs, [testScriptPath]);
-        }
-    }
-}
-
-/**
- * Update the test configuration.
- *
- * @param testConfiguration - the test configuration
- * @param path - the path
- * @param basePath - the base path
- * @param fs - file system reference
- * @param logger logger to report info to the user
- * @returns the updated test configuration
- */
-export async function updateTestConfig(
-    testConfiguration: PreviewConfig['test'],
-    path: string | undefined,
-    basePath: string,
-    fs: Editor,
-    logger?: ToolsLogger
-): Promise<PreviewConfig['test']> {
-    const hasTestsuite = (config: PreviewConfig['test']): boolean => {
-        return config?.some((test) => test.framework === 'Testsuite') ?? false;
-    };
-
-    testConfiguration = testConfiguration ?? [];
-
-    let framework: PreviewTestConfig['framework'] | undefined;
-    if (path?.includes('testsuite.qunit.html')) {
-        framework = 'Testsuite';
-    } else if (path?.includes('opaTests.qunit.html')) {
-        framework = 'OPA5';
-    } else if (path?.includes('unitTests.qunit.html')) {
-        framework = 'QUnit';
-    }
-
-    if (!framework) {
-        return testConfiguration;
-    }
-
-    const defaultPath = TEST_CONFIG_DEFAULTS[framework.toLowerCase()].path;
-    const testConfig = testConfiguration.find((test) => test.framework === framework);
-    if (testConfig) {
-        testConfig.path = path;
-        if (testConfig.path === defaultPath) {
-            //sanitize default path
-            delete testConfig.path;
-        }
-    } else {
-        const newConfig: TestConfig = {
-            framework,
-            ...(path && defaultPath !== (path.startsWith('/') ? path : `/${path}`) && { path })
-        };
-        await sanitizeTestScript(fs, basePath, path ?? defaultPath, newConfig, logger);
-        testConfiguration.push({ ...newConfig });
-        if (!hasTestsuite(testConfiguration)) {
-            testConfiguration.push({ framework: 'Testsuite' });
-            logger?.info(
-                `The test framework 'Testsuite' has been added because at least one test runner has been found.`
-            );
-        }
-    }
-    return testConfiguration;
 }
 
 /**

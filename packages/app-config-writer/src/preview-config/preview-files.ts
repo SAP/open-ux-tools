@@ -1,8 +1,9 @@
-import { basename, join } from 'path';
+import { join } from 'path';
 import { getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { TEST_CONFIG_DEFAULTS } from './ui5-yaml';
+import { TEST_CONFIG_DEFAULTS } from '../common/ui5-yaml';
+import { deleteFiles } from '../common/utils';
 
 const renameMessage = (filePath: string): string =>
     `Renamed '${filePath}' to '${filePath.slice(
@@ -106,22 +107,4 @@ export async function deleteNoLongerUsedFiles(
         files.push(join(webappTestPath, 'unit', 'unitTests.qunit.ts'));
     }
     await deleteFiles(fs, files, logger);
-}
-
-/**
- * Deletes the given file.
- *
- * @param fs - file system reference
- * @param files - files to be deleted
- * @param logger logger to report info to the user
- */
-export async function deleteFiles(fs: Editor, files: string[], logger?: ToolsLogger): Promise<void> {
-    files.forEach((path: string): void => {
-        if (fs.exists(path)) {
-            fs.delete(path);
-            logger?.info(
-                `Deleted the '${basename(path)}' file. This file is no longer needed for the virtual endpoints.`
-            );
-        }
-    });
 }

@@ -152,6 +152,22 @@ export function isTestPath(script: Script, configuration?: PreviewConfig): boole
 }
 
 /**
+ * Checks if the passed path is a FLP path.
+ *
+ * @param script - the script content
+ * @param configuration - the preview configuration
+ * @returns indicator if the path is an FLP path
+ */
+export function isFlpPath(script: Script, configuration: PreviewConfig): boolean {
+    const { path } = extractUrlDetails(script.value);
+    if (!path) {
+        return false;
+    }
+    const isRtaEditorPath = configuration.rta?.editors?.some((editor) => editor.path === path) ?? false;
+    return !isRtaEditorPath && !isTestPath(script, configuration);
+}
+
+/**
  * Extracts the test path of a given script name from the related ui5-test-runner script.
  * The relation is defined as usage in another script that references the given script name directly or via max. one indirection.
  *
