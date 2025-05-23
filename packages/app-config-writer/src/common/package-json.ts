@@ -72,7 +72,8 @@ export function extractUrlDetails(script: string): {
  *
  * The script name:
  * - must not be 'start-variants-management'
- * - must not be 'start-control-property-editor'.
+ * - must not be 'start-control-property-editor'
+ * - must not be 'start-cards-generator'.
  *
  * @param script - the script from the package.json file
  * @param convertTests - indicator if test suite and test runner should be included in the conversion (default: false)
@@ -80,7 +81,9 @@ export function extractUrlDetails(script: string): {
  */
 export function isValidPreviewScript(script: Script, convertTests: boolean = false): boolean {
     const isValidScriptName =
-        script.name != 'start-variants-management' && script.name != 'start-control-property-editor';
+        script.name != 'start-variants-management' &&
+        script.name != 'start-control-property-editor' &&
+        script.name != 'start-cards-generator';
 
     //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const startsWebServer = !!(script.value.includes('ui5 serve') || script.value.includes('fiori run'));
@@ -151,7 +154,7 @@ export function isTestPath(script: Script, configuration?: PreviewConfig): boole
 }
 
 /**
- * Checks if the passed path is a FLP path.
+ * Checks if the passed path is an FLP path.
  *
  * @param script - the script content
  * @param configuration - the preview configuration
@@ -162,8 +165,12 @@ export function isFlpPath(script: Script, configuration: PreviewConfig): boolean
     if (!path) {
         return false;
     }
-    const isRtaEditorPath = configuration.rta?.editors?.some((editor) => editor.path === path) ?? false;
-    return !isRtaEditorPath && !isTestPath(script, configuration);
+    const isRtaEditorPath =
+        configuration.rta?.editors?.some((editor) => editor.path === path) ?? //NOSONAR
+        configuration.editors?.rta?.endpoints?.some((editor) => editor.path === path) ??
+        false;
+    const isCardsGeneratorPath = configuration.editors?.cardGenerator?.path === path;
+    return !isRtaEditorPath && !isCardsGeneratorPath && !isTestPath(script, configuration);
 }
 
 /**
