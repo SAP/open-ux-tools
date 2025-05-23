@@ -40,3 +40,8 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
         projectRootPath: string;
     };
 }
+
+export interface TileActionAnswers {
+    tileHandlingAction: string;
+    copyFromExisting: boolean;
+}

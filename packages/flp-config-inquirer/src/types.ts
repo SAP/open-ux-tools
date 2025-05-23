@@ -1,7 +1,6 @@
 import type { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
 import type { ListQuestionOptions } from 'inquirer';
-import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { InboundContent } from '@sap-ux/axios-extension'
+import type { InboundContent } from '@sap-ux/axios-extension';
 
 /**
  * Enumeration of prompt names used in the FLP configuration.
@@ -72,6 +71,7 @@ export interface EmptyInboundsLabelOptions {
  */
 export interface SemanticObjectPromptOptions {
     default?: string;
+    hide?: boolean;
 }
 
 /**
@@ -79,6 +79,7 @@ export interface SemanticObjectPromptOptions {
  */
 export interface ActionPromptOptions {
     default?: string;
+    hide?: boolean;
 }
 
 /**

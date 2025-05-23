@@ -38,8 +38,7 @@ export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObject
             return answers?.inboundId?.semanticObject ?? '';
         },
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, isCLI, 30, ['_']),
-        when: (answers: FLPConfigAnswers) => !answers?.inboundId
+        validate: (val) => validateText(val, isCLI, 30, ['_'])
     };
 }
 
@@ -66,8 +65,7 @@ export function getActionPrompt(isCLI: boolean, options?: ActionPromptOptions): 
             return answers?.inboundId?.action ?? '';
         },
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, isCLI, 60, ['_']),
-        when: (answers: FLPConfigAnswers) => !answers?.inboundId
+        validate: (val) => validateText(val, isCLI, 60, ['_'])
     };
 }
 

@@ -1,4 +1,4 @@
-import type { FlpConfigOptions } from './types';
+import type { FlpConfigOptions, TileActionAnswers } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
 import path, { join } from 'path';
@@ -17,11 +17,12 @@ import {
     isCFEnvironment,
     generateInboundConfig,
     type InternalInboundNavigation,
-    type AdpPreviewConfig
+    type AdpPreviewConfig,
+    type DescriptorVariant
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
-import { getPrompts, type FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
+import { getPrompts, type FLPConfigAnswers, type FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
     TelemetryHelper,
@@ -48,7 +49,8 @@ import {
 } from '@sap-ux/system-access';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import { getTileQuestions } from './questions';
+import { getTileActionsQuestions, tileActions, getExistingFLPConfigPrompt } from './questions';
+import type { YUIQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Generator for adding a FLP configuration to an adaptation project.
@@ -74,7 +76,8 @@ export default class extends Generator {
     private credentials: CredentialsAnswers;
     private provider: AbapServiceProvider;
     private inbounds: ManifestNamespace.Inbound;
-    private target: AbapTarget;
+    private tileActionsAnswers: TileActionAnswers & YUIQuestion<InputQuestion>;
+    private variant: DescriptorVariant;
 
     /**
      * Creates an instance of the generator.
@@ -86,7 +89,6 @@ export default class extends Generator {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.launchAsSubGen = !!opts.launchAsSubGen;
-        this.target = opts.target;
         this.toolsLogger = new ToolsLogger();
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
         this.options = opts;
@@ -120,6 +122,7 @@ export default class extends Generator {
             return;
         }
         this.provider = await this._getAbapServiceProvider();
+        this.variant = await getVariant(this.projectRootPath, this.fs);
 
         try {
             this.inbounds = await this._getAppInbounds();
@@ -149,12 +152,13 @@ export default class extends Generator {
         if (this.abort) {
             return;
         }
-
-        const tileAnswers = await this.prompt(getTileQuestions());
-        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(this.inbounds, {
-            overwrite: { hide: true },
-            createAnotherInbound: { hide: true }
-        });
+        const tilePrompts = [];
+        if (this._hasExistingFlpConfig()) {
+            tilePrompts.push(getExistingFLPConfigPrompt());
+        }
+        tilePrompts.push(...getTileActionsQuestions());
+        this.tileActionsAnswers = await this.prompt(tilePrompts) as TileActionAnswers & YUIQuestion<InputQuestion>;
+        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(this.inbounds, this._getPromptConfig());
         this.answers = await this.prompt(prompts);
     }
 
@@ -205,9 +209,8 @@ export default class extends Generator {
      * @returns {Promise<ManifestNamespace.Inbound>} list of tile inbounds of the application.
      */
     private async _getAppInbounds(): Promise<ManifestNamespace.Inbound> {
-        const variant = await getVariant(this.projectRootPath, this.fs);
         const lrepService = await this.provider.getLayeredRepository();
-        const inbounds = (await lrepService.getSystemInfo(undefined, undefined, variant.reference))
+        const inbounds = (await lrepService.getSystemInfo(undefined, undefined, this.variant.reference))
             .inbounds as Inbound[];
         return inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
             // Skip if hideLauncher is not false
@@ -417,6 +420,40 @@ export default class extends Generator {
             this.options.logWrapper
         );
         this.logger = AdpFlpConfigLogger.logger;
+    }
+
+    private _getPromptConfig(): FLPConfigPromptOptions {
+        const { tileHandlingAction, copyFromExisting } = this.tileActionsAnswers;
+
+        // If the user chooses to add a new tile and copy the original, semantic object and action are required
+        if (!this.inbounds.length || (tileHandlingAction === tileActions.ADD && copyFromExisting === false)) {
+            return {
+                inboundId: { hide: true },
+                overwrite: { hide: true },
+                createAnotherInbound: { hide: true }
+            };
+        }
+        // If the user chooses to replace the original tile, are not required and are taken from the existing selected inbound
+        if (tileHandlingAction === tileActions.REPLACE) {
+            return {
+                overwrite: { hide: true },
+                semanticObject: { hide: true },
+                action: { hide: true },
+                createAnotherInbound: { hide: true }
+            };
+        }
+
+        // If the user chooses to add a new tile and copy the original, semantic object and action are required
+        return {
+            overwrite: { hide: true },
+            createAnotherInbound: { hide: true }
+        };
+    }
+
+    private _hasExistingFlpConfig(): boolean {
+        return this.variant.content.some((item) => {
+            return item.changeType === 'appdescr_app_addNewInbound' ? true : false;
+        }
     }
 }
 
