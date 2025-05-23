@@ -6,7 +6,7 @@ import { updatePreviewMiddlewareConfigs, updatePreviewMiddlewareConfig } from '.
 import type { PreviewConfigOptions } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import * as projectAccess from '@sap-ux/project-access';
-import type { Script } from '../../../src/preview-config/ui5-yaml';
+import type { Script } from '../../../src/common/package-json';
 
 describe('update preview middleware config', () => {
     const logger = new ToolsLogger();

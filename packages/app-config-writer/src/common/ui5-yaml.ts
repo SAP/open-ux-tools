@@ -7,8 +7,8 @@ import type { PreviewConfigOptions } from '../types';
 import type { CustomMiddleware, FioriAppReloadConfig, UI5Config } from '@sap-ux/ui5-config';
 import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from './utils';
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
-import { updatePreviewMiddlewareConfig, type Script, getScriptsFromPackageJson } from '../preview-config/ui5-yaml';
-import { isValidPreviewScript } from '../preview-config/package-json';
+import { updatePreviewMiddlewareConfig } from '../preview-config/ui5-yaml';
+import { getRunScriptForYamlConfig } from './package-json';
 
 /**
  * Gets the reload middleware form the provided yamlConfig.
@@ -74,10 +74,12 @@ export async function updateMiddlewaresForPreview(
         logger?.warn(`No preview middleware found in ${ui5YamlFile}. Preview middleware will be added.`);
         previewMiddleware = createPreviewMiddlewareConfig(fs, basePath);
     } else {
-        previewMiddleware = sanitizePreviewMiddleware(previewMiddleware) as CustomMiddleware<PreviewConfig>;
         const script = getRunScriptForYamlConfig(ui5YamlFile, fs, basePath);
         if (script) {
             previewMiddleware = await updatePreviewMiddlewareConfig(previewMiddleware, script, basePath, fs, logger);
+        } else {
+            //if we don't find a script for flp.path and intent we assume the default values and sanitize the config
+            previewMiddleware = sanitizePreviewMiddleware(previewMiddleware) as CustomMiddleware<PreviewConfig>;
         }
     }
     const reloadMiddleware = await getEnhancedReloadMiddleware(ui5YamlConfig);
@@ -90,34 +92,6 @@ export async function updateMiddlewaresForPreview(
     ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
     fs.write(join(basePath, ui5YamlFile), ui5YamlConfig.toString());
     logger?.debug(`Updated preview middleware in ${ui5YamlFile}.`);
-}
-
-/**
- * Get the first valid preview script from package.json that uses the given yaml config.
- *
- * @param yamlConfigName - name of the yaml config to be used
- * @param fs - mem-fs reference to be used for file access
- * @param basePath - path to project root, where package.json is
- * @returns the run script or undefined
- */
-export function getRunScriptForYamlConfig(yamlConfigName: string, fs: Editor, basePath: string): Script | undefined {
-    const packageJsonPath = join(basePath, 'package.json');
-    const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
-    if (!packageJson) {
-        return undefined;
-    }
-    for (const [scriptName, scriptValue] of getScriptsFromPackageJson(fs, basePath)) {
-        if (
-            isValidPreviewScript({ name: scriptName, value: scriptValue }) &&
-            extractYamlConfigFileName(scriptValue) === yamlConfigName
-        ) {
-            return {
-                name: scriptName,
-                value: scriptValue
-            };
-        }
-    }
-    return undefined;
 }
 
 /**
@@ -148,14 +122,4 @@ export function sanitizePreviewMiddleware(
     configuration.flp.theme = ui5Theme;
     previewMiddleware.configuration = configuration;
     return previewMiddleware as CustomMiddleware<PreviewConfig>;
-}
-
-/**
- * Extract the UI5 yaml configuration file name from the script.
- *
- * @param script - the content of the script from the package.json file
- * @returns the UI5 yaml configuration file name or 'ui5.yaml' as default
- */
-export function extractYamlConfigFileName(script: string): string {
-    return / (?:--config|-c) (\S*)/.exec(script)?.[1] ?? FileName.Ui5Yaml;
 }

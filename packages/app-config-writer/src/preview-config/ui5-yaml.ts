@@ -1,12 +1,17 @@
 import { basename, join } from 'path';
-import {
-    createPreviewMiddlewareConfig,
-    sanitizePreviewMiddleware,
-    extractYamlConfigFileName
-} from '../common/ui5-yaml';
-import { ensurePreviewMiddlewareDependency, extractUrlDetails, isValidPreviewScript } from './package-json';
-import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml, type Package } from '@sap-ux/project-access';
+import { createPreviewMiddlewareConfig, sanitizePreviewMiddleware } from '../common/ui5-yaml';
+import { ensurePreviewMiddlewareDependency } from './package-json';
+import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml } from '@sap-ux/project-access';
 import { getPreviewMiddleware } from '../common/utils';
+import {
+    extractUrlDetails,
+    isValidPreviewScript,
+    extractYamlConfigFileName,
+    type Script,
+    isTestPath,
+    getTestPathForUi5TestRunner,
+    getScriptsFromPackageJson
+} from '../common/package-json';
 import { renameSandbox, deleteFiles } from './preview-files';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
@@ -23,8 +28,6 @@ import type { ToolsLogger } from '@sap-ux/logger';
 type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
 
 type PreviewTestConfig = ArrayElement<Required<PreviewConfig>['test']>;
-
-export type Script = { name: string; value: string };
 
 const DEFAULT_FLP_PATH: DefaultFlpPath = '/test/flp.html';
 
@@ -55,11 +58,6 @@ export const TEST_CONFIG_DEFAULTS: Record<string, Readonly<Required<PreviewTestC
     | PreviewTestConfigDefaults['qunit']['init']
     | PreviewTestConfigDefaults['qunit']['pattern']
 >;
-
-/**
- * Map of scripts from the package.json file.
- */
-const scriptsFromPackageJson = new Map<string, string>();
 
 /**
  * Checks if a script can be converted based on the used UI5 yaml configuration file.
@@ -146,73 +144,6 @@ function isFlpPath(script: Script, configuration: PreviewConfig): boolean {
     }
     const isRtaEditorPath = configuration.rta?.editors?.some((editor) => editor.path === path) ?? false;
     return !isRtaEditorPath && !isTestPath(script, configuration);
-}
-
-/**
- * Check if the path is a test path.
- * 1) path matches pattern '**.qunit.html'
- * 2) path is being used as test configuration path in yaml configuration.
- *
- * @param script - the script content
- * @param configuration - the preview configuration
- * @returns indicator if the path is a test path
- */
-export function isTestPath(script: Script, configuration?: PreviewConfig): boolean {
-    const { path } = extractUrlDetails(script.value);
-    if (!path) {
-        return !!getTestPathForUi5TestRunner(script.name);
-    }
-    if (path.includes('.qunit.html')) {
-        return true;
-    }
-    return configuration?.test?.some((testConfig) => testConfig.path === path) ?? false;
-}
-
-/**
- * Extracts the test path of a given script name from the related ui5-test-runner script.
- * The relation is defined as usage in another script that references the given script name directly or via max. one indirection.
- *
- * Example:
- * - 'ui:test-server': 'ui5 serve --config ./ui5-deprecated-tools-preview-theme.yaml'
- * - 'ui:test-runner': 'ui5-test-runner --port 8081 --url http://localhost:8080/test/testsuite.qunit.html --report-dir ./target/'
- * - 'ui:test': 'start-server-and-test ui:test-server http://localhost:8080/ ui:test-runner'
- *
- * The test path for script 'ui:test-server' is 'http://localhost:8080/test/testsuite.qunit.html' from 'ui:test-runner' as they are connected via one indirection ('ui:test').
- *
- * @param scriptName - the name of the script from the package.json file
- * @returns the related test path
- */
-export function getTestPathForUi5TestRunner(scriptName: string): string | undefined {
-    const TEST_RUNNER_COMMAND = 'ui5-test-runner';
-
-    const extractUrl = (script: string): string | undefined => {
-        return / (?:--url|-u|--testsuite) (\S*)/.exec(script)?.[1] ?? undefined;
-    };
-
-    const findReferencingScriptByScriptName = (scriptName: string): string | undefined => {
-        return [...scriptsFromPackageJson.values()].find((tmpScriptValue) =>
-            tmpScriptValue.includes(` ${scriptName} `)
-        );
-    };
-
-    const findReferencingUi5TestRunnerScriptByScriptValue = (script: string): string | undefined => {
-        for (const scriptPart of script.split(' ')) {
-            const scriptValue = scriptsFromPackageJson.get(scriptPart);
-            if (scriptValue?.includes(TEST_RUNNER_COMMAND)) {
-                return scriptValue;
-            }
-        }
-        return undefined;
-    };
-
-    let testRunnerScript = findReferencingScriptByScriptName(scriptName);
-
-    let url = testRunnerScript?.includes(TEST_RUNNER_COMMAND) ? extractUrl(testRunnerScript) : undefined;
-    if (!url) {
-        testRunnerScript = findReferencingUi5TestRunnerScriptByScriptValue(testRunnerScript ?? '');
-        url = extractUrl(testRunnerScript ?? '');
-    }
-    return url ? new URL(url).pathname : undefined;
 }
 
 /**
@@ -471,24 +402,6 @@ export async function updateDefaultTestConfig(fs: Editor, basePath: string, logg
     ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
     const yamlPath = join(basePath, FileName.Ui5Yaml);
     fs.write(yamlPath, ui5YamlConfig.toString());
-}
-
-/**
- * Reads the scripts from the package.json file.
- * Scripts will be buffered map 'scriptsFromPackageJson' to avoid multiple reads of the package.json file.
- *
- * @param fs - file system reference
- * @param basePath - base path to be used for the conversion
- * @returns the scripts from the package.json file
- */
-export function getScriptsFromPackageJson(fs: Editor, basePath: string): Map<string, string> {
-    const packageJsonPath = join(basePath, 'package.json');
-    const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
-    scriptsFromPackageJson.clear();
-    Object.entries(packageJson?.scripts ?? {}).forEach(([scriptName, scriptContent]) => {
-        scriptsFromPackageJson.set(scriptName, scriptContent ?? '');
-    });
-    return scriptsFromPackageJson;
 }
 
 /**
