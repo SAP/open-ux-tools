@@ -1,5 +1,9 @@
 import { basename, join } from 'path';
-import { createPreviewMiddlewareConfig, sanitizePreviewMiddleware } from '../common/ui5-yaml';
+import {
+    createPreviewMiddlewareConfig,
+    sanitizePreviewMiddleware,
+    extractYamlConfigFileName
+} from '../common/ui5-yaml';
 import { ensurePreviewMiddlewareDependency, extractUrlDetails, isValidPreviewScript } from './package-json';
 import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml, type Package } from '@sap-ux/project-access';
 import { getPreviewMiddleware } from '../common/utils';
@@ -209,16 +213,6 @@ export function getTestPathForUi5TestRunner(scriptName: string): string | undefi
         url = extractUrl(testRunnerScript ?? '');
     }
     return url ? new URL(url).pathname : undefined;
-}
-
-/**
- * Extract the UI5 yaml configuration file name from the script.
- *
- * @param script - the content of the script from the package.json file
- * @returns the UI5 yaml configuration file name or 'ui5.yaml' as default
- */
-export function extractYamlConfigFileName(script: string): string {
-    return / (?:--config|-c) (\S*)/.exec(script)?.[1] ?? FileName.Ui5Yaml;
 }
 
 /**

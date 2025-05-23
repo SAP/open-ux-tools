@@ -1,5 +1,6 @@
 import { basename, join } from 'path';
-import { extractYamlConfigFileName, isTestPath } from './ui5-yaml';
+import { isTestPath } from './ui5-yaml';
+import { extractYamlConfigFileName } from '../common/ui5-yaml';
 import { generateVariantsConfig } from '../variants-config';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';

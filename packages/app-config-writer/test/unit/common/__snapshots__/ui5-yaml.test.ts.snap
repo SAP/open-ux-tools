@@ -28,8 +28,9 @@ server:
       configuration:
         flp:
           intent:
-            object: hello
-            action: world
+            object: v2lrop0909
+            action: tile
+          path: test/flpSandbox.html
 "
 `;
 
