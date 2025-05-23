@@ -28,7 +28,6 @@ export async function generateInboundConfig(
     const variant = await getVariant(basePath, fs);
 
     if (!config?.inboundId) {
-        config.addInboundId = true;
         config.inboundId = `${variant.id}.InboundID`;
     }
 

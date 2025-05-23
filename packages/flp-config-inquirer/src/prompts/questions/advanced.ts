@@ -1,55 +1,36 @@
 import { parseParameters } from '@sap-ux/adp-tooling';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
+import type { InboundContent } from '@sap-ux/axios-extension';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
 import type { FLPConfigQuestion, FLPConfigAnswers } from '../../types';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Creates the 'inboundId' prompt for FLP configuration.
  *
- * @param {string[]} inboundIds - List of existing inbound IDs to populate the prompt choices.
+ * @param {ManifestNamespace.Inbound} inbounds - List of existing inbounds to populate the prompt choices.
  * @returns {FLPConfigQuestion} The prompt configuration for selecting an inbound ID.
  */
-export function getInboundIdsPrompt(inboundIds: string[]): FLPConfigQuestion {
+export function getInboundIdsPrompt(inbounds: ManifestNamespace.Inbound): FLPConfigQuestion {
+    const choices = Object.entries(inbounds).map(([inboundId, data]) => ({
+        name: inboundId,
+        value: data
+    }));
     return {
         type: 'list',
         name: promptNames.inboundId,
         message: t('prompts.inboundIds'),
-        choices: inboundIds,
-        default: inboundIds[0],
-        validate: validateEmptyString,
-        when: inboundIds?.length > 0,
+        choices: choices,
+        default: () => choices[0]?.value,
+        validate: (value: InboundContent): boolean | string =>
+            validateEmptyString(value.semanticObject) && validateEmptyString(value.action),
+        when: choices?.length > 0,
         guiOptions: {
             hint: t('tooltips.inboundId'),
             breadcrumb: t('prompts.inboundIds'),
             mandatory: true
         }
-    };
-}
-
-/**
- * Creates the 'emptyInboundsInfo' label prompt for cases where no inbounds exist.
- *
- * @param {string[]} inboundIds - List of existing inbound IDs to determine whether to display this label.
- * @param {string} [appId] - Application ID to generate a link for the Fiori application library.
- * @returns {FLPConfigQuestion} The prompt configuration for displaying an information label when no inbounds exist.
- */
-export function getEmptyInboundsLabelPrompt(inboundIds: string[], appId?: string): FLPConfigQuestion {
-    return {
-        type: 'input',
-        name: promptNames.emptyInboundsInfo,
-        message: t('prompts.emptyInboundsInfo'),
-        guiOptions: {
-            type: 'label',
-            mandatory: false,
-            link: {
-                text: 'application page.',
-                url: `https://fioriappslibrary.hana.ondemand.com/sap/fix/externalViewer/${
-                    appId ? `index.html?appId=${appId}&releaseGroupTextCombined=SC` : '#/home'
-                }`
-            }
-        },
-        when: inboundIds.length === 0
     };
 }
 

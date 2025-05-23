@@ -12,18 +12,16 @@ import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from
  * Retrieves the inquirer prompts for the FLP configuration.
  *
  * @param {ManifestNamespace.Inbound | undefined} inbounds - An object containing existing inbound keys to check for duplicates.
- * @param {string | undefined} appId - The application ID used to generate unique prompt keys.
  * @param {FLPConfigPromptOptions | undefined} promptOptions - Options that control prompt behavior. See {@link FLPConfigPromptOptions} for details.
  * @returns {Promise<FLPConfigQuestion[]>} A promise that resolves to an array of FLP configuration questions.
  */
 async function getPrompts(
     inbounds?: ManifestNamespace.Inbound,
-    appId?: string,
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigQuestion[]> {
     await initI18n();
 
-    return getQuestions(inbounds, appId, promptOptions);
+    return getQuestions(inbounds, promptOptions);
 }
 
 /**
@@ -31,17 +29,15 @@ async function getPrompts(
  *
  * @param {InquirerAdapter} adapter - An instance of `InquirerAdapter` to handle prompting.
  * @param {ManifestNamespace.Inbound | undefined} inbounds - An object containing existing inbound keys to check for duplicates.
- * @param {string | undefined} appId - The application ID used to generate unique prompt keys.
  * @param {FLPConfigPromptOptions | undefined} promptOptions - Options that control prompt behavior. See {@link FLPConfigPromptOptions} for details.
  * @returns {Promise<FLPConfigAnswers>} A promise that resolves to the user's answers for the FLP configuration.
  */
 async function prompt(
     adapter: InquirerAdapter,
     inbounds?: ManifestNamespace.Inbound,
-    appId?: string,
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigAnswers> {
-    const flpPrompts = await getPrompts(inbounds, appId, promptOptions);
+    const flpPrompts = await getPrompts(inbounds, promptOptions);
 
     const answers = await adapter.prompt<FLPConfigAnswers>(flpPrompts);
     // Apply default values to prompts in case they have not been executed

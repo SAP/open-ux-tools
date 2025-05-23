@@ -2,6 +2,7 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { Manifest } from '@sap-ux/project-access';
 import type Generator from 'yeoman-generator';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
+import type { AbapTarget } from '@sap-ux/system-access';
 
 export interface FlpConfigOptions extends Generator.GeneratorOptions {
     /**
@@ -25,6 +26,10 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
      */
     manifest: Manifest;
     /**
+     * ABAP target from ui5.yaml
+     */
+    target: AbapTarget;
+    /**
      * Telemetry data to be send after deployment configuration has been added
      */
     telemetryData?: TelemetryData;
@@ -34,4 +39,9 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
     data?: {
         projectRootPath: string;
     };
+}
+
+export interface TileActionAnswers {
+    tileHandlingAction: string;
+    copyFromExisting: boolean;
 }

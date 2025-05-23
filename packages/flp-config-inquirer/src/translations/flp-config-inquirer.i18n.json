@@ -1,13 +1,13 @@
 {
     "prompts": {
         "inboundIds": "Inbound ID",
-        "emptyInboundsInfo": "Original application target mapping and the default parameters can be found in Fiori reference library under Implementation Information -> Configuration -> Target Mapping(s) in",
         "semanticObject": "Semantic Object",
         "action": "Action",
         "title": "Title",
         "subTitle": "Subtitle",
         "additionalParameters": "Parameters",
-        "createAnotherInbound": "Do you want to add or edit another inbound?"
+        "createAnotherInbound": "Do you want to add or edit another inbound?",
+        "icon": "Icon"
     },
     "tooltips": {
         "inboundId": "Choose the inbound ID that will be used to set the FLP tile configuration",
