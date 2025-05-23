@@ -1,5 +1,14 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.1.4
+
+### Patch Changes
+
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.2
+    -   @sap-ux/odata-service-inquirer@2.4.4
+
 ## 0.1.3
 
 ### Patch Changes
