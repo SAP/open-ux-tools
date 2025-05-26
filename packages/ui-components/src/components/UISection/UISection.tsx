@@ -24,8 +24,6 @@ export interface UISectionProps {
     rootRef?: React.RefObject<HTMLDivElement>;
     // Scroll event
     onScroll?: () => void;
-    // classname for body element
-    bodyClassName?: string;
 }
 
 /**
@@ -40,19 +38,6 @@ export class UISection extends React.Component<UISectionProps & Readonly<{ child
         if (this.props.onScroll) {
             this.props.onScroll();
         }
-    }
-
-    /**
-     * Method returns class names for body element.
-     *
-     * @returns Class names of section body element.
-     */
-    private getBodyClassNames(): string {
-        let classNames = `section__body`;
-        if (this.props.bodyClassName) {
-            classNames += ` ${this.props.bodyClassName}`;
-        }
-        return classNames;
     }
 
     /**
@@ -85,7 +70,7 @@ export class UISection extends React.Component<UISectionProps & Readonly<{ child
                         </div>
                     </div>
                 )}
-                <div className={this.getBodyClassNames()} onScroll={this.onScroll.bind(this)}>
+                <div className="section__body" onScroll={this.onScroll.bind(this)}>
                     {this.props.children}
                 </div>
             </div>
