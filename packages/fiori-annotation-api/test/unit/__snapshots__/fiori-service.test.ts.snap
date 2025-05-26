@@ -3902,6 +3902,76 @@ exports[`fiori annotation service update property value complete EDMXBackend xml
 "
 `;
 
+exports[`fiori annotation service update property value replace paths with multiple segments CAPNodejs cap-start v4 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.Incidents with @(
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataFieldForAnnotation',
+            Target : 'incidentFlow/@UI.LineItem',
+            ![@UI.Hidden] : incidentFlow.incident.createdBy,
+        },
+        {
+            $Type : 'UI.DataFieldForIntentBasedNavigation',
+            Mapping : [
+                {
+                    $Type : 'Common.SemanticObjectMappingType',
+                    LocalProperty : incidentFlow.createdBy,
+                },
+            ],
+        },
+        {
+            $Type : 'UI.DataFieldWithNavigationPath',
+            Target : incidentFlow.createdBy,
+        },
+    ]
+);
+
+"
+`;
+
+exports[`fiori annotation service update property value replace paths with multiple segments EDMXBackend xml-start v4 1`] = `
+"<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/Common.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.Common.v1\\" Alias=\\"Common\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\\">
+        <edmx:Include Namespace=\\"com.sap.vocabularies.UI.v1\\" Alias=\\"UI\\"/>
+    </edmx:Reference>
+    <edmx:Reference Uri=\\"/incident/$metadata\\">
+        <edmx:Include Namespace=\\"IncidentService\\"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\" Namespace=\\"sap.fe.demo\\">
+            <Annotations Target=\\"IncidentService.Incidents\\">
+                <Annotation Term=\\"UI.LineItem\\">
+                    <Collection>
+                        <Record Type=\\"UI.DataFieldForAnnotation\\">
+                            <PropertyValue Property=\\"Target\\" AnnotationPath=\\"incidentFlow/@UI.LineItem\\"/>
+                            <Annotation Term=\\"UI.Hidden\\" Path=\\"incidentFlow/incident/createdBy\\"/>
+                        </Record>
+                        <Record Type=\\"UI.DataFieldForIntentBasedNavigation\\">
+                            <PropertyValue Property=\\"Mapping\\">
+                                <Collection>
+                                    <Record Type=\\"Common.SemanticObjectMappingType\\">
+                                        <PropertyValue Property=\\"LocalProperty\\" PropertyPath=\\"incidentFlow/createdBy\\"/>
+                                    </Record>
+                                </Collection>
+                            </PropertyValue>
+                        </Record>
+                        <Record Type=\\"UI.DataFieldWithNavigationPath\\">
+                            <PropertyValue Property=\\"Target\\" NavigationPropertyPath=\\"incidentFlow/createdBy\\"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+"
+`;
+
 exports[`fiori annotation service update qualifier value CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 

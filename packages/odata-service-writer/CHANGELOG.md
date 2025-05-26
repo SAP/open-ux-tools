@@ -1,5 +1,27 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.3
+
+### Patch Changes
+
+-   6e2ef66: Do not stop service from being added in case if existing services are without annotation dataSources.
+
+## 0.27.2
+
+### Patch Changes
+
+-   07eaebf: Generation of a unique service name (if such service exists) and error for existing service URI.
+
+## 0.27.1
+
+### Patch Changes
+
+-   5e0020b: Support backend changes.
+-   Updated dependencies [5e0020b]
+    -   @sap-ux/ui5-config@0.28.1
+    -   @sap-ux/mockserver-config-writer@0.9.1
+    -   @sap-ux/project-access@1.30.1
+
 ## 0.27.0
 
 ### Minor Changes

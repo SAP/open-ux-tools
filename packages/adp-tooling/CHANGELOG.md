@@ -1,5 +1,53 @@
 # @sap-ux/adp-tooling
 
+## 0.14.6
+
+### Patch Changes
+
+-   Updated dependencies [6e2ef66]
+    -   @sap-ux/odata-service-writer@0.27.3
+
+## 0.14.5
+
+### Patch Changes
+
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/system-access@0.6.1
+
+## 0.14.4
+
+### Patch Changes
+
+-   8e44d02: fix: reuse ABAP service provider in create annotation file handler
+
+## 0.14.3
+
+### Patch Changes
+
+-   Updated dependencies [07eaebf]
+    -   @sap-ux/odata-service-writer@0.27.2
+
+## 0.14.2
+
+### Patch Changes
+
+-   5f3aa03: feat: Integration of ExtendControllerPlugin in Adaptation Editor
+
+## 0.14.1
+
+### Patch Changes
+
+-   Updated dependencies [5e0020b]
+-   Updated dependencies [66b88e1]
+    -   @sap-ux/odata-service-writer@0.27.1
+    -   @sap-ux/ui5-config@0.28.1
+    -   @sap-ux/inquirer-common@0.7.1
+    -   @sap-ux/project-access@1.30.1
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/project-input-validator@0.6.1
+    -   @sap-ux/system-access@0.6.0
+
 ## 0.14.0
 
 ### Minor Changes

@@ -3,7 +3,7 @@ import { dirname, join, sep } from 'path';
 import { t } from '../i18n';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { DirName, getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
-import type { EdmxAnnotationsInfo, OdataService } from '../types';
+import type { DataSources, EdmxAnnotationsInfo, OdataService } from '../types';
 import semVer from 'semver';
 
 interface DataSourceUpdateSettings {
@@ -154,7 +154,7 @@ function getModelSettings(minUI5Version: string | undefined): { includeSynchroni
  * @returns created annotation dataSources list for service.
  */
 function addLocalAnnotationDataSources(
-    dataSources: { [k: string]: ManifestNamespace.DataSource },
+    dataSources: DataSources,
     serviceName: string,
     serviceLocalAnnotations?: string | string[],
     useOldAnnotations?: boolean
@@ -206,7 +206,7 @@ function addLocalAnnotationDataSources(
 function removeUnusedAnnotations(
     fs: Editor,
     webappPath: string,
-    dataSources: { [k: string]: ManifestNamespace.DataSource },
+    dataSources: DataSources,
     serviceName: string,
     createdAnnotations: string[]
 ): void {
@@ -245,7 +245,7 @@ function removeUnusedAnnotations(
 function addRemoteAnnotationDataSources(
     fs: Editor,
     webappPath: string,
-    dataSources: { [k: string]: ManifestNamespace.DataSource },
+    dataSources: DataSources,
     serviceName: string,
     serviceRemoteAnnotations?: EdmxAnnotationsInfo | EdmxAnnotationsInfo[],
     cleanOldAnnotations?: boolean
@@ -376,13 +376,15 @@ async function addMultipleServiceSupportToManifest(
     const dataSources = manifest?.['sap.app']?.dataSources;
     for (const dataSourceKey in dataSources) {
         const dataSource = dataSources[dataSourceKey];
-        if (dataSource.type === 'OData') {
+        if (dataSource && dataSource.type === 'OData') {
             convertSingleService(webappPath, dataSourceKey, dataSource, fs);
             const annotations = dataSource.settings?.annotations;
             if (annotations) {
                 annotations.forEach((annotationName) => {
                     const annotationDataSource = dataSources[annotationName];
-                    convertSingleService(webappPath, dataSourceKey, annotationDataSource, fs);
+                    if (annotationDataSource) {
+                        convertSingleService(webappPath, dataSourceKey, annotationDataSource, fs);
+                    }
                 });
             }
         }
@@ -416,12 +418,7 @@ function removeFileForDataSource(fs: Editor, manifestPath: string, dataSource: M
  * @param annotations - annotations list
  * @param dataSources - dataSources from manifest.json
  */
-function removeAnnotations(
-    fs: Editor,
-    manifestPath: string,
-    annotations: string[],
-    dataSources?: { [k: string]: ManifestNamespace.DataSource }
-): void {
+function removeAnnotations(fs: Editor, manifestPath: string, annotations: string[], dataSources?: DataSources): void {
     for (const datasourceKey of annotations) {
         const annotationDatasource = dataSources?.[datasourceKey];
         if (annotationDatasource?.type === 'ODataAnnotation') {
@@ -505,6 +502,7 @@ export async function updateManifest(
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
     const appProp = 'sap.app';
     const appid = manifest?.[appProp]?.id;
+    const dataSources = manifest[appProp]?.dataSources ?? {};
     // Throw if required property is not found manifest.json
     if (!appid) {
         throw new Error(
@@ -512,11 +510,23 @@ export async function updateManifest(
         );
     }
     // Throw if only update is required and service is not found in manifest.json
-    if (forceServiceUpdate && service.name && !manifest[appProp]?.dataSources?.[service.name]) {
+    if (forceServiceUpdate && service.name && !dataSources?.[service.name]) {
         throw new Error(
             t('error.requiredProjectPropertyNotFound', {
                 property: `'${appProp}.dataSources.${service.name}'`,
                 path: manifestPath
+            })
+        );
+    }
+    // Throw if service is being added, but service with the same URI already exists
+    if (
+        !forceServiceUpdate &&
+        service.path &&
+        Object.values(dataSources).find((dataSource) => dataSource.uri === service.path)
+    ) {
+        throw new Error(
+            t('error.requiredServiceAlreadyExists', {
+                uri: service.path
             })
         );
     }
