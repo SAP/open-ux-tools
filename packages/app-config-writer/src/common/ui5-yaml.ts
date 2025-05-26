@@ -11,8 +11,8 @@ import {
     type DefaultIntent,
     type MiddlewareConfig as PreviewConfig,
     type TestConfigDefaults as PreviewTestConfigDefaults,
-    type TestConfig,
-    sanitizeRtaConfig
+    type TestConfig
+    //    sanitizeRtaConfig
 } from '@sap-ux/preview-middleware';
 import {
     getRunScriptForYamlConfig,
@@ -159,7 +159,10 @@ export function sanitizePreviewMiddleware(
     }
     //if we find the deprecated 'rta.editors' config, we will sanitize it
     if ('rta' in previewMiddleware.configuration) {
-        const rtaConfig = sanitizeRtaConfig(previewMiddleware.configuration.rta); //NOSONAR
+        // todo: fin out why this causes test errors
+        //  const rtaConfig = sanitizeRtaConfig(previewMiddleware.configuration.rta); //NOSONAR
+        const { editors, ...rta } = previewMiddleware.configuration.rta!; //NOSONAR
+        const rtaConfig = { ...rta, endpoints: [...editors] };
         delete previewMiddleware.configuration.rta; //NOSONAR
         previewMiddleware.configuration.editors ??= {};
         previewMiddleware.configuration.editors.rta = rtaConfig;
