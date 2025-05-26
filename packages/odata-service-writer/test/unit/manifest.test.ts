@@ -13,6 +13,7 @@ import { expectedEdmxManifestOlderServices } from '../test-data/manifest-json/ed
 import { expectedCdsManifest } from '../test-data/manifest-json/cap-manifest';
 import { expectedEdmxManifestLocalAnnotation } from '../test-data/manifest-json/edmx-manifest-local-annotation'; // single local annotation
 import { expectedEdmxManifestLocalAnnotations } from '../test-data/manifest-json/edmx-manifest-local-annotations'; // multiple local annotations
+import { expectedEdmxManifestMissingAnnotations } from '../test-data/manifest-json/edmx-manifest-missing-annotation-datasources'; // missing annotation definitions
 import { expectedEdmxManifesNoAnnotations } from '../test-data/manifest-json/edmx-manifest-no-annotations'; // no any annotations
 
 describe('manifest', () => {
@@ -59,7 +60,7 @@ describe('manifest', () => {
             const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
             expect(manifestJson['sap.ui5']?.models?.['amodel'].settings?.['synchronizationMode']).toEqual(syncMode);
         });
-        test('Ensure manifest updates are updated as expected as in edmx projects', async () => {
+        test('Ensure manifest are updated as expected as in edmx projects', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest'
@@ -87,7 +88,7 @@ describe('manifest', () => {
             expect(manifestJson).toEqual(expectedEdmxManifest);
         });
 
-        test('Ensure manifest updates are updated as expected as in edmx projects with custom model settings', async () => {
+        test('Ensure manifest are updated as expected as in edmx projects with custom model settings', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest'
@@ -123,7 +124,7 @@ describe('manifest', () => {
             });
         });
 
-        test('Ensure manifest updates are updated as expected as in edmx projects with local annotation', async () => {
+        test('Ensure manifest are updated as expected as in edmx projects with local annotation', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest',
@@ -158,7 +159,7 @@ describe('manifest', () => {
             expect(manifestJson).toEqual(expectedEdmxManifestLocalAnnotation);
         });
 
-        test('Ensure manifest updates are updated as expected as in edmx projects with multiple local annotations', async () => {
+        test('Ensure manifest are updated as expected as in edmx projects with multiple local annotations', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest',
@@ -193,7 +194,43 @@ describe('manifest', () => {
             expect(manifestJson).toEqual(expectedEdmxManifestLocalAnnotations);
         });
 
-        test('Ensure manifest updates are updated as expected as in edmx projects without any annotations', async () => {
+        test('Ensure manifest are updated as expected as in edmx projects without annotation definitions', async () => {
+            const testManifest = {
+                'sap.app': {
+                    id: 'test.update.manifest',
+                    dataSources: {
+                        'mainService': {
+                            type: 'OData',
+                            settings: {
+                                annotations: ['annotation'] // annotation is set to dataSource, but not defined for existing service
+                            }
+                        }
+                    }
+                },
+                'sap.ui5': {
+                    models: {
+                        '': {
+                            dataSource: 'mainService'
+                        }
+                    }
+                }
+            };
+            const service: OdataService = {
+                version: OdataVersion.v2,
+                client: '123',
+                model: 'amodel',
+                name: 'aname',
+                path: '/a/path',
+                type: ServiceType.EDMX
+            };
+            fs.writeJSON('./webapp/manifest.json', testManifest);
+            // Call updateManifest
+            await updateManifest('./', service, fs);
+            const manifestJson = fs.readJSON('./webapp/manifest.json');
+            expect(manifestJson).toEqual(expectedEdmxManifestMissingAnnotations);
+        });
+
+        test('Ensure manifest are updated as expected as in edmx projects without any annotations', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest',
@@ -228,7 +265,7 @@ describe('manifest', () => {
             expect(manifestJson).toEqual(expectedEdmxManifesNoAnnotations);
         });
 
-        test('Ensure manifest updates are updated as expected as in edmx projects with multiple annotations', async () => {
+        test('Ensure manifest are updated as expected as in edmx projects with multiple annotations', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest'
@@ -263,7 +300,7 @@ describe('manifest', () => {
             expect(manifestJson).toEqual(expectedEdmxManifestMultipleAnnotations);
         });
 
-        test('Ensure manifest updates are updated as expected as in edmx projects with multiple services', async () => {
+        test('Ensure manifest are updated as expected as in edmx projects with multiple services', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest',
@@ -305,7 +342,7 @@ describe('manifest', () => {
             expect(manifestJson).toEqual(expectedEdmxManifestMultipleServices);
         });
 
-        test('Ensure manifest updates are updated as expected as in edmx projects with older services', async () => {
+        test('Ensure manifest are updated as expected as in edmx projects with older services', async () => {
             // Test to basically check whether existing service definitions are updated (localUri attribute is modified)
             const testManifest = {
                 'sap.app': {
@@ -350,7 +387,7 @@ describe('manifest', () => {
             expect(manifestJson).toEqual(expectedEdmxManifestOlderServices);
         });
 
-        test('Ensure manifest updates are updated as expected as in cds projects', async () => {
+        test('Ensure manifest are updated as expected as in cds projects', async () => {
             const testManifest = {
                 'sap.app': {
                     id: 'test.update.manifest'
