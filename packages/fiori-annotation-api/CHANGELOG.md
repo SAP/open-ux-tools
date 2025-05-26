@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.5.6
+
+### Patch Changes
+
+-   e605d30: fix: [CDS] update change for path values does not replace `/` with `.`.
+
 ## 0.5.5
 
 ### Patch Changes
