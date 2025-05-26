@@ -127,13 +127,6 @@ export async function updateMiddlewaresForPreview(
         } else {
             //if we don't find a script for flp.path and intent we assume the default values and sanitize the config
             previewMiddleware = sanitizePreviewMiddleware(previewMiddleware) as CustomMiddleware<PreviewConfig>;
-            //if we find the deprecated 'rta.editors' config, we will sanitize it
-            if ('rta' in previewMiddleware.configuration) {
-                const rtaConfig = sanitizeRtaConfig(previewMiddleware.configuration.rta); //NOSONAR
-                delete previewMiddleware.configuration.rta; //NOSONAR
-                previewMiddleware.configuration.editors ??= {};
-                previewMiddleware.configuration.editors.rta = rtaConfig;
-            }
         }
     }
     const reloadMiddleware = await getEnhancedReloadMiddleware(ui5YamlConfig);
@@ -161,6 +154,16 @@ export async function updateMiddlewaresForPreview(
 export function sanitizePreviewMiddleware(
     previewMiddleware: CustomMiddleware<PreviewConfigOptions>
 ): CustomMiddleware<PreviewConfig | undefined> {
+    if (!previewMiddleware.configuration) {
+        return previewMiddleware as CustomMiddleware<PreviewConfig>;
+    }
+    //if we find the deprecated 'rta.editors' config, we will sanitize it
+    if ('rta' in previewMiddleware.configuration) {
+        const rtaConfig = sanitizeRtaConfig(previewMiddleware.configuration.rta); //NOSONAR
+        delete previewMiddleware.configuration.rta; //NOSONAR
+        previewMiddleware.configuration.editors ??= {};
+        previewMiddleware.configuration.editors.rta = rtaConfig;
+    }
     if (!isFioriToolsDeprecatedPreviewConfig(previewMiddleware.configuration)) {
         return previewMiddleware as CustomMiddleware<PreviewConfig>;
     }
