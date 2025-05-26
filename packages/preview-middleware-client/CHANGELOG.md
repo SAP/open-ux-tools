@@ -1,5 +1,41 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.14.4
+
+### Patch Changes
+
+-   225e7d7: fix: Add message when controller extension pending change is created
+
+## 0.14.3
+
+### Patch Changes
+
+-   c9b65f0: Migrate code from cards-editor-middleware to preview-middleware.
+
+## 0.14.2
+
+### Patch Changes
+
+-   b49c43f: fix: added apptype to quickactions and contextmenu
+
+## 0.14.1
+
+### Patch Changes
+
+-   5f3aa03: feat: Integration of ExtendControllerPlugin in Adaptation Editor
+
+## 0.14.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+## 0.13.22
+
+### Patch Changes
+
+-   e856125: Fix: Generic handling for change type and new UI component for displaying
+
 ## 0.13.21
 
 ### Patch Changes

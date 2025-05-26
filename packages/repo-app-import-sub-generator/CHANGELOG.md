@@ -1,5 +1,106 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.8
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.4.6
+-   @sap-ux/odata-service-inquirer@2.4.4
+
+## 0.3.7
+
+### Patch Changes
+
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/odata-service-inquirer@2.4.4
+    -   @sap-ux/abap-deploy-config-writer@0.1.2
+
+## 0.3.6
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.4.5
+-   @sap-ux/odata-service-inquirer@2.4.3
+
+## 0.3.5
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.4.4
+-   @sap-ux/odata-service-inquirer@2.4.3
+
+## 0.3.4
+
+### Patch Changes
+
+-   Updated dependencies [d1b5ab7]
+    -   @sap-ux/odata-service-inquirer@2.4.3
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [6cc19b7]
+    -   @sap-ux/odata-service-inquirer@2.4.2
+    -   @sap-ux/fiori-elements-writer@2.4.3
+
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [06d3ba3]
+    -   @sap-ux/fiori-elements-writer@2.4.2
+    -   @sap-ux/odata-service-inquirer@2.4.1
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [66b88e1]
+    -   @sap-ux/inquirer-common@0.7.1
+    -   @sap-ux/fiori-elements-writer@2.4.1
+    -   @sap-ux/odata-service-inquirer@2.4.1
+    -   @sap-ux/abap-deploy-config-writer@0.1.1
+    -   @sap-ux/launch-config@0.10.1
+    -   @sap-ux/project-access@1.30.1
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/fiori-generator-shared@0.12.1
+    -   @sap-ux/project-input-validator@0.6.1
+
+## 0.3.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/abap-deploy-config-writer@0.1.0
+    -   @sap-ux/project-input-validator@0.6.0
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/odata-service-inquirer@2.4.0
+    -   @sap-ux/fiori-elements-writer@2.4.0
+    -   @sap-ux/guided-answers-helper@0.3.0
+    -   @sap-ux/fiori-tools-settings@0.2.0
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/launch-config@0.10.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/ui5-info@0.11.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/store@1.1.0
+
+## 0.2.25
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.3.8
+-   @sap-ux/odata-service-inquirer@2.3.15
+
 ## 0.2.24
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @sap-ux/ui5-config
 
+## 0.28.1
+
+### Patch Changes
+
+-   5e0020b: Support backend changes.
+
+## 0.28.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/yaml@0.17.0
+
 ## 0.27.2
 
 ### Patch Changes

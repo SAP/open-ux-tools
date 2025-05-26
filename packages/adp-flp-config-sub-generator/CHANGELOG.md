@@ -1,5 +1,87 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.6
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.6
+-   @sap-ux/flp-config-inquirer@0.3.6
+
+## 0.1.5
+
+### Patch Changes
+
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/adp-tooling@0.14.5
+    -   @sap-ux/system-access@0.6.1
+    -   @sap-ux/flp-config-inquirer@0.3.5
+
+## 0.1.4
+
+### Patch Changes
+
+-   Updated dependencies [8e44d02]
+    -   @sap-ux/adp-tooling@0.14.4
+    -   @sap-ux/flp-config-inquirer@0.3.4
+
+## 0.1.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.3
+-   @sap-ux/flp-config-inquirer@0.3.3
+
+## 0.1.2
+
+### Patch Changes
+
+-   Updated dependencies [5f3aa03]
+    -   @sap-ux/adp-tooling@0.14.2
+    -   @sap-ux/flp-config-inquirer@0.3.2
+
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [66b88e1]
+    -   @sap-ux/inquirer-common@0.7.1
+    -   @sap-ux/adp-tooling@0.14.1
+    -   @sap-ux/project-access@1.30.1
+    -   @sap-ux/flp-config-inquirer@0.3.1
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/fiori-generator-shared@0.12.1
+    -   @sap-ux/system-access@0.6.0
+
+## 0.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/flp-config-inquirer@0.3.0
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/system-access@0.6.0
+    -   @sap-ux/adp-tooling@0.14.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/store@1.1.0
+
+## 0.0.61
+
+### Patch Changes
+
+-   Updated dependencies [2ba9fe9]
+    -   @sap-ux/adp-tooling@0.13.45
+    -   @sap-ux/flp-config-inquirer@0.2.90
+
 ## 0.0.60
 
 ### Patch Changes
