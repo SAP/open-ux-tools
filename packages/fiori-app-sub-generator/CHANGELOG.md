@@ -1,5 +1,71 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.2.8
+
+### Patch Changes
+
+-   Updated dependencies [6e2ef66]
+    -   @sap-ux/odata-service-writer@0.27.3
+    -   @sap-ux/fiori-elements-writer@2.4.6
+    -   @sap-ux/fiori-freestyle-writer@2.4.3
+    -   @sap-ux/odata-service-inquirer@2.4.4
+
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/odata-service-inquirer@2.4.4
+
+## 0.2.6
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.34
+-   @sap-ux/fiori-elements-writer@2.4.5
+-   @sap-ux/odata-service-inquirer@2.4.3
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [07eaebf]
+    -   @sap-ux/odata-service-writer@0.27.2
+    -   @sap-ux/fiori-elements-writer@2.4.4
+    -   @sap-ux/fiori-freestyle-writer@2.4.2
+    -   @sap-ux/odata-service-inquirer@2.4.3
+
+## 0.2.4
+
+### Patch Changes
+
+-   Updated dependencies [c05c016]
+    -   @sap-ux/ui5-application-inquirer@0.14.1
+
+## 0.2.3
+
+### Patch Changes
+
+-   Updated dependencies [d1b5ab7]
+    -   @sap-ux/odata-service-inquirer@2.4.3
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [6cc19b7]
+    -   @sap-ux/odata-service-inquirer@2.4.2
+    -   @sap-ux/fiori-elements-writer@2.4.3
+
+## 0.2.1
+
+### Patch Changes
+
+-   Updated dependencies [06d3ba3]
+    -   @sap-ux/fiori-elements-writer@2.4.2
+    -   @sap-ux/odata-service-inquirer@2.4.1
+
 ## 0.2.0
 
 ### Minor Changes

@@ -1,5 +1,98 @@
 # @sap-ux/create
 
+## 0.13.12
+
+### Patch Changes
+
+-   Updated dependencies [6e2ef66]
+    -   @sap-ux/odata-service-writer@0.27.3
+    -   @sap-ux/adp-tooling@0.14.6
+    -   @sap-ux/flp-config-inquirer@0.3.6
+    -   @sap-ux/preview-middleware@0.20.11
+    -   @sap-ux/app-config-writer@0.6.3
+
+## 0.13.11
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.2
+-   @sap-ux/adp-tooling@0.14.5
+-   @sap-ux/app-config-writer@0.6.3
+-   @sap-ux/preview-middleware@0.20.10
+-   @sap-ux/system-access@0.6.1
+-   @sap-ux/flp-config-inquirer@0.3.5
+-   @sap-ux/abap-deploy-config-writer@0.1.2
+
+## 0.13.10
+
+### Patch Changes
+
+-   Updated dependencies [8e44d02]
+    -   @sap-ux/adp-tooling@0.14.4
+    -   @sap-ux/flp-config-inquirer@0.3.4
+    -   @sap-ux/preview-middleware@0.20.9
+    -   @sap-ux/app-config-writer@0.6.2
+
+## 0.13.9
+
+### Patch Changes
+
+-   Updated dependencies [07eaebf]
+    -   @sap-ux/odata-service-writer@0.27.2
+    -   @sap-ux/adp-tooling@0.14.3
+    -   @sap-ux/flp-config-inquirer@0.3.3
+    -   @sap-ux/preview-middleware@0.20.8
+    -   @sap-ux/app-config-writer@0.6.2
+
+## 0.13.8
+
+### Patch Changes
+
+-   Updated dependencies [2702f19]
+    -   @sap-ux/preview-middleware@0.20.7
+    -   @sap-ux/app-config-writer@0.6.2
+
+## 0.13.7
+
+### Patch Changes
+
+-   Updated dependencies [225e7d7]
+    -   @sap-ux/preview-middleware@0.20.6
+    -   @sap-ux/app-config-writer@0.6.2
+
+## 0.13.6
+
+### Patch Changes
+
+-   0748e90: fix create readme for cards-editor
+
+## 0.13.5
+
+### Patch Changes
+
+-   Updated dependencies [48872e8]
+    -   @sap-ux/preview-middleware@0.20.5
+    -   @sap-ux/app-config-writer@0.6.2
+
+## 0.13.4
+
+### Patch Changes
+
+-   c9b65f0: Replace usage of cards-editor-config-writer with app-config-writer.
+    Added UI5.yaml config path option for cards-editor command.
+-   Updated dependencies [c9b65f0]
+-   Updated dependencies [c9b65f0]
+    -   @sap-ux/preview-middleware@0.20.4
+    -   @sap-ux/app-config-writer@0.6.2
+
+## 0.13.3
+
+### Patch Changes
+
+-   Updated dependencies [b49c43f]
+    -   @sap-ux/preview-middleware@0.20.3
+    -   @sap-ux/app-config-writer@0.6.1
+
 ## 0.13.2
 
 ### Patch Changes

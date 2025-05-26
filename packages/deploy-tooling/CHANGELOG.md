@@ -1,5 +1,14 @@
 # @sap-ux/deploy-tooling
 
+## 0.16.2
+
+### Patch Changes
+
+-   2224d63: Remove feature toggle, required to enable HTTPS proxy configurations
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/system-access@0.6.1
+
 ## 0.16.1
 
 ### Patch Changes

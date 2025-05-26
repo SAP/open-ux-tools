@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.26.4
+
+### Patch Changes
+
+-   739045a: feat(ui-components) export pivot
+
 ## 1.26.3
 
 ### Patch Changes

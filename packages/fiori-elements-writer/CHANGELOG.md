@@ -1,5 +1,38 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.4.6
+
+### Patch Changes
+
+-   Updated dependencies [6e2ef66]
+    -   @sap-ux/odata-service-writer@0.27.3
+
+## 2.4.5
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.34
+-   @sap-ux/fe-fpm-writer@0.34.2
+
+## 2.4.4
+
+### Patch Changes
+
+-   Updated dependencies [07eaebf]
+    -   @sap-ux/odata-service-writer@0.27.2
+
+## 2.4.3
+
+### Patch Changes
+
+-   6cc19b7: Fix for drive letter casing mismatch when selecting CAP projects on Windows
+
+## 2.4.2
+
+### Patch Changes
+
+-   06d3ba3: fix html target for opa tests
+
 ## 2.4.1
 
 ### Patch Changes
