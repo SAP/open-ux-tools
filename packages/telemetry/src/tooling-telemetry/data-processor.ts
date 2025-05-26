@@ -137,14 +137,10 @@ async function getTemplateType(appPath: string): Promise<string> {
 
     // N.B.: Keep this order i.e .appGenInfo.json file is read first, then README.md.
     if (fs.existsSync(appGenInfoPath)) {
-        try {
-            const appGenInfo = await fs.promises.readFile(appGenInfoPath, 'utf-8');
-            const appGenInfoParsed = JSON.parse(appGenInfo);
-            if (appGenInfoParsed?.generationParameters?.template) {
-                return appGenInfoParsed.generationParameters.template.trim();
-            }
-        } catch (err) {
-            console.warn(`Failed to read or parse .appGenInfo.json: ${err}`);
+        const appGenInfo = await fs.promises.readFile(appGenInfoPath, 'utf-8');
+        const appGenInfoParsed = JSON.parse(appGenInfo);
+        if (appGenInfoParsed?.generationParameters?.template) {
+            return appGenInfoParsed.generationParameters.template.trim();
         }
     }
 

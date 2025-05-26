@@ -162,7 +162,7 @@ describe('`writing` tests', () => {
                 write: expect.any(Function)
             });
             expect(mockWriteFnSpy).toHaveBeenCalledWith(
-                '/target/path/.appGenInfo.json',
+                join('/target/path/.appGenInfo.json'),
                 JSON.stringify(
                     {
                         generationParameters: expectedReadMe,
