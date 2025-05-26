@@ -78,6 +78,7 @@ export async function getSubGenPrompts(
         configFile: options.config,
         indexGenerationAllowed,
         showOverwriteQuestion: showOverwrite,
+        promptOptions: options.abapPromptOpts,
         logger: DeploymentGenerator.logger
     });
 

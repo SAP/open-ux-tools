@@ -10,6 +10,9 @@
   },
   "references": [
     {
+      "path": "../abap-deploy-config-inquirer"
+    },
+    {
       "path": "../annotation-generator"
     },
     {

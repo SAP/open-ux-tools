@@ -54,36 +54,3 @@ export enum DeployProjectType {
     Application = 'application',
     Library = 'library'
 }
-
-/**
- * Enum defining prompt names for ABAP deployment configuration.
- */
-enum promptNames {
-    ui5AbapRepo = 'ui5AbapRepo',
-    packageManual = 'packageManual',
-    packageAutocomplete = 'packageAutocomplete',
-    transportInputChoice = 'transportInputChoice',
-    targetSystem = 'targetSystem'
-}
-
-type HideIfOnPremisePromptOption = {
-    hideIfOnPremise?: boolean;
-};
-
-type TargetSystemPromptOptions = {
-    shouldRestrictDifferentSystemType: boolean;
-};
-
-type PackageAdditionalValidationPrompOptions = {
-    shouldValidatePackageType?: boolean;
-    shouldValidatePackageForStartingPrefix?: boolean;
-    shouldValidateFormatAndSpecialCharacters?: boolean;
-};
-
-export type AbapDeployConfigPromptOptions = Partial<
-    Record<promptNames.ui5AbapRepo, HideIfOnPremisePromptOption> &
-        Record<promptNames.transportInputChoice, HideIfOnPremisePromptOption> &
-        Record<promptNames.packageManual, PackageAdditionalValidationPrompOptions> &
-        Record<promptNames.packageAutocomplete, PackageAdditionalValidationPrompOptions> &
-        Record<promptNames.targetSystem, TargetSystemPromptOptions>
->;

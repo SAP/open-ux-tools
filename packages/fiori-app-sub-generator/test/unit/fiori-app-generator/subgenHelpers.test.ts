@@ -77,6 +77,9 @@ describe('Subgen (flp/deploy) are correctly composedWith', () => {
                 }
             },
             projectName: 'testAppName',
+            promptSettings: {
+                packageManual: { default: 'PKG123' }
+            },
             targetFolder: '/test/target/folder',
             applicationType: 'telemetryData_appType1'
         };
@@ -104,6 +107,9 @@ describe('Subgen (flp/deploy) are correctly composedWith', () => {
             projectPath: '/test/target/folder',
             telemetryData: {
                 appType: 'telemetryData_appType1'
+            },
+            abapPromptOpts: {
+                packageManual: { default: 'PKG123' }
             }
         });
 
@@ -136,6 +142,9 @@ describe('Subgen (flp/deploy) are correctly composedWith', () => {
             projectPath: '/test/target/folder',
             telemetryData: {
                 appType: 'telemetryData_appType1'
+            },
+            abapPromptOpts: {
+                packageManual: { default: 'PKG123' }
             }
         });
     });
