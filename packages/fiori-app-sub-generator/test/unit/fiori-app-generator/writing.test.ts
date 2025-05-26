@@ -94,11 +94,11 @@ describe('`writing` tests', () => {
             });
         });
 
-        it('`writeInfoFiles` should call `generateReadMe` with the correct params', async () => {
+        it('`writeInfoFiles` should call `generateReadMe` and write `appGenInfo.json` with the correct params', async () => {
             (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
 
             const expectedReadMe: ReadMe = {
-                generationDate: expect.any(String),
+                generationDate: 'Fri May 23 2025 19:11:45 GMT+0100',
                 generatorPlatform: 'Visual Studio Code',
                 serviceType: 'SAP System (ABAP On Premise)',
                 metadataFilename: '',
@@ -109,38 +109,69 @@ describe('`writing` tests', () => {
                 appNamespace: 'projectNamespace',
                 ui5Theme: 'a_ui5_theme',
                 ui5Version: '1.2.3',
+                enableCodeAssist: false,
+                enableEslint: false,
+                enableTypeScript: false,
                 showMockDataInfo: false,
                 generatorVersion: '123',
                 template: 'Basic V4',
                 generatorName: '@sap/some-generator',
-                launchText: t('readme.texts.runInstruction'),
-                enableCodeAssist: false,
-                enableEslint: false,
-                enableTypeScript: false,
-                additionalEntries: []
+                additionalEntries: [],
+                launchText: t('readme.texts.runInstruction')
             };
             const project: Project = { ...baseProject };
             const service: Service = {
                 version: OdataVersion.v4,
                 source: DatasourceType.sapSystem
             };
+            const abapCsn = [
+                {
+                    packageUri: 'abapfs:/TEST_DEST/$TMP',
+                    csnName: 'CSN1.abap.csn',
+                    serviceNameCsn: 'sb_travel_csn',
+                    datasourceKey: 'mainService'
+                },
+                {
+                    packageUri: 'abapfs:/TEST_DEST/$TMP',
+                    csnName: 'CSN2.abap.csn',
+                    serviceNameCsn: 'PurcharseOrders',
+                    datasourceKey: 'PO_ORDERS'
+                }
+            ];
 
+            const mockEditor = {
+                write: jest.fn()
+            } as unknown as Editor;
+            const mockWriteFnSpy = jest.spyOn(mockEditor, 'write');
             await writeInfoFiles(
                 {
                     project,
                     service,
-                    floorplan: FloorplanFF.FF_SIMPLE
+                    floorplan: FloorplanFF.FF_SIMPLE,
+                    abapCsn
                 },
                 '@sap/some-generator',
                 '123',
                 '/target/path',
+                mockEditor,
                 {
-                    write: jest.fn()
-                } as unknown as Editor
+                    generationDate: 'Fri May 23 2025 19:11:45 GMT+0100' // need to hardcode the date as the object is stringified for appGenInfo.json
+                }
             );
             expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {
                 write: expect.any(Function)
             });
+            expect(mockWriteFnSpy).toHaveBeenCalledWith(
+                '/target/path/.appGenInfo.json',
+                JSON.stringify(
+                    {
+                        generationParameters: expectedReadMe,
+                        abapCSN: abapCsn
+                    },
+                    null,
+                    2
+                )
+            );
         });
 
         it('should generate readme with CAP launch text', async () => {
