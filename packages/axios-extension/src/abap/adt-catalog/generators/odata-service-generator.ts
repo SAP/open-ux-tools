@@ -12,6 +12,7 @@ export class ODataServiceGenerator extends AdtService {
      * package to be used for generated objects
      */
     protected packageName!: string;
+    protected contentType: string;
 
     /**
      * Configure the UI service generator.
@@ -24,6 +25,14 @@ export class ODataServiceGenerator extends AdtService {
     }
 
     /**
+     * Set the content type to be used for post requests
+     * @param contentType - content type to be used for generated objects
+     */
+    public setContentType(contentType: string) {
+        this.contentType = contentType;
+    }
+
+    /**
      * Validate input for OData Service Definition
      *
      * @param input: JSON string
@@ -32,7 +41,7 @@ export class ODataServiceGenerator extends AdtService {
     public async validate(input: string): Promise<ValidationMessage[]> {
         const response = await this.post(`/validation`, input, {
             headers: {
-                'Content-Type': 'application/vnd.sap.adt.repository.generator.content.v1+json',
+                'Content-Type': this.contentType,
                 Accept: 'application/vnd.sap.adt.validationMessages.v1+xml, application/vnd.sap.as+xml;charset=UTF-8;dataname=com.sap.adt.StatusMessage'
             },
             params: {
@@ -53,7 +62,7 @@ export class ODataServiceGenerator extends AdtService {
     public async getTechnicalDetails(input: string): Promise<ODataServiceTechnicalDetails> {
         const response = await this.post(`/preview`, input, {
             headers: {
-                'Content-Type': 'application/vnd.sap.adt.repository.generator.content.v1+json',
+                'Content-Type': this.contentType,
                 Accept: 'application/vnd.sap.adt.repository.objects.massoperation.v1+xml'
             },
             params: {
@@ -71,7 +80,7 @@ export class ODataServiceGenerator extends AdtService {
     public async generate(input: string): Promise<number> {
         const response = await this.post(``, input, {
             headers: {
-                'Content-Type': 'application/vnd.sap.adt.repository.generator.content.v1+json',
+                'Content-Type': this.contentType,
                 'Accept': 'application/vnd.sap.adt.repository.generator.v1+json'
             },
             params: {

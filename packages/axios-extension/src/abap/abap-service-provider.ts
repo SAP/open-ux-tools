@@ -245,6 +245,7 @@ export class AbapServiceProvider extends ServiceProvider {
             this.getServiceUrlFromConfig(config),
             ODataServiceGenerator
         );
+        generator.setContentType(this.getServiceContentType(config));
         generator.configure(config, packageName || '$TMP');
         return generator;
     }
@@ -262,6 +263,20 @@ export class AbapServiceProvider extends ServiceProvider {
         }
         const endIndex = config.link[0].href.indexOf(config.id) + config.id.length;
         return config.link[0].href.substring(0, endIndex);
+    }
+
+    /**
+     * Get the content type from the generator config.
+     * This is used to determine the content type of the service.
+     * @param config - generator config
+     * @returns content type of the service
+     */
+    private getServiceContentType(config: GeneratorEntry): string {
+        const contentType = config.link[0].type.split(';')[0];
+        if (!contentType) {
+            throw new Error('No content type found in the generator config');
+        }
+        return contentType;
     }
 
     /**
