@@ -6,12 +6,13 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { PreviewConfigOptions } from '../types';
 import type { CustomMiddleware, FioriAppReloadConfig, UI5Config } from '@sap-ux/ui5-config';
 import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig, deleteFiles } from './utils';
-import type {
-    DefaultFlpPath,
-    DefaultIntent,
-    MiddlewareConfig as PreviewConfig,
-    TestConfigDefaults as PreviewTestConfigDefaults,
-    TestConfig
+import {
+    type DefaultFlpPath,
+    type DefaultIntent,
+    type MiddlewareConfig as PreviewConfig,
+    type TestConfigDefaults as PreviewTestConfigDefaults,
+    type TestConfig,
+    sanitizeRtaConfig
 } from '@sap-ux/preview-middleware';
 import {
     getRunScriptForYamlConfig,
@@ -126,6 +127,13 @@ export async function updateMiddlewaresForPreview(
         } else {
             //if we don't find a script for flp.path and intent we assume the default values and sanitize the config
             previewMiddleware = sanitizePreviewMiddleware(previewMiddleware) as CustomMiddleware<PreviewConfig>;
+            //if we find the deprecated 'rta.editors' config, we will sanitize it
+            if ('rta' in previewMiddleware.configuration) {
+                const rtaConfig = sanitizeRtaConfig(previewMiddleware.configuration.rta); //NOSONAR
+                delete previewMiddleware.configuration.rta; //NOSONAR
+                previewMiddleware.configuration.editors ??= {};
+                previewMiddleware.configuration.editors.rta = rtaConfig;
+            }
         }
     }
     const reloadMiddleware = await getEnhancedReloadMiddleware(ui5YamlConfig);
