@@ -6,6 +6,7 @@ import type { InboundContent } from '@sap-ux/axios-extension';
  * Enumeration of prompt names used in the FLP configuration.
  */
 export enum promptNames {
+    existingFlpConfigInfo = 'existingFlpConfigInfo',
     inboundId = 'inboundId',
     semanticObject = 'semanticObject',
     action = 'action',
@@ -21,6 +22,7 @@ export enum promptNames {
  * Interface representing the answers collected from the FLP configuration prompts.
  */
 export interface FLPConfigAnswers {
+    [promptNames.existingFlpConfigInfo]?: string;
     [promptNames.inboundId]?: InboundContent;
     [promptNames.semanticObject]: string;
     [promptNames.action]: string;
@@ -62,7 +64,7 @@ export interface InboundIdPromptOptions {
 /**
  * Options for the 'empty inbound label' prompt.
  */
-export interface EmptyInboundsLabelOptions {
+export interface existingFlpConfigInfo {
     hide?: boolean;
 }
 
@@ -142,7 +144,8 @@ type flpConfigPromptOptions = Record<promptNames.inboundId, InboundIdPromptOptio
     Record<promptNames.subTitle, SubTitlePromptOptions> &
     Record<promptNames.icon, IconPromptOptions> &
     Record<promptNames.additionalParameters, ParameterStringPromptOptions> &
-    Record<promptNames.createAnotherInbound, CreateAnotherInboundPromptOptions>;
+    Record<promptNames.createAnotherInbound, CreateAnotherInboundPromptOptions> &
+    Record<promptNames.existingFlpConfigInfo, existingFlpConfigInfo>;
 
 /**
  * The options for the FLP config inquirer & the prompts.

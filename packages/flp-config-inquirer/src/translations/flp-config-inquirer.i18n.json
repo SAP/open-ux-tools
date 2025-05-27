@@ -7,7 +7,8 @@
         "subTitle": "Subtitle",
         "additionalParameters": "Parameters",
         "createAnotherInbound": "Do you want to add or edit another inbound?",
-        "icon": "Icon"
+        "icon": "Icon",
+        "existingFLPConfig": "Have in mind that this project already has created FLP configuration. If you create another one, it will overwrite completely the current one"
     },
     "tooltips": {
         "inboundId": "Choose the inbound ID that will be used to set the FLP tile configuration",

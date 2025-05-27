@@ -3,7 +3,7 @@ import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InboundContent } from '@sap-ux/axios-extension';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
-import type { FLPConfigQuestion, FLPConfigAnswers } from '../../types';
+import type { FLPConfigQuestion } from '../../types';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
@@ -77,10 +77,29 @@ export function getCreateAnotherInboundPrompt(isCLI: boolean): FLPConfigQuestion
         name: promptNames.createAnotherInbound,
         message: t('prompts.createAnotherInbound'),
         default: false,
-        when: (answers: FLPConfigAnswers) => !isCLI && !!answers?.inboundId,
+        when: () => !isCLI,
         guiOptions: {
             hint: t('tooltips.inboundId'),
             breadcrumb: t('prompts.inboundIds')
+        }
+    };
+}
+
+/**
+ * Creates the 'existingFlpConfigInfo' prompt for displaying existing FLP configuration information.
+ *
+ * @param isCLI - Indicates if the platform is CLI (unused).
+ * @returns {FLPConfigQuestion} The prompt configuration for displaying existing FLP config info.
+ */
+export function getExistingFlpConfigInfoPrompt(isCLI: boolean): FLPConfigQuestion {
+    return {
+        type: 'input',
+        name: promptNames.existingFlpConfigInfo,
+        message: t('prompts.existingFLPConfig'),
+        when: () => !isCLI,
+        guiOptions: {
+            type: 'label',
+            mandatory: false
         }
     };
 }

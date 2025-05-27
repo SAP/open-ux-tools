@@ -10,7 +10,8 @@ import {
     getCreateAnotherInboundPrompt,
     getInboundIdsPrompt,
     getParameterStringPrompt,
-    getIconPrompt
+    getIconPrompt,
+    getExistingFlpConfigInfoPrompt
 } from './questions';
 import { promptNames } from '../types';
 import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
@@ -36,6 +37,7 @@ export function getQuestions(
     const silentOverwrite = promptOptions?.silentOverwrite ?? false;
 
     const keyedPrompts: Record<promptNames, FLPConfigQuestion> = {
+        [promptNames.existingFlpConfigInfo]: getExistingFlpConfigInfoPrompt(isCLI),
         [promptNames.inboundId]: getInboundIdsPrompt(inbounds ?? {}),
         [promptNames.semanticObject]: getSemanticObjectPrompt(isCLI, promptOptions?.[promptNames.semanticObject]),
         [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action]),

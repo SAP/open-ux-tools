@@ -5,6 +5,7 @@ import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-commo
 
 import { initI18n } from './i18n';
 import { promptNames } from './types';
+import { getExistingFlpConfigInfoPrompt } from './prompts/questions';
 import { getQuestions } from './prompts';
 import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types';
 
@@ -97,10 +98,12 @@ function getDefaultValue(
 
 export {
     getPrompts,
+    getExistingFlpConfigInfoPrompt,
     prompt,
     promptNames,
     type InquirerAdapter,
     type PromptDefaultValue,
     type FLPConfigAnswers,
-    type FLPConfigPromptOptions
+    type FLPConfigPromptOptions,
+    type FLPConfigQuestion
 };

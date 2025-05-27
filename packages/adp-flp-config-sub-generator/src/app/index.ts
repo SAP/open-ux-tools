@@ -22,7 +22,12 @@ import {
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
-import { getPrompts, type FLPConfigAnswers, type FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
+import {
+    getPrompts,
+    getExistingFlpConfigInfoPrompt,
+    type FLPConfigAnswers,
+    type FLPConfigPromptOptions
+} from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
     TelemetryHelper,
@@ -49,8 +54,8 @@ import {
 } from '@sap-ux/system-access';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import { getTileActionsQuestions, tileActions, getExistingFLPConfigPrompt } from './questions';
-import type { YUIQuestion, InputQuestion } from '@sap-ux/inquirer-common';
+import { getTileActionsQuestions, tileActions } from './questions';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Generator for adding a FLP configuration to an adaptation project.
@@ -76,7 +81,7 @@ export default class extends Generator {
     private credentials: CredentialsAnswers;
     private provider: AbapServiceProvider;
     private inbounds: ManifestNamespace.Inbound;
-    private tileActionsAnswers: TileActionAnswers & YUIQuestion<InputQuestion>;
+    private appId: string;
     private variant: DescriptorVariant;
 
     /**
@@ -94,7 +99,7 @@ export default class extends Generator {
         this.options = opts;
         this.vscode = opts.vscode;
 
-        this._setupPrompts();
+        this._setupFLPConfigPrompts();
         this._setupLogging();
     }
 
@@ -122,7 +127,12 @@ export default class extends Generator {
             return;
         }
         this.provider = await this._getAbapServiceProvider();
-        this.variant = await getVariant(this.projectRootPath, this.fs);
+        if (!this.launchAsSubGen) {
+            this.variant = await getVariant(this.projectRootPath, this.fs);
+            this.appId = this.variant.reference;
+        } else {
+            this.appId = this.options.appId as string;
+        }
 
         try {
             this.inbounds = await this._getAppInbounds();
@@ -152,13 +162,12 @@ export default class extends Generator {
         if (this.abort) {
             return;
         }
-        const tilePrompts = [];
-        if (this._hasExistingFlpConfig()) {
-            tilePrompts.push(getExistingFLPConfigPrompt());
-        }
-        tilePrompts.push(...getTileActionsQuestions());
-        this.tileActionsAnswers = await this.prompt(tilePrompts) as TileActionAnswers & YUIQuestion<InputQuestion>;
-        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(this.inbounds, this._getPromptConfig());
+
+        const tileActionsAnswers = await this._promptTileActions();
+        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(
+            this.inbounds,
+            this._getPromptConfig(tileActionsAnswers)
+        );
         this.answers = await this.prompt(prompts);
     }
 
@@ -210,8 +219,7 @@ export default class extends Generator {
      */
     private async _getAppInbounds(): Promise<ManifestNamespace.Inbound> {
         const lrepService = await this.provider.getLayeredRepository();
-        const inbounds = (await lrepService.getSystemInfo(undefined, undefined, this.variant.reference))
-            .inbounds as Inbound[];
+        const inbounds = (await lrepService.getSystemInfo(undefined, undefined, this.appId)).inbounds as Inbound[];
         return inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
             // Skip if hideLauncher is not false
             if (!inbound?.content || inbound.content.hideLauncher !== false) {
@@ -318,7 +326,7 @@ export default class extends Generator {
     /**
      * Sets up the prompts for the generator.
      */
-    private _setupPrompts(): void {
+    private _setupFLPConfigPrompts(): void {
         // If launched as a sub-generator, the prompts will be set by the parent generator
         if (!this.launchAsSubGen) {
             this.prompts = new Prompts([]);
@@ -422,12 +430,19 @@ export default class extends Generator {
         this.logger = AdpFlpConfigLogger.logger;
     }
 
-    private _getPromptConfig(): FLPConfigPromptOptions {
-        const { tileHandlingAction, copyFromExisting } = this.tileActionsAnswers;
+    /**
+     * Returns the prompt configuration options based on the provided tile actions answers.
+     *
+     * @param {TileActionAnswers & FLPConfigAnswers} [tileActionsAnswers] - The answers from the tile actions prompt.
+     * @returns {FLPConfigPromptOptions} The prompt configuration options.
+     */
+    private _getPromptConfig(tileActionsAnswers?: TileActionAnswers & FLPConfigAnswers): FLPConfigPromptOptions {
+        const { tileHandlingAction, copyFromExisting } = tileActionsAnswers ?? {};
 
         // If the user chooses to add a new tile and copy the original, semantic object and action are required
         if (!this.inbounds.length || (tileHandlingAction === tileActions.ADD && copyFromExisting === false)) {
             return {
+                existingFlpConfigInfo: { hide: !this.inbounds.length && this._hasExistingFlpConfig() },
                 inboundId: { hide: true },
                 overwrite: { hide: true },
                 createAnotherInbound: { hide: true }
@@ -436,6 +451,7 @@ export default class extends Generator {
         // If the user chooses to replace the original tile, are not required and are taken from the existing selected inbound
         if (tileHandlingAction === tileActions.REPLACE) {
             return {
+                existingFlpConfigInfo: { hide: true },
                 overwrite: { hide: true },
                 semanticObject: { hide: true },
                 action: { hide: true },
@@ -445,15 +461,51 @@ export default class extends Generator {
 
         // If the user chooses to add a new tile and copy the original, semantic object and action are required
         return {
+            existingFlpConfigInfo: { hide: true },
             overwrite: { hide: true },
             createAnotherInbound: { hide: true }
         };
     }
 
+    /**
+     * Checks if there is an existing FLP configuration in the variant content.
+     *
+     * @returns {boolean} True if an existing FLP configuration is found, otherwise false.
+     */
     private _hasExistingFlpConfig(): boolean {
         return this.variant.content.some((item) => {
             return item.changeType === 'appdescr_app_addNewInbound' ? true : false;
+        });
+    }
+
+    /**
+     * Prompts the user for tile actions and returns the answers.
+     *
+     * @returns {Promise<(TileActionAnswers & FLPConfigAnswers) | undefined>} The answers from the tile actions prompt, or undefined.
+     */
+    private async _promptTileActions(): Promise<(TileActionAnswers & FLPConfigAnswers) | undefined> {
+        if (this.inbounds.length) {
+            this._setTileActionsPrompts();
+            const tileActionPrompts = getTileActionsQuestions();
+            if (!this.launchAsSubGen && this._hasExistingFlpConfig()) {
+                const existingConfigPrompt = getExistingFlpConfigInfoPrompt(isCli());
+                tileActionPrompts.unshift(existingConfigPrompt as unknown as YUIQuestion<TileActionAnswers>);
+            }
+            return (await this.prompt(tileActionPrompts)) as TileActionAnswers & FLPConfigAnswers;
         }
+        return undefined;
+    }
+
+    private _setTileActionsPrompts(): void {
+        const promptsIndex = this.prompts.size() === 1 ? 0 : 1;
+        this.prompts.splice(promptsIndex, 0, [
+            {
+                name: t('yuiNavSteps.flpConfigName'),
+                description: t('yuiNavSteps.tileActionsDesc', {
+                    projectName: path.basename(this.projectRootPath)
+                })
+            }
+        ]);
     }
 }
 
