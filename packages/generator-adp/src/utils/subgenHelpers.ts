@@ -32,7 +32,6 @@ interface FlpGenProps {
 interface DeployGenOptions {
     projectName: string;
     targetFolder: string;
-    applicationType: string;
     client?: string;
     connectedSystem: string;
     destinationName?: string;
@@ -75,15 +74,19 @@ export function addFlpGen(
  * Composes the Fiori deploy-config sub-generator using `composeWith`. This sub-generator configures
  * deployment for Fiori applications, such as to ABAP or Cloud Foundry environments.
  *
- * Optional properties on the `service` object will be passed only if present.
- *
- * @param options - Deployment generator input options
- * @param composeWith - The composeWith method from the main Yeoman generator
- * @param logger - Logger for diagnostics
- * @param appWizard - Optional AppWizard instance for UI events
+ * @param {DeployGenOptions} options - Deployment generator input options
+ * @param {string} options.projectName - Project name
+ * @param {string} options.targetFolder - Folder where project will be generated
+ * @param {string} options.applicationType - Type of application being deployed
+ * @param {string} options.client - (Optional) ABAP client number
+ * @param {string} options.connectedSystem - (Optional) Connected system data
+ * @param {string} options.destinationName - (Optional) Destination name for deployment
+ * @param {Generator['composeWith']} composeWith - Yeoman composeWith method from generator context
+ * @param {ILogWrapper} logger - Logger for info and error output
+ * @param {AppWizard} appWizard - Optional AppWizard instance for displaying UI messages
  */
 export function addDeployGen(
-    { projectName, targetFolder, applicationType, client, connectedSystem, destinationName }: DeployGenOptions,
+    { projectName, targetFolder, client, connectedSystem, destinationName }: DeployGenOptions,
     composeWith: Generator['composeWith'],
     logger: ILogWrapper,
     appWizard?: AppWizard
@@ -93,7 +96,7 @@ export function addDeployGen(
             launchDeployConfigAsSubGenerator: true,
             projectName,
             projectPath: targetFolder,
-            telemetryData: { appType: applicationType },
+            telemetryData: { appType: 'Fiori Adaptation' },
             appWizard,
             logWrapper: logger,
             ...(client && { appGenClient: client }),

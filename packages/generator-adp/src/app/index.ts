@@ -192,7 +192,7 @@ export default class extends Generator {
         };
         const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
         const options: AttributePromptOptions = {
-            targetFolder: { default: defaultFolder, hide: this.shouldCreateExtProject },
+            targetFolder: { default: defaultFolder },
             ui5ValidationCli: { hide: !isCLI },
             enableTypeScript: { hide: this.shouldCreateExtProject }
         };
@@ -220,7 +220,6 @@ export default class extends Generator {
                 {
                     projectName: this.attributeAnswers.projectName,
                     targetFolder: this.attributeAnswers.targetFolder,
-                    applicationType: 'Fiori Adaptation',
                     client: (await this.systemLookup.getSystemByName(this.configAnswers.system))?.Client,
                     connectedSystem: this.configAnswers.system
                 },
@@ -297,16 +296,14 @@ export default class extends Generator {
                 appType: 'generator-adp',
                 ...this.options.telemetryData
             }) ?? {};
+        const fsPath = this._getProjectPath();
         if (telemetryData) {
-            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, this._getProjectPath()).catch(
-                (error) => {
-                    this.logger.error(t('error.telemetry', { error }));
-                }
-            );
+            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, fsPath).catch((error) => {
+                this.logger.error(t('error.telemetry', { error }));
+            });
         }
 
         try {
-            const fsPath = this._getProjectPath();
             if (!isCFEnvironment(fsPath)) {
                 this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath });
             }

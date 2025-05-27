@@ -2,12 +2,9 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import { getHostEnvironment, hostEnvironment, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 
-import { t } from './i18n';
 import type { State } from '../app/types';
 
 const ADP_CACHE_KEY = '$adp-generator-cache';
-
-const hostEnv = getHostEnvironment();
 
 /**
  * Augmented AppWizard type with optional internal cache field used for state persistence.
@@ -77,7 +74,8 @@ export function cacheClear(wiz: AppWizardWithCache | undefined, logger: ILogWrap
  * @param wiz - The AppWizard instance to check.
  */
 function ensureCache(logger: ILogWrapper, wiz?: AppWizardWithCache): void {
+    const hostEnv = getHostEnvironment();
     if (hostEnv === hostEnvironment.vscode && !wiz?.[ADP_CACHE_KEY]) {
-        logger.info(t('logMessages.warningCachingNotSupported'));
+        logger.info('Warning: caching is not supported');
     }
 }

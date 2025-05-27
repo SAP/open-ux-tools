@@ -66,7 +66,6 @@
         "destinationInfoMissing": "Could not create an extension project because the destination info is missing. Please select a different system.",
         "systemNotFound": "System not found or not supported: {{system}}. Please check the system exists.",
         "applicationNotFound": "Application not found or not supported: {{appName}}. Please check the application exists.",
-        "warningCachingNotSupported": "Warning: caching is not supported",
         "callingDeployGen": "Failed to invoke the Fiori deployment sub-generator."
     }
 }
