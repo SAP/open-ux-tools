@@ -16,8 +16,8 @@
 |**UI5 Version**<br><%= locals.ui5Version ? locals.ui5Version : '' %>|
 |**Enable Code Assist Libraries**<br><% if(locals.enableCodeAssist === true) { %><%= "True" %><% } else { %><%= "False" %><% }%>|
 |**Enable TypeScript**<br><% if(locals.enableTypeScript === true) { %><%= "True" %><% } else { %><%= "False" %><% }%>|
-|**Add Eslint configuration**<br><% if(locals.enableEslint === true) { %><%= "True, see https://www.npmjs.com/package/eslint-plugin-fiori-custom for the eslint rules." %><% } else { %><%= "False" %><% }%>|<% if (locals.additionalEntries) locals.additionalEntries.forEach(entry => { %>
-|**<%= entry.label %>**<br><%= entry.value %>|<%})%>
+|**Add Eslint configuration**<br><% if(locals.enableEslint === true) { %><%= "True, see https://www.npmjs.com/package/eslint-plugin-fiori-custom for the eslint rules." %><% } else { %><%= "False" %><% }%>|<% if (locals.entityRelatedConfig) locals.entityRelatedConfig.forEach(entry => { %>
+|**<%= entry.type %>**<br><%= entry.value %>|<%})%>
 
 ## <%= appName %>
 

@@ -1,5 +1,23 @@
 # @sap-ux/preview-middleware
 
+## 0.20.14
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.8
+
+## 0.20.13
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.7
+
+## 0.20.12
+
+### Patch Changes
+
+-   87ecdb8: fix: change indicators missing for change with control id in outline and scrollbar styling issue on quick action panel
+
 ## 0.20.11
 
 ### Patch Changes

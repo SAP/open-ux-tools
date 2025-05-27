@@ -1,5 +1,30 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.3.0
+
+### Minor Changes
+
+-   ac55cca: adds .appGenInfo.json file
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/telemetry@0.6.2
+    -   @sap-ux/cap-config-writer@0.10.2
+    -   @sap-ux/fiori-elements-writer@2.4.7
+    -   @sap-ux/fiori-freestyle-writer@2.4.4
+    -   @sap-ux/odata-service-inquirer@2.4.7
+    -   @sap-ux/ui5-application-inquirer@0.14.3
+
+## 0.2.10
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/odata-service-inquirer@2.4.6
+    -   @sap-ux/ui5-application-inquirer@0.14.2
+
 ## 0.2.9
 
 ### Patch Changes

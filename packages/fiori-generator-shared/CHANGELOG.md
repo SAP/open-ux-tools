@@ -1,5 +1,13 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.2
+
+### Patch Changes
+
+-   ac55cca: adds .appGenInfo.json file
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/telemetry@0.6.2
+
 ## 0.12.1
 
 ### Patch Changes

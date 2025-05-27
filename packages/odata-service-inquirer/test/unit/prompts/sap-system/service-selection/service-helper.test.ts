@@ -97,7 +97,7 @@ describe('Test service-helper function `getSelectedServiceMessage`', () => {
             {}
         );
         expect(serviceMsgResult).toEqual({
-            message: t('prompts.warnings.noServicesAvailable'),
+            message: t('warnings.noServicesAvailable'),
             severity: Severity.warning
         });
     });
@@ -112,7 +112,7 @@ describe('Test service-helper function `getSelectedServiceMessage`', () => {
             }
         );
         expect(serviceMsgResult).toEqual({
-            message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
+            message: t('warnings.noServicesAvailableForOdataVersion', {
                 odataVersion: OdataVersion.v4
             }),
             severity: Severity.warning
@@ -129,7 +129,7 @@ describe('Test service-helper function `getSelectedServiceMessage`', () => {
             }
         );
         expect(serviceMsgResult).toEqual({
-            message: t('prompts.warnings.noAnnotations'),
+            message: t('warnings.noAnnotations'),
             severity: Severity.warning
         });
     });
@@ -144,7 +144,7 @@ describe('Test service-helper function `getSelectedServiceMessage`', () => {
             }
         );
         expect(serviceMsgResult).toEqual({
-            message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
+            message: t('warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
             severity: Severity.warning
         });
     });
@@ -163,7 +163,7 @@ describe('Test service-helper function `getSelectedServiceMessage`', () => {
             }
         );
         expect(serviceMsgResult).toEqual({
-            message: t('prompts.warnings.collaborativeDraftMessage'),
+            message: t('warnings.collaborativeDraftMessage'),
             severity: Severity.warning
         });
     });

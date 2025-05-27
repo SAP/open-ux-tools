@@ -1,5 +1,13 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.4.4
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/cap-config-writer@0.10.2
+
 ## 2.4.3
 
 ### Patch Changes

@@ -1,5 +1,22 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.4.7
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/telemetry@0.6.2
+    -   @sap-ux/inquirer-common@0.7.3
+
+## 2.4.6
+
+### Patch Changes
+
+-   b3fe5b8: Adds support for bypassing cert errors in limited situations
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+
 ## 2.4.5
 
 ### Patch Changes
