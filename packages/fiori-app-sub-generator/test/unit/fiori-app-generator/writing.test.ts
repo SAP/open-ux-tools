@@ -1,8 +1,13 @@
-import { generateReadMe, getHostEnvironment, hostEnvironment, type ReadMe } from '@sap-ux/fiori-generator-shared';
+import {
+    generateAppGenInfo,
+    getHostEnvironment,
+    hostEnvironment,
+    type AppGenInfo
+} from '@sap-ux/fiori-generator-shared';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { writeAPIHubKeyFiles, writeInfoFiles } from '../../../src/fiori-app-generator/writing';
+import { writeAPIHubKeyFiles, writeAppGenInfoFiles } from '../../../src/fiori-app-generator/writing';
 import type { ApiHubConfig, Project, Service } from '../../../src/types';
 import { ApiHubType, FloorplanFE, FloorplanFF, generatorName } from '../../../src/types';
 import { initI18nFioriAppSubGenerator, t } from '../../../src/utils';
@@ -12,12 +17,12 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
         ...jest.requireActual('@sap-ux/fiori-generator-shared'),
         sendTelemetry: jest.fn(),
         getHostEnvironment: jest.fn(),
-        generateReadMe: jest.fn()
+        generateAppGenInfo: jest.fn()
     };
 });
 
 describe('`writing` tests', () => {
-    describe('`writeInfoFiles` tests', () => {
+    describe('`writeAppGenInfoFiles` tests', () => {
         // Test data
         const baseProject: Project = {
             name: 'someProjectName',
@@ -38,9 +43,9 @@ describe('`writing` tests', () => {
             jest.clearAllMocks();
         });
 
-        it('`generateReadMe` should be called with custom overrides of read me values', async () => {
+        it('`generateAppGenInfo` should be called with custom overrides of read me values', async () => {
             (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-            const expectedReadMe: ReadMe = {
+            const expectedReadMe: AppGenInfo = {
                 generationDate: 'Jan 01 1975',
                 generatorPlatform: 'CLI',
                 serviceType: 'File',
@@ -60,6 +65,7 @@ describe('`writing` tests', () => {
                 enableCodeAssist: false,
                 enableEslint: false,
                 enableTypeScript: false,
+                entityRelatedConfig: [],
                 additionalEntries: []
             };
 
@@ -69,13 +75,13 @@ describe('`writing` tests', () => {
                 source: DatasourceType.metadataFile,
                 localEdmxFilePath: '/some/path/to/local/edmx/metadata1234.xml'
             };
-            const readMe: Partial<ReadMe> = {
+            const readMe: Partial<AppGenInfo> = {
                 generatorName,
                 generatorVersion: '2.0.1',
                 generationDate: 'Jan 01 1975',
                 generatorPlatform: 'CLI'
             };
-            await writeInfoFiles(
+            await writeAppGenInfoFiles(
                 {
                     project,
                     service,
@@ -84,21 +90,17 @@ describe('`writing` tests', () => {
                 '@sap/generator-fiori-elements',
                 '2.0.1',
                 '/target/path',
-                {
-                    write: jest.fn()
-                } as unknown as Editor,
+                {} as Editor,
                 readMe
             );
-            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {
-                write: expect.any(Function)
-            });
+            expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
         });
 
-        it('`writeInfoFiles` should call `generateReadMe` and write `appGenInfo.json` with the correct params', async () => {
+        it('`writeAppGenInfoFiles` should call `generateAppGenInfo` with the correct params', async () => {
             (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
 
-            const expectedReadMe: ReadMe = {
-                generationDate: 'Fri May 23 2025 19:11:45 GMT+0100',
+            const expectedReadMe: AppGenInfo = {
+                generationDate: expect.any(String),
                 generatorPlatform: 'Visual Studio Code',
                 serviceType: 'SAP System (ABAP On Premise)',
                 metadataFilename: '',
@@ -116,6 +118,7 @@ describe('`writing` tests', () => {
                 generatorVersion: '123',
                 template: 'Basic V4',
                 generatorName: '@sap/some-generator',
+                entityRelatedConfig: [],
                 additionalEntries: [],
                 launchText: t('readme.texts.runInstruction')
             };
@@ -124,59 +127,24 @@ describe('`writing` tests', () => {
                 version: OdataVersion.v4,
                 source: DatasourceType.sapSystem
             };
-            const abapCsn = [
-                {
-                    packageUri: 'abapfs:/TEST_DEST/$TMP',
-                    csnName: 'CSN1.abap.csn',
-                    serviceNameCsn: 'sb_travel_csn',
-                    datasourceKey: 'mainService'
-                },
-                {
-                    packageUri: 'abapfs:/TEST_DEST/$TMP',
-                    csnName: 'CSN2.abap.csn',
-                    serviceNameCsn: 'PurcharseOrders',
-                    datasourceKey: 'PO_ORDERS'
-                }
-            ];
 
-            const mockEditor = {
-                write: jest.fn()
-            } as unknown as Editor;
-            const mockWriteFnSpy = jest.spyOn(mockEditor, 'write');
-            await writeInfoFiles(
+            await writeAppGenInfoFiles(
                 {
                     project,
                     service,
-                    floorplan: FloorplanFF.FF_SIMPLE,
-                    abapCsn
+                    floorplan: FloorplanFF.FF_SIMPLE
                 },
                 '@sap/some-generator',
                 '123',
                 '/target/path',
-                mockEditor,
-                {
-                    generationDate: 'Fri May 23 2025 19:11:45 GMT+0100' // need to hardcode the date as the object is stringified for appGenInfo.json
-                }
+                {} as Editor
             );
-            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {
-                write: expect.any(Function)
-            });
-            expect(mockWriteFnSpy).toHaveBeenCalledWith(
-                join('/target/path/.appGenInfo.json'),
-                JSON.stringify(
-                    {
-                        generationParameters: expectedReadMe,
-                        abapCSN: abapCsn
-                    },
-                    null,
-                    2
-                )
-            );
+            expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
         });
 
         it('should generate readme with CAP launch text', async () => {
             (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-            const expectedReadMe: ReadMe = {
+            const expectedReadMe: AppGenInfo = {
                 generationDate: expect.any(String),
                 generatorPlatform: 'CLI',
                 serviceType: 'Local Cap',
@@ -197,6 +165,7 @@ describe('`writing` tests', () => {
                 enableCodeAssist: false,
                 enableEslint: false,
                 enableTypeScript: false,
+                entityRelatedConfig: [],
                 additionalEntries: [{ label: 'label1', value: 'value1' }],
                 metadataFilename: ''
             };
@@ -213,7 +182,7 @@ describe('`writing` tests', () => {
                 servicePath: '/odata/service'
             };
 
-            await writeInfoFiles(
+            await writeAppGenInfoFiles(
                 {
                     project,
                     service,
@@ -222,21 +191,17 @@ describe('`writing` tests', () => {
                 '@sap/some-generator',
                 '1.0.0',
                 '/target/path',
-                {
-                    write: jest.fn()
-                } as unknown as Editor,
+                {} as Editor,
                 {
                     additionalEntries: [{ label: 'label1', value: 'value1' }]
                 }
             );
-            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {
-                write: expect.any(Function)
-            });
+            expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
         });
 
         it('should generate readme with entity related entries', async () => {
             (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-            const expectedReadMe: ReadMe = {
+            const expectedReadMe: AppGenInfo = {
                 generationDate: expect.any(String),
                 generatorPlatform: 'CLI',
                 serviceType: 'Local Cap',
@@ -257,13 +222,13 @@ describe('`writing` tests', () => {
                 enableCodeAssist: false,
                 enableEslint: false,
                 enableTypeScript: false,
-                additionalEntries: [
-                    { label: 'addLabel1', value: 'addValue1' },
-                    { label: 'Main Entity', value: 'mainEntitySetName1' },
-                    { label: 'Navigation Entity', value: 'navigationProperty1' },
-                    { label: 'Filter Entity Type', value: 'filterEntitySetName1' }
+                entityRelatedConfig: [
+                    { type: 'Main Entity', value: 'mainEntitySetName1' },
+                    { type: 'Navigation Entity', value: 'navigationProperty1' },
+                    { type: 'Filter Entity Type', value: 'filterEntitySetName1' }
                 ],
-                metadataFilename: ''
+                metadataFilename: '',
+                additionalEntries: []
             };
             const project: Project = { ...baseProject };
             const service: Service = {
@@ -278,7 +243,7 @@ describe('`writing` tests', () => {
                 servicePath: '/odata/service'
             };
 
-            await writeInfoFiles(
+            await writeAppGenInfoFiles(
                 {
                     project,
                     service,
@@ -301,21 +266,14 @@ describe('`writing` tests', () => {
                 '@sap/some-generator',
                 '1.0.0',
                 '/target/path',
-                {
-                    write: jest.fn()
-                } as unknown as Editor,
-                {
-                    additionalEntries: [{ label: 'addLabel1', value: 'addValue1' }]
-                }
+                {} as Editor
             );
-            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {
-                write: expect.any(Function)
-            });
+            expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
             jest.clearAllMocks();
             await initI18nFioriAppSubGenerator();
 
             // Nav entity should be 'None'
-            await writeInfoFiles(
+            await writeAppGenInfoFiles(
                 {
                     project,
                     service,
@@ -338,23 +296,19 @@ describe('`writing` tests', () => {
                 '@sap/some-generator',
                 '1.0.0',
                 '/target/path',
+                {} as Editor,
                 {
-                    write: jest.fn()
-                } as unknown as Editor,
-                {
-                    additionalEntries: [{ label: 'addLabel1', value: 'addValue1' }]
+                    additionalEntries: [{ addLabel1: 'addValue1' }]
                 }
             );
 
-            expectedReadMe.additionalEntries = [
-                { label: 'addLabel1', value: 'addValue1' },
-                { label: 'Main Entity', value: 'mainEntitySetName1' },
-                { label: 'Navigation Entity', value: 'None' },
-                { label: 'Filter Entity Type', value: 'filterEntitySetName1' }
+            expectedReadMe.entityRelatedConfig = [
+                { type: 'Main Entity', value: 'mainEntitySetName1' },
+                { type: 'Navigation Entity', value: 'None' },
+                { type: 'Filter Entity Type', value: 'filterEntitySetName1' }
             ];
-            expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {
-                write: expect.any(Function)
-            });
+            expectedReadMe.additionalEntries = [{ addLabel1: 'addValue1' }];
+            expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
         });
     });
 

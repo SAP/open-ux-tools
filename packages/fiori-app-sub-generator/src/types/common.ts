@@ -1,4 +1,3 @@
-import type { ReadMe } from '@sap-ux/fiori-generator-shared';
 import type {
     DatasourceType,
     OdataServicePromptOptions,
@@ -54,22 +53,4 @@ export interface GenerateLaunchConfigOptions {
     flpAppId?: string;
     /** Optional OData service version (e.g. v2 or v4). */
     odataVersion?: OdataVersion;
-}
-
-/**
- * Metadata for an ABAP CSN (Core Schema Notation)
- */
-export interface AbapCsn {
-    packageUri: string;
-    csnName: string;
-    serviceNameCsn: string;
-    datasourceKey?: string;
-}
-
-/**
- * Interface for .appGenInfo file
- */
-export interface AppGenInfo {
-    generationParameters?: Partial<ReadMe>;
-    abapCSN?: AbapCsn[];
 }

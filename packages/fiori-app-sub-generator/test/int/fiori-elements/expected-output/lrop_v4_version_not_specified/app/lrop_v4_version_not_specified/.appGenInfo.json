@@ -1,26 +1,25 @@
 {
-  "generationParameters": {
-    "generationDate": "Fri May 23 2025 12:52:11 GMT+0100 (Irish Standard Time)",
-    "generatorPlatform": "CLI",
-    "serviceType": "Local Cap",
-    "metadataFilename": "",
-    "serviceUrl": "http://localhost:4004/admin/",
-    "appName": "lrop_v4_version_not_specified",
-    "appTitle": "Project's \"Title\"",
-    "appDescription": "Test 'Project' \"Description\"",
-    "appNamespace": "testNameSpace",
-    "ui5Theme": "sap_fiori_3",
-    "ui5Version": "1.84.0",
-    "showMockDataInfo": false,
-    "generatorVersion": "0.0.0",
-    "template": "List Report Page V4",
-    "generatorName": "SAP Fiori Application Generator",
-    "additionalEntries": [
-      {
-        "label": "Main Entity",
-        "value": "Books"
-      }
-    ],
-    "launchText": "In order to launch the generated app, simply start your CAP project and navigate to the following location in your browser:\n\nhttp://localhost:4004/lrop_v4_version_not_specified/webapp/index.html"
-  }
+  "generationDate": "Tue May 27 2025 13:53:34 GMT+0100 (Irish Standard Time)",
+  "generatorPlatform": "CLI",
+  "serviceType": "Local Cap",
+  "metadataFilename": "",
+  "serviceUrl": "http://localhost:4004/admin/",
+  "appName": "lrop_v4_version_not_specified",
+  "appTitle": "Project's \"Title\"",
+  "appDescription": "Test 'Project' \"Description\"",
+  "appNamespace": "testNameSpace",
+  "ui5Theme": "sap_fiori_3",
+  "ui5Version": "1.84.0",
+  "showMockDataInfo": false,
+  "generatorVersion": "0.0.0",
+  "template": "List Report Page V4",
+  "generatorName": "SAP Fiori Application Generator",
+  "entityRelatedConfig": [
+    {
+      "type": "Main Entity",
+      "value": "Books"
+    }
+  ],
+  "additionalEntries": [],
+  "launchText": "In order to launch the generated app, simply start your CAP project and navigate to the following location in your browser:\n\nhttp://localhost:4004/lrop_v4_version_not_specified/webapp/index.html"
 }

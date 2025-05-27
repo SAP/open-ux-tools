@@ -10,7 +10,8 @@ import type {
     OdataVersion
 } from '@sap-ux/odata-service-inquirer';
 import type { ApiHubType, SapSystemSourceType } from '../types/constants';
-import type { Script, AbapCsn } from './common';
+import type { Script } from './common';
+import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
 
 export interface Project {
     targetFolder: string;
@@ -126,9 +127,9 @@ export interface State {
      */
     floorplan: Floorplan;
     /**
-     * ABAP CSN (Core Schema Notation) - for writing to .appGenInfo.json
+     * General information about the application - use for README and appGenInfo.json
      */
-    abapCsn?: AbapCsn[];
+    appGenInfo?: AppGenInfo[];
 }
 
 /** Only used by headless */
