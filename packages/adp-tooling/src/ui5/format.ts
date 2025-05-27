@@ -1,8 +1,7 @@
 import { supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
 
+import type { UI5Version, VersionDetail } from '../types';
 import { CURRENT_SYSTEM_VERSION, SNAPSHOT_CDN_URL, UI5_CDN_URL } from '../base/constants';
-import { UI5Version, VersionDetail } from '../types';
-import { UI5VersionSupport } from '@sap-ux/ui5-info/src/types';
 
 /**
  * Gets the official base URL for SAP UI5 resources based on the version information.

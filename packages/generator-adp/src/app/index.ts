@@ -314,6 +314,11 @@ export default class extends Generator {
         }
     }
 
+    /**
+     * Retrieves the ConfigPrompter instance from cache if it exists, otherwise creates a new instance.
+     *
+     * @returns {ConfigPrompter} Cached config prompter if going back a page.
+     */
     private _getOrCreatePrompter(): ConfigPrompter {
         const cached = cacheGet<ConfigPrompter>(this.appWizard, 'prompter', this.logger);
         if (cached) {
