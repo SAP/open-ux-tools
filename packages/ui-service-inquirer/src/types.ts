@@ -19,6 +19,7 @@ export interface UiServiceAnswers extends AbapDeployConfigAnswersInternal {
 export interface ServiceConfig {
     content: string;
     serviceName: string;
+    showDraftEnabled: boolean;
 }
 
 export type SystemSelectionQuestion = Question<UiServiceAnswers>;

@@ -200,15 +200,11 @@ builder:
       - /test/**
       - /localService/**
   customTasks:
-    - name: webide-extension-task-updateManifestJson
-      afterTask: replaceVersion
-      configuration:
-        appFolder: webapp
-        destDir: dist
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: headlesstestfeprojectui
+        relativePaths: true
         additionalFiles:
           - xs-app.json
 "
@@ -265,8 +261,7 @@ exports[`Test headless generator Test: Headless deploy-config - addMTADestinatio
         "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo"
     },
     "devDependencies": {
-        "@sap/ui5-builder-webide-extension": "^1.1.9",
-        "ui5-task-zipper": "^3.1.3",
+        "ui5-task-zipper": "^3.4.x",
         "@ui5/cli": "^3.9.2"
     }
 }
@@ -504,15 +499,11 @@ builder:
       - /test/**
       - /localService/**
   customTasks:
-    - name: webide-extension-task-updateManifestJson
-      afterTask: replaceVersion
-      configuration:
-        appFolder: webapp
-        destDir: dist
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: headlesstestfeprojectui
+        relativePaths: true
         additionalFiles:
           - xs-app.json
 "
@@ -569,8 +560,7 @@ exports[`Test headless generator Test: Headless deploy-config - addMTADestinatio
         "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo"
     },
     "devDependencies": {
-        "@sap/ui5-builder-webide-extension": "^1.1.9",
-        "ui5-task-zipper": "^3.1.3",
+        "ui5-task-zipper": "^3.4.x",
         "@ui5/cli": "^3.9.2"
     }
 }
@@ -691,15 +681,11 @@ builder:
       - /test/**
       - /localService/**
   customTasks:
-    - name: webide-extension-task-updateManifestJson
-      afterTask: replaceVersion
-      configuration:
-        appFolder: webapp
-        destDir: dist
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: comfioritoolstravel
+        relativePaths: true
         additionalFiles:
           - xs-app.json
 "
@@ -749,8 +735,7 @@ exports[`Test headless generator Test: Headless deploy-config - addToManagedAppR
     "undeploy": "cf undeploy existing-id-deploy --delete-services --delete-service-keys --delete-service-brokers"
   },
   "devDependencies": {
-    "@sap/ui5-builder-webide-extension": "^1.1.9",
-    "ui5-task-zipper": "^3.1.3",
+    "ui5-task-zipper": "^3.4.x",
     "@ui5/cli": "^3.9.2",
     "rimraf": "^5.0.5",
     "mbt": "^1.2.29"
@@ -1039,15 +1024,11 @@ builder:
       - /test/**
       - /localService/**
   customTasks:
-    - name: webide-extension-task-updateManifestJson
-      afterTask: replaceVersion
-      configuration:
-        appFolder: webapp
-        destDir: dist
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: headlesstestfeprojectui
+        relativePaths: true
         additionalFiles:
           - xs-app.json
 "
@@ -1104,8 +1085,7 @@ exports[`Test headless generator Test: Headless deploy-config - addToManagedAppR
         "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo"
     },
     "devDependencies": {
-        "@sap/ui5-builder-webide-extension": "^1.1.9",
-        "ui5-task-zipper": "^3.1.3",
+        "ui5-task-zipper": "^3.4.x",
         "@ui5/cli": "^3.9.2"
     }
 }
@@ -1255,15 +1235,11 @@ builder:
       - /test/**
       - /localService/**
   customTasks:
-    - name: webide-extension-task-updateManifestJson
-      afterTask: replaceVersion
-      configuration:
-        appFolder: webapp
-        destDir: dist
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: headlesstestfeprojectui
+        relativePaths: true
         additionalFiles:
           - xs-app.json
 "
@@ -1320,8 +1296,7 @@ exports[`Test headless generator Test: Headless deploy-config - localAppChanges 
         "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo"
     },
     "devDependencies": {
-        "@sap/ui5-builder-webide-extension": "^1.1.9",
-        "ui5-task-zipper": "^3.1.3",
+        "ui5-task-zipper": "^3.4.x",
         "@ui5/cli": "^3.9.2"
     }
 }
@@ -1476,6 +1451,17 @@ exports[`Test headless generator Test: Headless deploy-config - localAppChanges 
 `;
 
 exports[`Test headless generator Test: Headless deploy-config 1`] = `
+"{
+  "xsappname": "existing-id-deploy",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "role-templates": []
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config 2`] = `
 "_schema-version: '3.1'
 ID: existing-id-deploy
 description: Fiori elements app
@@ -1536,7 +1522,7 @@ parameters:
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config 2`] = `
+exports[`Test headless generator Test: Headless deploy-config 3`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: '2.4'
@@ -1552,21 +1538,17 @@ builder:
       - /test/**
       - /localService/**
   customTasks:
-    - name: webide-extension-task-updateManifestJson
-      afterTask: replaceVersion
-      configuration:
-        appFolder: webapp
-        destDir: dist
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: comfioritoolstravel
+        relativePaths: true
         additionalFiles:
           - xs-app.json
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config 3`] = `
+exports[`Test headless generator Test: Headless deploy-config 4`] = `
 "{
   "welcomeFile": "/index.html",
   "authenticationMethod": "route",
@@ -1601,7 +1583,7 @@ exports[`Test headless generator Test: Headless deploy-config 3`] = `
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config 4`] = `
+exports[`Test headless generator Test: Headless deploy-config 5`] = `
 "{
   "scripts": {
     "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
@@ -1610,8 +1592,7 @@ exports[`Test headless generator Test: Headless deploy-config 4`] = `
     "undeploy": "cf undeploy existing-id-deploy --delete-services --delete-service-keys --delete-service-brokers"
   },
   "devDependencies": {
-    "@sap/ui5-builder-webide-extension": "^1.1.9",
-    "ui5-task-zipper": "^3.1.3",
+    "ui5-task-zipper": "^3.4.x",
     "@ui5/cli": "^3.9.2",
     "rimraf": "^5.0.5",
     "mbt": "^1.2.29"
@@ -1620,7 +1601,7 @@ exports[`Test headless generator Test: Headless deploy-config 4`] = `
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config 5`] = `
+exports[`Test headless generator Test: Headless deploy-config 6`] = `
 "node_modules/
 dist/
 .scp/
@@ -1633,7 +1614,7 @@ archive.zip
 .*_mta_build_tmp"
 `;
 
-exports[`Test headless generator Test: Headless deploy-config 6`] = `
+exports[`Test headless generator Test: Headless deploy-config 7`] = `
 "{
   "_version": "1.8.0",
   "sap.app": {
@@ -1818,6 +1799,17 @@ exports[`Test headless generator Test: Headless deploy-config 6`] = `
 `;
 
 exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 1`] = `
+"{
+  "xsappname": "existing-id-deploy_ts",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "role-templates": []
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 2`] = `
 "_schema-version: '3.1'
 ID: existing-id-deploy_ts
 description: Fiori elements app
@@ -1878,7 +1870,7 @@ parameters:
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 2`] = `
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 3`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: '2.4'
@@ -1897,15 +1889,11 @@ builder:
         removeConsoleStatements: true
         transpileAsync: true
         transpileTypeScript: true
-    - name: webide-extension-task-updateManifestJson
-      afterTask: replaceVersion
-      configuration:
-        appFolder: webapp
-        destDir: dist
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: comfioritoolstravelts
+        relativePaths: true
         additionalFiles:
           - xs-app.json
   resources:
@@ -1918,7 +1906,7 @@ resources:
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 3`] = `
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 4`] = `
 "{
   "welcomeFile": "/index.html",
   "authenticationMethod": "route",
@@ -1953,7 +1941,7 @@ exports[`Test headless generator Test: Headless deploy-config TypeScript - Headl
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 4`] = `
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 5`] = `
 "{
   "scripts": {
     "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
@@ -1962,8 +1950,7 @@ exports[`Test headless generator Test: Headless deploy-config TypeScript - Headl
     "undeploy": "cf undeploy existing-id-deploy_ts --delete-services --delete-service-keys --delete-service-brokers"
   },
   "devDependencies": {
-    "@sap/ui5-builder-webide-extension": "^1.1.9",
-    "ui5-task-zipper": "^3.1.3",
+    "ui5-task-zipper": "^3.4.x",
     "@ui5/cli": "^3.9.2",
     "rimraf": "^5.0.5",
     "mbt": "^1.2.29"
@@ -1972,7 +1959,7 @@ exports[`Test headless generator Test: Headless deploy-config TypeScript - Headl
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 5`] = `
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 6`] = `
 "node_modules/
 dist/
 .scp/
@@ -1985,7 +1972,7 @@ archive.zip
 .*_mta_build_tmp"
 `;
 
-exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 6`] = `
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 7`] = `
 "{
   "_version": "1.8.0",
   "sap.app": {

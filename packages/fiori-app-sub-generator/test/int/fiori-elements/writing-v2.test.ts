@@ -153,7 +153,8 @@ describe('Generate v2 apps', () => {
 
         const testState: Partial<State> = {
             project: Object.assign({}, v2Project, {
-                name: testProjectName
+                name: testProjectName,
+                enableVirtualEndpoints: true
             }) as Project,
             floorplan: FloorplanFE.FE_LROP,
             service: Object.assign({}, v2Service, {
@@ -291,7 +292,7 @@ describe('Generate v2 apps', () => {
             floorplan: FloorplanFE.FE_OVP,
             service: ovpService,
             entityRelatedConfig: {
-                filterEntityType: {
+                filterEntitySet: {
                     entitySetName: 'GlobalFilters',
                     entitySetType: 'GlobalFilters'
                 }
@@ -310,7 +311,10 @@ describe('Generate v2 apps', () => {
                 name: testProjectName
             }) as Project,
             floorplan: FloorplanFE.FE_WORKLIST,
-            service: v2Service,
+            service: {
+                ...v2Service,
+                ignoreCertError: true
+            },
             entityRelatedConfig: v2EntityConfig
         });
 

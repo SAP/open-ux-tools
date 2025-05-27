@@ -1,10 +1,10 @@
 import type { ReaderCollection } from '@ui5/fs';
-import type { TemplateConfig } from '../../../src/base/config';
+import { CARD_GENERATOR_DEFAULT, type TemplateConfig } from '../../../src/base/config';
 import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
 import type { FlpConfig, MiddlewareConfig } from '../../../src';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
-import type { ProjectAccess, I18nBundles, Manifest } from '@sap-ux/project-access';
+import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
 import { readFileSync } from 'fs';
 import { join, posix } from 'path';
 import type { SuperTest, Test } from 'supertest';
@@ -17,6 +17,10 @@ import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
 import { fetchMock } from '../../__mock__/global';
+import { promises } from 'fs';
+import { getWebappPath } from '@sap-ux/project-access';
+import path from 'path';
+import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
 
@@ -26,6 +30,14 @@ jest.mock('@sap-ux/adp-tooling', () => {
         ...jest.requireActual('@sap-ux/adp-tooling')
     };
 });
+
+jest.mock('@sap-ux/i18n', () => {
+    return {
+        ...jest.requireActual('@sap-ux/i18n'),
+        createPropertiesI18nEntries: jest.fn()
+    };
+});
+const createPropertiesI18nEntriesMock = createPropertiesI18nEntries as jest.Mock;
 
 class FlpSandbox extends FlpSandboxUnderTest {
     public declare templateConfig: TemplateConfig;
@@ -99,6 +111,26 @@ describe('FlpSandbox', () => {
     describe('init', () => {
         test('minimal manifest', async () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            await flp.init(manifest);
+            expect(flp.templateConfig).toMatchSnapshot();
+        });
+
+        test('Card generator is enabled for the application', async () => {
+            const flp = new FlpSandbox(
+                {
+                    editors: {
+                        cardGenerator: {
+                            path: '/test/flpCardGeneratorSandbox.html'
+                        }
+                    }
+                },
+                mockProject,
+                mockUtils,
+                logger
+            );
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
@@ -606,14 +638,14 @@ describe('FlpSandbox', () => {
             const response = await server
                 .post('/preview/api/changes')
                 .set('Content-Type', 'application/json')
-                .send({ fileName: 'id', fileType: 'ctrl_variant' })
+                .send({ change: { fileName: 'id', fileType: 'ctrl_variant' } })
                 .expect(200);
             expect(response.text).toMatchInlineSnapshot(`"FILE_CREATED id.ctrl_variant"`);
 
             await server
                 .post('/preview/api/changes')
                 .set('Content-Type', 'application/json')
-                .send({ hello: 'world' })
+                .send({ change: { hello: 'world' } })
                 .expect(400);
         });
 
@@ -715,6 +747,134 @@ describe('FlpSandbox', () => {
                 )
                 .expect(200);
             expect(response.text).toMatchSnapshot();
+        });
+    });
+
+    describe('router with enableCardGenerator', () => {
+        let server!: SuperTest<Test>;
+        const mockConfig = {
+            editors: {
+                cardGenerator: {
+                    path: 'test/flpCardGeneratorSandbox.html'
+                }
+            }
+        };
+
+        let mockFsPromisesWriteFile: jest.Mock;
+
+        beforeEach(() => {
+            mockFsPromisesWriteFile = jest.fn();
+            promises.writeFile = mockFsPromisesWriteFile;
+        });
+
+        afterEach(() => {
+            fetchMock.mockRestore();
+        });
+
+        const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
+            const flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+
+            server = supertest(app);
+        };
+
+        beforeAll(async () => {
+            await setupMiddleware(mockConfig as MiddlewareConfig);
+        });
+
+        test('GET /test/flpCardGeneratorSandbox.html', async () => {
+            const response = await server.get(
+                `${CARD_GENERATOR_DEFAULT.previewGeneratorSandbox}?sap-ui-xx-viewCache=false`
+            );
+            expect(response.status).toBe(200);
+            expect(response.type).toBe('text/html');
+        });
+
+        test('POST /cards/store with payload', async () => {
+            const projectAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess').mockImplementation(() => {
+                return Promise.resolve({
+                    updateManifestJSON: () => {
+                        return Promise.resolve({});
+                    }
+                }) as unknown as Promise<ApplicationAccess>;
+            });
+            const payload = {
+                floorplan: 'ObjectPage',
+                localPath: 'cards/op/op1',
+                fileName: 'manifest.json',
+                manifests: [
+                    {
+                        type: 'integration',
+                        manifest: {
+                            '_version': '1.15.0',
+                            'sap.card': {
+                                'type': 'Object',
+                                'header': {
+                                    'type': 'Numeric',
+                                    'title': 'Card title'
+                                }
+                            },
+                            'sap.insights': {
+                                'versions': {
+                                    'ui5': '1.120.1-202403281300'
+                                },
+                                'templateName': 'ObjectPage',
+                                'parentAppId': 'sales.order.wd20',
+                                'cardType': 'DT'
+                            }
+                        },
+                        default: true,
+                        entitySet: 'op1'
+                    },
+                    {
+                        type: 'adaptive',
+                        manifest: {
+                            'type': 'AdaptiveCard',
+                            'body': [
+                                {
+                                    'type': 'TextBlock',
+                                    'wrap': true,
+                                    'weight': 'Bolder',
+                                    'text': 'Card Title'
+                                }
+                            ]
+                        },
+                        default: true,
+                        entitySet: 'op1'
+                    }
+                ]
+            };
+            const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload);
+            expect(projectAccessMock).toBeCalled();
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('Files were updated/created');
+        });
+
+        test('POST /cards/store without payload', async () => {
+            const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send();
+            expect(response.status).toBe(500);
+            expect(response.text).toBe('Files could not be created/updated.');
+        });
+
+        test('POST /editor/i18n with payload', async () => {
+            const newI18nEntry = [
+                {
+                    'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
+                    'value': 'new Entry'
+                }
+            ];
+            const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry);
+            const webappPath = await getWebappPath(path.resolve());
+            const filePath = join(webappPath, 'i18n', 'i18n.properties');
+
+            expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(1);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, newI18nEntry);
         });
     });
 
@@ -886,6 +1046,8 @@ describe('FlpSandbox', () => {
             response = await server.get('/test/integration/opaTests.qunit.html').expect(200);
             expect(response.text).toMatchSnapshot();
             await server.get('/cdm.json').expect(404);
+            response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(response.text).toMatchSnapshot();
         });
 
         test('GET default routes with connect API when enhancedHomePage is enabled', async () => {

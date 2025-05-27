@@ -64,8 +64,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: testappid
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
 ",
     "state": "modified",
   },
@@ -96,8 +96,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: testappid
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
 ",
     "state": "modified",
   },

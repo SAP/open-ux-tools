@@ -126,7 +126,7 @@ describe('getPackagePrompts', () => {
 
     test('should return expected values from packageManual prompt methods', async () => {
         jest.spyOn(conditions, 'defaultOrShowManualPackageQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validatePackageExtended').mockResolvedValueOnce(true);
+        jest.spyOn(validators, 'validatePackage').mockResolvedValueOnce(true);
 
         const packagePrompts = getPackagePrompts({});
         const packageManualPrompt = packagePrompts.find((prompt) => prompt.name === promptNames.packageManual);

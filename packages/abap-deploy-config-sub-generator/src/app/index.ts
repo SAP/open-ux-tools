@@ -168,7 +168,8 @@ export default class extends DeploymentGenerator {
                 transportInputChoice: { hideIfOnPremise: isAdp },
                 packageAutocomplete: {
                     shouldValidatePackageForStartingPrefix: isAdp,
-                    shouldValidatePackageType: isAdp
+                    shouldValidatePackageType: isAdp,
+                    shouldValidateFormatAndSpecialCharacters: isAdp
                 },
                 packageManual: { shouldValidatePackageForStartingPrefix: isAdp, shouldValidatePackageType: isAdp },
                 targetSystem: { shouldRestrictDifferentSystemType: isAdp }

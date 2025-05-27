@@ -5,9 +5,7 @@
   "repository": "<Add your repository here>",
   "license": "UNLICENSED",
   "private": true,
-  "dependencies": {
-    "@sap/cds": "6.7.0"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "cds": {
     "requires": {

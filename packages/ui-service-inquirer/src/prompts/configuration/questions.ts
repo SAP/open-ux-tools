@@ -2,6 +2,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import {
     type AbapDeployConfigQuestion,
+    type AbapDeployConfigPromptOptions,
     getPackagePrompts,
     getTransportRequestPrompts
 } from '@sap-ux/abap-deploy-config-inquirer';
@@ -32,6 +33,22 @@ export function getConfigQuestions(logger: Logger, options?: ServiceConfigOption
         PromptState.systemSelection.connectedSystem?.backendSystem
     );
 
+    const transportOptions = {
+        backendTarget: {
+            abapTarget: abapTarget,
+            serviceProvider: PromptState.systemSelection.connectedSystem?.serviceProvider
+        },
+        transportCreated: {
+            description: t('prompts.options.transportDescription')
+        },
+        transportInputChoice: {
+            showCreateDuringDeploy: false
+        },
+        ui5AbapRepo: {
+            default: ''
+        }
+    };
+
     const packagePrompts = getPackagePrompts(
         {
             packageAutocomplete: {
@@ -46,24 +63,9 @@ export function getConfigQuestions(logger: Logger, options?: ServiceConfigOption
         true
     ) as AbapDeployConfigQuestion[];
 
-    const transportPrompts = getTransportRequestPrompts(
-        {
-            backendTarget: {
-                abapTarget: abapTarget,
-                serviceProvider: PromptState.systemSelection.connectedSystem?.serviceProvider
-            },
-            transportInputChoice: {
-                showCreateDuringDeploy: false
-            },
-            ui5AbapRepo: {
-                default: 'ztestapp'
-            }
-        },
-        true,
-        true
-    ) as AbapDeployConfigQuestion[];
+    const transportPrompts = getTransportRequestPrompts(transportOptions, true, true) as AbapDeployConfigQuestion[];
 
-    const configPrompts = [getServiceNameQuestion(logger, options)];
+    const configPrompts = [getServiceNameQuestion(logger, transportOptions, options)];
 
     if (defaultOrShowDraftQuestion(options?.useDraftEnabled)) {
         configPrompts.push(getDraftEnabledQuestion(logger));
@@ -80,10 +82,15 @@ export function getConfigQuestions(logger: Logger, options?: ServiceConfigOption
  * Returns the service name question.
  *
  * @param logger - logger instance to use for logging
+ * @param transportOptions - transport options for prompts
  * @param options - configuration options for prompts
  * @returns question for service name
  */
-function getServiceNameQuestion(logger: Logger, options?: ServiceConfigOptions): Question<UiServiceAnswers> {
+function getServiceNameQuestion(
+    logger: Logger,
+    transportOptions: AbapDeployConfigPromptOptions,
+    options?: ServiceConfigOptions
+): Question<UiServiceAnswers> {
     return {
         when: async (answers: UiServiceAnswers): Promise<boolean> => {
             if (!!answers.packageManual || !!answers.packageAutocomplete) {
@@ -93,9 +100,15 @@ function getServiceNameQuestion(logger: Logger, options?: ServiceConfigOptions):
                         PromptState.serviceConfig.content =
                             (await PromptState.systemSelection.objectGenerator?.getContent(packageValue)) ?? '';
                         const content = JSON.parse(PromptState.serviceConfig?.content);
-                        if (defaultOrShowDraftQuestion(options?.useDraftEnabled)) {
-                            content.businessObject.projectionBehavior.withDraft = true;
+                        if (
+                            defaultOrShowDraftQuestion(options?.useDraftEnabled) &&
+                            content.businessObject?.projectionBehavior?.withDraft
+                        ) {
+                            PromptState.serviceConfig.showDraftEnabled = true;
                         }
+                        transportOptions.ui5AbapRepo!.default = `${(
+                            content.general?.namespace ?? 'Z'
+                        ).toLowerCase()}testapp`;
                         PromptState.serviceConfig.content = JSON.stringify(content);
                         PromptState.serviceConfig.serviceName =
                             content.businessService.serviceBinding.serviceBindingName;
@@ -140,6 +153,7 @@ function getServiceNameQuestion(logger: Logger, options?: ServiceConfigOptions):
 function getDraftEnabledQuestion(logger: Logger): Question<UiServiceAnswers> {
     let draftEnabled = true;
     return {
+        when: (): boolean => PromptState.serviceConfig.showDraftEnabled,
         name: 'draftEnabled',
         type: 'confirm',
         message: t('prompts.draftEnabled'),

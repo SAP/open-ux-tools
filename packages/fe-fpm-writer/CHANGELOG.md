@@ -1,5 +1,94 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.34.2
+
+### Patch Changes
+
+-   Updated dependencies [e605d30]
+    -   @sap-ux/fiori-annotation-api@0.5.6
+
+## 0.34.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/fiori-annotation-api@0.5.5
+
+## 0.34.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/fiori-annotation-api@0.5.4
+
+## 0.33.29
+
+### Patch Changes
+
+-   Updated dependencies [aeb23b0]
+    -   @sap-ux/fiori-annotation-api@0.5.3
+
+## 0.33.28
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/fiori-annotation-api@0.5.2
+
+## 0.33.27
+
+### Patch Changes
+
+-   Updated dependencies [2024a9f]
+    -   @sap-ux/fiori-annotation-api@0.5.1
+
+## 0.33.26
+
+### Patch Changes
+
+-   Updated dependencies [2a16531]
+    -   @sap-ux/fiori-annotation-api@0.5.0
+
+## 0.33.25
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/fiori-annotation-api@0.4.27
+
+## 0.33.24
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/fiori-annotation-api@0.4.26
+
+## 0.33.23
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/fiori-annotation-api@0.4.25
+
+## 0.33.22
+
+### Patch Changes
+
+-   8b035bd: Method "generateObjectPage": Incorrect 'controlAggregation' applied when a new Object Page is added and FCL is enabled
+
+## 0.33.21
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.4.24
+
 ## 0.33.20
 
 ### Patch Changes

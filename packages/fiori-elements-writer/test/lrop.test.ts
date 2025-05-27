@@ -213,7 +213,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
-            name: 'lropV2_omit_reuse_libs',
+            name: 'lropV2_omit_reuse_libs_use_virtual_endpoints',
             config: {
                 ...Object.assign(feBaseConfig('felrop4'), {
                     template: {
@@ -225,7 +225,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         version: '1.77.2' // flex changes preview should be included with this version
                     },
                     appOptions: {
-                        loadReuseLibs: false
+                        loadReuseLibs: false,
+                        useVirtualPreviewEndpoints: true
                     }
                 }),
                 service: v2Service
@@ -388,6 +389,28 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         ...feBaseConfig('lrop_v4_annotation_reuse_lib').appOptions,
                         generateIndex: true,
                         addTests: true
+                    }
+                }),
+                service: {
+                    ...v4Service,
+                    metadata: getTestData('annotation_v4', 'metadata'),
+                    type: ServiceType.EDMX
+                }
+            } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lrop_v4_add_test_virtual_endpoints',
+            config: {
+                ...Object.assign(feBaseConfig('lrop_v4_add_test_virtual_endpoints'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    },
+                    appOptions: {
+                        ...feBaseConfig('lrop_v4_add_test_virtual_endpoints').appOptions,
+                        generateIndex: false,
+                        addTests: true,
+                        useVirtualPreviewEndpoints: true
                     }
                 }),
                 service: {

@@ -1,50 +1,11 @@
-import { FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { MiddlewareConfigs } from '../types';
 import { stringify } from 'querystring';
 import type { Package } from '@sap-ux/project-access';
-import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
-import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types';
+import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import type { PreviewConfigOptions } from '../types';
 import type { Editor } from 'mem-fs-editor';
 import { satisfies } from 'semver';
-
-/**
- * Gets the preview middleware form the yamlConfig or provided path.
- * The middleware can either be named 'fiori-tools-preview' or 'preview-middleware'.
- *
- * @param yamlConfig - the yaml configuration to use; if not provided, the file will be read with the provided basePath and filename
- * @param basePath - path to project root, where ui5.yaml is located
- * @param filename - name of the ui5 yaml file to read from basePath; default is 'ui5.yaml'
- * @param fs - the memfs editor instance
- * @returns preview middleware configuration if found
- * Rejects if neither yamlConfig nor basePath is provided or if the file can't be read
- */
-export async function getPreviewMiddleware(
-    yamlConfig?: UI5Config,
-    basePath?: string,
-    filename: string = FileName.Ui5Yaml,
-    fs?: Editor
-): Promise<CustomMiddleware<PreviewConfigOptions> | undefined> {
-    if (!basePath && !yamlConfig) {
-        throw new Error('Either base path or yaml config must be provided.');
-    }
-    yamlConfig = yamlConfig ?? (await readUi5Yaml(basePath!, filename, fs));
-    return (
-        yamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.FioriToolsPreview) ??
-        yamlConfig.findCustomMiddleware<PreviewConfigOptions>(MiddlewareConfigs.PreviewMiddleware)
-    );
-}
-
-/**
- * Type guard to check if the given configuration is a deprecated preview middleware configuration.
- *
- * @param configuration preview middleware configuration
- * @returns true, if a preview middleware configuration is deprecated
- */
-export function isFioriToolsDeprecatedPreviewConfig(
-    configuration: PreviewConfigOptions | undefined
-): configuration is FioriToolsDeprecatedPreviewConfig {
-    return (configuration as FioriToolsDeprecatedPreviewConfig)?.component !== undefined;
-}
+import { getPreviewMiddleware, getIntentFromPreviewConfig, isFioriToolsDeprecatedPreviewConfig } from '../common/utils';
 
 /**
  * Get the url parameters needed for the UI5 run time adaptation.
@@ -52,7 +13,7 @@ export function isFioriToolsDeprecatedPreviewConfig(
  @param packageJson - package.json file
  * @returns enhanced url parameters
  */
-export function getRtaUrlParameters(packageJson: Package): string {
+export function getRTAUrlParameters(packageJson: Package): string {
     const getDependencyVersion = (packageJson: Package, dependencyName: string): string | undefined => {
         return packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName];
     };
@@ -82,7 +43,8 @@ export function getRtaUrlParameters(packageJson: Package): string {
  */
 function getRTAMountPoint(previewMiddlewareConfig: PreviewConfigOptions | undefined): string | undefined {
     if (!isFioriToolsDeprecatedPreviewConfig(previewMiddlewareConfig) && previewMiddlewareConfig?.rta?.editors) {
-        const editors = previewMiddlewareConfig.rta.editors;
+        // check if deprecated RTA config is used
+        const editors = previewMiddlewareConfig.rta.editors ?? previewMiddlewareConfig?.editors?.rta?.endpoints; //NOSONAR
         for (const editor of editors) {
             if (!('developerMode' in editor)) {
                 return editor.path;
@@ -90,35 +52,6 @@ function getRTAMountPoint(previewMiddlewareConfig: PreviewConfigOptions | undefi
         }
     }
     return undefined;
-}
-
-/**
- * Returns the intent of the preview middleware configuration from the ui5.yaml file, if given.
- *
- * @param previewMiddlewareConfig - configuration of the preview middleware
- * @returns - preview intent or undefined
- */
-function getRTAIntent(previewMiddlewareConfig: PreviewConfigOptions | undefined): string | undefined {
-    if (isFioriToolsDeprecatedPreviewConfig(previewMiddlewareConfig)) {
-        return undefined;
-    }
-    const intent = previewMiddlewareConfig?.flp?.intent;
-    return intent ? `#${intent.object}-${intent.action}` : undefined;
-}
-
-/**
- * Returns the serve command for the preview middleware configuration of the ui5.yaml file, if given.
- * If the fiori-tools-preview middleware is used, then the serve command will be 'fiori run'.
- * If the preview middleware is used, the serve command will be 'ui5 serve'.
- *
- * @param basePath - path to project root, where ui5.yaml is located
- * @param yamlFileName - name of the ui5 yaml file to read from basePath; default is 'ui5.yaml'
- * @param fs - the memfs editor instance
- * @returns - preview serve or undefined
- */
-export async function getRTAServe(basePath: string, yamlFileName: string, fs: Editor): Promise<string | undefined> {
-    const previewMiddleware = await getPreviewMiddleware(undefined, basePath, yamlFileName, fs);
-    return previewMiddleware?.name === MiddlewareConfigs.PreviewMiddleware ? 'ui5 serve' : 'fiori run';
 }
 
 /**
@@ -151,7 +84,7 @@ export async function getRTAUrl(
         return undefined;
     }
     const mountPoint = getRTAMountPoint(previewMiddleware?.configuration) ?? '/preview.html';
-    const intent = getRTAIntent(previewMiddleware?.configuration) ?? '#app-preview';
+    const intent = getIntentFromPreviewConfig(previewMiddleware?.configuration) ?? '#app-preview';
     const queryString = query ? '?' + query : '';
 
     return isFioriToolsDeprecatedPreviewConfig(previewMiddleware?.configuration)

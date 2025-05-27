@@ -57,7 +57,7 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
         .filter((app: AppItem) => {
             const hasRequiredFields = app['sap.app/id'] && app['sap.app/title'] && app['repoName'] && app['url'];
             if (!hasRequiredFields) {
-                RepoAppDownloadLogger.logger?.error(t('error.requiredFieldsMissing', { app: JSON.stringify(app) }));
+                RepoAppDownloadLogger.logger?.warn(t('warn.requiredFieldsMissing', { app: app.appId }));
             }
             return hasRequiredFields;
         })

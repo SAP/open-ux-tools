@@ -122,7 +122,7 @@ export function transformTemplateType(
             entityConfig: _entityConfig
         } as FEOPSettings,
         [TemplateTypeFE.OverviewPage]: {
-            filterEntityType: entityRelatedConfig?.filterEntityType?.entitySetName
+            filterEntitySet: entityRelatedConfig?.filterEntitySet?.entitySetName
         } as OVPSettings,
         [TemplateTypeFE.Worklist]: {
             entityConfig: _entityConfig,
@@ -211,7 +211,8 @@ export async function transformState<T>(
             annotations:
                 project.skipAnnotations !== true
                     ? await getAnnotations(project.name, service.annotations?.[0], service?.capService)
-                    : undefined
+                    : undefined,
+            ignoreCertError: service.ignoreCertError
         };
 
         const destinationName = service.destinationName ?? service.connectedSystem?.destination?.Name;
@@ -346,11 +347,12 @@ function getBaseAppConfig(
             eslint: project.enableEslint,
             typescript: project.enableTypeScript,
             sapux: project.sapux,
-            loadReuseLibs: !service.capService,
+            loadReuseLibs: !service.capService && !project.enableVirtualEndpoints,
             // Striclty speaking we should not need to guard here. If a template is not supported for OPA test generation then nothing should be generated.
             addTests: canGenerateTests(template.type),
             generateIndex: generateIndexHtml,
-            addAnnotations: entityRelatedConfig?.addFEOPAnnotations || entityRelatedConfig?.addLineItemAnnotations
+            addAnnotations: entityRelatedConfig?.addFEOPAnnotations || entityRelatedConfig?.addLineItemAnnotations,
+            useVirtualPreviewEndpoints: project.enableVirtualEndpoints
         },
         template: template as templateSetting extends BasicAppSettings
             ? TemplateSettingsFF<BasicAppSettings>

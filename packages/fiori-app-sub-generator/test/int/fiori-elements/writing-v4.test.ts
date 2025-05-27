@@ -207,7 +207,7 @@ describe('Generate v4 apps', () => {
             floorplan: FloorplanFE.FE_OVP,
             service: v4Service,
             entityRelatedConfig: {
-                filterEntityType: {
+                filterEntitySet: {
                     entitySetName: 'Travel',
                     entitySetType: 'Travel'
                 }
@@ -336,6 +336,57 @@ describe('Generate v4 apps', () => {
                 ui5Version: TemplateTypeAttributes.alp.minimumUi5Version['4'],
                 name: testProjectName,
                 targetFolder: join(testDir, testProjectName, capAppFolder)
+            } as Project,
+            service: {
+                version: OdataVersion.v4,
+                servicePath: '/admin/',
+                source: DatasourceType.capProject,
+                capService: {
+                    projectPath: join(testDir, testProjectName),
+                    serviceName: 'AdminService',
+                    serviceCdsPath: 'srv/admin-service',
+                    appPath: capAppFolder,
+                    capType: 'Node.js'
+                }
+            },
+            floorplan: FloorplanFE.FE_ALP,
+            entityRelatedConfig: {
+                mainEntity: {
+                    entitySetName: 'Books',
+                    entitySetType: 'BooksType'
+                },
+                tableType: 'GridTable',
+                presentationQualifier: '',
+                tableMultiSelect: true,
+                tableAutoHide: true,
+                tableSelectionMode: 'None',
+                smartVariantManagement: true
+            }
+        });
+        await runWritingPhaseGen(testState);
+        expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
+        cleanTestDir(join(testDir, testProjectName));
+        accessSpy.mockRestore();
+    });
+
+    it('ALP v4 CAP with typescript', async () => {
+        testProjectName = 'alp_v4_cap_typescript';
+        expectedOutputPath = getExpectedOutputPath(join(testProjectName));
+        // Copy fake package.json to mimic real CAP project
+        mkdirSync(join(testDir, testProjectName), { recursive: true });
+        const sourcePackageJsonPath = join(__dirname, './fixtures/cap-package.json.test');
+        const targetPackageJsonPath = join(testDir, testProjectName, 'package.json');
+        copyFileSync(sourcePackageJsonPath, targetPackageJsonPath);
+        const accessSpy = jest.spyOn(fsPromise, 'access').mockResolvedValue();
+
+        const testState: State = cloneDeep({
+            project: {
+                ...baseTestProject(testDir),
+                ui5Version: TemplateTypeAttributes.alp.minimumUi5Version['4'],
+                name: testProjectName,
+                targetFolder: join(testDir, testProjectName, capAppFolder),
+                enableTypeScript: true,
+                enableVirtualEndpoints: true
             } as Project,
             service: {
                 version: OdataVersion.v4,

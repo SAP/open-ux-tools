@@ -25,7 +25,7 @@ import { createFsEditorForProject } from './virtual-fs';
 import type { ProjectTestModel } from './projects';
 import { PROJECTS } from './projects';
 import { getLocalEDMXService } from '../../src/xml';
-import { serialize } from './raw-metadata-serializer';
+import { normalizeCdsVersionInPath, serialize, serializeAnnotations } from './raw-metadata-serializer';
 
 import { CDSAnnotationServiceAdapter } from '../../src/cds/adapter';
 import type { CompilerMessage } from '@sap-ux/odata-annotation-core-types';
@@ -574,11 +574,18 @@ describe('fiori annotation service', () => {
 
     describe('getAllFiles', () => {
         const toolsRoot = join(__dirname, '..', '..', '..', '..', '..');
+        const testRoot = join(__dirname, '..');
 
         function toRelativePath(projectRoot: string, uri: string): string {
             const projectRootUri = pathToFileURL(projectRoot).toString();
             const toolsRootUri = pathToFileURL(toolsRoot).toString();
-            return uri.replace(projectRootUri, 'APP_ROOT').replace(toolsRootUri, 'REPOSITORY_ROOT');
+            const testRootUri = pathToFileURL(testRoot).toString();
+            return normalizeCdsVersionInPath(
+                uri
+                    .replace(projectRootUri, 'APP_ROOT')
+                    .replace(testRootUri, 'TEST_ROOT')
+                    .replace(toolsRootUri, 'REPOSITORY_ROOT')
+            );
         }
 
         function convertFilesForSnapshots(projectRoot: string, files: TextFile[]): TextFile[] {
@@ -654,6 +661,113 @@ describe('fiori annotation service', () => {
                         .split(sep)
                         .join(posix.sep)
                 ).toMatchInlineSnapshot(`"webapp/localService/metadata.xml"`);
+            });
+
+            test('missing metadata reference (no alias in metadata)', async () => {
+                const project = PROJECTS.V4_XML_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.annotations);
+                const content = fsEditor.read(path);
+                const testData = content.replace(
+                    `    <edmx:Reference Uri="/incident/$metadata">
+        <edmx:Include Namespace="IncidentService"/>
+    </edmx:Reference>`,
+                    ''
+                );
+                fsEditor.write(path, testData);
+                const service = await testRead(
+                    PROJECTS.V4_XML_START.root,
+                    [
+                        createLineItem(project.files.annotations, [], 'a', TARGET_INCIDENTS),
+                        createLineItem(project.files.annotations, [], 'b', 'Service.Incidents')
+                    ],
+                    'mainService',
+                    fsEditor
+                );
+                const metadata = service.getSchema();
+                for (const key of Object.keys(metadata.schema.annotations)) {
+                    // we only need to check that annotations from annotation are there (metadata annotations are not relevant here)
+                    if (!key.endsWith('annotation.xml')) {
+                        delete metadata.schema.annotations[key];
+                    }
+                }
+
+                expect(serializeAnnotations(metadata.schema.annotations, PROJECTS.V4_XML_START.root)).toMatchSnapshot();
+            });
+
+            test('missing metadata alias', async () => {
+                const project = PROJECTS.V4_XML_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const metadataPath = pathFromUri(project.files.metadata);
+
+                fsEditor.write(
+                    metadataPath,
+                    fsEditor
+                        .read(metadataPath)
+                        .replace('Namespace="IncidentService"', 'Namespace="IncidentService" Alias="Service"')
+                );
+
+                const service = await testRead(
+                    PROJECTS.V4_XML_START.root,
+                    [
+                        createLineItem(project.files.annotations, [], 'a', TARGET_INCIDENTS),
+                        createLineItem(project.files.annotations, [], 'b', 'Service.Incidents')
+                    ],
+                    'mainService',
+                    fsEditor
+                );
+                const metadata = service.getSchema();
+                for (const key of Object.keys(metadata.schema.annotations)) {
+                    // we only need to check that annotations from annotation are there (metadata annotations are not relevant here)
+                    if (!key.endsWith('annotation.xml')) {
+                        delete metadata.schema.annotations[key];
+                    }
+                }
+
+                expect(serializeAnnotations(metadata.schema.annotations, PROJECTS.V4_XML_START.root)).toMatchSnapshot();
+            });
+
+            test('missing metadata reference ', async () => {
+                const project = PROJECTS.V4_XML_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const metadataPath = pathFromUri(project.files.metadata);
+
+                fsEditor.write(
+                    metadataPath,
+                    fsEditor
+                        .read(metadataPath)
+                        .replace('Namespace="IncidentService"', 'Namespace="IncidentService" Alias="Service"')
+                );
+                const path = pathFromUri(project.files.annotations);
+                const content = fsEditor.read(path);
+                const testData = content.replace(
+                    `    <edmx:Reference Uri="/incident/$metadata">
+        <edmx:Include Namespace="IncidentService"/>
+    </edmx:Reference>`,
+                    ''
+                );
+                fsEditor.write(path, testData);
+                const service = await testRead(
+                    PROJECTS.V4_XML_START.root,
+                    [
+                        createLineItem(project.files.annotations, [], 'a', TARGET_INCIDENTS),
+                        createLineItem(project.files.annotations, [], 'b', 'Service.Incidents')
+                    ],
+                    'mainService',
+                    fsEditor
+                );
+                const metadata = service.getSchema();
+                for (const key of Object.keys(metadata.schema.annotations)) {
+                    // we only need to check that annotations from annotation are there (metadata annotations are not relevant here)
+                    if (!key.endsWith('annotation.xml')) {
+                        delete metadata.schema.annotations[key];
+                    }
+                }
+
+                expect(serializeAnnotations(metadata.schema.annotations, PROJECTS.V4_XML_START.root)).toMatchSnapshot();
             });
         });
 
@@ -3100,6 +3214,151 @@ rating : Rating;
                     }
                 ]
             });
+
+            createEditTestCase({
+                name: 'replace paths with multiple segments',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: files.annotations,
+                        content: {
+                            target: TARGET_INCIDENTS,
+                            type: 'annotation',
+                            value: {
+                                term: LINE_ITEM,
+                                collection: [
+                                    {
+                                        type: `${UI}.DataFieldForAnnotation`,
+                                        propertyValues: [
+                                            {
+                                                name: 'Target',
+                                                value: {
+                                                    type: 'AnnotationPath',
+                                                    AnnotationPath: `incidentFlow/@${UI}.Chart`
+                                                }
+                                            }
+                                        ],
+                                        annotations: [
+                                            {
+                                                term: `${UI}.Hidden`,
+                                                value: {
+                                                    type: 'Path',
+                                                    Path: 'priority'
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        type: `${UI}.DataFieldForIntentBasedNavigation`,
+                                        propertyValues: [
+                                            {
+                                                name: 'Mapping',
+                                                value: {
+                                                    type: 'Collection',
+                                                    Collection: [
+                                                        {
+                                                            type: `${COMMON}.SemanticObjectMappingType`,
+                                                            propertyValues: [
+                                                                {
+                                                                    name: 'LocalProperty',
+                                                                    value: {
+                                                                        type: 'PropertyPath',
+                                                                        PropertyPath: 'incidentFlow/processStep'
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        type: `${UI}.DataFieldWithNavigationPath`,
+                                        propertyValues: [
+                                            {
+                                                name: 'Target',
+                                                value: {
+                                                    type: 'NavigationPropertyPath',
+                                                    NavigationPropertyPath: `incidentFlow/incident`
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: `/collection/0/propertyValues/0/value`,
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'AnnotationPath',
+                                AnnotationPath: 'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem'
+                            }
+                        }
+                    },
+                    // only certain paths are read as `PropertyPath` based on vocabulary definitions as CDS does not distinguish between different path types
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: `/collection/1/propertyValues/0/value/Collection/0/propertyValues/0/value`,
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'PropertyPath',
+                                PropertyPath: 'incidentFlow/createdBy'
+                            }
+                        }
+                    },
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: `/collection/2/propertyValues/0/value`,
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'NavigationPropertyPath',
+                                NavigationPropertyPath: 'incidentFlow/createdBy'
+                            }
+                        }
+                    },
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: `/collection/0/annotations/0/value`,
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'Path',
+                                Path: 'incidentFlow/incident/createdBy'
+                            }
+                        }
+                    }
+                ]
+            });
         });
         describe('expression', () => {
             createEditTestCase({
@@ -3331,8 +3590,7 @@ rating : Rating;
             });
         });
         describe('annotation value', () => {
-            // failing as new cds-compiler facade fix required
-            test.failing('in complex type', async () => {
+            test('in complex type', async () => {
                 const project = PROJECTS.V4_CDS_START;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);

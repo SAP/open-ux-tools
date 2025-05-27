@@ -1,26 +1,45 @@
+import { join } from 'path';
 import Generator from 'yeoman-generator';
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 
-import { ToolsLogger } from '@sap-ux/logger';
-import type { ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { SystemLookup, generate, getConfig } from '@sap-ux/adp-tooling';
+import {
+    FlexLayer,
+    SystemLookup,
+    fetchPublicVersions,
+    generate,
+    getConfig,
+    getConfiguredProvider,
+    loadApps,
+    type AttributesAnswers,
+    type ConfigAnswers,
+    type UI5Version,
+    SourceManifest
+} from '@sap-ux/adp-tooling';
 import {
     TelemetryHelper,
-    sendTelemetry,
-    type ILogWrapper,
+    getDefaultTargetFolder,
     getHostEnvironment,
-    hostEnvironment
+    hostEnvironment,
+    sendTelemetry,
+    type ILogWrapper
 } from '@sap-ux/fiori-generator-shared';
+import { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 
 import { getFlexLayer } from './layer';
-import { t, initI18n } from '../utils/i18n';
+import { initI18n, t } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import AdpFlpConfigLogger from '../utils/logger';
-import type { AdpGeneratorOptions } from './types';
+import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
+import { validateJsonInput } from './questions/helper/validators';
 import { getPackageInfo, installDependencies } from '../utils/deps';
-import { generateValidNamespace, getDefaultProjectName } from './questions/helper/default-values';
+import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
+import type { AdpGeneratorOptions, AttributePromptOptions, JsonInput } from './types';
+import { getExtensionProjectData, resolveNodeModuleGenerator } from './extension-project';
+import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -54,9 +73,9 @@ export default class extends Generator {
      */
     private configAnswers: ConfigAnswers;
     /**
-     * Target folder for the generated project.
+     * Project attribute answers.
      */
-    private targetFolder: string;
+    private attributeAnswers: AttributesAnswers;
     /**
      * SystemLookup instance for managing system endpoints.
      */
@@ -65,6 +84,27 @@ export default class extends Generator {
      * Instance of the configuration prompter class.
      */
     private prompter: ConfigPrompter;
+    /**
+     * JSON object representing the complete adaptation project configuration,
+     * passed as a CLI argument.
+     */
+    private readonly jsonInput?: JsonInput;
+    /**
+     * Instance of AbapServiceProvider.
+     */
+    private abapProvider: AbapServiceProvider;
+    /**
+     * Application manifest.
+     */
+    private manifest: Manifest;
+    /**
+     * Publicly available UI5 versions.
+     */
+    private publicVersions: UI5Version;
+    /**
+     * Indicates if the current layer is based on a customer base.
+     */
+    private isCustomerBase: boolean;
 
     /**
      * Creates an instance of the generator.
@@ -80,19 +120,31 @@ export default class extends Generator {
         this.vscode = opts.vscode;
         this.options = opts;
 
-        this._setupPrompts();
         this._setupLogging();
+        const jsonInputString = getFirstArgAsString(args);
+        this.jsonInput = parseJsonInput(jsonInputString, this.toolsLogger);
+        if (!this.jsonInput) {
+            this._setupPrompts();
+        }
     }
 
     async initializing(): Promise<void> {
         await initI18n();
 
-        const pages = [{ name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationDescr') }];
-        this.prompts.splice(0, 0, pages);
-
         this.layer = await getFlexLayer();
+        this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
 
         this.systemLookup = new SystemLookup(this.toolsLogger);
+
+        if (!this.jsonInput) {
+            const pages = [
+                { name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationDescr') },
+                { name: t('yuiNavSteps.projectAttributesName'), description: t('yuiNavSteps.projectAttributesDescr') }
+            ];
+            this.prompts.splice(0, 0, pages);
+
+            this.prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
+        }
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -105,7 +157,10 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        this.prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
+        if (this.jsonInput) {
+            return;
+        }
+
         const isCLI = getHostEnvironment() === hostEnvironment.cli;
 
         const configQuestions = this.prompter.getPrompts({
@@ -117,25 +172,56 @@ export default class extends Generator {
 
         this.logger.info(`System: ${this.configAnswers.system}`);
         this.logger.info(`Application: ${JSON.stringify(this.configAnswers.application, null, 2)}`);
+
+        const { ui5Versions, systemVersion } = this.prompter.ui5;
+        const promptConfig = {
+            ui5Versions,
+            isVersionDetected: !!systemVersion,
+            isCloudProject: this.prompter.isCloud,
+            layer: this.layer
+        };
+        const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
+        const options: AttributePromptOptions = {
+            targetFolder: { default: defaultFolder },
+            ui5ValidationCli: { hide: !isCLI },
+            enableTypeScript: { hide: !!this.configAnswers.shouldCreateExtProject }
+        };
+        const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
+
+        this.attributeAnswers = await this.prompt(attributesQuestions);
+
+        this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
     }
 
     async writing(): Promise<void> {
+        if (this.jsonInput) {
+            await this._initFromJson();
+        }
+
         try {
-            const projectName = getDefaultProjectName(this.destinationPath());
-            const namespace = generateValidNamespace(projectName, this.layer);
-            this.targetFolder = this.destinationPath(projectName);
+            if (this.configAnswers.shouldCreateExtProject) {
+                await this._generateExtensionProject();
+                return;
+            }
+
+            const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
+            const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
+            const manifest = this.jsonInput ? this.manifest : this.prompter.manifest;
 
             const packageJson = getPackageInfo();
             const config = await getConfig({
-                provider: this.prompter.provider,
+                provider,
                 configAnswers: this.configAnswers,
+                attributeAnswers: this.attributeAnswers,
+                systemVersion: this.prompter?.ui5?.systemVersion,
+                publicVersions,
+                manifest,
                 layer: this.layer,
-                defaults: { namespace },
                 packageJson,
                 logger: this.toolsLogger
             });
 
-            await generate(this.targetFolder, config, this.fs);
+            await generate(this._getProjectPath(), config, this.fs);
         } catch (e) {
             this.logger.error(`Writing phase failed: ${e}`);
             throw new Error(t('error.updatingApp'));
@@ -145,7 +231,7 @@ export default class extends Generator {
     async install(): Promise<void> {
         try {
             if (this.shouldInstallDeps) {
-                await installDependencies(this.targetFolder);
+                await installDependencies(this._getProjectPath());
             }
         } catch (e) {
             this.logger.error(`Installation of dependencies failed: ${e.message}`);
@@ -159,10 +245,47 @@ export default class extends Generator {
                 ...this.options.telemetryData
             }) ?? {};
         if (telemetryData) {
-            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, this.targetFolder).catch((error) => {
-                this.logger.error(t('error.telemetry', { error }));
-            });
+            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, this._getProjectPath()).catch(
+                (error) => {
+                    this.logger.error(t('error.telemetry', { error }));
+                }
+            );
         }
+
+        try {
+            this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath: this._getProjectPath() });
+        } catch (e) {
+            this.appWizard.showError(e.message, MessageType.notification);
+        }
+    }
+
+    /**
+     * Generates an extension project if the application is not supported by Adaptation Project.
+     */
+    private async _generateExtensionProject(): Promise<void> {
+        try {
+            const data = await getExtensionProjectData(this.configAnswers, this.attributeAnswers, this.systemLookup);
+
+            const generator = resolveNodeModuleGenerator();
+            this.composeWith(generator!, {
+                arguments: [JSON.stringify(data)],
+                appWizard: this.appWizard
+            });
+            this.logger.info(`'@bas-dev/generator-extensibility-sub' was called.`);
+        } catch (e) {
+            this.logger.info(t('error.creatingExtensionProjectError'));
+            this.logger.error(e.message);
+            this.appWizard.showError(e.message, MessageType.notification);
+        }
+    }
+
+    /**
+     * Combines the target folder and project name.
+     *
+     * @returns {string} The project path from the answers.
+     */
+    private _getProjectPath(): string {
+        return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
     }
 
     /**
@@ -190,6 +313,70 @@ export default class extends Generator {
             this.options.logWrapper
         );
         this.logger = AdpFlpConfigLogger.logger;
+    }
+
+    /**
+     * Initialize the project generator from a json.
+     */
+    private async _initFromJson(): Promise<void> {
+        if (!this.jsonInput) {
+            return;
+        }
+
+        const {
+            system,
+            client,
+            username = '',
+            password = '',
+            application: baseApplicationName,
+            applicationTitle,
+            targetFolder = '/home/user/projects',
+            projectName = getDefaultProjectName(targetFolder, `${baseApplicationName}.variant`),
+            namespace = getDefaultNamespace(projectName, this.isCustomerBase)
+        } = this.jsonInput;
+
+        await validateJsonInput(this.systemLookup, this.isCustomerBase, {
+            projectName,
+            targetFolder,
+            namespace,
+            system
+        });
+
+        this.publicVersions = await fetchPublicVersions();
+
+        const providerOptions = {
+            system,
+            client,
+            username,
+            password
+        };
+        this.abapProvider = await getConfiguredProvider(providerOptions, this.toolsLogger);
+
+        const applications = await loadApps(this.abapProvider, this.isCustomerBase);
+        const application = applications.find((application) => application.id === baseApplicationName);
+        if (!application) {
+            throw new Error(t('error.applicationNotFound', { appName: baseApplicationName }));
+        }
+
+        const sourceManifest = new SourceManifest(this.abapProvider, application.id);
+        this.manifest = await sourceManifest.getManifest();
+
+        this.configAnswers = {
+            system,
+            username,
+            password,
+            application
+        };
+
+        this.attributeAnswers = {
+            projectName,
+            title: applicationTitle ?? `${application.title} (variant)`,
+            namespace,
+            targetFolder,
+            // If not provided, latest ui5 version will be used. See getConfig() for a reference.
+            ui5Version: '',
+            enableTypeScript: false
+        };
     }
 }
 

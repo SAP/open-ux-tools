@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-config"
     },
-    "version": "0.26.5",
+    "version": "0.28.1",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -45,6 +45,6 @@
         "@types/js-yaml": "4.0.9"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }

@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-elements-writer:ovp",
-      "version": "2.1.8",
-      "toolsId": "781df3e8-4590-4269-bbbe-3537ed036429"
+      "version": "2.1.40",
+      "toolsId": "3a915f5c-adb1-472a-9d84-5a0340bc7770"
     },
     "dataSources": {
       "GWSAMPLE_BASIC": {
@@ -116,7 +116,7 @@
   },
   "sap.ovp": {
     "globalFilterModel": "mainModel",
-    "globalFilterEntityType": "GlobalFilters",
+    "globalFilterEntitySet": "GlobalFilters",
     "containerLayout": "resizable",
     "enableLiveFilter": true,
     "considerAnalyticalParameters": false,

@@ -39,10 +39,8 @@ describe('Tools Suite Telemetry Tests', () => {
 
     beforeAll(() => {
         jest.clearAllMocks();
-    });
-
-    afterAll(() => {
         jest.resetAllMocks();
+        jest.restoreAllMocks();
     });
 
     it('No additional properties, Not SBAS', async () => {

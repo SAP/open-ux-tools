@@ -4,6 +4,7 @@ import type { InputQuestion } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
 import {
     type CapService,
+    type ConnectedSystem,
     DatasourceType,
     type OdataServicePromptOptions,
     OdataVersion,
@@ -23,14 +24,7 @@ import type { Question } from 'inquirer';
 import merge from 'lodash/merge';
 import { join } from 'path';
 import type { Adapter } from 'yeoman-environment';
-import type {
-    FioriAppGeneratorPromptSettings,
-    Floorplan,
-    Project,
-    PromptExtension,
-    Service,
-    YeomanUiStepConfig
-} from '../types';
+import type { FioriAppGeneratorPromptSettings, Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
 import { Features, defaultPromptValues } from '../types';
 import { getMinSupportedUI5Version, t, validateNextStep } from '../utils';
 
@@ -87,9 +81,8 @@ type PromptUI5AppAnswersOptions = {
     targetFolder?: Project['targetFolder'];
     service: Partial<Service>;
     promptSettings?: FioriAppGeneratorPromptSettings;
-    hideUI5VersionPrompt?: boolean;
     floorplan: Floorplan;
-    promptExtension?: PromptExtension;
+    promptExtension?: UI5ApplicationPromptOptions;
 };
 
 /**
@@ -97,7 +90,6 @@ type PromptUI5AppAnswersOptions = {
  * The answers to the questions are returned.
  *
  * @param param0
- * @param param0.hideUI5VersionPrompt this will override the `hide` property of the ui5Version prompt setting if provided
  * @param param0.service
  * @param param0.projectName
  * @param param0.targetFolder
@@ -114,7 +106,7 @@ export async function promptUI5ApplicationAnswers(
         projectName,
         targetFolder,
         promptSettings,
-        hideUI5VersionPrompt,
+
         floorplan,
         promptExtension
     }: PromptUI5AppAnswersOptions,
@@ -131,21 +123,13 @@ export async function promptUI5ApplicationAnswers(
         inquirerAdapter = adapter;
     }
 
-    // Convert prompt related options to prompt settings
-    const pmptSettings = {
-        ...promptSettings,
-        [ui5AppInquirerPromptNames.ui5Version]: {
-            hide: hideUI5VersionPrompt ?? false
-        }
-    };
-
     const promptOptions = await createUI5ApplicationPromptOptions(
         service,
         yeomanUiStepConfig,
         floorplan,
         projectName,
         targetFolder,
-        pmptSettings,
+        promptSettings,
         promptExtension
     );
     const ui5AppAnswers: UI5ApplicationAnswers = await promptUI5App(
@@ -172,12 +156,14 @@ export async function promptUI5ApplicationAnswers(
  * @param options
  * @param logger
  * @param adapter
+ * @param connectedSystem
  * @returns {Promise<Service>}
  */
 export async function promptOdataServiceAnswers(
     options: OdataServiceInquirerOptions,
     logger: Logger,
-    adapter: Adapter
+    adapter: Adapter,
+    connectedSystem?: ConnectedSystem
 ): Promise<Service> {
     let inquirerAdapter;
     // type `any` will be replaced when we can import ESM modules
@@ -196,7 +182,8 @@ export async function promptOdataServiceAnswers(
         logger,
         isFeatureEnabled(Features.enableGAIntegration),
         ClientFactory.getTelemetryClient(),
-        getHostEnvironment() !== hostEnvironment.cli
+        getHostEnvironment() !== hostEnvironment.cli,
+        connectedSystem
     );
 
     const service: Service = {
@@ -210,7 +197,7 @@ export async function promptOdataServiceAnswers(
         source: answers.datasourceType,
         localEdmxFilePath: answers.metadataFilePath,
         connectedSystem: answers.connectedSystem,
-        ignoreCertError: (answers as any).ignoreCertError // TBI: ignoreCertError is not a property OdataServiceAnswers
+        ignoreCertError: answers.ignoreCertError
     };
     return service;
 }
@@ -236,7 +223,7 @@ export async function createUI5ApplicationPromptOptions(
     projectName?: Project['name'],
     targetFolder?: Project['targetFolder'],
     promptSettings?: FioriAppGeneratorPromptSettings,
-    extensions?: PromptExtension
+    extensions?: UI5ApplicationPromptOptions
 ): Promise<UI5ApplicationPromptOptions> {
     // prompt settings may be additionally provided e.g. set by adaptors
     const ui5VersionPromptOptions: UI5ApplicationPromptOptions['ui5Version'] = {
@@ -268,44 +255,45 @@ export async function createUI5ApplicationPromptOptions(
         };
     }
     // Add more prompt options as required
-    const promptOptions = merge(
-        {
-            [ui5AppInquirerPromptNames.name]: {
-                defaultValue: projectName
-            },
-            [ui5AppInquirerPromptNames.targetFolder]: defaultTargetFolderOption,
-            [ui5AppInquirerPromptNames.ui5Version]: ui5VersionPromptOptions,
-            [ui5AppInquirerPromptNames.skipAnnotations]: {
-                hide: !service.capService
-            },
-            [ui5AppInquirerPromptNames.addDeployConfig]: {
-                validatorCallback: (addDeployConfigAnswer: boolean) => {
-                    validateNextStep(
-                        addDeployConfigAnswer,
-                        t('steps.projectAttributesConfig.title'),
-                        appGenStepConfigList,
-                        t('steps.deployConfig.title')
-                    );
-                }
-            },
-            [ui5AppInquirerPromptNames.addFlpConfig]: {
-                validatorCallback: (addFlpConfigAnswer: boolean) => {
-                    validateNextStep(
-                        addFlpConfigAnswer,
-                        t('steps.projectAttributesConfig.title'),
-                        appGenStepConfigList,
-                        t('steps.flpConfig.title')
-                    );
-                }
-            },
-            [ui5AppInquirerPromptNames.enableTypeScript]: {
-                defaultValue: defaultPromptValues[ui5AppInquirerPromptNames.enableTypeScript]
+    const preMergedPromptOpts: UI5ApplicationPromptOptions = {
+        [ui5AppInquirerPromptNames.name]: {
+            defaultValue: projectName
+        },
+        [ui5AppInquirerPromptNames.targetFolder]: defaultTargetFolderOption,
+        [ui5AppInquirerPromptNames.ui5Version]: ui5VersionPromptOptions,
+        [ui5AppInquirerPromptNames.skipAnnotations]: {
+            hide: !service.capService
+        },
+        [ui5AppInquirerPromptNames.addDeployConfig]: {
+            validatorCallback: (addDeployConfigAnswer: boolean) => {
+                validateNextStep(
+                    addDeployConfigAnswer,
+                    t('steps.projectAttributesConfig.title'),
+                    appGenStepConfigList,
+                    t('steps.deployConfig.title')
+                );
             }
-        } as UI5ApplicationPromptOptions,
-        promptSettings as UI5ApplicationPromptOptions
-    );
+        },
+        [ui5AppInquirerPromptNames.addFlpConfig]: {
+            validatorCallback: (addFlpConfigAnswer: boolean) => {
+                validateNextStep(
+                    addFlpConfigAnswer,
+                    t('steps.projectAttributesConfig.title'),
+                    appGenStepConfigList,
+                    t('steps.flpConfig.title')
+                );
+            }
+        },
+        [ui5AppInquirerPromptNames.enableTypeScript]: {
+            default: defaultPromptValues[ui5AppInquirerPromptNames.enableTypeScript]
+        },
+        [ui5AppInquirerPromptNames.enableVirtualEndpoints]: {
+            hide: service.capService?.capType === 'Java'
+        }
+    };
+    const promptOptions = merge(preMergedPromptOpts, promptSettings);
 
-    // Configure the prompts which should be hidden behind the ad
+    // Configure the prompts which should be hidden behind the advanced option switch
     const advancedPrompts = [
         ui5AppInquirerPromptNames.enableCodeAssist,
         ui5AppInquirerPromptNames.skipAnnotations,
