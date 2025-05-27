@@ -569,7 +569,7 @@ describe('Service URL prompts', () => {
         showCollabDraftWarningSpy.mockClear();
     });
 
-    test('Should show `NODE_TLD_REJECT_UNAUTHORIZED` warning if set when bypassing certificate errors', async () => {
+    test('Should show `NODE_TLS_REJECT_UNAUTHORIZED` warning if set when bypassing certificate errors', async () => {
         const questions = getServiceUrlQuestions();
         const serviceUrlQuestion = questions.find((q) => q.name === promptNames.serviceUrl) as InputQuestion;
         const systemUrl = 'https://example.com';
