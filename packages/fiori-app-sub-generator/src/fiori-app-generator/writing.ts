@@ -15,6 +15,7 @@ import { getLaunchText, getReadMeDataSourceLabel, isBTPHosted, t } from '../util
  * @param state.service
  * @param state.floorplan
  * @param state.entityRelatedConfig
+ * @param state.appGenInfo
  * @param generatorName
  * @param generatorVersion
  * @param targetPath
@@ -22,7 +23,7 @@ import { getLaunchText, getReadMeDataSourceLabel, isBTPHosted, t } from '../util
  * @param existingAppGenInfo
  */
 export async function writeAppGenInfoFiles(
-    { project, service, floorplan, entityRelatedConfig }: State,
+    { project, service, floorplan, entityRelatedConfig, appGenInfo }: State,
     generatorName: string,
     generatorVersion: string,
     targetPath: string,
@@ -50,7 +51,8 @@ export async function writeAppGenInfoFiles(
                 `${service.capService ? DEFAULT_CAP_HOST : service.host ?? ''}${service.servicePath ?? ''}` ||
                 t('texts.notApplicable')
         } as Partial<AppGenInfo>,
-        existingAppGenInfo
+        existingAppGenInfo,
+        appGenInfo
     );
 
     appGenInfoCustom.entityRelatedConfig ??= [];
@@ -81,7 +83,7 @@ export async function writeAppGenInfoFiles(
         project.namespace
     );
 
-    const appGenInfo: AppGenInfo = {
+    const genInfo: AppGenInfo = {
         generationDate: appGenInfoCustom?.generationDate ?? new Date().toString(),
         generatorPlatform: appGenInfoCustom?.generatorPlatform ?? getHostEnvironment().name,
         serviceType: appGenInfoCustom?.serviceType,
@@ -105,7 +107,7 @@ export async function writeAppGenInfoFiles(
         launchText
     };
 
-    generateAppGenInfo(targetPath, appGenInfo, fs);
+    generateAppGenInfo(targetPath, genInfo, fs);
 }
 
 /**

@@ -1,5 +1,5 @@
 {
-  "generationDate": "Tue May 27 2025 13:53:38 GMT+0100 (Irish Standard Time)",
+  "generationDate": "Tue May 27 2025 14:36:44 GMT+0100 (Irish Standard Time)",
   "generatorPlatform": "CLI",
   "serviceType": "MTA File",
   "metadataFilename": "",
@@ -24,6 +24,19 @@
       "value": "to_ProductSalesData"
     }
   ],
-  "additionalEntries": [],
+  "additionalEntries": [
+    {
+      "testAdditionalEntry": [
+        {
+          "key": "testKey1",
+          "value": "testValue1"
+        },
+        {
+          "key": "testKey2",
+          "value": "testValue2"
+        }
+      ]
+    }
+  ],
   "launchText": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
 }

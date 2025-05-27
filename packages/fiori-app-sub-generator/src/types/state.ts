@@ -127,9 +127,9 @@ export interface State {
      */
     floorplan: Floorplan;
     /**
-     * General information about the application - use for README and appGenInfo.json
+     * General information about the application - used for README and appGenInfo.json
      */
-    appGenInfo?: AppGenInfo[];
+    appGenInfo?: Partial<AppGenInfo>;
 }
 
 /** Only used by headless */
