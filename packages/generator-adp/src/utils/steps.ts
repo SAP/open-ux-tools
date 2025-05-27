@@ -53,8 +53,8 @@ export function getDeployPage(): IPrompt {
  *
  * @param {YeomanUiSteps} prompts - The Yeoman UI Prompts container object.
  * @param {IPrompt} step - The step to add or remove.
- * @param {string} [insertAfter=''] - Optional name of the step after which to insert.
- * @param {boolean} [shouldAdd=true] - Whether to add (`true`) or remove (`false`) the step.
+ * @param {string} [insertAfter] - Optional name of the step after which to insert.
+ * @param {boolean} [shouldAdd] - Whether to add (`true`) or remove (`false`) the step.
  */
 export function updateWizardSteps(
     prompts: YeomanUiSteps,
