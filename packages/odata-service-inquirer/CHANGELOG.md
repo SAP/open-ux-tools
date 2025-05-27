@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.4.6
+
+### Patch Changes
+
+-   b3fe5b8: Adds support for bypassing cert errors in limited situations
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+
 ## 2.4.5
 
 ### Patch Changes
