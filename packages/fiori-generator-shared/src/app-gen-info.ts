@@ -1,4 +1,4 @@
-import type { AppGenInfo, AdditionalParameters } from './types';
+import type { AppGenInfo, ExternalParameters } from './types';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 
@@ -16,20 +16,20 @@ export function generateAppGenInfo(destPath: string, appGenInfo: AppGenInfo, fs:
     const templateSourcePath = join(__dirname, '../templates/README.md');
     const templateDestPath = `${destPath}/README.md`;
 
-    const { additionalParameters, ...appGenInfoCore } = appGenInfo;
+    const { externalParameters, ...appGenInfoCore } = appGenInfo;
 
     // Write the README file
     fs.copyTpl(templateSourcePath, templateDestPath, appGenInfoCore);
 
     const appGenInfoJson: {
-        generationParameters: Exclude<AppGenInfo, 'additionalParameters'>;
-        additionalParameters?: AdditionalParameters[];
+        generationParameters: Exclude<AppGenInfo, 'externalParameters'>;
+        externalParameters?: ExternalParameters[];
     } = {
         generationParameters: appGenInfoCore
     };
 
-    if (additionalParameters) {
-        appGenInfoJson.additionalParameters = [...additionalParameters];
+    if (externalParameters) {
+        appGenInfoJson.externalParameters = [...externalParameters];
     }
 
     // Write the .appGenInfo.json file

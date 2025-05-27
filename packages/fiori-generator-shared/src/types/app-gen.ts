@@ -1,7 +1,7 @@
 /**
- * Interface representing additional entries for the .appGenInfo.json file.
+ * Interface representing external parameters for the .appGenInfo.json file.
  */
-export type AdditionalParameters = {
+export type ExternalParameters = {
     [key: string]: string | object | object[];
 };
 
@@ -15,7 +15,7 @@ interface EntityRelatedConfig {
 
 /**
  * Interface representing the configuration for generating info files for AppGen i.e. README.md & .appGenInfo.json.
- * Extendable with additionalParameters - which will be used for writing to the .appGenInfo.json file.
+ * Extendable with externalParameters - which will be used for writing to the .appGenInfo.json file.
  */
 export interface AppGenInfo {
     /** The name of the application. */
@@ -61,8 +61,8 @@ export interface AppGenInfo {
      */
     entityRelatedConfig?: EntityRelatedConfig[];
     /**
-     * Additional custom entries for the application.
+     * Additional external parameters.
      * N.B. these will be added to the .appGenInfo.json file only
      */
-    additionalParameters?: AdditionalParameters[];
+    externalParameters?: ExternalParameters[];
 }

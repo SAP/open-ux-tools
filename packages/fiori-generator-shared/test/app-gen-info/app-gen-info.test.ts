@@ -34,7 +34,7 @@ describe('Readme file generation tests', () => {
             ui5Theme: 'a_ui5_theme',
             ui5Version: '1.2.3',
             appNamespace: 'appNamespace',
-            additionalParameters: [
+            externalParameters: [
                 {
                     'addEntry1': 'Generator Specific Value A',
                     'addEntry2': 'Generator Specific Value B',

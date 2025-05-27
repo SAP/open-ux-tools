@@ -91,7 +91,7 @@ describe('Generate v2 apps', () => {
             service: destService,
             entityRelatedConfig: v2EntityConfig,
             appGenInfo: {
-                additionalParameters: [
+                externalParameters: [
                     {
                         'testAdditionalEntry': [
                             {

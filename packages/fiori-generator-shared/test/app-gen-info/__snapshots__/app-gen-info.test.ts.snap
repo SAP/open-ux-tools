@@ -77,7 +77,7 @@ http://localhost:8080/someProjectName/webapp/index.html
 
 exports[`Readme file generation tests should generate README.md with the correct content including core and optional properties 2`] = `
 Object {
-  "additionalParameters": Array [
+  "externalParameters": Array [
     Object {
       "addEntry1": "Generator Specific Value A",
       "addEntry2": "Generator Specific Value B",
