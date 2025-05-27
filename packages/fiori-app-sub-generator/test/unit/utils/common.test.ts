@@ -53,7 +53,7 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    generateReadMe: jest.fn()
+    generateAppGenInfo: jest.fn()
 }));
 
 // rootPath exists only in SBAS

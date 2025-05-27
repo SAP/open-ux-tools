@@ -19,7 +19,7 @@ import { type FioriAppGeneratorOptions, FioriAppGenerator } from '../../../src/f
 import { runPostGenerationTasks } from '../../../src/fiori-app-generator/end';
 import { installDependencies } from '../../../src/fiori-app-generator/install';
 import { transformState } from '../../../src/fiori-app-generator/transforms';
-import { writeAPIHubKeyFiles, writeReadMe } from '../../../src/fiori-app-generator/writing';
+import { writeAPIHubKeyFiles, writeAppGenInfoFiles } from '../../../src/fiori-app-generator/writing';
 import type { Project, State } from '../../../src/types';
 import { ApiHubType, FIORI_STEPS, FloorplanFE, FloorplanFF, PLATFORMS, generatorName } from '../../../src/types';
 import { deleteCache, getYeomanUiStepConfig, t } from '../../../src/utils';
@@ -76,7 +76,7 @@ jest.mock('../../../src/fiori-app-generator/writing', () => {
     return {
         ...jest.requireActual('../../../src/fiori-app-generator/writing'),
         writeAPIHubKeyFiles: jest.fn(),
-        writeReadMe: jest.fn()
+        writeAppGenInfoFiles: jest.fn()
     };
 });
 
@@ -179,7 +179,7 @@ describe('Test FioriAppGenerator', () => {
         (isAppStudio as jest.Mock).mockReturnValue(false);
     });
 
-    test('Should call `transformState`, `generate` and ``writeReadMe` during writing phase', async () => {
+    test('Should call `transformState`, `generate` and `writeInfoFiles` during writing phase', async () => {
         options.generateIndexHtml = true;
         const mockState: State = {
             project: {
@@ -243,7 +243,7 @@ describe('Test FioriAppGenerator', () => {
                 EnableCodeAssist: undefined,
                 ToolsId: 'abcd1234'
             });
-            expect(writeReadMe).toHaveBeenCalledWith(
+            expect(writeAppGenInfoFiles).toHaveBeenCalledWith(
                 {
                     project: mockState.project,
                     service: mockState.service,

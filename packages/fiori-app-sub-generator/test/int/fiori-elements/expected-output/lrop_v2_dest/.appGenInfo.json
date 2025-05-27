@@ -1,0 +1,44 @@
+{
+  "generationParameters": {
+    "generationDate": "Tue May 27 2025 17:40:26 GMT+0100 (Irish Standard Time)",
+    "generatorPlatform": "CLI",
+    "serviceType": "MTA File",
+    "metadataFilename": "",
+    "serviceUrl": "https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com/sap/opu/odata/sap/SEPMRA_PROD_MAN",
+    "appName": "lrop_v2_dest",
+    "appTitle": "Project's \"Title\"",
+    "appDescription": "Test 'Project' \"Description\"",
+    "appNamespace": "testNameSpace",
+    "ui5Theme": "sap_fiori_3",
+    "ui5Version": "1.98.0",
+    "showMockDataInfo": true,
+    "generatorVersion": "0.0.0",
+    "template": "List Report Page V2",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "SEPMRA_C_PD_Product"
+      },
+      {
+        "type": "Navigation Entity",
+        "value": "to_ProductSalesData"
+      }
+    ],
+    "launchText": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
+  },
+  "externalParameters": [
+    {
+      "testAdditionalEntry": [
+        {
+          "key": "testKey1",
+          "value": "testValue1"
+        },
+        {
+          "key": "testKey2",
+          "value": "testValue2"
+        }
+      ]
+    }
+  ]
+}
