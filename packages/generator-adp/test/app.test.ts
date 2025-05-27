@@ -266,7 +266,7 @@ describe('Adaptation Project Generator Integration Test', () => {
                     addDeployConfig: false,
                     namespace: 'customer.app.variant',
                     projectName: 'app.variant',
-                    targetFolder: expect.any(String),
+                    targetFolder: testOutputDir,
                     title: 'App Title',
                     ui5Version: '1.134.1'
                 },
@@ -281,6 +281,53 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect.any(Object),
             expect.any(Object)
         );
+    });
+
+    it('should call composeWith for FLP and Deploy sub-generators and generate a cloud project successfully', async () => {
+        mockIsAppStudio.mockReturnValue(false);
+        jest.spyOn(ConfigPrompter.prototype, 'isCloud', 'get').mockReturnValue(true);
+        jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
+
+        const addDeployGenSpy = jest.spyOn(subgenHelpers, 'addDeployGen').mockReturnValue();
+        const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockReturnValue();
+
+        const runContext = yeomanTest
+            .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+            .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+            .withPrompts({ ...answers, addDeployConfig: true, addFlpConfig: true });
+
+        await expect(runContext.run()).resolves.not.toThrow();
+
+        expect(addDeployGenSpy).toHaveBeenCalledWith(
+            {
+                client: '010',
+                connectedSystem: 'urlA',
+                projectName: 'app.variant',
+                targetFolder: testOutputDir
+            },
+            expect.any(Function),
+            expect.any(Object),
+            expect.any(Object)
+        );
+
+        expect(addFlpGenSpy).toHaveBeenCalledWith(
+            {
+                manifest: {
+                    'sap.ui5': {
+                        flexEnabled: true
+                    }
+                },
+                projectRootPath: join(testOutputDir, answers.projectName),
+                system: 'urlA'
+            },
+            expect.any(Function),
+            expect.any(Object),
+            expect.any(Object)
+        );
+
+        expect(executeCommandSpy).toHaveBeenCalledTimes(1);
+        const generatedDirs = fs.readdirSync(testOutputDir);
+        expect(generatedDirs).toContain(answers.projectName);
     });
 
     it('should generate an onPremise adaptation project successfully', async () => {

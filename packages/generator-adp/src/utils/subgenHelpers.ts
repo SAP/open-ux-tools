@@ -66,7 +66,7 @@ export function addFlpGen(
         logger.info(`'@sap-ux/adp-flp-config-sub-generator' was called.`);
     } catch (e) {
         logger.error(e);
-        throw new Error(`Could not call sub-generator: ${e.message}`);
+        throw new Error(`Could not call '@sap-ux/adp-flp-config-sub-generator' sub-generator: ${e.message}`);
     }
 }
 
@@ -107,8 +107,8 @@ export function addDeployGen(
         composeWith(require.resolve('@sap-ux/deploy-config-sub-generator/generators/app'), generatorOptions);
         logger.info(`'@sap-ux/deploy-config-sub-generator' was called.`);
     } catch (e: any) {
-        logger.error(`Could not call deploy-config sub-generator: ${e.message}`);
-        appWizard?.showError?.(t('error.callingDeployGen'), MessageType.notification);
+        logger.error(e);
+        throw new Error(`Could not call '@sap-ux/deploy-config-sub-generator' sub-generator: ${e.message}`);
     }
 }
 
