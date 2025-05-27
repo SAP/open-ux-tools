@@ -170,7 +170,9 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             promptMock = jest
                 .spyOn(prompts, 'prompt')
                 .mockImplementation((questions) => jest.requireActual('prompts').prompt(questions));
-            jest.spyOn(i18next, 't').mockImplementation((key: TFunctionKeys | TFunctionKeys[]) => key as TFunctionResult);
+            jest.spyOn(i18next, 't').mockImplementation(
+                (key: TFunctionKeys | TFunctionKeys[]) => key as TFunctionResult
+            );
         });
 
         test('Use destination (no deploy config)', async () => {
