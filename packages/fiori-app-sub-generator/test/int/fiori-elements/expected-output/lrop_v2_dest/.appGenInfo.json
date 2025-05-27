@@ -1,6 +1,6 @@
 {
   "generationParameters": {
-    "generationDate": "Tue May 27 2025 15:16:20 GMT+0100 (Irish Standard Time)",
+    "generationDate": "Tue May 27 2025 16:19:17 GMT+0100 (Irish Standard Time)",
     "generatorPlatform": "CLI",
     "serviceType": "MTA File",
     "metadataFilename": "",
@@ -27,14 +27,18 @@
     ],
     "launchText": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
   },
-  "testAdditionalEntry": [
+  "additionalParameters": [
     {
-      "key1": "value1",
-      "key2": "value2"
-    },
-    {
-      "key1": "valueA",
-      "key2": "valueB"
+      "testAdditionalEntry": [
+        {
+          "key": "testKey1",
+          "value": "testValue1"
+        },
+        {
+          "key": "testKey2",
+          "value": "testValue2"
+        }
+      ]
     }
   ]
 }

@@ -103,7 +103,7 @@ export async function writeAppGenInfoFiles(
         template: appGenInfoCustom?.template ?? '',
         generatorName: appGenInfoCustom?.generatorName ?? '',
         entityRelatedConfig: appGenInfoCustom?.entityRelatedConfig ?? [],
-        additionalEntries: appGenInfoCustom?.additionalEntries ?? {},
+        additionalParameters: appGenInfoCustom?.additionalParameters,
         launchText
     };
 

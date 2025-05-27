@@ -77,20 +77,24 @@ http://localhost:8080/someProjectName/webapp/index.html
 
 exports[`Readme file generation tests should generate README.md with the correct content including core and optional properties 2`] = `
 Object {
-  "addEntry1": "Generator Specific Value A",
-  "addEntry2": "Generator Specific Value B",
-  "addEntryArr": Array [
+  "additionalParameters": Array [
     Object {
-      "prop1": "value1",
-      "prop2": "value2",
-      "prop3": "value3",
-      "prop4": "value4",
-    },
-    Object {
-      "prop1": "valuea",
-      "prop2": "valueb",
-      "prop3": "valuec",
-      "prop4": "valued",
+      "addEntry1": "Generator Specific Value A",
+      "addEntry2": "Generator Specific Value B",
+      "addEntryArr": Array [
+        Object {
+          "prop1": "value1",
+          "prop2": "value2",
+          "prop3": "value3",
+          "prop4": "value4",
+        },
+        Object {
+          "prop1": "valuea",
+          "prop2": "valueb",
+          "prop3": "valuec",
+          "prop4": "valued",
+        },
+      ],
     },
   ],
   "generationParameters": Object {
