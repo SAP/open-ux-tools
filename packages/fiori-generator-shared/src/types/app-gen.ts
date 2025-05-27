@@ -1,18 +1,23 @@
 /**
- * Interface representing additional entries for the README file.
+ * Interface representing external parameters for the .appGenInfo.json file.
  */
-interface AdditionalEntries {
-    /** The label for the additional entry. */
-    label: string;
-    /** The value corresponding to the label of the additional entry. */
-    value: string;
+export type ExternalParameters = {
+    [key: string]: string | object | object[];
+};
+
+/**
+ * Interface representing the configuration for entity-related information in AppGen.
+ */
+interface EntityRelatedConfig {
+    type: string; // e.g "Main Entity", "Navigation Entity", "Filter Entity Type"
+    value: string; // value of the entity
 }
 
 /**
- * Interface representing the configuration for generating a README file.
- * Extends OptionalEntries to include dynamic properties along with the core properties.
+ * Interface representing the configuration for generating info files for AppGen i.e. README.md & .appGenInfo.json.
+ * Extendable with externalParameters - which will be used for writing to the .appGenInfo.json file.
  */
-export interface ReadMe {
+export interface AppGenInfo {
     /** The name of the application. */
     appName: string;
     /** The title of the application. */
@@ -51,6 +56,13 @@ export interface ReadMe {
     showMockDataInfo?: boolean;
     /** Text used to launch the application */
     launchText?: string;
-    /** Additional custom entries for the application. */
-    additionalEntries?: AdditionalEntries[];
+    /**
+     * An array used to store information on the various entities, e.g main, navigation entity, and filter entity type.
+     */
+    entityRelatedConfig?: EntityRelatedConfig[];
+    /**
+     * Additional external parameters.
+     * N.B. these will be added to the .appGenInfo.json file only
+     */
+    externalParameters?: ExternalParameters[];
 }
