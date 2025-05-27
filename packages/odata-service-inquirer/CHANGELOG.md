@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.4.5
+
+### Patch Changes
+
+-   2b9e7af: fix(deps): update dependency @sap-ux/edmx-parser to v0.9.1
+
 ## 2.4.4
 
 ### Patch Changes
