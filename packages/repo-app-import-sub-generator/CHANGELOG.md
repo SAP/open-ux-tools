@@ -1,5 +1,16 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.11
+
+### Patch Changes
+
+-   ac55cca: adds .appGenInfo.json file
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/fiori-elements-writer@2.4.7
+    -   @sap-ux/inquirer-common@0.7.3
+    -   @sap-ux/odata-service-inquirer@2.4.7
+
 ## 0.3.10
 
 ### Patch Changes
