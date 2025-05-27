@@ -105,6 +105,7 @@ async function globalSetup(): Promise<void> {
 
                 const manifest = JSON.parse(manifestText);
                 manifest['sap.app'].id = variant.id;
+                manifest['sap.ui5'].appVariantId = variant.id; // component name in version 1.84 and 1.96
                 if (changes.length > 0) {
                     manifest['$sap.ui.fl.changes'] = {
                         descriptor: changes

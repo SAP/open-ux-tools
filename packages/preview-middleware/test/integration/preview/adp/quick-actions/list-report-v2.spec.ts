@@ -183,69 +183,59 @@ async function readChanges(root: string): Promise<Changes> {
 
 test.describe(`@quick-actions @fe-v2`, () => {
     test.describe(`@list-report`, () => {
-        test(
-            'Enable/Disable clear filter bar button',
-            {
-                annotation: {
-                    type: 'skipUI5Version',
-                    // TODO: 1.84 and 1.96 there is an error when saving changes
-                    description: '~1.84.0 || 1.96.0'
-                }
-            },
-            async ({ page, previewFrame, ui5Version, projectCopy }) => {
-                const lr = new ListReport(previewFrame);
-                const editor = new AdaptationEditorShell(page, ui5Version);
+        test('Enable/Disable clear filter bar button', {}, async ({ page, previewFrame, ui5Version, projectCopy }) => {
+            const lr = new ListReport(previewFrame);
+            const editor = new AdaptationEditorShell(page, ui5Version);
 
-                await editor.reloadCompleted();
-                await expect(lr.clearButton).toBeHidden();
+            await editor.reloadCompleted();
+            await expect(lr.clearButton).toBeHidden();
 
-                await editor.quickActions.enableClearButton.click();
+            await editor.quickActions.enableClearButton.click();
 
-                await expect(lr.clearButton).toBeVisible();
+            await expect(lr.clearButton).toBeVisible();
 
-                await editor.toolbar.saveButton.click();
+            await editor.toolbar.saveButton.click();
 
-                await expect(editor.toolbar.saveButton).toBeDisabled();
+            await expect(editor.toolbar.saveButton).toBeDisabled();
 
-                await expect
-                    .poll(async () => readChanges(projectCopy), {
-                        message: 'make sure change file is created'
+            await expect
+                .poll(async () => readChanges(projectCopy), {
+                    message: 'make sure change file is created'
+                })
+                .toEqual(
+                    expect.objectContaining({
+                        changes: expect.arrayContaining([
+                            expect.objectContaining({
+                                fileType: 'change',
+                                changeType: 'propertyChange',
+                                content: expect.objectContaining({ property: 'showClearOnFB', newValue: true })
+                            })
+                        ])
                     })
-                    .toEqual(
-                        expect.objectContaining({
-                            changes: expect.arrayContaining([
-                                expect.objectContaining({
-                                    fileType: 'change',
-                                    changeType: 'propertyChange',
-                                    content: expect.objectContaining({ property: 'showClearOnFB', newValue: true })
-                                })
-                            ])
-                        })
-                    );
-                await editor.quickActions.disableClearButton.click();
+                );
+            await editor.quickActions.disableClearButton.click();
 
-                await expect(lr.clearButton).toBeHidden();
+            await expect(lr.clearButton).toBeHidden();
 
-                await editor.toolbar.saveButton.click();
+            await editor.toolbar.saveButton.click();
 
-                await expect(editor.toolbar.saveButton).toBeDisabled();
-                await expect
-                    .poll(async () => readChanges(projectCopy), {
-                        message: 'make sure change file is created'
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+            await expect
+                .poll(async () => readChanges(projectCopy), {
+                    message: 'make sure change file is created'
+                })
+                .toEqual(
+                    expect.objectContaining({
+                        changes: expect.arrayContaining([
+                            expect.objectContaining({
+                                fileType: 'change',
+                                changeType: 'propertyChange',
+                                content: expect.objectContaining({ property: 'showClearOnFB', newValue: false })
+                            })
+                        ])
                     })
-                    .toEqual(
-                        expect.objectContaining({
-                            changes: expect.arrayContaining([
-                                expect.objectContaining({
-                                    fileType: 'change',
-                                    changeType: 'propertyChange',
-                                    content: expect.objectContaining({ property: 'showClearOnFB', newValue: false })
-                                })
-                            ])
-                        })
-                    );
-            }
-        );
+                );
+        });
 
         test(
             'Add controller to page',
@@ -253,7 +243,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 annotation: {
                     type: 'skipUI5Version',
                     // TODO: 1.84 and 1.96 there is an error when saving changes
-                    description: '~1.84.0 || ~1.96.0 || ~1.134.0 || ~1.135.0'
+                    description: '~1.134.0 || ~1.135.0'
                 }
             },
             async ({ page, previewFrame, projectCopy, ui5Version }) => {
@@ -596,7 +586,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
             {
                 annotation: {
                     type: 'skipUI5Version',
-                    description: '<1.130.0'
+                    description: '<1.96.0'
                 }
             },
             async ({ page, previewFrame, projectCopy, ui5Version }) => {
