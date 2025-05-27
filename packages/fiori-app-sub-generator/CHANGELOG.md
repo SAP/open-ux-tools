@@ -1,5 +1,13 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.2.9
+
+### Patch Changes
+
+-   2b9e7af: fix(deps): update dependency @sap-ux/edmx-parser to v0.9.1
+-   Updated dependencies [2b9e7af]
+    -   @sap-ux/odata-service-inquirer@2.4.5
+
 ## 0.2.8
 
 ### Patch Changes
