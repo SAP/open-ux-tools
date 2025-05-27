@@ -64,5 +64,5 @@ export interface AppGenInfo {
      * Additional custom entries for the application.
      * N.B. these will be added to the .appGenInfo.json file only
      */
-    additionalEntries?: AdditionalEntries[];
+    additionalEntries?: AdditionalEntries;
 }

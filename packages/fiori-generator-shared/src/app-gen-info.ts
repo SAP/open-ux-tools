@@ -16,11 +16,14 @@ export function generateAppGenInfo(destPath: string, appGenInfo: AppGenInfo, fs:
     const templateSourcePath = join(__dirname, '../templates/README.md');
     const templateDestPath = `${destPath}/README.md`;
 
-    fs.writeJSON(`${destPath}/.appGenInfo.json`, appGenInfo);
+    const { additionalEntries, ...appGenInfoCore } = appGenInfo;
 
-    // excludes 'additionalEntries' for README.md
-    const { additionalEntries: _addtionalEntries, ...appGenInfoForReadme } = appGenInfo;
-    fs.copyTpl(templateSourcePath, templateDestPath, appGenInfoForReadme);
+    fs.writeJSON(`${destPath}/.appGenInfo.json`, {
+        generationParameters: appGenInfoCore,
+        ...additionalEntries
+    });
 
+    fs.copyTpl(templateSourcePath, templateDestPath, appGenInfoCore);
+    appGenInfoCore;
     return fs;
 }

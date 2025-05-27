@@ -66,7 +66,7 @@ describe('`writing` tests', () => {
                 enableEslint: false,
                 enableTypeScript: false,
                 entityRelatedConfig: [],
-                additionalEntries: []
+                additionalEntries: {}
             };
 
             const project: Project = { ...baseProject };
@@ -119,7 +119,7 @@ describe('`writing` tests', () => {
                 template: 'Basic V4',
                 generatorName: '@sap/some-generator',
                 entityRelatedConfig: [],
-                additionalEntries: [],
+                additionalEntries: {},
                 launchText: t('readme.texts.runInstruction')
             };
             const project: Project = { ...baseProject };
@@ -166,7 +166,7 @@ describe('`writing` tests', () => {
                 enableEslint: false,
                 enableTypeScript: false,
                 entityRelatedConfig: [],
-                additionalEntries: [{ label: 'label1', value: 'value1' }],
+                additionalEntries: { label: 'label1', value: 'value1' },
                 metadataFilename: ''
             };
             const project: Project = { ...baseProject };
@@ -193,7 +193,7 @@ describe('`writing` tests', () => {
                 '/target/path',
                 {} as Editor,
                 {
-                    additionalEntries: [{ label: 'label1', value: 'value1' }]
+                    additionalEntries: { label: 'label1', value: 'value1' }
                 }
             );
             expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
@@ -228,7 +228,7 @@ describe('`writing` tests', () => {
                     { type: 'Filter Entity Type', value: 'filterEntitySetName1' }
                 ],
                 metadataFilename: '',
-                additionalEntries: []
+                additionalEntries: {}
             };
             const project: Project = { ...baseProject };
             const service: Service = {
@@ -298,7 +298,7 @@ describe('`writing` tests', () => {
                 '/target/path',
                 {} as Editor,
                 {
-                    additionalEntries: [{ addLabel1: 'addValue1' }]
+                    additionalEntries: { addLabel1: 'addValue1' }
                 }
             );
 
@@ -307,7 +307,7 @@ describe('`writing` tests', () => {
                 { type: 'Navigation Entity', value: 'None' },
                 { type: 'Filter Entity Type', value: 'filterEntitySetName1' }
             ];
-            expectedReadMe.additionalEntries = [{ addLabel1: 'addValue1' }];
+            expectedReadMe.additionalEntries = { addLabel1: 'addValue1' };
             expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
         });
     });

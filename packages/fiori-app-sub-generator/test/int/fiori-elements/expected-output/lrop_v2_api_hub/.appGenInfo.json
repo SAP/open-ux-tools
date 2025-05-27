@@ -1,29 +1,30 @@
 {
-  "generationDate": "Tue May 27 2025 13:53:39 GMT+0100 (Irish Standard Time)",
-  "generatorPlatform": "CLI",
-  "serviceType": "SAP API Business Hub Enterprise",
-  "metadataFilename": "",
-  "serviceUrl": "https://abap.cloud.host/sap/opu/odata/sap/SEPMRA_PROD_MAN",
-  "appName": "lrop_v2_api_hub",
-  "appTitle": "Project's \"Title\"",
-  "appDescription": "Test 'Project' \"Description\"",
-  "appNamespace": "testNameSpace",
-  "ui5Theme": "sap_fiori_3",
-  "ui5Version": "1.98.0",
-  "showMockDataInfo": true,
-  "generatorVersion": "0.0.0",
-  "template": "List Report Page V2",
-  "generatorName": "SAP Fiori Application Generator",
-  "entityRelatedConfig": [
-    {
-      "type": "Main Entity",
-      "value": "SEPMRA_C_PD_Product"
-    },
-    {
-      "type": "Navigation Entity",
-      "value": "to_ProductSalesData"
-    }
-  ],
-  "additionalEntries": [],
-  "launchText": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
+  "generationParameters": {
+    "generationDate": "Tue May 27 2025 15:05:12 GMT+0100 (Irish Standard Time)",
+    "generatorPlatform": "CLI",
+    "serviceType": "SAP API Business Hub Enterprise",
+    "metadataFilename": "",
+    "serviceUrl": "https://abap.cloud.host/sap/opu/odata/sap/SEPMRA_PROD_MAN",
+    "appName": "lrop_v2_api_hub",
+    "appTitle": "Project's \"Title\"",
+    "appDescription": "Test 'Project' \"Description\"",
+    "appNamespace": "testNameSpace",
+    "ui5Theme": "sap_fiori_3",
+    "ui5Version": "1.98.0",
+    "showMockDataInfo": true,
+    "generatorVersion": "0.0.0",
+    "template": "List Report Page V2",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "SEPMRA_C_PD_Product"
+      },
+      {
+        "type": "Navigation Entity",
+        "value": "to_ProductSalesData"
+      }
+    ],
+    "launchText": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
+  }
 }
