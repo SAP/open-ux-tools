@@ -38,10 +38,10 @@ import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
 import { validateJsonInput } from './questions/helper/validators';
 import { getPackageInfo, installDependencies } from '../utils/deps';
-import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
+import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
+import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
 import type { AdpGeneratorOptions, AttributePromptOptions, JsonInput } from './types';
-import { getExtensionProjectData, resolveNodeModuleGenerator } from './extension-project';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
 
 /**
@@ -203,7 +203,31 @@ export default class extends Generator {
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
         if (this.attributeAnswers?.addFlpConfig) {
-            this._callFlpGen();
+            addFlpGen(
+                {
+                    projectRootPath: this._getProjectPath(),
+                    system: this.configAnswers.system,
+                    manifest: this.prompter.manifest!
+                },
+                this.composeWith.bind(this),
+                this.logger,
+                this.appWizard
+            );
+        }
+
+        if (this.attributeAnswers.addDeployConfig) {
+            addDeployGen(
+                {
+                    projectName: this.attributeAnswers.projectName,
+                    targetFolder: this.attributeAnswers.targetFolder,
+                    applicationType: 'Fiori Adaptation',
+                    client: (await this.systemLookup.getSystemByName(this.configAnswers.system))?.Client,
+                    connectedSystem: this.configAnswers.system
+                },
+                this.composeWith.bind(this),
+                this.logger,
+                this.appWizard
+            );
         }
     }
 
@@ -214,7 +238,16 @@ export default class extends Generator {
             }
 
             if (this.shouldCreateExtProject) {
-                await this._generateExtensionProject();
+                await addExtProjectGen(
+                    {
+                        configAnswers: this.configAnswers,
+                        attributeAnswers: this.attributeAnswers,
+                        systemLookup: this.systemLookup
+                    },
+                    this.composeWith.bind(this),
+                    this.logger,
+                    this.appWizard
+                );
                 return;
             }
 
@@ -284,22 +317,6 @@ export default class extends Generator {
         }
     }
 
-    private _callFlpGen(): void {
-        try {
-            this.composeWith(require.resolve('@sap-ux/adp-flp-config-sub-generator/generators/app'), {
-                launchAsSubGen: true,
-                manifest: this.prompter.manifest,
-                system: this.configAnswers.system,
-                data: { projectRootPath: this._getProjectPath() },
-                appWizard: this.appWizard
-            });
-            this.logger.info('FLP sub-generator composed.');
-        } catch (e) {
-            this.logger.error(e);
-            throw new Error(`Could not call sub-generator: ${e.message}`);
-        }
-    }
-
     private _getOrCreatePrompter(): ConfigPrompter {
         const cached = cacheGet<ConfigPrompter>(this.appWizard, 'prompter', this.logger);
         if (cached) {
@@ -309,26 +326,6 @@ export default class extends Generator {
         const fresh = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
         cachePut(this.appWizard, { prompter: fresh }, this.logger);
         return fresh;
-    }
-
-    /**
-     * Generates an extension project if the application is not supported by Adaptation Project.
-     */
-    private async _generateExtensionProject(): Promise<void> {
-        try {
-            const data = await getExtensionProjectData(this.configAnswers, this.attributeAnswers, this.systemLookup);
-
-            const generator = resolveNodeModuleGenerator();
-            this.composeWith(generator!, {
-                arguments: [JSON.stringify(data)],
-                appWizard: this.appWizard
-            });
-            this.logger.info(`'@bas-dev/generator-extensibility-sub' was called.`);
-        } catch (e) {
-            this.logger.info(t('error.creatingExtensionProjectError'));
-            this.logger.error(e.message);
-            this.appWizard.showError(e.message, MessageType.notification);
-        }
     }
 
     /**

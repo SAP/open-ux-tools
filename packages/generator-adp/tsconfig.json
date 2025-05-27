@@ -22,6 +22,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../deploy-config-sub-generator"
+    },
+    {
       "path": "../feature-toggle"
     },
     {

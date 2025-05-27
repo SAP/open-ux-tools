@@ -263,6 +263,7 @@ function getEnableTypeScriptPrompt(_?: EnableTypeScriptPromptOptions): Attribute
 /**
  * Creates the Add Deployment Config confirm prompt.
  *
+ * @param {YeomanUiSteps} prompts - The Yeoman UI pages.
  * @param {AddDeployConfigPromptOptions} [_] - Optional prompt options to control visibility.
  * @returns {AttributesQuestion} The prompt configuration for Add Deployment config confirmation.
  */
@@ -285,8 +286,9 @@ export function getAddDeployConfigPrompt(prompts: YeomanUiSteps, _?: AddDeployCo
 /**
  * Creates the Add FLP Config confirm prompt.
  *
- * @param {AddFlpConfigPromptOptions} [_] - Optional prompt options to control visibility.
+ * @param {YeomanUiSteps} prompts - The Yeoman UI pages.
  * @param {boolean} isCloudProject - Whether the project is for a cloud-based system.
+ * @param {AddFlpConfigPromptOptions} [_] - Optional prompt options to control visibility.
  * @returns {AttributesQuestion} The prompt configuration for Add FLP config confirmation.
  */
 export function getFlpConfigPrompt(

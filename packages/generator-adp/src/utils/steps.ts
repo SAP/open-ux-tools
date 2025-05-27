@@ -1,4 +1,4 @@
-import { type Prompts as YeomanUiSteps, IPrompt } from '@sap-devx/yeoman-ui-types';
+import type { Prompts as YeomanUiSteps, IPrompt } from '@sap-devx/yeoman-ui-types';
 
 import { t } from './i18n';
 
@@ -73,7 +73,9 @@ export function updateWizardSteps(
 
         // Page already there → move it
         if (existingIdx !== -1) {
-            if (existingIdx === targetIdx) return;
+            if (existingIdx === targetIdx) {
+                return;
+            }
             const [existingStep] = pages.splice(existingIdx, 1);
             prompts.splice(targetIdx > existingIdx ? targetIdx - 1 : targetIdx, 0, [existingStep]);
             return;
