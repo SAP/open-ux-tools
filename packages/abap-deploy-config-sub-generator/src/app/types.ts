@@ -1,4 +1,7 @@
-import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-inquirer';
+import type {
+    AbapDeployConfigAnswersInternal,
+    AbapDeployConfigPromptOptions
+} from '@sap-ux/abap-deploy-config-inquirer';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ConnectedSystem } from '@sap-ux/deploy-config-generator-shared';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
@@ -48,6 +51,10 @@ export interface AbapDeployConfigOptions extends AbapDeployConfigAnswersInternal
      * Telemetry data to be send after deployment configuration has been added
      */
     telemetryData?: TelemetryData;
+    /**
+     * Prompts options for the ABAP deploy config inquirer
+     */
+    promptOptions?: AbapDeployConfigPromptOptions;
 }
 
 export enum DeployProjectType {

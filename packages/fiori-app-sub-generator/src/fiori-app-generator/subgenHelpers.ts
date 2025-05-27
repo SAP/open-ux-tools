@@ -50,9 +50,7 @@ export function addDeployGen(
         appWizard: appWizard,
         telemetryData: { appType: applicationType },
         logWrapper: logger,
-        abapPromptOpts: {
-            packageManual: promptSettings?.packageManual
-        }
+        subGenPromptOptions: promptSettings?.['@sap-ux/deploy-config-sub-generator']
     });
 }
 

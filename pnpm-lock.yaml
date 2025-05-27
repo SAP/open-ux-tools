@@ -1998,6 +1998,9 @@ importers:
       '@sap-ux/abap-deploy-config-inquirer':
         specifier: workspace:*
         version: link:../abap-deploy-config-inquirer
+      '@sap-ux/cf-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../cf-deploy-config-inquirer
       '@sap-ux/flp-config-sub-generator':
         specifier: workspace:*
         version: link:../flp-config-sub-generator

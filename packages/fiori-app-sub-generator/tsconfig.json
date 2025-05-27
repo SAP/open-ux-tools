@@ -25,6 +25,9 @@
       "path": "../cap-config-writer"
     },
     {
+      "path": "../cf-deploy-config-inquirer"
+    },
+    {
       "path": "../feature-toggle"
     },
     {

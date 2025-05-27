@@ -5,10 +5,8 @@ import type {
     promptNames
 } from '@sap-ux/odata-service-inquirer';
 import type { UI5ApplicationPromptOptions } from '@sap-ux/ui5-application-inquirer';
-import type {
-    AbapDeployConfigPromptOptions,
-    promptNames as abapDeployPromptNames
-} from '@sap-ux/abap-deploy-config-inquirer';
+import type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-inquirer';
+import type { CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-inquirer';
 
 /**
  * package.json script entries (commands and tasks)
@@ -28,9 +26,9 @@ export type WorkspaceFolder = {
 
 // Union type of all `@sap-ux/ui5-application-inquirer` and selected `@sap-ux/odata-service-inquirer` & `@sap-ux/abap-deploy-config-inquirer` prompt options
 export type FioriAppGeneratorPromptSettings = UI5ApplicationPromptOptions &
-    Pick<OdataServicePromptOptions, promptNames.systemSelection> &
-    Pick<OdataServicePromptOptions, typeof promptNames.systemSelection | typeof promptNames.serviceSelection> &
-    Pick<AbapDeployConfigPromptOptions, abapDeployPromptNames.packageManual>;
+    Pick<OdataServicePromptOptions, promptNames.systemSelection | promptNames.serviceSelection> & {
+        '@sap-ux/deploy-config-sub-generator'?: AbapDeployConfigPromptOptions | CfDeployConfigPromptOptions;
+    };
 
 /**
  * Custom environment type until yeoman-environment provides one
