@@ -1923,8 +1923,8 @@ importers:
         specifier: workspace:*
         version: link:../cap-config-writer
       '@sap-ux/edmx-parser':
-        specifier: 0.9.0
-        version: 0.9.0
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -2818,8 +2818,8 @@ importers:
         specifier: workspace:*
         version: link:../btp-utils
       '@sap-ux/edmx-parser':
-        specifier: 0.9.0
-        version: 0.9.0
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -8988,8 +8988,8 @@ packages:
       '@sap-ux/vocabularies-types': 0.13.0
     dev: false
 
-  /@sap-ux/edmx-parser@0.9.0:
-    resolution: {integrity: sha512-X7yda14CsUqGhEK5/XYhP0W65ueObQxq6Dv5qmJQBvR73V0gNexrY5sWuzCQPcEVVh0sB9A0qesMU9qgp6R37A==}
+  /@sap-ux/edmx-parser@0.9.1:
+    resolution: {integrity: sha512-qgDXrJP+WtBbYJdedtCEVyIyKTs2eVcfplE2Mk4AbW8oxU85rqq8h8gNRoQlIUCcXXBJwXeoVlWTvSCF5mF7Rw==}
     dependencies:
       xml-js: 1.6.11
     dev: false
