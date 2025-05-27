@@ -24,6 +24,5 @@ export function generateAppGenInfo(destPath: string, appGenInfo: AppGenInfo, fs:
     });
 
     fs.copyTpl(templateSourcePath, templateDestPath, appGenInfoCore);
-    appGenInfoCore;
     return fs;
 }
