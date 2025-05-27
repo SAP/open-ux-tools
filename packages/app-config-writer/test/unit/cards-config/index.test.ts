@@ -77,4 +77,17 @@ describe('enableCardGenerator', () => {
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(basePath, 'ui5-with-deprecated-rta-config.yaml'))).toMatchSnapshot();
     });
+
+    test('Valid LROP with deprecated config with cards generator', async () => {
+        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
+        const fs = create(createStorage());
+        await enableCardGeneratorConfig(basePath, 'ui5-with-deprecated-config-and-cards-generator.yaml', undefined, fs);
+
+        if (process.env.UX_DEBUG) {
+            fs.commit(() => {});
+        }
+
+        expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
+        expect(fs.read(join(basePath, 'ui5-with-deprecated-config-and-cards-generator.yaml'))).toMatchSnapshot();
+    });
 });
