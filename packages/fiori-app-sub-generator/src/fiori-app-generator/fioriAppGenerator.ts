@@ -66,7 +66,7 @@ import {
 } from './prompting';
 import { addDeployGen, addFlpGen } from './subgenHelpers';
 import { getTemplateType, transformState } from './transforms';
-import { writeAPIHubKeyFiles, writeReadMe } from './writing';
+import { writeAppGenInfoFiles, writeAPIHubKeyFiles } from './writing';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
@@ -402,7 +402,14 @@ export class FioriAppGenerator extends Generator {
 
             // Write after app, using values from the transformed state so defaults have been applied
             const readMeUpdated = { ui5Version: appConfig.ui5?.minUI5Version };
-            await writeReadMe(this.state, generatorName, this.generatorVersion, destRoot, this.fs, readMeUpdated);
+            await writeAppGenInfoFiles(
+                this.state,
+                generatorName,
+                this.generatorVersion,
+                destRoot,
+                this.fs,
+                readMeUpdated
+            );
         } catch (error) {
             FioriAppGenerator.logger.fatal(`${t('error.errorWritingApplicationFiles')} : ${error}`);
             this._exitOnError(error);

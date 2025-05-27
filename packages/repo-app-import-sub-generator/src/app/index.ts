@@ -9,8 +9,8 @@ import { extractZip } from '../utils/download-utils';
 import { EventName } from '../telemetryEvents';
 import {
     getDefaultTargetFolder,
-    generateReadMe,
-    type ReadMe,
+    generateAppGenInfo,
+    type AppGenInfo,
     type YeomanEnvironment,
     sendTelemetry,
     TelemetryHelper
@@ -169,7 +169,7 @@ export default class extends Generator {
 
         // Generate README
         const readMeConfig = this._getReadMeConfig(config);
-        generateReadMe(this.projectPath, readMeConfig, this.fs);
+        generateAppGenInfo(this.projectPath, readMeConfig, this.fs);
 
         // Replace webapp files with downloaded app files
         await replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
@@ -183,10 +183,10 @@ export default class extends Generator {
      * Returns the configuration for the README file.
      *
      * @param config - The app configuration object.
-     * @returns {ReadMe} The configuration for generating the README.
+     * @returns {AppGenInfo} The configuration for generating the README.
      */
-    private _getReadMeConfig(config: FioriElementsApp<LROPSettings>): ReadMe {
-        const readMeConfig: ReadMe = {
+    private _getReadMeConfig(config: FioriElementsApp<LROPSettings>): AppGenInfo {
+        const readMeConfig: AppGenInfo = {
             appName: config.app.id,
             appTitle: config.app.title ?? '',
             appNamespace: config.app.id.substring(0, config.app.id.lastIndexOf('.')),
