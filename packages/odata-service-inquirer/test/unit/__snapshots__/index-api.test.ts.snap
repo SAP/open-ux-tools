@@ -130,6 +130,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Enter the URL of the SAP System",
@@ -228,6 +229,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Enter the URL of the SAP System",

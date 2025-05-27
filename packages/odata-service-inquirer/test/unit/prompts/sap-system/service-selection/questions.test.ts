@@ -243,7 +243,7 @@ describe('Test new system prompt', () => {
         let message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)();
 
         expect(message).toMatchObject({
-            message: t('prompts.warnings.noServicesAvailable'),
+            message: t('warnings.noServicesAvailable'),
             severity: Severity.warning
         });
 
@@ -268,7 +268,7 @@ describe('Test new system prompt', () => {
         message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)();
 
         expect(message).toMatchObject({
-            message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
+            message: t('warnings.noServicesAvailableForOdataVersion', {
                 odataVersion: OdataVersion.v2
             }),
             severity: Severity.warning
@@ -312,7 +312,7 @@ describe('Test new system prompt', () => {
         );
 
         expect(message).toMatchObject({
-            message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
+            message: t('warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
             severity: Severity.warning
         });
 
@@ -354,7 +354,7 @@ describe('Test new system prompt', () => {
         choiceV2 = choices.find((choice) => choice.value.serviceODataVersion === ODataVersion.v2);
         message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(choiceV2?.value);
         expect(message).toMatchObject({
-            message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
+            message: t('warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
             severity: Severity.warning
         });
     });
@@ -408,7 +408,7 @@ describe('Test new system prompt', () => {
             choices[1].value
         );
         expect(message).toMatchObject({
-            message: t('prompts.warnings.noAnnotations'),
+            message: t('warnings.noAnnotations'),
             severity: Severity.warning
         });
 
