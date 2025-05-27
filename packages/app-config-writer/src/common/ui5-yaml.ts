@@ -144,6 +144,7 @@ export async function updateMiddlewaresForPreview(
 /**
  * Sanitizes the preview middleware configuration.
  *
+ * In case the deprecated 'rta.editors' config is being used it is moves to 'editors.rta'.
  * In case of an outdated preview configuration, the following changes will be applied:
  * - property 'ui5Theme' will be moved to 'flp.theme'.
  * - no longer used property 'component' will be removed.
