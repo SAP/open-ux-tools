@@ -1,5 +1,15 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.7
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/telemetry@0.6.2
+    -   @sap-ux/inquirer-common@0.7.3
+    -   @sap-ux/ui-service-inquirer@0.1.7
+
 ## 0.1.6
 
 ### Patch Changes

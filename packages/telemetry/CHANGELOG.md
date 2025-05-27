@@ -1,5 +1,11 @@
 # @sap-ux/telemetry
 
+## 0.6.2
+
+### Patch Changes
+
+-   ac55cca: adds .appGenInfo.json file
+
 ## 0.6.1
 
 ### Patch Changes
