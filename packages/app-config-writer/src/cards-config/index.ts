@@ -28,7 +28,7 @@ async function updateMiddlewareConfigWithGeneratorPath(
     const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile, fs);
 
     try {
-        ui5YamlConfig.removeCustomMiddleware("sap-cards-generator");
+        ui5YamlConfig.removeCustomMiddleware('sap-cards-generator');
     } catch (error) {
         logger?.warn(`Failed to remove 'sap-cards-generator' middleware: ${error.message}`);
     }
