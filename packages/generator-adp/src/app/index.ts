@@ -379,7 +379,7 @@ export default class extends Generator {
             system
         });
 
-        this.publicVersions = await fetchPublicVersions();
+        this.publicVersions = await fetchPublicVersions(this.toolsLogger);
 
         const providerOptions = {
             system,

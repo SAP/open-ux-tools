@@ -601,6 +601,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      '@sap-ux/ui5-info':
+        specifier: workspace:*
+        version: link:../ui5-info
       adm-zip:
         specifier: 0.5.10
         version: 0.5.10
