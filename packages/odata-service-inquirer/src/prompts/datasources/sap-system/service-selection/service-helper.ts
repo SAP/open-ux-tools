@@ -96,10 +96,15 @@ function logServiceCatalogErrorsForHelp(
  * Get the service choices from the specified catalogs.
  *
  * @param catalogs catalogs to get the services from. There should be one per odata version required.
+ * @param serviceFilter list of service ids used for filtering the choices
  * @returns service choices based on the provided catalogs
  */
-export async function getServiceChoices(catalogs: CatalogService[]): Promise<ListChoiceOptions<ServiceAnswer>[]> {
+export async function getServiceChoices(
+    catalogs: CatalogService[],
+    serviceFilter?: string[]
+): Promise<ListChoiceOptions<ServiceAnswer>[]> {
     const requestErrors: Record<ODataVersion, unknown> | {} = {};
+
     const listServicesRequests = catalogs.map(async (catalog) => {
         try {
             return await catalog.listServices();
@@ -119,13 +124,16 @@ export async function getServiceChoices(catalogs: CatalogService[]): Promise<Lis
         }
     });
     const serviceInfos: ODataServiceInfo[][] = await Promise.all(listServicesRequests);
-    const flatServices = serviceInfos?.flat() ?? [];
+    let flatServices = serviceInfos?.flat() ?? [];
     LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
 
     if (flatServices.length === 0) {
         logServiceCatalogErrorsForHelp(requestErrors, catalogs.length);
     }
 
+    if (serviceFilter) {
+        flatServices = flatServices.filter((service) => serviceFilter.includes(service.id));
+    }
     return createServiceChoices(flatServices);
 }
 
@@ -303,6 +311,7 @@ export async function validateService(
     PromptState.odataService.servicePath = service.servicePath;
     PromptState.odataService.origin = origin;
     PromptState.odataService.sapClient = connectionValidator.validatedClient;
+    PromptState.odataService.ignoreCertError = connectionValidator.ignoreCertError;
     return {
         validationResult: true,
         hasAnnotations: !!PromptState.odataService.annotations && PromptState.odataService.annotations.length > 0,
@@ -359,14 +368,14 @@ export async function getSelectedServiceMessage(
     if (serviceChoices?.length === 0) {
         if (requiredOdataVersion) {
             return {
-                message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
+                message: t('warnings.noServicesAvailableForOdataVersion', {
                     odataVersion: requiredOdataVersion
                 }),
                 severity: Severity.warning
             };
         } else {
             return {
-                message: t('prompts.warnings.noServicesAvailable'),
+                message: t('warnings.noServicesAvailable'),
                 severity: Severity.warning
             };
         }
@@ -377,7 +386,7 @@ export async function getSelectedServiceMessage(
             // Warn if odata service is version is '2' and no annotations are present
             if (!hasAnnotations) {
                 return {
-                    message: t('prompts.warnings.noAnnotations'),
+                    message: t('warnings.noAnnotations'),
                     severity: Severity.warning
                 };
             }
@@ -393,14 +402,14 @@ export async function getSelectedServiceMessage(
             const result = showCollabDraftWarning(showCollabDraftWarnOptions.edmx);
             if (result) {
                 return {
-                    message: t('prompts.warnings.collaborativeDraftMessage'),
+                    message: t('warnings.collaborativeDraftMessage'),
                     severity: Severity.warning
                 };
             }
         }
         if (serviceType && serviceType !== ServiceType.UI) {
             return {
-                message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
+                message: t('warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
                 severity: Severity.warning
             };
         }

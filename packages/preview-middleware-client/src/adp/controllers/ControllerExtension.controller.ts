@@ -185,6 +185,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
             if (this.data) {
                 this.data.deferred.resolve(controllerRef);
+                notifyUser(this.bundle.getText('ADP_CREATE_CONTROLLER_EXTENSION', [controllerName]), 8000);
             } else {
                 await this.createNewController(controllerName, controllerRef);
             }
@@ -358,7 +359,6 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
         await commandExecutor.pushAndExecuteCommand(command);
 
-        const bundle = await getTextBundle();
-        notifyUser(bundle.getText('ADP_CREATE_CONTROLLER_EXTENSION', [controllerName]), 8000);
+        notifyUser(this.bundle.getText('ADP_CREATE_CONTROLLER_EXTENSION', [controllerName]), 8000);
     }
 }

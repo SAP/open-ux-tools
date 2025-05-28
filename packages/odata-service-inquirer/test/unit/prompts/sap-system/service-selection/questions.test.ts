@@ -189,6 +189,26 @@ describe('Test new system prompt', () => {
             }
         ]);
 
+        // The service choices should be restricted based on the service filter prompt option
+        systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
+            serviceFilter: ['/DMO/FLIGHT']
+        });
+        serviceSelectionPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
+        );
+
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()).toEqual([
+            {
+                name: 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4',
+                value: {
+                    serviceODataVersion: '4',
+                    servicePath: '/sap/opu/odata4/dmo/flight/0001/?sap-client=000',
+                    serviceType: 'WEB_API',
+                    toString: expect.any(Function)
+                }
+            }
+        ]);
+
         // The services choices should be restricted to the specified required odata version
         systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
             requiredOdataVersion: OdataVersion.v2
@@ -223,7 +243,7 @@ describe('Test new system prompt', () => {
         let message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)();
 
         expect(message).toMatchObject({
-            message: t('prompts.warnings.noServicesAvailable'),
+            message: t('warnings.noServicesAvailable'),
             severity: Severity.warning
         });
 
@@ -248,7 +268,7 @@ describe('Test new system prompt', () => {
         message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)();
 
         expect(message).toMatchObject({
-            message: t('prompts.warnings.noServicesAvailableForOdataVersion', {
+            message: t('warnings.noServicesAvailableForOdataVersion', {
                 odataVersion: OdataVersion.v2
             }),
             severity: Severity.warning
@@ -292,7 +312,7 @@ describe('Test new system prompt', () => {
         );
 
         expect(message).toMatchObject({
-            message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
+            message: t('warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
             severity: Severity.warning
         });
 
@@ -334,7 +354,7 @@ describe('Test new system prompt', () => {
         choiceV2 = choices.find((choice) => choice.value.serviceODataVersion === ODataVersion.v2);
         message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(choiceV2?.value);
         expect(message).toMatchObject({
-            message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
+            message: t('warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
             severity: Severity.warning
         });
     });
@@ -388,7 +408,7 @@ describe('Test new system prompt', () => {
             choices[1].value
         );
         expect(message).toMatchObject({
-            message: t('prompts.warnings.noAnnotations'),
+            message: t('warnings.noAnnotations'),
             severity: Severity.warning
         });
 

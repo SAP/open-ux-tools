@@ -11,7 +11,6 @@ import { validateBasePath } from '../../validation';
 export function addCardsEditorConfigCommand(cmd: Command): void {
     cmd.command('cards-editor [path]')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
-        .option('-n, --skip-install', 'skip npm install step')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')
         .action(async (path, options) => {

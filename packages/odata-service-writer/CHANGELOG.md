@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.3
+
+### Patch Changes
+
+-   6e2ef66: Do not stop service from being added in case if existing services are without annotation dataSources.
+
+## 0.27.2
+
+### Patch Changes
+
+-   07eaebf: Generation of a unique service name (if such service exists) and error for existing service URI.
+
 ## 0.27.1
 
 ### Patch Changes

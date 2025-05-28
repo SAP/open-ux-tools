@@ -1,5 +1,34 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.4.5
+
+### Patch Changes
+
+-   4c6b7a1: add package default to fiori gen settings
+
+## 1.4.4
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/inquirer-common@0.7.3
+
+## 1.4.3
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+
+## 1.4.2
+
+### Patch Changes
+
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/system-access@0.6.1
+
 ## 1.4.1
 
 ### Patch Changes

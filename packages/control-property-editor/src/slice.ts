@@ -347,6 +347,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     if (change.kind === UNKNOWN_CHANGE_KIND) {
                         continue;
                     }
+                    // So far array of controlId is only used for generic configuration changes
                     if (change.kind === GENERIC_CHANGE_KIND && Array.isArray(change?.controlId)) {
                         const { controlId, type } = change;
                         for (const id of controlId) {
@@ -354,7 +355,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                             const control = getControlChangeStats(state.changes.controls, key, change, type);
                             state.changes.controls[key] = control;
                         }
-                    } else if (change.kind === GENERIC_CHANGE_KIND && change.controlId) {
+                    }
+                    // Unknown control changes missing change indicator, if restricted by generic change kind
+                    else if (change.controlId) {
                         const { controlId, type } = change;
                         const key = `${controlId}`;
                         const control = getControlChangeStats(state.changes.controls, key, change, type);

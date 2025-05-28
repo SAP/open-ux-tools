@@ -62,11 +62,12 @@ sap-ux add annotations [path]
 
 
 ### [cards-editor](#add-cards-editor)<a id="add-cards-editor"></a>
-Calling `sap-ux add cards-editor` adds a cards editor configuration to a project. To prevent overwriting, existing inbounds will be checked.
+Calling `sap-ux add cards-editor` will add the necessary configuration to an existing yaml file and the script to package.json for cards generation.
+It will use the configuration from the yaml file passed by cli or default to ui5.yaml, as provided by the fiori-tools-preview or preview-middleware.
 ```sh
 sap-ux add cards-editor [path]
 ```
-- `-n | --skip-install` skip npm install step
+- `-c | --config` path to project configuration file in YAML format, e.g.: -c ui5Custom.yaml
 
 ### [component-usages](#add-component-usages)<a id="add-component-usages"></a>
 Calling `sap-ux add component-usages` adds the component usages to an adaptation project.
