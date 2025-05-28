@@ -22,7 +22,7 @@
             "missingPropMsg": "The property: `{{destinationProperty}}` is missing.",
             "httpConnectionError": "A connection error occurred with the selected destination. Http code: {{- code}}. $t(texts.seeLogForDetails)"
         },
-        "unknownError": "An error occurred. Error: {{- error, addMsgWithColonFormatter}}.",
+        "unknownError": "An error occurred. Error{{- error, addMsgWithColonFormatter}}.",
         "servicesUnavailable": "An error occurred retrieving service(s) for SAP System.",
         "certificateError": "A certificate error has occurred{{- errorMsg, addMsgWithColonFormatter}}",
         "urlCertValidationError": "The system URL is using {{certErrorReason}} security certificate.",

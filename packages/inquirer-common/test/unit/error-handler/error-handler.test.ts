@@ -131,7 +131,7 @@ describe('Test ErrorHandler', () => {
 
         // TypeError
         expect(errorHandler.getErrorMsg({ name: 'TypeError', message: 'TypeError found' })).toEqual(
-            'An error occurred: TypeError found'
+            'An error occurred. Error: TypeError found.'
         );
     });
 
