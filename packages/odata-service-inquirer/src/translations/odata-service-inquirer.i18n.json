@@ -205,7 +205,7 @@
         "authenticationFailed": "Authentication incorrect. Error: {{error}}.",
         "invalidUrl": "Invalid URL. {{-input, addMsgWithColonFormatter}}.",
         "connectionError": "A connection error occurred. Ensure the target host is available on the network: {{- error}}",
-        "urlNotFound": "URL not found",
+        "urlNotFound": "URL not found.",
         "noServicesAvailable": "There are no OData V{{version}} services available from the selected system and the template you have chosen only supports OData V{{version}} services.",
         "abapEnvsUnavailable": "ABAP environments unavailable.",
         "systemOrServiceUrlNotFound": "Please verify the URL: {{- url}}, target system configuration and network connectivity.",
