@@ -71,10 +71,7 @@ export interface DeployConfigOptions extends Generator.GeneratorOptions {
     /**
      * Deployment configuration prompt options for sub generators
      */
-    subGenPromptOptions?: {
-        abap: AbapDeployConfigPromptOptions;
-        cf: CfDeployConfigPromptOptions;
-    };
+    subGenPromptOptions?: AbapDeployConfigPromptOptions | CfDeployConfigPromptOptions;
 }
 
 /**

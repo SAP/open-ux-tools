@@ -440,7 +440,8 @@ describe('prompting.ts', () => {
                     requiredOdataVersion: OdataVersion.v4,
                     allowNoDatasource: undefined,
                     promptOptions: {
-                        [odataServiceInqPromptNames.systemSelection]: { defaultChoice: 'someDestination' }
+                        [odataServiceInqPromptNames.systemSelection]: { defaultChoice: 'someDestination' },
+                        [odataServiceInqPromptNames.serviceSelection]: { serviceFilter: ['Service1', 'Service2'] }
                     },
                     showCollabDraftWarning: true
                 },
@@ -486,7 +487,8 @@ describe('prompting.ts', () => {
                     [odataServiceInqPromptNames.serviceSelection]: {
                         useAutoComplete: false,
                         requiredOdataVersion: OdataVersion.v4,
-                        showCollaborativeDraftWarning: true
+                        showCollaborativeDraftWarning: true,
+                        serviceFilter: ['Service1', 'Service2']
                     },
                     [odataServiceInqPromptNames.serviceUrl]: {
                         requiredOdataVersion: OdataVersion.v4,

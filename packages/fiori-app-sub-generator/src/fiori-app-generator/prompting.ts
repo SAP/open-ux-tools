@@ -397,8 +397,10 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
         },
         [odataServiceInquirerPromptNames.serviceSelection]: {
             useAutoComplete: getHostEnvironment() === hostEnvironment.cli,
-            requiredOdataVersion: options.requiredOdataVersion,
-            showCollaborativeDraftWarning: options.showCollabDraftWarning && isYUI
+            requiredOdataVersion:
+                options.requiredOdataVersion ?? options.promptOptions?.serviceSelection?.requiredOdataVersion,
+            showCollaborativeDraftWarning: options.showCollabDraftWarning && isYUI,
+            serviceFilter: options.promptOptions?.serviceSelection?.serviceFilter
         },
         [odataServiceInquirerPromptNames.systemSelection]: {
             destinationFilters: {
