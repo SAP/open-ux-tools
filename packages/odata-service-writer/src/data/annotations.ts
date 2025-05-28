@@ -343,7 +343,7 @@ function xmlToJson(xml: string): any | void {
         const parser = new XMLParser(options);
         return parser.parse(xml, true);
     } catch (error) {
-        throw new Error(t('error.unparseableXML', { error }));
+        throw new Error(t('error.unparseableXML', { error: error.message }));
     }
 }
 
