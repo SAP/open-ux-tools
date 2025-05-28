@@ -166,7 +166,7 @@ describe('ConnectionValidator', () => {
         getODataServiceSpy.mockClear();
 
         getODataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(404));
-        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({ valResult: 'URL not found' });
+        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({ valResult: 'URL not found.' });
         expect(validator.validity).toEqual({ urlFormat: true, reachable: false });
         expect(getODataServiceSpy).toHaveBeenCalled();
     });
