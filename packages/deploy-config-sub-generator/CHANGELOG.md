@@ -1,5 +1,11 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.2.9
+
+### Patch Changes
+
+-   0b518f4: fix prompt options for sub gens
+
 ## 0.2.8
 
 ### Patch Changes
