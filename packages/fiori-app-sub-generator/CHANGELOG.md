@@ -1,5 +1,17 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.4.2
+
+### Patch Changes
+
+-   991a479: Fix for headless generation when setting destination property
+
+## 0.4.1
+
+### Patch Changes
+
+-   0b518f4: fix prompt options for sub gens
+
 ## 0.4.0
 
 ### Minor Changes
