@@ -27,3 +27,5 @@ server:
         - /resources
         - /test-resources
         url: https://ui5.sap.com
+  - name: sap-cards-generator
+    afterMiddleware: compression
