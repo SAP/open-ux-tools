@@ -187,6 +187,15 @@ describe('main redux slice', () => {
                                         value: '{i18n>DELETE}'
                                     }
                                 ]
+                            },
+                            {
+                                kind: 'control',
+                                type: 'pending',
+                                controlId: 'control12',
+                                isActive: true,
+                                changeType: 'property',
+                                fileName: 'testFile1',
+                                title: 'Button'
                             }
                         ],
                         saved: [
@@ -204,6 +213,15 @@ describe('main redux slice', () => {
                                         value: 'abc'
                                     }
                                 ]
+                            },
+                            {
+                                kind: 'control',
+                                type: 'saved',
+                                controlId: 'control23',
+                                changeType: 'property',
+                                fileName: 'testFile1',
+                                title: 'Button',
+                                timestamp: 123
                             }
                         ]
                     })
@@ -251,6 +269,18 @@ describe('main redux slice', () => {
                                     saved: 1
                                 }
                             }
+                        },
+                        control12: {
+                            controlName: undefined,
+                            pending: 1,
+                            properties: {},
+                            saved: 0
+                        },
+                        control23: {
+                            controlName: undefined,
+                            pending: 0,
+                            properties: {},
+                            saved: 1
                         }
                     },
                     pending: [
@@ -268,6 +298,15 @@ describe('main redux slice', () => {
                                 }
                             ],
                             title: 'Button'
+                        },
+                        {
+                            changeType: 'property',
+                            controlId: 'control12',
+                            fileName: 'testFile1',
+                            isActive: true,
+                            kind: 'control',
+                            title: 'Button',
+                            type: 'pending'
                         }
                     ],
                     saved: [
@@ -285,6 +324,15 @@ describe('main redux slice', () => {
                                 }
                             ],
                             title: 'Button'
+                        },
+                        {
+                            changeType: 'property',
+                            controlId: 'control23',
+                            fileName: 'testFile1',
+                            kind: 'control',
+                            timestamp: 123,
+                            title: 'Button',
+                            type: 'saved'
                         }
                     ]
                 }

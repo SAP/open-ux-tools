@@ -139,7 +139,6 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -217,7 +216,6 @@ Object {
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"/apps/simple-app\\",\\"test.fe.v2.other\\":\\"/apps/other-app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -298,7 +296,6 @@ Object {
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 

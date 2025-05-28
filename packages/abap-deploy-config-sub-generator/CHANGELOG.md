@@ -1,5 +1,38 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.5
+
+### Patch Changes
+
+-   4c6b7a1: add package default to fiori gen settings
+-   Updated dependencies [4c6b7a1]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.5
+
+## 0.1.4
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/telemetry@0.6.2
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.4
+    -   @sap-ux/deploy-config-generator-shared@0.1.2
+
+## 0.1.3
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.3
+-   @sap-ux/deploy-config-generator-shared@0.1.1
+
+## 0.1.2
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.2
+-   @sap-ux/deploy-config-generator-shared@0.1.1
+-   @sap-ux/abap-deploy-config-writer@0.1.2
+
 ## 0.1.1
 
 ### Patch Changes

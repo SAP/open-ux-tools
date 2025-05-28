@@ -1,5 +1,24 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.14.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.3
+
+## 0.14.2
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+
+## 0.14.1
+
+### Patch Changes
+
+-   c05c016: fix hide fn logic
+
 ## 0.14.0
 
 ### Minor Changes

@@ -86,7 +86,8 @@ function getServiceUrlPrompt(
                             odataService: connectValidator.odataService,
                             axiosConfig: connectValidator.axiosConfig
                         },
-                        requiredVersion
+                        requiredVersion,
+                        connectValidator.ignoreCertError
                     );
                     showAnnotationWarning = !!valResult.showAnnotationWarning;
                     convertedMetadata = valResult.convertedMetadata;
@@ -96,7 +97,13 @@ function getServiceUrlPrompt(
             }
             return urlValidationState;
         },
-        additionalMessages: () => getAdditionalMessages(showAnnotationWarning, showCollabDraftWarn, convertedMetadata)
+        additionalMessages: () =>
+            getAdditionalMessages(
+                showAnnotationWarning,
+                showCollabDraftWarn,
+                convertedMetadata,
+                connectValidator.ignoreCertError
+            )
     } as InputQuestion<ServiceUrlAnswers>;
 }
 
@@ -107,22 +114,30 @@ function getServiceUrlPrompt(
  * @param showCollabDraftWarn true to show collaborative draft warning, this will be shown only if `showAnnotationWarning` is false
  *  and determines that collaborative draft is not enabled
  * @param convertedMetadata provided to avoid reparsing the metadata
+ * @param showNodeCertWarning
  * @returns
  */
 function getAdditionalMessages(
     showAnnotationWarning?: boolean,
     showCollabDraftWarn?: boolean,
-    convertedMetadata?: ConvertedMetadata
+    convertedMetadata?: ConvertedMetadata,
+    showNodeCertWarning?: boolean
 ): IMessageSeverity | void {
+    if (showNodeCertWarning) {
+        return {
+            message: t('warnings.certErrorIgnoredByNodeSetting'),
+            severity: Severity.warning
+        };
+    }
     if (showAnnotationWarning) {
         return {
-            message: t('prompts.warnings.noAnnotations'),
+            message: t('warnings.noAnnotations'),
             severity: Severity.warning
         };
     }
     if (convertedMetadata && showCollabDraftWarn && showCollabDraftWarning(convertedMetadata)) {
         return {
-            message: t('prompts.warnings.collaborativeDraftMessage'),
+            message: t('warnings.collaborativeDraftMessage'),
             severity: Severity.warning
         };
     }
@@ -146,7 +161,7 @@ function getIgnoreCertErrorsPrompt(
 
     return {
         when: ({ serviceUrl }: ServiceUrlAnswers) => {
-            if (serviceUrl && connectValidator.validity.canSkipCertError) {
+            if (serviceUrl && connectValidator.validity.canSkipCertError && !connectValidator.ignoreCertError) {
                 return true;
             }
             return false;
@@ -162,7 +177,7 @@ function getIgnoreCertErrorsPrompt(
             }
 
             if (ignoreCertError) {
-                LoggerHelper.logger.warn(t('prompts.validationMessages.warningCertificateValidationDisabled'));
+                LoggerHelper.logger.warn(t('warnings.warningCertificateValidationDisabled'));
             }
 
             const validUrl = await connectValidator.validateUrl(serviceUrl, {
@@ -214,7 +229,7 @@ function getCliIgnoreCertValidatePrompt(
                     throw new Error(t('errors.exitingGeneration', { exitReason: t('errors.certValidationRequired') }));
                 }
                 // If the user choose to ignore cert errors, we need to re-validate
-                LoggerHelper.logger.warn(t('prompts.validationMessages.warningCertificateValidationDisabled'));
+                LoggerHelper.logger.warn(t('warnings.warningCertificateValidationDisabled'));
                 // Re-check if auth required as the cert error would have prevented this check earlier
                 const validUrl = await connectValidator.validateUrl(serviceUrl, {
                     ignoreCertError,
@@ -308,7 +323,7 @@ function getPasswordPrompt(
                         axiosConfig: connectValidator.axiosConfig
                     },
                     requiredVersion,
-                    ignoreCertError
+                    ignoreCertError || connectValidator.ignoreCertError
                 );
                 showAnnotationWarning = !!valResult.showAnnotationWarning;
                 convertedMetadata = valResult.convertedMetadata;
