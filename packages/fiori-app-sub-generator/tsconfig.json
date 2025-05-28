@@ -10,6 +10,9 @@
   },
   "references": [
     {
+      "path": "../abap-deploy-config-inquirer"
+    },
+    {
       "path": "../annotation-generator"
     },
     {
@@ -20,6 +23,9 @@
     },
     {
       "path": "../cap-config-writer"
+    },
+    {
+      "path": "../cf-deploy-config-inquirer"
     },
     {
       "path": "../feature-toggle"

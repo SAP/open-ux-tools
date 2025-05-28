@@ -29,6 +29,7 @@ import type { Logger } from '@sap-ux/logger';
  * @param options.isCap - whether the project is a CAP project.
  * @param options.addOverwrite - whether to add the overwrite prompt.
  * @param options.apiHubConfig - the API Hub configuration.
+ * @param options.promptOptions - additional prompt options.
  * @returns the cf deploy config questions.
  */
 export async function getCFQuestions({
@@ -37,7 +38,8 @@ export async function getCFQuestions({
     cfDestination,
     isCap,
     addOverwrite,
-    apiHubConfig
+    apiHubConfig,
+    promptOptions
 }: {
     projectRoot: string;
     isAbapDirectServiceBinding: boolean;
@@ -45,6 +47,7 @@ export async function getCFQuestions({
     isCap: boolean;
     addOverwrite: boolean;
     apiHubConfig?: ApiHubConfig;
+    promptOptions?: CfDeployConfigPromptOptions;
 }): Promise<CfDeployConfigQuestions[]> {
     const isBAS = isAppStudio();
     const mtaYamlExists = !!(await getMtaPath(projectRoot));
@@ -57,6 +60,7 @@ export async function getCFQuestions({
     });
 
     const options: CfDeployConfigPromptOptions = {
+        ...promptOptions,
         [promptNames.destinationName]: {
             defaultValue: destinationQuestionDefaultOption(isAbapDirectServiceBinding, isBAS, cfDestination),
             hint: !!isAbapDirectServiceBinding,

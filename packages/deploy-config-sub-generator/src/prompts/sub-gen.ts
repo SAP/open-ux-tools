@@ -78,6 +78,7 @@ export async function getSubGenPrompts(
         configFile: options.config,
         indexGenerationAllowed,
         showOverwriteQuestion: showOverwrite,
+        promptOptions: options?.subGenPromptOptions?.abap,
         logger: DeploymentGenerator.logger
     });
 
@@ -88,7 +89,8 @@ export async function getSubGenPrompts(
         cfDestination: cfDestination,
         isCap: isCap,
         addOverwrite: showOverwrite,
-        apiHubConfig: apiHubConfig
+        apiHubConfig: apiHubConfig,
+        promptOptions: options?.subGenPromptOptions?.cf
     });
 
     // Combine all prompts

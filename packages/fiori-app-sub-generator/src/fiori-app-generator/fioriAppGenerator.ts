@@ -294,8 +294,9 @@ export class FioriAppGenerator extends Generator {
                     {
                         service: this.state.service,
                         projectName: this.state.project.name,
+                        promptSettings: generatorOptions.promptSettings,
                         targetFolder: this.state.project.targetFolder,
-                        applicationType: 'FF' // Telemetry data
+                        applicationType: this.state.floorplan === FloorplanFF.FF_SIMPLE ? 'FF' : 'FE' // Telemetry data
                     },
                     this.composeWith.bind(this),
                     FioriAppGenerator.logger,

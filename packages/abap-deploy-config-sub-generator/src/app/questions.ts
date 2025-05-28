@@ -3,14 +3,18 @@ import { FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { ABAP_DEPLOY_TASK } from '../utils/constants';
+import { DeployProjectType } from './types';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
-import type { AbapDeployConfigAnswersInternal, AbapDeployConfigQuestion } from '@sap-ux/abap-deploy-config-inquirer';
+import type {
+    AbapDeployConfigAnswersInternal,
+    AbapDeployConfigPromptOptions,
+    AbapDeployConfigQuestion
+} from '@sap-ux/abap-deploy-config-inquirer';
 import type { AbapDeployConfig, AbapTarget, BspApp, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { ConnectedSystem } from '@sap-ux/deploy-config-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
-import { DeployProjectType, type AbapDeployConfigPromptOptions } from './types';
 
 /**
  * Get the ABAP target based on the provided parameters.
@@ -126,39 +130,22 @@ export async function getAbapQuestions({
             },
             ui5AbapRepo: {
                 default: deployAppConfig?.name,
-                hideIfOnPremise: promptOptions?.ui5AbapRepo?.hideIfOnPremise ?? false
+                ...promptOptions?.ui5AbapRepo
             },
             description: { default: deployAppConfig?.description },
             packageManual: {
-                default: deployAppConfig?.package,
-                additionalValidation: {
-                    shouldValidatePackageType: promptOptions?.packageAutocomplete?.shouldValidatePackageType ?? false,
-                    shouldValidatePackageForStartingPrefix:
-                        promptOptions?.packageAutocomplete?.shouldValidatePackageForStartingPrefix ?? false,
-                    shouldValidateFormatAndSpecialCharacters:
-                        promptOptions?.packageAutocomplete?.shouldValidateFormatAndSpecialCharacters ?? false
-                }
+                default: deployAppConfig?.package ?? promptOptions?.packageManual?.default,
+                ...promptOptions?.packageManual
             },
             transportManual: { default: deployAppConfig?.transport },
             index: { indexGenerationAllowed },
             packageAutocomplete: {
                 useAutocomplete: true,
-                additionalValidation: {
-                    shouldValidatePackageType: promptOptions?.packageAutocomplete?.shouldValidatePackageType ?? false,
-                    shouldValidatePackageForStartingPrefix:
-                        promptOptions?.packageAutocomplete?.shouldValidatePackageForStartingPrefix ?? false,
-                    shouldValidateFormatAndSpecialCharacters:
-                        promptOptions?.packageAutocomplete?.shouldValidateFormatAndSpecialCharacters ?? false
-                }
+                ...promptOptions?.packageAutocomplete
             },
             overwrite: { hide: !showOverwriteQuestion },
             transportInputChoice: { hideIfOnPremise: promptOptions?.transportInputChoice?.hideIfOnPremise ?? false },
-            targetSystem: {
-                additionalValidation: {
-                    shouldRestrictDifferentSystemType:
-                        promptOptions?.targetSystem?.shouldRestrictDifferentSystemType ?? false
-                }
-            }
+            targetSystem: promptOptions?.targetSystem
         },
         logger as unknown as Logger,
         getHostEnvironment() !== hostEnvironment.cli

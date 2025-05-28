@@ -78,7 +78,12 @@ describe('Subgen (flp/deploy) are correctly composedWith', () => {
             },
             projectName: 'testAppName',
             targetFolder: '/test/target/folder',
-            applicationType: 'telemetryData_appType1'
+            applicationType: 'telemetryData_appType1',
+            promptSettings: {
+                '@sap-ux/deploy-config-sub-generator': {
+                    packageManual: { default: 'PKG123' }
+                }
+            }
         };
 
         addDeployGen(addDeployGenOpts, composeWithMock, DefaultLogger, {} as AppWizard);
@@ -104,6 +109,9 @@ describe('Subgen (flp/deploy) are correctly composedWith', () => {
             projectPath: '/test/target/folder',
             telemetryData: {
                 appType: 'telemetryData_appType1'
+            },
+            subGenPromptOptions: {
+                packageManual: { default: 'PKG123' }
             }
         });
 
@@ -136,6 +144,9 @@ describe('Subgen (flp/deploy) are correctly composedWith', () => {
             projectPath: '/test/target/folder',
             telemetryData: {
                 appType: 'telemetryData_appType1'
+            },
+            subGenPromptOptions: {
+                packageManual: { default: 'PKG123' }
             }
         });
     });

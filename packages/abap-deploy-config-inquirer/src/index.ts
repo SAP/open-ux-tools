@@ -6,6 +6,7 @@ import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from './utils'
 import LoggerHelper from './logger-helper';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import {
+    promptNames,
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
@@ -74,6 +75,7 @@ export {
     reconcileAnswers,
     getPackagePrompts,
     getTransportRequestPrompts,
+    promptNames,
     TargetSystemType,
     PackageInputChoices,
     TransportChoices,
