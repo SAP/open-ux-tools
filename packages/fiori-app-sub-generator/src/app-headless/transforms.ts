@@ -1,14 +1,13 @@
-import type { Destination } from '@sap-ux/btp-utils';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import { OdataVersion } from '@sap-ux/fiori-elements-writer';
 import { getCapFolderPathsSync } from '@sap-ux/fiori-generator-shared';
-import { DatasourceType, type EntityRelatedAnswers, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
+import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import { promptNames } from '@sap-ux/ui5-application-inquirer';
 import { getDefaultUI5Theme, supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
+import { join } from 'path';
 import type { AppConfig, FEAppConfig, FFAppConfig, Project, Service, State } from '../types';
 import { ApiHubType, FloorplanFE, FloorplanFF, capTypeConversion, defaultPromptValues } from '../types';
-import { join } from 'path';
-import { t, getODataVersion } from '../utils';
+import { getODataVersion, t } from '../utils';
 
 const APP_CONFIG_CURRENT_VERSION = '0.2';
 /**
@@ -151,12 +150,7 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
     } as Service;
 
     if (service?.destination) {
-        serviceDefaults.destinationName = service.destination; // Legacy, to be removed
-        serviceDefaults.connectedSystem = {
-            destination: {
-                Name: service?.destination
-            } as Destination
-        } as ConnectedSystem;
+        serviceDefaults.destinationName = service.destination;
         serviceDefaults.source = DatasourceType.sapSystem;
         return serviceDefaults;
     }
