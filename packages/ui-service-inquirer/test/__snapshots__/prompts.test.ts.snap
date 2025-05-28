@@ -123,7 +123,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "additionalMessages": [Function],
     "default": false,
     "guiOptions": {
-      "breadcrumb": "Create SAP Fiori Application?",
+      "breadcrumb": "Create SAP Fiori Application",
     },
     "message": "Do you want to create an SAP Fiori application with the newly generated service?",
     "name": "launchAppGen",

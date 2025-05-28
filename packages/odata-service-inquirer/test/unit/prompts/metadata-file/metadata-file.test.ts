@@ -19,7 +19,7 @@ describe('Test metadata file prompts', () => {
                 "mandatory": true,
               },
               "guiType": "file-browser",
-              "message": "Metadata file path",
+              "message": "Metadata File Path",
               "name": "metadataFilePath",
               "type": "input",
               "validate": [Function],

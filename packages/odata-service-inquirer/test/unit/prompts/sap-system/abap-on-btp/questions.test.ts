@@ -113,7 +113,7 @@ describe('questions', () => {
                   "mandatory": true,
                 },
                 "guiType": "file-browser",
-                "message": "Service key file path",
+                "message": "Service Key File Path",
                 "name": "serviceKey",
                 "type": "input",
                 "validate": [Function],
