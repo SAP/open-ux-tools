@@ -2,7 +2,7 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import type { Editor } from 'mem-fs-editor';
-import type { CloudApp, AdpWriterConfig, CustomConfig } from '../types';
+import type { CloudApp, AdpWriterConfig, CustomConfig, TypesConfig } from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -32,6 +32,34 @@ export function getPackageJSONInfo(): Package {
     } catch (e) {
         return defaultPackage;
     }
+}
+
+/**
+ * Determines the correct TypeScript definitions package and version based on a given UI5 version.
+ *
+ * If the version includes `"snapshot"`, it returns a predefined default types package and version.
+ * Otherwise, it selects the appropriate package and computes the corresponding version using either
+ * `getTypesVersion` or `getEsmTypesVersion`.
+ *
+ * @param {string} [ui5Version] - The version of UI5 (e.g., `"1.108.0"` or `"snapshot"`).
+ * @returns {TypesConfig} - The package name and version string for the UI5 types.
+ */
+export function getTypes(ui5Version?: string): TypesConfig {
+    if (ui5Version?.includes('snapshot')) {
+        return {
+            typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
+            typesVersion: UI5_DEFAULT.TYPES_VERSION_BEST
+        };
+    }
+
+    const typesPackage = getTypesPackage(ui5Version);
+    const isTypesPackage = typesPackage === UI5_DEFAULT.TYPES_PACKAGE_NAME;
+    const typesVersion = isTypesPackage ? getTypesVersion(ui5Version) : getEsmTypesVersion(ui5Version);
+
+    return {
+        typesPackage,
+        typesVersion
+    };
 }
 
 /**
@@ -75,9 +103,7 @@ export function writeTemplateToFolder(
     const tmplPath = join(baseTmplPath, 'project', '**/*.*');
     const tsConfigPath = join(baseTmplPath, 'typescript', 'tsconfig.json');
 
-    const typesPackage = getTypesPackage(ui5Version);
-    const isTypesPackage = typesPackage === UI5_DEFAULT.TYPES_PACKAGE_NAME;
-    const typesVersion = isTypesPackage ? getTypesVersion(ui5Version) : getEsmTypesVersion(ui5Version);
+    const { typesPackage, typesVersion } = getTypes(ui5Version);
 
     try {
         fs.copyTpl(tmplPath, projectPath, { ...data, typesPackage, typesVersion }, undefined, {
