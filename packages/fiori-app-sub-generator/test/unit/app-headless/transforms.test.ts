@@ -26,7 +26,7 @@ describe('Test headless', () => {
             transformExtState(appConfigInvalidCapServiceName as unknown as FFAppConfig);
         }).toThrow(t('error.appConfigMissingRequiredProperty', { propertyName: 'capService.serviceName' }));
 
-        // Should include destination name if specified
+        // Should include destination name if specified but not `ConnectedSystem`
         expect(transformExtState(appConfigDest as unknown as FFAppConfig)).toEqual({
             floorplan: 'basic',
             project: {
