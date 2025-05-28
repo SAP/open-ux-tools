@@ -8,8 +8,8 @@ import { UI5_VERSIONS_CDN_URL, UI5_VERSIONS_NEO_CDN_URL, LATEST_VERSION } from '
  * Fetches public UI5 version data from the SAP CDN.
  *
  * @param {ToolsLogger} logger - Optional logger instance.
- * @returns {Promise<UI5Version>} A promise that resolves to the UI5 version data object.
- * @throws Will throw an error if the fetch fails.
+ * @returns {Promise<UI5Version>} A promise that resolves to the UI5 version data object if request completes.
+ * Otherwise, returns fallback ui5 versions.
  */
 export async function fetchPublicVersions(logger?: ToolsLogger): Promise<UI5Version> {
     try {

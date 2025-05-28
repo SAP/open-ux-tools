@@ -4,6 +4,11 @@ import type { UI5Version, VersionDetail } from '../types';
 import { CURRENT_SYSTEM_VERSION, SNAPSHOT_CDN_URL, UI5_CDN_URL } from '../base/constants';
 
 /**
+ * Type alias for a single version entry from the fallback list.
+ */
+type SupportedUi5VersionEntry = (typeof supportedUi5VersionFallbacks)[number];
+
+/**
  * Gets the official base URL for SAP UI5 resources based on the version information.
  * If the version includes 'snapshot', it returns a preview URL; otherwise, it returns the main SAP UI5 CDN URL.
  *
@@ -143,24 +148,32 @@ export function isFeatureSupportedVersion(featureVersion: string, version?: stri
 }
 
 /**
- * Build a `Record<string, UI5Version>` from the curated fallback list
+ * Convert a supported UI5 version entry to a `VersionDetail`.
+ *
+ * @param {SupportedUi5VersionEntry} entry - An entry from the supported fallback list.
+ * @returns {VersionDetail} A normalized version detail object.
+ */
+function toVersionDetail(entry: SupportedUi5VersionEntry): VersionDetail {
+    return {
+        version: entry.version,
+        support: entry.support ?? '',
+        lts: !!entry.lts
+    };
+}
+
+/**
+ * Build a `UI5Version` from the curated fallback list
  * that ships with **@sap-ux/ui5-info**.
  *
  * @returns {UI5Version} An object whose keys are the version strings (e.g. `"1.135.0"`).
  */
 export function buildFallbackMap(): UI5Version {
-    const toDetail = (v: (typeof supportedUi5VersionFallbacks)[number]): VersionDetail => ({
-        version: v.version,
-        support: v.support ?? '',
-        lts: !!v.lts
-    });
-
-    const latest = toDetail(supportedUi5VersionFallbacks[0]);
+    const latest = toVersionDetail(supportedUi5VersionFallbacks[0]);
     return supportedUi5VersionFallbacks.reduce<UI5Version>(
-        (acc, cur) => {
-            acc[cur.version] = toDetail(cur);
+        (acc, entry) => {
+            acc[entry.version] = toVersionDetail(entry);
             return acc;
         },
-        { latest } as UI5Version
+        { latest }
     );
 }
