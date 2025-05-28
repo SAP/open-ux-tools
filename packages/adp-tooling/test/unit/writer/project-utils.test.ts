@@ -87,11 +87,11 @@ describe('Project Utils', () => {
         });
 
         it('should return default types for snapshot version', () => {
-            const result = getTypes('1.123.0-snapshot');
+            const result = getTypes('1.137.0-snapshot');
 
             expect(result).toEqual({
                 typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
-                typesVersion: UI5_DEFAULT.TYPES_VERSION_BEST
+                typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_BEST}`
             });
         });
 

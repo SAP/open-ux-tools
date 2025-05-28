@@ -48,7 +48,7 @@ export function getTypes(ui5Version?: string): TypesConfig {
     if (ui5Version?.includes('snapshot')) {
         return {
             typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
-            typesVersion: UI5_DEFAULT.TYPES_VERSION_BEST
+            typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_BEST}`
         };
     }
 
