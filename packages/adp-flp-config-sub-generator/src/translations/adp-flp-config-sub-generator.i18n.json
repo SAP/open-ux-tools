@@ -14,6 +14,7 @@
         "sysConfirmDesc": "Validates connection to configured system",
         "flpConfigName": "FLP Configuration",
         "flpConfigDesc": "FLP Configuration for {{- projectName}}",
+        "tileSettingsName": "Tile Settings",
         "tileActionsDesc": "Fiori Launchpad Tile Settings"
     },
     "info": {
@@ -21,7 +22,8 @@
     },
     "error": {
         "projectNotSupported": "Unable to find a supported adaptation project",
-        "fetchingApplicationInfo": "Error fetching application information",
+        "projectNotCloudReady": "FLP Configuration is supported for Cloud Ready adaptation projects only",
+        "backendRequestFailed": "Error while making a request to backend system: {{- system}}",
         "destinationNotFound": "Missing destination configuration in ui5.yaml",
         "destinationNotInSubaccount": "Destination not found in the subaccount: {{- destination}}",
         "systemNotFound": "Missing system configuration in ui5.yaml",

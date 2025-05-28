@@ -1,9 +1,8 @@
-import { parseParameters } from '@sap-ux/adp-tooling';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InboundContent } from '@sap-ux/axios-extension';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
-import type { FLPConfigQuestion } from '../../types';
+import type { FLPConfigQuestion, FLPConfigAnswers } from '../../types';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
@@ -37,27 +36,26 @@ export function getInboundIdsPrompt(inbounds: ManifestNamespace.Inbound): FLPCon
 /**
  * Creates the 'additionalParameters' prompt for specifying parameters in JSON format.
  *
- * @param {string[]} inboundIds - List of existing inbound IDs to conditionally display this prompt.
+ * @param {ManifestNamespace.Inbound} inbounds - List of existing inbound IDs to conditionally display this prompt.
  * @returns {FLPConfigQuestion} The prompt configuration for specifying a parameter string.
  */
-export function getParameterStringPrompt(inboundIds: string[]): FLPConfigQuestion {
+export function getParameterStringPrompt(inbounds?: ManifestNamespace.Inbound): FLPConfigQuestion {
     return {
         type: 'editor',
         name: promptNames.additionalParameters,
         message: t('prompts.additionalParameters'),
-        validate: (value: string) => {
-            if (!value) {
-                return true;
-            }
-
-            try {
-                parseParameters(value);
-            } catch (error) {
-                return error.message;
-            }
-            return true;
+        default: (answers: FLPConfigAnswers): string => {
+            const parameters = answers?.inboundId?.signature?.parameters;
+            return parameters ? JSON.stringify(parameters, null, 2) : '';
         },
-        when: inboundIds?.length === 0,
+        validate: (value: string, answers: FLPConfigAnswers): string | boolean => {
+            try {
+                JSON.parse(value);
+            } catch (error) {
+                return t('errors.invalidParameterString');
+            }
+            return _validateDuplicateInbound(inbounds, answers);
+        },
         guiOptions: {
             hint: t('tooltips.additionalParameters'),
             mandatory: false
@@ -66,23 +64,26 @@ export function getParameterStringPrompt(inboundIds: string[]): FLPConfigQuestio
 }
 
 /**
- * Creates the 'createAnotherInbound' confirmation prompt for adding additional inbounds.
+ * Validates if the inbound configuration is a duplicate.
  *
- * @param {boolean} isCLI - Indicates if the platform is CLI.
- * @returns {FLPConfigQuestion} The prompt configuration for confirming whether to create another inbound.
+ * @param {ManifestNamespace.Inbound} inbounds - Existing inbounds to check against.
+ * @param {FLPConfigAnswers} answers - Current answers to validate.
+ * @returns {string | boolean} Error message if duplicate, otherwise true.
  */
-export function getCreateAnotherInboundPrompt(isCLI: boolean): FLPConfigQuestion {
-    return {
-        type: 'confirm',
-        name: promptNames.createAnotherInbound,
-        message: t('prompts.createAnotherInbound'),
-        default: false,
-        when: () => !isCLI,
-        guiOptions: {
-            hint: t('tooltips.inboundId'),
-            breadcrumb: t('prompts.inboundIds')
-        }
-    };
+function _validateDuplicateInbound(inbounds?: ManifestNamespace.Inbound, answers?: FLPConfigAnswers): string | boolean {
+    if (!inbounds || !answers) {
+        return true;
+    }
+    const { semanticObject, action, title, additionalParameters } = answers;
+    const unformattedAdditionalParameters = additionalParameters?.replace(/\s/g, '');
+    const isDuplicate = Object.values(inbounds).some(
+        (inbound: any) =>
+            inbound.semanticObject === semanticObject &&
+            inbound.action === action &&
+            inbound.title === title &&
+            JSON.stringify(inbound?.signature?.parameters ?? {}) === (unformattedAdditionalParameters ?? '')
+    );
+    return isDuplicate ? t('errors.duplicateInbound') : true;
 }
 
 /**

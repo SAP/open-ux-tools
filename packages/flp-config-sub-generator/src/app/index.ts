@@ -146,8 +146,7 @@ export default class extends Generator {
         let questions: Question[] = (await getPrompts(inbounds, {
             silentOverwrite,
             inboundId: { hide: true },
-            additionalParameters: { hide: true },
-            createAnotherInbound: { hide: true }
+            additionalParameters: { hide: true }
         })) as Question[];
 
         if (this.extensionPromptOpts && !this.launchFlpConfigAsSubGenerator) {

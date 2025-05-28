@@ -14,8 +14,7 @@ export enum promptNames {
     title = 'title',
     subTitle = 'subTitle',
     icon = 'icon',
-    additionalParameters = 'additionalParameters',
-    createAnotherInbound = 'createAnotherInbound'
+    additionalParameters = 'additionalParameters'
 }
 
 /**
@@ -31,7 +30,6 @@ export interface FLPConfigAnswers {
     [promptNames.subTitle]?: string;
     [promptNames.icon]?: string;
     [promptNames.additionalParameters]?: string;
-    [promptNames.createAnotherInbound]?: boolean;
     s4Continue?: boolean;
 }
 
@@ -119,14 +117,6 @@ export interface ParameterStringPromptOptions {
 }
 
 /**
- * Options for the 'createAnotherInbound' prompt.
- */
-export interface CreateAnotherInboundPromptOptions {
-    default?: string;
-    hide?: boolean;
-}
-
-/**
  * The options which are common for the FLP config inquirer.
  */
 type FLPConfigCommonInquirerOptions = {
@@ -144,7 +134,6 @@ type flpConfigPromptOptions = Record<promptNames.inboundId, InboundIdPromptOptio
     Record<promptNames.subTitle, SubTitlePromptOptions> &
     Record<promptNames.icon, IconPromptOptions> &
     Record<promptNames.additionalParameters, ParameterStringPromptOptions> &
-    Record<promptNames.createAnotherInbound, CreateAnotherInboundPromptOptions> &
     Record<promptNames.existingFlpConfigInfo, existingFlpConfigInfo>;
 
 /**

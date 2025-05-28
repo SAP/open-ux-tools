@@ -106,14 +106,6 @@ export default class extends Generator {
     async initializing(): Promise<void> {
         await initI18n();
 
-        // Check if the project is supported
-        if (!this.launchAsSubGen) {
-            const isFioriAdaptation = (await getAppType(this.projectRootPath)) === 'Fiori Adaptation';
-            if (!isFioriAdaptation || isCFEnvironment(this.projectRootPath)) {
-                throw new Error(t('error.projectNotSupported'));
-            }
-        }
-
         // Force the generator to overwrite existing files without additional prompting
         if ((this.env as unknown as YeomanEnvironment).conflicter) {
             (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
@@ -126,23 +118,19 @@ export default class extends Generator {
         if (!this.configuredSystem) {
             return;
         }
+
         this.provider = await this._getAbapServiceProvider();
         if (!this.launchAsSubGen) {
-            this.variant = await getVariant(this.projectRootPath, this.fs);
-            this.appId = this.variant.reference;
+            await this._initializeStandAloneGenerator();
+            if (this.abort) {
+                return;
+            }
         } else {
             this.appId = this.options.appId as string;
         }
 
-        try {
-            this.inbounds = await this._getAppInbounds();
-        } catch (error) {
-            this.authenticationRequired = this._checkAuthRequired(error);
-            if (this.authenticationRequired) {
-                return;
-            }
-            this._handleFetchingError(error);
-        }
+        this.inbounds = await this._getAppInbounds();
+
         // Add telemetry to be sent once adp-flp-config is generated
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -155,14 +143,13 @@ export default class extends Generator {
     }
 
     public async prompting(): Promise<void> {
-        if (this.authenticationRequired) {
-            await this._promptAuthentication();
-        }
-
         if (this.abort) {
             return;
         }
 
+        if (this.authenticationRequired) {
+            await this._promptAuthentication();
+        }
         const tileActionsAnswers = await this._promptTileActions();
         const prompts: Question<FLPConfigAnswers>[] = await getPrompts(
             this.inbounds,
@@ -218,8 +205,15 @@ export default class extends Generator {
      * @returns {Promise<ManifestNamespace.Inbound>} list of tile inbounds of the application.
      */
     private async _getAppInbounds(): Promise<ManifestNamespace.Inbound> {
-        const lrepService = await this.provider.getLayeredRepository();
-        const inbounds = (await lrepService.getSystemInfo(undefined, undefined, this.appId)).inbounds as Inbound[];
+        const lrepService = this.provider.getLayeredRepository();
+
+        let inbounds: Inbound[] = [];
+        try {
+            inbounds = (await lrepService.getSystemInfo(undefined, undefined, this.appId)).inbounds as Inbound[];
+        } catch (error) {
+            this._handleFetchingError(error);
+        }
+
         return inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
             // Skip if hideLauncher is not false
             if (!inbound?.content || inbound.content.hideLauncher !== false) {
@@ -232,6 +226,15 @@ export default class extends Generator {
             }
             return acc;
         }, {} as { [key: string]: InboundContent });
+    }
+
+    /**
+     * Checks if the ABAP system is an ABAP Cloud system.
+     *
+     * @returns {Promise<boolean>} True if the system is ABAP Cloud, false otherwise.
+     */
+    private async _checkIsCloud(): Promise<boolean> {
+        return this.provider.isAbapCloud();
     }
 
     /**
@@ -291,7 +294,7 @@ export default class extends Generator {
     private _handleFetchingError(error: AxiosError): void {
         if (isAxiosError(error)) {
             this.logger.error(
-                `Application info fetching failed: ${error}. Status: ${error.response?.status}. URI: ${error.request?.path}`
+                `Backend system fetching failed: ${error}. Status: ${error.response?.status}. URI: ${error.request?.path}`
             );
 
             const errorHelp = this._getErrorHandlerMessage(error);
@@ -304,8 +307,8 @@ export default class extends Generator {
             }
             return;
         }
-        this.logger.error(`Application info fetching failed: ${error}`);
-        throw new Error(t('error.fetchingApplicationInfo'));
+        this.logger.error(`Backend system fetching failed: ${error}`);
+        throw new Error(t('error.backendRequestFailed'));
     }
 
     /**
@@ -440,12 +443,11 @@ export default class extends Generator {
         const { tileHandlingAction, copyFromExisting } = tileActionsAnswers ?? {};
 
         // If the user chooses to add a new tile and copy the original, semantic object and action are required
-        if (!this.inbounds.length || (tileHandlingAction === tileActions.ADD && copyFromExisting === false)) {
+        if (!this.inbounds || (tileHandlingAction === tileActions.ADD && copyFromExisting === false)) {
             return {
-                existingFlpConfigInfo: { hide: !this.inbounds.length && this._hasExistingFlpConfig() },
+                existingFlpConfigInfo: { hide: !this.inbounds && this._hasExistingFlpConfig() },
                 inboundId: { hide: true },
-                overwrite: { hide: true },
-                createAnotherInbound: { hide: true }
+                overwrite: { hide: true }
             };
         }
         // If the user chooses to replace the original tile, are not required and are taken from the existing selected inbound
@@ -455,15 +457,14 @@ export default class extends Generator {
                 overwrite: { hide: true },
                 semanticObject: { hide: true },
                 action: { hide: true },
-                createAnotherInbound: { hide: true }
+                additionalParameters: { hide: true }
             };
         }
 
         // If the user chooses to add a new tile and copy the original, semantic object and action are required
         return {
             existingFlpConfigInfo: { hide: true },
-            overwrite: { hide: true },
-            createAnotherInbound: { hide: true }
+            overwrite: { hide: true }
         };
     }
 
@@ -484,7 +485,7 @@ export default class extends Generator {
      * @returns {Promise<(TileActionAnswers & FLPConfigAnswers) | undefined>} The answers from the tile actions prompt, or undefined.
      */
     private async _promptTileActions(): Promise<(TileActionAnswers & FLPConfigAnswers) | undefined> {
-        if (this.inbounds.length) {
+        if (this.inbounds) {
             this._setTileActionsPrompts();
             const tileActionPrompts = getTileActionsQuestions();
             if (!this.launchAsSubGen && this._hasExistingFlpConfig()) {
@@ -500,12 +501,54 @@ export default class extends Generator {
         const promptsIndex = this.prompts.size() === 1 ? 0 : 1;
         this.prompts.splice(promptsIndex, 0, [
             {
-                name: t('yuiNavSteps.flpConfigName'),
+                name: t('yuiNavSteps.tileSettingsName'),
                 description: t('yuiNavSteps.tileActionsDesc', {
                     projectName: path.basename(this.projectRootPath)
                 })
             }
         ]);
+    }
+
+    /**
+     * Validates the project type and cloud readiness.
+     *
+     * @param {boolean} isCloud - Indicates if the system is ABAP Cloud.
+     * @throws {Error} If the project is not supported or not cloud ready.
+     */
+    private async _validateProject(isCloud: boolean): Promise<void> {
+        const isFioriAdaptation = (await getAppType(this.projectRootPath)) === 'Fiori Adaptation';
+        if (!isFioriAdaptation || isCFEnvironment(this.projectRootPath)) {
+            this._abortExecution(t('error.projectNotSupported'));
+            return;
+        }
+
+        if (!isCloud) {
+            this._abortExecution(t('error.projectNotCloudReady'));
+        }
+    }
+
+    /**
+     * Initializes the generator when launched as a standalone generator.
+     *
+     * @returns {Promise<void>} A promise that resolves when the initialization is complete.
+     */
+    private async _initializeStandAloneGenerator(): Promise<void> {
+        let isCloud = false;
+        try {
+            isCloud = await this._checkIsCloud();
+        } catch (error) {
+            this.authenticationRequired = this._checkAuthRequired(error);
+            if (this.authenticationRequired) {
+                return;
+            }
+            this._handleFetchingError(error);
+        }
+        await this._validateProject(isCloud);
+        if (this.abort) {
+            return;
+        }
+        this.variant = await getVariant(this.projectRootPath, this.fs);
+        this.appId = this.variant.reference;
     }
 }
 

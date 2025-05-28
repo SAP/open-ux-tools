@@ -159,18 +159,17 @@ async function retrieveMergedManifest(basePath: string, logger: ToolsLogger): Pr
  */
 async function getUserAnswers(
     inbounds: ManifestNamespace.Inbound | undefined,
-    isAdp: boolean,
+    isAdp: boolean
 ): Promise<FLPConfigAnswers | undefined> {
     let promptOptions: FLPConfigPromptOptions;
 
     if (!isAdp) {
         promptOptions = {
             inboundId: { hide: true },
-            additionalParameters: { hide: true },
-            createAnotherInbound: { hide: true }
+            additionalParameters: { hide: true }
         };
     } else {
-        promptOptions = { overwrite: { hide: true }, createAnotherInbound: { hide: true } };
+        promptOptions = { overwrite: { hide: true } };
     }
 
     const prompts = await filterLabelTypeQuestions<FLPConfigAnswers>(await getPrompts(inbounds, promptOptions));

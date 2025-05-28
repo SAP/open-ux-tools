@@ -16,7 +16,8 @@
     },
     "validators": {
         "inboundConfigKeyExists": "An inbound configuration with the key: '{{inboundKey}}' is already defined.",
+        "invalidParameterString": "Parameter string is not a valid JSON object.",
         "flpConfigOverwrite": "Overwrite existing configuration?",
-        "noInboundKeysAreFound": "Original application target mapping and the default parameters can be found in Fiori reference library under Implementation Information -> Configuration -> Target Mapping(s) in application page."
+        "duplicateInbound": "Base application already has an inbound with the same `Semantic Object/Action/Title/Parameters`. Please change at least one of these attributes."
     }
 }

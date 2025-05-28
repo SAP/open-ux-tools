@@ -370,7 +370,7 @@ export function enhanceManifestChangeContentWithFlpConfig(
     appId: string,
     manifestChangeContent: Content[] = []
 ): void {
-    const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfiguration, appId)
+    const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfiguration, appId);
     if (inboundChangeContent) {
         const addInboundChange = {
             changeType: 'appdescr_app_addNewInbound',

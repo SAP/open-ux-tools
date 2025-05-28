@@ -7,7 +7,6 @@ import {
     getTitlePrompt,
     getSubTitlePrompt,
     getOverwritePrompt,
-    getCreateAnotherInboundPrompt,
     getInboundIdsPrompt,
     getParameterStringPrompt,
     getIconPrompt,
@@ -54,8 +53,7 @@ export function getQuestions(
             promptOptions?.[promptNames.subTitle]
         ),
         [promptNames.icon]: getIconPrompt(promptOptions?.[promptNames.icon]),
-        [promptNames.additionalParameters]: getParameterStringPrompt(inboundKeys),
-        [promptNames.createAnotherInbound]: getCreateAnotherInboundPrompt(isCLI)
+        [promptNames.additionalParameters]: getParameterStringPrompt(inbounds)
     };
 
     const questions: FLPConfigQuestion[] = Object.entries(keyedPrompts)
