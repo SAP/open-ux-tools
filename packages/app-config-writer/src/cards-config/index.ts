@@ -29,6 +29,9 @@ async function updateMiddlewareConfigWithGeneratorPath(
 
     try {
         ui5YamlConfig.removeCustomMiddleware('sap-cards-generator');
+        logger?.info(
+            `Removed 'sap-cards-generator' middleware configuration from ${ui5YamlFile}. It is no longer needed because this feature has been integrated into fiori-tools-preview / preview-middleware.`
+        );
     } catch (error) {
         logger?.warn(`Failed to remove 'sap-cards-generator' middleware: ${error.message}`);
     }
@@ -59,9 +62,10 @@ async function updateMiddlewareConfigWithGeneratorPath(
  * @param {string} basePath - The path to the project root where the `package.json` file is located.
  * @param {Editor} fs - The `mem-fs-editor` instance used to read and write files.
  * @param {string} [yamlPath] - Optional path to the `ui5.yaml` configuration file for retrieving middleware configurations.
+ * @param {ToolsLogger} [logger] - Optional logger instance for logging debug information.
  * @returns {Promise<void>} A promise that resolves when the `package.json` file has been successfully updated.
  */
-async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string): Promise<void> {
+async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string, logger?: ToolsLogger): Promise<void> {
     const packageJsonPath = join(basePath, 'package.json');
     if (!fs.exists(packageJsonPath)) {
         throw new Error('package.json not found');
@@ -83,7 +87,9 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
 
     if (packageJson.devDependencies?.[dependencyName]) {
         delete packageJson.devDependencies[dependencyName];
-        console.log(`Dependency ${dependencyName} removed from devDependencies.`);
+        logger?.info(
+            `Removed devDependency ${dependencyName} from package.json. It is no longer needed because this feature has been integrated into fiori-tools-preview / preview-middleware.`
+        );
     }
 
     fs.writeJSON(packageJsonPath, packageJson);
@@ -110,6 +116,6 @@ export async function enableCardGeneratorConfig(
     fs = fs ?? create(createStorage());
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
-    await updatePackageJson(basePath, fs, yamlPath);
+    await updatePackageJson(basePath, fs, yamlPath, logger);
     return fs;
 }
