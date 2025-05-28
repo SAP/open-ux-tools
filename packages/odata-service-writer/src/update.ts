@@ -131,7 +131,7 @@ export async function addServicesData(
         }
         await writeLocalServiceAnnotationXMLFiles(fs, webappPath, templateRoot, service);
     }
-    // service update should not trigger the package.json update
+    // Service is being added - update the package.json update as well, service update should not run the updates of the package.json
     if (paths.packageJson && paths.ui5Yaml) {
         updatePackageJson(paths.packageJson, fs, !!service.metadata);
     }
@@ -176,38 +176,31 @@ export async function updateServicesData(
     // For update, updatable files should already exist
     if (service.metadata) {
         const webappPath = await getWebappPath(basePath, fs);
-        if (updateMiddlewares) {
-            // Generate mockserver only when ui5-mock.yaml already exists
-            if (paths.ui5MockYaml && paths.ui5Yaml && ui5Config) {
-                const config = {
-                    webappPath: webappPath,
-                    // Since ui5-mock.yaml already exists, set 'skip' to skip package.json file updates
-                    packageJsonConfig: {
-                        skip: true
-                    },
-                    // Set 'overwrite' to true to overwrite services data in YAML files
-                    ui5MockYamlConfig: {
-                        overwrite: true
-                    }
-                };
-                // Regenerate mockserver middleware for ui5-mock.yaml by overwriting
-                await generateMockserverConfig(basePath, config, fs);
-                // Update ui5-local.yaml with mockserver middleware from updated ui5-mock.yaml
-                await generateMockserverMiddlewareBasedOnUi5MockYaml(
-                    fs,
-                    paths.ui5Yaml,
-                    paths.ui5LocalYaml,
-                    ui5LocalConfig
-                );
-                // Update ui5-mock.yaml with backend middleware
-                if (paths.ui5MockYaml) {
-                    ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
-                    extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml, true);
+        // Generate mockserver only when ui5-mock.yaml already exists
+        if (paths.ui5MockYaml && paths.ui5Yaml && ui5Config && updateMiddlewares) {
+            const config = {
+                webappPath: webappPath,
+                // Since ui5-mock.yaml already exists, set 'skip' to skip package.json file updates
+                packageJsonConfig: {
+                    skip: true
+                },
+                // Set 'overwrite' to true to overwrite services data in YAML files
+                ui5MockYamlConfig: {
+                    overwrite: true
                 }
-                if (paths.ui5LocalYaml && ui5LocalConfig) {
-                    // write ui5 local yaml if service type is not CDS
-                    fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
-                }
+            };
+            // Regenerate mockserver middleware for ui5-mock.yaml by overwriting
+            await generateMockserverConfig(basePath, config, fs);
+            // Update ui5-local.yaml with mockserver middleware from updated ui5-mock.yaml
+            await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, paths.ui5LocalYaml, ui5LocalConfig);
+            // Update ui5-mock.yaml with backend middleware
+            if (paths.ui5MockYaml) {
+                ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
+                extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml, true);
+            }
+            if (paths.ui5LocalYaml && ui5LocalConfig) {
+                // write ui5 local yaml if service type is not CDS
+                fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
             }
         }
         // Write metadata.xml file
