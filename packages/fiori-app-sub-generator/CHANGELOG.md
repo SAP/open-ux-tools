@@ -1,5 +1,11 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.4.0
+
+### Minor Changes
+
+-   4c6b7a1: add package default to fiori gen settings
+
 ## 0.3.0
 
 ### Minor Changes
