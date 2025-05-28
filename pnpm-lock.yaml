@@ -1569,6 +1569,9 @@ importers:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
+      '@sap-ux/abap-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../abap-deploy-config-inquirer
       '@sap-ux/cf-deploy-config-inquirer':
         specifier: workspace:*
         version: link:../cf-deploy-config-inquirer
@@ -1992,6 +1995,12 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.16.9
         version: 1.16.9
+      '@sap-ux/abap-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../abap-deploy-config-inquirer
+      '@sap-ux/cf-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../cf-deploy-config-inquirer
       '@sap-ux/flp-config-sub-generator':
         specifier: workspace:*
         version: link:../flp-config-sub-generator

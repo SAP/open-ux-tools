@@ -1,5 +1,5 @@
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import { type CfDeployConfigAnswers } from '@sap-ux/cf-deploy-config-inquirer';
+import type { CfDeployConfigPromptOptions, CfDeployConfigAnswers } from '@sap-ux/cf-deploy-config-inquirer';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
 
@@ -88,4 +88,8 @@ export interface CfDeployConfigOptions extends CfDeployConfigAnswers {
      * Option to invoke the getConfirmMtaContinue prompt
      */
     addCapMtaContinue?: boolean;
+    /**
+     * Prompts options for the CF deploy config inquirer
+     */
+    promptOptions?: CfDeployConfigPromptOptions;
 }
