@@ -1285,6 +1285,10 @@ describe('update', () => {
     });
 
     it('Update an existing service without YAML updates, only update service files in localService', async () => {
+        // Write dummy YAML files that could potentially be updated
+        fs.write(join(testDir, 'ui5.yaml'), '');
+        fs.write(join(testDir, 'ui5-mock.yaml'), '');
+        fs.write(join(testDir, 'ui5-local.yaml'), '');
         // Delete metadata and annotation file from service folder
         fs.delete(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'));
         fs.delete(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'));
@@ -1308,6 +1312,11 @@ describe('update', () => {
             fs,
             false
         );
+        // Check that YAML are not updated with backend and mockserver middlewares
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toBe('');
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toBe('');
+        expect(fs.read(join(testDir, 'ui5-local.yaml'))).toBe('');
+        // Check that annotation and metadata files are created
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
     });
