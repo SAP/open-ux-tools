@@ -1,5 +1,12 @@
 # @sap-ux/create
 
+## 0.13.17
+
+### Patch Changes
+
+-   Updated dependencies [f8deed9]
+    -   @sap-ux/app-config-writer@0.6.4
+
 ## 0.13.16
 
 ### Patch Changes
