@@ -325,9 +325,9 @@ export default class extends Generator {
             return cached;
         }
 
-        const fresh = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
-        cachePut(this.appWizard, { prompter: fresh }, this.logger);
-        return fresh;
+        const prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
+        cachePut(this.appWizard, { prompter }, this.logger);
+        return prompter;
     }
 
     /**

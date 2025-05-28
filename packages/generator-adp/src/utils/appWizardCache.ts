@@ -15,12 +15,13 @@ export type AppWizardWithCache = AppWizard & { [ADP_CACHE_KEY]?: Partial<State> 
  * Initializes the internal cache store on the AppWizard instance if it doesn't exist.
  * This should be called early in the generator lifecycle (typically in the constructor).
  *
- * @param logger - The logger instance to log debug or warning messages.
- * @param wiz - The AppWizard instance to augment with cache storage.
+ * @param {ILogWrapper} logger - Logger instance used for debugging messages.
+ * @param {AppWizardWithCache} [wizard] - The AppWizard instance to augment with cache storage.
+ * @returns {void}
  */
-export function initCache(logger: ILogWrapper, wiz?: AppWizardWithCache): void {
-    if (wiz && !wiz[ADP_CACHE_KEY]) {
-        wiz[ADP_CACHE_KEY] = {};
+export function initCache(logger: ILogWrapper, wizard?: AppWizardWithCache): void {
+    if (wizard && !wizard[ADP_CACHE_KEY]) {
+        wizard[ADP_CACHE_KEY] = {};
         logger.debug('ADP-wizard cache initialised.');
     }
 }
@@ -28,41 +29,47 @@ export function initCache(logger: ILogWrapper, wiz?: AppWizardWithCache): void {
 /**
  * Stores or merges partial generator state in the AppWizard’s cache.
  *
- * @param wiz - The AppWizard instance (with optional cache).
- * @param state - Partial state object to cache.
- * @param logger - Logger used for diagnostics.
+ * @param {AppWizardWithCache | undefined} wizard - The AppWizard instance (may be undefined).
+ * @param {Partial<State>} state - Partial state object to cache.
+ * @param {ILogWrapper} logger - Logger instance for diagnostics.
+ * @returns {void}
  */
-export function cachePut(wiz: AppWizardWithCache | undefined, state: Partial<State>, logger: ILogWrapper): void {
-    ensureCache(logger, wiz);
-    if (wiz?.[ADP_CACHE_KEY]) {
-        Object.assign(wiz[ADP_CACHE_KEY], state);
+export function cachePut(wizard: AppWizardWithCache | undefined, state: Partial<State>, logger: ILogWrapper): void {
+    ensureCache(logger, wizard);
+    if (wizard?.[ADP_CACHE_KEY]) {
+        Object.assign(wizard[ADP_CACHE_KEY], state);
     }
 }
 
 /**
  * Retrieves a cached value from the AppWizard instance by key.
  *
- * @template T - The expected return type for the cached value.
- * @param wiz - The AppWizard instance with cache.
- * @param key - The key of the value to retrieve.
- * @param logger - Logger used for diagnostics.
- * @returns The cached value if present, otherwise `undefined`.
+ * @template T
+ * @param {AppWizardWithCache | undefined} wizard - The AppWizard instance with cache.
+ * @param {keyof State} key - The key to retrieve from the cached state.
+ * @param {ILogWrapper} logger - Logger instance used for diagnostics.
+ * @returns {T | undefined} - The cached value if present, otherwise `undefined`.
  */
-export function cacheGet<T>(wiz: AppWizardWithCache | undefined, key: keyof State, logger: ILogWrapper): T | undefined {
-    ensureCache(logger, wiz);
-    return wiz?.[ADP_CACHE_KEY]?.[key] as T | undefined;
+export function cacheGet<T>(
+    wizard: AppWizardWithCache | undefined,
+    key: keyof State,
+    logger: ILogWrapper
+): T | undefined {
+    ensureCache(logger, wizard);
+    return wizard?.[ADP_CACHE_KEY]?.[key] as T | undefined;
 }
 
 /**
  * Clears the entire generator state cache from the AppWizard instance.
  *
- * @param wiz - The AppWizard instance with cache to clear.
- * @param logger - Logger used for diagnostics.
+ * @param {AppWizardWithCache | undefined} wizard - The AppWizard instance with cache to clear.
+ * @param {ILogWrapper} logger - Logger instance for diagnostics.
+ * @returns {void}
  */
-export function cacheClear(wiz: AppWizardWithCache | undefined, logger: ILogWrapper): void {
-    ensureCache(logger, wiz);
-    if (wiz?.[ADP_CACHE_KEY]) {
-        delete wiz[ADP_CACHE_KEY];
+export function cacheClear(wizard: AppWizardWithCache | undefined, logger: ILogWrapper): void {
+    ensureCache(logger, wizard);
+    if (wizard?.[ADP_CACHE_KEY]) {
+        delete wizard[ADP_CACHE_KEY];
     }
 }
 
@@ -70,12 +77,13 @@ export function cacheClear(wiz: AppWizardWithCache | undefined, logger: ILogWrap
  * Logs a warning if caching is attempted in VS Code but the cache hasn’t been initialized.
  * This is a guard to ensure callers run `initCache()` before interacting with the cache.
  *
- * @param logger - Logger used for diagnostics.
- * @param wiz - The AppWizard instance to check.
+ * @param {ILogWrapper} logger - Logger instance for diagnostics.
+ * @param {AppWizardWithCache | undefined} wizard - The AppWizard instance to check.
+ * @returns {void}
  */
-function ensureCache(logger: ILogWrapper, wiz?: AppWizardWithCache): void {
+function ensureCache(logger: ILogWrapper, wizard?: AppWizardWithCache): void {
     const hostEnv = getHostEnvironment();
-    if (hostEnv === hostEnvironment.vscode && !wiz?.[ADP_CACHE_KEY]) {
+    if (hostEnv === hostEnvironment.vscode && !wizard?.[ADP_CACHE_KEY]) {
         logger.info('Warning: caching is not supported');
     }
 }
