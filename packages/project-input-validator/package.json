@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/project-input-validator",
-    "version": "0.5.4",
+    "version": "0.6.1",
     "description": "Library to validate Fiori project input formats",
     "repository": {
         "type": "git",
@@ -42,6 +42,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }

@@ -440,6 +440,13 @@ describe('getQuestions', () => {
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
         expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: true })).toBe(true);
+
+        // CAP project with cds-ui5 plugin disabled and hasMinCdsVersion is false
+        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false, hasMinCdsVersion: false });
+        enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+        expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(false);
     });
 
     test('getQuestions, prompt: `ui5Theme`', async () => {
@@ -542,17 +549,11 @@ describe('getQuestions', () => {
     });
 
     test('getQuestions, prompt: `enableTypeScript`', () => {
-        let questions = getQuestions([]);
+        const questions = getQuestions([]);
         let enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
         // default
         expect(enableTypeScriptQuestion?.default).toEqual(false);
-        questions = getQuestions([], {
-            enableTypeScript: {
-                default: () => true
-            }
-        });
-        enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
-        expect(enableTypeScriptQuestion?.default()).toEqual(true);
+        expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual(undefined);
 
         // when
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
@@ -567,10 +568,6 @@ describe('getQuestions', () => {
         );
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(false);
 
-        enableTypeScriptQuestion = getQuestions([], undefined, mockCdsInfoFalse).find(
-            (question) => question.name === promptNames.enableTypeScript
-        );
-
         enableTypeScriptQuestion = getQuestions([], undefined, {
             hasCdsUi5Plugin: true,
             isCdsUi5PluginEnabled: true,
@@ -578,6 +575,7 @@ describe('getQuestions', () => {
             hasMinCdsVersion: true
         }).find((question) => question.name === promptNames.enableTypeScript);
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
+        expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual(undefined);
 
         enableTypeScriptQuestion = getQuestions([], undefined, {
             hasCdsUi5Plugin: false,
@@ -585,6 +583,7 @@ describe('getQuestions', () => {
             isWorkspaceEnabled: false,
             hasMinCdsVersion: true
         }).find((question) => question.name === promptNames.enableTypeScript);
+        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
         expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual({
             message:
                 'The CAP project will be updated to use NPM workspaces (this is a requirement for generating with TypeScript)',

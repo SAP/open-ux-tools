@@ -1,5 +1,41 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.2
+
+### Patch Changes
+
+-   ac55cca: adds .appGenInfo.json file
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/telemetry@0.6.2
+
+## 0.12.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/telemetry@0.6.1
+
+## 0.12.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/telemetry@0.6.0
+
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/telemetry@0.5.78
+
 ## 0.11.2
 
 ### Patch Changes

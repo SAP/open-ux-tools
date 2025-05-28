@@ -13,6 +13,7 @@ import type { ConnectionValidator, SystemAuthType } from '../../../connectionVal
 import { type NewSystemAnswers, newSystemPromptNames } from '../new-system/types';
 import { suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Convert the system connection scheme (Service Key, Rentrance Ticket, etc) to the store specific authentication type.
@@ -75,17 +76,26 @@ export function getSystemUrlQuestion<T extends Answers>(
                 isSystem: true,
                 odataVersion: convertODataVersionType(requiredOdataVersion)
             });
-            // If basic auth not required we should have an active connection (could be a re-entrance ticket supported system url)
+            // If basic auth not required we should have an active connection and be authenticated
             if (valResult === true) {
-                if (!connectValidator.validity.authRequired && connectValidator.serviceProvider) {
+                if (connectValidator.validity.authenticated && connectValidator.serviceProvider) {
                     PromptState.odataService.connectedSystem = {
                         serviceProvider: removeCircularFromServiceProvider(connectValidator.serviceProvider)
                     };
                 } else {
+                    // otherwise we need to try basic auth
                     connectValidator.systemAuthType = 'basic';
                 }
             }
             return valResult;
+        },
+        additionalMessages: () => {
+            if (connectValidator.ignoreCertError) {
+                return {
+                    message: t('warnings.certErrorIgnoredByNodeSetting'),
+                    severity: Severity.warning
+                };
+            }
         }
     } as InputQuestion<T>;
 

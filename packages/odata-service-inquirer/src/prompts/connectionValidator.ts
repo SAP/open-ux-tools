@@ -49,8 +49,14 @@ interface Validity {
     canSkipCertError?: boolean;
 }
 
-// Cert errors that may be ignored by prompt user
-const ignorableCertErrors = [ERROR_TYPE.CERT_SELF_SIGNED, ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN];
+// Cert errors that may be ignored by the ignore cert errors prompt and NODE_TLS_REJECT_UNAUTHORIZED=0 setting
+const ignorableCertErrors = [
+    ERROR_TYPE.CERT_SELF_SIGNED,
+    ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN,
+    ERROR_TYPE.CERT_EXPIRED,
+    ERROR_TYPE.CERT_UKNOWN_OR_INVALID,
+    ERROR_TYPE.INVALID_SSL_CERTIFICATE
+];
 
 // Makes AxiosRequestConfig url properties required
 interface AxiosExtensionRequestConfig extends AxiosRequestConfig {
@@ -87,13 +93,24 @@ export class ConnectionValidator {
     private _connectedUserName: string | undefined;
     private _connectedSystemName: string | undefined;
     private _refreshToken: string | undefined;
+    // For the current validated URL connection attempts will ignore cert errors
+    private _ignoreCertError: boolean | undefined;
+
+    /**
+     * Get the ignoreCertError value.
+     *
+     * @returns the ignoreCertError value, true indicates that cert errors may have been ignored
+     */
+    public get ignoreCertError(): boolean | undefined {
+        return this._ignoreCertError;
+    }
 
     /**
      * Getter for the axios configuration.
      *
      * @returns the axios configuration
      */
-    public get axiosConfig(): AxiosRequestConfig {
+    public get axiosConfig(): AxiosRequestConfig & ProviderConfiguration {
         return this._axiosConfig;
     }
 
@@ -241,14 +258,21 @@ export class ConnectionValidator {
     /**
      * Setting an existing connected system will prevent re-authentication.
      * This should be used where the user has previously authenticated to prevent re-authentication (e.g. via browser) and the previous
-     * connected system is still valid. Only backend systems are currently supported.
+     * connected system is still valid. Only Abap connected backend systems are currently supported for cached connection use.
+     * For non-Abap backend systems, or basic auth connections, the user will be prompted to re-authenticate.
      *
      * @param connectedSystem A connected system object containing the service provider and backend system information. Not relevant for destination connections.
      * @param connectedSystem.serviceProvider
      * @param connectedSystem.backendSystem
      */
     public setConnectedSystem({ serviceProvider, backendSystem }: ConnectedSystem): void {
-        // Set the state using the provided ConnectedSystem to prevent re-authentication
+        // Set the state using the provided ConnectedSystem to prevent re-authentication if this is a valid AbapServiceProvider connection only
+        if (!(serviceProvider as AbapServiceProvider).catalog) {
+            LoggerHelper.logger.debug(
+                'ConnectionValidator.setConnectedSystem(): Use of a cached connected system is only supported for AbapServiceProviders. Re-authorization will be required.'
+            );
+            return;
+        }
         this._serviceProvider = serviceProvider;
         this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
         this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
@@ -261,6 +285,7 @@ export class ConnectionValidator {
         this.validity.reachable = true;
         this.validity.urlFormat = true;
         this.validity.authRequired = true;
+        // Do we need to explictly set the ignore cert error flag with an existing connection or are we calling checkUrl() again?
 
         if (backendSystem?.authenticationType === 'reentranceTicket') {
             this.systemAuthType = 'reentranceTicket';
@@ -335,9 +360,6 @@ export class ConnectionValidator {
             } else {
                 throw e;
             }
-        } finally {
-            // Reset global cert validation
-            ConnectionValidator.setGlobalRejectUnauthorized(true);
         }
     }
 
@@ -385,6 +407,11 @@ export class ConnectionValidator {
         axiosConfig: AxiosExtensionRequestConfig & ProviderConfiguration,
         servicePath: string
     ): Promise<void> {
+        if (await this.shouldIgnoreCertError(axiosConfig)) {
+            this._ignoreCertError = true;
+            axiosConfig.ignoreCertErrors = true;
+            ConnectionValidator.setGlobalRejectUnauthorized(false);
+        }
         this._axiosConfig = axiosConfig;
         this._serviceProvider = create(this._axiosConfig);
         this._odataService = this._serviceProvider.service<ODataService>(servicePath);
@@ -406,9 +433,48 @@ export class ConnectionValidator {
         this._connectedUserName = undefined;
         this._refreshToken = undefined;
         this._connectedSystemName = undefined;
+        this._ignoreCertError = undefined;
+
         if (resetValidity) {
             this.resetValidity();
         }
+    }
+
+    /**
+     * When the env has set `NODE_TLS_REJECT_UNAUTHORIZED=0` we make an intial request to check for cert errors.
+     * We log these errors to the console so the user is informed of the risks.
+     *
+     * @param axiosConfig the axios request configuration for Abap on prem connection
+     * @param odataVersion the odata version to restrict the catalog requests if only a specific version is required
+     * @returns true if the cert error should be ignored based on the environment setting `NODE_TLS_REJECT_UNAUTHORIZED=0`
+     */
+    private async shouldIgnoreCertError(
+        axiosConfig: AxiosRequestConfig & ProviderConfiguration,
+        odataVersion?: ODataVersion
+    ): Promise<boolean> {
+        LoggerHelper.logger.debug(`ConnectionValidator.shouldIgnoreCertError() - url: ${axiosConfig.baseURL}`);
+
+        let shouldIgnoreCertError = false;
+        const nodeAllowBadCerts = process.env.NODE_TLS_REJECT_UNAUTHORIZED === '0';
+        if (nodeAllowBadCerts) {
+            try {
+                const odataVerCatalog =
+                    !odataVersion || odataVersion === ODataVersion.v2 ? ODataVersion.v2 : ODataVersion.v4;
+                const abapProvider = createForAbap(axiosConfig);
+                LoggerHelper.attachAxiosLogger(abapProvider.interceptors);
+                await abapProvider.catalog(odataVerCatalog).listServices();
+            } catch (error) {
+                const errorType = ErrorHandler.getErrorType(error?.response?.status ?? error?.code);
+                if (error?.isAxiosError && ignorableCertErrors.includes(errorType)) {
+                    LoggerHelper.logger.warn(
+                        t('warnings.certificateErrors', { url: axiosConfig?.baseURL, error: errorType })
+                    );
+                    LoggerHelper.logger.warn(t('warnings.allowingUnauthorizedCertsNode'));
+                    shouldIgnoreCertError = true;
+                }
+            }
+        }
+        return shouldIgnoreCertError;
     }
 
     /**
@@ -449,6 +515,13 @@ export class ConnectionValidator {
             this._destinationUrl = destination.Host;
             this._serviceProvider = createForDestination({}, destination);
         } else if (axiosConfig) {
+            // Abap-on-prem on VSCode specific handling of cert errors from system connections.
+            // Make an additional request to log any cert errors that we are going to ignore so the user is informed of the risks.
+            if (await this.shouldIgnoreCertError(axiosConfig, odataVersion)) {
+                this._ignoreCertError = true;
+                axiosConfig.ignoreCertErrors = true;
+                ConnectionValidator.setGlobalRejectUnauthorized(false);
+            }
             this._axiosConfig = axiosConfig;
             this._serviceProvider = createForAbap(axiosConfig);
         }
@@ -497,6 +570,19 @@ export class ConnectionValidator {
             statusCode && !v4Requested && (errorType === ERROR_TYPE.NOT_FOUND || errorType === ERROR_TYPE.AUTH);
 
         if (this._catalogV4 && shouldFallbackToV4) {
+            // The v2 catalog was not available therefore cert errors will not have been seen (hidden by 404), only abap on prem uses axiosConfig directly
+            if (this._axiosConfig && (await this.shouldIgnoreCertError(this._axiosConfig, ODataVersion.v4))) {
+                this._ignoreCertError = true;
+                ConnectionValidator.setGlobalRejectUnauthorized(false);
+                this._axiosConfig = {
+                    ...this._axiosConfig,
+                    ignoreCertErrors: true
+                };
+                // Re-create the service provider with the updated config
+                this._serviceProvider = createForAbap(this._axiosConfig);
+                this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
+                LoggerHelper.attachAxiosLogger(this._serviceProvider.interceptors);
+            }
             try {
                 await this._catalogV4.listServices();
             } catch (v4Error) {
@@ -955,7 +1041,7 @@ export class ConnectionValidator {
 
             this.systemAuthType = 'basic';
             const status = await this.checkUrl(urlObject, username, password, {
-                ignoreCertError,
+                ignoreCertError: ignoreCertError,
                 isSystem,
                 odataVersion
             });

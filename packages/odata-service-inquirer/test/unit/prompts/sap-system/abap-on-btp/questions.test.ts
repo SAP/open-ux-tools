@@ -95,6 +95,7 @@ describe('questions', () => {
                 "validate": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "breadcrumb": true,
                   "hint": "Enter the URL of the SAP System",
@@ -453,6 +454,7 @@ describe('questions', () => {
             } as unknown as AbapServiceProvider,
             backendSystem: backendSystemReentrance
         };
+        connectionValidatorMock.validity.authenticated = true;
         const newSystemQuestions = getAbapOnBTPSystemQuestions(undefined, cachedConnectedSystem);
         const systemUrlPrompt = newSystemQuestions.find((q) => q.name === 'abapOnBtp:newSystemUrl');
         expect(await ((systemUrlPrompt as InputQuestion).validate as Function)('http:/s4hc:1234')).toBe(true);

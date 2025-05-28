@@ -93,6 +93,20 @@ declare module 'sap/ui/rta/plugin/AddXMLPlugin' {
     }
 }
 
+declare module 'sap/ui/rta/plugin/ExtendControllerPlugin' {
+    import type CommandFactory from 'sap/ui/rta/command/CommandFactory';
+
+    interface Arguments {
+        commandFactory: CommandFactory;
+        handlerFunction: (overlay: UI5Element) => Promise<void | object>;
+    }
+
+    export default class ExtendControllerPlugin {
+        constructor(_: Arguments) {}
+    }
+}
+
+
 declare module 'sap/ui/rta/command/CommandFactory' {
     import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
     import type CompositeCommand from 'sap/ui/rta/command/CompositeCommand';
@@ -277,6 +291,13 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getDomRef(): Element | null;
     }
 
+    export interface AppComponent {
+        getManifest(): Manifest;
+        getRootControl(): {
+            getPages(): FEAppPage[];
+        };
+    }
+
     export default class RuntimeAuthoring {
         constructor(_: RTAOptions) {}
 
@@ -293,12 +314,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getDefaultPlugins: () => { [key: string]: uknown; contextMenu: ContextMenu };
         getPlugins: () => { [key: string]: uknown; contextMenu: ContextMenu };
         setPlugins: (defaultPlugins: object) => void;
-        getRootControlInstance: () => {
-            getManifest(): Manifest;
-            getRootControl(): {
-                getPages(): FEAppPage[];
-            };
-        } & Component;
+        getRootControlInstance: () => AppComponent & Component;
         stop: (bSkipSave, bSkipRestart) => Promise<void>;
         attachStop: (handler: (event: Event) => void) => void;
         attachStart: (handler: (event: Event) => void) => void;

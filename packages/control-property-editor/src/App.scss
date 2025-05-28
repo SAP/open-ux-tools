@@ -6,6 +6,7 @@ html {
 }
 body {
     background-color: var(--vscode-editor-background);
+    scrollbar-color: var(--vscode-scrollbarSlider-background) var( --vscode-scrollbar-shadow)
 }
 
 .app-container {

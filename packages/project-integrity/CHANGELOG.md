@@ -1,5 +1,29 @@
 # @sap-ux/project-integrity
 
+## 0.2.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+
+## 0.2.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+
+## 0.1.21
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+
 ## 0.1.20
 
 ### Patch Changes

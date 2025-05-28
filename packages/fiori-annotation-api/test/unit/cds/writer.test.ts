@@ -938,6 +938,38 @@ annotate S.E with @UI.LineItem : [
 ];`
             );
         });
+        test('record in array with additional mismatching indentation', async () => {
+            const fixture = `
+      Service S { entity E {}; };
+      annotate S.E with @(UI : {
+        LineItem : []
+      });`;
+            await testWriter(
+                fixture,
+                [
+                    {
+                        type: 'insert-record',
+                        pointer: '/targets/0/assignments/0/items/items/0/value',
+                        element: createElementNode({
+                            name: Edm.Record,
+                            attributes: {
+                                [Edm.Type]: createAttributeNode(Edm.Term, 'UI.DataField')
+                            },
+                            content: []
+                        })
+                    }
+                ],
+                `
+      Service S { entity E {}; };
+      annotate S.E with @(UI : {
+        LineItem : [
+            {
+                $Type : 'UI.DataField',
+            },
+        ]
+      });`
+            );
+        });
         test('after entry with comment', async () => {
             const fixture = `
 Service S { entity E {}; };

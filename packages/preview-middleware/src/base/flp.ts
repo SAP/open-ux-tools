@@ -2,16 +2,21 @@ import type { ReaderCollection } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor as MemFsEditor } from 'mem-fs-editor';
-import { readFileSync } from 'fs';
 import { render } from 'ejs';
 import type http from 'http';
 import type { Request, Response, Router, NextFunction } from 'express';
 import { Router as createRouter, static as serveStatic, json } from 'express';
 import type connect from 'connect';
-import { dirname, join, posix } from 'path';
+import path, { dirname, join, posix } from 'path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
-import { getWebappPath, type Manifest } from '@sap-ux/project-access';
+import {
+    getWebappPath,
+    type Manifest,
+    FileName,
+    type ManifestNamespace,
+    createApplicationAccess
+} from '@sap-ux/project-access';
 import {
     AdpPreview,
     type AdpPreviewConfig,
@@ -24,7 +29,17 @@ import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { RtaEditor, FlpConfig, CompleteTestConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
+import type {
+    RtaEditor,
+    FlpConfig,
+    CompleteTestConfig,
+    MiddlewareConfig,
+    RtaConfig,
+    TestConfig,
+    CardGeneratorConfig,
+    MultiCardsPayload,
+    I18nEntry
+} from '../types';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
@@ -34,9 +49,13 @@ import {
     createTestTemplateConfig,
     addApp,
     getAppName,
-    sanitizeRtaConfig
+    sanitizeRtaConfig,
+    CARD_GENERATOR_DEFAULT
 } from './config';
 import { generateCdm } from './cdm';
+import { readFileSync } from 'fs';
+import { getIntegrationCard } from './utils/cards';
+import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -83,6 +102,7 @@ export class FlpSandbox {
     private readonly logger: Logger;
     private readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;
+    private readonly cardGenerator?: CardGeneratorConfig;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -101,6 +121,7 @@ export class FlpSandbox {
         this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
         logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
+        this.cardGenerator = config.editors?.cardGenerator;
     }
 
     /**
@@ -145,6 +166,18 @@ export class FlpSandbox {
             this.logger
         );
         this.addStandardRoutes();
+
+        const cardGeneratorPath = this.cardGenerator?.path;
+        if (cardGeneratorPath) {
+            if (!cardGeneratorPath.startsWith('/')) {
+                this.cardGenerator.path = `/${cardGeneratorPath}`;
+            }
+
+            await this.addCardGeneratorMiddlewareRoute();
+            await this.addStoreCardManifestRoute();
+            await this.addStoreI18nKeysRoute();
+        }
+
         if (this.rta) {
             this.rta.options ??= {};
             this.rta.options.baseId = componentId ?? id;
@@ -163,6 +196,7 @@ export class FlpSandbox {
             this.addCDMRoute();
         }
         await this.addRoutesForAdditionalApps();
+
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
@@ -381,9 +415,7 @@ export class FlpSandbox {
         // connect API (karma test runner) has no request query property
         if ('query' in req && 'redirect' in res && !req.query['sap-ui-xx-viewCache']) {
             const url =
-                'ui5-patched-router' in req
-                    ? join(req['ui5-patched-router']?.baseUrl ?? '', this.flpConfig.path)
-                    : this.flpConfig.path;
+                'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', req.path) : req.path;
             // Redirect to the same URL but add the necessary parameter
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
@@ -391,11 +423,12 @@ export class FlpSandbox {
             return;
         }
         await this.setApplicationDependencies();
-        // inform the user if a html file exists on the filesystem
+        // get filepath from request. Use dummy url to extract it from originalUrl if needed
+        const filePath = 'query' in req ? req.path : new URL('http://dummyHost' + req.originalUrl!).pathname; //NOSONAR
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const file = await this.project.byPath(this.flpConfig.path);
+        const file = await this.project.byPath(filePath);
         if (file) {
-            this.logger.info(`HTML file returned at ${this.flpConfig.path} is loaded from the file system.`);
+            this.logger.info(`HTML file returned at ${filePath} is loaded from the file system.`);
             next();
         } else {
             const ui5Version = await this.getUi5Version(
@@ -426,6 +459,30 @@ export class FlpSandbox {
                 res: Response | http.ServerResponse,
                 next: NextFunction
             ) => {
+                await this.flpGetHandler(req, res, next);
+            }
+        );
+    }
+
+    /**
+     * Adds a middleware route for the Card Generator in the FLP sandbox.
+     *
+     * This route dynamically updates the `templateConfig` with the Card Generator application details
+     * and serves the FLP sandbox HTML using the `flpGetHandler`.
+     *
+     * @private
+     */
+    private async addCardGeneratorMiddlewareRoute(): Promise<void> {
+        const previewGeneratorPath = this.cardGenerator?.path ?? CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
+        this.logger.debug(`Add route for ${previewGeneratorPath}`);
+        this.router.get(
+            previewGeneratorPath,
+            async (
+                req: EnhancedRequest | connect.IncomingMessage,
+                res: Response | http.ServerResponse,
+                next: NextFunction
+            ) => {
+                this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
                 await this.flpGetHandler(req, res, next);
             }
         );
@@ -878,6 +935,113 @@ export class FlpSandbox {
                 }
             );
         }
+    }
+
+    /**
+     * Stores the card manifest files in the webapp folder of the project and updates the application manifest.
+     *
+     * @param {Request} req - The HTTP request object containing the card manifest data in the body.
+     * @param {Response} res - The HTTP response object used to send the response back to the client.
+     * @returns {Promise<void>} A promise that resolves when the operation is complete.
+     */
+    private async storeCardManifestHandler(req: Request, res: Response): Promise<void> {
+        try {
+            const {
+                floorplan,
+                localPath,
+                fileName = FileName.Manifest,
+                manifests
+            } = req.body as {
+                floorplan: string;
+                localPath: string;
+                fileName?: string;
+                manifests: MultiCardsPayload[];
+            };
+            this.fs = this.fs ?? create(createStorage());
+            const webappPath = await getWebappPath(path.resolve(), this.fs);
+            const fullPath = join(webappPath, localPath);
+            const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
+            const integrationCard = getIntegrationCard(manifests);
+            this.fs.write(filePath, JSON.stringify(integrationCard.manifest, null, 2));
+
+            const entitySet = integrationCard.entitySet;
+            const sapCardsAp = (this.manifest['sap.cards.ap'] ??= {});
+            sapCardsAp.embeds ??= {};
+            sapCardsAp.embeds[floorplan] = {
+                default: entitySet,
+                manifests: {
+                    [entitySet]: [
+                        {
+                            localUri: localPath
+                        }
+                    ]
+                }
+            } satisfies ManifestNamespace.EmbedsSettings;
+
+            const appAccess = await createApplicationAccess(path.resolve(), this.fs);
+            await appAccess.updateManifestJSON(this.manifest, this.fs);
+            this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
+        } catch (error) {
+            this.logger.error(`Files could not be created/updated. Error: ${error}`);
+            this.sendResponse(res, 'text/plain', 500, 'Files could not be created/updated.');
+        }
+    }
+
+    /**
+     * Adds a route to store card manifest files, the files are stored in the webapp folder of the project.
+     * The application manifest.json file is updated with the new card manifests information within the sap.cards.ap.embeds.
+     *
+     * @returns {Promise<void>} A promise that resolves when the route is added.
+     */
+    async addStoreCardManifestRoute(): Promise<void> {
+        this.router.use(CARD_GENERATOR_DEFAULT.cardsStore, json());
+        this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.cardsStore}`);
+
+        this.router.post(CARD_GENERATOR_DEFAULT.cardsStore, async (req: Request, res: Response) => {
+            await this.storeCardManifestHandler(req, res);
+        });
+    }
+
+    /**
+     * Handles the storage of i18n keys in the i18n file.
+     *
+     * @param {Request} req - The HTTP request object containing the i18n key-value pairs in the body.
+     * @param {Response} res - The HTTP response object used to send the response back to the client.
+     * @returns {Promise<void>} A promise that resolves when the operation is complete.
+     */
+    private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
+        try {
+            this.fs = this.fs ?? create(createStorage());
+            const webappPath = await getWebappPath(path.resolve(), this.fs);
+            const i18nPath = this.manifest['sap.app'].i18n as string;
+            const filePath = i18nPath ? join(webappPath, i18nPath) : join(webappPath, 'i18n', 'i18n.properties');
+            const entries = (req.body as Array<I18nEntry>) || [];
+            entries.forEach((entry) => {
+                if (entry.comment) {
+                    entry.annotation = entry.comment;
+                }
+            });
+            await createPropertiesI18nEntries(filePath, entries);
+            this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
+        } catch (error) {
+            this.logger.error(`File could not be updated. Error: ${error}`);
+            this.sendResponse(res, 'text/plain', 500, 'File could not be updated.');
+        }
+    }
+
+    /**
+     * Adds a route to store i18n properties in the i18n file.
+     * This function updates the i18n file with new properties provided in the request body.
+     *
+     * @returns {Promise<void>} A promise that resolves when the route is added.
+     */
+    async addStoreI18nKeysRoute(): Promise<void> {
+        this.router.use(CARD_GENERATOR_DEFAULT.i18nStore, json());
+        this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.i18nStore}`);
+
+        this.router.post(CARD_GENERATOR_DEFAULT.i18nStore, async (req: Request, res: Response) => {
+            await this.storeI18nKeysHandler(req, res);
+        });
     }
 }
 

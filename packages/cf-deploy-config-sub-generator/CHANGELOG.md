@@ -1,5 +1,91 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.3
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/deploy-config-generator-shared@0.1.2
+    -   @sap-ux/inquirer-common@0.7.3
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.3
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.2
+    -   @sap-ux/deploy-config-generator-shared@0.1.1
+
+## 0.2.1
+
+### Patch Changes
+
+-   Updated dependencies [66b88e1]
+    -   @sap-ux/inquirer-common@0.7.1
+    -   @sap-ux/cf-deploy-config-writer@0.3.1
+    -   @sap-ux/project-access@1.30.1
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.1
+    -   @sap-ux/deploy-config-generator-shared@0.1.1
+    -   @sap-ux/fiori-generator-shared@0.12.1
+
+## 0.2.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/deploy-config-generator-shared@0.1.0
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.0
+    -   @sap-ux/cf-deploy-config-writer@0.3.0
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/btp-utils@1.1.0
+
+## 0.1.60
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+    -   @sap-ux/inquirer-common@0.6.43
+    -   @sap-ux/deploy-config-generator-shared@0.0.47
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.37
+
+## 0.1.59
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/cf-deploy-config-writer@0.2.13
+    -   @sap-ux/fiori-generator-shared@0.11.3
+    -   @sap-ux/deploy-config-generator-shared@0.0.47
+    -   @sap-ux/inquirer-common@0.6.42
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.36
+
+## 0.1.58
+
+### Patch Changes
+
+-   Updated dependencies [b339248]
+    -   @sap-ux/cf-deploy-config-writer@0.2.12
+
+## 0.1.57
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.41
+-   @sap-ux/cf-deploy-config-inquirer@0.2.35
+-   @sap-ux/deploy-config-generator-shared@0.0.46
+
 ## 0.1.56
 
 ### Patch Changes

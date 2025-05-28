@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 0.6.6
+
+### Patch Changes
+
+-   87ecdb8: fix: change indicators missing for change with control id in outline and scrollbar styling issue on quick action panel
+
+## 0.6.5
+
+### Patch Changes
+
+-   e856125: Fix: Generic handling for change type and new UI component for displaying
+
 ## 0.6.4
 
 ### Patch Changes

@@ -1368,7 +1368,7 @@ builder:
 
 exports[`CF Writer App Generate deployment configs - generateSupportingConfig read mtaId read from file 1`] = `
 "{
-  \\"name\\": \\"mta-project\\",
+  \\"name\\": \\"captestproject\\",
   \\"version\\": \\"0.0.1\\",
   \\"description\\": \\"Build and deployment scripts\\",
   \\"scripts\\": {
@@ -1411,7 +1411,7 @@ exports[`CF Writer App Generate deployment configs - generateSupportingConfig re
 
 exports[`CF Writer App Generate deployment configs - generateSupportingConfig with mtaId passed in 1`] = `
 "{
-  \\"name\\": \\"mta-project\\",
+  \\"name\\": \\"testMtaId\\",
   \\"version\\": \\"0.0.1\\",
   \\"description\\": \\"Build and deployment scripts\\",
   \\"scripts\\": {

@@ -17,7 +17,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"mta-project\\",
+  \\"name\\": \\"appfrontend\\",
   \\"version\\": \\"0.0.1\\",
   \\"description\\": \\"Build and deployment scripts\\",
   \\"scripts\\": {
@@ -104,7 +104,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"mta-project\\",
+  \\"name\\": \\"managed\\",
   \\"version\\": \\"0.0.1\\",
   \\"description\\": \\"Build and deployment scripts\\",
   \\"scripts\\": {
@@ -226,7 +226,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"mta-project\\",
+  \\"name\\": \\"standalonewithabapserviceprovider\\",
   \\"version\\": \\"0.0.1\\",
   \\"description\\": \\"Build and deployment scripts\\",
   \\"scripts\\": {
@@ -393,7 +393,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"mta-project\\",
+  \\"name\\": \\"standalone-with-connectivity-service\\",
   \\"version\\": \\"0.0.1\\",
   \\"description\\": \\"Build and deployment scripts\\",
   \\"scripts\\": {

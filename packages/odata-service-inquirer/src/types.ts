@@ -1,4 +1,4 @@
-import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
+import type { Annotations, ServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
@@ -7,6 +7,7 @@ import type { ListChoiceOptions } from 'inquirer';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper';
 import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
+import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -91,6 +92,11 @@ export interface OdataServiceAnswers {
      *
      */
     connectedSystem?: ConnectedSystem;
+
+    /**
+     * If the user chose to ignore the certificate error when connecting to the service the value will be true.
+     */
+    [serviceUrlInternalPromptNames.ignoreCertError]?: boolean;
 }
 
 export interface ConnectedSystem {
@@ -324,6 +330,10 @@ export type ServiceSelectionPromptOptions = {
      * This is used to indicate that the service does not support collaborative draft.
      */
     showCollaborativeDraftWarning?: boolean;
+    /**
+     * A list of service ids ({@link ODataServiceInfo.id}), used to filter the catalog results
+     */
+    serviceFilter?: string[];
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
 
 export type SystemNamePromptOptions = {

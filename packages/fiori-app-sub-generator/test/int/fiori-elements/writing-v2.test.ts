@@ -89,7 +89,23 @@ describe('Generate v2 apps', () => {
             }) as Project,
             floorplan: FloorplanFE.FE_LROP,
             service: destService,
-            entityRelatedConfig: v2EntityConfig
+            entityRelatedConfig: v2EntityConfig,
+            appGenInfo: {
+                externalParameters: [
+                    {
+                        'testAdditionalEntry': [
+                            {
+                                key: 'testKey1',
+                                value: 'testValue1'
+                            },
+                            {
+                                key: 'testKey2',
+                                value: 'testValue2'
+                            }
+                        ]
+                    }
+                ]
+            }
         });
         await runWritingPhaseGen(testState);
         expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
@@ -311,7 +327,10 @@ describe('Generate v2 apps', () => {
                 name: testProjectName
             }) as Project,
             floorplan: FloorplanFE.FE_WORKLIST,
-            service: v2Service,
+            service: {
+                ...v2Service,
+                ignoreCertError: true
+            },
             entityRelatedConfig: v2EntityConfig
         });
 

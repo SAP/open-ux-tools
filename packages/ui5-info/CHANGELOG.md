@@ -1,5 +1,22 @@
 # @sap-ux/ui5-info
 
+## 0.11.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/logger@0.7.0
+
+## 0.10.1
+
+### Patch Changes
+
+-   2050952: update Belize theme label and add version checks for deprecation
+
 ## 0.10.0
 
 ### Minor Changes

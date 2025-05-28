@@ -37,7 +37,10 @@ export enum configPromptNames {
     username = 'username',
     password = 'password',
     application = 'application',
-    appValidationCli = 'appValidationCli'
+    appValidationCli = 'appValidationCli',
+    fioriId = 'fioriId',
+    ach = 'ach',
+    shouldCreateExtProject = 'shouldCreateExtProject'
 }
 
 /**
@@ -70,6 +73,18 @@ export interface ApplicationPromptOptions {
     hide?: boolean;
 }
 
+export interface FioriIdPromptOptions {
+    hide?: boolean;
+}
+
+export interface AchPromptOptions {
+    hide?: boolean;
+}
+
+export interface ShouldCreateExtProjectPromptOptions {
+    hide?: boolean;
+}
+
 /**
  * Options for the configuration inquirer & the prompts.
  */
@@ -80,6 +95,9 @@ export type ConfigPromptOptions = Partial<{
     [configPromptNames.password]: PasswordPromptOptions;
     [configPromptNames.application]: ApplicationPromptOptions;
     [configPromptNames.appValidationCli]: CliValidationPromptOptions;
+    [configPromptNames.fioriId]: FioriIdPromptOptions;
+    [configPromptNames.ach]: AchPromptOptions;
+    [configPromptNames.shouldCreateExtProject]: ShouldCreateExtProjectPromptOptions;
 }>;
 
 export enum attributePromptNames {
@@ -129,3 +147,35 @@ export type AttributePromptOptions = Partial<{
     [attributePromptNames.ui5ValidationCli]: CliValidationPromptOptions;
     [attributePromptNames.enableTypeScript]: EnableTypeScriptPromptOptions;
 }>;
+
+export interface ExtensionProjectData {
+    destination: {
+        name: string;
+        basUsage: string | undefined;
+        host: string | undefined;
+        sapClient: string | undefined;
+    };
+    username: string;
+    password: string;
+    applicationNS: string;
+    applicationName: string;
+    userUI5Ver: string;
+    BSPUrl: string;
+    namespace: string;
+}
+
+/**
+ * An interface representing the json input used to store the complete adaptation project
+ * generator configurations. The json is passed as an CLI argument.
+ */
+export interface JsonInput {
+    system: string;
+    client?: string;
+    username?: string;
+    password?: string;
+    application: string;
+    applicationTitle?: string;
+    targetFolder?: string;
+    projectName?: string;
+    namespace?: string;
+}
