@@ -296,16 +296,16 @@ export default class extends Generator {
                 appType: 'generator-adp',
                 ...this.options.telemetryData
             }) ?? {};
-        const fsPath = this._getProjectPath();
+        const projectPath = this._getProjectPath();
         if (telemetryData) {
-            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, fsPath).catch((error) => {
+            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, projectPath).catch((error) => {
                 this.logger.error(t('error.telemetry', { error }));
             });
         }
 
         try {
-            if (!isCFEnvironment(fsPath)) {
-                this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath });
+            if (!isCFEnvironment(projectPath)) {
+                this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath: projectPath });
             }
         } catch (e) {
             this.appWizard.showError(e.message, MessageType.notification);
