@@ -198,13 +198,13 @@ export async function updateServicesData(
                 ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
                 extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml, true);
             }
-            if (paths.ui5LocalYaml && ui5LocalConfig) {
-                // write ui5 local yaml if service type is not CDS
-                fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
-            }
         }
         // Write metadata.xml file
         await writeMetadata(fs, webappPath, service);
+    }
+    if (paths.ui5LocalYaml && ui5LocalConfig) {
+        // write ui5 local yaml if service type is not CDS
+        fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
     }
     // Write new annotations files
     await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
