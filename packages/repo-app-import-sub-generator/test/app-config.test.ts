@@ -15,7 +15,10 @@ import { qfaJsonFileName } from '../src/utils/constants';
 
 jest.mock('../src/utils/logger', () => ({
     logger: {
-        error: jest.fn()
+        error: jest.fn(),
+        info: jest.fn(),
+        warn: jest.fn(),
+        debug: jest.fn()
     }
 }));
 

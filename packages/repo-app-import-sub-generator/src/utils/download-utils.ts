@@ -5,6 +5,7 @@ import { PromptState } from '../prompts/prompt-state';
 import { t } from './i18n';
 import RepoAppDownloadLogger from '../utils/logger';
 import { qfaJsonFileName } from './constants';
+import { type Logger } from '@sap-ux/logger';
 
 /**
  * Checks whether the ZIP archive contains an entry named qfa.json
@@ -49,7 +50,11 @@ export async function extractZip(extractedProjectPath: string, fs: Editor): Prom
  */
 export async function downloadApp(repoName: string): Promise<void> {
     const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
-    const downloadedAppPackage = await serviceProvider.getUi5AbapRepository().downloadFiles(repoName);
+    const ui5AbapRepository = await serviceProvider.getUi5AbapRepository();
+    ui5AbapRepository.log = RepoAppDownloadLogger.logger as unknown as Logger;
+    RepoAppDownloadLogger.logger?.debug(`App download started: ${repoName}`);
+    const downloadedAppPackage = await ui5AbapRepository.downloadFiles(repoName);
+    RepoAppDownloadLogger.logger?.debug(`App download completed: ${repoName}`);
     // store downloaded package in prompt state
     PromptState.admZip = downloadedAppPackage;
 }

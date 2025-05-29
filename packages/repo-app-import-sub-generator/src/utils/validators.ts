@@ -154,7 +154,6 @@ export async function validateAppSelection(
         } catch (error) {
             RepoAppDownloadLogger.logger?.debug(`validateAppSelection: Error downloading app: ${error.message}`);
             return t('error.appDownloadErrors.appDownloadFailure', { error: error.message });
-            
         }
     }
 

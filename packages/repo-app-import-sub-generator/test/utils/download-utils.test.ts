@@ -9,7 +9,10 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 jest.mock('adm-zip');
 jest.mock('../../src/utils/logger', () => ({
     logger: {
-        error: jest.fn()
+        error: jest.fn(),
+        warn: jest.fn(),
+        info: jest.fn(),
+        debug: jest.fn()
     }
 }));
 

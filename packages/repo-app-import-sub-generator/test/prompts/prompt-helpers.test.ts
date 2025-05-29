@@ -10,7 +10,9 @@ import RepoAppDownloadLogger from '../../src/utils/logger';
 jest.mock('../../src/utils/logger', () => ({
     logger: {
         error: jest.fn(),
-        warn: jest.fn()
+        warn: jest.fn(),
+        info: jest.fn(),
+        debug: jest.fn()
     }
 }));
 
