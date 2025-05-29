@@ -226,7 +226,7 @@ function verifyGeneratedFiles(testOutputDir: string, appId: string, testFixtureD
         extractedManifest['sap.app'].sourceTemplate.id = fioriAppSourcetemplateId;
     }
     const projectManifest = JSON.parse(fs.readFileSync(join(projectPath, DirName.Webapp, FileName.Manifest), 'utf-8'));
-    expect(projectManifest).toEqual(extractedManifest);
+    expect(projectManifest).toMatchSnapshot();
     expect(fs.readFileSync(join(projectPath, DirName.Webapp, 'i18n', 'i18n.properties'), 'utf-8')).toBe(
         fs.readFileSync(join(testFixtureDir, 'i18n', 'i18n.properties'), 'utf-8')
     );

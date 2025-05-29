@@ -161,7 +161,9 @@ describe('replaceWebappFiles', () => {
     beforeEach(() => {
         fs = {
             exists: jest.fn(),
-            copy: jest.fn()
+            copy: jest.fn(),
+            readJSON: jest.fn(),
+            writeJSON: jest.fn()
         } as unknown as jest.Mocked<Editor>;
     });
 
@@ -179,7 +181,7 @@ describe('replaceWebappFiles', () => {
         await replaceWebappFiles(projectPath, extractedPath, fs);
 
         // Verify that fs.copy is called for each file
-        expect(fs.writeJSON).toHaveBeenCalledWith(join(`${webappPath}/${FileName.Manifest}`));
+        expect(fs.writeJSON).toHaveBeenCalledWith(join(`${webappPath}/${FileName.Manifest}`), undefined, undefined, 2);
         expect(fs.copy).toHaveBeenCalledWith(
             join(`${extractedPath}/i18n/i18n.properties`),
             join(`${webappPath}/i18n/i18n.properties`)
