@@ -11,6 +11,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import type { CdsAnnotationsInfo } from '../../src';
+import { error } from 'console';
 
 describe('metadata parsing', () => {
     let testDataPath,
@@ -34,7 +35,7 @@ describe('metadata parsing', () => {
     it('getAnnotationNamespaces: metadata parsing', () => {
         expect(() => {
             getAnnotationNamespaces({ metadata: invalidEdmx });
-        }).toThrow(t('error.unparseableXML'));
+        }).toThrow(t('error.unparseableXML', { error: `boolean attribute '<Schema' is not allowed.:13:5` }));
         expect(getAnnotationNamespaces({ metadata: missingSchema })).toEqual([]);
 
         expect(getAnnotationNamespaces({ metadata: multischemaMetadata })).toEqual([

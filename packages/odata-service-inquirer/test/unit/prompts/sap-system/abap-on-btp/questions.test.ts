@@ -113,7 +113,7 @@ describe('questions', () => {
                   "mandatory": true,
                 },
                 "guiType": "file-browser",
-                "message": "Service key file path",
+                "message": "Service Key File Path",
                 "name": "serviceKey",
                 "type": "input",
                 "validate": [Function],
@@ -241,7 +241,7 @@ describe('questions', () => {
             'No ABAP environments in CF space found.'
         );
         expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)()).toEqual(
-            'No ABAP environments in CF space found. See log for more details.'
+            'No ABAP environments in CF space found. For more information, view the logs.'
         );
 
         // CLI throws to exit, as you cannot continue
@@ -256,7 +256,7 @@ describe('questions', () => {
         expect(await ((cfDiscoPrompt as ListQuestion).choices as Function)()).toEqual([]);
         expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)()).toEqual(
             'Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry ' +
-                '(see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login). See log for more details.'
+                '(see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login). For more information, view the logs.'
         );
     });
 

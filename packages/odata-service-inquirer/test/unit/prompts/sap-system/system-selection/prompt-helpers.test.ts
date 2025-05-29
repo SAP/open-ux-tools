@@ -85,7 +85,7 @@ describe('Test system selection prompt helpers', () => {
         test('Should create backend system selection choices', async () => {
             expect(await createSystemChoices()).toEqual([
                 {
-                    name: 'New system',
+                    name: 'New System',
                     value: {
                         system: '!@£*&937newSystem*X~qy^',
                         type: 'newSystemChoice'

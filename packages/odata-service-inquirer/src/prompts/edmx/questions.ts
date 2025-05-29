@@ -54,7 +54,7 @@ function validateEntityChoices(
 
     if (!PromptState.isYUI && validationMsg) {
         LoggerHelper.logger.debug(`Exiting due to validation error: ${validationMsg}`);
-        throw new Error(t('errors.exitingGeneration', { exitReason: validationMsg }));
+        throw new Error(`${t('errors.exitingGeneration')} exitReason: ${validationMsg}`);
     }
     return validationMsg ?? true;
 }
