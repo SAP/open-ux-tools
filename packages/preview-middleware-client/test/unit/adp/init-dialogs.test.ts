@@ -167,7 +167,7 @@ describe('Dialogs', () => {
             isReuseComponentMock.mockReturnValueOnce(true);
             const result = getExtendControllerItemText(overlay, [], isReuseComponentMock, false, resources);
 
-            expect(result).toBe('Extend with Controller');
+            expect(result).toBe('Extend Controller');
             expect(isReuseComponentMock).not.toHaveBeenCalled();
         });
 
@@ -183,7 +183,7 @@ describe('Dialogs', () => {
             } as ElementOverlay;
             const result = getExtendControllerItemText(overlay, [], isReuseComponentMock, true, resources);
 
-            expect(result).toBe('Extend with Controller');
+            expect(result).toBe('Extend Controller');
             expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
         });
 
@@ -201,7 +201,7 @@ describe('Dialogs', () => {
 
             const result = getExtendControllerItemText(overlay, [], isReuseComponentMock, true, resources);
 
-            expect(result).toBe('Extend with Controller (This action is disabled because the control is a reuse component)');
+            expect(result).toBe('Extend Controller (This action is disabled because the control is a reuse component)');
             expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
         });
 
@@ -219,7 +219,7 @@ describe('Dialogs', () => {
 
             const result = getExtendControllerItemText(overlay, syncViewsIds, isReuseComponentMock, false, resources);
 
-            expect(result).toBe('Extend with Controller (This action is disabled because the controls are part of a synchronous view)');
+            expect(result).toBe('Extend Controller (This action is disabled because the controls are part of a synchronous view)');
         });
     });
 

@@ -3,30 +3,33 @@ import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { FlpConfigOptions } from '@sap-ux/flp-config-sub-generator';
 import { join } from 'path';
 import type Generator from 'yeoman-generator';
-import { defaultNavActionDisplay, type Service } from '../types';
+import { defaultNavActionDisplay, type FioriAppGeneratorPromptSettings, type Service } from '../types';
 import { getSemanticObject } from '../utils';
 
 /**
  * Add the '@sap/fiori:fiori-deployment' generator as a subgenerator.
  *
- * @param root0
- * @param root0.service
- * @param root0.projectName
- * @param root0.targetFolder
- * @param root0.applicationType
- * @param composeWith
- * @param logger
- * @param appWizard
+ * @param deployGenOpts
+ * @param deployGenOpts.service - service object
+ * @param deployGenOpts.projectName - project name
+ * @param deployGenOpts.promptSettings - prompt settings for the deployment generator
+ * @param deployGenOpts.targetFolder - target folder for the deployment configuration
+ * @param deployGenOpts.applicationType - application type, used for telemetry (FF | FE)
+ * @param composeWith - the composeWith function from the Yeoman generator
+ * @param logger - logger instance
+ * @param appWizard - instance of the AppWizard
  */
 export function addDeployGen(
     {
         service,
         projectName,
+        promptSettings,
         targetFolder,
         applicationType
     }: {
         service: Partial<Service>;
         projectName: string;
+        promptSettings?: FioriAppGeneratorPromptSettings;
         targetFolder: string;
         applicationType: string;
     },
@@ -46,7 +49,8 @@ export function addDeployGen(
         projectPath: targetFolder,
         appWizard: appWizard,
         telemetryData: { appType: applicationType },
-        logWrapper: logger
+        logWrapper: logger,
+        subGenPromptOptions: promptSettings?.['@sap-ux/deploy-config-sub-generator']
     });
 }
 

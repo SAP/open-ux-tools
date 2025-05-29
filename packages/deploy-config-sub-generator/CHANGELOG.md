@@ -1,5 +1,71 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.2.9
+
+### Patch Changes
+
+-   0b518f4: fix prompt options for sub gens
+
+## 0.2.8
+
+### Patch Changes
+
+-   4c6b7a1: add package default to fiori gen settings
+-   Updated dependencies [4c6b7a1]
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.5
+
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.4
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.3
+    -   @sap-ux/deploy-config-generator-shared@0.1.2
+    -   @sap-ux/inquirer-common@0.7.3
+    -   @sap-ux/odata-service-inquirer@2.4.7
+
+## 0.2.6
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/odata-service-inquirer@2.4.6
+    -   @sap-ux/inquirer-common@0.7.2
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.2
+    -   @sap-ux/deploy-config-generator-shared@0.1.1
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.3
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [2b9e7af]
+    -   @sap-ux/odata-service-inquirer@2.4.5
+
+## 0.2.4
+
+### Patch Changes
+
+-   @sap-ux/deploy-config-generator-shared@0.1.1
+-   @sap-ux/odata-service-inquirer@2.4.4
+-   @sap-ux/abap-deploy-config-sub-generator@0.1.2
+
+## 0.2.3
+
+### Patch Changes
+
+-   Updated dependencies [d1b5ab7]
+    -   @sap-ux/odata-service-inquirer@2.4.3
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [6cc19b7]
+    -   @sap-ux/odata-service-inquirer@2.4.2
+
 ## 0.2.1
 
 ### Patch Changes

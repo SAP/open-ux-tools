@@ -428,11 +428,12 @@ export class FlpSandbox {
             return;
         }
         await this.setApplicationDependencies();
-        // inform the user if a html file exists on the filesystem
+        // get filepath from request. Use dummy url to extract it from originalUrl if needed
+        const filePath = 'query' in req ? req.path : new URL('http://dummyHost' + req.originalUrl!).pathname; //NOSONAR
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const file = await this.project.byPath(this.flpConfig.path);
+        const file = await this.project.byPath(filePath);
         if (file) {
-            this.logger.info(`HTML file returned at ${this.flpConfig.path} is loaded from the file system.`);
+            this.logger.info(`HTML file returned at ${filePath} is loaded from the file system.`);
             next();
         } else {
             const ui5Version = await this.getUi5Version(

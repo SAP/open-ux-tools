@@ -1838,7 +1838,7 @@ describe('FE V2 quick actions', () => {
                                             path: '0',
                                             children: [],
                                             enabled: testCase.metadataReadErrorMsg ? false : true,
-                                            label: `Add Annotation File for ''{0}''`,
+                                            label: `Add Annotation File for ''mainService''`,
                                             tooltip: testCase.metadataReadErrorMsg
                                         },
                                         {
@@ -1846,8 +1846,8 @@ describe('FE V2 quick actions', () => {
                                             children: [],
                                             enabled: testCase.metadataReadErrorMsg ? false : true,
                                             label: testCase.metadataReadErrorMsg
-                                                ? `Add Annotation File for ''{0}''`
-                                                : `Show Annotation File for ''{0}''`,
+                                                ? `Add Annotation File for ''dataService''`
+                                                : `Show Annotation File for ''dataService''`,
                                             tooltip: testCase.metadataReadErrorMsg
                                         }
                                     ]
@@ -3280,12 +3280,12 @@ describe('FE V2 quick actions', () => {
                 {
                     supportedVersion: true,
                     isEnabled: true,
-                    tooltip: `This option has been disabled because variant management is already enabled for the ''{0}''`
+                    tooltip: `This option has been disabled because variant management is already enabled for the '''MyTable' table''`
                 },
                 {
                     supportedVersion: true,
                     isCustomTable: true,
-                    tooltip: `Variant management cannot be set for custom table ''{0}''`
+                    tooltip: `Variant management cannot be set for custom table '''MyTable' table''`
                 }
             ];
             afterEach(() => {
