@@ -1,4 +1,5 @@
 import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
+import { type AbapTarget, createAbapServiceProvider } from '@sap-ux/system-access';
 import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
 import type { RepoAppDownloadAnswers, RepoAppDownloadQuestions, QuickDeployedAppConfig, AppInfo } from '../app/types';
 import { PromptNames } from '../app/types';
@@ -9,6 +10,10 @@ import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helper
 import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
 import { validateAppSelection } from '../utils/validators';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import RepoAppDownloadLogger from '../utils/logger';
+import type { Logger } from '@sap-ux/logger';
+import { type Question } from 'inquirer';
+import { isCli } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Gets the target folder selection prompt.
@@ -46,6 +51,30 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
     } as FileBrowserQuestion<RepoAppDownloadAnswers>;
 };
 
+const getServiceProvider = async (system: {
+    name: string;
+    url: string;
+    client: string;
+    username: string;
+    password: string;
+}): Promise<AbapServiceProvider | any> => {
+    if (system) {
+        const target: AbapTarget = {
+            destination: system.name ?? '',
+            url: system.url ?? '',
+            client: system.client ?? ''
+        };
+
+        const serviceProvider = (await createAbapServiceProvider(
+            target,
+            undefined,
+            false,
+            RepoAppDownloadLogger.logger as unknown as Logger
+        )) as AbapServiceProvider;
+        return serviceProvider;
+    }
+};
+
 /**
  * Retrieves prompts for selecting a system, app list, and target folder where the app will be generated.
  *
@@ -70,13 +99,22 @@ export async function getPrompts(
             true
         );
         let appList: AppIndex = [];
-        const appSelectionPrompt = [
+        const appSelectionPrompts: Partial<object[]> = [
             {
                 when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
-                    if (
-                        answers[PromptNames.systemSelection] &&
-                        systemQuestions.answers.connectedSystem?.serviceProvider
-                    ) {
+                    if (answers[PromptNames.systemSelection]) {
+                        if (!systemQuestions.answers.connectedSystem?.serviceProvider) {
+                            systemQuestions.answers.connectedSystem =
+                                systemQuestions.answers.connectedSystem ??
+                                (answers[PromptNames.systemSelection] as any).system ??
+                                {};
+
+                            if (systemQuestions.answers.connectedSystem) {
+                                systemQuestions.answers.connectedSystem.serviceProvider = await getServiceProvider(
+                                    (answers[PromptNames.systemSelection] as any).system
+                                );
+                            }
+                        }
                         appList = await fetchAppListForSelectedSystem(
                             systemQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider,
                             quickDeployedAppConfig?.appId
@@ -86,7 +124,7 @@ export async function getPrompts(
                 },
                 type: 'list',
                 name: PromptNames.selectedApp,
-                default: () => (quickDeployedAppConfig?.appId ? 0 : undefined),
+                default: (): number | undefined => (quickDeployedAppConfig?.appId ? 0 : undefined),
                 guiOptions: {
                     mandatory: !!appList.length,
                     breadcrumb: t('prompts.appSelection.breadcrumb'),
@@ -94,13 +132,43 @@ export async function getPrompts(
                 },
                 message: t('prompts.appSelection.message'),
                 choices: (): { name: string; value: AppInfo }[] => (appList.length ? formatAppChoices(appList) : []),
-                validate: async (answers: AppInfo) =>
-                    validateAppSelection(answers, appList, quickDeployedAppConfig, appWizard)
+                validate: async (answers: AppInfo): Promise<boolean> => {
+                    const result = await validateAppSelection(answers, appList, quickDeployedAppConfig, appWizard);
+                    return !!result;
+                }
             }
         ];
+        // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
+        if (isCli()) {
+            appSelectionPrompts?.push({
+                when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
+                    if (answers[PromptNames.selectedApp]) {
+                        try {
+                            await validateAppSelection(
+                                answers[PromptNames.selectedApp] as AppInfo,
+                                appList,
+                                quickDeployedAppConfig,
+                                appWizard
+                            );
+                        } catch (error) {
+                            if (error instanceof Error) {
+                                RepoAppDownloadLogger.logger?.error(error.message);
+                            } else {
+                                RepoAppDownloadLogger.logger?.error(
+                                    t('error.appDownloadErrors.validationError', { error: error })
+                                );
+                            }
+                            return false;
+                        }
+                    }
+                    return false;
+                },
+                name: `${PromptNames.selectedApp}-validation`
+            } as Question);
+        }
 
         const targetFolderPrompts = getTargetFolderPrompt(appRootPath, quickDeployedAppConfig?.appId);
-        return [...systemQuestions.prompts, ...appSelectionPrompt, targetFolderPrompts] as RepoAppDownloadQuestions[];
+        return [...systemQuestions.prompts, ...appSelectionPrompts, targetFolderPrompts] as RepoAppDownloadQuestions[];
     } catch (error) {
         throw new Error(`Failed to generate prompts: ${error.message}`);
     }

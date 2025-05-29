@@ -55,7 +55,11 @@ export const extractAppData = (app: AppItem): { name: string; value: AppInfo } =
 export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value: AppInfo }> => {
     return appList
         .filter((app: AppItem) => {
-            const hasRequiredFields = app['sap.app/id'] && app['sap.app/title'] && app['repoName'] && app['url'];
+            const hasRequiredFields =
+                app['sap.app/id'] &&
+                app['repoName'] &&
+                app['url'] &&
+                Object.prototype.hasOwnProperty.call(app, 'sap.app/title'); // allow for empty title
             if (!hasRequiredFields) {
                 RepoAppDownloadLogger.logger?.warn(t('warn.requiredFieldsMissing', { app: app.appId }));
             }
