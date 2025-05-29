@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.6.5
+
+### Patch Changes
+
+-   af47fcc: fix: sanitize preview middleware configuration if necessary
+
 ## 0.6.4
 
 ### Patch Changes
