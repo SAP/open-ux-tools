@@ -29,6 +29,10 @@ export async function extractZip(extractedProjectPath: string, fs: Editor): Prom
             if (!zipEntry.isDirectory) {
                 // Extract the file content
                 const fileContent = zipEntry.getData().toString('utf8');
+                const filePath = join(extractedProjectPath, zipEntry.entryName);
+                RepoAppDownloadLogger.logger?.debug(
+                    `extractZip: Extracting file: "${filePath}" with contents: "${fileContent}" .`
+                );
                 // Load the file content into mem-fs for use in the temporary extracted project directory
                 fs.write(join(extractedProjectPath, zipEntry.entryName), fileContent);
             }

@@ -239,7 +239,9 @@ export default class extends Generator {
     public async install(): Promise<void> {
         if (!this.options.skipInstall) {
             try {
+                RepoAppDownloadLogger.logger?.debug('Running npm install...');
                 await this._runNpmInstall(this.projectPath);
+                RepoAppDownloadLogger.logger?.debug('npm install completed successfully.');
             } catch (error) {
                 RepoAppDownloadLogger.logger?.error(t('error.installationErrors.npmInstall', { error }));
             }

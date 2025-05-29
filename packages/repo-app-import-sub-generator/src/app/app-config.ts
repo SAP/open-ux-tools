@@ -45,7 +45,9 @@ export const getAbapDeployConfig = (app: AppInfo, qfaJson: QfaJsonConfig): AbapD
  */
 const fetchServiceMetadata = async (provider: AbapServiceProvider, serviceUrl: string): Promise<string | undefined> => {
     try {
-        return await provider.service(serviceUrl).metadata();
+        const metdata = await provider.service(serviceUrl).metadata();
+        RepoAppDownloadLogger.logger?.debug('Metadata fetched successfully');
+        return metdata as string | undefined;
     } catch (err) {
         RepoAppDownloadLogger.logger?.error(t('error.metadataFetchError', { error: err.message }));
     }
