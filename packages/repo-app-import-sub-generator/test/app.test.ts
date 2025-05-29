@@ -1,5 +1,6 @@
 import yeomanTest from 'yeoman-test';
-import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { join } from 'path';
 import RepoAppDownloadGenerator from '../src/app';
 import * as prompts from '../src/prompts/prompts';
@@ -221,7 +222,7 @@ function verifyGeneratedFiles(testOutputDir: string, appId: string, testFixtureD
     });
     // after converting to fiori app, manifest will be updated with fiori app source template id
     const extractedManifest = JSON.parse(fs.readFileSync(join(testFixtureDir, FileName.Manifest), 'utf-8')) as Manifest;
-    if (extractedManifest && extractedManifest['sap.app'] && extractedManifest['sap.app'].sourceTemplate) {
+    if (extractedManifest?.['sap.app']?.sourceTemplate) {
         extractedManifest['sap.app'].sourceTemplate.id = fioriAppSourcetemplateId;
     }
     const projectManifest = JSON.parse(fs.readFileSync(join(projectPath, DirName.Webapp, FileName.Manifest), 'utf-8'));

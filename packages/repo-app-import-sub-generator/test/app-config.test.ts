@@ -34,9 +34,8 @@ jest.mock('@sap-ux/project-access', () => ({
     getMinimumUI5Version: jest.fn()
 }));
 
-
 jest.mock('@sap-ux/feature-toggle', () => ({
-    isInternalFeaturesSettingEnabled: jest.fn(),
+    isInternalFeaturesSettingEnabled: jest.fn()
 }));
 
 const testFixture = new TestFixture();
@@ -46,7 +45,7 @@ describe('getAppConfig', () => {
     const mockApp: AppInfo = {
         appId: 'testAppId',
         title: 'Test App',
-        description: 'Test Description', 
+        description: 'Test Description',
         repoName: 'testRepoName',
         url: 'https://example.com/testApp'
     };
@@ -112,7 +111,7 @@ describe('getAppConfig', () => {
 
     it('should generate app configuration successfully', async () => {
         const mockServiceProvider = {
-            defaults: { 
+            defaults: {
                 baseURL: 'https://test-url.com',
                 params: { 'sap-client': '100' }
             }
@@ -125,14 +124,14 @@ describe('getAppConfig', () => {
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
         (getMinimumUI5Version as jest.Mock).mockReturnValue('1.90.0');
         const mockQfaJsonWithoutNavEntity = {
-            ...mockQfaJson, 
+            ...mockQfaJson,
             serviceBindingDetails: {
                 name: mockQfaJson.serviceBindingDetails.name,
                 serviceName: mockQfaJson.serviceBindingDetails.serviceName,
                 serviceVersion: mockQfaJson.serviceBindingDetails.serviceVersion,
-                mainEntityName: mockQfaJson.serviceBindingDetails.mainEntityName,
+                mainEntityName: mockQfaJson.serviceBindingDetails.mainEntityName
             }
-        }
+        };
         const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJsonWithoutNavEntity, mockFs);
         expect(result).toEqual(expectedAppConfig);
     });
@@ -151,9 +150,9 @@ describe('getAppConfig', () => {
         };
 
         const mockServiceProvider = {
-            defaults: { 
+            defaults: {
                 baseURL: 'https://test-url.com',
-                params: { 'sap-client': '100' } 
+                params: { 'sap-client': '100' }
             }
         } as unknown as AbapServiceProvider;
 
@@ -171,7 +170,7 @@ describe('getAppConfig', () => {
                 main_entity_name: mockQfaJson.serviceBindingDetails.mainEntityName,
                 navigation_entity: mockQfaJson.serviceBindingDetails.navigationEntity
             }
-        }
+        };
         const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJsonJsonWithNavEntity, mockFs);
         expect(result).toEqual(expectedAppConfig);
     });
@@ -190,9 +189,9 @@ describe('getAppConfig', () => {
         };
 
         const mockServiceProvider = {
-            defaults: { 
+            defaults: {
                 baseURL: 'https://test-url.com',
-                params: { 'sap-client': '100' } 
+                params: { 'sap-client': '100' }
             }
         } as unknown as AbapServiceProvider;
 
@@ -201,7 +200,11 @@ describe('getAppConfig', () => {
         };
 
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
-        (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.134.0' }, { version: '1.132.0' }, { version: '1.124.0' }]);   
+        (getUI5Versions as jest.Mock).mockResolvedValue([
+            { version: '1.134.0' },
+            { version: '1.132.0' },
+            { version: '1.124.0' }
+        ]);
 
         const mockQfaJsonJsonWithNavEntity = {
             ...mockQfaJson,
@@ -210,7 +213,7 @@ describe('getAppConfig', () => {
                 main_entity_name: mockQfaJson.serviceBindingDetails.mainEntityName,
                 navigation_entity: mockQfaJson.serviceBindingDetails.navigationEntity
             }
-        }
+        };
         const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJsonJsonWithNavEntity, mockFs);
         expect(result).toEqual({
             ...expectedAppConfig,
@@ -227,7 +230,7 @@ describe('getAppConfig', () => {
 
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
         const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJson, mockFs);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.dataSourcesNotFound')); 
+        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.dataSourcesNotFound'));
     });
 
     it('should log an error if fetchServiceMetadata throws an error', async () => {
@@ -244,9 +247,9 @@ describe('getAppConfig', () => {
 
         const errorMsg = 'Metadata fetch failed';
         const mockServiceProvider = {
-            defaults: { 
+            defaults: {
                 baseURL: 'https://test-url.com',
-                params: { 'sap-client': '100' } 
+                params: { 'sap-client': '100' }
             },
             service: jest.fn().mockReturnValue({
                 metadata: jest.fn().mockRejectedValue(new Error(errorMsg))
@@ -260,7 +263,9 @@ describe('getAppConfig', () => {
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
 
         await getAppConfig(mockApp, '/path/to/project', mockQfaJson, mockFs);
-        expect(RepoAppDownloadLogger.logger?.error).toHaveBeenCalledWith(t('error.metadataFetchError', { error: errorMsg }));
+        expect(RepoAppDownloadLogger.logger?.error).toHaveBeenCalledWith(
+            t('error.metadataFetchError', { error: errorMsg })
+        );
     });
 
     it('should generate app config when minUi5Version is not provided in manifest', async () => {
@@ -277,7 +282,7 @@ describe('getAppConfig', () => {
         };
 
         const mockServiceProvider = {
-            defaults: { 
+            defaults: {
                 baseURL: 'https://test-url.com',
                 params: { 'sap-client': '100' }
             },
@@ -306,14 +311,13 @@ describe('getAppConfig', () => {
         await getAppConfig(mockApp, '/path/to/project', mockQfaJsonJsonWithoutUi5Version, mockFs);
         expect(RepoAppDownloadLogger.logger?.error).not.toHaveBeenCalled();
     });
-
 });
 
 describe('getAbapDeployConfig', () => {
     it('should generate the correct deployment configuration', () => {
         const app: AppInfo = {
             url: 'https://target-url.com',
-            repoName: 'TEST_REPO', 
+            repoName: 'TEST_REPO',
             appId: 'TEST_APP_ID',
             title: 'Test App',
             description: 'Test Description'
@@ -336,5 +340,3 @@ describe('getAbapDeployConfig', () => {
         expect(result).toEqual(expectedConfig);
     });
 });
-
-             

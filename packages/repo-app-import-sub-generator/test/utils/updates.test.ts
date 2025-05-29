@@ -1,4 +1,4 @@
-import { validateAndUpdateManifestUI5Version, replaceWebappFiles  } from '../../src/utils/updates';
+import { validateAndUpdateManifestUI5Version, replaceWebappFiles } from '../../src/utils/updates';
 import type { Editor } from 'mem-fs-editor';
 import { t } from '../../src/utils/i18n';
 import { getUI5Versions } from '@sap-ux/ui5-info';
@@ -39,7 +39,7 @@ describe('validateAndUpdateManifestUI5Version', () => {
         fs = {
             writeJSON: jest.fn(),
             exists: jest.fn(),
-            readJSON: jest.fn(),
+            readJSON: jest.fn()
         } as unknown as jest.Mocked<Editor>;
     });
 
@@ -62,7 +62,7 @@ describe('validateAndUpdateManifestUI5Version', () => {
         const manifest = {
             'sap.ui5': {
                 dependencies: {
-                    minUI5Version: '1.90.0',
+                    minUI5Version: '1.90.0'
                 }
             },
             'sap.app': {
@@ -82,8 +82,8 @@ describe('validateAndUpdateManifestUI5Version', () => {
         const manifest = {
             'sap.ui5': {
                 dependencies: {
-                    minUI5Version: '1.80.0',
-                },
+                    minUI5Version: '1.80.0'
+                }
             },
             'sap.app': {
                 sourceTemplate: {
@@ -102,8 +102,8 @@ describe('validateAndUpdateManifestUI5Version', () => {
             {
                 'sap.ui5': {
                     dependencies: {
-                        minUI5Version: '${sap.ui5.dist.version}',
-                    },
+                        minUI5Version: '${sap.ui5.dist.version}'
+                    }
                 },
                 'sap.app': {
                     sourceTemplate: {
@@ -120,7 +120,7 @@ describe('validateAndUpdateManifestUI5Version', () => {
         const manifest = {
             'sap.ui5': {
                 dependencies: {
-                    minUI5Version: '1.70.0',
+                    minUI5Version: '1.70.0'
                 }
             },
             'sap.app': {
@@ -140,8 +140,8 @@ describe('validateAndUpdateManifestUI5Version', () => {
             {
                 'sap.ui5': {
                     dependencies: {
-                        minUI5Version: '1.90.0',
-                    },
+                        minUI5Version: '1.90.0'
+                    }
                 },
                 'sap.app': {
                     sourceTemplate: {
@@ -179,8 +179,11 @@ describe('replaceWebappFiles', () => {
         await replaceWebappFiles(projectPath, extractedPath, fs);
 
         // Verify that fs.copy is called for each file
-        expect(fs.copy).toHaveBeenCalledWith(join(`${extractedPath}/${FileName.Manifest}`), join(`${webappPath}/${FileName.Manifest}`));
-        expect(fs.copy).toHaveBeenCalledWith(join(`${extractedPath}/i18n/i18n.properties`), join(`${webappPath}/i18n/i18n.properties`));
+        expect(fs.writeJSON).toHaveBeenCalledWith(join(`${webappPath}/${FileName.Manifest}`));
+        expect(fs.copy).toHaveBeenCalledWith(
+            join(`${extractedPath}/i18n/i18n.properties`),
+            join(`${webappPath}/i18n/i18n.properties`)
+        );
         expect(fs.copy).toHaveBeenCalledWith(join(`${extractedPath}/index.html`), join(`${webappPath}/index.html`));
         expect(fs.copy).toHaveBeenCalledWith(join(`${extractedPath}/component.js`), join(`${webappPath}/Component.js`));
     });
@@ -195,7 +198,10 @@ describe('replaceWebappFiles', () => {
         await replaceWebappFiles(projectPath, extractedPath, fs);
 
         // Verify that fs.copy is not called for the missing file
-        expect(fs.copy).not.toHaveBeenCalledWith(join(`${extractedPath}/${FileName.Manifest}`), join(`${webappPath}/${FileName.Manifest}`));
+        expect(fs.copy).not.toHaveBeenCalledWith(
+            join(`${extractedPath}/${FileName.Manifest}`),
+            join(`${webappPath}/${FileName.Manifest}`)
+        );
         expect(RepoAppDownloadLogger.logger?.warn).toHaveBeenCalledWith(
             t('warn.extractedFileNotFound', { extractedFilePath: join(`${extractedPath}/${FileName.Manifest}`) })
         );

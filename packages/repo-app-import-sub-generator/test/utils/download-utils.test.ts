@@ -65,10 +65,7 @@ describe('App Download Utils', () => {
 
             await extractZip('/tmp/project', mockFs as any);
 
-            expect(mockFs.write).toHaveBeenCalledWith(
-                join('/tmp/project', 'file1.txt'),
-                'file content'
-            );
+            expect(mockFs.write).toHaveBeenCalledWith(join('/tmp/project', 'file1.txt'), 'file content');
             expect(mockFs.write).toHaveBeenCalledTimes(1);
         });
 
