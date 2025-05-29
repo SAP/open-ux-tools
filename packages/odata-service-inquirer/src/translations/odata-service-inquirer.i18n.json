@@ -200,7 +200,7 @@
         "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. $t(texts.seeLogForDetails).",
         "capModelAndServicesLoadError": "An error occurred loading the CAP model and services: {{- error, addMsgWithColonFormatter}}.",
         "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. The `urlPath` CAP service property is not defined but it is required.",
-        "unknownError": "An error occurred. Error: {{- error, addMsgWithColonFormatter}}.",
+        "unknownError": "An error occurred. Error{{- error, addMsgWithColonFormatter}}.",
         "authenticationFailed": "Authentication incorrect. Error: {{error}}.",
         "invalidUrl": "Invalid URL. {{-input, addMsgWithColonFormatter}}.",
         "connectionError": "A connection error occurred. Ensure the target host is available on the network: {{- error}}",

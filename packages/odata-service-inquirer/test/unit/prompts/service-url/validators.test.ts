@@ -166,7 +166,7 @@ describe('Test service url validators', () => {
                 odataService,
                 'axiosConfig': {}
             })
-        ).toMatchObject({ validationResult: t('errors.unknownError', { error: `${metadataRequestError.message}` }) });
+        ).toMatchObject({ validationResult: t('errors.unknownError', { error: metadataRequestError.message }) });
         expect(loggerSpy).toHaveBeenCalled();
         expect(PromptState.odataService.metadata).toBeUndefined();
 
