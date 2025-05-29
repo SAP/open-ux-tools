@@ -42,9 +42,13 @@ export function getRTAUrlParameters(packageJson: Package): string {
  * @returns - RTA mount point or undefined
  */
 function getRTAMountPoint(previewMiddlewareConfig: PreviewConfigOptions | undefined): string | undefined {
-    if (!isFioriToolsDeprecatedPreviewConfig(previewMiddlewareConfig) && previewMiddlewareConfig?.rta?.editors) {
-        // check if deprecated RTA config is used
-        const editors = previewMiddlewareConfig.rta.editors ?? previewMiddlewareConfig?.editors?.rta?.endpoints; //NOSONAR
+    let editors =
+        previewMiddlewareConfig && 'rta' in previewMiddlewareConfig ? previewMiddlewareConfig?.rta?.editors : undefined; //NOSONAR
+    editors ??=
+        previewMiddlewareConfig && 'editors' in previewMiddlewareConfig
+            ? previewMiddlewareConfig?.editors?.rta?.endpoints
+            : undefined;
+    if (editors) {
         for (const editor of editors) {
             if (!('developerMode' in editor)) {
                 return editor.path;
