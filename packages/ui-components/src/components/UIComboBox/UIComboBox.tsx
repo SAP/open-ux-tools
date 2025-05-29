@@ -170,6 +170,13 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         return true;
     }
 
+    /**
+     * Checks if the loading state has changed between the previous and new loader values.
+     *
+     * @param prevLoader The previous loading state.
+     * @param newLoader The new loading state.
+     * @returns True if the loading state has changed.
+     */
     private isLoaderChanged(
         prevLoader?: boolean | UIComboBoxLoaderType[],
         newLoader?: boolean | UIComboBoxLoaderType[]
