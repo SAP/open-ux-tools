@@ -132,7 +132,7 @@ export default class extends Generator {
         this.jsonInput = parseJsonInput(jsonInputString, this.toolsLogger);
 
         if (!this.jsonInput) {
-            this.env.lookup({ packagePatterns: ['@sap/generator-fiori'] });
+            this.env.lookup({ packagePatterns: ['@sap/generator-fiori', '@sap-ux/adp-flp-config-sub-generator'] });
             setHeaderTitle(opts, this.logger);
 
             initCache(this.logger, this.appWizard);

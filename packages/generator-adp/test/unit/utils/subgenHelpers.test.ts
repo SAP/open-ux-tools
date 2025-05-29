@@ -4,7 +4,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { AttributesAnswers, ConfigAnswers, SystemLookup } from '@sap-ux/adp-tooling';
 
 import { t } from '../../../src/utils/i18n';
-import * as subgenHelpers from '../../../src/utils/subgenHelpers';
+import { addFlpGen, addDeployGen, addExtProjectGen } from '../../../src/utils/subgenHelpers';
 import { getExtensionProjectData, resolveNodeModuleGenerator } from '../../../src/app/extension-project';
 
 jest.mock('../../../src/app/extension-project', () => ({
@@ -16,14 +16,17 @@ const getExtensionProjectDataMock = getExtensionProjectData as jest.Mock;
 const resolveNodeModuleGeneratorMock = resolveNodeModuleGenerator as jest.Mock;
 
 describe('Sub-generator helpers', () => {
+    const wizard = {} as unknown as AppWizard;
+    const error = new Error('Failed to compose');
     const logger = { info: jest.fn(), error: jest.fn() } as any;
-    const composeWith = jest.fn();
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-    });
 
     describe('addFlpGen', () => {
+        const composeWith = jest.fn();
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
         it('should compose FLP generator with correct parameters', () => {
             const flpOptions = {
                 projectRootPath: '/test/path',
@@ -33,10 +36,10 @@ describe('Sub-generator helpers', () => {
             const resolvePath = 'flp-generator';
             jest.spyOn(require, 'resolve').mockReturnValue(resolvePath);
 
-            subgenHelpers.addFlpGen(flpOptions, composeWith, logger);
+            addFlpGen(flpOptions, composeWith, logger);
 
             expect(composeWith).toHaveBeenCalledWith(
-                expect.any(String), // mock require.resolve
+                expect.any(String),
                 expect.objectContaining({
                     manifest: flpOptions.manifest,
                     system: flpOptions.system,
@@ -45,9 +48,27 @@ describe('Sub-generator helpers', () => {
             );
             expect(logger.info).toHaveBeenCalled();
         });
+
+        it('should handle errors and show user notification', async () => {
+            composeWith.mockImplementation(() => {
+                throw error;
+            });
+
+            expect(() => addFlpGen({} as any, composeWith, logger, wizard)).toThrow(
+                "Could not call '@sap-ux/adp-flp-config-sub-generator' sub-generator: Failed to compose"
+            );
+
+            expect(logger.error).toHaveBeenCalledWith(error);
+        });
     });
 
     describe('addDeployGen', () => {
+        const composeWith = jest.fn();
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
         it('should compose deploy-config generator with merged options', () => {
             const deployOptions = {
                 projectName: 'some.app',
@@ -57,7 +78,7 @@ describe('Sub-generator helpers', () => {
                 destinationName: 'DEST'
             };
 
-            subgenHelpers.addDeployGen(deployOptions, composeWith, logger);
+            addDeployGen(deployOptions, composeWith, logger);
 
             expect(composeWith).toHaveBeenCalledWith(
                 '@sap/fiori:deploy-config',
@@ -72,9 +93,27 @@ describe('Sub-generator helpers', () => {
             );
             expect(logger.info).toHaveBeenCalled();
         });
+
+        it('should handle errors and show user notification', async () => {
+            composeWith.mockImplementation(() => {
+                throw error;
+            });
+
+            expect(() => addDeployGen({} as any, composeWith, logger, wizard)).toThrow(
+                "Could not call '@sap/fiori:deploy-config' sub-generator: Failed to compose"
+            );
+
+            expect(logger.error).toHaveBeenCalledWith(error);
+        });
     });
 
     describe('addExtProjectGen', () => {
+        const composeWith = jest.fn();
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
         it('should compose extension generator with serialized data', async () => {
             const answers = {
                 configAnswers: {} as ConfigAnswers,
@@ -87,7 +126,7 @@ describe('Sub-generator helpers', () => {
             getExtensionProjectDataMock.mockResolvedValue(fakeData);
             resolveNodeModuleGeneratorMock.mockReturnValue(fakePath);
 
-            await subgenHelpers.addExtProjectGen(answers, composeWith, logger);
+            await addExtProjectGen(answers, composeWith, logger);
 
             expect(composeWith).toHaveBeenCalledWith(
                 fakePath,
@@ -99,11 +138,9 @@ describe('Sub-generator helpers', () => {
         });
 
         it('should handle errors and show user notification', async () => {
-            const wizard = { showError: jest.fn() } as unknown as AppWizard;
-            const error = new Error('fail');
             getExtensionProjectDataMock.mockRejectedValue(error);
 
-            await expect(subgenHelpers.addExtProjectGen({} as any, composeWith, logger, wizard)).rejects.toThrow();
+            await expect(addExtProjectGen({} as any, composeWith, logger, wizard)).rejects.toThrow();
 
             expect(logger.info).toHaveBeenCalledWith(t('error.creatingExtensionProjectError'));
             expect(logger.error).toHaveBeenCalledWith(error);
