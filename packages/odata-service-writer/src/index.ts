@@ -123,8 +123,8 @@ async function update(basePath: string, service: OdataService, fs?: Editor, upda
     const isServiceTypeEdmx = service.type === ServiceType.EDMX;
     await updateManifest(basePath, service, fs, true);
     // Dont extend/update backend and mockserver middlewares if service type is CDS
-    if (isServiceTypeEdmx && updateMiddlewares) {
-        await updateServicesData(basePath, paths, service as EdmxOdataService, fs);
+    if (isServiceTypeEdmx) {
+        await updateServicesData(basePath, paths, service as EdmxOdataService, fs, updateMiddlewares);
     }
     return fs;
 }
