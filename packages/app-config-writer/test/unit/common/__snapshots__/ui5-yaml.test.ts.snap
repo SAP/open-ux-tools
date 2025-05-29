@@ -28,8 +28,9 @@ server:
       configuration:
         flp:
           intent:
-            object: hello
-            action: world
+            object: v2lrop0909
+            action: tile
+          path: test/flpSandbox.html
 "
 `;
 
@@ -47,12 +48,13 @@ server:
           intent:
             object: hello
             action: world
-        rta:
-          layer: VENDOR
-          editors:
-            - path: /editor.html
-              developerMode: true
-            - path: /my-variants.html
+        editors:
+          rta:
+            layer: VENDOR
+            endpoints:
+              - path: /editor.html
+                developerMode: true
+              - path: /my-variants.html
 "
 `;
 
