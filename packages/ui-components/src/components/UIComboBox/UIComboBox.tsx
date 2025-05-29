@@ -158,11 +158,23 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * @returns {boolean}
      */
     shouldComponentUpdate(nextProps: UIComboBoxProps): boolean {
-        if (nextProps.options !== this.props.options && this.query) {
+        console.log('shouldComponentUpdate');
+        if (
+            (nextProps.options !== this.props.options ||
+                this.isLoaderChanged(this.props.isLoading, nextProps.isLoading)) &&
+            this.query
+        ) {
             // Filter options
-            this.updateHiddenOptions(nextProps.options);
+            this.updateHiddenOptions(nextProps.options, nextProps.isLoading);
         }
         return true;
+    }
+
+    private isLoaderChanged(
+        prevLoader?: boolean | UIComboBoxLoaderType[],
+        newLoader?: boolean | UIComboBoxLoaderType[]
+    ): boolean {
+        return !!prevLoader !== !!newLoader;
     }
 
     /**
@@ -170,7 +182,8 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      *
      * @param {IComboBoxOption[]} opts
      */
-    private updateHiddenOptions(opts: IComboBoxOption[]): void {
+    private updateHiddenOptions(opts: IComboBoxOption[], isLoading?: boolean | UIComboBoxLoaderType[]): void {
+        console.log('updateHiddenOptions');
         this.isListHidden = true;
         let currentGroup: IComboBoxOption | undefined;
         let isGroupVisible = false;
@@ -188,7 +201,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 isGroupVisible = false;
             } else {
                 // Handle selectable item
-                const isVisible = this.isOptionVisibleByQuery(option, this.query);
+                const isVisible =
+                    this.isLoaderApplied(UIComboBoxLoaderType.List, isLoading) ||
+                    this.isOptionVisibleByQuery(option, this.query);
+                console.log('isVisible ' + isVisible);
                 option.hidden = !isVisible;
                 if (this.isListHidden && !option.hidden) {
                     this.isListHidden = false;
@@ -706,8 +722,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * @param type Loader's place
      * @returns True if loader should be displayed for passed type.
      */
-    private isLoaderApplied(type: UIComboBoxLoaderType): boolean {
-        const { isLoading } = this.props;
+    private isLoaderApplied(type: UIComboBoxLoaderType, isLoading = this.props.isLoading): boolean {
         if (Array.isArray(isLoading)) {
             return isLoading.includes(type);
         }
