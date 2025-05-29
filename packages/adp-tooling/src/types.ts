@@ -1,4 +1,4 @@
-import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace, Manifest } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { OperationsType } from '@sap-ux/axios-extension';
@@ -44,7 +44,7 @@ export interface OnpremApp {
     id: string;
     /** Reference associated with the ID of the base application. */
     reference: string;
-    layer?: UI5FlexLayer;
+    layer?: FlexLayer;
     fioriId?: string;
     ach?: string;
     title?: string;
@@ -52,6 +52,12 @@ export interface OnpremApp {
     content?: Content[];
     /** Optional: Description about i18n.properties. */
     i18nDescription?: string;
+    /** Optional: I18n resource models derived from the manifest. */
+    i18nModels?: ResourceModel[];
+    /** Optional: Application type derived from the manifest. */
+    appType?: ApplicationType;
+    /** The manifest of the application */
+    manifest?: Manifest;
 }
 
 export interface CloudApp extends OnpremApp {
@@ -72,6 +78,7 @@ export interface AdpWriterConfig {
         minVersion?: string;
         version?: string;
         frameworkUrl?: string;
+        shouldSetMinVersion?: boolean;
     };
     package?: {
         name?: string;
@@ -141,6 +148,20 @@ export interface VersionDetail {
     version: string;
     support: string;
     lts: boolean;
+}
+
+export interface ResourceModel {
+    key: string;
+    path: string;
+    content?: string;
+}
+
+export interface SapModel {
+    type?: string;
+    uri?: string;
+    settings?: {
+        bundleName?: string;
+    };
 }
 
 export interface Endpoint extends Partial<Destination> {
@@ -340,6 +361,13 @@ export type ParameterRules = {
      */
     isReference(param: string): ParamCheck;
 };
+
+export enum ApplicationType {
+    FIORI_ELEMENTS = 'FioriElements',
+    FIORI_ELEMENTS_OVP = 'FioriElementsOVP',
+    FREE_STYLE = 'FreeStyle',
+    NONE = ''
+}
 
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',

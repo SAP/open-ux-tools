@@ -1,5 +1,63 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.4.5
+
+### Patch Changes
+
+-   Updated dependencies [f9e4913]
+    -   @sap-ux/odata-service-writer@0.27.4
+
+## 2.4.4
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/cap-config-writer@0.10.2
+
+## 2.4.3
+
+### Patch Changes
+
+-   Updated dependencies [6e2ef66]
+    -   @sap-ux/odata-service-writer@0.27.3
+
+## 2.4.2
+
+### Patch Changes
+
+-   Updated dependencies [07eaebf]
+    -   @sap-ux/odata-service-writer@0.27.2
+
+## 2.4.1
+
+### Patch Changes
+
+-   Updated dependencies [5e0020b]
+    -   @sap-ux/odata-service-writer@0.27.1
+    -   @sap-ux/ui5-config@0.28.1
+    -   @sap-ux/ui5-application-writer@1.5.1
+    -   @sap-ux/cap-config-writer@0.10.1
+    -   @sap-ux/fiori-generator-shared@0.12.1
+    -   @sap-ux/ui5-test-writer@0.7.1
+
+## 2.4.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/ui5-application-writer@1.5.0
+    -   @sap-ux/odata-service-writer@0.27.0
+    -   @sap-ux/cap-config-writer@0.10.0
+    -   @sap-ux/ui5-test-writer@0.7.0
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/logger@0.7.0
+
 ## 2.3.5
 
 ### Patch Changes

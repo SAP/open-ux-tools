@@ -8,9 +8,14 @@ import { FileName } from '@sap-ux/project-access';
 import { getDeployTargetQuestion } from './deploy-target';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
-import type { ApiHubConfig, CfDeployConfigQuestions } from '@sap-ux/cf-deploy-config-sub-generator';
+import type {
+    ApiHubConfig,
+    CfDeployConfigPromptOptions,
+    CfDeployConfigQuestions
+} from '@sap-ux/cf-deploy-config-sub-generator';
 import type {
     AbapDeployConfigAnswersInternal,
+    AbapDeployConfigPromptOptions,
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { CommonPromptOptions, PromptDefaultValue } from '@sap-ux/inquirer-common';
@@ -78,6 +83,7 @@ export async function getSubGenPrompts(
         configFile: options.config,
         indexGenerationAllowed,
         showOverwriteQuestion: showOverwrite,
+        promptOptions: options?.subGenPromptOptions as AbapDeployConfigPromptOptions,
         logger: DeploymentGenerator.logger
     });
 
@@ -88,7 +94,8 @@ export async function getSubGenPrompts(
         cfDestination: cfDestination,
         isCap: isCap,
         addOverwrite: showOverwrite,
-        apiHubConfig: apiHubConfig
+        apiHubConfig: apiHubConfig,
+        promptOptions: options?.subGenPromptOptions as CfDeployConfigPromptOptions
     });
 
     // Combine all prompts

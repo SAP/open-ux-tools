@@ -1,5 +1,94 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.3.9
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.9
+
+## 0.3.8
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/inquirer-common@0.7.3
+    -   @sap-ux/adp-tooling@0.14.8
+
+## 0.3.7
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+    -   @sap-ux/adp-tooling@0.14.7
+
+## 0.3.6
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.6
+
+## 0.3.5
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.5
+
+## 0.3.4
+
+### Patch Changes
+
+-   Updated dependencies [8e44d02]
+    -   @sap-ux/adp-tooling@0.14.4
+
+## 0.3.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.3
+
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [5f3aa03]
+    -   @sap-ux/adp-tooling@0.14.2
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [66b88e1]
+    -   @sap-ux/inquirer-common@0.7.1
+    -   @sap-ux/adp-tooling@0.14.1
+    -   @sap-ux/project-access@1.30.1
+    -   @sap-ux/fiori-generator-shared@0.12.1
+    -   @sap-ux/project-input-validator@0.6.1
+
+## 0.3.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-input-validator@0.6.0
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/adp-tooling@0.14.0
+    -   @sap-ux/btp-utils@1.1.0
+
+## 0.2.90
+
+### Patch Changes
+
+-   Updated dependencies [2ba9fe9]
+    -   @sap-ux/adp-tooling@0.13.45
+
 ## 0.2.89
 
 ### Patch Changes

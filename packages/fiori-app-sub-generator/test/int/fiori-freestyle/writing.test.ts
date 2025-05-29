@@ -1,13 +1,11 @@
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import fs, { copyFileSync, promises as fsPromise, mkdirSync } from 'fs';
+import { copyFileSync, promises as fsPromise, mkdirSync } from 'fs';
 import { join } from 'path';
 import { rimraf } from 'rimraf';
-import yeomanTest from 'yeoman-test';
-import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
 import { FloorplanFF, type State } from '../../../src/types';
-import { TestWritingGenerator, cleanTestDir, getTestDir, ignoreMatcherOpts, runWritingPhaseGen } from '../test-utils';
+import { cleanTestDir, getTestDir, ignoreMatcherOpts, runWritingPhaseGen } from '../test-utils';
 
 const EXPECTED_OUT_PATH = './expected-output';
 const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later

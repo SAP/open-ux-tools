@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/cap-config-writer",
     "description": "Add or update configuration for SAP CAP projects",
-    "version": "0.9.29",
+    "version": "0.10.2",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -44,6 +44,6 @@
         "@types/semver": "7.5.2"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }

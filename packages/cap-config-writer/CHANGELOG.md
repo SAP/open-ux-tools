@@ -1,5 +1,33 @@
 # @sap-ux/cap-config-writer
 
+## 0.10.2
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+
+## 0.10.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/fiori-generator-shared@0.12.1
+
+## 0.10.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/yaml@0.17.0
+
 ## 0.9.29
 
 ### Patch Changes

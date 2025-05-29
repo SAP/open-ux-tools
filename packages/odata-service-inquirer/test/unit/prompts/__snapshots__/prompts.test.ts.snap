@@ -138,6 +138,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Enter the URL of the SAP System",
@@ -240,6 +241,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Enter the URL of the SAP System",

@@ -1,5 +1,31 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.2
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+
+## 0.1.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.1
+
+## 0.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/nodejs-utils@0.2.0
+    -   @sap-ux/btp-utils@1.1.0
+
 ## 0.0.47
 
 ### Patch Changes

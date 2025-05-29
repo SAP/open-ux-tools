@@ -1,5 +1,130 @@
 # @sap-ux/preview-middleware
 
+## 0.20.15
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.9
+
+## 0.20.14
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.8
+
+## 0.20.13
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.7
+
+## 0.20.12
+
+### Patch Changes
+
+-   87ecdb8: fix: change indicators missing for change with control id in outline and scrollbar styling issue on quick action panel
+
+## 0.20.11
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.6
+
+## 0.20.10
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.5
+-   @sap-ux/system-access@0.6.1
+
+## 0.20.9
+
+### Patch Changes
+
+-   Updated dependencies [8e44d02]
+    -   @sap-ux/adp-tooling@0.14.4
+
+## 0.20.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.3
+
+## 0.20.7
+
+### Patch Changes
+
+-   2702f19: fix local flp file leading to error with virtual cards generator endpoint
+
+## 0.20.6
+
+### Patch Changes
+
+-   225e7d7: fix: Add message when controller extension pending change is created
+
+## 0.20.5
+
+### Patch Changes
+
+-   48872e8: fix(preview-middleware) fix template spacing
+
+## 0.20.4
+
+### Patch Changes
+
+-   c9b65f0: Migrate code from cards-editor-middleware to preview-middleware.
+
+## 0.20.3
+
+### Patch Changes
+
+-   b49c43f: fix: added apptype to quickactions and contextmenu
+
+## 0.20.2
+
+### Patch Changes
+
+-   5f3aa03: feat: Integration of ExtendControllerPlugin in Adaptation Editor
+-   Updated dependencies [5f3aa03]
+    -   @sap-ux/adp-tooling@0.14.2
+
+## 0.20.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.1
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/system-access@0.6.0
+
+## 0.20.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/system-access@0.6.0
+    -   @sap-ux/adp-tooling@0.14.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+
+## 0.19.43
+
+### Patch Changes
+
+-   Updated dependencies [2ba9fe9]
+    -   @sap-ux/adp-tooling@0.13.45
+
+## 0.19.42
+
+### Patch Changes
+
+-   a49ed05: Fix: Generic handling for change type and new UI component for displaying
+
 ## 0.19.41
 
 ### Patch Changes

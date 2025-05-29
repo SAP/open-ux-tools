@@ -1,5 +1,17 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.6.5
+
+### Patch Changes
+
+-   b49c43f: fix: added apptype to quickactions and contextmenu
+
+## 0.6.4
+
+### Patch Changes
+
+-   e856125: Fix: Generic handling for change type and new UI component for displaying
+
 ## 0.6.3
 
 ### Patch Changes

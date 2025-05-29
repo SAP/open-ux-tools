@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-generator-shared",
     "description": "Commonly used shared functionality and types to support the fiori generator.",
-    "version": "0.11.3",
+    "version": "0.12.2",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -48,6 +48,6 @@
         "@sap-ux/logger": "workspace:*"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }

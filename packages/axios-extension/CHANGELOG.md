@@ -1,5 +1,24 @@
 # @sap-ux/axios-extension
 
+## 1.21.1
+
+### Patch Changes
+
+-   2224d63: Remove feature toggle, required to enable HTTPS proxy configurations
+
+## 1.21.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+
 ## 1.20.3
 
 ### Patch Changes

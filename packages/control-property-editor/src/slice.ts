@@ -9,17 +9,15 @@ import type {
     InfoCenterMessage,
     OutlineNode,
     PendingChange,
-    PendingConfigurationChange,
     PendingControlChange,
-    PendingPropertyChange,
     PropertyChange,
     QuickActionGroup,
     SavedChange,
-    SavedConfigurationChange,
     SavedControlChange,
-    SavedPropertyChange,
     Scenario,
-    ShowMessage
+    ShowMessage,
+    PendingGenericChange,
+    SavedGenericChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
     setApplicationRequiresReload,
@@ -44,10 +42,9 @@ import {
     UNKNOWN_CHANGE_KIND,
     SAVED_CHANGE_TYPE,
     PENDING_CHANGE_TYPE,
-    PROPERTY_CHANGE_KIND,
-    CONFIGURATION_CHANGE_KIND,
     requestControlContextMenu,
-    showInfoCenterMessage
+    showInfoCenterMessage,
+    GENERIC_CHANGE_KIND
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -106,8 +103,8 @@ export interface PropertyChanges {
 export interface PropertyChangeStats {
     pending: number;
     saved: number;
-    lastSavedChange?: SavedPropertyChange | SavedConfigurationChange;
-    lastChange?: PendingPropertyChange | PendingConfigurationChange;
+    lastSavedChange?: SavedGenericChange;
+    lastChange?: PendingGenericChange;
 }
 
 export const enum FilterName {
@@ -206,10 +203,9 @@ const processControl = (control: ControlChangeStats, changeType: string): void =
  */
 const processPropertyChange = (
     control: ControlChangeStats,
-    change: PendingPropertyChange | SavedPropertyChange | PendingConfigurationChange | SavedConfigurationChange
+    change: PendingGenericChange | SavedGenericChange
 ): void => {
-    const { propertyName } = change;
-
+    const propertyName = change.properties[0].label;
     const property = control.properties[propertyName]
         ? {
               pending: control.properties[propertyName].pending,
@@ -243,13 +239,7 @@ const processPropertyChange = (
 const getControlChangeStats = (
     controls: ControlChanges,
     key: string,
-    change:
-        | PendingPropertyChange
-        | SavedPropertyChange
-        | PendingConfigurationChange
-        | SavedConfigurationChange
-        | PendingControlChange
-        | SavedControlChange,
+    change: PendingGenericChange | SavedGenericChange | PendingControlChange | SavedControlChange,
     type: string
 ): ControlChangeStats => {
     const control = controls[key]
@@ -262,11 +252,14 @@ const getControlChangeStats = (
         : {
               pending: 0,
               saved: 0,
-              controlName: change.kind === PROPERTY_CHANGE_KIND ? change.controlName : undefined,
+              controlName:
+                  change.kind === GENERIC_CHANGE_KIND && change.changeType === 'property'
+                      ? change.controlName
+                      : undefined,
               properties: {}
           };
     processControl(control, type);
-    if (change.kind === CONFIGURATION_CHANGE_KIND || change.kind === PROPERTY_CHANGE_KIND) {
+    if (change.kind === GENERIC_CHANGE_KIND && ['property', 'configuration'].includes(change.changeType)) {
         processPropertyChange(control, change);
     }
 
@@ -354,14 +347,17 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     if (change.kind === UNKNOWN_CHANGE_KIND) {
                         continue;
                     }
-                    if (change.kind === CONFIGURATION_CHANGE_KIND) {
-                        const { controlIds, type } = change;
-                        for (const id of controlIds) {
+                    // So far array of controlId is only used for generic configuration changes
+                    if (change.kind === GENERIC_CHANGE_KIND && Array.isArray(change?.controlId)) {
+                        const { controlId, type } = change;
+                        for (const id of controlId) {
                             const key = `${id}`;
                             const control = getControlChangeStats(state.changes.controls, key, change, type);
                             state.changes.controls[key] = control;
                         }
-                    } else {
+                    }
+                    // Unknown control changes missing change indicator, if restricted by generic change kind
+                    else if (change.controlId) {
                         const { controlId, type } = change;
                         const key = `${controlId}`;
                         const control = getControlChangeStats(state.changes.controls, key, change, type);

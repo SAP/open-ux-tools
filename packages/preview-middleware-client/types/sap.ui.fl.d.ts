@@ -6,6 +6,7 @@ declare module 'sap/ui/fl/Selector' {
     export default interface Selector {
         id: string;
         idIsLocal: boolean;
+        type?: string;
     }
 }
 declare module 'sap/ui/fl/Layer' {
@@ -59,6 +60,7 @@ declare module 'sap/ui/fl/Change' {
         getLayer: () => Layer;
         getContent: () => ContentType;
         setContent: (newContent: ContentType) => void;
+        getProperty: (propertyName: string) => string;
     }
     const Change: Change;
     export default Change;
