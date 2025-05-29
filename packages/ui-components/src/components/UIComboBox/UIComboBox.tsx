@@ -1,5 +1,11 @@
 import React from 'react';
-import type { IComboBoxProps, IComboBoxState, IAutofillProps, IButtonProps } from '@fluentui/react';
+import type {
+    IComboBoxProps,
+    IComboBoxState,
+    IAutofillProps,
+    IButtonProps,
+    ISelectableDroppableTextProps
+} from '@fluentui/react';
 import {
     ComboBox,
     IComboBox,
@@ -80,6 +86,15 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
      * `false` to hide it, or `undefined` to apply the default search filtering behavior.
      */
     customSearchFilter?: (searchTerm: string, option: IComboBoxOption) => boolean | undefined;
+
+    // ToDo
+    externalSearchProps?: {
+        // pending
+        noDataLabel?: string;
+        onExternalSearch: (query: string) => void;
+    };
+    // externalSearchMode?: boolean;
+    // onExternalSearch: (query: string) => void;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -146,6 +161,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.onScrollToItem = this.onScrollToItem.bind(this);
         this.setFocus = this.setFocus.bind(this);
         this.onRenderIcon = this.onRenderIcon.bind(this);
+        this.onRenderList = this.onRenderList.bind(this);
 
         initializeComponentRef(this);
 
@@ -602,19 +618,33 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         }
     };
 
-    private onRenderListLoading = (): JSX.Element | null => {
-        const styles = {
-            label: {
-                fontSize: '11px',
-                fontWeight: 'normal'
-            }
-        };
+    private onRenderList = (
+        props?: ISelectableDroppableTextProps<IComboBox, IComboBox>,
+        defaultRender?: (props?: ISelectableDroppableTextProps<IComboBox, IComboBox>) => JSX.Element | null
+    ): JSX.Element | null => {
+        console.log('');
+        const { onRenderList, externalSearchProps, options } = this.props;
+        if (onRenderList) {
+            return onRenderList(props, defaultRender);
+        }
+        const isLoading = this.isLoaderApplied(UIComboBoxLoaderType.List);
+        if (isLoading) {
+            const styles = {
+                label: {
+                    fontSize: '11px',
+                    fontWeight: 'normal'
+                }
+            };
 
-        return (
-            <div className="option-loading">
-                <UILoader label="Loading" className="uiLoaderXSmall" labelPosition="right" styles={styles} />
-            </div>
-        );
+            return (
+                <div className="option-loading">
+                    <UILoader label="Loading" className="uiLoaderXSmall" labelPosition="right" styles={styles} />
+                </div>
+            );
+        } else if (externalSearchProps?.noDataLabel && !options.length) {
+            return <div>{externalSearchProps.noDataLabel}</div>;
+        }
+        return defaultRender?.(props);
     };
 
     /**
@@ -813,7 +843,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                             ...(this.props.useComboBoxAsMenuMinWidth && {
                                 calloutMain: {
                                     minWidth: this.state.minWidth,
-                                    display: this.state.isListHidden ? 'none' : undefined
+                                    display:
+                                        this.state.isListHidden && !this.props.externalSearchProps?.noDataLabel
+                                            ? 'none'
+                                            : undefined
                                 }
                             })
                         },
@@ -842,9 +875,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         onMenuOpen: this.handleRefreshButton,
                         onChange: this.handleChange
                     })}
-                    {...(this.isLoaderApplied(UIComboBoxLoaderType.List) && {
-                        onRenderList: this.onRenderListLoading
-                    })}
+                    onRenderList={this.onRenderList}
+                    // {...(this.isLoaderApplied(UIComboBoxLoaderType.List) && {
+                    //     onRenderList: this.onRenderList
+                    // })}
                     {...(this.props.multiSelect && {
                         onScrollToItem: this.onScrollToItem,
                         ...(this.props.onChange && {

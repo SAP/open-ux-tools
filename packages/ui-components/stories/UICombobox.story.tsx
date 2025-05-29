@@ -93,11 +93,12 @@ export const WithLoading = (): JSX.Element => (
 
 export const WithLoadingOnSearch = (): JSX.Element => {
     const [loader, setLoader] = useState<UIComboBoxLoaderType[] | false>(false);
-    const [options, setOptions] = useState<IComboBoxOption[]>([{key: '', text: 'Type to search', disabled: true}]);
+    const [options, setOptions] = useState<IComboBoxOption[]>([]);
     return (
         <div style={{ width: '300px' }}>
             <UIComboBox
                 options={options}
+                isForceEnabled={true}
                 highlight={true}
                 allowFreeform={true}
                 useComboBoxAsMenuMinWidth={true}
@@ -105,19 +106,49 @@ export const WithLoadingOnSearch = (): JSX.Element => {
                 placeholder={'Start typing to search'}
                 onInputValueChange={() => {
                     // Trigger backend request???
-                    setOptions([{key: '', text: 'Type to search', disabled: true}]);
+                    setOptions([]);
+                    setLoader([UIComboBoxLoaderType.List, UIComboBoxLoaderType.Input]);
                     setTimeout(() => {
                         setOptions(data);
                         setLoader(false);
-                    }, 5000);
-                    setLoader([UIComboBoxLoaderType.List, UIComboBoxLoaderType.Input]);
+                    }, 2500);
                 }}
                 isLoading={loader}
                 styles={{ optionsContainerWrapper: { width: '262px' } }}
                 label="List and Input"
+                externalSearchProps={{
+                    noDataLabel: 'No data available'
+                }}
             />
         </div>
     );
+    // const [loader, setLoader] = useState<UIComboBoxLoaderType[] | false>(false);
+    // const [options, setOptions] = useState<IComboBoxOption[]>([{key: '', text: 'Type to search', disabled: true}]);
+    // return (
+    //     <div style={{ width: '300px' }}>
+    //         <UIComboBox
+    //             options={options}
+    //             isForceEnabled={true}
+    //             highlight={true}
+    //             allowFreeform={true}
+    //             useComboBoxAsMenuMinWidth={true}
+    //             autoComplete="on"
+    //             placeholder={'Start typing to search'}
+    //             onInputValueChange={() => {
+    //                 // Trigger backend request???
+    //                 setOptions([{key: '', text: 'Type to search', disabled: true}]);
+    //                 setTimeout(() => {
+    //                     setOptions(data);
+    //                     setLoader(false);
+    //                 }, 5000);
+    //                 setLoader([UIComboBoxLoaderType.List, UIComboBoxLoaderType.Input]);
+    //             }}
+    //             isLoading={loader}
+    //             styles={{ optionsContainerWrapper: { width: '262px' } }}
+    //             label="List and Input"
+    //         />
+    //     </div>
+    // );
 };
 
 export const DifferentStates = (): JSX.Element => (
