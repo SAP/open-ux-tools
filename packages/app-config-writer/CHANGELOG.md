@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.6.4
+
+### Patch Changes
+
+-   f8deed9: Remove '@sap-ux/cards-editor-middleware' dependency and 'sap-cards-generator' custom middleware for application having card generation enabled already.
+
 ## 0.6.3
 
 ### Patch Changes
