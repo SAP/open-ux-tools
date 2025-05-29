@@ -1,5 +1,5 @@
 import type Generator from 'yeoman-generator';
-import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
+import { type AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { Manifest } from '@sap-ux/project-access';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
@@ -56,6 +56,7 @@ export function addFlpGen(
     appWizard?: AppWizard
 ): void {
     try {
+        // We are using this namespace for now because '@sap-ux/adp-flp-config-sub-generator' is not yet bundled in '@sap/generator-fiori'.
         composeWith(require.resolve('@sap-ux/adp-flp-config-sub-generator/generators/app'), {
             launchAsSubGen: true,
             manifest,
@@ -104,11 +105,11 @@ export function addDeployGen(
             ...(destinationName && { appGenDestination: destinationName })
         };
 
-        composeWith(require.resolve('@sap-ux/deploy-config-sub-generator/generators/app'), generatorOptions);
-        logger.info(`'@sap-ux/deploy-config-sub-generator' was called.`);
-    } catch (e: any) {
+        composeWith('@sap/fiori:deploy-config', generatorOptions);
+        logger.info(`'@sap/fiori:deploy-config' was called.`);
+    } catch (e) {
         logger.error(e);
-        throw new Error(`Could not call '@sap-ux/deploy-config-sub-generator' sub-generator: ${e.message}`);
+        throw new Error(`Could not call '@sap/fiori:deploy-config' sub-generator: ${e.message}`);
     }
 }
 
@@ -138,9 +139,9 @@ export async function addExtProjectGen(
             appWizard
         });
         logger.info(`'@bas-dev/generator-extensibility-sub' was called.`);
-    } catch (e: any) {
+    } catch (e) {
         logger.info(t('error.creatingExtensionProjectError'));
-        logger.error(e.message);
-        appWizard?.showError(e.message, MessageType.notification);
+        logger.error(e);
+        throw new Error(`Could not call '@bas-dev/generator-extensibility-sub' sub-generator: ${e.message}`);
     }
 }

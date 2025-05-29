@@ -37,7 +37,7 @@ import AdpFlpConfigLogger from '../utils/logger';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
 import { validateJsonInput } from './questions/helper/validators';
-import { getPackageInfo, installDependencies } from '../utils/deps';
+import { getPackageInfo, installDependencies, setHeaderTitle } from '../utils/deps';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
@@ -132,6 +132,9 @@ export default class extends Generator {
         this.jsonInput = parseJsonInput(jsonInputString, this.toolsLogger);
 
         if (!this.jsonInput) {
+            this.env.lookup({ packagePatterns: ['@sap/generator-fiori'] });
+            setHeaderTitle(opts, this.logger);
+
             initCache(this.logger, this.appWizard);
             this.prompts = new YeomanUiSteps([]);
             this.setPromptsCallback = (fn): void => {

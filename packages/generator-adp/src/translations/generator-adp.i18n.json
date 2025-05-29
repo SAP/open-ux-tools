@@ -4,8 +4,8 @@
         "configurationDescr": "Configure the system and select an application.",
         "projectAttributesName": "Project Attributes",
         "projectAttributesDescr": "Configure the main project attributes.",
-        "flpConfigName": "FLP Configuration",
-        "flpConfigDescr": "Configure Fiori Launchpad settings for {{- projectName}}",
+        "flpConfigName": "SAP Fiori Launchpad Configuration",
+        "flpConfigDescr": "Configure SAP Fiori launchpad settings for {{- projectName}}.",
         "deployConfigName": "Deployment Configuration",
         "deployConfigDescr": "Configure deployment settings."
     },
@@ -65,7 +65,6 @@
         "appParameterMissing": "Could not create an extension project because the application parameters are missing. Please select a different application.",
         "destinationInfoMissing": "Could not create an extension project because the destination info is missing. Please select a different system.",
         "systemNotFound": "System not found or not supported: {{system}}. Please check the system exists.",
-        "applicationNotFound": "Application not found or not supported: {{appName}}. Please check the application exists.",
-        "callingDeployGen": "Failed to invoke the Fiori deployment sub-generator."
+        "applicationNotFound": "Application not found or not supported: {{appName}}. Please check the application exists."
     }
 }

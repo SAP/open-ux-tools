@@ -2418,9 +2418,6 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
-      '@sap-ux/deploy-config-sub-generator':
-        specifier: workspace:*
-        version: link:../deploy-config-sub-generator
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle

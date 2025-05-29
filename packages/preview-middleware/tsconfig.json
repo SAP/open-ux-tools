@@ -9,7 +9,7 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
-    "erasableSyntaxOnly": true
+    // "erasableSyntaxOnly": true
   },
   "references": [
     {
