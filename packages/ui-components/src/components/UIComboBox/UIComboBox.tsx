@@ -153,12 +153,12 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
+     * Method checks if the options or loading state have changed and a query exists, it updates the hidden options.
      *
-     * @param {UIComboBoxProps} nextProps
-     * @returns {boolean}
+     * @param nextProps - The incoming props to compare with current props.
+     * @returns Always returns true to allow the component to re-render.
      */
     shouldComponentUpdate(nextProps: UIComboBoxProps): boolean {
-        console.log('shouldComponentUpdate');
         if (
             (nextProps.options !== this.props.options ||
                 this.isLoaderChanged(this.props.isLoading, nextProps.isLoading)) &&
@@ -180,10 +180,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     /**
      * Updates hidden options.
      *
-     * @param {IComboBoxOption[]} opts
+     * @param opts Current combobox options
+     * @param isLoading Current combobox loading state
      */
     private updateHiddenOptions(opts: IComboBoxOption[], isLoading?: boolean | UIComboBoxLoaderType[]): void {
-        console.log('updateHiddenOptions');
         this.isListHidden = true;
         let currentGroup: IComboBoxOption | undefined;
         let isGroupVisible = false;
@@ -204,7 +204,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 const isVisible =
                     this.isLoaderApplied(UIComboBoxLoaderType.List, isLoading) ||
                     this.isOptionVisibleByQuery(option, this.query);
-                console.log('isVisible ' + isVisible);
                 option.hidden = !isVisible;
                 if (this.isListHidden && !option.hidden) {
                     this.isListHidden = false;
@@ -720,6 +719,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * Method returns if loader should be displayed for passed type.
      *
      * @param type Loader's place
+     * @param isLoading Current combobox loading state
      * @returns True if loader should be displayed for passed type.
      */
     private isLoaderApplied(type: UIComboBoxLoaderType, isLoading = this.props.isLoading): boolean {
