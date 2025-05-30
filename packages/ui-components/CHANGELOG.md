@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.26.5
+
+### Patch Changes
+
+-   5b4af69: UIComboBox: Add support for external (backend) search with example in Storybook
+
 ## 1.26.4
 
 ### Patch Changes
