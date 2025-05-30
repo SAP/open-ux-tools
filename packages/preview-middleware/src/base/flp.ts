@@ -12,6 +12,9 @@ import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
 import {
     getWebappPath,
+    getProjectType,
+    type ProjectType,
+    findProjectRoot,
     type Manifest,
     FileName,
     type ManifestNamespace,
@@ -102,6 +105,7 @@ export class FlpSandbox {
     private readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;
     private readonly cardGenerator?: CardGeneratorConfig;
+    private projectType: ProjectType;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -146,6 +150,7 @@ export class FlpSandbox {
         resources: Record<string, string> = {},
         adp?: AdpPreview
     ): Promise<void> {
+        this.projectType = await getProjectType(await findProjectRoot(process.cwd()));
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
@@ -247,6 +252,14 @@ export class FlpSandbox {
             );
         } else {
             this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
+        }
+        if (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs') {
+            this.templateConfig.ui5.flex?.splice(0, 1);
+            this.logger.debug(
+                `The ABAP connector is not being used because the current project type is '${this.projectType}'.`
+            );
+        } else {
+            this.logger.debug(`The ABAP connector is being used.`);
         }
     }
 
