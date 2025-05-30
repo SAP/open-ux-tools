@@ -666,8 +666,8 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                     <UILoader label="Loading" className="uiLoaderXSmall" labelPosition="right" styles={styles} />
                 </div>
             );
-        } else if (externalSearchProps?.noDataLabel && !options.length) {
-            return <div>{externalSearchProps.noDataLabel}</div>;
+        } else if (externalSearchProps?.noDataLabel && (!options.length || this.isListHidden)) {
+            return <div className='option-no-data'>{externalSearchProps.noDataLabel}</div>;
         }
         return defaultRender?.(props);
     };
@@ -919,9 +919,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         onChange: this.handleChange
                     })}
                     onRenderList={this.onRenderList}
-                    // {...(this.isLoaderApplied(UIComboBoxLoaderType.List) && {
-                    //     onRenderList: this.onRenderList
-                    // })}
                     {...(this.props.multiSelect && {
                         onScrollToItem: this.onScrollToItem,
                         ...(this.props.onChange && {

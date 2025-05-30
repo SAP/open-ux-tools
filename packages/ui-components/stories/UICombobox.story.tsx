@@ -105,7 +105,6 @@ export const WithLoadingOnSearch = (): JSX.Element => {
                 autoComplete="on"
                 placeholder={'Start typing to search'}
                 isLoading={loader}
-                styles={{ optionsContainerWrapper: { width: '262px' } }}
                 label="List and Input"
                 externalSearchProps={{
                     noDataLabel: 'No data available',
