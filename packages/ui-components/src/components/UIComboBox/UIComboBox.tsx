@@ -159,7 +159,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
     private calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
-    private onExternalSearchDebounce: (query: string) => void;
+    private readonly onExternalSearchDebounce: (query: string) => void;
 
     /**
      * Initializes component properties.
@@ -644,7 +644,18 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         }
     };
 
-    private onRenderList = (
+    /**
+     * Custom render function for the combo box dropdown list.
+     *
+     * This method handles following cases:
+     * 1. If a loading state is active (as determined by `isLoaderApplied`), it renders a loading indicator.
+     * 2. If no options are available and a `noDataLabel` is provided via `externalSearchProps`, it shows a "no data" message.
+     *
+     * @param props The rendering props for the selectable, droppable list.
+     * @param defaultRender The default rendering function provided by the ComboBox component.
+     * @returns A JSX element representing the rendered list.
+     */
+    private readonly onRenderList = (
         props?: ISelectableDroppableTextProps<IComboBox, IComboBox>,
         defaultRender?: (props?: ISelectableDroppableTextProps<IComboBox, IComboBox>) => JSX.Element | null
     ): JSX.Element | null => {

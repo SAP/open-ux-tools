@@ -91,41 +91,6 @@ export const WithLoading = (): JSX.Element => (
     </div>
 );
 
-export const WithLoadingOnSearch = (): JSX.Element => {
-    const [loader, setLoader] = useState<UIComboBoxLoaderType[] | false>(false);
-    const [options, setOptions] = useState<IComboBoxOption[]>([]);
-    return (
-        <div style={{ width: '300px' }}>
-            <UIComboBox
-                options={options}
-                isForceEnabled={true}
-                highlight={true}
-                allowFreeform={true}
-                useComboBoxAsMenuMinWidth={true}
-                autoComplete="on"
-                placeholder={'Start typing to search'}
-                isLoading={loader}
-                label="List and Input"
-                externalSearchProps={{
-                    noDataLabel: 'No data available',
-                    onInputChange: () => {
-                        // Show loader to indicate search
-                        setOptions([]);
-                        setLoader([UIComboBoxLoaderType.List, UIComboBoxLoaderType.Input]);
-                    },
-                    onExternalSearch: () => {
-                        // Simulate backend call
-                        setTimeout(() => {
-                            setOptions(data);
-                            setLoader(false);
-                        }, 2500);
-                    }
-                }}
-            />
-        </div>
-    );
-};
-
 export const DifferentStates = (): JSX.Element => (
     <div style={{ width: '300px' }}>
         <UIComboBox
@@ -582,3 +547,38 @@ export const AdditionalCustomSearch = (): JSX.Element => (
         />
     </div>
 );
+
+export const WithExternalSearch = (): JSX.Element => {
+    const [loader, setLoader] = useState<UIComboBoxLoaderType[] | false>(false);
+    const [options, setOptions] = useState<IComboBoxOption[]>([]);
+    return (
+        <div style={{ width: '300px' }}>
+            <UIComboBox
+                options={options}
+                isForceEnabled={true}
+                highlight={true}
+                allowFreeform={true}
+                useComboBoxAsMenuMinWidth={true}
+                autoComplete="on"
+                placeholder={'Start typing to search'}
+                isLoading={loader}
+                label="List and Input"
+                externalSearchProps={{
+                    noDataLabel: 'No data available',
+                    onInputChange: () => {
+                        // Show loader to indicate search
+                        setOptions([]);
+                        setLoader([UIComboBoxLoaderType.List, UIComboBoxLoaderType.Input]);
+                    },
+                    onExternalSearch: () => {
+                        // Simulate backend call
+                        setTimeout(() => {
+                            setOptions(data);
+                            setLoader(false);
+                        }, 2500);
+                    }
+                }}
+            />
+        </div>
+    );
+};
