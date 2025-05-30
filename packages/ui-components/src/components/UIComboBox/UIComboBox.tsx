@@ -28,6 +28,7 @@ import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } fr
 import { CalloutCollisionTransform } from '../UICallout';
 import { isHTMLInputElement } from '../../utilities';
 import { REQUIRED_LABEL_INDICATOR } from '../types';
+import { debounce } from '../../utilities/debounce';
 
 export {
     IComboBoxOption as UIComboBoxOption,
@@ -87,14 +88,12 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
      */
     customSearchFilter?: (searchTerm: string, option: IComboBoxOption) => boolean | undefined;
 
-    // ToDo
     externalSearchProps?: {
-        // pending
         noDataLabel?: string;
+        onInputChange?: (query: string) => void;
         onExternalSearch: (query: string) => void;
+        debounceTime?: number;
     };
-    // externalSearchMode?: boolean;
-    // onExternalSearch: (query: string) => void;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -139,6 +138,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
     private calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
+    private onExternalSearchDebounce: (query: string) => void;
 
     /**
      * Initializes component properties.
@@ -162,6 +162,11 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.setFocus = this.setFocus.bind(this);
         this.onRenderIcon = this.onRenderIcon.bind(this);
         this.onRenderList = this.onRenderList.bind(this);
+        this.onInputValueChange = this.onInputValueChange.bind(this);
+        this.onExternalSearchDebounce = debounce(
+            (query: string) => this.props.externalSearchProps?.onExternalSearch?.(query),
+            props.externalSearchProps?.debounceTime ?? 500
+        );
 
         initializeComponentRef(this);
 
@@ -622,7 +627,6 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         props?: ISelectableDroppableTextProps<IComboBox, IComboBox>,
         defaultRender?: (props?: ISelectableDroppableTextProps<IComboBox, IComboBox>) => JSX.Element | null
     ): JSX.Element | null => {
-        console.log('');
         const { onRenderList, externalSearchProps, options } = this.props;
         if (onRenderList) {
             return onRenderList(props, defaultRender);
@@ -792,6 +796,19 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         return defaultRender?.(props) ?? null;
     }
 
+    private onInputValueChange(text: string): void {
+        const { onInputValueChange, externalSearchProps } = this.props;
+        // Call external cb from props
+        onInputValueChange?.(text);
+        if (externalSearchProps) {
+            const { onExternalSearch, onInputChange } = externalSearchProps;
+            onInputChange?.(text);
+            if (onExternalSearch) {
+                this.onExternalSearchDebounce(text);
+            }
+        }
+    }
+
     /**
      * @returns {JSX.Element}
      */
@@ -886,6 +903,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         })
                     })}
                     errorMessage={messageInfo.message}
+                    onInputValueChange={this.onInputValueChange}
                 />
             </div>
         );
