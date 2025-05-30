@@ -1,6 +1,6 @@
 import { readManifest } from '../../src/utils/file-helpers';
 import type { Editor } from 'mem-fs-editor';
-import { t } from '../../src/utils/i18n'; 
+import { t } from '../../src/utils/i18n';
 import { adtSourceTemplateId } from '../../src/utils/constants';
 import RepoAppDownloadLogger from '../../src/utils/logger';
 import { join } from 'path';
@@ -39,7 +39,7 @@ describe('readManifest', () => {
 
     it('should throw an error if manifest is not found', async () => {
         mockReadJSON.mockReturnValue(null);
-        readManifest(extractedProjectPath, mockFs)
+        readManifest(extractedProjectPath, mockFs);
         expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.readManifestErrors.readManifestFailed'));
     });
 
@@ -49,7 +49,7 @@ describe('readManifest', () => {
         };
         // Mock fs readJSON function to return a manifest without 'sap.app'
         mockReadJSON.mockReturnValue(invalidManifestNoSapApp);
-        readManifest(extractedProjectPath, mockFs)
+        readManifest(extractedProjectPath, mockFs);
         expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.readManifestErrors.sapAppNotDefined'));
     });
 
@@ -64,7 +64,9 @@ describe('readManifest', () => {
         };
         // Mock fs readJSON function to return a manifest with an unsupported sourceTemplate.id
         mockReadJSON.mockReturnValue(invalidManifestWrongTemplate);
-        readManifest(extractedProjectPath, mockFs)
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.readManifestErrors.sourceTemplateNotSupported'));
+        readManifest(extractedProjectPath, mockFs);
+        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(
+            t('error.readManifestErrors.sourceTemplateNotSupported')
+        );
     });
 });

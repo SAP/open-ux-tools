@@ -9,7 +9,10 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 jest.mock('adm-zip');
 jest.mock('../../src/utils/logger', () => ({
     logger: {
-        error: jest.fn()
+        error: jest.fn(),
+        warn: jest.fn(),
+        info: jest.fn(),
+        debug: jest.fn()
     }
 }));
 
@@ -65,10 +68,7 @@ describe('App Download Utils', () => {
 
             await extractZip('/tmp/project', mockFs as any);
 
-            expect(mockFs.write).toHaveBeenCalledWith(
-                join('/tmp/project', 'file1.txt'),
-                'file content'
-            );
+            expect(mockFs.write).toHaveBeenCalledWith(join('/tmp/project', 'file1.txt'), 'file content');
             expect(mockFs.write).toHaveBeenCalledTimes(1);
         });
 
