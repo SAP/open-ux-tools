@@ -118,7 +118,7 @@ export function getCredentialsPrompts<T extends Answers>(
                 if (
                     connectionValidator.ignoreCertError &&
                     // This condition prevents showing the message twice as it will already be shown under the new system URL prompt.
-                    !((answers as NewSystemAnswers)?.newSystemType === 'abapOnPrem')
+                    (answers as NewSystemAnswers)?.newSystemType !== 'abapOnPrem'
                 ) {
                     return {
                         message: t('warnings.certErrorIgnoredByNodeSetting'),
