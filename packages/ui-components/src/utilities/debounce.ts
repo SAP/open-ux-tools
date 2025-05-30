@@ -1,6 +1,5 @@
 /**
  * Returns a function which calls the callback function only after the specified idle time
- * Works similar to the Debounce operator from rxjs https://reactivex.io/documentation/operators/debounce.html link.
  *
  * @param callback Function to execute
  * @param delay Idle period in milliseconds after which the callback will be executed

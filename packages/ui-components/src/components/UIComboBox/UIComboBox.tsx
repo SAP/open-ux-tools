@@ -49,6 +49,31 @@ export enum UIComboBoxLoaderType {
     Input = 'Input'
 }
 
+export interface UIComboBoxExternalSearchProps {
+    /**
+     * Label displayed in the dropdown when there are no available options.
+     */
+    noDataLabel?: string;
+
+    /**
+     * Callback triggered immediately when the user types in the input field.
+     * Useful to clear data and show loader indicator.
+     */
+    onInputChange?: (query: string) => void;
+
+    /**
+     * Callback triggered after the user stops typing for the specified debounce duration.
+     * This is where the external search should be performed.
+     */
+    onExternalSearch: (query: string) => void;
+
+    /**
+     * Delay in milliseconds between the last user input and triggering the external search.
+     * @default 500
+     */
+    debounceTime?: number;
+}
+
 export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps {
     wrapperRef?: React.RefObject<HTMLDivElement>;
     highlight?: boolean;
@@ -88,12 +113,7 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
      */
     customSearchFilter?: (searchTerm: string, option: IComboBoxOption) => boolean | undefined;
 
-    externalSearchProps?: {
-        noDataLabel?: string;
-        onInputChange?: (query: string) => void;
-        onExternalSearch: (query: string) => void;
-        debounceTime?: number;
-    };
+    externalSearchProps?: UIComboBoxExternalSearchProps;
 }
 export interface UIComboBoxState {
     minWidth?: number;
