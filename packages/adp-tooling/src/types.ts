@@ -193,6 +193,8 @@ export interface NewInboundNavigation {
     title: string;
     /** Optional: Subtitle associated with the inbound navigation. */
     subTitle?: string;
+    /** Icon associated with the inbound navigation. */
+    icon?: string;
 }
 
 export interface InternalInboundNavigation extends NewInboundNavigation {

@@ -49,6 +49,9 @@ export function getParameterStringPrompt(inbounds?: ManifestNamespace.Inbound): 
             return parameters ? JSON.stringify(parameters, null, 2) : '';
         },
         validate: (value: string, answers: FLPConfigAnswers): string | boolean => {
+            if (!value) {
+                return true; // No additional parameters provided, skip validation
+            }
             try {
                 JSON.parse(value);
             } catch (error) {

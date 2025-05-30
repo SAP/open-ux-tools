@@ -2,10 +2,10 @@ import path from 'path';
 import { create as createStorage } from 'mem-fs';
 import { type Editor, create } from 'mem-fs-editor';
 
-import { type NewI18nEntry, createPropertiesI18nEntries } from '@sap-ux/i18n';
+import { type NewI18nEntry, createOrOverwriteI18nEntries } from '@sap-ux/i18n';
 
 import { getVariant, updateVariant } from '../';
-import type { Content, InternalInboundNavigation } from '../types';
+import type { Content, InternalInboundNavigation, DescriptorVariantContent } from '../types';
 import { enhanceManifestChangeContentWithFlpConfig as enhanceInboundConfig } from './options';
 
 /**
@@ -26,6 +26,8 @@ export async function generateInboundConfig(
     }
 
     const variant = await getVariant(basePath, fs);
+
+    variant.content = removeInboundChangeTypes(variant.content);
 
     if (!config?.inboundId) {
         config.inboundId = `${variant.id}.InboundID`;
@@ -75,6 +77,20 @@ export async function updateI18n(
 ): Promise<void> {
     const newEntries = getFlpI18nKeys(config, appId);
     const i18nPath = path.join(basePath, 'webapp', 'i18n', 'i18n.properties');
+    const keysToRemove = [`${appId}_sap.app.crossNavigation.inbounds`];
+    await createOrOverwriteI18nEntries(i18nPath, newEntries, keysToRemove, basePath, fs);
+}
 
-    await createPropertiesI18nEntries(i18nPath, newEntries, basePath, fs);
+/**
+ * Removes elements with changeType 'appdescr_app_addNewInbound' and 'appdescr_app_removeAllInboundsExceptOne' from the given array.
+ *
+ * @param content The array of manifest change objects.
+ * @returns A new array with the specified elements removed.
+ */
+export function removeInboundChangeTypes(content: DescriptorVariantContent[]): DescriptorVariantContent[] {
+    return content.filter(
+        (item) =>
+            item.changeType !== 'appdescr_app_addNewInbound' &&
+            item.changeType !== 'appdescr_app_removeAllInboundsExceptOne'
+    );
 }

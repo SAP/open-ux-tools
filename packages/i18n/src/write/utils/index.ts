@@ -33,3 +33,52 @@ export async function writeToExistingI18nPropertiesFile(
         return false;
     }
 }
+
+/**
+ * Overwrites an existing i18n.properties file by removing specified keys and adding new i18n entries.
+ *
+ * @param i18nFilePath - The path to the i18n file.
+ * @param newI18nEntries - Array of new i18n entries to add.
+ * @param keysToRemove - Array of keys to remove from the file.
+ * @param fs - Optional mem-fs-editor instance.
+ * @returns Promise<void>
+ */
+export async function overwriteI18nPropertiesFile(
+    i18nFilePath: string,
+    newI18nEntries: NewI18nEntry[],
+    keysToRemove: string[],
+    fs?: Editor
+): Promise<void> {
+    // Remove lines with keys to remove
+    const content = await readFile(i18nFilePath, fs);
+    const lines = content ? content.split(/\r\n|\n/) : [];
+    const filteredLines: string[] = [];
+
+    for (let i = 0; i < lines.length; ) {
+        const trimmed = lines[i].trim();
+        // Check if this line is a key to remove
+        const matchIdx = keysToRemove.findIndex((key) => trimmed.includes(key));
+        if (matchIdx !== -1) {
+            // Remove comment/empty lines above
+            let j = filteredLines.length - 1;
+            while (j >= 0 && (filteredLines[j].trim().startsWith('#') || filteredLines[j].trim() === '')) {
+                filteredLines.pop();
+                j--;
+            }
+            // Skip this line (the key) and any empty lines below
+            i++;
+            while (i < lines.length && lines[i].trim() === '') {
+                i++;
+            }
+        } else {
+            filteredLines.push(lines[i]);
+            i++;
+        }
+    }
+    // Add new entries
+    const newContent = filteredLines
+        .concat(newI18nEntries.map((entry) => printPropertiesI18nEntry(entry.key, entry.value, entry.annotation)))
+        .join('\n');
+
+    await writeFile(i18nFilePath, newContent, fs);
+}

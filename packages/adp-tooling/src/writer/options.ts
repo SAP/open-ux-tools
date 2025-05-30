@@ -269,54 +269,6 @@ function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }
 }
 
 /**
- * Get a Inbound change content with provided inboundId.
- *
- * @param flpConfiguration FLP cloud project configuration
- * @param appId application id
- * @returns Inbound change content.
- */
-function getInboundChangeContentWithExistingInboundId(
-    flpConfiguration: ChangeInboundNavigation,
-    appId: string
-): InboundContent {
-    const inboundContent: InboundContent = {
-        inboundId: flpConfiguration.inboundId,
-        entityPropertyChange: [
-            {
-                propertyPath: 'title',
-                operation: 'UPSERT',
-                propertyValue: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.title}}`
-            }
-        ]
-    };
-
-    if (flpConfiguration.subTitle) {
-        inboundContent.entityPropertyChange.push({
-            propertyPath: 'subTitle',
-            operation: 'UPSERT',
-            propertyValue: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`
-        });
-    }
-
-    inboundContent.entityPropertyChange.push({
-        propertyPath: 'signature/parameters/sap-appvar-id',
-        operation: 'UPSERT',
-        propertyValue: {
-            required: true,
-            filter: {
-                value: appId,
-                format: 'plain'
-            },
-            launcherValue: {
-                value: appId
-            }
-        }
-    });
-
-    return inboundContent;
-}
-
-/**
  * Get a Inbound change content without provided inboundId.
  *
  * @param flpConfiguration FLP cloud project configuration
@@ -327,9 +279,7 @@ function getInboundChangeContentWithNewInboundID(
     flpConfiguration: InternalInboundNavigation,
     appId: string
 ): InboundChangeContentAddInboundId {
-    const parameters = flpConfiguration?.additionalParameters
-        ? parseParameters(flpConfiguration?.additionalParameters)
-        : {};
+    const parameters = flpConfiguration?.additionalParameters ? JSON.parse(flpConfiguration.additionalParameters) : {};
 
     const content: InboundChangeContentAddInboundId = {
         inbound: {

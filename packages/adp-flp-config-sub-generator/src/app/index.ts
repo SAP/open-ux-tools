@@ -17,6 +17,7 @@ import {
     isCFEnvironment,
     generateInboundConfig,
     type InternalInboundNavigation,
+    type NewInboundNavigation,
     type AdpPreviewConfig,
     type DescriptorVariant
 } from '@sap-ux/adp-tooling';
@@ -80,9 +81,11 @@ export default class extends Generator {
     private ui5Yaml: AdpPreviewConfig;
     private credentials: CredentialsAnswers;
     private provider: AbapServiceProvider;
-    private inbounds: ManifestNamespace.Inbound;
+    private inbounds?: ManifestNamespace.Inbound;
     private appId: string;
     private variant: DescriptorVariant;
+    private tileActionsAnswers?: TileActionAnswers & FLPConfigAnswers;
+    private isCloud: boolean = false;
 
     /**
      * Creates an instance of the generator.
@@ -150,11 +153,8 @@ export default class extends Generator {
         if (this.authenticationRequired) {
             await this._promptAuthentication();
         }
-        const tileActionsAnswers = await this._promptTileActions();
-        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(
-            this.inbounds,
-            this._getPromptConfig(tileActionsAnswers)
-        );
+        this.tileActionsAnswers = await this._promptTileActions();
+        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(this.inbounds, this._getPromptConfig());
         this.answers = await this.prompt(prompts);
     }
 
@@ -163,16 +163,7 @@ export default class extends Generator {
             return;
         }
         try {
-            const inboundId = `${this.answers.inboundId?.semanticObject}-${this.answers.inboundId?.action}`;
-            const config = {
-                inboundId,
-                semanticObject: this.answers.semanticObject,
-                action: this.answers.action,
-                title: this.answers.title,
-                subTitle: this.answers.subTitle,
-                icon: this.answers.icon,
-                additionalParameters: this.answers.additionalParameters
-            };
+            const config = this._getWriteConfig();
             await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation, this.fs);
         } catch (error) {
             this.logger.error(`Writing phase failed: ${error}`);
@@ -204,7 +195,7 @@ export default class extends Generator {
      *
      * @returns {Promise<ManifestNamespace.Inbound>} list of tile inbounds of the application.
      */
-    private async _getAppInbounds(): Promise<ManifestNamespace.Inbound> {
+    private async _getAppInbounds(): Promise<ManifestNamespace.Inbound | undefined> {
         const lrepService = this.provider.getLayeredRepository();
 
         let inbounds: Inbound[] = [];
@@ -212,6 +203,10 @@ export default class extends Generator {
             inbounds = (await lrepService.getSystemInfo(undefined, undefined, this.appId)).inbounds as Inbound[];
         } catch (error) {
             this._handleFetchingError(error);
+        }
+
+        if (!inbounds?.length) {
+            return undefined;
         }
 
         return inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
@@ -436,16 +431,16 @@ export default class extends Generator {
     /**
      * Returns the prompt configuration options based on the provided tile actions answers.
      *
-     * @param {TileActionAnswers & FLPConfigAnswers} [tileActionsAnswers] - The answers from the tile actions prompt.
      * @returns {FLPConfigPromptOptions} The prompt configuration options.
      */
-    private _getPromptConfig(tileActionsAnswers?: TileActionAnswers & FLPConfigAnswers): FLPConfigPromptOptions {
-        const { tileHandlingAction, copyFromExisting } = tileActionsAnswers ?? {};
+    private _getPromptConfig(): FLPConfigPromptOptions {
+        const { tileHandlingAction, copyFromExisting } = this.tileActionsAnswers ?? {};
 
         // If the user chooses to add a new tile and copy the original, semantic object and action are required
         if (!this.inbounds || (tileHandlingAction === tileActions.ADD && copyFromExisting === false)) {
+            const hideExistingFlpConfigInfo = !(!this.inbounds && this._hasExistingFlpConfig());
             return {
-                existingFlpConfigInfo: { hide: !this.inbounds && this._hasExistingFlpConfig() },
+                existingFlpConfigInfo: { hide: hideExistingFlpConfigInfo },
                 inboundId: { hide: true },
                 overwrite: { hide: true }
             };
@@ -533,9 +528,12 @@ export default class extends Generator {
      * @returns {Promise<void>} A promise that resolves when the initialization is complete.
      */
     private async _initializeStandAloneGenerator(): Promise<void> {
-        let isCloud = false;
+        if (this.isCloud) {
+            return;
+        }
+
         try {
-            isCloud = await this._checkIsCloud();
+            this.isCloud = await this._checkIsCloud();
         } catch (error) {
             this.authenticationRequired = this._checkAuthRequired(error);
             if (this.authenticationRequired) {
@@ -543,12 +541,46 @@ export default class extends Generator {
             }
             this._handleFetchingError(error);
         }
-        await this._validateProject(isCloud);
+        await this._validateProject(this.isCloud);
         if (this.abort) {
             return;
         }
         this.variant = await getVariant(this.projectRootPath, this.fs);
         this.appId = this.variant.reference;
+    }
+
+    /**
+     * Returns the configuration for writing the inbound navigation based on the selected tile action.
+     *
+     * @returns {InternalInboundNavigation | NewInboundNavigation} The configuration object for the inbound navigation.
+     */
+    private _getWriteConfig(): InternalInboundNavigation | NewInboundNavigation {
+        const { tileHandlingAction } = this.tileActionsAnswers ?? {};
+        if (tileHandlingAction === tileActions.REPLACE) {
+            const {
+                semanticObject,
+                action,
+                signature: { parameters }
+            } = this.answers.inboundId ?? ({} as InboundContent);
+            return {
+                inboundId: `${semanticObject}-${action}`,
+                semanticObject: semanticObject ?? '',
+                action: action ?? '',
+                title: this.answers.title ?? '',
+                subTitle: this.answers.subTitle ?? '',
+                icon: this.answers.icon ?? '',
+                additionalParameters: JSON.stringify(parameters) ?? ''
+            };
+        }
+
+        return {
+            semanticObject: this.answers.semanticObject ?? '',
+            action: this.answers.action ?? '',
+            title: this.answers.title ?? '',
+            subTitle: this.answers.subTitle ?? '',
+            icon: this.answers.icon ?? '',
+            additionalParameters: this.answers.additionalParameters ?? ''
+        };
     }
 }
 

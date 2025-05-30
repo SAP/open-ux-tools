@@ -3,7 +3,7 @@ import isNil from 'lodash/isNil';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 
-import { initI18n } from './i18n';
+import { initI18n, addi18nResourceBundle } from './i18n';
 import { promptNames } from './types';
 import { getExistingFlpConfigInfoPrompt } from './prompts/questions';
 import { getQuestions } from './prompts';
@@ -100,6 +100,7 @@ export {
     getPrompts,
     getExistingFlpConfigInfoPrompt,
     prompt,
+    addi18nResourceBundle,
     promptNames,
     type InquirerAdapter,
     type PromptDefaultValue,
