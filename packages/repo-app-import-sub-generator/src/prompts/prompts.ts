@@ -48,6 +48,38 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
     } as FileBrowserQuestion<RepoAppDownloadAnswers>;
 };
 
+const getCliValidatePrompts = async (
+    appList: AppIndex,
+    quickDeployedAppConfig?: QuickDeployedAppConfig,
+    appWizard?: AppWizard
+): Promise<Question> => {
+    return {
+        when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
+            if (answers[PromptNames.selectedApp]) {
+                try {
+                    await validateAppSelection(
+                        answers[PromptNames.selectedApp],
+                        appList,
+                        quickDeployedAppConfig,
+                        appWizard
+                    );
+                } catch (error) {
+                    if (error instanceof Error) {
+                        RepoAppDownloadLogger.logger?.error(error.message);
+                    } else {
+                        RepoAppDownloadLogger.logger?.error(
+                            t('error.appDownloadErrors.validationError', { error: error })
+                        );
+                    }
+                    return false;
+                }
+            }
+            return false;
+        },
+        name: `${PromptNames.selectedApp}-validation`
+    } as Question;
+};
+
 /**
  * Retrieves prompts for selecting a system, app list, and target folder where the app will be generated.
  *
@@ -106,31 +138,7 @@ export async function getPrompts(
         ];
         // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
         if (isCli) {
-            appSelectionPrompts?.push({
-                when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
-                    if (answers[PromptNames.selectedApp]) {
-                        try {
-                            await validateAppSelection(
-                                answers[PromptNames.selectedApp] as AppInfo,
-                                appList,
-                                quickDeployedAppConfig,
-                                appWizard
-                            );
-                        } catch (error) {
-                            if (error instanceof Error) {
-                                RepoAppDownloadLogger.logger?.error(error.message);
-                            } else {
-                                RepoAppDownloadLogger.logger?.error(
-                                    t('error.appDownloadErrors.validationError', { error: error })
-                                );
-                            }
-                            return false;
-                        }
-                    }
-                    return false;
-                },
-                name: `${PromptNames.selectedApp}-validation`
-            } as Question);
+            appSelectionPrompts?.push(getCliValidatePrompts(appList, quickDeployedAppConfig, appWizard));
         }
 
         const targetFolderPrompts = getTargetFolderPrompt(appRootPath, quickDeployedAppConfig?.appId);
