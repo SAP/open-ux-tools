@@ -239,12 +239,13 @@ export class FlpSandbox {
     /**
      * Deletes the Fiori Tools local connector (WorkspaceConnector) in case of a not supported UI5 versions.
      * As an alternative the Fiori Tools fake connector (FakeLrepConnector) will be used as defined in preview-middleware-client/src/flp/initConnectors.ts.
+     * Also deletes the ABAP connector in case of a CAP project.
      *
      * @param ui5VersionMajor - the major version of UI5
      * @param ui5VersionMinor - the minor version of UI5
      * @private
      */
-    private checkDeleteCustomConnector(ui5VersionMajor: number, ui5VersionMinor: number): void {
+    private checkDeleteConnectors(ui5VersionMajor: number, ui5VersionMinor: number): void {
         if (ui5VersionMajor === 1 && ui5VersionMinor < 78) {
             this.templateConfig.ui5.flex?.splice(1, 1);
             this.logger.debug(
@@ -295,7 +296,7 @@ export class FlpSandbox {
 
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
 
-        this.checkDeleteCustomConnector(ui5Version.major, ui5Version.minor);
+        this.checkDeleteConnectors(ui5Version.major, ui5Version.minor);
 
         if (editor.developerMode === true) {
             config.ui5.bootstrapOptions = serializeUi5Configuration(this.getDeveloperModeConfig(ui5Version.major));
@@ -457,7 +458,7 @@ export class FlpSandbox {
                 req.headers.host,
                 'ui5-patched-router' in req ? req['ui5-patched-router']?.baseUrl : undefined
             );
-            this.checkDeleteCustomConnector(ui5Version.major, ui5Version.minor);
+            this.checkDeleteConnectors(ui5Version.major, ui5Version.minor);
             const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
