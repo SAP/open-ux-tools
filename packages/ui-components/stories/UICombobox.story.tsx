@@ -562,7 +562,7 @@ export const WithExternalSearch = (): JSX.Element => {
                 autoComplete="on"
                 placeholder={'Start typing to search'}
                 isLoading={loader}
-                label="List and Input"
+                label="External search"
                 externalSearchProps={{
                     noDataLabel: 'No data available',
                     onInputChange: () => {
