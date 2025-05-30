@@ -816,6 +816,11 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         return defaultRender?.(props) ?? null;
     }
 
+    /**
+     * Add commentMore actions
+     *
+     * @param text
+     */
     private onInputValueChange(text: string): void {
         const { onInputValueChange, externalSearchProps } = this.props;
         // Call external cb from props
