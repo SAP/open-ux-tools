@@ -2485,9 +2485,6 @@ importers:
       rimraf:
         specifier: 5.0.5
         version: 5.0.5
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
       yeoman-test:
         specifier: 6.3.0
         version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
