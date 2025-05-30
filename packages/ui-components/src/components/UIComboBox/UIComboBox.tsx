@@ -26,9 +26,8 @@ import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/Valida
 import { labelGlobalStyle } from '../UILabel';
 import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from '../UIDropdown';
 import { CalloutCollisionTransform } from '../UICallout';
-import { isHTMLInputElement } from '../../utilities';
+import { isHTMLInputElement, debounce } from '../../utilities';
 import { REQUIRED_LABEL_INDICATOR } from '../types';
-import { debounce } from '../../utilities';
 
 export {
     IComboBoxOption as UIComboBoxOption,
