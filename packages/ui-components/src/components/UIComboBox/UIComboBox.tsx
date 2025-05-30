@@ -667,7 +667,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 </div>
             );
         } else if (externalSearchProps?.noDataLabel && (!options.length || this.isListHidden)) {
-            return <div className='option-no-data'>{externalSearchProps.noDataLabel}</div>;
+            return <div className="option-no-data">{externalSearchProps.noDataLabel}</div>;
         }
         return defaultRender?.(props);
     };
