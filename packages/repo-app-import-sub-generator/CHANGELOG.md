@@ -1,5 +1,12 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.16
+
+### Patch Changes
+
+-   345d8c0: fix: missing localUri in datasource settings breaks Fiori tools
+    fix: relax check for appindex app title in ADT app being downloaded.
+
 ## 0.3.15
 
 ### Patch Changes
