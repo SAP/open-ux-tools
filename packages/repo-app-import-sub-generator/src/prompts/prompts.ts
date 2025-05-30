@@ -55,7 +55,7 @@ const getCliValidatePrompts = async (
 ): Promise<Question> => {
     return {
         when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
-            if (answers[PromptNames.selectedApp]) {
+            if (answers?.[PromptNames.selectedApp]) {
                 try {
                     await validateAppSelection(
                         answers[PromptNames.selectedApp],
