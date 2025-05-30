@@ -83,7 +83,7 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
     const dependencyName = '@sap-ux/cards-editor-middleware';
 
     packageJson.scripts ??= {};
-    packageJson.scripts['start-cards-generator'] = `${cliForPreview} --open '${cardGeneratorPath}${intent}'`;
+    packageJson.scripts['start-cards-generator'] = `${cliForPreview} --open "${cardGeneratorPath}${intent}"`;
 
     if (packageJson.devDependencies?.[dependencyName]) {
         delete packageJson.devDependencies[dependencyName];
