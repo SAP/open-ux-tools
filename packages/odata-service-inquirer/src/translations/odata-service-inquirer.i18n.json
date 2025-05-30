@@ -57,7 +57,7 @@
             "metadataInvalid": "The service metadata is invalid.",
             "metadataFilePathNotValid": "The metadata file does not exist or is not accessible. Please specify a valid file path.",
             "capProjectNotFound": "The folder you have selected does not contain a valid CAP project. Please check and try again.",
-            "warningCertificateValidationDisabled": "You have disabled certificate validation. You must ensure the certificate is valid.",
+            "warningCertificateValidationDisabled": "Certificate validation has been disabled by the user.",
             "annotationsNotFound": "Annotations not found for the specified service."
         },
         "warnings": {
