@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.4
+
+### Patch Changes
+
+-   f9e4913: Allow to only update annotation and metada files without YAML file changes.
+
 ## 0.27.3
 
 ### Patch Changes

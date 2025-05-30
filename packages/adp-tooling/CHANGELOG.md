@@ -1,5 +1,12 @@
 # @sap-ux/adp-tooling
 
+## 0.14.9
+
+### Patch Changes
+
+-   Updated dependencies [f9e4913]
+    -   @sap-ux/odata-service-writer@0.27.4
+
 ## 0.14.8
 
 ### Patch Changes
