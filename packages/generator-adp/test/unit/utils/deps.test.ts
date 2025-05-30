@@ -1,8 +1,9 @@
-import { exec } from 'child_process';
-import { getPackageInfo, installDependencies, setHeaderTitle } from '../../../src/utils/deps';
 import { readFileSync } from 'fs';
+import { exec } from 'child_process';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { IChildLogger } from '@vscode-logging/logger';
+
+import { getPackageInfo, installDependencies, setHeaderTitle } from '../../../src/utils/deps';
 
 jest.mock('child_process', () => ({
     ...jest.requireActual('child_process'),
