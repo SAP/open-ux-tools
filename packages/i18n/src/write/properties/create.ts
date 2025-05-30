@@ -1,6 +1,6 @@
 import type { NewI18nEntry } from '../../types';
 import { doesExist, writeFile } from '../../utils';
-import { writeToExistingI18nPropertiesFile, overwriteI18nPropertiesFile } from '../utils';
+import { writeToExistingI18nPropertiesFile, replaceI18nProperties } from '../utils';
 import { basename } from 'path';
 import type { Editor } from 'mem-fs-editor';
 
@@ -37,7 +37,7 @@ export async function createPropertiesI18nEntries(
  * @param fs Optional `mem-fs-editor` instance. If provided, its API is used instead of Node's `fs`.
  * @returns Promise that resolves when the operation is complete.
  */
-export async function createOrOverwriteI18nEntries(
+export async function createOrReplaceI18nEntries(
     i18nFilePath: string,
     newI18nEntries: NewI18nEntry[],
     keysToRemove: string[] = [],
@@ -47,7 +47,7 @@ export async function createOrOverwriteI18nEntries(
     if ((!fs && !(await doesExist(i18nFilePath))) || (fs && !fs.exists(i18nFilePath))) {
         await createNewI18nFile(i18nFilePath, root, fs);
     }
-    await overwriteI18nPropertiesFile(i18nFilePath, newI18nEntries, keysToRemove, fs);
+    await replaceI18nProperties(i18nFilePath, newI18nEntries, keysToRemove, fs);
 }
 
 /**

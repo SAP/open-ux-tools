@@ -2,7 +2,7 @@ import path from 'path';
 import { create as createStorage } from 'mem-fs';
 import { type Editor, create } from 'mem-fs-editor';
 
-import { type NewI18nEntry, createOrOverwriteI18nEntries } from '@sap-ux/i18n';
+import { type NewI18nEntry, createOrReplaceI18nEntries } from '@sap-ux/i18n';
 
 import { getVariant, updateVariant } from '../';
 import type { Content, InternalInboundNavigation, DescriptorVariantContent } from '../types';
@@ -78,7 +78,7 @@ export async function updateI18n(
     const newEntries = getFlpI18nKeys(config, appId);
     const i18nPath = path.join(basePath, 'webapp', 'i18n', 'i18n.properties');
     const keysToRemove = [`${appId}_sap.app.crossNavigation.inbounds`];
-    await createOrOverwriteI18nEntries(i18nPath, newEntries, keysToRemove, basePath, fs);
+    await createOrReplaceI18nEntries(i18nPath, newEntries, keysToRemove, basePath, fs);
 }
 
 /**

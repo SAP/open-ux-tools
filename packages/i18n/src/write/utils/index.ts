@@ -43,7 +43,7 @@ export async function writeToExistingI18nPropertiesFile(
  * @param fs - Optional mem-fs-editor instance.
  * @returns Promise<void>
  */
-export async function overwriteI18nPropertiesFile(
+export async function replaceI18nProperties(
     i18nFilePath: string,
     newI18nEntries: NewI18nEntry[],
     keysToRemove: string[],

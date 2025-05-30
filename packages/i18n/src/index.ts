@@ -1,5 +1,5 @@
 export { getCapI18nBundle, getPropertiesI18nBundle } from './read';
-export { createCapI18nEntries, createPropertiesI18nEntries, createOrOverwriteI18nEntries } from './write';
+export { createCapI18nEntries, createPropertiesI18nEntries, createOrReplaceI18nEntries } from './write';
 
 export {
     getI18nFolderNames,
