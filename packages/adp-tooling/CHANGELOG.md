@@ -1,5 +1,25 @@
 # @sap-ux/adp-tooling
 
+## 0.14.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.5
+
+## 0.14.10
+
+### Patch Changes
+
+-   61ea5c0: fix: Incorrect types package put during adaptation project generation
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/odata-service-writer@0.27.5
+    -   @sap-ux/project-access@1.30.2
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/project-input-validator@0.6.2
+    -   @sap-ux/system-access@0.6.1
+    -   @sap-ux/inquirer-common@0.7.4
+
 ## 0.14.9
 
 ### Patch Changes

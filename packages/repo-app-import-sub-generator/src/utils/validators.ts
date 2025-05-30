@@ -152,6 +152,7 @@ export async function validateAppSelection(
             }
             return isQfaJsonPresent;
         } catch (error) {
+            RepoAppDownloadLogger.logger?.debug(`validateAppSelection: Error downloading app: ${error.message}`);
             return t('error.appDownloadErrors.appDownloadFailure', { error: error.message });
         }
     }
