@@ -71,7 +71,6 @@ const getCliValidatePrompts = async (
                             t('error.appDownloadErrors.validationError', { error: error })
                         );
                     }
-                    return false;
                 }
             }
             return false;
