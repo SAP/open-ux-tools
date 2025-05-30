@@ -1,17 +1,29 @@
 {
+    "prompts": {
+        "tileHandlingAction": "Chose a Tile Handling Action",
+        "copyFromExisting": "Copy Configurations From an Existing Inbound (?)",
+        "existingFLPConfig": "Have in mind that this project already has created FLP configuration. If you create another one, it will overwrite completely the current one",
+        "choices": {
+            "replaceOriginalTile": "Replace Original App's Tile(s)",
+            "addNewTile": "Add a New Tile to The Original One"
+        }
+    },
     "yuiNavSteps": {
         "flpCredentialsName": "FLP Configuration - Credentials",
         "flpCredentialsDesc": "Enter credentials for your adaptation project's system ({{- system}})",
         "sysConfirmDesc": "Validates connection to configured system",
         "flpConfigName": "FLP Configuration",
-        "flpConfigDesc": "FLP Configuration for {{- projectName}}"
+        "flpConfigDesc": "FLP Configuration for {{- projectName}}",
+        "tileSettingsName": "Tile Settings",
+        "tileActionsDesc": "Fiori Launchpad Tile Settings"
     },
     "info": {
         "flpConfigAdded": "FLP Configuration added successfully"
     },
     "error": {
         "projectNotSupported": "Unable to find a supported adaptation project",
-        "fetchingManifest": "Error fetching merged manifest for base application",
+        "projectNotCloudReady": "FLP Configuration is supported for Cloud Ready adaptation projects only",
+        "backendRequestFailed": "Error while making a request to backend system: {{- system}}",
         "destinationNotFound": "Missing destination configuration in ui5.yaml",
         "destinationNotInSubaccount": "Destination not found in the subaccount: {{- destination}}",
         "systemNotFound": "Missing system configuration in ui5.yaml",

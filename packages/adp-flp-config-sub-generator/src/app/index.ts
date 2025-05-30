@@ -1,5 +1,4 @@
-import type { Manifest } from '@sap-ux/project-access';
-import type { FlpConfigOptions } from './types';
+import type { FlpConfigOptions, TileActionAnswers } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
 import path, { join } from 'path';
@@ -7,22 +6,29 @@ import {
     type AxiosError,
     type AxiosRequestConfig,
     type ProviderConfiguration,
+    type AbapServiceProvider,
+    type Inbound,
+    type InboundContent,
     isAxiosError
 } from '@sap-ux/axios-extension';
 import {
-    ManifestService,
     getVariant,
     getAdpConfig,
-    getInboundsFromManifest,
-    getRegistrationIdFromManifest,
     isCFEnvironment,
     generateInboundConfig,
     type InternalInboundNavigation,
-    type AdpPreviewConfig
+    type NewInboundNavigation,
+    type AdpPreviewConfig,
+    type DescriptorVariant
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
-import { getPrompts, type FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
+import {
+    getPrompts,
+    getExistingFlpConfigInfoPrompt,
+    type FLPConfigAnswers,
+    type FLPConfigPromptOptions
+} from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
     TelemetryHelper,
@@ -48,6 +54,9 @@ import {
     getCredentialsFromStore
 } from '@sap-ux/system-access';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import type { ManifestNamespace } from '@sap-ux/project-access';
+import { getTileActionsQuestions, tileActions } from './questions';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Generator for adding a FLP configuration to an adaptation project.
@@ -63,7 +72,6 @@ export default class extends Generator {
     private readonly vscode: any;
     private readonly toolsLogger: ToolsLogger;
     private readonly projectRootPath: string = '';
-    private manifest: Manifest;
     private answers: FLPConfigAnswers;
     private logger: ILogWrapper;
     private authenticationRequired: boolean = false;
@@ -72,6 +80,12 @@ export default class extends Generator {
     private configuredSystem: string | undefined;
     private ui5Yaml: AdpPreviewConfig;
     private credentials: CredentialsAnswers;
+    private provider: AbapServiceProvider;
+    private inbounds?: ManifestNamespace.Inbound;
+    private appId: string;
+    private variant: DescriptorVariant;
+    private tileActionsAnswers?: TileActionAnswers & FLPConfigAnswers;
+    private isCloud: boolean = false;
 
     /**
      * Creates an instance of the generator.
@@ -83,23 +97,17 @@ export default class extends Generator {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.launchAsSubGen = !!opts.launchAsSubGen;
-        this.manifest = opts.manifest;
         this.toolsLogger = new ToolsLogger();
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
         this.options = opts;
         this.vscode = opts.vscode;
 
-        this._setupPrompts();
+        this._setupFLPConfigPrompts();
         this._setupLogging();
     }
 
     async initializing(): Promise<void> {
         await initI18n();
-
-        // Check if the project is supported
-        if ((await getAppType(this.projectRootPath)) !== 'Fiori Adaptation' || isCFEnvironment(this.projectRootPath)) {
-            throw new Error(t('error.projectNotSupported'));
-        }
 
         // Force the generator to overwrite existing files without additional prompting
         if ((this.env as unknown as YeomanEnvironment).conflicter) {
@@ -114,17 +122,18 @@ export default class extends Generator {
             return;
         }
 
-        if (!this.manifest) {
-            try {
-                this.manifest = await this._getManifest();
-            } catch (error) {
-                this.authenticationRequired = this._checkAuthRequired(error);
-                if (this.authenticationRequired) {
-                    return;
-                }
-                this._handleFetchingError(error);
+        this.provider = await this._getAbapServiceProvider();
+        if (!this.launchAsSubGen) {
+            await this._initializeStandAloneGenerator();
+            if (this.abort) {
+                return;
             }
+        } else {
+            this.appId = this.options.appId as string;
         }
+
+        this.inbounds = await this._getAppInbounds();
+
         // Add telemetry to be sent once adp-flp-config is generated
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -137,20 +146,15 @@ export default class extends Generator {
     }
 
     public async prompting(): Promise<void> {
-        if (this.authenticationRequired) {
-            await this._promptAuthentication();
-        }
-
         if (this.abort) {
             return;
         }
-        const inbounds = getInboundsFromManifest(this.manifest);
-        const appId = getRegistrationIdFromManifest(this.manifest);
-        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(inbounds, appId, {
-            overwrite: { hide: true },
-            createAnotherInbound: { hide: true },
-            emptyInboundsInfo: { hide: isCli() }
-        });
+
+        if (this.authenticationRequired) {
+            await this._promptAuthentication();
+        }
+        this.tileActionsAnswers = await this._promptTileActions();
+        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(this.inbounds, this._getPromptConfig());
         this.answers = await this.prompt(prompts);
     }
 
@@ -159,7 +163,8 @@ export default class extends Generator {
             return;
         }
         try {
-            await generateInboundConfig(this.projectRootPath, this.answers as InternalInboundNavigation, this.fs);
+            const config = this._getWriteConfig();
+            await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation, this.fs);
         } catch (error) {
             this.logger.error(`Writing phase failed: ${error}`);
             throw new Error(t('error.updatingApp'));
@@ -186,25 +191,59 @@ export default class extends Generator {
     }
 
     /**
-     * Retrieves the merged manifest for the project.
+     * Retrieves the list of tile inbounds of the application.
      *
-     * @returns {Promise<Manifest>} The project manifest.
+     * @returns {Promise<ManifestNamespace.Inbound>} list of tile inbounds of the application.
      */
-    private async _getManifest(): Promise<Manifest> {
+    private async _getAppInbounds(): Promise<ManifestNamespace.Inbound | undefined> {
+        const lrepService = this.provider.getLayeredRepository();
+
+        let inbounds: Inbound[] = [];
+        try {
+            inbounds = (await lrepService.getSystemInfo(undefined, undefined, this.appId)).inbounds as Inbound[];
+        } catch (error) {
+            this._handleFetchingError(error);
+        }
+
+        if (!inbounds?.length) {
+            return undefined;
+        }
+
+        return inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
+            // Skip if hideLauncher is not false
+            if (!inbound?.content || inbound.content.hideLauncher !== false) {
+                return acc;
+            }
+            const { semanticObject, action } = inbound.content;
+            if (semanticObject && action) {
+                const key = `${semanticObject}-${action}`;
+                acc[key] = inbound.content;
+            }
+            return acc;
+        }, {} as { [key: string]: InboundContent });
+    }
+
+    /**
+     * Checks if the ABAP system is an ABAP Cloud system.
+     *
+     * @returns {Promise<boolean>} True if the system is ABAP Cloud, false otherwise.
+     */
+    private async _checkIsCloud(): Promise<boolean> {
+        return this.provider.isAbapCloud();
+    }
+
+    /**
+     * Creates and returns an instance of AbapServiceProvider using the current UI5 YAML configuration and credentials.
+     *
+     * @returns {Promise<AbapServiceProvider>} The ABAP service provider instance.
+     */
+    private async _getAbapServiceProvider(): Promise<AbapServiceProvider> {
         const { target, ignoreCertErrors = false } = this.ui5Yaml;
         const requestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = { ignoreCertErrors };
         if (this.credentials) {
             requestOptions['auth'] = { username: this.credentials.username, password: this.credentials.password };
         }
-        const provider = await createAbapServiceProvider(target, requestOptions, false, this.toolsLogger);
-        const variant = await getVariant(this.projectRootPath);
-        const manifestService = await ManifestService.initMergedManifest(
-            provider,
-            this.projectRootPath,
-            variant,
-            this.toolsLogger
-        );
-        return manifestService.getManifest();
+        return await createAbapServiceProvider(target, requestOptions, false, this.toolsLogger);
     }
 
     /**
@@ -217,7 +256,8 @@ export default class extends Generator {
             async (credentials: CredentialsAnswers): Promise<ValidationLink | string | boolean> => {
                 this.credentials = credentials;
                 try {
-                    this.manifest = await this._getManifest();
+                    this.provider = await this._getAbapServiceProvider();
+                    this.inbounds = await this._getAppInbounds();
                 } catch (error) {
                     if (!isAxiosError(error)) {
                         this.logger.error(`Manifest fetching failed: ${error}`);
@@ -249,7 +289,7 @@ export default class extends Generator {
     private _handleFetchingError(error: AxiosError): void {
         if (isAxiosError(error)) {
             this.logger.error(
-                `Manifest fetching failed: ${error}. Status: ${error.response?.status}. URI: ${error.request?.path}`
+                `Backend system fetching failed: ${error}. Status: ${error.response?.status}. URI: ${error.request?.path}`
             );
 
             const errorHelp = this._getErrorHandlerMessage(error);
@@ -262,8 +302,8 @@ export default class extends Generator {
             }
             return;
         }
-        this.logger.error(`Manifest fetching failed: ${error}`);
-        throw new Error(t('error.fetchingManifest'));
+        this.logger.error(`Backend system fetching failed: ${error}`);
+        throw new Error(t('error.backendRequestFailed'));
     }
 
     /**
@@ -284,7 +324,7 @@ export default class extends Generator {
     /**
      * Sets up the prompts for the generator.
      */
-    private _setupPrompts(): void {
+    private _setupFLPConfigPrompts(): void {
         // If launched as a sub-generator, the prompts will be set by the parent generator
         if (!this.launchAsSubGen) {
             this.prompts = new Prompts([]);
@@ -386,6 +426,161 @@ export default class extends Generator {
             this.options.logWrapper
         );
         this.logger = AdpFlpConfigLogger.logger;
+    }
+
+    /**
+     * Returns the prompt configuration options based on the provided tile actions answers.
+     *
+     * @returns {FLPConfigPromptOptions} The prompt configuration options.
+     */
+    private _getPromptConfig(): FLPConfigPromptOptions {
+        const { tileHandlingAction, copyFromExisting } = this.tileActionsAnswers ?? {};
+
+        // If the user chooses to add a new tile and copy the original, semantic object and action are required
+        if (!this.inbounds || (tileHandlingAction === tileActions.ADD && copyFromExisting === false)) {
+            const hideExistingFlpConfigInfo = !(!this.inbounds && this._hasExistingFlpConfig());
+            return {
+                existingFlpConfigInfo: { hide: hideExistingFlpConfigInfo },
+                inboundId: { hide: true },
+                overwrite: { hide: true }
+            };
+        }
+        // If the user chooses to replace the original tile, are not required and are taken from the existing selected inbound
+        if (tileHandlingAction === tileActions.REPLACE) {
+            return {
+                existingFlpConfigInfo: { hide: true },
+                overwrite: { hide: true },
+                semanticObject: { hide: true },
+                action: { hide: true },
+                additionalParameters: { hide: true }
+            };
+        }
+
+        // If the user chooses to add a new tile and copy the original, semantic object and action are required
+        return {
+            existingFlpConfigInfo: { hide: true },
+            overwrite: { hide: true }
+        };
+    }
+
+    /**
+     * Checks if there is an existing FLP configuration in the variant content.
+     *
+     * @returns {boolean} True if an existing FLP configuration is found, otherwise false.
+     */
+    private _hasExistingFlpConfig(): boolean {
+        return this.variant.content.some((item) => {
+            return item.changeType === 'appdescr_app_addNewInbound' ? true : false;
+        });
+    }
+
+    /**
+     * Prompts the user for tile actions and returns the answers.
+     *
+     * @returns {Promise<(TileActionAnswers & FLPConfigAnswers) | undefined>} The answers from the tile actions prompt, or undefined.
+     */
+    private async _promptTileActions(): Promise<(TileActionAnswers & FLPConfigAnswers) | undefined> {
+        if (this.inbounds) {
+            this._setTileActionsPrompts();
+            const tileActionPrompts = getTileActionsQuestions();
+            if (!this.launchAsSubGen && this._hasExistingFlpConfig()) {
+                const existingConfigPrompt = getExistingFlpConfigInfoPrompt(isCli());
+                tileActionPrompts.unshift(existingConfigPrompt as unknown as YUIQuestion<TileActionAnswers>);
+            }
+            return (await this.prompt(tileActionPrompts)) as TileActionAnswers & FLPConfigAnswers;
+        }
+        return undefined;
+    }
+
+    private _setTileActionsPrompts(): void {
+        const promptsIndex = this.prompts.size() === 1 ? 0 : 1;
+        this.prompts.splice(promptsIndex, 0, [
+            {
+                name: t('yuiNavSteps.tileSettingsName'),
+                description: t('yuiNavSteps.tileActionsDesc', {
+                    projectName: path.basename(this.projectRootPath)
+                })
+            }
+        ]);
+    }
+
+    /**
+     * Validates the project type and cloud readiness.
+     *
+     * @param {boolean} isCloud - Indicates if the system is ABAP Cloud.
+     * @throws {Error} If the project is not supported or not cloud ready.
+     */
+    private async _validateProject(isCloud: boolean): Promise<void> {
+        const isFioriAdaptation = (await getAppType(this.projectRootPath)) === 'Fiori Adaptation';
+        if (!isFioriAdaptation || isCFEnvironment(this.projectRootPath)) {
+            this._abortExecution(t('error.projectNotSupported'));
+            return;
+        }
+
+        if (!isCloud) {
+            this._abortExecution(t('error.projectNotCloudReady'));
+        }
+    }
+
+    /**
+     * Initializes the generator when launched as a standalone generator.
+     *
+     * @returns {Promise<void>} A promise that resolves when the initialization is complete.
+     */
+    private async _initializeStandAloneGenerator(): Promise<void> {
+        if (this.isCloud) {
+            return;
+        }
+
+        try {
+            this.isCloud = await this._checkIsCloud();
+        } catch (error) {
+            this.authenticationRequired = this._checkAuthRequired(error);
+            if (this.authenticationRequired) {
+                return;
+            }
+            this._handleFetchingError(error);
+        }
+        await this._validateProject(this.isCloud);
+        if (this.abort) {
+            return;
+        }
+        this.variant = await getVariant(this.projectRootPath, this.fs);
+        this.appId = this.variant.reference;
+    }
+
+    /**
+     * Returns the configuration for writing the inbound navigation based on the selected tile action.
+     *
+     * @returns {InternalInboundNavigation | NewInboundNavigation} The configuration object for the inbound navigation.
+     */
+    private _getWriteConfig(): InternalInboundNavigation | NewInboundNavigation {
+        const { tileHandlingAction } = this.tileActionsAnswers ?? {};
+        if (tileHandlingAction === tileActions.REPLACE) {
+            const {
+                semanticObject,
+                action,
+                signature: { parameters }
+            } = this.answers.inboundId ?? ({} as InboundContent);
+            return {
+                inboundId: `${semanticObject}-${action}`,
+                semanticObject: semanticObject ?? '',
+                action: action ?? '',
+                title: this.answers.title ?? '',
+                subTitle: this.answers.subTitle ?? '',
+                icon: this.answers.icon ?? '',
+                additionalParameters: JSON.stringify(parameters) ?? ''
+            };
+        }
+
+        return {
+            semanticObject: this.answers.semanticObject ?? '',
+            action: this.answers.action ?? '',
+            title: this.answers.title ?? '',
+            subTitle: this.answers.subTitle ?? '',
+            icon: this.answers.icon ?? '',
+            additionalParameters: this.answers.additionalParameters ?? ''
+        };
     }
 }
 
