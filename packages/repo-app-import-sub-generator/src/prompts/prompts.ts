@@ -11,7 +11,6 @@ import { validateAppSelection } from '../utils/validators';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import RepoAppDownloadLogger from '../utils/logger';
 import { type Question } from 'inquirer';
-import { isCli } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Gets the target folder selection prompt.
@@ -55,22 +54,24 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
  * @param {string} [appRootPath] - The root path of the application.
  * @param {QuickDeployedAppConfig} [quickDeployedAppConfig] - The quick deployed app configuration.
  * @param {AppWizard} [appWizard] - The app wizard instance.
+ * @param {boolean} [isCli=false] - Indicates if the prompts are being generated for CLI usage.
  * @returns {Promise<RepoAppDownloadQuestions[]>} A list of prompts for user interaction.
  */
 export async function getPrompts(
     appRootPath?: string,
     quickDeployedAppConfig?: QuickDeployedAppConfig,
-    appWizard?: AppWizard
+    appWizard?: AppWizard,
+    isCli: boolean = false
 ): Promise<RepoAppDownloadQuestions[]> {
     try {
         PromptState.reset();
 
         const systemQuestions = await getSystemSelectionQuestions(
             {
-                serviceSelection: { hide: true, useAutoComplete: isCli() },
+                serviceSelection: { hide: true, useAutoComplete: isCli },
                 systemSelection: { defaultChoice: quickDeployedAppConfig?.serviceProviderInfo?.name }
             },
-            !isCli()
+            !isCli
         );
         let appList: AppIndex = [];
         const appSelectionPrompts: Partial<object[]> = [
@@ -104,7 +105,7 @@ export async function getPrompts(
             }
         ];
         // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
-        if (isCli()) {
+        if (isCli) {
             appSelectionPrompts?.push({
                 when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
                     if (answers[PromptNames.selectedApp]) {

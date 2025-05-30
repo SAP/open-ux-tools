@@ -32,7 +32,6 @@ jest.mock('@sap-ux/project-input-validator', () => ({
 jest.mock('../../src/utils/validators', () => ({
     validateAppSelection: jest.fn()
 }));
-
 describe('getPrompts', () => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const mockGetSystemSelectionQuestions = require('@sap-ux/odata-service-inquirer').getSystemSelectionQuestions;
@@ -81,7 +80,7 @@ describe('getPrompts', () => {
         mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
         mockDownloadApp.mockResolvedValue(undefined);
 
-        const prompts = await getPrompts(appRootPath);
+        const prompts = await getPrompts(appRootPath, undefined, undefined, true); // run as CLI
 
         // system selection prompt
         const systemSelectionPrompt = prompts.find((p) => p.name === PromptNames.systemSelection);

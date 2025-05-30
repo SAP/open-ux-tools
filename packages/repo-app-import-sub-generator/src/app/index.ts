@@ -13,7 +13,8 @@ import {
     type AppGenInfo,
     type YeomanEnvironment,
     sendTelemetry,
-    TelemetryHelper
+    TelemetryHelper,
+    isCli
 } from '@sap-ux/fiori-generator-shared';
 import type { RepoAppDownloadOptions, RepoAppDownloadAnswers, RepoAppDownloadQuestions, QfaJsonConfig } from './types';
 import { getPrompts } from '../prompts/prompts';
@@ -115,7 +116,8 @@ export default class extends Generator {
         const questions: RepoAppDownloadQuestions[] = await getPrompts(
             this.appRootPath,
             quickDeployedAppConfig,
-            this.appWizard
+            this.appWizard,
+            isCli()
         );
         const answers: RepoAppDownloadAnswers = await this.prompt(questions);
         const { targetFolder } = answers;
