@@ -112,7 +112,9 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
      * `false` to hide it, or `undefined` to apply the default search filtering behavior.
      */
     customSearchFilter?: (searchTerm: string, option: IComboBoxOption) => boolean | undefined;
-
+    /**
+     * Properties to support external (backend) search behavior in the ComboBox.
+     */
     externalSearchProps?: UIComboBoxExternalSearchProps;
 }
 export interface UIComboBoxState {
