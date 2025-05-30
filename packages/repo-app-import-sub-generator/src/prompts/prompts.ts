@@ -1,5 +1,4 @@
 import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
-import { type AbapTarget, createAbapServiceProvider } from '@sap-ux/system-access';
 import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
 import type { RepoAppDownloadAnswers, RepoAppDownloadQuestions, QuickDeployedAppConfig, AppInfo } from '../app/types';
 import { PromptNames } from '../app/types';
@@ -11,7 +10,6 @@ import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
 import { validateAppSelection } from '../utils/validators';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import RepoAppDownloadLogger from '../utils/logger';
-import type { Logger } from '@sap-ux/logger';
 import { type Question } from 'inquirer';
 import { isCli } from '@sap-ux/fiori-generator-shared';
 
@@ -51,30 +49,6 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
     } as FileBrowserQuestion<RepoAppDownloadAnswers>;
 };
 
-const getServiceProvider = async (system: {
-    name: string;
-    url: string;
-    client: string;
-    username: string;
-    password: string;
-}): Promise<AbapServiceProvider | any> => {
-    if (system) {
-        const target: AbapTarget = {
-            destination: system.name ?? '',
-            url: system.url ?? '',
-            client: system.client ?? ''
-        };
-
-        const serviceProvider = (await createAbapServiceProvider(
-            target,
-            undefined,
-            false,
-            RepoAppDownloadLogger.logger as unknown as Logger
-        )) as AbapServiceProvider;
-        return serviceProvider;
-    }
-};
-
 /**
  * Retrieves prompts for selecting a system, app list, and target folder where the app will be generated.
  *
@@ -93,28 +67,19 @@ export async function getPrompts(
 
         const systemQuestions = await getSystemSelectionQuestions(
             {
-                serviceSelection: { hide: true },
+                serviceSelection: { hide: true, useAutoComplete: isCli() },
                 systemSelection: { defaultChoice: quickDeployedAppConfig?.serviceProviderInfo?.name }
             },
-            true
+            !isCli()
         );
         let appList: AppIndex = [];
         const appSelectionPrompts: Partial<object[]> = [
             {
                 when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
-                    if (answers[PromptNames.systemSelection]) {
-                        if (!systemQuestions.answers.connectedSystem?.serviceProvider) {
-                            systemQuestions.answers.connectedSystem =
-                                systemQuestions.answers.connectedSystem ??
-                                (answers[PromptNames.systemSelection] as any).system ??
-                                {};
-
-                            if (systemQuestions.answers.connectedSystem) {
-                                systemQuestions.answers.connectedSystem.serviceProvider = await getServiceProvider(
-                                    (answers[PromptNames.systemSelection] as any).system
-                                );
-                            }
-                        }
+                    if (
+                        answers[PromptNames.systemSelection] &&
+                        systemQuestions?.answers?.connectedSystem?.serviceProvider
+                    ) {
                         appList = await fetchAppListForSelectedSystem(
                             systemQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider,
                             quickDeployedAppConfig?.appId
