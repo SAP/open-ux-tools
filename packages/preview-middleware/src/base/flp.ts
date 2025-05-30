@@ -171,11 +171,10 @@ export class FlpSandbox {
         );
         this.addStandardRoutes();
 
-        const cardGeneratorPath = this.cardGenerator?.path;
-        if (cardGeneratorPath) {
-            if (!cardGeneratorPath.startsWith('/')) {
-                this.cardGenerator.path = `/${cardGeneratorPath}`;
-            }
+        if (this.cardGenerator?.path) {
+            this.cardGenerator.path = this.cardGenerator.path.startsWith('/')
+                ? this.cardGenerator.path
+                : `/${this.cardGenerator.path}`;
 
             await this.addCardGeneratorMiddlewareRoute();
             await this.addStoreCardManifestRoute();
