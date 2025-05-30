@@ -28,7 +28,7 @@ import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } fr
 import { CalloutCollisionTransform } from '../UICallout';
 import { isHTMLInputElement } from '../../utilities';
 import { REQUIRED_LABEL_INDICATOR } from '../types';
-import { debounce } from '../../utilities/debounce';
+import { debounce } from '../../utilities';
 
 export {
     IComboBoxOption as UIComboBoxOption,
