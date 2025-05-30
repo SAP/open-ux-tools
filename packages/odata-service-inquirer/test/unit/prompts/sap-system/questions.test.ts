@@ -65,6 +65,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "default": "",
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,

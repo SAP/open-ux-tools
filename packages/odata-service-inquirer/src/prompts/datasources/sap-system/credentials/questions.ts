@@ -1,12 +1,16 @@
+import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { isFullUrlDestination, isPartialUrlDestination, type Destination } from '@sap-ux/btp-utils';
+import type { InputQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 import type { BackendSystem } from '@sap-ux/store';
-import type { Answers, InputQuestion, PasswordQuestion, Question } from 'inquirer';
+import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n';
 import { promptNames } from '../../../../types';
 import { PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
+import type { ValidationResult } from '../../../types';
 import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers';
+import type { NewSystemAnswers } from '../new-system/types';
 
 export enum BasicCredentialsPromptNames {
     systemUsername = 'systemUsername',
@@ -26,7 +30,7 @@ export function getCredentialsPrompts<T extends Answers>(
     connectionValidator: ConnectionValidator,
     promptNamespace?: string,
     sapClient?: { sapClient: string | undefined; isValid: boolean }
-): Question<T>[] {
+): (InputQuestion<T> | PasswordQuestion<T>)[] {
     const usernamePromptName = `${promptNamespace ? promptNamespace + ':' : ''}${
         BasicCredentialsPromptNames.systemUsername
     }`;
@@ -53,7 +57,7 @@ export function getCredentialsPrompts<T extends Answers>(
             validate: (user: string) => user?.length > 0
         } as InputQuestion<T>,
         {
-            when: () => connectionValidator.systemAuthType === 'basic' && authRequired,
+            when: () => !!(connectionValidator.systemAuthType === 'basic' && authRequired),
             type: 'password',
             guiOptions: {
                 mandatory: true,
@@ -64,7 +68,7 @@ export function getCredentialsPrompts<T extends Answers>(
             message: t('prompts.systemPassword.message'),
             mask: '*',
             default: '',
-            validate: async (password, answers: T) => {
+            validate: async (password: string, answers: T): Promise<ValidationResult> => {
                 if (
                     !(
                         connectionValidator.validatedUrl &&
@@ -106,6 +110,21 @@ export function getCredentialsPrompts<T extends Answers>(
                     return true;
                 }
                 return valResult;
+            },
+            additionalMessages: (password: string, answers: T) => {
+                // Since the odata service URL prompt has its own credentials prompts its safe to assume
+                // that `ignoreCertError` when true means that the user has set the node setting to ignore cert errors and
+                // not that the user has chosen to ignore the cert error for this specific connection (this is only supported by the odata service URL prompts).
+                if (
+                    connectionValidator.ignoreCertError &&
+                    // This condition prevents showing the message twice as it will already be shown under the new system URL prompt.
+                    !((answers as NewSystemAnswers)?.newSystemType === 'abapOnPrem')
+                ) {
+                    return {
+                        message: t('warnings.certErrorIgnoredByNodeSetting'),
+                        severity: Severity.warning
+                    };
+                }
             }
         } as PasswordQuestion<T>
     ];
