@@ -1,5 +1,5 @@
 /**
- * Returns a function which calls the callback function only after the specified idle time
+ * Returns a function which calls the callback function only after the specified idle time.
  *
  * @param callback Function to execute
  * @param delay Idle period in milliseconds after which the callback will be executed

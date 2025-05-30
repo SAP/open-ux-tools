@@ -69,6 +69,7 @@ export interface UIComboBoxExternalSearchProps {
 
     /**
      * Delay in milliseconds between the last user input and triggering the external search.
+     *
      * @default 500
      */
     debounceTime?: number;
@@ -817,9 +818,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
-     * Add commentMore actions
+     * Called when the user types in to the input of the combo box.
      *
-     * @param text
+     * @param text The current input value typed by the user.
      */
     private onInputValueChange(text: string): void {
         const { onInputValueChange, externalSearchProps } = this.props;
