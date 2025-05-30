@@ -1,6 +1,6 @@
 {
     "error": {
-        "fetchingGenerator": "An error occurred when fetching the generator. Error: {{error}}.",
+        "fetchingGenerator": "An error occurred when fetching the generator: {{error}}.",
         "sendingTelemetry": "An error occurred when sending the telemetry event.",
         "connectionFailed": "The connection to the discovery service on the {{system}} back-end system failed.",
         "authentication": "Authentication failed with the provided system data. Cannot continue with UI service generation. Check the system data is correct.",

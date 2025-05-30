@@ -61,11 +61,11 @@
             "annotationsNotFound": "Annotations not found for the specified service."
         },
         "warnings": {
-            "nonUIServiceTypeWarningMessage": "{{serviceType}} services and non-classified services are not intended to be used for generating SAP Fiori UI applications. Your application may not work as expected.",
+            "nonUIServiceTypeWarningMessage": "Services of service type: {{serviceType}} or without a service type are not intended to be used for generating SAP Fiori UI applications.",
             "noServicesAvailable": "There are no services available for the selected system. For more information, see the logs.",
             "noServicesAvailableForOdataVersion": "There are no OData V{{odataVersion}} services available from the selected system and the template you have chosen only supports OData V{{odataVersion}} services.",
             "noAnnotations": "No back-end annotations associated with this service were retrieved. This can result in an invalid application.",
-            "collaborativeDraftMessage": "The selected service is draft-enabled but does not support collaborative drafts."
+            "collaborativeDraftMessage": "The selected service is draft-enabled but does not support collaborative draft."
         },
         "systemUrl": {
             "message": "System URL",
@@ -182,11 +182,11 @@
         },
         "tableMultiSelect": {
             "message": "Allow Multi Select",
-            "hint": "Allows you to show a checkbox for selecting multiple items in a table. This setting comes into effect only if there are actions defined either through an annotation or the `manifest.json` file."
+            "hint": "Allows you to show a checkbox for selecting multiple items in a table. This setting comes into effect only if there are actions defined either by using an annotation or a setting in the `manifest.json` file."
         },
         "tableAutoHide": {
             "message": "Auto Hide",
-            "hint": "Determines chart and table interaction. If set to `true`, the chart acts as a filter for the table. If set to `false`, the matching table rows are highlighted but the table is not filtered."
+            "hint": "Determines chart or table interaction. If set to `true`, the chart acts as a filter for the table. If set to `false`, the matching table rows are highlighted but the table is not filtered."
         },
         "smartVariantManagement": {
             "message": "Enable Smart Variant Management",
@@ -195,15 +195,15 @@
     },
     "errors": {
         "destination": {
-            "authError": "The selected system returned an authentication error. System Name: {{systemName}}. Error: {{- error}}.",
+            "authError": "The selected system: {{systemName}} returned an authentication error: {{- error}}.",
             "listDestinations": "An error occurred when retrieving the list of destinations: {{- error}}."
         },
         "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. $t(texts.seeLogForDetails).",
         "capModelAndServicesLoadError": "An error occurred loading the CAP model and services: {{- error, addMsgWithColonFormatter}}.",
-        "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. The `urlPath` CAP service property is not defined but it is required.",
-        "unknownError": "An error occurred. Error: {{- error, addMsgWithColonFormatter}}.",
-        "authenticationFailed": "Authentication incorrect. Error: {{error}}.",
-        "invalidUrl": "Invalid URL. {{-input, addMsgWithColonFormatter}}.",
+        "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. The CAP service property: `urlPath` is not defined but it is required.",
+        "unknownError": "An error occurred: {{- error, addMsgWithColonFormatter}}.",
+        "authenticationFailed": "Authentication incorrect: {{error}}.",
+        "invalidUrl": "Invalid URL: {{-input, addMsgWithColonFormatter}}.",
         "connectionError": "A connection error occurred. Ensure the target host is available on the network: {{- error}}",
         "urlNotFound": "URL not found.",
         "noServicesAvailable": "There are no OData V{{version}} services available from the selected system and the template you have chosen only supports OData V{{version}} services.",
@@ -215,18 +215,18 @@
         "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}.",
         "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). $t(texts.seeLogForDetails).",
         "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}.",
-        "serviceTypeRequestError": "An error occurred when retrieving the service type. Error: {{- error}}.",
+        "serviceTypeRequestError": "An error occurred when retrieving the service type: {{- error}}.",
         "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed.",
-        "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}. Error: {{error}}.",
+        "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}: {{error}}.",
         "storedSystemConnectionError": "An error occurred when validating the stored system connection info. System Name: {{-systemName}}. Error: {{- error}}.",
         "noCatalogOrServiceAvailable": "No active system or OData service endpoint connection available to retrieve the server.",
         "allCatalogServiceRequestsFailed": "All catalog service requests failed for the selected system. OData version: V{{version}}.",
         "unparseableMetadata": "Unable to parse entities from the metadata document. Error: {{-error}}.",
         "unparseableOdataVersion": "Unable to parse the OData version from the metadata.",
-        "unparseableXML": "Unparseable XML was specified. Error: {{-error}}.",
+        "unparseableXML": "Unparseable XML was specified: {{-error}}.",
         "noRelevantEntities": "The template and service selected have no relevant entities that you can use.",
         "cfInstanceCredentialsNotReturned": "Cannot not retrieve credentials to access: {{serviceInstanceName}}.",
-        "v2CatalogServiceNoAnnotations": "An error occurred when creating an OData V2 catalog service object. Annotations will not be available. Error: {{-error}}"
+        "v2CatalogServiceNoAnnotations": "An error occurred when creating an OData V2 catalog service object. Annotations will not be available: {{-error}}"
     },
     "warnings": {
         "largeMetadataDocument": "The metadata for this OData service is very large. It may take some time before this operation completes."
