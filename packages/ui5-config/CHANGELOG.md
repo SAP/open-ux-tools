@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.28.2
+
+### Patch Changes
+
+-   61ea5c0: fix: Incorrect types package put during adaptation project generation
+
 ## 0.28.1
 
 ### Patch Changes

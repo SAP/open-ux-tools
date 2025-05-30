@@ -1,5 +1,37 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.2.11
+
+### Patch Changes
+
+-   Updated dependencies [91726b0]
+    -   @sap-ux/fiori-generator-shared@0.12.4
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.7
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.5
+    -   @sap-ux/deploy-config-generator-shared@0.1.4
+    -   @sap-ux/inquirer-common@0.7.5
+    -   @sap-ux/odata-service-inquirer@2.4.9
+
+## 0.2.10
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.6
+    -   @sap-ux/project-access@1.30.2
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.4
+    -   @sap-ux/odata-service-inquirer@2.4.8
+    -   @sap-ux/fiori-generator-shared@0.12.3
+    -   @sap-ux/inquirer-common@0.7.4
+    -   @sap-ux/deploy-config-generator-shared@0.1.3
+
+## 0.2.9
+
+### Patch Changes
+
+-   0b518f4: fix prompt options for sub gens
+
 ## 0.2.8
 
 ### Patch Changes
