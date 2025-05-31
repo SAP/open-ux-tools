@@ -12,6 +12,9 @@ import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
 import {
     getWebappPath,
+    getProjectType,
+    type ProjectType,
+    findProjectRoot,
     type Manifest,
     FileName,
     type ManifestNamespace,
@@ -45,7 +48,6 @@ import {
     createFlpTemplateConfig,
     PREVIEW_URL,
     type TemplateConfig,
-    type CustomConnector,
     createTestTemplateConfig,
     addApp,
     getAppName,
@@ -103,6 +105,7 @@ export class FlpSandbox {
     private readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;
     private readonly cardGenerator?: CardGeneratorConfig;
+    private projectType: ProjectType;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -147,6 +150,7 @@ export class FlpSandbox {
         resources: Record<string, string> = {},
         adp?: AdpPreview
     ): Promise<void> {
+        this.projectType = await getProjectType(await findProjectRoot(process.cwd(), true, true));
         this.createFlexHandler();
         this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
@@ -167,11 +171,10 @@ export class FlpSandbox {
         );
         this.addStandardRoutes();
 
-        const cardGeneratorPath = this.cardGenerator?.path;
-        if (cardGeneratorPath) {
-            if (!cardGeneratorPath.startsWith('/')) {
-                this.cardGenerator.path = `/${cardGeneratorPath}`;
-            }
+        if (this.cardGenerator?.path) {
+            this.cardGenerator.path = this.cardGenerator.path.startsWith('/')
+                ? this.cardGenerator.path
+                : `/${this.cardGenerator.path}`;
 
             await this.addCardGeneratorMiddlewareRoute();
             await this.addStoreCardManifestRoute();
@@ -233,14 +236,31 @@ export class FlpSandbox {
     }
 
     /**
-     * Overrides the custom connector to a non-existing dummy value.
-     * This is needed for UI5 versions 1.71 and below.
+     * Deletes the Fiori Tools local connector (WorkspaceConnector) in case of a not supported UI5 versions.
+     * As an alternative the Fiori Tools fake connector (FakeLrepConnector) will be used as defined in preview-middleware-client/src/flp/initConnectors.ts.
+     * Also deletes the ABAP connector in case of a CAP project.
      *
+     * @param ui5VersionMajor - the major version of UI5
+     * @param ui5VersionMinor - the minor version of UI5
      * @private
      */
-    private overrideCustomConnector(): void {
-        (this.templateConfig.ui5.flex?.[1] as CustomConnector).applyConnector = 'FioriToolsNonexistentConnector';
-        (this.templateConfig.ui5.flex?.[1] as CustomConnector).writeConnector = 'FioriToolsNonexistentConnector';
+    private checkDeleteConnectors(ui5VersionMajor: number, ui5VersionMinor: number): void {
+        if (ui5VersionMajor === 1 && ui5VersionMinor < 78) {
+            this.templateConfig.ui5.flex?.splice(1, 1);
+            this.logger.debug(
+                `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it. The Fiori Tools fake connector (FakeLrepConnector) will be used instead.`
+            );
+        } else {
+            this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
+        }
+        if (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs') {
+            this.templateConfig.ui5.flex?.splice(0, 1);
+            this.logger.debug(
+                `The ABAP connector is not being used because the current project type is '${this.projectType}'.`
+            );
+        } else {
+            this.logger.debug(`The ABAP connector is being used.`);
+        }
     }
 
     /**
@@ -275,9 +295,7 @@ export class FlpSandbox {
 
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
 
-        if (ui5Version.major === 1 && ui5Version.minor <= 71) {
-            this.overrideCustomConnector();
-        }
+        this.checkDeleteConnectors(ui5Version.major, ui5Version.minor);
 
         if (editor.developerMode === true) {
             config.ui5.bootstrapOptions = serializeUi5Configuration(this.getDeveloperModeConfig(ui5Version.major));
@@ -439,6 +457,7 @@ export class FlpSandbox {
                 req.headers.host,
                 'ui5-patched-router' in req ? req['ui5-patched-router']?.baseUrl : undefined
             );
+            this.checkDeleteConnectors(ui5Version.major, ui5Version.minor);
             const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
@@ -524,7 +543,10 @@ export class FlpSandbox {
         const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
 
-        if ((major < 2 && minor < 123) || major >= 2 || label?.includes('legacy-free')) {
+        if (
+            this.flpConfig.enhancedHomePage &&
+            ((major < 2 && minor < 123) || major >= 2 || label?.includes('legacy-free'))
+        ) {
             this.flpConfig.enhancedHomePage = this.templateConfig.enhancedHomePage = false;
             this.logger.warn(`Feature enhancedHomePage disabled: UI5 version ${version} not supported.`);
         }
