@@ -1,9 +1,11 @@
 import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-import type { AttributesAnswers, ConfigAnswers } from '@sap-ux/adp-tooling';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
+import type { AttributesAnswers, ConfigAnswers } from '@sap-ux/adp-tooling';
+
+import type { ConfigPrompter } from './questions/configuration';
 
 export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
     /**
@@ -26,6 +28,14 @@ export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
      * A boolean flag indicating whether node_modules should be installed after project generation.
      */
     shouldInstallDeps?: boolean;
+}
+
+/**
+ * Values that are stashed in the App-Wizard cache.
+ */
+export interface State {
+    /** Re-use the heavy-weight ConfigPrompter when the user navigates back-and-forth. */
+    prompter?: ConfigPrompter;
 }
 
 /**
@@ -107,7 +117,9 @@ export enum attributePromptNames {
     targetFolder = 'targetFolder',
     ui5Version = 'ui5Version',
     ui5ValidationCli = 'ui5ValidationCli',
-    enableTypeScript = 'enableTypeScript'
+    enableTypeScript = 'enableTypeScript',
+    addDeployConfig = 'addDeployConfig',
+    addFlpConfig = 'addFlpConfig'
 }
 
 export type AttributesQuestion = YUIQuestion<AttributesAnswers>;
@@ -128,6 +140,7 @@ export interface NamespacePromptOptions {
 
 export interface TargetFolderPromptOptions {
     default?: string;
+    hide?: boolean;
 }
 
 export interface UI5VersionPromptOptions {
@@ -135,6 +148,14 @@ export interface UI5VersionPromptOptions {
 }
 
 export interface EnableTypeScriptPromptOptions {
+    hide?: boolean;
+}
+
+export interface AddDeployConfigPromptOptions {
+    hide?: boolean;
+}
+
+export interface AddFlpConfigPromptOptions {
     hide?: boolean;
 }
 
@@ -146,6 +167,8 @@ export type AttributePromptOptions = Partial<{
     [attributePromptNames.ui5Version]: UI5VersionPromptOptions;
     [attributePromptNames.ui5ValidationCli]: CliValidationPromptOptions;
     [attributePromptNames.enableTypeScript]: EnableTypeScriptPromptOptions;
+    [attributePromptNames.addDeployConfig]: AddDeployConfigPromptOptions;
+    [attributePromptNames.addFlpConfig]: AddFlpConfigPromptOptions;
 }>;
 
 export interface ExtensionProjectData {

@@ -19,7 +19,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
-import type { Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
+import type { AttributesAnswers, ConfigAnswers, Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 
@@ -28,6 +28,7 @@ import { initI18n, t } from '../src/utils/i18n';
 import type { JsonInput } from '../src/app/types';
 import { EventName } from '../src/telemetryEvents';
 import type { AdpGeneratorOptions } from '../src/app';
+import * as subgenHelpers from '../src/utils/subgenHelpers';
 import { ConfigPrompter } from '../src/app/questions/configuration';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
 
@@ -81,6 +82,8 @@ jest.mock('../src/utils/deps.ts', () => ({
     getPackageInfo: jest.fn().mockReturnValue({ name: '@sap-ux/generator-adp', version: 'mocked-version' })
 }));
 
+jest.mock('../src/utils/appWizardCache.ts');
+
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: jest.fn().mockReturnValue(new Promise(() => {})),
@@ -123,18 +126,20 @@ const apps: SourceApplication[] = [
     }
 ];
 
-const answers = {
+const answers: ConfigAnswers & AttributesAnswers = {
     system: 'urlA',
     username: 'user1',
     password: 'pass1',
-    application: { id: 'sap.ui.demoapps.f1', title: 'App One' },
+    application: apps[0],
     projectName: 'app.variant',
     namespace: 'customer.app.variant',
     title: 'App Title',
     ui5Version: '1.134.1',
     targetFolder: testOutputDir,
     enableTypeScript: false,
-    shouldCreateExtProject: false
+    shouldCreateExtProject: false,
+    addDeployConfig: false,
+    addFlpConfig: false
 };
 
 const activeLanguages: Language[] = [{ sap: 'value', i18n: 'DE' }];
@@ -245,7 +250,8 @@ describe('Adaptation Project Generator Integration Test', () => {
 
     it('should call composeWith to generate an extension project in case the application is not supported', async () => {
         mockIsAppStudio.mockReturnValue(false);
-        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
+        jest.spyOn(Generator.prototype, 'composeWith');
+        const addExtProjectGenSpy = jest.spyOn(subgenHelpers, 'addExtProjectGen').mockResolvedValue();
 
         const runContext = yeomanTest
             .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
@@ -254,15 +260,74 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(composeWithSpy).toHaveBeenCalledWith(
-            expect.stringMatching(''),
+        expect(addExtProjectGenSpy).toHaveBeenCalledWith(
             expect.objectContaining({
-                arguments: [
-                    '{"destination":{"name":"SystemA"},"applicationNS":"customer.app.variant","applicationName":"app.variant","userUI5Ver":"1.134.1","namespace":"sap.ui.demoapps.f1"}'
-                ],
-                appWizard: expect.anything()
-            })
+                attributeAnswers: {
+                    addDeployConfig: false,
+                    namespace: 'customer.app.variant',
+                    projectName: 'app.variant',
+                    targetFolder: testOutputDir,
+                    title: 'App Title',
+                    ui5Version: '1.134.1'
+                },
+                configAnswers: {
+                    application: apps[0],
+                    shouldCreateExtProject: true,
+                    system: 'urlA'
+                },
+                systemLookup: expect.any(Object)
+            }),
+            expect.any(Function),
+            expect.any(Object),
+            expect.any(Object)
         );
+    });
+
+    it('should call composeWith for FLP and Deploy sub-generators and generate a cloud project successfully', async () => {
+        mockIsAppStudio.mockReturnValue(false);
+        jest.spyOn(ConfigPrompter.prototype, 'isCloud', 'get').mockReturnValue(true);
+        jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
+
+        const addDeployGenSpy = jest.spyOn(subgenHelpers, 'addDeployGen').mockReturnValue();
+        const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockReturnValue();
+
+        const runContext = yeomanTest
+            .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+            .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+            .withPrompts({ ...answers, addDeployConfig: true, addFlpConfig: true });
+
+        await expect(runContext.run()).resolves.not.toThrow();
+
+        expect(addDeployGenSpy).toHaveBeenCalledWith(
+            {
+                client: '010',
+                connectedSystem: 'urlA',
+                projectName: 'app.variant',
+                targetFolder: testOutputDir
+            },
+            expect.any(Function),
+            expect.any(Object),
+            expect.any(Object)
+        );
+
+        expect(addFlpGenSpy).toHaveBeenCalledWith(
+            {
+                manifest: {
+                    'sap.ui5': {
+                        flexEnabled: true
+                    }
+                },
+                projectRootPath: join(testOutputDir, answers.projectName),
+                system: 'urlA'
+            },
+            expect.any(Function),
+            expect.any(Object),
+            expect.any(Object)
+        );
+
+        expect(executeCommandSpy).toHaveBeenCalledTimes(1);
+        const generatedDirs = fs.readdirSync(testOutputDir);
+        expect(generatedDirs).toContain(answers.projectName);
     });
 
     it('should generate an onPremise adaptation project successfully', async () => {

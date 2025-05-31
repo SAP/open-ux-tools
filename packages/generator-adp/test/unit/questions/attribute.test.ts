@@ -1,3 +1,5 @@
+import { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+
 import {
     validateProjectName,
     validateNamespaceAdp,
@@ -15,6 +17,7 @@ import { attributePromptNames } from '../../../src/app/types';
 import { getPrompts } from '../../../src/app/questions/attributes';
 import { getProjectNameTooltip } from '../../../src/app/questions/helper/tooltip';
 import { getVersionAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
+import { getWizardPages } from '../../../src/utils/steps';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
     validateProjectName: jest.fn(),
@@ -42,7 +45,8 @@ const mockConfig = {
     isCloudProject: false,
     layer: FlexLayer.CUSTOMER_BASE,
     ui5Versions: ['1.118.0', '1.119.0'],
-    isVersionDetected: true
+    isVersionDetected: true,
+    prompts: new YeomanUiSteps(getWizardPages())
 };
 
 const getDefaultVersionMock = getDefaultVersion as jest.Mock;
