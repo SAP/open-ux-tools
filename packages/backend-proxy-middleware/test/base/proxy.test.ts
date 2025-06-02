@@ -1,6 +1,6 @@
 import type { ClientRequest, IncomingMessage } from 'http';
 import type { Options } from 'http-proxy-middleware';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import { LogLevel, NullTransport, ToolsLogger } from '@sap-ux/logger';
 import {
     enhanceConfigsForDestination,
     enhanceConfigForSystem,
@@ -375,6 +375,7 @@ describe('proxy', () => {
     });
 
     describe('generateProxyMiddlewareOptions', () => {
+
         test('generate proxy middleware outside of BAS with all parameters', async () => {
             mockIsAppStudio.mockReturnValue(false);
             const backend: LocalBackendConfig = {
@@ -389,7 +390,7 @@ describe('proxy', () => {
                 xfwd: true
             };
 
-            const options = await generateProxyMiddlewareOptions(backend, baseOptions, logger);
+            const options = await generateProxyMiddlewareOptions(backend, baseOptions);
             expect(options).toBeDefined();
             expect(options?.on?.error).toBeDefined();
             expect(options?.on?.proxyReq).toBeDefined();
@@ -414,7 +415,7 @@ describe('proxy', () => {
                 [backend.destination]: {}
             });
 
-            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            const options = await generateProxyMiddlewareOptions(backend);
             expect(options).toBeDefined();
             expect(options.target).toBe(getDestinationUrlForAppStudio(backend.destination));
             expect(options.changeOrigin).toBe(true);
@@ -431,7 +432,7 @@ describe('proxy', () => {
                 path: '/my/path'
             };
 
-            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            const options = await generateProxyMiddlewareOptions(backend);
             expect(options).toBeDefined();
             expect(options.target).toBe(backend.url);
             expect(options.changeOrigin).toBe(true);
@@ -483,14 +484,31 @@ describe('proxy', () => {
         });
 
         test('calling onError calls proxyErrorHandler', async () => {
+            const debugSpy = jest.fn();
+
+            jest.mock('@sap-ux/logger', () => {
+                return {
+                    ...jest.requireActual('@sap-ux/logger'),
+                    ToolsLogger: jest.fn().mockImplementation(() => ({
+                        debug: debugSpy,
+                        info: jest.fn(),
+                    }))
+                };
+            });
+
+            jest.resetModules();
+            // To ensure the mock is applied the import must be done after the mock is set
+            const { generateProxyMiddlewareOptions } = await import('../../src');
+
             const backend: LocalBackendConfig = {
                 url: 'http://backend.example',
                 path: '/my/path'
             };
-            const proxyOptions = await generateProxyMiddlewareOptions(backend, {}, logger);
-            const debugSpy = jest.spyOn(logger, 'debug');
+
+            const proxyOptions = await generateProxyMiddlewareOptions(backend, {}, LogLevel.Debug);
+
             if (typeof proxyOptions?.on?.error === 'function') {
-                proxyOptions?.on?.error(undefined as any, {} as any, {} as any);
+                proxyOptions.on.error(undefined as any, {} as any, {} as any);
                 expect(debugSpy).toHaveBeenCalledTimes(1);
             }
         });
@@ -507,7 +525,7 @@ describe('proxy', () => {
                 path: '/my/path'
             };
 
-            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            const options = await generateProxyMiddlewareOptions(backend);
             expect(options).toBeDefined();
         });
 
@@ -521,7 +539,7 @@ describe('proxy', () => {
             };
             process.env.no_proxy = '.example';
 
-            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            const options = await generateProxyMiddlewareOptions(backend);
             expect(options.agent).toBeUndefined();
             delete process.env.npm_config_proxy;
             delete process.env.npm_config_https_proxy;
@@ -538,7 +556,7 @@ describe('proxy', () => {
             };
             process.env.no_proxy = '.example';
 
-            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            const options = await generateProxyMiddlewareOptions(backend);
             expect(options.agent).toBeUndefined();
             delete process.env.npm_config_proxy;
             delete process.env.npm_config_https_proxy;
@@ -554,7 +572,7 @@ describe('proxy', () => {
                 path: '/my/path',
                 proxy: 'http://proxy.example'
             };
-            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
+            const options = await generateProxyMiddlewareOptions(backend);
             expect(options.agent).toBeUndefined();
             delete process.env.npm_config_proxy;
             delete process.env.npm_config_https_proxy;
@@ -570,7 +588,7 @@ describe('proxy', () => {
                 path: '/my/path'
             };
 
-            const proxy = await createProxy(backend, {}, logger);
+            const proxy = await createProxy(backend, {});
             expect(proxy).toBeDefined();
             expect(typeof proxy).toBe('function');
         });
