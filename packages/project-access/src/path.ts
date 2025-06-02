@@ -1,8 +1,6 @@
 import { realpathSync } from 'fs';
 import { fileURLToPath } from 'url';
 
-const driveLetter = process.platform === 'win32' ? realpathSync.native('\\')[0] : '';
-
 /**
  *  Normalize URI to path.
  *
@@ -28,5 +26,6 @@ export function normalizePath(pathOrUri: string, parse = true): string {
  * @returns Normalized drive letter character
  */
 function toggleCase(character: string): string {
+    const driveLetter = process.platform === 'win32' ? realpathSync.native('\\')[0] : '';
     return driveLetter === driveLetter.toUpperCase() ? character.toUpperCase() : character.toLowerCase();
 }
