@@ -221,7 +221,7 @@
         "storedSystemConnectionError": "An error occurred when validating the stored system connection info. System Name: {{-systemName}}. Error: {{- error}}.",
         "noCatalogOrServiceAvailable": "No active system or OData service endpoint connection available to retrieve the server.",
         "allCatalogServiceRequestsFailed": "All catalog service requests failed for the selected system. OData version: V{{version}}.",
-        "unparseableMetadata": "Unable to parse entities from the metadata document. Error: {{-error}}.",
+        "unparseableMetadata": "Unable to parse entities from the metadata document: {{-error}}.",
         "unparseableOdataVersion": "Unable to parse the OData version from the metadata.",
         "unparseableXML": "Unparseable XML was specified: {{-error}}.",
         "noRelevantEntities": "The template and service selected have no relevant entities that you can use.",
