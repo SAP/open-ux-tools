@@ -19,7 +19,7 @@ describe('PromptState', () => {
             connectedSystem: {
                 serviceProvider: mockServiceProvider
             }
-        }
+        };
     });
 
     afterEach(() => {

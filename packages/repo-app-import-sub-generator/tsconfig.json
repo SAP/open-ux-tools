@@ -58,6 +58,9 @@
       "path": "../store"
     },
     {
+      "path": "../system-access"
+    },
+    {
       "path": "../ui5-config"
     },
     {
