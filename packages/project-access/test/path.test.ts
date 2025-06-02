@@ -43,5 +43,4 @@ describe('normalizePath', () => {
         const result = normalizePath(winfileURL);
         expect(result).toBe(`c:/Users/testuser/project/src/index.js`);
     });
-
 });
