@@ -55,9 +55,14 @@ export const extractAppData = (app: AppItem): { name: string; value: AppInfo } =
 export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value: AppInfo }> => {
     return appList
         .filter((app: AppItem) => {
-            const hasRequiredFields = app['sap.app/id'] && app['sap.app/title'] && app['repoName'] && app['url'];
+            RepoAppDownloadLogger.logger?.debug(`formatAppChoices: ${JSON.stringify(app)}`);
+            const hasRequiredFields =
+                app['sap.app/id'] &&
+                app['repoName'] &&
+                app['url'] &&
+                Object.prototype.hasOwnProperty.call(app, 'sap.app/title'); // allow for empty title
             if (!hasRequiredFields) {
-                RepoAppDownloadLogger.logger?.warn(t('warn.requiredFieldsMissing', { app: app.appId }));
+                RepoAppDownloadLogger.logger?.warn(t('warn.requiredFieldsMissing', { app: app['sap.app/id'] }));
             }
             return hasRequiredFields;
         })
@@ -82,6 +87,7 @@ async function getAppList(provider: AbapServiceProvider, appId?: string): Promis
         return await provider.getAppIndex().search(searchParams, appListResultFields);
     } catch (error) {
         RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: error.message }));
+        RepoAppDownloadLogger.logger?.debug(t('error.applicationListFetchError', { error: JSON.stringify(error) }));
         return [];
     }
 }

@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.4.10
+
+### Patch Changes
+
+-   944a0cd: Adds node TLS setting warning to credentials prompt
+
 ## 2.4.9
 
 ### Patch Changes

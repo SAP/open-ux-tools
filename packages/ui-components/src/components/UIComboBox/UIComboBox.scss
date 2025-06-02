@@ -208,7 +208,7 @@
                 .ms-ComboBox-header,
                 .ms-Dropdown-header {
                     border-top: none;
-                } 
+                }
             }
         }
         // Separator
@@ -269,6 +269,14 @@
             font-size: $menu-item-font-size;
             padding: 0;
         }
+    }
+
+    .option-no-data {
+        font-size: 12px;
+        font-weight: normal;
+        height: 26px;
+        line-height: 26px;
+        padding-left: 8px;
     }
 }
 

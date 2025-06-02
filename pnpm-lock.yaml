@@ -3301,6 +3301,9 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@sap-ux/system-access':
+        specifier: workspace:*
+        version: link:../system-access
       '@sap-ux/ui5-info':
         specifier: workspace:*
         version: link:../ui5-info
