@@ -36,11 +36,10 @@ import type {
     TextFile
 } from './types';
 import { ApiError, ApiErrorCode } from './error';
-import { pathFromUri } from './utils';
 import { ChangeConverter } from './change-converter';
 import { join } from 'path';
 import { pathToFileURL } from 'url';
-
+import { normalizePath } from '@sap-ux/project-access';
 export interface FioriAnnotationServiceConstructor<T> {
     new (
         vocabularyAPI: VocabularyService,
@@ -232,7 +231,7 @@ export class FioriAnnotationService {
         this.fileCache.clear();
         const files = await Promise.all(
             this.adapter.getAllFiles().map(async (file) => {
-                const path = pathFromUri(file.uri);
+                const path = normalizePath(file.uri);
                 const content = this.fs.read(path) ?? '';
                 return { ...file, content };
             })
@@ -312,7 +311,7 @@ export class FioriAnnotationService {
         // copy the cache to temp to revert if changes caused cds compiler error
         const temp = new Map(this.fileCache);
         for (const fileUri of fileUris) {
-            const path = pathFromUri(fileUri);
+            const path = normalizePath(fileUri);
             const text = this.fs.read(path) ?? '';
             const newText = applyWorkspaceEdits(fileUri, '', workspaceEdit, text);
             this.fileCache.set(fileUri, newText);
