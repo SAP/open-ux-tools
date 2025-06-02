@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { MiddlewareParameters, BackendMiddlewareConfig } from './base/types';
@@ -44,9 +44,14 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
     const backend = options.configuration.backend;
     const configOptions = options.configuration.options ?? {};
     configOptions.secure = configOptions.secure !== undefined ? !!configOptions.secure : true;
+    const logLevel = options.configuration?.debug ? LogLevel.Debug : LogLevel.Info;
 
     try {
-        const proxyOptions = await generateProxyMiddlewareOptions(options.configuration.backend, configOptions, logger);
+        const proxyOptions = await generateProxyMiddlewareOptions(
+            options.configuration.backend,
+            configOptions,
+            logLevel
+        );
         const proxyFn = createProxyMiddleware(proxyOptions);
         logger.info(
             `Starting backend-proxy-middleware using following configuration:\nbackend: ${JSON.stringify({
