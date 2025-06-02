@@ -8,6 +8,7 @@ import { promptNames } from './types';
 import { getExistingFlpConfigInfoPrompt } from './prompts/questions';
 import { getQuestions } from './prompts';
 import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types';
+import { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig, filterAndMapInboundsToManifest } from './utils';
 
 /**
  * Retrieves the inquirer prompts for the FLP configuration.
@@ -106,5 +107,8 @@ export {
     type PromptDefaultValue,
     type FLPConfigAnswers,
     type FLPConfigPromptOptions,
-    type FLPConfigQuestion
+    type FLPConfigQuestion,
+    getAdpFlpConfigPromptOptions,
+    getAdpFlpInboundsWriterConfig,
+    filterAndMapInboundsToManifest
 };

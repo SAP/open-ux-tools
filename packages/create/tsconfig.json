@@ -22,6 +22,9 @@
       "path": "../app-config-writer"
     },
     {
+      "path": "../axios-extension"
+    },
+    {
       "path": "../cap-config-writer"
     },
     {

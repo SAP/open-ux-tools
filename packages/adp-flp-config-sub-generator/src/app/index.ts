@@ -1,4 +1,4 @@
-import type { FlpConfigOptions, TileActionAnswers } from './types';
+import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
 import path, { join } from 'path';
@@ -8,7 +8,6 @@ import {
     type ProviderConfiguration,
     type AbapServiceProvider,
     type Inbound,
-    type InboundContent,
     isAxiosError
 } from '@sap-ux/axios-extension';
 import {
@@ -16,18 +15,22 @@ import {
     getAdpConfig,
     isCFEnvironment,
     generateInboundConfig,
+    getFlpTileSettings,
+    flpConfigurationExists,
     type InternalInboundNavigation,
-    type NewInboundNavigation,
     type AdpPreviewConfig,
-    type DescriptorVariant
+    type DescriptorVariant,
+    type TileSettingsAnswers
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
 import {
     getPrompts,
+    getAdpFlpConfigPromptOptions,
     getExistingFlpConfigInfoPrompt,
-    type FLPConfigAnswers,
-    type FLPConfigPromptOptions
+    getAdpFlpInboundsWriterConfig,
+    filterAndMapInboundsToManifest,
+    type FLPConfigAnswers
 } from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
@@ -55,7 +58,6 @@ import {
 } from '@sap-ux/system-access';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import { getTileActionsQuestions, tileActions } from './questions';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
@@ -84,7 +86,7 @@ export default class extends Generator {
     private inbounds?: ManifestNamespace.Inbound;
     private appId: string;
     private variant: DescriptorVariant;
-    private tileActionsAnswers?: TileActionAnswers & FLPConfigAnswers;
+    private tileSettingsAnswers?: TileSettingsAnswers;
     private isCloud: boolean = false;
 
     /**
@@ -153,8 +155,11 @@ export default class extends Generator {
         if (this.authenticationRequired) {
             await this._promptAuthentication();
         }
-        this.tileActionsAnswers = await this._promptTileActions();
-        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(this.inbounds, this._getPromptConfig());
+        this.tileSettingsAnswers = await this._promptTileActions();
+        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(
+            this.inbounds,
+            getAdpFlpConfigPromptOptions(this.tileSettingsAnswers as TileSettingsAnswers, this.inbounds, this.variant)
+        );
         this.answers = await this.prompt(prompts);
     }
 
@@ -163,7 +168,7 @@ export default class extends Generator {
             return;
         }
         try {
-            const config = this._getWriteConfig();
+            const config = getAdpFlpInboundsWriterConfig(this.answers, this.tileSettingsAnswers as TileSettingsAnswers);
             await generateInboundConfig(this.projectRootPath, config as InternalInboundNavigation, this.fs);
         } catch (error) {
             this.logger.error(`Writing phase failed: ${error}`);
@@ -209,18 +214,7 @@ export default class extends Generator {
             return undefined;
         }
 
-        return inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
-            // Skip if hideLauncher is not false
-            if (!inbound?.content || inbound.content.hideLauncher !== false) {
-                return acc;
-            }
-            const { semanticObject, action } = inbound.content;
-            if (semanticObject && action) {
-                const key = `${semanticObject}-${action}`;
-                acc[key] = inbound.content;
-            }
-            return acc;
-        }, {} as { [key: string]: InboundContent });
+        return filterAndMapInboundsToManifest(inbounds);
     }
 
     /**
@@ -429,65 +423,19 @@ export default class extends Generator {
     }
 
     /**
-     * Returns the prompt configuration options based on the provided tile actions answers.
-     *
-     * @returns {FLPConfigPromptOptions} The prompt configuration options.
-     */
-    private _getPromptConfig(): FLPConfigPromptOptions {
-        const { tileHandlingAction, copyFromExisting } = this.tileActionsAnswers ?? {};
-
-        // If the user chooses to add a new tile and copy the original, semantic object and action are required
-        if (!this.inbounds || (tileHandlingAction === tileActions.ADD && copyFromExisting === false)) {
-            const hideExistingFlpConfigInfo = !(!this.inbounds && this._hasExistingFlpConfig());
-            return {
-                existingFlpConfigInfo: { hide: hideExistingFlpConfigInfo },
-                inboundId: { hide: true },
-                overwrite: { hide: true }
-            };
-        }
-        // If the user chooses to replace the original tile, are not required and are taken from the existing selected inbound
-        if (tileHandlingAction === tileActions.REPLACE) {
-            return {
-                existingFlpConfigInfo: { hide: true },
-                overwrite: { hide: true },
-                semanticObject: { hide: true },
-                action: { hide: true },
-                additionalParameters: { hide: true }
-            };
-        }
-
-        // If the user chooses to add a new tile and copy the original, semantic object and action are required
-        return {
-            existingFlpConfigInfo: { hide: true },
-            overwrite: { hide: true }
-        };
-    }
-
-    /**
-     * Checks if there is an existing FLP configuration in the variant content.
-     *
-     * @returns {boolean} True if an existing FLP configuration is found, otherwise false.
-     */
-    private _hasExistingFlpConfig(): boolean {
-        return this.variant.content.some((item) => {
-            return item.changeType === 'appdescr_app_addNewInbound' ? true : false;
-        });
-    }
-
-    /**
      * Prompts the user for tile actions and returns the answers.
      *
      * @returns {Promise<(TileActionAnswers & FLPConfigAnswers) | undefined>} The answers from the tile actions prompt, or undefined.
      */
-    private async _promptTileActions(): Promise<(TileActionAnswers & FLPConfigAnswers) | undefined> {
+    private async _promptTileActions(): Promise<(TileSettingsAnswers & FLPConfigAnswers) | undefined> {
         if (this.inbounds) {
             this._setTileActionsPrompts();
-            const tileActionPrompts = getTileActionsQuestions();
-            if (!this.launchAsSubGen && this._hasExistingFlpConfig()) {
+            const tileSettingsPrompts = getFlpTileSettings();
+            if (!this.launchAsSubGen && flpConfigurationExists(this.variant)) {
                 const existingConfigPrompt = getExistingFlpConfigInfoPrompt(isCli());
-                tileActionPrompts.unshift(existingConfigPrompt as unknown as YUIQuestion<TileActionAnswers>);
+                tileSettingsPrompts.unshift(existingConfigPrompt as unknown as YUIQuestion<TileSettingsAnswers>);
             }
-            return (await this.prompt(tileActionPrompts)) as TileActionAnswers & FLPConfigAnswers;
+            return (await this.prompt(tileSettingsPrompts)) as TileSettingsAnswers & FLPConfigAnswers;
         }
         return undefined;
     }
@@ -547,40 +495,6 @@ export default class extends Generator {
         }
         this.variant = await getVariant(this.projectRootPath, this.fs);
         this.appId = this.variant.reference;
-    }
-
-    /**
-     * Returns the configuration for writing the inbound navigation based on the selected tile action.
-     *
-     * @returns {InternalInboundNavigation | NewInboundNavigation} The configuration object for the inbound navigation.
-     */
-    private _getWriteConfig(): InternalInboundNavigation | NewInboundNavigation {
-        const { tileHandlingAction } = this.tileActionsAnswers ?? {};
-        if (tileHandlingAction === tileActions.REPLACE) {
-            const {
-                semanticObject,
-                action,
-                signature: { parameters }
-            } = this.answers.inboundId ?? ({} as InboundContent);
-            return {
-                inboundId: `${semanticObject}-${action}`,
-                semanticObject: semanticObject ?? '',
-                action: action ?? '',
-                title: this.answers.title ?? '',
-                subTitle: this.answers.subTitle ?? '',
-                icon: this.answers.icon ?? '',
-                additionalParameters: JSON.stringify(parameters) ?? ''
-            };
-        }
-
-        return {
-            semanticObject: this.answers.semanticObject ?? '',
-            action: this.answers.action ?? '',
-            title: this.answers.title ?? '',
-            subTitle: this.answers.subTitle ?? '',
-            icon: this.answers.icon ?? '',
-            additionalParameters: this.answers.additionalParameters ?? ''
-        };
     }
 }
 

@@ -3,3 +3,4 @@ export { getPrompts as getPromptsForAddComponentUsages } from './add-component-u
 export { getPrompts as getPromptsForNewModel } from './add-new-model';
 export { getPrompts as getPromptsForChangeInbound } from './change-inbound';
 export { getPrompts as getPromptsForAddAnnotationsToOData } from './add-annotations-to-odata';
+export { getPrompts as getFlpTileSettings } from './flp-tile-settings';

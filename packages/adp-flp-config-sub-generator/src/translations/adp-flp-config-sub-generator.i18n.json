@@ -1,13 +1,4 @@
 {
-    "prompts": {
-        "tileHandlingAction": "Chose a Tile Handling Action",
-        "copyFromExisting": "Copy Configurations From an Existing Inbound (?)",
-        "existingFLPConfig": "Have in mind that this project already has created FLP configuration. If you create another one, it will overwrite completely the current one",
-        "choices": {
-            "replaceOriginalTile": "Replace Original App's Tile(s)",
-            "addNewTile": "Add a New Tile to The Original One"
-        }
-    },
     "yuiNavSteps": {
         "flpCredentialsName": "FLP Configuration - Credentials",
         "flpCredentialsDesc": "Enter credentials for your adaptation project's system ({{- system}})",
