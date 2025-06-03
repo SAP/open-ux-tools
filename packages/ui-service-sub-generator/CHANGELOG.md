@@ -1,5 +1,113 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.11
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.1.11
+
+## 0.1.10
+
+### Patch Changes
+
+-   Updated dependencies [91726b0]
+    -   @sap-ux/fiori-generator-shared@0.12.4
+    -   @sap-ux/inquirer-common@0.7.5
+    -   @sap-ux/ui-service-inquirer@0.1.10
+
+## 0.1.9
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.3
+-   @sap-ux/ui-service-inquirer@0.1.9
+-   @sap-ux/axios-extension@1.21.1
+-   @sap-ux/fiori-generator-shared@0.12.3
+-   @sap-ux/system-access@0.6.1
+-   @sap-ux/inquirer-common@0.7.4
+
+## 0.1.8
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.1.8
+
+## 0.1.7
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/telemetry@0.6.2
+    -   @sap-ux/inquirer-common@0.7.3
+    -   @sap-ux/ui-service-inquirer@0.1.7
+
+## 0.1.6
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+    -   @sap-ux/ui-service-inquirer@0.1.6
+
+## 0.1.5
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.1.5
+
+## 0.1.4
+
+### Patch Changes
+
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/system-access@0.6.1
+    -   @sap-ux/ui-service-inquirer@0.1.4
+
+## 0.1.3
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.1.3
+
+## 0.1.2
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.1.2
+
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [66b88e1]
+    -   @sap-ux/inquirer-common@0.7.1
+    -   @sap-ux/telemetry@0.6.1
+    -   @sap-ux/ui-service-inquirer@0.1.1
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/fiori-generator-shared@0.12.1
+    -   @sap-ux/system-access@0.6.0
+
+## 0.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/ui-service-inquirer@0.1.0
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/system-access@0.6.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/telemetry@0.6.0
+    -   @sap-ux/logger@0.7.0
+
 ## 0.0.42
 
 ### Patch Changes

@@ -28,8 +28,12 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer/dist/constants';
 import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { AbapDeployConfigOptions, AbapDeployConfigPromptOptions } from './types';
-import type { AbapDeployConfigAnswersInternal, AbapDeployConfigQuestion } from '@sap-ux/abap-deploy-config-inquirer';
+import type { AbapDeployConfigOptions } from './types';
+import type {
+    AbapDeployConfigAnswersInternal,
+    AbapDeployConfigPromptOptions,
+    AbapDeployConfigQuestion
+} from '@sap-ux/abap-deploy-config-inquirer';
 
 /**
  * ABAP deploy config generator.
@@ -163,16 +167,21 @@ export default class extends DeploymentGenerator {
         if (!this.launchDeployConfigAsSubGenerator) {
             const appType = await getAppType(this.destinationPath());
             const isAdp = appType === 'Fiori Adaptation';
+            const packageAdditionalValidation = {
+                shouldValidatePackageForStartingPrefix: isAdp,
+                shouldValidatePackageType: isAdp,
+                shouldValidateFormatAndSpecialCharacters: isAdp
+            };
             const promptOptions: AbapDeployConfigPromptOptions = {
                 ui5AbapRepo: { hideIfOnPremise: isAdp },
                 transportInputChoice: { hideIfOnPremise: isAdp },
                 packageAutocomplete: {
-                    shouldValidatePackageForStartingPrefix: isAdp,
-                    shouldValidatePackageType: isAdp,
-                    shouldValidateFormatAndSpecialCharacters: isAdp
+                    additionalValidation: packageAdditionalValidation
                 },
-                packageManual: { shouldValidatePackageForStartingPrefix: isAdp, shouldValidatePackageType: isAdp },
-                targetSystem: { shouldRestrictDifferentSystemType: isAdp }
+                packageManual: {
+                    additionalValidation: packageAdditionalValidation
+                },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: isAdp } }
             };
             const indexGenerationAllowed = this.indexGenerationAllowed && !isAdp;
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({
@@ -334,4 +343,5 @@ export default class extends DeploymentGenerator {
 export { AbapDeployConfigQuestion, AbapDeployConfigAnswersInternal };
 export { getAbapQuestions } from './questions';
 export { indexHtmlExists } from '../utils';
-export { AbapDeployConfigOptions, DeployProjectType, AbapDeployConfigPromptOptions } from './types';
+export { AbapDeployConfigOptions, DeployProjectType } from './types';
+export { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-inquirer';

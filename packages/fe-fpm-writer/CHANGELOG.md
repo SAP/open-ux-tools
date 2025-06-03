@@ -1,5 +1,45 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.34.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+-   @sap-ux/fiori-annotation-api@0.5.7
+
+## 0.34.2
+
+### Patch Changes
+
+-   Updated dependencies [e605d30]
+    -   @sap-ux/fiori-annotation-api@0.5.6
+
+## 0.34.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/fiori-annotation-api@0.5.5
+
+## 0.34.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/fiori-annotation-api@0.5.4
+
+## 0.33.29
+
+### Patch Changes
+
+-   Updated dependencies [aeb23b0]
+    -   @sap-ux/fiori-annotation-api@0.5.3
+
 ## 0.33.28
 
 ### Patch Changes

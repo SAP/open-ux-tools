@@ -412,7 +412,7 @@ describe('ConfigPrompter Integration Tests', () => {
 
             const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
 
-            expect(result).toEqual(t('error.appDoesNotSupportAdaptation'));
+            expect(result).toEqual(t('error.appDoesNotSupportFlexibility'));
         });
 
         it('application prompt validate should return string if value is not passed', async () => {

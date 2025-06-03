@@ -8,7 +8,7 @@ import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import { getError } from '../utils/error';
 
-type CommandNames = 'addXML';
+type CommandNames = 'addXML' | 'codeExt';
 
 /**
  * Class responsible for handling rta calls
@@ -26,15 +26,15 @@ export default class CommandExecutor {
      * @param runtimeControl Managed object
      * @param commandName Command name
      * @param modifiedValue Modified value/s
-     * @param designMetadata Design time metadata
      * @param flexSettings Additional flex settings
+     * @param designMetadata Design time metadata
      */
     public async getCommand<T>(
         runtimeControl: ManagedObject,
         commandName: CommandNames,
         modifiedValue: object,
-        designMetadata: DesignTimeMetadata,
-        flexSettings: FlexSettings
+        flexSettings: FlexSettings,
+        designMetadata?: DesignTimeMetadata
     ): Promise<FlexCommand<T>> {
         try {
             return await CommandFactory.getCommandFor(

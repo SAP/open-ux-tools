@@ -66,7 +66,7 @@ import {
 } from './prompting';
 import { addDeployGen, addFlpGen } from './subgenHelpers';
 import { getTemplateType, transformState } from './transforms';
-import { writeAPIHubKeyFiles, writeReadMe } from './writing';
+import { writeAppGenInfoFiles, writeAPIHubKeyFiles } from './writing';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
@@ -259,7 +259,6 @@ export class FioriAppGenerator extends Generator {
                             targetFolder: this.state.project?.targetFolder,
                             service: this.state.service,
                             floorplan: this.state.floorplan,
-                            hideUI5VersionPrompt: generatorOptions.hideUI5VersionPrompt,
                             promptSettings: generatorOptions.promptSettings,
                             promptExtension: generatorOptions.extensions
                         },
@@ -295,8 +294,9 @@ export class FioriAppGenerator extends Generator {
                     {
                         service: this.state.service,
                         projectName: this.state.project.name,
+                        promptSettings: generatorOptions.promptSettings,
                         targetFolder: this.state.project.targetFolder,
-                        applicationType: 'FF' // Telemetry data
+                        applicationType: this.state.floorplan === FloorplanFF.FF_SIMPLE ? 'FF' : 'FE' // Telemetry data
                     },
                     this.composeWith.bind(this),
                     FioriAppGenerator.logger,
@@ -403,7 +403,14 @@ export class FioriAppGenerator extends Generator {
 
             // Write after app, using values from the transformed state so defaults have been applied
             const readMeUpdated = { ui5Version: appConfig.ui5?.minUI5Version };
-            await writeReadMe(this.state, generatorName, this.generatorVersion, destRoot, this.fs, readMeUpdated);
+            await writeAppGenInfoFiles(
+                this.state,
+                generatorName,
+                this.generatorVersion,
+                destRoot,
+                this.fs,
+                readMeUpdated
+            );
         } catch (error) {
             FioriAppGenerator.logger.fatal(`${t('error.errorWritingApplicationFiles')} : ${error}`);
             this._exitOnError(error);

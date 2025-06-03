@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/i18n",
-    "version": "0.2.3",
+    "version": "0.3.0",
     "description": "Library for i18n",
     "repository": {
         "type": "git",
@@ -54,6 +54,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }

@@ -1,5 +1,75 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [91726b0]
+    -   @sap-ux/fiori-generator-shared@0.12.4
+    -   @sap-ux/deploy-config-generator-shared@0.1.4
+    -   @sap-ux/inquirer-common@0.7.5
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.5
+
+## 0.2.4
+
+### Patch Changes
+
+-   @sap-ux/cf-deploy-config-writer@0.3.2
+-   @sap-ux/project-access@1.30.2
+-   @sap-ux/fiori-generator-shared@0.12.3
+-   @sap-ux/inquirer-common@0.7.4
+-   @sap-ux/deploy-config-generator-shared@0.1.3
+-   @sap-ux/cf-deploy-config-inquirer@0.3.4
+
+## 0.2.3
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/deploy-config-generator-shared@0.1.2
+    -   @sap-ux/inquirer-common@0.7.3
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.3
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.2
+    -   @sap-ux/deploy-config-generator-shared@0.1.1
+
+## 0.2.1
+
+### Patch Changes
+
+-   Updated dependencies [66b88e1]
+    -   @sap-ux/inquirer-common@0.7.1
+    -   @sap-ux/cf-deploy-config-writer@0.3.1
+    -   @sap-ux/project-access@1.30.1
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.1
+    -   @sap-ux/deploy-config-generator-shared@0.1.1
+    -   @sap-ux/fiori-generator-shared@0.12.1
+
+## 0.2.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/deploy-config-generator-shared@0.1.0
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.0
+    -   @sap-ux/cf-deploy-config-writer@0.3.0
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/btp-utils@1.1.0
+
 ## 0.1.60
 
 ### Patch Changes

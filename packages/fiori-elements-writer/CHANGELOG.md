@@ -1,5 +1,115 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.4.10
+
+### Patch Changes
+
+-   Updated dependencies [91726b0]
+    -   @sap-ux/fiori-generator-shared@0.12.4
+    -   @sap-ux/cap-config-writer@0.10.4
+
+## 2.4.9
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/odata-service-writer@0.27.5
+    -   @sap-ux/ui5-application-writer@1.5.2
+    -   @sap-ux/annotation-generator@0.3.35
+    -   @sap-ux/cap-config-writer@0.10.3
+    -   @sap-ux/fe-fpm-writer@0.34.3
+    -   @sap-ux/fiori-generator-shared@0.12.3
+    -   @sap-ux/ui5-test-writer@0.7.2
+
+## 2.4.8
+
+### Patch Changes
+
+-   Updated dependencies [f9e4913]
+    -   @sap-ux/odata-service-writer@0.27.4
+
+## 2.4.7
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/cap-config-writer@0.10.2
+
+## 2.4.6
+
+### Patch Changes
+
+-   Updated dependencies [6e2ef66]
+    -   @sap-ux/odata-service-writer@0.27.3
+
+## 2.4.5
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.34
+-   @sap-ux/fe-fpm-writer@0.34.2
+
+## 2.4.4
+
+### Patch Changes
+
+-   Updated dependencies [07eaebf]
+    -   @sap-ux/odata-service-writer@0.27.2
+
+## 2.4.3
+
+### Patch Changes
+
+-   6cc19b7: Fix for drive letter casing mismatch when selecting CAP projects on Windows
+
+## 2.4.2
+
+### Patch Changes
+
+-   06d3ba3: fix html target for opa tests
+
+## 2.4.1
+
+### Patch Changes
+
+-   Updated dependencies [5e0020b]
+    -   @sap-ux/odata-service-writer@0.27.1
+    -   @sap-ux/ui5-config@0.28.1
+    -   @sap-ux/ui5-application-writer@1.5.1
+    -   @sap-ux/annotation-generator@0.3.33
+    -   @sap-ux/cap-config-writer@0.10.1
+    -   @sap-ux/fe-fpm-writer@0.34.1
+    -   @sap-ux/fiori-generator-shared@0.12.1
+    -   @sap-ux/ui5-test-writer@0.7.1
+
+## 2.4.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/ui5-application-writer@1.5.0
+    -   @sap-ux/odata-service-writer@0.27.0
+    -   @sap-ux/cap-config-writer@0.10.0
+    -   @sap-ux/ui5-test-writer@0.7.0
+    -   @sap-ux/fe-fpm-writer@0.34.0
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/annotation-generator@0.3.32
+
+## 2.3.8
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.31
+-   @sap-ux/fe-fpm-writer@0.33.29
+
 ## 2.3.7
 
 ### Patch Changes

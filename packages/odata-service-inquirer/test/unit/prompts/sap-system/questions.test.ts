@@ -31,6 +31,7 @@ describe('questions', () => {
                 "type": "list",
               },
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "breadcrumb": true,
                   "hint": "Enter the URL of the SAP System",
@@ -64,6 +65,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "default": "",
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
@@ -133,6 +135,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "breadcrumb": true,
                   "hint": "Enter the URL of the SAP System",

@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/project-integrity",
-    "version": "0.1.21",
+    "version": "0.2.2",
     "description": "Library to check the integrity of projects",
     "repository": {
         "type": "git",
@@ -29,7 +29,7 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     },
     "dependencies": {
         "@sap-ux/project-access": "workspace:*",

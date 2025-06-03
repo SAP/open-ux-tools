@@ -48,12 +48,12 @@ describe('getResourceUrlsForUi5Bootstrap', () => {
 });
 
 describe('getDefaultTargetFolder', () => {
-    // rootPath exists only in SBAS
     const vscodeMock = {
         workspace: {
             workspaceFolders: [
-                { uri: { fsPath: '/1st/workspace/path', scheme: 'file' } },
-                { uri: { fsPath: '/2nd/workspace/path', scheme: 'file' } }
+                { uri: { fsPath: '/1st/workspace/virtual/path', scheme: 'abapfs' } },
+                { uri: { fsPath: '/2nd/workspace/path', scheme: 'file' } },
+                { uri: { fsPath: '/3rd/workspace/path', scheme: 'file' } }
             ],
             workspaceFile: undefined,
             getConfiguration: (id: string): object => {
@@ -72,12 +72,12 @@ describe('getDefaultTargetFolder', () => {
         }
     };
 
-    test('getDefaultTargetFolder', () => {
-        expect(getDefaultTargetFolder(vscodeMock)).toBe('/1st/workspace/path');
+    test('should return correct default target folder', () => {
+        expect(getDefaultTargetFolder(vscodeMock)).toBe('/2nd/workspace/path');
 
         // Has a saved workspace, the first path is still used
         Object.assign(vscodeMock.workspace, { workspaceFile: 'workspace-file.json' });
-        expect(getDefaultTargetFolder(vscodeMock)).toBe('/1st/workspace/path');
+        expect(getDefaultTargetFolder(vscodeMock)).toBe('/2nd/workspace/path');
 
         // No folders added to workspace
         jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true);

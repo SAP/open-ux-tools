@@ -1,5 +1,64 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.5
+
+### Patch Changes
+
+-   Updated dependencies [91726b0]
+    -   @sap-ux/fiori-generator-shared@0.12.4
+    -   @sap-ux/ui5-library-reference-inquirer@0.4.5
+
+## 0.1.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+-   @sap-ux/telemetry@0.6.3
+-   @sap-ux/ui5-library-reference-writer@0.2.2
+-   @sap-ux/fiori-generator-shared@0.12.3
+-   @sap-ux/ui5-library-reference-inquirer@0.4.4
+
+## 0.1.3
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/telemetry@0.6.2
+    -   @sap-ux/ui5-library-reference-inquirer@0.4.3
+
+## 0.1.2
+
+### Patch Changes
+
+-   @sap-ux/ui5-library-reference-inquirer@0.4.2
+
+## 0.1.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/telemetry@0.6.1
+-   @sap-ux/ui5-library-reference-writer@0.2.1
+-   @sap-ux/ui5-library-reference-inquirer@0.4.1
+-   @sap-ux/fiori-generator-shared@0.12.1
+
+## 0.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/ui5-library-reference-inquirer@0.4.0
+    -   @sap-ux/ui5-library-reference-writer@0.2.0
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/telemetry@0.6.0
+
 ## 0.0.64
 
 ### Patch Changes

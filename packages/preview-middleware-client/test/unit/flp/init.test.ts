@@ -14,6 +14,7 @@ import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { CommunicationService } from '../../../src/cpe/communication-service';
+import type Component from 'sap/ui/core/Component';
 
 jest.mock('../../../src/i18n', () => {
     return {
@@ -385,6 +386,31 @@ describe('flp/init', () => {
                 }
             });
             expect(reloadSpy).toHaveBeenCalled();
+        });
+
+        test('cardGenerator mode is enabled', async () => {
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.124.50' });
+            const mockComponentInstance = {} as Component;
+            const mockService = {
+                attachAppLoaded: jest.fn().mockImplementation((callback: (event: any) => void) => {
+                    const mockEvent = {
+                        getParameter: jest.fn().mockReturnValue(mockComponentInstance)
+                    };
+                    callback(mockEvent);
+                }),
+                createUserAction: jest.fn()
+            };
+            sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+            await init({ enableCardGenerator: true });
+
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
+            await rendererCb();
+            expect(mockService.attachAppLoaded).toBeCalled();
+            expect(mockService.attachAppLoaded).toHaveBeenCalledTimes(1);
+            expect(mockService.attachAppLoaded.mock.calls[0][0]).toBeInstanceOf(Function);
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
+            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
         });
     });
 });
