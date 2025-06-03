@@ -6,7 +6,10 @@ import { generatorNamespace, t } from '../utils';
 import type { CfDeployConfigOptions } from '@sap-ux/cf-deploy-config-sub-generator';
 import type { AbapDeployConfigOptions } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { AppConfig } from '@sap-ux/fiori-app-sub-generator';
-import type { CFDeployConfig } from '@sap-ux/fiori-generator-shared';
+import type {
+    CFDeployConfig as CfHeadlessDeployConfig,
+    AbapDeployConfigOptions as AbapHeadlessDeployConfigOptions
+} from '@sap-ux/fiori-generator-shared';
 
 /**
  * Headless deployment generator
@@ -88,7 +91,7 @@ export default class extends DeploymentGenerator {
         let options: CfDeployConfigOptions | AbapDeployConfigOptions | undefined;
 
         if (this.deployTarget === DeployTarget.CF) {
-            const cf = this.appConfig.deployConfig as CFDeployConfig;
+            const cf = this.appConfig.deployConfig as CfHeadlessDeployConfig;
             if (this.appConfig.project.targetFolder) {
                 options = {
                     projectRoot: this.appConfig.project.targetFolder,
@@ -102,9 +105,23 @@ export default class extends DeploymentGenerator {
                     cloudServiceName: cf.cloudServiceName
                 } as CfDeployConfigOptions;
             }
+        } else if (this.deployTarget === DeployTarget.ABAP) {
+            const abap = this.appConfig.deployConfig as AbapHeadlessDeployConfigOptions;
+            if (this.appConfig.project.targetFolder) {
+                options = {
+                    appRootPath: this.appConfig?.project?.targetFolder,
+                    destination: abap?.destination,
+                    url: abap?.url ?? '', // URL may not be provided in BAS but will be determined in the generator
+                    client: abap?.client,
+                    scp: abap?.scp,
+                    ui5AbapRepo: abap?.ui5AbapRepo,
+                    description: abap?.description,
+                    package: abap?.package,
+                    transport: abap?.transport,
+                    launchDeployConfigAsSubGenerator: true
+                } satisfies AbapDeployConfigOptions;
+            }
         }
-        // ABAP support will be added in the future
-
         return options;
     }
 

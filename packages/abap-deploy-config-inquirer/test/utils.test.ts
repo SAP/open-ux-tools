@@ -9,7 +9,8 @@ import {
     getPackageAnswer,
     useCreateTrDuringDeploy,
     queryPackages,
-    reconcileAnswers
+    reconcileAnswers,
+    getTransportAnswer
 } from '../src/utils';
 import { getService } from '@sap-ux/store';
 import { mockTargetSystems } from './fixtures/targets';
@@ -253,5 +254,41 @@ describe('Test utils', () => {
         };
 
         expect(reconcileAnswers(internalAnswers, PromptState.abapDeployConfig)).toStrictEqual(expectedAnswers);
+    });
+
+    describe('getTransportAnswer', () => {
+        it('should return transport passed as an option if defined', () => {
+            const result = getTransportAnswer(undefined, 'TR123456');
+            expect(result).toBe('TR123456');
+        });
+
+        it('should return transportManual if transportOpt is undefined', () => {
+            const result = getTransportAnswer({ url: '', package: '', transportManual: 'TRMANUAL' });
+            expect(result).toBe('TRMANUAL');
+        });
+
+        it('should return transportFromList if transportManual is undefined', () => {
+            const result = getTransportAnswer({ url: '', package: '', transportFromList: 'TRLIST' });
+            expect(result).toBe('TRLIST');
+        });
+
+        it('should return transportCreated if others are undefined', () => {
+            const result = getTransportAnswer({ url: '', package: '', transportCreated: 'TRCREATED' });
+            expect(result).toBe('TRCREATED');
+        });
+
+        it('returns CREATE_TR_DURING_DEPLOY if transportInputChoice is CreateDuringDeployChoice', () => {
+            const result = getTransportAnswer({
+                url: '',
+                package: '',
+                transportInputChoice: TransportChoices.CreateDuringDeployChoice
+            });
+            expect(result).toBe(CREATE_TR_DURING_DEPLOY);
+        });
+
+        it('returns empty string if all inputs are undefined', () => {
+            const result = getTransportAnswer();
+            expect(result).toBe('');
+        });
     });
 });

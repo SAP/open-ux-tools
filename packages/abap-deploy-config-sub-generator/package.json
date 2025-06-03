@@ -39,7 +39,6 @@
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "i18next": "23.5.1",
         "@sap-devx/yeoman-ui-types": "1.14.4"
