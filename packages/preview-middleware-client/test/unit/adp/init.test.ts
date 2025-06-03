@@ -86,7 +86,7 @@ describe('adp', () => {
 
         const callBackFn = spyPostMessage.mock.calls[0][0];
 
-        const action = common.addExtensionPoint({
+        const action1 = common.addExtensionPoint({
             controlId: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport--PgLayout',
             children: [],
             controlType: '',
@@ -94,10 +94,25 @@ describe('adp', () => {
             name: 'PgLayout',
             visible: true
         });
+        const action2 = common.addExtensionPoint({
+            controlId: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport',
+            children: [],
+            controlType: '',
+            editable: true,
+            name: '',
+            visible: true
+        });
 
-        await callBackFn(action);
+        await callBackFn(action1);
+        await callBackFn(action2);
 
-        expect(executeSpy).toHaveBeenCalledWith(
+        expect(executeSpy).toHaveBeenNthCalledWith(
+            1,
+            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport',
+            'CTX_ADDXML_AT_EXTENSIONPOINT'
+        );
+        expect(executeSpy).toHaveBeenNthCalledWith(
+            2,
             'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport',
             'CTX_ADDXML_AT_EXTENSIONPOINT'
         );
