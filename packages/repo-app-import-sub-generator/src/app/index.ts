@@ -149,7 +149,13 @@ export default class extends Generator {
         validateQfaJsonFile(qfaJson);
 
         // Generate app config
-        const config = await getAppConfig(this.answers.selectedApp, this.extractedProjectPath, qfaJson, this.fs);
+        const config = await getAppConfig(
+            this.answers.selectedApp,
+            this.extractedProjectPath,
+            qfaJson,
+            this.answers.systemSelection,
+            this.fs
+        );
         await generate(this.projectPath, config, this.fs);
 
         // Generate deploy config
