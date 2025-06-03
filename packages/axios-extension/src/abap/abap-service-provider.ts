@@ -250,7 +250,7 @@ export class AbapServiceProvider extends ServiceProvider {
      * @returns the type of the config link from config
      */
     private getContentAcceptType(config: GeneratorEntry): string {
-        const found = config.link.find((link) => typeof link.href === 'string' && link.href.endsWith('/content'));
+        const found = config.link.find((link) => typeof link.href === 'string' && link.href.includes('/content'));
         return found.type;
     }
 
