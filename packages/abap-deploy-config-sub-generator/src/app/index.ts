@@ -76,10 +76,6 @@ export default class extends DeploymentGenerator {
         await super.initializing();
         await initI18n();
 
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
-
         DeploymentGenerator.logger?.debug(t('debug.initTelemetry'));
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -89,6 +85,10 @@ export default class extends DeploymentGenerator {
             internalFeature: isInternalFeaturesSettingEnabled(),
             watchTelemetrySettingStore: false
         });
+
+        if ((this.env as unknown as YeomanEnvironment).conflicter) {
+            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
+        }
 
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._initializing();

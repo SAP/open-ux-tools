@@ -5,4 +5,4 @@
 '@sap-ux/fiori-generator-shared': patch
 ---
 
-adds support for abap headless deployment configuration
+adds support for adding deployment config via headless generator
