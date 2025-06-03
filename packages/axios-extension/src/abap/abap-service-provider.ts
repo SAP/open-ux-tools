@@ -250,8 +250,10 @@ export class AbapServiceProvider extends ServiceProvider {
      * @returns the type of the content link from service generator config
      */
     private getContentType(config: GeneratorEntry): string {
-        const found = config.link.find((link) => typeof link.href === 'string' && link.href.includes('/content'));
-        return found.type;
+        const contentEndpoint = config.link.find(
+            (link) => typeof link.href === 'string' && link.href.includes('/content')
+        );
+        return contentEndpoint.type;
     }
 
     /**
