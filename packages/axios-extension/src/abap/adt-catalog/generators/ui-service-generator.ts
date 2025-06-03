@@ -7,15 +7,22 @@ import { AdtService } from '../services';
  */
 export class UiServiceGenerator extends AdtService {
     protected referencedObject!: BusinessObject | AbapCDSView;
+    protected contentAcceptType!: string;
 
     /**
      * Configure the UI service generator.
      *
      * @param _config - The generator configuration.
      * @param referencedObject - The referenced object (business object or abap cds view).
+     * @param acceptType - The header accept type for the request.
      */
-    public configure(_config: GeneratorEntry, referencedObject: BusinessObject | AbapCDSView) {
+    public configure(
+        _config: GeneratorEntry,
+        referencedObject: BusinessObject | AbapCDSView,
+        acceptType: string
+    ): void {
         this.referencedObject = referencedObject;
+        this.contentAcceptType = acceptType;
     }
 
     /**
@@ -44,7 +51,7 @@ export class UiServiceGenerator extends AdtService {
     public async getContent(pckg: string): Promise<string> {
         const response = await this.get('/content', {
             headers: {
-                Accept: 'application/vnd.sap.adt.repository.generator.content.v1+json'
+                Accept: this.contentAcceptType
             },
             params: {
                 referencedObject: this.referencedObject.uri,
@@ -91,7 +98,7 @@ export class UiServiceGenerator extends AdtService {
     public async validateContent(content: string): Promise<ValidationResponse> {
         const response = await this.post('/validation', content, {
             headers: {
-                'Content-Type': 'application/vnd.sap.adt.repository.generator.content.v1+json',
+                'Content-Type': this.contentAcceptType,
                 Accept: 'application/vnd.sap.adt.validationMessages.v1+xml'
             },
             params: {

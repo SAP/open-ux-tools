@@ -224,7 +224,7 @@ export class AbapServiceProvider extends ServiceProvider {
         }
         const config = await generatorService.getUIServiceGeneratorConfig(referencedObject.uri);
         const gen = this.createService<UiServiceGenerator>(this.getServiceUrlFromConfig(config), UiServiceGenerator);
-        gen.configure(config, referencedObject);
+        gen.configure(config, referencedObject, this.getContentAcceptType(config));
         return gen;
     }
 
@@ -241,6 +241,17 @@ export class AbapServiceProvider extends ServiceProvider {
         }
         const endIndex = config.link[0].href.indexOf(config.id) + config.id.length;
         return config.link[0].href.substring(0, endIndex);
+    }
+
+    /**
+     * Get the content accept type from the generator config.
+     *
+     * @param config - generator config
+     * @returns the type of the config link from config
+     */
+    private getContentAcceptType(config: GeneratorEntry): string {
+        const found = config.link.find((link) => typeof link.href === 'string' && link.href.endsWith('/content'));
+        return found.type;
     }
 
     /**
