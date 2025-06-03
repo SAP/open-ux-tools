@@ -2455,6 +2455,9 @@ importers:
       '@jest/types':
         specifier: 29.6.3
         version: 29.6.3
+      '@sap-ux/deploy-config-sub-generator':
+        specifier: workspace:*
+        version: link:../deploy-config-sub-generator
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13

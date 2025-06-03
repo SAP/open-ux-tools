@@ -58,6 +58,7 @@
         "@types/fs-extra": "9.0.13",
         "@types/inquirer": "8.2.6",
         "@types/vscode": "1.73.1",
+        "@sap-ux/deploy-config-sub-generator": "workspace:*",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.11",
         "@types/yeoman-test": "4.0.6",

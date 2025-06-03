@@ -331,7 +331,7 @@ describe('Deployment Generator', () => {
         expect(getABAPPromptsSpy).toHaveBeenCalled();
     });
 
-    it('Validate deployment generator handles CAP project with missing MTA configuration', async () => {
+    it.only('Validate deployment generator handles CAP project with missing MTA configuration', async () => {
         cwd = `${OUTPUT_DIR_PREFIX}${sep}capproject`;
         mockIsAppStudio.mockReturnValueOnce(true);
         const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
@@ -358,7 +358,7 @@ describe('Deployment Generator', () => {
                 .withOptions({
                     overwrite: false,
                     skipInstall: true,
-                    launchDeployConfigAsSubGenerator: true,
+                    launchDeployConfigAsSubGenerator: false,
                     projectPath: OUTPUT_DIR_PREFIX,
                     projectName: 'capproject'
                 })

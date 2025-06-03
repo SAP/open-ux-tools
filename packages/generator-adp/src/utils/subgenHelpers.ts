@@ -53,10 +53,13 @@ export function addFlpGen(
     { projectRootPath, system, manifest }: FlpGenProps,
     composeWith: Generator['composeWith'],
     logger: ILogWrapper,
-    appWizard?: AppWizard
+    appWizard: AppWizard
 ): void {
     try {
-        // We are using this namespace for now because '@sap-ux/adp-flp-config-sub-generator' is not yet bundled in '@sap/generator-fiori'.
+        /**
+         * We are using this namespace for now because '@sap-ux/adp-flp-config-sub-generator' is not yet bundled in '@sap/generator-fiori'.
+         * After, it will be moved to devDependencies to be able to debug it from OSR.
+         */
         composeWith(require.resolve('@sap-ux/adp-flp-config-sub-generator/generators/app'), {
             launchAsSubGen: true,
             manifest,
@@ -85,12 +88,14 @@ export function addFlpGen(
  * @param {Generator['composeWith']} composeWith - Yeoman composeWith method from generator context
  * @param {ILogWrapper} logger - Logger for info and error output
  * @param {AppWizard} appWizard - Optional AppWizard instance for displaying UI messages
+ * @param {boolean} debug - Debug flag which composes a generator from OSR.
  */
 export function addDeployGen(
     { projectName, targetFolder, client, connectedSystem, destinationName }: DeployGenOptions,
     composeWith: Generator['composeWith'],
     logger: ILogWrapper,
-    appWizard?: AppWizard
+    appWizard: AppWizard,
+    debug: boolean = false
 ): void {
     try {
         const generatorOptions = {
@@ -100,12 +105,16 @@ export function addDeployGen(
             telemetryData: { appType: 'Fiori Adaptation' },
             appWizard,
             logWrapper: logger,
+            target: 'abap',
             ...(client && { appGenClient: client }),
             ...(connectedSystem && { connectedSystem }),
             ...(destinationName && { appGenDestination: destinationName })
         };
 
-        composeWith('@sap/fiori:deploy-config', generatorOptions);
+        const generator = debug
+            ? require.resolve('@sap-ux/deploy-config-sub-generator/generators/app')
+            : '@sap/fiori:deploy-config';
+        composeWith(generator, generatorOptions);
         logger.info(`'@sap/fiori:deploy-config' was called.`);
     } catch (e) {
         logger.error(e);

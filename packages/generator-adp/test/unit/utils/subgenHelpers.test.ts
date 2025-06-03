@@ -36,7 +36,7 @@ describe('Sub-generator helpers', () => {
             const resolvePath = 'flp-generator';
             jest.spyOn(require, 'resolve').mockReturnValue(resolvePath);
 
-            addFlpGen(flpOptions, composeWith, logger);
+            addFlpGen(flpOptions, composeWith, logger, wizard);
 
             expect(composeWith).toHaveBeenCalledWith(
                 expect.any(String),
@@ -78,7 +78,7 @@ describe('Sub-generator helpers', () => {
                 destinationName: 'DEST'
             };
 
-            addDeployGen(deployOptions, composeWith, logger);
+            addDeployGen(deployOptions, composeWith, logger, wizard);
 
             expect(composeWith).toHaveBeenCalledWith(
                 '@sap/fiori:deploy-config',

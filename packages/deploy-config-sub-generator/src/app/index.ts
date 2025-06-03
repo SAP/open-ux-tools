@@ -161,7 +161,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         );
 
         // target may have been passed in from the cli or determined in the init phase
-        if (this.target) {
+        if (this.target && !this.launchDeployConfigAsSubGenerator) {
             const checkTarget = supportedTargets.find((t) => t.name === this.target);
             if (!checkTarget) {
                 bail(ErrorHandler.unrecognizedTarget(this.target));
@@ -182,7 +182,8 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
                     isCap: this.isCap,
                     apiHubConfig: this.apiHubConfig,
                     isLibrary: this.isLibrary
-                }
+                },
+                this.target
             );
             this.target = target;
             this.answers = answers;
