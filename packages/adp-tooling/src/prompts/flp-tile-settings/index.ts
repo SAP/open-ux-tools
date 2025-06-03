@@ -19,7 +19,8 @@ export function getPrompts(): YUIQuestion<TileSettingsAnswers>[] {
             ],
             store: false,
             guiOptions: {
-                mandatory: true
+                mandatory: true,
+                breadcrumb: true
             }
         } as ListQuestion<TileSettingsAnswers>,
         {
@@ -27,6 +28,10 @@ export function getPrompts(): YUIQuestion<TileSettingsAnswers>[] {
             name: 'copyFromExisting',
             message: t('prompts.copyFromExisting'),
             default: false,
+            guiOptions: {
+                mandatory: true,
+                breadcrumb: true
+            },
             when: (answers: any): boolean => answers.tileHandlingAction === tileActions.ADD
         } as ConfirmQuestion<TileSettingsAnswers>
     ];

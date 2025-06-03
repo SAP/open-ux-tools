@@ -55,7 +55,7 @@ export function getParameterStringPrompt(inbounds?: ManifestNamespace.Inbound): 
             try {
                 JSON.parse(value);
             } catch (error) {
-                return t('errors.invalidParameterString');
+                return t('validators.invalidParameterString');
             }
             return _validateDuplicateInbound(inbounds, answers);
         },
@@ -86,7 +86,7 @@ function _validateDuplicateInbound(inbounds?: ManifestNamespace.Inbound, answers
             inbound.title === title &&
             JSON.stringify(inbound?.signature?.parameters ?? {}) === (unformattedAdditionalParameters ?? '')
     );
-    return isDuplicate ? t('errors.duplicateInbound') : true;
+    return isDuplicate ? t('validators.duplicateInbound') : true;
 }
 
 /**

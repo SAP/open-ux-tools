@@ -1,2 +1,2 @@
 export { createCapI18nEntries } from './cap';
-export { createPropertiesI18nEntries, createOrOverwriteI18nEntries } from './properties';
+export { createPropertiesI18nEntries, createOrReplaceI18nEntries } from './properties';
