@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.6.7
+
+### Patch Changes
+
+-   58cea5c: fix card generator log message
+
 ## 0.6.6
 
 ### Patch Changes
