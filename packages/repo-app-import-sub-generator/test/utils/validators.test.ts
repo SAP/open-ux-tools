@@ -26,12 +26,11 @@ jest.mock('../../src/utils/download-utils', () => ({
     hasQfaJson: jest.fn(() => true)
 }));
 
-// jest.mock('@sap-ux/inquirer-common', () => ({
-//     ...jest.requireActual('@sap-ux/inquirer-common'),
-//     ErrorHandler: {
-//         getHelpLink: jest.fn()
-//     }
-// }));
+jest.mock('@sap-ux/inquirer-common', () => ({
+    ...jest.requireActual('@sap-ux/inquirer-common')
+}));
+
+ErrorHandler.getHelpLink = jest.fn();
 
 describe('validateQfaJsonFile', () => {
     const validConfig: QfaJsonConfig = {
@@ -135,7 +134,7 @@ describe('validateQfaJsonFile', () => {
     });
 });
 
-describe.skip('validateAppSelection', () => {
+describe('validateAppSelection', () => {
     const mockGetHelpLink = ErrorHandler.getHelpLink as jest.Mock;
     const mockDownloadApp = downloadApp as jest.Mock;
     const mockHelpLink = { url: 'https://GA-link.com' };
