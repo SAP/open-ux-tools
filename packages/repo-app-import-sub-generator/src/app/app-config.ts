@@ -41,11 +41,11 @@ export const getAbapDeployConfig = (app: AppInfo, qfaJson: QfaJsonConfig): AbapD
         config.target = {
             url: PromptState.baseURL,
             client: PromptState.sapClient,
-            destination: ''
+            destination: PromptState.destinationName as string
         };
     }
 
-    return config as AbapDeployConfig;
+    return config as AbapDeployConfig; // NOSONAR
 };
 
 /**

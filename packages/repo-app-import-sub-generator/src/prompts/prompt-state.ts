@@ -26,7 +26,7 @@ export class PromptState {
      * @param {OdataServiceAnswers} value - system selection value
      */
     public static set systemSelection(value: Partial<OdataServiceAnswers>) {
-        this._systemSelection = value as OdataServiceAnswers;
+        this._systemSelection = value as OdataServiceAnswers; // NOSONAR
     }
 
     /**
