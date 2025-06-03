@@ -8,6 +8,9 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml';
 
+const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
+const CARDS_GENERATOR_MIDDLEWARE = 'sap-cards-generator';
+
 /**
  * Updates the `ui5.yaml` file to add card generator path to preview middleware configuration.
  * Removes the `sap-cards-generator` middleware if it exists.
@@ -27,13 +30,15 @@ async function updateMiddlewareConfigWithGeneratorPath(
     const ui5YamlFile = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
     const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile, fs);
 
-    try {
-        ui5YamlConfig.removeCustomMiddleware('sap-cards-generator');
-        logger?.info(
-            `Removed 'sap-cards-generator' middleware configuration from ${ui5YamlFile}. It is no longer needed because this feature has been integrated into fiori-tools-preview / preview-middleware.`
-        );
-    } catch (error) {
-        logger?.warn(`Failed to remove 'sap-cards-generator' middleware: ${error.message}`);
+    if (ui5YamlConfig.findCustomMiddleware(CARDS_GENERATOR_MIDDLEWARE)) {
+        try {
+            ui5YamlConfig.removeCustomMiddleware(CARDS_GENERATOR_MIDDLEWARE);
+            logger?.info(
+                `Removed '${CARDS_GENERATOR_MIDDLEWARE}' middleware configuration from ${ui5YamlFile}. It is no longer needed because this feature has been integrated into fiori-tools-preview / preview-middleware.`
+            );
+        } catch (error) {
+            logger?.warn(`Failed to remove '${CARDS_GENERATOR_MIDDLEWARE}' middleware: ${error.message}`);
+        }
     }
 
     const previewMiddleware = await getPreviewMiddleware(ui5YamlConfig, basePath, yamlPath, fs);
@@ -80,15 +85,14 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
         (previewMiddleware?.configuration as PreviewConfig)?.editors?.cardGenerator?.path ??
         '/test/flpCardGeneratorSandbox.html';
     const cliForPreview = await getCLIForPreview(basePath, yamlPath ?? '', fs);
-    const dependencyName = '@sap-ux/cards-editor-middleware';
 
     packageJson.scripts ??= {};
     packageJson.scripts['start-cards-generator'] = `${cliForPreview} --open "${cardGeneratorPath}${intent}"`;
 
-    if (packageJson.devDependencies?.[dependencyName]) {
-        delete packageJson.devDependencies[dependencyName];
+    if (packageJson.devDependencies?.[DEPENDENCY_NAME]) {
+        delete packageJson.devDependencies[DEPENDENCY_NAME];
         logger?.info(
-            `Removed devDependency ${dependencyName} from package.json. It is no longer needed because this feature has been integrated into fiori-tools-preview / preview-middleware.`
+            `Removed devDependency ${DEPENDENCY_NAME} from package.json. It is no longer needed because this feature has been integrated into fiori-tools-preview / preview-middleware.`
         );
     }
 
