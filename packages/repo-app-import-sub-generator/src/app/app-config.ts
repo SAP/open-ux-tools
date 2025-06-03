@@ -136,7 +136,7 @@ export async function getAppConfig(
                 path: manifest?.['sap.app']?.dataSources?.mainService.uri,
                 version: odataVersion,
                 metadata: metadata,
-                url: serviceProvider.publicUrl,
+                url: PromptState.baseURL,
                 client: PromptState.sapClient
             },
             appOptions: {
