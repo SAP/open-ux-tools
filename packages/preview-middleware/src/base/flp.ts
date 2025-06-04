@@ -1,4 +1,4 @@
-import type { ReaderCollection } from '@ui5/fs';
+import type { ReaderCollection, Resource } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor as MemFsEditor } from 'mem-fs-editor';
@@ -374,7 +374,7 @@ export class FlpSandbox {
             // Redirect to the same URL but add the necessary parameter
             const url =
                 'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', previewUrl) : previewUrl;
-            const params = structuredClone(req.query);
+            const params = structuredClone(req.query) as Record<string, string>;
             params['sap-ui-xx-viewCache'] = 'false';
             params['fiori-tools-rta-mode'] = 'true';
             params['sap-ui-rta-skip-flex-validation'] = 'true';
@@ -435,7 +435,7 @@ export class FlpSandbox {
             const url =
                 'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', req.path) : req.path;
             // Redirect to the same URL but add the necessary parameter
-            const params = structuredClone(req.query);
+            const params = structuredClone(req.query) as Record<string, string>;
             params['sap-ui-xx-viewCache'] = 'false';
             res.redirect(302, `${url}?${new URLSearchParams(params)}`);
             return;
@@ -596,7 +596,7 @@ export class FlpSandbox {
      * @returns the location of the locate-reuse-libs script or undefined.
      */
     private async hasLocateReuseLibsScript(): Promise<boolean | undefined> {
-        const files = await this.project.byGlob('**/locate-reuse-libs.js');
+        const files = (await this.project.byGlob('**/locate-reuse-libs.js')) as Resource[];
         return files.length > 0;
     }
 
@@ -768,7 +768,7 @@ export class FlpSandbox {
         initTemplate: string,
         testPaths: string[]
     ): Promise<void> {
-        const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
+        const files = (await this.project.byGlob(config.init.replace('.js', '.[jt]s'))) as Resource[];
         if (files?.length > 0) {
             this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
             next();
@@ -904,12 +904,12 @@ export class FlpSandbox {
     ): Promise<void> {
         this.logger.debug(`Serving test init script: ${config.init}`);
 
-        const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
+        const files = (await this.project.byGlob(config.init.replace('.js', '.[jt]s'))) as Resource[];
         if (files?.length > 0) {
             this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
             next();
         } else {
-            const testFiles = await this.project.byGlob(config.pattern);
+            const testFiles = (await this.project.byGlob(config.pattern)) as Resource[];
             const templateConfig = { tests: generateImportList(ns, testFiles) };
             const js = render(initTemplate, templateConfig);
             this.sendResponse(res, 'application/javascript', 200, js);
@@ -1084,7 +1084,7 @@ function serializeDataAttributes(attributes: Map<string, string>, indent = '', p
 }
 
 /**
- * Creates an attribute string that can be added to bootstrap script in a HTML file.
+ * Creates an attribute string that can be added to bootstrap script in an HTML file.
  *
  * @param config ui5 configuration options
  * @returns attribute string
