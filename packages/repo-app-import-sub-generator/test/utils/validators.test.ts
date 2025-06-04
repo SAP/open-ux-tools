@@ -27,11 +27,10 @@ jest.mock('../../src/utils/download-utils', () => ({
 }));
 
 jest.mock('@sap-ux/inquirer-common', () => ({
-    ...jest.requireActual('@sap-ux/inquirer-common'),
-    ErrorHandler: {
-        getHelpLink: jest.fn()
-    }
+    ...jest.requireActual('@sap-ux/inquirer-common')
 }));
+
+ErrorHandler.getHelpLink = jest.fn();
 
 describe('validateQfaJsonFile', () => {
     const validConfig: QfaJsonConfig = {

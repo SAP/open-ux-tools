@@ -1,4 +1,4 @@
-import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AppIndex } from '@sap-ux/axios-extension';
 import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
 import type { RepoAppDownloadAnswers, RepoAppDownloadQuestions, QuickDeployedAppConfig, AppInfo } from '../app/types';
 import { PromptNames } from '../app/types';
@@ -48,12 +48,13 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
     } as FileBrowserQuestion<RepoAppDownloadAnswers>;
 };
 
-const getCliValidatePrompts = async (
+const getCliValidatePrompts = (
     appList: AppIndex,
     quickDeployedAppConfig?: QuickDeployedAppConfig,
     appWizard?: AppWizard
-): Promise<Question> => {
+): Question => {
     return {
+        type: 'input',
         when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
             if (answers?.[PromptNames.selectedApp]) {
                 try {
@@ -113,7 +114,7 @@ export async function getPrompts(
                         systemQuestions.answers.connectedSystem?.serviceProvider
                     ) {
                         appList = await fetchAppListForSelectedSystem(
-                            systemQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider,
+                            systemQuestions.answers.connectedSystem,
                             quickDeployedAppConfig?.appId
                         );
                     }
