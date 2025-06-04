@@ -22,7 +22,8 @@ import {
     handleProjectDoesNotExist,
     indexHtmlExists,
     determineScpFromTarget,
-    determineUrlFromDestination
+    determineUrlFromDestination,
+    determineS4HCFromTarget
 } from '../utils';
 import { getAbapQuestions } from './questions';
 import { EventName } from '../telemetryEvents';
@@ -39,7 +40,6 @@ import type {
     AbapDeployConfigPromptOptions,
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-inquirer';
-import { determineS4HCFromTarget } from '../utils/helpers';
 
 /**
  * ABAP deploy config generator.
