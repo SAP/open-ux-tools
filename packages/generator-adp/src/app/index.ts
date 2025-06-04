@@ -32,12 +32,13 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { getFlexLayer } from './layer';
 import { initI18n, t } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
+import { setHeaderTitle } from '../utils/opts';
 import { getWizardPages } from '../utils/steps';
 import AdpFlpConfigLogger from '../utils/logger';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
 import { validateJsonInput } from './questions/helper/validators';
-import { getPackageInfo, installDependencies, setHeaderTitle } from '../utils/deps';
+import { getPackageInfo, installDependencies } from '../utils/deps';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
@@ -66,7 +67,7 @@ export default class extends Generator {
     /**
      * Generator prompts.
      */
-    private prompts: YeomanUiSteps;
+    private readonly prompts: YeomanUiSteps;
     /**
      * Instance of the logger.
      */

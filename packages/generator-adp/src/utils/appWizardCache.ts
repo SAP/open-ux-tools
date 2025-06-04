@@ -2,14 +2,22 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import { getHostEnvironment, hostEnvironment, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 
-import type { State } from '../app/types';
+import type { ConfigPrompter } from '../app/questions/configuration';
 
-const ADP_CACHE_KEY = '$adp-generator-cache';
+/**
+ * Values that are stashed in the App-Wizard cache.
+ */
+interface State {
+    /** Re-use the heavy-weight ConfigPrompter when the user navigates back-and-forth. */
+    prompter?: ConfigPrompter;
+}
 
 /**
  * Augmented AppWizard type with optional internal cache field used for state persistence.
  */
 export type AppWizardWithCache = AppWizard & { [ADP_CACHE_KEY]?: Partial<State> };
+
+const ADP_CACHE_KEY = '$adp-generator-cache';
 
 /**
  * Initializes the internal cache store on the AppWizard instance if it doesn't exist.
