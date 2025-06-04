@@ -27,12 +27,12 @@ modules:
                       - Name: sap-ux-test_html_repo_host
                         ServiceInstanceName: sap-ux-test-html5-service
                         ServiceKeyName: sap-ux-test-repo-host-key
-                        sap.cloud.service: sap-ux-test
+                        sap.cloud.service: sapuxtest
                       - Authentication: OAuth2UserTokenExchange
                         Name: sap-ux-test_uaa
                         ServiceInstanceName: sap-ux-test-xsuaa-service
                         ServiceKeyName: sap-ux-test-uaa-key
-                        sap.cloud.service: sap-ux-test
+                        sap.cloud.service: sapuxtest
                   existing_destinations_policy: update
       build-parameters:
           no-source: true

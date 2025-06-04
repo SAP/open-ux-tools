@@ -24,12 +24,12 @@ modules:
         - Name: test-mta_html_repo_host
           ServiceInstanceName: test-mta-html5-srv
           ServiceKeyName: test-mta-repo-host-key
-          sap.cloud.service: test-mta
+          sap.cloud.service: testmta
         - Authentication: OAuth2UserTokenExchange
           Name: test-mta_uaa
           ServiceInstanceName: test-mta-xsuaa-srv
           ServiceKeyName: test-mta-uaa-key
-          sap.cloud.service: test-mta
+          sap.cloud.service: testmta
         existing_destinations_policy: update
   build-parameters:
     no-source: true

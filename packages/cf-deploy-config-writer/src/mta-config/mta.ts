@@ -1126,14 +1126,14 @@ export class MtaConfig {
                                         Name: `${this.prefix.slice(0, 100)}_html_repo_host`,
                                         ServiceInstanceName: appHostServiceName,
                                         ServiceKeyName: `${appHostName}-key`,
-                                        'sap.cloud.service': `${this.prefix.slice(0, 100)}`
+                                        'sap.cloud.service': `${this.cloudServiceName ?? `${this.prefix.replace(/-/g, '').slice(0, 100)}`}`
                                     },
                                     {
                                         Authentication: 'OAuth2UserTokenExchange',
                                         Name: `${this.prefix.slice(0, 100)}_uaa`,
                                         ServiceInstanceName: managedXSUAAServiceName,
                                         ServiceKeyName: `${managedXSUAAName}-key`,
-                                        'sap.cloud.service': `${this.prefix.slice(0, 100)}`
+                                        'sap.cloud.service': `${this.cloudServiceName ?? `${this.prefix.replace(/-/g, '').slice(0, 100)}`}`
                                     }
                                 ],
                                 'existing_destinations_policy': 'update'
