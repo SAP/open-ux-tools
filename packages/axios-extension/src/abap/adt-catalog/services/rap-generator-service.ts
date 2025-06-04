@@ -26,7 +26,7 @@ export class RapGeneratorService extends AdtService {
     private id: string;
 
     /**
-     * Get the RAP Generator.
+     * Get the RAP Generator (published-x-ui-service).
      *
      * @param businessObjectName - The business object name.
      * @returns TBD
