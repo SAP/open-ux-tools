@@ -349,14 +349,6 @@ describe('getAppConfig', () => {
 
 describe('getAbapDeployConfig', () => {
     it('should generate the correct deployment configuration', () => {
-        const app: AppInfo = {
-            url: 'https://target-url.com',
-            repoName: 'TEST_REPO',
-            appId: 'TEST_APP_ID',
-            title: 'Test App',
-            description: 'Test Description'
-        };
-
         const expectedConfig = {
             target: {
                 url: 'https://test-url.com',
@@ -370,7 +362,7 @@ describe('getAbapDeployConfig', () => {
                 transport: 'REPLACE_WITH_TRANSPORT'
             }
         };
-        const result = getAbapDeployConfig(app, mockQfaJson);
+        const result = getAbapDeployConfig(mockQfaJson);
         expect(result).toEqual(expectedConfig);
     });
 });

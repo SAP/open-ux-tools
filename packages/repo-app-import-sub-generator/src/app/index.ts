@@ -159,7 +159,7 @@ export default class extends Generator {
         await generate(this.projectPath, config, this.fs);
 
         // Generate deploy config
-        const deployConfig: AbapDeployConfig = getAbapDeployConfig(this.answers.selectedApp, qfaJson);
+        const deployConfig: AbapDeployConfig = getAbapDeployConfig(qfaJson);
         await generateDeployConfig(this.projectPath, deployConfig, undefined, this.fs);
 
         if (this.vscode) {

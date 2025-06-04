@@ -17,35 +17,23 @@ import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 /**
  * Generates the deployment configuration for an ABAP application.
  *
- * @param {AppInfo} app - Application info containing `url` and `repoName`.
  * @param {QfaJsonConfig} qfaJson - The QFA JSON configuration containing app details.
  * @returns {AbapDeployConfig} The deployment configuration containing `target` and `app` info.
  */
-export const getAbapDeployConfig = (app: AppInfo, qfaJson: QfaJsonConfig): AbapDeployConfig => {
-    const config: Partial<AbapDeployConfig> = {
+export const getAbapDeployConfig = (qfaJson: QfaJsonConfig): AbapDeployConfig => {
+    return {
+        target: {
+            url: PromptState.baseURL,
+            client: PromptState.sapClient,
+            destination: PromptState.destinationName as string
+        },
         app: {
             name: qfaJson.deploymentDetails.repositoryName,
             package: qfaJson.metadata.package,
             description: qfaJson.deploymentDetails.repositoryDescription,
             transport: 'REPLACE_WITH_TRANSPORT'
         }
-    };
-
-    if (PromptState.destinationName) {
-        config.target = {
-            url: PromptState.baseURL,
-            client: PromptState.sapClient,
-            destination: PromptState.destinationName
-        };
-    } else {
-        config.target = {
-            url: PromptState.baseURL,
-            client: PromptState.sapClient,
-            destination: PromptState.destinationName as string
-        };
-    }
-
-    return config as AbapDeployConfig; // NOSONAR
+    } as AbapDeployConfig; // NOSONAR
 };
 
 /**
