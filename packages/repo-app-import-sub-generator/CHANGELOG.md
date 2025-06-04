@@ -1,5 +1,11 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.18
+
+### Patch Changes
+
+-   6273a09: Fix deployment config for download ADT App (ui5-deploy.yaml)
+
 ## 0.3.17
 
 ### Patch Changes
