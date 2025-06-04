@@ -23,13 +23,13 @@ export function generateAppGenInfo(destPath: string, appGenInfo: AppGenInfo, fs:
 
     const appGenInfoJson: {
         generationParameters: Exclude<AppGenInfo, 'externalParameters'>;
-        externalParameters?: ExternalParameters[];
+        externalParameters?: ExternalParameters;
     } = {
         generationParameters: appGenInfoCore
     };
 
     if (externalParameters) {
-        appGenInfoJson.externalParameters = [...externalParameters];
+        appGenInfoJson.externalParameters = externalParameters;
     }
 
     // Write the .appGenInfo.json file
