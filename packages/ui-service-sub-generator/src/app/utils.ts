@@ -35,6 +35,8 @@ export async function generateService(
         appWizard.showError(`${t('error.generatingService')}`, MessageType.notification);
         UiServiceGenLogger.logger.error(`Error generating service: ${error.message}`);
         UiServiceGenLogger.logger.error(`${error.code} ${error.response?.status} ${error.response?.data}`);
+        UiServiceGenLogger.logger?.error(JSON.stringify(error, null, 2));
+        UiServiceGenLogger.logger?.error(JSON.stringify(error.response, null, 2));
 
         TelemetryHelper.createTelemetryData({
             ErrorMessage: error.message,
