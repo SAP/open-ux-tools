@@ -64,6 +64,27 @@ describe('Test the helpers for abap sub gen', () => {
         jest.resetAllMocks();
     });
 
+    it('should fail silently when call to destinations fails', async () => {
+        isAppStudioMock.mockReturnValue(true);
+        listDestinationsMock.mockImplementationOnce(() => {
+            throw new Error('401 error');
+        });
+
+        const result = await determineScpFromTarget({ destination: 'Dest1' });
+        expect(result).toBe(false);
+    });
+
+    it('should fail silently when call to backend systems fails', async () => {
+        isAppStudioMock.mockReturnValue(false);
+        getServiceMock.mockResolvedValue({
+            getAll: () => {
+                throw new Error('Failure accessing secure store');
+            }
+        });
+        const result = await determineScpFromTarget({ url: 'https://example2.abap.backend:44300', client: '100' });
+        expect(result).toBe(false);
+    });
+
     it('should determine the url from the given destination', async () => {
         isAppStudioMock.mockReturnValue(true);
         listDestinationsMock.mockResolvedValue(mockDestinations);

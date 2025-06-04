@@ -98,7 +98,7 @@ export default class extends DeploymentGenerator {
                     destinationName: cf.destinationName,
                     destinationAuthType: cf.destinationAuthType,
                     addManagedAppRouter: cf.addToManagedAppRouter,
-                    launchDeployConfigAsSubGenerator: true,
+                    launchDeployConfigAsSubGenerator: true, // ensures prompting is skipped within cf sub gen
                     appRootPath: join(this.appConfig.project.targetFolder, this.appConfig.project.name),
                     addMTADestination: cf.addMTADestination,
                     lcapModeOnly: cf.lcapModeOnly,
@@ -118,7 +118,7 @@ export default class extends DeploymentGenerator {
                     description: abap?.description,
                     package: abap?.package,
                     transport: abap?.transport,
-                    launchDeployConfigAsSubGenerator: true
+                    launchDeployConfigAsSubGenerator: true // ensures prompting is skipping within abap sub gen
                 } satisfies AbapDeployConfigOptions;
             }
         }

@@ -30,7 +30,11 @@ function isSameSystem(backend: BackendSystem, target: AbapTarget): boolean {
  */
 async function getDestinations(): Promise<Destinations> {
     if (Object.keys(cachedDestinations)?.length === 0) {
-        cachedDestinations = await listDestinations({ stripS4HCApiHosts: true });
+        try {
+            cachedDestinations = await listDestinations({ stripS4HCApiHosts: true });
+        } catch (e) {
+            DeploymentGenerator.logger.error(`Failed to fetch destinations. Error: ${e.message}`);
+        }
     }
     return cachedDestinations;
 }
@@ -42,11 +46,15 @@ async function getDestinations(): Promise<Destinations> {
  */
 async function getBackendSystems(): Promise<BackendSystem[]> {
     if (cachedBackendSystems?.length === 0) {
-        const systemStore = await getService<BackendSystem, BackendSystemKey>({
-            logger: DeploymentGenerator.logger as unknown as Logger,
-            entityName: 'system'
-        });
-        cachedBackendSystems = await systemStore?.getAll();
+        try {
+            const systemStore = await getService<BackendSystem, BackendSystemKey>({
+                logger: DeploymentGenerator.logger as unknown as Logger,
+                entityName: 'system'
+            });
+            cachedBackendSystems = await systemStore?.getAll();
+        } catch (e) {
+            DeploymentGenerator.logger.error(`Failed to fetch systems list. Error: ${e.message}`);
+        }
     }
     return cachedBackendSystems;
 }
@@ -76,7 +84,9 @@ export async function determineScpFromTarget(target: AbapTarget): Promise<boolea
     let isScp = false;
     if (isAppStudio() && target.destination) {
         const destinations = await getDestinations();
-        isScp = isAbapEnvironmentOnBtp(destinations?.[target.destination]);
+        if (destinations?.[target.destination]) {
+            isScp = isAbapEnvironmentOnBtp(destinations?.[target.destination]);
+        }
     } else if (target.url) {
         const backendSystems = await getBackendSystems();
         const backendSystem = backendSystems?.find((backend: BackendSystem) => isSameSystem(backend, target));
@@ -95,7 +105,9 @@ export async function determineS4HCFromTarget(target: AbapTarget): Promise<boole
     let isS4HCloud = false;
     if (isAppStudio() && target.destination) {
         const destinations = await getDestinations();
-        isS4HCloud = isS4HC(destinations?.[target.destination]);
+        if (destinations?.[target.destination]) {
+            isS4HCloud = isS4HC(destinations?.[target.destination]);
+        }
     } else if (target.url) {
         const backendSystems = await getBackendSystems();
         const backendSystem = backendSystems?.find((backend: BackendSystem) => isSameSystem(backend, target));
