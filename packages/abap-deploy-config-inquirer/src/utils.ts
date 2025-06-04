@@ -175,18 +175,16 @@ export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswersIntern
  * Determines the transport request from the various transport related prompts.
  *
  * @param promptAnswers - previous answers
- * @param transportOpt - transport answer passed as an option e.g. from headless
  * @returns transport request
  */
-export function getTransportAnswer(promptAnswers?: AbapDeployConfigAnswersInternal, transportOpt?: string): string {
+export function getTransportAnswer(promptAnswers?: AbapDeployConfigAnswersInternal): string {
     return (
-        transportOpt ??
-        (promptAnswers?.transportManual ||
-            promptAnswers?.transportFromList ||
-            promptAnswers?.transportCreated ||
-            (promptAnswers?.transportInputChoice === TransportChoices.CreateDuringDeployChoice
-                ? CREATE_TR_DURING_DEPLOY
-                : ''))
+        promptAnswers?.transportManual ||
+        promptAnswers?.transportFromList ||
+        promptAnswers?.transportCreated ||
+        (promptAnswers?.transportInputChoice === TransportChoices.CreateDuringDeployChoice
+            ? CREATE_TR_DURING_DEPLOY
+            : '')
     );
 }
 

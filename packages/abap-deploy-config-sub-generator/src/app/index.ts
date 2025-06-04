@@ -255,8 +255,9 @@ export default class extends DeploymentGenerator {
         // Set transport
         if (!this.answers.transport) {
             this.answers.transport =
-                getTransportAnswer(this.options as AbapDeployConfigAnswersInternal, this.options.transport) ||
-                getTransportAnswer(this.answers);
+                this.options.transport ??
+                (getTransportAnswer(this.options as AbapDeployConfigAnswersInternal) ||
+                    getTransportAnswer(this.answers));
         }
     }
 

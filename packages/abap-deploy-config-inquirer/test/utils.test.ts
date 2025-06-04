@@ -257,12 +257,7 @@ describe('Test utils', () => {
     });
 
     describe('getTransportAnswer', () => {
-        it('should return transport passed as an option if defined', () => {
-            const result = getTransportAnswer(undefined, 'TR123456');
-            expect(result).toBe('TR123456');
-        });
-
-        it('should return transportManual if transportOpt is undefined', () => {
+        it('should return transportManual', () => {
             const result = getTransportAnswer({ url: '', package: '', transportManual: 'TRMANUAL' });
             expect(result).toBe('TRMANUAL');
         });
