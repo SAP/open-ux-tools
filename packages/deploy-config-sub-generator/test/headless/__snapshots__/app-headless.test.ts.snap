@@ -594,12 +594,12 @@ modules:
             - Name: existing-id-deploy_html_repo_host
               ServiceInstanceName: existing-id-deploy-html5-service
               ServiceKeyName: existing-id-deploy-repo-host-key
-              sap.cloud.service: existing-id-deploy
+              sap.cloud.service: existingiddeploy
             - Authentication: OAuth2UserTokenExchange
               Name: existing-id-deploy_uaa
               ServiceInstanceName: existing-id-deploy-xsuaa-service
               ServiceKeyName: existing-id-deploy-uaa-key
-              sap.cloud.service: existing-id-deploy
+              sap.cloud.service: existingiddeploy
           existing_destinations_policy: update
     build-parameters:
       no-source: true
@@ -1444,7 +1444,7 @@ exports[`Test headless generator Test: Headless deploy-config - localAppChanges 
   },
   "sap.cloud": {
     "public": true,
-    "service": "existing-id-deploy"
+    "service": "existingiddeploy"
   }
 }
 "
