@@ -161,12 +161,14 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         );
 
         // target may have been passed in from the cli or determined in the init phase
-        if (this.target && !this.launchDeployConfigAsSubGenerator) {
+        if (this.target) {
             const checkTarget = supportedTargets.find((t) => t.name === this.target);
             if (!checkTarget) {
                 bail(ErrorHandler.unrecognizedTarget(this.target));
             }
-        } else {
+        }
+
+        if (!this.target || this.launchDeployConfigAsSubGenerator) {
             // if there is no specified target then prompting will occur
             const { target, answers } = await promptDeployConfigQuestions(
                 this.fs,

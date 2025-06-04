@@ -331,7 +331,7 @@ describe('Deployment Generator', () => {
         expect(getABAPPromptsSpy).toHaveBeenCalled();
     });
 
-    it.only('Validate deployment generator handles CAP project with missing MTA configuration', async () => {
+    it('Validate deployment generator handles CAP project with missing MTA configuration', async () => {
         cwd = `${OUTPUT_DIR_PREFIX}${sep}capproject`;
         mockIsAppStudio.mockReturnValueOnce(true);
         const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
