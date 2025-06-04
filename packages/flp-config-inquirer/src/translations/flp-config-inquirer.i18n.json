@@ -18,6 +18,6 @@
         "inboundConfigKeyExists": "An inbound configuration with the key: '{{inboundKey}}' is already defined.",
         "invalidParameterString": "Parameter string is not a valid JSON object.",
         "flpConfigOverwrite": "Overwrite existing configuration?",
-        "duplicateInbound": "The base application already has an inbound that matches the values for [semantic object, action, title, parameters]. Please change at least one of the values to be different in order to create a new tile"
+        "duplicateInbound": "The base application already has an inbound that matches the values for [semantic object, action]. Please change at least one of the values to be different in order to create a new tile"
     }
 }

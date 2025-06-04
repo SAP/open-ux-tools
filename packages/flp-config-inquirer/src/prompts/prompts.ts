@@ -39,7 +39,7 @@ export function getQuestions(
         [promptNames.existingFlpConfigInfo]: getExistingFlpConfigInfoPrompt(isCLI),
         [promptNames.inboundId]: getInboundIdsPrompt(inbounds ?? {}),
         [promptNames.semanticObject]: getSemanticObjectPrompt(isCLI, promptOptions?.[promptNames.semanticObject]),
-        [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action]),
+        [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action], inbounds),
         [promptNames.overwrite]: getOverwritePrompt(
             inboundKeys,
             isCLI,
@@ -53,7 +53,7 @@ export function getQuestions(
             promptOptions?.[promptNames.subTitle]
         ),
         [promptNames.icon]: getIconPrompt(promptOptions?.[promptNames.icon]),
-        [promptNames.additionalParameters]: getParameterStringPrompt(inbounds)
+        [promptNames.additionalParameters]: getParameterStringPrompt()
     };
 
     const questions: FLPConfigQuestion[] = Object.entries(keyedPrompts)

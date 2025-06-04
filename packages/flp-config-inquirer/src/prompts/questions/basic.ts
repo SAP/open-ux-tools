@@ -14,6 +14,7 @@ import type {
 } from '../../types';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Creates the 'semanticObject' prompt for FLP configuration.
@@ -47,9 +48,14 @@ export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObject
  *
  * @param {boolean} isCLI - Indicates if the platform is CLI.
  * @param {ActionPromptOptions} [options] - Optional configuration for the action prompt, including default values.
+ * @param {ManifestNamespace.Inbound} [inbounds] - Existing inbound configuration to derive default action.
  * @returns {FLPConfigQuestion} The prompt configuration for the action.
  */
-export function getActionPrompt(isCLI: boolean, options?: ActionPromptOptions): FLPConfigQuestion {
+export function getActionPrompt(
+    isCLI: boolean,
+    options?: ActionPromptOptions,
+    inbounds?: ManifestNamespace.Inbound
+): FLPConfigQuestion {
     return {
         name: promptNames.action,
         type: 'input',
@@ -62,10 +68,24 @@ export function getActionPrompt(isCLI: boolean, options?: ActionPromptOptions): 
             if (options?.default) {
                 return options.default;
             }
-            return answers?.inboundId?.action ?? '';
+            return answers?.inboundId?.action ? `${answers?.inboundId?.action}1` : '';
         },
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, isCLI, 60, ['_'])
+        validate: (val, answers: FLPConfigAnswers): string | boolean => {
+            const textValidation = validateText(val, isCLI, 30, ['_']);
+            if (textValidation !== true) {
+                return textValidation;
+            }
+
+            if (!inbounds || !answers.semanticObject) {
+                return true;
+            }
+
+            const isDuplicate = Object.values(inbounds).some(
+                (inbound: any) => inbound.semanticObject === answers.semanticObject && inbound.action === val
+            );
+            return isDuplicate ? t('validators.duplicateInbound') : true;
+        }
     };
 }
 

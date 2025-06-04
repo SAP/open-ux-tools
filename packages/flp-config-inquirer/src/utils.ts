@@ -81,6 +81,7 @@ export function getAdpFlpInboundsWriterConfig(
     }
 
     return {
+        inboundId: `${flpConfigAnswers.semanticObject}-${flpConfigAnswers.action}`,
         semanticObject: flpConfigAnswers.semanticObject ?? '',
         action: flpConfigAnswers.action ?? '',
         title: flpConfigAnswers.title ?? '',
