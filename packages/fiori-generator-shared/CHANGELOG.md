@@ -1,5 +1,26 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.4
+
+### Patch Changes
+
+-   91726b0: loop through workspace folders to find correct default
+
+## 0.12.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+-   @sap-ux/telemetry@0.6.3
+
+## 0.12.2
+
+### Patch Changes
+
+-   ac55cca: adds .appGenInfo.json file
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/telemetry@0.6.2
+
 ## 0.12.1
 
 ### Patch Changes

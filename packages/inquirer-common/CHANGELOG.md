@@ -1,5 +1,33 @@
 # @sap-ux/inquirer-common
 
+## 0.7.5
+
+### Patch Changes
+
+-   Updated dependencies [91726b0]
+    -   @sap-ux/fiori-generator-shared@0.12.4
+
+## 0.7.4
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.3
+-   @sap-ux/fiori-generator-shared@0.12.3
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/telemetry@0.6.2
+
+## 0.7.2
+
+### Patch Changes
+
+-   b3fe5b8: Adds support for bypassing cert errors in limited situations
+
 ## 0.7.1
 
 ### Patch Changes

@@ -17,6 +17,7 @@ jest.mock('@sap-ux/store', () => ({
 describe('Test new system prompt', () => {
     beforeAll(async () => {
         await initI18nOdataServiceInquirer();
+        delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
     });
 
     test('Should prompt for system name', async () => {

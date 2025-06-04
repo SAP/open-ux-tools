@@ -8,5 +8,5 @@ export * from './types';
 export { getPackageScripts } from './npm-package-scripts/getPackageScripts';
 export { getBootstrapResourceUrls } from './ui5/ui5';
 export { getDefaultTargetFolder, isExtensionInstalled } from './vscode-helpers/vscode-helpers';
-export { generateReadMe } from './read-me';
+export { generateAppGenInfo } from './app-gen-info';
 export { getHostEnvironment } from './environment';

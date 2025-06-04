@@ -1,5 +1,50 @@
 # @sap-ux/preview-middleware
 
+## 0.20.18
+
+### Patch Changes
+
+-   920c23d: Fix custom connector for flex changes in UI5 < 1.78
+
+## 0.20.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.11
+
+## 0.20.16
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/adp-tooling@0.14.10
+    -   @sap-ux/project-access@1.30.2
+    -   @sap-ux/system-access@0.6.1
+
+## 0.20.15
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.9
+
+## 0.20.14
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.8
+
+## 0.20.13
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.7
+
+## 0.20.12
+
+### Patch Changes
+
+-   87ecdb8: fix: change indicators missing for change with control id in outline and scrollbar styling issue on quick action panel
+
 ## 0.20.11
 
 ### Patch Changes
