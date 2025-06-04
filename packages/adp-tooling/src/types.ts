@@ -152,6 +152,11 @@ export interface VersionDetail {
     lts: boolean;
 }
 
+export interface TypesConfig {
+    typesPackage: string;
+    typesVersion: string;
+}
+
 export interface ResourceModel {
     key: string;
     path: string;
