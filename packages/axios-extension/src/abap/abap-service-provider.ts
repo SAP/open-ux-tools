@@ -224,7 +224,7 @@ export class AbapServiceProvider extends ServiceProvider {
         }
         const config = await generatorService.getUIServiceGeneratorConfig(referencedObject.uri);
         const gen = this.createService<UiServiceGenerator>(this.getServiceUrlFromConfig(config), UiServiceGenerator);
-        gen.configure(config, referencedObject);
+        gen.configure(config, referencedObject, this.getContentType(config));
         return gen;
     }
 
@@ -241,6 +241,19 @@ export class AbapServiceProvider extends ServiceProvider {
         }
         const endIndex = config.link[0].href.indexOf(config.id) + config.id.length;
         return config.link[0].href.substring(0, endIndex);
+    }
+
+    /**
+     * Get the content type from the generator config.
+     *
+     * @param config - generator config
+     * @returns the type of the content link from service generator config
+     */
+    private getContentType(config: GeneratorEntry): string {
+        const contentEndpoint = config.link?.find(
+            (link) => typeof link.href === 'string' && link.href.includes('/content')
+        );
+        return contentEndpoint.type;
     }
 
     /**

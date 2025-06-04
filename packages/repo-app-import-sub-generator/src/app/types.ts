@@ -1,9 +1,8 @@
 import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { VSCodeInstance, TelemetryData, LogWrapper } from '@sap-ux/fiori-generator-shared';
-import type { Destination } from '@sap-ux/btp-utils';
-import type { BackendSystem } from '@sap-ux/store';
-import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
+import type { AppIndex } from '@sap-ux/axios-extension';
+import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
@@ -55,28 +54,6 @@ export interface RepoAppDownloadOptions extends Generator.GeneratorOptions {
 }
 
 /**
- * Answers related to system selection in the application download process.
- */
-export interface SystemSelectionAnswers {
-    /**
-     * Details of the connected system allowing downstream consumers to access it without creating new connections.
-     */
-    connectedSystem?: {
-        /** Service provider for the connected ABAP system. */
-        serviceProvider: AbapServiceProvider;
-
-        /**
-         * Persistable backend system representation of the connected service provider.
-         * `newOrUpdated` is true if the system was newly created or updated during connection validation.
-         */
-        backendSystem?: BackendSystem & { newOrUpdated?: boolean };
-
-        /** Destination details of the connected system. */
-        destination?: Destination;
-    };
-}
-
-/**
  * Represents a question in the app download process.
  * Extends `YUIQuestion` with optional autocomplete functionality.
  */
@@ -108,7 +85,7 @@ export enum PromptNames {
  */
 export interface RepoAppDownloadAnswers {
     /** Selected backend system connection details. */
-    [PromptNames.systemSelection]: SystemSelectionAnswers;
+    [PromptNames.systemSelection]: OdataServiceAnswers;
     /** Information about the selected application for download. */
     [PromptNames.selectedApp]: AppInfo;
     /** Target folder where the application will be generated. */
