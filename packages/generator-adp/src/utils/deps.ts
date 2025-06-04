@@ -2,11 +2,8 @@ import { join } from 'path';
 import * as util from 'util';
 import { readFileSync } from 'fs';
 import { exec } from 'child_process';
-import type { IChildLogger } from '@vscode-logging/logger';
 
 import type { Package } from '@sap-ux/project-access';
-
-import type { AdpGeneratorOptions } from '../app';
 
 /**
  * Reads the package.json of the current package.
@@ -31,5 +28,3 @@ export async function installDependencies(projectPath: string): Promise<void> {
         throw new Error('Installation of dependencies failed.');
     }
 }
-
-

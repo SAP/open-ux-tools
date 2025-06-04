@@ -12,12 +12,12 @@ interface State {
     prompter?: ConfigPrompter;
 }
 
+const ADP_CACHE_KEY = '$adp-generator-cache';
+
 /**
  * Augmented AppWizard type with optional internal cache field used for state persistence.
  */
 export type AppWizardWithCache = AppWizard & { [ADP_CACHE_KEY]?: Partial<State> };
-
-const ADP_CACHE_KEY = '$adp-generator-cache';
 
 /**
  * Initializes the internal cache store on the AppWizard instance if it doesn't exist.
