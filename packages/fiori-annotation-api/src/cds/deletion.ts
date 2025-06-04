@@ -920,9 +920,19 @@ function includeSiblingSeparator(
     const endTokenIndex = deletionRange.tokenRange.end;
     const nextTokenIndex = getNeighboringTokenIndex(tokens, endTokenIndex, +1);
     const nextToken = tokens[nextTokenIndex];
+
+    const startTokenIndex = deletionRange.tokenRange.start;
+    const previousTokenIndex = getNeighboringTokenIndex(tokens, startTokenIndex, -1);
+    const previousToken = tokens[previousTokenIndex];
+
     let siblingSeparatorFound = false;
     let previousSeparatorIncluded = false;
-    if (nextToken && nextToken.text === separator) {
+    if (previousToken?.text === separator && deletionRange.kind !== DeletionRangeKind.TARGET_ARTIFACT) {
+        // extend deletion range to include separator (except for whole annotate statement, there ';' might be needed)
+        deletionRange.tokenRange.start = previousTokenIndex;
+        previousSeparatorIncluded = true;
+    }
+    if (!previousSeparatorIncluded && nextToken && nextToken.text === separator) {
         // extend deletion range to include separator
         deletionRange.tokenRange.end = nextTokenIndex;
         siblingSeparatorFound = true;
@@ -934,15 +944,6 @@ function includeSiblingSeparator(
             }
         }
     }
-    if (!siblingSeparatorFound) {
-        const startTokenIndex = deletionRange.tokenRange.start;
-        const previousTokenIndex = getNeighboringTokenIndex(tokens, startTokenIndex, -1);
-        const previousToken = tokens[previousTokenIndex];
-        if (previousToken.text === separator && deletionRange.kind !== DeletionRangeKind.TARGET_ARTIFACT) {
-            // extend deletion range to include separator (except for whole annotate statement, there ';' might be needed)
-            deletionRange.tokenRange.start = previousTokenIndex;
-            previousSeparatorIncluded = true;
-        }
-    }
+
     return { deletionRange, siblingSeparatorFound, previousSeparatorIncluded };
 }
