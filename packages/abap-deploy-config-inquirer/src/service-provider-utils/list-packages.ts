@@ -12,6 +12,7 @@ import { ErrorHandler } from '@sap-ux/inquirer-common';
  * @param phrase - search phrase
  * @param backendTarget - backend target from abap deploy config prompt options
  * @returns list of packages
+ * @throws {Error} if there is a certificate error while fetching packages it will be thrown, any other error will be logged and swallowed
  */
 export async function listPackagesFromService(phrase: string, backendTarget?: BackendTarget): Promise<string[]> {
     try {

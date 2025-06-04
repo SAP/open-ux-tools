@@ -33,7 +33,9 @@ export class AbapServiceProviderManager {
         let ignoreCertErrors = false;
         if (process.env.NODE_TLS_REJECT_UNAUTHORIZED === '0') {
             LoggerHelper.logger.warn(t('warnings.allowingUnauthorizedCertsNode'));
+            // Will only applied to new service providers, not existing ones. Passed service provider would be expected to have the cert setting already configured.
             ignoreCertErrors = true;
+            setGlobalRejectUnauthorized(false);
         }
         // 1. Use existing service provider
         if (this.isExistingServiceProviderValid(backendTarget)) {
@@ -46,12 +48,6 @@ export class AbapServiceProviderManager {
             await this.setIsDefaultAbapCloud();
 
             return this.abapServiceProvider;
-        }
-        // Only when creating a new service provider do we need to ignore cert errors explicitly based on the node setting.
-        // In other cases the service provider is already created and the ignoreCertErrors should have been set during its creation.
-        if (ignoreCertErrors) {
-            setGlobalRejectUnauthorized(false);
-            ignoreCertErrors = true;
         }
         // 3. Create a new service provider
         this.abapServiceProvider = await this.createNewServiceProvider(credentials, backendTarget, ignoreCertErrors);

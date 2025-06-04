@@ -1,7 +1,6 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import type { AxiosInterceptorManager, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import * as AxiosLogger from 'axios-logger';
-import { t } from '../i18n';
 
 /**
  * Static logger prevents passing of logger references through all functions, as this is a cross-cutting concern.
@@ -44,13 +43,12 @@ export default class LoggerHelper {
             typeof (LoggerHelper.logger as any).getLogLevel === 'function' &&
             (LoggerHelper.logger as any).getLogLevel() === 'trace';
         const debugLogger = LoggerHelper.logger.debug.bind(LoggerHelper.logger);
-        // Due to a bug in axios-logger the `baseUrl` wont be logged if the `url` is falsey
         interceptors.request.use(
             (request) => {
                 // Due to a bug in `axios-logger`, the `baseURL` is not logged if the `url` is falsey.
                 if (!request.url) {
-                    debugLogger(`[@sap-ux/odata-service-inquirer] Request URL: ${request.baseURL}`)
-                };
+                    debugLogger(`[@sap-ux/odata-service-inquirer] Request URL: ${request.baseURL}`);
+                }
                 return AxiosLogger.requestLogger(request, {
                     url: true,
                     data: true,

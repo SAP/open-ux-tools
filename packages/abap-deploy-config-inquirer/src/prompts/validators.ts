@@ -390,6 +390,7 @@ export async function validatePackageChoiceInput(
                 helpLink = ErrorHandler.getHelpForError(ERROR_TYPE.CERT);
                 return helpLink ?? true;
             }
+            throw error;
         }
     }
     return true;
