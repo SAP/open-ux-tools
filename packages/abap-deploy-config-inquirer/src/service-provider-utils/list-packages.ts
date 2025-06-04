@@ -4,6 +4,7 @@ import { ABAP_PACKAGE_SEARCH_MAX_RESULTS } from '../constants';
 import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
 import type { BackendTarget } from '../types';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**
  * List packages from the service.
@@ -26,6 +27,12 @@ export async function listPackagesFromService(phrase: string, backendTarget?: Ba
         LoggerHelper.logger.debug(
             t('errors.debugAbapTargetSystem', { method: 'listPackagesFromService', error: e.message })
         );
+        if (ErrorHandler.isCertError(e)) {
+            LoggerHelper.logger.warn(
+                t('warnings.certificateError', { url: backendTarget?.abapTarget?.url, error: e.message })
+            );
+            throw e;
+        }
     }
     return [];
 }

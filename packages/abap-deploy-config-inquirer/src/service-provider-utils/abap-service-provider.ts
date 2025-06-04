@@ -1,5 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { isSameSystem } from '../utils';
+import { isSameSystem, setGlobalRejectUnauthorized } from '../utils';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { AuthenticationType } from '@sap-ux/store';
 import { PromptState } from '../prompts/prompt-state';
@@ -8,6 +8,7 @@ import type { AbapServiceProvider, AxiosRequestConfig, ProviderConfiguration } f
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { BackendTarget, Credentials, SystemConfig } from '../types';
 import type { AbapTarget } from '@sap-ux/ui5-config';
+import { t } from '../i18n';
 
 /**
  * Class to manage the ABAP service provider used during prompting.
@@ -28,6 +29,12 @@ export class AbapServiceProviderManager {
         backendTarget?: BackendTarget,
         credentials?: Credentials
     ): Promise<AbapServiceProvider> {
+        // Log the warning about NODE_TLS_REJECT_UNAUTHORIZED here so it is logged for both existing and new service providers (standalone new provider or connected provider)
+        let ignoreCertErrors = false;
+        if (process.env.NODE_TLS_REJECT_UNAUTHORIZED === '0') {
+            LoggerHelper.logger.warn(t('warnings.allowingUnauthorizedCertsNode'));
+            ignoreCertErrors = true;
+        }
         // 1. Use existing service provider
         if (this.isExistingServiceProviderValid(backendTarget)) {
             return this.abapServiceProvider as AbapServiceProvider;
@@ -40,9 +47,14 @@ export class AbapServiceProviderManager {
 
             return this.abapServiceProvider;
         }
-
+        // Only when creating a new service provider do we need to ignore cert errors explicitly based on the node setting.
+        // In other cases the service provider is already created and the ignoreCertErrors should have been set during its creation.
+        if (ignoreCertErrors) {
+            setGlobalRejectUnauthorized(false);
+            ignoreCertErrors = true;
+        }
         // 3. Create a new service provider
-        this.abapServiceProvider = await this.createNewServiceProvider(credentials, backendTarget);
+        this.abapServiceProvider = await this.createNewServiceProvider(credentials, backendTarget, ignoreCertErrors);
         await this.setIsDefaultAbapCloud();
 
         return this.abapServiceProvider;
@@ -123,14 +135,16 @@ export class AbapServiceProviderManager {
      *
      * @param credentials - user credentials
      * @param backendTarget - backend target from prompt options
+     * @param ignoreCertErrors
      * @returns abap service provider
      */
     private static async createNewServiceProvider(
         credentials?: Credentials,
-        backendTarget?: BackendTarget
+        backendTarget?: BackendTarget,
+        ignoreCertErrors: boolean = false
     ): Promise<AbapServiceProvider> {
         const abapTarget: AbapTarget = this.buildAbapTarget(backendTarget);
-        const requestOptions = this.buildRequestOptions(credentials);
+        const requestOptions = this.buildRequestOptions(credentials, ignoreCertErrors);
         const serviceProvider = await createAbapServiceProvider(abapTarget, requestOptions, false, LoggerHelper.logger);
 
         this.system = this.getSystemConfig(backendTarget);
@@ -171,9 +185,13 @@ export class AbapServiceProviderManager {
      * Build the request options.
      *
      * @param credentials - user credentials
+     * @param ignoreCertErrors
      * @returns request options
      */
-    private static buildRequestOptions(credentials?: Credentials): AxiosRequestConfig & Partial<ProviderConfiguration> {
+    private static buildRequestOptions(
+        credentials?: Credentials,
+        ignoreCertErrors = false
+    ): AxiosRequestConfig & Partial<ProviderConfiguration> {
         let auth;
         if (credentials?.username && credentials?.password) {
             auth = {
@@ -183,7 +201,7 @@ export class AbapServiceProviderManager {
         }
 
         return {
-            ignoreCertErrors: false,
+            ignoreCertErrors,
             auth
         };
     }

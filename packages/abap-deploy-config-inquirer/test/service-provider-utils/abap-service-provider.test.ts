@@ -19,6 +19,13 @@ const mockCreateAbapServiceProvider = createAbapServiceProvider as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('getOrCreateServiceProvider', () => {
+    beforeAll(() => {
+        // Since having this environment variable set to '0' affects behaviour
+        // we need to delete it before running the tests. There are specific tests for
+        // testing the behaviour with this variable set to '0'
+        delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+    });
+
     afterEach(() => {
         AbapServiceProviderManager.deleteExistingServiceProvider();
     });
