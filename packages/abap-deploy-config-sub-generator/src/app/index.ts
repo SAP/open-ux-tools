@@ -90,6 +90,10 @@ export default class extends DeploymentGenerator {
             (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
         }
 
+        if ((this.env as unknown as YeomanEnvironment).conflicterOptions) {
+            (this.env as unknown as YeomanEnvironment).conflicterOptions.force = this.options.force ?? true;
+        }
+
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._initializing();
         }

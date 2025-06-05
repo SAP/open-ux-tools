@@ -7,6 +7,9 @@ export interface YeomanEnvironment {
     conflicter: {
         force: boolean;
     };
+    conflicterOptions: {
+        force: boolean;
+    };
     adapter: {
         actualAdapter: unknown;
     };

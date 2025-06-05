@@ -110,7 +110,7 @@ export default class extends DeploymentGenerator {
             const abap = this.appConfig.deployConfig as AbapHeadlessDeployConfigOptions;
             if (this.appConfig.project.targetFolder) {
                 options = {
-                    appRootPath: this.appConfig?.project?.targetFolder,
+                    appRootPath: join(this.appConfig.project.targetFolder, this.appConfig.project.name),
                     destination: abap?.destination,
                     url: abap?.url ?? '', // URL may not be provided in BAS but will be determined in the generator
                     client: abap?.client,
