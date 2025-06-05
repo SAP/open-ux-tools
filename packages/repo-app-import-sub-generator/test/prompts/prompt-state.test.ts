@@ -1,7 +1,7 @@
 import { PromptState } from '../../src/prompts/prompt-state';
-import type { SystemSelectionAnswers } from '../../src/app/types';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import AdmZip from 'adm-zip';
+import { DatasourceType, type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 
 jest.mock('adm-zip');
 describe('PromptState', () => {
@@ -13,13 +13,28 @@ describe('PromptState', () => {
             }
         }
     } as unknown as AbapServiceProvider;
-    let mockSystemSelection: SystemSelectionAnswers;
+    let mockSystemSelection: OdataServiceAnswers;
     beforeEach(() => {
         mockSystemSelection = {
+            datasourceType: DatasourceType.sapSystem,
             connectedSystem: {
-                serviceProvider: mockServiceProvider
+                serviceProvider: mockServiceProvider,
+                destination: {
+                    Host: 'https://mock.sap-system.com',
+                    'sap-client': '100',
+                    Name: 'mockDestination',
+                    Type: 'HTTP',
+                    ProxyType: 'Internet',
+                    Description: 'Mock SAP System',
+                    Authentication: 'BasicAuthentication'
+                },
+                backendSystem: {
+                    url: 'https://mock.sap-system.com',
+                    client: '100',
+                    name: 'Mock SAP System'
+                }
             }
-        }
+        };
     });
 
     afterEach(() => {

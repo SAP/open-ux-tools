@@ -5,14 +5,12 @@ import { PromptNames, type QuickDeployedAppConfig } from '../../src/app/types';
 import { PromptState } from '../../src/prompts/prompt-state';
 import * as helpers from '../../src/prompts/prompt-helpers';
 import * as downloadUtils from '../../src/utils/download-utils';
-import RepoAppDownloadLogger from '../../src/utils/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { formatAppChoices } from '../../src/prompts/prompt-helpers';
-import { format } from 'path';
 import { validateAppSelection } from '../../src/utils/validators';
-import app from '../../src/app';
 
 jest.mock('@sap-ux/odata-service-inquirer', () => ({
+    ...jest.requireActual('@sap-ux/odata-service-inquirer'),
     getSystemSelectionQuestions: jest.fn()
 }));
 
@@ -32,8 +30,8 @@ jest.mock('@sap-ux/project-input-validator', () => ({
 jest.mock('../../src/utils/validators', () => ({
     validateAppSelection: jest.fn()
 }));
-
 describe('getPrompts', () => {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const mockGetSystemSelectionQuestions = require('@sap-ux/odata-service-inquirer').getSystemSelectionQuestions;
     const mockFetchAppList = helpers.fetchAppListForSelectedSystem as jest.Mock;
     const mockDownloadApp = downloadUtils.downloadApp as jest.Mock;
@@ -49,10 +47,8 @@ describe('getPrompts', () => {
     } as unknown as AbapServiceProvider;
 
     const appRootPath = '/app/path';
-    const appValue = { appId: 'app1', repoName: 'repo1' } 
-    const appList = [
-        { name: 'App 1', value: appValue }
-    ]
+    const appValue = { appId: 'app1', repoName: 'repo1' };
+    const appList = [{ name: 'App 1', value: appValue }];
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -62,11 +58,13 @@ describe('getPrompts', () => {
 
     it('should return system, app, and target folder prompts without Quick Deployed App config', async () => {
         mockGetSystemSelectionQuestions.mockResolvedValue({
-            prompts: [{
-                name: PromptNames.systemSelection,
-                type: 'list',
-                choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]
-            }],
+            prompts: [
+                {
+                    name: PromptNames.systemSelection,
+                    type: 'list',
+                    choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]
+                }
+            ],
             answers: {
                 connectedSystem: { serviceProvider: mockServiceProvider }
             }
@@ -80,21 +78,25 @@ describe('getPrompts', () => {
         mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
         mockDownloadApp.mockResolvedValue(undefined);
 
-        const prompts = await getPrompts(appRootPath);
-        
+        const prompts = await getPrompts(appRootPath, undefined, undefined, true); // run as CLI
+
         // system selection prompt
-        const systemSelectionPrompt = prompts.find(p => p.name === PromptNames.systemSelection);
-       
+        const systemSelectionPrompt = prompts.find((p) => p.name === PromptNames.systemSelection);
+
         expect(systemSelectionPrompt).toBeDefined();
         expect(systemSelectionPrompt).toHaveProperty('type', 'list');
-        expect(systemSelectionPrompt).toHaveProperty('choices', [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]);
+        expect(systemSelectionPrompt).toHaveProperty('choices', [
+            { name: 'System 1', value: { system: { name: 'MockSystem' } } }
+        ]);
         expect(systemSelectionPrompt).toHaveProperty('name', PromptNames.systemSelection);
 
         // app selection prompt
-        const appSelectionPrompt = prompts.find(p => p.name === PromptNames.selectedApp);
+        const appSelectionPrompt = prompts.find((p) => p.name === PromptNames.selectedApp);
         expect(appSelectionPrompt).toBeDefined();
         expect(appSelectionPrompt).toHaveProperty('type', 'list');
-        expect(await (appSelectionPrompt as any)?.when({ [PromptNames.systemSelection]: mockServiceProvider })).toBe(true);
+        expect(await (appSelectionPrompt as any)?.when({ [PromptNames.systemSelection]: mockServiceProvider })).toBe(
+            true
+        );
         expect((appSelectionPrompt as any)?.choices()).toEqual(appList);
         expect(appSelectionPrompt).toHaveProperty('when');
         expect(appSelectionPrompt).toHaveProperty('message', t('prompts.appSelection.message'));
@@ -108,7 +110,7 @@ describe('getPrompts', () => {
         expect(appSelectionPrompt).toHaveProperty('name', PromptNames.selectedApp);
 
         // target folder prompt
-        const targetFolderPrompt = prompts.find(p => p.name === PromptNames.targetFolder);
+        const targetFolderPrompt = prompts.find((p) => p.name === PromptNames.targetFolder);
         expect(targetFolderPrompt).toBeDefined();
         expect(targetFolderPrompt).toHaveProperty('type', 'input');
         expect(targetFolderPrompt).toHaveProperty('message', t('prompts.targetPath.message'));
@@ -123,12 +125,14 @@ describe('getPrompts', () => {
 
     it('should return system, app, and target folder prompts with Quick Deployed App config', async () => {
         mockGetSystemSelectionQuestions.mockResolvedValue({
-            prompts: [{
-                name: PromptNames.systemSelection,
-                type: 'list',
-                choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }],
-                default: 0
-            }],
+            prompts: [
+                {
+                    name: PromptNames.systemSelection,
+                    type: 'list',
+                    choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }],
+                    default: 0
+                }
+            ],
             answers: {
                 connectedSystem: { serviceProvider: mockServiceProvider }
             }
@@ -147,20 +151,24 @@ describe('getPrompts', () => {
             serviceProviderInfo: mockServiceProvider
         } as unknown as QuickDeployedAppConfig;
         const prompts = await getPrompts(appRootPath, quickDeployedAppConfig);
-        
+
         // system selection prompt
-        const systemSelectionPrompt = prompts.find(p => p.name === PromptNames.systemSelection);
+        const systemSelectionPrompt = prompts.find((p) => p.name === PromptNames.systemSelection);
         expect(systemSelectionPrompt).toBeDefined();
         expect(systemSelectionPrompt).toHaveProperty('type', 'list');
-        expect(systemSelectionPrompt).toHaveProperty('choices', [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]);
+        expect(systemSelectionPrompt).toHaveProperty('choices', [
+            { name: 'System 1', value: { system: { name: 'MockSystem' } } }
+        ]);
         expect((systemSelectionPrompt as any)?.default).toBe(0);
         expect(systemSelectionPrompt).toHaveProperty('name', PromptNames.systemSelection);
 
         // app selection prompt
-        const appSelectionPrompt = prompts.find(p => p.name === PromptNames.selectedApp);
+        const appSelectionPrompt = prompts.find((p) => p.name === PromptNames.selectedApp);
         expect(appSelectionPrompt).toBeDefined();
         expect(appSelectionPrompt).toHaveProperty('type', 'list');
-        expect(await (appSelectionPrompt as any)?.when({ [PromptNames.systemSelection]: mockServiceProvider })).toBe(true);
+        expect(await (appSelectionPrompt as any)?.when({ [PromptNames.systemSelection]: mockServiceProvider })).toBe(
+            true
+        );
         expect((appSelectionPrompt as any)?.choices()).toEqual(appList);
         expect(appSelectionPrompt).toHaveProperty('when');
         expect(appSelectionPrompt).toHaveProperty('message', t('prompts.appSelection.message'));
@@ -174,7 +182,7 @@ describe('getPrompts', () => {
         expect(appSelectionPrompt).toHaveProperty('name', PromptNames.selectedApp);
 
         // target folder prompt
-        const targetFolderPrompt = prompts.find(p => p.name === PromptNames.targetFolder);
+        const targetFolderPrompt = prompts.find((p) => p.name === PromptNames.targetFolder);
         expect(targetFolderPrompt).toBeDefined();
         expect(targetFolderPrompt).toHaveProperty('type', 'input');
         expect(targetFolderPrompt).toHaveProperty('message', t('prompts.targetPath.message'));
@@ -183,18 +191,20 @@ describe('getPrompts', () => {
             applyDefaultWhenDirty: true,
             breadcrumb: t('prompts.targetPath.breadcrumb')
         });
-        expect(await (targetFolderPrompt as any)?.when({ [PromptNames.targetFolder]: appRootPath})).toBe(true);
+        expect(await (targetFolderPrompt as any)?.when({ [PromptNames.targetFolder]: appRootPath })).toBe(true);
         expect(await (targetFolderPrompt as any)?.validate(appRootPath, appValue)).toBe(true);
     });
 
     it('should return prompts allowing the user to override the default path and app selection when Quick Deployed App config is provided', async () => {
         mockGetSystemSelectionQuestions.mockResolvedValue({
-            prompts: [{
-                name: PromptNames.systemSelection,
-                type: 'list',
-                choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }],
-                default: 0
-            }],
+            prompts: [
+                {
+                    name: PromptNames.systemSelection,
+                    type: 'list',
+                    choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }],
+                    default: 0
+                }
+            ],
             answers: {
                 connectedSystem: { serviceProvider: mockServiceProvider }
             }
@@ -203,7 +213,7 @@ describe('getPrompts', () => {
         const appListWithMoreOptions = [
             ...appList,
             { name: 'App 2', value: { appId: 'app2', repoName: 'repo2' } },
-            { name: 'App 3', value: { appId: 'app3', repoName: 'repo3' }  }
+            { name: 'App 3', value: { appId: 'app3', repoName: 'repo3' } }
         ];
 
         (formatAppChoices as jest.Mock).mockReturnValue(appListWithMoreOptions);
@@ -218,25 +228,25 @@ describe('getPrompts', () => {
             serviceProviderInfo: mockServiceProvider
         } as unknown as QuickDeployedAppConfig;
         const prompts = await getPrompts(appRootPath, quickDeployedAppConfig);
-        
+
         // system selection prompt
-        const systemSelectionPrompt = prompts.find(p => p.name === PromptNames.systemSelection);
+        const systemSelectionPrompt = prompts.find((p) => p.name === PromptNames.systemSelection);
         expect(systemSelectionPrompt).toBeDefined();
 
         // app selection prompt
-        const selectedAnswer = { 
+        const selectedAnswer = {
             [PromptNames.systemSelection]: mockServiceProvider,
             [PromptNames.selectedApp]: { appId: 'app3', repoName: 'repo3' },
             [PromptNames.targetFolder]: 'someother/path'
         };
-        const appSelectionPrompt = prompts.find(p => p.name === PromptNames.selectedApp);
+        const appSelectionPrompt = prompts.find((p) => p.name === PromptNames.selectedApp);
         expect(await (appSelectionPrompt as any)?.when(selectedAnswer)).toBe(true);
         expect(await (appSelectionPrompt as any)?.validate(appValue)).toBe(true);
         //expect((appSelectionPrompt as any)?.default()).toBe(0);
         expect(appSelectionPrompt).toHaveProperty('name', PromptNames.selectedApp);
 
         // target folder prompt
-        const targetFolderPrompt = prompts.find(p => p.name === PromptNames.targetFolder);
+        const targetFolderPrompt = prompts.find((p) => p.name === PromptNames.targetFolder);
         expect(targetFolderPrompt).toBeDefined();
         expect(targetFolderPrompt).toHaveProperty('type', 'input');
         expect(targetFolderPrompt).toHaveProperty('message', t('prompts.targetPath.message'));
@@ -249,4 +259,3 @@ describe('getPrompts', () => {
         expect(await (targetFolderPrompt as any)?.validate('someother/path', appValue)).toBe(true);
     });
 });
-                       
