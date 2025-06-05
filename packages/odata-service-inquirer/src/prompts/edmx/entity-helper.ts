@@ -11,7 +11,7 @@ export type EntityAnswer = {
     entitySetType: string;
     // The navigation property name linking a parameterised entity set.
     // Populated only if the entity set has a `Common.ResultContext` annotation.
-    parameterisedNavigationPropertyName?: string;
+    parameterisedMainEntity?: string;
 };
 
 export type NavigationEntityAnswer = {
@@ -36,43 +36,40 @@ export type EntitySetFilter = 'filterDraftEnabled' | 'filterAggregateTransformat
  * that it is a parameterised entity. It then searches for a navigation property that:
  * - Points to a target entity (`containsTarget === true`).
  * - Has a partner navigation property named `Parameters` (linking back to the parameters entity).
- * - Has a `targetTypeName` that matches the provided `targetEntityTypeName`.
  *
  * If such a navigation property is found, its name is returned and skips navigation entity selection prompt
  * Otherwise, `null` is returned.
  *
  * @param entitySet - The entity set to search for navigation properties.
- * @param targetEntityTypeName - The fully qualified name of the target entity type to match.
+ * @param entityTypes - The list of entity types to search for matching navigation properties.
  * @returns The name of the matching navigation property, or `null` if no match is found.
  */
 function getNavigationPropertyForParameterisedEntity(
     entitySet: EntitySet,
-    entityTypes?: any // todo: replace with the correct type
+    entityTypes?: ConvertedMetadata['entityTypes']
 ): string | null {
     // Check if the entity type has the Common.ResultContext annotation
-    const hasResultContextAnnotation = Boolean(
-        entitySet?.entityType?.annotations?.Common?.ResultContext
-    );
+    const hasResultContextAnnotation = Boolean(entitySet?.entityType?.annotations?.Common?.ResultContext);
 
     if (!hasResultContextAnnotation) {
         // If the entity set is not parameterised, no parametrised navigation is expected
         return null;
-    };
+    }
 
     // Get all navigation properties of the parameterised entity type
     const navigationProperties = entitySet?.entityType?.navigationProperties ?? [];
-    // Find the first navigation property that meets the criteria - todo: confirm with someone if this is correct.
+    // Find the first navigation property that meets the criteria.
     for (const navigationProperty of navigationProperties) {
         if (
-            navigationProperty.containsTarget === true &&// Points to a target entity
+            navigationProperty.containsTarget === true && // Points to a target entity
             navigationProperty.partner // The partner navigation property name is defined
         ) {
-            const isMatchingEntitySet = entityTypes.filter(
+            const isMatchingEntitySet = entityTypes?.filter(
                 (entityType: any) => entityType.fullyQualifiedName === navigationProperty.targetTypeName
-              );
+            );
             // Check if the target type name matches the provided entity type name
             if (isMatchingEntitySet) {
-                // Return the navigation property name 
+                // Return the navigation property name
                 return navigationProperty.name;
             }
         }
@@ -111,14 +108,12 @@ export function getEntityChoices(
     try {
         convertedMetadata = convert(parse(edmx));
         const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
-
         if (Number.isNaN(parsedOdataVersion)) {
             LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
             throw new Error(t('errors.unparseableOdataVersion'));
         }
         // Note that odata version > `4` e.g. `4.1`, is not currently supported by `@sap-ux/edmx-converter`
         odataVersion = parsedOdataVersion === 4 ? OdataVersion.v4 : OdataVersion.v2;
-
         let entitySets: EntitySet[] = [];
 
         if (entitySetFilter === 'filterDraftEnabled') {
@@ -130,14 +125,17 @@ export function getEntityChoices(
             entitySets = convertedMetadata.entitySets;
         }
         entitySets.forEach((entitySet, index) => {
-            const parameterisedNavigationPropertyName = getNavigationPropertyForParameterisedEntity(entitySet, convertedMetadata?.entityTypes);
+            const parameterisedMainEntity = getNavigationPropertyForParameterisedEntity(
+                entitySet,
+                convertedMetadata?.entityTypes
+            );
             const choice: ListChoiceOptions<EntityAnswer> = {
                 name: entitySet.name,
                 value: {
                     entitySetName: entitySet.name,
                     entitySetType: entitySet.entityTypeName, // Fully qualified entity type name
-                    ...(parameterisedNavigationPropertyName && {
-                        parameterisedNavigationPropertyName
+                    ...(parameterisedMainEntity && {
+                        parameterisedMainEntity
                     }) // parameterised navigation property name
                 }
             };

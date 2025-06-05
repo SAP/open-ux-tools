@@ -135,8 +135,8 @@ export function getEntitySelectionQuestions(
         let navigationEntityChoices: ListChoiceOptions<NavigationEntityAnswer>[];
         entityQuestions.push({
             when: (answers: EntitySelectionAnswers) => {
-                // Skip navigation entity selection if the selected main entity has parameterisedNavigationPropertyName.
-                if (answers.mainEntity && !answers.mainEntity.parameterisedNavigationPropertyName) {
+                // Skip navigation entity selection if the selected main entity has parameterisedMainEntity.
+                if (answers.mainEntity && !answers.mainEntity.parameterisedMainEntity) {
                     navigationEntityChoices = getNavigationEntityChoices(
                         convertedMetadata,
                         odataVersion,

@@ -30,7 +30,7 @@ export class ValidationError extends Error {
 
 export interface EntityConfig {
     mainEntityName: string; // Defines the main list page entity
-    parameterisedNavigationPropertyName?: string, // Defines the parameterised navigation property name for object page navigation
+    parameterisedMainEntity?: string; // Defines the parameterised navigation property name for object page navigation
     navigationEntity?: {
         EntitySet: string; // Defines the entity set for object page navigation
         Name: string; // Defines the entity name for object page navigation
