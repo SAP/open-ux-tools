@@ -59,9 +59,11 @@ const EditableDropdownExample = (props: EditableDropdownExampleProps) => {
             <div style={{ width: '300px' }}>
                 <DropdownEditable
                     options={[...options]}
-                    selectedKey={selectedKey}
+                    // selectedKey={selectedKey}
+                    selectedKey="test"
+                    placeholder="test"
                     onChange={(event, option) => {
-                        // console.log('ochange!!! -> option ' + option?.key);
+                        console.log('ochange!!! -> option ' + option?.key);
                         setSelectedOption(option);
                         setSelectedKey(option?.key);
                     }}

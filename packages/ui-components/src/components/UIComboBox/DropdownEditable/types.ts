@@ -1,4 +1,5 @@
 import { UIContextualMenuItem } from '../../UIContextualMenu';
+import { UIDirectionalHint } from '../../UITreeDropdown';
 import { UISelectableOption } from '../UIComboBox';
 
 export interface UISelectableOptionWithSubValues extends UISelectableOption {
@@ -19,5 +20,6 @@ export interface SelectionUpdate {
 
 export interface SubMenuData {
     target: HTMLElement | null;
+    directionalHint?: UIDirectionalHint;
     option?: UISelectableOptionWithSubValues;
 }

@@ -9,7 +9,7 @@ export interface SubMenuContextMenuProps extends UIIContextualMenuProps {
 }
 
 export const SubMenuContextMenu = (props: SubMenuContextMenuProps) => {
-    const { target, hideSubmenu, onItemClick, items } = props;
+    const { target, hideSubmenu, onItemClick, items, directionalHint } = props;
     return (
         <UIContextualMenu
             target={target}
@@ -23,7 +23,8 @@ export const SubMenuContextMenu = (props: SubMenuContextMenuProps) => {
                 onItemClick?.(ev, item);
                 hideSubmenu();
             }}
-            directionalHint={11}
+            directionalHint={directionalHint ?? 11}
+            // directionalHintFixed={true}
             shouldFocusOnMount={false}
             items={items}
             delayUpdateFocusOnHover={true}

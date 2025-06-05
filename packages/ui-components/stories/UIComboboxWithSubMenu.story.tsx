@@ -64,7 +64,7 @@ const EditableComboboxExample = (props: EditableComboboxExampleProps) => {
                     autoComplete="on"
                     selectedKey={selectedKey}
                     onChange={(event, option) => {
-                        console.log('ochange!!! -> option ' + option?.key);
+                        // console.log('ochange!!! -> option ' + option?.key);
                         setSelectedOption(option);
                         setSelectedKey(option?.key);
                     }}

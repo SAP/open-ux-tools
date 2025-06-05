@@ -17,6 +17,7 @@ import {
 } from '../../UIDropdown';
 import { ISelectableDroppableTextProps } from '@fluentui/react';
 import { SubMenuContextMenu } from './SubMenuContextMenu';
+import { UIDirectionalHint } from '../../UITreeDropdown';
 
 export interface DropdownEditableProps extends UIDropdownProps {
     /**
@@ -30,6 +31,11 @@ export interface DropdownEditableProps extends UIDropdownProps {
         value?: string,
         selection?: OptionKey
     ) => void;
+}
+
+interface CalloutPosition {
+    target: HTMLElement | null;
+    directionalHint?: UIDirectionalHint;
 }
 
 /**
@@ -52,6 +58,21 @@ function isEditableOption(option?: UISelectableOption): boolean {
     return !!(option && 'editable' in option && option.editable);
 }
 
+function getCalloutTarget(element: HTMLElement | null): CalloutPosition {
+    const elementRect = element?.getBoundingClientRect();
+    const rightPosition = elementRect?.right ?? 0;
+    const availableSpaceOnRight = window.innerWidth - rightPosition;
+    console.log(`availableSpaceOnRight=${availableSpaceOnRight}`);
+    const position: CalloutPosition = {
+        target: element,
+        directionalHint: availableSpaceOnRight > 200 ? UIDirectionalHint.rightTopEdge : UIDirectionalHint.topRightEdge
+        // directionalHint: UIDirectionalHint.topRightEdge
+    };
+    // return element.querySelector('.editable-item-sub-menu-icon');
+
+    return position;
+}
+
 export const DropdownEditable = (props: DropdownEditableProps) => {
     const { options, onChange, multiSelect } = props;
     const [selectedKey, updateSelection, convertedOptions] = useOptions(props.selectedKey, options, props.multiSelect);
@@ -64,6 +85,9 @@ export const DropdownEditable = (props: DropdownEditableProps) => {
     selectedKeyRef.current = selectedKey;
     const pendingChange = useRef<boolean>(false);
     const isRootMenuMounted = useRef<boolean>(false);
+
+    console.log('target');
+    console.log(target);
 
     /**
      * Handles selection or edit change.
@@ -172,7 +196,7 @@ export const DropdownEditable = (props: DropdownEditableProps) => {
                                 const optionsCount = option?.options?.length ?? 0;
                                 if (optionsCount > 1) {
                                     setSubMenu({
-                                        target: multiSelect ? element.parentElement : element,
+                                        ...getCalloutTarget(multiSelect ? element.parentElement : element),
                                         option: convertedOptions[parseInt(index)]
                                     });
                                 }
@@ -245,6 +269,7 @@ export const DropdownEditable = (props: DropdownEditableProps) => {
                             inputItemRefs.current[activeOption.key]?.setOption(activeOption);
                         }
                     }}
+                    directionalHint={subMenu?.directionalHint}
                 />
             )}
         </>
