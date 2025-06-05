@@ -1,5 +1,24 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.9
+    -   @sap-ux/inquirer-common@0.7.6
+    -   @sap-ux/odata-service-inquirer@2.4.12
+
+## 0.1.12
+
+### Patch Changes
+
+-   61d4060: use accept header for service generator content request from config
+-   Updated dependencies [61d4060]
+    -   @sap-ux/axios-extension@1.21.2
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.8
+    -   @sap-ux/odata-service-inquirer@2.4.11
+
 ## 0.1.11
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @sap-ux/preview-middleware
 
+## 0.20.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.13
+
+## 0.20.19
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.12
+-   @sap-ux/system-access@0.6.2
+
+## 0.20.18
+
+### Patch Changes
+
+-   920c23d: Fix custom connector for flex changes in UI5 < 1.78
+
 ## 0.20.17
 
 ### Patch Changes
