@@ -4,21 +4,36 @@ import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { generatorNamespace } from '../../src/utils';
 import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
+import ABAPGen from '@sap-ux/abap-deploy-config-sub-generator';
+import { DeployTarget } from '@sap-ux/fiori-generator-shared';
 import type { AppConfig } from '@sap-ux/fiori-app-sub-generator';
 
 /**
+ * Runs the headless generator for deployment sub generators.
  *
  * @param testNameOrJsonOrPath - can be the partial test file name or the actual json as string, or a file path to the config file
+ * @param target - the deploy target i.e ABAP or CF
  * @param targetDir - override the standard output path
+ * @param opts - additional options
  */
-export async function runHeadlessGen(testNameOrJsonOrPath: string, targetDir?: string, opts?: {}): Promise<any> {
+export async function runHeadlessGen(
+    testNameOrJsonOrPath: string,
+    target: DeployTarget,
+    targetDir?: string,
+    opts?: {}
+): Promise<any> {
     let appConfig;
     const headlessGenPath = join(__dirname, '../../src/headless');
 
     if (existsSync(testNameOrJsonOrPath)) {
         appConfig = testNameOrJsonOrPath;
     } else {
-        const testFilePath = join(__dirname, '/fixtures/headless-configs', `${testNameOrJsonOrPath}-config.json`);
+        const testFilePath = join(
+            __dirname,
+            '/fixtures/headless-configs',
+            target === DeployTarget.CF ? 'cf' : 'abap',
+            `${testNameOrJsonOrPath}-config.json`
+        );
         if (testFilePath) {
             const testConfig = existsSync(testFilePath)
                 ? readFileSync(testFilePath, { encoding: 'utf-8' })
@@ -49,6 +64,9 @@ export async function runHeadlessGen(testNameOrJsonOrPath: string, targetDir?: s
                 opts
             )
         )
-        .withGenerators([[CFGen as any, generatorNamespace('gen:test', 'CF')]])
+        .withGenerators([
+            [CFGen as any, generatorNamespace('gen:test', 'CF')],
+            [ABAPGen as any, generatorNamespace('gen:test', 'ABAP')]
+        ])
         .run();
 }
