@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.4.14
+
+### Patch Changes
+
+-   18c7e5d: Adds support for cert bypassing and cert error GA link generation
+
 ## 2.4.13
 
 ### Patch Changes

@@ -1,9 +1,10 @@
-import { AtoService } from '@sap-ux/axios-extension';
-import { t } from '../i18n';
-import { AbapServiceProviderManager } from './abap-service-provider';
-import LoggerHelper from '../logger-helper';
 import type { AtoSettings } from '@sap-ux/axios-extension';
-import type { TransportConfig, InitTransportConfigResult, Credentials, BackendTarget } from '../types';
+import { AtoService } from '@sap-ux/axios-extension';
+import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import { t } from '../i18n';
+import LoggerHelper from '../logger-helper';
+import type { BackendTarget, Credentials, InitTransportConfigResult, TransportConfig } from '../types';
+import { AbapServiceProviderManager } from './abap-service-provider';
 
 /**
  * Dummy transport configuration.
@@ -132,7 +133,14 @@ class DefaultTransportConfig implements TransportConfig {
             }
         } catch (err) {
             AbapServiceProviderManager.deleteExistingServiceProvider();
-            if (err.response?.status === 401) {
+
+            if (ErrorHandler.isCertError(err)) {
+                LoggerHelper.logger.warn(
+                    t('warnings.certificateError', { url: backendTarget?.abapTarget?.url, error: err.message })
+                );
+                // Stringified version of the GA link will be reported in the logs
+                result.warning = ErrorHandler.getHelpForError(ERROR_TYPE.CERT)?.toString();
+            } else if (err.response?.status === 401) {
                 const auth: string = err.response.headers?.['www-authenticate'];
                 result.transportConfigNeedsCreds = !!auth?.toLowerCase()?.startsWith('basic');
                 LoggerHelper.logger.debug(
