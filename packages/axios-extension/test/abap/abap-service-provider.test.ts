@@ -241,7 +241,7 @@ describe('AbapServiceProvider', () => {
             expect(provider.getAdtService).toHaveBeenCalledWith(expect.any(Function));
             expect(mockRapGeneratorService.getRAPGeneratorConfig).toHaveBeenCalled();
             expect(provider.createService).toHaveBeenCalledWith('/sap/bc/adt/rap/generators/webapi/published-x-ui-service', expect.any(Function));
-            expect(mockGenerator.setContentType).toHaveBeenCalledWith('application/vnd.sap.adt.serverdriven.content.v1+json');
+            expect(mockGenerator.setContentType).toHaveBeenCalledWith('application/vnd.sap.adt.serverdriven.content.v1+json; framework=generators.v1');
             expect(mockGenerator.configure).toHaveBeenCalledWith(config, packageName);
             expect(result).toBe(mockGenerator);
         });
