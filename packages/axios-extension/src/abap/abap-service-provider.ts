@@ -225,7 +225,7 @@ export class AbapServiceProvider extends ServiceProvider {
         }
         const config = await generatorService.getUIServiceGeneratorConfig(referencedObject.uri);
         const gen = this.createService<UiServiceGenerator>(this.getServiceUrlFromConfig(config), UiServiceGenerator);
-        gen.configure(config, referencedObject);
+        gen.configure(config, referencedObject, this.getContentType(config));
         return gen;
     }
 
@@ -245,7 +245,7 @@ export class AbapServiceProvider extends ServiceProvider {
             this.getServiceUrlFromConfig(config),
             ODataServiceGenerator
         );
-        generator.setContentType(this.getServiceContentType(config));
+        generator.setContentType(this.getContentType(config));
         generator.configure(config, packageName || '$TMP');
         return generator;
     }
@@ -266,17 +266,14 @@ export class AbapServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Get the content type from the generator config.
-     * This is used to determine the content type of the service.
      * @param config - generator config
-     * @returns content type of the service
+     * @returns the type of the content link from service generator config
      */
-    private getServiceContentType(config: GeneratorEntry): string {
-        const contentType = config.link[0].type.split(';')[0];
-        if (!contentType) {
-            throw new Error('No content type found in the generator config');
-        }
-        return contentType;
+    private getContentType(config: GeneratorEntry): string {
+        const contentEndpoint = config.link?.find(
+            (link) => typeof link.href === 'string' && link.href.includes('/content')
+        );
+        return contentEndpoint.type;
     }
 
     /**

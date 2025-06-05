@@ -135,7 +135,7 @@ export async function validateAppSelection(
     }
 
     // No apps available at all
-    if (appList.length === 0) {
+    if (appList.length === 0 && !answers?.appId) {
         return await generateAppNotFoundHelpLink();
     }
 
