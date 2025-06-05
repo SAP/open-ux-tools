@@ -222,12 +222,13 @@ export default class extends Generator {
         }
 
         if (this.attributeAnswers.addDeployConfig) {
+            const client = (await this.systemLookup.getSystemByName(this.configAnswers.system))?.Client;
             addDeployGen(
                 {
                     projectName: this.attributeAnswers.projectName,
                     targetFolder: this.attributeAnswers.targetFolder,
-                    client: (await this.systemLookup.getSystemByName(this.configAnswers.system))?.Client,
-                    connectedSystem: this.configAnswers.system
+                    connectedSystem: this.configAnswers.system,
+                    client
                 },
                 this.composeWith.bind(this),
                 this.logger,
