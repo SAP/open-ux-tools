@@ -100,11 +100,7 @@ export function getAbapOnPremSystemQuestions(
                 return valRes;
             }
         } as InputQuestion<AbapOnPremAnswers>,
-        ...getCredentialsPrompts<AbabpOnPremCredentialsAnswers>(
-            connectValidator,
-            abapOnPremPromptNamespace,
-            sapClientRef
-        )
+        ...getCredentialsPrompts<AbapOnPremAnswers>(connectValidator, abapOnPremPromptNamespace, sapClientRef)
     ];
 
     if (systemNamePromptOptions?.hide !== true) {

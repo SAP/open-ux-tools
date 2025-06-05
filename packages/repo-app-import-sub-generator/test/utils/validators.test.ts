@@ -1,19 +1,23 @@
-import { validateQfaJsonFile, validateAppSelection,isValidPromptState } from '../../src/utils/validators'; 
+import { validateQfaJsonFile, validateAppSelection, isValidPromptState } from '../../src/utils/validators';
 import type { QfaJsonConfig, QuickDeployedAppConfig, AppInfo } from '../../src/app/types';
 import { t } from '../../src/utils/i18n';
 import RepoAppDownloadLogger from '../../src/utils/logger';
 import { downloadApp, hasQfaJson } from '../../src/utils/download-utils';
-import type { AppIndex } from '@sap-ux/axios-extension'
+import type { AppIndex } from '@sap-ux/axios-extension';
 import { ErrorHandler, ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { HELP_NODES } from '@sap-ux/guided-answers-helper';
 import { PromptState } from '../../src/prompts/prompt-state';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { qfaJsonFileName } from '../../src/utils/constants';
-import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import { MessageType } from '@sap-devx/yeoman-ui-types';
 
 jest.mock('../../src/utils/logger', () => ({
     logger: {
-        error: jest.fn()
+        error: jest.fn(),
+        warn: jest.fn(),
+        info: jest.fn(),
+        debug: jest.fn()
     }
 }));
 
@@ -23,11 +27,10 @@ jest.mock('../../src/utils/download-utils', () => ({
 }));
 
 jest.mock('@sap-ux/inquirer-common', () => ({
-    ...jest.requireActual('@sap-ux/inquirer-common'),
-    ErrorHandler: {
-        getHelpLink: jest.fn(),
-    },
+    ...jest.requireActual('@sap-ux/inquirer-common')
 }));
+
+ErrorHandler.getHelpLink = jest.fn();
 
 describe('validateQfaJsonFile', () => {
     const validConfig: QfaJsonConfig = {
@@ -35,7 +38,7 @@ describe('validateQfaJsonFile', () => {
         serviceBindingDetails: {
             serviceName: 'validService',
             serviceVersion: '1.0.0',
-            mainEntityName: 'validEntity',
+            mainEntityName: 'validEntity'
         },
         projectAttribute: { moduleName: 'validModule' },
         deploymentDetails: { repositoryName: 'validRepository' },
@@ -63,7 +66,7 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidMetadataConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidMetadataPackage')); 
+        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidMetadataPackage'));
     });
 
     it('should return false and log an error when service binding details validation fails', () => {
@@ -71,7 +74,7 @@ describe('validateQfaJsonFile', () => {
             ...validConfig,
             serviceBindingDetails: {
                 ...validConfig.serviceBindingDetails,
-                serviceName: '', // Invalid service name
+                serviceName: '' // Invalid service name
             }
         } as unknown as QfaJsonConfig;
 
@@ -115,14 +118,14 @@ describe('validateQfaJsonFile', () => {
         } as unknown as QfaJsonConfig;
 
         const result = validateQfaJsonFile(invalidProjectAttributeConfig);
-        expect(result).toBe(false); 
+        expect(result).toBe(false);
         expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidModuleName'));
     });
 
     it('should return false and log an error when deployment details validation fails', () => {
         const invalidDeploymentDetailsConfig = {
-           ...validConfig,
-           deploymentDetails: { repositoryName: '' } // Invalid repository name
+            ...validConfig,
+            deploymentDetails: { repositoryName: '' } // Invalid repository name
         } as unknown as QfaJsonConfig;
 
         const result = validateQfaJsonFile(invalidDeploymentDetailsConfig);
@@ -160,7 +163,7 @@ describe('validateAppSelection', () => {
         const appList: AppIndex = [];
         const result = await validateAppSelection({} as AppInfo, appList);
         mockGetHelpLink.mockResolvedValue(mockHelpLink);
-        
+
         expect(mockGetHelpLink).toHaveBeenCalledTimes(1);
         expect(mockGetHelpLink).toHaveBeenCalledWith(
             HELP_NODES.ADT_APP_NOT_FOUND_ERROR,
@@ -181,7 +184,10 @@ describe('validateAppSelection', () => {
         const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
         (hasQfaJson as jest.Mock).mockReturnValue(false);
         await validateAppSelection(answers, appList, undefined, mockAppWizard);
-        expect(mockAppWizard.showError).toHaveBeenCalledWith(t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }), MessageType.notification);
+        expect(mockAppWizard.showError).toHaveBeenCalledWith(
+            t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }),
+            MessageType.notification
+        );
     });
 
     it('should return true if a valid app is selected and download is successful', async () => {
@@ -203,7 +209,7 @@ describe('validateAppSelection', () => {
         const result = await validateAppSelection(answers, appList);
 
         expect(mockDownloadApp).toHaveBeenCalledWith('testRepo');
-        expect(result).toBe(t('error.appDownloadErrors.appDownloadFailure', { error:"Download failed" }));
+        expect(result).toBe(t('error.appDownloadErrors.appDownloadFailure', { error: 'Download failed' }));
     });
 
     it('should return a message if no app is selected', async () => {
@@ -243,8 +249,8 @@ describe('isValidPromptState', () => {
     it('should return false when serviceProvider is missing', () => {
         PromptState.systemSelection = {
             connectedSystem: {
-                serviceProvider: null as unknown as AbapServiceProvider 
-            } 
+                serviceProvider: null as unknown as AbapServiceProvider
+            }
         };
         const targetFolder = '/mock/target/folder';
         const appId = 'mockAppId';

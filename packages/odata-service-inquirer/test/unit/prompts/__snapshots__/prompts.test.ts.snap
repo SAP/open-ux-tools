@@ -88,6 +88,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": "",
     "guiOptions": {
       "applyDefaultWhenDirty": true,
@@ -172,6 +173,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": "",
     "guiOptions": {
       "applyDefaultWhenDirty": true,

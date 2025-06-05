@@ -135,7 +135,7 @@ export async function validateAppSelection(
     }
 
     // No apps available at all
-    if (appList.length === 0) {
+    if (appList.length === 0 && !answers?.appId) {
         return await generateAppNotFoundHelpLink();
     }
 
@@ -152,6 +152,7 @@ export async function validateAppSelection(
             }
             return isQfaJsonPresent;
         } catch (error) {
+            RepoAppDownloadLogger.logger?.debug(`validateAppSelection: Error downloading app: ${error.message}`);
             return t('error.appDownloadErrors.appDownloadFailure', { error: error.message });
         }
     }

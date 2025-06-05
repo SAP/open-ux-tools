@@ -1,5 +1,45 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.19
+
+### Patch Changes
+
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/fiori-generator-shared@0.12.5
+    -   @sap-ux/fiori-elements-writer@2.4.11
+    -   @sap-ux/inquirer-common@0.7.6
+    -   @sap-ux/odata-service-inquirer@2.4.12
+
+## 0.3.18
+
+### Patch Changes
+
+-   6273a09: Fix deployment config for download ADT App (ui5-deploy.yaml)
+
+## 0.3.17
+
+### Patch Changes
+
+-   Updated dependencies [61d4060]
+    -   @sap-ux/axios-extension@1.21.2
+    -   @sap-ux/odata-service-inquirer@2.4.11
+    -   @sap-ux/system-access@0.6.2
+    -   @sap-ux/abap-deploy-config-writer@0.1.4
+
+## 0.3.16
+
+### Patch Changes
+
+-   345d8c0: fix: missing localUri in datasource settings breaks Fiori tools
+    fix: relax check for appindex app title in ADT app being downloaded.
+
+## 0.3.15
+
+### Patch Changes
+
+-   Updated dependencies [944a0cd]
+    -   @sap-ux/odata-service-inquirer@2.4.10
+
 ## 0.3.14
 
 ### Patch Changes

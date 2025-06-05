@@ -13,7 +13,8 @@ import {
     type AppGenInfo,
     type YeomanEnvironment,
     sendTelemetry,
-    TelemetryHelper
+    TelemetryHelper,
+    isCli
 } from '@sap-ux/fiori-generator-shared';
 import type { RepoAppDownloadOptions, RepoAppDownloadAnswers, RepoAppDownloadQuestions, QfaJsonConfig } from './types';
 import { getPrompts } from '../prompts/prompts';
@@ -115,7 +116,8 @@ export default class extends Generator {
         const questions: RepoAppDownloadQuestions[] = await getPrompts(
             this.appRootPath,
             quickDeployedAppConfig,
-            this.appWizard
+            this.appWizard,
+            isCli()
         );
         const answers: RepoAppDownloadAnswers = await this.prompt(questions);
         const { targetFolder } = answers;
@@ -147,11 +149,17 @@ export default class extends Generator {
         validateQfaJsonFile(qfaJson);
 
         // Generate app config
-        const config = await getAppConfig(this.answers.selectedApp, this.extractedProjectPath, qfaJson, this.fs);
+        const config = await getAppConfig(
+            this.answers.selectedApp,
+            this.extractedProjectPath,
+            qfaJson,
+            this.answers.systemSelection,
+            this.fs
+        );
         await generate(this.projectPath, config, this.fs);
 
         // Generate deploy config
-        const deployConfig: AbapDeployConfig = getAbapDeployConfig(this.answers.selectedApp, qfaJson);
+        const deployConfig: AbapDeployConfig = getAbapDeployConfig(qfaJson);
         await generateDeployConfig(this.projectPath, deployConfig, undefined, this.fs);
 
         if (this.vscode) {
@@ -239,7 +247,9 @@ export default class extends Generator {
     public async install(): Promise<void> {
         if (!this.options.skipInstall) {
             try {
+                RepoAppDownloadLogger.logger?.debug('Running npm install...');
                 await this._runNpmInstall(this.projectPath);
+                RepoAppDownloadLogger.logger?.debug('npm install completed successfully.');
             } catch (error) {
                 RepoAppDownloadLogger.logger?.error(t('error.installationErrors.npmInstall', { error }));
             }

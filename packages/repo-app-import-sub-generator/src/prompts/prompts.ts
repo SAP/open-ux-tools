@@ -1,4 +1,4 @@
-import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AppIndex } from '@sap-ux/axios-extension';
 import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
 import type { RepoAppDownloadAnswers, RepoAppDownloadQuestions, QuickDeployedAppConfig, AppInfo } from '../app/types';
 import { PromptNames } from '../app/types';
@@ -9,6 +9,8 @@ import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helper
 import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
 import { validateAppSelection } from '../utils/validators';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import RepoAppDownloadLogger from '../utils/logger';
+import { type Question } from 'inquirer';
 
 /**
  * Gets the target folder selection prompt.
@@ -46,31 +48,65 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
     } as FileBrowserQuestion<RepoAppDownloadAnswers>;
 };
 
+const getCliValidatePrompts = (
+    appList: AppIndex,
+    quickDeployedAppConfig?: QuickDeployedAppConfig,
+    appWizard?: AppWizard
+): Question => {
+    return {
+        type: 'input',
+        when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
+            if (answers?.[PromptNames.selectedApp]) {
+                try {
+                    await validateAppSelection(
+                        answers[PromptNames.selectedApp],
+                        appList,
+                        quickDeployedAppConfig,
+                        appWizard
+                    );
+                } catch (error) {
+                    if (error instanceof Error) {
+                        RepoAppDownloadLogger.logger?.error(error.message);
+                    } else {
+                        RepoAppDownloadLogger.logger?.error(
+                            t('error.appDownloadErrors.validationError', { error: error })
+                        );
+                    }
+                }
+            }
+            return false;
+        },
+        name: `${PromptNames.selectedApp}-validation`
+    } as Question;
+};
+
 /**
  * Retrieves prompts for selecting a system, app list, and target folder where the app will be generated.
  *
  * @param {string} [appRootPath] - The root path of the application.
  * @param {QuickDeployedAppConfig} [quickDeployedAppConfig] - The quick deployed app configuration.
  * @param {AppWizard} [appWizard] - The app wizard instance.
+ * @param {boolean} [isCli] - Indicates if the prompts are being generated for CLI usage.
  * @returns {Promise<RepoAppDownloadQuestions[]>} A list of prompts for user interaction.
  */
 export async function getPrompts(
     appRootPath?: string,
     quickDeployedAppConfig?: QuickDeployedAppConfig,
-    appWizard?: AppWizard
+    appWizard?: AppWizard,
+    isCli: boolean = false
 ): Promise<RepoAppDownloadQuestions[]> {
     try {
         PromptState.reset();
 
         const systemQuestions = await getSystemSelectionQuestions(
             {
-                serviceSelection: { hide: true },
+                serviceSelection: { hide: true, useAutoComplete: isCli },
                 systemSelection: { defaultChoice: quickDeployedAppConfig?.serviceProviderInfo?.name }
             },
-            true
+            !isCli
         );
         let appList: AppIndex = [];
-        const appSelectionPrompt = [
+        const appSelectionPrompts: Partial<object[]> = [
             {
                 when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
                     if (
@@ -78,7 +114,7 @@ export async function getPrompts(
                         systemQuestions.answers.connectedSystem?.serviceProvider
                     ) {
                         appList = await fetchAppListForSelectedSystem(
-                            systemQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider,
+                            systemQuestions.answers.connectedSystem,
                             quickDeployedAppConfig?.appId
                         );
                     }
@@ -86,7 +122,7 @@ export async function getPrompts(
                 },
                 type: 'list',
                 name: PromptNames.selectedApp,
-                default: () => (quickDeployedAppConfig?.appId ? 0 : undefined),
+                default: (): number | undefined => (quickDeployedAppConfig?.appId ? 0 : undefined),
                 guiOptions: {
                     mandatory: !!appList.length,
                     breadcrumb: t('prompts.appSelection.breadcrumb'),
@@ -94,13 +130,19 @@ export async function getPrompts(
                 },
                 message: t('prompts.appSelection.message'),
                 choices: (): { name: string; value: AppInfo }[] => (appList.length ? formatAppChoices(appList) : []),
-                validate: async (answers: AppInfo) =>
-                    validateAppSelection(answers, appList, quickDeployedAppConfig, appWizard)
+                validate: async (answers: AppInfo): Promise<boolean> => {
+                    const result = await validateAppSelection(answers, appList, quickDeployedAppConfig, appWizard);
+                    return !!result;
+                }
             }
         ];
+        // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
+        if (isCli) {
+            appSelectionPrompts?.push(getCliValidatePrompts(appList, quickDeployedAppConfig, appWizard));
+        }
 
         const targetFolderPrompts = getTargetFolderPrompt(appRootPath, quickDeployedAppConfig?.appId);
-        return [...systemQuestions.prompts, ...appSelectionPrompt, targetFolderPrompts] as RepoAppDownloadQuestions[];
+        return [...systemQuestions.prompts, ...appSelectionPrompts, targetFolderPrompts] as RepoAppDownloadQuestions[];
     } catch (error) {
         throw new Error(`Failed to generate prompts: ${error.message}`);
     }
