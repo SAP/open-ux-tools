@@ -736,7 +736,7 @@ exports[`Test headless generator Test: Headless deploy-config - addToManagedAppR
   },
   "devDependencies": {
     "ui5-task-zipper": "^3.4.x",
-    "@ui5/cli": "^3.9.2",
+    "@ui5/cli": "^4.0.16"
     "rimraf": "^5.0.5",
     "mbt": "^1.2.29"
   }
@@ -1593,7 +1593,7 @@ exports[`Test headless generator Test: Headless deploy-config 5`] = `
   },
   "devDependencies": {
     "ui5-task-zipper": "^3.4.x",
-    "@ui5/cli": "^3.9.2",
+    "@ui5/cli": "^4.0.16"
     "rimraf": "^5.0.5",
     "mbt": "^1.2.29"
   }
@@ -1951,7 +1951,7 @@ exports[`Test headless generator Test: Headless deploy-config TypeScript - Headl
   },
   "devDependencies": {
     "ui5-task-zipper": "^3.4.x",
-    "@ui5/cli": "^3.9.2",
+    "@ui5/cli": "^4.0.16"
     "rimraf": "^5.0.5",
     "mbt": "^1.2.29"
   }
