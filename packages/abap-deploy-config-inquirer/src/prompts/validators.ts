@@ -309,7 +309,6 @@ export async function validateCredentials(
     }));
 
     if (warning) {
-        /****/
         const helpLink = getHelpUrl(HELP_TREE.FIORI_TOOLS, [57266]);
         const warningMessage = t('warnings.transportConfigFailure', { helpLink });
         LoggerHelper.logger.info(`\n${warningMessage}`);
