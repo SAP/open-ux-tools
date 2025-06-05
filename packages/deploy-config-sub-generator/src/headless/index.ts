@@ -2,7 +2,7 @@ import { join, resolve } from 'path';
 import { unlinkSync } from 'fs';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
 import { DeployTarget } from '@sap-ux/fiori-generator-shared';
-import { generatorNamespace, t } from '../utils';
+import { t, generatorNamespace, abapChoice, cfChoice } from '../utils';
 import type { CfDeployConfigOptions } from '@sap-ux/cf-deploy-config-sub-generator';
 import type { AbapDeployConfigOptions } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { AppConfig } from '@sap-ux/fiori-app-sub-generator';
@@ -73,7 +73,8 @@ export default class extends DeploymentGenerator {
         const deployConfigOpts = this.transformExtConfig();
 
         if (deployConfigOpts && this.deployTarget) {
-            this.composeWith(generatorNamespace(this.genNamespace, this.deployTarget), {
+            const subGen = this.deployTarget === DeployTarget.CF ? cfChoice.name : abapChoice.name;
+            this.composeWith(generatorNamespace(this.genNamespace, subGen), {
                 arguments: this.args,
                 ...Object.assign(this.options, deployConfigOpts, {
                     telemetryData: additionalTelemetryData

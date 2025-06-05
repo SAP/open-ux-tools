@@ -289,7 +289,7 @@ describe('Test headless generator', () => {
         await runHeadlessGen(testAppName, DeployTarget.CF, OUTPUT_DIR);
 
         expect(composeWithSpy).toHaveBeenCalledWith(
-            expect.stringMatching(generatorNamespace('gen:test', 'CF')),
+            expect.stringMatching(generatorNamespace('gen:test', 'cf')),
             expect.objectContaining({ telemetryData: expect.objectContaining(expectedTelemetryProperties) })
         );
         rimraf.sync(join(OUTPUT_DIR, testAppName));

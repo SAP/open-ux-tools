@@ -1,6 +1,6 @@
 import { join } from 'path';
 import * as childProcess from 'child_process';
-import { copy } from 'fs-extra';
+import { copy, readdirSync } from 'fs-extra';
 import { readFile } from 'fs/promises';
 import { rimraf } from 'rimraf';
 import { runHeadlessGen } from './utils';
@@ -73,10 +73,10 @@ describe('Test ABAP headless generator', () => {
     afterAll(() => {
         // Remove the test folder if the folder is empty (i.e. no failed tests)
         try {
-            // if (readdirSync(OUTPUT_DIR).length === 0) {
-            //     console.log('Removing test output folder');
-            //     rimraf.sync(OUTPUT_DIR);
-            // }
+            if (readdirSync(OUTPUT_DIR).length === 0) {
+                console.log('Removing test output folder');
+                rimraf.sync(OUTPUT_DIR);
+            }
         } catch {
             // do nothing
         }

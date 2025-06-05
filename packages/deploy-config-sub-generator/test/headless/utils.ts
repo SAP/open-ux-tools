@@ -65,8 +65,8 @@ export async function runHeadlessGen(
             )
         )
         .withGenerators([
-            [CFGen as any, generatorNamespace('gen:test', 'CF')],
-            [ABAPGen as any, generatorNamespace('gen:test', 'ABAP')]
+            [CFGen as any, generatorNamespace('gen:test', 'cf')],
+            [ABAPGen as any, generatorNamespace('gen:test', 'abap')]
         ])
         .run();
 }
