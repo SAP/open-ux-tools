@@ -3052,7 +3052,7 @@ annotate S.E with @(
                         Service S { entity E {}; };
                         annotate S.E with @(
                             Common.Text : 'abc',
-                        );
+                            );
                         `
                     );
                 });
@@ -3105,7 +3105,7 @@ annotate S.E with @(
                         Service S { entity E {}; };
                         annotate S.E with @(
                             Common.Text : 'abc',
-                        );
+                            );
                         `
                     );
                 });
@@ -3134,7 +3134,7 @@ annotate S.E with @(
                         annotate S.E with {
                             name @Common : {
                                 Text : 'abc',
-                            }
+                                }
                         );
                         `
                     );
@@ -3356,7 +3356,7 @@ annotate S.E with {
 annotate S.E with {
     description @(
         Common.Text : modifiedBy,
-)};`
+        )};`
                 );
             });
             test('when there are three annotations in compound annotation', async () => {
@@ -3380,7 +3380,7 @@ annotate S.E with {
     description @(
         Common.Text : modifiedBy,
         UI.Hidden : true,
-)};`
+        )};`
                 );
             });
         });

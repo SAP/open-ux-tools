@@ -61,7 +61,7 @@ exports[`fiori annotation service delete annotation embedded annotation from roo
 annotate service.test with @(
     UI.LineItem : [
     ],
-);
+    );
 
 "
 `;
@@ -127,7 +127,7 @@ exports[`fiori annotation service delete annotation with cds annotation group 1`
                 annotate service.Incidents with {
                     priority @Common : {
                         Text : priority.name,
-                    }
+                        }
                 };
                 "
 `;
@@ -188,7 +188,7 @@ exports[`fiori annotation service delete annotation with qualifier CAPNodejs cap
 annotate service.test with @(
     UI.LineItem : [
     ],
-);
+    );
 
 "
 `;
@@ -3910,7 +3910,7 @@ annotate service.Incidents with @(
         {
             $Type : 'UI.DataFieldForAnnotation',
             Target : 'incidentFlow/@UI.LineItem',
-            ![@UI.Hidden] : incidentFlow.incident.createdBy,
+            @UI.Hidden : incidentFlow.incident.createdBy,
         },
         {
             $Type : 'UI.DataFieldForIntentBasedNavigation',
