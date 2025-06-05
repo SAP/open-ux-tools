@@ -1,5 +1,23 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.9
+
+### Patch Changes
+
+-   15ec5c4: adds support for adding deployment config via headless generator
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.9
+    -   @sap-ux/fiori-generator-shared@0.12.5
+    -   @sap-ux/deploy-config-generator-shared@0.1.5
+
+## 0.1.8
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.8
+-   @sap-ux/deploy-config-generator-shared@0.1.4
+-   @sap-ux/abap-deploy-config-writer@0.1.4
+
 ## 0.1.7
 
 ### Patch Changes
