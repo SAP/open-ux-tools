@@ -680,9 +680,11 @@ describe('Test validators', () => {
         });
 
         it('should handle cert error when listing transports', async () => {
-            jest.spyOn(validatorUtils, 'getTransportList').mockRejectedValueOnce(new AxiosError('Unable to verify signature in chain', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE'));
+            jest.spyOn(validatorUtils, 'getTransportList').mockRejectedValueOnce(
+                new AxiosError('Unable to verify signature in chain', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE')
+            );
 
-            let result = await validateTransportChoiceInput({
+            const result = await validateTransportChoiceInput({
                 useStandalone: false,
                 input: TransportChoices.ListExistingChoice,
                 previousAnswers: {
