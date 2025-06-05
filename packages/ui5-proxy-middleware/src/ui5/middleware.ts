@@ -91,6 +91,8 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
     const configs = Array.isArray(config.ui5) ? config.ui5 : [config.ui5];
     const ui5Configs: ProxyConfig[] = [];
     const routes: { route: string; handler: RequestHandler }[] = [];
+    const logLevel = options.configuration?.debug ? LogLevel.Debug : LogLevel.Info;
+
     for (const ui5 of configs) {
         const paths = Array.isArray(ui5.path) ? ui5.path : [ui5.path];
         for (const ui5Path of paths) {
@@ -98,11 +100,10 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
                 path: ui5Path,
                 url: envUI5Url || ui5.url,
                 version: ui5Version,
-                proxy: config.proxy,
-                logLevel: config.debug ? LogLevel.Debug : LogLevel.Info
+                proxy: config.proxy
             };
 
-            routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions) });
+            routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions, undefined, logLevel) });
             ui5Configs.push(ui5Config);
         }
     }

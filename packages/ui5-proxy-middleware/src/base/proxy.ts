@@ -21,11 +21,17 @@ import type { Socket } from 'net';
  * @param config - proxy configuration
  * @param options - additional configuration options
  * @param filter - custom filter function which will be applied to all requests
+ * @param logLevel - log level to be used for the proxy
  * @returns Proxy function to use
  */
-export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter) => {
+export const ui5Proxy = (
+    config: ProxyConfig,
+    options?: Options,
+    filter?: Filter,
+    logLevel: LogLevel = LogLevel.Info
+) => {
     const logger = new ToolsLogger({
-        logLevel: config.logLevel,
+        logLevel: logLevel,
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
     const today = new Date();
@@ -62,7 +68,7 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
         },
         pathFilter: proxyFilter,
         ...options,
-        logger: config.logLevel === LogLevel.Debug ? logger : undefined
+        logger: logLevel === LogLevel.Debug ? logger : undefined
     };
 
     // update proxy config with values coming from args or ui5.yaml

@@ -301,7 +301,7 @@ export async function generateProxyMiddlewareOptions(
 ): Promise<Options> {
     const logger = new ToolsLogger({
         logLevel,
-        transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
+        transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware' })]
     });
     // add required options
     const proxyOptions: Options & { headers: object } = {
