@@ -14,7 +14,7 @@
         "additionalParameters": "Enter the value for the parameters in the Target Mappings section from the URL mentioned above."
     },
     "validators": {
-        "inboundConfigKeyExists": "An inbound configuration with the key: {{inboundKey}} is already defined.",
+        "inboundConfigKeyExists": "An inbound configuration with the key: {{inboundKey}} is already defined. Choose another key.",
         "flpConfigOverwrite": "Overwrite existing configuration?",
         "noInboundKeysAreFound": "The original application target mapping and the default parameters are found in the SAP Fiori reference library under Implementation Information -> Configuration -> Target Mappings in application page."
     }
