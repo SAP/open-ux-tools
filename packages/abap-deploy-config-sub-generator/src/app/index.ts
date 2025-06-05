@@ -309,7 +309,7 @@ export default class extends DeploymentGenerator {
     }
 
     public install(): void {
-        if (!this.launchDeployConfigAsSubGenerator && this.answers.overwrite !== false) {
+        if (this.answers.overwrite !== false) {
             this._install();
         }
     }
