@@ -453,7 +453,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     settings: {
                         entityConfig: {
                             mainEntityName: 'ZC_STOCKAGEING',
-                            parameterisedMainEntity: 'Set'
+                            mainEntityParameterName: 'Set'
                         },
                         tableType: 'ResponsiveTable'
                     }

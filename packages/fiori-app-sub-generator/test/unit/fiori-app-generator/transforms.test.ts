@@ -224,7 +224,7 @@ describe('Test transform state', () => {
                 mainEntity: {
                     entitySetName: 'ZC_STOCKAGEING',
                     entitySetType: 'com.sap.gateway.srvd.zserv_d_stock_ageing.v0001.ZC_STOCKAGEINGParameters',
-                    parameterisedMainEntity: 'Set'
+                    mainEntityParameterName: 'Set'
                 },
                 navigationEntity: {} as EntityRelatedAnswers['navigationEntity'],
                 presentationQualifier: '',
@@ -239,7 +239,7 @@ describe('Test transform state', () => {
         expect(feApp.template.settings).toEqual({
             entityConfig: {
                 mainEntityName: 'ZC_STOCKAGEING',
-                parameterisedMainEntity: 'Set'
+                mainEntityParameterName: 'Set'
             },
             hierarchyQualifier: undefined,
             tableType: 'ResponsiveTable'

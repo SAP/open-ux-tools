@@ -392,7 +392,7 @@ describe('Test entity prompts', () => {
                 value: {
                     entitySetName: 'ZC_STOCKAGEING',
                     entitySetType: 'com.sap.gateway.srvd.zserv_d_stock_ageing.v0001.ZC_STOCKAGEINGParameters',
-                    parameterisedMainEntity: 'Set'
+                    mainEntityParameterName: 'Set'
                 }
             }
         ];
@@ -413,7 +413,7 @@ describe('Test entity prompts', () => {
                 [EntityPromptNames.mainEntity]: {
                     entitySetName: 'ZC_STOCKAGEING',
                     entitySetType: 'com.sap.gateway.srvd.zserv_d_stock_ageing.v0001.ZC_STOCKAGEINGParameters',
-                    parameterisedMainEntity: 'Set'
+                    mainEntityParameterName: 'Set'
                 } as EntityAnswer
             })
         ).toBe(false);
@@ -432,7 +432,7 @@ describe('Test entity prompts', () => {
                 value: {
                     entitySetName: 'ChangeableFields',
                     entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.ChangeableFieldsParameters',
-                    parameterisedMainEntity: 'Set'
+                    mainEntityParameterName: 'Set'
                 }
             },
             {
@@ -447,7 +447,7 @@ describe('Test entity prompts', () => {
                 value: {
                     entitySetName: 'CustomHint',
                     entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomHintParameters',
-                    parameterisedMainEntity: 'Set'
+                    mainEntityParameterName: 'Set'
                 }
             }
         ];
@@ -478,7 +478,7 @@ describe('Test entity prompts', () => {
                 [EntityPromptNames.mainEntity]: {
                     entitySetName: 'ChangeableFields',
                     entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.ChangeableFieldsParameters',
-                    parameterisedMainEntity: 'Set'
+                    mainEntityParameterName: 'Set'
                 } as EntityAnswer
             })
         ).toBe(false);

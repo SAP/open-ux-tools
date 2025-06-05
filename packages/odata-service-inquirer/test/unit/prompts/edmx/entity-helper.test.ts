@@ -192,27 +192,27 @@ describe('Test entity helper functions', () => {
             expect(typeNameChoices[0].value.entitySetType).toEqual('SEPMRA_PROD_MAN.I_CurrencyType');
         });
 
-        test('should set parameterisedMainEntity for a single valid parameterised main entity', async () => {
+        test('should set mainEntityParameterName for a single valid parameterised main entity', async () => {
             const v4ParamertrisedEntitiesMetadata = await readFile(
                 join(__dirname, '../test-data/parameterised-entity-metadata.xml'),
                 'utf8'
             );
             const result = getEntityChoices(v4ParamertrisedEntitiesMetadata);
-            // Check that the choices contain the parameterisedMainEntity property
+            // Check that the choices contain the mainEntityParameterName property
             const expectedChoicesWithParameterisedMainEntity = [
                 {
                     name: 'ZC_STOCKAGEING',
                     value: {
                         entitySetName: 'ZC_STOCKAGEING',
                         entitySetType: 'com.sap.gateway.srvd.zserv_d_stock_ageing.v0001.ZC_STOCKAGEINGParameters',
-                        parameterisedMainEntity: 'Set'
+                        mainEntityParameterName: 'Set'
                     }
                 }
             ];
             expect(result.choices).toEqual(expectedChoicesWithParameterisedMainEntity);
         });
 
-        test('should set parameterisedMainEntity for multiple valid parameterised main entities', async () => {
+        test('should set mainEntityParameterName for multiple valid parameterised main entities', async () => {
             const v4MultiParamertrisedEntitiesMetadata = await readFile(
                 join(__dirname, '../test-data/multiple-parameterised-entities-metadata.xml'),
                 'utf8'
@@ -224,7 +224,7 @@ describe('Test entity helper functions', () => {
                     value: {
                         entitySetName: 'ChangeableFields',
                         entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.ChangeableFieldsParameters',
-                        parameterisedMainEntity: 'Set'
+                        mainEntityParameterName: 'Set'
                     }
                 },
                 {
@@ -232,7 +232,7 @@ describe('Test entity helper functions', () => {
                     value: {
                         entitySetName: 'CustomFunction',
                         entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomFunctionParameters',
-                        parameterisedMainEntity: 'Set'
+                        mainEntityParameterName: 'Set'
                     }
                 },
                 {
@@ -240,7 +240,7 @@ describe('Test entity helper functions', () => {
                     value: {
                         entitySetName: 'CustomHint',
                         entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomHintParameters',
-                        parameterisedMainEntity: 'Set'
+                        mainEntityParameterName: 'Set'
                     }
                 },
                 {
@@ -248,7 +248,7 @@ describe('Test entity helper functions', () => {
                     value: {
                         entitySetName: 'CustomLink',
                         entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomLinkParameters',
-                        parameterisedMainEntity: 'Set'
+                        mainEntityParameterName: 'Set'
                     }
                 },
                 {
@@ -256,7 +256,7 @@ describe('Test entity helper functions', () => {
                     value: {
                         entitySetName: 'CustomText',
                         entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomTextParameters',
-                        parameterisedMainEntity: 'Set'
+                        mainEntityParameterName: 'Set'
                     }
                 },
                 {
@@ -264,7 +264,7 @@ describe('Test entity helper functions', () => {
                     value: {
                         entitySetName: 'InterfaceDisplayName',
                         entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.InterfaceDisplayNameParameters',
-                        parameterisedMainEntity: 'Set'
+                        mainEntityParameterName: 'Set'
                     }
                 },
                 {
@@ -272,7 +272,7 @@ describe('Test entity helper functions', () => {
                     value: {
                         entitySetName: 'InterfaceStatistics',
                         entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.InterfaceStatisticsParameters',
-                        parameterisedMainEntity: 'Set'
+                        mainEntityParameterName: 'Set'
                     }
                 },
                 {
@@ -293,11 +293,11 @@ describe('Test entity helper functions', () => {
             expect(result.choices).toEqual(expectedMultiParamEntities);
         });
 
-        test('should return no parameterisedMainEntity when no valid parameterised navigation property exists', async () => {
+        test('should return no mainEntityParameterName when no valid parameterised navigation property exists', async () => {
             const result = getEntityChoices(metadataV4WithDraftEntities);
-            // Check that none of the choices have parameterisedMainEntity defined
+            // Check that none of the choices have mainEntityParameterName defined
             result.choices.forEach((choice) => {
-                expect(choice.value).not.toHaveProperty('parameterisedMainEntity');
+                expect(choice.value).not.toHaveProperty('mainEntityParameterName');
             });
         });
     });

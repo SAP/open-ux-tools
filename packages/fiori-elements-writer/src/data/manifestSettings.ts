@@ -43,8 +43,8 @@ export function extendManifestJson<T>(
         const minVersion = semVer.coerce(feApp.ui5?.minUI5Version);
         if (!minVersion || semVer.gte(minVersion, '1.94.0')) {
             const entityConfig = (feApp.template.settings as LROPSettings).entityConfig as ManifestEntitySettings;
-            if (entityConfig.parameterisedMainEntity) {
-                entityConfig.contextPath = `/${entityConfig.mainEntityName}/${entityConfig.parameterisedMainEntity}`;
+            if (entityConfig.mainEntityParameterName) {
+                entityConfig.contextPath = `/${entityConfig.mainEntityName}/${entityConfig.mainEntityParameterName}`;
             } else {
                 entityConfig.contextPath = `/${entityConfig.mainEntityName}`;
             }

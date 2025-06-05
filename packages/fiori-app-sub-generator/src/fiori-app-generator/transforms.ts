@@ -93,8 +93,8 @@ export function transformTemplateType(
             mainEntityName: entityRelatedConfig.mainEntity.entitySetName
         };
 
-        if (entityRelatedConfig.mainEntity.parameterisedMainEntity) {
-            _entityConfig.parameterisedMainEntity = entityRelatedConfig.mainEntity.parameterisedMainEntity;
+        if (entityRelatedConfig.mainEntity.mainEntityParameterName) {
+            _entityConfig.mainEntityParameterName = entityRelatedConfig.mainEntity.mainEntityParameterName;
         }
 
         if (entityRelatedConfig?.navigationEntity?.navigationPropertyName) {

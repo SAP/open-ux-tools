@@ -29,8 +29,18 @@ export class ValidationError extends Error {
 }
 
 export interface EntityConfig {
-    mainEntityName: string; // Defines the main list page entity
-    parameterisedMainEntity?: string; // Defines the parameterised navigation property name for object page navigation
+    /**
+     * The name of the main entity used for list page entity
+     */
+    mainEntityName: string;
+    /**
+     * Holds the name of the navigation property (e.g., 'Set') for a main entity where Partner="Parameters".
+     * If set, the prompt for selecting navigation properties will be skipped.
+     */
+    mainEntityParameterName?: string;
+    /**
+     * Configuration for the navigation entity used for object page navigation.
+     */
     navigationEntity?: {
         EntitySet: string; // Defines the entity set for object page navigation
         Name: string; // Defines the entity name for object page navigation

@@ -9,9 +9,11 @@ import LoggerHelper from '../logger-helper';
 export type EntityAnswer = {
     entitySetName: string;
     entitySetType: string;
-    // The navigation property name linking a parameterised entity set.
-    // Populated only if the entity set has a `Common.ResultContext` annotation.
-    parameterisedMainEntity?: string;
+    /**
+     * The name of the navigation property (e.g., 'Set') linking a parameterised entity set to its target entity set.
+     * Populated only if the entity set has a `Common.ResultContext` annotation, indicating it is parameterised.
+     */
+    mainEntityParameterName?: string;
 };
 
 export type NavigationEntityAnswer = {
@@ -125,7 +127,7 @@ export function getEntityChoices(
             entitySets = convertedMetadata.entitySets;
         }
         entitySets.forEach((entitySet, index) => {
-            const parameterisedMainEntity = getNavigationPropertyForParameterisedEntity(
+            const mainEntityParameterName = getNavigationPropertyForParameterisedEntity(
                 entitySet,
                 convertedMetadata?.entityTypes
             );
@@ -134,8 +136,8 @@ export function getEntityChoices(
                 value: {
                     entitySetName: entitySet.name,
                     entitySetType: entitySet.entityTypeName, // Fully qualified entity type name
-                    ...(parameterisedMainEntity && {
-                        parameterisedMainEntity
+                    ...(mainEntityParameterName && {
+                        mainEntityParameterName
                     }) // parameterised navigation property name
                 }
             };
