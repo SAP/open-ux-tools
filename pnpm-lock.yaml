@@ -403,9 +403,6 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap-ux/telemetry':
-        specifier: workspace:*
-        version: link:../telemetry
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
