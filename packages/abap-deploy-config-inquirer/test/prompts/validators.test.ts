@@ -25,6 +25,8 @@ import { mockDestinations } from '../fixtures/destinations';
 import * as serviceProviderUtils from '../../src/service-provider-utils';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
+import { Axios, AxiosError } from 'axios';
+import { GUIDED_ANSWERS_ICON, HELP_NODES, HELP_TREE } from '@sap-ux/guided-answers-helper';
 
 jest.mock('../../src/service-provider-utils', () => ({
     getTransportListFromService: jest.fn(),
@@ -329,6 +331,21 @@ describe('Test validators', () => {
             jest.spyOn(utils, 'queryPackages').mockResolvedValueOnce([]);
             const result = await validatePackageChoiceInput(PackageInputChoices.ListExistingChoice, {});
             expect(result).toBe(t('warnings.packageNotFound'));
+        });
+
+        it('should return a GA link when list packages is selected and querying packages fails due to cert error', async () => {
+            jest.spyOn(utils, 'queryPackages').mockRejectedValueOnce(
+                new AxiosError('Expired certificate', 'CERT_HAS_EXPIRED')
+            );
+            const result = await validatePackageChoiceInput(PackageInputChoices.ListExistingChoice, {});
+            expect(result).toEqual({
+                link: {
+                    icon: GUIDED_ANSWERS_ICON,
+                    text: 'Need help with this error?',
+                    url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.CERTIFICATE_ERROR}`
+                },
+                message: 'A certificate error has occurred'
+            });
         });
     });
 
@@ -660,6 +677,28 @@ describe('Test validators', () => {
                 validateInputChanged: false
             });
             expect(result).toBe(true);
+        });
+
+        it('should handle cert error when listing transports', async () => {
+            jest.spyOn(validatorUtils, 'getTransportList').mockRejectedValueOnce(new AxiosError('Unable to verify signature in chain', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE'));
+
+            let result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.ListExistingChoice,
+                previousAnswers: {
+                    ...previousAnswers,
+                    packageManual: 'ZPACKAGE',
+                    ui5AbapRepo: 'ZUI5REPO'
+                }
+            });
+            expect(result).toEqual({
+                link: {
+                    icon: GUIDED_ANSWERS_ICON,
+                    text: 'Need help with this error?',
+                    url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.CERTIFICATE_ERROR}`
+                },
+                message: 'A certificate error has occurred'
+            });
         });
     });
 

@@ -285,7 +285,7 @@ export async function validateCredentials(
     input: string,
     previousAnswers: AbapDeployConfigAnswersInternal,
     backendTarget?: BackendTarget
-): Promise<boolean | string | IValidationLink> {
+): Promise<boolean | string> {
     if (!input || !previousAnswers.username) {
         return t('errors.requireCredentials');
     }
