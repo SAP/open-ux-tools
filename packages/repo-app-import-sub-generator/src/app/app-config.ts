@@ -12,20 +12,20 @@ import RepoAppDownloadLogger from '../utils/logger';
 import { FileName } from '@sap-ux/project-access';
 import { join } from 'path';
 import { getUI5Versions, type UI5Version } from '@sap-ux/ui5-info';
+import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 
 /**
  * Generates the deployment configuration for an ABAP application.
  *
- * @param {AppInfo} app - Application info containing `url` and `repoName`.
  * @param {QfaJsonConfig} qfaJson - The QFA JSON configuration containing app details.
  * @returns {AbapDeployConfig} The deployment configuration containing `target` and `app` info.
  */
-export const getAbapDeployConfig = (app: AppInfo, qfaJson: QfaJsonConfig): AbapDeployConfig => {
+export const getAbapDeployConfig = (qfaJson: QfaJsonConfig): AbapDeployConfig => {
     return {
         target: {
             url: PromptState.baseURL,
             client: PromptState.sapClient,
-            destination: app.repoName
+            destination: PromptState.destinationName as string
         },
         app: {
             name: qfaJson.deploymentDetails.repositoryName,
@@ -33,7 +33,7 @@ export const getAbapDeployConfig = (app: AppInfo, qfaJson: QfaJsonConfig): AbapD
             description: qfaJson.deploymentDetails.repositoryDescription,
             transport: 'REPLACE_WITH_TRANSPORT'
         }
-    };
+    } as AbapDeployConfig; // NOSONAR
 };
 
 /**
@@ -45,7 +45,9 @@ export const getAbapDeployConfig = (app: AppInfo, qfaJson: QfaJsonConfig): AbapD
  */
 const fetchServiceMetadata = async (provider: AbapServiceProvider, serviceUrl: string): Promise<string | undefined> => {
     try {
-        return await provider.service(serviceUrl).metadata();
+        const metdata = await provider.service(serviceUrl).metadata();
+        RepoAppDownloadLogger.logger?.debug('Metadata fetched successfully');
+        return metdata as string | undefined;
     } catch (err) {
         RepoAppDownloadLogger.logger?.error(t('error.metadataFetchError', { error: err.message }));
     }
@@ -58,6 +60,7 @@ const fetchServiceMetadata = async (provider: AbapServiceProvider, serviceUrl: s
  * @param {AppInfo} app - Selected app information.
  * @param {string} extractedProjectPath - Path where the app files are extracted.
  * @param {QfaJsonConfig} qfaJson - The QFA JSON configuration containing app details.
+ * @param {OdataServiceAnswers} systemSelection - User's selection of the OData service and system.
  * @param {Editor} fs - The file system editor to manipulate project files.
  * @returns {Promise<FioriElementsApp<LROPSettings>>} - A promise resolving to the generated app configuration.
  * @throws {Error} - Throws an error if there are issues generating the configuration.
@@ -66,6 +69,7 @@ export async function getAppConfig(
     app: AppInfo,
     extractedProjectPath: string,
     qfaJson: QfaJsonConfig,
+    systemSelection: OdataServiceAnswers,
     fs: Editor
 ): Promise<FioriElementsApp<LROPSettings>> {
     try {
@@ -120,7 +124,8 @@ export async function getAppConfig(
                 path: manifest?.['sap.app']?.dataSources?.mainService.uri,
                 version: odataVersion,
                 metadata: metadata,
-                url: serviceProvider.defaults.baseURL
+                url: PromptState.baseURL,
+                client: PromptState.sapClient
             },
             appOptions: {
                 addAnnotations: odataVersion === OdataVersion.v4,
@@ -130,6 +135,9 @@ export async function getAppConfig(
                 localVersion
             }
         };
+        if (PromptState.destinationName) {
+            appConfig.service.destination = { name: PromptState.destinationName };
+        }
         return appConfig;
     } catch (error) {
         RepoAppDownloadLogger.logger?.error(t('error.appConfigGenError', { error: error.message }));
