@@ -45,9 +45,15 @@ export default class LoggerHelper {
         const debugLogger = LoggerHelper.logger.debug.bind(LoggerHelper.logger);
         interceptors.request.use(
             (request) => {
+                // Due to a bug in `axios-logger`, the `baseURL` is not logged if the `url` is falsey.
+                if (!request.url) {
+                    debugLogger(`[@sap-ux/odata-service-inquirer] Request URL: ${request.baseURL}`);
+                }
                 return AxiosLogger.requestLogger(request, {
                     url: true,
                     data: true,
+                    params: true,
+                    method: true,
                     prefixText: '@sap-ux/odata-service-inquirer',
                     headers: true,
                     logger: debugLogger

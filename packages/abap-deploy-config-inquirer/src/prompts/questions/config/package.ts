@@ -17,6 +17,7 @@ import {
 } from '../../../types';
 import type { InputQuestion, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Returns the package prompts.
@@ -31,7 +32,7 @@ export function getPackagePrompts(
     useStandalone = true,
     isYUI = false
 ): Question<AbapDeployConfigAnswersInternal>[] {
-    let packageInputChoiceValid: boolean | string;
+    let packageInputChoiceValid: boolean | string | IValidationLink;
     let morePackageResultsMsg = '';
     PromptState.isYUI = isYUI;
 
@@ -47,7 +48,7 @@ export function getPackagePrompts(
             choices: () => getPackageInputChoices(),
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackageChoice(previousAnswers.packageInputChoice),
-            validate: async (input: PackageInputChoices): Promise<boolean | string> => {
+            validate: async (input: PackageInputChoices): Promise<boolean | string | IValidationLink> => {
                 packageInputChoiceValid = await validatePackageChoiceInput(
                     input,
                     getSystemConfig(useStandalone, PromptState.abapDeployConfig, options.backendTarget),
