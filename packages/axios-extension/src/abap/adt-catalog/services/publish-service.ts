@@ -54,7 +54,7 @@ export class PublishService extends AdtService {
     }
 
     /**
-     * Get OData V4 service URI
+     * Get OData V4 service URI for the given business object.
      *
      * @param technicalDetails - technical name of OData service
      * @returns service URI.

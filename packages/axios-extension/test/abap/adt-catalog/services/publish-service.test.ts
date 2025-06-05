@@ -38,9 +38,9 @@ describe('PublishService', () => {
                 <LONG_TEXT/>
                 </DATA>
             </asx:values>
-            </asx:abap>`
+            </asx:abap>`;
             const mockContent = `<?xml version="1.0" encoding="UTF-8"?><adtcore:objectReferences xmlns:adtcore="http://www.sap.com/adt/core"><adtcore:objectReference adtcore:type="SRV" adtcore:name="ZZ1UI_STATES_O4"/></adtcore:objectReferences>`;
-            const postSpy = jest.spyOn(service, 'post').mockResolvedValue({ data: responseData});
+            const postSpy = jest.spyOn(service, 'post').mockResolvedValue({ data: responseData });
             const result = await service.publish('SRV', 'ZZ1UI_STATES_O4');
             expect(postSpy).toHaveBeenCalledWith(
                 '/publishjobs',
@@ -51,7 +51,7 @@ describe('PublishService', () => {
                     })
                 })
             );
-            expect(result).toEqual({SEVERITY: 'OK', SHORT_TEXT: 'ZZ1UI_STATES_O4 published locally', LONG_TEXT: ''});
+            expect(result).toEqual({ SEVERITY: 'OK', SHORT_TEXT: 'ZZ1UI_STATES_O4 published locally', LONG_TEXT: '' });
         });
     });
 

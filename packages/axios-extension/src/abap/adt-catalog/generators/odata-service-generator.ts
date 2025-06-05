@@ -1,4 +1,3 @@
-import type { Logger } from '@sap-ux/logger';
 import type { GeneratorEntry } from './types';
 import type { ODataServiceTechnicalDetails, ValidationMessage } from '../../types';
 import { AdtService } from '../services';
@@ -7,7 +6,6 @@ import { AdtService } from '../services';
  * Extension of the Generator service to generate OData services
  */
 export class ODataServiceGenerator extends AdtService {
-
     /**
      * package to be used for generated objects
      */
@@ -25,7 +23,8 @@ export class ODataServiceGenerator extends AdtService {
     }
 
     /**
-     * Set the content type to be used for post requests
+     * Set the content type to be used for post requests of genertor.
+     *
      * @param contentType - content type to be used for generated objects
      */
     public setContentType(contentType: string) {
@@ -33,9 +32,9 @@ export class ODataServiceGenerator extends AdtService {
     }
 
     /**
-     * Validate input for OData Service Definition
+     * Validates input for OData Service generation.
      *
-     * @param input: JSON string
+     * @param input - JSON string
      * @returns messages
      */
     public async validate(input: string): Promise<ValidationMessage[]> {
@@ -52,11 +51,11 @@ export class ODataServiceGenerator extends AdtService {
     }
 
     /**
-     * Get technical details of (to be generated) OData service
+     * Gets technical details of (to be generated) OData service.
      * - this is a workaround for the missing service definition name in the generator response
-     * - actual name might be different e.g. because of name collisions at the time when the actual generation is called
+     * - actual name might be different e.g. because of name collisions at the time when the actual generation is called.
      *
-     * @param input: JSON string
+     * @param input - JSON string
      * @returns technical name of service definition
      */
     public async getTechnicalDetails(input: string): Promise<ODataServiceTechnicalDetails> {
@@ -73,9 +72,11 @@ export class ODataServiceGenerator extends AdtService {
     }
 
     /**
-     * Generate OData Service Definition
+     * Generates OData Service.
      *
-     * @param input: JSON string
+     * @param input - JSON string
+     * @returns HTTP status code as number
+     * @throws Error if the generation fails
      */
     public async generate(input: string): Promise<number> {
         const response = await this.post(``, input, {
@@ -92,7 +93,7 @@ export class ODataServiceGenerator extends AdtService {
     }
 
     /**
-     * Parse an xml document for validation messages
+     * Parse an xml document for validation messages.
      *
      * @param xml response for "validation" request
      * @returns messages
@@ -119,7 +120,7 @@ export class ODataServiceGenerator extends AdtService {
     }
 
     /**
-     * Parse an XML document to find the technical name of the service definition
+     * Parse an XML document to find the technical name of the service definition.
      *
      * @param xml response for "preview" request
      * @returns technical details of service definition
@@ -164,7 +165,7 @@ export class ODataServiceGenerator extends AdtService {
         return {
             serviceName: serviceBindingObject.objectReference?.name || '',
             serviceDefinitionName: serviceObject.objectReference?.name || '',
-            serviceVersion: '0001' 
+            serviceVersion: '0001'
         };
     }
 }

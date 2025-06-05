@@ -28,8 +28,7 @@ export class RapGeneratorService extends AdtService {
     /**
      * Get the RAP Generator (published-x-ui-service).
      *
-     * @param businessObjectName - The business object name.
-     * @returns TBD
+     * @returns Promise<GeneratorEntry>
      */
     public async getRAPGeneratorConfig(): Promise<GeneratorEntry> {
         const response = await this.get('', {
