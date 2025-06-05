@@ -33,7 +33,6 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer/dist/constants';
 import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { AbapDeployConfigOptions } from './types';
 import type {
     AbapDeployConfigAnswersInternal,
@@ -85,14 +84,6 @@ export default class extends DeploymentGenerator {
             internalFeature: isInternalFeaturesSettingEnabled(),
             watchTelemetrySettingStore: false
         });
-
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
-
-        if ((this.env as unknown as YeomanEnvironment).conflicterOptions) {
-            (this.env as unknown as YeomanEnvironment).conflicterOptions.force = this.options.force ?? true;
-        }
 
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._initializing();
@@ -280,6 +271,10 @@ export default class extends DeploymentGenerator {
     public async writing(): Promise<void> {
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._writing();
+        } else {
+            // Needed to delay `init` as the yaml configurations won't be ready!
+            await this._initializing();
+            await this._writing();
         }
     }
 
@@ -337,13 +332,6 @@ export default class extends DeploymentGenerator {
     public async end(): Promise<void> {
         if (this.abort || this.answers.overwrite === false) {
             return;
-        }
-
-        // Delayed process of deploy configuration generation if integrated with app generator
-        if (this.launchDeployConfigAsSubGenerator) {
-            await this._initializing();
-            await this._writing();
-            this._install();
         }
 
         if (
