@@ -24,7 +24,6 @@ import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writ
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { generateAnnotations } from '@sap-ux/annotation-generator';
-import type { Manifest } from '@sap-ux/project-access';
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
@@ -479,9 +478,9 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         const testPath = join(curTestOutPath, projectName);
         const fs = await generate(testPath, config);
         const manifestPath = join(testPath, 'webapp', 'manifest.json');
-        const manifest = fs.readJSON(manifestPath) as Manifest;
+        const manifest = fs.readJSON(manifestPath);
 
-        const routing = manifest['sap.ui5'].routing;
+        const routing = (manifest as any)['sap.ui5'].routing;
         const routingRoutes = routing.routes;
 
         // check routing routes
