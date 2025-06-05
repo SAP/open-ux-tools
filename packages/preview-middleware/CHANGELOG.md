@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.20.21
+
+### Patch Changes
+
+-   461c297: fix: only parse change files from `changes` folder.
+
 ## 0.20.20
 
 ### Patch Changes
