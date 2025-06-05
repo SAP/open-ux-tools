@@ -14,11 +14,17 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from '@sap-ux/abap-deploy-config-inquirer';
 import { generate as generateAbapDeployConfig } from '@sap-ux/abap-deploy-config-writer';
-import { initTelemetrySettings } from '@sap-ux/telemetry';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName, getAppType } from '@sap-ux/project-access';
 import { AuthenticationType } from '@sap-ux/store';
-import { t, handleProjectDoesNotExist, indexHtmlExists } from '../utils';
+import {
+    t,
+    handleProjectDoesNotExist,
+    indexHtmlExists,
+    determineScpFromTarget,
+    determineUrlFromDestination,
+    determineS4HCFromTarget
+} from '../utils';
 import { getAbapQuestions } from './questions';
 import { EventName } from '../telemetryEvents';
 import { DeployProjectType } from './types';
@@ -70,12 +76,8 @@ export default class extends DeploymentGenerator {
         await super.initializing();
         await initI18n();
 
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
-
         DeploymentGenerator.logger?.debug(t('debug.initTelemetry'));
-        await initTelemetrySettings({
+        await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
                 name: '@sap-ux/abap-deploy-config-sub-generator',
                 version: this.rootGeneratorVersion()
@@ -83,6 +85,10 @@ export default class extends DeploymentGenerator {
             internalFeature: isInternalFeaturesSettingEnabled(),
             watchTelemetrySettingStore: false
         });
+
+        if ((this.env as unknown as YeomanEnvironment).conflicter) {
+            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
+        }
 
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._initializing();
@@ -203,15 +209,30 @@ export default class extends DeploymentGenerator {
             const prompAnswers = await this.prompt(abapDeployConfigPrompts);
             this.answers = reconcileAnswers(prompAnswers, abapAnswers);
         }
-        this._reconcileAnswersWithOptions();
+        await this._reconcileAnswersWithOptions();
     }
 
-    private _processAbapTargetAnswers(): void {
+    private async _processAbapTargetAnswers(): Promise<void> {
         this.answers.destination = this.options.destination || this.answers.destination;
-        this.answers.url = this.options.url || this.answers.url;
+        this.answers.url =
+            this.options.url || this.answers.url || (await determineUrlFromDestination(this.answers.destination));
         this.answers.client = this.options.client || this.answers.client;
-        this.answers.scp = this.options.scp || this.answers.scp;
-        this.answers.isS4HC = this.options.isS4HC || this.answers.isS4HC;
+        this.answers.scp =
+            this.options.scp ||
+            this.answers.scp ||
+            (await determineScpFromTarget({
+                url: this.answers.url,
+                client: this.answers.client,
+                destination: this.answers.destination
+            }));
+        this.answers.isS4HC =
+            this.options.isS4HC ||
+            this.answers.isS4HC ||
+            (await determineS4HCFromTarget({
+                url: this.answers.url,
+                client: this.answers.client,
+                destination: this.answers.destination
+            }));
 
         if (!isAppStudio() && this.answers.scp) {
             // ensure there is no client for SCP on vscode
@@ -234,7 +255,9 @@ export default class extends DeploymentGenerator {
         // Set transport
         if (!this.answers.transport) {
             this.answers.transport =
-                getTransportAnswer(this.options as AbapDeployConfigAnswersInternal) || getTransportAnswer(this.answers);
+                this.options.transport ??
+                (getTransportAnswer(this.options as AbapDeployConfigAnswersInternal) ||
+                    getTransportAnswer(this.answers));
         }
     }
 
@@ -243,8 +266,8 @@ export default class extends DeploymentGenerator {
      *
      * Options may be passed from parent generator, or from the command line.
      */
-    private _reconcileAnswersWithOptions(): void {
-        this._processAbapTargetAnswers();
+    private async _reconcileAnswersWithOptions(): Promise<void> {
+        await this._processAbapTargetAnswers();
         this._processBspAppAnswers();
         this.answers.index = this.options.index ?? this.answers.index;
         this.answers.overwrite = this.options.overwrite ?? this.answers.overwrite;
