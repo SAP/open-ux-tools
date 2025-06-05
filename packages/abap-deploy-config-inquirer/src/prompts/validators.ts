@@ -723,7 +723,9 @@ export async function validatePackage(
             // checks if package is a local package and will update prompt state accordingly
             await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
         } catch (error) {
-            // Do nothing, should show transport related errors in the transport prompt
+            LoggerHelper.logger.warn(
+                `An error occurred while validating the local package for package: ${error.message}`
+            );
         }
     }
 
