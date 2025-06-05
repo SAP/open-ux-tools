@@ -1,6 +1,9 @@
-import { PromptState } from '../../src/prompts/prompt-state';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { GUIDED_ANSWERS_ICON, HELP_NODES, HELP_TREE } from '@sap-ux/guided-answers-helper';
+import { AxiosError } from 'axios';
 import { AuthenticationType } from '../../../store/src';
 import { initI18n, t } from '../../src/i18n';
+import { PromptState } from '../../src/prompts/prompt-state';
 import {
     validateAppDescription,
     validateClient,
@@ -8,9 +11,9 @@ import {
     validateConfirmQuestion,
     validateCredentials,
     validateDestinationQuestion,
+    validatePackage,
     validatePackageChoiceInput,
     validatePackageChoiceInputForCli,
-    validatePackage,
     validateTargetSystem,
     validateTargetSystemUrlCli,
     validateTransportChoiceInput,
@@ -18,15 +21,12 @@ import {
     validateUi5AbapRepoName,
     validateUrl
 } from '../../src/prompts/validators';
-import * as validatorUtils from '../../src/validator-utils';
+import * as serviceProviderUtils from '../../src/service-provider-utils';
+import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
 import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types';
 import * as utils from '../../src/utils';
+import * as validatorUtils from '../../src/validator-utils';
 import { mockDestinations } from '../fixtures/destinations';
-import * as serviceProviderUtils from '../../src/service-provider-utils';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
-import { Axios, AxiosError } from 'axios';
-import { GUIDED_ANSWERS_ICON, HELP_NODES, HELP_TREE } from '@sap-ux/guided-answers-helper';
 
 jest.mock('../../src/service-provider-utils', () => ({
     getTransportListFromService: jest.fn(),
@@ -680,9 +680,11 @@ describe('Test validators', () => {
         });
 
         it('should handle cert error when listing transports', async () => {
-            jest.spyOn(validatorUtils, 'getTransportList').mockRejectedValueOnce(new AxiosError('Unable to verify signature in chain', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE'));
+            jest.spyOn(validatorUtils, 'getTransportList').mockRejectedValueOnce(
+                new AxiosError('Unable to verify signature in chain', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE')
+            );
 
-            let result = await validateTransportChoiceInput({
+            const result = await validateTransportChoiceInput({
                 useStandalone: false,
                 input: TransportChoices.ListExistingChoice,
                 previousAnswers: {
