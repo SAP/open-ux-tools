@@ -34,26 +34,24 @@ describe('Readme file generation tests', () => {
             ui5Theme: 'a_ui5_theme',
             ui5Version: '1.2.3',
             appNamespace: 'appNamespace',
-            externalParameters: [
-                {
-                    'addEntry1': 'Generator Specific Value A',
-                    'addEntry2': 'Generator Specific Value B',
-                    'addEntryArr': [
-                        {
-                            prop1: 'value1',
-                            prop2: 'value2',
-                            prop3: 'value3',
-                            prop4: 'value4'
-                        },
-                        {
-                            prop1: 'valuea',
-                            prop2: 'valueb',
-                            prop3: 'valuec',
-                            prop4: 'valued'
-                        }
-                    ]
-                }
-            ],
+            externalParameters: {
+                'addEntry1': 'Generator Specific Value A',
+                'addEntry2': 'Generator Specific Value B',
+                'addEntryArr': [
+                    {
+                        prop1: 'value1',
+                        prop2: 'value2',
+                        prop3: 'value3',
+                        prop4: 'value4'
+                    },
+                    {
+                        prop1: 'valuea',
+                        prop2: 'valueb',
+                        prop3: 'valuec',
+                        prop4: 'valued'
+                    }
+                ]
+            },
             enableEslint: false,
             enableTypeScript: false,
             enableCodeAssist: false

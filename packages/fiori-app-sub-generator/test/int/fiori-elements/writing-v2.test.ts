@@ -91,20 +91,18 @@ describe('Generate v2 apps', () => {
             service: destService,
             entityRelatedConfig: v2EntityConfig,
             appGenInfo: {
-                externalParameters: [
-                    {
-                        'testAdditionalEntry': [
-                            {
-                                key: 'testKey1',
-                                value: 'testValue1'
-                            },
-                            {
-                                key: 'testKey2',
-                                value: 'testValue2'
-                            }
-                        ]
-                    }
-                ]
+                externalParameters: {
+                    'testAdditionalEntry': [
+                        {
+                            key: 'testKey1',
+                            value: 'testValue1'
+                        },
+                        {
+                            key: 'testKey2',
+                            value: 'testValue2'
+                        }
+                    ]
+                }
             }
         });
         await runWritingPhaseGen(testState);
