@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.8
+
+### Patch Changes
+
+-   3630ec9: fixs for abap headless
+
 ## 0.2.7
 
 ### Patch Changes
