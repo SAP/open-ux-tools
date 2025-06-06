@@ -86,7 +86,15 @@ describe('adp', () => {
 
         const callBackFn = spyPostMessage.mock.calls[0][0];
 
-        const action = common.addExtensionPoint({
+        const action1 = common.addExtensionPoint({
+            controlId: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport--PgLayout',
+            children: [],
+            controlType: '',
+            editable: true,
+            name: 'PgLayout',
+            visible: true
+        });
+        const action2 = common.addExtensionPoint({
             controlId: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport',
             children: [],
             controlType: '',
@@ -95,9 +103,19 @@ describe('adp', () => {
             visible: true
         });
 
-        await callBackFn(action);
+        await callBackFn(action1);
+        await callBackFn(action2);
 
-        expect(executeSpy).toHaveBeenCalledWith(action.payload.controlId, 'CTX_ADDXML_AT_EXTENSIONPOINT');
+        expect(executeSpy).toHaveBeenNthCalledWith(
+            1,
+            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport',
+            'CTX_ADDXML_AT_EXTENSIONPOINT'
+        );
+        expect(executeSpy).toHaveBeenNthCalledWith(
+            2,
+            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport',
+            'CTX_ADDXML_AT_EXTENSIONPOINT'
+        );
     });
 
     test('init - send notification for UI5 version lower than 1.71', async () => {
@@ -191,7 +209,7 @@ describe('adp', () => {
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
-        expect(addFragmentServiceMock).toHaveBeenCalledWith(rtaMock)
+        expect(addFragmentServiceMock).toHaveBeenCalledWith(rtaMock);
         expect(extendControllerServiceMock).toHaveBeenCalledWith(rtaMock);
     });
 });

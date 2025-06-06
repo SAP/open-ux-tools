@@ -58,9 +58,11 @@ export default class ExtensionPointService {
                 try {
                     const { controlId, name } = action.payload;
 
+                    const suffix = `--${name}`;
+                    const baseControlId = controlId.endsWith(suffix) ? controlId.slice(0, -suffix.length) : controlId;
                     const service = await this.rta.getService<ActionService>('action');
 
-                    service.execute(controlId, this.actionId);
+                    service.execute(baseControlId, this.actionId);
                     this.selectedExtensionPointName = name;
                 } catch (e) {
                     throw new Error(`Failed to execute service with actionId: ${this.actionId}`);
