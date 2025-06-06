@@ -42,7 +42,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
-        "i18next": "25.2.0",
+        "i18next": "25.2.1",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
