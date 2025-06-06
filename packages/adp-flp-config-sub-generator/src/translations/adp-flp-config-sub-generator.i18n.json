@@ -4,14 +4,17 @@
         "flpCredentialsDesc": "Enter credentials for your adaptation project's system ({{- system}})",
         "sysConfirmDesc": "Validates connection to configured system",
         "flpConfigName": "FLP Configuration",
-        "flpConfigDesc": "FLP Configuration for {{- projectName}}"
+        "flpConfigDesc": "FLP Configuration for {{- projectName}}",
+        "tileSettingsName": "FLP Configuration - tile settings",
+        "tileActionsDesc": "Tile settings for {{- projectName}}"
     },
     "info": {
         "flpConfigAdded": "FLP Configuration added successfully"
     },
     "error": {
         "projectNotSupported": "Unable to find a supported adaptation project",
-        "fetchingManifest": "Error fetching merged manifest for base application",
+        "projectNotCloudReady": "FLP Configuration is supported for Cloud Ready adaptation projects only",
+        "baseAppInboundsFetching": "Error while fetching base application inbounds: {{- system}}",
         "destinationNotFound": "Missing destination configuration in ui5.yaml",
         "destinationNotInSubaccount": "Destination not found in the subaccount: {{- destination}}",
         "systemNotFound": "Missing system configuration in ui5.yaml",

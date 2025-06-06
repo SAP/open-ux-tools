@@ -35,6 +35,8 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-devx/yeoman-ui-types": "1.16.9",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",

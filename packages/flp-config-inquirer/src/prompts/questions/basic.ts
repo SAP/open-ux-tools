@@ -9,10 +9,12 @@ import type {
     OverwritePromptOptions,
     SemanticObjectPromptOptions,
     SubTitlePromptOptions,
-    TitlePromptOptions
+    TitlePromptOptions,
+    IconPromptOptions
 } from '../../types';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Creates the 'semanticObject' prompt for FLP configuration.
@@ -30,10 +32,14 @@ export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObject
             breadcrumb: true
         },
         message: t('prompts.semanticObject'),
-        default: options?.default,
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.semanticObject ?? '';
+        },
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, isCLI, 30, ['_']),
-        when: (answers: FLPConfigAnswers) => !answers?.inboundId
+        validate: (val) => validateText(val, isCLI, 30, ['_'])
     };
 }
 
@@ -42,9 +48,14 @@ export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObject
  *
  * @param {boolean} isCLI - Indicates if the platform is CLI.
  * @param {ActionPromptOptions} [options] - Optional configuration for the action prompt, including default values.
+ * @param {ManifestNamespace.Inbound} [inbounds] - Existing inbound configuration to derive default action.
  * @returns {FLPConfigQuestion} The prompt configuration for the action.
  */
-export function getActionPrompt(isCLI: boolean, options?: ActionPromptOptions): FLPConfigQuestion {
+export function getActionPrompt(
+    isCLI: boolean,
+    options?: ActionPromptOptions,
+    inbounds?: ManifestNamespace.Inbound
+): FLPConfigQuestion {
     return {
         name: promptNames.action,
         type: 'input',
@@ -53,10 +64,28 @@ export function getActionPrompt(isCLI: boolean, options?: ActionPromptOptions): 
             breadcrumb: true
         },
         message: t('prompts.action'),
-        default: options?.default,
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.action ? `${answers?.inboundId?.action}1` : '';
+        },
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, isCLI, 60, ['_']),
-        when: (answers: FLPConfigAnswers) => !answers?.inboundId
+        validate: (val, answers: FLPConfigAnswers): string | boolean => {
+            const textValidation = validateText(val, isCLI, 30, ['_']);
+            if (textValidation !== true) {
+                return textValidation;
+            }
+
+            if (!inbounds || !answers.semanticObject) {
+                return true;
+            }
+
+            const isDuplicate = Object.values(inbounds).some(
+                (inbound: any) => inbound.semanticObject === answers.semanticObject && inbound.action === val
+            );
+            return isDuplicate ? t('validators.duplicateInbound') : true;
+        }
     };
 }
 
@@ -130,7 +159,12 @@ export function getTitlePrompt(
             breadcrumb: true
         },
         message: t('prompts.title'),
-        default: options?.default,
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.title ?? '';
+        },
         filter: (val: string): string => val?.trim(),
         validate: (val) => validateText(val, isCLI, 0)
     };
@@ -157,7 +191,36 @@ export function getSubTitlePrompt(
             breadcrumb: t('prompts.subTitle')
         },
         message: t('prompts.subTitle'),
-        default: options?.default,
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.subTitle ?? '';
+        },
+        filter: (val: string): string => val?.trim()
+    };
+}
+
+/**
+ * Creates the 'icon' prompt for FLP configuration.
+ *
+ * @param {IconPromptOptions} [options] - Optional configuration for the icon prompt, including default values.
+ * @returns {FLPConfigQuestion} The prompt configuration for the icon.
+ */
+export function getIconPrompt(options?: IconPromptOptions): FLPConfigQuestion {
+    return {
+        name: promptNames.icon,
+        type: 'input',
+        guiOptions: {
+            breadcrumb: t('prompts.icon')
+        },
+        message: t('prompts.icon'),
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.icon ?? '';
+        },
         filter: (val: string): string => val?.trim()
     };
 }

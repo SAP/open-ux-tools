@@ -198,13 +198,13 @@ export interface NewInboundNavigation {
     title: string;
     /** Optional: Subtitle associated with the inbound navigation. */
     subTitle?: string;
+    /** Icon associated with the inbound navigation. */
+    icon?: string;
 }
 
 export interface InternalInboundNavigation extends NewInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
-    /** Flag indicating if the new inbound navigation should be added. */
-    addInboundId?: boolean;
 }
 
 export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;

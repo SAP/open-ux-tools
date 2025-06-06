@@ -4,13 +4,11 @@ import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
 import {
-    flpConfigurationExists,
     generateInboundConfig,
     getAdpConfig,
     getInboundsFromManifest,
-    getRegistrationIdFromManifest,
     getVariant,
-    ManifestService
+    filterAndMapInboundsToManifest
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
@@ -19,7 +17,15 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { InternalInboundNavigation } from '@sap-ux/adp-tooling';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
-import type { FLPConfigAnswers, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
+import {
+    type FLPConfigAnswers,
+    type FLPConfigPromptOptions,
+    getAdpFlpConfigPromptOptions,
+    getAdpFlpInboundsWriterConfig,
+    getTileSettingsQuestions,
+    type TileSettingsAnswers
+} from '@sap-ux/flp-config-inquirer';
+import type { Inbound } from '@sap-ux/axios-extension';
 
 import { promptYUIQuestions } from '../../common';
 import { validateBasePath } from '../../validation';
@@ -59,28 +65,26 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
         const appType = await getAppType(basePath);
         const isAdp = appType === 'Fiori Adaptation';
 
-        if (isAdp && (await flpConfigurationExists(basePath))) {
-            logger.info('FLP Configuration already exists.');
-            return;
-        }
-
         const fs = create(createStorage());
 
-        const manifest = await getManifest(basePath, isAdp, fs, logger);
-        const inbounds = getInboundsFromManifest(manifest);
-        const appId = getRegistrationIdFromManifest(manifest);
+        const inbounds = await getInbounds(basePath, isAdp, fs, logger);
+        let tileSettingsAnswers: TileSettingsAnswers | undefined;
+        if (inbounds && isAdp) {
+            tileSettingsAnswers = await promptYUIQuestions(getTileSettingsQuestions(), false);
+        }
 
-        const config = await getUserConfig(inbounds, isAdp, appId);
+        const answers = await getUserAnswers(inbounds, isAdp, tileSettingsAnswers);
 
-        if (!config) {
+        if (!answers) {
             logger.info('User chose not to overwrite existing inbound navigation configuration.');
             return;
         }
 
         if (isAdp) {
+            const config = getAdpFlpInboundsWriterConfig(answers, tileSettingsAnswers);
             await generateInboundConfig(basePath, config as InternalInboundNavigation, fs);
         } else {
-            await generateInboundNavigationConfig(basePath, config, true, fs);
+            await generateInboundNavigationConfig(basePath, answers, true, fs);
         }
 
         if (!simulate) {
@@ -95,25 +99,31 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
 }
 
 /**
- * Retrieves the project's manifest file, handling both Fiori and Adaptation project scenarios.
+ * Retrieves the inbounds for the given project, handling both ADP and Fiori scenarios.
  *
  * @param {string} basePath - The base path to the project.
  * @param {boolean} isAdp - Indicates whether the project is an ADP project.
  * @param {Editor} fs - The mem-fs editor instance.
  * @param {ToolsLogger} logger - The logger instance.
- * @returns {Promise<Manifest>} The manifest file content.
- * @throws {Error} If the project is not CloudReady or the manifest cannot be retrieved.
+ * @returns {Promise<ManifestNamespace.Inbound | undefined>} The inbounds from the manifest or mapped from the system.
  */
-export async function getManifest(
+async function getInbounds(
     basePath: string,
     isAdp: boolean,
     fs: Editor,
     logger: ToolsLogger
-): Promise<Manifest> {
+): Promise<ManifestNamespace.Inbound | undefined> {
     if (isAdp) {
-        return retrieveMergedManifest(basePath, logger);
+        const appId = (await getVariant(basePath)).reference;
+        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
+        const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
+        const lrepService = provider.getLayeredRepository();
+        const inbounds = (await lrepService.getSystemInfo(undefined, undefined, appId)).inbounds as Inbound[];
+        return filterAndMapInboundsToManifest(inbounds);
     }
-    return retrieveManifest(basePath, fs);
+
+    const manifest = await retrieveManifest(basePath, fs);
+    return getInboundsFromManifest(manifest);
 }
 
 /**
@@ -129,51 +139,31 @@ async function retrieveManifest(basePath: string, fs: Editor): Promise<Manifest>
 }
 
 /**
- * Retrieves the manifest for an Adaptation Project (ADP).
- *
- * @param {string} basePath - The base path to the ADP project.
- * @param {ToolsLogger} logger - The logger instance.
- * @returns {Promise<Manifest>} The merged manifest for the ADP project.
- * @throws {Error} If the project is not CloudReady.
- */
-async function retrieveMergedManifest(basePath: string, logger: ToolsLogger): Promise<Manifest> {
-    const variant = await getVariant(basePath);
-    const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
-
-    const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
-
-    const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, logger);
-    return manifestService.getManifest();
-}
-
-/**
  * Prompts the user for inbound navigation configuration.
  *
  * @param {ManifestNamespace.Inbound | undefined} inbounds - The existing inbounds if any.
  * @param {boolean} isAdp - Indicates whether the project is an ADP project.
- * @param {string} [appId] - The application ID used for generating prompts specific to the app.
+ * @param {TileSettingsAnswers} [tileSettingsAnswers] - The answers for tile settings.
  * @returns {Promise<FLPConfigAnswers | undefined>} A promise resolving to the user-provided configuration,
  * or `undefined` if the user opts not to overwrite.
  */
-async function getUserConfig(
+async function getUserAnswers(
     inbounds: ManifestNamespace.Inbound | undefined,
     isAdp: boolean,
-    appId?: string
+    tileSettingsAnswers?: TileSettingsAnswers
 ): Promise<FLPConfigAnswers | undefined> {
     let promptOptions: FLPConfigPromptOptions;
 
     if (!isAdp) {
         promptOptions = {
             inboundId: { hide: true },
-            additionalParameters: { hide: true },
-            createAnotherInbound: { hide: true },
-            emptyInboundsInfo: { hide: true }
+            additionalParameters: { hide: true }
         };
     } else {
-        promptOptions = { overwrite: { hide: true }, createAnotherInbound: { hide: true } };
+        promptOptions = getAdpFlpConfigPromptOptions(tileSettingsAnswers as TileSettingsAnswers, inbounds);
     }
 
-    const prompts = await filterLabelTypeQuestions<FLPConfigAnswers>(await getPrompts(inbounds, appId, promptOptions));
+    const prompts = await filterLabelTypeQuestions<FLPConfigAnswers>(await getPrompts(inbounds, promptOptions));
     const config = await promptYUIQuestions(prompts, false);
 
     if (config?.subTitle === '') {
