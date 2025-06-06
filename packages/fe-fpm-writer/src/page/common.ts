@@ -3,7 +3,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import { validateBasePath } from '../common/validate';
+import { validateBasePath, validateDependenciesLibs } from '../common/validate';
 import type {
     CustomPage,
     FCL,
@@ -33,6 +33,11 @@ type EnhancePageConfigFunction = (
  * Suffix for patterns to support arbitrary paramters
  */
 export const PATTERN_SUFFIX = ':?query:';
+
+/**
+ * List of special page templates that differs from the standard 'sap.fe.templates'.
+ */
+export const SPECIAL_PAGE_TEMPLATES = ['sap.fe.ariba'];
 
 /**
  * Generates the pattern for a new route based on the input.
@@ -283,4 +288,21 @@ export async function extendPageJSON(
     });
 
     return fs;
+}
+
+/**
+ * Returns the template name prefix based on the provided manifest.
+ * If the dependencies in manifest matches any of the special page templates, that template is returned.
+ * Otherwise, it defaults to 'sap.fe.templates'.
+ *
+ * @param manifest The application manifest to check against special templates.
+ * @returns The matched template prefix or the default 'sap.fe.templates'.
+ */
+export function getTemplateNamePrefix(manifest: Manifest): string {
+    for (const template of SPECIAL_PAGE_TEMPLATES) {
+        if (validateDependenciesLibs(manifest, [template])) {
+            return template;
+        }
+    }
+    return 'sap.fe.templates';
 }
