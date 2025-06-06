@@ -363,7 +363,7 @@ function getBaseAppConfig(
 
 /**
  * Transforms the external abapCSN object (possible multiple services) to the internal abapCSN (single chosen service).
- * Uses the chosen service to obtain the service uri, id, and name for the .appGenInfo.json.
+ * Uses the chosen service to obtain the service uri and name for the .appGenInfo.json.
  *
  * @param chosenService - the service selected during prompting
  * @param chosenService.serviceId - service id
