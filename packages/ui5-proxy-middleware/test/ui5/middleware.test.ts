@@ -6,6 +6,7 @@ import express from 'express';
 import supertest from 'supertest';
 import nock from 'nock';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
+import {ToolsLogger} from "@sap-ux/logger";
 
 // spy on ui5Proxy and injectScripts to verify calls
 const ui5ProxySpy = jest.spyOn(proxy, 'ui5Proxy');
@@ -156,7 +157,7 @@ describe('middleware', () => {
                 expect.objectContaining({}),
                 expect.objectContaining({ secure: true, logger: undefined }),
                 undefined,
-                expect.objectContaining({})
+                expect.any(ToolsLogger)
             );
         });
 
@@ -169,7 +170,7 @@ describe('middleware', () => {
                 expect.objectContaining({ proxy: 'http://proxy.example' }),
                 expect.objectContaining({}),
                 undefined,
-                expect.objectContaining({})
+                expect.any(ToolsLogger)
             );
         });
 
@@ -182,7 +183,7 @@ describe('middleware', () => {
                 expect.objectContaining({}),
                 expect.objectContaining({ logger: expect.objectContaining({})}),
                 undefined,
-                expect.objectContaining({})
+                expect.any(ToolsLogger)
             );
         });
 
@@ -195,7 +196,7 @@ describe('middleware', () => {
                 expect.objectContaining({}),
                 expect.objectContaining({ secure: true, logger: undefined }),
                 undefined,
-                expect.objectContaining({})
+                expect.any(ToolsLogger)
             );
         });
 
@@ -208,7 +209,7 @@ describe('middleware', () => {
                 expect.objectContaining({}),
                 expect.objectContaining({ secure: false, logger: undefined }),
                 undefined,
-                expect.objectContaining({})
+                expect.any(ToolsLogger)
             );
         });
 
@@ -260,7 +261,7 @@ describe('middleware', () => {
                 expect.objectContaining({ version: ui5Version }),
                 expect.objectContaining({}),
                 undefined,
-                expect.objectContaining({})
+                expect.any(ToolsLogger)
             );
         });
 
@@ -275,7 +276,7 @@ describe('middleware', () => {
                 expect.objectContaining({ version: '' }),
                 expect.objectContaining({}),
                 undefined,
-                expect.objectContaining({})
+                expect.any(ToolsLogger)
             );
         });
 
@@ -286,7 +287,7 @@ describe('middleware', () => {
                 expect.objectContaining({ version: '' }),
                 expect.objectContaining({}),
                 undefined,
-                expect.objectContaining({})
+                expect.any(ToolsLogger)
             );
         });
     });

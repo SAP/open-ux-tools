@@ -53,6 +53,7 @@ describe('proxy', () => {
 
         const options: hpm.Options = {
             secure: true,
+            logger: new ToolsLogger(),
             changeOrigin: false
         };
 
@@ -61,7 +62,7 @@ describe('proxy', () => {
         expect(mockCreateProxyMiddleware).toHaveBeenCalledWith({
             changeOrigin: false,
             secure: true,
-            logger: undefined,
+            logger: expect.any(ToolsLogger),
             target: 'https://example.example',
             on: {
                 proxyReq: expect.any(Function),

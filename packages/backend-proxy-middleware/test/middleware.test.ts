@@ -6,6 +6,7 @@ import { BackendMiddlewareConfig } from '../src/base/types';
 import nock from 'nock';
 import { Options } from 'http-proxy-middleware';
 import connect = require('connect');
+import { ToolsLogger } from '@sap-ux/logger';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...(jest.requireActual('@sap-ux/btp-utils') as object),
@@ -48,7 +49,7 @@ describe('backend-proxy-middleware', () => {
             expect(generateProxyOptionsSpy).toBeCalledWith(
                 expect.objectContaining(backend),
                 expect.objectContaining({ secure: true, logger: undefined }),
-                expect.objectContaining({})
+                expect.any(ToolsLogger)
             );
         });
 
@@ -57,7 +58,7 @@ describe('backend-proxy-middleware', () => {
             expect(generateProxyOptionsSpy).toBeCalledWith(
                 expect.objectContaining(backend),
                 expect.objectContaining({ secure: true, logger: expect.objectContaining({}) }),
-                expect.objectContaining({})
+                expect.any(ToolsLogger)
             );
         });
 
@@ -71,7 +72,7 @@ describe('backend-proxy-middleware', () => {
             expect(generateProxyOptionsSpy).toBeCalledWith(
                 expect.objectContaining(addtionalConfig),
                 expect.objectContaining({ secure: true, logger: undefined }),
-                expect.objectContaining({})
+                expect.any(ToolsLogger)
             );
         });
 
@@ -84,7 +85,7 @@ describe('backend-proxy-middleware', () => {
             expect(generateProxyOptionsSpy).toBeCalledWith(
                 expect.objectContaining(backend),
                 expect.objectContaining({ ...options, secure: true, logger: undefined }),
-                expect.objectContaining({})
+                expect.any(ToolsLogger)
             );
         });
     });
@@ -133,7 +134,7 @@ describe('backend-proxy-middleware with connect', () => {
         expect(generateProxyOptionsSpy).toBeCalledWith(
             expect.objectContaining(backend),
             expect.objectContaining({ secure: true, logger: undefined }),
-            expect.objectContaining({})
+            expect.any(ToolsLogger)
         );
     });
 
@@ -147,7 +148,7 @@ describe('backend-proxy-middleware with connect', () => {
         expect(generateProxyOptionsSpy).toBeCalledWith(
             expect.objectContaining(addtionalConfig),
             expect.objectContaining({ secure: true, logger: undefined }),
-            expect.objectContaining({})
+            expect.any(ToolsLogger)
         );
     });
 
@@ -160,7 +161,7 @@ describe('backend-proxy-middleware with connect', () => {
         expect(generateProxyOptionsSpy).toBeCalledWith(
             expect.objectContaining(backend),
             expect.objectContaining({ ...options, secure: true, logger: undefined }),
-            expect.objectContaining({})
+            expect.any(ToolsLogger)
         );
     });
 
