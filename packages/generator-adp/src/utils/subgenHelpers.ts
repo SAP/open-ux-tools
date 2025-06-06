@@ -88,14 +88,12 @@ export function addFlpGen(
  * @param {Generator['composeWith']} composeWith - Yeoman composeWith method from generator context
  * @param {ILogWrapper} logger - Logger for info and error output
  * @param {AppWizard} appWizard - Optional AppWizard instance for displaying UI messages
- * @param {boolean} debug - Debug flag which composes a generator from OSR.
  */
 export function addDeployGen(
     { projectName, targetFolder, client, connectedSystem, destinationName }: DeployGenOptions,
     composeWith: Generator['composeWith'],
     logger: ILogWrapper,
-    appWizard: AppWizard,
-    debug: boolean = false
+    appWizard: AppWizard
 ): void {
     try {
         const generatorOptions = {
@@ -111,10 +109,7 @@ export function addDeployGen(
             ...(destinationName && { appGenDestination: destinationName })
         };
 
-        const generator = debug
-            ? require.resolve('@sap-ux/deploy-config-sub-generator/generators/app')
-            : '@sap/fiori:deploy-config';
-        composeWith(generator, generatorOptions);
+        composeWith('@sap/fiori:deploy-config', generatorOptions);
         logger.info(`'@sap/fiori:deploy-config' was called.`);
     } catch (e) {
         logger.error(e);
