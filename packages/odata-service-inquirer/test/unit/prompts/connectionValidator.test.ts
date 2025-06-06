@@ -14,11 +14,17 @@ import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
 import { ConnectionValidator } from '../../../src/prompts/connectionValidator';
 import LoggerHelper from '../../../src/prompts/logger-helper';
 import type { ConnectedSystem } from '../../../src/types';
+import * as nodejsUtils from '@sap-ux/nodejs-utils';
 
 const odataServicesMock: ODataServiceInfo[] = [];
 const catalogServiceMock = jest.fn().mockImplementation(() => ({
     interceptors: { request: { use: jest.fn() }, response: { use: jest.fn() } },
     listServices: jest.fn().mockImplementation(() => odataServicesMock)
+}));
+
+jest.mock('@sap-ux/nodejs-utils', () => ({
+    __esModule: true,
+    ...jest.requireActual('@sap-ux/nodejs-utils')
 }));
 
 jest.mock('@sap-ux/axios-extension', () => ({
@@ -235,7 +241,7 @@ describe('ConnectionValidator', () => {
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
         const warnLogSpy = jest.spyOn(LoggerHelper.logger, 'warn');
 
-        const setGlobalRejectUnauthSpy = jest.spyOn(ConnectionValidator, 'setGlobalRejectUnauthorized');
+        const setGlobalRejectUnauthSpy = jest.spyOn(nodejsUtils, 'setGlobalRejectUnauthorized');
 
         const validator = new ConnectionValidator();
         expect(await validator.validateUrl(serviceUrl)).toBe(true);
@@ -270,7 +276,7 @@ describe('ConnectionValidator', () => {
 
         const createForAbapProviderSpy = jest.spyOn(axiosExtension, 'createForAbap');
         const warnLogSpy = jest.spyOn(LoggerHelper.logger, 'warn');
-        const setGlobalRejectUnauthSpy = jest.spyOn(ConnectionValidator, 'setGlobalRejectUnauthorized');
+        const setGlobalRejectUnauthSpy = jest.spyOn(nodejsUtils, 'setGlobalRejectUnauthorized');
 
         const validator = new ConnectionValidator();
         expect(await validator.validateUrl(systemUrl, { isSystem: true })).toBe(true);
@@ -603,7 +609,7 @@ describe('ConnectionValidator', () => {
 
         const createForAbapProviderSpy = jest.spyOn(axiosExtension, 'createForAbap');
         const warnLogSpy = jest.spyOn(LoggerHelper.logger, 'warn');
-        const setGlobalRejectUnauthSpy = jest.spyOn(ConnectionValidator, 'setGlobalRejectUnauthorized');
+        const setGlobalRejectUnauthSpy = jest.spyOn(nodejsUtils, 'setGlobalRejectUnauthorized');
 
         const connectValidator = new ConnectionValidator();
         await connectValidator.validateUrl('https://example.com:1234', { isSystem: true });
