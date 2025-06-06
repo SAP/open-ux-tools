@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.35.0
+
+### Minor Changes
+
+-   ccd85c8: Support 'sap.fe.ariba' dependency for new pages'. If the dependency is listed in the manifest, it will be used as the template(property "name") for new LR and OP pages.
+
 ## 0.34.3
 
 ### Patch Changes
