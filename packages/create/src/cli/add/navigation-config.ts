@@ -8,13 +8,13 @@ import {
     getAdpConfig,
     getInboundsFromManifest,
     getVariant,
-    getFlpTileSettings
+    filterAndMapInboundsToManifest
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
 import { FileName, getAppType } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import type { InternalInboundNavigation, TileSettingsAnswers } from '@sap-ux/adp-tooling';
+import type { InternalInboundNavigation } from '@sap-ux/adp-tooling';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
 import {
@@ -22,7 +22,8 @@ import {
     type FLPConfigPromptOptions,
     getAdpFlpConfigPromptOptions,
     getAdpFlpInboundsWriterConfig,
-    filterAndMapInboundsToManifest
+    getTileSettingsQuestions,
+    type TileSettingsAnswers
 } from '@sap-ux/flp-config-inquirer';
 import type { Inbound } from '@sap-ux/axios-extension';
 
@@ -69,7 +70,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
         const inbounds = await getInbounds(basePath, isAdp, fs, logger);
         let tileSettingsAnswers: TileSettingsAnswers | undefined;
         if (inbounds && isAdp) {
-            tileSettingsAnswers = await promptYUIQuestions(getFlpTileSettings(), false);
+            tileSettingsAnswers = await promptYUIQuestions(getTileSettingsQuestions(), false);
         }
 
         const answers = await getUserAnswers(inbounds, isAdp, tileSettingsAnswers);

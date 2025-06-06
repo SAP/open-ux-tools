@@ -6,9 +6,9 @@ import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-commo
 import { initI18n, addi18nResourceBundle } from './i18n';
 import { promptNames } from './types';
 import { getExistingFlpConfigInfoPrompt } from './prompts/questions';
-import { getQuestions } from './prompts';
-import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types';
-import { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig, filterAndMapInboundsToManifest } from './utils';
+import { getQuestions, getTileSettingsQuestions } from './prompts';
+import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions, TileSettingsAnswers } from './types';
+import { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } from './utils';
 
 /**
  * Retrieves the inquirer prompts for the FLP configuration.
@@ -108,7 +108,8 @@ export {
     type FLPConfigAnswers,
     type FLPConfigPromptOptions,
     type FLPConfigQuestion,
+    type TileSettingsAnswers,
     getAdpFlpConfigPromptOptions,
     getAdpFlpInboundsWriterConfig,
-    filterAndMapInboundsToManifest
+    getTileSettingsQuestions
 };

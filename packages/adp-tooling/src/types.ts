@@ -202,10 +202,6 @@ export interface NewInboundNavigation {
     icon?: string;
 }
 
-export interface TileSettingsAnswers {
-    tileHandlingAction: string;
-    copyFromExisting: boolean;
-}
 export interface InternalInboundNavigation extends NewInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
@@ -411,11 +407,6 @@ export const enum HttpStatusCodes {
     NOT_IMPLEMETED = 501,
     SERVICE_UNAVAILABLE = 503
 }
-
-export const tileActions = {
-    REPLACE: 'replace',
-    ADD: 'add'
-} as const;
 
 export type OperationType = 'read' | 'write' | 'delete';
 

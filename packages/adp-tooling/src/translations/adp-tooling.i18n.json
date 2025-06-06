@@ -29,8 +29,6 @@
         "oDataAnnotationDataSourceUriTooltip": "Enter URI for the OData annotation data source. The URI should start and end with '/' and should not contain any whitespaces or parameters",
         "oDataAnnotationSettingsLabel": "OData Annotation Settings",
         "oDataAnnotationSettingsTooltip": "If needed enter any additional {{value}} settings in the \"key1\":\"value1\",\"key2\":\"value2\" format",
-        "tileHandlingAction": "Chose a Tile Handling Action",
-        "copyFromExisting": "Copy Configurations From an Existing Inbound (?)",
         "component": {
             "usage": "Component usage",
             "usageIdLabel": "Component Usage ID",
@@ -82,10 +80,6 @@
         "annotationFile": {
             "selectFromWorkspace": "Select annotation file from workspace",
             "createTemplateFile": "Create local annotation file from template"
-        },
-        "tileActions": {
-            "replaceOriginalTile": "Replace Original App's Tile(s)",
-            "addNewTile": "Add a New Tile to The Original One"
         }
     }
 }

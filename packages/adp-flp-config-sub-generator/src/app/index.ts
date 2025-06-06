@@ -15,23 +15,22 @@ import {
     getAdpConfig,
     isCFEnvironment,
     generateInboundConfig,
-    getFlpTileSettings,
     flpConfigurationExists,
     SystemLookup,
+    filterAndMapInboundsToManifest,
     type InternalInboundNavigation,
     type AdpPreviewConfig,
-    type DescriptorVariant,
-    type TileSettingsAnswers
+    type DescriptorVariant
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
 import {
     getPrompts,
     getAdpFlpConfigPromptOptions,
-    getExistingFlpConfigInfoPrompt,
     getAdpFlpInboundsWriterConfig,
-    filterAndMapInboundsToManifest,
-    type FLPConfigAnswers
+    getTileSettingsQuestions,
+    type FLPConfigAnswers,
+    type TileSettingsAnswers
 } from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
@@ -54,7 +53,6 @@ import {
 import { createAbapServiceProvider, type AbapTarget, type UrlAbapTarget } from '@sap-ux/system-access';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import { initAppWizardCache, addToCache, getFromCache, deleteCache } from './appWizzardCache';
 
 /**
@@ -410,11 +408,15 @@ export default class AdpFlpConfigGenerator extends Generator {
     private async _promptTileActions(): Promise<(TileSettingsAnswers & FLPConfigAnswers) | undefined> {
         if (this.inbounds) {
             this._setTileSettingsPrompts();
-            const tileSettingsPrompts = getFlpTileSettings();
+            const promptOptions = {
+                existingFlpConfigInfo: {
+                    hide: true
+                }
+            };
             if (!this.launchAsSubGen && flpConfigurationExists(this.variant)) {
-                const existingConfigPrompt = getExistingFlpConfigInfoPrompt(isCli());
-                tileSettingsPrompts.unshift(existingConfigPrompt as YUIQuestion);
+                promptOptions.existingFlpConfigInfo.hide = false;
             }
+            const tileSettingsPrompts = getTileSettingsQuestions(promptOptions);
             return (await this.prompt(tileSettingsPrompts)) as TileSettingsAnswers & FLPConfigAnswers;
         }
         return undefined;

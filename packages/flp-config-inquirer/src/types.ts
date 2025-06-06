@@ -17,6 +17,11 @@ export enum promptNames {
     additionalParameters = 'additionalParameters'
 }
 
+export enum tilePromptNames {
+    tileHandlingAction = 'tileHandlingAction',
+    copyFromExisting = 'copyFromExisting'
+}
+
 /**
  * Interface representing the answers collected from the FLP configuration prompts.
  */
@@ -140,3 +145,14 @@ type flpConfigPromptOptions = Record<promptNames.inboundId, InboundIdPromptOptio
  * The options for the FLP config inquirer & the prompts.
  */
 export type FLPConfigPromptOptions = Partial<flpConfigPromptOptions> & FLPConfigCommonInquirerOptions;
+
+export const tileActions = {
+    REPLACE: 'replace',
+    ADD: 'add'
+} as const;
+
+export interface TileSettingsAnswers {
+    [promptNames.existingFlpConfigInfo]?: string;
+    [tilePromptNames.tileHandlingAction]: string;
+    [tilePromptNames.copyFromExisting]: boolean;
+}

@@ -1,14 +1,12 @@
 import {
-    type TileSettingsAnswers,
     type DescriptorVariant,
     type NewInboundNavigation,
     type InternalInboundNavigation,
-    tileActions,
     flpConfigurationExists
 } from '@sap-ux/adp-tooling';
-import type { InboundContent, Inbound } from '@sap-ux/axios-extension';
+import type { InboundContent } from '@sap-ux/axios-extension';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { FLPConfigPromptOptions, FLPConfigAnswers } from './types';
+import { type FLPConfigPromptOptions, type FLPConfigAnswers, type TileSettingsAnswers, tileActions } from './types';
 /**
  * Returns FLP configuration prompt options based on the provided inbounds, variant, and tile settings answers.
  *
@@ -89,28 +87,4 @@ export function getAdpFlpInboundsWriterConfig(
         icon: flpConfigAnswers.icon ?? '',
         additionalParameters: flpConfigAnswers.additionalParameters ?? ''
     };
-}
-
-/**
- * Transforms an array of inbound objects from the SystemInfo API format into a ManifestNamespace.Inbound object.
- *
- * @param {Inbound[]} inbounds - The array of inbound objects to transform.
- * @returns {ManifestNamespace.Inbound | undefined} The transformed inbounds or undefined if input is empty.
- */
-export function filterAndMapInboundsToManifest(inbounds: Inbound[]): ManifestNamespace.Inbound | undefined {
-    if (!inbounds || inbounds.length === 0) {
-        return undefined;
-    }
-    return inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
-        // Skip if hideLauncher is not false
-        if (!inbound?.content || inbound.content.hideLauncher !== false) {
-            return acc;
-        }
-        const { semanticObject, action } = inbound.content;
-        if (semanticObject && action) {
-            const key = `${semanticObject}-${action}`;
-            acc[key] = inbound.content;
-        }
-        return acc;
-    }, {} as { [key: string]: InboundContent });
 }

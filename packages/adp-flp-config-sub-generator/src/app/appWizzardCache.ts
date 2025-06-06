@@ -3,9 +3,9 @@ import type { AdpAppWizardCache } from './types';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { t } from '../utils/i18n';
 
-const ADP_CACHE = '$adp-cache';
+const ADP_FLP_CONFIG_CACHE = '$adp-flp-config-cache';
 // Type alias for the AppWizard object with the cache object.
-export type AppWizardCache = AppWizard & { [ADP_CACHE]?: AdpAppWizardCache };
+export type AppWizardCache = AppWizard & { [ADP_FLP_CONFIG_CACHE]?: AdpAppWizardCache };
 const hostEnv = getHostEnvironment();
 
 /**
@@ -15,8 +15,8 @@ const hostEnv = getHostEnvironment();
  * @param appWizard - AppWizard object to initialize the cache in.
  */
 export function initAppWizardCache(logger: ILogWrapper, appWizard?: AppWizardCache): void {
-    if (appWizard && !appWizard[ADP_CACHE]) {
-        appWizard[ADP_CACHE] = {};
+    if (appWizard && !appWizard[ADP_FLP_CONFIG_CACHE]) {
+        appWizard[ADP_FLP_CONFIG_CACHE] = {};
         logger.debug('AppWizard based cache initialized.');
     }
 }
@@ -34,8 +34,8 @@ export function addToCache(
     logger: ILogWrapper
 ): void {
     logIfCacheMissing(appWizard, logger);
-    if (appWizard?.[ADP_CACHE]) {
-        Object.assign(appWizard[ADP_CACHE], state);
+    if (appWizard?.[ADP_FLP_CONFIG_CACHE]) {
+        Object.assign(appWizard[ADP_FLP_CONFIG_CACHE], state);
     }
 }
 
@@ -53,7 +53,7 @@ export function getFromCache<T>(
     logger: ILogWrapper
 ): T | undefined {
     logIfCacheMissing(appWizard, logger);
-    return appWizard?.[ADP_CACHE]?.[cacheKey] as T;
+    return appWizard?.[ADP_FLP_CONFIG_CACHE]?.[cacheKey] as T;
 }
 
 /**
@@ -64,8 +64,8 @@ export function getFromCache<T>(
  */
 export function deleteCache(appWizard: AppWizardCache | undefined, logger: ILogWrapper): void {
     logIfCacheMissing(appWizard, logger);
-    if (appWizard?.[ADP_CACHE]) {
-        delete appWizard[ADP_CACHE];
+    if (appWizard?.[ADP_FLP_CONFIG_CACHE]) {
+        delete appWizard[ADP_FLP_CONFIG_CACHE];
     }
 }
 
@@ -76,7 +76,7 @@ export function deleteCache(appWizard: AppWizardCache | undefined, logger: ILogW
  * @param logger - Logger to log messages.
  */
 function logIfCacheMissing(appWizard: AppWizardCache | undefined, logger: ILogWrapper): void {
-    if (hostEnv === hostEnvironment.vscode && !appWizard?.[ADP_CACHE]) {
+    if (hostEnv === hostEnvironment.vscode && !appWizard?.[ADP_FLP_CONFIG_CACHE]) {
         logger.info(t('logMessages.warningCachingNotSupported'));
     }
 }

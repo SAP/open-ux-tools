@@ -8,7 +8,9 @@
         "additionalParameters": "Parameters",
         "createAnotherInbound": "Do you want to add or edit another inbound?",
         "icon": "Icon",
-        "existingFLPConfig": "Have in mind that this project already has created FLP configuration. If you create another one, it will overwrite completely the current one"
+        "existingFLPConfig": "Have in mind that this project already has created FLP configuration. If you create another one, it will overwrite completely the current one.",
+        "tileHandlingAction": "Chose a Tile Handling Action",
+        "copyFromExisting": "Copy Configurations From an Existing Inbound (?)"
     },
     "tooltips": {
         "inboundId": "Choose the inbound ID that will be used to set the FLP tile configuration",
@@ -19,5 +21,9 @@
         "invalidParameterString": "Parameter string is not a valid JSON object.",
         "flpConfigOverwrite": "Overwrite existing configuration?",
         "duplicateInbound": "The base application already has an inbound that matches the values for [semantic object, action]. Please change at least one of the values to be different in order to create a new tile"
+    },
+    "choices": {
+        "replaceOriginalTile": "Replace Original App's Tile(s)",
+        "addNewTile": "Add a New Tile to The Original One"
     }
 }
