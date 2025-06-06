@@ -38,7 +38,7 @@ import {
     createDeleteAnnotationGroupItemsChange,
     DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE
 } from './change';
-import type { Deletes, CDSDocumentChange, InsertRecord } from './change';
+import type { Deletes, CDSDocumentChange, InsertRecord, InsertEmbeddedAnnotation, InsertAnnotation } from './change';
 import { getChildCount, type AstNode, type CDSDocument } from './document';
 import { getAstNodesFromPointer } from './pointer';
 import type { CompilerToken } from './cds-compiler-tokens';
@@ -425,46 +425,26 @@ class ChangePreprocessor {
                 change.type === INSERT_ANNOTATION_CHANGE_TYPE &&
                 (parent?.type === TARGET_TYPE || parent?.type === ANNOTATION_GROUP_ITEMS_TYPE)
             ) {
+                const pointerFragments = [change.pointer];
                 if (parent.type === ANNOTATION_GROUP_ITEMS_TYPE) {
-                    // merge inserts and deletions
                     const index = change.index ?? parent.items.length - 1;
-                    const pointer = `${change.pointer}/${index}`;
-                    const deletionChangeIndex = this.input.findIndex(
-                        (c) => c.pointer === pointer && c.type === DELETE_ANNOTATION_CHANGE_TYPE
-                    );
-                    const command = this.commands.get(deletionChangeIndex);
-                    if (command?.type === 'drop') {
-                        continue;
-                    }
-                    if (deletionChangeIndex !== -1) {
-                        this.commands.set(i, {
-                            type: 'replace',
-                            changes: [createReplaceNodeChange(pointer, change.element)]
-                        });
-                        this.commands.set(deletionChangeIndex, {
-                            type: 'drop'
-                        });
-                    }
+                    pointerFragments.push(index.toString());
                 } else {
-                    // merge inserts and deletions
                     const index = change.index ?? parent.assignments.length - 1;
-                    const pointer = `${change.pointer}/assignments/${index}`;
-                    const deletionChangeIndex = this.input.findIndex(
-                        (c) => c.pointer === pointer && c.type === DELETE_ANNOTATION_CHANGE_TYPE
-                    );
-                    const command = this.commands.get(deletionChangeIndex);
-                    if (command?.type === 'drop') {
-                        continue;
-                    }
-                    if (deletionChangeIndex !== -1) {
-                        this.commands.set(i, {
-                            type: 'replace',
-                            changes: [createReplaceNodeChange(pointer, change.element)]
-                        });
-                        this.commands.set(deletionChangeIndex, {
-                            type: 'drop'
-                        });
-                    }
+                    pointerFragments.push('assignments');
+                    pointerFragments.push(index.toString());
+                }
+                const pointer = pointerFragments.join('/');
+                // merge inserts and deletions
+                const deletionChangeIndex = this.input.findIndex(
+                    (c) => c.pointer === pointer && c.type === DELETE_ANNOTATION_CHANGE_TYPE
+                );
+                const command = this.commands.get(deletionChangeIndex);
+                if (command?.type === 'drop') {
+                    continue;
+                }
+                if (deletionChangeIndex !== -1) {
+                    this.createReplaceCommand(pointer, change, deletionChangeIndex, i);
                 }
             } else if (
                 change.type === INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE &&
@@ -472,71 +452,53 @@ class ChangePreprocessor {
             ) {
                 // currently this is not supported for longer deeper structures
                 // e.g multiple levels of annotations on an annotation with a primitive value
-                // const elementName = parent.type === RECORD_PROPERTY_TYPE ? Edm.PropertyValue : Edm.Annotation;
+                const index =
+                    change.index ??
+                    (grandParent.type === ANNOTATION_GROUP_ITEMS_TYPE
+                        ? grandParent.items.length - 1
+                        : grandParent.assignments.length - 1);
 
-                if (grandParent.type === ANNOTATION_GROUP_ITEMS_TYPE) {
-                    // merge inserts and deletions
-                    const index = change.index ?? grandParent.items.length - 1;
-                    const pointer = `${change.pointer.split('/').slice(0, -1).join('/')}/${index}`;
-                    const deletionChangeIndex = this.input.findIndex(
-                        (c) => c.pointer === pointer && c.type === DELETE_ANNOTATION_CHANGE_TYPE
-                    );
-                    const command = this.commands.get(deletionChangeIndex);
-                    if (command?.type === 'drop') {
-                        continue;
-                    }
-                    if (deletionChangeIndex !== -1) {
-                        const element = createReferenceElement(parent);
-                        const last = structuredClone(change.element);
-                        delete last.attributes[Edm.Qualifier];
-                        const context = [last];
-                        if (element) {
-                            context.unshift(element);
-                            const term = getElementAttribute(change.element, Edm.Term);
-                            if (term) {
-                                term.value = printKey(context);
-                            }
-                        }
-                        this.commands.set(i, {
-                            type: 'replace',
-                            changes: [createReplaceNodeChange(pointer, change.element)]
-                        });
-                        this.commands.set(deletionChangeIndex, {
-                            type: 'drop'
-                        });
-                    }
-                } else {
-                    // merge inserts and deletions
-                    const index = change.index ?? grandParent.assignments.length - 1;
-                    const pointer = `${change.pointer.split('/').slice(0, -1).join('/')}/${index}`;
-                    const deletionChangeIndex = this.input.findIndex(
-                        (c) => c.pointer === pointer && c.type === DELETE_ANNOTATION_CHANGE_TYPE
-                    );
-                    const command = this.commands.get(deletionChangeIndex);
-                    if (command?.type === 'drop') {
-                        continue;
-                    }
-                    if (deletionChangeIndex !== -1) {
-                        const element = createReferenceElement(parent);
-                        const last = structuredClone(change.element);
-                        delete last.attributes[Edm.Qualifier];
-                        const context = [last];
-                        if (element) {
-                            context.unshift(element);
-                            const term = getElementAttribute(change.element, Edm.Term);
-                            if (term) {
-                                term.value = printKey(context);
-                            }
-                        }
-                        this.commands.set(i, {
-                            type: 'replace',
-                            changes: [createReplaceNodeChange(pointer, change.element)]
-                        });
-                        this.commands.set(deletionChangeIndex, {
-                            type: 'drop'
-                        });
-                    }
+                const pointer = `${change.pointer.split('/').slice(0, -1).join('/')}/${index}`;
+                const deletionChangeIndex = this.input.findIndex(
+                    (c) => c.pointer === pointer && c.type === DELETE_ANNOTATION_CHANGE_TYPE
+                );
+                const command = this.commands.get(deletionChangeIndex);
+                if (command?.type === 'drop') {
+                    continue;
                 }
+                if (deletionChangeIndex !== -1) {
+                    this.flattenAnnotationTerm(change, parent);
+                    this.createReplaceCommand(pointer, change, deletionChangeIndex, i);
+                }
+            }
+        }
+    }
+
+    private createReplaceCommand(
+        pointer: string,
+        change: InsertEmbeddedAnnotation | InsertAnnotation,
+        deletionChangeIndex: number,
+        changeIndex: number
+    ): void {
+        this.commands.set(changeIndex, {
+            type: 'replace',
+            changes: [createReplaceNodeChange(pointer, change.element)]
+        });
+        this.commands.set(deletionChangeIndex, {
+            type: 'drop'
+        });
+    }
+
+    private flattenAnnotationTerm(change: InsertEmbeddedAnnotation, parent: AstNode): void {
+        const element = createReferenceElement(parent);
+        const last = structuredClone(change.element);
+        delete last.attributes[Edm.Qualifier];
+        const context = [last];
+        if (element) {
+            context.unshift(element);
+            const term = getElementAttribute(change.element, Edm.Term);
+            if (term) {
+                term.value = printKey(context);
             }
         }
     }
