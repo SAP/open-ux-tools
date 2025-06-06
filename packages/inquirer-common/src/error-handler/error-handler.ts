@@ -381,7 +381,7 @@ export class ErrorHandler {
      * @param status the error type
      * @returns true if the error is a general certificate error
      */
-    public static isCertError(status: string | number): boolean {
+    public static isCertError(status: string | number | Error): boolean {
         return [
             ERROR_TYPE.CERT,
             ERROR_TYPE.CERT_EXPIRED,

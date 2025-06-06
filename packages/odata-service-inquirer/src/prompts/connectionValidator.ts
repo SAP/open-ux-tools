@@ -24,8 +24,8 @@ import {
     isFullUrlDestination,
     isPartialUrlDestination
 } from '@sap-ux/btp-utils';
+import { setGlobalRejectUnauthorized } from '@sap-ux/nodejs-utils';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
-import https from 'https';
 import { t } from '../i18n';
 import type { ConnectedSystem } from '../types';
 import { SAP_CLIENT_KEY } from '../types';
@@ -328,7 +328,7 @@ export class ConnectionValidator {
             // VSCode default extension proxy setting does not allow bypassing cert errors using httpsAgent (as used by Axios)
             // so we must use globalAgent to bypass cert validation
             if (ignoreCertError === true) {
-                ConnectionValidator.setGlobalRejectUnauthorized(!ignoreCertError);
+                setGlobalRejectUnauthorized(!ignoreCertError);
             }
             if (isBAS) {
                 url.searchParams.append('saml2', 'disabled');
@@ -410,7 +410,7 @@ export class ConnectionValidator {
         if (await this.shouldIgnoreCertError(axiosConfig)) {
             this._ignoreCertError = true;
             axiosConfig.ignoreCertErrors = true;
-            ConnectionValidator.setGlobalRejectUnauthorized(false);
+            setGlobalRejectUnauthorized(false);
         }
         this._axiosConfig = axiosConfig;
         this._serviceProvider = create(this._axiosConfig);
@@ -520,7 +520,7 @@ export class ConnectionValidator {
             if (await this.shouldIgnoreCertError(axiosConfig, odataVersion)) {
                 this._ignoreCertError = true;
                 axiosConfig.ignoreCertErrors = true;
-                ConnectionValidator.setGlobalRejectUnauthorized(false);
+                setGlobalRejectUnauthorized(false);
             }
             this._axiosConfig = axiosConfig;
             this._serviceProvider = createForAbap(axiosConfig);
@@ -573,7 +573,7 @@ export class ConnectionValidator {
             // The v2 catalog was not available therefore cert errors will not have been seen (hidden by 404), only abap on prem uses axiosConfig directly
             if (this._axiosConfig && (await this.shouldIgnoreCertError(this._axiosConfig, ODataVersion.v4))) {
                 this._ignoreCertError = true;
-                ConnectionValidator.setGlobalRejectUnauthorized(false);
+                setGlobalRejectUnauthorized(false);
                 this._axiosConfig = {
                     ...this._axiosConfig,
                     ignoreCertErrors: true
@@ -1083,21 +1083,5 @@ export class ConnectionValidator {
         this._validatedUrl = undefined;
         this._destinationUrl = undefined;
         this._destination = undefined;
-    }
-
-    /**
-     * Set the rejectUnauthorized option of the global https agent.
-     *
-     * @param rejectUnauthorized - true to reject unauthorized certificates, false to accept them
-     */
-    public static setGlobalRejectUnauthorized(rejectUnauthorized: boolean): void {
-        if (https.globalAgent.options) {
-            https.globalAgent.options.rejectUnauthorized = rejectUnauthorized;
-        }
-        //@ts-expect-error - fallbackAgent is only present in BoundHttpsProxyAgent implementation and is not part of the Node.js API
-        if (https.globalAgent.fallbackAgent) {
-            //@ts-expect-error - fallbackAgent is not typed in Node.js API
-            https.globalAgent.fallbackAgent.options.rejectUnauthorized = rejectUnauthorized;
-        }
     }
 }
