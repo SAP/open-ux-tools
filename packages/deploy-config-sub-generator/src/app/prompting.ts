@@ -24,6 +24,7 @@ import type { GeneratorOptions } from 'yeoman-generator';
  * @param promptOpts.isCap - whether the project is a CAP project
  * @param promptOpts.apiHubConfig - API Hub configuration
  * @param promptOpts.isLibrary - whether the project is a library
+ * @param targetDeployment - target deployment
  * @returns - target deployment CF | ABAP and answers
  */
 export async function promptDeployConfigQuestions(
@@ -50,7 +51,8 @@ export async function promptDeployConfigQuestions(
         isCap: boolean;
         apiHubConfig: ApiHubConfig;
         isLibrary: boolean;
-    }
+    },
+    targetDeployment?: string
 ): Promise<{
     target?: string;
     answers?: AbapDeployConfigAnswersInternal | CfDeployConfigAnswers;
@@ -58,23 +60,30 @@ export async function promptDeployConfigQuestions(
     let answers: AbapDeployConfigAnswersInternal | CfDeployConfigAnswers = {};
 
     if (launchDeployConfigAsSubGenerator) {
-        const { questions, abapAnswers } = await getSubGenPrompts(fs, options, {
-            launchDeployConfigAsSubGenerator,
-            launchStandaloneFromYui,
-            extensionPromptOpts,
-            supportedTargets,
-            backendConfig,
-            cfDestination,
-            isCap,
-            apiHubConfig,
-            isLibrary
-        });
+        const { questions, abapAnswers } = await getSubGenPrompts(
+            fs,
+            options,
+            {
+                launchDeployConfigAsSubGenerator,
+                launchStandaloneFromYui,
+                extensionPromptOpts,
+                supportedTargets,
+                backendConfig,
+                cfDestination,
+                isCap,
+                apiHubConfig,
+                isLibrary
+            },
+            targetDeployment
+        );
         const subGenAnswers = await prompt(questions);
         Object.assign(answers, subGenAnswers, abapAnswers);
     } else {
         answers = await prompt(getDeployTargetQuestion([...supportedTargets], options.projectRoot));
     }
-    const target = supportedTargets.find((t) => t.name === (answers as Answers)?.targetName)?.name;
+    const target = supportedTargets.find(
+        (t) => t.name === (answers as Answers)?.targetName || t.name === targetDeployment
+    )?.name;
 
     return { target, answers };
 }

@@ -83,6 +83,7 @@ export default class extends Generator {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.launchAsSubGen = !!opts.launchAsSubGen;
+        this.configuredSystem = opts.system;
         this.manifest = opts.manifest;
         this.toolsLogger = new ToolsLogger();
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
@@ -97,8 +98,11 @@ export default class extends Generator {
         await initI18n();
 
         // Check if the project is supported
-        if ((await getAppType(this.projectRootPath)) !== 'Fiori Adaptation' || isCFEnvironment(this.projectRootPath)) {
-            throw new Error(t('error.projectNotSupported'));
+        if (!this.launchAsSubGen) {
+            const isFioriAdaptation = (await getAppType(this.projectRootPath)) === 'Fiori Adaptation';
+            if (!isFioriAdaptation || isCFEnvironment(this.projectRootPath)) {
+                throw new Error(t('error.projectNotSupported'));
+            }
         }
 
         // Force the generator to overwrite existing files without additional prompting
@@ -108,8 +112,10 @@ export default class extends Generator {
 
         this._setupFLPConfigPage();
 
-        this.ui5Yaml = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
-        this.configuredSystem = await this._findConfiguredSystem(this.ui5Yaml.target);
+        if (!this.launchAsSubGen) {
+            this.ui5Yaml = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
+            this.configuredSystem ??= await this._findConfiguredSystem(this.ui5Yaml.target);
+        }
         if (!this.configuredSystem) {
             return;
         }

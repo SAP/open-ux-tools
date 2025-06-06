@@ -1,18 +1,29 @@
+import type { ToolsLogger } from '@sap-ux/logger';
+
 import type { UI5Version } from '../types';
+import { buildFallbackMap } from './format';
 import { UI5_VERSIONS_CDN_URL, UI5_VERSIONS_NEO_CDN_URL, LATEST_VERSION } from '../base/constants';
 
 /**
  * Fetches public UI5 version data from the SAP CDN.
  *
- * @returns {Promise<UI5Version>} A promise that resolves to the UI5 version data object.
- * @throws Will throw an error if the fetch fails.
+ * @param {ToolsLogger} logger - Optional logger instance.
+ * @returns {Promise<UI5Version>} A promise that resolves to the UI5 version data object if request completes.
+ * Otherwise, returns fallback ui5 versions.
  */
-export async function fetchPublicVersions(): Promise<UI5Version> {
-    const response = await fetch(UI5_VERSIONS_CDN_URL);
-    if (!response.ok) {
-        throw new Error(`Failed to fetch public UI5 versions. Status: ${response.status}`);
+export async function fetchPublicVersions(logger?: ToolsLogger): Promise<UI5Version> {
+    try {
+        const response = await fetch(UI5_VERSIONS_CDN_URL);
+        if (!response.ok) {
+            throw new Error(`Failed to fetch public UI5 versions. Status: ${response.status}`);
+        }
+        return (await response.json()) as UI5Version;
+    } catch (e) {
+        logger?.warn(
+            '[ui5-info] Falling back to built-in UI5 version list: ' + (e instanceof Error ? e.message : String(e))
+        );
+        return buildFallbackMap();
     }
-    return response.json();
 }
 
 /**

@@ -1,6 +1,7 @@
-import { exec } from 'child_process';
-import { getPackageInfo, installDependencies } from '../../../src/utils/deps';
 import { readFileSync } from 'fs';
+import { exec } from 'child_process';
+
+import { getPackageInfo, installDependencies } from '../../../src/utils/deps';
 
 jest.mock('child_process', () => ({
     ...jest.requireActual('child_process'),
@@ -14,6 +15,8 @@ jest.mock('fs', () => ({
 
 const execMock = exec as unknown as jest.Mock;
 const readFileSyncMock = readFileSync as jest.Mock;
+
+const mockPackage = { name: '@sap-ux/generator-adp', version: '0.0.1', displayName: 'SAPUI5 Adaptation Project' };
 
 describe('installDependencies', () => {
     const dummyProjectPath = '/dummy/path';
@@ -43,8 +46,6 @@ describe('installDependencies', () => {
 });
 
 describe('getPackageInfo', () => {
-    const mockPackage = { name: '@sap-ux/generator-adp', version: '0.0.1' };
-
     afterEach(() => {
         jest.clearAllMocks();
     });

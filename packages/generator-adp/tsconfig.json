@@ -10,6 +10,9 @@
   },
   "references": [
     {
+      "path": "../adp-flp-config-sub-generator"
+    },
+    {
       "path": "../adp-tooling"
     },
     {
@@ -17,6 +20,9 @@
     },
     {
       "path": "../btp-utils"
+    },
+    {
+      "path": "../deploy-config-sub-generator"
     },
     {
       "path": "../feature-toggle"

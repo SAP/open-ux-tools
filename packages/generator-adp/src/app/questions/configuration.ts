@@ -644,7 +644,7 @@ export class ConfigPrompter {
     private async loadUI5Versions(): Promise<void> {
         const version = await getSystemUI5Version(this.abapProvider);
         this.systemVersion = checkSystemVersionPattern(version);
-        this.publicVersions = await fetchPublicVersions();
+        this.publicVersions = await fetchPublicVersions(this.logger);
         this.ui5Versions = await getRelevantVersions(this.systemVersion, this.isCustomerBase, this.publicVersions);
     }
 
