@@ -1,10 +1,9 @@
 import { ui5Proxy } from '../../src';
 import * as hpm from 'http-proxy-middleware';
 import * as utils from '../../src/base/utils';
-import { LogLevel, ToolsLogger } from '@sap-ux/logger';
+import { ToolsLogger } from '@sap-ux/logger';
 
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { WinstonLogger } from '@sap-ux/logger/dist/winston-logger';
 
 jest.mock('http-proxy-middleware', () => ({
     ...jest.requireActual('http-proxy-middleware'),
@@ -47,7 +46,6 @@ describe('proxy', () => {
 
     test('ui5Proxy: creates an ui5 proxy middleware, additional params', () => {
         const config = {
-            logLevel: LogLevel.Debug,
             path: '/mypath',
             url: 'https://example.example',
             version: ''

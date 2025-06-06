@@ -4,7 +4,7 @@ import type { RequestHandler, Options } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import i18n from 'i18next';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
-import { type Logger, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import { ToolsLogger, type Logger, UI5ToolingTransport } from '@sap-ux/logger';
 import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import {
     isAppStudio,
@@ -291,12 +291,16 @@ export async function enhanceConfigForSystem(
  *
  * @param backend backend system specific configuration
  * @param options optional base options for the http-proxy-middleware
+ * @param logger optional logger instance
  * @returns options for the http-proxy-middleware
  */
-export async function generateProxyMiddlewareOptions(backend: BackendConfig, options: Options = {}): Promise<Options> {
-    const logger = new ToolsLogger({
+export async function generateProxyMiddlewareOptions(
+    backend: BackendConfig,
+    options: Options = {},
+    logger: ToolsLogger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware' })]
-    });
+    })
+): Promise<Options> {
     // add required options
     const proxyOptions: Options & { headers: object } = {
         headers: {},
@@ -396,8 +400,13 @@ export async function generateProxyMiddlewareOptions(backend: BackendConfig, opt
  *
  * @param backend backend system specific configuration
  * @param options optional base options for the http-proxy-middleware
+ * @param logger optional logger instance
  * @returns an instance of http-proxy-middleware
  */
-export async function createProxy(backend: BackendConfig, options?: Options): Promise<RequestHandler> {
-    return createProxyMiddleware(await generateProxyMiddlewareOptions(backend, options));
+export async function createProxy(
+    backend: BackendConfig,
+    options?: Options,
+    logger?: ToolsLogger
+): Promise<RequestHandler> {
+    return createProxyMiddleware(await generateProxyMiddlewareOptions(backend, options, logger));
 }

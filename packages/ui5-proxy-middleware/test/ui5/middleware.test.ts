@@ -154,7 +154,9 @@ describe('middleware', () => {
             await getTestServer(config);
             expect(ui5ProxySpy).toBeCalledWith(
                 expect.objectContaining({}),
-                expect.objectContaining({ secure: true })
+                expect.objectContaining({ secure: true, logger: undefined }),
+                undefined,
+                expect.objectContaining({})
             );
         });
 
@@ -165,7 +167,9 @@ describe('middleware', () => {
             });
             expect(ui5ProxySpy).toBeCalledWith(
                 expect.objectContaining({ proxy: 'http://proxy.example' }),
-                expect.objectContaining({ logger: undefined })
+                expect.objectContaining({}),
+                undefined,
+                expect.objectContaining({})
             );
         });
 
@@ -176,7 +180,9 @@ describe('middleware', () => {
             });
             expect(ui5ProxySpy).toBeCalledWith(
                 expect.objectContaining({}),
-                expect.objectContaining({ logger: expect.objectContaining({})})
+                expect.objectContaining({ logger: expect.objectContaining({})}),
+                undefined,
+                expect.objectContaining({})
             );
         });
 
@@ -187,7 +193,9 @@ describe('middleware', () => {
             });
             expect(ui5ProxySpy).toBeCalledWith(
                 expect.objectContaining({}),
-                expect.objectContaining({ secure: true, logger: undefined })
+                expect.objectContaining({ secure: true, logger: undefined }),
+                undefined,
+                expect.objectContaining({})
             );
         });
 
@@ -198,7 +206,9 @@ describe('middleware', () => {
             });
             expect(ui5ProxySpy).toBeCalledWith(
                 expect.objectContaining({}),
-                expect.objectContaining({ secure: false, logger: undefined })
+                expect.objectContaining({ secure: false, logger: undefined }),
+                undefined,
+                expect.objectContaining({})
             );
         });
 
@@ -248,6 +258,8 @@ describe('middleware', () => {
             expect(loadManifestMock).toBeCalled();
             expect(ui5ProxySpy).toBeCalledWith(
                 expect.objectContaining({ version: ui5Version }),
+                expect.objectContaining({}),
+                undefined,
                 expect.objectContaining({})
             );
         });
@@ -261,6 +273,8 @@ describe('middleware', () => {
             await getTestServer(config);
             expect(ui5ProxySpy).toBeCalledWith(
                 expect.objectContaining({ version: '' }),
+                expect.objectContaining({}),
+                undefined,
                 expect.objectContaining({})
             );
         });
@@ -270,6 +284,8 @@ describe('middleware', () => {
             await getTestServer(config);
             expect(ui5ProxySpy).toBeCalledWith(
                 expect.objectContaining({ version: '' }),
+                expect.objectContaining({}),
+                undefined,
                 expect.objectContaining({})
             );
         });

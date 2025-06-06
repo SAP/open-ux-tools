@@ -1,6 +1,6 @@
 import type { ClientRequest, IncomingMessage } from 'http';
 import type { Options } from 'http-proxy-middleware';
-import { LogLevel, NullTransport, ToolsLogger } from '@sap-ux/logger';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import {
     enhanceConfigsForDestination,
     enhanceConfigForSystem,

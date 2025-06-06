@@ -21,12 +21,17 @@ import type { Socket } from 'net';
  * @param config - proxy configuration
  * @param options - additional configuration options
  * @param filter - custom filter function which will be applied to all requests
+ * @param logger - optional logger instance
  * @returns Proxy function to use
  */
-export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter) => {
-    const logger = new ToolsLogger({
+export const ui5Proxy = (
+    config: ProxyConfig,
+    options?: Options,
+    filter?: Filter,
+    logger: ToolsLogger = new ToolsLogger({
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
-    });
+    })
+) => {
     const today = new Date();
     const etag = `W/"${config.version || 'ui5-latest-' + today.getDate() + today.getMonth() + today.getFullYear()}"`;
     const ui5Ver = config.version ? `/${config.version}` : '';

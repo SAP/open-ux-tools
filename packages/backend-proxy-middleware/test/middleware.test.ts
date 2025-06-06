@@ -47,7 +47,8 @@ describe('backend-proxy-middleware', () => {
             await getTestServerForExpress({ backend });
             expect(generateProxyOptionsSpy).toBeCalledWith(
                 expect.objectContaining(backend),
-                expect.objectContaining({ secure: true, logger: undefined })
+                expect.objectContaining({ secure: true, logger: undefined }),
+                expect.objectContaining({})
             );
         });
 
@@ -55,7 +56,8 @@ describe('backend-proxy-middleware', () => {
             await getTestServerForExpress({ backend, debug: true });
             expect(generateProxyOptionsSpy).toBeCalledWith(
                 expect.objectContaining(backend),
-                expect.objectContaining({ secure: true, logger: expect.objectContaining({}) })
+                expect.objectContaining({ secure: true, logger: expect.objectContaining({}) }),
+                expect.objectContaining({})
             );
         });
 
@@ -68,7 +70,8 @@ describe('backend-proxy-middleware', () => {
             await getTestServerForExpress({ backend: addtionalConfig });
             expect(generateProxyOptionsSpy).toBeCalledWith(
                 expect.objectContaining(addtionalConfig),
-                expect.objectContaining({ secure: true, logger: undefined })
+                expect.objectContaining({ secure: true, logger: undefined }),
+                expect.objectContaining({})
             );
         });
 
@@ -80,7 +83,8 @@ describe('backend-proxy-middleware', () => {
             await getTestServerForExpress({ backend, options });
             expect(generateProxyOptionsSpy).toBeCalledWith(
                 expect.objectContaining(backend),
-                expect.objectContaining({ ...options, secure: true, logger: undefined })
+                expect.objectContaining({ ...options, secure: true, logger: undefined }),
+                expect.objectContaining({})
             );
         });
     });
@@ -128,7 +132,8 @@ describe('backend-proxy-middleware with connect', () => {
         await getTestServerForConnect({ backend });
         expect(generateProxyOptionsSpy).toBeCalledWith(
             expect.objectContaining(backend),
-            expect.objectContaining({ secure: true, logger: undefined })
+            expect.objectContaining({ secure: true, logger: undefined }),
+            expect.objectContaining({})
         );
     });
 
@@ -141,7 +146,8 @@ describe('backend-proxy-middleware with connect', () => {
         await getTestServerForConnect({ backend: addtionalConfig });
         expect(generateProxyOptionsSpy).toBeCalledWith(
             expect.objectContaining(addtionalConfig),
-            expect.objectContaining({ secure: true, logger: undefined })
+            expect.objectContaining({ secure: true, logger: undefined }),
+            expect.objectContaining({})
         );
     });
 
@@ -153,7 +159,8 @@ describe('backend-proxy-middleware with connect', () => {
         await getTestServerForConnect({ backend, options });
         expect(generateProxyOptionsSpy).toBeCalledWith(
             expect.objectContaining(backend),
-            expect.objectContaining({ ...options, secure: true, logger: undefined })
+            expect.objectContaining({ ...options, secure: true, logger: undefined }),
+            expect.objectContaining({})
         );
     });
 

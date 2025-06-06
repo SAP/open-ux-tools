@@ -103,7 +103,7 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
                 proxy: config.proxy
             };
 
-            routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions) });
+            routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions, undefined, logger) });
             ui5Configs.push(ui5Config);
         }
     }

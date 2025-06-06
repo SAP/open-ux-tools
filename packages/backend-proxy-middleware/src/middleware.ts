@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
-import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
-import { createProxyMiddleware } from 'http-proxy-middleware';
-import type { MiddlewareParameters, BackendMiddlewareConfig } from './base/types';
-import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
 import express from 'express';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import type { BackendMiddlewareConfig, MiddlewareParameters } from './base/types';
+import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
 
 /**
  * Hides the proxy credentials for displaying the proxy configuration in the console.
@@ -34,6 +34,7 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
  */
 module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfig>): Promise<RequestHandler> => {
     const logger = new ToolsLogger({
+        logLevel: options.configuration?.debug ? LogLevel.Debug : LogLevel.Info,
         transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware' })]
     });
 
@@ -47,7 +48,7 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
     configOptions.logger = options.configuration?.debug ? logger : undefined;
 
     try {
-        const proxyOptions = await generateProxyMiddlewareOptions(options.configuration.backend, configOptions);
+        const proxyOptions = await generateProxyMiddlewareOptions(options.configuration.backend, configOptions, logger);
         const proxyFn = createProxyMiddleware(proxyOptions);
         logger.info(
             `Starting backend-proxy-middleware using following configuration:\nbackend: ${JSON.stringify({
@@ -58,7 +59,6 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
                 options.configuration?.debug ? 'debug' : 'info'
             }'`
         );
-        //})}\noptions: ${JSON.stringify(configOptions)}'\nlog: '${options.configuration?.debug ? 'debug' : 'info'}'`
         return router.use(backend.path, proxyFn);
     } catch (e) {
         const message = `Failed to register backend for ${backend.path}. Check configuration in yaml file. \n\t${e}`;
