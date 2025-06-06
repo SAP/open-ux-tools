@@ -58,7 +58,6 @@ export function addFlpGen(
     try {
         /**
          * We are using this namespace for now because '@sap-ux/adp-flp-config-sub-generator' is not yet bundled in '@sap/generator-fiori'.
-         * After, it will be moved to devDependencies to be able to debug it from OSR.
          */
         composeWith(require.resolve('@sap-ux/adp-flp-config-sub-generator/generators/app'), {
             launchAsSubGen: true,
