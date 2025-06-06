@@ -505,7 +505,7 @@ describe('proxy', () => {
                 path: '/my/path'
             };
 
-            const proxyOptions = await generateProxyMiddlewareOptions(backend, {}, LogLevel.Debug);
+            const proxyOptions = await generateProxyMiddlewareOptions(backend, {});
 
             if (typeof proxyOptions?.on?.error === 'function') {
                 proxyOptions.on.error(undefined as any, {} as any, {} as any);

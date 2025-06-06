@@ -19,7 +19,8 @@ import type { ReaderCollection } from '@ui5/fs';
  */
 function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Options {
     return {
-        secure: config.secure !== undefined ? !!config.secure : true
+        secure: config.secure !== undefined ? !!config.secure : true,
+        logger: config.debug ? logger : undefined
     };
 }
 
@@ -91,7 +92,6 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
     const configs = Array.isArray(config.ui5) ? config.ui5 : [config.ui5];
     const ui5Configs: ProxyConfig[] = [];
     const routes: { route: string; handler: RequestHandler }[] = [];
-    const logLevel = options.configuration?.debug ? LogLevel.Debug : LogLevel.Info;
 
     for (const ui5 of configs) {
         const paths = Array.isArray(ui5.path) ? ui5.path : [ui5.path];
@@ -103,7 +103,7 @@ module.exports = async ({ resources, options }: MiddlewareParameters<UI5ProxyCon
                 proxy: config.proxy
             };
 
-            routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions, undefined, logLevel) });
+            routes.push({ route: ui5Config.path, handler: ui5Proxy(ui5Config, proxyOptions) });
             ui5Configs.push(ui5Config);
         }
     }

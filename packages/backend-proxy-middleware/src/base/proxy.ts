@@ -4,7 +4,7 @@ import type { RequestHandler, Options } from 'http-proxy-middleware';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import i18n from 'i18next';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
-import { type Logger, ToolsLogger, LogLevel, UI5ToolingTransport } from '@sap-ux/logger';
+import { type Logger, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import { AbapCloudEnvironment, createForAbapOnCloud } from '@sap-ux/axios-extension';
 import {
     isAppStudio,
@@ -291,16 +291,10 @@ export async function enhanceConfigForSystem(
  *
  * @param backend backend system specific configuration
  * @param options optional base options for the http-proxy-middleware
- * @param logLevel optional log level to be used for the logger
  * @returns options for the http-proxy-middleware
  */
-export async function generateProxyMiddlewareOptions(
-    backend: BackendConfig,
-    options: Options = {},
-    logLevel: LogLevel = LogLevel.Info
-): Promise<Options> {
+export async function generateProxyMiddlewareOptions(backend: BackendConfig, options: Options = {}): Promise<Options> {
     const logger = new ToolsLogger({
-        logLevel,
         transports: [new UI5ToolingTransport({ moduleName: 'backend-proxy-middleware' })]
     });
     // add required options
@@ -320,8 +314,7 @@ export async function generateProxyMiddlewareOptions(
         ...options,
         changeOrigin: true,
         target: backend.url,
-        pathRewrite: PathRewriters.getPathRewrite(backend, logger),
-        logger: logLevel === LogLevel.Debug ? logger : undefined
+        pathRewrite: PathRewriters.getPathRewrite(backend, logger)
     };
 
     // overwrite url if running in AppStudio
@@ -403,13 +396,8 @@ export async function generateProxyMiddlewareOptions(
  *
  * @param backend backend system specific configuration
  * @param options optional base options for the http-proxy-middleware
- * @param logLevel optional log level to be used for the logger
  * @returns an instance of http-proxy-middleware
  */
-export async function createProxy(
-    backend: BackendConfig,
-    options?: Options,
-    logLevel: LogLevel = LogLevel.Info
-): Promise<RequestHandler> {
-    return createProxyMiddleware(await generateProxyMiddlewareOptions(backend, options, logLevel));
+export async function createProxy(backend: BackendConfig, options?: Options): Promise<RequestHandler> {
+    return createProxyMiddleware(await generateProxyMiddlewareOptions(backend, options));
 }

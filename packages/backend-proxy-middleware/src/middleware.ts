@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { MiddlewareParameters, BackendMiddlewareConfig } from './base/types';
@@ -44,21 +44,21 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
     const backend = options.configuration.backend;
     const configOptions = options.configuration.options ?? {};
     configOptions.secure = configOptions.secure !== undefined ? !!configOptions.secure : true;
-    const logLevel = options.configuration?.debug ? LogLevel.Debug : LogLevel.Info;
+    configOptions.logger = options.configuration?.debug ? logger : undefined;
 
     try {
-        const proxyOptions = await generateProxyMiddlewareOptions(
-            options.configuration.backend,
-            configOptions,
-            logLevel
-        );
+        const proxyOptions = await generateProxyMiddlewareOptions(options.configuration.backend, configOptions);
         const proxyFn = createProxyMiddleware(proxyOptions);
         logger.info(
             `Starting backend-proxy-middleware using following configuration:\nbackend: ${JSON.stringify({
                 ...backend,
                 proxy: formatProxyForLogging(backend.proxy)
-            })}\noptions: ${JSON.stringify(configOptions)}'`
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            })}\noptions: ${JSON.stringify(({ logger, ...rest } = configOptions) => rest)}'\nlog: '${
+                options.configuration?.debug ? 'debug' : 'info'
+            }'`
         );
+        //})}\noptions: ${JSON.stringify(configOptions)}'\nlog: '${options.configuration?.debug ? 'debug' : 'info'}'`
         return router.use(backend.path, proxyFn);
     } catch (e) {
         const message = `Failed to register backend for ${backend.path}. Check configuration in yaml file. \n\t${e}`;
