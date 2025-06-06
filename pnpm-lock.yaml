@@ -565,12 +565,18 @@ importers:
 
   packages/adp-tooling:
     dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.16.9
+        version: 1.16.9
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n

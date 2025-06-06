@@ -55,13 +55,14 @@ import { createAbapServiceProvider, type AbapTarget, type UrlAbapTarget } from '
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import { initAppWizardCache, addToCache, getFromCache, deleteCache } from './appWizzardCache';
 
 /**
  * Generator for adding a FLP configuration to an adaptation project.
  *
  * @extends Generator
  */
-export default class extends Generator {
+export default class AdpFlpConfigGenerator extends Generator {
     setPromptsCallback: (fn: object) => void;
     private prompts: Prompts;
     // Flag to determine if the generator was launched as a sub-generator or standalone
@@ -77,11 +78,11 @@ export default class extends Generator {
     private abort: boolean = false;
     private ui5Yaml: AdpPreviewConfig;
     private credentials: CredentialsAnswers;
-    private provider: AbapServiceProvider;
     private inbounds?: ManifestNamespace.Inbound;
     private appId: string;
     private variant: DescriptorVariant;
     private tileSettingsAnswers?: TileSettingsAnswers;
+    private provider: AbapServiceProvider;
 
     /**
      * Creates an instance of the generator.
@@ -98,6 +99,7 @@ export default class extends Generator {
         this.options = opts;
         this.vscode = opts.vscode;
 
+        initAppWizardCache(opts.logger, this.appWizard);
         this._setupFLPConfigPrompts();
         this._setupLogging();
     }
@@ -115,9 +117,10 @@ export default class extends Generator {
         if (!this.launchAsSubGen) {
             await this._initializeStandAloneGenerator();
         } else {
-            this.provider = this.options.provider as AbapServiceProvider;
             this.appId = this.options.appId as string;
         }
+
+        await this._initAbapServiceProvider();
 
         try {
             this.inbounds = await this._getAppInbounds();
@@ -176,6 +179,7 @@ export default class extends Generator {
     }
 
     end(): void {
+        deleteCache(this.appWizard, this.logger);
         if (this.abort) {
             return;
         }
@@ -236,6 +240,7 @@ export default class extends Generator {
                 try {
                     this.provider = await this._getAbapServiceProvider();
                     this.inbounds = await this._getAppInbounds();
+                    addToCache(this.appWizard, { provider: this.provider }, this.logger);
                 } catch (error) {
                     if (!isAxiosError(error)) {
                         this.logger.error(`Base application inbounds fetching failed: ${error}`);
@@ -408,7 +413,7 @@ export default class extends Generator {
             const tileSettingsPrompts = getFlpTileSettings();
             if (!this.launchAsSubGen && flpConfigurationExists(this.variant)) {
                 const existingConfigPrompt = getExistingFlpConfigInfoPrompt(isCli());
-                tileSettingsPrompts.unshift(existingConfigPrompt as unknown as YUIQuestion<TileSettingsAnswers>);
+                tileSettingsPrompts.unshift(existingConfigPrompt as YUIQuestion);
             }
             return (await this.prompt(tileSettingsPrompts)) as TileSettingsAnswers & FLPConfigAnswers;
         }
@@ -453,7 +458,22 @@ export default class extends Generator {
         this.ui5Yaml = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
         this.variant = await getVariant(this.projectRootPath, this.fs);
         this.appId = this.variant.reference;
+    }
+
+    private async _initAbapServiceProvider(): Promise<void> {
+        if (this.launchAsSubGen) {
+            this.provider = this.options.provider as AbapServiceProvider;
+            return;
+        }
+
+        const cachedProvider = getFromCache<AbapServiceProvider>(this.appWizard, 'provider', this.logger);
+        if (cachedProvider) {
+            this.provider = cachedProvider;
+            return;
+        }
+
         this.provider = await this._getAbapServiceProvider();
+        addToCache(this.appWizard, { provider: this.provider }, this.logger);
     }
 }
 

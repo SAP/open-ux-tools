@@ -44,3 +44,7 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
         projectRootPath: string;
     };
 }
+
+export interface AdpAppWizardCache {
+    provider?: AbapServiceProvider;
+}

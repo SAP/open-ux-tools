@@ -18,6 +18,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../fiori-generator-shared"
+    },
+    {
       "path": "../i18n"
     },
     {
