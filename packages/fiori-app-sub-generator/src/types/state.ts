@@ -52,6 +52,7 @@ export interface Service {
     client?: string;
     destinationName?: string;
     servicePath?: string; // url path of odata or cap service
+    serviceId?: string; // id of the service
     edmx?: string; // Optional since Fiori Freestyle can be generated without datasource
     annotations?: Annotations[];
     version?: OdataVersion; // Not present for FF no datasource template flow
@@ -173,3 +174,10 @@ export enum FloorplanFE {
 
 // Used internally to join Floorplan types from multiple generators (until we have a merged type)
 export type Floorplan = FloorplanFE | FloorplanFF;
+
+export interface AppGenInfoAbapCSN {
+    packageUri: string;
+    csnName: string;
+    serviceNameCsn?: string;
+    serviceUri?: string;
+}

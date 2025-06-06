@@ -12,9 +12,10 @@ import {
     DefaultLogger,
     getHostEnvironment,
     hostEnvironment,
-    type ILogWrapper,
     sendTelemetry,
-    TelemetryHelper
+    TelemetryHelper,
+    type AbapCSN,
+    type ILogWrapper
 } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
@@ -65,7 +66,7 @@ import {
     type ViewNameAnswer
 } from './prompting';
 import { addDeployGen, addFlpGen } from './subgenHelpers';
-import { getTemplateType, transformState } from './transforms';
+import { getTemplateType, transformAbapCSNForAppGenInfo, transformState } from './transforms';
 import { writeAppGenInfoFiles, writeAPIHubKeyFiles } from './writing';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
@@ -369,6 +370,13 @@ export class FioriAppGenerator extends Generator {
                 );
                 await generateFioriElementsApp(destRoot, feApp, this.fs);
                 appConfig = feApp;
+            }
+
+            if (this.state.appGenInfo?.externalParameters?.abapCSN) {
+                this.state.appGenInfo.externalParameters.abapCSN = transformAbapCSNForAppGenInfo(
+                    { serviceId: service.serviceId, serviceUri: service.servicePath },
+                    this.state.appGenInfo.externalParameters.abapCSN as AbapCSN
+                );
             }
 
             const t2 = performance.now();

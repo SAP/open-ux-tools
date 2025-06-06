@@ -2,7 +2,7 @@ import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import type { BackendSystem } from '@sap-ux/store';
 import { AuthenticationType } from '@sap-ux/store';
-import { transformState } from '../../../src/fiori-app-generator/transforms';
+import { transformAbapCSNForAppGenInfo, transformState } from '../../../src/fiori-app-generator/transforms';
 import type { Project, Service, State } from '../../../src/types';
 import { ApiHubType, FloorplanFE, FloorplanFF, PLATFORMS } from '../../../src/types';
 import type { FioriElementsApp } from '@sap-ux/fiori-elements-writer';
@@ -279,5 +279,34 @@ describe('Test transform state', () => {
                 frameworkUrl: 'https://ui5.sap.com'
             }
         });
+    });
+
+    test('Should transform `abapCSN` external state to internal representation for the single service for appGenInfo.json', async () => {
+        const abapCSN = {
+            services: [
+                { type: 'abapCSN', runtimeName: 'ABCD_MockService_O1', csnServiceName: 'MockService' },
+                { type: 'abapCSN', runtimeName: 'ABCD_MockService_O2', csnServiceName: 'MockService2' },
+                { type: 'abapCSN', runtimeName: 'ABCD_MockService_O3', csnServiceName: 'MockService3' }
+            ],
+            csnName: 'MOCKCSN55.abap.csn',
+            packageUri: 'abapfs:/BAS_DEST/MOCK_CSN_TEST1'
+        };
+
+        const abapCSNInternal = transformAbapCSNForAppGenInfo(
+            {
+                serviceId: 'ABCD_MockService_O2',
+                serviceUri: '/abap/odata/abcd_mock_service_02'
+            },
+            abapCSN
+        );
+
+        expect(abapCSNInternal).toMatchObject([
+            {
+                packageUri: 'abapfs:/BAS_DEST/MOCK_CSN_TEST1',
+                csnName: 'MOCKCSN55.abap.csn',
+                serviceNameCsn: 'MockService2',
+                serviceUri: '/abap/odata/abcd_mock_service_02'
+            }
+        ]);
     });
 });

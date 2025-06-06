@@ -18,7 +18,7 @@ import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service
 import { ServiceType } from '@sap-ux/odata-service-writer';
 import { AuthenticationType } from '@sap-ux/store';
 import { latestVersionString } from '@sap-ux/ui5-info';
-import type { Floorplan, State } from '../types';
+import type { AppGenInfoAbapCSN, Floorplan, State } from '../types';
 import {
     DEFAULT_HOST,
     DEFAULT_SERVICE_PATH,
@@ -42,7 +42,7 @@ import {
 } from '../utils';
 import type { Package } from '@sap-ux/project-access';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
-import { hostEnvironment, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { hostEnvironment, getHostEnvironment, type AbapCSN } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Get the writer template type from the Fiori App floorplan.
@@ -179,12 +179,12 @@ function getUI5Uri(): string {
  * Transform Fiori Tools State to the type required by the open source ux-tools module.
  * Process inputs to set correct defaults.
  *
- * @param param0
- * @param param0.project
- * @param param0.service
- * @param param0.floorplan
- * @param param0.entityRelatedConfig
- * @param param0.viewName
+ * @param state
+ * @param state.project
+ * @param state.service
+ * @param state.floorplan
+ * @param state.entityRelatedConfig
+ * @param state.viewName
  * @param generateIndexHtml
  * @returns {FioriElementsApp<T>} - The app configuration
  */
@@ -359,4 +359,29 @@ function getBaseAppConfig(
             : TemplateSettingsFE<unknown>
     };
     return appConfig;
+}
+
+/**
+ * Transforms the external abapCSN object (possible multiple services) to the internal abapCSN (single chosen service).
+ * Uses the chosen service to obtain the service uri, id, and name for the .appGenInfo.json.
+ *
+ * @param chosenService - the service selected during prompting
+ * @param chosenService.serviceId - service id
+ * @param chosenService.serviceUri - service uri
+ * @param abapCSN - external abapCSN object passed to app gen
+ * @returns - internal representation of abapCSN for .appGenInfo.json
+ */
+export function transformAbapCSNForAppGenInfo(
+    { serviceId, serviceUri }: { serviceId?: string; serviceUri?: string },
+    abapCSN: AbapCSN
+): AppGenInfoAbapCSN[] {
+    const serviceNameCsn = abapCSN.services.find((service) => service.runtimeName === serviceId)?.csnServiceName;
+    return [
+        {
+            packageUri: abapCSN.packageUri,
+            csnName: abapCSN.csnName,
+            serviceNameCsn,
+            serviceUri
+        }
+    ];
 }

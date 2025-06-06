@@ -1,8 +1,19 @@
+interface CSNServices {
+    runtimeName: string;
+    csnServiceName: string;
+}
+
+export interface AbapCSN {
+    packageUri: string;
+    csnName: string;
+    services: CSNServices[];
+}
+
 /**
  * Interface representing external parameters for the .appGenInfo.json file.
  */
 export type ExternalParameters = {
-    [key: string]: string | object | object[];
+    [key: string]: string | object | object[] | AbapCSN;
 };
 
 /**
