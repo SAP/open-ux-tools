@@ -1,23 +1,22 @@
 import { realpathSync } from 'fs';
 import { fileURLToPath } from 'url';
 
-const driveLetter = process.platform === 'win32' ? realpathSync.native('\\')[0] : '';
-
 /**
- *  Converts URI to path.
+ *  Normalize URI to path.
  *
- * @param uri - URI.
+ * @param pathOrUri - URI or string.
+ * @param parse - URI or string.
  * @returns File path.
  */
-export function pathFromUri(uri: string): string {
-    const parsedUri = fileURLToPath(uri);
+export function normalizePath(pathOrUri: string, parse = true): string {
+    const parsedPath = parse ? fileURLToPath(pathOrUri) : pathOrUri;
 
     // for windows, some NodeJS methods will output uppercase drive letters, some in lowercase
     if (process.platform === 'win32') {
-        return toggleCase(parsedUri.charAt(0)) + parsedUri.slice(1);
+        return toggleCase(parsedPath.charAt(0)) + parsedPath.slice(1);
     }
 
-    return parsedUri;
+    return parsedPath;
 }
 
 /**
@@ -27,5 +26,6 @@ export function pathFromUri(uri: string): string {
  * @returns Normalized drive letter character
  */
 function toggleCase(character: string): string {
+    const driveLetter = process.platform === 'win32' ? realpathSync.native('\\')[0] : '';
     return driveLetter === driveLetter.toUpperCase() ? character.toUpperCase() : character.toLowerCase();
 }
