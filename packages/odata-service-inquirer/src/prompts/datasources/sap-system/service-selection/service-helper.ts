@@ -63,7 +63,8 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
                     servicePath,
                     serviceODataVersion: service.odataVersion,
                     toString: () => serviceName,
-                    serviceType: service.serviceType
+                    serviceType: service.serviceType,
+                    serviceId: service.id
                 }
             }) as ListChoiceOptions<ServiceAnswer>;
         });
@@ -309,6 +310,7 @@ export async function validateService(
     PromptState.odataService.odataVersion =
         version ?? (service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4);
     PromptState.odataService.servicePath = service.servicePath;
+    PromptState.odataService.serviceId = service.serviceId;
     PromptState.odataService.origin = origin;
     PromptState.odataService.sapClient = connectionValidator.validatedClient;
     PromptState.odataService.ignoreCertError = connectionValidator.ignoreCertError;

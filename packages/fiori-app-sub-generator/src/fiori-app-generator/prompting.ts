@@ -190,6 +190,7 @@ export async function promptOdataServiceAnswers(
         host: answers.origin,
         client: answers.sapClient,
         servicePath: answers.servicePath,
+        serviceId: answers.serviceId,
         edmx: answers.metadata,
         annotations: answers.annotations,
         version: answers.odataVersion,

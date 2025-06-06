@@ -88,6 +88,7 @@ export async function writeAppGenInfoFiles(
         generatorPlatform: appGenInfoCustom?.generatorPlatform ?? getHostEnvironment().name,
         serviceType: appGenInfoCustom?.serviceType,
         metadataFilename: service.localEdmxFilePath ? basename(service.localEdmxFilePath) : '',
+        serviceId: service.serviceId,
         serviceUrl: appGenInfoCustom?.serviceUrl,
         appName: project.name,
         appTitle: project.title,

@@ -52,6 +52,7 @@ export interface Service {
     client?: string;
     destinationName?: string;
     servicePath?: string; // url path of odata or cap service
+    serviceId?: string; // id of the service
     edmx?: string; // Optional since Fiori Freestyle can be generated without datasource
     annotations?: Annotations[];
     version?: OdataVersion; // Not present for FF no datasource template flow

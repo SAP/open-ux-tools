@@ -78,6 +78,11 @@ export interface OdataServiceAnswers {
     servicePath?: string;
 
     /**
+     * The id of the selected service.
+     */
+    serviceId?: string;
+
+    /**
      * The 'sap-client' value for the service.
      */
     sapClient?: string;
