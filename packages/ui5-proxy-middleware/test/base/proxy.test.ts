@@ -63,7 +63,7 @@ describe('proxy', () => {
         expect(mockCreateProxyMiddleware).toHaveBeenCalledWith({
             changeOrigin: false,
             secure: true,
-            logger: expect.any(WinstonLogger),
+            logger: undefined,
             target: 'https://example.example',
             on: {
                 proxyReq: expect.any(Function),
