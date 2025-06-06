@@ -73,7 +73,7 @@ builder:
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"2.9.9\\",
     \\"rimraf\\": \\"^5.0.5\\",
-    \\"ui5-task-flatten-library\\": \\"3.0.2\\"
+    \\"ui5-task-flatten-library\\": \\"^3.1.0\\"
   },
   \\"scripts\\": {
     \\"deploy\\": \\"npm run build && fiori deploy --config deploy-config.yaml && rimraf archive.zip\\",
@@ -102,7 +102,7 @@ Object {
   \\"devDependencies\\": {
     \\"@ui5/cli\\": \\"2.9.9\\",
     \\"rimraf\\": \\"^5.0.5\\",
-    \\"ui5-task-flatten-library\\": \\"3.0.2\\"
+    \\"ui5-task-flatten-library\\": \\"^3.1.0\\"
   },
   \\"scripts\\": {
     \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
