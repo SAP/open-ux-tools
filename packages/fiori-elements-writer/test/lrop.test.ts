@@ -444,6 +444,67 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         });
     });
 
+    test('should generate manifest with correct routing and context paths when parameterised main entity is selected', async () => {
+        const projectName = 'projectWithParametrisedMainEntity';
+        const config = {
+            ...Object.assign(feBaseConfig(projectName), {
+                template: {
+                    type: TemplateType.ListReportObjectPage,
+                    settings: {
+                        entityConfig: {
+                            mainEntityName: 'ZC_STOCKAGEING',
+                            mainEntityParameterName: 'Set'
+                        },
+                        tableType: 'ResponsiveTable'
+                    }
+                },
+                appOptions: {
+                    ...feBaseConfig(projectName).appOptions,
+                    generateIndex: false,
+                    addTests: true,
+                    useVirtualPreviewEndpoints: true
+                }
+            }),
+            service: {
+                ...v4Service,
+                type: ServiceType.EDMX
+            },
+            ui5: {
+                ...feBaseConfig(projectName).ui5,
+                minUI5Version: '1.94.0'
+            }
+        } as FioriElementsApp<LROPSettings>;
+
+        const testPath = join(curTestOutPath, projectName);
+        const fs = await generate(testPath, config);
+        const manifestPath = join(testPath, 'webapp', 'manifest.json');
+        const manifest = fs.readJSON(manifestPath);
+
+        const routing = (manifest as any)['sap.ui5'].routing;
+        const routingRoutes = routing.routes;
+
+        // check routing routes
+        expect(routingRoutes).toEqual([
+            {
+                pattern: ':?query:',
+                name: 'ZC_STOCKAGEINGList',
+                target: 'ZC_STOCKAGEINGList'
+            },
+            {
+                pattern: 'ZC_STOCKAGEING({key})/Set({key2}):?query:',
+                name: 'ZC_STOCKAGEINGObjectPage',
+                target: 'ZC_STOCKAGEINGObjectPage'
+            }
+        ]);
+
+        // check context paths
+        const contextPathForListPage = routing.targets.ZC_STOCKAGEINGList.options.settings.contextPath;
+        expect(contextPathForListPage).toBe('/ZC_STOCKAGEING/Set');
+
+        const contextPathForObjectPage = routing.targets.ZC_STOCKAGEINGObjectPage.options.settings.contextPath;
+        expect(contextPathForObjectPage).toBe('/ZC_STOCKAGEING/Set');
+    });
+
     test('sapuxLayer is added to package json for edmx projects when provided', async () => {
         const fioriElementsApp: FioriElementsApp<LROPSettings> = {
             ...Object.assign(feBaseConfig('felrop1'), {

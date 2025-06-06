@@ -8,10 +8,11 @@
                     "target": "<%- entityConfig.mainEntityName %>List"
                 },<% } %>
                 {
-                    "pattern": "<%- entityConfig.mainEntityName %>({key}):?query:",
+                    "pattern": "<%- entityConfig.mainEntityName %>({key})<% if (entityConfig.mainEntityParameterName) { %>/<%- entityConfig.mainEntityParameterName %>({key2})<% } %>:?query:",
                     "name": "<%- entityConfig.mainEntityName %>ObjectPage",
                     "target": "<%- entityConfig.mainEntityName %>ObjectPage"
-                }<% if (entityConfig.navigationEntity && entityConfig.navigationEntity.EntitySet) { %>,
+                }
+                <% if (entityConfig.navigationEntity && entityConfig.navigationEntity.EntitySet) { %>,
                     {
                         "pattern": "<%- entityConfig.mainEntityName %>({key})/<%- entityConfig.navigationEntity.Name %>({key2}):?query:",
                         "name": "<%- entityConfig.navigationEntity.EntitySet %>ObjectPage",
