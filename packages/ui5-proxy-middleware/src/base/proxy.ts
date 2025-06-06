@@ -9,7 +9,7 @@ import {
     proxyErrorHandler,
     updateProxyEnv
 } from './utils';
-import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { Url } from 'url';
 import { getProxyForUrl } from 'proxy-from-env';
 import { HttpsProxyAgent } from 'https-proxy-agent';
