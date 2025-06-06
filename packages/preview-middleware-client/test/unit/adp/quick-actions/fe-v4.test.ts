@@ -534,15 +534,14 @@ describe('FE V4 quick actions', () => {
                     { actionName: 'add-controller-to-page', telemetryEventIdentifier }
                 );
 
-                expect(reportTelemetrySpy).toHaveBeenCalledWith(
-                   {
-                        category: 'QuickAction',
-                        quickActionSteps: 2,
-                        actionName: 'add-controller-to-page',
-                        telemetryEventIdentifier,
-                        ui5Version: '1.127.0',
-                        appType: 'fe-v4'
-                    })
+                expect(reportTelemetrySpy).toHaveBeenCalledWith({
+                    category: 'QuickAction',
+                    quickActionSteps: 2,
+                    actionName: 'add-controller-to-page',
+                    telemetryEventIdentifier,
+                    ui5Version: '1.127.0',
+                    appType: 'fe-v4'
+                });
             });
 
             test('initialize and execute action with existing controller change', async () => {
@@ -651,7 +650,8 @@ describe('FE V4 quick actions', () => {
                                     id: 'listReport0-add-controller-to-page',
                                     title: 'Add Controller to Page',
                                     enabled: false,
-                                    tooltip: 'This action is disabled because a pending change for a controller extension has been found. '
+                                    tooltip:
+                                        'This action is disabled because a pending change for a controller extension has been found. '
                                 }
                             ]
                         }
@@ -1201,6 +1201,7 @@ describe('FE V4 quick actions', () => {
 
                 mockOverlay.getDesignTimeMetadata.mockReturnValue({
                     getData: jest.fn().mockReturnValue({
+                        manifestSettings: jest.fn().mockReturnValue([]),
                         manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
                         manifestPropertyChange: jest.fn().mockImplementation((propertyValue, propertyPath) => [
                             {
@@ -1519,6 +1520,7 @@ describe('FE V4 quick actions', () => {
 
                         mockOverlay.getDesignTimeMetadata.mockReturnValue({
                             getData: jest.fn().mockReturnValue({
+                                manifestSettings: jest.fn().mockReturnValue([]),
                                 manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
                                 manifestPropertyChange: jest.fn().mockImplementation((propertyValue, propertyPath) => [
                                     {
@@ -2154,6 +2156,7 @@ describe('FE V4 quick actions', () => {
 
                         mockOverlay.getDesignTimeMetadata.mockReturnValue({
                             getData: jest.fn().mockReturnValue({
+                                manifestSettings: jest.fn().mockReturnValue([]),
                                 manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
                                 manifestPropertyChange: jest.fn().mockImplementation((propertyValue, propertyPath) => [
                                     {
@@ -2427,6 +2430,7 @@ describe('FE V4 quick actions', () => {
 
                             mockOverlay.getDesignTimeMetadata.mockReturnValue({
                                 getData: jest.fn().mockReturnValue({
+                                    manifestSettings: jest.fn().mockReturnValue([]),
                                     manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
                                     manifestPropertyChange: jest
                                         .fn()
@@ -2499,7 +2503,7 @@ describe('FE V4 quick actions', () => {
                             enabled: true,
                             id: 'objectPage0-add-controller-to-page',
                             kind: 'simple',
-                            title: 'Add Controller to Page',
+                            title: 'Add Controller to Page'
                         },
                         {
                             enabled: true,
