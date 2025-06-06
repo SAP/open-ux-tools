@@ -174,10 +174,3 @@ export enum FloorplanFE {
 
 // Used internally to join Floorplan types from multiple generators (until we have a merged type)
 export type Floorplan = FloorplanFE | FloorplanFF;
-
-export interface AppGenInfoAbapCSN {
-    packageUri: string;
-    csnName: string;
-    serviceNameCsn?: string;
-    serviceUri?: string;
-}

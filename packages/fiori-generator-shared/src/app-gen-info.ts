@@ -1,6 +1,36 @@
-import type { AppGenInfo, ExternalParameters } from './types';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
+import type { AbapCSN, AppGenInfo, ExternalParameters } from './types';
+
+/**
+ * Transforms the external abapCSN object (possible multiple services) to the internal abapCSN (single chosen service).
+ * Uses the chosen service to obtain the service uri and name for the .appGenInfo.json.
+ *
+ * @param chosenService - the service selected during prompting
+ * @param chosenService.serviceId - service id
+ * @param chosenService.serviceUrl - service url
+ * @param abapCSN - external abapCSN object passed to app gen
+ * @returns - internal representation of abapCSN for .appGenInfo.json
+ */
+export function transformAbapCSNForAppGenInfo(
+    { serviceId, serviceUrl }: { serviceId?: string; serviceUrl?: string },
+    abapCSN: AbapCSN
+): {
+    packageUri: string;
+    csnName: string;
+    serviceNameCsn?: string;
+    serviceUrl?: string;
+}[] {
+    const serviceNameCsn = abapCSN.services.find((service) => service.runtimeName === serviceId)?.csnServiceName;
+    return [
+        {
+            packageUri: abapCSN.packageUri,
+            csnName: abapCSN.csnName,
+            serviceNameCsn,
+            serviceUrl
+        }
+    ];
+}
 
 /**
  * Generates a README file and .appGenInfo.json at the specified destination path using the provided configuration and file system editor.
@@ -16,7 +46,7 @@ export function generateAppGenInfo(destPath: string, appGenInfo: AppGenInfo, fs:
     const templateSourcePath = join(__dirname, '../templates/README.md');
     const templateDestPath = `${destPath}/README.md`;
 
-    const { externalParameters, ...appGenInfoCore } = appGenInfo;
+    const { externalParameters, serviceId, ...appGenInfoCore } = appGenInfo;
 
     // Write the README file
     fs.copyTpl(templateSourcePath, templateDestPath, appGenInfoCore);
@@ -29,6 +59,12 @@ export function generateAppGenInfo(destPath: string, appGenInfo: AppGenInfo, fs:
     };
 
     if (externalParameters) {
+        if (externalParameters.abapCSN) {
+            externalParameters.abapCSN = transformAbapCSNForAppGenInfo(
+                { serviceId, serviceUrl: appGenInfo.serviceUrl },
+                externalParameters.abapCSN as AbapCSN
+            );
+        }
         appGenInfoJson.externalParameters = externalParameters;
     }
 
