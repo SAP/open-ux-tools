@@ -1,5 +1,93 @@
 # @sap-ux/adp-tooling
 
+## 0.14.14
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.7
+
+## 0.14.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.6
+
+## 0.14.12
+
+### Patch Changes
+
+-   Updated dependencies [61d4060]
+    -   @sap-ux/axios-extension@1.21.2
+    -   @sap-ux/system-access@0.6.2
+
+## 0.14.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.5
+
+## 0.14.10
+
+### Patch Changes
+
+-   61ea5c0: fix: Incorrect types package put during adaptation project generation
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/odata-service-writer@0.27.5
+    -   @sap-ux/project-access@1.30.2
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/project-input-validator@0.6.2
+    -   @sap-ux/system-access@0.6.1
+    -   @sap-ux/inquirer-common@0.7.4
+
+## 0.14.9
+
+### Patch Changes
+
+-   Updated dependencies [f9e4913]
+    -   @sap-ux/odata-service-writer@0.27.4
+
+## 0.14.8
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.3
+
+## 0.14.7
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+
+## 0.14.6
+
+### Patch Changes
+
+-   Updated dependencies [6e2ef66]
+    -   @sap-ux/odata-service-writer@0.27.3
+
+## 0.14.5
+
+### Patch Changes
+
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/system-access@0.6.1
+
+## 0.14.4
+
+### Patch Changes
+
+-   8e44d02: fix: reuse ABAP service provider in create annotation file handler
+
+## 0.14.3
+
+### Patch Changes
+
+-   Updated dependencies [07eaebf]
+    -   @sap-ux/odata-service-writer@0.27.2
+
 ## 0.14.2
 
 ### Patch Changes

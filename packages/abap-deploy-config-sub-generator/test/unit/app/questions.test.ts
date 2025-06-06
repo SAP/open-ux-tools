@@ -59,16 +59,20 @@ describe('Test getAbapQuestions', () => {
                 ui5AbapRepo: { hideIfOnPremise: false },
                 transportInputChoice: { hideIfOnPremise: false },
                 packageAutocomplete: {
-                    shouldValidatePackageForStartingPrefix: false,
-                    shouldValidatePackageType: false,
-                    shouldValidateFormatAndSpecialCharacters: false
+                    additionalValidation: {
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidatePackageType: false,
+                        shouldValidateFormatAndSpecialCharacters: false
+                    }
                 },
                 packageManual: {
-                    shouldValidatePackageForStartingPrefix: false,
-                    shouldValidatePackageType: false,
-                    shouldValidateFormatAndSpecialCharacters: false
+                    additionalValidation: {
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidatePackageType: false,
+                        shouldValidateFormatAndSpecialCharacters: false
+                    }
                 },
-                targetSystem: { shouldRestrictDifferentSystemType: false }
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             }
         });
 
@@ -138,16 +142,20 @@ describe('Test getAbapQuestions', () => {
                 ui5AbapRepo: { hideIfOnPremise: false },
                 transportInputChoice: { hideIfOnPremise: false },
                 packageAutocomplete: {
-                    shouldValidatePackageForStartingPrefix: false,
-                    shouldValidatePackageType: false,
-                    shouldValidateFormatAndSpecialCharacters: false
+                    additionalValidation: {
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidatePackageType: false,
+                        shouldValidateFormatAndSpecialCharacters: false
+                    }
                 },
                 packageManual: {
-                    shouldValidatePackageForStartingPrefix: false,
-                    shouldValidatePackageType: false,
-                    shouldValidateFormatAndSpecialCharacters: false
+                    additionalValidation: {
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidatePackageType: false,
+                        shouldValidateFormatAndSpecialCharacters: false
+                    }
                 },
-                targetSystem: { shouldRestrictDifferentSystemType: false }
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             }
         });
 

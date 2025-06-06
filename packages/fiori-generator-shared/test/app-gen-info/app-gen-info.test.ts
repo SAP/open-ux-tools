@@ -1,8 +1,8 @@
 import path from 'path';
 import memFs from 'mem-fs';
 import memFsEditor from 'mem-fs-editor';
-import { generateReadMe } from '../../src/read-me';
-import type { ReadMe } from '../../src/types';
+import { generateAppGenInfo } from '../../src/app-gen-info';
+import type { AppGenInfo } from '../../src/types';
 
 function getLaunchText(): string {
     return (
@@ -19,7 +19,7 @@ describe('Readme file generation tests', () => {
 
     it('should generate README.md with the correct content including core and optional properties', () => {
         const readMePath = path.join(__dirname, '/README.md');
-        const readMe: ReadMe = {
+        const readMe: AppGenInfo = {
             generatorName: '@sap/generator-fiori-elements',
             template: 'List Report Page V4',
             serviceType: 'Local Cap',
@@ -34,21 +34,36 @@ describe('Readme file generation tests', () => {
             ui5Theme: 'a_ui5_theme',
             ui5Version: '1.2.3',
             appNamespace: 'appNamespace',
-            additionalEntries: [
-                { label: 'Generator Specific Label A', value: 'Generator Specific Value A' },
-                { label: 'Generator Specific Label B', value: 'Generator Specific Value B' }
-            ],
+            externalParameters: {
+                'addEntry1': 'Generator Specific Value A',
+                'addEntry2': 'Generator Specific Value B',
+                'addEntryArr': [
+                    {
+                        prop1: 'value1',
+                        prop2: 'value2',
+                        prop3: 'value3',
+                        prop4: 'value4'
+                    },
+                    {
+                        prop1: 'valuea',
+                        prop2: 'valueb',
+                        prop3: 'valuec',
+                        prop4: 'valued'
+                    }
+                ]
+            },
             enableEslint: false,
             enableTypeScript: false,
             enableCodeAssist: false
         };
-        generateReadMe(__dirname, readMe, editor);
+        generateAppGenInfo(__dirname, readMe, editor);
         expect(editor.read(readMePath)).toMatchSnapshot();
+        expect(editor.readJSON(path.join(__dirname, '/.appGenInfo.json'))).toMatchSnapshot();
     });
 
     it('should generate README.md with core properties', () => {
         const readMePath = path.join(__dirname, '/README.md');
-        const readMe: ReadMe = {
+        const readMe: AppGenInfo = {
             generatorName: '@sap/generator-fiori-elements',
             template: 'List Report Page V4',
             generatorVersion: '2.0.1',
@@ -57,9 +72,10 @@ describe('Readme file generation tests', () => {
             appDescription: 'Fiori project description',
             ui5Theme: 'a_ui5_theme',
             ui5Version: '1.2.3',
-            appNamespace: 'appNamespace'
+            appNamespace: 'appNamespace',
+            entityRelatedConfig: [{ type: 'Main Entity', value: 'Product' }]
         };
-        generateReadMe(__dirname, readMe, editor);
+        generateAppGenInfo(__dirname, readMe, editor);
         expect(editor.read(readMePath)).toMatchSnapshot();
     });
 });

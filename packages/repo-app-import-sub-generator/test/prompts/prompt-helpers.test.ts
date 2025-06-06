@@ -1,15 +1,19 @@
 import { fetchAppListForSelectedSystem, formatAppChoices, getYUIDetails } from '../../src/prompts/prompt-helpers';
-import { PromptNames, RepoAppDownloadAnswers, AppItem } from '../../src/app/types';
+import type { RepoAppDownloadAnswers, AppItem } from '../../src/app/types';
+import { PromptNames } from '../../src/app/types';
 import { PromptState } from '../../src/prompts/prompt-state';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import { generatorTitle, generatorDescription } from '../../src/utils/constants';
-import { t } from '../../src/utils/i18n';   
+import { t } from '../../src/utils/i18n';
 import RepoAppDownloadLogger from '../../src/utils/logger';
+import { DatasourceType, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 
 jest.mock('../../src/utils/logger', () => ({
     logger: {
         error: jest.fn(),
-        warn: jest.fn()
+        warn: jest.fn(),
+        info: jest.fn(),
+        debug: jest.fn()
     }
 }));
 
@@ -22,9 +26,10 @@ describe('fetchAppListForSelectedSystem', () => {
 
     const mockAnswers: RepoAppDownloadAnswers = {
         [PromptNames.systemSelection]: {
+            datasourceType: DatasourceType.sapSystem,
             connectedSystem: {
                 serviceProvider: mockServiceProvider
-            }
+            } as ConnectedSystem
         },
         [PromptNames.selectedApp]: {
             appId: 'mockAppId',
@@ -37,12 +42,12 @@ describe('fetchAppListForSelectedSystem', () => {
     };
 
     it('should fetch the application list when systemSelection and serviceProvider are provided', async () => {
-        const result = await fetchAppListForSelectedSystem(mockServiceProvider, mockAnswers[PromptNames.selectedApp].appId);
-
-        expect(mockServiceProvider.getAppIndex().search).toHaveBeenCalledWith(
-            expect.anything(),
-            expect.anything()
+        const result = await fetchAppListForSelectedSystem(
+            mockAnswers[PromptNames.systemSelection].connectedSystem as ConnectedSystem,
+            mockAnswers[PromptNames.selectedApp].appId
         );
+
+        expect(mockServiceProvider.getAppIndex().search).toHaveBeenCalledWith(expect.anything(), expect.anything());
         expect(result).toEqual([{ id: 'app1' }, { id: 'app2' }]);
         expect(PromptState.systemSelection).toEqual({
             connectedSystem: { serviceProvider: mockServiceProvider }
@@ -50,15 +55,20 @@ describe('fetchAppListForSelectedSystem', () => {
     });
 
     it('should return an empty array when serviceProvider is not provided', async () => {
-        const result = await fetchAppListForSelectedSystem(undefined as unknown as AbapServiceProvider);
+        const result = await fetchAppListForSelectedSystem(undefined as unknown as ConnectedSystem);
         expect(result).toEqual([]);
     });
 
     it('should log an error if getAppList throws an error', async () => {
         const error = new Error('Mock error');
         mockServiceProvider.getAppIndex().search = jest.fn().mockRejectedValue(error);
-        const result = await fetchAppListForSelectedSystem(mockServiceProvider, mockAnswers[PromptNames.selectedApp].appId);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.applicationListFetchError', { error: error.message }));
+        const result = await fetchAppListForSelectedSystem(
+            mockAnswers[PromptNames.systemSelection].connectedSystem as ConnectedSystem,
+            mockAnswers[PromptNames.selectedApp].appId
+        );
+        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(
+            t('error.applicationListFetchError', { error: error.message })
+        );
         expect(result).toEqual([]);
     });
 });
@@ -100,13 +110,17 @@ describe('formatAppChoices', () => {
     it('should log error if required fields are missing', () => {
         const appList: AppIndex = [invalidApp];
         const result = formatAppChoices(appList);
-        expect(RepoAppDownloadLogger.logger.warn).toBeCalledWith( t('warn.requiredFieldsMissing', { app: JSON.stringify(appList) }) );
+        expect(RepoAppDownloadLogger.logger.warn).toBeCalledWith(
+            t('warn.requiredFieldsMissing', { app: JSON.stringify(appList) })
+        );
     });
 
     it('should handle a mix of valid and invalid apps by throwing an error', () => {
         const appList: AppIndex = [validApp, invalidApp];
         const result = formatAppChoices(appList);
-        expect(RepoAppDownloadLogger.logger.warn).toBeCalledWith( t('warn.requiredFieldsMissing', { app: JSON.stringify(appList) }) );
+        expect(RepoAppDownloadLogger.logger.warn).toBeCalledWith(
+            t('warn.requiredFieldsMissing', { app: JSON.stringify(appList) })
+        );
     });
 
     it('should return an empty array if the app list is empty', () => {

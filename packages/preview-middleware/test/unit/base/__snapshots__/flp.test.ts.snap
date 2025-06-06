@@ -480,7 +480,6 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -584,6 +583,81 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
 </html>"
 `;
 
+exports[`FlpSandbox router - connect API GET default routes with connect API (used by karma test runner) 5`] = `
+"<!DOCTYPE HTML>
+<html lang=\\"en\\">
+<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
+
+<head>
+    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
+    <meta charset=\\"UTF-8\\">
+    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
+    <title>Local FLP Sandbox</title>
+
+    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
+
+         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
+
+         The fiori2 renderer will render the shell header allowing, for instance,
+         testing of additional application setting buttons.
+
+         The navigation target resolution service is configured in a way that the empty URL hash is
+         resolved to our own application.
+
+         This example uses relative path references for the SAPUI5 resources and test-resources;
+         it might be necessary to adapt them depending on the target runtime platform.
+         The sandbox platform is restricted to development or demo use cases and must NOT be used
+         for productive scenarios.
+    -->
+    <script type=\\"text/javascript\\">
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
+                }
+            },
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
+        };
+    </script>
+
+    <script type=\\"text/javascript\\">
+        window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
+    </script>
+
+    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
+    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
+    <script id=\\"sap-ui-bootstrap\\"
+        src=\\"../resources/sap-ui-core.js\\"
+        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
+        data-sap-ui-async=\\"true\\"
+        data-sap-ui-preload=\\"async\\"
+        data-sap-ui-theme=\\"sap_horizon_dark\\"
+        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-language=\\"en\\"
+        data-sap-ui-bindingSyntax=\\"complex\\"
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"writeConnector\\":\\"open/ux/preview/client/flp/WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
+        data-sap-ui-frameOptions=\\"allow\\"
+        data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
+    </script>
+
+
+</head>
+
+<!-- UI Content -->
+<body class=\\"sapUiBody\\" id=\\"content\\">
+</body>
+
+</html>"
+`;
+
 exports[`FlpSandbox router - connect API GET default routes with connect API when enhancedHomePage is enabled 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
@@ -629,7 +703,6 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
@@ -800,7 +873,6 @@ exports[`FlpSandbox router enhanced homepage disabled editor with config 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -876,7 +948,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -950,7 +1021,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 2.x 1`] 
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
         data-sap-ui-xx-component-preload=\\"off\\"
-        
         data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -1024,7 +1094,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 legacy-f
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
         data-sap-ui-xx-component-preload=\\"off\\"
-        
         data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -1100,7 +1169,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 snapshot
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -1178,7 +1246,6 @@ exports[`FlpSandbox router enhanced homepage disabled test/flp.html sap-ui-xx-vi
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -1237,7 +1304,6 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
@@ -1299,7 +1365,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
@@ -1374,7 +1439,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 2.x 1`] =
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
         data-sap-ui-xx-component-preload=\\"off\\"
-        
         data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -1448,7 +1512,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 legacy-fr
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
         data-sap-ui-xx-component-preload=\\"off\\"
-        
         data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -1507,7 +1570,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
@@ -1569,7 +1631,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-vie
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
@@ -1646,7 +1707,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html should fallba
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -1781,7 +1841,6 @@ exports[`FlpSandbox router rta with adp instance - preview 2`] = `
         data-sap-ui-resourceroots='{\\"myResources1\\":\\"myResourcesUrl1\\",\\"myResources2\\":\\"myResourcesUrl2\\",\\"open.ux.preview.client\\":\\"../preview/client\\",\\"my.id\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
@@ -1917,7 +1976,6 @@ exports[`FlpSandbox router rta with adp instance 2`] = `
         data-sap-ui-xx-designMode=\\"true\\"
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"myComponent\\",\\"appName\\":\\"my.id\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
@@ -2076,7 +2134,6 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
         data-sap-ui-xx-design-mode=\\"true\\"
         data-sap-ui-xx-suppress-deactivation-of-controller-code=\\"true\\"
         data-sap-ui-xx-view-cache=\\"false\\"
-        
         data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
@@ -2171,7 +2228,6 @@ exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
         data-sap-ui-xx-designMode=\\"true\\"
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/tools/plugin\\"}'>
@@ -2265,7 +2321,6 @@ exports[`FlpSandbox router rta with url parameters 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>
@@ -2397,14 +2452,13 @@ exports[`FlpSandbox router test/flp.html UI5 1.71 with asyncHints.requests 2`] =
         data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"FioriToolsNonexistentConnector\\",\\"writeConnector\\":\\"FioriToolsNonexistentConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
+        data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"myResources1\\":\\"myResourcesUrl1\\",\\"myResources2\\":\\"myResourcesUrl2\\",\\"open.ux.preview.client\\":\\"../preview/client\\",\\"my.id\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
         data-sap-ui-xx-designMode=\\"true\\"
         data-sap-ui-xx-suppressDeactivationOfControllerCode=\\"true\\"
         data-sap-ui-xx-viewCache=\\"false\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"myComponent\\",\\"appName\\":\\"my.id\\",\\"generator\\":\\"@sap-ux/control-property-editor\\",\\"developerMode\\":true,\\"pluginScript\\":\\"open/ux/preview/client/cpe/init\\"}'>
@@ -2558,7 +2612,6 @@ exports[`FlpSandbox rta with new config rta with url parameters 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        
         data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-features='[]'
         data-open-ux-preview-flex-settings='{\\"layer\\":\\"CUSTOMER_BASE\\",\\"baseId\\":\\"test.fe.v2.app\\",\\"appName\\":\\"test.fe.v2.app\\",\\"generator\\":\\"@sap-ux/preview-middleware\\",\\"developerMode\\":false}'>

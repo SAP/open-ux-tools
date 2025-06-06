@@ -397,6 +397,28 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     type: ServiceType.EDMX
                 }
             } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lrop_v4_add_test_virtual_endpoints',
+            config: {
+                ...Object.assign(feBaseConfig('lrop_v4_add_test_virtual_endpoints'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    },
+                    appOptions: {
+                        ...feBaseConfig('lrop_v4_add_test_virtual_endpoints').appOptions,
+                        generateIndex: false,
+                        addTests: true,
+                        useVirtualPreviewEndpoints: true
+                    }
+                }),
+                service: {
+                    ...v4Service,
+                    metadata: getTestData('annotation_v4', 'metadata'),
+                    type: ServiceType.EDMX
+                }
+            } as FioriElementsApp<LROPSettings>
         }
     ];
 

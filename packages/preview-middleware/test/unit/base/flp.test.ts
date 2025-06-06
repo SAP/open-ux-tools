@@ -24,6 +24,9 @@ import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
 
+jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
+jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
+
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
         __esModule: true,
@@ -1046,6 +1049,8 @@ describe('FlpSandbox', () => {
             response = await server.get('/test/integration/opaTests.qunit.html').expect(200);
             expect(response.text).toMatchSnapshot();
             await server.get('/cdm.json').expect(404);
+            response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(response.text).toMatchSnapshot();
         });
 
         test('GET default routes with connect API when enhancedHomePage is enabled', async () => {

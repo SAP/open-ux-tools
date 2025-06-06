@@ -14,11 +14,17 @@
             "!{projectRoot}/**/*.test.tsx",
             "!{projectRoot}/**/*.spec.ts",
             "!{projectRoot}/**/*.test.ts"
+        ],
+        "sharedGlobals": [
+            {
+                "runtime": "node -p \"`${process.platform}_${process.arch}_${process.version}`\""
+            }
         ]
     },
     "targetDefaults": {
         "build": {
             "dependsOn": ["^build"],
+            "inputs": ["default", "^prod", "sharedGlobals"],
             "outputs": [
                 "{projectRoot}/dist",
                 "{projectRoot}/generators",
@@ -28,12 +34,24 @@
             "cache": true
         },
         "test": {
-            "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
+            "inputs": [
+                "default",
+                "^prod",
+                "{workspaceRoot}/jest.base.js",
+                "{projectRoot}/jest.config.js",
+                "sharedGlobals"
+            ],
             "outputs": ["{projectRoot}/coverage"],
             "cache": true
         },
         "test:integration": {
-            "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
+            "inputs": [
+                "default",
+                "^prod",
+                "{workspaceRoot}/jest.base.js",
+                "{projectRoot}/jest.config.js",
+                "sharedGlobals"
+            ],
             "outputs": ["{projectRoot}/playwright-report"],
             "cache": true
         },
@@ -60,5 +78,9 @@
         }
     },
     "defaultBase": "main",
-    "nxCloudId": "63723103eb505e0e8ebeb550"
+    "nxCloudId": "63723103eb505e0e8ebeb550",
+    "tui": {
+        "enabled": false,
+        "autoExit": true
+    }
 }
