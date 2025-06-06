@@ -379,7 +379,7 @@ class Visitor {
     }
 
     private flattenedAnnotation(astNode: Annotation, node: ElementChild, pointer: string[]): ReturnValue | undefined {
-        if (node.type !== ELEMENT_TYPE || node.name !== Edm.Record) {
+        if (node.type !== ELEMENT_TYPE || (node.name !== Edm.Record && node.name !== Edm.Annotation)) {
             return undefined;
         }
         const [segment, indexSegment, ...segments] = pointer;
@@ -392,7 +392,11 @@ class Visitor {
                 if (segment.length === 0) {
                     return undefined;
                 }
-                return this.flattenedAnnotationPropertyValue(astNode, propertyValue, segments);
+                if (node.name === Edm.Record) {
+                    return this.flattenedAnnotationPropertyValue(astNode, propertyValue, segments);
+                } else if (node.name === Edm.Annotation) {
+                    return this.flattenedAnnotationValue(astNode, propertyValue, segments);
+                }
             }
         }
         return undefined;
@@ -428,6 +432,22 @@ class Visitor {
                 pointer: ['term', 'segments', this.currentFlattenedSegmentIndexInPath.toString()]
             };
         }
+        return undefined;
+    }
+    private flattenedAnnotationValue(
+        astNode: Annotation,
+        node: ElementChild,
+        pointer: string[]
+    ): ReturnValue | undefined {
+        if (node?.type !== ELEMENT_TYPE || !astNode.value) {
+            return undefined;
+        }
+        if (pointer.length === 0) {
+            return {
+                pointer: ['value']
+            };
+        }
+        // flattened structures after annotation are not supported
         return undefined;
     }
 }

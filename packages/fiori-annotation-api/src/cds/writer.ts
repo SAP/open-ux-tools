@@ -29,17 +29,11 @@ import {
     RECORD_PROPERTY_TYPE,
     RECORD_TYPE,
     copyPosition,
-    ANNOTATION_GROUP_TYPE
+    ANNOTATION_GROUP_TYPE,
+    ANNOTATION_GROUP_ITEMS_TYPE
 } from '@sap-ux/cds-annotation-parser';
 import type { Target } from '@sap-ux/cds-odata-annotation-converter';
-import {
-    TARGET_TYPE,
-    printCsdlNode,
-    printPrimitiveValue,
-    indent,
-    print,
-    printTarget
-} from '@sap-ux/cds-odata-annotation-converter';
+import { TARGET_TYPE, printPrimitiveValue, indent, print, printTarget } from '@sap-ux/cds-odata-annotation-converter';
 
 import { increaseIndent, compareByRange } from '../utils';
 import { ApiError } from '../error';
@@ -104,9 +98,10 @@ import {
     DELETE_TARGET_CHANGE_TYPE,
     CONVERT_TO_COMPOUND_ANNOTATION_CHANGE_TYPE,
     DELETE_ANNOTATION_GROUP_CHANGE_TYPE,
-    DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE
+    DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE,
+    createDeleteAnnotationChange
 } from './change';
-import { preprocessChanges } from './preprocessor';
+import { createReferenceElement, preprocessChanges } from './preprocessor';
 import type { CompilerToken } from './cds-compiler-tokens';
 import {
     findLastTokenBeforePosition,
@@ -188,7 +183,7 @@ export class CDSWriter implements ChangeHandler {
      */
     public async getTextEdits(): Promise<TextEdit[]> {
         this.resetState();
-        this.processedChanges = preprocessChanges(this.document, this.changes);
+        this.processedChanges = preprocessChanges(this.document, this.changes, this.tokens);
 
         for (const change of this.processedChanges) {
             const path = getAstNodesFromPointer(this.document, change.pointer).reverse();
@@ -277,7 +272,7 @@ export class CDSWriter implements ChangeHandler {
         if ((astNode?.type === ANNOTATION_TYPE || astNode?.type === RECORD_PROPERTY_TYPE) && astNode.range) {
             const recordText =
                 ' : ' +
-                indent(print(change.element, printOptions, false), {
+                indent(print(change.element, printOptions, { indentResult: false }), {
                     level: indentLevel,
                     skipFirstLine: true
                 });
@@ -310,7 +305,7 @@ export class CDSWriter implements ChangeHandler {
 
     [INSERT_ANNOTATION_CHANGE_TYPE] = (change: InsertAnnotation, reversePath: AstNode[]): void => {
         const [astNode] = reversePath;
-        if (astNode?.type !== TARGET_TYPE) {
+        if (astNode?.type !== TARGET_TYPE && astNode?.type !== ANNOTATION_GROUP_ITEMS_TYPE) {
             return;
         }
         const indentLevel = this.getIndentLevel(change.pointer);
@@ -325,7 +320,7 @@ export class CDSWriter implements ChangeHandler {
     };
 
     [INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE] = (change: InsertEmbeddedAnnotation, reversePath: AstNode[]): void => {
-        const [astNode] = reversePath;
+        const [astNode, parent] = reversePath;
         const indentLevel = this.getIndentLevel(change.pointer);
         if (astNode?.type === RECORD_TYPE) {
             const content = getContainerContent(astNode, this.comments, this.tokens);
@@ -337,44 +332,26 @@ export class CDSWriter implements ChangeHandler {
                 this.isFirstInsert(change.pointer, astNode, change.index)
             );
         } else if (astNode?.type === ANNOTATION_TYPE) {
-            const value = astNode.value;
-            let adjustedIndentLevel = indentLevel;
+            // we're inserting into the parent, not the value
+            let adjustedIndentLevel = indentLevel - 1;
             if (willTargetAnnotationIncreaseIndent(this.processedChanges, change.pointer)) {
                 adjustedIndentLevel++;
             }
-            if (value?.type === RECORD_TYPE) {
-                const content = getContainerContent(value, this.comments, this.tokens);
-                // existing value is record
+
+            if (
+                astNode.value?.range &&
+                (parent?.type === TARGET_TYPE || parent?.type === ANNOTATION_GROUP_ITEMS_TYPE)
+            ) {
+                const content = getContainerContent(parent, this.comments, this.tokens);
                 this.insertIntoNodeWithContent(
                     content,
-                    value,
+                    parent,
                     change,
                     adjustedIndentLevel,
-                    this.isFirstInsert(change.pointer, value, change.index)
+                    // adjust pointer to match the parent node, because we're inserting into the parent
+                    this.isFirstInsert(change.pointer.split('/').slice(0, -2).join('/'), parent, change.index),
+                    astNode
                 );
-            } else if (astNode.value?.range) {
-                // existing value is primitive
-                const indent = ' '.repeat(adjustedIndentLevel * printOptions.tabWidth);
-                const valueIndent = ' '.repeat((adjustedIndentLevel + 1) * printOptions.tabWidth);
-                const annotationText = printCsdlNode(change.element, printOptions);
-                const insertEdits = [
-                    TextEdit.insert(astNode.value.range.start, `{\n${valueIndent}$value : `),
-                    TextEdit.insert(astNode.value.range.end, `,\n${valueIndent}${annotationText}\n${indent}}`)
-                ];
-                const valuePointer = [change.pointer, 'value'].join('/');
-                const replacementChange = this.processedChanges.find(
-                    (c) => c.pointer === valuePointer && c.type === REPLACE_NODE_CHANGE_TYPE
-                );
-                if (!replacementChange) {
-                    let line = astNode.value.range.start.line + 1;
-                    const contentIndent = ' '.repeat(printOptions.tabWidth);
-                    while (line <= astNode.value.range.end.line) {
-                        insertEdits.push(TextEdit.insert(Position.create(line, 0), contentIndent));
-                        line++;
-                    }
-                }
-
-                this.edits.push(...insertEdits);
             }
         }
     };
@@ -573,21 +550,25 @@ export class CDSWriter implements ChangeHandler {
 
     [DELETE_EMBEDDED_ANNOTATION_CHANGE_TYPE] = (change: DeleteEmbeddedAnnotation, reversePath: AstNode[]): void => {
         const [astNode, parent] = reversePath;
-        if (astNode?.type === ANNOTATION_TYPE && parent.type === RECORD_TYPE) {
-            // Transform $value back to normal primitive value representation if last embedded annotation is being deleted
-            const firstProperty = parent.properties[0];
-            const isTransformPossible =
-                parent.annotations?.length === 1 &&
-                parent.properties.length === 1 &&
-                firstProperty.name.value === ReservedProperties.Value;
-            if (isTransformPossible && parent.range && firstProperty.value?.range) {
-                // delete surrounding record parts, leaving property value only
-                this.edits.push(
-                    TextEdit.del(Range.create(parent.range.start, firstProperty.value.range.start)),
-                    TextEdit.del(Range.create(firstProperty.value.range.end, parent.range.end))
-                );
+        if (astNode?.type === ANNOTATION_TYPE) {
+            if (parent.type === RECORD_TYPE) {
+                // Transform $value back to normal primitive value representation if last embedded annotation is being deleted
+                const firstProperty = parent.properties[0];
+                const isTransformPossible =
+                    parent.annotations?.length === 1 &&
+                    parent.properties.length === 1 &&
+                    firstProperty.name.value === ReservedProperties.Value;
+                if (isTransformPossible && parent.range && firstProperty.value?.range) {
+                    // delete surrounding record parts, leaving property value only
+                    this.edits.push(
+                        TextEdit.del(Range.create(parent.range.start, firstProperty.value.range.start)),
+                        TextEdit.del(Range.create(firstProperty.value.range.end, parent.range.end))
+                    );
+                } else {
+                    this.deleteNode(change.pointer, reversePath);
+                }
             } else {
-                this.deleteNode(change.pointer, reversePath);
+                this[DELETE_ANNOTATION_CHANGE_TYPE](createDeleteAnnotationChange(change.pointer), reversePath);
             }
         }
     };
@@ -615,15 +596,8 @@ export class CDSWriter implements ChangeHandler {
             return;
         }
         let indentLevel = this.getIndentLevel(change.pointer);
-        const parentPointer = change.pointer.split('/').slice(0, -1).join('/');
-        const insertEmbeddedAnnotationChange = this.changes.find(
-            (change) => change.pointer === parentPointer && change.type === INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE
-        );
 
         if (willTargetAnnotationIncreaseIndent(this.processedChanges, change.pointer)) {
-            indentLevel++;
-        }
-        if (insertEmbeddedAnnotationChange) {
             indentLevel++;
         }
 
@@ -639,7 +613,7 @@ export class CDSWriter implements ChangeHandler {
             return;
         }
 
-        const text = indent(print(change.newProperty, printOptions, false), {
+        const text = indent(print(change.newProperty, printOptions, { indentResult: false }), {
             level: indentLevel + 1,
             skipFirstLine: true
         });
@@ -755,7 +729,8 @@ export class CDSWriter implements ChangeHandler {
         parent: ContainerNode,
         change: T,
         indentLevel: number,
-        firstInsert: boolean
+        firstInsert: boolean,
+        referenceNode?: Annotation
     ): void {
         const index = getIndexForInsertion(getChildCount(parent), change.index);
         // change.index should not be used in this scope, because changes with indices outside the container size are merged
@@ -763,7 +738,7 @@ export class CDSWriter implements ChangeHandler {
         if (!change || !parent.range) {
             return;
         }
-        const newElements = printChange(parent)(change);
+        const newElements = printChange(parent, referenceNode)(change);
         if (getChildCount(parent) === 0) {
             const fragments: string[] = [];
             const range = copyRange(parent.range);
@@ -931,11 +906,19 @@ function convertToCompoundAnnotation(
     // if annotation ends with ';' we need to insert closing ')' before ';' otherwise we need to insert it after the last token
     // sometimes element annotations many end without ';'
     const afterEndTokenCharacter = tokenColumn(afterEndToken);
+    const afterEndTokenLine = tokenLine(afterEndToken);
     const endCharacter = afterEndToken.text === ';' ? afterEndTokenCharacter : endTokenCharacter + endToken.text.length;
+    const endReplaceRangeStart = Position.create(endTokenLine, endCharacter);
+    // if the closing '}' for element container is in the same line as the value it is likely there will be whitespace between,
+    // we need to make sure that this whitespace is removed because `)` will be inserted in the same line
+    const endReplaceRangeEnd =
+        endTokenLine === afterEndTokenLine
+            ? Position.create(afterEndTokenLine, afterEndTokenCharacter)
+            : endReplaceRangeStart;
     return [
         TextEdit.insert(Position.create(startTokenLine, startTokenCharacter + 1), `(\n${indentText}`),
         ...contentIndent,
-        TextEdit.insert(Position.create(endTokenLine, endCharacter), `\n${closingIndent})`)
+        TextEdit.replace(Range.create(endReplaceRangeStart, endReplaceRangeEnd), `\n${closingIndent})`)
     ];
 }
 
@@ -1027,13 +1010,24 @@ function deleteValue(
     }
 }
 
-function printChange(parent: ContainerNode | undefined) {
-    return function (change: ElementInserts) {
-        if (change.type === INSERT_PRIMITIVE_VALUE_TYPE) {
+function printChange(parent: ContainerNode | undefined, referenceNode?: Annotation) {
+    return function (change: ElementInserts): string {
+        if (change.type === INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE) {
+            if (referenceNode) {
+                const element = createReferenceElement(referenceNode);
+                if (element) {
+                    return print(change.element, printOptions, {
+                        indentResult: false,
+                        annotationContext: [element]
+                    });
+                }
+            }
+            return '@' + print(change.element, printOptions);
+        } else if (change.type === INSERT_PRIMITIVE_VALUE_TYPE) {
             const text = change.element.content[0]?.type === TEXT_TYPE ? change.element.content[0].text : '';
             return printPrimitiveValue(change.element.name, text);
         } else if (parent?.type === RECORD_TYPE && change.element.name === Edm.Annotation) {
-            return printCsdlNode(change.element, printOptions);
+            return print(change.element, printOptions);
         } else {
             return print(change.element, printOptions);
         }
@@ -1459,7 +1453,7 @@ function skipCommaInsertion(
     content: ContainerContentBlock[],
     document: CDSDocument,
     insertAfterIndex: number
-) {
+): boolean {
     return !!changes.find((change) => {
         if (!change.type.startsWith('delete')) {
             return false;
@@ -1468,7 +1462,7 @@ function skipCommaInsertion(
         const toBeDeletedNodes = astNodes[astNodes.length - 1];
         const node = content[insertAfterIndex];
         if (node.type === 'element' && node?.element === toBeDeletedNodes) {
-            if (toBeDeletedNodes.type === 'annotation' && content.length === 1) {
+            if (toBeDeletedNodes.type === ANNOTATION_TYPE && content.length === 1) {
                 return false;
             }
             return true;

@@ -4,7 +4,8 @@ exports[`annotation generation (CDS) generate default facets and line items 1`] 
 "using from '../../srv/service';
 using from '../../db/schema';
 annotate MainService.Consultants with {
-    identifier @(UI.lineItem : [
+    identifier @(
+        UI.lineItem : [
             {
                 position : 10,
                 importance : #HIGH,
@@ -25,11 +26,12 @@ annotate MainService.Consultants with {
                 position : 10,
                 label : 'General Information',
             },
-        ]
+        ],
 )};
 
 annotate MainService.Consultants with {
-    name @(UI.lineItem : [
+    name @(
+        UI.lineItem : [
             {
                 position : 20,
                 importance : #HIGH,
@@ -40,11 +42,12 @@ annotate MainService.Consultants with {
                 position : 20,
                 qualifier : 'GeneratedGroup',
             },
-        ]
+        ],
 )};
 
 annotate MainService.Consultants with {
-    address @(UI.lineItem : [
+    address @(
+        UI.lineItem : [
             {
                 position : 30,
                 importance : #HIGH,
@@ -56,11 +59,12 @@ annotate MainService.Consultants with {
                 qualifier : 'GeneratedGroup',
             },
         ],
-        EndUserText.label : 'address'
+        EndUserText.label : 'address',
 )};
 
 annotate MainService.Consultants with {
-    street @(UI.lineItem : [
+    street @(
+        UI.lineItem : [
             {
                 position : 40,
                 importance : #HIGH,
@@ -71,11 +75,12 @@ annotate MainService.Consultants with {
                 position : 40,
                 qualifier : 'GeneratedGroup',
             },
-        ]
+        ],
 )};
 
 annotate MainService.Consultants with {
-    building @(UI.lineItem : [
+    building @(
+        UI.lineItem : [
             {
                 position : 50,
                 importance : #HIGH,
@@ -86,7 +91,7 @@ annotate MainService.Consultants with {
                 position : 50,
                 qualifier : 'GeneratedGroup',
             },
-        ]
+        ],
 )};
 
 annotate MainService.Consultants with {
@@ -108,13 +113,14 @@ annotate MainService.Consultants with {
 };
 
 annotate MainService.Consultants with {
-    country_code @(UI.fieldGroup : [
+    country_code @(
+        UI.fieldGroup : [
             {
                 position : 80,
                 qualifier : 'GeneratedGroup',
             },
         ],
-        EndUserText.label : 'country_code'
+        EndUserText.label : 'country_code',
 )};
 
 annotate MainService.Consultants with {

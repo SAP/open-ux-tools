@@ -1,2 +1,2 @@
 export { indent } from './indent';
-export { print, printCsdlNode, printPrimitiveValue, printTarget } from './csdl-to-cds';
+export { print, printCsdlNode, printPrimitiveValue, printTarget, printKey } from './csdl-to-cds';
