@@ -45,7 +45,6 @@ import {
     CfDeployConfigAnswers,
     RouterModuleType
 } from '@sap-ux/cf-deploy-config-inquirer';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Answers } from 'inquirer';
 
 /**
@@ -103,10 +102,6 @@ export default class extends DeploymentGenerator {
     public async initializing(): Promise<void> {
         await super.initializing();
         await initI18n();
-
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
 
         DeploymentGenerator.logger?.debug(t('cfGen.debug.initTelemetry'));
 

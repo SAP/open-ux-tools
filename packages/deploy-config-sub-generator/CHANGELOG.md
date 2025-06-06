@@ -1,5 +1,14 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.3.3
+
+### Patch Changes
+
+-   3630ec9: fixs for abap headless
+-   Updated dependencies [3630ec9]
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.12
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.8
+
 ## 0.3.2
 
 ### Patch Changes
