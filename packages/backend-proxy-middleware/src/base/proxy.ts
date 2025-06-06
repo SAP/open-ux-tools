@@ -165,7 +165,7 @@ export const PathRewriters = {
         const functions: ((path: string, req: EnhancedIncomingMessage) => string)[] = [];
         functions.push((path, req) => {
             // ensure that the path starts with the configured path
-            // sometimes it gets lost in the http proxy middleware
+            // it might get lost when you nest router instances
             return req.originalUrl?.includes(path) ? req.originalUrl : path;
         });
         if (config.pathReplace) {
