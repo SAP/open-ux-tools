@@ -390,7 +390,7 @@ describe('proxy', () => {
                 xfwd: true
             };
 
-            const options = await generateProxyMiddlewareOptions(backend, baseOptions);
+            const options = await generateProxyMiddlewareOptions(backend, baseOptions, logger);
             expect(options).toBeDefined();
             expect(options?.on?.error).toBeDefined();
             expect(options?.on?.proxyReq).toBeDefined();
@@ -415,7 +415,7 @@ describe('proxy', () => {
                 [backend.destination]: {}
             });
 
-            const options = await generateProxyMiddlewareOptions(backend);
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options).toBeDefined();
             expect(options.target).toBe(getDestinationUrlForAppStudio(backend.destination));
             expect(options.changeOrigin).toBe(true);
@@ -432,7 +432,7 @@ describe('proxy', () => {
                 path: '/my/path'
             };
 
-            const options = await generateProxyMiddlewareOptions(backend);
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options).toBeDefined();
             expect(options.target).toBe(backend.url);
             expect(options.changeOrigin).toBe(true);
@@ -525,7 +525,7 @@ describe('proxy', () => {
                 path: '/my/path'
             };
 
-            const options = await generateProxyMiddlewareOptions(backend);
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options).toBeDefined();
         });
 
@@ -539,7 +539,7 @@ describe('proxy', () => {
             };
             process.env.no_proxy = '.example';
 
-            const options = await generateProxyMiddlewareOptions(backend);
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options.agent).toBeUndefined();
             delete process.env.npm_config_proxy;
             delete process.env.npm_config_https_proxy;
@@ -556,7 +556,7 @@ describe('proxy', () => {
             };
             process.env.no_proxy = '.example';
 
-            const options = await generateProxyMiddlewareOptions(backend);
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options.agent).toBeUndefined();
             delete process.env.npm_config_proxy;
             delete process.env.npm_config_https_proxy;
@@ -572,7 +572,7 @@ describe('proxy', () => {
                 path: '/my/path',
                 proxy: 'http://proxy.example'
             };
-            const options = await generateProxyMiddlewareOptions(backend);
+            const options = await generateProxyMiddlewareOptions(backend, undefined, logger);
             expect(options.agent).toBeUndefined();
             delete process.env.npm_config_proxy;
             delete process.env.npm_config_https_proxy;
@@ -588,7 +588,7 @@ describe('proxy', () => {
                 path: '/my/path'
             };
 
-            const proxy = await createProxy(backend, {});
+            const proxy = await createProxy(backend, {}, logger);
             expect(proxy).toBeDefined();
             expect(typeof proxy).toBe('function');
         });
