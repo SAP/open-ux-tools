@@ -861,8 +861,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       http-proxy-middleware:
-        specifier: 3.0.3
-        version: 3.0.3
+        specifier: 3.0.5
+        version: 3.0.5
       https-proxy-agent:
         specifier: 5.0.1
         version: 5.0.1
@@ -4393,8 +4393,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       http-proxy-middleware:
-        specifier: 3.0.3
-        version: 3.0.3
+        specifier: 3.0.5
+        version: 3.0.5
       https-proxy-agent:
         specifier: 5.0.1
         version: 5.0.1
@@ -16967,8 +16967,8 @@ packages:
       - debug
     dev: true
 
-  /http-proxy-middleware@3.0.3:
-    resolution: {integrity: sha512-usY0HG5nyDUwtqpiZdETNbmKtw3QQ1jwYFZ9wi5iHzX2BcILwQKtYDJPo7XHTsu5Z0B2Hj3W9NNnbd+AjFWjqg==}
+  /http-proxy-middleware@3.0.5:
+    resolution: {integrity: sha512-GLZZm1X38BPY4lkXA01jhwxvDoOkkXqjgVyUzVxiEK4iuRu03PZoYHhHRwxnfhQMDuaxi3vVri0YgSro/1oWqg==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@types/http-proxy': 1.17.15
