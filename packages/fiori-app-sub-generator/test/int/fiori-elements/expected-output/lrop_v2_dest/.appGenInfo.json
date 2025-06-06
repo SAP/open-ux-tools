@@ -1,6 +1,6 @@
 {
   "generationParameters": {
-    "generationDate": "Fri Jun 06 2025 15:22:17 GMT+0100 (Irish Standard Time)",
+    "generationDate": "Fri Jun 06 2025 19:22:34 GMT+0100 (Irish Standard Time)",
     "generatorPlatform": "CLI",
     "serviceType": "MTA File",
     "metadataFilename": "",
@@ -33,7 +33,7 @@
         "packageUri": "abapfs:/BAS_DEST/MOCK_CSN_TEST1",
         "csnName": "MOCKCSN55.abap.csn",
         "serviceNameCsn": "MockService2",
-        "serviceUrl": "https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com/sap/opu/odata/sap/SEPMRA_PROD_MAN"
+        "serviceUri": "/sap/opu/odata/sap/SEPMRA_PROD_MAN"
       }
     ]
   }

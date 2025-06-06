@@ -28,7 +28,7 @@ describe('Readme file generation tests', () => {
             generationDate: 'Jan 01 1975',
             generatorPlatform: 'CLI',
             serviceId: 'ABCD_MockService_O2',
-            serviceUrl: 'serviceUrl',
+            serviceUrl: 'http://mock.url/with/path/to/odata',
             appName: 'appName',
             appTitle: 'appTitle',
             appDescription: 'Fiori project description',

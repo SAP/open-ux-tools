@@ -47,7 +47,7 @@ exports[`Readme file generation tests should generate README.md with the correct
 |**Generation Platform**<br>CLI|
 |**Template Used**<br>List Report Page V4|
 |**Service Type**<br>Local Cap|
-|**Service URL**<br>serviceUrl|
+|**Service URL**<br>http://mock.url/with/path/to/odata|
 |**Module Name**<br>appName|
 |**Application Title**<br>appTitle|
 |**Namespace**<br>appNamespace|
@@ -83,7 +83,7 @@ Object {
         "csnName": "MOCKCSN55.abap.csn",
         "packageUri": "abapfs:/BAS_DEST/MOCK_CSN_TEST1",
         "serviceNameCsn": "MockService2",
-        "serviceUrl": "serviceUrl",
+        "serviceUri": "/with/path/to/odata",
       },
     ],
     "addEntry1": "Generator Specific Value A",
@@ -119,7 +119,7 @@ Object {
 
 http://localhost:8080/someProjectName/webapp/index.html",
     "serviceType": "Local Cap",
-    "serviceUrl": "serviceUrl",
+    "serviceUrl": "http://mock.url/with/path/to/odata",
     "template": "List Report Page V4",
     "ui5Theme": "a_ui5_theme",
     "ui5Version": "1.2.3",

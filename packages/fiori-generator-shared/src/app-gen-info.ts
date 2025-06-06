@@ -19,15 +19,16 @@ export function transformAbapCSNForAppGenInfo(
     packageUri: string;
     csnName: string;
     serviceNameCsn?: string;
-    serviceUrl?: string;
+    serviceUri?: string;
 }[] {
-    const serviceNameCsn = abapCSN.services.find((service) => service.runtimeName === serviceId)?.csnServiceName;
+    const serviceUri = serviceUrl ? new URL(serviceUrl).pathname : undefined;
+    const serviceNameCsn = abapCSN.services.find((s) => s.runtimeName === serviceId)?.csnServiceName;
     return [
         {
             packageUri: abapCSN.packageUri,
             csnName: abapCSN.csnName,
             serviceNameCsn,
-            serviceUrl
+            serviceUri
         }
     ];
 }
