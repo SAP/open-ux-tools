@@ -43,4 +43,4 @@
 '@sap-ux/store': patch
 ---
 
-i18next upgrade to 25.2.0
+i18next upgrade to 25.2.1
