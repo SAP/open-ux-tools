@@ -11,7 +11,7 @@ import * as utils from '../../../src/smartlinks-config/utils';
 import { promptUserPass } from '../../../src/prompt';
 import { yellow } from 'chalk';
 import i18next from 'i18next';
-import type { TFunctionKeys, TFunctionResult } from 'i18next';
+import type { TFunction, TFunctionReturn } from 'i18next';
 
 jest.mock('prompts', () => ({
     ...jest.requireActual('prompts'),
@@ -59,7 +59,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
         getSystemCredentialsSpy = jest.spyOn(utils, 'getLocalStoredCredentials');
         listDestinationsMock = jest.spyOn(btp, 'listDestinations');
         getServiceMock.mockImplementation(() => serviceMock);
-        jest.spyOn(i18next, 't').mockImplementation((key: TFunctionKeys | TFunctionKeys[]) => key as TFunctionResult);
+        jest.spyOn(i18next, 't').mockImplementation((...args: any[]) => args[0]);
     });
 
     describe('Check prompt steps: ', () => {
@@ -170,9 +170,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             promptMock = jest
                 .spyOn(prompts, 'prompt')
                 .mockImplementation((questions) => jest.requireActual('prompts').prompt(questions));
-            jest.spyOn(i18next, 't').mockImplementation(
-                (key: TFunctionKeys | TFunctionKeys[]) => key as TFunctionResult
-            );
+            jest.spyOn(i18next, 't').mockImplementation((...args: any[]) => args[0]);
         });
 
         test('Use destination (no deploy config)', async () => {
