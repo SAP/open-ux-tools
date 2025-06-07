@@ -11,7 +11,6 @@ import * as utils from '../../../src/smartlinks-config/utils';
 import { promptUserPass } from '../../../src/prompt';
 import { yellow } from 'chalk';
 import i18next from 'i18next';
-import type { TFunction, TFunctionReturn } from 'i18next';
 
 jest.mock('prompts', () => ({
     ...jest.requireActual('prompts'),
