@@ -83,7 +83,7 @@ Object {
         "csnName": "MOCKCSN55.abap.csn",
         "packageUri": "abapfs:/BAS_DEST/MOCK_CSN_TEST1",
         "serviceNameCsn": "MockService2",
-        "serviceUri": "/with/path/to/odata",
+        "serviceUri": "/with/path/to/odata/",
       },
     ],
     "addEntry1": "Generator Specific Value A",

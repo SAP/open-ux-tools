@@ -21,8 +21,13 @@ export function transformAbapCSNForAppGenInfo(
     serviceNameCsn?: string;
     serviceUri?: string;
 }[] {
-    const serviceUri = serviceUrl ? new URL(serviceUrl).pathname : undefined;
+    const serviceUrlObj = serviceUrl ? new URL(serviceUrl) : undefined;
+    // adds trailing '/' to match to mainService.uri in manifest.json
+    const serviceUri = serviceUrlObj?.pathname?.endsWith('/')
+        ? serviceUrlObj.pathname
+        : (serviceUrlObj?.pathname ?? '') + '/';
     const serviceNameCsn = abapCSN.services.find((s) => s.runtimeName === serviceId)?.csnServiceName;
+
     return [
         {
             packageUri: abapCSN.packageUri,
