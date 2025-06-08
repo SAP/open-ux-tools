@@ -517,8 +517,10 @@ describe('flp-config generator', () => {
                 .run()
         ).resolves.not.toThrow();
 
+        const dirprefix =
+            process.platform == 'win32' ? join(path.parse(process.cwd()).root, OUTPUT_DIR_PREFIX) : OUTPUT_DIR_PREFIX;
         expect(showWarningSpy).toHaveBeenCalledWith(
-            t('warning.updatei18n', { path: `${OUTPUT_DIR_PREFIX}/app1/webapp/i18n/i18n.properties` }),
+            t('warning.updatei18n', { path: `${join(dirprefix, '/app1/webapp/i18n/i18n.properties')}` }),
             MessageType.notification
         );
     });
