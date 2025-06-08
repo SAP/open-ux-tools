@@ -56,7 +56,6 @@
         "inquirer": "8.2.6",
         "nock": "13.5.6",
         "rimraf": "5.0.5",
-        "typescript": "5.3.3",
         "yeoman-test": "6.3.0"
     },
     "engines": {
