@@ -1,5 +1,34 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.4.14
+
+### Patch Changes
+
+-   18c7e5d: Adds support for cert bypassing and cert error GA link generation
+
+## 2.4.13
+
+### Patch Changes
+
+-   Updated dependencies [95a816d]
+    -   @sap-ux/fiori-generator-shared@0.12.6
+    -   @sap-ux/inquirer-common@0.7.7
+
+## 2.4.12
+
+### Patch Changes
+
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/fiori-generator-shared@0.12.5
+    -   @sap-ux/inquirer-common@0.7.6
+
+## 2.4.11
+
+### Patch Changes
+
+-   Updated dependencies [61d4060]
+    -   @sap-ux/axios-extension@1.21.2
+
 ## 2.4.10
 
 ### Patch Changes

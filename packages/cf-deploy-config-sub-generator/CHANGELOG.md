@@ -1,5 +1,31 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.8
+
+### Patch Changes
+
+-   3630ec9: fixs for abap headless
+
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [95a816d]
+    -   @sap-ux/fiori-generator-shared@0.12.6
+    -   @sap-ux/deploy-config-generator-shared@0.1.6
+    -   @sap-ux/inquirer-common@0.7.7
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.7
+
+## 0.2.6
+
+### Patch Changes
+
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/fiori-generator-shared@0.12.5
+    -   @sap-ux/deploy-config-generator-shared@0.1.5
+    -   @sap-ux/inquirer-common@0.7.6
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.6
+
 ## 0.2.5
 
 ### Patch Changes

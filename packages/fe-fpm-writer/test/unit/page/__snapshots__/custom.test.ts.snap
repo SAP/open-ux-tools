@@ -9,6 +9,51 @@ Object {
 }
 `;
 
+exports[`CustomPage Add when "sap.fe.ariba" dependency is listed 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.ariba": Object {},
+        "sap.fe.core": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "TestObjectPage",
+          "pattern": ":?query:",
+          "target": "TestObjectPage",
+        },
+        Object {
+          "name": "RootEntityCustomPage",
+          "pattern": "RootEntity:?query:",
+          "target": "RootEntityCustomPage",
+        },
+      ],
+      "targets": Object {
+        "RootEntityCustomPage": Object {
+          "id": "RootEntityCustomPage",
+          "name": "sap.fe.core.fpm",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/RootEntity",
+              "navigation": Object {},
+              "viewName": "my.test.App.ext.customPage.CustomPage",
+            },
+          },
+          "type": "Component",
+        },
+        "TestObjectPage": Object {},
+      },
+    },
+  },
+}
+`;
+
 exports[`CustomPage Test property custom "tabSizing" 1 tab 1`] = `
 "#XTIT: Custom view title
 CustomPageTitle=CustomPage"

@@ -2,20 +2,20 @@ import yeomanTest from 'yeoman-test';
 import { join } from 'path';
 import fs from 'fs';
 import * as memfs from 'memfs';
-import AbapDeployGenerator from '../src/app';
 import * as abapInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import * as abapWriter from '@sap-ux/abap-deploy-config-writer';
+import * as projectAccess from '@sap-ux/project-access';
+import AbapDeployGenerator from '../src/app';
 import { t } from '../src/utils/i18n';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { AuthenticationType, getService } from '@sap-ux/store';
 import { mockTargetSystems } from './fixtures/targets';
 import { TestFixture } from './fixtures';
 import { PackageInputChoices, TargetSystemType, TransportChoices } from '@sap-ux/abap-deploy-config-inquirer';
-import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { ABAP_DEPLOY_TASK } from '../src/utils/constants';
 import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
-import * as projectAccess from '@sap-ux/project-access';
+import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 
 jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
@@ -43,17 +43,15 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: jest.fn(),
     isExtensionInstalled: jest.fn().mockReturnValue(true),
-    getHostEnvironment: jest.fn()
+    getHostEnvironment: jest.fn(),
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn(),
+        createTelemetryData: jest.fn()
+    }
 }));
 
 const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 const mockSendTelemetry = sendTelemetry as jest.Mock;
-
-jest.mock('@sap-ux/telemetry', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-    ...(jest.requireActual('@sap-ux/telemetry') as {}),
-    initTelemetrySettings: jest.fn()
-}));
 
 const abapDeployGenPath = join(__dirname, '../../src/app');
 
@@ -70,7 +68,7 @@ describe('Test abap deploy configuration generator', () => {
 
     beforeEach(() => {
         mockGetService.mockResolvedValueOnce({
-            getAll: jest.fn().mockResolvedValue({})
+            getAll: jest.fn().mockResolvedValue([])
         });
         const mockChdir = jest.spyOn(process, 'chdir');
         mockChdir.mockImplementation((dir): void => {
