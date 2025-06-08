@@ -57,7 +57,11 @@ class ChangePreprocessor {
      * @param input - CDS document changes.
      * @param tokens - All tokens in the document.
      */
-    constructor(private document: CDSDocument, private input: CDSDocumentChange[], private tokens: CompilerToken[]) {}
+    constructor(
+        private readonly document: CDSDocument,
+        private readonly input: CDSDocumentChange[],
+        private readonly tokens: CompilerToken[]
+    ) {}
 
     /**
      * Optimizes changes to remove duplicates and conflicting changes.
@@ -510,7 +514,7 @@ class ChangePreprocessor {
         for (let i = this.input.length - 1; i >= 0; i--) {
             const change = this.input[i];
             const path = getAstNodesFromPointer(this.document, change.pointer);
-            const [parent, grandParent] = path.reverse();
+            const [parent, grandParent] = path.toReversed();
             let pointer = change.pointer;
             let target = parent;
             if (
