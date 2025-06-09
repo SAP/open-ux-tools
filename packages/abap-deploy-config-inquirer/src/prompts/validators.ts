@@ -290,12 +290,7 @@ export async function validateCredentials(
         return t('errors.requireCredentials');
     }
 
-    let warning: unknown;
-    ({
-        transportConfig: PromptState.transportAnswers.transportConfig,
-        transportConfigNeedsCreds: PromptState.transportAnswers.transportConfigNeedsCreds,
-        warning
-    } = await initTransportConfig({
+    const { transportConfigNeedsCreds } = await initTransportConfig({
         backendTarget: backendTarget,
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
@@ -306,25 +301,10 @@ export async function validateCredentials(
         errorHandler: (e: string) => {
             handleTransportConfigError(e);
         }
-    }));
+    });
 
-    if (warning) {
-        const helpLink = getHelpUrl(HELP_TREE.FIORI_TOOLS, [57266]);
-        const warningMessage = t('warnings.transportConfigFailure', { helpLink });
-        LoggerHelper.logger.info(`\n${warningMessage}`);
-        LoggerHelper.logger.info(`\n${warning}`);
-        PromptState.transportAnswers.transportConfigNeedsCreds = false;
-
-        return true; // Log a warning and proceed
-    }
-
-    if (PromptState.transportAnswers.transportConfigNeedsCreds) {
-        LoggerHelper.logger.warn(t('errors.incorrectCredentials'));
-        return t('errors.incorrectCredentials');
-    } else {
-        LoggerHelper.logger.info(t('info.correctCredentials'));
-        return true;
-    }
+    PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
+    return transportConfigNeedsCreds ? t('errors.incorrectCredentials') : true;
 }
 
 /**

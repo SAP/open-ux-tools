@@ -176,11 +176,9 @@ describe('Test abap deploy config inquirer conditions', () => {
     test('should not show username question', async () => {
         jest.spyOn(utils, 'initTransportConfig').mockResolvedValueOnce({
             transportConfig: {} as any,
-            transportConfigNeedsCreds: false,
-            warning: 'Warning message'
+            transportConfigNeedsCreds: false
         });
         expect(await showUsernameQuestion(undefined)).toBe(false);
-        expect(mockGetHelpUrl).toHaveBeenCalledWith(3046, [57266]);
     });
 
     test('should show password questions', () => {

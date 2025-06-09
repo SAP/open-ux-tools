@@ -127,19 +127,15 @@ class DefaultTransportConfig implements TransportConfig {
             const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget, credentials);
             const atoService = await provider.getAdtService<AtoService>(AtoService);
             const atoSettings = await atoService?.getAtoInfo();
-
             if (atoSettings) {
                 result.error = this.handleAtoResponse(atoSettings);
             }
         } catch (err) {
             AbapServiceProviderManager.deleteExistingServiceProvider();
-
             if (ErrorHandler.isCertError(err)) {
                 LoggerHelper.logger.warn(
                     t('warnings.certificateError', { url: backendTarget?.abapTarget?.url, error: err.message })
                 );
-                // Stringified version of the GA link will be reported in the logs
-                result.warning = ErrorHandler.getHelpForError(ERROR_TYPE.CERT)?.toString();
             } else if (err.response?.status === 401) {
                 const auth: string = err.response.headers?.['www-authenticate'];
                 result.transportConfigNeedsCreds = !!auth?.toLowerCase()?.startsWith('basic');
@@ -150,7 +146,9 @@ class DefaultTransportConfig implements TransportConfig {
                 // Everything from network errors to service being inactive is a warning.
                 // Will be logged and the user is allowed to move on
                 // Business errors will be returned by the ATO response above and these act as hard stops
-                result.warning = err.message;
+                LoggerHelper.logger.warn(
+                    t('warnings.certificateError', { url: backendTarget?.abapTarget?.url, error: err.message })
+                );
                 result.transportConfigNeedsCreds = false;
             }
             LoggerHelper.logger.debug(t('errors.debugAbapTargetSystem', { method: 'init', error: err.message }));
@@ -158,7 +156,6 @@ class DefaultTransportConfig implements TransportConfig {
         const initSuccessful = !result.error && !result.transportConfigNeedsCreds;
         // transportConfig is not initialised, so use dummy transport config
         result.transportConfig = initSuccessful ? this : this.getDummyConfig();
-
         return result;
     }
 

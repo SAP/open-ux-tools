@@ -102,12 +102,7 @@ export function showClientQuestion(previousAnswers?: AbapDeployConfigAnswersInte
  * @returns boolean
  */
 export async function showUsernameQuestion(backendTarget?: BackendTarget): Promise<boolean> {
-    let warning: unknown;
-    ({
-        transportConfig: PromptState.transportAnswers.transportConfig,
-        transportConfigNeedsCreds: PromptState.transportAnswers.transportConfigNeedsCreds,
-        warning
-    } = await initTransportConfig({
+    const { transportConfig, transportConfigNeedsCreds } = await initTransportConfig({
         backendTarget: backendTarget,
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
@@ -115,23 +110,19 @@ export async function showUsernameQuestion(backendTarget?: BackendTarget): Promi
         errorHandler: (e: string) => {
             handleTransportConfigError(e);
         }
-    }));
+    });
 
-    if (warning) {
-        const helpLink = getHelpUrl(HELP_TREE.FIORI_TOOLS, [57266]);
-        const warningMessage = t('warnings.transportConfigFailure', { helpLink });
-        LoggerHelper.logger.info(`\n${warningMessage}`);
-        LoggerHelper.logger.info(`\n${warning}`);
-        PromptState.transportAnswers.transportConfigNeedsCreds = false;
-        return false; // Log a warning and proceed
-    } else {
-        // Need to give the CLI some context why the username is shown.
-        if (PromptState.transportAnswers.transportConfigNeedsCreds) {
-            LoggerHelper.logger.info(t('errors.atoUnauthorisedSystem'));
-        }
-        return PromptState.transportAnswers.transportConfigNeedsCreds ?? false;
+    // Update the prompt state with the transport configuration
+    PromptState.transportAnswers.transportConfig = transportConfig;
+    PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds;
+
+    // Provide context to the CLI when username credentials are required
+    if (transportConfigNeedsCreds) {
+        LoggerHelper.logger.info(t('errors.atoUnauthorisedSystem'));
     }
+    return transportConfigNeedsCreds ?? false;
 }
+
 /**
  * Determines if the password question should be shown.
  *
