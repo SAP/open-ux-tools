@@ -48,6 +48,6 @@
         "overwriteDestination": "Overwriting destination is enabled.",
         "routerOptions": "Router options are enabled.",
         "addConnectivityService": "Add connectivity service is enabled in CF application router.",
-        "addABAPServiceBinding": "Abap service binding is enabled in CF application router."
+        "addABAPServiceBinding": "ABAP service binding is enabled in CF application router."
     }
 }
