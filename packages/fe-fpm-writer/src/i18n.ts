@@ -1,4 +1,4 @@
-import type { TOptions, TOptionsBase } from 'i18next';
+import type { i18n as i18nNext, TOptions, TOptionsBase } from 'i18next';
 import i18next from 'i18next';
 import translations from './prompts/translations/i18n';
 const namespacePrefix = 'fe-fpm-writer';
@@ -6,12 +6,13 @@ const namespacePrefix = 'fe-fpm-writer';
 export const i18nNamespaces = {
     buildingBlock: `${namespacePrefix}-building-block`
 } as const;
+export const i18n: i18nNext = i18next.createInstance();
 
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
-    await i18next.init({
+    await i18n.init({
         resources: {
             en: {
                 [i18nNamespaces.buildingBlock]: translations
@@ -38,7 +39,7 @@ export function translate(
     keyPrefix?: string
 ): (key: string, options?: string | TOptions<$Dictionary & TOptionsBase>) => string | string[] {
     return (key: string, options?: any): string | string[] => {
-        const result = i18next.t(`${namespace}:${keyPrefix ?? ''}${key}`, options) as string | string[];
+        const result = i18n.t(`${namespace}:${keyPrefix ?? ''}${key}`, options) as string | string[];
         return result;
     };
 }
