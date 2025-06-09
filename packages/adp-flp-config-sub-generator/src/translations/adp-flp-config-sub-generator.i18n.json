@@ -11,7 +11,7 @@
     },
     "error": {
         "projectNotSupported": "Unable to find a supported adaptation project.",
-        "fetchingManifest": "An error occurred when fetching the merged manifest for the base application.",
+        "fetchingManifest": "An error occurred when fetching the merged `manifest.json` file for the base application.",
         "destinationNotFound": "Missing destination configuration in the `ui5.yaml` file.",
         "destinationNotInSubaccount": "Destination not found in the subaccount: {{- destination}}.",
         "systemNotFound": "Missing system configuration in the `ui5.yaml` file.",
