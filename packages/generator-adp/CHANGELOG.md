@@ -1,5 +1,40 @@
 # @sap-ux/generator-adp
 
+## 0.3.15
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+    -   @sap-ux/adp-tooling@0.14.15
+
+## 0.3.14
+
+### Patch Changes
+
+-   Updated dependencies [95a816d]
+    -   @sap-ux/fiori-generator-shared@0.12.6
+    -   @sap-ux/inquirer-common@0.7.7
+    -   @sap-ux/adp-tooling@0.14.14
+
+## 0.3.13
+
+### Patch Changes
+
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/fiori-generator-shared@0.12.5
+    -   @sap-ux/inquirer-common@0.7.6
+    -   @sap-ux/adp-tooling@0.14.13
+
+## 0.3.12
+
+### Patch Changes
+
+-   Updated dependencies [61d4060]
+    -   @sap-ux/axios-extension@1.21.2
+    -   @sap-ux/adp-tooling@0.14.12
+    -   @sap-ux/system-access@0.6.2
+
 ## 0.3.11
 
 ### Patch Changes

@@ -123,6 +123,56 @@ Object {
 }
 `;
 
+exports[`ObjectPage generate Add when "sap.fe.ariba" dependency is listed 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.ariba": Object {},
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "RootEntityListReport",
+          "pattern": ":?query:",
+          "target": "TestListReport",
+        },
+        Object {
+          "name": "RootEntityObjectPage",
+          "pattern": "RootEntity({RootEntityKey}):?query:",
+          "target": "RootEntityObjectPage",
+        },
+        Object {
+          "name": "OtherEntityObjectPage",
+          "pattern": "OtherEntity:?query:",
+          "target": "OtherEntityObjectPage",
+        },
+      ],
+      "targets": Object {
+        "OtherEntityObjectPage": Object {
+          "id": "OtherEntityObjectPage",
+          "name": "sap.fe.ariba.ObjectPage",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/OtherEntity",
+              "navigation": Object {},
+            },
+          },
+          "type": "Component",
+        },
+        "RootEntityListReport": Object {},
+        "RootEntityObjectPage": Object {},
+      },
+    },
+  },
+}
+`;
+
 exports[`ObjectPage generate all optional settings 1`] = `
 Object {
   "sap.app": Object {

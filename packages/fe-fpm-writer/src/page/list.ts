@@ -1,5 +1,11 @@
 import type { Editor } from 'mem-fs-editor';
-import { getFclConfig, extendPageJSON, initializeTargetSettings, getLibraryDependencies } from './common';
+import {
+    getFclConfig,
+    extendPageJSON,
+    initializeTargetSettings,
+    getLibraryDependencies,
+    getTemplateNamePrefix
+} from './common';
 import type { Manifest } from '../common/types';
 import type { ListReport, InternalListReport } from './types';
 import { PageType } from './types';
@@ -16,6 +22,7 @@ function enhanceData(data: ListReport, manifest: Manifest): InternalListReport {
         ...data,
         settings: initializeTargetSettings(data, data.settings),
         name: PageType.ListReport,
+        template: `${getTemplateNamePrefix(manifest)}.ListReport`,
         ...getFclConfig(manifest)
     };
 

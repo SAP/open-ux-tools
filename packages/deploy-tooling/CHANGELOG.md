@@ -1,5 +1,21 @@
 # @sap-ux/deploy-tooling
 
+## 0.16.5
+
+### Patch Changes
+
+-   d6943aa: Adds GA link to deploy.
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+
+## 0.16.4
+
+### Patch Changes
+
+-   Updated dependencies [61d4060]
+    -   @sap-ux/axios-extension@1.21.2
+    -   @sap-ux/system-access@0.6.2
+
 ## 0.16.3
 
 ### Patch Changes

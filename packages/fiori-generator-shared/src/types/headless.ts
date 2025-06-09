@@ -26,6 +26,46 @@ export interface CFDeployConfig extends DeployConfig {
     readonly cloudServiceName?: string; // Add Cloud Service name
 }
 
+export interface AbapDeployConfigOptions extends DeployConfig {
+    /**
+     * The deploy target for the ABAP deployment configuration.
+     */
+    readonly deployTarget: DeployTarget.ABAP;
+    /**
+     * Destination name to be used in abap deployment (BAS Only).
+     */
+    readonly destination?: string;
+    /**
+     * Target URL for the ABAP deployment (VSCode Only).
+     */
+    readonly url?: string;
+    /**
+     * Target client for the ABAP deployment (VSCode Only).
+     */
+    readonly client?: string;
+    /**
+     * This value is required in VSCode if the system is not saved in the local keystore.
+     * The `scp` flag will mean the running app will look for an auth key in the local keystore.
+     */
+    readonly scp?: boolean;
+    /**
+     * Name for the UI5 ABAP repository.
+     */
+    readonly ui5AbapRepo: string;
+    /**
+     * Description for the ABAP deployment.
+     */
+    readonly description?: string;
+    /**
+     * Package for the deployment.
+     */
+    readonly package: string;
+    /**
+     * Transport request for the deployment.
+     */
+    readonly transport?: string;
+}
+
 export interface FLPConfig {
     readonly action?: string;
     readonly title?: string;
