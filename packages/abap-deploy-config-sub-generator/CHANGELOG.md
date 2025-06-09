@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.14
+
+### Patch Changes
+
+-   7132e18: add conflicter force prop for yui usage
+
 ## 0.1.13
 
 ### Patch Changes
