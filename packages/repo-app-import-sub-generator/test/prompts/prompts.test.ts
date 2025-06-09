@@ -5,14 +5,12 @@ import { PromptNames, type QuickDeployedAppConfig } from '../../src/app/types';
 import { PromptState } from '../../src/prompts/prompt-state';
 import * as helpers from '../../src/prompts/prompt-helpers';
 import * as downloadUtils from '../../src/utils/download-utils';
-import RepoAppDownloadLogger from '../../src/utils/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { formatAppChoices } from '../../src/prompts/prompt-helpers';
-import { format } from 'path';
 import { validateAppSelection } from '../../src/utils/validators';
-import app from '../../src/app';
 
 jest.mock('@sap-ux/odata-service-inquirer', () => ({
+    ...jest.requireActual('@sap-ux/odata-service-inquirer'),
     getSystemSelectionQuestions: jest.fn()
 }));
 

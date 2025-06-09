@@ -4,6 +4,7 @@ import { ABAP_PACKAGE_SEARCH_MAX_RESULTS } from '../constants';
 import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
 import type { BackendTarget } from '../types';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**
  * List packages from the service.
@@ -11,6 +12,7 @@ import type { BackendTarget } from '../types';
  * @param phrase - search phrase
  * @param backendTarget - backend target from abap deploy config prompt options
  * @returns list of packages
+ * @throws {Error} if there is a certificate error while fetching packages it will be thrown, any other error will be logged and swallowed
  */
 export async function listPackagesFromService(phrase: string, backendTarget?: BackendTarget): Promise<string[]> {
     try {
@@ -26,6 +28,12 @@ export async function listPackagesFromService(phrase: string, backendTarget?: Ba
         LoggerHelper.logger.debug(
             t('errors.debugAbapTargetSystem', { method: 'listPackagesFromService', error: e.message })
         );
+        if (ErrorHandler.isCertError(e)) {
+            LoggerHelper.logger.warn(
+                t('warnings.certificateError', { url: backendTarget?.abapTarget?.url, error: e.message })
+            );
+            throw e;
+        }
     }
     return [];
 }

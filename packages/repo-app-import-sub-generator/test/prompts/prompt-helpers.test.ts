@@ -6,6 +6,7 @@ import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import { generatorTitle, generatorDescription } from '../../src/utils/constants';
 import { t } from '../../src/utils/i18n';
 import RepoAppDownloadLogger from '../../src/utils/logger';
+import { DatasourceType, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 
 jest.mock('../../src/utils/logger', () => ({
     logger: {
@@ -25,9 +26,10 @@ describe('fetchAppListForSelectedSystem', () => {
 
     const mockAnswers: RepoAppDownloadAnswers = {
         [PromptNames.systemSelection]: {
+            datasourceType: DatasourceType.sapSystem,
             connectedSystem: {
                 serviceProvider: mockServiceProvider
-            }
+            } as ConnectedSystem
         },
         [PromptNames.selectedApp]: {
             appId: 'mockAppId',
@@ -41,7 +43,7 @@ describe('fetchAppListForSelectedSystem', () => {
 
     it('should fetch the application list when systemSelection and serviceProvider are provided', async () => {
         const result = await fetchAppListForSelectedSystem(
-            mockServiceProvider,
+            mockAnswers[PromptNames.systemSelection].connectedSystem as ConnectedSystem,
             mockAnswers[PromptNames.selectedApp].appId
         );
 
@@ -53,7 +55,7 @@ describe('fetchAppListForSelectedSystem', () => {
     });
 
     it('should return an empty array when serviceProvider is not provided', async () => {
-        const result = await fetchAppListForSelectedSystem(undefined as unknown as AbapServiceProvider);
+        const result = await fetchAppListForSelectedSystem(undefined as unknown as ConnectedSystem);
         expect(result).toEqual([]);
     });
 
@@ -61,7 +63,7 @@ describe('fetchAppListForSelectedSystem', () => {
         const error = new Error('Mock error');
         mockServiceProvider.getAppIndex().search = jest.fn().mockRejectedValue(error);
         const result = await fetchAppListForSelectedSystem(
-            mockServiceProvider,
+            mockAnswers[PromptNames.systemSelection].connectedSystem as ConnectedSystem,
             mockAnswers[PromptNames.selectedApp].appId
         );
         expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(
