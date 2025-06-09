@@ -5,7 +5,6 @@ import {
     ErrorHandler,
     showOverwriteQuestion
 } from '@sap-ux/deploy-config-generator-shared';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     isExtensionInstalled,
     YUI_EXTENSION_ID,
@@ -33,6 +32,7 @@ import { initI18n } from '../utils/i18n';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer/dist/constants';
+import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { AbapDeployConfigOptions } from './types';
 import type {

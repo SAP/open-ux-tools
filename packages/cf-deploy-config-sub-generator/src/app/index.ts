@@ -2,7 +2,6 @@ import { join, dirname } from 'path';
 import { platform } from 'os';
 import hasbin = require('hasbin');
 import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     sendTelemetry,
     TelemetryHelper,
@@ -36,6 +35,7 @@ import { loadManifest } from './utils';
 import { getMtaPath, findCapProjectRoot, FileName, type Package } from '@sap-ux/project-access';
 import { EventName } from '../telemetryEvents';
 import { getCFQuestions, getCAPMTAQuestions } from './questions';
+import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ApiHubConfig, CFAppConfig, CAPConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Logger } from '@sap-ux/logger';
 import { CfDeployConfigOptions } from './types';
