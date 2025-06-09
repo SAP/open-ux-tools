@@ -64,5 +64,5 @@ export interface AppGenInfo {
      * Additional external parameters.
      * N.B. these will be added to the .appGenInfo.json file only
      */
-    externalParameters?: ExternalParameters[];
+    externalParameters?: ExternalParameters;
 }
