@@ -1,12 +1,11 @@
 import { getDefaultUI5Theme, ui5ThemeIds, getUi5Themes, ui5Themes } from '../src/ui5-theme-info';
-import { defaultMinUi5Version } from '../src/constants';
+import { defaultMinUi5Version, defaultVersion } from '../src/constants';
 import * as themeInfo from '../src/ui5-theme-info';
 import type { UI5Theme } from '../src/types';
 
 describe('getUi5Themes', () => {
     const allExpectedThemes: UI5Theme[] = Object.values(ui5Themes);
     test('getUi5Themes', () => {
-        expect(getUi5Themes()).toEqual(allExpectedThemes);
         expect(getUi5Themes('not-a-valid-version')).toEqual(allExpectedThemes);
         expect(getUi5Themes(defaultMinUi5Version)).toEqual(allExpectedThemes.slice(0, 2));
         expect(getUi5Themes('1.71')).toEqual(allExpectedThemes.slice(0, 2));
@@ -37,6 +36,18 @@ describe('getUi5Themes', () => {
 
         afterEach(() => {
             jest.restoreAllMocks();
+        });
+
+        test('excludes sap_belize theme when using default UI5 version ("Latest")', () => {
+            expect(getUi5Themes()).toEqual(themesWithoutBelize);
+        });
+
+        test('excludes sap_belize theme when explicitly passing "Latest" as UI5 version', () => {
+            expect(getUi5Themes(defaultVersion)).toEqual(themesWithoutBelize);
+        });
+
+        test('excludes sap_belize theme for snapshot UI5 versions such as "snapshot-1.137.0"', () => {
+            expect(getUi5Themes('snapshot-1.137.0')).toEqual(themesWithoutBelize);
         });
 
         test('should mark sap_belize as deprecated for versions between 1.120.0 and 1.136.0', () => {

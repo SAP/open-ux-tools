@@ -11,6 +11,10 @@ export const supportState = {
 // Updated Apr-25-2025 from https://ui5.sap.com/versionoverview.json
 export const ui5VersionFallbacks = [
     {
+        version: '1.136.*',
+        support: supportState.maintenance
+    },
+    {
         version: '1.135.*',
         support: supportState.maintenance
     },

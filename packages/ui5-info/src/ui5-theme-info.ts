@@ -2,6 +2,7 @@ import { defaultVersion } from './constants';
 import type { UI5Theme } from './types';
 import type { SemVer } from 'semver';
 import { coerce, gte, lt } from 'semver';
+import { supportedUi5VersionFallbacks } from './ui5-version-fallback';
 
 const MIN_UI5_VER_DARK_THEME = '1.72.0';
 const MIN_UI5_VER_HORIZON_THEME = '1.102.0';
@@ -85,8 +86,13 @@ function isSupported(theme: UI5Theme, cleanSemVer: SemVer): boolean {
  * @returns UI5 themes array
  */
 export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
-    const ui5VersionSince = ui5Version.replace('snapshot-', '');
-    const cleanSemVer = coerce(ui5VersionSince);
+    // Handle 'Latest' versions by using the latest supported UI5 version
+    const isUsingDefaultVersion = ui5Version === defaultVersion;
+    const resolvedUi5Version = isUsingDefaultVersion
+        ? supportedUi5VersionFallbacks[0].version
+        : ui5Version.replace('snapshot-', '');
+
+    const cleanSemVer = coerce(resolvedUi5Version);
 
     if (!cleanSemVer) {
         return Object.values(ui5Themes);
