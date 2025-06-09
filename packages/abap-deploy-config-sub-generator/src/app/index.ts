@@ -86,6 +86,8 @@ export default class extends DeploymentGenerator {
             watchTelemetrySettingStore: false
         });
 
+        // hack to suppress yeoman's overwrite prompt when files already exist
+        // required when running the deploy config generator in standalone mode
         if ((this.env as unknown as YeomanEnvironment).conflicter) {
             (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
         }
