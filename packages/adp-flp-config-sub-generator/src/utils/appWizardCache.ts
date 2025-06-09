@@ -1,11 +1,11 @@
 import { getHostEnvironment, hostEnvironment, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
-import type { AdpAppWizardCache } from './types';
+import type { State } from '../app/types';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { t } from '../utils/i18n';
 
 const ADP_FLP_CONFIG_CACHE = '$adp-flp-config-cache';
 // Type alias for the AppWizard object with the cache object.
-export type AppWizardCache = AppWizard & { [ADP_FLP_CONFIG_CACHE]?: AdpAppWizardCache };
+export type AppWizardCache = AppWizard & { [ADP_FLP_CONFIG_CACHE]?: State };
 const hostEnv = getHostEnvironment();
 
 /**
@@ -28,11 +28,7 @@ export function initAppWizardCache(logger: ILogWrapper, appWizard?: AppWizardCac
  * @param state - Partial state to add to the cache.
  * @param logger - Logger to log messages.
  */
-export function addToCache(
-    appWizard: AppWizardCache | undefined,
-    state: Partial<AdpAppWizardCache>,
-    logger: ILogWrapper
-): void {
+export function addToCache(appWizard: AppWizardCache | undefined, state: Partial<State>, logger: ILogWrapper): void {
     logIfCacheMissing(appWizard, logger);
     if (appWizard?.[ADP_FLP_CONFIG_CACHE]) {
         Object.assign(appWizard[ADP_FLP_CONFIG_CACHE], state);
@@ -49,7 +45,7 @@ export function addToCache(
  */
 export function getFromCache<T>(
     appWizard: AppWizardCache | undefined,
-    cacheKey: keyof AdpAppWizardCache,
+    cacheKey: keyof State,
     logger: ILogWrapper
 ): T | undefined {
     logIfCacheMissing(appWizard, logger);

@@ -3,18 +3,12 @@ import type { Command } from 'commander';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
-import {
-    generateInboundConfig,
-    getAdpConfig,
-    getInboundsFromManifest,
-    getVariant,
-    filterAndMapInboundsToManifest
-} from '@sap-ux/adp-tooling';
+import { generateInboundConfig, getAdpConfig, getInboundsFromManifest, getVariant } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
 import { FileName, getAppType } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import type { InternalInboundNavigation } from '@sap-ux/adp-tooling';
+import { type InternalInboundNavigation, getBaseAppInbounds } from '@sap-ux/adp-tooling';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { generateInboundNavigationConfig, readManifest } from '@sap-ux/app-config-writer';
 import {
@@ -25,7 +19,6 @@ import {
     getTileSettingsQuestions,
     type TileSettingsAnswers
 } from '@sap-ux/flp-config-inquirer';
-import type { Inbound } from '@sap-ux/axios-extension';
 
 import { promptYUIQuestions } from '../../common';
 import { validateBasePath } from '../../validation';
@@ -117,9 +110,7 @@ async function getInbounds(
         const appId = (await getVariant(basePath)).reference;
         const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
         const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
-        const lrepService = provider.getLayeredRepository();
-        const inbounds = (await lrepService.getSystemInfo(undefined, undefined, appId)).inbounds as Inbound[];
-        return filterAndMapInboundsToManifest(inbounds);
+        return getBaseAppInbounds(appId, provider);
     }
 
     const manifest = await retrieveManifest(basePath, fs);

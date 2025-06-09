@@ -2,14 +2,7 @@ import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
 import path, { join } from 'path';
-import {
-    type AxiosError,
-    type AxiosRequestConfig,
-    type ProviderConfiguration,
-    type AbapServiceProvider,
-    type Inbound,
-    isAxiosError
-} from '@sap-ux/axios-extension';
+import { type AxiosError, type AbapServiceProvider, isAxiosError } from '@sap-ux/axios-extension';
 import {
     getVariant,
     getAdpConfig,
@@ -17,7 +10,7 @@ import {
     generateInboundConfig,
     flpConfigurationExists,
     SystemLookup,
-    filterAndMapInboundsToManifest,
+    getBaseAppInbounds,
     type InternalInboundNavigation,
     type AdpPreviewConfig,
     type DescriptorVariant
@@ -42,19 +35,17 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName, getAppType } from '@sap-ux/project-access';
-import AdpFlpConfigLogger from '../utils/logger';
-import { t, initI18n } from '../utils/i18n';
+import { AdpFlpConfigLogger, t, initI18n, getAbapServiceProvider } from '../utils';
 import {
     ErrorHandler,
     type CredentialsAnswers,
     getCredentialsPrompts,
     type ValidationLink
 } from '@sap-ux/inquirer-common';
-import { createAbapServiceProvider, type AbapTarget, type UrlAbapTarget } from '@sap-ux/system-access';
+import type { AbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import { initAppWizardCache, addToCache, getFromCache, deleteCache } from './appWizzardCache';
-
+import { initAppWizardCache, addToCache, getFromCache, deleteCache } from '../utils/appWizardCache';
 /**
  * Generator for adding a FLP configuration to an adaptation project.
  *
@@ -121,7 +112,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         await this._initAbapServiceProvider();
 
         try {
-            this.inbounds = await this._getAppInbounds();
+            this.inbounds = await getBaseAppInbounds(this.appId, this.provider);
         } catch (error) {
             this.authenticationRequired = this._checkAuthRequired(error);
             if (this.authenticationRequired) {
@@ -197,36 +188,6 @@ export default class AdpFlpConfigGenerator extends Generator {
     }
 
     /**
-     * Retrieves the list of tile inbounds of the application.
-     *
-     * @returns {Promise<ManifestNamespace.Inbound>} list of tile inbounds of the application.
-     */
-    private async _getAppInbounds(): Promise<ManifestNamespace.Inbound | undefined> {
-        const lrepService = this.provider.getLayeredRepository();
-        const inbounds = (await lrepService.getSystemInfo(undefined, undefined, this.appId)).inbounds as Inbound[];
-
-        if (!inbounds?.length) {
-            return undefined;
-        }
-
-        return filterAndMapInboundsToManifest(inbounds);
-    }
-
-    /**
-     * Creates and returns an instance of AbapServiceProvider using the current UI5 YAML configuration and credentials.
-     *
-     * @returns {Promise<AbapServiceProvider>} The ABAP service provider instance.
-     */
-    private async _getAbapServiceProvider(): Promise<AbapServiceProvider> {
-        const { target, ignoreCertErrors = false } = this.ui5Yaml;
-        const requestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = { ignoreCertErrors };
-        if (this.credentials) {
-            requestOptions['auth'] = { username: this.credentials.username, password: this.credentials.password };
-        }
-        return await createAbapServiceProvider(target, requestOptions, false, this.toolsLogger);
-    }
-
-    /**
      * Prompts the user for authentication credentials.
      *
      * @returns {void}
@@ -236,8 +197,8 @@ export default class AdpFlpConfigGenerator extends Generator {
             async (credentials: CredentialsAnswers): Promise<ValidationLink | string | boolean> => {
                 this.credentials = credentials;
                 try {
-                    this.provider = await this._getAbapServiceProvider();
-                    this.inbounds = await this._getAppInbounds();
+                    this.provider = await getAbapServiceProvider(this.ui5Yaml, this.toolsLogger, this.credentials);
+                    this.inbounds = await getBaseAppInbounds(this.appId, this.provider);
                     addToCache(this.appWizard, { provider: this.provider }, this.logger);
                 } catch (error) {
                     if (!isAxiosError(error)) {
@@ -334,11 +295,8 @@ export default class AdpFlpConfigGenerator extends Generator {
         const isBas = isAppStudio();
         const endpoint = await systemLookup.getSystemByName((isBas ? target.destination : target.url) as string);
         if (!endpoint?.Name) {
-            if (isBas) {
-                this._abortExecution(t('error.destinationNotFound'));
-            } else {
-                this._abortExecution(t('error.systemNotFoundInStore'));
-            }
+            const message = isBas ? t('error.destinationNotFound') : t('error.systemNotFoundInStore');
+            this._abortExecution(message);
             return undefined;
         }
 
@@ -405,23 +363,24 @@ export default class AdpFlpConfigGenerator extends Generator {
      *
      * @returns {Promise<(TileSettingsAnswers & FLPConfigAnswers) | undefined>} The answers from the tile actions prompt, or undefined.
      */
-    private async _promptTileActions(): Promise<(TileSettingsAnswers & FLPConfigAnswers) | undefined> {
-        if (this.inbounds) {
-            this._setTileSettingsPrompts();
-            const promptOptions = {
-                existingFlpConfigInfo: {
-                    hide: true
-                }
-            };
-            if (!this.launchAsSubGen && flpConfigurationExists(this.variant)) {
-                promptOptions.existingFlpConfigInfo.hide = false;
-            }
-            const tileSettingsPrompts = getTileSettingsQuestions(promptOptions);
-            return (await this.prompt(tileSettingsPrompts)) as TileSettingsAnswers & FLPConfigAnswers;
+    private async _promptTileActions(): Promise<TileSettingsAnswers | undefined> {
+        if (!this.inbounds) {
+            return undefined;
         }
-        return undefined;
+        this._setTileSettingsPrompts();
+        const existingFlpConfig = !this.launchAsSubGen && flpConfigurationExists(this.variant);
+        const promptOptions = {
+            existingFlpConfigInfo: {
+                hide: !existingFlpConfig
+            }
+        };
+        const tileSettingsPrompts = getTileSettingsQuestions(promptOptions);
+        return this.prompt(tileSettingsPrompts);
     }
 
+    /**
+     * Sets the tile settings prompts based on the current state of the generator.
+     */
     private _setTileSettingsPrompts(): void {
         const promptsIndex = this.prompts.size() === 1 ? 0 : 1;
         this.prompts.splice(promptsIndex, 0, [
@@ -462,6 +421,12 @@ export default class AdpFlpConfigGenerator extends Generator {
         this.appId = this.variant.reference;
     }
 
+    /**
+     * Initializes the AbapServiceProvider for the generator. If the generator is launched as a sub-generator, the provider is taken from the options.
+     * If the provider is cached in the app wizard, it is retrieved from the cache, otherwise, a new AbapServiceProvider is created using the ui5.yaml configuration.
+     *
+     * @returns {Promise<void>} A promise that resolves when the AbapServiceProvider is initialized.
+     */
     private async _initAbapServiceProvider(): Promise<void> {
         if (this.launchAsSubGen) {
             this.provider = this.options.provider as AbapServiceProvider;
@@ -474,7 +439,7 @@ export default class AdpFlpConfigGenerator extends Generator {
             return;
         }
 
-        this.provider = await this._getAbapServiceProvider();
+        this.provider = await getAbapServiceProvider(this.ui5Yaml, this.toolsLogger);
         addToCache(this.appWizard, { provider: this.provider }, this.logger);
     }
 }

@@ -95,7 +95,7 @@ export function getIconPrompt(options?: IconPromptOptions): FLPConfigQuestion {
         name: promptNames.icon,
         type: 'input',
         guiOptions: {
-            breadcrumb: t('prompts.icon')
+            breadcrumb: true
         },
         message: t('prompts.icon'),
         default: (answers: FLPConfigAnswers): string => {
