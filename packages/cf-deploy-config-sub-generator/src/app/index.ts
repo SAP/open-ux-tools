@@ -7,7 +7,8 @@ import {
     TelemetryHelper,
     isExtensionInstalled,
     YUI_EXTENSION_ID,
-    YUI_MIN_VER_FILES_GENERATED_MSG
+    YUI_MIN_VER_FILES_GENERATED_MSG,
+    YeomanEnvironment
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isFullUrlDestination } from '@sap-ux/btp-utils';
@@ -104,6 +105,10 @@ export default class extends DeploymentGenerator {
         await initI18n();
 
         DeploymentGenerator.logger?.debug(t('cfGen.debug.initTelemetry'));
+
+        if ((this.env as unknown as YeomanEnvironment).conflicter) {
+            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
+        }
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {

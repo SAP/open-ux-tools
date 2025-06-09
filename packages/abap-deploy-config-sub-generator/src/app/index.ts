@@ -10,7 +10,8 @@ import {
     YUI_EXTENSION_ID,
     YUI_MIN_VER_FILES_GENERATED_MSG,
     sendTelemetry,
-    TelemetryHelper
+    TelemetryHelper,
+    YeomanEnvironment
 } from '@sap-ux/fiori-generator-shared';
 import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from '@sap-ux/abap-deploy-config-inquirer';
 import { generate as generateAbapDeployConfig } from '@sap-ux/abap-deploy-config-writer';
@@ -85,6 +86,9 @@ export default class extends DeploymentGenerator {
             watchTelemetrySettingStore: false
         });
 
+        if ((this.env as unknown as YeomanEnvironment).conflicter) {
+            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
+        }
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._initializing();
         }
