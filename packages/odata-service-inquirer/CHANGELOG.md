@@ -1,5 +1,14 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.4.15
+
+### Patch Changes
+
+-   d6943aa: Adds GA link to deploy.
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+    -   @sap-ux/nodejs-utils@0.2.1
+
 ## 2.4.14
 
 ### Patch Changes

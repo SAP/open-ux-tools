@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.20.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.15
+
+## 0.20.23
+
+### Patch Changes
+
+-   ec78662: fix: variant changes are not shown in Adaptation Editor
+
 ## 0.20.22
 
 ### Patch Changes

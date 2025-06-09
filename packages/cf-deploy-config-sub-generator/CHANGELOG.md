@@ -1,5 +1,21 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.10
+
+### Patch Changes
+
+-   7132e18: add conflicter force prop for yui usage
+
+## 0.2.9
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.8
+    -   @sap-ux/deploy-config-generator-shared@0.1.7
+    -   @sap-ux/cf-deploy-config-writer@0.3.3
+
 ## 0.2.8
 
 ### Patch Changes

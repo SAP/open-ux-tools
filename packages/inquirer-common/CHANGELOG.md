@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.7.8
+
+### Patch Changes
+
+-   d6943aa: Adds GA link to deploy.
+
 ## 0.7.7
 
 ### Patch Changes

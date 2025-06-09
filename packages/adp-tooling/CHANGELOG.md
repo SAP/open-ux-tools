@@ -1,5 +1,13 @@
 # @sap-ux/adp-tooling
 
+## 0.14.15
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+    -   @sap-ux/nodejs-utils@0.2.1
+
 ## 0.14.14
 
 ### Patch Changes
