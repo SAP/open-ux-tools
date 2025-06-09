@@ -348,6 +348,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
@@ -370,6 +373,9 @@ importers:
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
+      axios:
+        specifier: 1.8.2
+        version: 1.8.2
 
   packages/abap-deploy-config-sub-generator:
     dependencies:
@@ -400,9 +406,6 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap-ux/telemetry':
-        specifier: workspace:*
-        version: link:../telemetry
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
@@ -1644,6 +1647,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -2853,6 +2859,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access

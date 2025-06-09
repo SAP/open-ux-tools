@@ -1,5 +1,17 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.6
+
+### Patch Changes
+
+-   95a816d: update external params on app gen info type
+
+## 0.12.5
+
+### Patch Changes
+
+-   15ec5c4: adds support for adding deployment config via headless generator
+
 ## 0.12.4
 
 ### Patch Changes

@@ -1,5 +1,48 @@
 # @sap-ux/preview-middleware
 
+## 0.20.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.15
+
+## 0.20.23
+
+### Patch Changes
+
+-   ec78662: fix: variant changes are not shown in Adaptation Editor
+
+## 0.20.22
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.14
+
+## 0.20.21
+
+### Patch Changes
+
+-   461c297: fix: only parse change files from `changes` folder.
+
+## 0.20.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.13
+
+## 0.20.19
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.12
+-   @sap-ux/system-access@0.6.2
+
+## 0.20.18
+
+### Patch Changes
+
+-   920c23d: Fix custom connector for flex changes in UI5 < 1.78
+
 ## 0.20.17
 
 ### Patch Changes

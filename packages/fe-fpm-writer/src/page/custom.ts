@@ -33,6 +33,8 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
 
     // set common defaults
     const config = setCommonDefaults(data, manifestPath, manifest) as InternalCustomPage;
+    // currently the custom page template is always the same
+    config.template = 'sap.fe.core.fpm';
     config.settings = initializeTargetSettings(data);
 
     // set library dependencies
