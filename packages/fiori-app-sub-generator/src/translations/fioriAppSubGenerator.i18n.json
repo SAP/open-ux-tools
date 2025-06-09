@@ -81,7 +81,7 @@
     "logMessages": {
         "installingDependencies": "Installing dependencies to package path: {{- path}}...",
         "dependenciesInstalled": "Project dependencies installed in {{installTime}} seconds.",
-        "errorInstallingDependencies": "AN unknown error occurred when installing the project dependencies.",
+        "errorInstallingDependencies": "An unknown error occurred when installing the project dependencies.",
         "commandFailedWithError": "{{command}} failed with error code: {{errorCode}}.",
         "commandErrorCodeWithStack": "Error code: {{errorCode}} returned from {{command}}. {{stack}}",
         "applicationGenerationSuccess": "The application jas been generated and is available at {{- targetFolder}}",
