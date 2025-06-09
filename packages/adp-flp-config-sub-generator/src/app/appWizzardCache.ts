@@ -43,7 +43,7 @@ export function addToCache(
  * Gets the cached state from the app wizard object based on the specified key where the key is a propert of the State type.
  *
  * @param appWizard - AppWizard object with the cache object.
- * @param cacheKey - Key of the AdpYuiCache object to retrieve.
+ * @param cacheKey - Key of the AdpAppWizardCache object to retrieve.
  * @param logger - Logger to log messages.
  * @returns The cached state of the specified key or undefined if not found.
  */

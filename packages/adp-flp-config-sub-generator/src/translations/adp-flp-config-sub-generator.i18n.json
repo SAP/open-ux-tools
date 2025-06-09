@@ -22,6 +22,7 @@
         "writingPhase": "Error in writing phase of the adaptation project FLP configuration",
         "telemetry": "Error sending telemetry data: {{- error}}",
         "updatingApp": "Error updating app with FLP configuration. Inspect the logs for full error.",
-        "authenticationFailed": "Authentication failed."
+        "authenticationFailed": "Authentication failed.",
+        "warningCachingNotSupported": "Warning: caching is not supported"
     }
 }
