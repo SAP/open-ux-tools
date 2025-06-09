@@ -5,13 +5,13 @@ import {
     ErrorHandler,
     showOverwriteQuestion
 } from '@sap-ux/deploy-config-generator-shared';
+import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     isExtensionInstalled,
     YUI_EXTENSION_ID,
     YUI_MIN_VER_FILES_GENERATED_MSG,
     sendTelemetry,
-    TelemetryHelper,
-    YeomanEnvironment
+    TelemetryHelper
 } from '@sap-ux/fiori-generator-shared';
 import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from '@sap-ux/abap-deploy-config-inquirer';
 import { generate as generateAbapDeployConfig } from '@sap-ux/abap-deploy-config-writer';

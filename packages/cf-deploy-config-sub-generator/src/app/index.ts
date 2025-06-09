@@ -2,13 +2,13 @@ import { join, dirname } from 'path';
 import { platform } from 'os';
 import hasbin = require('hasbin');
 import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
+import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     sendTelemetry,
     TelemetryHelper,
     isExtensionInstalled,
     YUI_EXTENSION_ID,
-    YUI_MIN_VER_FILES_GENERATED_MSG,
-    YeomanEnvironment
+    YUI_MIN_VER_FILES_GENERATED_MSG
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isFullUrlDestination } from '@sap-ux/btp-utils';
