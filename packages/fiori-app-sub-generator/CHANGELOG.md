@@ -1,5 +1,40 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.4.12
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/odata-service-inquirer@2.4.15
+    -   @sap-ux/ui5-application-inquirer@0.14.8
+
+## 0.4.11
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.4.13
+-   @sap-ux/odata-service-inquirer@2.4.14
+
+## 0.4.10
+
+### Patch Changes
+
+-   Updated dependencies [18c7e5d]
+    -   @sap-ux/odata-service-inquirer@2.4.14
+
+## 0.4.9
+
+### Patch Changes
+
+-   95a816d: update external params on app gen info type
+-   Updated dependencies [95a816d]
+    -   @sap-ux/fiori-generator-shared@0.12.6
+    -   @sap-ux/cap-config-writer@0.10.6
+    -   @sap-ux/fiori-elements-writer@2.4.12
+    -   @sap-ux/fiori-freestyle-writer@2.4.9
+    -   @sap-ux/odata-service-inquirer@2.4.13
+    -   @sap-ux/ui5-application-inquirer@0.14.7
+
 ## 0.4.8
 
 ### Patch Changes
