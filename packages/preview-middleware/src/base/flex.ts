@@ -18,7 +18,7 @@ export async function readChanges(
 ): Promise<Record<string, CommonChangeProperties>> {
     const changes: Record<string, CommonChangeProperties> = {};
     const files = await project.byGlob(
-        '/**/changes/**/*.{change,ctrl_variant,ctrl_variant_change,ctrl_variant_management_change}'
+        '/**/changes/**/*.{change,variant,ctrl_variant,ctrl_variant_change,ctrl_variant_management_change}'
     );
     for (const file of files) {
         try {
