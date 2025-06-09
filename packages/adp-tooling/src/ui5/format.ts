@@ -138,10 +138,12 @@ export function isFeatureSupportedVersion(featureVersion: string, version?: stri
         return true;
     }
 
-    if (major > featMajorVersion) {
-        return true;
-    } else if (minor < featMinorVersion) {
-        return false;
+    if (major !== featMajorVersion) {
+        return major > featMajorVersion;
+    }
+
+    if (minor !== featMinorVersion) {
+        return minor > featMinorVersion;
     }
 
     return patch >= featPatchVersion;
