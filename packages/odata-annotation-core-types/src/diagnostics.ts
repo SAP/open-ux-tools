@@ -49,6 +49,7 @@ export const NO_UNDEFINED_NAMESPACE_TYPE = 'no-undefined-namespace';
 export const NAME_CASE_ISSUE_PATH_VALUE = 'name-case-issue-path-value';
 export const MISSING_I18N_KEY = 'missing-i18n-key';
 export const VALUE_REQUIRED = 'value-required';
+export const NO_WHITESPACE_IN_PATH_EXPRESSION = 'no-whitespace-in-path-expression';
 export const INCOMPLETE_EXPRESSION_CC_FORWARD_SLASH = 'incomplete-expression-cc-forward-slash';
 export const INCOMPLETE_EXPRESSION_FORWARD_SLASH = 'incomplete-expression-forward-slash';
 export const IGNORE_TARGET_VALIDATION = 'ignore-target-validation';
@@ -112,6 +113,10 @@ export type NameCasePathValueDiagnostic = DiagnosticBase<typeof NAME_CASE_ISSUE_
 export type MissingI18nKeyDiagnostic = DiagnosticBase<typeof MISSING_I18N_KEY, I18nMissingKey>;
 export type InvalidTypeDiagnostic = DiagnosticBase<typeof INVALID_TYPE_TYPE, InvalidType>;
 export type ValueRequired = DiagnosticBase<typeof VALUE_REQUIRED, { name: string }>;
+export type NoWhitespaceInPathExpression = DiagnosticBase<
+    typeof NO_WHITESPACE_IN_PATH_EXPRESSION,
+    { whitespaceRanges: Range[] }
+>;
 export type InvalidPrimitiveType = DiagnosticBase<typeof INVALID_PRIMITIVE_TYPE, { name: string }>;
 export type NoVaidationForSubNodes = DiagnosticBase<typeof NO_VALIDATION_FOR_SUBNODES, { name: string }>;
 export type IncompleteExpressionCCForwardSlash = DiagnosticBase<
@@ -182,6 +187,7 @@ export type ExtendedDiagnostic =
     | NameCasePathValueDiagnostic
     | MissingI18nKeyDiagnostic
     | ValueRequired
+    | NoWhitespaceInPathExpression
     | IncompleteExpressionCCForwardSlash
     | IncompleteExpressionForwardSlash
     | IgnoreTargetValidation
