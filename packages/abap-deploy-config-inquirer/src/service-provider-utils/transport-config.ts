@@ -139,16 +139,10 @@ class DefaultTransportConfig implements TransportConfig {
             } else if (err.response?.status === 401) {
                 const auth: string = err.response.headers?.['www-authenticate'];
                 result.transportConfigNeedsCreds = !!auth?.toLowerCase()?.startsWith('basic');
-                LoggerHelper.logger.debug(
-                    t('errors.debugAbapTargetSystemAuthFound', { isFound: !!result.transportConfigNeedsCreds })
-                );
             } else {
                 // Everything from network errors to service being inactive is a warning.
                 // Will be logged and the user is allowed to move on
                 // Business errors will be returned by the ATO response above and these act as hard stops
-                LoggerHelper.logger.warn(
-                    t('warnings.certificateError', { url: backendTarget?.abapTarget?.url, error: err.message })
-                );
                 result.transportConfigNeedsCreds = false;
             }
             LoggerHelper.logger.debug(t('errors.debugAbapTargetSystem', { method: 'init', error: err.message }));
