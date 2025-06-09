@@ -25,19 +25,12 @@ import {
 } from '../../src/prompts/conditions';
 import * as utils from '../../src/utils';
 import { PromptState } from '../../src/prompts/prompt-state';
-import { getHelpUrl } from '@sap-ux/guided-answers-helper';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
 }));
 
-jest.mock('@sap-ux/guided-answers-helper', () => ({
-    ...jest.requireActual('@sap-ux/guided-answers-helper'),
-    getHelpUrl: jest.fn()
-}));
-
 const mockIsAppStudio = isAppStudio as jest.Mock;
-const mockGetHelpUrl = getHelpUrl as jest.Mock;
 
 describe('Test abap deploy config inquirer conditions', () => {
     beforeEach(() => {

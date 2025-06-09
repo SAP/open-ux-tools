@@ -1,6 +1,6 @@
 import type { AtoSettings } from '@sap-ux/axios-extension';
 import { AtoService } from '@sap-ux/axios-extension';
-import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
 import type { BackendTarget, Credentials, InitTransportConfigResult, TransportConfig } from '../types';

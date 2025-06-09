@@ -20,7 +20,6 @@ import {
 } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
 import { AuthenticationType } from '@sap-ux/store';
-import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
 import {
     ClientChoiceValue,

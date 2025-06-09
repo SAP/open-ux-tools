@@ -3,7 +3,6 @@ import { PromptState } from './prompt-state';
 import { findBackendSystemByUrl, initTransportConfig } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
 import { t } from '../i18n';
-import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
 import {
     ClientChoiceValue,
