@@ -146,6 +146,8 @@ export default class extends Generator {
         let questions: Question[] = (await getPrompts(inbounds, {
             silentOverwrite,
             inboundId: { hide: true },
+            existingFlpConfigInfo: { hide: true },
+            icon: { hide: true },
             additionalParameters: { hide: true }
         })) as Question[];
 

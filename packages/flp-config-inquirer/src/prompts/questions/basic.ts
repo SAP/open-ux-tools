@@ -9,8 +9,7 @@ import type {
     OverwritePromptOptions,
     SemanticObjectPromptOptions,
     SubTitlePromptOptions,
-    TitlePromptOptions,
-    IconPromptOptions
+    TitlePromptOptions
 } from '../../types';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
@@ -78,6 +77,11 @@ export function getActionPrompt(
             }
 
             if (!inbounds || !answers.semanticObject) {
+                return true;
+            }
+
+            // If executeDuplicateValidation is not set to true, skip duplicate validation
+            if (!options?.executeDuplicateValidation) {
                 return true;
             }
 
@@ -196,30 +200,6 @@ export function getSubTitlePrompt(
                 return options.default;
             }
             return answers?.inboundId?.subTitle ?? '';
-        },
-        filter: (val: string): string => val?.trim()
-    };
-}
-
-/**
- * Creates the 'icon' prompt for FLP configuration.
- *
- * @param {IconPromptOptions} [options] - Optional configuration for the icon prompt, including default values.
- * @returns {FLPConfigQuestion} The prompt configuration for the icon.
- */
-export function getIconPrompt(options?: IconPromptOptions): FLPConfigQuestion {
-    return {
-        name: promptNames.icon,
-        type: 'input',
-        guiOptions: {
-            breadcrumb: t('prompts.icon')
-        },
-        message: t('prompts.icon'),
-        default: (answers: FLPConfigAnswers): string => {
-            if (options?.default) {
-                return options.default;
-            }
-            return answers?.inboundId?.icon ?? '';
         },
         filter: (val: string): string => val?.trim()
     };

@@ -2,7 +2,7 @@ import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InboundContent } from '@sap-ux/axios-extension';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
-import type { FLPConfigQuestion, FLPConfigAnswers } from '../../types';
+import type { FLPConfigQuestion, FLPConfigAnswers, IconPromptOptions } from '../../types';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
@@ -81,5 +81,29 @@ export function getExistingFlpConfigInfoPrompt(isCLI: boolean): FLPConfigQuestio
             type: 'label',
             mandatory: false
         }
+    };
+}
+
+/**
+ * Creates the 'icon' prompt for FLP configuration.
+ *
+ * @param {IconPromptOptions} [options] - Optional configuration for the icon prompt, including default values.
+ * @returns {FLPConfigQuestion} The prompt configuration for the icon.
+ */
+export function getIconPrompt(options?: IconPromptOptions): FLPConfigQuestion {
+    return {
+        name: promptNames.icon,
+        type: 'input',
+        guiOptions: {
+            breadcrumb: t('prompts.icon')
+        },
+        message: t('prompts.icon'),
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.icon ?? '';
+        },
+        filter: (val: string): string => val?.trim()
     };
 }

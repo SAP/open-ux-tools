@@ -85,6 +85,10 @@ export interface SemanticObjectPromptOptions {
 export interface ActionPromptOptions {
     default?: string;
     hide?: boolean;
+    /**
+     * If set to false, the prompt will not validate for duplicate semantic object/action combination.
+     */
+    executeDuplicateValidation?: boolean;
 }
 
 /**
@@ -111,6 +115,7 @@ export interface SubTitlePromptOptions {
 
 export interface IconPromptOptions {
     default?: string;
+    hide?: boolean;
 }
 
 /**
