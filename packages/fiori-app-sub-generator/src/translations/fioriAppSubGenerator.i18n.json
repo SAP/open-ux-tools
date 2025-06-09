@@ -84,7 +84,7 @@
         "errorInstallingDependencies": "An unknown error occurred when installing the project dependencies.",
         "commandFailedWithError": "{{command}} failed with error code: {{errorCode}}.",
         "commandErrorCodeWithStack": "Error code: {{errorCode}} returned from {{command}}. {{stack}}",
-        "applicationGenerationSuccess": "The application jas been generated and is available at {{- targetFolder}}",
+        "applicationGenerationSuccess": "The application has been generated and is available at {{- targetFolder}}",
         "copyingTemplateFiles": "Copying {{templateName}} template files...",
         "generatingAppWithVersion": "Generating application with {{- generatorName}} {{generatorVersion}}",
         "warningCachingNotSupported": "Warning: caching is not supported.",
