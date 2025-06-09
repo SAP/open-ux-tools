@@ -7,7 +7,7 @@ import { addi18nResourceBundle as addProjectInputValidatorBundle } from '@sap-ux
 import translations from '../translations/generator-adp.i18n.json';
 
 const adpGeneratorI18nNamespace = 'generator-adp';
-export const i18n: i18nNext = i18next.createInstance(); 
+export const i18n: i18nNext = i18next.createInstance();
 
 /**
  * Initialize i18next with the translations for this module.
