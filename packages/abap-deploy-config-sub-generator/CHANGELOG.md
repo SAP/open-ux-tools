@@ -1,5 +1,20 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.15
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.13
+    -   @sap-ux/deploy-config-generator-shared@0.1.8
+
+## 0.1.14
+
+### Patch Changes
+
+-   7132e18: add conflicter force prop for yui usage
+
 ## 0.1.13
 
 ### Patch Changes

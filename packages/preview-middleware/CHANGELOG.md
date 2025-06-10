@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.20.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.16
+
+## 0.20.25
+
+### Patch Changes
+
+-   135c3ae: fix: Duplicate Extension Points are selected in outline tree
+
 ## 0.20.24
 
 ### Patch Changes
