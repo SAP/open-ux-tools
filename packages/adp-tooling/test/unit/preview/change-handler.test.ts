@@ -592,7 +592,6 @@ id=\\"btn-30303030\\""
                 alias: 'test'
             }
         ]);
-        jest.spyOn(systemAccess, 'createAbapServiceProvider').mockResolvedValue({} as any);
         jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
             getDataSourceMetadata: jest.fn().mockResolvedValue(`
                     <?xml version="1.0" encoding="utf-8"?>
@@ -683,7 +682,8 @@ id=\\"btn-30303030\\""
                 'projectRoot',
                 change,
                 mockFs as unknown as Editor,
-                mockLogger as unknown as Logger
+                mockLogger as unknown as Logger,
+                {} as any
             );
 
             expect(generateChangeSpy).toHaveBeenCalled();

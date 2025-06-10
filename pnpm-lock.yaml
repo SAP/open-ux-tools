@@ -348,6 +348,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
@@ -370,6 +373,9 @@ importers:
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
+      axios:
+        specifier: 1.8.2
+        version: 1.8.2
 
   packages/abap-deploy-config-sub-generator:
     dependencies:
@@ -400,9 +406,6 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap-ux/telemetry':
-        specifier: workspace:*
-        version: link:../telemetry
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
@@ -601,6 +604,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      '@sap-ux/ui5-info':
+        specifier: workspace:*
+        version: link:../ui5-info
       adm-zip:
         specifier: 0.5.10
         version: 0.5.10
@@ -1569,6 +1575,9 @@ importers:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
+      '@sap-ux/abap-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../abap-deploy-config-inquirer
       '@sap-ux/cf-deploy-config-inquirer':
         specifier: workspace:*
         version: link:../cf-deploy-config-inquirer
@@ -1632,6 +1641,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -1923,8 +1935,8 @@ importers:
         specifier: workspace:*
         version: link:../cap-config-writer
       '@sap-ux/edmx-parser':
-        specifier: 0.9.0
-        version: 0.9.0
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -1992,6 +2004,12 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.16.9
         version: 1.16.9
+      '@sap-ux/abap-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../abap-deploy-config-inquirer
+      '@sap-ux/cf-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../cf-deploy-config-inquirer
       '@sap-ux/flp-config-sub-generator':
         specifier: workspace:*
         version: link:../flp-config-sub-generator
@@ -2392,8 +2410,11 @@ importers:
         specifier: 2.0.3
         version: 2.0.3
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.16.9
+        version: 1.16.9
+      '@sap-ux/adp-flp-config-sub-generator':
+        specifier: workspace:*
+        version: link:../adp-flp-config-sub-generator
       '@sap-ux/adp-tooling':
         specifier: workspace:*
         version: link:../adp-tooling
@@ -2440,6 +2461,9 @@ importers:
       '@jest/types':
         specifier: 29.6.3
         version: 29.6.3
+      '@sap-ux/deploy-config-sub-generator':
+        specifier: workspace:*
+        version: link:../deploy-config-sub-generator
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13
@@ -2470,9 +2494,6 @@ importers:
       rimraf:
         specifier: 5.0.5
         version: 5.0.5
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
       yeoman-test:
         specifier: 6.3.0
         version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
@@ -2818,8 +2839,8 @@ importers:
         specifier: workspace:*
         version: link:../btp-utils
       '@sap-ux/edmx-parser':
-        specifier: 0.9.0
-        version: 0.9.0
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -2832,6 +2853,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -3292,6 +3316,9 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@sap-ux/system-access':
+        specifier: workspace:*
+        version: link:../system-access
       '@sap-ux/ui5-info':
         specifier: workspace:*
         version: link:../ui5-info
@@ -8982,8 +9009,8 @@ packages:
       '@sap-ux/vocabularies-types': 0.13.0
     dev: false
 
-  /@sap-ux/edmx-parser@0.9.0:
-    resolution: {integrity: sha512-X7yda14CsUqGhEK5/XYhP0W65ueObQxq6Dv5qmJQBvR73V0gNexrY5sWuzCQPcEVVh0sB9A0qesMU9qgp6R37A==}
+  /@sap-ux/edmx-parser@0.9.1:
+    resolution: {integrity: sha512-qgDXrJP+WtBbYJdedtCEVyIyKTs2eVcfplE2Mk4AbW8oxU85rqq8h8gNRoQlIUCcXXBJwXeoVlWTvSCF5mF7Rw==}
     dependencies:
       xml-js: 1.6.11
     dev: false

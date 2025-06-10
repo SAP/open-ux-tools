@@ -11,6 +11,7 @@ import type {
 } from '@sap-ux/odata-service-inquirer';
 import type { ApiHubType, SapSystemSourceType } from '../types/constants';
 import type { Script } from './common';
+import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
 
 export interface Project {
     targetFolder: string;
@@ -51,6 +52,7 @@ export interface Service {
     client?: string;
     destinationName?: string;
     servicePath?: string; // url path of odata or cap service
+    serviceId?: string; // id of the service
     edmx?: string; // Optional since Fiori Freestyle can be generated without datasource
     annotations?: Annotations[];
     version?: OdataVersion; // Not present for FF no datasource template flow
@@ -125,6 +127,10 @@ export interface State {
      * The template selected by the user, maybe FE or FF
      */
     floorplan: Floorplan;
+    /**
+     * General information about the application - used for README and appGenInfo.json
+     */
+    appGenInfo?: Partial<AppGenInfo>;
 }
 
 /** Only used by headless */

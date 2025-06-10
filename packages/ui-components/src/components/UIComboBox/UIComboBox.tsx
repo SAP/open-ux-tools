@@ -1,5 +1,11 @@
 import React from 'react';
-import type { IComboBoxProps, IComboBoxState, IAutofillProps, IButtonProps } from '@fluentui/react';
+import type {
+    IComboBoxProps,
+    IComboBoxState,
+    IAutofillProps,
+    IButtonProps,
+    ISelectableDroppableTextProps
+} from '@fluentui/react';
 import {
     ComboBox,
     IComboBox,
@@ -20,7 +26,7 @@ import { getMessageInfo, MESSAGE_TYPES_CLASSNAME_MAP } from '../../helper/Valida
 import { labelGlobalStyle } from '../UILabel';
 import { isDropdownEmpty, getCalloutCollisionTransformationPropsForDropdown } from '../UIDropdown';
 import { CalloutCollisionTransform } from '../UICallout';
-import { isHTMLInputElement } from '../../utilities';
+import { isHTMLInputElement, debounce } from '../../utilities';
 import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 export {
@@ -40,6 +46,32 @@ export enum UIComboBoxLoaderType {
      * Loader within input
      */
     Input = 'Input'
+}
+
+export interface UIComboBoxExternalSearchProps {
+    /**
+     * Label displayed in the dropdown when there are no available options.
+     */
+    noDataLabel?: string;
+
+    /**
+     * Callback triggered immediately when the user types in the input field.
+     * Useful to clear data and show loader indicator.
+     */
+    onInputChange?: (query: string) => void;
+
+    /**
+     * Callback triggered after the user stops typing for the specified debounce duration.
+     * This is where the external search should be performed.
+     */
+    onExternalSearch: (query: string) => void;
+
+    /**
+     * Delay in milliseconds between the last user input and triggering the external search.
+     *
+     * @default 500
+     */
+    debounceTime?: number;
 }
 
 export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps {
@@ -80,6 +112,10 @@ export interface UIComboBoxProps extends IComboBoxProps, UIMessagesExtendedProps
      * `false` to hide it, or `undefined` to apply the default search filtering behavior.
      */
     customSearchFilter?: (searchTerm: string, option: IComboBoxOption) => boolean | undefined;
+    /**
+     * Properties to support external (backend) search behavior in the ComboBox.
+     */
+    externalSearchProps?: UIComboBoxExternalSearchProps;
 }
 export interface UIComboBoxState {
     minWidth?: number;
@@ -124,6 +160,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     private ignoreOpenKeys: Array<string> = ['Meta', 'Control', 'Shift', 'Tab', 'Alt', 'CapsLock'];
     private isListHidden = false;
     private calloutCollisionTransform = new CalloutCollisionTransform(this.comboboxDomRef, this.menuDomRef);
+    private readonly onExternalSearchDebounce: (query: string) => void;
 
     /**
      * Initializes component properties.
@@ -146,6 +183,12 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         this.onScrollToItem = this.onScrollToItem.bind(this);
         this.setFocus = this.setFocus.bind(this);
         this.onRenderIcon = this.onRenderIcon.bind(this);
+        this.onRenderList = this.onRenderList.bind(this);
+        this.onInputValueChange = this.onInputValueChange.bind(this);
+        this.onExternalSearchDebounce = debounce(
+            (query: string) => this.props.externalSearchProps?.onExternalSearch?.(query),
+            props.externalSearchProps?.debounceTime ?? 500
+        );
 
         initializeComponentRef(this);
 
@@ -153,24 +196,44 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
     }
 
     /**
+     * Method checks if the options or loading state have changed and a query exists, it updates the hidden options.
      *
-     * @param {UIComboBoxProps} nextProps
-     * @returns {boolean}
+     * @param nextProps - The incoming props to compare with current props.
+     * @returns Always returns true to allow the component to re-render.
      */
     shouldComponentUpdate(nextProps: UIComboBoxProps): boolean {
-        if (nextProps.options !== this.props.options && this.query) {
+        if (
+            (nextProps.options !== this.props.options ||
+                this.isLoaderChanged(this.props.isLoading, nextProps.isLoading)) &&
+            this.query
+        ) {
             // Filter options
-            this.updateHiddenOptions(nextProps.options);
+            this.updateHiddenOptions(nextProps.options, nextProps.isLoading);
         }
         return true;
     }
 
     /**
+     * Checks if the loading state has changed between the previous and new loader values.
+     *
+     * @param prevLoader The previous loading state.
+     * @param newLoader The new loading state.
+     * @returns True if the loading state has changed.
+     */
+    private isLoaderChanged(
+        prevLoader?: boolean | UIComboBoxLoaderType[],
+        newLoader?: boolean | UIComboBoxLoaderType[]
+    ): boolean {
+        return !!prevLoader !== !!newLoader;
+    }
+
+    /**
      * Updates hidden options.
      *
-     * @param {IComboBoxOption[]} opts
+     * @param opts Current combobox options
+     * @param isLoading Current combobox loading state
      */
-    private updateHiddenOptions(opts: IComboBoxOption[]): void {
+    private updateHiddenOptions(opts: IComboBoxOption[], isLoading?: boolean | UIComboBoxLoaderType[]): void {
         this.isListHidden = true;
         let currentGroup: IComboBoxOption | undefined;
         let isGroupVisible = false;
@@ -188,7 +251,9 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                 isGroupVisible = false;
             } else {
                 // Handle selectable item
-                const isVisible = this.isOptionVisibleByQuery(option, this.query);
+                const isVisible =
+                    this.isLoaderApplied(UIComboBoxLoaderType.List, isLoading) ||
+                    this.isOptionVisibleByQuery(option, this.query);
                 option.hidden = !isVisible;
                 if (this.isListHidden && !option.hidden) {
                     this.isListHidden = false;
@@ -580,19 +645,43 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
         }
     };
 
-    private onRenderListLoading = (): JSX.Element | null => {
-        const styles = {
-            label: {
-                fontSize: '11px',
-                fontWeight: 'normal'
-            }
-        };
+    /**
+     * Custom render function for the combo box dropdown list.
+     *
+     * This method handles following cases:
+     * 1. If a loading state is active (as determined by `isLoaderApplied`), it renders a loading indicator.
+     * 2. If no options are available and a `noDataLabel` is provided via `externalSearchProps`, it shows a "no data" message.
+     *
+     * @param props The rendering props for the selectable, droppable list.
+     * @param defaultRender The default rendering function provided by the ComboBox component.
+     * @returns A JSX element representing the rendered list.
+     */
+    private readonly onRenderList = (
+        props?: ISelectableDroppableTextProps<IComboBox, IComboBox>,
+        defaultRender?: (props?: ISelectableDroppableTextProps<IComboBox, IComboBox>) => JSX.Element | null
+    ): JSX.Element | null => {
+        const { onRenderList, externalSearchProps, options } = this.props;
+        if (onRenderList) {
+            return onRenderList(props, defaultRender);
+        }
+        const isLoading = this.isLoaderApplied(UIComboBoxLoaderType.List);
+        if (isLoading) {
+            const styles = {
+                label: {
+                    fontSize: '11px',
+                    fontWeight: 'normal'
+                }
+            };
 
-        return (
-            <div className="option-loading">
-                <UILoader label="Loading" className="uiLoaderXSmall" labelPosition="right" styles={styles} />
-            </div>
-        );
+            return (
+                <div className="option-loading">
+                    <UILoader label="Loading" className="uiLoaderXSmall" labelPosition="right" styles={styles} />
+                </div>
+            );
+        } else if (externalSearchProps?.noDataLabel && (!options.length || this.isListHidden)) {
+            return <div className="option-no-data">{externalSearchProps.noDataLabel}</div>;
+        }
+        return defaultRender?.(props);
     };
 
     /**
@@ -704,10 +793,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
      * Method returns if loader should be displayed for passed type.
      *
      * @param type Loader's place
+     * @param isLoading Current combobox loading state
      * @returns True if loader should be displayed for passed type.
      */
-    private isLoaderApplied(type: UIComboBoxLoaderType): boolean {
-        const { isLoading } = this.props;
+    private isLoaderApplied(type: UIComboBoxLoaderType, isLoading = this.props.isLoading): boolean {
         if (Array.isArray(isLoading)) {
             return isLoading.includes(type);
         }
@@ -738,6 +827,24 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
             return <UILoader className="uiLoaderXSmall" labelPosition="right" styles={styles} />;
         }
         return defaultRender?.(props) ?? null;
+    }
+
+    /**
+     * Called when the user types in to the input of the combo box.
+     *
+     * @param text The current input value typed by the user.
+     */
+    private onInputValueChange(text: string): void {
+        const { onInputValueChange, externalSearchProps } = this.props;
+        // Call external cb from props
+        onInputValueChange?.(text);
+        if (externalSearchProps) {
+            const { onExternalSearch, onInputChange } = externalSearchProps;
+            onInputChange?.(text);
+            if (onExternalSearch) {
+                this.onExternalSearchDebounce(text);
+            }
+        }
     }
 
     /**
@@ -791,7 +898,10 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                             ...(this.props.useComboBoxAsMenuMinWidth && {
                                 calloutMain: {
                                     minWidth: this.state.minWidth,
-                                    display: this.state.isListHidden ? 'none' : undefined
+                                    display:
+                                        this.state.isListHidden && !this.props.externalSearchProps?.noDataLabel
+                                            ? 'none'
+                                            : undefined
                                 }
                             })
                         },
@@ -820,9 +930,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         onMenuOpen: this.handleRefreshButton,
                         onChange: this.handleChange
                     })}
-                    {...(this.isLoaderApplied(UIComboBoxLoaderType.List) && {
-                        onRenderList: this.onRenderListLoading
-                    })}
+                    onRenderList={this.onRenderList}
                     {...(this.props.multiSelect && {
                         onScrollToItem: this.onScrollToItem,
                         ...(this.props.onChange && {
@@ -830,6 +938,7 @@ export class UIComboBox extends React.Component<UIComboBoxProps, UIComboBoxState
                         })
                     })}
                     errorMessage={messageInfo.message}
+                    onInputValueChange={this.onInputValueChange}
                 />
             </div>
         );

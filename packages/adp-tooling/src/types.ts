@@ -122,6 +122,8 @@ export interface AttributesAnswers {
     targetFolder: string;
     ui5Version: string;
     enableTypeScript: boolean;
+    addDeployConfig?: boolean;
+    addFlpConfig?: boolean;
 }
 
 export interface SourceApplication {
@@ -148,6 +150,11 @@ export interface VersionDetail {
     version: string;
     support: string;
     lts: boolean;
+}
+
+export interface TypesConfig {
+    typesPackage: string;
+    typesVersion: string;
 }
 
 export interface ResourceModel {

@@ -1,5 +1,8 @@
 import type { MatcherIgnore } from '@sap-ux/jest-file-matchers';
 import {
+    APPGEN_INFO_DATE_REGEX,
+    APPGEN_INFO_GEN_VERSION,
+    APPGEN_INFO_PLATFORM_REGEX,
     MANIFEST_SOURCE_TEMPLATE_ID_REGEX,
     MANIFEST_SOURCE_TEMPLATE_TOOLSID_REGEX,
     MANIFEST_SOURCE_TEMPLATE_VERSION_REGEX,
@@ -66,6 +69,10 @@ export const ignoreMatcherOpts: MatcherIgnore = {
         {
             filenames: ['ui5-local.yaml'],
             ignore: [YAML_VERSION_REGEX]
+        },
+        {
+            filenames: ['.appGenInfo.json'],
+            ignore: [APPGEN_INFO_DATE_REGEX, APPGEN_INFO_GEN_VERSION, APPGEN_INFO_PLATFORM_REGEX]
         }
     ]
 };

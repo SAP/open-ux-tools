@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.14.6
+
+### Patch Changes
+
+-   135c3ae: fix: Duplicate Extension Points are selected in outline tree
+
+## 0.14.5
+
+### Patch Changes
+
+-   920c23d: Fix custom connector for flex changes in UI5 < 1.78
+
 ## 0.14.4
 
 ### Patch Changes

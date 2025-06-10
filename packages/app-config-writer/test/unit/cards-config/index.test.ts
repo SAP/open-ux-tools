@@ -18,7 +18,7 @@ function createTestFs(basePath: string) {
 
 describe('enableCardGenerator', () => {
     test('Valid LROP', async () => {
-        const basePath = join(__dirname, '../../fixtures/lrop-v4');
+        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
         const fs = createTestFs(basePath);
         await enableCardGeneratorConfig(basePath, 'ui5.yaml', undefined, fs);
 
@@ -27,7 +27,7 @@ describe('enableCardGenerator', () => {
     });
 
     test('V4 LROP with CLI 3.0', async () => {
-        const basePath = join(__dirname, '../../fixtures/lrop-v4');
+        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
         const fs = create(createStorage());
         await enableCardGeneratorConfig(basePath, 'ui5.yaml', undefined, fs);
 
@@ -40,7 +40,7 @@ describe('enableCardGenerator', () => {
     });
 
     test('Valid LROP without cardGenerator config', async () => {
-        const basePath = join(__dirname, '../../fixtures/lrop-v4');
+        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
         const fs = create(createStorage());
         await enableCardGeneratorConfig(basePath, 'ui5-without-generator.yaml', undefined, fs);
 
@@ -50,5 +50,44 @@ describe('enableCardGenerator', () => {
 
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(basePath, 'ui5-without-generator.yaml'))).toMatchSnapshot();
+    });
+
+    test('Valid LROP with deprecated preview config', async () => {
+        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
+        const fs = create(createStorage());
+        await enableCardGeneratorConfig(basePath, 'ui5-with-deprecated-config.yaml', undefined, fs);
+
+        if (process.env.UX_DEBUG) {
+            fs.commit(() => {});
+        }
+
+        expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
+        expect(fs.read(join(basePath, 'ui5-with-deprecated-config.yaml'))).toMatchSnapshot();
+    });
+
+    test('Valid LROP with deprecated rta config', async () => {
+        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
+        const fs = create(createStorage());
+        await enableCardGeneratorConfig(basePath, 'ui5-with-deprecated-rta-config.yaml', undefined, fs);
+
+        if (process.env.UX_DEBUG) {
+            fs.commit(() => {});
+        }
+
+        expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
+        expect(fs.read(join(basePath, 'ui5-with-deprecated-rta-config.yaml'))).toMatchSnapshot();
+    });
+
+    test('Valid LROP with deprecated config with cards generator', async () => {
+        const basePath = join(__dirname, '../../fixtures/cards-config/lrop-v4');
+        const fs = create(createStorage());
+        await enableCardGeneratorConfig(basePath, 'ui5-with-deprecated-config-and-cards-generator.yaml', undefined, fs);
+
+        if (process.env.UX_DEBUG) {
+            fs.commit(() => {});
+        }
+
+        expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
+        expect(fs.read(join(basePath, 'ui5-with-deprecated-config-and-cards-generator.yaml'))).toMatchSnapshot();
     });
 });

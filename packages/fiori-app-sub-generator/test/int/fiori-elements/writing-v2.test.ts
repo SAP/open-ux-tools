@@ -74,6 +74,7 @@ describe('Generate v2 apps', () => {
 
         const destService: Service = {
             localEdmxFilePath: '',
+            serviceId: 'ABCD_MockService_O2',
             servicePath: v2Service.servicePath,
             version: v2Service.version,
             host: v2Service.host!,
@@ -89,7 +90,20 @@ describe('Generate v2 apps', () => {
             }) as Project,
             floorplan: FloorplanFE.FE_LROP,
             service: destService,
-            entityRelatedConfig: v2EntityConfig
+            entityRelatedConfig: v2EntityConfig,
+            appGenInfo: {
+                externalParameters: {
+                    'abapCSN': {
+                        services: [
+                            { type: 'abapCSN', runtimeName: 'ABCD_MockService_O1', csnServiceName: 'MockService' },
+                            { type: 'abapCSN', runtimeName: 'ABCD_MockService_O2', csnServiceName: 'MockService2' },
+                            { type: 'abapCSN', runtimeName: 'ABCD_MockService_O3', csnServiceName: 'MockService3' }
+                        ],
+                        csnName: 'MOCKCSN55.abap.csn',
+                        packageUri: 'abapfs:/BAS_DEST/MOCK_CSN_TEST1'
+                    }
+                }
+            }
         });
         await runWritingPhaseGen(testState);
         expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);

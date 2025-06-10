@@ -1,5 +1,46 @@
 # @sap-ux/deploy-tooling
 
+## 0.16.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.9
+
+## 0.16.5
+
+### Patch Changes
+
+-   d6943aa: Adds GA link to deploy.
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+
+## 0.16.4
+
+### Patch Changes
+
+-   Updated dependencies [61d4060]
+    -   @sap-ux/axios-extension@1.21.2
+    -   @sap-ux/system-access@0.6.2
+
+## 0.16.3
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/project-input-validator@0.6.2
+    -   @sap-ux/system-access@0.6.1
+
+## 0.16.2
+
+### Patch Changes
+
+-   2224d63: Remove feature toggle, required to enable HTTPS proxy configurations
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/system-access@0.6.1
+
 ## 0.16.1
 
 ### Patch Changes

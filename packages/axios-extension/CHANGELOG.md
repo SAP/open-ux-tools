@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.21.2
+
+### Patch Changes
+
+-   61d4060: use accept header for service generator content request from config
+
+## 1.21.1
+
+### Patch Changes
+
+-   2224d63: Remove feature toggle, required to enable HTTPS proxy configurations
+
 ## 1.21.0
 
 ### Minor Changes

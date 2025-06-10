@@ -8,8 +8,12 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml';
 
+const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
+const CARDS_GENERATOR_MIDDLEWARE = 'sap-cards-generator';
+
 /**
  * Updates the `ui5.yaml` file to add card generator path to preview middleware configuration.
+ * Removes the `sap-cards-generator` middleware if it exists.
  *
  * @param {Editor} fs - The `mem-fs-editor` instance used to read and write files.
  * @param {string} basePath - The path to the project root where the `ui5.yaml` file is located.
@@ -25,6 +29,18 @@ async function updateMiddlewareConfigWithGeneratorPath(
 ): Promise<void> {
     const ui5YamlFile = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
     const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile, fs);
+
+    if (ui5YamlConfig.findCustomMiddleware(CARDS_GENERATOR_MIDDLEWARE)) {
+        try {
+            ui5YamlConfig.removeCustomMiddleware(CARDS_GENERATOR_MIDDLEWARE);
+            logger?.info(
+                `Removed '${CARDS_GENERATOR_MIDDLEWARE}' middleware configuration from ${ui5YamlFile}. It is no longer needed because this feature has been integrated into fiori-tools-preview / preview-middleware.`
+            );
+        } catch (error) {
+            logger?.warn(`Failed to remove '${CARDS_GENERATOR_MIDDLEWARE}' middleware: ${error.message}`);
+        }
+    }
+
     const previewMiddleware = await getPreviewMiddleware(ui5YamlConfig, basePath, yamlPath, fs);
 
     if (previewMiddleware) {
@@ -46,13 +62,15 @@ async function updateMiddlewareConfigWithGeneratorPath(
 
 /**
  * Updates the `package.json` file to include a script for starting the card generator.
+ * Removes the `@sap-ux/cards-editor-middleware` dependency if it exists in `devDependencies`.
  *
  * @param {string} basePath - The path to the project root where the `package.json` file is located.
  * @param {Editor} fs - The `mem-fs-editor` instance used to read and write files.
  * @param {string} [yamlPath] - Optional path to the `ui5.yaml` configuration file for retrieving middleware configurations.
+ * @param {ToolsLogger} [logger] - Optional logger instance for logging debug information.
  * @returns {Promise<void>} A promise that resolves when the `package.json` file has been successfully updated.
  */
-async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string): Promise<void> {
+async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string, logger?: ToolsLogger): Promise<void> {
     const packageJsonPath = join(basePath, 'package.json');
     if (!fs.exists(packageJsonPath)) {
         throw new Error('package.json not found');
@@ -69,7 +87,15 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
     const cliForPreview = await getCLIForPreview(basePath, yamlPath ?? '', fs);
 
     packageJson.scripts ??= {};
-    packageJson.scripts['start-cards-generator'] = `${cliForPreview} --open '${cardGeneratorPath}${intent}'`;
+    packageJson.scripts['start-cards-generator'] = `${cliForPreview} --open "${cardGeneratorPath}${intent}"`;
+
+    if (packageJson.devDependencies?.[DEPENDENCY_NAME]) {
+        delete packageJson.devDependencies[DEPENDENCY_NAME];
+        logger?.info(
+            `Removed devDependency ${DEPENDENCY_NAME} from package.json. It is no longer needed because this feature has been integrated into fiori-tools-preview / preview-middleware.`
+        );
+    }
+
     fs.writeJSON(packageJsonPath, packageJson);
 }
 
@@ -94,6 +120,6 @@ export async function enableCardGeneratorConfig(
     fs = fs ?? create(createStorage());
     await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
-    await updatePackageJson(basePath, fs, yamlPath);
+    await updatePackageJson(basePath, fs, yamlPath, logger);
     return fs;
 }
