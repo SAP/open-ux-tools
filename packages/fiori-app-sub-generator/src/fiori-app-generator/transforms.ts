@@ -179,12 +179,12 @@ function getUI5Uri(): string {
  * Transform Fiori Tools State to the type required by the open source ux-tools module.
  * Process inputs to set correct defaults.
  *
- * @param param0
- * @param param0.project
- * @param param0.service
- * @param param0.floorplan
- * @param param0.entityRelatedConfig
- * @param param0.viewName
+ * @param state
+ * @param state.project
+ * @param state.service
+ * @param state.floorplan
+ * @param state.entityRelatedConfig
+ * @param state.viewName
  * @param generateIndexHtml
  * @returns {FioriElementsApp<T>} - The app configuration
  */
