@@ -607,6 +607,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      '@sap-ux/ui5-info':
+        specifier: workspace:*
+        version: link:../ui5-info
       adm-zip:
         specifier: 0.5.10
         version: 0.5.10
@@ -2416,8 +2419,11 @@ importers:
         specifier: 2.0.3
         version: 2.0.3
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.16.9
+        version: 1.16.9
+      '@sap-ux/adp-flp-config-sub-generator':
+        specifier: workspace:*
+        version: link:../adp-flp-config-sub-generator
       '@sap-ux/adp-tooling':
         specifier: workspace:*
         version: link:../adp-tooling
@@ -2464,6 +2470,9 @@ importers:
       '@jest/types':
         specifier: 29.6.3
         version: 29.6.3
+      '@sap-ux/deploy-config-sub-generator':
+        specifier: workspace:*
+        version: link:../deploy-config-sub-generator
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13
@@ -2494,9 +2503,6 @@ importers:
       rimraf:
         specifier: 5.0.5
         version: 5.0.5
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
       yeoman-test:
         specifier: 6.3.0
         version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
