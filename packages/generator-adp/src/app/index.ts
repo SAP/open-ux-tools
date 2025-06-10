@@ -34,7 +34,7 @@ import { getFlexLayer } from './layer';
 import { initI18n, t } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import { setHeaderTitle } from '../utils/opts';
-import { getWizardPages } from '../utils/steps';
+import { getWizardPages, updateFlpWizardSteps } from '../utils/steps';
 import AdpFlpConfigLogger from '../utils/logger';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
@@ -217,6 +217,14 @@ export default class extends Generator {
 
         this.attributeAnswers = await this.prompt(attributesQuestions);
 
+        // Steps need to be updated here to be available after back navigation in Yeoman UI.
+        updateFlpWizardSteps(
+            !!this.baseAppInbounds,
+            this.prompts,
+            this.attributeAnswers.projectName,
+            this.attributeAnswers.addFlpConfig
+        );
+
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
         if (this.attributeAnswers?.addFlpConfig) {
@@ -224,7 +232,6 @@ export default class extends Generator {
                 {
                     vscode: this.vscode,
                     projectRootPath: this._getProjectPath(),
-                    appId: this.configAnswers.application.id,
                     inbounds: this.baseAppInbounds
                 },
                 this.composeWith.bind(this),

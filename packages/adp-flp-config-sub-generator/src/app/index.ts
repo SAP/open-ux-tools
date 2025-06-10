@@ -109,8 +109,6 @@ export default class AdpFlpConfigGenerator extends Generator {
             if (this.abort || this.authenticationRequired) {
                 return;
             }
-        } else {
-            this.appId = this.options.appId as string;
         }
 
         // Add telemetry to be sent once adp-flp-config is generated
