@@ -71,7 +71,7 @@ export function getActionPrompt(
         },
         filter: (val: string): string => val?.trim(),
         validate: (val, answers: FLPConfigAnswers): string | boolean => {
-            const textValidation = validateText(val, isCLI, 30, ['_']);
+            const textValidation = validateText(val, isCLI, 60, ['_']);
             if (textValidation !== true) {
                 return textValidation;
             }
