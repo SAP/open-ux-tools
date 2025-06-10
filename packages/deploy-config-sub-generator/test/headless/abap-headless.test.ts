@@ -1,6 +1,6 @@
 import { join } from 'path';
 import * as childProcess from 'child_process';
-import { copy } from 'fs-extra';
+import { copy, readdirSync } from 'fs-extra';
 import { readFile } from 'fs/promises';
 import { rimraf } from 'rimraf';
 import { runHeadlessGen } from './utils';
@@ -73,10 +73,10 @@ describe('Test ABAP headless generator', () => {
     afterAll(() => {
         // Remove the test folder if the folder is empty (i.e. no failed tests)
         try {
-            // if (readdirSync(OUTPUT_DIR).length === 0) {
-            //     console.log('Removing test output folder');
-            //     rimraf.sync(OUTPUT_DIR);
-            // }
+            if (readdirSync(OUTPUT_DIR).length === 0) {
+                console.log('Removing test output folder');
+                rimraf.sync(OUTPUT_DIR);
+            }
         } catch {
             // do nothing
         }
@@ -91,7 +91,7 @@ describe('Test ABAP headless generator', () => {
         const testAppName = 'app-on-prem';
 
         await copy(join(OUTPUT_DIR, INPUT_BASE_APP), join(OUTPUT_DIR, testAppName));
-        await runHeadlessGen(headlessConfig, DeployTarget.ABAP, join(OUTPUT_DIR, testAppName));
+        await runHeadlessGen(headlessConfig, DeployTarget.ABAP, OUTPUT_DIR, testAppName);
 
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/package.json`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/ui5-deploy.yaml`, 'utf-8')).toMatchSnapshot();
@@ -106,7 +106,7 @@ describe('Test ABAP headless generator', () => {
         const testAppName = 'app1-btp';
 
         await copy(join(OUTPUT_DIR, INPUT_BASE_APP), join(OUTPUT_DIR, testAppName));
-        await runHeadlessGen(headlessConfig, DeployTarget.ABAP, join(OUTPUT_DIR, testAppName));
+        await runHeadlessGen(headlessConfig, DeployTarget.ABAP, OUTPUT_DIR, testAppName);
 
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/package.json`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/ui5-deploy.yaml`, 'utf-8')).toMatchSnapshot();
@@ -119,7 +119,7 @@ describe('Test ABAP headless generator', () => {
         const testAppName = 'app2-bas-on-prem';
 
         await copy(join(OUTPUT_DIR, INPUT_BASE_APP), join(OUTPUT_DIR, testAppName));
-        await runHeadlessGen(headlessConfig, DeployTarget.ABAP, join(OUTPUT_DIR, testAppName));
+        await runHeadlessGen(headlessConfig, DeployTarget.ABAP, OUTPUT_DIR, testAppName);
 
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/package.json`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/ui5-deploy.yaml`, 'utf-8')).toMatchSnapshot();
@@ -132,7 +132,7 @@ describe('Test ABAP headless generator', () => {
         const testAppName = 'app3-bas-s4hc';
 
         await copy(join(OUTPUT_DIR, INPUT_BASE_APP), join(OUTPUT_DIR, testAppName));
-        await runHeadlessGen(headlessConfig, DeployTarget.ABAP, join(OUTPUT_DIR, testAppName));
+        await runHeadlessGen(headlessConfig, DeployTarget.ABAP, OUTPUT_DIR, testAppName);
 
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/package.json`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/ui5-deploy.yaml`, 'utf-8')).toMatchSnapshot();

@@ -164,7 +164,7 @@ describe('`writing` tests', () => {
                 enableEslint: false,
                 enableTypeScript: false,
                 entityRelatedConfig: [],
-                externalParameters: [{ label: 'label1', value: 'value1' }],
+                externalParameters: { label: 'label1', value: 'value1' },
                 metadataFilename: ''
             };
             const project: Project = { ...baseProject };
@@ -191,7 +191,7 @@ describe('`writing` tests', () => {
                 '/target/path',
                 {} as Editor,
                 {
-                    externalParameters: [{ label: 'label1', value: 'value1' }]
+                    externalParameters: { label: 'label1', value: 'value1' }
                 }
             );
             expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
@@ -295,7 +295,7 @@ describe('`writing` tests', () => {
                 '/target/path',
                 {} as Editor,
                 {
-                    externalParameters: [{ addLabel1: 'addValue1' }]
+                    externalParameters: { addLabel1: 'addValue1' }
                 }
             );
 
@@ -304,7 +304,7 @@ describe('`writing` tests', () => {
                 { type: 'Navigation Entity', value: 'None' },
                 { type: 'Filter Entity Type', value: 'filterEntitySetName1' }
             ];
-            expectedReadMe.externalParameters = [{ addLabel1: 'addValue1' }];
+            expectedReadMe.externalParameters = { addLabel1: 'addValue1' };
             expect(generateAppGenInfo).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
         });
     });
