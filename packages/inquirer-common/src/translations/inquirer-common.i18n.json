@@ -9,7 +9,7 @@
     },
     "ui5VersionLabels": {
         "maintained": "Maintained",
-        "outOfMaintenance": "out of maintenance",
+        "outOfMaintenance": "Out of maintenance",
         "version_one": "Version",
         "version_other": "Versions"
     },
