@@ -71,10 +71,4 @@
         "folderContainsFioriApp": "The project folder path already contains an SAP Fiori application in the folder: {{-path}}. Please choose a different folder and try again.",
         "folderContainsCapApp": "The selected project folder is part of an existing CAP project. This application must use the local CAP project as the data source."
     },
-    "ui5VersionLabels": {
-        "maintained": "Maintained",
-        "outOfMaintenance": "Out of Maintenance",
-        "version_one": "Version",
-        "version_other": "Versions"
-    }
 }
