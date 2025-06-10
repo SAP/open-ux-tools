@@ -91,4 +91,11 @@ annotate S.E with @(
         );
         expect(indent).toStrictEqual(2);
     });
+    test('single line assignment for element', async () => {
+        const fixture = `Service S { entity E { description: String; }; };
+annotate S.E with { description @Common.Text: title };`;
+        const [, document] = await getCDSDocument(PROJECTS.V4_CDS_START.root, fixture);
+        const indent = getIndentLevelFromPointer(document.ast, document.tokens, '/targets/0');
+        expect(indent).toStrictEqual(0);
+    });
 });
