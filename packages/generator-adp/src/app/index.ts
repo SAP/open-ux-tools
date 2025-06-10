@@ -14,7 +14,8 @@ import {
     type ConfigAnswers,
     type UI5Version,
     SourceManifest,
-    isCFEnvironment
+    isCFEnvironment,
+    getBaseAppInbounds
 } from '@sap-ux/adp-tooling';
 import {
     TelemetryHelper,
@@ -25,7 +26,7 @@ import {
     type ILogWrapper
 } from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 
@@ -42,7 +43,7 @@ import { getPackageInfo, installDependencies } from '../utils/deps';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
-import type { AdpGeneratorOptions, AttributePromptOptions, JsonInput } from './types';
+import { type AdpGeneratorOptions, attributePromptNames, type AttributePromptOptions, type JsonInput } from './types';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
 
 /**
@@ -113,6 +114,10 @@ export default class extends Generator {
      * Indicates if the current layer is based on a customer base.
      */
     private isCustomerBase: boolean;
+    /**
+     * Base application inbounds, if the base application is an FLP app.
+     */
+    private baseAppInbounds?: ManifestNamespace.Inbound;
 
     /**
      * Creates an instance of the generator.
@@ -202,6 +207,12 @@ export default class extends Generator {
             ui5ValidationCli: { hide: !isCLI },
             enableTypeScript: { hide: this.shouldCreateExtProject }
         };
+        if (this.prompter.isCloud) {
+            this.baseAppInbounds = await getBaseAppInbounds(this.configAnswers.application.id, this.prompter.provider);
+            options[attributePromptNames.addFlpConfig] = {
+                hasBaseAppInbounds: !!this.baseAppInbounds
+            };
+        }
         const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
 
         this.attributeAnswers = await this.prompt(attributesQuestions);
@@ -211,9 +222,10 @@ export default class extends Generator {
         if (this.attributeAnswers?.addFlpConfig) {
             addFlpGen(
                 {
+                    vscode: this.vscode,
                     projectRootPath: this._getProjectPath(),
-                    system: this.configAnswers.system,
-                    manifest: this.prompter.manifest!
+                    appId: this.configAnswers.application.id,
+                    inbounds: this.baseAppInbounds
                 },
                 this.composeWith.bind(this),
                 this.logger,

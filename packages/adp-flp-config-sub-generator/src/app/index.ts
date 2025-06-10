@@ -87,6 +87,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
         this.options = opts;
         this.vscode = opts.vscode;
+        this.inbounds = opts.inbounds;
 
         initAppWizardCache(opts.logger, this.appWizard);
         this._setupFLPConfigPrompts();
@@ -105,20 +106,11 @@ export default class AdpFlpConfigGenerator extends Generator {
 
         if (!this.launchAsSubGen) {
             await this._initializeStandAloneGenerator();
-        } else {
-            this.appId = this.options.appId as string;
-        }
-
-        await this._initAbapServiceProvider();
-
-        try {
-            this.inbounds = await getBaseAppInbounds(this.appId, this.provider);
-        } catch (error) {
-            this.authenticationRequired = this._checkAuthRequired(error);
-            if (this.authenticationRequired) {
+            if (this.abort || this.authenticationRequired) {
                 return;
             }
-            this._handleFetchingError(error);
+        } else {
+            this.appId = this.options.appId as string;
         }
 
         // Add telemetry to be sent once adp-flp-config is generated
@@ -382,6 +374,9 @@ export default class AdpFlpConfigGenerator extends Generator {
      * Sets the tile settings prompts based on the current state of the generator.
      */
     private _setTileSettingsPrompts(): void {
+        if (this.launchAsSubGen) {
+            return;
+        }
         const promptsIndex = this.prompts.size() === 1 ? 0 : 1;
         this.prompts.splice(promptsIndex, 0, [
             {
@@ -419,6 +414,18 @@ export default class AdpFlpConfigGenerator extends Generator {
         this.ui5Yaml = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
         this.variant = await getVariant(this.projectRootPath, this.fs);
         this.appId = this.variant.reference;
+
+        await this._initAbapServiceProvider();
+
+        try {
+            this.inbounds = this.inbounds ?? (await getBaseAppInbounds(this.appId, this.provider));
+        } catch (error) {
+            this.authenticationRequired = this._checkAuthRequired(error);
+            if (this.authenticationRequired) {
+                return;
+            }
+            this._handleFetchingError(error);
+        }
     }
 
     /**
@@ -428,11 +435,6 @@ export default class AdpFlpConfigGenerator extends Generator {
      * @returns {Promise<void>} A promise that resolves when the AbapServiceProvider is initialized.
      */
     private async _initAbapServiceProvider(): Promise<void> {
-        if (this.launchAsSubGen) {
-            this.provider = this.options.provider as AbapServiceProvider;
-            return;
-        }
-
         const cachedProvider = getFromCache<AbapServiceProvider>(this.appWizard, 'provider', this.logger);
         if (cachedProvider) {
             this.provider = cachedProvider;

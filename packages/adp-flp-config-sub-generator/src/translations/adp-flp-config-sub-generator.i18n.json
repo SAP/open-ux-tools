@@ -6,7 +6,7 @@
         "flpConfigName": "FLP Configuration",
         "flpConfigDesc": "FLP Configuration for {{- projectName}}",
         "tileSettingsName": "FLP Configuration - tile settings",
-        "tileActionsDesc": "Tile settings for {{- projectName}}"
+        "tileSettingsDescr": "Tile settings for {{- projectName}}"
     },
     "info": {
         "flpConfigAdded": "FLP Configuration added successfully"

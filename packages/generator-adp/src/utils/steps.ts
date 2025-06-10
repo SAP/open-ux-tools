@@ -23,13 +23,25 @@ export function getWizardPages(): IPrompt[] {
 /**
  * Returns the FLP configuration page step.
  *
+ * @param {boolean} showTileSettingsPage - Flag to determine if the tile settings page should be shown.
+ * @param {string} projectName - The name of the project.
  * @returns {IPrompt} The FLP configuration wizard page.
  */
-export function getFlpPage(): IPrompt {
-    return {
-        name: t('yuiNavSteps.flpConfigName'),
-        description: t('yuiNavSteps.flpConfigDescr')
-    };
+export function getFlpPages(showTileSettingsPage: boolean, projectName: string): IPrompt[] {
+    const pages = [
+        {
+            name: t('yuiNavSteps.flpConfigName'),
+            description: t('yuiNavSteps.flpConfigDescr', { projectName })
+        }
+    ];
+    if (showTileSettingsPage) {
+        pages.unshift({
+            name: t('yuiNavSteps.tileSettingsName'),
+            description: t('yuiNavSteps.tileSettingsDescr', { projectName })
+        });
+    }
+
+    return pages;
 }
 
 /**
