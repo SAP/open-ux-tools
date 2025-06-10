@@ -35,7 +35,7 @@ export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObject
             if (options?.default) {
                 return options.default;
             }
-            return answers?.inboundId?.semanticObject ?? '';
+            return answers?.inboundId?.semanticObject ? `${answers?.inboundId?.semanticObject}_New` : '';
         },
         filter: (val: string): string => val?.trim(),
         validate: (val) => validateText(val, isCLI, 30, ['_'])
@@ -67,7 +67,7 @@ export function getActionPrompt(
             if (options?.default) {
                 return options.default;
             }
-            return answers?.inboundId?.action ? `${answers?.inboundId?.action}1` : '';
+            return answers?.inboundId?.action ? `${answers?.inboundId?.action}_New` : '';
         },
         filter: (val: string): string => val?.trim(),
         validate: (val, answers: FLPConfigAnswers): string | boolean => {
