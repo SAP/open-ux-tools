@@ -3,9 +3,9 @@ import { Window } from 'types/global';
 /**
  * Initializes the CDM (Common Data Model) configuration for the SAP Fiori Launchpad.
  *
- * @returns {Promise<void>} A promise that resolves when the initialization is complete.
+ * @returns {void}
  */
-export default async function initCdm(): Promise<void> {
+export default function initCdm(): void {
     (window as unknown as Window)['sap-ushell-config'] = {
         defaultRenderer: 'fiori2',
         renderers: {
