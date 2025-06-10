@@ -182,7 +182,9 @@ describe('getTransportConfigInstance', () => {
                 .fn()
                 .mockRejectedValueOnce(new AxiosError('self signed certificate', 'DEPTH_ZERO_SELF_SIGNED_CERT'))
         });
-        const loggerSpy = jest.spyOn(LoggerHelper.logger, 'warn');
+        const loggerSpyWarn = jest.spyOn(LoggerHelper.logger, 'warn');
+        const loggerSpyDebug = jest.spyOn(LoggerHelper.logger, 'debug');
+        const loggerSpyInfo = jest.spyOn(LoggerHelper.logger, 'info');
         addi18nResourceBundle(); // Ensure i18n is initialized for GA link creation testing
 
         const transportConfigResult3 = await getTransportConfigInstance({
@@ -193,8 +195,14 @@ describe('getTransportConfigInstance', () => {
         });
         expect(transportConfigResult3.transportConfigNeedsCreds).toBe(undefined);
         // Expect GA link to be logged
-        expect(loggerSpy).toHaveBeenCalledWith(
+        expect(loggerSpyWarn).toHaveBeenCalledWith(
             t('warnings.certificateError', { url: 'https://example.com', error: 'self signed certificate' })
+        );
+        expect(loggerSpyDebug).toHaveBeenCalledWith(
+            t('errors.debugAbapTargetSystem', { url: 'https://example.com', error: 'self signed certificate' })
+        );
+        expect(loggerSpyInfo).toHaveBeenCalledWith(
+            expect.stringContaining('https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/53643')
         );
     });
 });
