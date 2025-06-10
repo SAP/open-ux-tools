@@ -7,6 +7,7 @@ config.snapshotFormat = {
 config.modulePathIgnorePatterns = [
     ...config.modulePathIgnorePatterns,
     '<rootDir>/test/int/fiori-elements/expected-output',
-    '<rootDir>/test/int/fiori-freestyle/expected-output'
+    '<rootDir>/test/int/fiori-freestyle/expected-output',
+    '<rootDir>/test/int/test-output'
 ];
 module.exports = config;

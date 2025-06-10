@@ -12,6 +12,8 @@ import {
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath
 } from './common';
+import { initI18n } from '../src/i18n';
+import { before } from 'lodash';
 
 const TEST_NAME = 'listDetailTemplate';
 
@@ -163,8 +165,9 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         }
     ];
 
-    beforeAll(() => {
+    beforeAll(async () => {
         removeSync(curTestOutPath); // even for in memory
+        await initI18n();
     });
 
     test.each(configuration)('Generate files for template: $name', async ({ name, config }) => {
