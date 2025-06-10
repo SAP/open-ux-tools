@@ -1,5 +1,11 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.3.7
+
+### Patch Changes
+
+-   f4439f1: feat(generator-adp): Consume FLP generator and Deployment generator
+
 ## 0.3.6
 
 ### Patch Changes

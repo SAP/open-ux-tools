@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.14.17
+
+### Patch Changes
+
+-   f4439f1: feat(generator-adp): Consume FLP generator and Deployment generator
+
 ## 0.14.16
 
 ### Patch Changes
