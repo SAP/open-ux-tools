@@ -82,7 +82,7 @@ export async function updateI18n(
 }
 
 /**
- * Removes elements with changeType 'appdescr_app_addNewInbound' and 'appdescr_app_removeAllInboundsExceptOne' from the given array.
+ * Removes elements with changeType 'appdescr_app_addNewInbound', 'appdescr_app_removeAllInboundsExceptOne' and 'appdescr_app_changeInbound' from the given array.
  *
  * @param content The array of manifest change objects.
  * @returns A new array with the specified elements removed.
@@ -91,6 +91,7 @@ export function removeInboundChangeTypes(content: DescriptorVariantContent[]): D
     return content.filter(
         (item) =>
             item.changeType !== 'appdescr_app_addNewInbound' &&
+            item.changeType !== 'appdescr_app_changeInbound' &&
             item.changeType !== 'appdescr_app_removeAllInboundsExceptOne'
     );
 }
