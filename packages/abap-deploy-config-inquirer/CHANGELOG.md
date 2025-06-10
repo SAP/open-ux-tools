@@ -1,5 +1,14 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.4.12
+
+### Patch Changes
+
+-   d6943aa: Adds GA link to deploy.
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+    -   @sap-ux/nodejs-utils@0.2.1
+
 ## 1.4.11
 
 ### Patch Changes

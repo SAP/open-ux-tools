@@ -348,6 +348,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
@@ -1641,6 +1644,9 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -2847,6 +2853,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
