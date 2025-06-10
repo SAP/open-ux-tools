@@ -23,7 +23,7 @@
                 "<%- entityConfig.mainEntityName %>List": {
                     "type": "Component",
                     "id": "<%- entityConfig.mainEntityName %>List",
-                    "name": "sap.fe.templates.ListReport",
+                    "name": "<%- routingTargetName %>.ListReport",
                     "options": {
                         "settings": {<% if (entityConfig.contextPath) { %>
                             "contextPath": "<%- entityConfig.contextPath %>"<% } else { %>
@@ -71,7 +71,7 @@
                 "<%- entityConfig.mainEntityName %>ObjectPage": {
                     "type": "Component",
                     "id": "<%- entityConfig.mainEntityName %>ObjectPage",
-                    "name": "sap.fe.templates.ObjectPage",
+                    "name": "<%- routingTargetName %>.ObjectPage",
                     "options": {
                         "settings": {
                             "editableHeaderContent": false,<% if (entityConfig.contextPath) { %>
@@ -96,7 +96,7 @@
                     "<%- entityConfig.navigationEntity.EntitySet %>ObjectPage": {
                         "type": "Component",
                         "id": "<%- entityConfig.navigationEntity.EntitySet %>ObjectPage",
-                        "name": "sap.fe.templates.ObjectPage",
+                        "name": "<%- routingTargetName %>.ObjectPage",
                         "options": {
                             "settings": {
                                 "editableHeaderContent": false,<% if (entityConfig.navigationEntity.contextPath) { %>

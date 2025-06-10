@@ -8,7 +8,8 @@ export const TemplateType = {
     AnalyticalListPage: 'alp',
     OverviewPage: 'ovp',
     FormEntryObjectPage: 'feop',
-    FlexibleProgrammingModel: 'fpm'
+    FlexibleProgrammingModel: 'fpm',
+    AribaListReportObjectPage: 'aribaLrop'
 } as const;
 
 export type TemplateType = (typeof TemplateType)[keyof typeof TemplateType];

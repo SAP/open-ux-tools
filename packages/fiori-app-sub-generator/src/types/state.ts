@@ -169,7 +169,8 @@ export enum FloorplanFE {
     FE_OVP = 'ovp',
     FE_ALP = 'alp',
     FE_FEOP = 'feop',
-    FE_WORKLIST = 'worklist'
+    FE_WORKLIST = 'worklist',
+    FE_ARIBA_LROP = 'aribaLrop'
 }
 
 // Used internally to join Floorplan types from multiple generators (until we have a merged type)
