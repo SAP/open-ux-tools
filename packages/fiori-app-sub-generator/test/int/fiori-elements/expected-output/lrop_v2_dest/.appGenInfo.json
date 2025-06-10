@@ -1,6 +1,6 @@
 {
   "generationParameters": {
-    "generationDate": "Wed Jun 04 2025 13:49:42 GMT+0100 (Irish Standard Time)",
+    "generationDate": "Sun Jun 08 2025 15:58:52 GMT+0100 (Irish Standard Time)",
     "generatorPlatform": "CLI",
     "serviceType": "MTA File",
     "metadataFilename": "",
@@ -28,14 +28,12 @@
     "launchText": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
   },
   "externalParameters": {
-    "testAdditionalEntry": [
+    "abapCSN": [
       {
-        "key": "testKey1",
-        "value": "testValue1"
-      },
-      {
-        "key": "testKey2",
-        "value": "testValue2"
+        "packageUri": "abapfs:/BAS_DEST/MOCK_CSN_TEST1",
+        "csnName": "MOCKCSN55.abap.csn",
+        "serviceNameCsn": "MockService2",
+        "serviceUri": "/sap/opu/odata/sap/SEPMRA_PROD_MAN/"
       }
     ]
   }
