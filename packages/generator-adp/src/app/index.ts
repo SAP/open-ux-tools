@@ -34,7 +34,7 @@ import { getFlexLayer } from './layer';
 import { initI18n, t } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import { setHeaderTitle } from '../utils/opts';
-import { getWizardPages, updateFlpWizardSteps } from '../utils/steps';
+import { getWizardPages, updateFlpWizardSteps, updateWizardSteps, getDeployPage } from '../utils/steps';
 import AdpFlpConfigLogger from '../utils/logger';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
@@ -218,7 +218,7 @@ export default class extends Generator {
         this.attributeAnswers = await this.prompt(attributesQuestions);
 
         // Steps need to be updated here to be available after back navigation in Yeoman UI.
-        this._updateFLPWizardSteps();
+        this._updateWizardStepsAfterNavigation();
 
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
@@ -443,15 +443,25 @@ export default class extends Generator {
      * Updates the FLP wizard steps in the prompt sequence if the FLP configuration page(s) does not already exist.
      *
      */
-    private _updateFLPWizardSteps(): void {
+    private _updateWizardStepsAfterNavigation(): void {
         const pages: IPrompt[] = this.prompts['items'];
         const flpPagesExist = pages.some((p) => p.name === t('yuiNavSteps.flpConfigName'));
+        const deployPageExists = pages.some((p) => p.name === t('yuiNavSteps.deployConfigName'));
         if (!flpPagesExist) {
             updateFlpWizardSteps(
                 !!this.baseAppInbounds,
                 this.prompts,
                 this.attributeAnswers.projectName,
                 this.attributeAnswers.addFlpConfig
+            );
+        }
+
+        if (!deployPageExists) {
+            updateWizardSteps(
+                this.prompts,
+                getDeployPage(),
+                t('yuiNavSteps.projectAttributesName'),
+                this.attributeAnswers.addDeployConfig
             );
         }
     }
