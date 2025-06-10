@@ -50,7 +50,7 @@ export interface DiagnosticBase<R extends RuleType, T = undefined> {
     quickFixes?: [];
     range: Range;
     rule: R;
-    data?: T;
+    data: T;
 }
 
 export const NO_UNUSED_NAMESPACE_TYPE = 'no-unused-namespace';
