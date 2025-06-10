@@ -1,6 +1,6 @@
 import { join } from 'path';
 import Generator from 'yeoman-generator';
-import { AppWizard, MessageType, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
 
 import {
     FlexLayer,
@@ -218,12 +218,7 @@ export default class extends Generator {
         this.attributeAnswers = await this.prompt(attributesQuestions);
 
         // Steps need to be updated here to be available after back navigation in Yeoman UI.
-        updateFlpWizardSteps(
-            !!this.baseAppInbounds,
-            this.prompts,
-            this.attributeAnswers.projectName,
-            this.attributeAnswers.addFlpConfig
-        );
+        this._updateFLPWizardSteps();
 
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
@@ -442,6 +437,23 @@ export default class extends Generator {
             ui5Version: '',
             enableTypeScript: false
         };
+    }
+
+    /**
+     * Updates the FLP wizard steps in the prompt sequence if the FLP configuration page(s) does not already exist.
+     *
+     */
+    private _updateFLPWizardSteps(): void {
+        const pages: IPrompt[] = this.prompts['items'];
+        const flpPagesExist = pages.some((p) => p.name === t('yuiNavSteps.flpConfigName'));
+        if (!flpPagesExist) {
+            updateFlpWizardSteps(
+                !!this.baseAppInbounds,
+                this.prompts,
+                this.attributeAnswers.projectName,
+                this.attributeAnswers.addFlpConfig
+            );
+        }
     }
 }
 
