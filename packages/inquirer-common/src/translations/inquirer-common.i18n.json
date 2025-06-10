@@ -11,7 +11,7 @@
         "maintained": "Maintained",
         "outOfMaintenance": "Out of maintenance",
         "version_one": "version",
-        "version_other": "Versions"
+        "version_other": "versions"
     },
     "errors": {
         "destination": {
