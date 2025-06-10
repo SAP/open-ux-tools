@@ -1,5 +1,23 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.3.7
+
+### Patch Changes
+
+-   f4439f1: feat(generator-adp): Consume FLP generator and Deployment generator
+
+## 0.3.6
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/odata-service-inquirer@2.4.16
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.15
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.11
+    -   @sap-ux/deploy-config-generator-shared@0.1.8
+    -   @sap-ux/inquirer-common@0.7.9
+
 ## 0.3.5
 
 ### Patch Changes
