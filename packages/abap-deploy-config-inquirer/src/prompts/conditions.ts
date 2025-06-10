@@ -113,13 +113,13 @@ export async function showUsernameQuestion(backendTarget?: BackendTarget): Promi
 
     // Update the prompt state with the transport configuration
     PromptState.transportAnswers.transportConfig = transportConfig;
-    PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds;
+    PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
 
     // Provide context to the CLI when username credentials are required
     if (transportConfigNeedsCreds) {
         LoggerHelper.logger.info(t('errors.atoUnauthorisedSystem'));
     }
-    return transportConfigNeedsCreds ?? false;
+    return PromptState.transportAnswers.transportConfigNeedsCreds;
 }
 
 /**
