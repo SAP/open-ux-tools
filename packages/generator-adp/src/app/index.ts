@@ -1,6 +1,6 @@
 import { join } from 'path';
 import Generator from 'yeoman-generator';
-import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, MessageType, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
 import {
     FlexLayer,
@@ -13,7 +13,8 @@ import {
     type AttributesAnswers,
     type ConfigAnswers,
     type UI5Version,
-    SourceManifest
+    SourceManifest,
+    isCFEnvironment
 } from '@sap-ux/adp-tooling';
 import {
     TelemetryHelper,
@@ -31,14 +32,17 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { getFlexLayer } from './layer';
 import { initI18n, t } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
+import { setHeaderTitle } from '../utils/opts';
+import { getWizardPages } from '../utils/steps';
 import AdpFlpConfigLogger from '../utils/logger';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
 import { validateJsonInput } from './questions/helper/validators';
 import { getPackageInfo, installDependencies } from '../utils/deps';
+import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
+import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
 import type { AdpGeneratorOptions, AttributePromptOptions, JsonInput } from './types';
-import { getExtensionProjectData, resolveNodeModuleGenerator } from './extension-project';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
 
 /**
@@ -57,9 +61,13 @@ export default class extends Generator {
      */
     private readonly shouldInstallDeps: boolean;
     /**
+     * A boolean flag indicating whether an extension project should be created.
+     */
+    private shouldCreateExtProject: boolean;
+    /**
      * Generator prompts.
      */
-    private prompts: Prompts;
+    private readonly prompts: YeomanUiSteps;
     /**
      * Instance of the logger.
      */
@@ -123,8 +131,20 @@ export default class extends Generator {
         this._setupLogging();
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.toolsLogger);
+
         if (!this.jsonInput) {
-            this._setupPrompts();
+            this.env.lookup({
+                packagePatterns: ['@sap/generator-fiori', '@sap-ux/adp-flp-config-sub-generator']
+            });
+            setHeaderTitle(opts, this.logger);
+
+            initCache(this.logger, this.appWizard);
+            this.prompts = new YeomanUiSteps([]);
+            this.setPromptsCallback = (fn): void => {
+                if (this.prompts) {
+                    this.prompts.setCallback(fn);
+                }
+            };
         }
     }
 
@@ -137,13 +157,8 @@ export default class extends Generator {
         this.systemLookup = new SystemLookup(this.toolsLogger);
 
         if (!this.jsonInput) {
-            const pages = [
-                { name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationDescr') },
-                { name: t('yuiNavSteps.projectAttributesName'), description: t('yuiNavSteps.projectAttributesDescr') }
-            ];
-            this.prompts.splice(0, 0, pages);
-
-            this.prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
+            this.prompts.splice(0, 0, getWizardPages());
+            this.prompter = this._getOrCreatePrompter();
         }
 
         await TelemetryHelper.initTelemetrySettings({
@@ -167,8 +182,8 @@ export default class extends Generator {
             appValidationCli: { hide: !isCLI },
             systemValidationCli: { hide: !isCLI }
         });
-
         this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
+        this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;
 
         this.logger.info(`System: ${this.configAnswers.system}`);
         this.logger.info(`Application: ${JSON.stringify(this.configAnswers.application, null, 2)}`);
@@ -178,29 +193,67 @@ export default class extends Generator {
             ui5Versions,
             isVersionDetected: !!systemVersion,
             isCloudProject: this.prompter.isCloud,
-            layer: this.layer
+            layer: this.layer,
+            prompts: this.prompts
         };
         const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
         const options: AttributePromptOptions = {
             targetFolder: { default: defaultFolder },
             ui5ValidationCli: { hide: !isCLI },
-            enableTypeScript: { hide: !!this.configAnswers.shouldCreateExtProject }
+            enableTypeScript: { hide: this.shouldCreateExtProject }
         };
         const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
 
         this.attributeAnswers = await this.prompt(attributesQuestions);
 
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
+
+        if (this.attributeAnswers?.addFlpConfig) {
+            addFlpGen(
+                {
+                    projectRootPath: this._getProjectPath(),
+                    system: this.configAnswers.system,
+                    manifest: this.prompter.manifest!
+                },
+                this.composeWith.bind(this),
+                this.logger,
+                this.appWizard
+            );
+        }
+
+        if (this.attributeAnswers.addDeployConfig) {
+            const client = (await this.systemLookup.getSystemByName(this.configAnswers.system))?.Client;
+            addDeployGen(
+                {
+                    projectName: this.attributeAnswers.projectName,
+                    targetFolder: this.attributeAnswers.targetFolder,
+                    connectedSystem: this.configAnswers.system,
+                    client
+                },
+                this.composeWith.bind(this),
+                this.logger,
+                this.appWizard
+            );
+        }
     }
 
     async writing(): Promise<void> {
-        if (this.jsonInput) {
-            await this._initFromJson();
-        }
-
         try {
-            if (this.configAnswers.shouldCreateExtProject) {
-                await this._generateExtensionProject();
+            if (this.jsonInput) {
+                await this._initFromJson();
+            }
+
+            if (this.shouldCreateExtProject) {
+                await addExtProjectGen(
+                    {
+                        configAnswers: this.configAnswers,
+                        attributeAnswers: this.attributeAnswers,
+                        systemLookup: this.systemLookup
+                    },
+                    this.composeWith.bind(this),
+                    this.logger,
+                    this.appWizard
+                );
                 return;
             }
 
@@ -225,16 +278,22 @@ export default class extends Generator {
         } catch (e) {
             this.logger.error(`Writing phase failed: ${e}`);
             throw new Error(t('error.updatingApp'));
+        } finally {
+            cacheClear(this.appWizard, this.logger);
         }
     }
 
     async install(): Promise<void> {
+        if (!this.shouldInstallDeps || this.shouldCreateExtProject) {
+            return;
+        }
+
         try {
-            if (this.shouldInstallDeps) {
-                await installDependencies(this._getProjectPath());
-            }
+            await installDependencies(this._getProjectPath());
         } catch (e) {
             this.logger.error(`Installation of dependencies failed: ${e.message}`);
+        } finally {
+            cacheClear(this.appWizard, this.logger);
         }
     }
 
@@ -244,39 +303,38 @@ export default class extends Generator {
                 appType: 'generator-adp',
                 ...this.options.telemetryData
             }) ?? {};
+        const projectPath = this._getProjectPath();
         if (telemetryData) {
-            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, this._getProjectPath()).catch(
-                (error) => {
-                    this.logger.error(t('error.telemetry', { error }));
-                }
-            );
+            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, projectPath).catch((error) => {
+                this.logger.error(t('error.telemetry', { error }));
+            });
         }
 
         try {
-            this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath: this._getProjectPath() });
+            if (!isCFEnvironment(projectPath)) {
+                this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath: projectPath });
+            }
         } catch (e) {
             this.appWizard.showError(e.message, MessageType.notification);
+        } finally {
+            cacheClear(this.appWizard, this.logger);
         }
     }
 
     /**
-     * Generates an extension project if the application is not supported by Adaptation Project.
+     * Retrieves the ConfigPrompter instance from cache if it exists, otherwise creates a new instance.
+     *
+     * @returns {ConfigPrompter} Cached config prompter if going back a page.
      */
-    private async _generateExtensionProject(): Promise<void> {
-        try {
-            const data = await getExtensionProjectData(this.configAnswers, this.attributeAnswers, this.systemLookup);
-
-            const generator = resolveNodeModuleGenerator();
-            this.composeWith(generator!, {
-                arguments: [JSON.stringify(data)],
-                appWizard: this.appWizard
-            });
-            this.logger.info(`'@bas-dev/generator-extensibility-sub' was called.`);
-        } catch (e) {
-            this.logger.info(t('error.creatingExtensionProjectError'));
-            this.logger.error(e.message);
-            this.appWizard.showError(e.message, MessageType.notification);
+    private _getOrCreatePrompter(): ConfigPrompter {
+        const cached = cacheGet<ConfigPrompter>(this.appWizard, 'prompter', this.logger);
+        if (cached) {
+            return cached;
         }
+
+        const prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
+        cachePut(this.appWizard, { prompter }, this.logger);
+        return prompter;
     }
 
     /**
@@ -286,18 +344,6 @@ export default class extends Generator {
      */
     private _getProjectPath(): string {
         return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
-    }
-
-    /**
-     * Sets up the prompts for the generator.
-     */
-    private _setupPrompts(): void {
-        this.prompts = new Prompts([]);
-        this.setPromptsCallback = (fn): void => {
-            if (this.prompts) {
-                this.prompts.setCallback(fn);
-            }
-        };
     }
 
     /**
@@ -342,7 +388,7 @@ export default class extends Generator {
             system
         });
 
-        this.publicVersions = await fetchPublicVersions();
+        this.publicVersions = await fetchPublicVersions(this.toolsLogger);
 
         const providerOptions = {
             system,

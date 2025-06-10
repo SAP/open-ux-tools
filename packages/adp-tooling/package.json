@@ -43,6 +43,7 @@
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/ui5-info": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
