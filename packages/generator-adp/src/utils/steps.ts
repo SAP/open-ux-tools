@@ -61,7 +61,7 @@ export function updateFlpWizardSteps(
     const pages = getFlpPages(hasBaseAppInbound, projectName);
     if (pages.length === 2) {
         updateWizardSteps(prompts, pages[0], t('yuiNavSteps.deployConfigName'), shouldAdd);
-        updateWizardSteps(prompts, pages[1], t('yuiNavSteps.flpConfigName'), shouldAdd);
+        updateWizardSteps(prompts, pages[1], t('yuiNavSteps.tileSettingsName'), shouldAdd);
         return;
     }
 
