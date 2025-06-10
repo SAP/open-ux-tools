@@ -1,5 +1,16 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.6.0
+
+### Minor Changes
+
+-   d2c10e7: feat: write cds annotations using new syntax without `![]` escape sequence.
+
+### Patch Changes
+
+-   Updated dependencies [d2c10e7]
+    -   @sap-ux/cds-odata-annotation-converter@0.6.0
+
 ## 0.5.8
 
 ### Patch Changes

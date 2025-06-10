@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.6.0
+
+### Minor Changes
+
+-   d2c10e7: feat: write cds annotations using new syntax without `![]` escape sequence.
+
 ## 0.5.9
 
 ### Patch Changes
