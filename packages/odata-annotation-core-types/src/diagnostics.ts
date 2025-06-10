@@ -35,12 +35,21 @@ export interface CaseCheckBase {
     value?: string;
 }
 
-export interface DiagnosticBase<R extends RuleType = string, T = undefined> {
+export interface DiagnosticBaseWithOptionalRule<R extends RuleType = string, T = undefined> {
     severity: DiagnosticSeverity;
     message: string;
     quickFixes?: [];
     range: Range;
     rule?: R; // TODO: make it mandatory
+    data?: T;
+}
+
+export interface DiagnosticBase<R extends RuleType, T = undefined> {
+    severity: DiagnosticSeverity;
+    message: string;
+    quickFixes?: [];
+    range: Range;
+    rule: R;
     data?: T;
 }
 
@@ -180,8 +189,7 @@ export type ODataPathSeparatorDiagnostic = DiagnosticBase<typeof ODATA_PATH_SEPA
 
 export type CommonCaseIssue = DiagnosticBase<typeof COMMON_CASE_ISSUE, CaseCheckBase>;
 
-export type ExtendedDiagnostic =
-    | DiagnosticBase
+export type DiagnosticWithRule =
     | NoUndefinedNamespaceDiagnostic
     | NoUnusedNamespaceDiagnostic
     | NameCasePathValueDiagnostic
@@ -210,38 +218,13 @@ export type ExtendedDiagnostic =
     | ODataPathSeparatorDiagnostic
     | InvalidPrimitiveType;
 
-type RuleTypes =
-    | typeof NO_UNDEFINED_NAMESPACE_TYPE
-    | typeof NO_UNUSED_NAMESPACE_TYPE
-    | typeof NAME_CASE_ISSUE_PATH_VALUE
-    | typeof MISSING_I18N_KEY
-    | typeof VALUE_REQUIRED
-    | typeof INCOMPLETE_EXPRESSION_CC_FORWARD_SLASH
-    | typeof INCOMPLETE_EXPRESSION_FORWARD_SLASH
-    | typeof IGNORE_TARGET_VALIDATION
-    | typeof UNKNOWN_TERM
-    | typeof UN_SUPPORTED_VOCABULARY
-    | typeof ATTRIBUTE_NOT_ALLOWED_HERE
-    | typeof MISSING_REQUIRED_ATTRIBUTE
-    | typeof MISSING_REQUIRED_VALUE_FOR_ATTRIBUTE
-    | typeof TERM_NOT_APPLICABLE
-    | typeof RECORD_COLLECTION_PATH_NOT_ALLOWED
-    | typeof ODATA_FUNCTION_WRONG_RETURN_TYPE
-    | typeof IGNORE_DUPLICATE
-    | typeof INVALID_PATH_EXPRESSION
-    | typeof INVALID_TYPE_TYPE
-    | typeof NO_VALIDATION_FOR_SUBNODES
-    | typeof INVALID_ENUM_MEMBER_TYPE
-    | typeof INCOMPLETE_PATH_WITH_TYPE
-    | typeof INCOMPLETE_PATH_WITH_COMPATIBLE_TYPES
-    | typeof COMMON_CASE_ISSUE
-    | typeof ODATA_PATH_SEPARATOR_RULE
-    | typeof INVALID_PRIMITIVE_TYPE
-    | typeof NOT_IN_APPLICABLE_TERMS_CONSTRAINT;
+export type ExtendedDiagnostic = DiagnosticBaseWithOptionalRule | DiagnosticWithRule;
+
+export type RuleTypes = DiagnosticWithRule['rule'];
 
 export type RuleType = RuleTypes | string;
 
 export interface CompilerMessage {
     hasSyntaxErrors: boolean;
-    messages: DiagnosticBase[];
+    messages: DiagnosticBaseWithOptionalRule[];
 }
