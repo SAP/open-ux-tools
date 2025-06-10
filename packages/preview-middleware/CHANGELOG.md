@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.20.25
+
+### Patch Changes
+
+-   135c3ae: fix: Duplicate Extension Points are selected in outline tree
+
 ## 0.20.24
 
 ### Patch Changes
