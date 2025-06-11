@@ -78,7 +78,8 @@ export async function replaceI18nProperties(
     // Add new entries
     const newContent = filteredLines
         .concat(newI18nEntries.map((entry) => printPropertiesI18nEntry(entry.key, entry.value, entry.annotation)))
-        .join('\n');
+        .join('\n')
+        .replace(/\n+$/, ''); // Remove trailing newlines
 
     await writeFile(i18nFilePath, newContent, fs);
 }

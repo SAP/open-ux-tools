@@ -43,7 +43,7 @@ import { getPackageInfo, installDependencies } from '../utils/deps';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
-import { type AdpGeneratorOptions, attributePromptNames, type AttributePromptOptions, type JsonInput } from './types';
+import { type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput } from './types';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
 
 /**
