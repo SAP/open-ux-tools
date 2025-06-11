@@ -9,17 +9,14 @@ import type {
 
 import type {
     AdpWriterConfig,
-    InboundContent,
     Language,
     InboundChangeContentAddInboundId,
     Content,
     CloudApp,
-    ChangeInboundNavigation,
     InternalInboundNavigation,
     CloudCustomTaskConfig,
     CloudCustomTaskConfigTarget
 } from '../types';
-import { parseParameters } from '../common';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 

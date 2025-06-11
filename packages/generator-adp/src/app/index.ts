@@ -202,17 +202,15 @@ export default class extends Generator {
             prompts: this.prompts
         };
         const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
+        if (this.prompter.isCloud) {
+            this.baseAppInbounds = await getBaseAppInbounds(this.configAnswers.application.id, this.prompter.provider);
+        }
         const options: AttributePromptOptions = {
             targetFolder: { default: defaultFolder },
             ui5ValidationCli: { hide: !isCLI },
-            enableTypeScript: { hide: this.shouldCreateExtProject }
+            enableTypeScript: { hide: this.shouldCreateExtProject },
+            addFlpConfig: { hasBaseAppInbounds: !!this.baseAppInbounds }
         };
-        if (this.prompter.isCloud) {
-            this.baseAppInbounds = await getBaseAppInbounds(this.configAnswers.application.id, this.prompter.provider);
-            options[attributePromptNames.addFlpConfig] = {
-                hasBaseAppInbounds: !!this.baseAppInbounds
-            };
-        }
         const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
 
         this.attributeAnswers = await this.prompt(attributesQuestions);
