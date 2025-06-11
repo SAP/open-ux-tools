@@ -9,8 +9,7 @@ describe('flp/initCdm', () => {
     });
 
     test('ensure that ushell config is set properly', async () => {
-        const container = sapMock.ushell.Container;
-        await initCdm(container as unknown as typeof sap.ushell.Container);
+        initCdm();
 
         expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();
         expect(sapMock.ushell.Container.init).toHaveBeenCalledWith('cdm');
