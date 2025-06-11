@@ -8,12 +8,9 @@ import officialBlockOutOfMaintenanceResponse from './testdata/official-latest-bl
 import { getLatestUI5Version, getUI5Versions } from '../src/ui5-version-info';
 import * as commands from '../src/commands';
 import { ToolsLogger } from '@sap-ux/logger';
-import { defaultVersion, ui5VersionRequestInfo } from '../src/constants';
+import { ui5VersionRequestInfo } from '../src/constants';
 import { defaultUi5Versions } from '../src/ui5-version-fallback';
-import * as ui5VersionInfo from '../src/ui5-version-info';
-// --- Jest Mocking for ui5VersionsCache ---
 // This mocks the 'constants' module to control `ui5VersionsCache`'s state in tests.
-// The path must correctly point to the file where `ui5VersionsCache` is defined.
 jest.mock('../src/constants', () => {
     // Create a mutable mock object for ui5VersionsCache
     const mockUi5VersionsCache = {
@@ -33,7 +30,6 @@ jest.mock('../src/constants', () => {
 });
 
 // Import the mocked ui5VersionsCache after jest.mock()
-// This `ui5VersionsCache` variable in your test file now refers to the mock.
 import { ui5VersionsCache } from '../src/constants';
 
 const snapshotVersionsHost = 'http://ui5.versions.snapshots';
