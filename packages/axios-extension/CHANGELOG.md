@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.21.4
+
+### Patch Changes
+
+-   b45093b: Revert toggle, required to support BAS CLI flows
+
 ## 1.21.3
 
 ### Patch Changes
