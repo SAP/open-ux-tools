@@ -646,22 +646,26 @@ export class FlpSandbox {
         );
     }
 
+    /**
+     * Add internal routes for the Tasks of the enhanced home page.
+     *
+     * @private
+     */
     private addInternalRoutesForEnhancedHomePage(): void {
         this.router.get(
             '/open/ux/preview/api/tasks/count',
             async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+                this.logger.info(`Serving count for Task data of enhanced home page.`);
+                //todo: do not hard code count
                 this.sendResponse(res, 'text/plain', 200, '1');
             }
         );
         this.router.get(
             '/open/ux/preview/api/tasks',
             async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
-                //todo: implement the TaskCollection for local FLP
-                // * check if this is the count or the data request and fill response accordingly
-                // * check response structure
-                const count = 1;
+                //todo: do not hard code task data
                 const data = {
-                    '@odata.context': '/open/ux/preview/api/TaskCollection/$metadata#TaskCollection',
+                    '@odata.context': '/open/ux/preview/api/tasks/$metadata#Tasks',
                     value: [
                         {
                             TaskTitle: 'Task Title',
@@ -669,9 +673,8 @@ export class FlpSandbox {
                         }
                     ]
                 };
-                const response = data;
-                this.logger.info(`Serving TaskCollection data for enhanced home page: ${_req.url}`);
-                this.sendResponse(res, 'application/json', 200, JSON.stringify(response));
+                this.logger.info(`Serving Task data of enhanced home page.`);
+                this.sendResponse(res, 'application/json', 200, JSON.stringify(data));
             }
         );
     }
