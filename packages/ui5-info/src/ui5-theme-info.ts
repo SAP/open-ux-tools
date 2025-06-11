@@ -2,7 +2,7 @@ import { defaultVersion, latestVersionString } from './constants';
 import type { UI5Theme } from './types';
 import type { SemVer } from 'semver';
 import { coerce, gte, lt } from 'semver';
-import { supportedUi5VersionFallbacks } from './ui5-version-fallback';
+import { getLatestUI5Version } from './ui5-version-info';
 
 const MIN_UI5_VER_DARK_THEME = '1.72.0';
 const MIN_UI5_VER_HORIZON_THEME = '1.102.0';
@@ -89,11 +89,10 @@ function isSupported(theme: UI5Theme, cleanSemVer: SemVer): boolean {
  * @param [ui5Version] - The UI5 version to filter themes by. Defaults to `defaultVersion`.
  * @returns An array of UI5 themes supported for the specified version.
  */
-export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
+export async function getUi5Themes(ui5Version: string = defaultVersion): Promise<UI5Theme[]> {
     // Handle 'Latest' versions by using the latest supported UI5 version
-    const isUsingLatestVersion = ui5Version === latestVersionString;
-    const resolvedUi5Version = isUsingLatestVersion
-        ? supportedUi5VersionFallbacks[0].version
+    const resolvedUi5Version = (ui5Version === latestVersionString)
+        ? await getLatestUI5Version(true)
         : ui5Version.replace('snapshot-', '');
 
     const cleanSemVer = coerce(resolvedUi5Version);
