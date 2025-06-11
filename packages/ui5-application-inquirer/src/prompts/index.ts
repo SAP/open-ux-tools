@@ -35,12 +35,12 @@ import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
  * @param [isYUI] - optional, default is `false`. Changes the behaviour of some validation since YUI does not re-validate prompts that may be inter-dependant.
  * @returns the prompts
  */
-export function getQuestions(
+export async function getQuestions(
     ui5Versions: UI5Version[],
     promptOptions?: UI5ApplicationPromptOptions,
     capCdsInfo?: CdsUi5PluginInfo,
     isYUI = false
-): UI5ApplicationQuestion[] {
+): Promise<UI5ApplicationQuestion[]> {
     // Set shared defaults
     const appName =
         typeof promptOptions?.[promptNames.name]?.default === 'string'
@@ -71,7 +71,7 @@ export function getQuestions(
         [promptNames.addFlpConfig]: getAddFlpConfigPrompt(promptOptions?.addFlpConfig),
         [promptNames.enableVirtualEndpoints]: getEnableVirtualEndpoints(capCdsInfo),
         [promptNames.showAdvanced]: getShowAdvancedPrompt(),
-        [promptNames.ui5Theme]: getUI5ThemePrompt(),
+        [promptNames.ui5Theme]: await getUI5ThemePrompt(),
         [promptNames.enableEslint]: getEnableEsLintPrompt(),
         [promptNames.enableCodeAssist]: getEnableCodeAssistPrompt(),
         [promptNames.skipAnnotations]: getSkipAnnotationsPrompt()

@@ -36,27 +36,27 @@ describe('getQuestions', () => {
         jest.restoreAllMocks();
     });
 
-    test('getQuestions, no options', () => {
+    test('getQuestions, no options', async () => {
         // Tests all declaritive values
-        expect(getQuestions([])).toMatchSnapshot();
+        expect(await getQuestions([])).toMatchSnapshot();
     });
 
-    test('getQuestions, parameter `capCdsInfo` specified', () => {
+    test('getQuestions, parameter `capCdsInfo` specified', async () => {
         // Prompt: `targetFolder` should not returned for CAP projects
-        expect(getQuestions([], undefined, mockCdsInfo)).not.toEqual(
+        expect(await getQuestions([], undefined, mockCdsInfo)).not.toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.targetFolder })])
         );
 
         // Prompt: `targetFolder` should only be returned for non-CAP projects
-        expect(getQuestions([])).toEqual(
+        expect(await getQuestions([])).toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.targetFolder })])
         );
     });
 
-    test('getQuestions, prompt: `name`, conditional validator', () => {
+    test('getQuestions, prompt: `name`, conditional validator', async () => {
         jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(true);
         // Test default when `isCLi` === true
-        let questions = getQuestions([], {
+        let questions = await getQuestions([], {
             [promptNames.targetFolder]: {
                 default: '/cap/specific/target/path'
             }
@@ -66,7 +66,7 @@ describe('getQuestions', () => {
         ).toMatchInlineSnapshot(`"A module with this name already exists in the folder: /cap/specific/target/path"`);
 
         // Test default when CAP project info provided
-        questions = getQuestions(
+        questions = await getQuestions(
             [],
             {
                 [promptNames.targetFolder]: {
@@ -81,7 +81,7 @@ describe('getQuestions', () => {
         ).toMatchInlineSnapshot(`"A module with this name already exists in the folder: /cap/specific/target/path1"`);
 
         // Non-Cli usage (YUI)
-        questions = getQuestions(
+        questions = await getQuestions(
             [],
             {
                 [promptNames.targetFolder]: {
@@ -113,7 +113,7 @@ describe('getQuestions', () => {
                 defaultValue: 'shouldBeIgnoredAsDefaultIsProvided'
             }
         };
-        questions = getQuestions([], promptOpts);
+        questions = await getQuestions([], promptOpts);
         const namePrompt = questions.find((question) => question.name === promptNames.name);
         expect(namePrompt?.default).toEqual(promptOpts.name?.default);
 
@@ -124,14 +124,14 @@ describe('getQuestions', () => {
             }
         };
 
-        questions = getQuestions([], promptOptionsDefaultValue);
+        questions = await getQuestions([], promptOptionsDefaultValue);
         const namePromptWithDefaultValue = questions.find((question) => question.name === promptNames.name);
         expect(namePromptWithDefaultValue?.default({})).toEqual(promptOptionsDefaultValue.name?.defaultValue);
         expect(namePromptWithDefaultValue?.default({ name: 'userInputName' })).toEqual('userInputName');
     });
 
-    test('getQuestions, prompt: `title`, default', () => {
-        const questions = getQuestions([]);
+    test('getQuestions, prompt: `title`, default', async () => {
+        const questions = await getQuestions([]);
         // defaults
         expect(
             (questions.find((question) => question.name === promptNames.title)?.default as Function)({})
@@ -144,8 +144,8 @@ describe('getQuestions', () => {
         ).toMatchInlineSnapshot(`"alreadyAnsweredTitle"`);
     });
 
-    test('getQuestions, prompt: `namespace`', () => {
-        let questions = getQuestions([]);
+    test('getQuestions, prompt: `namespace`', async () => {
+        let questions = await getQuestions([]);
         // defaults
         let namespacePrompt = questions.find((question) => question.name === promptNames.namespace);
         expect((namespacePrompt?.default as Function)({})).toMatchInlineSnapshot(`""`);
@@ -169,14 +169,14 @@ describe('getQuestions', () => {
                 default: 'defaultAppName'
             }
         };
-        questions = getQuestions([], promptOpts);
+        questions = await getQuestions([], promptOpts);
         namespacePrompt = questions.find((question) => question.name === promptNames.namespace);
         expect(namespacePrompt?.validate!('def', {})).toEqual(true);
         expect(validateNamespaceSpy).toHaveBeenCalledWith('def', promptOpts.name?.default);
     });
 
-    test('getQuestions, prompt: `description`, default', () => {
-        const questions = getQuestions([]);
+    test('getQuestions, prompt: `description`, default', async () => {
+        const questions = await getQuestions([]);
         // defaults
         const descPrompt = questions.find((question) => question.name === promptNames.description);
         expect((descPrompt?.default as Function)({})).toMatchInlineSnapshot(`"An SAP Fiori application."`);
@@ -191,7 +191,7 @@ describe('getQuestions', () => {
     test('getQuestions, prompt: `targetFolder`', async () => {
         const mockCwd = '/any/current/working/directory';
         jest.spyOn(process, 'cwd').mockReturnValueOnce(mockCwd);
-        let questions = getQuestions([]);
+        let questions = await getQuestions([]);
         // defaults, cwd
         let targetFolderPrompt = questions.find((question) => question.name === promptNames.targetFolder);
         expect((targetFolderPrompt?.default as Function)({})).toEqual(mockCwd);
@@ -206,12 +206,12 @@ describe('getQuestions', () => {
                 default: '/any/passed/target/folder'
             }
         };
-        questions = getQuestions([], promptOpts);
+        questions = await getQuestions([], promptOpts);
         targetFolderPrompt = questions.find((question) => question.name === promptNames.targetFolder);
         expect(targetFolderPrompt?.default).toEqual(promptOpts.targetFolder?.default);
 
         // validators
-        questions = getQuestions([]);
+        questions = await getQuestions([]);
         targetFolderPrompt = questions.find((question) => question.name === promptNames.targetFolder);
 
         await expect(targetFolderPrompt?.validate!(undefined, {})).resolves.toEqual(false);
@@ -230,7 +230,7 @@ describe('getQuestions', () => {
             }
         };
 
-        questions = getQuestions([], promptOptionsDefaultValue);
+        questions = await getQuestions([], promptOptionsDefaultValue);
         const targetFolderPromptWithDefaultValue = questions.find(
             (question) => question.name === promptNames.targetFolder
         );
@@ -242,9 +242,9 @@ describe('getQuestions', () => {
         );
     });
 
-    test('getQuestions, prompt: `ui5VersionChoice`', () => {
+    test('getQuestions, prompt: `ui5VersionChoice`', async () => {
         // No UI5 versions specified
-        let questions = getQuestions([]);
+        let questions = await getQuestions([]);
         let ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
         expect((ui5VersionPrompt?.when as Function)()).toEqual(true);
         expect(ui5VersionPrompt?.type).toEqual('list');
@@ -280,7 +280,7 @@ describe('getQuestions', () => {
             }
         ];
         // UI5 versions specified
-        questions = getQuestions(ui5Vers);
+        questions = await getQuestions(ui5Vers);
         ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
         expect((ui5VersionPrompt?.when as Function)()).toEqual(true);
         expect(ui5VersionPrompt?.type).toEqual('list');
@@ -290,7 +290,7 @@ describe('getQuestions', () => {
 
         // Option `useAutocomplete` specified
         // UI5 versions specified
-        questions = getQuestions(ui5Vers, {
+        questions = await getQuestions(ui5Vers, {
             ui5Version: {
                 useAutocomplete: true
             }
@@ -308,7 +308,7 @@ describe('getQuestions', () => {
             'name': '1.120.99 (Source system version)',
             'value': '1.120.99'
         };
-        questions = getQuestions(ui5Vers, {
+        questions = await getQuestions(ui5Vers, {
             ui5Version: {
                 defaultChoice
             }
@@ -337,7 +337,7 @@ describe('getQuestions', () => {
         jest.spyOn(process, 'cwd').mockReturnValueOnce(mockCwd);
 
         // 'addDeployConfig' is always returned based on static inputs, it is the 'when' condition that determines its presence
-        let questions = getQuestions([], undefined, mockCdsInfo);
+        let questions = await getQuestions([], undefined, mockCdsInfo);
         let addDeployConfigQuestion = questions.find((question) => question.name === promptNames.addDeployConfig);
         expect(questions).toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.addDeployConfig })])
@@ -349,7 +349,7 @@ describe('getQuestions', () => {
         );
 
         getMtaPathSpy.mockResolvedValue({ mtaPath: 'any/path', hasRoot: false });
-        questions = getQuestions([], undefined, mockCdsInfo);
+        questions = await getQuestions([], undefined, mockCdsInfo);
         addDeployConfigQuestion = questions.find((question) => question.name === promptNames.addDeployConfig);
         expect(await (addDeployConfigQuestion?.when as Function)()).toEqual(true);
         expect(getMtaPathSpy).toHaveBeenCalledWith(mockCwd);
@@ -366,11 +366,11 @@ describe('getQuestions', () => {
 
     test('getQuestions, prompt: `addDeployConfig` validator', async () => {
         // 'addDeployConfig' is always returned based on static inputs, it is the 'when' condition that determines its presence
-        let questions = getQuestions([]);
+        let questions = await getQuestions([]);
         let addDeployConfigQuestion = questions.find((question) => question.name === promptNames.addDeployConfig);
         expect(await (addDeployConfigQuestion?.validate as Function)()).toEqual(true);
         const validatorCbSpy = jest.fn();
-        questions = getQuestions([], {
+        questions = await getQuestions([], {
             addDeployConfig: {
                 validatorCallback: validatorCbSpy
             }
@@ -383,7 +383,7 @@ describe('getQuestions', () => {
     });
 
     test('getQuestions, prompt: `addFlpConfig`', async () => {
-        let questions = getQuestions([]);
+        let questions = await getQuestions([]);
         let addFlpConfigQuestion = questions.find((question) => question.name === promptNames.addFlpConfig);
 
         expect(questions).toEqual(
@@ -393,7 +393,7 @@ describe('getQuestions', () => {
 
         expect(await (addFlpConfigQuestion?.validate as Function)()).toEqual(true);
         const validatorCbSpy = jest.fn();
-        questions = getQuestions([], {
+        questions = await getQuestions([], {
             addFlpConfig: {
                 validatorCallback: validatorCbSpy
             }
@@ -407,7 +407,7 @@ describe('getQuestions', () => {
 
     test('getQuestions, prompt: `enableVirtualEndpoints`', async () => {
         // Edmx project
-        let questions = getQuestions([]);
+        let questions = await getQuestions([]);
         let enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
@@ -421,28 +421,32 @@ describe('getQuestions', () => {
         );
 
         // CAP project with cds-ui5 plugin enabled
-        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: true });
+        questions = await getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: true });
         enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
         expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(true);
 
         // CAP project with cds-ui5 plugin disabled and enableTypeScript answer is no
-        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false });
+        questions = await getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false });
         enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
         expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: false })).toBe(false);
 
         // CAP project with cds-ui5 plugin disabled and enableTypeScript answer is yes
-        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false });
+        questions = await getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false });
         enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
         expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: true })).toBe(true);
 
         // CAP project with cds-ui5 plugin disabled and hasMinCdsVersion is false
-        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false, hasMinCdsVersion: false });
+        questions = await getQuestions(
+            [],
+            {},
+            { ...mockCdsInfo, isCdsUi5PluginEnabled: false, hasMinCdsVersion: false }
+        );
         enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
@@ -451,7 +455,7 @@ describe('getQuestions', () => {
 
     test('getQuestions, prompt: `ui5Theme`', async () => {
         const getDefaultUI5ThemeSpy = jest.spyOn(ui5Info, 'getDefaultUI5Theme');
-        const questions = getQuestions([]);
+        const questions = await getQuestions([]);
         const ui5ThemeQuestion = questions.find((question) => question.name === promptNames.ui5Theme);
 
         expect(questions).toEqual(expect.arrayContaining([expect.objectContaining({ name: promptNames.ui5Theme })]));
@@ -478,8 +482,8 @@ describe('getQuestions', () => {
             { id: ui5ThemeIds.SAP_FIORI_3_DARK, label: 'Theme One' },
             { id: ui5ThemeIds.SAP_HORIZON_DARK, label: 'Theme Two' }
         ];
-        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockReturnValue(mockThemes);
-        expect(((ui5ThemeQuestion as ListQuestion)?.choices as Function)({})).toMatchInlineSnapshot(`
+        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockResolvedValue(mockThemes);
+        expect(await ((ui5ThemeQuestion as ListQuestion)?.choices as Function)({})).toMatchInlineSnapshot(`
             [
               {
                 "name": "Theme One",
@@ -497,12 +501,12 @@ describe('getQuestions', () => {
         expect(getUI5ThemesSpy).toHaveBeenCalledWith(ui5Version);
     });
 
-    test('getQuestions, prompt: `enableEslint`', () => {
-        let questions = getQuestions([]);
+    test('getQuestions, prompt: `enableEslint`', async () => {
+        let questions = await getQuestions([]);
         let enableEslintQuestion = questions.find((question) => question.name === promptNames.enableEslint);
         // defaults
         expect(enableEslintQuestion?.default).toEqual(false);
-        questions = getQuestions([], {
+        questions = await getQuestions([], {
             enableEslint: {
                 default: true
             }
@@ -511,12 +515,12 @@ describe('getQuestions', () => {
         expect(enableEslintQuestion?.default).toEqual(true);
     });
 
-    test('getQuestions, prompt: `enableCodeAssist`', () => {
-        let questions = getQuestions([]);
+    test('getQuestions, prompt: `enableCodeAssist`', async () => {
+        let questions = await getQuestions([]);
         let enableCodeAssistQuestion = questions.find((question) => question.name === promptNames.enableCodeAssist);
         // defaults
         expect(enableCodeAssistQuestion?.default).toEqual(false);
-        questions = getQuestions([], {
+        questions = await getQuestions([], {
             enableCodeAssist: {
                 default: true
             }
@@ -533,12 +537,12 @@ describe('getQuestions', () => {
         expect((enableCodeAssistQuestion?.when as Function)({})).toEqual(true);
     });
 
-    test('getQuestions, prompt: `skipAnnotations`', () => {
-        let questions = getQuestions([]);
+    test('getQuestions, prompt: `skipAnnotations`', async () => {
+        let questions = await getQuestions([]);
         let skipAnnotationsQuestion = questions.find((question) => question.name === promptNames.skipAnnotations);
         // defaults
         expect(skipAnnotationsQuestion?.default).toEqual(false);
-        questions = getQuestions([], {
+        questions = await getQuestions([], {
             skipAnnotations: {
                 default: true
             }
@@ -548,8 +552,8 @@ describe('getQuestions', () => {
         expect(skipAnnotationsQuestion?.default).toEqual(true);
     });
 
-    test('getQuestions, prompt: `enableTypeScript`', () => {
-        const questions = getQuestions([]);
+    test('getQuestions, prompt: `enableTypeScript`', async () => {
+        const questions = await getQuestions([]);
         let enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
         // default
         expect(enableTypeScriptQuestion?.default).toEqual(false);
@@ -563,26 +567,30 @@ describe('getQuestions', () => {
             isWorkspaceEnabled: false,
             hasMinCdsVersion: false
         };
-        enableTypeScriptQuestion = getQuestions([], undefined, mockCdsInfoFalse).find(
+        enableTypeScriptQuestion = (await getQuestions([], undefined, mockCdsInfoFalse)).find(
             (question) => question.name === promptNames.enableTypeScript
         );
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(false);
 
-        enableTypeScriptQuestion = getQuestions([], undefined, {
-            hasCdsUi5Plugin: true,
-            isCdsUi5PluginEnabled: true,
-            isWorkspaceEnabled: true,
-            hasMinCdsVersion: true
-        }).find((question) => question.name === promptNames.enableTypeScript);
+        enableTypeScriptQuestion = (
+            await getQuestions([], undefined, {
+                hasCdsUi5Plugin: true,
+                isCdsUi5PluginEnabled: true,
+                isWorkspaceEnabled: true,
+                hasMinCdsVersion: true
+            })
+        ).find((question) => question.name === promptNames.enableTypeScript);
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
         expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual(undefined);
 
-        enableTypeScriptQuestion = getQuestions([], undefined, {
-            hasCdsUi5Plugin: false,
-            isCdsUi5PluginEnabled: false,
-            isWorkspaceEnabled: false,
-            hasMinCdsVersion: true
-        }).find((question) => question.name === promptNames.enableTypeScript);
+        enableTypeScriptQuestion = (
+            await getQuestions([], undefined, {
+                hasCdsUi5Plugin: false,
+                isCdsUi5PluginEnabled: false,
+                isWorkspaceEnabled: false,
+                hasMinCdsVersion: true
+            })
+        ).find((question) => question.name === promptNames.enableTypeScript);
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
         expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual({
             message:
@@ -591,7 +599,7 @@ describe('getQuestions', () => {
         });
     });
 
-    test('getQuestions, advanced prompt grouping', () => {
+    test('getQuestions, advanced prompt grouping', async () => {
         const advancedOptions = {
             [promptNames.ui5Theme]: {
                 advancedOption: true
@@ -600,7 +608,7 @@ describe('getQuestions', () => {
                 advancedOption: true
             }
         };
-        const questions = getQuestions([], advancedOptions, mockCdsInfo);
+        const questions = await getQuestions([], advancedOptions, mockCdsInfo);
 
         Object.keys(advancedOptions).forEach((questionName) => {
             const question = questions.find(({ name }) => name === questionName);
