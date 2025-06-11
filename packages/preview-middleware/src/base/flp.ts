@@ -197,6 +197,7 @@ export class FlpSandbox {
 
         if (this.flpConfig.enhancedHomePage) {
             this.addCDMRoute();
+            this.addInternalRoutesForEnhancedHomePage();
         }
         await this.addRoutesForAdditionalApps();
 
@@ -641,6 +642,32 @@ export class FlpSandbox {
             async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
                 const json = generateCdm(this.templateConfig.apps);
                 this.sendResponse(res, 'application/json', 200, JSON.stringify(json));
+            }
+        );
+    }
+
+    private addInternalRoutesForEnhancedHomePage(): void {
+        this.router.get(
+            '/open/ux/preview/api/TaskCollection',
+            async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+                //todo: implement the TaskCollection for local FLP
+                // * check if this is the count or the data request and fill response accordingly
+                // * check response structure
+                const count = 1;
+                const data = {
+                    '@odata.context': '/open/ux/preview/api/TaskCollection/$metadata#TaskCollection',
+                    value: [
+                        {
+                            id: 'task-id',
+                            TaskTitle: 'Task Title',
+                            loadState: 'READY',
+                            cardWidth: '100px'
+                        }
+                    ]
+                };
+                const response = data;
+                this.logger.info(`Serving TaskCollection data for enhanced home page: ${_req.url}`);
+                this.sendResponse(res, 'application/json', 200, JSON.stringify(response));
             }
         );
     }
