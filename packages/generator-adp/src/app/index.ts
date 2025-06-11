@@ -447,14 +447,6 @@ export default class extends Generator {
         const pages: IPrompt[] = this.prompts['items'];
         const flpPagesExist = pages.some((p) => p.name === t('yuiNavSteps.flpConfigName'));
         const deployPageExists = pages.some((p) => p.name === t('yuiNavSteps.deployConfigName'));
-        if (!flpPagesExist) {
-            updateFlpWizardSteps(
-                !!this.baseAppInbounds,
-                this.prompts,
-                this.attributeAnswers.projectName,
-                this.attributeAnswers.addFlpConfig
-            );
-        }
 
         if (!deployPageExists) {
             updateWizardSteps(
@@ -462,6 +454,15 @@ export default class extends Generator {
                 getDeployPage(),
                 t('yuiNavSteps.projectAttributesName'),
                 this.attributeAnswers.addDeployConfig
+            );
+        }
+
+        if (!flpPagesExist) {
+            updateFlpWizardSteps(
+                !!this.baseAppInbounds,
+                this.prompts,
+                this.attributeAnswers.projectName,
+                this.attributeAnswers.addFlpConfig
             );
         }
     }
