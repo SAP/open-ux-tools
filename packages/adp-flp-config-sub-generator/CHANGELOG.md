@@ -1,5 +1,15 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.18
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+    -   @sap-ux/adp-tooling@0.14.18
+    -   @sap-ux/system-access@0.6.3
+    -   @sap-ux/flp-config-inquirer@0.3.18
+
 ## 0.1.17
 
 ### Patch Changes
