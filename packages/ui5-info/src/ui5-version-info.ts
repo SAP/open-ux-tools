@@ -170,7 +170,6 @@ const retrieveUI5VersionsCache = async (
                 ui5VersionsCache.officialVersions = versions;
                 ui5VersionsCache.support = support;
             }
-            console.log('---- I AM HERE ----', versions);
             return type === ui5VersionsType.official ? versions : support;
 
         case ui5VersionsType.snapshot:
