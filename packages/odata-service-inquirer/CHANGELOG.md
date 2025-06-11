@@ -1,5 +1,21 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.4.17
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+
+## 2.4.16
+
+### Patch Changes
+
+-   4e6c22e: adds support for external param abapCSN
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/inquirer-common@0.7.9
+
 ## 2.4.15
 
 ### Patch Changes

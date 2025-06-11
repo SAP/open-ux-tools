@@ -1,7 +1,10 @@
+import { supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
+
 import { fetchPublicVersions, fetchInternalVersions } from '../../../src/ui5/fetch';
 import { UI5_VERSIONS_CDN_URL, UI5_VERSIONS_NEO_CDN_URL } from '../../../src/base/constants';
 
 import { fetchMock } from '../../__mock__/global';
+import { buildFallbackMap } from '../../../src';
 
 describe('ui5 fetchers', () => {
     beforeEach(() => {
@@ -23,13 +26,15 @@ describe('ui5 fetchers', () => {
             expect(result).toEqual(mockData);
         });
 
-        it('should throw an error if fetch fails (non-ok response)', async () => {
+        it('should resolve to offline ui5 version fallbacks if fetch fails (non-ok response)', async () => {
             fetchMock.mockResolvedValue({
                 ok: false,
                 status: 500
             });
 
-            await expect(fetchPublicVersions()).rejects.toThrow('Failed to fetch public UI5 versions. Status: 500');
+            const versions = await fetchPublicVersions();
+
+            expect(versions).toEqual(buildFallbackMap());
         });
     });
 
