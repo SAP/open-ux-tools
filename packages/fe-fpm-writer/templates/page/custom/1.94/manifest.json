@@ -8,7 +8,7 @@
                 "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>": {
                     "type": "Component",
                     "id": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>",
-                    "name": "sap.fe.core.fpm",<%if (locals.controlAggregation) {%>
+                    "name": "<%- template %>",<%if (locals.controlAggregation) {%>
                     "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
                     "options": {
                         "settings": <%- JSON.stringify({ ...settings, viewName: `${ns}.${name}`}) %>

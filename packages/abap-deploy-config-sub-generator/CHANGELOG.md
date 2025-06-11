@@ -1,5 +1,68 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.16
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.14
+-   @sap-ux/deploy-config-generator-shared@0.1.8
+-   @sap-ux/abap-deploy-config-writer@0.1.5
+
+## 0.1.15
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.13
+    -   @sap-ux/deploy-config-generator-shared@0.1.8
+
+## 0.1.14
+
+### Patch Changes
+
+-   7132e18: add conflicter force prop for yui usage
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.12
+    -   @sap-ux/deploy-config-generator-shared@0.1.7
+
+## 0.1.12
+
+### Patch Changes
+
+-   3630ec9: fixs for abap headless
+
+## 0.1.11
+
+### Patch Changes
+
+-   Updated dependencies [18c7e5d]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.11
+
+## 0.1.10
+
+### Patch Changes
+
+-   Updated dependencies [95a816d]
+    -   @sap-ux/fiori-generator-shared@0.12.6
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.10
+    -   @sap-ux/deploy-config-generator-shared@0.1.6
+
+## 0.1.9
+
+### Patch Changes
+
+-   15ec5c4: adds support for adding deployment config via headless generator
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.9
+    -   @sap-ux/fiori-generator-shared@0.12.5
+    -   @sap-ux/deploy-config-generator-shared@0.1.5
+
 ## 0.1.8
 
 ### Patch Changes

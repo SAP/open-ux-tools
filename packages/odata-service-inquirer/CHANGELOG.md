@@ -1,5 +1,52 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.4.17
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+
+## 2.4.16
+
+### Patch Changes
+
+-   4e6c22e: adds support for external param abapCSN
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/inquirer-common@0.7.9
+
+## 2.4.15
+
+### Patch Changes
+
+-   d6943aa: Adds GA link to deploy.
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+    -   @sap-ux/nodejs-utils@0.2.1
+
+## 2.4.14
+
+### Patch Changes
+
+-   18c7e5d: Adds support for cert bypassing and cert error GA link generation
+
+## 2.4.13
+
+### Patch Changes
+
+-   Updated dependencies [95a816d]
+    -   @sap-ux/fiori-generator-shared@0.12.6
+    -   @sap-ux/inquirer-common@0.7.7
+
+## 2.4.12
+
+### Patch Changes
+
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/fiori-generator-shared@0.12.5
+    -   @sap-ux/inquirer-common@0.7.6
+
 ## 2.4.11
 
 ### Patch Changes

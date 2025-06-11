@@ -1,5 +1,61 @@
 # @sap-ux/preview-middleware
 
+## 0.20.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.18
+-   @sap-ux/system-access@0.6.3
+
+## 0.20.27
+
+### Patch Changes
+
+-   Updated dependencies [f4439f1]
+    -   @sap-ux/adp-tooling@0.14.17
+
+## 0.20.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.16
+
+## 0.20.25
+
+### Patch Changes
+
+-   135c3ae: fix: Duplicate Extension Points are selected in outline tree
+
+## 0.20.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.15
+
+## 0.20.23
+
+### Patch Changes
+
+-   ec78662: fix: variant changes are not shown in Adaptation Editor
+
+## 0.20.22
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.14
+
+## 0.20.21
+
+### Patch Changes
+
+-   461c297: fix: only parse change files from `changes` folder.
+
+## 0.20.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.13
+
 ## 0.20.19
 
 ### Patch Changes
