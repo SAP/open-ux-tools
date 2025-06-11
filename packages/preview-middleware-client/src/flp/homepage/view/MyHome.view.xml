@@ -2,7 +2,7 @@
     xmlns="sap.cux.home"
     xmlns:m="sap.m"
     xmlns:mvc="sap.ui.core.mvc"
-    xmlns:controls="cux.consume.controls"
+    xmlns:controls="open.ux.preview.client.flp.homepage.controls"
     displayBlock="true"
     class="sapUShellFullHeight"
 >
@@ -13,9 +13,9 @@
     >
         <ToDosContainer id="toDosContainer">
             <controls:CustomToDoPanel
-                    id="customPanel"
-                    countUrl="/open/ux/preview/api/TaskCollection/$count"
-                    dataUrl="/open/ux/preview/api/TaskCollection"
+                id="customPanel"
+                countUrl="/open/ux/preview/api/tasks/count"
+                dataUrl="/open/ux/preview/api/tasks"
             />
         </ToDosContainer>
 

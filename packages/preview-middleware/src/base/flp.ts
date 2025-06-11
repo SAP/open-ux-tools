@@ -648,7 +648,13 @@ export class FlpSandbox {
 
     private addInternalRoutesForEnhancedHomePage(): void {
         this.router.get(
-            '/open/ux/preview/api/TaskCollection',
+            '/open/ux/preview/api/tasks/count',
+            async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+                this.sendResponse(res, 'text/plain', 200, '1');
+            }
+        );
+        this.router.get(
+            '/open/ux/preview/api/tasks',
             async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
                 //todo: implement the TaskCollection for local FLP
                 // * check if this is the count or the data request and fill response accordingly
@@ -658,10 +664,8 @@ export class FlpSandbox {
                     '@odata.context': '/open/ux/preview/api/TaskCollection/$metadata#TaskCollection',
                     value: [
                         {
-                            id: 'task-id',
                             TaskTitle: 'Task Title',
-                            loadState: 'READY',
-                            cardWidth: '100px'
+                            TaskDescription: 'Task Description'
                         }
                     ]
                 };
