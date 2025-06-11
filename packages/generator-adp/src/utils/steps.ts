@@ -50,7 +50,7 @@ export function getFlpPages(showTileSettingsPage: boolean, projectName: string):
  * @param {boolean} hasBaseAppInbound - Indicates if the base app inbound exists.
  * @param {YeomanUiSteps} prompts - The Yeoman UI Prompts container object.
  * @param {string} projectName - The name of the project.
- * @param {boolean} [shouldAdd=true] - Whether to add (`true`) or remove (`false`) the steps.
+ * @param {boolean} [shouldAdd] - Whether to add (`true`) or remove (`false`) the steps.
  */
 export function updateFlpWizardSteps(
     hasBaseAppInbound: boolean,
