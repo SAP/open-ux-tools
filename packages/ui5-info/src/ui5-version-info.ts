@@ -140,7 +140,7 @@ async function parseUI5VersionsAndSupport(
  * Retrieves UI5 versions from a cache or by fetching them, depending on the useCache flag.
  *
  * @param {'official' | 'snapshot' | 'support'} type - The type of UI5 versions to retrieve.
- * @param {boolean} [useCache=false] - If true, attempts to return cached versions first.
+ * @param {boolean} [useCache] - If true, attempts to return cached versions first.
  * If false, or if cached versions are not available/ empty, it fetches data from https://ui5.sap.com.
  * If fresh data is fetched and useCache is true, the cache will be updated.
  * @param {string} [snapshotUrl] - The URL to fetch snapshot versions from. Required if type is 'snapshot'.
@@ -170,7 +170,7 @@ const retrieveUI5VersionsCache = async (
                 ui5VersionsCache.officialVersions = versions;
                 ui5VersionsCache.support = support;
             }
-            console.log("---- I AM HERE ----", versions);
+            console.log('---- I AM HERE ----', versions);
             return type === ui5VersionsType.official ? versions : support;
 
         case ui5VersionsType.snapshot:
@@ -385,7 +385,7 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
  * - If the cache is empty or useCache is false, the function fetches the latest version from https://ui5.sap.com..
  * - If both cache and API retrieval fail, the function falls back to the default UI5 version.
  *
- * @param {boolean} [useCache=false] - Whether to use cached versions. 
+ * @param {boolean} [useCache] - Whether to use cached versions.
  * @returns {Promise<string>} The latest supported UI5 version, or the default version if cache and API retrieval fail.
  */
 export async function getLatestUI5Version(useCache: boolean = false): Promise<string> {

@@ -91,9 +91,8 @@ function isSupported(theme: UI5Theme, cleanSemVer: SemVer): boolean {
  */
 export async function getUi5Themes(ui5Version: string = defaultVersion): Promise<UI5Theme[]> {
     // Handle 'Latest' versions by using the latest supported UI5 version
-    const resolvedUi5Version = (ui5Version === latestVersionString)
-        ? await getLatestUI5Version(true)
-        : ui5Version.replace('snapshot-', '');
+    const resolvedUi5Version =
+        ui5Version === latestVersionString ? await getLatestUI5Version(true) : ui5Version.replace('snapshot-', '');
 
     const cleanSemVer = coerce(resolvedUi5Version);
 
