@@ -27,7 +27,8 @@ export function getAdpFlpConfigPromptOptions(
         const hideExistingFlpConfigInfo = variant ? !(!inbounds && flpConfigurationExists(variant)) : true;
         return {
             existingFlpConfigInfo: { hide: hideExistingFlpConfigInfo },
-            action: { executeDuplicateValidation: true },
+            semanticObject: { showTooltip: true },
+            action: { executeDuplicateValidation: true, showTooltip: true },
             inboundId: { hide: true },
             overwrite: { hide: true }
         };
@@ -38,7 +39,7 @@ export function getAdpFlpConfigPromptOptions(
             existingFlpConfigInfo: { hide: true },
             overwrite: { hide: true },
             semanticObject: { hide: true },
-            action: { hide: true },
+            action: { hide: true, showTooltip: true },
             additionalParameters: { hide: true }
         };
     }
@@ -46,7 +47,8 @@ export function getAdpFlpConfigPromptOptions(
     // If the user chooses to add a new tile and copy the original, semantic object and action are required
     return {
         existingFlpConfigInfo: { hide: true },
-        action: { executeDuplicateValidation: true },
+        semanticObject: { showTooltip: true },
+        action: { executeDuplicateValidation: true, showTooltip: true },
         overwrite: { hide: true }
     };
 }

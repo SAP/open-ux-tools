@@ -1,5 +1,6 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { validateText } from '@sap-ux/project-input-validator';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 import type {
     ActionPromptOptions,
@@ -23,13 +24,19 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
  * @returns {FLPConfigQuestion} The prompt configuration for the semantic object.
  */
 export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObjectPromptOptions): FLPConfigQuestion {
+    const guiOptions: YUIQuestion['guiOptions'] = {
+        mandatory: true,
+        breadcrumb: true
+    };
+
+    if (options?.showTooltip) {
+        guiOptions.hint = t('tooltips.semObjectActionDuplication');
+    }
+
     return {
         name: promptNames.semanticObject,
         type: 'input',
-        guiOptions: {
-            mandatory: true,
-            breadcrumb: true
-        },
+        guiOptions,
         message: t('prompts.semanticObject'),
         default: (answers: FLPConfigAnswers): string => {
             if (options?.default) {
@@ -55,13 +62,19 @@ export function getActionPrompt(
     options?: ActionPromptOptions,
     inbounds?: ManifestNamespace.Inbound
 ): FLPConfigQuestion {
+    const guiOptions: YUIQuestion['guiOptions'] = {
+        mandatory: true,
+        breadcrumb: true
+    };
+
+    if (options?.showTooltip) {
+        guiOptions.hint = t('tooltips.semObjectActionDuplication');
+    }
+
     return {
         name: promptNames.action,
         type: 'input',
-        guiOptions: {
-            mandatory: true,
-            breadcrumb: true
-        },
+        guiOptions,
         message: t('prompts.action'),
         default: (answers: FLPConfigAnswers): string => {
             if (options?.default) {

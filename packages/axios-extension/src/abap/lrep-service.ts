@@ -360,7 +360,7 @@ export class LayeredRepositoryService extends Axios implements Service {
                 params.append('package', cloudPackage);
             }
             if (appId) {
-                params['sap-app-id'] = appId;
+                params.append('sap-app-id', appId);
             }
 
             const response = await this.get(`${DTA_PATH_SUFFIX}system_info`, {

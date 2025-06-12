@@ -77,6 +77,10 @@ export interface existingFlpConfigInfo {
 export interface SemanticObjectPromptOptions {
     default?: string;
     hide?: boolean;
+    /**
+     * If set to true, the prompt will show a tooltip with information about semantic objects prompt.
+     */
+    showTooltip?: boolean;
 }
 
 /**
@@ -89,6 +93,10 @@ export interface ActionPromptOptions {
      * If set to false, the prompt will not validate for duplicate semantic object/action combination.
      */
     executeDuplicateValidation?: boolean;
+    /**
+     * If set to true, the prompt will show a tooltip with information about action prompt.
+     */
+    showTooltip?: boolean;
 }
 
 /**
