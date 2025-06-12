@@ -81,7 +81,7 @@ function isSupported(theme: UI5Theme, cleanSemVer: SemVer): boolean {
 /**
  * Returns the list of supported UI5 themes for a given UI5 version.
  *
- * - If ui5Version is Latest, the latest supported UI5 version is used.
+ * - If ui5Version is `Latest`, the latest supported UI5 version is used.
  * - If ui5Version is a snapshot version (e.g., 'snapshot-1.137.0'), the snapshot prefix is removed.
  * - If ui5Version is invalid or cannot be parsed into a semantic version, all themes are returned.
  * - Themes that are deprecated for the given version are marked with "(deprecated)" in their label.

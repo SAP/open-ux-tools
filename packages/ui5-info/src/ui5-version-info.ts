@@ -376,7 +376,7 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
 }
 
 /**
- * Retrieves the latest supported UI5 version.
+ * Retrieves the latest supported published UI5 version.
  *
  * - If useCache is true, the function first attempts to retrieve the version from the cache:
  *   - If the cache contains official versions, the first version from the cache is returned.
