@@ -1,3 +1,17 @@
+interface CSNServices {
+    runtimeName: string;
+    csnServiceName: string;
+}
+
+/**
+ * ABAP CSN properties and services.
+ */
+export interface AbapCSN {
+    packageUri: string;
+    csnName: string;
+    services: CSNServices[];
+}
+
 /**
  * Interface representing external parameters for the .appGenInfo.json file.
  */
@@ -38,6 +52,8 @@ export interface AppGenInfo {
     ui5Theme?: string;
     /** The date when the generator was run. */
     generationDate?: string;
+    /** The ID of the service used in the application */
+    serviceId?: string;
     /** The service URL of the application */
     serviceUrl?: string;
     /** The service type for the application. */
@@ -64,5 +80,5 @@ export interface AppGenInfo {
      * Additional external parameters.
      * N.B. these will be added to the .appGenInfo.json file only
      */
-    externalParameters?: ExternalParameters[];
+    externalParameters?: ExternalParameters;
 }
