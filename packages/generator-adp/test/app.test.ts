@@ -19,9 +19,9 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
-import type { AttributesAnswers, ConfigAnswers, Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import type { AttributesAnswers, ConfigAnswers, Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
 
 import adpGenerator from '../src/app';
 import { initI18n, t } from '../src/utils/i18n';
@@ -32,9 +32,8 @@ import * as subgenHelpers from '../src/utils/subgenHelpers';
 import { ConfigPrompter } from '../src/app/questions/configuration';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
 
-jest.mock('@sap-devx/feature-toggle-node', () => ({
-    // Is BAS this will mean that the layer is CUSTOMER_BASE
-    isFeatureEnabled: jest.fn().mockResolvedValue(false)
+jest.mock('@sap-ux/feature-toggle', () => ({
+    isInternalFeaturesSettingEnabled: jest.fn().mockReturnValue(false)
 }));
 
 jest.mock('../src/app/questions/helper/default-values.ts', () => ({
