@@ -1,5 +1,12 @@
 # @sap-ux/odata-annotation-core
 
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [08ed948]
+    -   @sap-ux/odata-annotation-core-types@0.4.4
+
 ## 0.2.4
 
 ### Patch Changes

@@ -358,7 +358,7 @@ describe('Deployment Generator', () => {
                 .withOptions({
                     overwrite: false,
                     skipInstall: true,
-                    launchDeployConfigAsSubGenerator: true,
+                    launchDeployConfigAsSubGenerator: false,
                     projectPath: OUTPUT_DIR_PREFIX,
                     projectName: 'capproject'
                 })
