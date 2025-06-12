@@ -1,5 +1,5 @@
-import type { SystemSelectionAnswers } from '../app/types';
 import AdmZip from 'adm-zip';
+import { DatasourceType, type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 
 /**
  * Much of the values returned by the app downloader prompting are derived from prompt answers and are not direct answer values.
@@ -8,7 +8,7 @@ import AdmZip from 'adm-zip';
  *
  */
 export class PromptState {
-    private static _systemSelection: SystemSelectionAnswers = {};
+    private static _systemSelection: OdataServiceAnswers = { datasourceType: DatasourceType.sapSystem };
     private static _admZipInstance?: AdmZip;
 
     /**
@@ -16,17 +16,17 @@ export class PromptState {
      *
      * @returns {SystemSelectionAnswers} service config
      */
-    public static get systemSelection(): SystemSelectionAnswers {
+    public static get systemSelection(): OdataServiceAnswers {
         return this._systemSelection;
     }
 
     /**
      * Set the state of the system selection.
      *
-     * @param {SystemSelectionAnswers} value - system selection value
+     * @param {OdataServiceAnswers} value - system selection value
      */
-    public static set systemSelection(value: Partial<SystemSelectionAnswers>) {
-        this._systemSelection = value;
+    public static set systemSelection(value: Partial<OdataServiceAnswers>) {
+        this._systemSelection = value as OdataServiceAnswers; // NOSONAR
     }
 
     /**
@@ -51,7 +51,10 @@ export class PromptState {
      * @returns {string | undefined} baseURL
      */
     public static get baseURL(): string | undefined {
-        return this._systemSelection.connectedSystem?.serviceProvider?.defaults?.baseURL;
+        return (
+            this._systemSelection.connectedSystem?.backendSystem?.url ??
+            this._systemSelection.connectedSystem?.destination?.Host
+        );
     }
 
     /**
@@ -60,7 +63,19 @@ export class PromptState {
      * @returns {string | undefined} sap-client
      */
     public static get sapClient(): string | undefined {
-        return this._systemSelection.connectedSystem?.serviceProvider?.defaults?.params?.['sap-client'];
+        return (
+            this._systemSelection.connectedSystem?.backendSystem?.client ??
+            this._systemSelection.connectedSystem?.destination?.['sap-client']
+        );
+    }
+
+    /**
+     * Get the destination parameter from the connected system's service provider defaults.
+     *
+     * @returns {string | undefined} sap-client
+     */
+    public static get destinationName(): string | undefined {
+        return this._systemSelection.connectedSystem?.destination?.Name;
     }
 
     static reset(): void {

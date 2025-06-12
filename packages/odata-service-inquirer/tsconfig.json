@@ -40,6 +40,9 @@
       "path": "../logger"
     },
     {
+      "path": "../nodejs-utils"
+    },
+    {
       "path": "../odata-service-writer"
     },
     {

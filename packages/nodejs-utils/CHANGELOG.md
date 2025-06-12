@@ -1,5 +1,11 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.1
+
+### Patch Changes
+
+-   d6943aa: Adds GA link to deploy.
+
 ## 0.2.0
 
 ### Minor Changes
