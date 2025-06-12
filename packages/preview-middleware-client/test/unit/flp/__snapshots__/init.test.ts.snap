@@ -1,0 +1,110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`flp/init init enhancedHomePage mode is enabled 1`] = `
+Object {
+  "defaultRenderer": "fiori2",
+  "renderers": Object {
+    "fiori2": Object {
+      "componentData": Object {
+        "config": Object {
+          "enableRecentActivity": true,
+          "enableSearch": false,
+          "rootIntent": "Shell-home",
+        },
+      },
+    },
+  },
+  "services": Object {
+    "AppState": Object {
+      "adapter": Object {
+        "module": "sap.ushell.adapters.local.AppStateAdapter",
+      },
+      "config": Object {
+        "transient": true,
+      },
+    },
+    "CommonDataModel": Object {
+      "adapter": Object {
+        "config": Object {
+          "ignoreSiteDataPersonalization": true,
+          "siteDataUrl": "/cdm.json",
+        },
+      },
+    },
+    "Container": Object {
+      "adapter": Object {
+        "config": Object {
+          "userProfile": Object {
+            "defaults": Object {
+              "email": "john.doe@sap.com",
+              "firstName": "John",
+              "fullName": "John Doe",
+              "id": "DOEJ",
+              "lastName": "Doe",
+            },
+            "metadata": Object {
+              "editablePropterties": Array [
+                "accessibility",
+                "contentDensity",
+                "theme",
+              ],
+            },
+          },
+        },
+      },
+    },
+    "FlpLaunchPage": Object {
+      "adapter": Object {
+        "module": "sap.ushell.adapters.cdm.v3.FlpLaunchPageAdapter",
+      },
+    },
+    "NavTargetResolutionInternal": Object {
+      "adapter": Object {
+        "module": "sap.ushell.adapters.local.NavTargetResolutionInternalAdapter",
+      },
+      "config": Object {
+        "allowTestUrlComponentConfig": false,
+        "enableClientSideTargetResolution": true,
+      },
+    },
+    "Personalization": Object {
+      "adapter": Object {
+        "config": Object {
+          "storageType": "MEMORY",
+        },
+        "module": "sap.ushell.adapters.local.PersonalizationAdapter",
+      },
+    },
+    "PersonalizationV2": Object {
+      "adapter": Object {
+        "config": Object {
+          "storageType": "MEMORY",
+        },
+        "module": "sap.ushell.adapters.local.PersonalizationAdapter",
+      },
+    },
+    "UserInfo": Object {
+      "adapter": Object {
+        "module": "sap.ushell.adapters.local.UserInfoAdapter",
+      },
+    },
+  },
+  "ushell": Object {
+    "customPreload": Object {
+      "enabled": false,
+    },
+    "homeApp": Object {
+      "component": Object {
+        "name": "open.ux.preview.client.flp.homepage",
+        "url": "/preview/client/flp/homepage",
+      },
+    },
+    "spaces": Object {
+      "enabled": true,
+      "myHome": Object {
+        "enabled": true,
+      },
+    },
+  },
+}
+`;
