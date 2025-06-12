@@ -8,8 +8,7 @@ import officialBlockOutOfMaintenanceResponse from './testdata/official-latest-bl
 import { getLatestUI5Version, getUI5Versions } from '../src/ui5-version-info';
 import * as commands from '../src/commands';
 import { ToolsLogger } from '@sap-ux/logger';
-import { ui5VersionRequestInfo } from '../src/constants';
-import { ui5VersionsCache } from '../src/constants';
+import { ui5VersionRequestInfo, ui5VersionsCache } from '../src/constants';
 
 const snapshotVersionsHost = 'http://ui5.versions.snapshots';
 

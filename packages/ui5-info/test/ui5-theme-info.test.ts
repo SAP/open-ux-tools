@@ -1,7 +1,61 @@
 import { getDefaultUI5Theme, ui5ThemeIds, getUi5Themes, ui5Themes } from '../src/ui5-theme-info';
-import { defaultMinUi5Version, defaultVersion } from '../src/constants';
+import { defaultMinUi5Version, defaultVersion, ui5VersionsCache, ui5VersionRequestInfo } from '../src/constants';
 import * as themeInfo from '../src/ui5-theme-info';
 import type { UI5Theme } from '../src/types';
+import nock from 'nock';
+
+describe('UI5 Themes - Cache and API Behavior', () => {
+    const allExpectedThemes: UI5Theme[] = Object.values(ui5Themes);
+    const themesWithoutBelize = allExpectedThemes.filter((theme) => theme.id !== ui5ThemeIds.SAP_BELIZE);
+
+    beforeAll(() => {
+        // Mock the ui5VersionsCache to simulate cached versions
+        const originalConstants = jest.requireActual('../src/constants');
+        Object.assign(ui5VersionsCache, {
+            officialVersions: [],
+            ...originalConstants
+        });
+    });
+
+    afterEach(() => {
+        nock.cleanAll();
+        jest.restoreAllMocks();
+        jest.clearAllMocks();
+    });
+
+    it('should return the latest version from ui5VersionsCache and avoid API calls', async () => {
+        ui5VersionsCache.officialVersions = ['1.136.0', '1.108.0', '1.107.0'];
+
+        // Mock API request (should not be called due to cache)
+        const apiRequestMock = nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
+            .reply(200, {
+                latest: {
+                    version: '1.136.0'
+                }
+            });
+        const themes = await getUi5Themes();
+        expect(apiRequestMock.isDone()).toBe(false); // Ensure no API call was made
+        expect(themes).toEqual(themesWithoutBelize);
+    });
+
+    it('should return the latest version from API call and cache is empty', async () => {
+        ui5VersionsCache.officialVersions = [];
+
+        // Mock API request (should not be called due to cache)
+        const apiRequestMock = nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
+            .reply(200, {
+                latest: {
+                    version: '1.136.0'
+                }
+            });
+
+        const themes = await getUi5Themes();
+        expect(apiRequestMock.isDone()).toBe(true); // Ensure API call was made
+        expect(themes).toEqual(themesWithoutBelize);
+    });
+});
 
 describe('getUi5Themes', () => {
     const allExpectedThemes: UI5Theme[] = Object.values(ui5Themes);
