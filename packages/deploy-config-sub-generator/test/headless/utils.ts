@@ -14,12 +14,14 @@ import type { AppConfig } from '@sap-ux/fiori-app-sub-generator';
  * @param testNameOrJsonOrPath - can be the partial test file name or the actual json as string, or a file path to the config file
  * @param target - the deploy target i.e ABAP or CF
  * @param targetDir - override the standard output path
+ * @param projectName
  * @param opts - additional options
  */
 export async function runHeadlessGen(
     testNameOrJsonOrPath: string,
     target: DeployTarget,
     targetDir?: string,
+    projectName?: string,
     opts?: {}
 ): Promise<any> {
     let appConfig;
@@ -45,6 +47,12 @@ export async function runHeadlessGen(
         if (appConfig?.project?.targetFolder) {
             appConfig.project.targetFolder = targetDir;
         }
+        if (appConfig && projectName) {
+            appConfig.project = {
+                ...appConfig.project,
+                name: projectName
+            };
+        }
     }
     opts = Object.assign({}, opts, { appConfig });
 
@@ -65,8 +73,8 @@ export async function runHeadlessGen(
             )
         )
         .withGenerators([
-            [CFGen as any, generatorNamespace('gen:test', 'CF')],
-            [ABAPGen as any, generatorNamespace('gen:test', 'ABAP')]
+            [CFGen as any, generatorNamespace('gen:test', 'cf')],
+            [ABAPGen as any, generatorNamespace('gen:test', 'abap')]
         ])
         .run();
 }

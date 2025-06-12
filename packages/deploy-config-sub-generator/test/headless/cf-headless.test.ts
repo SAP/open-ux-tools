@@ -265,7 +265,7 @@ describe('Test headless generator', () => {
         const appConfigFilePathTest = join(OUTPUT_DIR, `${basename(testConfigFilePathBase, '.json')}-copy.json`);
         writeFileSync(appConfigFilePathTest, JSON.stringify(appConfigAbsTarget));
 
-        await runHeadlessGen(appConfigFilePathTest, DeployTarget.CF, targetDir, { deleteFile: true });
+        await runHeadlessGen(appConfigFilePathTest, DeployTarget.CF, targetDir, undefined, { deleteFile: true });
 
         const expectedOutputPath = join(__dirname, '/expected-output', INPUT_LCAP_CHANGES);
         expect(join(OUTPUT_DIR, INPUT_LCAP_CHANGES)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
@@ -289,7 +289,7 @@ describe('Test headless generator', () => {
         await runHeadlessGen(testAppName, DeployTarget.CF, OUTPUT_DIR);
 
         expect(composeWithSpy).toHaveBeenCalledWith(
-            expect.stringMatching(generatorNamespace('gen:test', 'CF')),
+            expect.stringMatching(generatorNamespace('gen:test', 'cf')),
             expect.objectContaining({ telemetryData: expect.objectContaining(expectedTelemetryProperties) })
         );
         rimraf.sync(join(OUTPUT_DIR, testAppName));

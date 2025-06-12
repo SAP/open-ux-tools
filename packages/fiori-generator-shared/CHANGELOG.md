@@ -1,5 +1,17 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.7
+
+### Patch Changes
+
+-   4e6c22e: adds support for external param abapCSN
+
+## 0.12.6
+
+### Patch Changes
+
+-   95a816d: update external params on app gen info type
+
 ## 0.12.5
 
 ### Patch Changes

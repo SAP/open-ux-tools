@@ -47,7 +47,7 @@ exports[`Readme file generation tests should generate README.md with the correct
 |**Generation Platform**<br>CLI|
 |**Template Used**<br>List Report Page V4|
 |**Service Type**<br>Local Cap|
-|**Service URL**<br>serviceUrl|
+|**Service URL**<br>http://mock.url/with/path/to/odata|
 |**Module Name**<br>appName|
 |**Application Title**<br>appTitle|
 |**Namespace**<br>appNamespace|
@@ -77,26 +77,32 @@ http://localhost:8080/someProjectName/webapp/index.html
 
 exports[`Readme file generation tests should generate README.md with the correct content including core and optional properties 2`] = `
 Object {
-  "externalParameters": Array [
-    Object {
-      "addEntry1": "Generator Specific Value A",
-      "addEntry2": "Generator Specific Value B",
-      "addEntryArr": Array [
-        Object {
-          "prop1": "value1",
-          "prop2": "value2",
-          "prop3": "value3",
-          "prop4": "value4",
-        },
-        Object {
-          "prop1": "valuea",
-          "prop2": "valueb",
-          "prop3": "valuec",
-          "prop4": "valued",
-        },
-      ],
-    },
-  ],
+  "externalParameters": Object {
+    "abapCSN": Array [
+      Object {
+        "csnName": "MOCKCSN55.abap.csn",
+        "packageUri": "abapfs:/BAS_DEST/MOCK_CSN_TEST1",
+        "serviceNameCsn": "MockService2",
+        "serviceUri": "/with/path/to/odata/",
+      },
+    ],
+    "addEntry1": "Generator Specific Value A",
+    "addEntry2": "Generator Specific Value B",
+    "addEntryArr": Array [
+      Object {
+        "prop1": "value1",
+        "prop2": "value2",
+        "prop3": "value3",
+        "prop4": "value4",
+      },
+      Object {
+        "prop1": "valuea",
+        "prop2": "valueb",
+        "prop3": "valuec",
+        "prop4": "valued",
+      },
+    ],
+  },
   "generationParameters": Object {
     "appDescription": "Fiori project description",
     "appName": "appName",
@@ -113,7 +119,7 @@ Object {
 
 http://localhost:8080/someProjectName/webapp/index.html",
     "serviceType": "Local Cap",
-    "serviceUrl": "serviceUrl",
+    "serviceUrl": "http://mock.url/with/path/to/odata",
     "template": "List Report Page V4",
     "ui5Theme": "a_ui5_theme",
     "ui5Version": "1.2.3",

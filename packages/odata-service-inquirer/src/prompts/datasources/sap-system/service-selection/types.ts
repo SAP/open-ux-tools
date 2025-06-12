@@ -7,4 +7,5 @@ export type ServiceAnswer = {
     serviceODataVersion: ODataVersion;
     toString: () => string;
     serviceType?: string;
+    serviceId?: string;
 };
