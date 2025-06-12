@@ -1,5 +1,34 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.4.17
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.38
+-   @sap-ux/fe-fpm-writer@0.35.3
+
+## 2.4.16
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.37
+-   @sap-ux/fe-fpm-writer@0.35.2
+
+## 2.4.15
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.36
+-   @sap-ux/fe-fpm-writer@0.35.1
+
+## 2.4.14
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/cap-config-writer@0.10.7
+
 ## 2.4.13
 
 ### Patch Changes
