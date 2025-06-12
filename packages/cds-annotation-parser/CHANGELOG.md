@@ -1,5 +1,11 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.2.12
+
+### Patch Changes
+
+-   be6febe: fix: parsing of single path in expression
+
 ## 0.2.11
 
 ### Patch Changes
