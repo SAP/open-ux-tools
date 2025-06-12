@@ -3,7 +3,11 @@
         "configurationName": "System and Application Selection",
         "configurationDescr": "Configure the system and select an application.",
         "projectAttributesName": "Project Attributes",
-        "projectAttributesDescr": "Configure the main project attributes."
+        "projectAttributesDescr": "Configure the main project attributes.",
+        "flpConfigName": "SAP Fiori Launchpad Configuration",
+        "flpConfigDescr": "Configure SAP Fiori launchpad settings for {{- projectName}}.",
+        "deployConfigName": "Deployment Configuration",
+        "deployConfigDescr": "Configure deployment settings."
     },
     "prompts": {
         "systemLabel": "System",
@@ -33,6 +37,8 @@
         "projectFolderPath": "Project Path",
         "ui5VersionLabel": "SAPUI5 Version",
         "ui5VersionTooltip": "Select the SAPUI5 version you want to use to preview your app variant.",
+        "addDeployConfig": "Add Deployment Configuration",
+        "addFlpConfig": "Add SAP Fiori Launchpad Configuration",
         "appInfoLabel": "Synchronous views are detected for this application. Therefore, the controller extensions are not supported. Controller extension functionality on these views will be disabled.",
         "notSupportedAdpOverAdpLabel": "You have selected 'Adaptation Project' as the base. The selected system has a SAPUI5 version lower than 1.90. Therefore, it does not support 'Adaptation Project' as а base for a new adaptation project. You are able to create such а project, but after deployment, it will not work until the SAPUI5 version of the system has been updated.",
         "isPartiallySupportedAdpOverAdpLabel": "You have selected 'Adaptation Project' as the base. The selected system has a SAPUI5 version lower than 1.96 and for your adaptation project based on an adaptation project to work after deployment, you need to apply SAP Note 756 SP0 on your system.",
