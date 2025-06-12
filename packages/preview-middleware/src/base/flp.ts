@@ -634,7 +634,6 @@ export class FlpSandbox {
 
     /**
      * Add routes for cdm.json required by FLP during bootstrapping via cdm.
-     *
      */
     private addCDMRoute(): void {
         this.router.get(
@@ -648,8 +647,6 @@ export class FlpSandbox {
 
     /**
      * Add internal routes for the Tasks of the enhanced home page.
-     *
-     * @private
      */
     private addInternalRoutesForEnhancedHomePage(): void {
         this.router.get(

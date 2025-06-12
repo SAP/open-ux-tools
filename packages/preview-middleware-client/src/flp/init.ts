@@ -256,7 +256,7 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
 
 /**
  * This function dynamically adds a "Generate Card" action to the SAP Fiori Launchpad for the given component instance.
- * 
+ *
  * @param componentInstance - The instance of the component for which the card generation action is being added.
  * @param container - The SAP Fiori Launchpad container instance used to access services.
  */
@@ -305,9 +305,12 @@ export async function init({
     enhancedHomePage?: boolean | null;
     enableCardGenerator?: boolean
 }): Promise<void> {
+    // Set CDM configuration before importing ushell container
+    // to ensure proper configuration pickup during bootstrap
     if (enhancedHomePage) {
         initCdm();
     }
+
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ??
         (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
@@ -364,9 +367,9 @@ export async function init({
                 addCardGenerationUserAction(componentInstance as unknown as Component, container);
             });
         });
-    } else {  
+    } else {
         Log.warning('Card generator is not supported for the current UI5 version.');
-    } 
+    }
 
     // reset app state if requested
     if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() !== 'true') {

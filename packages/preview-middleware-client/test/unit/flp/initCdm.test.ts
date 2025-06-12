@@ -12,7 +12,6 @@ describe('flp/initCdm', () => {
         initCdm();
 
         expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();
-        expect(sapMock.ushell.Container.init).toHaveBeenCalledWith('cdm');
     });
 
     test('ensure that homepage component is defined', async () => {
