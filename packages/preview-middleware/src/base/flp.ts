@@ -18,7 +18,8 @@ import {
     type Manifest,
     FileName,
     type ManifestNamespace,
-    createApplicationAccess
+    createApplicationAccess,
+    type Package
 } from '@sap-ux/project-access';
 import {
     AdpPreview,
@@ -661,14 +662,26 @@ export class FlpSandbox {
             '/open/ux/preview/api/tasks',
             async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
                 //todo: do not hard code task data
+                this.fs = this.fs ?? create(createStorage());
+                const packageJsonPath = join(this.templateConfig.basePath, FileName.Package);
+                const packageJson = this.fs.readJSON(packageJsonPath) as Package | undefined;
+                const value: Array<{ TaskTitle: string; TaskDescription: string }> = [];
+                const previewMiddlewareVersion = (
+                    this.fs.readJSON('../../node_modules/@sap-ux/preview-middleware/package.json') as
+                        | Package
+                        | undefined
+                )?.version;
+                if (
+                    previewMiddlewareVersion &&
+                    packageJson?.devDependencies?.['@sap-ux/preview-middleware'] !== previewMiddlewareVersion
+                ) {
+                    value.push({
+                        TaskTitle: 'Outdated devDependency found',
+                        TaskDescription: `'@sap-ux/preview-middleware' is not up to date.\nPlease update to version ${previewMiddlewareVersion}`
+                    });
+                }
                 const data = {
-                    '@odata.context': '/open/ux/preview/api/tasks/$metadata#Tasks',
-                    value: [
-                        {
-                            TaskTitle: 'Task Title',
-                            TaskDescription: 'Task Description'
-                        }
-                    ]
+                    value
                 };
                 this.logger.info(`Serving Task data of enhanced home page.`);
                 this.sendResponse(res, 'application/json', 200, JSON.stringify(data));
