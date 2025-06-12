@@ -127,10 +127,11 @@ server:
   - name: preview-middleware
     afterMiddleware: compression
     configuration:
-      rta:
-        layer: CUSTOMER_BASE
-        editors:
-          - path: /test/variant-editor.html
+      editors:
+        rta:
+          layer: CUSTOMER_BASE
+          endpoints:
+            - path: /test/variant-editor.html
 ```
 This mount path can be used with a run script that looks as follows.
 ```Json
