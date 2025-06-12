@@ -516,8 +516,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                             mainEntityName: 'TestMainEntity',
                             mainEntityParameterName: 'Set',
                             navigationEntity: {
-                                EntitySet: 'Entity',
-                                Name: 'Name'
+                                EntitySet: 'NavigationEntitySet',
+                                Name: 'NavigationName'
                             }
                         },
                         tableType: 'ResponsiveTable'
@@ -561,9 +561,9 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 target: 'TestMainEntityObjectPage'
             },
             {
-                pattern: 'TestMainEntity({key})/Name({key2}):?query:',
-                name: 'EntityObjectPage',
-                target: 'EntityObjectPage'
+                pattern: 'TestMainEntity({key})/NavigationName({key2}):?query:',
+                name: 'NavigationEntitySetObjectPage',
+                target: 'NavigationEntitySetObjectPage'
             }
         ]);
 
@@ -574,8 +574,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         const contextPathForObjectPage = routing.targets.TestMainEntityObjectPage.options.settings.contextPath;
         expect(contextPathForObjectPage).toBe('/TestMainEntity/Set');
 
-        const contextPathForEnityObjectPage = routing.targets.EntityObjectPage.options.settings.contextPath;
-        expect(contextPathForEnityObjectPage).toBe('/TestMainEntity/Set/Name');
+        const contextPathForEnityObjectPage = routing.targets.NavigationEntitySetObjectPage.options.settings.contextPath;
+        expect(contextPathForEnityObjectPage).toBe('/TestMainEntity/Set/NavigationName');
     });
 
     test('sapuxLayer is added to package json for edmx projects when provided', async () => {
