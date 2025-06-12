@@ -194,7 +194,7 @@ describe('adp', () => {
         });
     });
 
-    test('init - use AddXMLPlugin and ExtendControllerPlugin for UI5 version higher than 1.136', async () => {
+    test('init - use AddXMLPlugin and ExtendControllerPlugin for UI5 version higher than 1.136.1', async () => {
         const mockUI5Element = {
             getMetadata: jest.fn().mockReturnValue({
                 getName: jest.fn().mockReturnValue('XMLView')
@@ -205,11 +205,30 @@ describe('adp', () => {
 
         Element.registry.filter.mockReturnValue([mockUI5Element]);
 
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.137.0' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.2' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
         expect(addFragmentServiceMock).toHaveBeenCalledWith(rtaMock);
         expect(extendControllerServiceMock).toHaveBeenCalledWith(rtaMock);
+    });
+
+        test('init - use for UI5 version higher than 1.136.1', async () => {
+        const mockUI5Element = {
+            getMetadata: jest.fn().mockReturnValue({
+                getName: jest.fn().mockReturnValue('XMLView')
+            }),
+            oAsyncState: undefined,
+            getId: jest.fn().mockReturnValue('application-app-preview-component---fin.ar.lineitems.display.appView')
+        };
+
+        Element.registry.filter.mockReturnValue([mockUI5Element]);
+
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.0' });
+
+        await init(rtaMock as unknown as RuntimeAuthoring);
+
+        expect(addFragmentServiceMock).not.toHaveBeenCalledWith(rtaMock);
+        expect(extendControllerServiceMock).not.toHaveBeenCalledWith(rtaMock);
     });
 });
