@@ -242,7 +242,7 @@ describe('getQuestions', () => {
         );
     });
 
-    test('getQuestions, prompt: `ui5VersionChoice`', async () => {
+    test('getQuestions, prompt: `ui5VersionChoice`', () => {
         // No UI5 versions specified
         let questions = getQuestions([]);
         let ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
@@ -405,7 +405,7 @@ describe('getQuestions', () => {
         expect(validatorCbSpy).toHaveBeenCalledWith(true, promptNames.addFlpConfig);
     });
 
-    test('getQuestions, prompt: `enableVirtualEndpoints`', () => {
+    test('getQuestions, prompt: `enableVirtualEndpoints`', async () => {
         // Edmx project
         let questions = getQuestions([]);
         let enableVirtualEndpointsQuestion = questions.find(
