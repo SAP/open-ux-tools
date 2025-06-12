@@ -35,6 +35,7 @@ import { loadManifest } from './utils';
 import { getMtaPath, findCapProjectRoot, FileName, type Package } from '@sap-ux/project-access';
 import { EventName } from '../telemetryEvents';
 import { getCFQuestions, getCAPMTAQuestions } from './questions';
+import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ApiHubConfig, CFAppConfig, CAPConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Logger } from '@sap-ux/logger';
 import { CfDeployConfigOptions } from './types';
@@ -45,7 +46,6 @@ import {
     CfDeployConfigAnswers,
     RouterModuleType
 } from '@sap-ux/cf-deploy-config-inquirer';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Answers } from 'inquirer';
 
 /**
@@ -104,11 +104,13 @@ export default class extends DeploymentGenerator {
         await super.initializing();
         await initI18n();
 
+        DeploymentGenerator.logger?.debug(t('cfGen.debug.initTelemetry'));
+
+        // hack to suppress yeoman's overwrite prompt when files already exist
+        // required when running the deploy config generator in standalone mode
         if ((this.env as unknown as YeomanEnvironment).conflicter) {
             (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
         }
-
-        DeploymentGenerator.logger?.debug(t('cfGen.debug.initTelemetry'));
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
