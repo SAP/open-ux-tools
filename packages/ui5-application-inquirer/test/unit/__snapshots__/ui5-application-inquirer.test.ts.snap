@@ -47,6 +47,7 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
     "type": "input",
   },
   {
+    "additionalMessages": [Function],
     "default": [Function],
     "guiOptions": {
       "applyDefaultWhenDirty": true,

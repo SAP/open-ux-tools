@@ -10,6 +10,8 @@ import type { UI5Version } from '@sap-ux/ui5-info';
 import { defaultVersion, minUi5VersionSupportingCodeAssist, ui5ThemeIds } from '@sap-ux/ui5-info';
 import { ui5VersionsGrouped, type ListQuestion } from '@sap-ux/inquirer-common';
 import { inc } from 'semver';
+import * as os from 'os';
+import { t as i18nT } from '../../../src/i18n';
 
 jest.mock('@sap-ux/project-input-validator', () => {
     return {
@@ -607,5 +609,85 @@ describe('getQuestions', () => {
             expect((question?.when as Function)({ [promptNames.showAdvanced]: false })).toEqual(false);
             expect((question?.when as Function)({ [promptNames.showAdvanced]: true })).toEqual(true);
         });
+    });
+});
+describe('getQuestions, prompt: `targetFolder` additionalMessages', () => {
+    let originalPlatform: PropertyDescriptor | undefined;
+    let tOrig: typeof i18nT;
+    let questions: ReturnType<typeof getQuestions>;
+    let targetFolderPrompt: { additionalMessages: (target: string, answers: Record<string, unknown>) => unknown };
+
+    beforeAll(() => {
+        // Save the original platform property descriptor
+        originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
+    });
+
+    beforeEach(() => {
+        // Redefine process.platform to 'win32' for the test
+        Object.defineProperty(process, 'platform', {
+            value: 'win32',
+            configurable: true
+        });
+        // Save and override t
+        tOrig = i18nT;
+        (global as any).t = (key: string, vars?: { length?: number }) => {
+            if (key === 'ui5.windowsFolderPathTooLong') {
+                return `Path too long: ${vars?.length}`;
+            }
+            return key;
+        };
+        questions = getQuestions([]);
+        targetFolderPrompt = questions.find(
+            (q: { name: string }) => q.name === 'targetFolder'
+        ) as typeof targetFolderPrompt;
+    });
+
+    afterEach(() => {
+        // Restore the original platform property
+        if (originalPlatform) {
+            Object.defineProperty(process, 'platform', originalPlatform);
+        }
+        // Restore the original t function
+        (global as any).t = tOrig;
+    });
+
+    test('returns warning when combined path length >= 256', () => {
+        const target = 'C:'.padEnd(253, 'a');
+        const answers = { name: 'project1', namespace: 'abc' };
+        const msg = targetFolderPrompt.additionalMessages(target, answers);
+        expect(msg).toEqual({
+            message: i18nT('ui5.windowsFolderPathTooLong'),
+            severity: 1
+        });
+    });
+
+    test('returns undefined when path length < 256', () => {
+        const target = 'C:\\short\\path';
+        const answers = { name: 'app', namespace: 'ns' };
+        const msg = targetFolderPrompt.additionalMessages(target, answers);
+        expect(msg).toBeUndefined();
+    });
+
+    test('returns undefined on non-win32 platforms', () => {
+        Object.defineProperty(process, 'platform', {
+            value: 'darwin',
+            configurable: true
+        });
+        const target = '/Users/test/path';
+        const answers = { name: 'app', namespace: 'ns' };
+        // Re-fetch questions and prompt to reflect platform change
+        const questionsNonWin = getQuestions([]);
+        const targetFolderPromptNonWin = questionsNonWin.find(
+            (q: { name: string }) => q.name === 'targetFolder'
+        ) as typeof targetFolderPrompt;
+        const msg = targetFolderPromptNonWin.additionalMessages(target, answers);
+        expect(msg).toBeUndefined();
+    });
+
+    test('handles missing name and namespace gracefully', () => {
+        const target = 'C:\\short\\path';
+        const answers = {};
+        const msg = targetFolderPrompt.additionalMessages(target, answers);
+        expect(msg).toBeUndefined();
     });
 });

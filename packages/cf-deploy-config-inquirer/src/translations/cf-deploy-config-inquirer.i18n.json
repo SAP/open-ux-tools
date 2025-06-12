@@ -41,7 +41,8 @@
     },
     "warning": {
         "btpDestinationListWarning": "BTP destinations are only retrieved on BAS.",
-        "appFrontendServiceRouterChoice": "You need to have the Application Frontend service enabled for your subaccount."
+        "appFrontendServiceRouterChoice": "You need to have the Application Frontend service enabled for your subaccount.",
+        "windowsMtaIdPathTooLong": "The combined length {{length}} of the MTA ID and MTA path exceeds the default Windows paths length. This may cause issues with MTA project generation."
     },
     "info": {
         "addManagedAppRouter": "Add managed application router is enabled",
