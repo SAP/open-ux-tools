@@ -281,6 +281,7 @@ export class ErrorHandler {
         const errorToHelp: Record<ERROR_TYPE, number | undefined> = {
             [ERROR_TYPE.SERVICES_UNAVAILABLE]: isBAS ? HELP_NODES.BAS_CATALOG_SERVICES_REQUEST_FAILED : undefined,
             [ERROR_TYPE.CERT]: HELP_NODES.CERTIFICATE_ERROR,
+            [ERROR_TYPE.CERT_EXPIRED]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.CERT_SELF_SIGNED]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.INVALID_SSL_CERTIFICATE]: HELP_NODES.CERTIFICATE_ERROR,
@@ -295,7 +296,6 @@ export class ErrorHandler {
             [ERROR_TYPE.AUTH]: undefined,
             [ERROR_TYPE.AUTH_TIMEOUT]: undefined,
             [ERROR_TYPE.REDIRECT]: undefined,
-            [ERROR_TYPE.CERT_EXPIRED]: undefined,
             [ERROR_TYPE.UNKNOWN]: undefined,
             [ERROR_TYPE.INVALID_URL]: undefined,
             [ERROR_TYPE.CONNECTION]: undefined,
