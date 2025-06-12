@@ -24,10 +24,10 @@ jest.mock('../../../src/ui5/fetch', () => ({
 }));
 
 jest.mock('../../../src/ui5/format', () => ({
+    ...jest.requireActual('../../../src/ui5/format'),
     removeTimestampFromVersion: jest.fn(),
     addSnapshot: jest.fn(),
-    buildSystemVersionLabel: jest.fn(),
-    isFeatureSupportedVersion: jest.fn()
+    buildSystemVersionLabel: jest.fn()
 }));
 
 const mockPublicVersions = {
@@ -37,12 +37,11 @@ const mockPublicVersions = {
     '1.119.0': { version: '1.119.0' }
 } as unknown as UI5Version;
 
-const mockInternalVersions = ['1.120.0', '1.119.1', '1.119.0'];
+const mockInternalVersions = ['1.120.0', '1.119.1', '1.119.0', '1.64.0'];
 
 const fetchInternalVersionsMock = fetchInternalVersions as jest.Mock;
 const addSnapshotMock = addSnapshot as jest.Mock;
 const buildSystemVersionLabelMock = buildSystemVersionLabel as jest.Mock;
-const isFeatureSupportedVersionMock = isFeatureSupportedVersion as jest.Mock;
 const removeTimestampFromVersionMock = removeTimestampFromVersion as jest.Mock;
 
 describe('Version Info', () => {
@@ -51,7 +50,6 @@ describe('Version Info', () => {
         removeTimestampFromVersionMock.mockImplementation((v) => v);
         addSnapshotMock.mockReturnValue('');
         buildSystemVersionLabelMock.mockReturnValue('1.119.1 (system version)');
-        isFeatureSupportedVersionMock.mockReturnValue(true);
     });
 
     afterEach(() => {
@@ -199,15 +197,7 @@ describe('Version Info', () => {
             // Using the default, all versions are supported.
             const result = await getInternalVersions('1.120.0');
             expect(fetchInternalVersionsMock).toHaveBeenCalledWith('1.120.0');
-            expect(isFeatureSupportedVersionMock).toHaveBeenCalledTimes(mockInternalVersions.length);
-            expect(result).toEqual(mockInternalVersions);
-        });
-
-        it('should filter out unsupported internal versions', async () => {
-            // Simulate that '1.119.0' is unsupported.
-            isFeatureSupportedVersionMock.mockImplementation((v) => v !== '1.119.0');
-            const result = await getInternalVersions('1.120.0');
-            expect(result).toEqual(['1.120.0', '1.119.1']);
+            expect(result).toEqual(['1.120.0', '1.119.1', '1.119.0']);
         });
     });
 
