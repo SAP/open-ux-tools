@@ -653,7 +653,7 @@ export class FlpSandbox {
         this.router.get(
             '/open/ux/preview/api/tasks/count',
             async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
-                this.logger.info(`Serving count for Task data of enhanced home page.`);
+                this.logger.debug(`Serving count for Task data of enhanced home page.`);
                 //todo: do not hard code count
                 this.sendResponse(res, 'text/plain', 200, '1');
             }
@@ -683,7 +683,7 @@ export class FlpSandbox {
                 const data = {
                     value
                 };
-                this.logger.info(`Serving Task data of enhanced home page.`);
+                this.logger.debug(`Serving Task data of enhanced home page.`);
                 this.sendResponse(res, 'application/json', 200, JSON.stringify(data));
             }
         );
