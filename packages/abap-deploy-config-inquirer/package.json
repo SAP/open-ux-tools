@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-inquirer"
     },
-    "version": "1.4.11",
+    "version": "1.4.15",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -34,6 +34,7 @@
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/nodejs-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",

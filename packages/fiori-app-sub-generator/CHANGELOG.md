@@ -1,5 +1,66 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.4.18
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.38
+-   @sap-ux/fiori-elements-writer@2.4.17
+-   @sap-ux/odata-service-inquirer@2.4.18
+
+## 0.4.17
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+    -   @sap-ux/odata-service-inquirer@2.4.18
+
+## 0.4.16
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+    -   @sap-ux/odata-service-inquirer@2.4.17
+
+## 0.4.15
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.37
+-   @sap-ux/fiori-elements-writer@2.4.16
+-   @sap-ux/odata-service-inquirer@2.4.16
+
+## 0.4.14
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.36
+-   @sap-ux/fiori-elements-writer@2.4.15
+-   @sap-ux/odata-service-inquirer@2.4.16
+
+## 0.4.13
+
+### Patch Changes
+
+-   4e6c22e: adds support for external param abapCSN
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/odata-service-inquirer@2.4.16
+    -   @sap-ux/cap-config-writer@0.10.7
+    -   @sap-ux/fiori-elements-writer@2.4.14
+    -   @sap-ux/fiori-freestyle-writer@2.4.10
+    -   @sap-ux/ui5-application-inquirer@0.14.9
+
+## 0.4.12
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/odata-service-inquirer@2.4.15
+    -   @sap-ux/ui5-application-inquirer@0.14.8
+
 ## 0.4.11
 
 ### Patch Changes

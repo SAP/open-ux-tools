@@ -20,7 +20,8 @@ import {
     type CDSDocumentChange,
     createDeletePrimitiveValueChange,
     createDeleteAnnotationGroupChange,
-    createDeleteAnnotationGroupItemsChange
+    createDeleteAnnotationGroupItemsChange,
+    createInsertEmbeddedAnnotationChange
 } from '../../../src/cds/change';
 import { preprocessChanges } from '../../../src/cds/preprocessor';
 
@@ -49,7 +50,7 @@ async function runTest(
 ): Promise<void> {
     const [, document] = await getCDSDocument(PROJECTS.V4_CDS_START.root, text);
 
-    expect(preprocessChanges(document.ast, changes)).toStrictEqual(expectedChanges);
+    expect(preprocessChanges(document.ast, changes, document.tokens)).toStrictEqual(expectedChanges);
 }
 
 describe('cds preprocessor', () => {
@@ -353,18 +354,18 @@ describe('cds preprocessor', () => {
         });
 
         describe('delete -> replace', () => {
+            function createTestNode(qualifier: string) {
+                return createElementNode({
+                    name: Edm.Annotation,
+                    attributes: {
+                        [Edm.Term]: createAttributeNode(Edm.Term, 'UI.Hidden'),
+                        [Edm.Qualifier]: createAttributeNode(Edm.Qualifier, qualifier),
+                        [Edm.Bool]: createAttributeNode(Edm.Bool, 'true')
+                    },
+                    content: []
+                });
+            }
             test('target delete and inserts', async () => {
-                function createTestNode(qualifier: string) {
-                    return createElementNode({
-                        name: Edm.Annotation,
-                        attributes: {
-                            [Edm.Term]: createAttributeNode(Edm.Term, 'UI.Hidden'),
-                            [Edm.Qualifier]: createAttributeNode(Edm.Qualifier, qualifier),
-                            [Edm.Bool]: createAttributeNode(Edm.Bool, 'true')
-                        },
-                        content: []
-                    });
-                }
                 const fixture = `Service S { entity E { name: String; }; };
             annotate S.E with {
                 name @Common.Label : 'label';
@@ -383,6 +384,70 @@ describe('cds preprocessor', () => {
                         createInsertAnnotationChange('/targets/0', createTestNode('three')),
                         createConvertToCompoundAnnotationChange('/targets/0', false)
                     ]
+                );
+            });
+            test('delete annotation in annotation group', async () => {
+                const fixture = `Service S { entity E { name: String; }; };
+annotate S.E with {
+    name @UI : {
+        Label : 'label',
+        Label #two : 'label2',
+    };
+};`;
+                await runTest(
+                    fixture,
+                    [
+                        createInsertAnnotationChange('/targets/0/assignments/0/items/items', createTestNode('one')),
+                        createInsertAnnotationChange('/targets/0/assignments/0/items/items', createTestNode('two')),
+                        createInsertAnnotationChange('/targets/0/assignments/0/items/items', createTestNode('three')),
+                        createDeleteAnnotationChange('/targets/0/assignments/0/items/items/1')
+                    ],
+                    [
+                        createReplaceNodeChange('/targets/0/assignments/0/items/items/1', createTestNode('one')),
+                        createInsertAnnotationChange('/targets/0/assignments/0/items/items', createTestNode('two')),
+                        createInsertAnnotationChange('/targets/0/assignments/0/items/items', createTestNode('three'))
+                    ]
+                );
+            });
+            test('insert embedded annotation in group', async () => {
+                const fixture = `Service S { entity E { name: String; }; };
+annotate S.E with {
+    name @Common : {
+        Text : 'label',
+        TextArrangement : #TextLast,
+    };
+};`;
+                const result = createTestNode('one');
+                result.attributes[Edm.Term]!.value = 'Text.@UI.Hidden';
+                await runTest(
+                    fixture,
+                    [
+                        createInsertEmbeddedAnnotationChange(
+                            '/targets/0/assignments/0/items/items/0',
+                            createTestNode('one')
+                        ),
+                        createDeleteAnnotationChange('/targets/0/assignments/0/items/items/1')
+                    ],
+                    [createReplaceNodeChange('/targets/0/assignments/0/items/items/1', result)]
+                );
+            });
+            test('insert embedded annotation in compound annotation', async () => {
+                const fixture = `Service S { entity E { name: String; }; };
+annotate S.E with {
+    name @(
+        Common.Text : 'label',
+        Common.TextArrangement : #TextLast,
+    );
+};`;
+                const result = createTestNode('one');
+                result.attributes[Edm.Term]!.value = 'Common.Text.@UI.Hidden';
+                await runTest(
+                    fixture,
+                    [
+                        createInsertEmbeddedAnnotationChange('/targets/0/assignments/0', createTestNode('one')),
+                        createDeleteAnnotationChange('/targets/0/assignments/1')
+                    ],
+                    [createReplaceNodeChange('/targets/0/assignments/1', result)]
                 );
             });
         });
