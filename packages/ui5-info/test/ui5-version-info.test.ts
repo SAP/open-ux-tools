@@ -422,4 +422,15 @@ describe('getLatestUI5Version', () => {
         expect(apiRequestMock.isDone()).toBe(true);
         expect(latestVersion).toBe(undefined);
     });
+
+    it('Return version from ui5VersionsCache when useCache is true', async () => {
+        mockUi5VersionsCache(['1.109.3', '1.108.0', '1.107.0']);
+        const apiRequestMock = nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
+            .reply(200, { ui5Versions: [] });
+
+        const latestVersion = await getLatestUI5Version(true);
+        expect(apiRequestMock.isDone()).toBe(false); // No API call made
+        expect(latestVersion).toBe('1.109.3');
+    });
 });
