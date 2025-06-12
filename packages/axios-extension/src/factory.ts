@@ -24,6 +24,7 @@ import { TlsPatch } from './base/patchTls';
 import { getProxyForUrl } from 'proxy-from-env';
 import { type HttpsProxyAgentOptions, HttpsProxyAgent } from 'https-proxy-agent';
 import { HttpProxyAgent } from 'http-proxy-agent';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 type Class<T> = new (...args: any[]) => T;
 
@@ -73,7 +74,8 @@ function createInstance<T extends ServiceProvider>(
         rejectUnauthorized: !providerConfig.ignoreCertErrors
     };
     const localProxy = getProxyForUrl(config.baseURL);
-    if (localProxy) {
+    const isPatchProxyEnabled = isFeatureEnabled('sap.ux.enablePatchProxy');
+    if (isPatchProxyEnabled && localProxy) {
         // axios doesn't handle proxies correctly, instead use a custom agent with axios proxy disabled
         providerConfig.httpsAgent = new PatchedHttpsProxyAgent(
             localProxy,
