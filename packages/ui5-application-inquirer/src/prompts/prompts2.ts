@@ -29,7 +29,7 @@ export function getShowAdvancedPrompt(): UI5ApplicationQuestion {
  *
  * @returns The `ui5Theme` prompt
  */
-export async function getUI5ThemePrompt(): Promise<UI5ApplicationQuestion> {
+export function getUI5ThemePrompt(): UI5ApplicationQuestion{
     return {
         type: 'list',
         name: promptNames.ui5Theme,
