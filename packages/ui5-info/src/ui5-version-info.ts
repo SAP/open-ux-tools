@@ -126,7 +126,7 @@ async function parseUI5VersionsAndSupport(
             return route.path === '/' ? defaultVersion : route.target.version;
         });
     } else {
-        latestUI5Version = response['latest']?.version;
+        latestUI5Version = response['latest'].version;
         Object.values(response).forEach(({ version, support, patches = [] }) => {
             versionStrings.push(...patches);
             supportInfo.push({ version: version, support: support });

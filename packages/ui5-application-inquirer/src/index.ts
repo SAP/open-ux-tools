@@ -35,7 +35,7 @@ async function getPrompts(
     };
     const ui5Versions = await getUI5Versions(filterOptions);
 
-    return await getQuestions(ui5Versions, promptOptions, capCdsInfo, isYUI);
+    return getQuestions(ui5Versions, promptOptions, capCdsInfo, isYUI);
 }
 
 /**
