@@ -10,8 +10,11 @@ export type EntityAnswer = {
     entitySetName: string;
     entitySetType: string;
     /**
-     * The name of the navigation property (e.g., 'Set') linking a parameterised entity set to its target entity set.
-     * Populated only if the entity set has a `Common.ResultContext` annotation, indicating it is parameterised.
+     * Represents a parameter used along with the main entity to query data.
+     * When this parameter is set, the prompt for selecting navigation properties is skipped,
+     * as the entity set is parameterised and directly linked to its target entity set.
+     * This property is populated only if the metadata entity set includes a `Common.ResultContext` annotation,
+     * indicating that the entity set requires additional parameters for querying.
      */
     mainEntityParameterName?: string;
 };

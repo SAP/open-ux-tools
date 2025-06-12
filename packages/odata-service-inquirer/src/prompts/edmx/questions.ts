@@ -119,10 +119,17 @@ export function getEntitySelectionQuestions(
             searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
         default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
         validate: () => validateEntityChoices(entityChoices.choices, templateType, odataVersion, isCapService),
-        additionalMessages: () => {
+        additionalMessages: (answers: EntitySelectionAnswers) => {
             if (promptOptions?.defaultMainEntityName && entityChoices.defaultMainEntityIndex === undefined) {
                 return {
                     message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
+                    severity: Severity.warning
+                };
+            }
+            if (answers.mainEntity?.mainEntityParameterName) {
+                // display a warning if the main entity has a mainEntityParameterName
+                return {
+                    message: t('prompts.mainEntitySelection.mainEntityParameterFoundWarning'),
                     severity: Severity.warning
                 };
             }

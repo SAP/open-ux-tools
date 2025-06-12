@@ -404,6 +404,14 @@ describe('Test entity prompts', () => {
         const questions = getEntitySelectionQuestions(v4ParamertrisedEntitiesMetadata, 'lrop', false, {
             defaultMainEntityName: 'ZC_STOCKAGEING'
         });
+        const mainEntityPrompt = questions.find(
+            (question) => question.name === EntityPromptNames.mainEntity
+        ) as ListQuestion;
+        // Expect additional messages to be shown for parameterised main entity
+        expect(mainEntityPrompt.additionalMessages!()).toEqual({
+            message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
+            severity: Severity.warning
+        });
         const navEntityPrompt = questions.find(
             (question) => question.name === EntityPromptNames.navigationEntity
         ) as ListQuestion;
@@ -459,7 +467,6 @@ describe('Test entity prompts', () => {
             convertedMetadata: convert(parse(metadataV4WithMultipleParameterisedEntities)) as ConvertedMetadata,
             defaultMainEntityIndex: 0
         });
-
         const questionsForChangeableFields = getEntitySelectionQuestions(
             metadataV4WithMultipleParameterisedEntities,
             'lrop',
