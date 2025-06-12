@@ -7,8 +7,6 @@ import {
 } from '../src';
 import { type ListQuestion } from '@sap-ux/inquirer-common';
 import { getAppRouterQuestions } from '../src/prompts';
-import { Severity } from '@sap-devx/yeoman-ui-types';
-import * as os from 'os';
 
 let cfAbapServices: any[] = [];
 
@@ -379,103 +377,6 @@ describe('App Router Prompt Generation Tests', () => {
                 })
             ).toEqual(true);
             expect((addServiceProviderPrompt?.validate as Function)(null)).toBe(false);
-        });
-    });
-
-    describe('getMtaIdPrompt - additionalMessages', () => {
-        let originalPlatform: PropertyDescriptor | undefined;
-
-        beforeAll(() => {
-            // Save the original platform property descriptor
-            originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
-        });
-
-        beforeEach(() => {
-            // Redefine process.platform as needed for each test
-            Object.defineProperty(process, 'platform', {
-                value: 'win32',
-                configurable: true
-            });
-        });
-
-        afterEach(() => {
-            // Restore the original platform property
-            if (originalPlatform) {
-                Object.defineProperty(process, 'platform', originalPlatform);
-            }
-        });
-
-        it('should return undefined if not on win32', async () => {
-            Object.defineProperty(process, 'platform', {
-                value: 'darwin',
-                configurable: true
-            });
-            const promptOptions: CfAppRouterDeployConfigPromptOptions = {
-                [appRouterPromptNames.mtaPath]: 'C:\\test',
-                [appRouterPromptNames.mtaId]: true
-            };
-            const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
-            const mtaIdPrompt = questions.find((question) => question.name === appRouterPromptNames.mtaId);
-            const result = (mtaIdPrompt?.additionalMessages as Function)('my-mta-id', { mtaPath: 'C:\\test' });
-            expect(result).toBeUndefined();
-        });
-
-        it('should return undefined if path length is less than 256 on win32', async () => {
-            Object.defineProperty(process, 'platform', {
-                value: 'win32',
-                configurable: true
-            });
-            const promptOptions: CfAppRouterDeployConfigPromptOptions = {
-                [appRouterPromptNames.mtaPath]: 'C:\\shortpath',
-                [appRouterPromptNames.mtaId]: true
-            };
-            const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
-            const mtaIdPrompt = questions.find((question) => question.name === appRouterPromptNames.mtaId);
-            const result = (mtaIdPrompt?.additionalMessages as Function)('shortid', { mtaPath: 'C:\\shortpath' });
-            expect(result).toBeUndefined();
-        });
-
-        it('should return warning message if path length is >= 256 on win32', async () => {
-            Object.defineProperty(process, 'platform', {
-                value: 'win32',
-                configurable: true
-            });
-
-            const longPath = 'C:'.padEnd(252, 'a');
-            const promptOptions: CfAppRouterDeployConfigPromptOptions = {
-                [appRouterPromptNames.mtaPath]: longPath,
-                [appRouterPromptNames.mtaId]: true
-            };
-            const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
-            const mtaIdPrompt = questions.find((question) => question.name === appRouterPromptNames.mtaId);
-            const input = 'bbb';
-            const combinedLength = `${longPath}\\${input}`.length;
-            const result = (mtaIdPrompt?.additionalMessages as Function)(input, { mtaPath: longPath });
-            expect(result).toEqual({
-                message: t('warning.windowsMtaIdPathTooLong', { length: combinedLength }),
-                severity: Severity.warning
-            });
-        });
-
-        it('should use empty string for mtaPath if not provided', async () => {
-            Object.defineProperty(process, 'platform', {
-                value: 'win32',
-                configurable: true
-            });
-
-            const promptOptions: CfAppRouterDeployConfigPromptOptions = {
-                [appRouterPromptNames.mtaPath]: '',
-                [appRouterPromptNames.mtaId]: true
-            };
-            const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
-            const mtaIdPrompt = questions.find((question) => question.name === appRouterPromptNames.mtaId);
-            const input = 'a'.repeat(256);
-            const combinedLength = `\\${input}`.length;
-            const result = (mtaIdPrompt?.additionalMessages as Function)(input, {});
-            expect(result).toEqual({
-                message: t('warning.windowsMtaIdPathTooLong', { length: combinedLength }),
-                severity: Severity.warning
-            });
         });
     });
 });

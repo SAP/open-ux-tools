@@ -92,7 +92,14 @@ export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployC
     if (existsSync(join(previousAnswers.mtaPath, input.trim()))) {
         return t('errors.mtaIdAlreadyExistError', { mtaPath: previousAnswers.mtaPath });
     }
-
+    const mtaPath = previousAnswers.mtaPath || '';
+    // Windows path length validation
+    if (process.platform === 'win32') {
+        const combinedLength = `${mtaPath}\\${input}`.length;
+        if (combinedLength >= 256) {
+            return t('error.windowsMtaIdPathTooLong', { length: combinedLength });
+        }
+    }
     // All checks passed
     return true;
 }

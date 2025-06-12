@@ -119,6 +119,92 @@ describe('validateMtaId', () => {
     });
 });
 
+describe('validateMtaId long Windows path', () => {
+    let originalPlatform: PropertyDescriptor | undefined;
+
+    beforeAll(() => {
+        originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
+    });
+
+    beforeEach(() => {
+        Object.defineProperty(process, 'platform', {
+            value: 'win32',
+            configurable: true
+        });
+        mockedExistsSync.mockReturnValue(false);
+        mockedJoin.mockImplementation((...args) => args.join('/'));
+    });
+
+    afterEach(() => {
+        if (originalPlatform) {
+            Object.defineProperty(process, 'platform', originalPlatform);
+        }
+    });
+
+    it('should return true if not on win32 and input is valid', () => {
+        Object.defineProperty(process, 'platform', {
+            value: 'darwin',
+            configurable: true
+        });
+        const input = 'my-mta-id';
+        const previousAnswers: CfAppRouterDeployConfigAnswers = {
+            mtaPath: 'C\\test',
+            mtaId: input,
+            routerType: 'standard'
+        };
+        const result = validateMtaId(input, previousAnswers);
+        expect(result).toBe(true);
+    });
+
+    it('should return true if path length is less than 256 on win32 and input is valid', () => {
+        Object.defineProperty(process, 'platform', {
+            value: 'win32',
+            configurable: true
+        });
+        const input = 'shortid';
+        const previousAnswers: CfAppRouterDeployConfigAnswers = {
+            mtaPath: 'C\\shortpath',
+            mtaId: input,
+            routerType: 'standard'
+        };
+        const result = validateMtaId(input, previousAnswers);
+        expect(result).toBe(true);
+    });
+
+    it('should return error message if path length is >= 256 on win32', () => {
+        Object.defineProperty(process, 'platform', {
+            value: 'win32',
+            configurable: true
+        });
+        const input = 'bbb';
+        const longPath = 'C:'.padEnd(252, 'a');
+        const previousAnswers: CfAppRouterDeployConfigAnswers = {
+            mtaPath: longPath,
+            mtaId: input,
+            routerType: 'standard'
+        };
+        const combinedLength = `${longPath}\\${input}`.length;
+        const result = validateMtaId(input, previousAnswers);
+        expect(result).toBe(t('error.windowsMtaIdPathTooLong', { length: combinedLength }));
+    });
+
+    it('should use empty string for mtaPath if not provided and return error if length >= 256', () => {
+        Object.defineProperty(process, 'platform', {
+            value: 'win32',
+            configurable: true
+        });
+        const input = 'a'.repeat(256);
+        const previousAnswers: CfAppRouterDeployConfigAnswers = {
+            mtaPath: '',
+            mtaId: input,
+            routerType: 'standard'
+        };
+        const combinedLength = `\\${input}`.length;
+        const result = validateMtaId(input, previousAnswers);
+        expect(result).toBe(t('error.windowsMtaIdPathTooLong', { length: combinedLength }));
+    });
+});
+
 describe('validateAbapService', () => {
     let mockErrorHandler: ErrorHandler;
 

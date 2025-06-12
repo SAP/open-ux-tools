@@ -9,8 +9,7 @@ import { appRouterPromptNames, RouterModuleType } from '../types';
 import { validateMtaPath, validateMtaId, validateAbapService } from './validators';
 import type { Logger } from '@sap-ux/logger';
 import { getCFAbapInstanceChoices, ErrorHandler } from '@sap-ux/inquirer-common';
-import { Severity } from '@sap-devx/yeoman-ui-types';
-import type { ListChoiceOptions, Answers } from 'inquirer';
+import type { ListChoiceOptions } from 'inquirer';
 
 /**
  * Generates a prompt for selecting the MTA path.
@@ -46,21 +45,6 @@ function getMtaIdPrompt(): CfAppRouterDeployConfigQuestions {
         },
         name: appRouterPromptNames.mtaId,
         message: t('prompts.mtaIdMessage'),
-        additionalMessages: (input: string, previousAnswers: Answers) => {
-            const { mtaPath = '' } = previousAnswers as CfAppRouterDeployConfigAnswers;
-            let message;
-            // Windows path length validation
-            if (process.platform === 'win32') {
-                const combinedLength = `${mtaPath}\\${input}`.length;
-                if (combinedLength >= 256) {
-                    message = {
-                        message: t('warning.windowsMtaIdPathTooLong', { length: combinedLength }),
-                        severity: Severity.warning
-                    };
-                }
-            }
-            return message;
-        },
         validate: (input: string, previousAnswers: CfAppRouterDeployConfigAnswers): boolean | string =>
             validateMtaId(input, previousAnswers),
         filter: (input: string): string => input.replace(/\./g, '-')

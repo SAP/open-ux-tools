@@ -37,12 +37,12 @@
         "invalidMtaIdError": "The ID can only contain letters, numbers, dashes, periods and underscores (but no spaces).",
         "mtaIdAlreadyExistError": "A folder with same name already exist at {{- mtaPath}}",
         "abapEnvsUnavailable": "ABAP environments unavailable",
-        "errorScpAbapSourceDiscoveryCheckLog": "Check the Application Wizard console output view for details."
+        "errorScpAbapSourceDiscoveryCheckLog": "Check the Application Wizard console output view for details.",
+        "windowsMtaIdPathTooLong": "The combined length {{length}} of the MTA ID and MTA path exceeds the default Windows paths length. This may cause issues with MTA project generation."
     },
     "warning": {
         "btpDestinationListWarning": "BTP destinations are only retrieved on BAS.",
-        "appFrontendServiceRouterChoice": "You need to have the Application Frontend service enabled for your subaccount.",
-        "windowsMtaIdPathTooLong": "The combined length {{length}} of the MTA ID and MTA path exceeds the default Windows paths length. This may cause issues with MTA project generation."
+        "appFrontendServiceRouterChoice": "You need to have the Application Frontend service enabled for your subaccount."
     },
     "info": {
         "addManagedAppRouter": "Add managed application router is enabled",

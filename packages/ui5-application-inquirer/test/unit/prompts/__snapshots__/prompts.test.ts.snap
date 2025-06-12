@@ -47,7 +47,6 @@ exports[`getQuestions getQuestions, no options 1`] = `
     "type": "input",
   },
   {
-    "additionalMessages": [Function],
     "default": [Function],
     "guiOptions": {
       "applyDefaultWhenDirty": true,

@@ -131,26 +131,11 @@ export function getTargetFolderPrompt(targetDir: string, validateFioriAppFolder?
             breadcrumb: t('prompts.targetFolder.breadcrumb')
         },
         default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
-        additionalMessages: (target: string, answers: UI5ApplicationAnswers) => {
-            const { name = '' } = answers;
-            const { namespace = '' } = answers;
-            let message;
-            // Windows path length validation
-            if (process.platform === 'win32') {
-                const combinedLength = `${target}\\${namespace || ''}\\${name}`.length;
-                if (combinedLength >= 256) {
-                    message = {
-                        message: t('validators.windowsFolderPathTooLong', { length: combinedLength }),
-                        severity: Severity.warning
-                    };
-                }
-            }
-            return message;
-        },
         validate: async (target, answers: UI5ApplicationAnswers): Promise<boolean | string> => {
             const { name = '' } = answers;
+            const { namespace = '' } = answers;
             if (name.length > 2) {
-                return await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
+                return await validateFioriAppTargetFolder(target, name, validateFioriAppFolder, namespace);
             }
             return false;
         }
