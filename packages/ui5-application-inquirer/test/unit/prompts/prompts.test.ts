@@ -8,9 +8,9 @@ import { promptNames } from '../../../src/types';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { defaultVersion, minUi5VersionSupportingCodeAssist, ui5ThemeIds } from '@sap-ux/ui5-info';
-import { ui5VersionsGrouped, type ListQuestion } from '@sap-ux/inquirer-common';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { inc } from 'semver';
-import * as os from 'os';
+import path from 'path';
 import { t as i18nT } from '../../../src/i18n';
 
 jest.mock('@sap-ux/project-input-validator', () => {
@@ -654,9 +654,12 @@ describe('getQuestions, prompt: `targetFolder` additionalMessages', () => {
     test('returns warning when combined path length >= 256', () => {
         const target = 'C:'.padEnd(253, 'a');
         const answers = { name: 'project1', namespace: 'abc' };
+        // Use path.join to account for slashes between segments
+        const combinedPath = path.join(target, answers.namespace ?? '', answers.name ?? '');
+        const combinedLength = combinedPath.length;
         const msg = targetFolderPrompt.additionalMessages(target, answers);
         expect(msg).toEqual({
-            message: i18nT('ui5.windowsFolderPathTooLong'),
+            message: i18nT('validators.windowsFolderPathTooLong', { length: combinedLength }),
             severity: 1
         });
     });

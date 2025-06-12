@@ -140,7 +140,7 @@ export function getTargetFolderPrompt(targetDir: string, validateFioriAppFolder?
                 const combinedLength = `${target}\\${namespace || ''}\\${name}`.length;
                 if (combinedLength >= 256) {
                     message = {
-                        message: t('ui5.windowsFolderPathTooLong', { length: combinedLength }),
+                        message: t('validators.windowsFolderPathTooLong', { length: combinedLength }),
                         severity: Severity.warning
                     };
                 }
