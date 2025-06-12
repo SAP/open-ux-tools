@@ -136,7 +136,7 @@ class DefaultTransportConfig implements TransportConfig {
                 LoggerHelper.logger.warn(
                     t('warnings.certificateError', { url: backendTarget?.abapTarget?.url, error: err.message })
                 );
-                LoggerHelper.logger.info(`${ErrorHandler.getHelpForError(ERROR_TYPE.CERT)?.toString()}`);
+                LoggerHelper.logger.info(ErrorHandler.getHelpForError(ERROR_TYPE.CERT)?.toString());
             } else if (err.response?.status === 401) {
                 const auth: string = err.response.headers?.['www-authenticate'];
                 result.transportConfigNeedsCreds = !!auth?.toLowerCase()?.startsWith('basic');
