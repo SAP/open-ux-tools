@@ -574,7 +574,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         const contextPathForObjectPage = routing.targets.TestMainEntityObjectPage.options.settings.contextPath;
         expect(contextPathForObjectPage).toBe('/TestMainEntity/Set');
 
-        const contextPathForEnityObjectPage = routing.targets.NavigationEntitySetObjectPage.options.settings.contextPath;
+        const contextPathForEnityObjectPage =
+            routing.targets.NavigationEntitySetObjectPage.options.settings.contextPath;
         expect(contextPathForEnityObjectPage).toBe('/TestMainEntity/Set/NavigationName');
     });
 
