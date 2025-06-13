@@ -8,8 +8,9 @@ import snapshotResponse from './testdata/snapshot-response.json';
 import { ToolsLogger } from '@sap-ux/logger';
 import * as commands from '../src/commands';
 import * as ui5VersionConstants from '../src/constants';
-import { ui5VersionRequestInfo } from '../src/constants';
+import { ui5VersionRequestInfo, ui5VersionsCache } from '../src/constants';
 import { getLatestUI5Version, getUI5Versions } from '../src/ui5-version-info';
+import { defaultUi5Versions } from '../src/ui5-version-fallback';
 
 const snapshotVersionsHost = 'http://ui5.versions.snapshots';
 

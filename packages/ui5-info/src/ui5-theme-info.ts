@@ -87,7 +87,7 @@ function isSupported(theme: UI5Theme, cleanSemVer: SemVer): boolean {
  * - Themes that are deprecated for the given version are marked with "(deprecated)" in their label.
  *
  * @param [ui5Version] - The UI5 version to filter themes by. Defaults to `defaultVersion`.
- * @returns An array of UI5 themes supported for the specified version.
+ * @returns {Promise<UI5Theme[]>}  A promise that returns an array of UI5 themes supported for the specified version.
  */
 export async function getUi5Themes(ui5Version: string = defaultVersion): Promise<UI5Theme[]> {
     // Handle 'Latest' versions by using the latest supported UI5 version
