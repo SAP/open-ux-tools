@@ -1,6 +1,6 @@
 {
     "questions": {
-        "pathToMock": "Path to mocked service",
-        "overwrite": "Overwrite services"
+        "pathToMock": "Path to Mocked Service",
+        "overwrite": "Overwrite Services"
     }
 }
