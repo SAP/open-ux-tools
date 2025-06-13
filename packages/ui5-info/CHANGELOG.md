@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.11.1
+
+### Patch Changes
+
+-   7f35f6c: Updates option `useCache` default to true.
+
 ## 0.11.0
 
 ### Minor Changes
