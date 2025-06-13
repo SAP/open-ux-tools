@@ -1,13 +1,22 @@
 import type { Logger } from '@sap-ux/logger';
-import type { AbapTarget, DestinationAbapTarget, UrlAbapTarget } from '../types';
+import type {
+    AbapTarget,
+    DestinationAbapTarget,
+    UrlAbapTarget,
+    Credentials,
+    ConnectionTestResult,
+    SystemConnection
+} from '../types';
 import type {
     AbapCloudStandaloneOptions,
     AbapServiceProvider,
     AxiosError,
     AxiosRequestConfig,
     ProviderConfiguration,
-    ServiceInfo
+    ServiceInfo,
+    AtoSettings
 } from '@sap-ux/axios-extension';
+import { AtoService } from '@sap-ux/axios-extension';
 import {
     AbapCloudEnvironment,
     createForAbapOnCloud,
@@ -21,7 +30,7 @@ import {
     isBasicAuth,
     isServiceAuth
 } from './credentials';
-import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import { isAppStudio, listDestinations, type Destination as DestinationBtpUtils } from '@sap-ux/btp-utils';
 import { questions } from './prompts';
 import prompts from 'prompts';
 import { readFileSync } from 'fs';
@@ -219,4 +228,142 @@ export async function createAbapServiceProvider(
         throw new Error('Unable to handle the configuration in the current environment.');
     }
     return provider;
+}
+
+/**
+ * Handle the ATO response and return an error message if validation fails.
+ *
+ * @param atoSettings - ATO settings object
+ * @returns error message if validation fails, otherwise undefined
+ */
+function handleAtoResponse(atoSettings: AtoSettings): string | undefined {
+    let validationRequired = false;
+    //let atoSettingsClone = atoSettings;
+
+    // Ignore ATO settings if these parameters are not met
+    if (atoSettings.isConfigured && atoSettings.tenantType === 'CUSTOMER' && atoSettings.operationsType === 'C') {
+        if (!atoSettings.isExtensibilityDevelopmentSystem) {
+            return 'errors.s4SystemNoExtensible';
+        }
+        if (!atoSettings.developmentPrefix) {
+            return 'errors.incorrectAtoSettings';
+        }
+
+        validationRequired = true;
+    }
+
+    // We only validate if it's a customer system with Cloud operations type
+    if (!validationRequired) {
+        //atoSettingsClone = { operationsType: atoSettings.operationsType };
+    }
+    return undefined; // No errors
+}
+
+/**
+ * Check the connection to the ABAP system and return the authentication status and service provider.
+ *
+ * @param system - DestinationBtpUtils object containing the destination information
+ * @param logger - Logger instance for logging messages
+ * @param credentials - optional credentials to be used for authentication
+ * @returns SystemConnection object containing the authentication status and service provider
+ */
+export async function checkSystemConnection(
+    system: DestinationBtpUtils,
+    logger: Logger,
+    credentials?: Credentials
+): Promise<SystemConnection> {
+    const abapTarget: AbapTarget = buildAbapTarget(system);
+    const requestOptions = buildRequestOptions(credentials);
+    const result: ConnectionTestResult = {};
+    let serviceProvider = {} as AbapServiceProvider;
+    try {
+        serviceProvider = (await createAbapServiceProvider(
+            abapTarget,
+            requestOptions,
+            false,
+            logger
+        )) as unknown as AbapServiceProvider;
+        const atoService = await serviceProvider.getAdtService<AtoService>(AtoService);
+        const atoSettings = await atoService?.getAtoInfo();
+
+        if (atoSettings) {
+            result.error = handleAtoResponse(atoSettings);
+        }
+    } catch (err) {
+        if (err.response) {
+            if (err.response?.status === 401) {
+                const auth: string = err.response.headers?.['www-authenticate'];
+                result.needsCreds = !!auth?.toLowerCase()?.startsWith('basic');
+            } else {
+                // Everything from network errors to service being inactive is a warning.
+                // Will be logged and the user is allowed to move on
+                // Business errors will be returned by the ATO response above and these act as hard stops
+                result.warning = err.message;
+                result.needsCreds = false;
+            }
+        } else {
+            result.error = err.message;
+        }
+    }
+    return { authenticated: !result.error && !result.needsCreds, serviceProvider };
+}
+
+/**
+ * Build an ABAP target configuration based on the provided destination.
+ *
+ * @param destination - DestinationBtpUtils object containing the destination information
+ * @description Builds an ABAP target configuration based on the provided destination.
+ * If the environment is App Studio, it returns a DestinationAbapTarget with the destination name.
+ * Otherwise, it returns an empty UrlAbapTarget.
+ * @returns AbapTarget configuration
+ */
+export function buildAbapTarget(destination: DestinationBtpUtils): AbapTarget {
+    let abapTarget: AbapTarget = {} as UrlAbapTarget;
+    if (isAppStudio()) {
+        abapTarget = {
+            destination: destination.Name
+        } as DestinationAbapTarget;
+    }
+    return abapTarget;
+}
+
+// function buildAbapTargetFull(backendTarget?: AbapTarget): AbapTarget {
+//     let abapTarget: AbapTarget;
+//     if (isAppStudio()) {
+//         abapTarget = {
+//             destination: backendTarget?.destination
+//         } as DestinationAbapTarget;
+//     } else {
+//         abapTarget = {
+//             url: backendTarget?.url,
+//             client: backendTarget?.client,
+//             scp: backendTarget?.scp
+//         } as UrlAbapTarget;
+
+//         if (backendTarget?.authenticationType === AuthenticationType.ReentranceTicket) {
+//             abapTarget.authenticationType = AuthenticationType.ReentranceTicket;
+//         }
+//     }
+//     return abapTarget;
+// }
+
+/**
+ * Build request options for the ABAP service provider.
+ *
+ * @param credentials - optional credentials to be used for authentication
+ * @returns request options
+ */
+function buildRequestOptions(credentials?: Credentials): AxiosRequestConfig & Partial<ProviderConfiguration> {
+    let auth;
+    if (credentials?.username && credentials?.password) {
+        auth = {
+            username: credentials.username,
+            password: credentials.password
+        };
+    }
+
+    return {
+        ignoreCertErrors: false,
+        auth
+    };
 }
