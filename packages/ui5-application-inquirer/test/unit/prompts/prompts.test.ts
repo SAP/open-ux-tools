@@ -478,8 +478,8 @@ describe('getQuestions', () => {
             { id: ui5ThemeIds.SAP_FIORI_3_DARK, label: 'Theme One' },
             { id: ui5ThemeIds.SAP_HORIZON_DARK, label: 'Theme Two' }
         ];
-        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockReturnValue(mockThemes);
-        expect(((ui5ThemeQuestion as ListQuestion)?.choices as Function)({})).toMatchInlineSnapshot(`
+        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockResolvedValue(mockThemes);
+        expect(await ((ui5ThemeQuestion as ListQuestion)?.choices as Function)({})).toMatchInlineSnapshot(`
             [
               {
                 "name": "Theme One",

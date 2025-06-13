@@ -12,8 +12,8 @@ import { Separator } from './separator';
  * @param ui5Version - UI5 semantic version
  * @returns UI5 themes as list choice options
  */
-export function getUI5ThemesChoices(ui5Version?: string): ListChoiceOptions[] {
-    const themes = getUi5Themes(ui5Version);
+export async function getUI5ThemesChoices(ui5Version?: string): Promise<ListChoiceOptions[]> {
+    const themes = await getUi5Themes(ui5Version);
     return themes.map((theme: UI5Theme) => ({
         name: theme.label,
         value: theme.id

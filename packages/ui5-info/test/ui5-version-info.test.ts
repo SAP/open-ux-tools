@@ -8,8 +8,9 @@ import snapshotResponse from './testdata/snapshot-response.json';
 import { ToolsLogger } from '@sap-ux/logger';
 import * as commands from '../src/commands';
 import * as ui5VersionConstants from '../src/constants';
-import { ui5VersionRequestInfo } from '../src/constants';
+import { ui5VersionRequestInfo, ui5VersionsCache } from '../src/constants';
 import { getLatestUI5Version, getUI5Versions } from '../src/ui5-version-info';
+import { defaultUi5Versions } from '../src/ui5-version-fallback';
 
 const snapshotVersionsHost = 'http://ui5.versions.snapshots';
 
@@ -360,6 +361,33 @@ describe('getUI5Versions: npm listed versions', () => {
 });
 
 describe('getLatestUI5Version', () => {
+    /**
+     * Mocks ui5VersionsCache.officialVersions.
+     *
+     * @param {string[]} [officialVersions] - Versions to populate the cache. Defaults to an empty array if not provided.
+     */
+    const mockUi5VersionsCache = (officialVersions?: string[]) => {
+        ui5VersionsCache.officialVersions = officialVersions || [];
+    };
+
+    beforeAll(() => {
+        // Mock the ui5VersionsCache
+        const originalConstants = jest.requireActual('../src/constants');
+        return {
+            ...originalConstants,
+            ui5VersionsCache: {
+                officialVersions: [],
+                snapshotsVersions: [],
+                support: []
+            }
+        };
+    });
+
+    beforeEach(() => {
+        jest.resetModules();
+        resetUI5VersionsCache();
+    });
+
     afterEach(() => {
         jest.clearAllMocks();
         nock.cleanAll();
@@ -378,25 +406,57 @@ describe('getLatestUI5Version', () => {
         nock(ui5VersionRequestInfo.OfficialUrl)
             .get(`/${ui5VersionRequestInfo.VersionsFile}`)
             .reply(200, null as unknown as string);
-
-        const latestVersion = await getLatestUI5Version();
-        expect(latestVersion).toBeUndefined();
+        const latestVersion = await getLatestUI5Version(false);
+        expect(latestVersion).toBe(defaultUi5Versions[0]); // Default version should be returned
     });
 
     it('Return undefined as latest UI5 version is not returned', async () => {
         nock(ui5VersionRequestInfo.OfficialUrl)
             .get(`/${ui5VersionRequestInfo.VersionsFile}`)
-            .reply(200, { ui5Versions: { latest: {} } });
+            .reply(200, { latest: {} });
 
-        const latestVersion = await getLatestUI5Version();
-        expect(latestVersion).toBeUndefined();
+        const latestVersion = await getLatestUI5Version(false);
+        expect(latestVersion).toBe(undefined);
     });
 
     it('Return undefined as network call throws exception', async () => {
         jest.spyOn(axios, 'get').mockImplementationOnce(() => {
             throw new Error('Network error');
         });
-        const latestVersion = await getLatestUI5Version();
-        expect(latestVersion).toBeUndefined();
+        const latestVersion = await getLatestUI5Version(false);
+        expect(latestVersion).toBe(defaultUi5Versions[0]); // Default version should be returned
+    });
+
+    it('Fetch from API when useCache is false and cache is empty', async () => {
+        mockUi5VersionsCache([]);
+        const apiRequestMock = nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
+            .reply(200, officialResponse);
+
+        const latestVersion = await getLatestUI5Version(false);
+        expect(latestVersion).toBe(officialResponse.latest.version);
+        expect(apiRequestMock.isDone()).toBe(true);
+    });
+
+    it('Return undefined when cache is empty and API returns no versions', async () => {
+        mockUi5VersionsCache([]);
+        const apiRequestMock = nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
+            .reply(200, { latest: {} });
+
+        const latestVersion = await getLatestUI5Version(false);
+        expect(apiRequestMock.isDone()).toBe(true);
+        expect(latestVersion).toBe(undefined);
+    });
+
+    it('Return version from ui5VersionsCache when useCache is true', async () => {
+        mockUi5VersionsCache(['1.109.3', '1.108.0', '1.107.0']);
+        const apiRequestMock = nock(ui5VersionRequestInfo.OfficialUrl)
+            .get(`/${ui5VersionRequestInfo.VersionsFile}`)
+            .reply(200, { latest: {} });
+
+        const latestVersion = await getLatestUI5Version(true);
+        expect(apiRequestMock.isDone()).toBe(false); // No API call made
+        expect(latestVersion).toBe('1.109.3');
     });
 });
