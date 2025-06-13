@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.20.31
+
+### Patch Changes
+
+-   a9e93ff: fix: disable cards generator for CAP projects
+
 ## 0.20.30
 
 ### Patch Changes
