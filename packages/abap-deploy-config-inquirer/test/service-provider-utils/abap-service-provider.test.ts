@@ -5,6 +5,8 @@ import { PromptState } from '../../src/prompts/prompt-state';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import LoggerHelper from '../../src/logger-helper';
 import { AuthenticationType } from '@sap-ux/store';
+import { t } from '../../src/i18n';
+import exp from 'constants';
 
 jest.mock('@sap-ux/system-access', () => ({
     ...jest.requireActual('@sap-ux/system-access'),
@@ -19,6 +21,13 @@ const mockCreateAbapServiceProvider = createAbapServiceProvider as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('getOrCreateServiceProvider', () => {
+    beforeAll(() => {
+        // Since having this environment variable set to '0' affects behaviour
+        // we need to delete it before running the tests. There are specific tests for
+        // testing the behaviour with this variable set to '0'
+        delete process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+    });
+
     afterEach(() => {
         AbapServiceProviderManager.deleteExistingServiceProvider();
     });
@@ -120,5 +129,21 @@ describe('getOrCreateServiceProvider', () => {
         jest.spyOn(abapServiceProvider, 'isAbapCloud').mockResolvedValueOnce(true);
         await AbapServiceProviderManager.getOrCreateServiceProvider(undefined, credentials);
         expect(AbapServiceProviderManager.getIsDefaultProviderAbapCloud()).toBe(true);
+    });
+
+    it('should apply node setting `NODE_TLS_REJECT_UNAUTHORIZED=0` if set', async () => {
+        // Set the environment variable to simulate the scenario
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+        const logWarnSpy = jest.spyOn(LoggerHelper.logger, 'warn');
+        const createNewServiceProviderSpy = jest.spyOn(AbapServiceProviderManager as any, 'createNewServiceProvider');
+        const buildRequestOptionsSpy = jest.spyOn(AbapServiceProviderManager as any, 'buildRequestOptions');
+        await AbapServiceProviderManager.getOrCreateServiceProvider(undefined);
+        expect(logWarnSpy).toHaveBeenCalledWith(t('warnings.allowingUnauthorizedCertsNode'));
+        expect(createNewServiceProviderSpy).toHaveBeenCalledWith(
+            undefined,
+            undefined,
+            true // ignoreCertErrors should be true
+        );
+        expect(buildRequestOptionsSpy).toHaveBeenCalledWith(undefined, true);
     });
 });

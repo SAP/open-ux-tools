@@ -1,13 +1,15 @@
 import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
 import { type Destination, WebIDEUsage } from '@sap-ux/btp-utils';
-import { type InputQuestion } from '@sap-ux/inquirer-common';
+import type { InputQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 import { type BackendSystem } from '@sap-ux/store';
-import { type PasswordQuestion } from 'inquirer';
-import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
+import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { getCredentialsPrompts } from '../../../../../src/prompts/datasources/sap-system/credentials/questions';
 import { promptNames } from '../../../../../src/types';
+import type { NewSystemAnswers } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
+import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import { PromptState } from '../../../../../src/utils';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 const serviceProviderMock = {} as Partial<ServiceProvider>;
 let odataServiceMock: Partial<ODataService> | undefined;
@@ -24,7 +26,8 @@ const connectionValidatorMock = {
     destinationUrl: destinationUrlMock,
     serviceProvider: serviceProviderMock,
     systemAuthType: 'basic',
-    odataService: odataServiceMock
+    odataService: odataServiceMock,
+    ignoreCertError: false
 };
 
 jest.mock('../../../../../src/prompts/connectionValidator', () => {
@@ -234,5 +237,36 @@ describe('Test credentials prompts', () => {
             isSystem: false
         });
         expect(PromptState.odataService.connectedSystem?.destination).toEqual(partialUrlDest);
+    });
+
+    test('should show additional message indicating cert errors are ignored', async () => {
+        const connectionValidator = new ConnectionValidator();
+        connectionValidatorMock.validity = {
+            authenticated: false,
+            authRequired: true,
+            reachable: true
+        };
+        connectionValidatorMock.systemAuthType = 'basic';
+        connectionValidatorMock.validatedUrl = 'http://abap01:1234';
+
+        const credentialsPrompts = getCredentialsPrompts(connectionValidator, promptNamespace);
+        const passwordPrompt = credentialsPrompts.find(
+            (question) => question.name === systemPasswordPromptName
+        ) as PasswordQuestion;
+
+        expect(passwordPrompt.additionalMessages?.('123')).toBeUndefined();
+
+        connectionValidatorMock.ignoreCertError = true;
+        expect(passwordPrompt.additionalMessages?.('123')).toEqual({
+            message: t('warnings.certErrorIgnoredByNodeSetting'),
+            severity: Severity.warning
+        });
+
+        // Should not show the message if the password prompt is part of the new Abap system flow as it will be shown under the new system URL prompt
+        expect(
+            passwordPrompt.additionalMessages?.('123', {
+                [newSystemPromptNames.newSystemType]: 'abapOnPrem'
+            } as NewSystemAnswers)
+        ).toBeUndefined();
     });
 });

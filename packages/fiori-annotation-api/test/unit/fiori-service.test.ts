@@ -95,6 +95,7 @@ interface EditTestCase<T extends Record<string, string>> {
     fsEditor?: Editor;
     log?: boolean;
     fioriServiceOptions?: Partial<FioriAnnotationServiceOptions>;
+    throws?: boolean;
 }
 
 interface CustomTest<T extends Record<string, string>> {
@@ -114,6 +115,20 @@ const createEditTestCase = (<T extends Record<string, string>>(): CustomTest<T> 
                 test(
                     name,
                     async () => {
+                        if (testCase.throws) {
+                            await expect(() =>
+                                testEdit(
+                                    root,
+                                    testCase.getInitialChanges ? testCase.getInitialChanges(files) : [],
+                                    testCase.getChanges(files),
+                                    serviceName,
+                                    testCase.fsEditor,
+                                    testCase.log,
+                                    testCase.fioriServiceOptions
+                                )
+                            ).rejects.toThrowErrorMatchingSnapshot();
+                            return;
+                        }
                         const text = await testEdit(
                             root,
                             testCase.getInitialChanges ? testCase.getInitialChanges(files) : [],
@@ -1465,6 +1480,30 @@ rating : Rating;
                         }
                     }
                 ]
+            });
+            createEditTestCase({
+                name: 'no existing annotation',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: () => [],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertEmbeddedAnnotation,
+                        reference: {
+                            target: targetName,
+                            term: `${UI}.LineItem`
+                        },
+                        uri: files.annotations,
+                        pointer: '',
+                        content: {
+                            type: 'embedded-annotation',
+                            value: {
+                                term: 'UI.Hidden',
+                                value: { type: 'Bool', Bool: true }
+                            }
+                        }
+                    }
+                ],
+                throws: true
             });
 
             createEditTestCase({
@@ -3214,6 +3253,151 @@ rating : Rating;
                     }
                 ]
             });
+
+            createEditTestCase({
+                name: 'replace paths with multiple segments',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertAnnotation,
+                        uri: files.annotations,
+                        content: {
+                            target: TARGET_INCIDENTS,
+                            type: 'annotation',
+                            value: {
+                                term: LINE_ITEM,
+                                collection: [
+                                    {
+                                        type: `${UI}.DataFieldForAnnotation`,
+                                        propertyValues: [
+                                            {
+                                                name: 'Target',
+                                                value: {
+                                                    type: 'AnnotationPath',
+                                                    AnnotationPath: `incidentFlow/@${UI}.Chart`
+                                                }
+                                            }
+                                        ],
+                                        annotations: [
+                                            {
+                                                term: `${UI}.Hidden`,
+                                                value: {
+                                                    type: 'Path',
+                                                    Path: 'priority'
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        type: `${UI}.DataFieldForIntentBasedNavigation`,
+                                        propertyValues: [
+                                            {
+                                                name: 'Mapping',
+                                                value: {
+                                                    type: 'Collection',
+                                                    Collection: [
+                                                        {
+                                                            type: `${COMMON}.SemanticObjectMappingType`,
+                                                            propertyValues: [
+                                                                {
+                                                                    name: 'LocalProperty',
+                                                                    value: {
+                                                                        type: 'PropertyPath',
+                                                                        PropertyPath: 'incidentFlow/processStep'
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        type: `${UI}.DataFieldWithNavigationPath`,
+                                        propertyValues: [
+                                            {
+                                                name: 'Target',
+                                                value: {
+                                                    type: 'NavigationPropertyPath',
+                                                    NavigationPropertyPath: `incidentFlow/incident`
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: `/collection/0/propertyValues/0/value`,
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'AnnotationPath',
+                                AnnotationPath: 'incidentFlow/@com.sap.vocabularies.UI.v1.LineItem'
+                            }
+                        }
+                    },
+                    // only certain paths are read as `PropertyPath` based on vocabulary definitions as CDS does not distinguish between different path types
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: `/collection/1/propertyValues/0/value/Collection/0/propertyValues/0/value`,
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'PropertyPath',
+                                PropertyPath: 'incidentFlow/createdBy'
+                            }
+                        }
+                    },
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: `/collection/2/propertyValues/0/value`,
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'NavigationPropertyPath',
+                                NavigationPropertyPath: 'incidentFlow/createdBy'
+                            }
+                        }
+                    },
+                    {
+                        kind: ChangeType.Update,
+                        reference: {
+                            target: TARGET_INCIDENTS,
+                            term: LINE_ITEM
+                        },
+                        uri: files.annotations,
+                        pointer: `/collection/0/annotations/0/value`,
+                        content: {
+                            type: 'expression',
+                            value: {
+                                type: 'Path',
+                                Path: 'incidentFlow/incident/createdBy'
+                            }
+                        }
+                    }
+                ]
+            });
         });
         describe('expression', () => {
             createEditTestCase({
@@ -3544,6 +3728,45 @@ rating : Rating;
                                     }
                                 ]
                             }
+                        }
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+        test('embedded annotation with update', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const mdPath = pathFromUri(project.files.annotations);
+            const mdContent = fsEditor.read(mdPath);
+            const mdTestData = `${mdContent}
+            annotate service.Individual with {
+                createdAt @(
+                    Common.Text            : createdBy,
+                    Common.Text.@UI.TextArrangement : null,
+                )
+            };`;
+            fsEditor.write(mdPath, mdTestData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Update,
+                        uri: project.files.annotations,
+                        pointer: '/annotations/0/value',
+                        reference: {
+                            target: 'IncidentService.Individual/createdAt',
+                            term: `${COMMON}.Text`
+                        },
+                        content: {
+                            type: 'expression',
+                            value: { type: 'EnumMember', EnumMember: `${UI}.TextArrangementType/TextFirst` }
                         }
                     }
                 ],

@@ -1,5 +1,26 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.5
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/mockserver-config-writer@0.9.2
+    -   @sap-ux/project-access@1.30.2
+
+## 0.27.4
+
+### Patch Changes
+
+-   f9e4913: Allow to only update annotation and metada files without YAML file changes.
+
+## 0.27.3
+
+### Patch Changes
+
+-   6e2ef66: Do not stop service from being added in case if existing services are without annotation dataSources.
+
 ## 0.27.2
 
 ### Patch Changes

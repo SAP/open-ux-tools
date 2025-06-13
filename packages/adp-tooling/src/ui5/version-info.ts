@@ -113,7 +113,7 @@ export function checkSystemVersionPattern(version: string | undefined): string |
  */
 export async function getInternalVersions(latestVersion: string): Promise<string[]> {
     const releasedVersions = await fetchInternalVersions(latestVersion);
-    return releasedVersions.filter((version) => isFeatureSupportedVersion(version, '1.71.0'));
+    return releasedVersions.filter((version) => isFeatureSupportedVersion('1.71.0', version));
 }
 
 /**

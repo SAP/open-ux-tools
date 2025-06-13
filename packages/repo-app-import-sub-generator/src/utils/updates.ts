@@ -1,6 +1,7 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { FileName, DirName } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 import { t } from './i18n';
 import RepoAppDownloadLogger from './logger';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
@@ -75,7 +76,20 @@ export async function replaceWebappFiles(projectPath: string, extractedPath: str
 
             // Check if the extracted file exists before replacing
             if (fs.exists(extractedFilePath)) {
-                fs.copy(extractedFilePath, webappFilePath);
+                if (extractedFile === FileName.Manifest) {
+                    // Use datasource and model from the generated manifest
+                    const extractedManifestJSON: Manifest = fs.readJSON(extractedFilePath) as unknown as Manifest;
+                    const generatedManifestJSON: Manifest = fs.readJSON(webappFilePath) as unknown as Manifest;
+                    if (generatedManifestJSON?.['sap.app']?.dataSources && extractedManifestJSON?.['sap.app']) {
+                        extractedManifestJSON['sap.app'].dataSources = generatedManifestJSON['sap.app'].dataSources;
+                    }
+                    if (generatedManifestJSON?.['sap.ui5']?.models && extractedManifestJSON?.['sap.ui5']) {
+                        extractedManifestJSON['sap.ui5'].models = generatedManifestJSON['sap.ui5']?.models;
+                    }
+                    fs.writeJSON(webappFilePath, extractedManifestJSON, undefined, 2);
+                } else {
+                    fs.copy(extractedFilePath, webappFilePath);
+                }
             } else {
                 RepoAppDownloadLogger.logger?.warn(t('warn.extractedFileNotFound', { extractedFilePath }));
             }

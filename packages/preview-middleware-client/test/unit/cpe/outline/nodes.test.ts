@@ -135,7 +135,8 @@ describe('outline nodes', () => {
             ).toStrictEqual([
                 {
                     children: [],
-                    controlId: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
+                    controlId:
+                        'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter--ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
                     controlType: 'sap.ui.extensionpoint',
                     editable: false,
                     hasDefaultContent: false,
@@ -191,28 +192,29 @@ describe('outline nodes', () => {
 
             expect(await transformNodes(nodes, 'ADAPTATION_PROJECT')).toStrictEqual([
                 {
-                    'controlId': 'application-app-preview-component---View1--hbox',
-                    'controlType': 'sap.m.HBox',
-                    'name': 'HBox',
-                    'editable': false,
-                    'visible': true,
-                    'children': [
+                    controlId: 'application-app-preview-component---View1--hbox',
+                    controlType: 'sap.m.HBox',
+                    name: 'HBox',
+                    editable: false,
+                    visible: true,
+                    children: [
                         {
-                            'controlId': 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
-                            'controlType': 'sap.ui.extensionpoint',
-                            'name': 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
-                            'editable': false,
-                            'visible': true,
-                            'hasDefaultContent': true,
-                            'children': [
+                            controlId:
+                                'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter--ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
+                            controlType: 'sap.ui.extensionpoint',
+                            name: 'ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
+                            editable: false,
+                            visible: true,
+                            hasDefaultContent: true,
+                            children: [
                                 {
-                                    'controlId': 'id1',
-                                    'controlType': 'some-name',
-                                    'name': 'id1',
-                                    'visible': true,
-                                    'editable': false,
-                                    'children': [],
-                                    'hasDefaultContent': false
+                                    controlId: 'id1',
+                                    controlType: 'some-name',
+                                    name: 'id1',
+                                    visible: true,
+                                    editable: false,
+                                    children: [],
+                                    hasDefaultContent: false
                                 }
                             ]
                         }
@@ -239,16 +241,17 @@ describe('outline nodes', () => {
                 {
                     children: [
                         {
-                            'children': [],
-                            'controlId': 'id1',
-                            'controlType': 'some-name',
-                            'editable': false,
-                            'hasDefaultContent': false,
-                            'name': 'id1',
-                            'visible': true
+                            children: [],
+                            controlId: 'id1',
+                            controlType: 'some-name',
+                            editable: false,
+                            hasDefaultContent: false,
+                            name: 'id1',
+                            visible: true
                         }
                     ],
-                    controlId: 'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter',
+                    controlId:
+                        'sap.ui.demoapps.rta.fiorielements::SEPMRA_C_PD_Product--listReportFilter--ResponsiveTableColumnsExtension|SEPMRA_C_PD_Product',
                     controlType: 'sap.ui.extensionpoint',
                     editable: false,
                     hasDefaultContent: false,
