@@ -30,6 +30,7 @@ import {
     Rimraf,
     RimrafVersion,
     UI5DeployBuildScript,
+    UI5DeployBuildScriptForCap,
     undeployMTAScript,
     WelcomeFile
 } from '../constants';
@@ -430,7 +431,12 @@ async function updateHTML5AppPackage(cfConfig: CFConfig, fs: Editor): Promise<vo
     await updatePackageScript(cfConfig.appPath, 'build:cf', UI5DeployBuildScript, fs);
     await addCommonPackageDependencies(cfConfig.appPath, fs);
 
-    // Scripts should only be added if mta and UI5 app are at the same level
+    // Add support for CDS compatible applications which rely on `build` as the default script
+    if (cfConfig.isCap) {
+        await updatePackageScript(cfConfig.appPath, 'build', UI5DeployBuildScriptForCap, fs);
+    }
+
+    // Scripts should only be added if mta and UI5 app is at the same level
     if (cfConfig.mtaPath && !cfConfig.isMtaRoot) {
         await updatePackageScript(cfConfig.appPath, 'build:mta', MTABuildScript, fs);
         await updatePackageScript(cfConfig.appPath, 'deploy', appDeployMTAScript(deployArgs), fs);
