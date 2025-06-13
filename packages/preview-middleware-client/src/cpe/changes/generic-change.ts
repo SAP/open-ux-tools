@@ -129,7 +129,7 @@ export type GenericChange =
     | ConfigChange
     | V2ConfigChange;
 
-export type changeType = GenericChange['changeType'];
+export type ChangeType = GenericChange['changeType'];
 
 /**
  * Returns a shortened version of the given configuration path segments by removing excess segments,
