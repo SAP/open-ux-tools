@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.26.6
+
+### Patch Changes
+
+-   12faf8b: feat(ui-components) add icon pdf and word
+
 ## 1.26.5
 
 ### Patch Changes

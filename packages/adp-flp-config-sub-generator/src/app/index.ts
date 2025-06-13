@@ -314,7 +314,7 @@ export default class AdpFlpConfigGenerator extends Generator {
      * @returns {ValidationLink | string | undefined} The validation link or error message.
      */
     private _getErrorHandlerMessage(error: Error | AxiosError): ValidationLink | string | undefined {
-        const errorHandler = new ErrorHandler();
+        const errorHandler = new ErrorHandler(undefined, undefined, '@sap-ux/adp-flp-config');
         return errorHandler.getValidationErrorHelp(error);
     }
 
