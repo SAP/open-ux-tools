@@ -213,7 +213,7 @@ describe('adp', () => {
         expect(extendControllerServiceMock).toHaveBeenCalledWith(rtaMock);
     });
 
-        test('init - use for UI5 version higher than 1.136.1', async () => {
+    test('init - use for UI5 version higher than 1.136.1', async () => {
         const mockUI5Element = {
             getMetadata: jest.fn().mockReturnValue({
                 getName: jest.fn().mockReturnValue('XMLView')
