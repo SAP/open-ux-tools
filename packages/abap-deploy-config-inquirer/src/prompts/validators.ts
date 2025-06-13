@@ -601,9 +601,11 @@ export async function validateTransportChoiceInput({
         } catch (error) {
             if (ErrorHandler.isCertError(error)) {
                 return (
-                    new ErrorHandler(undefined, undefined, '@sap-ux/abap-deploy-config-inquirer').getValidationErrorHelp(
-                        error
-                    ) ?? true
+                    new ErrorHandler(
+                        undefined,
+                        undefined,
+                        '@sap-ux/abap-deploy-config-inquirer'
+                    ).getValidationErrorHelp(error) ?? true
                 );
             }
         }
