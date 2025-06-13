@@ -107,7 +107,7 @@ export interface SystemInfo {
      *
      * @since ABAP Platform Cloud 2505
      */
-    inbounds: Inbound[];
+    inbounds?: Inbound[];
 }
 
 interface Language {
@@ -362,6 +362,7 @@ export class LayeredRepositoryService extends Axios implements Service {
             if (appId) {
                 params.append('sap-app-id', appId);
             }
+            params.append('saml2', 'disabled');
 
             const response = await this.get(`${DTA_PATH_SUFFIX}system_info`, {
                 params,
