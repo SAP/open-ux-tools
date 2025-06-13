@@ -46,7 +46,8 @@
         "projectNameLengthErrorExt": "The name cannot contain more than 61 characters or end with the word 'component'.",
         "projectNameValidationErrorExt": "The name must contain only latin alphanumeric characters. Different parts can be separated by a period and every part must start with a letter.",
         "projectNameLengthErrorInt": "The name cannot start with the word 'customer', or contain more than 61 characters, or end with the word 'component'.",
-        "projectNameValidationErrorInt": "The name must contain only latin alphanumeric characters and it must have at least two parts. The different parts must be separated by a period and every part must start with a letter."
+        "projectNameValidationErrorInt": "The name must contain only latin alphanumeric characters and it must have at least two parts. The different parts must be separated by a period and every part must start with a letter.",
+        "projectNotInWorkspace": "Project '{{- path}}' is not in current workspace. Some Adaptation Project tools might not work. What do you want to do?"
     },
     "error": {
         "selectCannotBeEmptyError": "{{value}} has to be selected.",

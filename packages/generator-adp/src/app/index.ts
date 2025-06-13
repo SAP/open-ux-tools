@@ -44,6 +44,7 @@ import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
 import type { AdpGeneratorOptions, AttributePromptOptions, JsonInput } from './types';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
+import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -55,6 +56,7 @@ export default class extends Generator {
     private readonly appWizard: AppWizard;
     private readonly vscode: any;
     private readonly toolsLogger: ToolsLogger;
+    private isCli: boolean;
 
     /**
      * A boolean flag indicating whether node_modules should be installed after project generation.
@@ -129,6 +131,7 @@ export default class extends Generator {
         this.options = opts;
 
         this._setupLogging();
+
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.toolsLogger);
 
@@ -151,9 +154,9 @@ export default class extends Generator {
     async initializing(): Promise<void> {
         await initI18n();
 
-        this.layer = await getFlexLayer();
+        this.layer = getFlexLayer();
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
-
+        this.isCli = getHostEnvironment() === hostEnvironment.cli;
         this.systemLookup = new SystemLookup(this.toolsLogger);
 
         if (!this.jsonInput) {
@@ -176,11 +179,9 @@ export default class extends Generator {
             return;
         }
 
-        const isCLI = getHostEnvironment() === hostEnvironment.cli;
-
         const configQuestions = this.prompter.getPrompts({
-            appValidationCli: { hide: !isCLI },
-            systemValidationCli: { hide: !isCLI }
+            appValidationCli: { hide: !this.isCli },
+            systemValidationCli: { hide: !this.isCli }
         });
         this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
         this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;
@@ -199,7 +200,7 @@ export default class extends Generator {
         const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
         const options: AttributePromptOptions = {
             targetFolder: { default: defaultFolder },
-            ui5ValidationCli: { hide: !isCLI },
+            ui5ValidationCli: { hide: !this.isCli },
             enableTypeScript: { hide: this.shouldCreateExtProject }
         };
         const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
@@ -292,12 +293,10 @@ export default class extends Generator {
             await installDependencies(this._getProjectPath());
         } catch (e) {
             this.logger.error(`Installation of dependencies failed: ${e.message}`);
-        } finally {
-            cacheClear(this.appWizard, this.logger);
         }
     }
 
-    end(): void {
+    async end(): Promise<void> {
         const telemetryData =
             TelemetryHelper.createTelemetryData({
                 appType: 'generator-adp',
@@ -310,14 +309,22 @@ export default class extends Generator {
             });
         }
 
+        if (isCFEnvironment(projectPath) || this.isCli) {
+            return;
+        }
+
         try {
-            if (!isCFEnvironment(projectPath)) {
-                this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath: projectPath });
+            if (!existsInWorkspace(this.vscode, projectPath)) {
+                const userChoice = await showWorkspaceFolderWarning(this.vscode, projectPath);
+                if (!userChoice) {
+                    return;
+                }
+                await handleWorkspaceFolderChoice(this.vscode, projectPath, userChoice);
+                return;
             }
+            await this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath: projectPath });
         } catch (e) {
             this.appWizard.showError(e.message, MessageType.notification);
-        } finally {
-            cacheClear(this.appWizard, this.logger);
         }
     }
 
