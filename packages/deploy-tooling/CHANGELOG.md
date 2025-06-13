@@ -1,5 +1,14 @@
 # @sap-ux/deploy-tooling
 
+## 0.16.8
+
+### Patch Changes
+
+-   b45093b: Revert toggle, required to support BAS CLI flows
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+    -   @sap-ux/system-access@0.6.4
+
 ## 0.16.7
 
 ### Patch Changes
