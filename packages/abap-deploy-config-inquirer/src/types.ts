@@ -282,7 +282,6 @@ export interface InitTransportConfigResult {
     transportConfig?: TransportConfig;
     transportConfigNeedsCreds?: boolean;
     error?: string;
-    warning?: string;
 }
 
 export interface SystemConfig {
