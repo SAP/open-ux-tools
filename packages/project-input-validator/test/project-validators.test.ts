@@ -59,3 +59,79 @@ describe('validateFioriAppTargetFolder', () => {
         expect(result).toBe(t('ui5.folderDoesNotExist'));
     });
 });
+
+describe('validateFioriAppTargetFolder Windows path length logic', () => {
+    let originalPlatform: PropertyDescriptor | undefined;
+    let tOrig: typeof t;
+
+    beforeAll(() => {
+        originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
+    });
+
+    beforeEach(() => {
+        Object.defineProperty(process, 'platform', {
+            value: 'win32',
+            configurable: true
+        });
+        tOrig = t;
+        (global as any).t = (key: string, vars?: { length?: number }) => {
+            if (key === 'ui5.windowsFolderPathTooLong') {
+                return `Path too long: ${vars?.length}`;
+            }
+            return key;
+        };
+        (validateProjectFolder as jest.Mock).mockReturnValue(true);
+    });
+
+    afterEach(() => {
+        if (originalPlatform) {
+            Object.defineProperty(process, 'platform', originalPlatform);
+        }
+        (global as any).t = tOrig;
+    });
+
+    test('returns error when combined path length >= 256', async () => {
+        const target = 'C:'.padEnd(253, 'a');
+        const name = 'project1';
+        const namespace = 'abc';
+        const validateFioriAppFolder = true;
+        const combinedLength = `${target}\\${namespace}\\${name}`.length;
+        const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder, namespace);
+        if (process.platform === 'win32' && combinedLength >= 256) {
+            expect(result).toBe(`ui5.windowsFolderPathTooLong`);
+        } else {
+            expect(result).not.toBe(`ui5.windowsFolderPathTooLong`);
+        }
+    });
+
+    test('returns true when path length < 256', async () => {
+        const target = 'C:\\short\\path';
+        const name = 'app';
+        const namespace = 'ns';
+        const validateFioriAppFolder = true;
+        const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder, namespace);
+        expect(result).not.toContain(`ui5.windowsFolderPathTooLong`);
+    });
+
+    test('returns true on non-win32 platforms', async () => {
+        Object.defineProperty(process, 'platform', {
+            value: 'darwin',
+            configurable: true
+        });
+        const target = '/Users/test/path';
+        const name = 'app';
+        const namespace = 'ns';
+        const validateFioriAppFolder = true;
+        const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder, namespace);
+        expect(result).not.toContain('Path too long');
+    });
+
+    test('handles missing name and namespace gracefully', async () => {
+        const target = 'C:\\short\\path';
+        const name = '';
+        const namespace = '';
+        const validateFioriAppFolder = true;
+        const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder, namespace);
+        expect(result).not.toContain('Path too long');
+    });
+});
