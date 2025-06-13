@@ -379,7 +379,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         this.prompts.splice(promptsIndex, 0, [
             {
                 name: t('yuiNavSteps.tileSettingsName'),
-                description: t('yuiNavSteps.tileActionsDesc', {
+                description: t('yuiNavSteps.tileSettingsDescr', {
                     projectName: path.basename(this.projectRootPath)
                 })
             }
