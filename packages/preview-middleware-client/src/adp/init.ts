@@ -28,7 +28,7 @@ export default async function (rta: RuntimeAuthoring) {
     const defaultPlugins = rta.getDefaultPlugins();
     rta.setPlugins(defaultPlugins);
 
-    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 136 })) {
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 136, patch: 2 })) {
         await initDialogs(rta, syncViewsIds, ui5VersionInfo);
     } else {
         (await import('open/ux/preview/client/adp/add-fragment')).initAddXMLPlugin(rta);
