@@ -43,14 +43,16 @@ export function extendManifestJson<T>(
         const minVersion = semVer.coerce(feApp.ui5?.minUI5Version);
         if (!minVersion || semVer.gte(minVersion, '1.94.0')) {
             const entityConfig = (feApp.template.settings as LROPSettings).entityConfig as ManifestEntitySettings;
-            if (entityConfig.mainEntityParameterName) {
-                entityConfig.contextPath = `/${entityConfig.mainEntityName}/${entityConfig.mainEntityParameterName}`;
-            } else {
-                entityConfig.contextPath = `/${entityConfig.mainEntityName}`;
-            }
+            // Set the contextPath for the main entity
+            entityConfig.contextPath = entityConfig.mainEntityParameterName
+                ? `/${entityConfig.mainEntityName}/${entityConfig.mainEntityParameterName}`
+                : `/${entityConfig.mainEntityName}`;
 
+            // Set the contextPath for the navigation entity
             if (entityConfig.navigationEntity?.EntitySet) {
-                entityConfig.navigationEntity.contextPath = `${entityConfig.contextPath}/${entityConfig.navigationEntity.Name}`;
+                entityConfig.navigationEntity.contextPath = entityConfig.mainEntityParameterName
+                    ? `/${entityConfig.mainEntityName}/${entityConfig.navigationEntity.Name}`
+                    : `${entityConfig.contextPath}/${entityConfig.navigationEntity.Name}`;
             }
         }
     }

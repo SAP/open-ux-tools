@@ -55,9 +55,8 @@ export interface EntityConfig {
      *    }
      *  ]
      * ```
-     * @example
-     * Example of the metadata definition:
-     * Metadata can be found at {@link packages/odata-service-inquirer/test/unit/prompts/test-data/parameterised-entity-metadata.xml}.
+     * An example of metadata that populates `mainEntityParameterName` can be found in the following file:
+     * {@link packages/odata-service-inquirer/test/unit/prompts/test-data/parameterised-entity-metadata.xml}.
      */
     mainEntityParameterName?: string;
     /**

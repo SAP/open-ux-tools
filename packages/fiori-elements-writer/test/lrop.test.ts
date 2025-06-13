@@ -513,11 +513,11 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     type: TemplateType.ListReportObjectPage,
                     settings: {
                         entityConfig: {
-                            mainEntityName: 'TestMainEntity',
+                            mainEntityName: 'Travel',
                             mainEntityParameterName: 'Set',
                             navigationEntity: {
-                                EntitySet: 'NavigationEntitySet',
-                                Name: 'NavigationName'
+                                EntitySet: 'Booking',
+                                Name: '_Booking'
                             }
                         },
                         tableType: 'ResponsiveTable'
@@ -552,31 +552,79 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         expect(routingRoutes).toEqual([
             {
                 pattern: ':?query:',
-                name: 'TestMainEntityList',
-                target: 'TestMainEntityList'
+                name: 'TravelList',
+                target: 'TravelList'
             },
             {
-                name: 'TestMainEntityObjectPage',
-                pattern: 'TestMainEntity({key})/Set({key2}):?query:',
-                target: 'TestMainEntityObjectPage'
+                name: 'TravelObjectPage',
+                pattern: 'Travel({key})/Set({key2}):?query:',
+                target: 'TravelObjectPage'
             },
             {
-                pattern: 'TestMainEntity({key})/NavigationName({key2}):?query:',
-                name: 'NavigationEntitySetObjectPage',
-                target: 'NavigationEntitySetObjectPage'
+                pattern: 'Travel({key})/_Booking({key2}):?query:',
+                name: 'BookingObjectPage',
+                target: 'BookingObjectPage'
             }
         ]);
 
         // check context paths
-        const contextPathForListPage = routing.targets.TestMainEntityList.options.settings.contextPath;
-        expect(contextPathForListPage).toBe('/TestMainEntity/Set');
-
-        const contextPathForObjectPage = routing.targets.TestMainEntityObjectPage.options.settings.contextPath;
-        expect(contextPathForObjectPage).toBe('/TestMainEntity/Set');
-
-        const contextPathForEnityObjectPage =
-            routing.targets.NavigationEntitySetObjectPage.options.settings.contextPath;
-        expect(contextPathForEnityObjectPage).toBe('/TestMainEntity/Set/NavigationName');
+        const targets = routing.targets;
+        expect(targets).toEqual({
+            TravelList: {
+                type: 'Component',
+                id: 'TravelList',
+                name: 'sap.fe.templates.ListReport',
+                options: {
+                    settings: {
+                        contextPath: '/Travel/Set',
+                        variantManagement: 'Page',
+                        navigation: {
+                            Travel: {
+                                detail: {
+                                    route: 'TravelObjectPage'
+                                }
+                            }
+                        },
+                        controlConfiguration: {
+                            '@com.sap.vocabularies.UI.v1.LineItem': {
+                                tableSettings: {
+                                    type: 'ResponsiveTable'
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            TravelObjectPage: {
+                type: 'Component',
+                id: 'TravelObjectPage',
+                name: 'sap.fe.templates.ObjectPage',
+                options: {
+                    settings: {
+                        editableHeaderContent: false,
+                        contextPath: '/Travel/Set',
+                        navigation: {
+                            _Booking: {
+                                detail: {
+                                    route: 'BookingObjectPage'
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            BookingObjectPage: {
+                type: 'Component',
+                id: 'BookingObjectPage',
+                name: 'sap.fe.templates.ObjectPage',
+                options: {
+                    settings: {
+                        editableHeaderContent: false,
+                        contextPath: '/Travel/_Booking'
+                    }
+                }
+            }
+        });
     });
 
     test('sapuxLayer is added to package json for edmx projects when provided', async () => {
