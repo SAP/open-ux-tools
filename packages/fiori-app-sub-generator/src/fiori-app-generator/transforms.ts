@@ -58,6 +58,7 @@ export function getTemplateType(floorplan: Floorplan): TemplateTypeFE | Template
         [FloorplanFE.FE_OVP]: 'ovp',
         [FloorplanFE.FE_WORKLIST]: 'worklist',
         [FloorplanFE.FE_FPM]: 'fpm',
+        [FloorplanFE.FE_ARIBA_LROP]: 'aribaLrop',
         [FloorplanFF.FF_SIMPLE]: 'basic'
     };
     return templateMap[floorplan];
@@ -100,12 +101,16 @@ export function transformTemplateType(
             };
         }
     }
+
+    const lropSettings = {
+        entityConfig: _entityConfig,
+        tableType: entityRelatedConfig?.tableType,
+        hierarchyQualifier: entityRelatedConfig?.hierarchyQualifier
+    } as LROPSettings;
+
     const templateSettingsMap = {
-        [TemplateTypeFE.ListReportObjectPage]: {
-            entityConfig: _entityConfig,
-            tableType: entityRelatedConfig?.tableType,
-            hierarchyQualifier: entityRelatedConfig?.hierarchyQualifier
-        } as LROPSettings,
+        [TemplateTypeFE.ListReportObjectPage]: lropSettings,
+        [TemplateTypeFE.AribaListReportObjectPage]: lropSettings,
         [TemplateTypeFE.AnalyticalListPage]: {
             entityConfig: _entityConfig,
             selectionMode: entityRelatedConfig?.tableSelectionMode,

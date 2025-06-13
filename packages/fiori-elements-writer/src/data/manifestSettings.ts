@@ -33,7 +33,8 @@ export function extendManifestJson<T>(
                 TemplateType.FormEntryObjectPage,
                 TemplateType.AnalyticalListPage,
                 TemplateType.ListReportObjectPage,
-                TemplateType.Worklist
+                TemplateType.Worklist,
+                TemplateType.AribaListReportObjectPage
             ] as TemplateType[]
         ).includes(feApp.template.type)
     ) {
@@ -55,8 +56,14 @@ export function extendManifestJson<T>(
     const templateSettings = {
         ...feApp.template.settings,
         defaultModel: (feApp.service as OdataService).model,
-        type: feApp.template.type
+        type: feApp.template.type,
+        routingTargetName: 'sap.fe.templates'
     };
+
+    if (feApp.template.type === TemplateType.AribaListReportObjectPage) {
+        templateSettings.type = TemplateType.ListReportObjectPage; // the differences between aribaLrop & lrop at this point are too small to warrant further updates to the templates
+        templateSettings.routingTargetName = 'sap.fe.ariba';
+    }
 
     // Manifest paths to be extended
     const extendTemplatePaths = [
