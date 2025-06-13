@@ -180,7 +180,6 @@ describe('index', () => {
                     'key1=oldValue1',
                     'key3=oldValue3',
                     'key4=newValue4',
-                    '',
                     'key5=newValue5 # Some annotation'
                 ].join('\n'),
                 fs
@@ -238,7 +237,7 @@ describe('index', () => {
 
             expect(utils.writeFile).toHaveBeenCalledWith(
                 i18nFilePath,
-                ['key8=newValue8', '', 'key9=newValue9'].join('\n'),
+                ['key8=newValue8', 'key9=newValue9'].join('\n'),
                 fs
             );
         });

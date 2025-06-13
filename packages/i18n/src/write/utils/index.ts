@@ -75,11 +75,12 @@ export async function replaceI18nProperties(
             i++;
         }
     }
+
     // Add new entries
     const newContent = filteredLines
+        .map((line) => `${line.trim()}\n`)
         .concat(newI18nEntries.map((entry) => printPropertiesI18nEntry(entry.key, entry.value, entry.annotation)))
-        .join('\n')
-        .replace(/\n+$/, ''); // Remove trailing newlines
+        .join('');
 
-    await writeFile(i18nFilePath, newContent, fs);
+    await writeFile(i18nFilePath, newContent.trim(), fs);
 }
