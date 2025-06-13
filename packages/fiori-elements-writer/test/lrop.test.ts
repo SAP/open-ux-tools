@@ -505,7 +505,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         expect(contextPathForObjectPage).toBe('/ZC_STOCKAGEING/Set');
     });
 
-    test('should omit navigation entity target whe both mainEntityParameterName and navigation entity are specified', async () => {
+    test('should omit navigation entity target when both `mainEntityParameterName` and `navigationEntity` are specified', async () => {
         const projectName = 'parameterisedMainEntityWithNavigation';
         const config = {
             ...Object.assign(feBaseConfig(projectName), {
