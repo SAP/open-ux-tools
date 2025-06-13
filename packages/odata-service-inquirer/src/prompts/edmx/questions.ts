@@ -129,8 +129,8 @@ export function getEntitySelectionQuestions(
             if (answers.mainEntity?.mainEntityParameterName) {
                 // display a warning if the main entity has a mainEntityParameterName
                 return {
-                    message: t('prompts.mainEntitySelection.mainEntityParameterFoundWarning'),
-                    severity: Severity.warning
+                    message: t('prompts.mainEntitySelection.mainEntityParameterFoundInfo'),
+                    severity: Severity.information
                 };
             }
         }

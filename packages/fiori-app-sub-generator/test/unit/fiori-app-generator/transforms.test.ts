@@ -214,7 +214,7 @@ describe('Test transform state', () => {
         });
     });
 
-    test('should transform parametrised entity related config correctly', async () => {
+    test('should transform parameterised entity related config correctly', async () => {
         const state: State = {
             ...baseState,
             project: {

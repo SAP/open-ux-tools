@@ -505,7 +505,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         expect(contextPathForObjectPage).toBe('/ZC_STOCKAGEING/Set');
     });
 
-    test('should generate manifest when main entity selected has both mainEntityParameterName and navigation entity', async () => {
+    test('should omit navigation entity target whe both mainEntityParameterName and navigation entity are specified', async () => {
         const projectName = 'parameterisedMainEntityWithNavigation';
         const config = {
             ...Object.assign(feBaseConfig(projectName), {
@@ -548,7 +548,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         const routing = (manifest as any)['sap.ui5'].routing;
         const routingRoutes = routing.routes;
 
-        // check routing routes
+        // Verify routing routes & targets to ensure that navigation entity routing is excluded
+        // when the mainEntityParameterName is set, as navigation entities are not supported in this scenario.
         expect(routingRoutes).toEqual([
             {
                 pattern: ':?query:',
@@ -559,15 +560,9 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 name: 'TravelObjectPage',
                 pattern: 'Travel({key})/Set({key2}):?query:',
                 target: 'TravelObjectPage'
-            },
-            {
-                pattern: 'Travel({key})/_Booking({key2}):?query:',
-                name: 'BookingObjectPage',
-                target: 'BookingObjectPage'
             }
         ]);
 
-        // check context paths
         const targets = routing.targets;
         expect(targets).toEqual({
             TravelList: {
@@ -602,25 +597,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 options: {
                     settings: {
                         editableHeaderContent: false,
-                        contextPath: '/Travel/Set',
-                        navigation: {
-                            _Booking: {
-                                detail: {
-                                    route: 'BookingObjectPage'
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            BookingObjectPage: {
-                type: 'Component',
-                id: 'BookingObjectPage',
-                name: 'sap.fe.templates.ObjectPage',
-                options: {
-                    settings: {
-                        editableHeaderContent: false,
-                        contextPath: '/Travel/_Booking'
+                        contextPath: '/Travel/Set'
                     }
                 }
             }

@@ -11,8 +11,7 @@ export type EntityAnswer = {
     entitySetType: string;
     /**
      * Represents a parameter used along with the main entity to query data.
-     * When this parameter is set, the prompt for selecting navigation properties is skipped,
-     * as the entity set is parameterised and directly linked to its target entity set.
+     * When this parameter is set, the prompt for selecting navigation properties is skipped
      * This property is populated only if the metadata entity set includes a `Common.ResultContext` annotation,
      * indicating that the entity set requires additional parameters for querying.
      */
@@ -52,13 +51,13 @@ export type EntitySetFilter = 'filterDraftEnabled' | 'filterAggregateTransformat
 function getNavigationPropertyForParameterisedEntity(
     entitySet: EntitySet,
     entityTypes?: ConvertedMetadata['entityTypes']
-): string | null {
+): string | undefined {
     // Check if the entity type has the Common.ResultContext annotation
     const hasResultContextAnnotation = Boolean(entitySet?.entityType?.annotations?.Common?.ResultContext);
 
     if (!hasResultContextAnnotation) {
         // If the entity set is not parameterised, no parametrised navigation is expected
-        return null;
+        return undefined;
     }
 
     // Get all navigation properties of the parameterised entity type
@@ -80,8 +79,8 @@ function getNavigationPropertyForParameterisedEntity(
         }
     }
 
-    // If no matching navigation property is found, return null
-    return null;
+    // If no matching navigation property is found, return undefined
+    return undefined;
 }
 /**
  * Returns the entity choice options for use in a list inquirer prompt.
