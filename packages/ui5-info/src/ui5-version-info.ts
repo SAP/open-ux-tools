@@ -175,7 +175,7 @@ const retrieveUI5VersionsCache = async (
     if (useCache) {
         return ui5VersionsCache[type];
     }
-    return versions;
+    return [ui5VersionsType.official, ui5VersionsType.snapshot].includes(type) ? versions : support;
 };
 
 /**
