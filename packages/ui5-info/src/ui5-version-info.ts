@@ -379,14 +379,15 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
  * Retrieves the latest supported published UI5 version.
  *
  * - If useCache is true, the function first attempts to retrieve the version from the cache:
- *   - If the cache contains official versions, the first version from the cache is returned.
- * - If useCache is false or the cache is empty, the function fetches the latest version from https://ui5.sap.com.
- * - If the API call fails, the function returns undefined.
+ *    - If the cache contains official versions, the first version from the cache is returned.
+ *    - If the cache is empty, the function makes an API call to fetch the latest UI5 versions & populates the cache back.
+ * - If useCache is false, the function fetches the latest version from https://ui5.sap.com.
+ * - If no versions are available (e.g., API call fails or cache is empty), the function returns the latest fallback version.
  *
  * @param {boolean} [useCache] - Whether to use cached versions.
  * @returns {Promise<string | undefined>} The latest supported UI5 version, or undefined if the API call fails.
  */
-export async function getLatestUI5Version(useCache: boolean = false): Promise<string | undefined> {
+export async function getLatestUI5Version(useCache: boolean = true): Promise<string | undefined> {
     const ui5Versions = await getUI5Versions({ useCache });
     return ui5Versions?.[0]?.version;
 }

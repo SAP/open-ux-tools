@@ -379,7 +379,7 @@ describe('getLatestUI5Version', () => {
         nock(ui5VersionRequestInfo.OfficialUrl)
             .get(`/${ui5VersionRequestInfo.VersionsFile}`)
             .reply(200, null as unknown as string);
-        const latestVersion = await getLatestUI5Version();
+        const latestVersion = await getLatestUI5Version(false);
         expect(latestVersion).toBe(defaultUi5Versions[0]); // Default version should be returned
     });
 
@@ -388,7 +388,7 @@ describe('getLatestUI5Version', () => {
             .get(`/${ui5VersionRequestInfo.VersionsFile}`)
             .reply(200, { latest: {} });
 
-        const latestVersion = await getLatestUI5Version();
+        const latestVersion = await getLatestUI5Version(false);
         expect(latestVersion).toBe(undefined);
     });
 
@@ -396,7 +396,7 @@ describe('getLatestUI5Version', () => {
         jest.spyOn(axios, 'get').mockImplementationOnce(() => {
             throw new Error('Network error');
         });
-        const latestVersion = await getLatestUI5Version();
+        const latestVersion = await getLatestUI5Version(false);
         expect(latestVersion).toBe(defaultUi5Versions[0]); // Default version should be returned
     });
 
