@@ -17,7 +17,7 @@ describe('UI5 Themes - Cache and API Behavior', () => {
         });
     });
 
-    afterEach(() => {
+    beforeEach(() => {
         nock.cleanAll();
         jest.restoreAllMocks();
         jest.clearAllMocks();
@@ -47,7 +47,8 @@ describe('UI5 Themes - Cache and API Behavior', () => {
             .get(`/${ui5VersionRequestInfo.VersionsFile}`)
             .reply(200, {
                 latest: {
-                    version: '1.136.0'
+                    version: '1.136.0',
+                    patches: ['1.136.1', '1.136.2']
                 }
             });
 

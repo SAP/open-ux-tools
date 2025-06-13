@@ -387,22 +387,6 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
  * @returns {Promise<string | undefined>} The latest supported UI5 version, or undefined if the API call fails.
  */
 export async function getLatestUI5Version(useCache: boolean = false): Promise<string | undefined> {
-    let version: string | undefined;
-    if (useCache && ui5VersionsCache.officialVersions.length > 0) {
-        version =
-            typeof ui5VersionsCache.officialVersions[0] === 'string'
-                ? ui5VersionsCache.officialVersions[0]
-                : ui5VersionsCache.officialVersions[0].version;
-        return version;
-    }
-
-    try {
-        const ui5Versions = await requestUI5Versions<UI5VersionsResponse>();
-        version = ui5Versions?.latest?.version;
-    } catch {
-        // HTTP request most likely failed
-        version = undefined;
-    }
-
-    return version;
+    const ui5Versions = await getUI5Versions({ useCache });
+    return ui5Versions?.[0]?.version;
 }
