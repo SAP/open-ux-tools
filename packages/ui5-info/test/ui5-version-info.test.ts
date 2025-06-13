@@ -385,6 +385,7 @@ describe('getLatestUI5Version', () => {
 
     beforeEach(() => {
         jest.resetModules();
+        resetUI5VersionsCache();
     });
 
     afterEach(() => {
