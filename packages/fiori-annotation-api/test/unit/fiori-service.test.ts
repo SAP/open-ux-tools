@@ -15,7 +15,7 @@ import type {
     RawAnnotation,
     StringExpression
 } from '@sap-ux/vocabularies-types';
-import { getProject } from '@sap-ux/project-access';
+import { getProject, normalizePath } from '@sap-ux/project-access';
 
 import type { Change, DeleteChange, InsertAnnotationChange, TextFile } from '../../src/types';
 import { ExpressionType, ChangeType } from '../../src/types';
@@ -31,8 +31,6 @@ import { CDSAnnotationServiceAdapter } from '../../src/cds/adapter';
 import type { CompilerMessage } from '@sap-ux/odata-annotation-core-types';
 import { DiagnosticSeverity, Range } from '@sap-ux/odata-annotation-core-types';
 import type { ApiError, FioriAnnotationServiceOptions } from '../../src';
-
-import { pathFromUri } from '../../src/utils';
 
 /**
  * Configuration
@@ -192,7 +190,7 @@ async function testEdit(
     await service.save();
 
     for (const uri of changedFileUris.values()) {
-        const path = pathFromUri(uri);
+        const path = normalizePath(uri);
         const original = fioriServiceOptions.ignoreChangedFileInitialContent
             ? ''
             : await promises.readFile(path, { encoding: 'utf-8' });
@@ -257,7 +255,7 @@ async function testEditWithMockData(
     await service.save();
 
     for (const uri of uris.values()) {
-        const path = pathFromUri(uri);
+        const path = normalizePath(uri);
         const textAfterEdit = editor?.read(path);
         if (log) {
             console.log(textAfterEdit);
@@ -268,10 +266,10 @@ async function testEditWithMockData(
 }
 
 function createVolume(root: string): Editor {
-    const metadataFilePath = pathFromUri(
+    const metadataFilePath = normalizePath(
         pathToFileURL(join(root, 'webapp', 'localService', 'metadata.xml')).toString()
     );
-    const annotationFilePath = pathFromUri(
+    const annotationFilePath = normalizePath(
         pathToFileURL(join(root, 'webapp', 'annotations', 'annotation.xml')).toString()
     );
     const editor = createEditor(createStore());
@@ -682,7 +680,7 @@ describe('fiori annotation service', () => {
                 const project = PROJECTS.V4_XML_START;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);
-                const path = pathFromUri(project.files.annotations);
+                const path = normalizePath(project.files.annotations);
                 const content = fsEditor.read(path);
                 const testData = content.replace(
                     `    <edmx:Reference Uri="/incident/$metadata">
@@ -715,7 +713,7 @@ describe('fiori annotation service', () => {
                 const project = PROJECTS.V4_XML_START;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);
-                const metadataPath = pathFromUri(project.files.metadata);
+                const metadataPath = normalizePath(project.files.metadata);
 
                 fsEditor.write(
                     metadataPath,
@@ -748,7 +746,7 @@ describe('fiori annotation service', () => {
                 const project = PROJECTS.V4_XML_START;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);
-                const metadataPath = pathFromUri(project.files.metadata);
+                const metadataPath = normalizePath(project.files.metadata);
 
                 fsEditor.write(
                     metadataPath,
@@ -756,7 +754,7 @@ describe('fiori annotation service', () => {
                         .read(metadataPath)
                         .replace('Namespace="IncidentService"', 'Namespace="IncidentService" Alias="Service"')
                 );
-                const path = pathFromUri(project.files.annotations);
+                const path = normalizePath(project.files.annotations);
                 const content = fsEditor.read(path);
                 const testData = content.replace(
                     `    <edmx:Reference Uri="/incident/$metadata">
@@ -797,7 +795,7 @@ describe('fiori annotation service', () => {
                 const project = PROJECTS.V4_CAP_NO_APPS;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);
-                const servicesFilePath = pathFromUri(project.files.services);
+                const servicesFilePath = normalizePath(project.files.services);
                 const newFileName = 'new-file';
                 const appName = 'incidents';
                 const testData = `using from './${appName}/${newFileName}';\n`;
@@ -815,7 +813,7 @@ describe('fiori annotation service', () => {
                 const project = PROJECTS.V4_CDS_START;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);
-                const path = pathFromUri(project.files.services);
+                const path = normalizePath(project.files.services);
                 const content = fsEditor.read(path);
                 const newFileName = 'new-file';
                 const testData = `using from './${newFileName}';\n${content}`;
@@ -988,7 +986,7 @@ describe('fiori annotation service', () => {
                 const project = PROJECTS.V4_CDS_START;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);
-                const servicePath = pathFromUri(project.files.metadata);
+                const servicePath = normalizePath(project.files.metadata);
                 const serviceContent = fsEditor.read(servicePath);
                 const updatedServiceFile = `${serviceContent}
                 annotate service.Incidents.composition with @UI.LineItem: [] {
@@ -997,7 +995,7 @@ describe('fiori annotation service', () => {
                 `;
 
                 fsEditor.write(servicePath, updatedServiceFile);
-                const path = pathFromUri(project.files.schema);
+                const path = normalizePath(project.files.schema);
                 const content = fsEditor.read(path);
                 const updatedSchemaFile = content.replace(
                     'on processingThreshold.incident = $self;',
@@ -1060,7 +1058,7 @@ describe('fiori annotation service', () => {
                 const project = PROJECTS.V4_CDS_START;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);
-                const path = pathFromUri(project.files.schema);
+                const path = normalizePath(project.files.schema);
                 const content = fsEditor.read(path);
                 const updatedSchemaFile = content.replace(
                     'on processingThreshold.incident = $self;',
@@ -1104,7 +1102,7 @@ describe('fiori annotation service', () => {
                 const project = PROJECTS.V4_CDS_START;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);
-                const path = pathFromUri(project.files.schema);
+                const path = normalizePath(project.files.schema);
                 const content = fsEditor.read(path);
                 let updatedSchemaFile = content.replace(
                     'type Criticality : Integer @(',
@@ -2465,7 +2463,7 @@ rating : Rating;
                 const project = PROJECTS.V4_CDS_START;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);
-                const path = pathFromUri(project.files.annotations);
+                const path = normalizePath(project.files.annotations);
                 const content = fsEditor.read(path);
                 const testData = `${content}
                 using from '../../srv/common';
@@ -3633,7 +3631,7 @@ rating : Rating;
                 const project = PROJECTS.V4_CDS_START;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);
-                const path = pathFromUri(project.files.schema);
+                const path = normalizePath(project.files.schema);
                 const content = fsEditor.read(path);
                 let updatedSchemaFile = content.replace(
                     'type Criticality : Integer @(',
@@ -3697,7 +3695,7 @@ rating : Rating;
             const project = PROJECTS.V4_CDS_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
-            const mdPath = pathFromUri(project.files.metadata);
+            const mdPath = normalizePath(project.files.metadata);
             const mdContent = fsEditor.read(mdPath);
             const mdTestData = `${mdContent}
             annotate service.Individual with {
@@ -3926,7 +3924,7 @@ rating : Rating;
             const project = PROJECTS.V4_CDS_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
-            const path = pathFromUri(project.files.annotations);
+            const path = normalizePath(project.files.annotations);
             const content = fsEditor.read(path);
             const testData = `${content}
             using from '../../srv/common';
@@ -3973,7 +3971,7 @@ rating : Rating;
             const project = PROJECTS.V4_CDS_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
-            const path = pathFromUri(project.files.annotations);
+            const path = normalizePath(project.files.annotations);
             const content = fsEditor.read(path);
             const testData = `${content}
             annotate IncidentService.Incidents with @(
@@ -4030,7 +4028,7 @@ rating : Rating;
             const project = PROJECTS.V4_CDS_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
-            const path = pathFromUri(project.files.annotations);
+            const path = normalizePath(project.files.annotations);
             const content = fsEditor.read(path);
             const testData = `${content}
             annotate IncidentService.Incidents with { 
@@ -4075,7 +4073,7 @@ rating : Rating;
             const project = PROJECTS.V4_CDS_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
-            const path = pathFromUri(project.files.annotations);
+            const path = normalizePath(project.files.annotations);
             const content = fsEditor.read(path);
             const testData = `${content}
             annotate IncidentService.Incidents with @(
@@ -4147,7 +4145,7 @@ describe('serializeTarget', () => {
             const project = PROJECTS.V4_XML_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
-            const path = pathFromUri(project.files.annotations);
+            const path = normalizePath(project.files.annotations);
             const content = fsEditor.read(path);
             const testData = `${content.replace(
                 '</Schema>',
@@ -4208,7 +4206,7 @@ describe('serializeTarget', () => {
             const project = PROJECTS.V4_XML_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
-            const path = pathFromUri(project.files.annotations);
+            const path = normalizePath(project.files.annotations);
             const content = fsEditor.read(path);
             const testData = `${content.replace(
                 '</Schema>',
@@ -4266,7 +4264,7 @@ describe('serializeTarget', () => {
             const project = PROJECTS.V4_XML_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
-            const path = pathFromUri(project.files.annotations);
+            const path = normalizePath(project.files.annotations);
             const content = fsEditor.read(path);
             const testData = `${content.replace(
                 '</Schema>',
@@ -4324,7 +4322,7 @@ describe('serializeTarget', () => {
             const project = PROJECTS.V4_XML_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
-            const path = pathFromUri(project.files.annotations);
+            const path = normalizePath(project.files.annotations);
             const content = fsEditor.read(path);
             const testData = `${content.replace(
                 '</Schema>',
@@ -4384,7 +4382,7 @@ describe('serializeTarget', () => {
             const project = PROJECTS.V4_XML_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
-            const path = pathFromUri(project.files.annotations);
+            const path = normalizePath(project.files.annotations);
             const content = fsEditor.read(path);
             const testData = `${content.replace(
                 '</Schema>',
@@ -4470,7 +4468,7 @@ describe('serializeTarget', () => {
             const project = PROJECTS.V4_CDS_START;
             const root = project.root;
             const fsEditor = await createFsEditorForProject(root);
-            const path = pathFromUri(project.files.annotations);
+            const path = normalizePath(project.files.annotations);
             const content = fsEditor.read(path);
             const testData = `${content}
               annotate IncidentService.Incidents with @UI : {

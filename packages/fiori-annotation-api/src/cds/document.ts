@@ -14,12 +14,13 @@ import { type CdsCompilerFacade, type MetadataCollector, type PropagatedTargetMa
 import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
-import { compareByRange, pathFromUri } from '../utils';
+import { compareByRange } from '../utils';
 import type { TextFile } from '../types';
 
 import type { Comment } from './comments';
 import { collectComments } from './comments';
 import type { CompilerToken } from './cds-compiler-tokens';
+import { normalizePath } from '@sap-ux/project-access';
 
 export const CDS_DOCUMENT_TYPE = 'document';
 export type CDSDocument = {
@@ -62,7 +63,7 @@ export function getDocument(
 ): Document {
     const comments = getComments(fileCache, file, facade, false);
     const cdsAnnotationFile = toTargetMap(facade.blitzIndex.forUri(file.uri), file.uri, vocabularyService, facade);
-    const tokens = facade.getTokensForUri(pathFromUri(file.uri));
+    const tokens = facade.getTokensForUri(normalizePath(file.uri));
     const line = fileCache.get(file.uri)?.split('\n').length ?? 0;
     const character = fileCache.get(file.uri)?.split('\n').pop()?.length ?? 0;
     const range = Range.create(0, 0, line, character);
@@ -123,7 +124,7 @@ export function getGhostFileDocument(
     propagatedTargetMap: PropagatedTargetMap
 ): Document {
     const comments = getComments(fileCache, file, facade, false);
-    const tokens = facade.getTokensForUri(pathFromUri(file.uri));
+    const tokens = facade.getTokensForUri(normalizePath(file.uri));
     const cdsAnnotationFile = toTargetMap(facade.blitzIndex.forUri(file.uri), file.uri, vocabularyService, facade);
     const annotationFile = toAnnotationFile(
         file.uri,
