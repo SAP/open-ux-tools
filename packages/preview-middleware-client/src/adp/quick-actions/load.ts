@@ -19,5 +19,10 @@ export async function loadDefinitions(appType: ApplicationType): Promise<QuickAc
             .default;
         return [new FEV4QuickActionRegistry()];
     }
+    if (appType === 'freestyle') {
+        const FSQuickActionRegistry = (await import('open/ux/preview/client/adp/quick-actions/free-style/registry'))
+            .default;
+        return [new FSQuickActionRegistry()];
+    }
     return [];
 }

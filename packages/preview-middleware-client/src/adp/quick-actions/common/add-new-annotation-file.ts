@@ -17,6 +17,7 @@ import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/vers
 import { getV2AppComponent } from '../fe-v2/utils';
 import { getV4AppComponent } from '../../../utils/fe-v4';
 import { getApplicationType } from '../../../utils/application';
+import Component from 'sap/ui/core/Component';
 
 export const ADD_NEW_ANNOTATION_FILE = 'add-new-annotation-file';
 const ADD_NEW_ANNOTATION_FILE_TITLE = 'QUICK_ACTION_ADD_NEW_ANNOTATION_FILE';
@@ -137,7 +138,9 @@ export class AddNewAnnotationFile
                 const modifiedValue = {
                     changeType: 'appdescr_app_addAnnotationsToOData',
                     appComponent:
-                        appType === 'fe-v4'
+                        appType === 'freestyle'
+                            ? Component.getOwnerComponentFor(this.context.view)
+                            : appType === 'fe-v4'
                             ? getV4AppComponent(this.context.view)
                             : getV2AppComponent(this.context.view),
                     generator: this.context.flexSettings.generator,
