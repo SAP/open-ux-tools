@@ -2,7 +2,7 @@
     "name": "@sap-ux/generator-adp",
     "displayName": "SAPUI5 Adaptation Project",
     "description": "Adaptation project allows you to create an app variant for an existing SAP Fiori elements-based or SAPUI5 freestyle application, without changing the original application.",
-    "version": "0.3.19",
+    "version": "0.3.20",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
