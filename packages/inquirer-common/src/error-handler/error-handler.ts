@@ -334,8 +334,9 @@ export class ErrorHandler {
      * Create an instance of the ErrorHandler.
      *
      * @param logger the logger instance to use
-     * @param enableGuidedAnswers if true, the end user validation errors will include guided answers to provide help
-     * @param logPrefix optional, a prefix to be used for the logger to distinguish the source of the log messages
+     * @param enableGuidedAnswers if true, Guided Answers help links will include a command to launch the Guided Answers UI.
+     *     Should be set to true if the Guided Answers UI extension is available.
+     * @param logPrefix optional, a prefix to be used for the logger to distinguish the source of the log messages, if a logger is not provided
      */
     constructor(logger?: Logger, enableGuidedAnswers = false, logPrefix?: string) {
         ErrorHandler._logger = logger ?? new ToolsLogger({ logPrefix: logPrefix ?? '@sap-ux/inquirer-common' });

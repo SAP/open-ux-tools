@@ -386,7 +386,11 @@ export async function validatePackageChoiceInput(
             }
         } catch (error) {
             if (ErrorHandler.isCertError(error)) {
-                helpLink = new ErrorHandler().getValidationErrorHelp(error);
+                helpLink = new ErrorHandler(
+                    undefined,
+                    undefined,
+                    '@sap-ux/abap-deploy-config-inquirer'
+                ).getValidationErrorHelp(error);
                 return helpLink ?? true;
             }
             throw error;
@@ -596,7 +600,11 @@ export async function validateTransportChoiceInput({
             );
         } catch (error) {
             if (ErrorHandler.isCertError(error)) {
-                return new ErrorHandler().getValidationErrorHelp(error) ?? true;
+                return (
+                    new ErrorHandler(undefined, undefined, '@sap-ux/abap-deplu-config-inquirer').getValidationErrorHelp(
+                        error
+                    ) ?? true
+                );
             }
         }
     } else if (input === TransportChoices.CreateNewChoice) {

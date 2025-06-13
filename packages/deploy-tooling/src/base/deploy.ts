@@ -44,7 +44,9 @@ async function handleError(
     archive: Buffer
 ): Promise<void> {
     if (ErrorHandler.isCertError(error)) {
-        const gaLink = new ErrorHandler().getValidationErrorHelp(error)?.toString();
+        const gaLink = new ErrorHandler(undefined, undefined, '@sap-ux/deploy-tooling')
+            .getValidationErrorHelp(error)
+            ?.toString();
         if (gaLink) {
             logger.info(gaLink);
         }

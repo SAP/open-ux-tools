@@ -139,7 +139,9 @@ class DefaultTransportConfig implements TransportConfig {
                     t('warnings.certificateError', { url: backendTarget?.abapTarget?.url, error: err.message })
                 );
                 // Stringified version of the GA link will be reported in the logs
-                result.warning = new ErrorHandler().getValidationErrorHelp(err)?.toString();
+                result.warning = new ErrorHandler(undefined, undefined, '@sap-ux/abap-deploy-config-inquirer')
+                    .getValidationErrorHelp(err)
+                    ?.toString();
             } else if (err.response?.status === 401) {
                 const auth: string = err.response.headers?.['www-authenticate'];
                 result.transportConfigNeedsCreds = !!auth?.toLowerCase()?.startsWith('basic');
