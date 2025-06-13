@@ -29,7 +29,39 @@ export class ValidationError extends Error {
 }
 
 export interface EntityConfig {
-    mainEntityName: string; // Defines the main list page entity
+    /**
+     * The name of the main entity used for list page entity
+     */
+    mainEntityName: string;
+    /**
+     * Represents a parameter used alongside the main entity to query for data.
+     * When this parameter is set, the prompt for selecting navigation properties is skipped,
+     * as the entity set is parameterised and directly linked to its target entity set.
+     * If a value is provided, navigation routes will always include it.
+     *
+     * @example
+     * Example of the resulting routing entry:
+     * ```
+     * "routes": [
+     *    {
+     *      "pattern": ":?query:",
+     *      "name": "ZC_STOCKAGEINGList",
+     *      "target": "ZC_STOCKAGEINGList"
+     *    },
+     *    {
+     *      "pattern": "ZC_STOCKAGEING({key})/Set({key2}):?query:",
+     *      "name": "ZC_STOCKAGEINGObjectPage",
+     *      "target": "ZC_STOCKAGEINGObjectPage"
+     *    }
+     *  ]
+     * ```
+     * An example of metadata that populates `mainEntityParameterName` can be found in the following file:
+     * {@link packages/odata-service-inquirer/test/unit/prompts/test-data/parameterised-entity-metadata.xml}.
+     */
+    mainEntityParameterName?: string;
+    /**
+     * Configuration for the navigation entity used for object page navigation.
+     */
     navigationEntity?: {
         EntitySet: string; // Defines the entity set for object page navigation
         Name: string; // Defines the entity name for object page navigation
