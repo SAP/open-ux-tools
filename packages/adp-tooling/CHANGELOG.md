@@ -1,5 +1,12 @@
 # @sap-ux/adp-tooling
 
+## 0.14.20
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
 ## 0.14.19
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.20
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+    -   @sap-ux/adp-tooling@0.14.20
+    -   @sap-ux/flp-config-inquirer@0.3.20
+
 ## 0.1.19
 
 ### Patch Changes
