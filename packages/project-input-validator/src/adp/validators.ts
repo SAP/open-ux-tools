@@ -64,9 +64,9 @@ export function validateProjectName(value: string, destinationPath: string, isCu
     }
 
     if (!isCustomerBase) {
-        return validateProjectNameInternal(value, destinationPath);
+        return validateProjectNameInternal(value);
     } else {
-        return validateProjectNameExternal(value, destinationPath);
+        return validateProjectNameExternal(value);
     }
 }
 
@@ -74,10 +74,9 @@ export function validateProjectName(value: string, destinationPath: string, isCu
  * Validates that project name is valid for CUSTOMER_BASE layer.
  *
  * @param {string} value - The project name.
- * @param {string} destinationPath - The project directory.
  * @returns {string | boolean} If value is valid returns true otherwise error message.
  */
-export function validateProjectNameExternal(value: string, destinationPath: string): boolean | string {
+export function validateProjectNameExternal(value: string): boolean | string {
     if (value.length > 61 || value.toLocaleLowerCase().endsWith('component')) {
         return t('adp.projectNameLengthErrorExt');
     }
@@ -86,17 +85,16 @@ export function validateProjectNameExternal(value: string, destinationPath: stri
         return t('adp.projectNameValidationErrorExt');
     }
 
-    return validateDuplicateProjectName(value, destinationPath);
+    return true;
 }
 
 /**
  * Validates that project name is valid for VENDOR layer.
  *
  * @param {string} value - The project name.
- * @param {string} destinationPath - The project directory.
  * @returns {string | boolean} If value is valid returns true otherwise error message.
  */
-export function validateProjectNameInternal(value: string, destinationPath: string): boolean | string {
+export function validateProjectNameInternal(value: string): boolean | string {
     if (
         value.toLowerCase().startsWith('customer') ||
         value.length > 61 ||
@@ -109,7 +107,7 @@ export function validateProjectNameInternal(value: string, destinationPath: stri
         return t('adp.projectNameValidationErrorInt');
     }
 
-    return validateDuplicateProjectName(value, destinationPath);
+    return true;
 }
 
 /**

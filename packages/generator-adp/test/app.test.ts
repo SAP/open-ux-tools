@@ -19,10 +19,16 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
-import type { AttributesAnswers, ConfigAnswers, Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import type { AttributesAnswers, ConfigAnswers, Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
 
+import {
+    existsInWorkspace,
+    showWorkspaceFolderWarning,
+    handleWorkspaceFolderChoice,
+    workspaceChoices
+} from '../src/utils/workspace';
 import adpGenerator from '../src/app';
 import { initI18n, t } from '../src/utils/i18n';
 import type { JsonInput } from '../src/app/types';
@@ -32,9 +38,8 @@ import * as subgenHelpers from '../src/utils/subgenHelpers';
 import { ConfigPrompter } from '../src/app/questions/configuration';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
 
-jest.mock('@sap-devx/feature-toggle-node', () => ({
-    // Is BAS this will mean that the layer is CUSTOMER_BASE
-    isFeatureEnabled: jest.fn().mockResolvedValue(false)
+jest.mock('@sap-ux/feature-toggle', () => ({
+    isInternalFeaturesSettingEnabled: jest.fn().mockReturnValue(false)
 }));
 
 jest.mock('../src/app/questions/helper/default-values.ts', () => ({
@@ -74,7 +79,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     loadApps: jest.fn(),
     getProviderConfig: jest.fn(),
     validateUI5VersionExists: jest.fn(),
-    fetchPublicVersions: jest.fn()
+    fetchPublicVersions: jest.fn(),
+    isCFEnvironment: jest.fn().mockReturnValue(false)
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
@@ -107,6 +113,13 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 jest.mock('uuid', () => ({
     v4: jest.fn().mockReturnValue('mocked-uuid')
+}));
+
+jest.mock('../src/utils/workspace', () => ({
+    ...jest.requireActual('../src/utils/workspace'),
+    existsInWorkspace: jest.fn(),
+    showWorkspaceFolderWarning: jest.fn(),
+    handleWorkspaceFolderChoice: jest.fn()
 }));
 
 const originalCwd = process.cwd();
@@ -171,9 +184,26 @@ const loggerMock: ToolsLogger = {
 jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 const executeCommandSpy = jest.fn();
+const showWarningMessageSpy = jest.fn();
+const getWorkspaceFolderSpy = jest.fn();
+const onDidChangeWorkspaceFoldersSpy = jest.fn();
+const updateWorkspaceFoldersSpy = jest.fn();
+
 const vscodeMock = {
     commands: {
-        executeCommand: executeCommandSpy
+        executeCommand: executeCommandSpy.mockResolvedValue(undefined)
+    },
+    window: {
+        showWarningMessage: showWarningMessageSpy
+    },
+    workspace: {
+        getWorkspaceFolder: getWorkspaceFolderSpy,
+        workspaceFolders: [],
+        onDidChangeWorkspaceFolders: onDidChangeWorkspaceFoldersSpy,
+        updateWorkspaceFolders: updateWorkspaceFoldersSpy
+    },
+    Uri: {
+        file: jest.fn((path: string) => ({ path }))
     }
 };
 
@@ -183,6 +213,9 @@ const mockIsAppStudio = isAppStudio as jest.Mock;
 const getProviderConfigMock = getProviderConfig as jest.Mock;
 const fetchPublicVersionsMock = fetchPublicVersions as jest.Mock;
 const sendTelemetryMock = sendTelemetry as jest.Mock;
+const existsInWorkspaceMock = existsInWorkspace as jest.Mock;
+const showWorkspaceFolderWarningMock = showWorkspaceFolderWarning as jest.Mock;
+const handleWorkspaceFolderChoiceMock = handleWorkspaceFolderChoice as jest.Mock;
 const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
@@ -220,6 +253,9 @@ describe('Adaptation Project Generator Integration Test', () => {
         getCredentialsFromStoreMock.mockResolvedValue(undefined);
 
         fetchPublicVersionsMock.mockResolvedValue(publicVersions);
+        existsInWorkspaceMock.mockReturnValue(true);
+        showWorkspaceFolderWarningMock.mockResolvedValue(workspaceChoices.OPEN_FOLDER);
+        handleWorkspaceFolderChoiceMock.mockResolvedValue(undefined);
     });
 
     beforeAll(async () => {
@@ -285,6 +321,7 @@ describe('Adaptation Project Generator Integration Test', () => {
 
     it('should call composeWith for FLP and Deploy sub-generators and generate a cloud project successfully', async () => {
         mockIsAppStudio.mockReturnValue(false);
+        existsInWorkspaceMock.mockReturnValue(false);
         jest.spyOn(ConfigPrompter.prototype, 'isCloud', 'get').mockReturnValue(true);
         jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
 
@@ -325,7 +362,10 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect.any(Object)
         );
 
-        expect(executeCommandSpy).toHaveBeenCalledTimes(1);
+        expect(executeCommandSpy).toHaveBeenCalledTimes(0);
+        expect(showWorkspaceFolderWarningMock).toHaveBeenCalledTimes(1);
+        expect(handleWorkspaceFolderChoiceMock).toHaveBeenCalledTimes(1);
+
         const generatedDirs = fs.readdirSync(testOutputDir);
         expect(generatedDirs).toContain(answers.projectName);
     });
