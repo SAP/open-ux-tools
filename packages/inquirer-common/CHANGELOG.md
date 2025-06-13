@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.7.10
+
+### Patch Changes
+
+-   bf752f3: Adds more specific cert error messages with GA links.
+
 ## 0.7.9
 
 ### Patch Changes

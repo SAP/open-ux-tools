@@ -1,6 +1,6 @@
 import type { AtoSettings } from '@sap-ux/axios-extension';
 import { AtoService } from '@sap-ux/axios-extension';
-import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
 import type { BackendTarget, Credentials, InitTransportConfigResult, TransportConfig } from '../types';
@@ -136,7 +136,11 @@ class DefaultTransportConfig implements TransportConfig {
                 LoggerHelper.logger.warn(
                     t('warnings.certificateError', { url: backendTarget?.abapTarget?.url, error: err.message })
                 );
-                LoggerHelper.logger.info(ErrorHandler.getHelpForError(ERROR_TYPE.CERT)?.toString());
+                LoggerHelper.logger.info(
+                    `${new ErrorHandler(undefined, undefined, '@sap-ux/abap-deploy-config-inquirer')
+                        .getValidationErrorHelp(err)
+                        ?.toString()}`
+                );
             } else if (err.response?.status === 401) {
                 const auth: string = err.response.headers?.['www-authenticate'];
                 result.transportConfigNeedsCreds = !!auth?.toLowerCase()?.startsWith('basic');
