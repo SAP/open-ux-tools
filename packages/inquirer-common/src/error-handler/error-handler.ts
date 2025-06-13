@@ -335,9 +335,10 @@ export class ErrorHandler {
      *
      * @param logger the logger instance to use
      * @param enableGuidedAnswers if true, the end user validation errors will include guided answers to provide help
+     * @param logPrefix optional, a prefix to be used for the logger to distinguish the source of the log messages
      */
-    constructor(logger?: Logger, enableGuidedAnswers = false) {
-        ErrorHandler._logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
+    constructor(logger?: Logger, enableGuidedAnswers = false, logPrefix?: string) {
+        ErrorHandler._logger = logger ?? new ToolsLogger({ logPrefix: logPrefix ?? '@sap-ux/inquirer-common' });
         ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
     }
 
