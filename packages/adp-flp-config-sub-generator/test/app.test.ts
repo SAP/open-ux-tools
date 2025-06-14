@@ -1,23 +1,25 @@
+import { join } from 'path';
+import fs from 'fs';
+import fsextra from 'fs-extra';
+
 import type { YUIQuestion, CredentialsAnswers } from '@sap-ux/inquirer-common';
 import type { FLPConfigAnswers, TileSettingsAnswers } from '@sap-ux/flp-config-inquirer';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { join } from 'path';
 import yeomanTest from 'yeoman-test';
-import fs from 'fs';
-import fsextra from 'fs-extra';
-import adpFlpConfigGenerator from '../src/app';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as btpUtils from '@sap-ux/btp-utils';
 import * as Logger from '@sap-ux/logger';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
+import * as inquirerCommon from '@sap-ux/inquirer-common';
+import * as projectAccess from '@sap-ux/project-access';
+import type { AbapServiceProvider, InboundContent } from '@sap-ux/axios-extension';
+import { MessageType } from '@sap-devx/yeoman-ui-types';
+
+import adpFlpConfigGenerator from '../src/app';
 import { rimraf } from 'rimraf';
 import { EventName } from '../src/telemetryEvents';
 import * as sysAccess from '@sap-ux/system-access';
 import { t, initI18n } from '../src/utils/i18n';
-import { MessageType } from '@sap-devx/yeoman-ui-types';
-import * as inquirerCommon from '@sap-ux/inquirer-common';
-import * as projectAccess from '@sap-ux/project-access';
-import type { AbapServiceProvider, InboundContent } from '@sap-ux/axios-extension';
 import * as appWizardCache from '../src/utils/appWizardCache';
 
 const originalCwd = process.cwd();
@@ -82,7 +84,6 @@ const loggerMock: ToolsLogger = {
 jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 describe('FLPConfigGenerator Integration Tests', () => {
-    jest.setTimeout(60000);
     jest.spyOn(adpTooling, 'isCFEnvironment').mockReturnValue(false);
     jest.spyOn(sysAccess, 'createAbapServiceProvider').mockResolvedValue({
         isAbapCloud: jest.fn().mockReturnValue(true)
@@ -111,11 +112,11 @@ describe('FLPConfigGenerator Integration Tests', () => {
     };
     const inbounds = {
         'display-bank': {
-            semanticObject: 'test',
-            action: 'action',
-            title: 'testTitle',
-            subTitle: 'testSubTitle',
-            icon: 'sap-icon://test',
+            semanticObject: 'baseAppSo',
+            action: 'baseAppAction',
+            title: 'baseAppTitle',
+            subTitle: 'baseAppSubTitle',
+            icon: 'sap-icon://baseAppIcon',
             signature: {
                 parameters: {
                     param1: {
@@ -149,6 +150,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
     };
     jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
     jest.spyOn(adpTooling, 'getBaseAppInbounds').mockResolvedValue(inbounds);
+    const generateInboundConfigSpy = jest.spyOn(adpTooling, 'generateInboundConfig');
 
     beforeEach(async () => {
         answers = {
@@ -161,7 +163,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             action: 'testAction',
             title: 'testTitle',
             subTitle: 'testSubTitle',
-            additionalParameters: 'param1=test1&param2=test2'
+            additionalParameters: '{"param1":"test1","param2":"test2"}'
         };
     });
 
@@ -180,7 +182,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         rimraf.sync(testOutputDir);
     });
 
-    it('should generate FLP configuration successfully - Application Studio', async () => {
+    it('should generate FLP configuration successfully - Application Studio (REPLACE)', async () => {
         const testPath = join(testOutputDir, 'test_project1');
         fs.mkdirSync(testPath, { recursive: true });
         fsextra.copySync(join(__dirname, 'fixtures/app.variant1'), join(testPath, 'app.variant1'));
@@ -212,14 +214,6 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await expect(runContext.run()).resolves.not.toThrow();
-        const variant = fs.readFileSync(join(testProjectPath, 'webapp', 'manifest.appdescr_variant'), {
-            encoding: 'utf8'
-        });
-        const i18n = fs.readFileSync(join(testProjectPath, 'webapp', 'i18n', 'i18n.properties'), {
-            encoding: 'utf8'
-        });
-        expect(variant).toMatchSnapshot();
-        expect(i18n).toMatchSnapshot();
         expect(sendTelemetrySpy).toBeCalledWith(
             EventName.ADP_FLP_CONFIG_ADDED,
             expect.objectContaining({
@@ -229,6 +223,145 @@ describe('FLPConfigGenerator Integration Tests', () => {
             testProjectPath
         );
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
+        expect(generateInboundConfigSpy).toBeCalledWith(
+            testProjectPath,
+            expect.objectContaining({
+                inboundId: 'baseAppSo-baseAppAction',
+                semanticObject: 'baseAppSo',
+                action: 'baseAppAction',
+                title: 'testTitle',
+                subTitle: 'testSubTitle',
+                icon: 'sap-icon://baseAppIcon',
+                additionalParameters: '{"param1":{"value":"test1","isRequired":true}}'
+            }),
+            expect.anything()
+        );
+    });
+
+    it('should generate FLP configuration successfully - Application Studio (ADD/Copy from existing)', async () => {
+        (answers as TileSettingsAnswers).tileHandlingAction = 'add';
+        (answers as TileSettingsAnswers).copyFromExisting = true;
+        (answers as FLPConfigAnswers).semanticObject = 'testSo_New';
+        (answers as FLPConfigAnswers).action = 'testAct_New';
+
+        const testPath = join(testOutputDir, 'test_project1');
+        fs.mkdirSync(testPath, { recursive: true });
+        fsextra.copySync(join(__dirname, 'fixtures/app.variant1'), join(testPath, 'app.variant1'));
+        const testProjectPath = join(testPath, 'app.variant1');
+
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        const sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                loggerMock,
+                launchAsSubGen: false
+            })
+            .withPrompts(answers);
+
+        await expect(runContext.run()).resolves.not.toThrow();
+        expect(sendTelemetrySpy).toBeCalledWith(
+            EventName.ADP_FLP_CONFIG_ADDED,
+            expect.objectContaining({
+                OperatingSystem: 'testOS',
+                Platform: 'testPlatform'
+            }),
+            testProjectPath
+        );
+        expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
+        expect(generateInboundConfigSpy).toBeCalledWith(
+            testProjectPath,
+            expect.objectContaining({
+                inboundId: 'testSo_New-testAct_New',
+                semanticObject: 'testSo_New',
+                action: 'testAct_New',
+                title: 'testTitle',
+                subTitle: 'testSubTitle',
+                icon: 'sap-icon://baseAppIcon',
+                additionalParameters: '{"param1":"test1","param2":"test2"}'
+            }),
+            expect.anything()
+        );
+    });
+
+    it('should generate FLP configuration successfully - Application Studio (ADD/Create new)', async () => {
+        (answers as TileSettingsAnswers).tileHandlingAction = 'add';
+        (answers as TileSettingsAnswers).copyFromExisting = false;
+        (answers as FLPConfigAnswers).semanticObject = 'testSo_New';
+        (answers as FLPConfigAnswers).action = 'testAct_New';
+        (answers as FLPConfigAnswers).title = 'testTitle_New';
+        (answers as FLPConfigAnswers).subTitle = 'testSubTitle_New';
+        (answers as FLPConfigAnswers).icon = 'sap-icon://Icon_New';
+        (answers as FLPConfigAnswers).additionalParameters = '{"param1":"test1","param2":"test2"}';
+
+        const testPath = join(testOutputDir, 'test_project1');
+        fs.mkdirSync(testPath, { recursive: true });
+        fsextra.copySync(join(__dirname, 'fixtures/app.variant1'), join(testPath, 'app.variant1'));
+        const testProjectPath = join(testPath, 'app.variant1');
+
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        const sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                loggerMock,
+                launchAsSubGen: false
+            })
+            .withPrompts(answers);
+
+        await expect(runContext.run()).resolves.not.toThrow();
+        expect(sendTelemetrySpy).toBeCalledWith(
+            EventName.ADP_FLP_CONFIG_ADDED,
+            expect.objectContaining({
+                OperatingSystem: 'testOS',
+                Platform: 'testPlatform'
+            }),
+            testProjectPath
+        );
+        expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
+        expect(generateInboundConfigSpy).toBeCalledWith(
+            testProjectPath,
+            expect.objectContaining({
+                inboundId: 'testSo_New-testAct_New',
+                semanticObject: 'testSo_New',
+                action: 'testAct_New',
+                title: 'testTitle_New',
+                subTitle: 'testSubTitle_New',
+                icon: 'sap-icon://Icon_New',
+                additionalParameters: '{"param1":"test1","param2":"test2"}'
+            }),
+            expect.anything()
+        );
     });
 
     it('should generate FLP configuration successfully - Application Studio', async () => {
@@ -321,14 +454,6 @@ describe('FLPConfigGenerator Integration Tests', () => {
             })
             .withPrompts(answers);
         await expect(runContext.run()).resolves.not.toThrow();
-        const variant = fs.readFileSync(join(testProjectPath, 'webapp', 'manifest.appdescr_variant'), {
-            encoding: 'utf8'
-        });
-        const i18n = fs.readFileSync(join(testProjectPath, 'webapp', 'i18n', 'i18n.properties'), {
-            encoding: 'utf8'
-        });
-        expect(variant).toMatchSnapshot();
-        expect(i18n).toMatchSnapshot();
         expect(sendTelemetrySpy).toBeCalledWith(
             EventName.ADP_FLP_CONFIG_ADDED,
             expect.objectContaining({
@@ -338,6 +463,19 @@ describe('FLPConfigGenerator Integration Tests', () => {
             testProjectPath
         );
         expect(createAbapServiceProviderSpy).not.toHaveBeenCalled();
+        expect(generateInboundConfigSpy).toBeCalledWith(
+            testProjectPath,
+            expect.objectContaining({
+                inboundId: 'baseAppSo-baseAppAction',
+                semanticObject: 'baseAppSo',
+                action: 'baseAppAction',
+                title: 'testTitle',
+                subTitle: 'testSubTitle',
+                icon: 'sap-icon://baseAppIcon',
+                additionalParameters: '{"param1":{"value":"test1","isRequired":true}}'
+            }),
+            expect.anything()
+        );
     });
 
     it('should generate FLP configuration successfully - VS Code', async () => {

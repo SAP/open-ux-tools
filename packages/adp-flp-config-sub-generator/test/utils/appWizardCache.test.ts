@@ -70,7 +70,7 @@ describe('appWizardCache', () => {
             expect(result).toStrictEqual({ test: '1' });
         });
 
-        it.only('should return undefined if cache or key is missing', () => {
+        it('should return undefined if cache or key is missing', () => {
             const appWizard: any = {};
             expect(getFromCache(appWizard, 'provider', logger)).toBeUndefined();
             expect(getFromCache(undefined, 'provider', logger)).toBeUndefined();
