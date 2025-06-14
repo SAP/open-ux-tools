@@ -67,7 +67,7 @@ export interface InboundIdPromptOptions {
 /**
  * Options for the 'empty inbound label' prompt.
  */
-export interface existingFlpConfigInfo {
+export interface ExistingFlpConfigInfo {
     hide?: boolean;
 }
 
@@ -152,7 +152,7 @@ type flpConfigPromptOptions = Record<promptNames.inboundId, InboundIdPromptOptio
     Record<promptNames.subTitle, SubTitlePromptOptions> &
     Record<promptNames.icon, IconPromptOptions> &
     Record<promptNames.additionalParameters, ParameterStringPromptOptions> &
-    Record<promptNames.existingFlpConfigInfo, existingFlpConfigInfo>;
+    Record<promptNames.existingFlpConfigInfo, ExistingFlpConfigInfo>;
 
 /**
  * The options for the FLP config inquirer & the prompts.

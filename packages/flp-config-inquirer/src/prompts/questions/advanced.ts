@@ -54,7 +54,7 @@ export function getParameterStringPrompt(): FLPConfigQuestion {
             try {
                 JSON.parse(value);
                 return true;
-            } catch (error) {
+            } catch {
                 return t('validators.invalidParameterString');
             }
         },
