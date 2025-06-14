@@ -76,7 +76,7 @@ describe('appWizardCache', () => {
             expect(getFromCache(undefined, 'provider', logger)).toBeUndefined();
         });
     });
-    s;
+
     describe('deleteCache', () => {
         it('should delete the cache from appWizard', () => {
             const appWizard: any = { [ADP_FLP_CONFIG_CACHE]: { foo: 'bar' } };
