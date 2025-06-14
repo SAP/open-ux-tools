@@ -69,21 +69,27 @@ export function getAdpFlpInboundsWriterConfig(
         const {
             semanticObject,
             action,
-            signature: { parameters }
+            signature: { parameters } = {}
         } = flpConfigAnswers.inboundId ?? ({} as InboundContent);
+        const inboundId = !semanticObject || !action ? '' : `${semanticObject}-${action}`;
+
         return {
-            inboundId: `${semanticObject}-${action}`,
+            inboundId,
             semanticObject: semanticObject ?? '',
             action: action ?? '',
             title: flpConfigAnswers.title ?? '',
             subTitle: flpConfigAnswers.subTitle ?? '',
             icon: flpConfigAnswers.icon ?? '',
-            additionalParameters: JSON.stringify(parameters) ?? ''
+            additionalParameters: parameters ? JSON.stringify(parameters) : ''
         };
     }
 
+    const inboundId =
+        !flpConfigAnswers.semanticObject || !flpConfigAnswers.action
+            ? ''
+            : `${flpConfigAnswers.semanticObject}-${flpConfigAnswers.action}`;
     return {
-        inboundId: `${flpConfigAnswers.semanticObject}-${flpConfigAnswers.action}`,
+        inboundId,
         semanticObject: flpConfigAnswers.semanticObject ?? '',
         action: flpConfigAnswers.action ?? '',
         title: flpConfigAnswers.title ?? '',

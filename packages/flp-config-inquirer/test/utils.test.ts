@@ -94,16 +94,16 @@ describe('utils', () => {
     });
 
     describe('getAdpFlpInboundsWriterConfig', () => {
-        it('should return config for REPLACE action', () => {
+        it('should return config for REPLACE scenario', () => {
             const flpConfigAnswers = {
                 inboundId: {
-                    semanticObject: 'so',
-                    action: 'act',
+                    semanticObject: 'semanticObject_Base',
+                    action: 'action_Base',
                     signature: { parameters: { foo: 'bar' } }
                 },
-                title: 'Title',
-                subTitle: 'Sub',
-                icon: 'icon'
+                title: 'title_New',
+                subTitle: 'subTitle_New',
+                icon: 'icon_New'
             };
             const tileSettingsAnswers = { tileHandlingAction: tileActions.REPLACE };
 
@@ -113,40 +113,72 @@ describe('utils', () => {
             );
 
             expect(writerConfig).toEqual({
-                inboundId: 'so-act',
-                semanticObject: 'so',
-                action: 'act',
-                title: 'Title',
-                subTitle: 'Sub',
-                icon: 'icon',
+                inboundId: 'semanticObject_Base-action_Base',
+                semanticObject: 'semanticObject_Base',
+                action: 'action_Base',
+                title: 'title_New',
+                subTitle: 'subTitle_New',
+                icon: 'icon_New',
                 additionalParameters: JSON.stringify({ foo: 'bar' })
             });
         });
 
-        it('should return config for ADD action', () => {
-            const flpConfigAnswers = {
-                semanticObject: 'so2',
-                action: 'act2',
-                title: 'Title2',
-                subTitle: 'Sub2',
-                icon: 'icon2',
-                additionalParameters: 'params'
-            };
-            const tileSettingsAnswers = { tileHandlingAction: tileActions.ADD };
+        it('should return empty strings for config if no answers REPLACE scenario', () => {
+            const tileSettingsAnswers = { tileHandlingAction: tileActions.REPLACE };
 
             const writerConfig = getAdpFlpInboundsWriterConfig(
-                flpConfigAnswers,
+                {} as unknown as FLPConfigAnswers,
                 tileSettingsAnswers as TileSettingsAnswers
             );
 
             expect(writerConfig).toEqual({
-                inboundId: 'so2-act2',
-                semanticObject: 'so2',
-                action: 'act2',
-                title: 'Title2',
-                subTitle: 'Sub2',
-                icon: 'icon2',
-                additionalParameters: 'params'
+                inboundId: '',
+                semanticObject: '',
+                action: '',
+                title: '',
+                subTitle: '',
+                icon: '',
+                additionalParameters: ''
+            });
+        });
+
+        it('should return config for ADD scenario', () => {
+            const flpConfigAnswers = {
+                semanticObject: 'semanticObject_New',
+                action: 'action_New',
+                title: 'title_New',
+                subTitle: 'subTitle_New',
+                icon: 'icon_New',
+                additionalParameters: '{ "param1": "value1" }'
+            };
+            const tileSettingsAnswers = { tileHandlingAction: tileActions.ADD, copyFromExisting: false };
+
+            const writerConfig = getAdpFlpInboundsWriterConfig(flpConfigAnswers, tileSettingsAnswers);
+
+            expect(writerConfig).toEqual({
+                inboundId: 'semanticObject_New-action_New',
+                semanticObject: 'semanticObject_New',
+                action: 'action_New',
+                title: 'title_New',
+                subTitle: 'subTitle_New',
+                icon: 'icon_New',
+                additionalParameters: '{ "param1": "value1" }'
+            });
+        });
+
+        it('should return config emptry strings for config if no answers ADD scenario', () => {
+            const tileSettingsAnswers = { tileHandlingAction: tileActions.ADD, copyFromExisting: false };
+
+            const writerConfig = getAdpFlpInboundsWriterConfig({} as unknown as FLPConfigAnswers, tileSettingsAnswers);
+
+            expect(writerConfig).toEqual({
+                inboundId: '',
+                semanticObject: '',
+                action: '',
+                title: '',
+                subTitle: '',
+                icon: '',
+                additionalParameters: ''
             });
         });
 
