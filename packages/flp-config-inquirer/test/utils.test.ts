@@ -1,6 +1,7 @@
+import * as adpTooling from '@sap-ux/adp-tooling';
+
 import { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } from '../src/utils';
 import { tileActions, type TileSettingsAnswers, type FLPConfigAnswers } from '../src/types';
-import * as adpTooling from '@sap-ux/adp-tooling';
 
 jest.mock('@sap-ux/adp-tooling', () => ({
     flpConfigurationExists: jest.fn()
@@ -9,11 +10,11 @@ jest.mock('@sap-ux/adp-tooling', () => ({
 describe('utils', () => {
     const inbounds = {
         'display-bank': {
-            semanticObject: 'test',
-            action: 'action',
-            title: 'testTitle',
-            subTitle: 'testSubTitle',
-            icon: 'sap-icon://test',
+            semanticObject: 'semanticObject_Base',
+            action: 'action_Base',
+            title: 'title_Base',
+            subTitle: 'subTitle_Base',
+            icon: 'sap-icon://Icon_Base',
             additionalParameters: {}
         }
     };
