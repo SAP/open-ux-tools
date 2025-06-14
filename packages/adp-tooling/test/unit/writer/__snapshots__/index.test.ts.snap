@@ -1904,35 +1904,29 @@ my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle=sampleSubTitle
       }
     },
     {
-      \\"changeType\\": \\"appdescr_app_changeInbound\\",
+      \\"changeType\\": \\"appdescr_app_addNewInbound\\",
       \\"content\\": {
-        \\"inboundId\\": \\"sampleId\\",
-        \\"entityPropertyChange\\": [
-          {
-            \\"propertyPath\\": \\"title\\",
-            \\"operation\\": \\"UPSERT\\",
-            \\"propertyValue\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.sampleId.title}}\\"
-          },
-          {
-            \\"propertyPath\\": \\"subTitle\\",
-            \\"operation\\": \\"UPSERT\\",
-            \\"propertyValue\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle}}\\"
-          },
-          {
-            \\"propertyPath\\": \\"signature/parameters/sap-appvar-id\\",
-            \\"operation\\": \\"UPSERT\\",
-            \\"propertyValue\\": {
-              \\"required\\": true,
-              \\"filter\\": {
-                \\"value\\": \\"my.test.app\\",
-                \\"format\\": \\"plain\\"
-              },
-              \\"launcherValue\\": {
-                \\"value\\": \\"my.test.app\\"
+        \\"inbound\\": {
+          \\"sampleId\\": {
+            \\"title\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.sampleId.title}}\\",
+            \\"signature\\": {
+              \\"additionalParameters\\": \\"allowed\\",
+              \\"parameters\\": {
+                \\"sap-appvar-id\\": {
+                  \\"required\\": true,
+                  \\"filter\\": {
+                    \\"value\\": \\"my.test.app\\",
+                    \\"format\\": \\"plain\\"
+                  },
+                  \\"launcherValue\\": {
+                    \\"value\\": \\"my.test.app\\"
+                  }
+                }
               }
-            }
+            },
+            \\"subTitle\\": \\"{{my.test.app_sap.app.crossNavigation.inbounds.sampleId.subTitle}}\\"
           }
-        ]
+        }
       },
       \\"texts\\": {
         \\"i18n\\": \\"i18n/i18n.properties\\"
