@@ -7,13 +7,15 @@ import {
     getTitlePrompt,
     getSubTitlePrompt,
     getOverwritePrompt,
-    getCreateAnotherInboundPrompt,
-    getEmptyInboundsLabelPrompt,
     getInboundIdsPrompt,
-    getParameterStringPrompt
+    getParameterStringPrompt,
+    getIconPrompt,
+    getExistingFlpConfigInfoPrompt,
+    getTileSettingsPrompts
 } from './questions';
 import { promptNames } from '../types';
-import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
+import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion, TileSettingsAnswers } from '../types';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Generates a list of prompts for FLP (Fiori Launchpad) configuration.
@@ -23,13 +25,11 @@ import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } fr
  * prompts can be customized through the provided `promptOptions` parameter.
  *
  * @param {ManifestNamespace.Inbound | undefined} [inbounds] - Existing inbounds for the application, if any.
- * @param {string | undefined} [appId] - Application ID for generating relevant prompts.
  * @param {FLPConfigPromptOptions | undefined} [promptOptions] - Optional configuration to control prompt behavior and defaults.
  * @returns {FLPConfigQuestion[]} An array of FLPConfigQuestion objects to be used for prompting the user.
  */
 export function getQuestions(
     inbounds?: ManifestNamespace.Inbound,
-    appId?: string,
     promptOptions?: FLPConfigPromptOptions
 ): FLPConfigQuestion[] {
     const inboundKeys = Object.keys(inbounds ?? {});
@@ -38,10 +38,10 @@ export function getQuestions(
     const silentOverwrite = promptOptions?.silentOverwrite ?? false;
 
     const keyedPrompts: Record<promptNames, FLPConfigQuestion> = {
-        [promptNames.inboundId]: getInboundIdsPrompt(inboundKeys),
-        [promptNames.emptyInboundsInfo]: getEmptyInboundsLabelPrompt(inboundKeys, appId),
+        [promptNames.existingFlpConfigInfo]: getExistingFlpConfigInfoPrompt(isCLI),
+        [promptNames.inboundId]: getInboundIdsPrompt(inbounds ?? {}),
         [promptNames.semanticObject]: getSemanticObjectPrompt(isCLI, promptOptions?.[promptNames.semanticObject]),
-        [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action]),
+        [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action], inbounds),
         [promptNames.overwrite]: getOverwritePrompt(
             inboundKeys,
             isCLI,
@@ -54,8 +54,8 @@ export function getQuestions(
             silentOverwrite,
             promptOptions?.[promptNames.subTitle]
         ),
-        [promptNames.additionalParameters]: getParameterStringPrompt(inboundKeys),
-        [promptNames.createAnotherInbound]: getCreateAnotherInboundPrompt(isCLI)
+        [promptNames.icon]: getIconPrompt(promptOptions?.[promptNames.icon]),
+        [promptNames.additionalParameters]: getParameterStringPrompt()
     };
 
     const questions: FLPConfigQuestion[] = Object.entries(keyedPrompts)
@@ -65,5 +65,20 @@ export function getQuestions(
         })
         .map(([_, prompt]) => prompt);
 
+    return questions;
+}
+
+/**
+ * Generates a list of prompts for configuring tile settings in the FLP configuration.
+ *
+ * @param {FLPConfigPromptOptions} [promptOptions] - Optional configuration to control prompt behavior and defaults.
+ * @returns {YUIQuestion<TileSettingsAnswers>[] | FLPConfigQuestion[]} An array of questions for tile settings.
+ */
+export function getTileSettingsQuestions(promptOptions?: FLPConfigPromptOptions): YUIQuestion<TileSettingsAnswers>[] {
+    const isCLI = getHostEnvironment() === hostEnvironment.cli;
+    const questions = getTileSettingsPrompts();
+    if (!promptOptions?.existingFlpConfigInfo?.hide) {
+        questions.unshift(getExistingFlpConfigInfoPrompt(isCLI) as YUIQuestion);
+    }
     return questions;
 }

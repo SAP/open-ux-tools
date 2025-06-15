@@ -102,6 +102,12 @@ export interface SystemInfo {
      */
     adaptationProjectTypes: AdaptationProjectType[];
     activeLanguages: Language[];
+    /**
+     * Inbound objects of the application.
+     *
+     * @since ABAP Platform Cloud 2505
+     */
+    inbounds?: Inbound[];
 }
 
 interface Language {
@@ -109,6 +115,35 @@ interface Language {
     description: string;
     i18n: string;
 }
+
+export interface InboundContent {
+    semanticObject: string;
+    action: string;
+    hideLauncher: boolean;
+    icon: string;
+    title: string;
+    subTitle: string;
+    indicatorDataSource?: {
+        dataSource: string;
+        path: string;
+        /**
+         * Represents refresh interval
+         */
+        refresh?: number;
+        [k: string]: unknown;
+    };
+    deviceTypes?: ManifestNamespace.DeviceType;
+    signature: ManifestNamespace.SignatureDef;
+}
+
+export interface Inbound {
+    metadata: {
+        name: string;
+        deprecated: boolean;
+    };
+    content: InboundContent;
+}
+
 /**
  * Technically supported layers, however, in practice only `CUSTOMER_BASE` is used
  */
@@ -311,11 +346,12 @@ export class LayeredRepositoryService extends Axios implements Service {
     /**
      * Get system info.
      *
-     * @param language
+     * @param language language code (default: EN)
      * @param cloudPackage name
+     * @param appId application id (since ABAP Platform Cloud 2505)
      * @returns the system info object
      */
-    public async getSystemInfo(language: string = 'EN', cloudPackage?: string): Promise<SystemInfo> {
+    public async getSystemInfo(language: string = 'EN', cloudPackage?: string, appId?: string): Promise<SystemInfo> {
         try {
             const params = new URLSearchParams({
                 'sap-language': language
@@ -323,6 +359,10 @@ export class LayeredRepositoryService extends Axios implements Service {
             if (cloudPackage) {
                 params.append('package', cloudPackage);
             }
+            if (appId) {
+                params.append('sap-app-id', appId);
+            }
+
             const response = await this.get(`${DTA_PATH_SUFFIX}system_info`, {
                 params,
                 paramsSerializer: decodeUrlParams

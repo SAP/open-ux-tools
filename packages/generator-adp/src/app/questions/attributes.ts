@@ -24,7 +24,7 @@ import { t } from '../../utils/i18n';
 import { attributePromptNames } from '../types';
 import { getProjectNameTooltip } from './helper/tooltip';
 import { getVersionAdditionalMessages } from './helper/additional-messages';
-import { updateWizardSteps, getDeployPage, getFlpPage } from '../../utils/steps';
+import { updateWizardSteps, getDeployPage, updateFlpWizardSteps } from '../../utils/steps';
 import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values';
 
 interface Config {
@@ -288,13 +288,13 @@ export function getAddDeployConfigPrompt(prompts: YeomanUiSteps, _?: AddDeployCo
  *
  * @param {YeomanUiSteps} prompts - The Yeoman UI pages.
  * @param {boolean} isCloudProject - Whether the project is for a cloud-based system.
- * @param {AddFlpConfigPromptOptions} [_] - Optional prompt options to control visibility.
+ * @param {AddFlpConfigPromptOptions} options - Optional prompt options to control visibility.
  * @returns {AttributesQuestion} The prompt configuration for Add FLP config confirmation.
  */
 export function getFlpConfigPrompt(
     prompts: YeomanUiSteps,
     isCloudProject: boolean,
-    _?: AddFlpConfigPromptOptions
+    options?: AddFlpConfigPromptOptions
 ): AttributesQuestion {
     return {
         type: 'confirm',
@@ -305,8 +305,8 @@ export function getFlpConfigPrompt(
             breadcrumb: true
         },
         when: () => isCloudProject,
-        validate: (value: boolean) => {
-            updateWizardSteps(prompts, getFlpPage(), t('yuiNavSteps.deployConfigName'), value);
+        validate: (value: boolean, answers: AttributesAnswers) => {
+            updateFlpWizardSteps(!!options?.hasBaseAppInbounds, prompts, answers.projectName, value);
             return true;
         }
     } as ConfirmQuestion<AttributesAnswers>;

@@ -2,7 +2,7 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import type { create, Editor } from 'mem-fs-editor';
 
-import { createPropertiesI18nEntries } from '@sap-ux/i18n';
+import { createOrReplaceI18nEntries } from '@sap-ux/i18n';
 
 import { getVariant } from '../../../src/base/helper';
 import { getFlpI18nKeys, updateI18n } from '../../../src/writer/inbound-navigation';
@@ -14,11 +14,11 @@ jest.mock('../../../src/base/helper', () => ({
 }));
 
 jest.mock('@sap-ux/i18n', () => ({
-    createPropertiesI18nEntries: jest.fn()
+    createOrReplaceI18nEntries: jest.fn()
 }));
 
 const getVariantMock = getVariant as jest.Mock;
-const createPropertiesI18nEntriesMock = createPropertiesI18nEntries as jest.Mock;
+const createOrReplaceI18nEntriesMock = createOrReplaceI18nEntries as jest.Mock;
 
 describe('FLP Configuration Functions', () => {
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');
@@ -29,8 +29,10 @@ describe('FLP Configuration Functions', () => {
         title: 'new_title',
         subTitle: 'new_subTitle',
         inboundId: 'displayBank',
-        additionalParameters: 'param1=value1&param2=value2',
-        addInboundId: false
+        additionalParameters: '{"param1":"value1","param2":"value2"}',
+        addInboundId: false,
+        semanticObject: 'SomeSemanticObject',
+        action: 'SomeAction'
     } as InternalInboundNavigation;
 
     let fs: ReturnType<typeof create>;
@@ -50,8 +52,9 @@ describe('FLP Configuration Functions', () => {
 
             expect(getVariantMock).toHaveBeenCalledWith(basePath, expect.any(Object));
             expect(fs.writeJSON).toHaveBeenCalledWith(join(basePath, 'webapp', 'manifest.appdescr_variant'), variant);
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(createOrReplaceI18nEntriesMock).toHaveBeenCalledWith(
                 join(basePath, 'webapp', 'i18n', 'i18n.properties'),
+                expect.any(Array),
                 expect.any(Array),
                 basePath,
                 fs
@@ -65,8 +68,9 @@ describe('FLP Configuration Functions', () => {
 
             expect(fs).toBeDefined();
             expect(getVariantMock).toHaveBeenCalledWith(basePath, expect.any(Object));
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
+            expect(createOrReplaceI18nEntriesMock).toHaveBeenCalledWith(
                 join(basePath, 'webapp', 'i18n', 'i18n.properties'),
+                expect.any(Array),
                 expect.any(Array),
                 basePath,
                 fs
@@ -81,7 +85,6 @@ describe('FLP Configuration Functions', () => {
             await generateInboundConfig(basePath, newConfig, fs);
 
             expect(newConfig.inboundId).toBe(`${variant.id}.InboundID`);
-            expect(newConfig.addInboundId).toBe(true);
         });
     });
 
@@ -118,10 +121,17 @@ describe('FLP Configuration Functions', () => {
                     value: config.subTitle
                 }
             ];
+            const keysToRemove = [`${appId}_sap.app.crossNavigation.inbounds`];
 
             await updateI18n(basePath, appId, config, fs);
 
-            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(i18nPath, expectedEntries, basePath, fs);
+            expect(createOrReplaceI18nEntriesMock).toHaveBeenCalledWith(
+                i18nPath,
+                expectedEntries,
+                keysToRemove,
+                basePath,
+                fs
+            );
         });
     });
 });
