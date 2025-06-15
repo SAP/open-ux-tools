@@ -362,7 +362,6 @@ export class LayeredRepositoryService extends Axios implements Service {
             if (appId) {
                 params.append('sap-app-id', appId);
             }
-            params.append('saml2', 'disabled');
 
             const response = await this.get(`${DTA_PATH_SUFFIX}system_info`, {
                 params,
