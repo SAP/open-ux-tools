@@ -66,7 +66,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -99,7 +99,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },

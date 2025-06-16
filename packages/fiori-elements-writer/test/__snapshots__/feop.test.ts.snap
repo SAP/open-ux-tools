@@ -76,7 +76,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: fefeop1
             action: tile
@@ -132,7 +132,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: fefeop1
             action: tile
@@ -181,7 +181,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: fefeop1
             action: tile
@@ -3810,7 +3810,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: fefeop2ts
             action: tile
@@ -3874,7 +3874,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: fefeop2ts
             action: tile
@@ -3939,7 +3939,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: fefeop2ts
             action: tile

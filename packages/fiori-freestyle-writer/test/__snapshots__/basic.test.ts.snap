@@ -1472,7 +1472,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -1512,7 +1512,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -2274,7 +2274,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -2338,7 +2338,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -2403,7 +2403,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -3156,7 +3156,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -3220,7 +3220,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -3285,7 +3285,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -4023,7 +4023,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -4087,7 +4087,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -4152,7 +4152,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -4667,7 +4667,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -4731,7 +4731,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -4796,7 +4796,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -5250,7 +5250,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -5306,7 +5306,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -5355,7 +5355,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -5814,7 +5814,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -5870,7 +5870,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -5919,7 +5919,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -6638,7 +6638,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -6694,7 +6694,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -6743,7 +6743,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -7461,7 +7461,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -7517,7 +7517,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -7566,7 +7566,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -8284,7 +8284,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -8340,7 +8340,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -8389,7 +8389,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -9589,7 +9589,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -9645,7 +9645,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display
@@ -9694,7 +9694,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: nods1
             action: display

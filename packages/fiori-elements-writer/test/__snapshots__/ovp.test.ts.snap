@@ -82,7 +82,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp1
             action: tile
@@ -140,7 +140,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp1
             action: tile
@@ -191,7 +191,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp1
             action: tile
@@ -1842,7 +1842,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp1
             action: tile
@@ -1908,7 +1908,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp1
             action: tile
@@ -1975,7 +1975,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp1
             action: tile
@@ -3365,7 +3365,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp2
             action: tile
@@ -3421,7 +3421,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp2
             action: tile
@@ -3470,7 +3470,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp2
             action: tile
@@ -9360,7 +9360,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp2
             action: tile
@@ -9424,7 +9424,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp2
             action: tile
@@ -9489,7 +9489,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp2
             action: tile
@@ -15116,7 +15116,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp2
             action: tile
@@ -15172,7 +15172,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp2
             action: tile
@@ -15221,7 +15221,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp2
             action: tile
@@ -21056,7 +21056,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp2
             action: tile
@@ -21112,7 +21112,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp2
             action: tile
@@ -21161,7 +21161,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: feovp2
             action: tile

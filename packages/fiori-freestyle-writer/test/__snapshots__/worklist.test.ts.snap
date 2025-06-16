@@ -79,7 +79,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -132,7 +132,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -178,7 +178,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -6842,7 +6842,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -6901,7 +6901,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -6950,7 +6950,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -10215,7 +10215,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3_dark
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -10268,7 +10268,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3_dark
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -10314,7 +10314,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3_dark
-          path: flpSandbox.html
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -13214,7 +13214,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -13281,7 +13281,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -13346,7 +13346,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -16608,7 +16608,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -16675,7 +16675,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -16740,7 +16740,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:

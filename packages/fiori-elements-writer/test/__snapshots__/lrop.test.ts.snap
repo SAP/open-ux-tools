@@ -79,7 +79,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop2
             action: tile
@@ -139,7 +139,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop2
             action: tile
@@ -191,7 +191,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop2
             action: tile
@@ -3714,7 +3714,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop2
             action: tile
@@ -3774,7 +3774,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop2
             action: tile
@@ -3826,7 +3826,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop2
             action: tile
@@ -7404,7 +7404,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv2ts
             action: tile
@@ -7472,7 +7472,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv2ts
             action: tile
@@ -7540,7 +7540,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv2ts
             action: tile
@@ -10859,7 +10859,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop1
             action: tile
@@ -10915,7 +10915,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop1
             action: tile
@@ -10964,7 +10964,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop1
             action: tile
@@ -14551,7 +14551,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop194
             action: tile
@@ -14607,7 +14607,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop194
             action: tile
@@ -14656,7 +14656,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop194
             action: tile
@@ -19464,7 +19464,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv4addtests
             action: tile
@@ -19520,7 +19520,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv4addtests
             action: tile
@@ -19569,7 +19569,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv4addtests
             action: tile
@@ -25049,7 +25049,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv4annotationreuselib
             action: tile
@@ -25105,7 +25105,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv4annotationreuselib
             action: tile
@@ -25154,7 +25154,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv4annotationreuselib
             action: tile
@@ -26404,7 +26404,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felropui5
             action: tile
@@ -26460,7 +26460,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felropui5
             action: tile
@@ -26509,7 +26509,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felropui5
             action: tile
@@ -30096,7 +30096,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felropui5
             action: tile
@@ -30152,7 +30152,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felropui5
             action: tile
@@ -30201,7 +30201,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felropui5
             action: tile
@@ -33792,7 +33792,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop3
             action: tile
@@ -33852,7 +33852,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop3
             action: tile
@@ -33904,7 +33904,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: felrop3
             action: tile
@@ -40487,7 +40487,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2settoolsId
             action: tile
@@ -40547,7 +40547,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2settoolsId
             action: tile
@@ -40599,7 +40599,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2settoolsId
             action: tile
@@ -44123,7 +44123,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2settoolsIdonly
             action: tile
@@ -44183,7 +44183,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2settoolsIdonly
             action: tile
@@ -44235,7 +44235,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2settoolsIdonly
             action: tile
@@ -47814,7 +47814,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2tsui51108
             action: tile
@@ -47882,7 +47882,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2tsui51108
             action: tile
@@ -47950,7 +47950,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2tsui51108
             action: tile
@@ -51316,7 +51316,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2tsui51111
             action: tile
@@ -51384,7 +51384,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2tsui51111
             action: tile
@@ -51452,7 +51452,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2tsui51111
             action: tile
@@ -54818,7 +54818,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2tsui51113
             action: tile
@@ -54886,7 +54886,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2tsui51113
             action: tile
@@ -54954,7 +54954,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropV2tsui51113
             action: tile
@@ -58260,7 +58260,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv2ts
             action: tile
@@ -58306,7 +58306,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv2ts
             action: tile
@@ -58724,7 +58724,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv2ts
             action: tile
@@ -58784,7 +58784,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv2ts
             action: tile
@@ -58836,7 +58836,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: lropv2ts
             action: tile

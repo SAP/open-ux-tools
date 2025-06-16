@@ -101,7 +101,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -134,7 +134,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -355,7 +355,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: appwithnamespace
             action: display
@@ -391,7 +391,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
           intent:
             object: appwithnamespace
             action: display
@@ -613,7 +613,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -646,7 +646,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -1109,7 +1109,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -1142,7 +1142,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -2017,7 +2017,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -2061,7 +2061,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
-          path: flpSandbox.html
+          path: test/flpSandbox.html
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
