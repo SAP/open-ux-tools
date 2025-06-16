@@ -97,9 +97,9 @@ describe('validateFioriAppTargetFolder Windows path length logic', () => {
         const combinedLength = `${target}\\${name}`.length;
         const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
         if (process.platform === 'win32' && combinedLength >= 256) {
-            expect(result).toBe(`ui5.windowsFolderPathTooLong`);
+            expect(result).toBe(`general.windowsFolderPathTooLong`);
         } else {
-            expect(result).not.toBe(`ui5.windowsFolderPathTooLong`);
+            expect(result).not.toBe(`general.windowsFolderPathTooLong`);
         }
     });
 
@@ -108,7 +108,7 @@ describe('validateFioriAppTargetFolder Windows path length logic', () => {
         const name = 'app';
         const validateFioriAppFolder = true;
         const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
-        expect(result).not.toContain(`ui5.windowsFolderPathTooLong`);
+        expect(result).not.toContain(`general.windowsFolderPathTooLong`);
     });
 
     test('returns true on non-win32 platforms', async () => {

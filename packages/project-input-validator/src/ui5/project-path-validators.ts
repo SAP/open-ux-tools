@@ -1,6 +1,31 @@
 import { findRootsForPath, findCapProjectRoot, getCapProjectType } from '@sap-ux/project-access';
 import { validateProjectFolder } from './validators';
 import { t } from '../i18n';
+
+/**
+ * Checks if the combined Windows path length exceeds the default limit (256).
+ *
+ * @param basePath The base path (e.g., target folder or mtaPath)
+ * @param id The name, id, or additional segment to append
+ * @param tFunc The translation function to use for the error message
+ * @param errorKey The translation key for the error message
+ * @returns true if valid, or the error message if too long
+ */
+export function validateWindowsPathLength(
+    basePath: string,
+    id: string,
+    tFunc: typeof t,
+    errorKey: string
+): true | string {
+    if (process.platform === 'win32') {
+        const combinedLength = `${basePath}\\${id}`.length;
+        if (combinedLength >= 256) {
+            return tFunc(errorKey, { length: combinedLength });
+        }
+    }
+    return true;
+}
+
 /**
  * Returns true if the specified target path does not contain a Fiori project.
  *
@@ -58,11 +83,9 @@ export async function validateFioriAppTargetFolder(
         return isProjectValid;
     }
     // Windows path length validation
-    if (process.platform === 'win32') {
-        const combinedLength = `${targetPath}\\${appName}`.length;
-        if (combinedLength >= 256) {
-            return t('ui5.windowsFolderPathTooLong', { length: combinedLength });
-        }
+    const winPathResult = validateWindowsPathLength(targetPath, appName, t, 'general.windowsFolderPathTooLong');
+    if (winPathResult !== true) {
+        return winPathResult;
     }
     return true;
 }

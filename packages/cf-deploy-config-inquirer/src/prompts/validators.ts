@@ -3,6 +3,7 @@ import type { CfSystemChoice, CfAppRouterDeployConfigAnswers } from '../types';
 import { existsSync } from 'fs';
 import { join } from 'path';
 import type { ErrorHandler } from '@sap-ux/inquirer-common';
+import { validateWindowsPathLength } from '@sap-ux/project-input-validator';
 
 /**
  *
@@ -94,11 +95,9 @@ export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployC
     }
     const mtaPath = previousAnswers.mtaPath || '';
     // Windows path length validation
-    if (process.platform === 'win32') {
-        const combinedLength = `${mtaPath}\\${input}`.length;
-        if (combinedLength >= 256) {
-            return t('error.windowsMtaIdPathTooLong', { length: combinedLength });
-        }
+    const winPathResult = validateWindowsPathLength(mtaPath, input, t, 'error.windowsMtaIdPathTooLong');
+    if (winPathResult !== true) {
+        return winPathResult;
     }
     // All checks passed
     return true;

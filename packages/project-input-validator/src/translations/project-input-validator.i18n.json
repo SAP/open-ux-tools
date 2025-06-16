@@ -43,8 +43,7 @@
         "moduleAlreadyExists": "The module folder named: {{folderName}} already exists at the specified path",
         "appFolderExistsAtPath": "A module with this name already exists in the folder: {{-path}}",
         "folderContainsFioriApp": "The project folder path already contains an SAP Fiori application in the folder: {{-path}}. Please choose a different folder and try again.",
-        "folderContainsCapApp": "The selected project folder is part of an existing CAP project. This application must therefore use the local CAP project as the data source.",
-        "windowsFolderPathTooLong": "The combined length {{length}} of the target folder and module name exceeds the default Windows path length. This can cause issues with project generation."
+        "folderContainsCapApp": "The selected project folder is part of an existing CAP project. This application must therefore use the local CAP project as the data source."        
     },
     "general": {
         "invalidUrl": "Invalid URL: [{{-input}}]",
@@ -54,7 +53,8 @@
         "invalidJSON": "Invalid JSON",
         "invalidValueForSpecialChars": "Input must contain only Latin alphanumeric characters or the following symbols: '-','_','$' and '.'",
         "maxLength": "Maximum length: {{maxLength}} characters",
-        "supportedFormats": "Only alphanumeric and '{{allowedCharacters}}' characters are allowed"
+        "supportedFormats": "Only alphanumeric and '{{allowedCharacters}}' characters are allowed",
+        "windowsFolderPathTooLong": "The combined length {{length}} of the target folder and module name exceeds the default Windows path length. This can cause issues with project generation."
     },
     "adp": {
         "projectNameUppercaseError": "The name cannot contain uppercase letters.",
