@@ -193,7 +193,9 @@ describe('getTransportConfigInstance', () => {
             credentials: {}
         });
         expect(transportConfigResult3.transportConfigNeedsCreds).toBe(undefined);
-        expect(transportConfigResult3.warning).toContain('A certificate error has occurred Need help with this error?');
+        expect(transportConfigResult3.warning).toContain(
+            'The system URL is using a self-signed security certificate. Need help with this error?'
+        );
         // Expect GA link to be logged
         expect(loggerSpy).toHaveBeenCalledWith(
             t('warnings.certificateError', { url: 'https://example.com', error: 'self signed certificate' })

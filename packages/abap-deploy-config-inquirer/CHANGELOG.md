@@ -1,5 +1,27 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.4.17
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.11
+
+## 1.4.16
+
+### Patch Changes
+
+-   bf752f3: Adds more specific cert error messages with GA links.
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
+## 1.4.15
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+    -   @sap-ux/system-access@0.6.4
+
 ## 1.4.14
 
 ### Patch Changes
