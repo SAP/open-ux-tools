@@ -1,5 +1,13 @@
 # @sap-ux/adp-tooling
 
+## 0.14.23
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/ui5-info@0.12.0
+    -   @sap-ux/inquirer-common@0.7.12
+
 ## 0.14.22
 
 ### Patch Changes
