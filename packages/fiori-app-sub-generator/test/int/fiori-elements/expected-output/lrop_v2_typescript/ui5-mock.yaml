@@ -30,6 +30,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: flpSandbox.html
+          intent:
+            object: testNameSpacelropv2typescript
+            action: tile
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:

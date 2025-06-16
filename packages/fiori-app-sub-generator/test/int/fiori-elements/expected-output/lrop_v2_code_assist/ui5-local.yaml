@@ -29,6 +29,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: flpSandbox.html
+          intent:
+            object: testNameSpacelropv2codeassist
+            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:

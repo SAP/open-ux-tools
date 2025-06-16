@@ -113,6 +113,7 @@ function getPreviewMiddlewareOpts(app: App, ui5Theme: string, useVirtualPreviewE
         }),
         // only add flp intent if not using virtual endpoints (default `app-preview` will be used by middleware)
         ...(!useVirtualPreviewEndpoints && {
+            localStartFile: app.localStartFile ?? 'flpSandbox.html',
             flpAction: app.flpAction,
             appId: app.id
         })

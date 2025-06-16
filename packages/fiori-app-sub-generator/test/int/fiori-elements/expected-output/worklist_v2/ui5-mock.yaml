@@ -30,6 +30,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: flpSandbox.html
+          intent:
+            object: testNameSpaceworklistv2
+            action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:

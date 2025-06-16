@@ -37,7 +37,6 @@ import {
     generateToolsId,
     getAnnotations,
     getAppId,
-    getFlpId,
     getMinSupportedUI5Version
 } from '../utils';
 import type { Package } from '@sap-ux/project-access';
@@ -316,10 +315,7 @@ function getBaseAppConfig(
             id: appId,
             title: project.title,
             description: project.description,
-            flpAppId: getFlpId(
-                appId,
-                floorplan === FloorplanFF.FF_SIMPLE ? defaultNavActionDisplay : defaultNavActionTile
-            ),
+            flpAction: floorplan === FloorplanFF.FF_SIMPLE ? defaultNavActionDisplay : defaultNavActionTile,
             sourceTemplate: {
                 toolsId: generateToolsId()
             },
