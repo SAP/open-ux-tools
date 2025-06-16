@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.20.35
+
+### Patch Changes
+
+-   59771f3: fix: Bump required versions of SAPUI5 for using ElementRegistry and RTA plugins
+
 ## 0.20.34
 
 ### Patch Changes
