@@ -133,9 +133,8 @@ export function getTargetFolderPrompt(targetDir: string, validateFioriAppFolder?
         default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
         validate: async (target, answers: UI5ApplicationAnswers): Promise<boolean | string> => {
             const { name = '' } = answers;
-            const { namespace = '' } = answers;
             if (name.length > 2) {
-                return await validateFioriAppTargetFolder(target, name, validateFioriAppFolder, namespace);
+                return await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
             }
             return false;
         }

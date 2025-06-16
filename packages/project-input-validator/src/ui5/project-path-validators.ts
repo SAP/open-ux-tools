@@ -40,14 +40,12 @@ async function validateFioriAppProjectFolder(targetDir: string): Promise<string 
  * @param targetPath - The target directory path where the Fiori app is to be created.
  * @param appName - The application directory name.
  * @param validateFioriAppFolder - If true, validates the target path as a Fiori App project folder.
- * @param namespace
  * @returns A boolean value `true` if all validations pass; otherwise, an error message.
  */
 export async function validateFioriAppTargetFolder(
     targetPath: string,
     appName: string,
-    validateFioriAppFolder?: boolean,
-    namespace?: string
+    validateFioriAppFolder?: boolean
 ): Promise<string | boolean> {
     if (validateFioriAppFolder === true) {
         const isFioriValid = await validateFioriAppProjectFolder(targetPath);
@@ -61,7 +59,7 @@ export async function validateFioriAppTargetFolder(
     }
     // Windows path length validation
     if (process.platform === 'win32') {
-        const combinedLength = `${targetPath}\\${namespace || ''}\\${appName}`.length;
+        const combinedLength = `${targetPath}\\${appName}`.length;
         if (combinedLength >= 256) {
             return t('ui5.windowsFolderPathTooLong', { length: combinedLength });
         }

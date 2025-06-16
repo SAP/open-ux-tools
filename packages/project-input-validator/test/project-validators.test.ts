@@ -93,10 +93,9 @@ describe('validateFioriAppTargetFolder Windows path length logic', () => {
     test('returns error when combined path length >= 256', async () => {
         const target = 'C:'.padEnd(253, 'a');
         const name = 'project1';
-        const namespace = 'abc';
         const validateFioriAppFolder = true;
-        const combinedLength = `${target}\\${namespace}\\${name}`.length;
-        const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder, namespace);
+        const combinedLength = `${target}\\${name}`.length;
+        const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
         if (process.platform === 'win32' && combinedLength >= 256) {
             expect(result).toBe(`ui5.windowsFolderPathTooLong`);
         } else {
@@ -107,9 +106,8 @@ describe('validateFioriAppTargetFolder Windows path length logic', () => {
     test('returns true when path length < 256', async () => {
         const target = 'C:\\short\\path';
         const name = 'app';
-        const namespace = 'ns';
         const validateFioriAppFolder = true;
-        const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder, namespace);
+        const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
         expect(result).not.toContain(`ui5.windowsFolderPathTooLong`);
     });
 
@@ -120,18 +118,16 @@ describe('validateFioriAppTargetFolder Windows path length logic', () => {
         });
         const target = '/Users/test/path';
         const name = 'app';
-        const namespace = 'ns';
         const validateFioriAppFolder = true;
-        const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder, namespace);
+        const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
         expect(result).not.toContain('Path too long');
     });
 
     test('handles missing name and namespace gracefully', async () => {
         const target = 'C:\\short\\path';
         const name = '';
-        const namespace = '';
         const validateFioriAppFolder = true;
-        const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder, namespace);
+        const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
         expect(result).not.toContain('Path too long');
     });
 });
