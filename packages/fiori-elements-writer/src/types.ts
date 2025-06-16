@@ -45,18 +45,16 @@ export interface EntityConfig {
      * "routes": [
      *    {
      *      "pattern": ":?query:",
-     *      "name": "ZC_STOCKAGEINGList",
-     *      "target": "ZC_STOCKAGEINGList"
+     *      "name": "ProductsList",
+     *      "target": "ProductsList"
      *    },
      *    {
-     *      "pattern": "ZC_STOCKAGEING({key})/Set({key2}):?query:",
-     *      "name": "ZC_STOCKAGEINGObjectPage",
-     *      "target": "ZC_STOCKAGEINGObjectPage"
+     *      "pattern": "Products({key})/ProductFilter({key2}):?query:",
+     *      "name": "ProductsObjectPage",
+     *      "target": "ProductsObjectPage"
      *    }
      *  ]
      * ```
-     * An example of metadata that populates `mainEntityParameterName` can be found in the following file:
-     * {@link packages/odata-service-inquirer/test/unit/prompts/test-data/parameterised-entity-metadata.xml}.
      */
     mainEntityParameterName?: string;
     /**
