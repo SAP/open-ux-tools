@@ -1,5 +1,14 @@
 # @sap-ux/generator-adp
 
+## 0.3.22
+
+### Patch Changes
+
+-   65edfba: feat(generator-adp): Align @ui5/cli with latest v4 release
+-   Updated dependencies [65edfba]
+    -   @sap-ux/adp-tooling@0.14.22
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.22
+
 ## 0.3.21
 
 ### Patch Changes
