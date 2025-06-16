@@ -142,4 +142,53 @@ describe('project input validators', () => {
             expect(output).toContain(t('general.invalidValueForSpecialChars'));
         });
     });
+
+    describe('validateWindowsPathLength', () => {
+        const errorMessage = 'Path too long: {length}';
+        let validateWindowsPathLength: (basePath: string, errorMessage: string) => true | string;
+
+        beforeEach(async () => {
+            ({ validateWindowsPathLength } = await import('../src/general/project-path-validators'));
+        });
+
+        afterEach(() => {
+            jest.resetModules();
+        });
+
+        it('returns true if not on win32', () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, 'platform', { value: 'darwin' });
+            expect(validateWindowsPathLength('C:/short/path', errorMessage)).toBe(true);
+            Object.defineProperty(process, 'platform', { value: originalPlatform });
+        });
+
+        it('returns true if path length < 256 on win32', () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, 'platform', { value: 'win32' });
+            expect(validateWindowsPathLength('a'.repeat(255), errorMessage)).toBe(true);
+            Object.defineProperty(process, 'platform', { value: originalPlatform });
+        });
+
+        it('returns error message with length if path length >= 256 on win32', () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, 'platform', { value: 'win32' });
+            const longPath = 'a'.repeat(256);
+            expect(validateWindowsPathLength(longPath, errorMessage)).toBe('Path too long: 256');
+            Object.defineProperty(process, 'platform', { value: originalPlatform });
+        });
+
+        it('returns true for empty path', () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, 'platform', { value: 'win32' });
+            expect(validateWindowsPathLength('', errorMessage)).toBe(true);
+            Object.defineProperty(process, 'platform', { value: originalPlatform });
+        });
+
+        it('returns true for undefined path', () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, 'platform', { value: 'win32' });
+            expect(validateWindowsPathLength(undefined as unknown as string, errorMessage)).toBe(true);
+            Object.defineProperty(process, 'platform', { value: originalPlatform });
+        });
+    });
 });
