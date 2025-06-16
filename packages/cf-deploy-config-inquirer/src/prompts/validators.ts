@@ -95,7 +95,7 @@ export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployC
     }
     const mtaPath = previousAnswers.mtaPath || '';
     // Windows path length validation
-    const winPathResult = validateWindowsPathLength(mtaPath, input, t, 'error.windowsMtaIdPathTooLong');
+    const winPathResult = validateWindowsPathLength(join(mtaPath, input), t('error.windowsMtaIdPathTooLong'));
     if (winPathResult !== true) {
         return winPathResult;
     }
