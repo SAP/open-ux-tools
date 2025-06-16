@@ -40,6 +40,13 @@ export interface EntityConfig {
      * If a value is provided, navigation routes will always include it.
      *
      * @example
+     * Example input:
+     * ```
+     * {
+     *   mainEntityName: `Products`,
+     *   mainEntityParameterName: 'ProductFilter'
+     * }
+     * ```
      * Example of the resulting routing entry:
      * ```
      * "routes": [
