@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.14.22
+
+### Patch Changes
+
+-   65edfba: feat(generator-adp): Align @ui5/cli with latest v4 release
+
 ## 0.14.21
 
 ### Patch Changes
