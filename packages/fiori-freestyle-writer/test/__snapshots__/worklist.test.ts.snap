@@ -80,6 +80,9 @@ server:
         flp:
           theme: sap_belize
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -133,6 +136,9 @@ server:
         flp:
           theme: sap_belize
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -179,6 +185,9 @@ server:
         flp:
           theme: sap_belize
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
 ",
     "state": "modified",
   },
@@ -6843,6 +6852,9 @@ server:
         flp:
           theme: sap_belize
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -6902,6 +6914,9 @@ server:
         flp:
           theme: sap_belize
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -6951,6 +6966,9 @@ server:
         flp:
           theme: sap_belize
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
 ",
     "state": "modified",
   },
@@ -10216,6 +10234,9 @@ server:
         flp:
           theme: sap_fiori_3_dark
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -10269,6 +10290,9 @@ server:
         flp:
           theme: sap_fiori_3_dark
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -10315,6 +10339,9 @@ server:
         flp:
           theme: sap_fiori_3_dark
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
 ",
     "state": "modified",
   },
@@ -13215,6 +13242,9 @@ server:
         flp:
           theme: sap_belize
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -13282,6 +13312,9 @@ server:
         flp:
           theme: sap_belize
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -13347,6 +13380,9 @@ server:
         flp:
           theme: sap_belize
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -16609,6 +16645,9 @@ server:
         flp:
           theme: sap_horizon
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -16676,6 +16715,9 @@ server:
         flp:
           theme: sap_horizon
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -16741,6 +16783,9 @@ server:
         flp:
           theme: sap_horizon
           path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:

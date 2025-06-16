@@ -75,6 +75,9 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -128,6 +131,9 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -174,6 +180,9 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
 ",
     "state": "modified",
   },
@@ -1194,6 +1203,9 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -1247,6 +1259,9 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -1293,6 +1308,9 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
 ",
     "state": "modified",
   },
@@ -3870,6 +3888,9 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -3923,6 +3944,9 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -3969,6 +3993,9 @@ server:
         flp:
           theme: sap_fiori_3
           path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
 ",
     "state": "modified",
   },

@@ -6,6 +6,7 @@ import type { BasicAppSettings, FioriApp, FreestyleApp } from './types';
 
 const defaultVirtualPreviewFile = 'test/flp.html'; // Default virtual preview file name
 const defaultIntent = 'app-preview';
+const defaultNavActionDisplay = 'display';
 
 /**
  * Set defaults for missing parameters on the given Fiori/UI5 app instance.
@@ -14,7 +15,8 @@ const defaultIntent = 'app-preview';
  */
 function setAppDefaults(app: FioriApp): void {
     app.baseComponent = app.baseComponent || 'sap/ui/core/UIComponent';
-    app.flpAppId = app.flpAppId || getFlpId(app.id, app.flpAction ?? 'display');
+    app.flpAction = app.flpAction || defaultNavActionDisplay;
+    app.flpAppId = app.flpAppId || getFlpId(app.id, app.flpAction);
 }
 
 /**

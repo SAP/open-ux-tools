@@ -315,7 +315,6 @@ function getBaseAppConfig(
             id: appId,
             title: project.title,
             description: project.description,
-            flpAction: floorplan === FloorplanFF.FF_SIMPLE ? defaultNavActionDisplay : defaultNavActionTile,
             sourceTemplate: {
                 toolsId: generateToolsId()
             },

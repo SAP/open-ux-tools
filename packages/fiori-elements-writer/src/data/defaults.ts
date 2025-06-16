@@ -27,6 +27,7 @@ import { getFlpId } from '@sap-ux/fiori-generator-shared';
 const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
 const defaultVirtualPreviewFile = 'test/flp.html'; // Default virtual preview file name
 const defaultIntent = 'app-preview';
+const defaultNavActionTile = 'tile';
 
 /**
  * Sets defaults for relevant parameters (`flpAppId`, `startFile`, `localStartFile`,  ) when virtual endpoints are used.
@@ -125,6 +126,7 @@ function setFioriAppDefaults(app: FioriApp, templateType: TemplateType, serviceV
     // Generate base UI5 project
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     app.baseComponent = app.baseComponent || getBaseComponent(templateType, serviceVersion);
+    app.flpAction = app.flpAction || defaultNavActionTile;
     // create `flpAppId` if not already added
     app.flpAppId = app.flpAppId || getFlpId(app.id, app.flpAction);
 }
