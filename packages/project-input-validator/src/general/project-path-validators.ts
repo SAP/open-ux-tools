@@ -1,5 +1,5 @@
 import { findRootsForPath, findCapProjectRoot, getCapProjectType } from '@sap-ux/project-access';
-import { validateProjectFolder } from './validators';
+import { validateProjectFolder } from '../ui5/validators';
 import { t } from '../i18n';
 import { join } from 'path';
 
@@ -29,12 +29,12 @@ export function validateWindowsPathLength(basePath: string, errorMessage: string
 async function validateFioriAppProjectFolder(targetDir: string): Promise<string | boolean> {
     // Check if the target directory contains a CAP project
     if (!!(await findCapProjectRoot(targetDir, false)) || !!(await getCapProjectType(targetDir))) {
-        return t('ui5.folderContainsCapApp');
+        return t('general.folderContainsCapApp');
     }
     // Check if the target directory contains a Fiori project
     const appRoot = await findRootsForPath(targetDir);
     if (appRoot) {
-        return t('ui5.folderContainsFioriApp', { path: appRoot.appRoot });
+        return t('general.folderContainsFioriApp', { path: appRoot.appRoot });
     } else {
         return true;
     }
