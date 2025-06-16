@@ -4,6 +4,7 @@ describe('integration: validateFioriAppTargetFolder calls validateWindowsPathLen
     });
 
     it('should call validateWindowsPathLength when validating target folder', () => {
+        // Mock Windows platform
         const originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
         Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
 
@@ -24,15 +25,23 @@ describe('integration: validateFioriAppTargetFolder calls validateWindowsPathLen
                         const spy = projectValidators.validateWindowsPathLength as jest.Mock;
                         const longTarget = 'C:'.padEnd(253, 'a');
                         const name = 'project1';
-                        return projectValidators.validateFioriAppTargetFolder(longTarget, name, true).then(() => {
-                            expect(spy).toHaveBeenCalled();
-                            if (originalPlatform) {
-                                Object.defineProperty(process, 'platform', originalPlatform);
-                            }
-                            resolve();
-                        });
+                        return projectValidators.validateFioriAppTargetFolder(longTarget, name, true)
+                            .then(() => {
+                                expect(spy).toHaveBeenCalled();
+                                // Reset platform after test
+                                if (originalPlatform) {
+                                    Object.defineProperty(process, 'platform', originalPlatform);
+                                }
+                                resolve();
+                            });
                     })
-                    .catch(reject);
+                    .catch((err) => {
+                        // Always reset platform even on error
+                        if (originalPlatform) {
+                            Object.defineProperty(process, 'platform', originalPlatform);
+                        }
+                        reject(err);
+                    });
             });
         });
     });
