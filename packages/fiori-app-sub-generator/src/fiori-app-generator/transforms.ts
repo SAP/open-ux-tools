@@ -27,9 +27,7 @@ import {
     FloorplanFF,
     MAIN_DATASOURCE_NAME,
     MAIN_MODEL_NAME,
-    UI5_VERSION_PROPS,
-    defaultNavActionDisplay,
-    defaultNavActionTile
+    UI5_VERSION_PROPS
 } from '../types';
 import {
     assignSapUxLayerValue,
