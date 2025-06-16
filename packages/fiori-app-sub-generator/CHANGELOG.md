@@ -1,5 +1,73 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.4.21
+
+### Patch Changes
+
+-   20cc54f: enhance theme retrieval for latest UI5 versions
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/ui5-info@0.12.0
+    -   @sap-ux/ui5-application-inquirer@0.14.12
+    -   @sap-ux/launch-config@0.10.4
+    -   @sap-ux/odata-service-inquirer@2.4.21
+
+## 0.4.20
+
+### Patch Changes
+
+-   Updated dependencies [7f35f6c]
+    -   @sap-ux/ui5-info@0.11.1
+    -   @sap-ux/launch-config@0.10.3
+    -   @sap-ux/ui5-application-inquirer@0.14.11
+    -   @sap-ux/odata-service-inquirer@2.4.20
+
+## 0.4.19
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.4.19
+-   @sap-ux/ui5-application-inquirer@0.14.10
+
+## 0.4.18
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.38
+-   @sap-ux/fiori-elements-writer@2.4.17
+-   @sap-ux/odata-service-inquirer@2.4.18
+
+## 0.4.17
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+    -   @sap-ux/odata-service-inquirer@2.4.18
+
+## 0.4.16
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+    -   @sap-ux/odata-service-inquirer@2.4.17
+
+## 0.4.15
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.37
+-   @sap-ux/fiori-elements-writer@2.4.16
+-   @sap-ux/odata-service-inquirer@2.4.16
+
+## 0.4.14
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.36
+-   @sap-ux/fiori-elements-writer@2.4.15
+-   @sap-ux/odata-service-inquirer@2.4.16
+
 ## 0.4.13
 
 ### Patch Changes

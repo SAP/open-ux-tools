@@ -1,5 +1,50 @@
 # @sap-ux/preview-middleware
 
+## 0.20.34
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.23
+
+## 0.20.33
+
+### Patch Changes
+
+-   Updated dependencies [65edfba]
+    -   @sap-ux/adp-tooling@0.14.22
+
+## 0.20.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.21
+
+## 0.20.31
+
+### Patch Changes
+
+-   a9e93ff: fix: disable cards generator for CAP projects
+
+## 0.20.30
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.20
+
+## 0.20.29
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.19
+-   @sap-ux/system-access@0.6.4
+
+## 0.20.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.18
+-   @sap-ux/system-access@0.6.3
+
 ## 0.20.27
 
 ### Patch Changes
