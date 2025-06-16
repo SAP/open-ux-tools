@@ -1,5 +1,24 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.4.22
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.39
+-   @sap-ux/fiori-elements-writer@2.4.18
+-   @sap-ux/odata-service-inquirer@2.4.21
+
+## 0.4.21
+
+### Patch Changes
+
+-   20cc54f: enhance theme retrieval for latest UI5 versions
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/ui5-info@0.12.0
+    -   @sap-ux/ui5-application-inquirer@0.14.12
+    -   @sap-ux/launch-config@0.10.4
+    -   @sap-ux/odata-service-inquirer@2.4.21
+
 ## 0.4.20
 
 ### Patch Changes

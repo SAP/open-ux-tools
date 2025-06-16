@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.12.0
+
+### Minor Changes
+
+-   20cc54f: enhance theme retrieval for latest UI5 versions
+
 ## 0.11.1
 
 ### Patch Changes
