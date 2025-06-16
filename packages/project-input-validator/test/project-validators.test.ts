@@ -1,7 +1,8 @@
 import { findCapProjectRoot, getCapProjectType, findRootsForPath } from '@sap-ux/project-access';
-import { t } from '../src/i18n';
+import { validateFioriAppTargetFolder } from '../src/general/project-path-validators';
+import { initI18nProjectValidators, t } from '../src/i18n';
 import { validateProjectFolder } from '../src/ui5/validators';
-import { join } from 'path';
+import * as generalValidators from '../src/general/validators';
 
 jest.mock('@sap-ux/project-access', () => ({
     ...jest.requireActual('@sap-ux/project-access'),
@@ -16,15 +17,13 @@ jest.mock('../src/ui5/validators', () => ({
 }));
 
 describe('validateFioriAppTargetFolder', () => {
-    let validateFioriAppTargetFolder: (
-        targetPath: string,
-        appName: string,
-        validateFioriAppFolder?: boolean
-    ) => Promise<string | boolean>;
+    beforeAll(async () => {
+        await initI18nProjectValidators();
+    });
+
     beforeEach(async () => {
         jest.clearAllMocks();
         jest.restoreAllMocks();
-        ({ validateFioriAppTargetFolder } = await import('../src/general/project-path-validators'));
     });
 
     it('should return an error message if a CAP project is found in the target directory', async () => {
@@ -42,7 +41,7 @@ describe('validateFioriAppTargetFolder', () => {
         (findRootsForPath as jest.Mock).mockReturnValue({ appRoot: '/path/to/fioriAppRoot' });
 
         const result = await validateFioriAppTargetFolder('/path/to/dir', 'AppName', true);
-        expect(result).toBe(t('general.folderContainsFioriApp'));
+        expect(result).toBe(t('general.folderContainsFioriApp', { path: '/path/to/fioriAppRoot' }));
     });
 
     it('should return true if no Fiori project is found in the target directory', async () => {
@@ -63,5 +62,19 @@ describe('validateFioriAppTargetFolder', () => {
 
         const result = await validateFioriAppTargetFolder('/path/to/dir', 'AppName', false);
         expect(result).toBe(t('ui5.folderDoesNotExist'));
+    });
+
+    it('should call `validateWindowsPathLength` validator', async () => {
+        (findCapProjectRoot as jest.Mock).mockReturnValue(null);
+        (getCapProjectType as jest.Mock).mockReturnValue(null);
+        (findRootsForPath as jest.Mock).mockReturnValue(null);
+        (validateProjectFolder as jest.Mock).mockReturnValue(true);
+        const valWinPathSpy = jest.spyOn(generalValidators, 'validateWindowsPathLength').mockReturnValue(true);
+
+        await validateFioriAppTargetFolder('/path/to/dir', 'appname1', false);
+        expect(valWinPathSpy as jest.Mock).toHaveBeenCalledWith(
+            '/path/to/dir/appname1',
+            'The combined length {{length}} of the target folder and module name exceeds the default Windows path length. This can cause issues with project generation.'
+        );
     });
 });

@@ -130,3 +130,20 @@ export function validateSpecialChars(value: string, regexp = '^[a-zA-Z0-9_$.\\-]
 
     return t('general.invalidValueForSpecialChars');
 }
+
+/**
+ * Checks if the combined Windows path length exceeds the default limit (256).
+ *
+ * @param basePath The base path (e.g., target folder or mtaPath) + the name, id, or additional segment to append
+ * @param errorMessage The error message to return if the path is too long. Use `{length}` as a placeholder for the actual length.
+ * @returns true if valid, or the error message if too long
+ */
+export function validateWindowsPathLength(basePath: string, errorMessage: string): true | string {
+    if (process.platform === 'win32') {
+        const combinedLength = `${basePath}`.length;
+        if (combinedLength >= 256) {
+            return errorMessage.replace('{{length}}', combinedLength.toString());
+        }
+    }
+    return true;
+}

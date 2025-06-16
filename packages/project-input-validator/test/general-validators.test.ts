@@ -6,7 +6,8 @@ import {
     validateJSON,
     validateSpecialChars,
     validateMaxLength,
-    validateAllowedCharacters
+    validateAllowedCharacters,
+    validateWindowsPathLength
 } from '../src/general/validators';
 import { initI18nProjectValidators, t } from '../src/i18n';
 
@@ -144,12 +145,7 @@ describe('project input validators', () => {
     });
 
     describe('validateWindowsPathLength', () => {
-        const errorMessage = 'Path too long: {length}';
-        let validateWindowsPathLength: (basePath: string, errorMessage: string) => true | string;
-
-        beforeEach(async () => {
-            ({ validateWindowsPathLength } = await import('../src/general/project-path-validators'));
-        });
+        const errorMessage = 'Path too long: {{length}}';
 
         afterEach(() => {
             jest.resetModules();

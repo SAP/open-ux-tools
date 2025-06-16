@@ -1,24 +1,8 @@
-import { findRootsForPath, findCapProjectRoot, getCapProjectType } from '@sap-ux/project-access';
-import { validateProjectFolder } from '../ui5/validators';
-import { t } from '../i18n';
+import { findCapProjectRoot, findRootsForPath, getCapProjectType } from '@sap-ux/project-access';
 import { join } from 'path';
-
-/**
- * Checks if the combined Windows path length exceeds the default limit (256).
- *
- * @param basePath The base path (e.g., target folder or mtaPath) + the name, id, or additional segment to append
- * @param errorMessage The error message to return if the path is too long. Use `{length}` as a placeholder for the actual length.
- * @returns true if valid, or the error message if too long
- */
-export function validateWindowsPathLength(basePath: string, errorMessage: string): true | string {
-    if (process.platform === 'win32') {
-        const combinedLength = `${basePath}`.length;
-        if (combinedLength >= 256) {
-            return errorMessage.replace('{length}', String(combinedLength));
-        }
-    }
-    return true;
-}
+import { t } from '../i18n';
+import { validateProjectFolder } from '../ui5/validators';
+import { validateWindowsPathLength } from './validators';
 
 /**
  * Returns true if the specified target path does not contain a Fiori project.
@@ -55,6 +39,9 @@ async function validateFioriAppProjectFolder(targetDir: string): Promise<string 
  * 3. **General Project Folder Check:**
  *    - Uses `validateProjectFolder()` to verify if the provided target path exists.
  *    - Ensures the target folder does not already contain a subfolder with the intended project name.
+ *
+ * 4. **Windows Path Length Validation:**
+ *   - Validates the combined path length of the target directory and application name against the Windows max path length limit (256 characters).
  *
  * @param targetPath - The target directory path where the Fiori app is to be created.
  * @param appName - The application directory name.
