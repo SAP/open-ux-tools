@@ -24,18 +24,16 @@ describe('integration: validateFioriAppTargetFolder calls validateWindowsPathLen
                         const spy = projectValidators.validateWindowsPathLength as jest.Mock;
                         const longTarget = 'C:'.padEnd(253, 'a');
                         const name = 'project1';
-                        return projectValidators.validateFioriAppTargetFolder(longTarget, name, true)
-                            .then(() => {
-                                expect(spy).toHaveBeenCalled();
-                                if (originalPlatform) {
-                                    Object.defineProperty(process, 'platform', originalPlatform);
-                                }
-                                resolve();
-                            });
+                        return projectValidators.validateFioriAppTargetFolder(longTarget, name, true).then(() => {
+                            expect(spy).toHaveBeenCalled();
+                            if (originalPlatform) {
+                                Object.defineProperty(process, 'platform', originalPlatform);
+                            }
+                            resolve();
+                        });
                     })
                     .catch(reject);
             });
         });
     });
 });
-
