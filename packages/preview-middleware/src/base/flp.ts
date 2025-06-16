@@ -261,7 +261,7 @@ export class FlpSandbox {
                 this.isFlexConnector(connector)
             );
             this.logger.debug(
-                `The Fiori Tools fake connector (FakeLrepConnector) is being used because the current UI5 version does not support the local connector (WorkspaceConnector).`
+                `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it. The Fiori Tools fake connector (FakeLrepConnector) will be used instead.`
             );
         } else {
             this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
