@@ -3,6 +3,7 @@ import { validateFioriAppTargetFolder } from '../src/general/project-path-valida
 import { initI18nProjectValidators, t } from '../src/i18n';
 import { validateProjectFolder } from '../src/ui5/validators';
 import * as generalValidators from '../src/general/validators';
+import { join } from 'path';
 
 jest.mock('@sap-ux/project-access', () => ({
     ...jest.requireActual('@sap-ux/project-access'),
@@ -73,7 +74,7 @@ describe('validateFioriAppTargetFolder', () => {
 
         await validateFioriAppTargetFolder('/path/to/dir', 'appname1', false);
         expect(valWinPathSpy as jest.Mock).toHaveBeenCalledWith(
-            '/path/to/dir/appname1',
+            join('/path/to/dir', 'appname1'),
             'The combined length {{length}} of the target folder and module name exceeds the default Windows path length. This can cause issues with project generation.'
         );
     });
