@@ -1,5 +1,13 @@
 # @sap-ux/inquirer-common
 
+## 0.7.12
+
+### Patch Changes
+
+-   20cc54f: enhance theme retrieval for latest UI5 versions
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/ui5-info@0.12.0
+
 ## 0.7.11
 
 ### Patch Changes
