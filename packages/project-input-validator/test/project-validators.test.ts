@@ -32,7 +32,7 @@ describe('validateFioriAppTargetFolder', () => {
         (findRootsForPath as jest.Mock).mockReturnValue(null);
 
         const result = await validateFioriAppTargetFolder('/path/to/dir', 'AppName', true);
-        expect(result).toBe(t('general.folderContainsCapApp'));
+        expect(result).toBe(t('ui5.folderContainsCapApp'));
     });
 
     it('should return an error message if a Fiori project is found in the target directory', async () => {
@@ -41,7 +41,7 @@ describe('validateFioriAppTargetFolder', () => {
         (findRootsForPath as jest.Mock).mockReturnValue({ appRoot: '/path/to/fioriAppRoot' });
 
         const result = await validateFioriAppTargetFolder('/path/to/dir', 'AppName', true);
-        expect(result).toBe(t('general.folderContainsFioriApp', { path: '/path/to/fioriAppRoot' }));
+        expect(result).toBe(t('ui5.folderContainsFioriApp', { path: '/path/to/fioriAppRoot' }));
     });
 
     it('should return true if no Fiori project is found in the target directory', async () => {

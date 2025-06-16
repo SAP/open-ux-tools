@@ -13,12 +13,12 @@ import { validateWindowsPathLength } from './validators';
 async function validateFioriAppProjectFolder(targetDir: string): Promise<string | boolean> {
     // Check if the target directory contains a CAP project
     if (!!(await findCapProjectRoot(targetDir, false)) || !!(await getCapProjectType(targetDir))) {
-        return t('general.folderContainsCapApp');
+        return t('ui5.folderContainsCapApp');
     }
     // Check if the target directory contains a Fiori project
     const appRoot = await findRootsForPath(targetDir);
     if (appRoot) {
-        return t('general.folderContainsFioriApp', { path: appRoot.appRoot });
+        return t('ui5.folderContainsFioriApp', { path: appRoot.appRoot });
     } else {
         return true;
     }
