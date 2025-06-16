@@ -1,4 +1,4 @@
-// Last content update: Mon Feb 10 2025 23:35:57 GMT+0100 (Mitteleuropäische Normalzeit)
+// Last content update: Sat Jun 14 2025 13:41:16 GMT+0200 (Mitteleuropäische Sommerzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -33,6 +33,14 @@ export default {
                 {
                     '$Namespace': 'com.sap.vocabularies.Common.v1',
                     '$Alias': 'Common'
+                }
+            ]
+        },
+        'https://sap.github.io/odata-vocabularies/vocabularies/Hierarchy.json': {
+            '$Include': [
+                {
+                    '$Namespace': 'com.sap.vocabularies.Hierarchy.v1',
+                    '$Alias': 'Hierarchy'
                 }
             ]
         }
@@ -211,6 +219,139 @@ export default {
                     'Adding a list of other terms that can be annotated to it.',
                 '@Org.OData.Validation.V1.ApplicableTerms': ['com.sap.vocabularies.Common.v1.Label']
             }
+        },
+        'MultiLevelExpand': [
+            {
+                '$Kind': 'Function',
+                '$EntitySetPath': 'InputSet',
+                '$IsBound': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description':
+                    '`$apply` transformation that expands an unnamed leveled hierarchy with custom aggregation of certain properties',
+                '@Org.OData.Core.V1.LongDescription':
+                    'Example transformation sequence:\nfilter on columns `Industry`, `Amount` and `Currency`,\norder by `Amount` descending,\nshow 2 levels, with two exceptions\npreceded by one row with a leaves count and one row with the grand total\n```\n$apply=filter(Industry in (\'IT\',\'AI\'))\n/groupby((Country,Region,Segment,Industry),\n         filter($these/aggregate(Amount) gt 0 and\n                $these/aggregate(Currency) ne null))\n/concat(\n  groupby((Country,Region,Segment,Industry))\n    /aggregate($count as LeavesCount),\n  aggregate(Amount,Currency),\n  Analytics.MultiLevelExpand(\n    LevelProperties=[{"DimensionProperties":["Country"],"AdditionalProperties":["CountryName"]},\n                     {"DimensionProperties":["Region"],"AdditionalProperties":["RegionName"]},\n                     {"DimensionProperties":["Segment","Industry"],"AdditionalProperties":[]}],\n    Aggregation=["Amount","Currency"],\n    SiblingOrder=[{"Property":"Amount","Descending":true}],\n    Levels=2,\n    ExpandLevels=[{"Entry":["US"],"Levels":0},\n                  {"Entry":["DE","BW"],"Levels":1}]\n  )/concat(aggregate($count as ResultEntriesCount),\n           skip(20)/top(10)))\n```\n',
+                '$Parameter': [
+                    {
+                        '$Name': 'InputSet',
+                        '$Collection': true,
+                        '$Type': 'Edm.EntityType',
+                        '@Org.OData.Core.V1.Description': 'Entity set to be processed'
+                    },
+                    {
+                        '$Name': 'LevelProperties',
+                        '$Collection': true,
+                        '$Type': 'com.sap.vocabularies.Analytics.v1.MultiLevelExpandLevel',
+                        '@Org.OData.Core.V1.Description':
+                            'Collection of aggregation levels forming a leveled hierarchy',
+                        '@Org.OData.Core.V1.LongDescription':
+                            'Each element in the collection defines the properties that constitute one level.\n            A property must not be referenced by more than one level.\n            The first element in the collection defines the property names of the coarsest level,\n            the following elements define the property names of consecutively finer-grained aggregation levels.\n            The function result is the leveled hierarchy with these levels in preorder,\n            entries on the finest-grained level cannot be expanded further.\n            The result does not contain a level representing a root or grand total.\n            All referenced properties must be groupable.'
+                    },
+                    {
+                        '$Name': 'Aggregation',
+                        '$Collection': true,
+                        '@Org.OData.Core.V1.Description':
+                            'Properties to aggregate for all result entries on all levels',
+                        '@Org.OData.Core.V1.LongDescription':
+                            'All properties in this collection must be custom aggregates.'
+                    },
+                    {
+                        '$Name': 'SiblingOrder',
+                        '$Collection': true,
+                        '$Type': 'com.sap.vocabularies.Analytics.v1.MultiLevelExpandSiblingOrder',
+                        '@Org.OData.Core.V1.Description':
+                            'Sort specification to apply to all direct descendants of a given entry (so-called siblings) in the resulting leveled hierarchy'
+                    },
+                    {
+                        '$Name': 'Levels',
+                        '$Type': 'Edm.Int64',
+                        '@Org.OData.Core.V1.Description': 'Number N of levels to be shown in the initial expansion',
+                        '@Org.OData.Core.V1.LongDescription':
+                            'The initial expansion shows the first N levels as defined in `LevelProperties` (1 ≤ N ≤ length of `LevelProperties`).\n            If this parameter is omitted, all levels are shown.',
+                        '@Org.OData.Core.V1.OptionalParameter': {}
+                    },
+                    {
+                        '$Name': 'ExpandLevels',
+                        '$Collection': true,
+                        '$Type': 'com.sap.vocabularies.Analytics.v1.MultiLevelExpandEntry',
+                        '@Org.OData.Core.V1.Description': 'Entries with exceptional expansion',
+                        '@Org.OData.Core.V1.OptionalParameter': {}
+                    },
+                    {
+                        '$Name': 'SubtotalsAtBottom',
+                        '$Type': 'Edm.Boolean',
+                        '@Org.OData.Core.V1.Description':
+                            'Whether to duplicate the group headers so that they appear before and after their descendants',
+                        '@Org.OData.Core.V1.LongDescription':
+                            'The entry before has [DrillState](Hierarchy.md#HierarchyType) `expanded`,\n            the entry after has DrillState `subtotal`.',
+                        '@Org.OData.Core.V1.OptionalParameter': {
+                            'DefaultValue': 'false'
+                        }
+                    }
+                ],
+                '$ReturnType': {
+                    '$Collection': true,
+                    '$Type': 'Edm.EntityType',
+                    '@Org.OData.Core.V1.Description':
+                        'Output set including the instance annotation [`LevelInformation`](#LevelInformation)'
+                }
+            }
+        ],
+        'MultiLevelExpandLevel': {
+            '$Kind': 'ComplexType',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'Property names constituting a level in an [unnamed leveled hierarchy](#MultiLevelExpand)',
+            '@Org.OData.Core.V1.LongDescription':
+                '`DimensionProperties` must be used to identify entries in [`ExpandEntries/Entry`](#MultiLevelExpandEntry),\n          otherwise they have the same effect as `AdditionalProperties`.',
+            'DimensionProperties': {
+                '$Collection': true,
+                '@Org.OData.Core.V1.Description':
+                    'A non-empty list of property names that define a combination of dimension values'
+            },
+            'AdditionalProperties': {
+                '$Collection': true,
+                '@Org.OData.Core.V1.Description':
+                    'A possibly empty list of names of additional properties of the dimensions that occur in `DimensionProperties`'
+            }
+        },
+        'MultiLevelExpandSiblingOrder': {
+            '$Kind': 'ComplexType',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description': 'Sibling order in an [unnamed leveled hierarchy](#MultiLevelExpand)',
+            'Property': {
+                '@Org.OData.Core.V1.Description': 'Property by which to sort'
+            },
+            'Descending': {
+                '$Type': 'Edm.Boolean',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Sort direction, ascending if not specified otherwise'
+            }
+        },
+        'MultiLevelExpandEntry': {
+            '$Kind': 'ComplexType',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'Expansion state of an entry in an [unnamed leveled hierarchy](#MultiLevelExpand)',
+            'Entry': {
+                '$Collection': true,
+                '@Org.OData.Core.V1.Description':
+                    'An entry on a given [level](#MultiLevelExpandLevel) is identified by a list of values for the `DimensionProperties` that constitute all levels up to and including the given one',
+                '@Org.OData.Core.V1.LongDescription': 'The values are cast to strings as in the OData `cast` function.'
+            },
+            'Levels': {
+                '$Type': 'Edm.Int64',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description':
+                    'Number of levels to be expanded, null means all levels, 0 means collapsed'
+            }
+        },
+        'LevelInformation': {
+            '$Kind': 'Term',
+            '$Type': 'com.sap.vocabularies.Hierarchy.v1.HierarchyType',
+            '$AppliesTo': ['EntityType'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'Information about grouping levels in the result set of a request including the [`MultiLevelExpand`](#MultiLevelExpand) transformation'
         }
     }
 } as CSDL;
