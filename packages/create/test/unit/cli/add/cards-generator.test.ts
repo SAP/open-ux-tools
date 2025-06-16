@@ -5,6 +5,10 @@ import { Command } from 'commander';
 import type { Store } from 'mem-fs';
 import type { Editor, create } from 'mem-fs-editor';
 import { join } from 'path';
+import * as projectAccess from '@sap-ux/project-access';
+
+jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
+jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
 
 jest.mock('mem-fs-editor', () => {
     const editor = jest.requireActual<{ create: typeof create }>('mem-fs-editor');

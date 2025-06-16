@@ -2,6 +2,10 @@ import { enableCardGeneratorConfig } from '../../../src/cards-config';
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import * as projectAccess from '@sap-ux/project-access';
+
+jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
+jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
 
 function createTestFs(basePath: string) {
     const fs = create(createStorage());
