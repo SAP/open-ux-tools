@@ -131,8 +131,7 @@ export function getTargetFolderPrompt(targetDir: string, validateFioriAppFolder?
             breadcrumb: t('prompts.targetFolder.breadcrumb')
         },
         default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
-        validate: async (target, answers: UI5ApplicationAnswers): Promise<boolean | string> => {
-            const { name = '' } = answers;
+        validate: async (target, { name = '' }: UI5ApplicationAnswers): Promise<boolean | string> => {
             if (name.length > 2) {
                 return await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
             }

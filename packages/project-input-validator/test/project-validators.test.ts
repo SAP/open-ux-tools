@@ -2,6 +2,7 @@ import { validateFioriAppTargetFolder } from '../src/ui5/project-path-validators
 import { findCapProjectRoot, getCapProjectType, findRootsForPath } from '@sap-ux/project-access';
 import { t } from '../src/i18n';
 import { validateProjectFolder } from '../src/ui5/validators';
+import { validateWindowsPathLength } from '../src/ui5/project-path-validators';
 
 jest.mock('@sap-ux/project-access', () => ({
     ...jest.requireActual('@sap-ux/project-access'),
@@ -129,5 +130,35 @@ describe('validateFioriAppTargetFolder Windows path length logic', () => {
         const validateFioriAppFolder = true;
         const result = await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
         expect(result).not.toContain('Path too long');
+    });
+});
+
+describe('validateWindowsPathLength', () => {
+    const errorMessage = 'Path too long: {length}';
+
+    afterEach(() => {
+        jest.resetModules();
+    });
+
+    it('returns true if not on win32', () => {
+        const originalPlatform = process.platform;
+        Object.defineProperty(process, 'platform', { value: 'darwin' });
+        expect(validateWindowsPathLength('C:/short/path', errorMessage)).toBe(true);
+        Object.defineProperty(process, 'platform', { value: originalPlatform });
+    });
+
+    it('returns true if path length < 256 on win32', () => {
+        const originalPlatform = process.platform;
+        Object.defineProperty(process, 'platform', { value: 'win32' });
+        expect(validateWindowsPathLength('a'.repeat(255), errorMessage)).toBe(true);
+        Object.defineProperty(process, 'platform', { value: originalPlatform });
+    });
+
+    it('returns error message with length if path length >= 256 on win32', () => {
+        const originalPlatform = process.platform;
+        Object.defineProperty(process, 'platform', { value: 'win32' });
+        const longPath = 'a'.repeat(256);
+        expect(validateWindowsPathLength(longPath, errorMessage)).toBe('Path too long: 256');
+        Object.defineProperty(process, 'platform', { value: originalPlatform });
     });
 });
