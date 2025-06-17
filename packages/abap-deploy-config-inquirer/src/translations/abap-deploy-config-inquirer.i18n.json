@@ -35,7 +35,7 @@
             "app": {
                 "ui5AbapRepo": {
                     "message": "SAPUI5 ABAP Repository",
-                    "messageMaxLength": "Maximum length: 15 characters. Must start with {{ applicationPrefix }}).",
+                    "messageMaxLength": "SAPUI5 ABAP Repository (Maximum length: 15 characters. Must start with {{ applicationPrefix }}).",
                     "hint": "Enter the name for the deployed application. The name must follow the rules of creating a BSP application. It must not exceed 15 characters and must consist of alphanumeric characters or underscores only. The name must be unique in the BSP repository and its namespace must be compatible with the selected package."
                 },
                 "description": {
