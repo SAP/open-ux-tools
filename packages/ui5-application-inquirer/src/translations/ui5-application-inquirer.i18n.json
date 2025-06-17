@@ -47,7 +47,7 @@
             "breadcrumb": "Virtual Endpoints"
         },
         "showAdvanced": {
-            "message": "Configure Advanced Pptions",
+            "message": "Configure Advanced Options",
             "tooltip": "Choosing 'No' will apply the default options."
         },
         "ui5Theme": {
