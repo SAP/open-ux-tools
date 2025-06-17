@@ -1,5 +1,14 @@
 # @sap-ux/generator-adp
 
+## 0.3.25
+
+### Patch Changes
+
+-   Updated dependencies [c9f79c1]
+    -   @sap-ux/project-input-validator@0.6.3
+    -   @sap-ux/adp-tooling@0.14.25
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.25
+
 ## 0.3.24
 
 ### Patch Changes
