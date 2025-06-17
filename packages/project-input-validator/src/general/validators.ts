@@ -132,10 +132,10 @@ export function validateSpecialChars(value: string, regexp = '^[a-zA-Z0-9_$.\\-]
 }
 
 /**
- * Checks if the combined Windows path length exceeds the default limit (256).
+ * Checks if the combined Windows path length exceeds the default limit (256 chracters).
  *
- * @param basePath The base path (e.g., target folder or mtaPath) + the name, id, or additional segment to append
- * @param errorMessage The error message to return if the path is too long. Use `{length}` as a placeholder for the actual length.
+ * @param basePath The base path (e.g., target folder or mtaPath) + the name, ID, or additional segment to be appended
+ * @param errorMessage The error message to be returned if the path is too long. Use `{length}` as a placeholder for the actual length.
  * @returns true if valid, or the error message if too long
  */
 export function validateWindowsPathLength(basePath: string, errorMessage: string): true | string {
