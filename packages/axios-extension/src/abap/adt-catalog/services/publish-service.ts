@@ -8,7 +8,7 @@ export class PublishService extends AdtService {
     /**
      * @see AdtService.getAdtCatagory()
      */
-    private static adtCategory = {
+    private static readonly adtCategory = {
         scheme: 'http://www.sap.com/categories/servicebindings/bindingtypes',
         term: 'ODataV4'
     };

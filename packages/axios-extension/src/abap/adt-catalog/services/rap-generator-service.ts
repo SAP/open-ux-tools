@@ -9,7 +9,7 @@ export class RapGeneratorService extends AdtService {
     /**
      * @see AdtService.getAdtCategory()
      */
-    private static adtCategory = {
+    private static readonly adtCategory = {
         scheme: 'http://www.sap.com/adt/categories/respository',
         term: 'generators'
     };
@@ -23,7 +23,7 @@ export class RapGeneratorService extends AdtService {
         return RapGeneratorService.adtCategory;
     }
 
-    private id: string;
+    private readonly id: string;
 
     /**
      * Get the RAP Generator (published-x-ui-service).
@@ -41,7 +41,7 @@ export class RapGeneratorService extends AdtService {
             }
         });
 
-        let generators = (this.parseResponse<any>(response.data).feed?.entry || []) as GeneratorEntry[];
+        let generators = (this.parseResponse<any>(response.data).feed?.entry ?? []) as GeneratorEntry[];
         if (generators && !Array.isArray(generators)) {
             generators = [generators];
         }
