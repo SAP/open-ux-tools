@@ -5,7 +5,7 @@ import { create } from 'mem-fs-editor';
 import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview } from '../common/utils';
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { FileName, findProjectRoot, getProjectType, type Package, readUi5Yaml } from '@sap-ux/project-access';
+import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
 import { updateMiddlewaresForPreview } from '../common/ui5-yaml';
 
 const DEPENDENCY_NAME = '@sap-ux/cards-editor-middleware';
@@ -118,13 +118,8 @@ export async function enableCardGeneratorConfig(
     fs?: Editor
 ): Promise<Editor> {
     fs = fs ?? create(createStorage());
-    const projectType = await getProjectType(await findProjectRoot(basePath, true, true));
-    if (projectType === 'CAPJava' || projectType === 'CAPNodejs') {
-        logger?.warn(`Adding the card generator configuration is not supported for CAP projects.`);
-    } else {
-        await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
-        await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
-        await updatePackageJson(basePath, fs, yamlPath, logger);
-    }
+    await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
+    await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
+    await updatePackageJson(basePath, fs, yamlPath, logger);
     return fs;
 }
