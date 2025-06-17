@@ -120,7 +120,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
     "guiOptions": {
       "hint": "Choosing 'No' will apply the default options.",
     },
-    "message": "Configure Advanced Pptions",
+    "message": "Configure Advanced Options",
     "name": "showAdvanced",
     "type": "confirm",
   },
