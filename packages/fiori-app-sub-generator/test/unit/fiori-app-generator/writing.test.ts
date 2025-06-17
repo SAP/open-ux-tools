@@ -158,14 +158,15 @@ describe('`writing` tests', () => {
                 template: 'Basic',
                 generatorName: '@sap/some-generator',
                 launchText:
-                    'In order to launch the generated app, simply start your CAP project and navigate to the following location in your browser:' +
+                    'To launch the generated app, start your CAP project:  and navigate to the following location in your browser:' +
                     '\n\nhttp://localhost:4004/someProjectName/webapp/index.html',
                 enableCodeAssist: false,
                 enableEslint: false,
                 enableTypeScript: false,
                 entityRelatedConfig: [],
                 externalParameters: { label: 'label1', value: 'value1' },
-                metadataFilename: ''
+                metadataFilename: '',
+                serviceId: undefined,
             };
             const project: Project = { ...baseProject };
             const service: Service = {
@@ -215,7 +216,7 @@ describe('`writing` tests', () => {
                 template: 'Basic',
                 generatorName: '@sap/some-generator',
                 launchText:
-                    'In order to launch the generated app, simply start your CAP project and navigate to the following location in your browser:' +
+                    'To launch the generated app, start your CAP project:  and navigate to the following location in your browser:' +
                     '\n\nhttp://localhost:4004/someProjectName/webapp/index.html',
                 enableCodeAssist: false,
                 enableEslint: false,
@@ -225,7 +226,8 @@ describe('`writing` tests', () => {
                     { type: 'Navigation Entity', value: 'navigationProperty1' },
                     { type: 'Filter Entity Type', value: 'filterEntitySetName1' }
                 ],
-                metadataFilename: ''
+                metadataFilename: '',
+                serviceId: undefined,
             };
             const project: Project = { ...baseProject };
             const service: Service = {
