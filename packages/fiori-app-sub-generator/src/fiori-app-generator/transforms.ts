@@ -27,9 +27,7 @@ import {
     FloorplanFF,
     MAIN_DATASOURCE_NAME,
     MAIN_MODEL_NAME,
-    UI5_VERSION_PROPS,
-    defaultNavActionDisplay,
-    defaultNavActionTile
+    UI5_VERSION_PROPS
 } from '../types';
 import {
     assignSapUxLayerValue,
@@ -37,7 +35,6 @@ import {
     generateToolsId,
     getAnnotations,
     getAppId,
-    getFlpId,
     getMinSupportedUI5Version
 } from '../utils';
 import type { Package } from '@sap-ux/project-access';
@@ -316,10 +313,6 @@ function getBaseAppConfig(
             id: appId,
             title: project.title,
             description: project.description,
-            flpAppId: getFlpId(
-                appId,
-                floorplan === FloorplanFF.FF_SIMPLE ? defaultNavActionDisplay : defaultNavActionTile
-            ),
             sourceTemplate: {
                 toolsId: generateToolsId()
             },

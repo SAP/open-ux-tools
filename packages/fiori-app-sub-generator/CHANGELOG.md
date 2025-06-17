@@ -1,5 +1,18 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.4.23
+
+### Patch Changes
+
+-   163522f: fix non-virtual endpoint preview config
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-freestyle-writer@2.4.11
+    -   @sap-ux/fiori-generator-shared@0.12.8
+    -   @sap-ux/fiori-elements-writer@2.4.19
+    -   @sap-ux/odata-service-inquirer@2.4.22
+    -   @sap-ux/cap-config-writer@0.10.8
+    -   @sap-ux/ui5-application-inquirer@0.14.13
+
 ## 0.4.22
 
 ### Patch Changes
