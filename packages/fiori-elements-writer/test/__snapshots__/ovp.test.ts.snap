@@ -82,6 +82,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: feovp1
+            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -136,6 +140,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: feovp1
+            action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -183,6 +191,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: feovp1
+            action: tile
 ",
     "state": "modified",
   },
@@ -1830,6 +1842,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: feovp1
+            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -1892,6 +1908,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: feovp1
+            action: tile
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -1955,6 +1975,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: feovp1
+            action: tile
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -3341,6 +3365,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: feovp2
+            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -3393,6 +3421,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: feovp2
+            action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -3438,6 +3470,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: feovp2
+            action: tile
 ",
     "state": "modified",
   },
@@ -9324,6 +9360,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: feovp2
+            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -9384,6 +9424,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: feovp2
+            action: tile
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -9445,6 +9489,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: feovp2
+            action: tile
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -15068,6 +15116,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: feovp2
+            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -15120,6 +15172,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: feovp2
+            action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -15165,6 +15221,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: feovp2
+            action: tile
 ",
     "state": "modified",
   },
@@ -20996,6 +21056,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: feovp2
+            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -21048,6 +21112,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: feovp2
+            action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -21093,6 +21161,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: feovp2
+            action: tile
 ",
     "state": "modified",
   },
