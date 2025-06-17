@@ -1093,6 +1093,9 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
         version: 1.14.4
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6

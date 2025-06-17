@@ -37,7 +37,8 @@
         "invalidMtaIdError": "The MTA ID can only contain letters, numbers, dashes, periods, and underscores. It cannot contain spaces.",
         "mtaIdAlreadyExistError": "A folder with the same name already exists at: {{- mtaPath}}. Choose a different MTA ID.",
         "abapEnvsUnavailable": "ABAP environments unavailable.",
-        "errorScpAbapSourceDiscoveryCheckLog": "For more information, see the Application Wizard console output view."
+        "errorScpAbapSourceDiscoveryCheckLog": "For more information, see the Application Wizard console output view.",
+        "windowsMtaIdPathTooLong": "The combined length {{length}} of the MTA ID and MTA path exceeds the default Windows paths length. This may cause issues with MTA project generation."
     },
     "warning": {
         "btpDestinationListWarning": "BTP destinations are only retrieved on SAP Business Application Studio.",
