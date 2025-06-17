@@ -596,29 +596,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
                 pointer: pointer,
                 target: change.target
             });
-            const element = getGenericNodeFromPointer(document.annotationFile, change.pointer);
-            if (element?.type === ELEMENT_TYPE) {
-                let targetNode: AstTarget | undefined;
-                if (parentAstNode.type === TARGET_TYPE) {
-                    targetNode = parentAstNode;
-                } else if (greatGrandParentAstNode.type === TARGET_TYPE) {
-                    targetNode = greatGrandParentAstNode;
-                }
-
-                if (targetNode) {
-                    const termName = getElementAttributeValue(element, Edm.Term);
-                    const qualifier = getElementAttribute(element, Edm.Qualifier);
-                    if (termName) {
-                        deleteChildFlattenedStructures(
-                            targetNode.name,
-                            termName,
-                            qualifier?.value,
-                            document.ast,
-                            writer
-                        );
-                    }
-                }
-            }
+            checkAndDeleteFlattenedStructures(writer, document, change, parentAstNode, greatGrandParentAstNode);
         } else if (currentAstNode?.type === RECORD_TYPE) {
             writer.addChange({
                 type: 'delete-record',
@@ -1042,7 +1020,33 @@ function adaptRecordPropertyIndex(record: Record, currentIndex?: number): number
     }
     return adaptedIdx;
 }
+function checkAndDeleteFlattenedStructures(
+    writer: CDSWriter,
+    document: Document,
+    change: DeleteElement,
+    parentAstNode: AstNode,
+    greatGrandParentAstNode: AstNode
+): void {
+    const element = getGenericNodeFromPointer(document.annotationFile, change.pointer);
+    if (element?.type === ELEMENT_TYPE) {
+        let targetNode: AstTarget | undefined;
+        if (parentAstNode.type === TARGET_TYPE) {
+            targetNode = parentAstNode;
+        } else if (greatGrandParentAstNode.type === TARGET_TYPE) {
+            targetNode = greatGrandParentAstNode;
+        }
+        if (targetNode) {
+            const termName = getElementAttributeValue(element, Edm.Term);
+            const qualifier = getElementAttribute(element, Edm.Qualifier);
+            if (termName) {
+                deleteChildFlattenedStructures(targetNode.name, termName, qualifier?.value, document.ast, writer);
+            }
+        }
+    }
+}
 
+// Splitting the logic into multiple functions would make the code more difficult to follow than it currently is.
+// eslint-disable-next-line sonarjs/cognitive-complexity
 function deleteChildFlattenedStructures(
     targetName: string | undefined,
     term: string,
@@ -1084,9 +1088,8 @@ function isMatchingAnnotation(node: AstNode, prefix: string, term: string | unde
     if (node.type !== ANNOTATION_TYPE) {
         return false;
     }
-    if (term === undefined) {
-        term = node.term.value;
-    }
+
+    term ??= node.term.value;
     const [match, next] = term.split(prefix);
 
     return match === '' && next.startsWith('.') && node.qualifier?.value === qualifier;
