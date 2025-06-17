@@ -43,7 +43,7 @@ export function isDataSourceURI(uri: string): boolean {
     return /^(?!.*\/\/)\/([^\s]*)\/$/.test(uri);
 }
 
-const projectNamePattern = /^(\w\.\w|[a-zA-Z0-9]){1,61}$/;
+const projectNamePattern = /^[a-zA-Z]+([.][a-zA-Z0-9]+)*$/;
 
 /**
  * Validates that the project name is not empty and it is correct for VENDOR and CUSTOMER_BASE layer.
@@ -80,7 +80,6 @@ export function validateProjectNameExternal(value: string): boolean | string {
     if (value.length > 61 || value.toLocaleLowerCase().endsWith('component')) {
         return t('adp.projectNameLengthErrorExt');
     }
-    const projectNamePattern = /^(\w\.\w|[a-zA-Z0-9]){1,61}$/;
     if (!projectNamePattern.test(value)) {
         return t('adp.projectNameValidationErrorExt');
     }
