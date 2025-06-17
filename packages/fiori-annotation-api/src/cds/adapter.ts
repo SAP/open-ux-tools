@@ -477,7 +477,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         });
     }
 
-    private clearState() {
+    private clearState(): void {
         this.missingReferences = {};
     }
 

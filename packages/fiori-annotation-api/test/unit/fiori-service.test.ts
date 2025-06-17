@@ -2579,45 +2579,6 @@ rating : Rating;
 
                     expect(text).toMatchSnapshot();
                 });
-                test.skip('with qualifiers and embedded annotation', async () => {
-                    // deletion logic doesn't work correctly with ![]
-                    const project = PROJECTS.V4_CDS_START;
-                    const root = project.root;
-                    const fsEditor = await createFsEditorForProject(root);
-                    const path = pathFromUri(project.files.annotations);
-                    const content = fsEditor.read(path);
-                    const testData = `${content}
-                    using from '../../srv/common';
-                    annotate service.Incidents with {
-                        priority @(
-                            ![Common.Text#abc] : priority.name,
-                            ![Common.Text#abc.@UI.TextArrangement#xyz] : #TextFirst,
-                        )
-                    };
-                    `;
-                    fsEditor.write(path, testData);
-                    const text = await testEdit(
-                        root,
-                        [],
-                        [
-                            {
-                                kind: ChangeType.Delete,
-                                reference: {
-                                    target: 'IncidentService.Incidents/priority',
-                                    term: `${COMMON}.Text`,
-                                    qualifier: 'abc'
-                                },
-                                uri: project.files.annotations,
-                                pointer: ''
-                            }
-                        ],
-                        'IncidentService',
-                        fsEditor,
-                        false
-                    );
-
-                    expect(text).toMatchSnapshot();
-                });
 
                 test('with properties and embedded annotation', async () => {
                     const project = PROJECTS.V4_CDS_START;
