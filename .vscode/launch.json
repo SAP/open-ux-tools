@@ -332,7 +332,7 @@
             "request": "launch",
             "name": "cds-annotation-parser: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
-            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false", "--runInBand"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "windows": {

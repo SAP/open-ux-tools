@@ -18,6 +18,47 @@ exports[`fiori annotation service delete annotation all annotations EDMXBackend 
 "
 `;
 
+exports[`fiori annotation service delete annotation cds clean up related flattened structures preserve other target annotations 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
+
+                    @UI.HeaderInfo.TypeName : 'Incident'
+                    annotate service.IncidentFlow with @UI.HeaderInfo.@Core.Description : 'description';
+
+                    annotate service.Incidents with @(
+                        ![UI.HeaderInfo#abc.TypeName] : 'Incident',
+                        ![UI.HeaderInfo#abc.TypeNamePlural] : 'Incidents',
+                    );
+                    "
+`;
+
+exports[`fiori annotation service delete annotation cds clean up related flattened structures with annotation group 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
+                    "
+`;
+
+exports[`fiori annotation service delete annotation cds clean up related flattened structures with embedded annotation 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
+                    "
+`;
+
+exports[`fiori annotation service delete annotation cds clean up related flattened structures with properties and embedded annotation 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
+
+                    "
+`;
+
 exports[`fiori annotation service delete annotation embedded annotation from nested record CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
