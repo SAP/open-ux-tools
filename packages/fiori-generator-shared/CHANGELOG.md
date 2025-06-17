@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.8
+
+### Patch Changes
+
+-   163522f: fix non-virtual endpoint preview config
+
 ## 0.12.7
 
 ### Patch Changes
