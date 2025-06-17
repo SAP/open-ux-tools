@@ -1,5 +1,13 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.14.14
+
+### Patch Changes
+
+-   c9f79c1: Check long Windows paths during project generation and deployment config generation.
+-   Updated dependencies [c9f79c1]
+    -   @sap-ux/project-input-validator@0.6.3
+
 ## 0.14.13
 
 ### Patch Changes
