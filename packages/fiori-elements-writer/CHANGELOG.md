@@ -1,5 +1,30 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.4.20
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.40
+-   @sap-ux/fe-fpm-writer@0.35.5
+
+## 2.4.19
+
+### Patch Changes
+
+-   163522f: fix non-virtual endpoint preview config
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+    -   @sap-ux/ui5-application-writer@1.5.3
+    -   @sap-ux/cap-config-writer@0.10.8
+    -   @sap-ux/ui5-test-writer@0.7.3
+
+## 2.4.18
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.39
+-   @sap-ux/fe-fpm-writer@0.35.4
+
 ## 2.4.17
 
 ### Patch Changes
