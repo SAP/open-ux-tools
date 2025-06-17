@@ -23,7 +23,7 @@
         "connectSuccess": "Connected"
     },
     "error": {
-        "target": "Please provide a target for configuration.",
+        "target": "Please provide a target for the configuration.",
         "noTarget": "No target definition found: {{-file}}.",
         "emptyUsername": "Username cannot be empty. Provide a value for the username.",
         "emptyPassword": "Password cannot be empty. Provide a value for the password."
