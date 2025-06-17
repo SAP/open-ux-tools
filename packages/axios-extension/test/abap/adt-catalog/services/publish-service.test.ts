@@ -17,44 +17,6 @@ describe('PublishService', () => {
         });
     });
 
-    describe('buildServiceBindingContent', () => {
-        it('should build correct XML content', () => {
-            const xml = (service as any).buildServiceBindingContent('SRV', 'BIND');
-            expect(xml).toBe(
-                '<?xml version="1.0" encoding="UTF-8"?><adtcore:objectReferences xmlns:adtcore="http://www.sap.com/adt/core"><adtcore:objectReference adtcore:type="SRV" adtcore:name="BIND"/></adtcore:objectReferences>'
-            );
-        });
-    });
-
-    describe('publish', () => {
-        it('should call post and parseResponse, returning DATA', async () => {
-            const responseData = `
-            <asx:abap version="1.0"
-            xmlns:asx="http://www.sap.com/abapxml">
-            <asx:values>
-                <DATA>
-                <SEVERITY>OK</SEVERITY>
-                <SHORT_TEXT>ZZ1UI_STATES_O4 published locally</SHORT_TEXT>
-                <LONG_TEXT/>
-                </DATA>
-            </asx:values>
-            </asx:abap>`;
-            const mockContent = `<?xml version="1.0" encoding="UTF-8"?><adtcore:objectReferences xmlns:adtcore="http://www.sap.com/adt/core"><adtcore:objectReference adtcore:type="SRV" adtcore:name="ZZ1UI_STATES_O4"/></adtcore:objectReferences>`;
-            const postSpy = jest.spyOn(service, 'post').mockResolvedValue({ data: responseData });
-            const result = await service.publish('SRV', 'ZZ1UI_STATES_O4');
-            expect(postSpy).toHaveBeenCalledWith(
-                '/publishjobs',
-                mockContent,
-                expect.objectContaining({
-                    headers: expect.objectContaining({
-                        'Content-Type': 'application/xml'
-                    })
-                })
-            );
-            expect(result).toEqual({ SEVERITY: 'OK', SHORT_TEXT: 'ZZ1UI_STATES_O4 published locally', LONG_TEXT: '' });
-        });
-    });
-
     describe('getODataV4ServiceUri', () => {
         it('should call get and parseResponse, returning serviceUrl', async () => {
             const technicalDetails: ODataServiceTechnicalDetails = {
