@@ -133,7 +133,7 @@
             "defaultEntityNameNotFoundWarning": "The supplied entity cannot be found in the service. Please choose from the list above.",
             "noDraftEnabledEntitiesError": "The CAP service you have chosen does not have any entities that are draft enabled. To generate an OData V4 SAP Fiori application using this floorplan for a CAP project, the entity selected must be draft enabled.",
             "noEntitiesError": "$t(errors.noRelevantEntities)",
-            "noEntitiesAlpV4Error": "The OData V4 service you have provided is not suitable for use in an analytical list page application. The service must contain aggregate based entities for this template."
+            "noEntitiesAlpV4Error": "The OData V4 service you have provided is not suitable for use in an analytical list page application. The service must contain aggregate-based entities for this template."
         },
         "navigationEntitySelection": {
             "message": "Navigation Entity",
