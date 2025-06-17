@@ -1,5 +1,11 @@
 # @sap-ux/project-input-validator
 
+## 0.6.3
+
+### Patch Changes
+
+-   c9f79c1: Check long Windows paths during project generation and deployment config generation.
+
 ## 0.6.2
 
 ### Patch Changes
