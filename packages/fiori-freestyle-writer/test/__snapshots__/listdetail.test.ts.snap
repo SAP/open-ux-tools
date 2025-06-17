@@ -27,7 +27,7 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"description\\": \\"Description of test.me\\",
+  \\"description\\": \\"Description of test.me.\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -1201,7 +1201,7 @@ export default class NotFound extends BaseController {
 appTitle=My Test App
 
 #YDES: Application description
-appDescription=Description of test.me
+appDescription=Description of test.me.
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
@@ -2126,7 +2126,7 @@ export function createDeviceModel () {
             applications: {
                 \\"testme-app\\": {
                     title: \\"My Test App\\",
-                    description: \\"Description of test.me\\",
+                    description: \\"Description of test.me.\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
@@ -2742,7 +2742,7 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"description\\": \\"Description of test.me\\",
+  \\"description\\": \\"Description of test.me.\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -3916,7 +3916,7 @@ export default class NotFound extends BaseController {
 appTitle=My Test App
 
 #YDES: Application description
-appDescription=Description of test.me
+appDescription=Description of test.me.
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
@@ -4841,7 +4841,7 @@ export function createDeviceModel () {
             applications: {
                 \\"testme-app\\": {
                     title: \\"My Test App\\",
-                    description: \\"Description of test.me\\",
+                    description: \\"Description of test.me.\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
@@ -5457,7 +5457,7 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"description\\": \\"Description of test.me\\",
+  \\"description\\": \\"Description of test.me.\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -6631,7 +6631,7 @@ export default class NotFound extends BaseController {
 appTitle=My Test App
 
 #YDES: Application description
-appDescription=Description of test.me
+appDescription=Description of test.me.
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
@@ -7556,7 +7556,7 @@ export function createDeviceModel () {
             applications: {
                 \\"testme-app\\": {
                     title: \\"My Test App\\",
-                    description: \\"Description of test.me\\",
+                    description: \\"Description of test.me.\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
@@ -8175,7 +8175,7 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"description\\": \\"Description of test.me\\",
+  \\"description\\": \\"Description of test.me.\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -9273,7 +9273,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
 appTitle=My Test App
 
 #YDES: Application description
-appDescription=Description of test.me
+appDescription=Description of test.me.
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
@@ -10187,7 +10187,7 @@ function (JSONModel, Device) {
             applications: {
                 \\"testme-app\\": {
                     title: \\"My Test App\\",
-                    description: \\"Description of test.me\\",
+                    description: \\"Description of test.me.\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
@@ -10745,7 +10745,7 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"description\\": \\"Description of test.me\\",
+  \\"description\\": \\"Description of test.me.\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -11860,7 +11860,7 @@ export default class NotFound extends BaseController {
 appTitle=My Test App
 
 #YDES: Application description
-appDescription=Description of test.me
+appDescription=Description of test.me.
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
@@ -12755,7 +12755,7 @@ export function createDeviceModel () {
             applications: {
                 \\"testme-app\\": {
                     title: \\"My Test App\\",
-                    description: \\"Description of test.me\\",
+                    description: \\"Description of test.me.\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
