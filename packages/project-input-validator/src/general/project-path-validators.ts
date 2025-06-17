@@ -5,17 +5,17 @@ import { validateProjectFolder } from '../ui5/validators';
 import { validateWindowsPathLength } from './validators';
 
 /**
- * Returns true if the specified target path does not contain a Fiori project.
+ * Returns true if the specified target path does not contain an SAP Fiori project.
  *
  * @param targetDir the target directory path.
- * @returns true, if not Fiori Project, or string message indicating that the path contains a Fiori project.
+ * @returns true, if not Fiori Project, or string message indicating that the path contains an SAP Fiori project.
  */
 async function validateFioriAppProjectFolder(targetDir: string): Promise<string | boolean> {
     // Check if the target directory contains a CAP project
     if (!!(await findCapProjectRoot(targetDir, false)) || !!(await getCapProjectType(targetDir))) {
         return t('ui5.folderContainsCapApp');
     }
-    // Check if the target directory contains a Fiori project
+    // Check if the target directory contains an SAP Fiori project
     const appRoot = await findRootsForPath(targetDir);
     if (appRoot) {
         return t('ui5.folderContainsFioriApp', { path: appRoot.appRoot });
@@ -25,15 +25,15 @@ async function validateFioriAppProjectFolder(targetDir: string): Promise<string 
 }
 
 /**
- * Validates whether the specified target path is suitable for creating a Fiori App project.
+ * Validates whether the specified target path is suitable for creating an SAP Fiori project App project.
  * The function performs the following checks:
  *
  * 1. **CAP Project Check:** If `validateFioriAppFolder` is true, it checks if the target path is part of an existing CAP project.
  *    - Uses `findCapProjectRoot()` and `getCapProjectType()` to verify the presence of a CAP project.
  *    - Returns an error message if a CAP project is detected.
  *
- * 2. **Fiori App Project Check:** If `validateFioriAppFolder` is true, it checks if the target path contains a Fiori project.
- *    - Uses `findRootsForPath()` to determine if a Fiori application root exists.
+ * 2. **Fiori App Project Check:** If `validateFioriAppFolder` is true, it checks if the target path contains an SAP Fiori project.
+ *    - Uses `findRootsForPath()` to determine if an SAP Fiori project application root exists.
  *    - Returns a success message if a valid Fiori app root is found, otherwise returns true.
  *
  * 3. **General Project Folder Check:**
@@ -43,9 +43,9 @@ async function validateFioriAppProjectFolder(targetDir: string): Promise<string 
  * 4. **Windows Path Length Validation:**
  *   - Validates the combined path length of the target directory and application name against the Windows max path length limit (256 characters).
  *
- * @param targetPath - The target directory path where the Fiori app is to be created.
+ * @param targetPath - The target directory path where the SAP Fiori app is to be created.
  * @param appName - The application directory name.
- * @param validateFioriAppFolder - If true, validates the target path as a Fiori App project folder.
+ * @param validateFioriAppFolder - If true, validates the target path as a SAP Fiori App project folder.
  * @returns A boolean value `true` if all validations pass; otherwise, an error message.
  */
 export async function validateFioriAppTargetFolder(
