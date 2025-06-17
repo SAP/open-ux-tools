@@ -186,7 +186,7 @@
         },
         "tableAutoHide": {
             "message": "Auto Hide",
-            "hint": "Determines chart or table interaction. If set to `true`, the chart acts as a filter for the table. If set to `false`, the matching table rows are highlighted but the table is not filtered."
+            "hint": "Determines the chart or table interaction. If set to `true`, the chart acts as a filter for the table. If set to `false`, the matching table rows are highlighted but the table is not filtered."
         },
         "smartVariantManagement": {
             "message": "Enable Smart Variant Management",
