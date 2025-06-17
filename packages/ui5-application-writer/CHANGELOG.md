@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.5.3
+
+### Patch Changes
+
+-   163522f: fix non-virtual endpoint preview config
+
 ## 1.5.2
 
 ### Patch Changes
