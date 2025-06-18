@@ -14,7 +14,8 @@ import {
     hostEnvironment,
     type ILogWrapper,
     sendTelemetry,
-    TelemetryHelper
+    TelemetryHelper,
+    getFlpId
 } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
@@ -42,7 +43,6 @@ import {
     deleteCache,
     getAppId,
     getCdsUi5PluginInfo,
-    getFlpId,
     getFromCache,
     getRequiredOdataVersion,
     getTelemetryBusinessHubType,

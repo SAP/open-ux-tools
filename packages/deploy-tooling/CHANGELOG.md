@@ -1,5 +1,39 @@
 # @sap-ux/deploy-tooling
 
+## 0.16.13
+
+### Patch Changes
+
+-   Updated dependencies [c9f79c1]
+    -   @sap-ux/project-input-validator@0.6.3
+
+## 0.16.12
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.13
+
+## 0.16.11
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/inquirer-common@0.7.12
+
+## 0.16.10
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.11
+
+## 0.16.9
+
+### Patch Changes
+
+-   bf752f3: Adds more specific cert error messages with GA links.
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
 ## 0.16.8
 
 ### Patch Changes
