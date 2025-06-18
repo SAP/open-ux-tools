@@ -15,7 +15,7 @@
     "error": {
         "validatingContent": "There was a back-end validation error for the service content and package provided. Service generation cannot continue. Please try again or contact an admin for the back-end system.",
         "fetchingContentForServiceBinding": "An error occurred when fetching content for the service binding of the business object. Please try again or contact an admin for the back-end system.",
-        "fetchingBusinessObjects": "An error occurred when fetching yjr business object interfaces from the back-end system. Please try again or contact an admin for the back-end system.",
+        "fetchingBusinessObjects": "An error occurred when fetching your business object interfaces from the back-end system. Please try again or contact an admin for the back-end system.",
         "fetchingGenerator": "An error occurred fetching the generator: {{error}}",
         "fetchingCdsViews": "An error occurred fetching the CDS views from the back-end system: {{error}}",
         "noGeneratorFoundBo": "No generator was found for the selected business object interface.",
