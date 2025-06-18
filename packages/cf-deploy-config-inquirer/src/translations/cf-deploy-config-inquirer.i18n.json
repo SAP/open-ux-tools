@@ -6,7 +6,7 @@
         "generateDeploymentRouterOptionsMessage": "Add Router Module",
         "directBindingDestinationHint": "The app router is configured to use direct service binding.",
         "overwriteMessage": "Editing the deployment configuration will overwrite the existing configuration. Are you sure you want to continue?",
-        "overwriteHintMessage": "Deployment configuration will abort if you choose 'No'. Click 'Finish' to abort.",
+        "overwriteHintMessage": "Deployment configuration will abort if you choose 'No'. Click 'Finish' to complete the process.",
         "mtaPathBreadcrumbMessage": "Application Router Path",
         "mtaPathMessage": "Application router project path",
         "mtaIdMessage": "MTA ID",
