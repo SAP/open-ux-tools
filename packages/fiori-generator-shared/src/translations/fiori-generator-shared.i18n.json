@@ -4,7 +4,7 @@
     },
     "error": {
         "logWrapperNotInitialised": "`LogWrapper` is not initialised.",
-        "methodNotImplemented": "Method not implemented."
+      
     },
     "debug": {
         "loggingConfigured": "Logging has been configured at log level: {{logLevel}}."
