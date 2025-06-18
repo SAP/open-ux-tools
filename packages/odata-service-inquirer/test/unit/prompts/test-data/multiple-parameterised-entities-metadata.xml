@@ -1,0 +1,1937 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0"
+	xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+	xmlns="http://docs.oasis-open.org/odata/ns/edm">
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="SAP__aggregation"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="SAP__capabilities"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="SAP__CodeList"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="SAP__common"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CORE',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="Org.OData.Core.V1" Alias="SAP__core"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_HIERARCHY',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="com.sap.vocabularies.Hierarchy.v1" Alias="SAP__hierarchy"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_HTML5',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="com.sap.vocabularies.HTML5.v1" Alias="SAP__HTML5"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="Org.OData.Measures.V1" Alias="SAP__measures"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ODM',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="com.sap.vocabularies.ODM.v1" Alias="SAP__ODM"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PDF',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="com.sap.vocabularies.PDF.v1" Alias="SAP__PDF"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_SESSION',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="com.sap.vocabularies.Session.v1" Alias="SAP__session"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_SUPPORT',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="com.sap.vocabularies.Support.v1" Alias="SAP__support"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="SAP__UI"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='LOCAL')/$value">
+		<edmx:Include Namespace="Org.OData.Validation.V1" Alias="SAP__validation"/>
+	</edmx:Reference>
+	<edmx:DataServices>
+		<Schema Namespace="com.sap.gateway.srvd.aif.messagemonitor.v0001" Alias="SAP__self">
+			<Annotation Term="SAP__core.SchemaVersion" String="1.0.0"/>
+			<EntityType Name="ChangeableFieldsParameters">
+				<Key>
+					<PropertyRef Name="p_ns"/>
+					<PropertyRef Name="p_ifname"/>
+					<PropertyRef Name="p_ifversion"/>
+				</Key>
+				<Property Name="p_ns" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="p_ifname" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="p_ifversion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<NavigationProperty Name="Set" Type="Collection(com.sap.gateway.srvd.aif.messagemonitor.v0001.ChangeableFieldsType)" Partner="Parameters" ContainsTarget="true"/>
+			</EntityType>
+			<EntityType Name="InterfaceStatisticsParameters">
+				<Key>
+					<PropertyRef Name="p_datetime_from"/>
+					<PropertyRef Name="p_datetime_to"/>
+				</Key>
+				<Property Name="p_datetime_from" Type="Edm.DateTimeOffset" Nullable="false"/>
+				<Property Name="p_datetime_to" Type="Edm.DateTimeOffset" Nullable="false"/>
+				<NavigationProperty Name="Set" Type="Collection(com.sap.gateway.srvd.aif.messagemonitor.v0001.InterfaceStatisticsType)" Partner="Parameters" ContainsTarget="true"/>
+			</EntityType>
+			<EntityType Name="CustomLinkParameters">
+				<Key>
+					<PropertyRef Name="p_namespace"/>
+					<PropertyRef Name="p_interfacename"/>
+					<PropertyRef Name="p_interfaceversion"/>
+					<PropertyRef Name="p_messageid"/>
+					<PropertyRef Name="p_messageno"/>
+				</Key>
+				<Property Name="p_namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="p_interfacename" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="p_interfaceversion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="p_messageid" Type="Edm.String" Nullable="false" MaxLength="20"/>
+				<Property Name="p_messageno" Type="Edm.String" Nullable="false" MaxLength="3"/>
+				<NavigationProperty Name="Set" Type="Collection(com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomLinkType)" Partner="Parameters" ContainsTarget="true"/>
+			</EntityType>
+			<EntityType Name="CustomHintType">
+				<Key>
+					<PropertyRef Name="Namespace"/>
+					<PropertyRef Name="InterfaceName"/>
+					<PropertyRef Name="InterfaceVersion"/>
+					<PropertyRef Name="HintId"/>
+					<PropertyRef Name="AuthorizedUser"/>
+				</Key>
+				<Property Name="Namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="InterfaceName" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="InterfaceVersion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="HintId" Type="Edm.String" Nullable="false" MaxLength="32"/>
+				<Property Name="AuthorizedUser" Type="Edm.String" Nullable="false" MaxLength="12"/>
+				<Property Name="MessageId" Type="Edm.String" Nullable="false" MaxLength="20"/>
+				<Property Name="MessageNo" Type="Edm.String" Nullable="false" MaxLength="3"/>
+				<Property Name="RecordedCreateUser" Type="Edm.String" Nullable="false" MaxLength="12"/>
+				<Property Name="ScreenNumber" Type="Edm.String" Nullable="false" MaxLength="4"/>
+				<Property Name="Visibility" Type="Edm.String" Nullable="false" MaxLength="1"/>
+				<Property Name="Scope" Type="Edm.String" Nullable="false" MaxLength="1"/>
+				<NavigationProperty Name="Parameters" Type="com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomHintParameters" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="MessageProcessStatusType">
+				<Key>
+					<PropertyRef Name="MessageGuid"/>
+					<PropertyRef Name="Namespace"/>
+					<PropertyRef Name="InterfaceName"/>
+					<PropertyRef Name="InterfaceVersion"/>
+				</Key>
+				<Property Name="MessageGuid" Type="Edm.String" Nullable="false" MaxLength="32"/>
+				<Property Name="Namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="InterfaceName" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="InterfaceVersion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="Processor" Type="Edm.String" Nullable="false" MaxLength="12"/>
+				<Property Name="Status" Type="Edm.String" Nullable="false" MaxLength="1"/>
+				<Property Name="CreatedUser" Type="Edm.String" Nullable="false" MaxLength="12"/>
+				<Property Name="ProcessingTime" Type="Edm.DateTimeOffset" Precision="7"/>
+				<Property Name="FormattedName" Type="Edm.String" Nullable="false" MaxLength="80"/>
+				<Property Name="__EntityControl" Type="com.sap.gateway.srvd.aif.messagemonitor.v0001.EntityControl"/>
+				<Property Name="SAP__Messages" Type="Collection(com.sap.gateway.srvd.aif.messagemonitor.v0001.SAP__Message)" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="CustomLinkType">
+				<Key>
+					<PropertyRef Name="Namespace"/>
+					<PropertyRef Name="InterfaceName"/>
+					<PropertyRef Name="InterfaceVersion"/>
+					<PropertyRef Name="LinkId"/>
+					<PropertyRef Name="AuthorizedUser"/>
+				</Key>
+				<Property Name="Namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="InterfaceName" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="InterfaceVersion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="LinkId" Type="Edm.String" Nullable="false" MaxLength="32"/>
+				<Property Name="AuthorizedUser" Type="Edm.String" Nullable="false" MaxLength="12"/>
+				<Property Name="MessageId" Type="Edm.String" Nullable="false" MaxLength="20"/>
+				<Property Name="MessageNo" Type="Edm.String" Nullable="false" MaxLength="3"/>
+				<Property Name="LogicalSystem" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="Visibility" Type="Edm.String" Nullable="false" MaxLength="1"/>
+				<Property Name="Scope" Type="Edm.String" Nullable="false" MaxLength="1"/>
+				<Property Name="CreateUser" Type="Edm.String" Nullable="false" MaxLength="12"/>
+				<Property Name="CreateDate" Type="Edm.Date"/>
+				<Property Name="CreateTime" Type="Edm.TimeOfDay" Nullable="false"/>
+				<Property Name="LastUser" Type="Edm.String" Nullable="false" MaxLength="12"/>
+				<Property Name="LastDate" Type="Edm.Date"/>
+				<Property Name="LastTime" Type="Edm.TimeOfDay" Nullable="false"/>
+				<Property Name="RecordType" Type="Edm.String" Nullable="false" MaxLength="45"/>
+				<Property Name="RecordTypeNumber" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="GlobalRowNumber" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="FieldName" Type="Edm.String" Nullable="false" MaxLength="30"/>
+				<Property Name="LogHandle" Type="Edm.Guid"/>
+				<Property Name="MessageSerialNumber" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<NavigationProperty Name="Parameters" Type="com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomLinkParameters" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="MessageCommentType">
+				<Key>
+					<PropertyRef Name="Namespace"/>
+					<PropertyRef Name="InterfaceName"/>
+					<PropertyRef Name="InterfaceVersion"/>
+					<PropertyRef Name="MessageGuid"/>
+					<PropertyRef Name="Counter"/>
+				</Key>
+				<Property Name="Namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="InterfaceName" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="InterfaceVersion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="MessageGuid" Type="Edm.String" Nullable="false" MaxLength="32"/>
+				<Property Name="Counter" Type="Edm.Int32" Nullable="false"/>
+				<Property Name="Note" Type="Edm.String" Nullable="false"/>
+				<Property Name="CreateUser" Type="Edm.String" Nullable="false" MaxLength="12"/>
+				<Property Name="CreateTime" Type="Edm.DateTimeOffset"/>
+				<Property Name="NoteCreatedByFormattedName" Type="Edm.String" Nullable="false" MaxLength="80"/>
+				<Property Name="SAP__Messages" Type="Collection(com.sap.gateway.srvd.aif.messagemonitor.v0001.SAP__Message)" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="CustomTextParameters">
+				<Key>
+					<PropertyRef Name="p_namespace"/>
+					<PropertyRef Name="p_interfacename"/>
+					<PropertyRef Name="p_interfaceversion"/>
+					<PropertyRef Name="p_messageid"/>
+					<PropertyRef Name="p_messageno"/>
+				</Key>
+				<Property Name="p_namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="p_interfacename" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="p_interfaceversion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="p_messageid" Type="Edm.String" Nullable="false" MaxLength="20"/>
+				<Property Name="p_messageno" Type="Edm.String" Nullable="false" MaxLength="3"/>
+				<NavigationProperty Name="Set" Type="Collection(com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomTextType)" Partner="Parameters" ContainsTarget="true"/>
+			</EntityType>
+			<EntityType Name="CustomHintParameters">
+				<Key>
+					<PropertyRef Name="p_namespace"/>
+					<PropertyRef Name="p_interfacename"/>
+					<PropertyRef Name="p_interfaceversion"/>
+					<PropertyRef Name="p_messageid"/>
+					<PropertyRef Name="p_messageno"/>
+				</Key>
+				<Property Name="p_namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="p_interfacename" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="p_interfaceversion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="p_messageid" Type="Edm.String" Nullable="false" MaxLength="20"/>
+				<Property Name="p_messageno" Type="Edm.String" Nullable="false" MaxLength="3"/>
+				<NavigationProperty Name="Set" Type="Collection(com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomHintType)" Partner="Parameters" ContainsTarget="true"/>
+			</EntityType>
+			<EntityType Name="InterfaceStatisticsType">
+				<Key>
+					<PropertyRef Name="Namespace"/>
+					<PropertyRef Name="InterfaceName"/>
+					<PropertyRef Name="InterfaceVersion"/>
+				</Key>
+				<Property Name="Namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="Namespace_Text" Type="Edm.String" Nullable="false" MaxLength="40"/>
+				<Property Name="InterfaceName" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="InterfaceVersion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="InterfaceKey" Type="Edm.String" Nullable="false" MaxLength="120"/>
+				<Property Name="InterfaceKey_Text" Type="Edm.String" Nullable="false" MaxLength="50"/>
+				<Property Name="IndexTable" Type="Edm.String" Nullable="false" MaxLength="30"/>
+				<Property Name="NumberAllMessages" Type="Edm.Int32" Nullable="false"/>
+				<Property Name="NumberWarningMessages" Type="Edm.Int32" Nullable="false"/>
+				<Property Name="NumberErrorMessages" Type="Edm.Int32" Nullable="false"/>
+				<Property Name="NumberAbortMessages" Type="Edm.Int32" Nullable="false"/>
+				<Property Name="NumberInProcessMessages" Type="Edm.Int32" Nullable="false"/>
+				<Property Name="NumberSuccessMessages" Type="Edm.Int32" Nullable="false"/>
+				<Property Name="NumberCanceledMessages" Type="Edm.Int32" Nullable="false"/>
+				<Property Name="IsTechnicalInterface" Type="Edm.Boolean" Nullable="false"/>
+				<NavigationProperty Name="Parameters" Type="com.sap.gateway.srvd.aif.messagemonitor.v0001.InterfaceStatisticsParameters" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="CustomTextType">
+				<Key>
+					<PropertyRef Name="Namespace"/>
+					<PropertyRef Name="InterfaceName"/>
+					<PropertyRef Name="InterfaceVersion"/>
+					<PropertyRef Name="TextId"/>
+					<PropertyRef Name="AuthorizedUser"/>
+				</Key>
+				<Property Name="Namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="InterfaceName" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="InterfaceVersion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="TextId" Type="Edm.String" Nullable="false" MaxLength="32"/>
+				<Property Name="AuthorizedUser" Type="Edm.String" Nullable="false" MaxLength="12"/>
+				<Property Name="MessageId" Type="Edm.String" Nullable="false" MaxLength="20"/>
+				<Property Name="MessageNo" Type="Edm.String" Nullable="false" MaxLength="3"/>
+				<Property Name="CreateUser" Type="Edm.String" Nullable="false" MaxLength="12"/>
+				<Property Name="LastDate" Type="Edm.Date"/>
+				<Property Name="LastTime" Type="Edm.TimeOfDay" Nullable="false"/>
+				<Property Name="Visibility" Type="Edm.String" Nullable="false" MaxLength="1"/>
+				<Property Name="Scope" Type="Edm.String" Nullable="false" MaxLength="1"/>
+				<Property Name="LogicalSystem" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<NavigationProperty Name="Parameters" Type="com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomTextParameters" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="CustomFunctionParameters">
+				<Key>
+					<PropertyRef Name="p_namespace"/>
+					<PropertyRef Name="p_interfacename"/>
+					<PropertyRef Name="p_interfaceversion"/>
+					<PropertyRef Name="p_messageid"/>
+					<PropertyRef Name="p_messageno"/>
+				</Key>
+				<Property Name="p_namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="p_interfacename" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="p_interfaceversion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="p_messageid" Type="Edm.String" Nullable="false" MaxLength="20"/>
+				<Property Name="p_messageno" Type="Edm.String" Nullable="false" MaxLength="3"/>
+				<NavigationProperty Name="Set" Type="Collection(com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomFunctionType)" Partner="Parameters" ContainsTarget="true"/>
+			</EntityType>
+			<EntityType Name="ChangeableFieldsType">
+				<Key>
+					<PropertyRef Name="ns"/>
+					<PropertyRef Name="ifname"/>
+					<PropertyRef Name="ifversion"/>
+					<PropertyRef Name="counter"/>
+				</Key>
+				<Property Name="ns" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="ifname" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="ifversion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="counter" Type="Edm.String" Nullable="false" MaxLength="3"/>
+				<Property Name="field_path" Type="Edm.String" Nullable="false" MaxLength="200"/>
+				<NavigationProperty Name="Parameters" Type="com.sap.gateway.srvd.aif.messagemonitor.v0001.ChangeableFieldsParameters" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="CustomFunctionType">
+				<Key>
+					<PropertyRef Name="Namespace"/>
+					<PropertyRef Name="InterfaceName"/>
+					<PropertyRef Name="InterfaceVersion"/>
+					<PropertyRef Name="FunctionId"/>
+					<PropertyRef Name="AuthorizedUser"/>
+				</Key>
+				<Property Name="Namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="InterfaceName" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="InterfaceVersion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="FunctionId" Type="Edm.String" Nullable="false" MaxLength="32"/>
+				<Property Name="AuthorizedUser" Type="Edm.String" Nullable="false" MaxLength="12"/>
+				<Property Name="FunctionIcon" Type="Edm.String" Nullable="false" MaxLength="4"/>
+				<Property Name="MessageId" Type="Edm.String" Nullable="false" MaxLength="20"/>
+				<Property Name="MessageNo" Type="Edm.String" Nullable="false" MaxLength="3"/>
+				<Property Name="RecordedCreateUser" Type="Edm.String" Nullable="false" MaxLength="12"/>
+				<Property Name="RecordedCreateDate" Type="Edm.Date"/>
+				<Property Name="SkipFirstScreen" Type="Edm.Boolean" Nullable="false"/>
+				<Property Name="StartInNewSession" Type="Edm.Boolean" Nullable="false"/>
+				<Property Name="FunctionType" Type="Edm.String" Nullable="false" MaxLength="1"/>
+				<Property Name="FunctionName" Type="Edm.String" Nullable="false" MaxLength="255"/>
+				<Property Name="ScreenNumber" Type="Edm.String" Nullable="false" MaxLength="4"/>
+				<Property Name="Visibility" Type="Edm.String" Nullable="false" MaxLength="1"/>
+				<Property Name="Scope" Type="Edm.String" Nullable="false" MaxLength="1"/>
+				<Property Name="IconAlias" Type="Edm.String" Nullable="false" MaxLength="64"/>
+				<Property Name="sem_obj" Type="Edm.String" Nullable="false" MaxLength="30"/>
+				<Property Name="sem_act" Type="Edm.String" Nullable="false" MaxLength="60"/>
+				<NavigationProperty Name="Parameters" Type="com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomFunctionParameters" Nullable="false"/>
+			</EntityType>
+			<EntityType Name="InterfaceDisplayNameParameters">
+				<Key>
+					<PropertyRef Name="p_namespace"/>
+					<PropertyRef Name="p_interfacename"/>
+					<PropertyRef Name="p_interfaceversion"/>
+				</Key>
+				<Property Name="p_namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="p_interfacename" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="p_interfaceversion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<NavigationProperty Name="Set" Type="Collection(com.sap.gateway.srvd.aif.messagemonitor.v0001.InterfaceDisplayNameType)" Partner="Parameters" ContainsTarget="true"/>
+			</EntityType>
+			<EntityType Name="InterfaceDisplayNameType">
+				<Key>
+					<PropertyRef Name="Namespace"/>
+					<PropertyRef Name="InterfaceName"/>
+					<PropertyRef Name="InterfaceVersion"/>
+				</Key>
+				<Property Name="Namespace" Type="Edm.String" Nullable="false" MaxLength="6"/>
+				<Property Name="InterfaceName" Type="Edm.String" Nullable="false" MaxLength="10"/>
+				<Property Name="InterfaceVersion" Type="Edm.String" Nullable="false" MaxLength="5"/>
+				<Property Name="InterfaceDisplayName" Type="Edm.String" Nullable="false" MaxLength="120"/>
+				<NavigationProperty Name="Parameters" Type="com.sap.gateway.srvd.aif.messagemonitor.v0001.InterfaceDisplayNameParameters" Nullable="false"/>
+			</EntityType>
+			<ComplexType Name="EntityControl">
+				<Property Name="Updatable" Type="Edm.Boolean" Nullable="false"/>
+			</ComplexType>
+			<ComplexType Name="SAP__Message">
+				<Property Name="code" Type="Edm.String" Nullable="false"/>
+				<Property Name="message" Type="Edm.String" Nullable="false"/>
+				<Property Name="target" Type="Edm.String"/>
+				<Property Name="additionalTargets" Type="Collection(Edm.String)" Nullable="false"/>
+				<Property Name="transition" Type="Edm.Boolean" Nullable="false"/>
+				<Property Name="numericSeverity" Type="Edm.Byte" Nullable="false"/>
+				<Property Name="longtextUrl" Type="Edm.String"/>
+			</ComplexType>
+			<EntityContainer Name="Container">
+				<EntitySet Name="ChangeableFields" EntityType="com.sap.gateway.srvd.aif.messagemonitor.v0001.ChangeableFieldsParameters">
+					<NavigationPropertyBinding Path="Set/Parameters" Target="ChangeableFields"/>
+				</EntitySet>
+				<EntitySet Name="CustomFunction" EntityType="com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomFunctionParameters">
+					<NavigationPropertyBinding Path="Set/Parameters" Target="CustomFunction"/>
+				</EntitySet>
+				<EntitySet Name="CustomHint" EntityType="com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomHintParameters">
+					<NavigationPropertyBinding Path="Set/Parameters" Target="CustomHint"/>
+				</EntitySet>
+				<EntitySet Name="CustomLink" EntityType="com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomLinkParameters">
+					<NavigationPropertyBinding Path="Set/Parameters" Target="CustomLink"/>
+				</EntitySet>
+				<EntitySet Name="CustomText" EntityType="com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomTextParameters">
+					<NavigationPropertyBinding Path="Set/Parameters" Target="CustomText"/>
+				</EntitySet>
+				<EntitySet Name="InterfaceDisplayName" EntityType="com.sap.gateway.srvd.aif.messagemonitor.v0001.InterfaceDisplayNameParameters">
+					<NavigationPropertyBinding Path="Set/Parameters" Target="InterfaceDisplayName"/>
+				</EntitySet>
+				<EntitySet Name="InterfaceStatistics" EntityType="com.sap.gateway.srvd.aif.messagemonitor.v0001.InterfaceStatisticsParameters">
+					<NavigationPropertyBinding Path="Set/Parameters" Target="InterfaceStatistics"/>
+				</EntitySet>
+				<EntitySet Name="MessageComment" EntityType="com.sap.gateway.srvd.aif.messagemonitor.v0001.MessageCommentType"/>
+				<EntitySet Name="MessageProcessStatus" EntityType="com.sap.gateway.srvd.aif.messagemonitor.v0001.MessageProcessStatusType"/>
+			</EntityContainer>
+			<Annotations Target="SAP__self.ChangeableFieldsParameters/p_ns">
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Namespace"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.ChangeableFieldsParameters/p_ifname">
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Interface Name"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.ChangeableFieldsParameters/p_ifversion">
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Interface Version"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.Container/ChangeableFields">
+				<Annotation Term="SAP__capabilities.NavigationRestrictions">
+					<Record>
+						<PropertyValue Property="RestrictedProperties">
+							<Collection>
+								<Record>
+									<PropertyValue Property="NavigationProperty" NavigationPropertyPath="Set"/>
+									<PropertyValue Property="InsertRestrictions">
+										<Record>
+											<PropertyValue Property="Insertable" Bool="false"/>
+										</Record>
+									</PropertyValue>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SearchRestrictions">
+					<Record>
+						<PropertyValue Property="Searchable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.FilterRestrictions">
+					<Record>
+						<PropertyValue Property="NonFilterableProperties">
+							<Collection>
+								<PropertyPath>p_ns</PropertyPath>
+								<PropertyPath>p_ifname</PropertyPath>
+								<PropertyPath>p_ifversion</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SortRestrictions">
+					<Record>
+						<PropertyValue Property="NonSortableProperties">
+							<Collection>
+								<PropertyPath>p_ns</PropertyPath>
+								<PropertyPath>p_ifname</PropertyPath>
+								<PropertyPath>p_ifversion</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.ReadRestrictions">
+					<Record>
+						<PropertyValue Property="Readable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.InsertRestrictions">
+					<Record>
+						<PropertyValue Property="Insertable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.DeleteRestrictions">
+					<Record>
+						<PropertyValue Property="Deletable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.UpdateRestrictions">
+					<Record>
+						<PropertyValue Property="Updatable" Bool="false"/>
+						<PropertyValue Property="NonUpdatableNavigationProperties">
+							<Collection>
+								<PropertyPath>Set</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="QueryOptions">
+							<Record>
+								<PropertyValue Property="SelectSupported" Bool="true"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="SAP__self.ChangeableFieldsParameters">
+				<Annotation Term="SAP__common.ResultContext"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsParameters/p_datetime_from">
+				<Annotation Term="SAP__common.Label" String="UTC Timestamp"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Processing Timestamp in UTC Timezone"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.Heading" String="Message Processing Timestamp in UTC Timezone"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FPROCESSING_TSTMP"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsParameters/p_datetime_to">
+				<Annotation Term="SAP__common.Label" String="UTC Timestamp"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Processing Timestamp in UTC Timezone"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.Heading" String="Message Processing Timestamp in UTC Timezone"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FPROCESSING_TSTMP"/>
+			</Annotations>
+			<Annotations Target="SAP__self.Container/InterfaceStatistics">
+				<Annotation Term="SAP__capabilities.NavigationRestrictions">
+					<Record>
+						<PropertyValue Property="RestrictedProperties">
+							<Collection>
+								<Record>
+									<PropertyValue Property="NavigationProperty" NavigationPropertyPath="Set"/>
+									<PropertyValue Property="InsertRestrictions">
+										<Record>
+											<PropertyValue Property="Insertable" Bool="false"/>
+										</Record>
+									</PropertyValue>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SearchRestrictions">
+					<Record>
+						<PropertyValue Property="Searchable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.FilterRestrictions">
+					<Record>
+						<PropertyValue Property="NonFilterableProperties">
+							<Collection>
+								<PropertyPath>p_datetime_from</PropertyPath>
+								<PropertyPath>p_datetime_to</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SortRestrictions">
+					<Record>
+						<PropertyValue Property="NonSortableProperties">
+							<Collection>
+								<PropertyPath>p_datetime_from</PropertyPath>
+								<PropertyPath>p_datetime_to</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.ReadRestrictions">
+					<Record>
+						<PropertyValue Property="Readable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.InsertRestrictions">
+					<Record>
+						<PropertyValue Property="Insertable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.DeleteRestrictions">
+					<Record>
+						<PropertyValue Property="Deletable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.UpdateRestrictions">
+					<Record>
+						<PropertyValue Property="Updatable" Bool="false"/>
+						<PropertyValue Property="NonUpdatableNavigationProperties">
+							<Collection>
+								<PropertyPath>Set</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="QueryOptions">
+							<Record>
+								<PropertyValue Property="SelectSupported" Bool="true"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsParameters">
+				<Annotation Term="SAP__common.ResultContext"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkParameters/p_namespace">
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Namespace"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkParameters/p_interfacename">
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Interface Name"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkParameters/p_interfaceversion">
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Interface Version"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkParameters/p_messageid">
+				<Annotation Term="SAP__common.Label" String="Message Class"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Identification"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Message Class"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MSGID"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkParameters/p_messageno">
+				<Annotation Term="SAP__common.Label" String="Message Number"/>
+				<Annotation Term="SAP__common.QuickInfo" String="System Message Number"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Msg."/>
+			</Annotations>
+			<Annotations Target="SAP__self.Container/CustomLink">
+				<Annotation Term="SAP__capabilities.NavigationRestrictions">
+					<Record>
+						<PropertyValue Property="RestrictedProperties">
+							<Collection>
+								<Record>
+									<PropertyValue Property="NavigationProperty" NavigationPropertyPath="Set"/>
+									<PropertyValue Property="InsertRestrictions">
+										<Record>
+											<PropertyValue Property="Insertable" Bool="false"/>
+										</Record>
+									</PropertyValue>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SearchRestrictions">
+					<Record>
+						<PropertyValue Property="Searchable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.FilterRestrictions">
+					<Record>
+						<PropertyValue Property="NonFilterableProperties">
+							<Collection>
+								<PropertyPath>p_namespace</PropertyPath>
+								<PropertyPath>p_interfacename</PropertyPath>
+								<PropertyPath>p_interfaceversion</PropertyPath>
+								<PropertyPath>p_messageid</PropertyPath>
+								<PropertyPath>p_messageno</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SortRestrictions">
+					<Record>
+						<PropertyValue Property="NonSortableProperties">
+							<Collection>
+								<PropertyPath>p_namespace</PropertyPath>
+								<PropertyPath>p_interfacename</PropertyPath>
+								<PropertyPath>p_interfaceversion</PropertyPath>
+								<PropertyPath>p_messageid</PropertyPath>
+								<PropertyPath>p_messageno</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.ReadRestrictions">
+					<Record>
+						<PropertyValue Property="Readable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.InsertRestrictions">
+					<Record>
+						<PropertyValue Property="Insertable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.DeleteRestrictions">
+					<Record>
+						<PropertyValue Property="Deletable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.UpdateRestrictions">
+					<Record>
+						<PropertyValue Property="Updatable" Bool="false"/>
+						<PropertyValue Property="NonUpdatableNavigationProperties">
+							<Collection>
+								<PropertyPath>Set</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="QueryOptions">
+							<Record>
+								<PropertyValue Property="SelectSupported" Bool="true"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkParameters">
+				<Annotation Term="SAP__common.ResultContext"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintType/Namespace">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintType/InterfaceName">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintType/InterfaceVersion">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintType/HintId">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Unique ID for a Hint"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FHINTID"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintType/AuthorizedUser">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="User"/>
+				<Annotation Term="SAP__common.Heading" String="User Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="User Name in User Master Record"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=XUBNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintType/MessageId">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Message Class"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Identification"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MSGID"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintType/MessageNo">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Message Number"/>
+				<Annotation Term="SAP__common.Heading" String="Msg."/>
+				<Annotation Term="SAP__common.QuickInfo" String="System Message Number"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintType/RecordedCreateUser">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="User"/>
+				<Annotation Term="SAP__common.Heading" String="User Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="User Name in User Master Record"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=XUBNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintType/ScreenNumber">
+				<Annotation Term="SAP__common.IsDigitSequence"/>
+				<Annotation Term="SAP__common.Label" String="Dynpro No."/>
+				<Annotation Term="SAP__common.Heading" String="Dynpro"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Dynpro Number"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintType/Visibility">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Visibility"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FVISIBILITY"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintType/Scope">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Scope"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FSCOPE"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintType">
+				<Annotation Term="SAP__common.Label" String="Custom Hint"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageProcessStatusType/Namespace">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageProcessStatusType/InterfaceName">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageProcessStatusType/InterfaceVersion">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageProcessStatusType/Processor">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Processor"/>
+				<Annotation Term="SAP__common.Heading" String="Message Processor"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Processor"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FRESP_PROCESSOR"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageProcessStatusType/Status">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Processing Status"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FMSG_PRO_STATUS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageProcessStatusType/CreatedUser">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Create User"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCREATE_USER"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageProcessStatusType/__EntityControl">
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__UI.HiddenFilter"/>
+				<Annotation Term="SAP__UI.Hidden"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageProcessStatusType">
+				<Annotation Term="SAP__common.Label" String="Message Process Status"/>
+				<Annotation Term="SAP__common.Messages" Path="SAP__Messages"/>
+			</Annotations>
+			<Annotations Target="SAP__self.Container/MessageProcessStatus">
+				<Annotation Term="SAP__capabilities.SearchRestrictions">
+					<Record>
+						<PropertyValue Property="Searchable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.FilterRestrictions">
+					<Record>
+						<PropertyValue Property="NonFilterableProperties">
+							<Collection>
+								<PropertyPath>__EntityControl</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SortRestrictions">
+					<Record>
+						<PropertyValue Property="NonSortableProperties">
+							<Collection>
+								<PropertyPath>__EntityControl</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.UpdateRestrictions">
+					<Record>
+						<PropertyValue Property="DeltaUpdateSupported" Bool="true"/>
+						<PropertyValue Property="Updatable" Path="__EntityControl/Updatable"/>
+						<PropertyValue Property="QueryOptions">
+							<Record>
+								<PropertyValue Property="SelectSupported" Bool="true"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.DeepUpdateSupport">
+					<Record>
+						<PropertyValue Property="ContentIDSupported" Bool="true"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.DeleteRestrictions">
+					<Record>
+						<PropertyValue Property="Deletable" Bool="false"/>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/Namespace">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/InterfaceName">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/InterfaceVersion">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/AuthorizedUser">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="User"/>
+				<Annotation Term="SAP__common.Heading" String="User Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="User Name in User Master Record"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=XUBNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/MessageId">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Message Class"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Identification"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MSGID"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/MessageNo">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Message Number"/>
+				<Annotation Term="SAP__common.Heading" String="Msg."/>
+				<Annotation Term="SAP__common.QuickInfo" String="System Message Number"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/LogicalSystem">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Logical System"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/Visibility">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Visibility"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FVISIBILITY"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/Scope">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Scope"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FSCOPE"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/CreateUser">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Create User"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCREATE_USER"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/LastUser">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Last User"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FLAST_USER"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/RecordType">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Record Type"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FMAINCOMPONENT"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/RecordTypeNumber">
+				<Annotation Term="SAP__common.IsDigitSequence"/>
+				<Annotation Term="SAP__common.Label" String="Record Type Number"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FRECTYPENR"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/GlobalRowNumber">
+				<Annotation Term="SAP__common.IsDigitSequence"/>
+				<Annotation Term="SAP__common.Label" String="Global Row Number"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FGLOBALROWNR"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/FieldName">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Component name"/>
+				<Annotation Term="SAP__common.Heading" String="Component"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=NAME_KOMP"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/MessageSerialNumber">
+				<Annotation Term="SAP__common.IsDigitSequence"/>
+				<Annotation Term="SAP__common.Label" String="Message Serial No."/>
+				<Annotation Term="SAP__common.Heading" String="Msg.No"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Application Log: Internal Message Serial Number"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=BALMNR"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType">
+				<Annotation Term="SAP__common.Label" String="Custom Link"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageCommentType/Namespace">
+				<Annotation Term="SAP__common.FieldControl" EnumMember="SAP__common.FieldControlType/Mandatory"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageCommentType/InterfaceName">
+				<Annotation Term="SAP__common.FieldControl" EnumMember="SAP__common.FieldControlType/Mandatory"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageCommentType/InterfaceVersion">
+				<Annotation Term="SAP__common.FieldControl" EnumMember="SAP__common.FieldControlType/Mandatory"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageCommentType/MessageGuid">
+				<Annotation Term="SAP__common.FieldControl" EnumMember="SAP__common.FieldControlType/Mandatory"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageCommentType/Note">
+				<Annotation Term="SAP__common.FieldControl" EnumMember="SAP__common.FieldControlType/Mandatory"/>
+				<Annotation Term="SAP__common.Label" String="Comment"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Comment for message processing"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCOMMENT"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageCommentType/CreateUser">
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Create User"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCREATE_USER"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageCommentType">
+				<Annotation Term="SAP__common.CreatedBy" Path="CreateUser"/>
+				<Annotation Term="SAP__common.CreatedAt" Path="CreateTime"/>
+				<Annotation Term="SAP__common.Label" String="Data message comments"/>
+				<Annotation Term="SAP__common.Messages" Path="SAP__Messages"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageCommentType/CreateTime">
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.Label" String="UTC Timestamp"/>
+				<Annotation Term="SAP__common.Heading" String="Message Processing Timestamp in UTC Timezone"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Processing Timestamp in UTC Timezone"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FPROCESSING_TSTMP"/>
+			</Annotations>
+			<Annotations Target="SAP__self.Container/MessageComment">
+				<Annotation Term="SAP__capabilities.SearchRestrictions">
+					<Record>
+						<PropertyValue Property="Searchable" Bool="true"/>
+						<PropertyValue Property="UnsupportedExpressions" EnumMember="SAP__capabilities.SearchExpressions/AND SAP__capabilities.SearchExpressions/NOT SAP__capabilities.SearchExpressions/group "/>
+						<PropertyValue Property="SearchSyntax" String="https://url.sap/odata-search"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.FilterRestrictions">
+					<Record>
+						<PropertyValue Property="Filterable" Bool="true"/>
+						<PropertyValue Property="FilterExpressionRestrictions">
+							<Collection>
+								<Record>
+									<PropertyValue Property="Property" PropertyPath="Note"/>
+									<PropertyValue Property="AllowedExpressions" String="SearchExpression"/>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SortRestrictions">
+					<Record>
+						<PropertyValue Property="NonSortableProperties">
+							<Collection>
+								<PropertyPath>Note</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.DeleteRestrictions">
+					<Record>
+						<PropertyValue Property="Deletable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.UpdateRestrictions">
+					<Record>
+						<PropertyValue Property="Updatable" Bool="false"/>
+						<PropertyValue Property="QueryOptions">
+							<Record>
+								<PropertyValue Property="SelectSupported" Bool="true"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextParameters/p_namespace">
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Namespace"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextParameters/p_interfacename">
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Interface Name"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextParameters/p_interfaceversion">
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Interface Version"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextParameters/p_messageid">
+				<Annotation Term="SAP__common.Label" String="Message Class"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Identification"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Message Class"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MSGID"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextParameters/p_messageno">
+				<Annotation Term="SAP__common.Label" String="Message Number"/>
+				<Annotation Term="SAP__common.QuickInfo" String="System Message Number"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Msg."/>
+			</Annotations>
+			<Annotations Target="SAP__self.Container/CustomText">
+				<Annotation Term="SAP__capabilities.NavigationRestrictions">
+					<Record>
+						<PropertyValue Property="RestrictedProperties">
+							<Collection>
+								<Record>
+									<PropertyValue Property="NavigationProperty" NavigationPropertyPath="Set"/>
+									<PropertyValue Property="InsertRestrictions">
+										<Record>
+											<PropertyValue Property="Insertable" Bool="false"/>
+										</Record>
+									</PropertyValue>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SearchRestrictions">
+					<Record>
+						<PropertyValue Property="Searchable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.FilterRestrictions">
+					<Record>
+						<PropertyValue Property="NonFilterableProperties">
+							<Collection>
+								<PropertyPath>p_namespace</PropertyPath>
+								<PropertyPath>p_interfacename</PropertyPath>
+								<PropertyPath>p_interfaceversion</PropertyPath>
+								<PropertyPath>p_messageid</PropertyPath>
+								<PropertyPath>p_messageno</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SortRestrictions">
+					<Record>
+						<PropertyValue Property="NonSortableProperties">
+							<Collection>
+								<PropertyPath>p_namespace</PropertyPath>
+								<PropertyPath>p_interfacename</PropertyPath>
+								<PropertyPath>p_interfaceversion</PropertyPath>
+								<PropertyPath>p_messageid</PropertyPath>
+								<PropertyPath>p_messageno</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.ReadRestrictions">
+					<Record>
+						<PropertyValue Property="Readable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.InsertRestrictions">
+					<Record>
+						<PropertyValue Property="Insertable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.DeleteRestrictions">
+					<Record>
+						<PropertyValue Property="Deletable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.UpdateRestrictions">
+					<Record>
+						<PropertyValue Property="Updatable" Bool="false"/>
+						<PropertyValue Property="NonUpdatableNavigationProperties">
+							<Collection>
+								<PropertyPath>Set</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="QueryOptions">
+							<Record>
+								<PropertyValue Property="SelectSupported" Bool="true"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextParameters">
+				<Annotation Term="SAP__common.ResultContext"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintParameters/p_namespace">
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Namespace"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintParameters/p_interfacename">
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Interface Name"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintParameters/p_interfaceversion">
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Interface Version"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintParameters/p_messageid">
+				<Annotation Term="SAP__common.Label" String="Message Class"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Identification"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Message Class"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MSGID"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintParameters/p_messageno">
+				<Annotation Term="SAP__common.Label" String="Message Number"/>
+				<Annotation Term="SAP__common.QuickInfo" String="System Message Number"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Msg."/>
+			</Annotations>
+			<Annotations Target="SAP__self.Container/CustomHint">
+				<Annotation Term="SAP__capabilities.NavigationRestrictions">
+					<Record>
+						<PropertyValue Property="RestrictedProperties">
+							<Collection>
+								<Record>
+									<PropertyValue Property="NavigationProperty" NavigationPropertyPath="Set"/>
+									<PropertyValue Property="InsertRestrictions">
+										<Record>
+											<PropertyValue Property="Insertable" Bool="false"/>
+										</Record>
+									</PropertyValue>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SearchRestrictions">
+					<Record>
+						<PropertyValue Property="Searchable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.FilterRestrictions">
+					<Record>
+						<PropertyValue Property="NonFilterableProperties">
+							<Collection>
+								<PropertyPath>p_namespace</PropertyPath>
+								<PropertyPath>p_interfacename</PropertyPath>
+								<PropertyPath>p_interfaceversion</PropertyPath>
+								<PropertyPath>p_messageid</PropertyPath>
+								<PropertyPath>p_messageno</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SortRestrictions">
+					<Record>
+						<PropertyValue Property="NonSortableProperties">
+							<Collection>
+								<PropertyPath>p_namespace</PropertyPath>
+								<PropertyPath>p_interfacename</PropertyPath>
+								<PropertyPath>p_interfaceversion</PropertyPath>
+								<PropertyPath>p_messageid</PropertyPath>
+								<PropertyPath>p_messageno</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.ReadRestrictions">
+					<Record>
+						<PropertyValue Property="Readable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.InsertRestrictions">
+					<Record>
+						<PropertyValue Property="Insertable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.DeleteRestrictions">
+					<Record>
+						<PropertyValue Property="Deletable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.UpdateRestrictions">
+					<Record>
+						<PropertyValue Property="Updatable" Bool="false"/>
+						<PropertyValue Property="NonUpdatableNavigationProperties">
+							<Collection>
+								<PropertyPath>Set</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="QueryOptions">
+							<Record>
+								<PropertyValue Property="SelectSupported" Bool="true"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomHintParameters">
+				<Annotation Term="SAP__common.ResultContext"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/Namespace">
+				<Annotation Term="SAP__common.Text" Path="Namespace_Text"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/Namespace_Text">
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.Label" String="Namespace Desc."/>
+				<Annotation Term="SAP__common.Heading" String="Namespace Description"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Namespace Description"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNSTX"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/InterfaceName">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/InterfaceVersion">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/InterfaceKey">
+				<Annotation Term="SAP__common.Text" Path="InterfaceKey_Text"/>
+				<Annotation Term="SAP__common.Label" String="Obsolete"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/InterfaceKey_Text">
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.Label" String="Description"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFDESC"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/IndexTable">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__UI.Hidden"/>
+				<Annotation Term="SAP__common.Label" String="Message Idx Table"/>
+				<Annotation Term="SAP__common.Heading" String="Message Index Table Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Index Table Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FMSG_TBL"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType">
+				<Annotation Term="SAP__common.Label" String="Statistics information by per interface"/>
+				<Annotation Term="SAP__common.SemanticKey">
+					<Collection>
+						<PropertyPath>InterfaceKey</PropertyPath>
+					</Collection>
+				</Annotation>
+				<Annotation Term="SAP__UI.LineItem">
+					<Collection>
+						<Record Type="SAP__UI.DataField">
+							<PropertyValue Property="Value" Path="Namespace"/>
+						</Record>
+						<Record Type="SAP__UI.DataField">
+							<PropertyValue Property="Value" Path="InterfaceName"/>
+						</Record>
+						<Record Type="SAP__UI.DataField">
+							<PropertyValue Property="Value" Path="InterfaceVersion"/>
+						</Record>
+						<Record Type="SAP__UI.DataField">
+							<PropertyValue Property="Value" Path="InterfaceKey"/>
+						</Record>
+						<Record Type="SAP__UI.DataField">
+							<PropertyValue Property="Value" Path="NumberAllMessages"/>
+						</Record>
+						<Record Type="SAP__UI.DataField">
+							<PropertyValue Property="Value" Path="NumberWarningMessages"/>
+						</Record>
+						<Record Type="SAP__UI.DataField">
+							<PropertyValue Property="Value" Path="NumberErrorMessages"/>
+						</Record>
+						<Record Type="SAP__UI.DataField">
+							<PropertyValue Property="Value" Path="NumberAbortMessages"/>
+						</Record>
+						<Record Type="SAP__UI.DataField">
+							<PropertyValue Property="Value" Path="NumberInProcessMessages"/>
+						</Record>
+						<Record Type="SAP__UI.DataField">
+							<PropertyValue Property="Value" Path="NumberCanceledMessages"/>
+						</Record>
+						<Record Type="SAP__UI.DataField">
+							<PropertyValue Property="Value" Path="NumberSuccessMessages"/>
+						</Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/Namespace">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/InterfaceName">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/InterfaceVersion">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/AuthorizedUser">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="User"/>
+				<Annotation Term="SAP__common.Heading" String="User Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="User Name in User Master Record"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=XUBNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/MessageId">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Message Class"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Identification"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MSGID"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/MessageNo">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Message Number"/>
+				<Annotation Term="SAP__common.Heading" String="Msg."/>
+				<Annotation Term="SAP__common.QuickInfo" String="System Message Number"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/CreateUser">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Create User"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCREATE_USER"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/Visibility">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Visibility"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FVISIBILITY"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/Scope">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Scope"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FSCOPE"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/LogicalSystem">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Logical System"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType">
+				<Annotation Term="SAP__common.Label" String="Custom Text"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionParameters/p_namespace">
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Namespace"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionParameters/p_interfacename">
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Interface Name"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionParameters/p_interfaceversion">
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Interface Version"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionParameters/p_messageid">
+				<Annotation Term="SAP__common.Label" String="Message Class"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Identification"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Message Class"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MSGID"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionParameters/p_messageno">
+				<Annotation Term="SAP__common.Label" String="Message Number"/>
+				<Annotation Term="SAP__common.QuickInfo" String="System Message Number"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Msg."/>
+			</Annotations>
+			<Annotations Target="SAP__self.Container/CustomFunction">
+				<Annotation Term="SAP__capabilities.NavigationRestrictions">
+					<Record>
+						<PropertyValue Property="RestrictedProperties">
+							<Collection>
+								<Record>
+									<PropertyValue Property="NavigationProperty" NavigationPropertyPath="Set"/>
+									<PropertyValue Property="InsertRestrictions">
+										<Record>
+											<PropertyValue Property="Insertable" Bool="false"/>
+										</Record>
+									</PropertyValue>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SearchRestrictions">
+					<Record>
+						<PropertyValue Property="Searchable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.FilterRestrictions">
+					<Record>
+						<PropertyValue Property="NonFilterableProperties">
+							<Collection>
+								<PropertyPath>p_namespace</PropertyPath>
+								<PropertyPath>p_interfacename</PropertyPath>
+								<PropertyPath>p_interfaceversion</PropertyPath>
+								<PropertyPath>p_messageid</PropertyPath>
+								<PropertyPath>p_messageno</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SortRestrictions">
+					<Record>
+						<PropertyValue Property="NonSortableProperties">
+							<Collection>
+								<PropertyPath>p_namespace</PropertyPath>
+								<PropertyPath>p_interfacename</PropertyPath>
+								<PropertyPath>p_interfaceversion</PropertyPath>
+								<PropertyPath>p_messageid</PropertyPath>
+								<PropertyPath>p_messageno</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.ReadRestrictions">
+					<Record>
+						<PropertyValue Property="Readable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.InsertRestrictions">
+					<Record>
+						<PropertyValue Property="Insertable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.DeleteRestrictions">
+					<Record>
+						<PropertyValue Property="Deletable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.UpdateRestrictions">
+					<Record>
+						<PropertyValue Property="Updatable" Bool="false"/>
+						<PropertyValue Property="NonUpdatableNavigationProperties">
+							<Collection>
+								<PropertyPath>Set</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="QueryOptions">
+							<Record>
+								<PropertyValue Property="SelectSupported" Bool="true"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionParameters">
+				<Annotation Term="SAP__common.ResultContext"/>
+			</Annotations>
+			<Annotations Target="SAP__self.ChangeableFieldsType/ns">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.ChangeableFieldsType/ifname">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.ChangeableFieldsType/ifversion">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.ChangeableFieldsType/counter">
+				<Annotation Term="SAP__common.IsDigitSequence"/>
+				<Annotation Term="SAP__common.Label" String="Index"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Counter Number"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCOUNTNR"/>
+			</Annotations>
+			<Annotations Target="SAP__self.ChangeableFieldsType">
+				<Annotation Term="SAP__common.Label" String="Interface Level Changeable Fields"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/Namespace">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/InterfaceName">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/InterfaceVersion">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/FunctionId">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Function ID"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FFUNC_ID"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/AuthorizedUser">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="User"/>
+				<Annotation Term="SAP__common.Heading" String="User Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="User Name in User Master Record"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=XUBNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/FunctionIcon">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Function Icon"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FMSG_ICON"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/MessageId">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Message Class"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Identification"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MSGID"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/MessageNo">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Message Number"/>
+				<Annotation Term="SAP__common.Heading" String="Msg."/>
+				<Annotation Term="SAP__common.QuickInfo" String="System Message Number"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/RecordedCreateUser">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="User"/>
+				<Annotation Term="SAP__common.Heading" String="User Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="User Name in User Master Record"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=XUBNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/FunctionType">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Function Type"/>
+				<Annotation Term="SAP__common.Heading" String="Custom Function Type"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Type of Function"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCFUNC_MODE"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/ScreenNumber">
+				<Annotation Term="SAP__common.IsDigitSequence"/>
+				<Annotation Term="SAP__common.Label" String="Dynpro No."/>
+				<Annotation Term="SAP__common.Heading" String="Dynpro"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Dynpro Number"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/Visibility">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Visibility"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FVISIBILITY"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/Scope">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Scope"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FSCOPE"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType">
+				<Annotation Term="SAP__common.Label" String="Custom Function"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceDisplayNameParameters/p_namespace">
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Namespace"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceDisplayNameParameters/p_interfacename">
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Interface Name"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceDisplayNameParameters/p_interfaceversion">
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Interface Version"/>
+				<Annotation Term="SAP__core.Computed"/>
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Heading" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.Container/InterfaceDisplayName">
+				<Annotation Term="SAP__capabilities.NavigationRestrictions">
+					<Record>
+						<PropertyValue Property="RestrictedProperties">
+							<Collection>
+								<Record>
+									<PropertyValue Property="NavigationProperty" NavigationPropertyPath="Set"/>
+									<PropertyValue Property="InsertRestrictions">
+										<Record>
+											<PropertyValue Property="Insertable" Bool="false"/>
+										</Record>
+									</PropertyValue>
+								</Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SearchRestrictions">
+					<Record>
+						<PropertyValue Property="Searchable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.FilterRestrictions">
+					<Record>
+						<PropertyValue Property="NonFilterableProperties">
+							<Collection>
+								<PropertyPath>p_namespace</PropertyPath>
+								<PropertyPath>p_interfacename</PropertyPath>
+								<PropertyPath>p_interfaceversion</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SortRestrictions">
+					<Record>
+						<PropertyValue Property="NonSortableProperties">
+							<Collection>
+								<PropertyPath>p_namespace</PropertyPath>
+								<PropertyPath>p_interfacename</PropertyPath>
+								<PropertyPath>p_interfaceversion</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.ReadRestrictions">
+					<Record>
+						<PropertyValue Property="Readable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.InsertRestrictions">
+					<Record>
+						<PropertyValue Property="Insertable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.DeleteRestrictions">
+					<Record>
+						<PropertyValue Property="Deletable" Bool="false"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.UpdateRestrictions">
+					<Record>
+						<PropertyValue Property="Updatable" Bool="false"/>
+						<PropertyValue Property="NonUpdatableNavigationProperties">
+							<Collection>
+								<PropertyPath>Set</PropertyPath>
+							</Collection>
+						</PropertyValue>
+						<PropertyValue Property="QueryOptions">
+							<Record>
+								<PropertyValue Property="SelectSupported" Bool="true"/>
+							</Record>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceDisplayNameParameters">
+				<Annotation Term="SAP__common.ResultContext"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceDisplayNameType/Namespace">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Namespace"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FNS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceDisplayNameType/InterfaceName">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Name"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFNAME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceDisplayNameType/InterfaceVersion">
+				<Annotation Term="SAP__common.IsUpperCase"/>
+				<Annotation Term="SAP__common.Label" String="Interface Version"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FIFVERSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceDisplayNameType">
+				<Annotation Term="SAP__common.Label" String="Interface Display Name"/>
+			</Annotations>
+			<Annotations Target="SAP__self.Container">
+				<Annotation Term="SAP__common.ApplyMultiUnitBehaviorForSortingAndFiltering" Bool="true"/>
+				<Annotation Term="SAP__capabilities.FilterFunctions">
+					<Collection>
+						<String>eq</String>
+						<String>ne</String>
+						<String>gt</String>
+						<String>ge</String>
+						<String>lt</String>
+						<String>le</String>
+						<String>and</String>
+						<String>or</String>
+						<String>contains</String>
+						<String>startswith</String>
+						<String>endswith</String>
+						<String>any</String>
+						<String>all</String>
+					</Collection>
+				</Annotation>
+				<Annotation Term="SAP__support.TechnicalInfoLinks">
+					<Record>
+						<PropertyValue Property="Url" String="../../../../default/iwbep/common/0001/$metadata"/>
+						<PropertyValue Property="FunctionImport" String="GetTechnicalInfoLinks"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.SupportedFormats">
+					<Collection>
+						<String>application/json</String>
+						<String>application/pdf</String>
+					</Collection>
+				</Annotation>
+				<Annotation Term="SAP__PDF.Features">
+					<Record>
+						<PropertyValue Property="DocumentDescriptionReference" String="../../../../default/iwbep/common/0001/$metadata"/>
+						<PropertyValue Property="DocumentDescriptionCollection" String="MyDocumentDescriptions"/>
+						<PropertyValue Property="ArchiveFormat" Bool="true"/>
+						<PropertyValue Property="Border" Bool="true"/>
+						<PropertyValue Property="CoverPage" Bool="true"/>
+						<PropertyValue Property="FitToPage" Bool="true"/>
+						<PropertyValue Property="FontName" Bool="true"/>
+						<PropertyValue Property="FontSize" Bool="true"/>
+						<PropertyValue Property="HeaderFooter" Bool="true"/>
+						<PropertyValue Property="IANATimezoneFormat" Bool="true"/>
+						<PropertyValue Property="Margin" Bool="true"/>
+						<PropertyValue Property="Padding" Bool="true"/>
+						<PropertyValue Property="ResultSizeDefault" Int="20000"/>
+						<PropertyValue Property="ResultSizeMaximum" Int="20000"/>
+						<PropertyValue Property="Signature" Bool="true"/>
+						<PropertyValue Property="TextDirectionLayout" Bool="true"/>
+						<PropertyValue Property="Treeview" Bool="true"/>
+						<PropertyValue Property="UploadToFileShare" Bool="true"/>
+					</Record>
+				</Annotation>
+				<Annotation Term="SAP__capabilities.KeyAsSegmentSupported"/>
+				<Annotation Term="SAP__capabilities.AsynchronousRequestsSupported"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/IsTechnicalInterface">
+				<Annotation Term="SAP__UI.Hidden"/>
+				<Annotation Term="SAP__common.Label" String="Boolean Variable (X = True, - = False, Space = Unknown)"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageProcessStatusType/ProcessingTime">
+				<Annotation Term="SAP__common.Label" String="Msg. Process Time(s)"/>
+				<Annotation Term="SAP__common.Heading" String="Message Process Time(s)"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Message Process Time(s)"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageProcessStatusType/FormattedName">
+				<Annotation Term="SAP__common.Label" String="Description"/>
+				<Annotation Term="SAP__common.QuickInfo" String="User Description"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/LinkId">
+				<Annotation Term="SAP__common.Label" String="Custom Data Link"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCLINKID"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/CreateDate">
+				<Annotation Term="SAP__common.Label" String="Creation Date"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCREATE_DATE"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/CreateTime">
+				<Annotation Term="SAP__common.Label" String="Creation Time"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCREATE_TIME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/LastDate">
+				<Annotation Term="SAP__common.Label" String="Last Date"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FLAST_DATE"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/LastTime">
+				<Annotation Term="SAP__common.Label" String="Last Time"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FLAST_TIME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomLinkType/LogHandle">
+				<Annotation Term="SAP__common.Label" String="Handle"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Application Log: Log Handle"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=BALLOGHNDL"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageCommentType/Counter">
+				<Annotation Term="SAP__common.Label" String="INT4"/>
+				<Annotation Term="SAP__common.QuickInfo" String="4 Byte Signed Integer"/>
+			</Annotations>
+			<Annotations Target="SAP__self.MessageCommentType/NoteCreatedByFormattedName">
+				<Annotation Term="SAP__common.Label" String="Description"/>
+				<Annotation Term="SAP__common.QuickInfo" String="User Description"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/NumberAllMessages">
+				<Annotation Term="SAP__common.Label" String="All Messages"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCOUNT_ALL"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/NumberWarningMessages">
+				<Annotation Term="SAP__common.Label" String="Warnings"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCOUNT_W"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/NumberErrorMessages">
+				<Annotation Term="SAP__common.Label" String="Errors"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCOUNT_E"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/NumberAbortMessages">
+				<Annotation Term="SAP__common.Label" String="Technical Errors"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCOUNT_A"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/NumberInProcessMessages">
+				<Annotation Term="SAP__common.Label" String="In Process"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCOUNT_I"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/NumberSuccessMessages">
+				<Annotation Term="SAP__common.Label" String="Success"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCOUNT_S"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceStatisticsType/NumberCanceledMessages">
+				<Annotation Term="SAP__common.Label" String="Canceled"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCOUNT_C"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/TextId">
+				<Annotation Term="SAP__common.Label" String="Custom Text ID"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCTEXTID"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/LastDate">
+				<Annotation Term="SAP__common.Label" String="Last Date"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FLAST_DATE"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomTextType/LastTime">
+				<Annotation Term="SAP__common.Label" String="Last Time"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FLAST_TIME"/>
+			</Annotations>
+			<Annotations Target="SAP__self.ChangeableFieldsType/field_path">
+				<Annotation Term="SAP__common.Label" String="Field Path"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FFIELD_PATH"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/RecordedCreateDate">
+				<Annotation Term="SAP__common.Label" String="Date"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FFDATUM"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/SkipFirstScreen">
+				<Annotation Term="SAP__common.Label" String="Skip First Screen"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCFUNC_SKIPFIRSTSCREEN"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/StartInNewSession">
+				<Annotation Term="SAP__common.Label" String="Start in New Session"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FCFUNC_INNEWSESSION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/FunctionName">
+				<Annotation Term="SAP__common.Label" String="URL (Intf. Monitor)"/>
+				<Annotation Term="SAP__common.Heading" String="URL for Interface Monitor"/>
+				<Annotation Term="SAP__common.QuickInfo" String="URL for Interface Monitor"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FURLS"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/IconAlias">
+				<Annotation Term="SAP__common.Label" String="Icon Alias"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Cross-Application Icon Alias"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/sem_obj">
+				<Annotation Term="SAP__common.Label" String="Semantic Object"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FSEMANTIC_OBJECT"/>
+			</Annotations>
+			<Annotations Target="SAP__self.CustomFunctionType/sem_act">
+				<Annotation Term="SAP__common.Label" String="Semantic Action"/>
+				<Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=%2FAIF%2FSEMANTIC_ACTION"/>
+			</Annotations>
+			<Annotations Target="SAP__self.InterfaceDisplayNameType/InterfaceDisplayName">
+				<Annotation Term="SAP__common.Label" String="Obsolete"/>
+			</Annotations>
+			<Annotations Target="SAP__self.EntityControl/Updatable">
+				<Annotation Term="SAP__common.Label" String="Dyn. Method Control"/>
+				<Annotation Term="SAP__common.Heading" String="Dynamic Method Control"/>
+				<Annotation Term="SAP__common.QuickInfo" String="Dynamic Method Property"/>
+			</Annotations>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>
