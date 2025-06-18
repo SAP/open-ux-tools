@@ -35,7 +35,7 @@
         "numSapSystemsFound": "Found {{sapSystemNumber}} SAP systems.",
         "numServicesForSystem": "v{{odataVersion}} catalog request for {{- system}} returned {{numServicesForSystem}}.",
         "platform": "Platform: {{platform}}",
-        "sapUI5RepoAvailable": "SAPUI5 repository service for deployment available.",
+        "sapUI5RepoAvailable": "SAPUI5 repository service for deployment is available.",
         "serviceMod": "SAP Fiori tools - Service Modeler: {{- serviceMod}}",
         "ui5LanguageAssistant": "UI5 Language Assistant Support: {{- ui5LanguageAssistant}}",
         "urlRequestFailure": "Request to URL: {{url}} failed with message: {{- error}}. Complete error object: {{- errorObj}}.",
