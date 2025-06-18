@@ -54,30 +54,30 @@ describe('base/config', () => {
 
         test('valid config', () => {
             mockIsAppStudio.mockReturnValueOnce(false);
-            expect(() => validateConfig(validConfig)).not.toThrowError();
+            expect(() => validateConfig(validConfig)).not.toThrow();
             mockIsAppStudio.mockReturnValueOnce(true);
-            expect(() => validateConfig({ app: validConfig.app, target: { destination: '~dest' } })).not.toThrowError();
+            expect(() => validateConfig({ app: validConfig.app, target: { destination: '~dest' } })).not.toThrow();
         });
 
         test('config missing', () => {
-            expect(() => validateConfig(undefined)).toThrowError();
+            expect(() => validateConfig(undefined)).toThrow();
         });
 
         test('incorrect app', () => {
             const config = { app: { ...validConfig.app }, target: validConfig.target };
             delete (config as any).app;
-            expect(() => validateConfig(config)).toThrowError();
+            expect(() => validateConfig(config)).toThrow();
         });
 
         test('incorrect target', () => {
             const config = { app: validConfig.app, target: { ...validConfig.target } };
             delete (config.target as any).url;
             mockIsAppStudio.mockReturnValueOnce(false);
-            expect(() => validateConfig(config)).toThrowError('target-url');
+            expect(() => validateConfig(config)).toThrow('target-url');
             mockIsAppStudio.mockReturnValueOnce(true);
-            expect(() => validateConfig(config)).toThrowError('target-destination');
+            expect(() => validateConfig(config)).toThrow('target-destination');
             delete (config as any).target;
-            expect(() => validateConfig(config)).toThrowError('target');
+            expect(() => validateConfig(config)).toThrow('target');
         });
 
         test('zeros added to client', () => {

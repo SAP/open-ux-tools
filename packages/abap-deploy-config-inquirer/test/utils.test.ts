@@ -124,7 +124,7 @@ describe('Test utils', () => {
             errorHandler: jest.fn()
         });
 
-        expect(mockGetTransportConfigInstance).toBeCalledWith({
+        expect(mockGetTransportConfigInstance).toHaveBeenCalledWith({
             backendTarget: undefined,
             credentials: undefined
         });
@@ -147,13 +147,13 @@ describe('Test utils', () => {
             errorHandler
         });
 
-        expect(mockGetTransportConfigInstance).toBeCalledWith({
+        expect(mockGetTransportConfigInstance).toHaveBeenCalledWith({
             backendTarget: undefined,
             credentials: undefined
         });
         expect(initTransportConfigResult.error).toStrictEqual(errorObj);
-        expect(errorHandler).toBeCalledWith(errorObj);
-        expect(loggerSpy).toBeCalledWith(
+        expect(errorHandler).toHaveBeenCalledWith(errorObj);
+        expect(loggerSpy).toHaveBeenCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'initTransportConfig', error: errorObj.toString() })
         );
     });

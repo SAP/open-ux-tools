@@ -123,7 +123,7 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                 serviceName: 'test1-cfServicetechnicalName'
             } as ServiceInstanceInfo)
         ).toBe(true);
-        expect(getCredsSpy).toBeCalledWith('test1-cFAbapService');
+        expect(getCredsSpy).toHaveBeenCalledWith('test1-cFAbapService');
         expect(createDestSpy).toHaveBeenCalledWith(
             'test1-cFAbapService',
             {
@@ -151,7 +151,7 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                 serviceName: 'test1-cfServicetechnicalName'
             } as ServiceInstanceInfo)
         ).toEqual(errMsg);
-        expect(getCredsSpy).toBeCalledWith('test1-cFAbapService');
+        expect(getCredsSpy).toHaveBeenCalledWith('test1-cFAbapService');
         expect(createDestSpy).toHaveBeenCalled();
     });
 });

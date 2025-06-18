@@ -72,7 +72,7 @@ describe('getCapI18nBundle', () => {
         const result = getCapI18nBundle(PROJECT_ROOT, env, [
             join(PROJECT_ROOT, 'app', 'properties-csv', 'service.cds')
         ]);
-        return expect(result).rejects.toThrowError('should-throw-error');
+        return expect(result).rejects.toThrow('should-throw-error');
     });
 
     test('single .properties file - mem-fs-editor', async () => {

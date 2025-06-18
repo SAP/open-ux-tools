@@ -26,7 +26,7 @@ describe('ui5Utils', () => {
             const { getComponent } = await import('../../../src/utils/core');
             const component = getComponent(testComponent.id);
 
-            expect(sapCoreMock.getComponent).toBeCalledWith(testComponent.id);
+            expect(sapCoreMock.getComponent).toHaveBeenCalledWith(testComponent.id);
             expect(component).toStrictEqual(testComponent);
         });
 
@@ -40,8 +40,8 @@ describe('ui5Utils', () => {
             const { getComponent } = await import('../../../src/utils/core');
             const component = getComponent(testComponent.id);
 
-            expect(Component.get).toBeCalledWith(testComponent.id);
-            expect(sapCoreMock.getComponent).not.toBeCalled();
+            expect(Component.get).toHaveBeenCalledWith(testComponent.id);
+            expect(sapCoreMock.getComponent).not.toHaveBeenCalled();
             expect(component).toStrictEqual(testComponent);
         });
 
@@ -57,9 +57,9 @@ describe('ui5Utils', () => {
             const { getComponent } = await import('../../../src/utils/core');
             const component = getComponent(testComponent.id);
 
-            expect(Component.getComponentById).toBeCalledWith(testComponent.id);
-            expect(Component.get).not.toBeCalled();
-            expect(sapCoreMock.getComponent).not.toBeCalled();
+            expect(Component.getComponentById).toHaveBeenCalledWith(testComponent.id);
+            expect(Component.get).not.toHaveBeenCalled();
+            expect(sapCoreMock.getComponent).not.toHaveBeenCalled();
             expect(component).toStrictEqual(testComponent);
         });
     });

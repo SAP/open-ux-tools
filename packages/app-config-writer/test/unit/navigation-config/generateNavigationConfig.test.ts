@@ -72,7 +72,7 @@ describe('Unit tests for navigation config generation', () => {
                 title: 'title1',
                 subTitle: 'subtitle1'
             })
-        ).rejects.toThrowError(/^Manifest not found at path: /);
+        ).rejects.toThrow(/^Manifest not found at path: /);
     });
 
     test('"sap.app" not defined', async () => {

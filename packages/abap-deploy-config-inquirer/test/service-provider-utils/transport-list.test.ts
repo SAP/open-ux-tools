@@ -47,7 +47,7 @@ describe('Test list transports', () => {
 
         const allTransports = await getTransportListFromService(packageName, appName);
         expect(allTransports).toStrictEqual(undefined);
-        expect(loggerSpy).toBeCalledWith(
+        expect(loggerSpy).toHaveBeenCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'getTransportListFromService', error: errorObj.message })
         );
     });
@@ -59,8 +59,8 @@ describe('Test list transports', () => {
 
         await expect(
             getTransportListFromService(packageName, appName, { abapTarget: { url: 'http://somehost:1234' } })
-        ).rejects.toThrowError('self signed cert');
-        expect(logWarnSpy).toBeCalledWith(
+        ).rejects.toThrow('self signed cert');
+        expect(logWarnSpy).toHaveBeenCalledWith(
             t('warnings.certificateError', { url: 'http://somehost:1234', error: error.message })
         );
     });

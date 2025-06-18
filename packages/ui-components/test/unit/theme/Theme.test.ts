@@ -5,7 +5,7 @@ describe('initTheme', () => {
     it('initTheme', () => {
         const createThemeSpy = jest.spyOn(fluentUI, 'createTheme');
         initTheme();
-        expect(createThemeSpy).toBeCalledWith({
+        expect(createThemeSpy).toHaveBeenCalledWith({
             defaultFontStyle: {
                 WebkitFontSmoothing: '',
                 fontFamily: 'var(--vscode-font-family)'

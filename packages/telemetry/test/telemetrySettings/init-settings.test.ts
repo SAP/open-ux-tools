@@ -70,8 +70,8 @@ describe('toolsSuiteTelemetrySettings', () => {
             watchTelemetrySettingStore: true
         });
 
-        expect(readFileMock).toBeCalledTimes(0);
-        expect(getFilesystemWatcherForSpy).toBeCalledTimes(1);
+        expect(readFileMock).toHaveBeenCalledTimes(0);
+        expect(getFilesystemWatcherForSpy).toHaveBeenCalledTimes(1);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
         expect(TelemetrySettings.telemetryEnabled).toBe(true);
@@ -91,7 +91,7 @@ describe('toolsSuiteTelemetrySettings', () => {
             watchTelemetrySettingStore: false
         });
 
-        expect(readFileMock).toBeCalledTimes(0);
+        expect(readFileMock).toHaveBeenCalledTimes(0);
         expect(TelemetrySettings.telemetryEnabled).toBe(false);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
@@ -120,9 +120,9 @@ describe('toolsSuiteTelemetrySettings', () => {
             watchTelemetrySettingStore: false
         });
 
-        expect(readFileMock).toBeCalledTimes(1);
-        expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
-        expect(getFilesystemWatcherForSpy).toBeCalledTimes(0);
+        expect(readFileMock).toHaveBeenCalledTimes(1);
+        expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining('settings.json'), 'utf-8');
+        expect(getFilesystemWatcherForSpy).toHaveBeenCalledTimes(0);
         expect(TelemetrySettings.telemetryEnabled).toBe(false);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
@@ -149,8 +149,8 @@ describe('toolsSuiteTelemetrySettings', () => {
             watchTelemetrySettingStore: false
         });
 
-        expect(readFileMock).toBeCalledTimes(1);
-        expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
+        expect(readFileMock).toHaveBeenCalledTimes(1);
+        expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining('settings.json'), 'utf-8');
         expect(TelemetrySettings.telemetryEnabled).toBe(true);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
@@ -174,8 +174,8 @@ describe('toolsSuiteTelemetrySettings', () => {
             internalFeature: false,
             watchTelemetrySettingStore: false
         });
-        expect(readFileMock).toBeCalledTimes(1);
-        expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
+        expect(readFileMock).toHaveBeenCalledTimes(1);
+        expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining('settings.json'), 'utf-8');
         expect(TelemetrySettings.telemetryEnabled).toBe(true);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
@@ -200,9 +200,9 @@ describe('toolsSuiteTelemetrySettings', () => {
             internalFeature: false,
             watchTelemetrySettingStore: false
         });
-        expect(readFileMock).toBeCalledTimes(1);
-        expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
-        expect(readFileMock).toBeCalledWith(expect.stringContaining('theia'), 'utf-8');
+        expect(readFileMock).toHaveBeenCalledTimes(1);
+        expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining('settings.json'), 'utf-8');
+        expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining('theia'), 'utf-8');
         expect(TelemetrySettings.telemetryEnabled).toBe(true);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
@@ -225,9 +225,9 @@ describe('toolsSuiteTelemetrySettings', () => {
             internalFeature: false,
             watchTelemetrySettingStore: false
         });
-        expect(readFileMock).toBeCalledTimes(1);
-        expect(readFileMock).toBeCalledWith(expect.stringContaining('settings.json'), 'utf-8');
-        expect(readFileMock).toBeCalledWith(expect.stringContaining('theia'), 'utf-8');
+        expect(readFileMock).toHaveBeenCalledTimes(1);
+        expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining('settings.json'), 'utf-8');
+        expect(readFileMock).toHaveBeenCalledWith(expect.stringContaining('theia'), 'utf-8');
         expect(TelemetrySettings.telemetryEnabled).toBe(false);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');
@@ -256,7 +256,7 @@ describe('toolsSuiteTelemetrySettings', () => {
             internalFeature: false,
             watchTelemetrySettingStore: false
         });
-        expect(readFileMock).toBeCalledTimes(0);
+        expect(readFileMock).toHaveBeenCalledTimes(0);
         expect(TelemetrySettings.telemetryEnabled).toBe(true);
         expect(TelemetrySettings.consumerModuleName).toBe('testProject');
         expect(TelemetrySettings.consumerModuleVersion).toBe('0.0.1');

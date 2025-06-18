@@ -16,7 +16,7 @@ foo:
     });
 
     it('throws an error containing messages for all documents', async () => {
-        await expect(async () => await YamlDocument.newInstance(`- 1\n2\n---\n- 3\n4`)).rejects.toThrowError(
+        await expect(async () => await YamlDocument.newInstance(`- 1\n2\n---\n- 3\n4`)).rejects.toThrow(
             expect.objectContaining({
                 message: `Error parsing YAML document\nUnexpected scalar at node end at line 2, column 1:\n\n- 1\n2\n^\n,Unexpected scalar at node end at line 5, column 1:\n\n- 3\n4\n^\n`
             })
@@ -24,7 +24,7 @@ foo:
     });
 
     it('throws an error containing message for erroneous document', async () => {
-        await expect(async () => await YamlDocument.newInstance(`- 1\n---\n- 2\n3`)).rejects.toThrowError(
+        await expect(async () => await YamlDocument.newInstance(`- 1\n---\n- 2\n3`)).rejects.toThrow(
             expect.objectContaining({
                 message: `Error parsing YAML document\nUnexpected scalar at node end at line 4, column 1:\n\n- 2\n3\n^\n`
             })
@@ -334,7 +334,7 @@ seq1:
                     matcher: { key: 'name', value: 'name1' },
                     value: { config: { prop2: 'b' } }
                 });
-            }).toThrowError();
+            }).toThrow();
             expect(doc.toString()).toEqual(serializedYaml);
         });
 
@@ -351,7 +351,7 @@ seq1:
                     matcher: { key: 'name', value: 'name1' },
                     value: { config: { prop2: 'b' } }
                 });
-            }).toThrowError(interpolate(errorTemplate.seqDoesNotExist, { path }));
+            }).toThrow(interpolate(errorTemplate.seqDoesNotExist, { path }));
             expect(doc.toString()).toEqual(serializedYaml);
         });
     });
@@ -415,14 +415,14 @@ seq1:
             const doc = await YamlDocument.newInstance(serializedYaml);
             expect(() => {
                 doc.deleteAt({ path: 'seq1', matcher: { key: 'name', value: 'unknown' } });
-            }).toThrowError();
+            }).toThrow();
             expect(doc.toString()).toBe(serializedYaml);
         });
         it('try deleting from a node that is not a sequence', async () => {
             const doc = await YamlDocument.newInstance(serializedYaml);
             expect(() => {
                 doc.deleteAt({ path: 'key1', matcher: { key: 'name', value: 'name1' } });
-            }).toThrowError();
+            }).toThrow();
             expect(doc.toString()).toBe(serializedYaml);
         });
     });

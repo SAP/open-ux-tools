@@ -59,11 +59,11 @@ describe('generate/adaptation-project', () => {
 
         const expectedAppRoot = join(process.cwd(), id);
         // Flow check
-        expect(promptSpy).not.toBeCalled();
-        expect(traceSpy).not.toBeCalled();
-        expect(npmInstallSpy).toBeCalledWith(expectedAppRoot);
+        expect(promptSpy).not.toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
+        expect(npmInstallSpy).toHaveBeenCalledWith(expectedAppRoot);
         // Generate call check
-        expect(generateSpy).toBeCalledWith(
+        expect(generateSpy).toHaveBeenCalledWith(
             expectedAppRoot,
             expect.objectContaining({
                 app: { id, reference, layer, content },
@@ -79,10 +79,10 @@ describe('generate/adaptation-project', () => {
         await command.parseAsync(getArgv(appRoot, '--id', id, '--reference', reference, '--url', url, '-y'));
 
         // Flow check
-        expect(promptSpy).not.toBeCalled();
-        expect(traceSpy).not.toBeCalled();
-        expect(npmInstallSpy).toBeCalledWith(appRoot);
-        expect(generateSpy).toBeCalled();
+        expect(promptSpy).not.toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
+        expect(npmInstallSpy).toHaveBeenCalledWith(appRoot);
+        expect(generateSpy).toHaveBeenCalled();
     });
 
     test('<appRoot> --skip-install --id --reference --url --package', async () => {
@@ -106,10 +106,10 @@ describe('generate/adaptation-project', () => {
         );
 
         // Flow check
-        expect(promptSpy).not.toBeCalled();
-        expect(traceSpy).not.toBeCalled();
-        expect(npmInstallSpy).not.toBeCalled();
-        expect(generateSpy).toBeCalled();
+        expect(promptSpy).not.toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
+        expect(npmInstallSpy).not.toHaveBeenCalled();
+        expect(generateSpy).toHaveBeenCalled();
     });
 
     test('<appRoot> --simulate --id --reference --url', async () => {
@@ -121,10 +121,10 @@ describe('generate/adaptation-project', () => {
         );
 
         // Flow check
-        expect(promptSpy).not.toBeCalled();
-        expect(traceSpy).toBeCalled();
-        expect(npmInstallSpy).not.toBeCalled();
-        expect(generateSpy).toBeCalled();
+        expect(promptSpy).not.toHaveBeenCalled();
+        expect(traceSpy).toHaveBeenCalled();
+        expect(npmInstallSpy).not.toHaveBeenCalled();
+        expect(generateSpy).toHaveBeenCalled();
     });
 
     test('<appRoot> --url', async () => {
@@ -140,12 +140,12 @@ describe('generate/adaptation-project', () => {
         await command.parseAsync(getArgv(appRoot, '--url', url));
 
         // Flow check
-        expect(promptSpy).toBeCalled();
-        expect(traceSpy).not.toBeCalled();
-        expect(npmInstallSpy).toBeCalled();
+        expect(promptSpy).toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
+        expect(npmInstallSpy).toHaveBeenCalled();
 
         // Generate call check
-        expect(generateSpy).toBeCalledWith(
+        expect(generateSpy).toHaveBeenCalledWith(
             appRoot,
             expect.objectContaining({
                 app: { id, reference, layer, content },

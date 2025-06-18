@@ -13,7 +13,7 @@ describe('utils/version', () => {
             version: '1.124.11'
         });
         const version = await getUi5Version('sap.m');
-        expect(versionInfoLoadMock).toBeCalledWith({ library: 'sap.m' });
+        expect(versionInfoLoadMock).toHaveBeenCalledWith({ library: 'sap.m' });
         expect(version.major).toEqual(1);
         expect(version.minor).toEqual(124);
         expect(version.patch).toEqual(11);
@@ -26,7 +26,7 @@ describe('utils/version', () => {
             version: '1.124.11'
         });
         const version = await getUi5Version();
-        expect(versionInfoLoadMock).toBeCalledWith({ library: 'sap.ui.core' });
+        expect(versionInfoLoadMock).toHaveBeenCalledWith({ library: 'sap.ui.core' });
         expect(version.major).toEqual(1);
         expect(version.minor).toEqual(124);
         expect(version.patch).toEqual(11);
@@ -44,7 +44,7 @@ describe('utils/version', () => {
             version: '1.128.0-SNAPSHOT'
         });
         const version = await getUi5Version();
-        expect(versionInfoLoadMock).toBeCalledWith({ library: 'sap.ui.core' });
+        expect(versionInfoLoadMock).toHaveBeenCalledWith({ library: 'sap.ui.core' });
         expect(version.major).toEqual(1);
         expect(version.minor).toEqual(128);
     });
@@ -71,7 +71,7 @@ describe('utils/version', () => {
         //returns false for minimum versions using default
         expect(isLowerThanMinimalUi5Version({ major: 1, minor: 71 })).toBeFalsy();
         //throw error in case on NaN
-        expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrowError();
+        expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrow();
         //returns true for lower minor versions using default
         expect(isLowerThanMinimalUi5Version({ major: 1, minor: 70 })).toBeTruthy();
         //returns true for lower major versions using default
@@ -105,9 +105,9 @@ describe('utils/version', () => {
             )
         ).toBeFalsy();
         //throw error in case on NaN
-        expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrowError();
+        expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrow();
         //throw error in case on NaN
-        expect(() => isLowerThanMinimalUi5Version({ major: 1, minor: 1, patch: NaN })).toThrowError();
+        expect(() => isLowerThanMinimalUi5Version({ major: 1, minor: 1, patch: NaN })).toThrow();
     });
 
     test('test validation message', () => {

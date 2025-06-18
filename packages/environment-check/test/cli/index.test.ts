@@ -76,9 +76,9 @@ describe('Test for cli()', () => {
         await cli();
 
         // Result check
-        expect(console.error).toBeCalledWith('🔴 ERROR message');
-        expect(console.warn).toBeCalledWith('🟡 WARNING message');
-        expect(console.log).toBeCalledWith('🟢 INFO message');
+        expect(console.error).toHaveBeenCalledWith('🔴 ERROR message');
+        expect(console.warn).toHaveBeenCalledWith('🟡 WARNING message');
+        expect(console.log).toHaveBeenCalledWith('🟢 INFO message');
         expect(console.info).not.toHaveBeenCalled(); // should be called only in case we pass verbose
     });
 
@@ -246,7 +246,7 @@ describe('Test for cli()', () => {
         await cli();
 
         // Result check
-        expect(mockCheckEnvironment).toBeCalledTimes(1);
+        expect(mockCheckEnvironment).toHaveBeenCalledTimes(1);
         expect(checkContent).toEqual(result);
     });
 });

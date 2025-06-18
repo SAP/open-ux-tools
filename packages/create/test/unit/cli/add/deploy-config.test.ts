@@ -56,9 +56,9 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot]));
 
         // Result check
-        expect(mockPrompt).toBeCalledTimes(1);
-        expect(getPromptsSpy).toBeCalledTimes(1);
-        expect(deployConfigWriterSpy).toBeCalledTimes(1);
+        expect(mockPrompt).toHaveBeenCalledTimes(1);
+        expect(getPromptsSpy).toHaveBeenCalledTimes(1);
+        expect(deployConfigWriterSpy).toHaveBeenCalledTimes(1);
     });
 
     test('should log when cf deploy config is requested', async () => {
@@ -68,7 +68,7 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'cf']));
 
         // Result check
-        expect(loggerMock.info).toBeCalledWith('Cloud Foundry deployment is not yet implemented.');
+        expect(loggerMock.info).toHaveBeenCalledWith('Cloud Foundry deployment is not yet implemented.');
     });
 
     test('should add deploy config', async () => {
@@ -81,12 +81,12 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap']));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
     });
 
     test('should add deploy config for Fiori elements project', async () => {
@@ -100,12 +100,12 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap']));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
     });
 
     test('should add deploy config for Adp project', async () => {
@@ -119,12 +119,12 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot]));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
     });
 
     test('should add deploy config --simulate', async () => {
@@ -137,12 +137,12 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap', '--simulate']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).not.toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).not.toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
     test('should add deploy config --verbose', async () => {
@@ -155,12 +155,12 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap', '--verbose']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
     });
 
     test('should report error', async () => {
@@ -177,12 +177,12 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--target', 'abap', '--verbose']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).not.toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).toBeCalledWith(`Error while executing add deploy-config '${errorObj.message}'`);
-        expect(fsMock.commit).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).not.toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith(`Error while executing add deploy-config '${errorObj.message}'`);
+        expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
     test('should add deployment config when answers are returned by prompting', async () => {
@@ -207,7 +207,7 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--verbose']));
 
         // Result check
-        expect(loggerMock.debug).toBeCalledWith(
+        expect(loggerMock.debug).toHaveBeenCalledWith(
             `Adding deployment configuration : ${JSON.stringify(
                 {
                     target: {
@@ -226,7 +226,7 @@ describe('add/deploy-config', () => {
                 2
             )}`
         );
-        expect(fsMock.commit).toBeCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
     });
 
     test('should add deployment config for Adp project with on-Premise system when answers are returned by prompting ', async () => {
@@ -250,7 +250,7 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--verbose']));
 
         // Result check
-        expect(loggerMock.debug).toBeCalledWith(
+        expect(loggerMock.debug).toHaveBeenCalledWith(
             `Adding deployment configuration : ${JSON.stringify(
                 {
                     target: {
@@ -266,7 +266,7 @@ describe('add/deploy-config', () => {
                 2
             )}`
         );
-        expect(fsMock.commit).toBeCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
     });
 
     test('should add deployment config for Adp project with Cloud system when answers are returned by prompting ', async () => {
@@ -292,7 +292,7 @@ describe('add/deploy-config', () => {
         await command.parseAsync(getArgv(['deploy-config', appRoot, '--verbose']));
 
         // Result check
-        expect(loggerMock.debug).toBeCalledWith(
+        expect(loggerMock.debug).toHaveBeenCalledWith(
             `Adding deployment configuration : ${JSON.stringify(
                 {
                     target: {
@@ -310,6 +310,6 @@ describe('add/deploy-config', () => {
                 2
             )}`
         );
-        expect(fsMock.commit).toBeCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
     });
 });

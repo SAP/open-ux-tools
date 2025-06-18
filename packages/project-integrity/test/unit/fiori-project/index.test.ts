@@ -96,11 +96,11 @@ describe('Test for checkFioriProjectIntegrity()', () => {
             },
             'additionalStringContent': { 'differentContent': [], 'equalContent': ['capPaths', 'csn'] }
         });
-        expect(mockCheckProjectIntegrity).toBeCalledWith(expect.stringContaining('integrity.json'), {
+        expect(mockCheckProjectIntegrity).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
             capPaths: '{"app":"app/","db":"db/","srv":"srv/"}',
             csn: expect.stringContaining('definitions')
         });
-        expect(mockWriteIntegrityData).toBeCalledWith(expect.stringContaining('ai-integrity.json'), {
+        expect(mockWriteIntegrityData).toHaveBeenCalledWith(expect.stringContaining('ai-integrity.json'), {
             enabled: true,
             fileIntegrity: [
                 {
@@ -155,11 +155,11 @@ describe('Test for checkFioriProjectIntegrity()', () => {
             },
             'additionalStringContent': { 'differentContent': [], 'equalContent': ['capPaths', 'csn'] }
         });
-        expect(mockCheckProjectIntegrity).toBeCalledWith(expect.stringContaining('integrity.json'), {
+        expect(mockCheckProjectIntegrity).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
             capPaths: '{"app":"app/","db":"db/","srv":"srv/"}',
             csn: expect.stringContaining('definitions')
         });
-        expect(mockWriteIntegrityData).toBeCalledWith(expect.stringContaining('ai-integrity.json'), {
+        expect(mockWriteIntegrityData).toHaveBeenCalledWith(expect.stringContaining('ai-integrity.json'), {
             enabled: true,
             fileIntegrity: [
                 {
@@ -235,7 +235,7 @@ describe('Test for checkFioriProjectIntegrity()', () => {
                 'equalContent': ['capPaths']
             }
         });
-        expect(mockCheckProjectIntegrity).toBeCalledWith(expect.stringContaining('integrity.json'), {
+        expect(mockCheckProjectIntegrity).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
             capPaths: '{"app":"app/","db":"db/","srv":"srv/"}',
             csn: expect.stringContaining('definitions')
         });
@@ -250,7 +250,7 @@ describe('Test for updateFioriProjectIntegrity()', () => {
             .mockResolvedValueOnce();
         const projectRoot = join(__dirname, '../../test-input/valid-fiori-project');
         await updateFioriProjectIntegrity(projectRoot);
-        expect(mockUpdateFioriProjectIntegrity).toBeCalledWith(expect.stringContaining('integrity.json'), {
+        expect(mockUpdateFioriProjectIntegrity).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
             capPaths: '{"app":"app/","db":"db/","srv":"srv/"}',
             csn: expect.stringContaining('definitions')
         });
@@ -277,7 +277,7 @@ describe('Test enableFioriProjectIntegrity()', () => {
         const projectRoot = join(__dirname, '../../test-input/disabled-fiori-project');
 
         await enableFioriProjectIntegrity(projectRoot);
-        expect(mockWriteIntegrityData).toBeCalledWith(expect.stringContaining('ai-integrity.json'), {
+        expect(mockWriteIntegrityData).toHaveBeenCalledWith(expect.stringContaining('ai-integrity.json'), {
             'enabled': true,
             'fileIntegrity': [],
             'contentIntegrity': []
@@ -291,7 +291,7 @@ describe('Test disableFioriProjectIntegrity()', () => {
         const projectRoot = join(__dirname, '../../test-input/enabled-fiori-project');
 
         await disableFioriProjectIntegrity(projectRoot);
-        expect(mockWriteIntegrityData).toBeCalledWith(expect.stringContaining('ai-integrity.json'), {
+        expect(mockWriteIntegrityData).toHaveBeenCalledWith(expect.stringContaining('ai-integrity.json'), {
             'enabled': false,
             'fileIntegrity': [],
             'contentIntegrity': []

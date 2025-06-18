@@ -124,7 +124,7 @@ describe('main', () => {
         await connector.storage.removeItem('sap.ui.fl.testFile');
 
         //assert
-        expect(applyChangeSpy).toBeCalledWith({ rta }, payload);
+        expect(applyChangeSpy).toHaveBeenCalledWith({ rta }, payload);
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
     });
     test('init - rta exception', async () => {
@@ -137,7 +137,7 @@ describe('main', () => {
 
         // assert
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
-        expect(Log.error).toBeCalledWith('Service Initialization Failed: ', error);
+        expect(Log.error).toHaveBeenCalledWith('Service Initialization Failed: ', error);
     });
 
     test('init and appLoaed called', async () => {
@@ -161,6 +161,6 @@ describe('main', () => {
             selectionServiceSpy,
             quickActionServiceSpy
         ]);
-        expect(CommunicationService.sendAction).toBeCalledWith(common.appLoaded());
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(common.appLoaded());
     });
 });

@@ -16,7 +16,7 @@ describe('flp/FakeLrepConnector', () => {
 
         enableFakeConnector();
 
-        expect(enableFakeConnectorSpy).toBeCalledTimes(1);
+        expect(enableFakeConnectorSpy).toHaveBeenCalledTimes(1);
     });
 
     describe('loadChanges', () => {
@@ -70,7 +70,7 @@ describe('flp/FakeLrepConnector', () => {
 
             await create([change]);
 
-            expect(fetchMock).toBeCalledTimes(1);
+            expect(fetchMock).toHaveBeenCalledTimes(1);
             expect(FakeLrepConnector.fileChangeRequestNotifier).toHaveBeenCalledWith(
                 'dummyFileName',
                 'create',
@@ -94,7 +94,7 @@ describe('flp/FakeLrepConnector', () => {
 
             await create(change);
 
-            expect(fetchMock).toBeCalledTimes(1);
+            expect(fetchMock).toHaveBeenCalledTimes(1);
         });
     });
 });

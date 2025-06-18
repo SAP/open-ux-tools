@@ -15,7 +15,7 @@ describe('runHooks', () => {
             hookParameters: { fsPath: generatedProjectRootPath },
             vscodeInstance: getVscodeInstance
         });
-        expect(mockExecuteCommand).toBeCalledWith(DEFAULT_POST_APP_GEN_COMMAND, {
+        expect(mockExecuteCommand).toHaveBeenCalledWith(DEFAULT_POST_APP_GEN_COMMAND, {
             fsPath: generatedProjectRootPath
         });
     });
@@ -29,7 +29,7 @@ describe('runHooks', () => {
             vscodeInstance: getVscodeInstance,
             options: { command: postGenCommand }
         });
-        expect(mockExecuteCommand).toBeCalledWith(postGenCommand, { fsPath: generatedProjectRootPath });
+        expect(mockExecuteCommand).toHaveBeenCalledWith(postGenCommand, { fsPath: generatedProjectRootPath });
     });
 
     it('does not throw an error when post generation command does', async () => {
@@ -43,7 +43,7 @@ describe('runHooks', () => {
                 hookParameters: { fsPath: generatedProjectRootPath },
                 vscodeInstance: getVscodeInstance
             })
-        ).resolves.not.toThrowError();
+        ).resolves.not.toThrow();
     });
 
     it('if no vscode instance is passed in, nothing happens', async () => {
@@ -53,6 +53,6 @@ describe('runHooks', () => {
             runHooks('app-generated', {
                 hookParameters: { fsPath: generatedProjectRootPath }
             })
-        ).resolves.not.toThrowError();
+        ).resolves.not.toThrow();
     });
 });

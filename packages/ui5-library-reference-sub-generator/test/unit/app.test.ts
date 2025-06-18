@@ -80,7 +80,7 @@ describe('Test reference generator', () => {
         });
         const updatedManifest = JSON.parse(manifest);
         expect(updatedManifest).toMatchSnapshot();
-        expect(sendTelemetrySpy).toBeCalledWith(
+        expect(sendTelemetrySpy).toHaveBeenCalledWith(
             EventName.LIB_REFERENCE_ADDED,
             expect.objectContaining({
                 OperatingSystem: 'CLI',

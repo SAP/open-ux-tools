@@ -184,7 +184,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         });
         expect(variant).toMatchSnapshot();
         expect(i18n).toMatchSnapshot();
-        expect(sendTelemetrySpy).toBeCalledWith(
+        expect(sendTelemetrySpy).toHaveBeenCalledWith(
             EventName.ADP_FLP_CONFIG_ADDED,
             expect.objectContaining({
                 OperatingSystem: 'testOS',
@@ -238,7 +238,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         });
         expect(variant).toMatchSnapshot();
         expect(i18n).toMatchSnapshot();
-        expect(sendTelemetrySpy).toBeCalledWith(
+        expect(sendTelemetrySpy).toHaveBeenCalledWith(
             EventName.ADP_FLP_CONFIG_ADDED,
             expect.objectContaining({
                 OperatingSystem: 'testOS',
@@ -246,7 +246,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             }),
             testProjectPath
         );
-        expect(showInformationSpy).not.toBeCalled();
+        expect(showInformationSpy).not.toHaveBeenCalled();
     });
 
     it('Should throw an error if writing phase fails', async () => {
@@ -335,7 +335,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await runContext.run();
-        expect(vsCodeMessageSpy).toBeCalledWith(t('error.destinationNotFound'));
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.destinationNotFound'));
     });
 
     it('Should throw an error when no url is configured for target in VS Code', async () => {
@@ -363,7 +363,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await runContext.run();
-        expect(vsCodeMessageSpy).toBeCalledWith(t('error.systemNotFound'));
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.systemNotFound'));
     });
 
     it('Should throw an error when system is not found in the store in VS Code', async () => {
@@ -394,7 +394,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             })
             .withPrompts(answers);
         await runContext.run();
-        expect(vsCodeMessageSpy).toBeCalledWith(t('error.systemNotFound', { systemUrl }));
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.systemNotFound', { systemUrl }));
     });
 
     it('Should throw an error when fetching manifest fails', async () => {
@@ -480,7 +480,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         initMergedManifestSpy.mockClear();
         await expect(runContext.run()).rejects.toThrow(t('error.fetchingManifest'));
-        expect(initMergedManifestSpy).toBeCalledTimes(2);
+        expect(initMergedManifestSpy).toHaveBeenCalledTimes(2);
     });
 
     it('Should require authentication again if credentials are wrong', async () => {
@@ -703,7 +703,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await runContext.run();
-        expect(vsCodeMessageSpy).toBeCalledWith('Network Error');
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith('Network Error');
     });
 
     it('Should fail if destination is not found in BTP subaccount', async () => {
@@ -734,7 +734,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await runContext.run();
-        expect(vsCodeMessageSpy).toBeCalledWith(
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(
             t('error.destinationNotFoundInStore', { destination: 'testDestination' })
         );
     });
@@ -768,7 +768,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await runContext.run();
-        expect(toolsLoggerErrorSpy).toBeCalledWith(
+        expect(toolsLoggerErrorSpy).toHaveBeenCalledWith(
             t('error.destinationNotFoundInStore', { destination: 'testDestination' })
         );
     });

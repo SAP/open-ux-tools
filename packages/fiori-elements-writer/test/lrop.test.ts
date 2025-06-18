@@ -644,9 +644,9 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
 
             const fioriElementsApp = applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage);
             await generate(curTestOutPath, fioriElementsApp, fs);
-            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toHaveBeenCalledTimes(1);
 
-            expect(applyCAPUpdates).toBeCalledWith(fs, sampleCapService, {
+            expect(applyCAPUpdates).toHaveBeenCalledWith(fs, sampleCapService, {
                 ...capProjectSettings,
                 enableNPMWorkspaces: true,
                 enableCdsUi5Plugin: true
@@ -670,8 +670,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
 
-            expect(applyCAPUpdates).toBeCalledTimes(1);
-            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+            expect(applyCAPUpdates).toHaveBeenCalledTimes(1);
+            expect(applyCAPUpdates).toHaveBeenCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
                 ...capProjectSettings,
                 enableNPMWorkspaces: false,
                 enableCdsUi5Plugin: false
@@ -696,8 +696,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
 
-            expect(applyCAPUpdates).toBeCalledTimes(1);
-            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+            expect(applyCAPUpdates).toHaveBeenCalledTimes(1);
+            expect(applyCAPUpdates).toHaveBeenCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
                 ...capProjectSettings,
                 appId: 'felrop2',
                 packageName: 'felrop2',
@@ -724,8 +724,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
 
-            expect(applyCAPUpdates).toBeCalledTimes(1);
-            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+            expect(applyCAPUpdates).toHaveBeenCalledTimes(1);
+            expect(applyCAPUpdates).toHaveBeenCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
                 ...capProjectSettings,
                 appId: 'felrop2',
                 packageName: 'felrop2',
@@ -739,7 +739,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             const fioriElementsApp = applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage);
             delete fioriElementsApp.service.capService;
             await generate(curTestOutPath, fioriElementsApp, fs);
-            expect(applyCAPUpdates).toBeCalledTimes(0);
+            expect(applyCAPUpdates).toHaveBeenCalledTimes(0);
         });
     });
 
@@ -759,9 +759,9 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
-            expect(generateAnnotations).toBeCalledTimes(1);
+            expect(generateAnnotations).toHaveBeenCalledTimes(1);
 
-            expect(generateAnnotations).toBeCalledWith(
+            expect(generateAnnotations).toHaveBeenCalledWith(
                 fs,
                 {
                     serviceName: sampleCapService.serviceName,
@@ -786,7 +786,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
-            expect(generateAnnotations).not.toBeCalled();
+            expect(generateAnnotations).not.toHaveBeenCalled();
         });
 
         test('Should not generate annotations for LROP projects when service is OData V2 and addAnnotations is enabled', async () => {
@@ -802,7 +802,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
-            expect(generateAnnotations).not.toBeCalled();
+            expect(generateAnnotations).not.toHaveBeenCalled();
         });
 
         test('Should not generate annotations for projects unless they are LROP or Worklist with OData V4 service, or an FEOP project', async () => {
@@ -814,7 +814,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }
             };
             await generate(curTestOutPath, fioriElementsApp, fs);
-            expect(generateAnnotations).not.toBeCalled();
+            expect(generateAnnotations).not.toHaveBeenCalled();
         });
     });
 });

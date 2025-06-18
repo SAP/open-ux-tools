@@ -88,7 +88,7 @@ describe('Test utils', () => {
         expect(getODataVersion(validMetadataV2)).toEqual(OdataVersion.v2);
         expect(getODataVersion(validMetadataV4)).toEqual(OdataVersion.v4);
 
-        expect(() => getODataVersion('<?xml version="1.0" encoding="utf-8"?>')).toThrowError(
+        expect(() => getODataVersion('<?xml version="1.0" encoding="utf-8"?>')).toThrow(
             'Application config property edmx cannot be parsed'
         );
     });
@@ -303,7 +303,7 @@ describe('Test utils', () => {
             };
 
             await createLaunchConfig(projectPath, expectedFioriOptions, editor);
-            expect(writeApplicationInfoSettings).toBeCalledWith(projectPath);
+            expect(writeApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
 
         it('should generate correct launch config for OData v4', async () => {

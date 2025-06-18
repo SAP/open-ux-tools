@@ -26,7 +26,7 @@ describe('Utils', () => {
             callback(new Error('Error'));
         });
         const errorSpy = jest.spyOn(logger, 'error');
-        await expect(getAvailablePort(35729, logger)).rejects.toThrowError('Error');
+        await expect(getAvailablePort(35729, logger)).rejects.toThrow('Error');
         expect(errorSpy).toHaveBeenCalled();
     });
 });

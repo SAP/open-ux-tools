@@ -62,8 +62,8 @@ describe('ClientFactory Send Report Blocking Tests', () => {
             },
             SampleRate.NoSampling
         );
-        expect(telemetryClientWrapperTrackEventMock).toBeCalledTimes(1);
-        expect(flushMock).toBeCalledTimes(0);
+        expect(telemetryClientWrapperTrackEventMock).toHaveBeenCalledTimes(1);
+        expect(flushMock).toHaveBeenCalledTimes(0);
         telemetryClientWrapperTrackEventMock.mockClear();
     });
 
@@ -83,8 +83,8 @@ describe('ClientFactory Send Report Blocking Tests', () => {
             },
             SampleRate.NoSampling
         );
-        expect(trackEventMock).toBeCalledTimes(1);
-        expect(flushMock).toBeCalledTimes(1);
+        expect(trackEventMock).toHaveBeenCalledTimes(1);
+        expect(flushMock).toHaveBeenCalledTimes(1);
         telemetryClientWrapperTrackEventMock.mockClear();
     });
 });

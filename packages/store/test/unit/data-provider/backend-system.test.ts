@@ -45,7 +45,7 @@ describe('Backend system data provider', () => {
         await expect(new SystemDataProvider(logger).write(new BackendSystem(expectedSystem))).resolves.toBe(
             expectedSystem
         );
-        expect(mockHybridStore.write).toBeCalledWith({
+        expect(mockHybridStore.write).toHaveBeenCalledWith({
             entityName: Entities.BackendSystem,
             id: BackendSystemKey.from(expectedSystem).getId(),
             entity: new BackendSystem(expectedSystem)
@@ -64,7 +64,7 @@ describe('Backend system data provider', () => {
         await expect(new SystemDataProvider(logger).write(new BackendSystem(expectedSystem))).resolves.toBe(
             expectedSystem
         );
-        expect(mockHybridStore.write).toBeCalledWith({
+        expect(mockHybridStore.write).toHaveBeenCalledWith({
             entityName: Entities.BackendSystem,
             id: BackendSystemKey.from(expectedSystem).getId(),
             entity: new BackendSystem(expectedSystem)
@@ -81,7 +81,7 @@ describe('Backend system data provider', () => {
         });
         mockHybridStore.del.mockResolvedValueOnce(true);
         await expect(new SystemDataProvider(logger).delete(new BackendSystem(expectedSystem))).resolves.toBe(true);
-        expect(mockHybridStore.del).toBeCalledWith({
+        expect(mockHybridStore.del).toHaveBeenCalledWith({
             entityName: Entities.BackendSystem,
             id: BackendSystemKey.from(expectedSystem).getId()
         });
@@ -111,7 +111,7 @@ describe('Backend system data provider', () => {
         });
         mockHybridStore.readAll.mockResolvedValueOnce({ sys1, sys2, sys3 });
         await expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1, sys2, sys3]);
-        expect(mockHybridStore.readAll).toBeCalledWith({
+        expect(mockHybridStore.readAll).toHaveBeenCalledWith({
             entityName: Entities.BackendSystem
         });
     });
@@ -147,7 +147,7 @@ describe('Backend system data provider', () => {
         }) as unknown as BackendSystem; // We want url to be undefined for the test
         mockHybridStore.readAll.mockResolvedValueOnce({ sys1, sys2, sys3, sys4, sys5: undefined });
         await expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1]);
-        expect(mockHybridStore.readAll).toBeCalledWith({
+        expect(mockHybridStore.readAll).toHaveBeenCalledWith({
             entityName: Entities.BackendSystem
         });
     });

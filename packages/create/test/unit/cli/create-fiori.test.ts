@@ -24,7 +24,7 @@ describe('Test handleCreateFioriCommand()', () => {
         handleCreateFioriCommand([process.argv[0], 'create-fiori', '--version']);
 
         // Result check
-        expect(process.stdout.write).toBeCalledWith(expect.stringContaining(version));
+        expect(process.stdout.write).toHaveBeenCalledWith(expect.stringContaining(version));
     });
 
     test('Execute command create-fiori help, should show help', () => {
@@ -37,8 +37,8 @@ describe('Test handleCreateFioriCommand()', () => {
         handleCreateFioriCommand([process.argv[0], 'create-fiori', 'help']);
 
         // Result check
-        expect(process.stdout.write).toBeCalledWith(expect.stringContaining('create-fiori [options] [command]'));
-        expect(mockLogger.debug).toBeCalledWith(expect.objectContaining({ code: 'commander.help' }));
-        expect(mockLogger.error).not.toBeCalled();
+        expect(process.stdout.write).toHaveBeenCalledWith(expect.stringContaining('create-fiori [options] [command]'));
+        expect(mockLogger.debug).toHaveBeenCalledWith(expect.objectContaining({ code: 'commander.help' }));
+        expect(mockLogger.error).not.toHaveBeenCalled();
     });
 });

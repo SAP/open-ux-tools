@@ -120,7 +120,7 @@ describe('index', () => {
 
             await expect(
                 convertToVirtualPreview(missingPrerequisitesPath, { convertTests: false, logger, fs })
-            ).rejects.toThrowError(`The prerequisites are not met. For more information, see the log messages above.`);
+            ).rejects.toThrow(`The prerequisites are not met. For more information, see the log messages above.`);
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
             expect(updatePreviewMiddlewareConfigsSpy).not.toHaveBeenCalled();
             expect(renameDefaultSandboxesSpy).not.toHaveBeenCalled();

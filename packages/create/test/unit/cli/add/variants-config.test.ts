@@ -47,13 +47,13 @@ describe('Test command add variants-config', () => {
         await command.parseAsync(getArgv(['variants-config', appRoot]));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori add variants-config <appRoot> --simulate', async () => {
@@ -63,11 +63,11 @@ describe('Test command add variants-config', () => {
         await command.parseAsync(getArgv(['variants-config', appRoot, '-s']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
-        expect(fsMock.commit).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori add variants-config --verbose', async () => {
@@ -77,10 +77,10 @@ describe('Test command add variants-config', () => {
         await command.parseAsync(getArgv(['variants-config', '--verbose']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalled();
-        expect(fsMock.commit).not.toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
     });
 });

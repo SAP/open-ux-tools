@@ -822,7 +822,7 @@ describe('fiori annotation service', () => {
                 fsEditor.write(join(root, 'app', `${newFileName}.cds`), '');
                 fsEditor.write(path, testData);
                 const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService', fsEditor);
-                expect(() => service.getSchema()).not.toThrowError();
+                expect(() => service.getSchema()).not.toThrow();
             });
         });
     });

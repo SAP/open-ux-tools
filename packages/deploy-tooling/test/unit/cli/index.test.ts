@@ -126,16 +126,16 @@ describe('cli', () => {
             async ({ params, writeFileSyncCalled, object, provider, deployFn }) => {
                 process.argv = params;
                 await runDeploy();
-                expect(deployFn).toBeCalled();
+                expect(deployFn).toHaveBeenCalled();
                 if (provider) {
-                    expect(mockedProvider.getUi5AbapRepository).toBeCalledWith(provider);
+                    expect(mockedProvider.getUi5AbapRepository).toHaveBeenCalledWith(provider);
                 }
                 expect(writeFileSyncSpy).toHaveBeenCalledTimes(writeFileSyncCalled);
                 if (writeFileSyncCalled > 0) {
                     expect(writeFileSyncSpy.mock.calls[0][0]).toBe('archive.zip');
                 }
-                expect(cliArchiveSpy).toBeCalled();
-                expect(cliArchiveSpy).toBeCalledWith(expect.any(ToolsLogger), expect.objectContaining(object));
+                expect(cliArchiveSpy).toHaveBeenCalled();
+                expect(cliArchiveSpy).toHaveBeenCalledWith(expect.any(ToolsLogger), expect.objectContaining(object));
             }
         );
     });
@@ -154,7 +154,7 @@ describe('cli', () => {
                 target
             ];
             await runUndeploy();
-            expect(mockedUi5RepoService.undeploy).toBeCalled();
+            expect(mockedUi5RepoService.undeploy).toHaveBeenCalled();
         });
 
         test('successful undeploy from lrep', async () => {
@@ -167,7 +167,7 @@ describe('cli', () => {
                 'apps/sap.ui.demoapps.rta.fiorielements/appVariants/adp.example/'
             ];
             await runUndeploy();
-            expect(mockedLrepService.undeploy).toBeCalled();
+            expect(mockedLrepService.undeploy).toHaveBeenCalled();
         });
 
         test('successful undeploy with environment variable and no config file', async () => {
@@ -186,7 +186,7 @@ describe('cli', () => {
                 '/bc/my/service'
             ];
             await runUndeploy();
-            expect(mockedUi5RepoService.undeploy).toBeCalled();
+            expect(mockedUi5RepoService.undeploy).toHaveBeenCalled();
         });
     });
 
@@ -206,8 +206,8 @@ describe('cli', () => {
                 const helpMock = jest.spyOn(Command.prototype, 'help');
                 process.argv = ['node', 'test'];
                 await method();
-                expect(helpMock).toBeCalled();
-                expect(errorMock).toBeCalled();
+                expect(helpMock).toHaveBeenCalled();
+                expect(errorMock).toHaveBeenCalled();
                 expect(mockExit).toHaveBeenCalledWith(0);
                 mockExit.mockRestore();
                 errorMock.mockReset();

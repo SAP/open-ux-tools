@@ -46,13 +46,13 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot]));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(promptSpy).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(promptSpy).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
     });
 
     test('Test create-fiori remove mockserver-config <appRoot>, deleted files, confirm: no', async () => {
@@ -70,13 +70,13 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot]));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(promptSpy).toBeCalled();
-        expect(fsMock.commit).not.toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(promptSpy).toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori remove mockserver-config <appRoot>, deleted files, confirm: yes', async () => {
@@ -94,10 +94,10 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot]));
 
         // Result check
-        expect(loggerMock.info).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
+        expect(loggerMock.info).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
     });
 
     test('Test create-fiori remove mockserver-config <appRoot> --force, deleted files', async () => {
@@ -115,11 +115,11 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot, '--force']));
 
         // Result check
-        expect(loggerMock.info).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(promptSpy).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
+        expect(loggerMock.info).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(promptSpy).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
     });
 
     test('Test create-fiori remove mockserver-config --verbose', async () => {
@@ -129,9 +129,9 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', '--verbose']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalled();
     });
 
     test('Test create-fiori remove mockserver-config INVALID_PATH', async () => {
@@ -141,8 +141,8 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', 'INVALID_PATH']));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalled();
     });
 });

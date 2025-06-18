@@ -41,7 +41,7 @@ describe('postMessage', () => {
         const callBackFn = addEventListenerSpy.mock.calls[0][1];
         callBackFn(event as any);
 
-        expect(actionHandlerMock).toBeCalled();
+        expect(actionHandlerMock).toHaveBeenCalled();
     });
 
     test('startPostMessageCommunication - target as function', () => {
@@ -77,12 +77,12 @@ describe('postMessage', () => {
         expect(actionHandlerMock).not.toHaveBeenCalled();
         result.dispose();
 
-        expect(removeEventListenerSpy).toBeCalled();
+        expect(removeEventListenerSpy).toHaveBeenCalled();
         expect(removeEventListenerSpy).toHaveBeenCalledWith('message', expect.any(Function));
 
         result.sendAction({});
-        expect(postMessageMock).toBeCalled();
-        expect(postMessageMock).toBeCalledWith({ type: 'post-message-action', action: {} }, 'http://localhost');
+        expect(postMessageMock).toHaveBeenCalled();
+        expect(postMessageMock).toHaveBeenCalledWith({ type: 'post-message-action', action: {} }, 'http://localhost');
     });
 
     test('startPostMessageCommunication - target undefined', () => {
@@ -106,6 +106,6 @@ describe('postMessage', () => {
         callBackFn(event as any);
 
         result.sendAction({});
-        expect(addEventListenerSpy).toBeCalled();
+        expect(addEventListenerSpy).toHaveBeenCalled();
     });
 });

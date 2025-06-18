@@ -29,6 +29,6 @@ describe('bundle', () => {
             throw new Error('should-throw-error');
         });
         const result = getPropertiesI18nBundle(join(PROJECT_ROOT, 'i18n'));
-        return expect(result).rejects.toThrowError('should-throw-error');
+        return expect(result).rejects.toThrow('should-throw-error');
     });
 });

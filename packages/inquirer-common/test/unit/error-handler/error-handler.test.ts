@@ -169,7 +169,7 @@ describe('Test ErrorHandler', () => {
                 message: t('errors.servicesUnavailable')
             })
         );
-        expect(mockTelemClient.reportEvent).toBeCalledWith(
+        expect(mockTelemClient.reportEvent).toHaveBeenCalledWith(
             {
                 eventName: 'GA_LINK_CREATED',
                 measurements: {},
@@ -223,7 +223,7 @@ describe('Test ErrorHandler', () => {
             })
         );
 
-        expect(mockTelemClient.reportEvent).toBeCalledWith(
+        expect(mockTelemClient.reportEvent).toHaveBeenCalledWith(
             {
                 eventName: 'GA_LINK_CREATED',
                 measurements: {},

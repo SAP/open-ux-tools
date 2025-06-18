@@ -52,14 +52,14 @@ describe('context-menu-service', () => {
         await subscribeMock.mock.calls[0][0](
             cpeCpmmon.executeContextMenuAction({ actionName: 'TESTACTION01', controlId: 'test-control' })
         );
-        expect(reportTelemetrySpy).toBeCalledWith({
+        expect(reportTelemetrySpy).toHaveBeenCalledWith({
                                 category: 'OutlineContextMenu',
                                 actionName: 'TESTACTION01',
                                 controlName: 'sap.m.Button',
                                 ui5Version: '1.127.0',
                                 appType : 'fe-v4'
                             });
-        expect(actionServiceExecuteSpy).toBeCalledWith('test-control', 'TESTACTION01');
+        expect(actionServiceExecuteSpy).toHaveBeenCalledWith('test-control', 'TESTACTION01');
     });
 
     test('requestControlContextMenu', async () => {
@@ -79,7 +79,7 @@ describe('context-menu-service', () => {
 
         await subscribeMock.mock.calls[0][0](cpeCpmmon.requestControlContextMenu.pending('test-control-01'));
 
-        expect(sendActionMock).toBeCalledWith({
+        expect(sendActionMock).toHaveBeenCalledWith({
             payload: {
                 contextMenuItems: [
                     {

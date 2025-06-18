@@ -26,13 +26,13 @@ describe('preview-files', () => {
         fs.write(flpSandboxPath, 'dummy content flpSandbox');
         fs.write(flpSandboxMockserverPath, 'dummy content flpSandboxMockserver');
         await renameDefaultSandboxes(fs, basePath, logger);
-        expect(() => fs.read(join(basePath, 'webapp', 'test', 'flpSandbox.html'))).toThrowError(
+        expect(() => fs.read(join(basePath, 'webapp', 'test', 'flpSandbox.html'))).toThrow(
             `${flpSandboxPath} doesn\'t exist`
         );
         expect(fs.read(join(basePath, 'webapp', 'test', 'flpSandbox_old.html'))).toMatchInlineSnapshot(
             '"dummy content flpSandbox"'
         );
-        expect(() => fs.read(join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html'))).toThrowError(
+        expect(() => fs.read(join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html'))).toThrow(
             `${flpSandboxMockserverPath} doesn\'t exist`
         );
         expect(fs.read(join(basePath, 'webapp', 'test', 'flpSandboxMockserver_old.html'))).toMatchInlineSnapshot(
@@ -59,13 +59,13 @@ describe('preview-files', () => {
         expect(infoLogMock).toHaveBeenCalledWith(
             `Deleted the 'locate-reuse-libs.js' file. This file is no longer needed for the virtual endpoints.`
         );
-        expect(() => fs.read(join(basePath, 'webapp', 'test', 'locate-reuse-libs.js'))).toThrowError(
+        expect(() => fs.read(join(basePath, 'webapp', 'test', 'locate-reuse-libs.js'))).toThrow(
             `${join(basePath, 'webapp', 'test', 'locate-reuse-libs.js')} doesn\'t exist`
         );
         expect(infoLogMock).toHaveBeenCalledWith(
             `Deleted the 'initFlpSandbox.js' file. This file is no longer needed for the virtual endpoints.`
         );
-        expect(() => fs.read(join(basePath, 'webapp', 'test', 'initFlpSandbox.js'))).toThrowError(
+        expect(() => fs.read(join(basePath, 'webapp', 'test', 'initFlpSandbox.js'))).toThrow(
             `${join(basePath, 'webapp', 'test', 'initFlpSandbox.js')} doesn\'t exist`
         );
     });
@@ -76,13 +76,13 @@ describe('preview-files', () => {
         fs.write(join(basePath, 'webapp', 'test', 'integration', 'opaTests.qunit.js'), 'dummy content');
         fs.write(join(basePath, 'webapp', 'test', 'unit', 'unitTests.qunit.js'), 'dummy content');
         await deleteNoLongerUsedFiles(fs, basePath, true, logger);
-        expect(() => fs.read(join(basePath, 'webapp', 'test', 'locate-reuse-libs.js'))).toThrowError(
+        expect(() => fs.read(join(basePath, 'webapp', 'test', 'locate-reuse-libs.js'))).toThrow(
             `${join(basePath, 'webapp', 'test', 'locate-reuse-libs.js')} doesn\'t exist`
         );
         expect(infoLogMock).toHaveBeenCalledWith(
             `Deleted the 'initFlpSandbox.js' file. This file is no longer needed for the virtual endpoints.`
         );
-        expect(() => fs.read(join(basePath, 'webapp', 'test', 'initFlpSandbox.js'))).toThrowError(
+        expect(() => fs.read(join(basePath, 'webapp', 'test', 'initFlpSandbox.js'))).toThrow(
             `${join(basePath, 'webapp', 'test', 'initFlpSandbox.js')} doesn\'t exist`
         );
         expect(infoLogMock).toHaveBeenCalledWith(
