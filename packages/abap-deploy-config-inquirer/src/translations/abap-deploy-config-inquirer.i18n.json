@@ -68,7 +68,7 @@
                     "message": "Select how you want to enter the transport request."
                 },
                 "transportCreated": {
-                    "message": "Created new Transport Request."
+                    "message": "Created new transport request."
                 }
             }
         },
