@@ -94,7 +94,7 @@
             "blank": "Use Default System Client"
         },
         "transport": {
-            "createDuringDeploy": "Create During Deployment",
+            "createDuringDeploy": "Create during deployment",
             "createNew": "Create New",
             "enterManually": "Enter Manually"
         }
