@@ -1,7 +1,7 @@
 {
     "prompts": {
         "inboundIds": "Inbound ID",
-        "emptyInboundsInfo": "The original application target mapping and the default parameters are found in the SAP Fiori reference library under Implementation Information -> Configuration -> Target Mappings in",
+        "emptyInboundsInfo": "The original application target mapping and the default parameters are found in the SAP Fiori reference library under Implementation Information -> Configuration -> Target Mappings",
         "semanticObject": "Semantic Object",
         "action": "Action",
         "title": "Title",
