@@ -11,7 +11,7 @@
         "noAppName": "Cannot determine the application name from the `manifest.json` file.",
         "noBaseConfig": "Error: could not read {{- baseConfig}}.",
         "noBinary": "Cannot find the \"{{bin}}\" executable. Please add it to the path or use \"npm i -g {{- pkg}}\" to install it.",
-        "noManifest": "Error: could not read the `webapp` or `manifest.json` file.",
+        "noManifest": "Error: could not read the file: `webapp/manifest.json`.",
         "unrecognizedTarget": "Unrecognized target: {{target}}.",
         "unknownError": "An unknown error occurred. Please try again."
     },
