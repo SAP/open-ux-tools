@@ -100,4 +100,10 @@ export interface FioriAppGeneratorOptions extends Generator.GeneratorOptions, Fi
      * VSCode Workspace folders
      */
     workspaceFolders?: string[];
+    /**
+     * Used for the post generation task, if set to true, the project will automatically be added to the workspace.
+     *
+     * @default false
+     */
+    addProjectToWorkspace?: boolean;
 }

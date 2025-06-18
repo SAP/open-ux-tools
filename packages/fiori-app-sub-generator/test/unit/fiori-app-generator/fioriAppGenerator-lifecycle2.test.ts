@@ -391,7 +391,11 @@ describe('Test FioriAppGenerator', () => {
     });
 
     test('Should call `runPostGenerationTasks` during end phase', async () => {
-        const fioriAppGen = new FioriAppGenerator([], { ...options, followUpCommand: 'testCommand' });
+        const fioriAppGen = new FioriAppGenerator([], {
+            ...options,
+            followUpCommand: 'testCommand',
+            addProjectToWorkspace: true
+        });
         // Note: The state object is not representative of a real state object, only for testing purposes
         const mockState: State = {
             project: {
@@ -449,7 +453,8 @@ describe('Test FioriAppGenerator', () => {
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
             undefined, // vscode
             { appWizard: 'appWizard' }, // appWizard
-            'testCommand' // followUpCommand
+            'testCommand', // followUpCommand,
+            true // addProjectToWorkspace
         );
         expect(deleteCache).toHaveBeenCalled();
     });

@@ -44,21 +44,23 @@ async function saveApiHubApiKey(apiKey: string, logger: Logger & ILogWrapper): P
 /**
  * Run post generation hooks: delegates to `runHooks` with `'app-generated'` as the event name.
  *
- * @param projectPath
- * @param logger
- * @param vscode
- * @param followUpCommand
+ * @param projectPath - path to the project
+ * @param logger - logger instance
+ * @param vscode - vscode instance
+ * @param followUpCommand - post generation command which will be ran instead of default
+ * @param addProjectToWorkspace - adds project to the workspace automatically
  */
 async function runPostGenHooks(
     projectPath: string,
     logger: ILogWrapper,
     vscode?: VSCodeInstance,
-    followUpCommand?: string
+    followUpCommand?: string,
+    addProjectToWorkspace?: boolean
 ): Promise<void> {
     await runHooks(
         'app-generated',
         {
-            hookParameters: { fsPath: projectPath },
+            hookParameters: { fsPath: projectPath, addProjectToWorkspace },
             vscodeInstance: vscode,
             options: { followUpCommand }
         },
@@ -85,6 +87,7 @@ async function runPostGenHooks(
  * @param vscode - the vscode instance
  * @param appWizard - the app wizard instance
  * @param followUpCommand - the follow up command
+ * @param addProjectToWorkspace - adds project to the workspace automatically
  * @returns {Promise<void>}
  */
 export async function runPostGenerationTasks(
@@ -112,7 +115,8 @@ export async function runPostGenerationTasks(
     logger: Logger & ILogWrapper,
     vscode?: unknown,
     appWizard?: AppWizard,
-    followUpCommand?: string
+    followUpCommand?: string,
+    addProjectToWorkspace = false
 ): Promise<void> {
     // Add launch config for non-cap projects
     if (!service.capService) {
@@ -161,5 +165,5 @@ export async function runPostGenerationTasks(
         })
     );
     await sendTelemetry('GENERATION_SUCCESS', TelemetryHelper.telemetryData, projectPath);
-    await runPostGenHooks(projectPath, logger, vscode as VSCodeInstance, followUpCommand);
+    await runPostGenHooks(projectPath, logger, vscode as VSCodeInstance, followUpCommand, addProjectToWorkspace);
 }

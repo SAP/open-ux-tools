@@ -2,6 +2,7 @@ import { t } from './i18n';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 export interface HookParameters {
     fsPath: string;
+    addProjectToWorkspace?: boolean;
 }
 export interface VSCodeInstance {
     commands: { executeCommand: (command: string, ...rest: any[]) => Promise<void> };

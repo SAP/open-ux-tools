@@ -175,7 +175,7 @@ describe('runPostGenerationTasks', () => {
         expect(runHooks).toHaveBeenCalledWith(
             'app-generated',
             {
-                hookParameters: { fsPath: projectPath },
+                hookParameters: { fsPath: projectPath, addProjectToWorkspace: false },
                 vscodeInstance: vscode,
                 options: { followUpCommand: undefined }
             },
