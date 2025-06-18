@@ -462,8 +462,7 @@ export class FioriAppGenerator extends Generator {
             FioriAppGenerator.logger,
             this.vscode,
             this.appWizard,
-            this.options.followUpCommand,
-            this.options.addProjectToWorkspace
+            this.options.followUpCommand
         );
 
         const generationTime02 = performance.now();

@@ -47,22 +47,22 @@ async function saveApiHubApiKey(apiKey: string, logger: Logger & ILogWrapper): P
  * @param projectPath - path to the project
  * @param logger - logger instance
  * @param vscode - vscode instance
- * @param followUpCommand - post generation command which will be ran instead of default
- * @param addProjectToWorkspace - adds project to the workspace automatically
+ * @param followUpCommand - post generation command (with optional params) which will be ran instead of the default
+ * @param followUpCommand.cmdName - name of the command
+ * @param followUpCommand.cmdParams - options params for the command
  */
 async function runPostGenHooks(
     projectPath: string,
     logger: ILogWrapper,
     vscode?: VSCodeInstance,
-    followUpCommand?: string,
-    addProjectToWorkspace?: boolean
+    followUpCommand?: { cmdName: string; cmdParams?: { [key: string]: string | boolean } }
 ): Promise<void> {
     await runHooks(
         'app-generated',
         {
-            hookParameters: { fsPath: projectPath, addProjectToWorkspace },
+            hookParameters: { fsPath: projectPath, ...followUpCommand?.cmdParams },
             vscodeInstance: vscode,
-            options: { followUpCommand }
+            options: { command: followUpCommand?.cmdName }
         },
         logger
     );
@@ -86,8 +86,9 @@ async function runPostGenHooks(
  * @param logger - the logger
  * @param vscode - the vscode instance
  * @param appWizard - the app wizard instance
- * @param followUpCommand - the follow up command
- * @param addProjectToWorkspace - adds project to the workspace automatically
+ * @param followUpCommand - post generation command (with optional params) which will be ran instead of the default
+ * @param followUpCommand.cmdName - name of the command
+ * @param followUpCommand.cmdParams - options params for the command
  * @returns {Promise<void>}
  */
 export async function runPostGenerationTasks(
@@ -115,8 +116,7 @@ export async function runPostGenerationTasks(
     logger: Logger & ILogWrapper,
     vscode?: unknown,
     appWizard?: AppWizard,
-    followUpCommand?: string,
-    addProjectToWorkspace = false
+    followUpCommand?: { cmdName: string; cmdParams?: { [key: string]: string | boolean } }
 ): Promise<void> {
     // Add launch config for non-cap projects
     if (!service.capService) {
@@ -165,5 +165,5 @@ export async function runPostGenerationTasks(
         })
     );
     await sendTelemetry('GENERATION_SUCCESS', TelemetryHelper.telemetryData, projectPath);
-    await runPostGenHooks(projectPath, logger, vscode as VSCodeInstance, followUpCommand, addProjectToWorkspace);
+    await runPostGenHooks(projectPath, logger, vscode as VSCodeInstance, followUpCommand);
 }

@@ -2,7 +2,6 @@ import { t } from './i18n';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 export interface HookParameters {
     fsPath: string;
-    addProjectToWorkspace?: boolean;
 }
 export interface VSCodeInstance {
     commands: { executeCommand: (command: string, ...rest: any[]) => Promise<void> };
@@ -11,7 +10,10 @@ export const DEFAULT_POST_APP_GEN_COMMAND = 'sap.ux.application.generated.handle
 export interface GeneratorContext {
     hookParameters: HookParameters;
     vscodeInstance?: VSCodeInstance;
-    options?: { followUpCommand?: string; [key: string]: unknown };
+    options?: {
+        command?: string;
+        [key: string]: unknown;
+    };
 }
 
 export type Event = 'app-generated';
@@ -41,7 +43,7 @@ export async function runHooks(event: Event, context: GeneratorContext, logger?:
 async function postGenerationHook(context: GeneratorContext, logger?: ILogWrapper): Promise<void> {
     if (context.vscodeInstance) {
         try {
-            const command = context.options?.followUpCommand ?? DEFAULT_POST_APP_GEN_COMMAND;
+            const command = context.options?.command ?? DEFAULT_POST_APP_GEN_COMMAND;
             logger?.info(t('logMessages.attemptingToExecutePostGenerationCommand', { command }));
             await context.vscodeInstance.commands?.executeCommand?.(command, context.hookParameters);
         } catch (e) {
