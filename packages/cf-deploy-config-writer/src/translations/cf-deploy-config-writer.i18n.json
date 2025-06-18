@@ -22,7 +22,7 @@
         "processHTML5App": "Processing HTML5 app: {{- appName }}."
     },
     "error": {
-        "unableToLoadMTA": "Unable to load the `mta.yaml` configuration: {{- mtaDir }}. Error thrown: {{- error }}.",
+        "unableToLoadMTA": "Unable to load the `mta.yaml` configuration: {{- mtaDir }}. Returned error: {{- error }}.",
         "updatingMTAExtensionFailed": "Unable to add the MTA extension configuration to the file: {{mtaExtFilePath}}.",
         "cannotFindBinary": "Cannot find the \"{{bin}}\" executable. Please add it to the path or use \"npm i -g {{- pkg}}\" to install it.",
         "mtaExtensionFailed": "Unable to create or update the MTA extension file for the API Hub Enterprise destination configuration: {{error}}.",
