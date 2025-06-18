@@ -1,6 +1,6 @@
 {
     "prompts": {
-        "targetProjectFolderLabel": "Project folder Path",
+        "targetProjectFolderLabel": "Project Folder Path",
         "sourceLabel": "Reusable Library Source",
         "referenceLibrariesLabel": "Select Reusable Libraries"
     },
