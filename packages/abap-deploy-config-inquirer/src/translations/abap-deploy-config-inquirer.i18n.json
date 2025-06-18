@@ -65,7 +65,7 @@
                     "provideTransportRequest": "Provide a transport request for your application."
                 },
                 "transportInputChoice": {
-                    "message": "Enter Transport Request"
+                    "message": "How do you want to enter the transport request?"
                 },
                 "transportCreated": {
                     "message": "Created new Transport Request."
