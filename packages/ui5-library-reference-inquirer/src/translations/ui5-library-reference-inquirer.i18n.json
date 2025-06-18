@@ -12,7 +12,7 @@
     },
     "error": {
         "noProjectsFound": "No SAP Fiori tools projects were found in this workspace.",
-        "noLibsFound": "No reuse libraries or components found in this workspace.",
+        "noLibsFound": "No reuse libraries or components were found in this workspace.",
         "noLibSelected": "You must select at least one reuse library or component."
     }
 }
