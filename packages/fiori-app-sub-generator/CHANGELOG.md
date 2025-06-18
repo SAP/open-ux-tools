@@ -1,5 +1,17 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.0
+
+### Minor Changes
+
+-   45e1035: Add support for parameterised main entities across FE writer and OData service inquirer
+
+### Patch Changes
+
+-   Updated dependencies [45e1035]
+    -   @sap-ux/odata-service-inquirer@2.5.0
+    -   @sap-ux/fiori-elements-writer@2.5.0
+
 ## 0.4.25
 
 ### Patch Changes
