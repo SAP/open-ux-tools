@@ -67,7 +67,7 @@
         "noProjectRoot": "The project root: {{- projectRoot}} does not exist.",
         "projectRootWorkspace": "An error occurred when trying to find the project in the workspace root: {{- root}}. Error was: {{- error}}",
         "queryFailure": "Cannot query v{{odataVersion}} catalog service for {{- system}}.",
-        "retrievingDestinations": "An error occurred when retrieving the destinations. Error was: {{- error}}",
+        "retrievingDestinations": "An error occurred when retrieving the destinations: {{- error}}",
         "retrievingExtensions": "An error occurred when retrieving the installed extensions: {{- error}}",
         "retrievingProcessVersions": "An error occurred when retrieving the process versions: {{- error}}",
         "retrievingSapSystems": "An error occurred when retrieving the SAP systems. Error was: {{- error}}",
