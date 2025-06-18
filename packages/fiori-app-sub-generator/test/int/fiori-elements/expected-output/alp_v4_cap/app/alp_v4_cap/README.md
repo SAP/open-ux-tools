@@ -24,7 +24,7 @@ Test &#39;Project&#39; &#34;Description&#34;
 
 ### Starting the generated app
 
--   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  To launch the generated app, start your CAP project:  and navigate to the following location in your browser:
+-   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  To launch the generated app, start your CAP project and navigate to the following location in your browser:
 
 http://localhost:4004/alp_v4_cap/webapp/index.html
 
