@@ -65,7 +65,7 @@
         "differentNamespaceThanProjectName": "The namespace must be the same as the project name.",
         "namespaceSameAsProjectNameError": "The namespace must be the same as the project name.",
         "namespaceLengthError": "The namespace cannot exceed 61 characters or end with the word 'component'.",
-        "namespaceValidationError": "The namespace must only contain latin alphanumeric characters. Every part must start with a letter and different parts can be separated by a period.",
+        "namespaceValidationError": "The namespace must only contain Latin alphanumeric characters. Every part must start with a letter and different parts can be separated by a period.",
         "achMandatoryError": "The application component hierarchy must only contain capital letters, digits, and dashes."
     }
 }
