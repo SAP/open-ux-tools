@@ -4,6 +4,7 @@ import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import {
+    MessageBarType,
     outlineChanged
 } from '@sap-ux-private/control-property-editor-common';
 
@@ -11,6 +12,7 @@ import { getError } from '../../utils/error';
 import { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';
 import { ChangeService } from '../changes';
+import { showLocalizedMessage } from '../../utils/localized-message';
 
 export const OUTLINE_CHANGE_EVENT = 'OUTLINE_CHANGED';
 
@@ -58,7 +60,14 @@ export class OutlineService extends EventTarget {
                 sendAction(outlineChanged(outlineNodes));
                 await this.changeService.updateConfigurationProps(configPropertyIdMap);
             } catch (error) {
-                Log.error('Outline sync failed!', getError(error));
+                const extendError = getError(error);
+                Log.error('Outline sync failed!', extendError);
+                await showLocalizedMessage({
+                    title: { key: 'CPE_OUTLINE_ERROR_TITLE' },
+                    description: extendError.message,
+                    type: MessageBarType.error,
+                    showToast: false
+                });
             }
         };
         await syncOutline();

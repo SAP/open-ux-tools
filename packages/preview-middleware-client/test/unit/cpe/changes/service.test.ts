@@ -4,6 +4,7 @@ import { ActionHandler } from '../../../../src/cpe/types';
 import {
     changeProperty,
     deletePropertyChanges,
+    MessageBarType,
     propertyChangeFailed,
     PropertyType,
     setApplicationRequiresReload
@@ -15,6 +16,7 @@ import JsControlTreeModifierMock from 'mock/sap/ui/core/util/reflection/JsContro
 import Control from 'sap/ui/core/Control';
 import * as Utils from '../../../../src/utils/version';
 import ChangesWriteAPIMock from 'mock/sap/ui/fl/write/api/ChangesWriteAPI';
+import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
 
 describe('ChangeService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
@@ -202,6 +204,12 @@ describe('ChangeService', () => {
                     }
                 ]
             }
+        });
+        expect(showLocalizedMessage).toHaveBeenCalledWith({
+            title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
+            description: expect.any(String),
+            type: MessageBarType.error,
+            showToast: false
         });
     });
     test('Sync Outline Changes', async () => {
@@ -821,6 +829,12 @@ describe('ChangeService', () => {
                 saved: [],
                 pending: []
             }
+        });
+        expect(showLocalizedMessage).toHaveBeenCalledWith({
+            title: { key: 'ADP_OPERATION_FAILURE_TITLE' },
+            description: expect.any(String),
+            type: MessageBarType.error,
+            showToast: false
         });
     });
 
@@ -1622,6 +1636,12 @@ describe('ChangeService', () => {
                 ]
             }
         });
+        expect(showLocalizedMessage).toHaveBeenCalledWith({
+            title: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_TITLE' },
+            description: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_DESCRIPTION' },
+            type: MessageBarType.info,
+            toastDuration: 8000,
+        });
     });
     test('FE V4 manifest change', async () => {
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
@@ -1764,8 +1784,9 @@ describe('ChangeService', () => {
             json: () => Promise.resolve({})
         });
 
+        const errorMessage = 'RTA Error: Not acceptable value';
         const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
-            throw 'RTA Error: Not acceptable value';
+            throw errorMessage;
         });
 
         const service = new ChangeService({ rta: rtaMock } as any);
@@ -1803,5 +1824,12 @@ describe('ChangeService', () => {
                 errorMessage: 'Error: "RTA Error: Not acceptable value"'
             } as any)
         );
+        
+        expect(showLocalizedMessage).toHaveBeenCalledWith({
+            title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
+            description: `Error: ${JSON.stringify(errorMessage)}`,
+            type: MessageBarType.error,
+            showToast: false
+        });
     });
 });

@@ -7,7 +7,6 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { ValueState } from 'mock/sap/ui/core/library';
 import { fetchMock, openMock, sapCoreMock } from 'mock/window';
-import MessageToast from 'mock/sap/m/MessageToast';
 
 import * as apiHandler from '../../../../src/adp/api-handler';
 
@@ -16,6 +15,8 @@ import { ExtendControllerData } from 'open/ux/preview/client/adp/extend-controll
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import * as utils from '../../../../src/utils/version';
 import * as coreUtils from '../../../../src/utils/core';
+import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 jest.mock('../../../../src/adp/command-executor', () => {
     return jest.fn().mockImplementation(() => ({
@@ -667,10 +668,12 @@ describe('ControllerExtension', () => {
                 codeRef: 'coding/testController.js',
                 viewId: 'viewId'
             });
-            expect(MessageToast.show).toHaveBeenCalledWith(
-                'Note: The `testController` controller extension will be created once you save the change.',
-                { 'duration': 8000 }
-            );
+            expect(showLocalizedMessage).toHaveBeenCalledWith({
+                description: 'Note: The `testController` controller extension will be created once you save the change.',
+                title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+                toastDuration: 8000,
+                type: MessageBarType.info
+            });
         });
 
         test('opens link to existing controller', async () => {

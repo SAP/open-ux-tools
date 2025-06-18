@@ -11,23 +11,23 @@ import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import * as apiHandler from '../../../src/adp/api-handler';
 import { fetchMock, sapMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
-import type { Scenario } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { CommunicationService } from '../../../src/cpe/communication-service';
 import type Component from 'sap/ui/core/Component';
 import { Window } from 'types/global';
+import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
+import { createDeferred } from 'open/ux/preview/client/adp/utils';
 
 jest.mock('../../../src/i18n', () => {
     return {
         ...jest.requireActual('../../../src/i18n'),
-        getTextBundle: async () => {
-            return {
-                hasText: jest.fn().mockReturnValueOnce(true),
-                getText: jest
-                    .fn()
-                    .mockReturnValueOnce('The application was reloaded because of changes in a higher layer.')
-            };
-        }
+        getTextBundle: () => Promise.resolve({
+            hasText: jest.fn().mockReturnValueOnce(true),
+            getText: jest
+                .fn()
+                .mockReturnValueOnce('The application was reloaded because of changes in a higher layer.')
+        })
     };
 });
 
@@ -176,6 +176,12 @@ describe('flp/init', () => {
             } catch (error) {
                 expect(error).toEqual('Error');
             }
+            expect(showLocalizedMessage).toHaveBeenCalledWith({
+                title: { key: 'FLP_REGISTER_LIBS_FAILED_TITLE' },
+                description: 'Error',
+                type: MessageBarType.error,
+                showToast: false
+            });
         });
     });
 
@@ -241,9 +247,15 @@ describe('flp/init', () => {
         test('nothing configured', async () => {
             VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
             await init({});
-            expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toHaveBeenCalled();
-            expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
-            expect(sapMock.ushell.Container.createRendererInternal).not.toHaveBeenCalled();
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
+            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRendererInternal).not.toBeCalled();
+            expect(showLocalizedMessage).toHaveBeenCalledWith({
+                title: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_TITLE' },
+                description: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_DESCRIPTION' },
+                type: MessageBarType.warning,
+                showToast: false
+            });
         });
 
         test('flex configured', async () => {
@@ -351,15 +363,15 @@ describe('flp/init', () => {
 
             VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.84.50' });
 
+            const reloadComplete = createDeferred();
             // Mocking `sap.ui.require` to throw the correct error structure
-            sapMock.ui.require.mockImplementation((libs, callback) => {
+            sapMock.ui.require.mockImplementation(async (libs, callback) => {
                 if (libs[0] === 'open/ux/preview/client/flp/WorkspaceConnector') {
                     callback({}); // WorkspaceConnector
                     return;
                 }
-                callback(async () => {
-                    throw 'Reload triggered';
-                }, {});
+                await callback(() => Promise.reject('Reload triggered'))
+                reloadComplete.resolve(undefined);
             });
 
             const sendActionSpy = jest.spyOn(CommunicationService, 'sendAction');
@@ -375,8 +387,8 @@ describe('flp/init', () => {
 
             await rendererCb();
 
-            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => Promise<void>;
-            await loadedCb({ getParameter: () => {} });
+            // Wait for the reload to complete before continue with the test cases.
+            await reloadComplete.promise;
 
             expect(sendActionSpy).toHaveBeenCalled();
             expect(sendActionSpy).toHaveBeenNthCalledWith(1, {
@@ -385,6 +397,12 @@ describe('flp/init', () => {
                     message: 'The application was reloaded because of changes in a higher layer.',
                     shouldHideIframe: false
                 }
+            });           
+            expect(showLocalizedMessage).toHaveBeenCalledWith({
+                title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
+                description: expect.any(String),
+                type: MessageBarType.error,
+                showToast: false
             });
             expect(reloadSpy).toHaveBeenCalled();
         });

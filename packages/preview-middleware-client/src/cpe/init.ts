@@ -1,7 +1,7 @@
 import Log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { iconsLoaded, enableTelemetry, appLoaded } from '@sap-ux-private/control-property-editor-common';
+import { iconsLoaded, enableTelemetry, appLoaded, MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 import type { ActionHandler, Service } from './types';
 import { OutlineService } from './outline/service';
@@ -16,6 +16,7 @@ import { QuickActionService } from './quick-actions/quick-action-service';
 import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
 import { CommunicationService } from './communication-service';
 import { ContextMenuService } from './context-menu-service';
+import { showLocalizedMessage } from '../utils/localized-message';
 
 export default function init(
     rta: RuntimeAuthoring,
@@ -59,7 +60,14 @@ export default function init(
         loadDefaultLibraries();
         const allPromises = services.map((service) => {
             return service.init(CommunicationService.sendAction, subscribe)?.catch((error) => {
-                Log.error('Service Initialization Failed: ', getError(error));
+                const extendedError = getError(error);
+                Log.error('Service Initialization Failed: ', extendedError);
+                return showLocalizedMessage({
+                    title: { key: 'CPE_INIT_ERROR_TITLE' },
+                    description: extendedError.message,
+                    type: MessageBarType.error,
+                    showToast: false
+                });
             });
         });
         Promise.all(allPromises)
@@ -67,11 +75,26 @@ export default function init(
                 CommunicationService.sendAction(appLoaded());
             })
             // eslint-disable-next-line @typescript-eslint/unbound-method
-            .catch(Log.error);
+            .catch((error) => {
+                Log.error(error);
+                return showLocalizedMessage({
+                    title: { key: 'CPE_INIT_ERROR_TITLE' },
+                    description: getError(error).message,
+                    type: MessageBarType.error,
+                    showToast: false
+                });
+            });
         const icons = getIcons();
         CommunicationService.sendAction(iconsLoaded(icons));
     } catch (error) {
-        Log.error('Error during initialization of Control Property Editor', getError(error));
+        const extendedError = getError(error);
+        Log.error('Error during initialization of Control Property Editor', extendedError);
+        void showLocalizedMessage({
+            title: { key: 'CPE_INIT_ERROR_TITLE' },
+            description: extendedError.message,
+            type: MessageBarType.error,
+            showToast: false
+        });
     }
 
     //  * This is returned immediately to avoid promise deadlock, preventing services from waiting indefinitely.

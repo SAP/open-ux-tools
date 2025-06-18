@@ -6,7 +6,8 @@ import {
     reportTelemetry,
     Properties,
     changeProperty,
-    PropertyType
+    PropertyType,
+    MessageBarType
 } from '@sap-ux-private/control-property-editor-common';
 import { buildControlData } from './control-data';
 import { getOverlay, getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
@@ -24,6 +25,7 @@ import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import { getComponent, getControlById } from '../utils/core';
 import { getError } from '../utils/error';
 import { ChangeService } from './changes';
+import { showLocalizedMessage } from '../utils/localized-message';
 
 export interface PropertyChangeParams {
     name: string;
@@ -59,12 +61,12 @@ function getPropertyDocument(
     return document?.[property.name]
         ? document[property.name]
         : ({
-              defaultValue: (property.defaultValue as string) ?? '-',
-              description: '',
-              propertyName: property.name,
-              type: ui5Type ?? '-',
-              propertyType: ui5Type ?? '-'
-          } as PropertiesInfo);
+            defaultValue: (property.defaultValue as string) ?? '-',
+            description: '',
+            propertyName: property.name,
+            type: ui5Type ?? '-',
+            propertyType: ui5Type ?? '-'
+        } as PropertiesInfo);
 }
 
 async function addDocumentationForProperties(control: ManagedObject, controlData: Control): Promise<void> {
@@ -84,7 +86,14 @@ async function addDocumentationForProperties(control: ManagedObject, controlData
             }
         });
     } catch (e) {
-        Log.error('Document loading failed', getError(e));
+        const extendedError = getError(e);
+        Log.error('Document loading failed', extendedError);
+        void showLocalizedMessage({
+            title: { key: 'CPE_DOCUMENT_LOAD_FAILED_TITLE' },
+            description: extendedError.message,
+            type: MessageBarType.error,
+            showToast: false
+        });
     }
 }
 
@@ -100,7 +109,7 @@ export class SelectionService implements Service {
      * @param rta - rta object.
      * @param ui5 - facade for ui5 framework methods
      */
-    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {}
+    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) { }
 
     /**
      * Initialize selection service.
@@ -112,7 +121,16 @@ export class SelectionService implements Service {
         const eventOrigin: Set<string> = new Set();
         const onselectionChange = this.createOnSelectionChangeHandler(sendAction, eventOrigin);
         this.rta.attachSelectionChange((event) => {
-            onselectionChange(event).catch((error) => Log.error('Event interrupted: ', getError(error)));
+            onselectionChange(event).catch((error) => {
+                const extendedError = getError(error);
+                Log.error('Event interrupted: ', extendedError);
+                return showLocalizedMessage({
+                    title: { key: 'CPE_EVENT_INTERRUPTED_TITLE' },
+                    description: extendedError.message,
+                    type: MessageBarType.error,
+                    showToast: false
+                });
+            });
         });
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (changeProperty.match(action)) {
@@ -216,7 +234,14 @@ export class SelectionService implements Service {
                             reportTelemetry({ category: 'Overlay Selection', controlName: name });
                         }
                     } catch (error) {
-                        Log.error('Failed to report telemetry', getError(error));
+                        const extendedError = getError(error);
+                        Log.error('Failed to report telemetry', extendedError);
+                        await showLocalizedMessage({
+                            title: { key: 'CPE_TELEMETRY_REPORT_FAILURE_TITLE' },
+                            description: extendedError.message,
+                            type: MessageBarType.error,
+                            showToast: false
+                        });
                     } finally {
                         await this.buildProperties(runtimeControl, sendAction, overlayControl);
                         eventOrigin.delete('outline');
