@@ -17,7 +17,7 @@
         "cloudCli": "Cloud CLI tools: {{- cloudCli}}",
         "detailsForDestinations": "Getting details for destinations: {{destinations}}...",
         "detailsForSapSystem": "Getting details for SAP systems: {{sapSystems}}...",
-        "developmentEnvironment": "Development environment: {{env}}.",
+        "developmentEnvironment": "Development environment: {{env}}",
         "fioriGenVersion": "SAP Fiori tools - SAP Fiori generator: {{- fioriGenVersion}}.",
         "foundDestinationsInApp": "Found destinations in application: {{- appRoot}} - {{- appDestinations}}.",
         "foundNumApps": "Found {{numApps}} applications.",
