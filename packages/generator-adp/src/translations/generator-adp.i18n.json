@@ -19,7 +19,7 @@
         "applicationListLabel": "Application",
         "applicationListTooltip": "Select the application for which you want to create an application variant.",
         "fioriIdLabel": "Fiori ID",
-        "fioriIdHint": "This is an one-time, semantic identifier for the application variant. The Fiori ID is shown in the 'About' section of the application and is also be available in the SAP Fiori Apps Reference Library.",
+        "fioriIdHint": "This is an one-time, semantic identifier for the application variant. The Fiori ID is shown in the 'About' section of the application and is also available in the SAP Fiori Apps Reference Library.",
         "achLabel": "Application Component Hierarchy",
         "achHint": "The purpose of ACH components is to enable the support organization to indicate which BCP or ticket component may be responsible for a particular issue.",
         "createExtProjectLabel": "The selected application is not supported by SAPUI5 Adaptation Project. For more information, see SAPUI5 Adaptation Project documentation. Do you want to create an extension project instead?",
