@@ -347,7 +347,7 @@ export class ChangeService extends EventTarget {
                         title: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_TITLE' },
                         description: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_DESCRIPTION' },
                         type: MessageBarType.info,
-                        toastDuration: 8000,
+                        toastDuration: 8000
                     });
                     this.sendAction(setApplicationRequiresReload(changesRequiringReload > 0));
                 }
