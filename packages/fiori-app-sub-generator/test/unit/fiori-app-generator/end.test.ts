@@ -1,5 +1,5 @@
 import { runPostGenerationTasks } from '../../../src/fiori-app-generator/end';
-import { generateLaunchConfig, runHooks, t } from '../../../src/utils';
+import { DEFAULT_POST_APP_GEN_COMMAND, generateLaunchConfig, runHooks, t } from '../../../src/utils';
 import type { BackendSystem } from '@sap-ux/store';
 import { getService } from '@sap-ux/store';
 import { PLATFORMS, ApiHubType, EventName, State } from '../../../src/types';
@@ -177,7 +177,7 @@ describe('runPostGenerationTasks', () => {
             {
                 hookParameters: { fsPath: projectPath },
                 vscodeInstance: vscode,
-                options: { followUpCommand: undefined }
+                options: { command: undefined }
             },
             logger
         );
