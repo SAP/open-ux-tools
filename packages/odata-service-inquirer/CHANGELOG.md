@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.0
+
+### Minor Changes
+
+-   45e1035: Add support for parameterised main entities across FE writer and OData service inquirer
+
 ## 2.4.23
 
 ### Patch Changes
