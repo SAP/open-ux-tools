@@ -74,7 +74,7 @@
             "title": "Deployment Configuration"
         },
         "flpConfig": {
-            "description": "Configure SAP Fiori launchpad settings{{appFolderName}}.",
+            "description": "Configure SAP Fiori launchpad settings {{appFolderName}}.",
             "title": "SAP Fiori Launchpad Configuration"
         }
     },
