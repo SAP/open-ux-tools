@@ -51,7 +51,7 @@
         "inputCannotBeEmpty": "The input cannot be empty.",
         "inputCannotHaveSpaces": "The input cannot contain spaces.",
         "invalidJSON": "Invalid JSON.",
-        "invalidValueForSpecialChars": "The input must only contain latin alphanumeric characters or the following symbols: '-','_','$' and '.'.",
+        "invalidValueForSpecialChars": "The input must only contain Latin alphanumeric characters or the following symbols: '-','_','$' and '.'.",
         "maxLength": "The maximum length is: {{maxLength}} characters.",
         "supportedFormats": "Only alphanumeric and '{{allowedCharacters}}' characters are allowed."
     },
