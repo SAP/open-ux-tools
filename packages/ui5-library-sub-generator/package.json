@@ -41,7 +41,7 @@
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
-        "@jest/types": "29.6.3",
+        "@jest/types": "30.0.0",
         "@sap-ux/jest-file-matchers": "workspace:*",
         "@types/mem-fs-editor": "7.0.1",
         "@types/yeoman-environment": "2.10.11",
