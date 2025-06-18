@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 0.13.45
+
+### Patch Changes
+
+-   9de0d46: No card config generation for CAP projects
+
 ## 0.13.44
 
 ### Patch Changes
