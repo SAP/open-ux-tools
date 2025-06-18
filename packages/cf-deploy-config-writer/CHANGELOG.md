@@ -1,5 +1,18 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.4
+
+### Patch Changes
+
+-   11c317d: Suppprt MTA configuration from CDS
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/nodejs-utils@0.2.1
+
 ## 0.3.2
 
 ### Patch Changes

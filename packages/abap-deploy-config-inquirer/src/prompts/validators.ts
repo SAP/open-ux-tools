@@ -1,42 +1,44 @@
-import { PromptState } from './prompt-state';
-import { type Destinations, isS4HC, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
-import {
-    createTransportNumber,
-    getTransportList,
-    isEmptyString,
-    isValidClient,
-    isValidUrl,
-    isAppNameValid
-} from '../validator-utils';
-import { DEFAULT_PACKAGE_ABAP } from '../constants';
-import { getTransportListFromService, getSystemInfo, isAbapCloud } from '../service-provider-utils';
-import { t } from '../i18n';
-import {
-    findBackendSystemByUrl,
-    initTransportConfig,
-    getPackageAnswer,
-    queryPackages,
-    getSystemConfig
-} from '../utils';
-import { handleTransportConfigError } from '../error-handler';
-import { AuthenticationType } from '@sap-ux/store';
+import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { isAbapEnvironmentOnBtp, isS4HC, type Destinations } from '@sap-ux/btp-utils';
 import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
+import { AuthenticationType } from '@sap-ux/store';
+import { DEFAULT_PACKAGE_ABAP } from '../constants';
+import { handleTransportConfigError } from '../error-handler';
+import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
+import { getSystemInfo, getTransportListFromService, isAbapCloud } from '../service-provider-utils';
+import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
 import {
     ClientChoiceValue,
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
-    type SystemConfig,
     type AbapDeployConfigAnswersInternal,
     type AbapSystemChoice,
     type BackendTarget,
     type PackagePromptOptions,
+    type SystemConfig,
     type TargetSystemPromptOptions,
     type UI5AbapRepoPromptOptions
 } from '../types';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
+import {
+    findBackendSystemByUrl,
+    getPackageAnswer,
+    getSystemConfig,
+    initTransportConfig,
+    queryPackages
+} from '../utils';
+import {
+    createTransportNumber,
+    getTransportList,
+    isAppNameValid,
+    isEmptyString,
+    isValidClient,
+    isValidUrl
+} from '../validator-utils';
+import { PromptState } from './prompt-state';
 
 const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 
@@ -372,17 +374,29 @@ export async function validatePackageChoiceInput(
     input: PackageInputChoices,
     systemConfig: SystemConfig,
     backendTarget?: BackendTarget
-): Promise<boolean | string> {
+): Promise<boolean | string | IValidationLink> {
     if (input === PackageInputChoices.ListExistingChoice) {
-        const retrievedPackageList = await queryPackages('', systemConfig, backendTarget);
-        if (retrievedPackageList && retrievedPackageList.length > 0) {
-            return true;
-        } else {
-            return t('warnings.packageNotFound');
+        let helpLink: IValidationLink | string | undefined;
+        try {
+            const retrievedPackageList = await queryPackages('', systemConfig, backendTarget);
+            if (retrievedPackageList && retrievedPackageList.length > 0) {
+                return true;
+            } else {
+                return t('warnings.packageNotFound');
+            }
+        } catch (error) {
+            if (ErrorHandler.isCertError(error)) {
+                helpLink = new ErrorHandler(
+                    undefined,
+                    undefined,
+                    '@sap-ux/abap-deploy-config-inquirer'
+                ).getValidationErrorHelp(error);
+                return helpLink ?? true;
+            }
+            throw error;
         }
-    } else {
-        return true;
     }
+    return true;
 }
 
 /**
@@ -571,37 +585,44 @@ export async function validateTransportChoiceInput({
     backendTarget?: BackendTarget;
     ui5AbapRepoName?: string;
     transportDescription?: string;
-}): Promise<boolean | string> {
+}): Promise<boolean | string | IValidationLink> {
     const packageAnswer = getPackageAnswer(previousAnswers, PromptState.abapDeployConfig.package);
     const systemConfig = getSystemConfig(useStandalone, PromptState.abapDeployConfig, backendTarget);
 
-    switch (input) {
-        case TransportChoices.ListExistingChoice: {
-            return handleListExistingTransportChoice(
+    if (input === TransportChoices.ListExistingChoice) {
+        try {
+            return await handleListExistingTransportChoice(
                 packageAnswer,
                 systemConfig,
                 previousAnswers,
                 backendTarget,
                 ui5AbapRepoName
             );
+        } catch (error) {
+            if (ErrorHandler.isCertError(error)) {
+                return (
+                    new ErrorHandler(
+                        undefined,
+                        undefined,
+                        '@sap-ux/abap-deploy-config-inquirer'
+                    ).getValidationErrorHelp(error) ?? true
+                );
+            }
         }
-        case TransportChoices.CreateNewChoice: {
-            return handleCreateNewTransportChoice({
-                packageAnswer,
-                systemConfig,
-                input,
-                previousAnswers,
-                validateInputChanged,
-                prevTransportInputChoice,
-                backendTarget,
-                ui5AbapRepoName,
-                transportDescription
-            });
-        }
-        case TransportChoices.EnterManualChoice:
-        default:
-            return true;
+    } else if (input === TransportChoices.CreateNewChoice) {
+        return await handleCreateNewTransportChoice({
+            packageAnswer,
+            systemConfig,
+            input,
+            previousAnswers,
+            validateInputChanged,
+            prevTransportInputChoice,
+            backendTarget,
+            ui5AbapRepoName,
+            transportDescription
+        });
     }
+    return true;
 }
 
 /**
@@ -708,8 +729,14 @@ export async function validatePackage(
         // we need to verify cloud systems are connected before checking the package to avoid multiple browser windows opening
         (PromptState.abapDeployConfig.scp && AbapServiceProviderManager.isConnected())
     ) {
-        // checks if package is a local package and will update prompt state accordingly
-        await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
+        try {
+            // checks if package is a local package and will update prompt state accordingly
+            await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
+        } catch (error) {
+            LoggerHelper.logger.warn(
+                `An error occurred while validating the local package for package: ${error.message}`
+            );
+        }
     }
 
     const startingPrefixValidation = validatePackageStartingPrefix(input, answers, promptOption, ui5AbapPromptOptions);

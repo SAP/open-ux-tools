@@ -18,6 +18,7 @@ import {
 } from '../../../types';
 import type { InputQuestion, ListQuestion, Question } from 'inquirer';
 import { useCreateTrDuringDeploy } from '../../../utils';
+import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Returns the transport prompts.
@@ -53,8 +54,8 @@ export function getTransportRequestPrompts(
             validate: async (
                 input: TransportChoices,
                 previousAnswers: AbapDeployConfigAnswersInternal
-            ): Promise<boolean | string> => {
-                const result = validateTransportChoiceInput({
+            ): Promise<boolean | string | IValidationLink> => {
+                const result = await validateTransportChoiceInput({
                     useStandalone,
                     input,
                     previousAnswers,

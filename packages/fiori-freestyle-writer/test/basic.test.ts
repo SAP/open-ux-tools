@@ -36,7 +36,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             id: 'nods1',
             title: 'App Title',
             description: 'A Fiori application.',
-            flpAppId: 'nods1-tile',
+            flpAction: 'display',
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: 'test-template'

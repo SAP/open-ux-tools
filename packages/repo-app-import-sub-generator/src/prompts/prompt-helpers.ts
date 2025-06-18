@@ -4,7 +4,7 @@ import type { AppInfo, AppItem } from '../app/types';
 import { PromptState } from './prompt-state';
 import { t } from '../utils/i18n';
 import RepoAppDownloadLogger from '../utils/logger';
-
+import { type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 /**
  * Returns the details for the YUI prompt.
  *
@@ -95,19 +95,19 @@ async function getAppList(provider: AbapServiceProvider, appId?: string): Promis
 /**
  * Fetches the application list for the selected system.
  *
- * @param {AbapServiceProvider} serviceProvider - The ABAP service provider.
+ * @param {ConnectedSystem} connectedSystem - The ABAP service provider.
  * @param {string} appId - Application ID to be downloaded.
  * @returns {Promise<AppIndex>} A list of applications filtered by source template.
  */
 export async function fetchAppListForSelectedSystem(
-    serviceProvider: AbapServiceProvider,
+    connectedSystem: ConnectedSystem,
     appId?: string
 ): Promise<AppIndex> {
-    if (serviceProvider) {
+    if (connectedSystem?.serviceProvider) {
         PromptState.systemSelection = {
-            connectedSystem: { serviceProvider }
+            connectedSystem: connectedSystem
         };
-        return await getAppList(serviceProvider, appId);
+        return await getAppList(connectedSystem.serviceProvider as AbapServiceProvider, appId);
     }
     return [];
 }

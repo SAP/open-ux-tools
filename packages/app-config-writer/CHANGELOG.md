@@ -1,5 +1,32 @@
 # @sap-ux/app-config-writer
 
+## 0.6.10
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+
+## 0.6.9
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [61d4060]
+    -   @sap-ux/axios-extension@1.21.2
+
+## 0.6.7
+
+### Patch Changes
+
+-   58cea5c: fix card generator log message
+
 ## 0.6.6
 
 ### Patch Changes

@@ -153,20 +153,8 @@ export async function transformNodes(
                 const technicalName = current.technicalName.split('.').slice(-1)[0];
 
                 const transformedChildren = isAdp
-                    ? await handleDuplicateNodes(
-                          children,
-                          scenario,
-                          controlIndex,
-                          changeService,
-                          propertyIdMap
-                      )
-                    : await transformNodes(
-                          children,
-                          scenario,
-                          controlIndex,
-                          changeService,
-                          propertyIdMap
-                      );
+                    ? await handleDuplicateNodes(children, scenario, controlIndex, changeService, propertyIdMap)
+                    : await transformNodes(children, scenario, controlIndex, changeService, propertyIdMap);
                 const node: OutlineNode = {
                     controlId: current.id,
                     controlType: current.technicalName,
@@ -192,7 +180,7 @@ export async function transformNodes(
                 });
 
                 const node: OutlineNode = {
-                    controlId: current.id,
+                    controlId: `${current.id}--${current.name ?? ''}`,
                     controlType: current.technicalName,
                     name: current.name ?? '',
                     editable,

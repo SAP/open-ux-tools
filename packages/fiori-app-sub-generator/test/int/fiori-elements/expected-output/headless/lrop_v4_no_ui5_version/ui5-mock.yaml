@@ -29,6 +29,10 @@ server:
       configuration:
         flp:
           theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: testnamepsacelropv4noui5version
+            action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
