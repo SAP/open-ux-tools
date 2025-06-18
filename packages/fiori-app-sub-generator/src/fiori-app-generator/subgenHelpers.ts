@@ -1,10 +1,9 @@
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
+import { type ILogWrapper, getSemanticObject } from '@sap-ux/fiori-generator-shared';
 import type { FlpConfigOptions } from '@sap-ux/flp-config-sub-generator';
 import { join } from 'path';
 import type Generator from 'yeoman-generator';
 import { defaultNavActionDisplay, type FioriAppGeneratorPromptSettings, type Service } from '../types';
-import { getSemanticObject } from '../utils';
 
 /**
  * Add the '@sap/fiori:fiori-deployment' generator as a subgenerator.
