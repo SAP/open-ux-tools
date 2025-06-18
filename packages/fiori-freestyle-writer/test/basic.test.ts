@@ -8,8 +8,7 @@ import type { BasicAppSettings } from '../src/types';
 import { projectChecks } from './common';
 import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
-import { types } from 'util';
+import { create } from 'mem-fs-editor';
 
 const TEST_NAME = 'basicTemplate';
 jest.setTimeout(240000); // Needed when debug.enabled
