@@ -75,7 +75,7 @@
         "confirm": {
             "index": {
                 "message": "Generate standalone index.html during deployment",
-                "breadcrumb": "Generate `index.html` file"
+                "breadcrumb": "Generate index.html"
             },
             "overwrite": {
                 "message": "Editing the deployment configuration will overwrite the existing configuration. Are you sure you want to continue?",
