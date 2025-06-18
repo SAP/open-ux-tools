@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.6.11
+
+### Patch Changes
+
+-   14c2776: fix preview middleware dependency
+
 ## 0.6.10
 
 ### Patch Changes
