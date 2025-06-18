@@ -4447,6 +4447,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@sap-ux/ui5-application-writer':
         specifier: workspace:*
         version: link:../ui5-application-writer
@@ -4463,9 +4466,6 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
