@@ -41,7 +41,7 @@ export async function showLocalizedMessage(message: LocalizedMessage): Promise<v
 
     if (showToast) {
         MessageToast.show(description, {
-            duration: message.toastDuration ?? FIVE_SEC_IN_MS,
+            duration: message.toastDuration ?? FIVE_SEC_IN_MS
         });
     }
 
