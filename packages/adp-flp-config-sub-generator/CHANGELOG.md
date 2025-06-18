@@ -1,5 +1,95 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.25
+-   @sap-ux/flp-config-inquirer@0.3.25
+
+## 0.1.24
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+    -   @sap-ux/flp-config-inquirer@0.3.24
+    -   @sap-ux/inquirer-common@0.7.13
+    -   @sap-ux/adp-tooling@0.14.24
+
+## 0.1.23
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/inquirer-common@0.7.12
+    -   @sap-ux/adp-tooling@0.14.23
+    -   @sap-ux/flp-config-inquirer@0.3.23
+
+## 0.1.22
+
+### Patch Changes
+
+-   Updated dependencies [65edfba]
+    -   @sap-ux/adp-tooling@0.14.22
+    -   @sap-ux/flp-config-inquirer@0.3.22
+
+## 0.1.21
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.21
+-   @sap-ux/inquirer-common@0.7.11
+-   @sap-ux/flp-config-inquirer@0.3.21
+
+## 0.1.20
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+    -   @sap-ux/adp-tooling@0.14.20
+    -   @sap-ux/flp-config-inquirer@0.3.20
+
+## 0.1.19
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+    -   @sap-ux/adp-tooling@0.14.19
+    -   @sap-ux/system-access@0.6.4
+    -   @sap-ux/flp-config-inquirer@0.3.19
+
+## 0.1.18
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+    -   @sap-ux/adp-tooling@0.14.18
+    -   @sap-ux/system-access@0.6.3
+    -   @sap-ux/flp-config-inquirer@0.3.18
+
+## 0.1.17
+
+### Patch Changes
+
+-   f4439f1: feat(generator-adp): Consume FLP generator and Deployment generator
+-   Updated dependencies [f4439f1]
+    -   @sap-ux/adp-tooling@0.14.17
+    -   @sap-ux/flp-config-inquirer@0.3.17
+
+## 0.1.16
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/flp-config-inquirer@0.3.16
+    -   @sap-ux/inquirer-common@0.7.9
+    -   @sap-ux/adp-tooling@0.14.16
+
 ## 0.1.15
 
 ### Patch Changes

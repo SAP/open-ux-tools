@@ -7,7 +7,13 @@ import type {
     AttributeName,
     TargetPath
 } from '@sap-ux/odata-annotation-core';
-import { Edm, ELEMENT_TYPE, TEXT_TYPE, printOptions as defaultPrintOptions } from '@sap-ux/odata-annotation-core';
+import {
+    Edm,
+    ELEMENT_TYPE,
+    TEXT_TYPE,
+    printOptions as defaultPrintOptions,
+    getElementAttributeValue
+} from '@sap-ux/odata-annotation-core';
 
 import type { ContainerItemType } from './primitives';
 import {
@@ -100,9 +106,13 @@ export const printTarget = (target: Target, complexTypePathSegments?: string[]):
     const boundActionFunctionName = resolvedTarget.boundActionFunctionName;
     const options: FormatterOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
 
-    let result =
-        [...target.terms.map((term) => internalPrint(term, options))].join(',\n') +
-        (complexTypePathSegments?.length ? ';' : '\n');
+    const terms = [...target.terms.flatMap((term) => internalPrint(term, options))];
+    if (terms.length > 1 && !terms[terms.length - 1].endsWith(',')) {
+        // make sure there is trailing comma
+        terms[terms.length - 1] += ',';
+    }
+
+    let result = terms.join(',\n') + (complexTypePathSegments?.length ? ';' : '\n');
 
     if (!childSegments || childSegments.length === 0) {
         if (boundActionFunctionName) {
@@ -130,12 +140,12 @@ export const printTarget = (target: Target, complexTypePathSegments?: string[]):
             //        <term> <qualifier>: <value>
             //     );
             // }
-            const terms = target.terms.length > 1 ? `@(${result})` : `@${result}`;
+            const assignment = terms.length > 1 ? `@(\n${result})` : `@${result}`;
             if (complexTypePathSegments?.length) {
                 const complexTarget = complexTypePathSegments?.join('.');
-                result = `annotate ${rootElementName} : ${complexTarget} with ${terms}\n`;
+                result = `annotate ${rootElementName} : ${complexTarget} with ${assignment}\n`;
             } else {
-                result = `annotate ${rootElementName} with {\n${childSegments[0]} ${terms}};\n`;
+                result = `annotate ${rootElementName} with {\n${childSegments[0]} ${assignment}};\n`;
             }
         }
     }
@@ -144,26 +154,51 @@ export const printTarget = (target: Target, complexTypePathSegments?: string[]):
     return result;
 };
 
+export interface PrintOptions {
+    indentResult: boolean;
+
+    /**
+     * Used to build prefix for annotation terms on annotations and record properties.
+     */
+    annotationContext: Element[];
+}
+
+/**
+ * Get print options replacing missing values with defaults.
+ *
+ * @param printOptions - Options for printing.
+ * @returns The complete print options with defaults applied.
+ */
+function getPrintOptions(printOptions: Partial<PrintOptions>): PrintOptions {
+    return {
+        indentResult: printOptions.indentResult ?? true,
+
+        annotationContext: printOptions.annotationContext ?? []
+    };
+}
 export const print = (
-    node: Element | TextNode | Element[] | TextNode[],
-    options: FormatterOptions = defaultPrintOptions,
-    indentResult = true
+    node: Element | TextNode | (Element | TextNode)[],
+    formatterOptions: FormatterOptions = defaultPrintOptions,
+    printOptions: Partial<PrintOptions> = {}
 ): string => {
+    const { indentResult, annotationContext } = getPrintOptions(printOptions);
     if (Array.isArray(node)) {
-        const nodes: (Element | TextNode)[] = node;
+        const nodes = node;
         const withTrailingCommas = nodes
-            .map((item: Element | TextNode) => internalPrint(item, options) + ',')
+            .map((item: Element | TextNode) => printCsdlNode(item, annotationContext, formatterOptions) + ',')
             .join('\n');
         return indentResult ? indent(withTrailingCommas) : withTrailingCommas;
     }
-    return indentResult ? indent(internalPrint(node, options)) : internalPrint(node, options);
+    return indentResult
+        ? indent(printCsdlNode(node, annotationContext, formatterOptions))
+        : printCsdlNode(node, annotationContext, formatterOptions);
 };
 
-const internalPrint = (node: Element | TextNode, options: FormatterOptions): string => {
+const internalPrint = (node: Element | TextNode, options: FormatterOptions): string[] => {
     if (node.type === ELEMENT_TYPE && node.name === Edm.Annotation) {
-        return printNonRecordNode(node, false, options);
+        return printNonRecordNode(node, [], options);
     }
-    return printCsdlNode(node, options);
+    return [printCsdlNode(node, [], options)];
 };
 
 const escapeText = (input: string): string => {
@@ -173,13 +208,13 @@ const escapeText = (input: string): string => {
     return input.replace(/'/g, "''");
 };
 
-export const printCsdlNode = (node: Element | TextNode, options: FormatterOptions): string => {
+export const printCsdlNode = (node: Element | TextNode, context: Element[], options: FormatterOptions): string => {
     switch (node.type) {
         case ELEMENT_TYPE:
             if (node.name === Edm.Record) {
-                return printRecord(node, options);
+                return printRecord(node, [], options);
             } else {
-                return printNonRecordNode(node, true, options);
+                return printNonRecordNode(node, context, options).join(',\n');
             }
         case TEXT_TYPE:
             // text nodes can have all kinds of primitive values which might need enclosing '' or not (e.g. true, false, paths)
@@ -189,42 +224,75 @@ export const printCsdlNode = (node: Element | TextNode, options: FormatterOption
     }
 };
 
-const printNonRecordNode = (node: Element, embedded: boolean, options: FormatterOptions): string => {
-    const value = wrapNonRecordNodeValue(node, embedded, options);
+const printNonRecordNode = (node: Element, context: Element[], options: FormatterOptions): string[] => {
+    const value = printNonRecordValue(node, context, options);
     if (node.name === Edm.Annotation || node.name === Edm.PropertyValue) {
         // Annotation and PropertyValue need special handling because they also include 'key' part of the key value pair
-        const key = printKey(node, embedded);
-        return value === undefined ? keyAlone(key) : valuePair(key, value);
+        const annotations = flattenAnnotations(node, context, options);
+        const key = printKey([...context, node]);
+        return [value === undefined ? keyAlone(key) : valuePair(key, value), ...annotations];
     }
-    return value;
+    return [value];
 };
 
-const wrapNonRecordNodeValue = (node: Element, embedded: boolean, options: FormatterOptions): string => {
-    const annotations = (node.content || []).filter(annotationFilter) as Element[];
-    const value = printNonRecordValue(node, options);
+const printAnnotationTerm = (element: Element, embedded: boolean, isLastSegment: boolean): string => {
+    const term = getElementAttributeValue(element, Edm.Term);
+    const qualifier = getElementAttributeValue(element, Edm.Qualifier);
+    if (!term) {
+        return '';
+    }
+
+    const embeddedPrefix = embedded ? '@' : '';
+    if (qualifier) {
+        if (!isLastSegment) {
+            return delimitedIdentifier(`${embeddedPrefix}${term}#${qualifier}`);
+        }
+        return `${embeddedPrefix}${term} #${qualifier}`;
+    } else {
+        return embeddedPrefix + term;
+    }
+};
+
+const flattenAnnotations = (node: Element, context: Element[], options: FormatterOptions): string[] => {
+    const annotations = (node.content ?? []).filter(annotationFilter);
     if (annotations.length) {
-        const valueProperty = valuePair(encodeSnippet(options, '$value'), value);
-        const annotationProperties = annotations.map((annotation) => printNonRecordNode(annotation, true, options));
-        return struct([valueProperty, ...annotationProperties]);
+        return annotations.flatMap((annotation) => printNonRecordNode(annotation, [...context, node], options));
     }
-    return value;
+    return [];
 };
 
-const printKey = (node: Element, embedded: boolean): string => {
-    switch (node.name) {
-        case Edm.Annotation:
-            return printAnnotationTerm(node, embedded);
-        case Edm.PropertyValue:
-            return printPropertyName(node);
-        default:
+/**
+ * Flatten OData structure into a CDS key.
+ *
+ * @param context - Annotation elements
+ * @returns The key string
+ */
+export const printKey = (context: Element[]): string => {
+    return context
+        .map((element, i) => {
+            if (element.name === Edm.Annotation) {
+                return printAnnotationTerm(
+                    element,
+                    i !== 0,
+                    i === context.length - 1 && (i !== 0 || context.length === 1)
+                );
+            } else if (element.name === Edm.PropertyValue) {
+                const propertyName = getElementAttributeValue(element, Edm.Property);
+                if (!propertyName) {
+                    return '';
+                }
+                return propertyName;
+            }
             return '';
-    }
+        })
+        .filter((segment) => segment !== '')
+        .join('.');
 };
 
 const printContainerNode =
-    (options: FormatterOptions) =>
+    (context: Element[], options: FormatterOptions) =>
     (node: Element | TextNode): ContainerItemType => {
-        const value = printCsdlNode(node, options);
+        const value = printCsdlNode(node, context, options);
         if (options.useSnippetSyntax && value.startsWith('$')) {
             return {
                 placeholder: true,
@@ -234,16 +302,16 @@ const printContainerNode =
         return value;
     };
 
-const printNonRecordValue = (node: Element, options: FormatterOptions): string => {
+const printNonRecordValue = (node: Element, context: Element[], options: FormatterOptions): string => {
     switch (node.name) {
         case Edm.Annotation:
         case Edm.PropertyValue: {
-            return printValue(node, options) as string;
+            return printValue(node, context, options) as string;
         }
         case Edm.Collection: {
             const items = (node.content ?? [])
                 .filter((node) => node.type === ELEMENT_TYPE || node.text.trim() !== '')
-                .map(printContainerNode(options));
+                .map(printContainerNode(context, options));
             return collection(items);
         }
         case Edm.Null: {
@@ -268,7 +336,7 @@ const printNonRecordValue = (node: Element, options: FormatterOptions): string =
                     .map((nodeContent) =>
                         nodeContent.type === TEXT_TYPE
                             ? printPrimitiveValue(node.name, nodeContent.text)
-                            : printCsdlNode(nodeContent, options)
+                            : printCsdlNode(nodeContent, context, options)
                     )
                     .join('');
             } else {
@@ -309,13 +377,13 @@ const printAttributePrimitiveValue = (element: Element): string | undefined => {
     return undefined;
 };
 
-const annotationFilter = (node: Element | TextNode): boolean =>
+const annotationFilter = (node: Element | TextNode): node is Element =>
     node.type === ELEMENT_TYPE && node.name === Edm.Annotation;
 
 const encodeSnippet = (options: FormatterOptions, text: string): string =>
     options.useSnippetSyntax ? text.replace(/\$/g, '\\$') : text;
 
-const printValue = (element: Element, options: FormatterOptions): string | undefined => {
+const printValue = (element: Element, context: Element[], options: FormatterOptions): string | undefined => {
     const valueElement =
         (element.content ?? []).find((node) => node.type === ELEMENT_TYPE && node.name !== Edm.Annotation) ??
         (element.content ?? []).find((node) => node.type !== ELEMENT_TYPE && node.text.trim() !== '');
@@ -332,7 +400,7 @@ const printValue = (element: Element, options: FormatterOptions): string | undef
     }
 
     if (valueElement) {
-        return printCsdlNode(valueElement, options);
+        return printCsdlNode(valueElement, context, options);
     }
     const primitiveAttributeValue = printAttributePrimitiveValue(element);
     if (primitiveAttributeValue) {
@@ -341,36 +409,7 @@ const printValue = (element: Element, options: FormatterOptions): string | undef
     return undefined;
 };
 
-const printPropertyName = (element: Element): string => {
-    const attributes = element.attributes ?? {};
-    return attributes[Edm.Property]?.value ?? '';
-};
-
-const encodeTerm = (embedded: boolean, text: string): string => (embedded ? delimitedIdentifier(`@${text}`) : text);
-
-const printAnnotationTerm = (element: Element, embedded: boolean): string => {
-    const attributes = element.attributes ?? {};
-    const { term, qualifier }: { term?: string; qualifier?: string; qualifierPlaceholder?: string } = Object.keys(
-        attributes
-    ).reduce((accumulator, attributeName) => {
-        if (attributeName === Edm.Term) {
-            return { ...accumulator, term: encodeTerm(embedded, element.attributes[attributeName].value) };
-        }
-        if (attributeName === Edm.Qualifier) {
-            return { ...accumulator, qualifier: attributes[attributeName].value };
-        }
-        return accumulator;
-    }, {});
-    if (term) {
-        if (qualifier) {
-            return `${term} #${qualifier}`;
-        }
-        return term;
-    }
-    return '';
-};
-
-const printRecord = (element: Element, options: FormatterOptions): string => {
+const printRecord = (element: Element, context: Element[], options: FormatterOptions): string => {
     const content = element.content ?? [];
     const skipTextNodes =
         content.find((child) => child.type === ELEMENT_TYPE && child.name !== Edm.Annotation) !== undefined;
@@ -381,10 +420,10 @@ const printRecord = (element: Element, options: FormatterOptions): string => {
                 (!skipTextNodes && child.type !== ELEMENT_TYPE) ||
                 (child.type === ELEMENT_TYPE && child.name !== Edm.Annotation)
         )
-        .map(printContainerNode(options));
-    const annotations = (content.filter(annotationFilter) as Element[]).map((annotation: Element) =>
-        printNonRecordNode(annotation, true, options)
-    );
+        .map(printContainerNode(context, options));
+    const annotations = content
+        .filter(annotationFilter)
+        .flatMap((annotation: Element) => printNonRecordNode(annotation, [...context, element], options));
     const typeAttribute = element.attributes ? element.attributes['Type'] : undefined;
     if (typeAttribute?.value) {
         const type = valuePair(encodeSnippet(options, '$Type'), `'${typeAttribute.value}'`);

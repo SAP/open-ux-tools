@@ -12,6 +12,22 @@ exports[`csdlToCds print Annotation content.length > 0 1`] = `
 ]"
 `;
 
+exports[`csdlToCds print Annotation multiple levels of primitive annotation values 1`] = `
+"Annotation1 : 'Value1',
+Annotation1.@Annotation2 : {
+    Property1 : {
+        Property : 'My Value',
+        Property.@Core.Description : 'on property',
+    },
+    @Core.Description : 'on record',
+},
+Annotation1.@Annotation2.@Annotation3 : 'Value3'"
+`;
+
+exports[`csdlToCds print Annotation no placeholders 1`] = `"UI.TextArrangement : #TextLast"`;
+
+exports[`csdlToCds print Annotation with prefix 1`] = `"Common.Text.@UI.TextArrangement : #TextLast"`;
+
 exports[`csdlToCds print Collection 1`] = `
 "[
     {
@@ -178,39 +194,36 @@ exports[`csdlToCds printTarget Annotating unbound Action/Function parameter 1`] 
 
 exports[`csdlToCds printTarget Embedded annotation collection 1`] = `
 "annotate AdminService.Books with {
-    Autor @UI.Facets : {
-        $value : [
+    Author @(
+        UI.Facets : [
             {
                 $Type : 'UI.ReferenceFacet',
                 Label : 'Sales',
             },
         ],
-        ![@UI.Importance] : #High,
-    }
-};
+        UI.Facets.@UI.Importance : #High,
+)};
 "
 `;
 
 exports[`csdlToCds printTarget Embedded annotation record 1`] = `
 "annotate AdminService.Books with {
-    Autor @UI.HeaderInfo : {
-        $value : {
+    Author @(
+        UI.HeaderInfo : {
             $Type : 'UI.HeaderInfo',
-            TypeName : {
-                $value : 'My Book',
-                ![@Core.Description] #something : 'PropertyValue annotation',
-            },
-            ![@Core.Description] : 'Record annotation',
+            TypeName : 'My Book',
+            TypeName.@Core.Description #something : 'PropertyValue annotation',
+            TypeName.![@Core.Description#something].@Core.Description : 'of Description',
+            @Core.Description : 'Record annotation',
         },
-        ![@UI.Importance] : #High,
-    }
-};
+        UI.HeaderInfo.@UI.Importance : #High,
+)};
 "
 `;
 
 exports[`csdlToCds printTarget childSegments.length === 1] 1`] = `
 "annotate AdminService.Books with {
-    Autor @UI.Facets : [
+    Author @UI.Facets : [
         {
             $Type : 'UI.ReferenceFacet',
             Label : 'Sales',
@@ -224,7 +237,8 @@ exports[`csdlToCds printTarget childSegments.length === 1] 1`] = `
 
 exports[`csdlToCds printTarget childSegments.length > 1] 1`] = `
 "annotate AdminService.Books with {
-    Autor @(UI.Facets : [
+    Author @(
+        UI.Facets : [
             {
                 $Type : 'UI.ReferenceFacet',
                 Label : 'Sales',
@@ -239,7 +253,7 @@ exports[`csdlToCds printTarget childSegments.length > 1] 1`] = `
                 ID : 'Sales',
                 Target : 'to_ProductSalesData/@UI.Chart',
             },
-        ]
+        ],
 )};
 "
 `;
@@ -249,7 +263,7 @@ exports[`csdlToCds printTarget multiple terms in single target 1`] = `
     UI.Facets : [
     ],
     UI.Facets #MyQualifierName : [
-    ]
+    ],
 );
 "
 `;

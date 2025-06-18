@@ -1,4 +1,4 @@
-// Last content update: Mon Feb 10 2025 23:35:57 GMT+0100 (Mitteleuropäische Normalzeit)
+// Last content update: Sat Jun 14 2025 13:41:16 GMT+0200 (Mitteleuropäische Sommerzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -686,8 +686,7 @@ export default {
             'NonExpandableStreamProperties': {
                 '$Collection': true,
                 '$Type': 'Edm.PropertyPath',
-                '@Org.OData.Core.V1.Description': 'These stream properties cannot be used in expand expressions',
-                '@Org.OData.Core.V1.RequiresType': 'Edm.Stream'
+                '@Org.OData.Core.V1.Description': 'These stream properties cannot be used in expand expressions'
             }
         },
         'SearchRestrictions': {

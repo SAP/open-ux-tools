@@ -604,6 +604,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      '@sap-ux/ui5-info':
+        specifier: workspace:*
+        version: link:../ui5-info
       adm-zip:
         specifier: 0.5.10
         version: 0.5.10
@@ -1053,8 +1056,8 @@ importers:
         specifier: workspace:*
         version: link:../text-document-utils
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.17.1
-        version: 1.17.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.18.0
+        version: 1.18.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
         specifier: 20.6.1
         version: 20.6.1
@@ -1090,6 +1093,9 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
         version: 1.14.4
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -1883,8 +1889,8 @@ importers:
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.17.1
-        version: 1.17.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.18.0
+        version: 1.18.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       '@xml-tools/ast':
         specifier: 5.0.5
         version: 5.0.5
@@ -2407,8 +2413,11 @@ importers:
         specifier: 2.0.3
         version: 2.0.3
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.16.9
+        version: 1.16.9
+      '@sap-ux/adp-flp-config-sub-generator':
+        specifier: workspace:*
+        version: link:../adp-flp-config-sub-generator
       '@sap-ux/adp-tooling':
         specifier: workspace:*
         version: link:../adp-tooling
@@ -2455,6 +2464,9 @@ importers:
       '@jest/types':
         specifier: 29.6.3
         version: 29.6.3
+      '@sap-ux/deploy-config-sub-generator':
+        specifier: workspace:*
+        version: link:../deploy-config-sub-generator
       '@types/fs-extra':
         specifier: 9.0.13
         version: 9.0.13
@@ -2485,9 +2497,6 @@ importers:
       rimraf:
         specifier: 5.0.5
         version: 5.0.5
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
       yeoman-test:
         specifier: 6.3.0
         version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
@@ -9109,13 +9118,13 @@ packages:
       - utf-8-validate
     dev: true
 
-  /@sap/ux-cds-compiler-facade@1.17.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
-    resolution: {integrity: sha512-T0t00oBJHIf2Ykm84sqfRCzaYIn0vgUlBGno5XsBXgB6ZuoP07RGCMRNfeg+fPvhpODUA12CFaBKs5pjyj+YlA==}
-    engines: {node: '>=18.16.0'}
+  /@sap/ux-cds-compiler-facade@1.18.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
+    resolution: {integrity: sha512-+ZFyMacxesTxnAq9F5wTbn1xu4feflnH4Q4FGM7im9du9aVlMb5jyRdbit7Gq6qG7FV80/A1qOPEATEy4MTdKw==}
+    engines: {node: '>=20.0.0'}
     peerDependencies:
-      '@sap-ux/odata-annotation-core': '>=0.2.2'
-      '@sap-ux/odata-annotation-core-types': '>=0.4.2'
-      '@sap-ux/project-access': '>=1.29.18'
+      '@sap-ux/odata-annotation-core': '>=0.2.5'
+      '@sap-ux/odata-annotation-core-types': '>=0.4.4'
+      '@sap-ux/project-access': '>=1.30.2'
     dependencies:
       '@sap-ux/odata-annotation-core': link:packages/odata-annotation-core
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types

@@ -27,9 +27,7 @@ import {
     FloorplanFF,
     MAIN_DATASOURCE_NAME,
     MAIN_MODEL_NAME,
-    UI5_VERSION_PROPS,
-    defaultNavActionDisplay,
-    defaultNavActionTile
+    UI5_VERSION_PROPS
 } from '../types';
 import {
     assignSapUxLayerValue,
@@ -37,7 +35,6 @@ import {
     generateToolsId,
     getAnnotations,
     getAppId,
-    getFlpId,
     getMinSupportedUI5Version
 } from '../utils';
 import type { Package } from '@sap-ux/project-access';
@@ -183,12 +180,12 @@ function getUI5Uri(): string {
  * Transform Fiori Tools State to the type required by the open source ux-tools module.
  * Process inputs to set correct defaults.
  *
- * @param param0
- * @param param0.project
- * @param param0.service
- * @param param0.floorplan
- * @param param0.entityRelatedConfig
- * @param param0.viewName
+ * @param state
+ * @param state.project
+ * @param state.service
+ * @param state.floorplan
+ * @param state.entityRelatedConfig
+ * @param state.viewName
  * @param generateIndexHtml
  * @returns {FioriElementsApp<T>} - The app configuration
  */
@@ -320,10 +317,6 @@ function getBaseAppConfig(
             id: appId,
             title: project.title,
             description: project.description,
-            flpAppId: getFlpId(
-                appId,
-                floorplan === FloorplanFF.FF_SIMPLE ? defaultNavActionDisplay : defaultNavActionTile
-            ),
             sourceTemplate: {
                 toolsId: generateToolsId()
             },

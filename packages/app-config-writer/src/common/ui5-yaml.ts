@@ -12,7 +12,7 @@ import {
     type MiddlewareConfig as PreviewConfig,
     type TestConfigDefaults as PreviewTestConfigDefaults,
     type TestConfig,
-    sanitizeRtaConfig
+    type RtaConfig
 } from '@sap-ux/preview-middleware';
 import {
     getRunScriptForYamlConfig,
@@ -56,6 +56,24 @@ export const TEST_CONFIG_DEFAULTS: Record<string, Readonly<Required<PreviewTestC
     | PreviewTestConfigDefaults['qunit']['init']
     | PreviewTestConfigDefaults['qunit']['pattern']
 >;
+
+/**
+ * Sanitize the deprecated RTA configuration.
+ *
+ * @param deprecatedRtaConfig deprecated RTA configuration
+ * @param logger logger instance
+ * @returns sanitized RTA configuration
+ */
+//prettier-ignore
+export function sanitizeRtaConfig(deprecatedRtaConfig: PreviewConfig['rta'], logger?: ToolsLogger): RtaConfig | undefined { //NOSONAR
+    let rtaConfig: RtaConfig | undefined;
+    if (deprecatedRtaConfig) {
+        const { editors, ...rta } = deprecatedRtaConfig;
+        rtaConfig = { ...rta, endpoints: [...editors] };
+        logger?.warn(`The configuration option 'rta' is deprecated and has been adjusted to 'editors.rta'.`);
+    }
+    return rtaConfig;
+}
 
 /**
  * Gets the reload middleware form the provided yamlConfig.
@@ -150,17 +168,19 @@ export async function updateMiddlewaresForPreview(
  * - no longer used property 'component' will be removed.
  *
  * @param previewMiddleware - the preview middleware
+ * @param logger - logger to report info to the user
  * @returns the sanitized preview middleware
  */
 export function sanitizePreviewMiddleware(
-    previewMiddleware: CustomMiddleware<PreviewConfigOptions>
+    previewMiddleware: CustomMiddleware<PreviewConfigOptions>,
+    logger?: ToolsLogger
 ): CustomMiddleware<PreviewConfig | undefined> {
     if (!previewMiddleware.configuration) {
         return previewMiddleware as CustomMiddleware<PreviewConfig>;
     }
     //if we find the deprecated 'rta.editors' config, we will sanitize it
     if ('rta' in previewMiddleware.configuration) {
-        const rtaConfig = sanitizeRtaConfig(previewMiddleware.configuration.rta); //NOSONAR
+        const rtaConfig = sanitizeRtaConfig(previewMiddleware.configuration.rta, logger); //NOSONAR
         delete previewMiddleware.configuration.rta; //NOSONAR
         previewMiddleware.configuration.editors ??= {};
         previewMiddleware.configuration.editors.rta = rtaConfig;
@@ -203,7 +223,7 @@ export async function updatePreviewMiddlewareConfig(
 ): Promise<CustomMiddleware<PreviewConfigOptions>> {
     const { path, intent } = extractUrlDetails(script.value);
     const defaultIntent = `${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`;
-    const newMiddlewareConfig = sanitizePreviewMiddleware(previewMiddleware);
+    const newMiddlewareConfig = sanitizePreviewMiddleware(previewMiddleware, logger);
 
     //copy of configuration to avoid ending up with an empty configuration object in some cases
     const configuration = { ...newMiddlewareConfig.configuration };

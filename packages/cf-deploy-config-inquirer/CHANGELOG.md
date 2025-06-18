@@ -1,5 +1,43 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.14
+
+### Patch Changes
+
+-   c9f79c1: Check long Windows paths during project generation and deployment config generation.
+
+## 0.3.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.13
+
+## 0.3.12
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/inquirer-common@0.7.12
+
+## 0.3.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.11
+
+## 0.3.10
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
+## 0.3.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.9
+
 ## 0.3.8
 
 ### Patch Changes

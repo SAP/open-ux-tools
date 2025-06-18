@@ -175,6 +175,7 @@ describe('Test new system prompt', () => {
                     serviceODataVersion: '4',
                     servicePath: '/sap/opu/odata4/dmo/flight/0001/?sap-client=000',
                     serviceType: 'WEB_API',
+                    serviceId: '/DMO/FLIGHT',
                     toString: expect.any(Function)
                 }
             },
@@ -184,6 +185,7 @@ describe('Test new system prompt', () => {
                     serviceODataVersion: '2',
                     servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
                     serviceType: 'Not Classified',
+                    serviceId: 'ZTRAVEL_DESK_SRV_0002',
                     toString: expect.any(Function)
                 }
             }
@@ -204,6 +206,7 @@ describe('Test new system prompt', () => {
                     serviceODataVersion: '4',
                     servicePath: '/sap/opu/odata4/dmo/flight/0001/?sap-client=000',
                     serviceType: 'WEB_API',
+                    serviceId: '/DMO/FLIGHT',
                     toString: expect.any(Function)
                 }
             }
@@ -224,6 +227,7 @@ describe('Test new system prompt', () => {
                     serviceODataVersion: '2',
                     servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
                     serviceType: 'Not Classified',
+                    serviceId: 'ZTRAVEL_DESK_SRV_0002',
                     toString: expect.any(Function)
                 }
             }
