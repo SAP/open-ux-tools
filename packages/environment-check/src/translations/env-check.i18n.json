@@ -110,7 +110,7 @@
         "setHtml5DynamicDest": "Please ensure the property: `HTML5.DynamicDestination` is set to `true` in SAP Business Technology Platform Cockpit > 'Additional Properties'.",
         "setHtml5TimeoutDest": "Please ensure the property: `HTML5.Timeout` is set to a minimum value of `60000` in SAP Business Technology Platform Cockpit > 'Additional Properties'.",
         "v2CatalogNotAvailable": "OData V2 catalog service not available.",
-        "v2CatalogReturned": "OData V2 catalog call returned.",
+        "v2CatalogReturned": "OData V2 catalog call returned",
         "v4CatalogNotAvailable": "OData V4 catalog service not available.",
         "v4CatalogReturned": "OData V4 catalog call returned.",
         "versions": "Versions",
