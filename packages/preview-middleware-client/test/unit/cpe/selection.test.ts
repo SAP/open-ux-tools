@@ -1,11 +1,12 @@
 import * as controlData from '../../../src/cpe/control-data';
 import { SelectionService } from '../../../src/cpe/selection';
 import * as Documentation from '../../../src/cpe/documentation';
-import type { ExternalAction, Control } from '@sap-ux-private/control-property-editor-common';
+import { type ExternalAction, type Control, MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';
 import { fetchMock, sapCoreMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
+import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
 
 describe('SelectionService', () => {
     const sendActionMock = jest.fn();
@@ -722,6 +723,12 @@ describe('SelectionService', () => {
             }
         });
         expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), changeService, undefined);
+        expect(showLocalizedMessage).toHaveBeenCalledWith({
+            title: { key: 'CPE_DOCUMENT_LOAD_FAILED_TITLE' },
+            description: expect.any(String),
+            type: MessageBarType.error,
+            showToast: false
+        });
     });
 
     test('attaches to selected control change - test getBindingInfo object bindingString', async () => {

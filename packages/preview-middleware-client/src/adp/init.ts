@@ -2,9 +2,9 @@ import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 
-import { showMessage, enableTelemetry } from '@sap-ux-private/control-property-editor-common';
+import { showMessage, enableTelemetry, MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
-import { getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version } from '../utils/version';
+import { getFullyQualifiedUi5Version, getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version, minVersionInfo } from '../utils/version';
 
 import { CommunicationService } from '../cpe/communication-service';
 import init from '../cpe/init';
@@ -13,6 +13,7 @@ import { getApplicationType } from '../utils/application';
 
 import { loadDefinitions } from './quick-actions/load';
 import { initDialogs } from './init-dialogs';
+import { showLocalizedMessage } from '../utils/localized-message';
 
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
@@ -57,6 +58,16 @@ export default async function (rta: RuntimeAuthoring) {
     });
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
+        await showLocalizedMessage({
+            title: { key: 'FLP_UI5_VERSION_WARNING_TITLE' },
+            description: {
+                key: 'FLP_UI5_VERSION_WARNING_DESCRIPTION', params: [
+                    getFullyQualifiedUi5Version(ui5VersionInfo),
+                    getFullyQualifiedUi5Version(minVersionInfo)]
+            },
+            type: MessageBarType.warning,
+            showToast: false
+        });
         CommunicationService.sendAction(
             showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), shouldHideIframe: true })
         );

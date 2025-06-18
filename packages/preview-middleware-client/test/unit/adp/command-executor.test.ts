@@ -5,8 +5,9 @@ import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
-import MessageToast from 'mock/sap/m/MessageToast';
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
+import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 describe('client/command-executor', () => {
     describe('generateAndExecuteCommand', () => {
@@ -39,12 +40,19 @@ describe('client/command-executor', () => {
             } catch (e) {
                 expect(e.message).toBe('Could not execute command!');
                 expect(pushAndExecuteSpy.mock.calls.length).toBe(1);
+                expect(showLocalizedMessage).toHaveBeenCalledWith({
+                    title: { key: 'ADP_RUN_COMMAND_FAILED_TITLE' },
+                    description: e.message,
+                    type: MessageBarType.error
+                });
             }
         });
     });
 
     describe('getCommand', () => {
-        const mockRuntimeControl = {};
+        const mockRuntimeControl = {
+            getId: () => 'id'
+        };
         const commandName = 'addXML';
         const modifiedValue = { fragmentPath: 'fragments/Share.fragment.xml' };
         const designMetadata = {};
@@ -75,9 +83,15 @@ describe('client/command-executor', () => {
                 designMetadata,
                 flexSettings
             );
+            expect(showLocalizedMessage).toHaveBeenCalledWith({
+                title: { key: 'ADP_CREATE_COMMAND_TITLE' },
+                description: { key: `ADP_CREATE_COMMAND_DESCRIPTION`, params: [commandName, mockRuntimeControl.getId()] },
+                type: MessageBarType.info,
+                showToast: false
+            });
         });
 
-        it('should show a message toast and throw an error if getting command fails', async () => {
+        it('should show a message in the info center and throw an error if getting command fails', async () => {
             const errorMessage = 'Missing properties';
             CommandFactory.getCommandFor.mockImplementation(() => {
                 throw new Error(errorMessage);
@@ -95,8 +109,14 @@ describe('client/command-executor', () => {
                 )
             ).rejects.toThrow(`Could not get command for '${commandName}'. ${errorMessage}`);
 
-            expect(MessageToast.show).toHaveBeenCalledWith(expect.stringContaining(commandName));
-            expect(MessageToast.show).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
+            expect(showLocalizedMessage).toHaveBeenCalledWith({
+                title: { key: 'ADP_GET_COMMAND_FAILURE_TITLE' },
+                description: {
+                    key: 'ADP_GET_COMMAND_FAILURE_DESCRIPTION',
+                    params: [commandName, errorMessage]
+                },
+                type: MessageBarType.error
+            });
         });
     });
 });

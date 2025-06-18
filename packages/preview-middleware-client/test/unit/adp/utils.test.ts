@@ -7,6 +7,7 @@ import * as Utils from '../../../src/utils/core';
 import Element from 'sap/ui/core/Element';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
 
 import {
     createDeferred,
@@ -16,6 +17,7 @@ import {
     matchesChangeProperty,
     checkForExistingChange
 } from '../../../src/adp/utils';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 describe('utils', () => {
     describe('createDeferred', () => {
@@ -176,22 +178,15 @@ describe('utils', () => {
             MessageToast.show.mockClear();
         });
 
-        it('displays the message with default duration if no duration is provided', () => {
+        it('displays the message in the info center and shows a toaster message', () => {
             const message = 'Hello, world!';
             notifyUser(message);
 
-            expect(MessageToast.show).toHaveBeenCalledWith(message, {
-                duration: 5000
-            });
-        });
-
-        it('displays the message with specified duration', () => {
-            const message = 'Goodbye, world!';
-            const duration = 3000;
-            notifyUser(message, duration);
-
-            expect(MessageToast.show).toHaveBeenCalledWith(message, {
-                duration
+            expect(showLocalizedMessage).toHaveBeenCalledWith({
+                title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+                description: message,
+                type: MessageBarType.info,
+                toastDuration: 5000
             });
         });
     });

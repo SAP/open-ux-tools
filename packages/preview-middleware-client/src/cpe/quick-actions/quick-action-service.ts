@@ -12,7 +12,8 @@ import {
     QuickActionGroup,
     updateQuickAction,
     externalFileChange,
-    reportTelemetry
+    reportTelemetry,
+    MessageBarType
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
@@ -25,13 +26,15 @@ import { ChangeService } from '../changes';
 import { DialogFactory } from '../../adp/dialog-factory';
 import { getApplicationType } from '../../utils/application';
 import { getUi5Version } from '../../utils/version';
+import { showLocalizedMessage } from '../../utils/localized-message';
+import { getError } from '../../utils/error';
 
 
 /**
  * Service providing Quick Actions.
  */
 export class QuickActionService implements Service {
-    private sendAction: ActionSenderFunction = () => {};
+    private sendAction: ActionSenderFunction = () => { };
     private actions: QuickActionDefinition[] = [];
     private controlTreeIndex: ControlTreeIndex;
 
@@ -50,7 +53,7 @@ export class QuickActionService implements Service {
         private readonly outlineService: OutlineService,
         private readonly registries: QuickActionDefinitionRegistry<string>[],
         private readonly changeService: ChangeService
-    ) {}
+    ) { }
 
     /**
      * Initialize selection service.
@@ -135,6 +138,12 @@ export class QuickActionService implements Service {
                         await this.addAction(group, instance);
                     } catch {
                         Log.warning(`Failed to initialize ${Definition.name} quick action.`);
+                        await showLocalizedMessage({
+                            title: { key: 'CPE_QUICK_ACTION_FAILURE_TITLE' },
+                            description: { key: 'CPE_QUICK_ACTION_FAILURE_DESCRIPTION', params: [Definition.name] },
+                            type: MessageBarType.warning,
+                            showToast: false
+                        });
                     }
                 }
                 groups.push(group);
@@ -166,6 +175,12 @@ export class QuickActionService implements Service {
             });
         } catch (error) {
             Log.error('Error in reporting Telemetry:', error);
+            await showLocalizedMessage({
+                title: { key: 'CPE_QUICK_ACTION_TELEMETRY_FAILURE_TITLE' },
+                description: getError(error).message,
+                type: MessageBarType.error,
+                showToast: false
+            });
         }
         if (payload.kind === SIMPLE_QUICK_ACTION_KIND && actionInstance.kind === SIMPLE_QUICK_ACTION_KIND) {
             return actionInstance.execute();
