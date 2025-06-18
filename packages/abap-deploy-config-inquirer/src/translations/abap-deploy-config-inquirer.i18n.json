@@ -45,7 +45,7 @@
             },
             "package": {
                 "packageInputChoice": {
-                    "message": "Enter Package"
+                    "message": "Select how you want to enter the package."
                 },
                 "packageManual": {
                     "message": "Package",
