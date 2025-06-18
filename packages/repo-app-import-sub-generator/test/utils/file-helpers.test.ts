@@ -40,7 +40,9 @@ describe('readManifest', () => {
     it('should throw an error if manifest is not found', async () => {
         mockReadJSON.mockReturnValue(null);
         readManifest(extractedProjectPath, mockFs);
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.readManifestErrors.readManifestFailed'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.readManifestErrors.readManifestFailed')
+        );
     });
 
     it('should throw an error if "sap.app" is not defined in the manifest', async () => {

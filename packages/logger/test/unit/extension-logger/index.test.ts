@@ -47,7 +47,9 @@ describe('ExtensionLogger', () => {
         const logger = new ExtensionLogger('test');
         logger.error('error args', { 'one': 1, 'two': 2 }, undefined, null, [1, 2, 3], 'string');
         await flushPromises();
-        expect(channelMock.error).toHaveBeenCalledWith(`error args { one: 1, two: 2 } undefined null [ 1, 2, 3 ] 'string'`);
+        expect(channelMock.error).toHaveBeenCalledWith(
+            `error args { one: 1, two: 2 } undefined null [ 1, 2, 3 ] 'string'`
+        );
     });
 
     test('log warn', async () => {
@@ -90,7 +92,9 @@ describe('ExtensionLogger', () => {
             'string'
         );
         await flushPromises();
-        expect(channelMock.trace).toHaveBeenCalledWith(`wrong level { one: 1, two: 2 } undefined null [ 1, 2, 3 ] 'string'`);
+        expect(channelMock.trace).toHaveBeenCalledWith(
+            `wrong level { one: 1, two: 2 } undefined null [ 1, 2, 3 ] 'string'`
+        );
     });
 
     test('calling show on channel', async () => {

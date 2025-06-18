@@ -56,10 +56,13 @@ describe('Test command add mockserver-config', () => {
         expect(loggerMock.warn).not.toHaveBeenCalled();
         expect(loggerMock.error).not.toHaveBeenCalled();
         expect(fsMock.commit).toHaveBeenCalled();
-        expect(execNpmCommandSpy).toHaveBeenCalledWith(['install', '--save-dev', '@sap-ux/ui5-middleware-fe-mockserver'], {
-            cwd: appRoot,
-            logger: undefined
-        });
+        expect(execNpmCommandSpy).toHaveBeenCalledWith(
+            ['install', '--save-dev', '@sap-ux/ui5-middleware-fe-mockserver'],
+            {
+                cwd: appRoot,
+                logger: undefined
+            }
+        );
     });
 
     test('Test create-fiori add mockserver-config <appRoot> --simulate', async () => {

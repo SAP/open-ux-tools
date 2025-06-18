@@ -71,9 +71,7 @@ describe('handleErrorMessage', () => {
         const expectedErrMsg = ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ABORT_SIGNAL);
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
 
-        expect(() => handleErrorMessage(appWizardMock, { errorType: ERROR_TYPE.ABORT_SIGNAL })).toThrow(
-            expectedErrMsg
-        );
+        expect(() => handleErrorMessage(appWizardMock, { errorType: ERROR_TYPE.ABORT_SIGNAL })).toThrow(expectedErrMsg);
     });
 
     it('should log error and call appWizard.showError if environment is not CLI', () => {

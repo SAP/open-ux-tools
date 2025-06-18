@@ -49,9 +49,9 @@ describe('Test list packages', () => {
         const logWarnSpy = jest.spyOn(LoggerHelper.logger, 'warn');
         mockGetOrCreateServiceProvider.mockRejectedValueOnce(error);
 
-        await expect(
-            listPackagesFromService(phrase, { abapTarget: { url: 'http://somehost:1234' } })
-        ).rejects.toThrow('self signed cert');
+        await expect(listPackagesFromService(phrase, { abapTarget: { url: 'http://somehost:1234' } })).rejects.toThrow(
+            'self signed cert'
+        );
         expect(logWarnSpy).toHaveBeenCalledWith(
             t('warnings.certificateError', { url: 'http://somehost:1234', error: error.message })
         );
