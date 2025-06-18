@@ -1,12 +1,12 @@
 /** sap.m */
-import Input from 'sap/m/Input';
 import Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
+import Input from 'sap/m/Input';
 import MessageToast from 'sap/m/MessageToast';
 
 /** sap.ui.core */
-import { ValueState } from 'sap/ui/core/library';
 import type UI5Element from 'sap/ui/core/Element';
+import { ValueState } from 'sap/ui/core/library';
 
 /** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
@@ -20,16 +20,19 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 /** sap.ui.dt */
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
-import type { CodeExtResponse, ControllersResponse } from '../api-handler';
-import { getExistingController, readControllers, writeChange, writeController } from '../api-handler';
-import BaseDialog from './BaseDialog.controller';
-import type { ExtendControllerData, DeferredExtendControllerData } from '../extend-controller';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 import { getResourceModel, getTextBundle, TextBundle } from '../../i18n';
-import { notifyUser, checkForExistingChange, getControllerInfo } from '../utils';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
-import CommandExecutor from '../command-executor';
 import { getControlById } from '../../utils/core';
+import { getError } from '../../utils/error';
+import { showLocalizedMessage } from '../../utils/localized-message';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
+import type { CodeExtResponse, ControllersResponse } from '../api-handler';
+import { getExistingController, readControllers, writeChange, writeController } from '../api-handler';
+import CommandExecutor from '../command-executor';
+import type { DeferredExtendControllerData, ExtendControllerData } from '../extend-controller';
+import { checkForExistingChange, getControllerInfo, notifyUser } from '../utils';
+import BaseDialog from './BaseDialog.controller';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
@@ -286,7 +289,13 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         try {
             data = await getExistingController(controllerName);
         } catch (e) {
-            this.handleError(e);
+            const error = getError(e);
+            await showLocalizedMessage({
+                title: { key: 'ADP_CONTROLLER_ERROR_TITLE' },
+                description: error.message,
+                type: MessageBarType.error
+            });
+            throw error;
         }
 
         return data;
@@ -300,7 +309,13 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             const { controllers } = await readControllers<ControllersResponse>();
             this.model.setProperty('/controllersList', controllers);
         } catch (e) {
-            this.handleError(e);
+            const error = getError(e);
+            await showLocalizedMessage({
+                title: { key: 'ADP_CONTROLLER_ERROR_TITLE' },
+                description: error.message,
+                type: MessageBarType.error
+            });
+            throw error;
         }
     }
 
@@ -330,10 +345,16 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             await writeChange(change);
             MessageToast.show(`Controller extension with name '${controllerName}' was created.`);
         } catch (e) {
+            const error = getError(e);
+            await showLocalizedMessage({
+                title: { key: 'ADP_CONTROLLER_ERROR_TITLE' },
+                description: error.message,
+                type: MessageBarType.error
+            });
             // We want to update the model incase we have already created a controller file but failed when creating a change file,
             // so when the user types the same controller name again he does not get 409 from the server, instead an error is shown in the UI
             await this.getControllers();
-            this.handleError(e);
+            throw error;
         }
     }
 

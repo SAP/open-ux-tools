@@ -1,5 +1,5 @@
 import UI5Element from 'sap/ui/core/Element';
-import { NESTED_QUICK_ACTION_KIND, NestedQuickAction } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, NESTED_QUICK_ACTION_KIND, NestedQuickAction } from '@sap-ux-private/control-property-editor-common';
 import type IconTabBar from 'sap/m/IconTabBar';
 import type IconTabFilter from 'sap/m/IconTabFilter';
 import type Table from 'sap/m/Table';
@@ -25,6 +25,8 @@ import {
     SMART_TABLE_TYPE,
     TREE_TABLE_TYPE
 } from './control-types';
+import { showLocalizedMessage } from '../../utils/localized-message';
+import { getError } from '../../utils/error';
 
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
@@ -119,9 +121,9 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             const changeToolbarContentAction = actions.find((action) => action.id === changeToolbarContentActionId);
             this.tableMap[tableMapKey].changeToolbarContentAction = changeToolbarContentAction
                 ? {
-                      id: changeToolbarContentAction.id,
-                      enabled: changeToolbarContentAction.enabled
-                  }
+                    id: changeToolbarContentAction.id,
+                    enabled: changeToolbarContentAction.enabled
+                }
                 : undefined;
         }
     }
@@ -186,6 +188,12 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             }
             return tableInternal as UI5Element | undefined;
         } catch (error) {
+            void showLocalizedMessage({
+                title: { key: 'ADP_INTERNAL_TABLE_RETRIEVAL_ERROR_TITLE' },
+                description: getError(error).message,
+                type: MessageBarType.error,
+                showToast: false
+            });
             return undefined;
         }
     }

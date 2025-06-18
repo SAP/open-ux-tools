@@ -1,4 +1,3 @@
-import MessageToast from 'sap/m/MessageToast';
 import Element from 'sap/ui/core/Element';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type DTElement from 'sap/ui/dt/Element';
@@ -13,6 +12,8 @@ import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { getError } from '../utils/error';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import { showLocalizedMessage } from '../utils/localized-message';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 export interface Deferred<T> {
     promise: Promise<T>;
@@ -130,8 +131,11 @@ export function matchesChangeProperty(command: FlexCommand, propertyPath: string
  * @param {number} duration - The duration during which message toast will be active.
  */
 export function notifyUser(message: string, duration: number = 5000) {
-    MessageToast.show(message, {
-        duration
+    void showLocalizedMessage({
+        title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+        description: message,
+        type: MessageBarType.info,
+        toastDuration: duration
     });
 }
 

@@ -92,7 +92,8 @@ describe('AddTableColumnsFragments controller', () => {
                     }),
                     getDefaultAggregationName: jest.fn().mockReturnValue('content'),
                     getName: jest.fn().mockReturnValue('Table')
-                })
+                }),
+                getId: jest.fn().mockReturnValue('runtime-control-id'),
             });
 
             ControlUtils.getControlAggregationByName = jest
@@ -476,7 +477,8 @@ describe('AddTableColumnsFragments controller', () => {
                     getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
                     getDefaultAggregationName: jest.fn().mockReturnValue('content')
                 }),
-                getAggregation: getAggregationMock
+                getAggregation: getAggregationMock,
+                getId: jest.fn().mockReturnValue('runtime-control-id'),
             } as unknown as ManagedObject);
 
             let thrown: string | undefined;
@@ -499,7 +501,8 @@ describe('AddTableColumnsFragments controller', () => {
                     getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
                     getDefaultAggregationName: jest.fn().mockReturnValue('content')
                 }),
-                getAggregation: getAggregationMock
+                getAggregation: getAggregationMock,
+                getId: jest.fn().mockReturnValue('runtime-control-id'),
             } as unknown as ManagedObject);
 
             try {
@@ -576,14 +579,18 @@ describe('AddTableColumnsFragments controller', () => {
             rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
 
             sapCoreMock.byId.mockReturnValue({});
-            const getAggregationMock = jest.fn().mockReturnValue([{ dummyAggregation: true }]);
+            const getAggregationMock = jest.fn().mockReturnValue([{ 
+                dummyAggregation: true,
+                getId: jest.fn().mockReturnValue('runtime-control-id'),
+             }]);
             jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
                 getMetadata: jest.fn().mockReturnValue({
                     getAllAggregations: jest.fn().mockReturnValue({ 'columns': {}, 'items': {} }),
                     getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
                     getDefaultAggregationName: jest.fn().mockReturnValue('content')
                 }),
-                getAggregation: getAggregationMock
+                getAggregation: getAggregationMock,
+                getId: jest.fn().mockReturnValue('runtime-control-id'),
             } as unknown as ManagedObject);
 
             createDialog(

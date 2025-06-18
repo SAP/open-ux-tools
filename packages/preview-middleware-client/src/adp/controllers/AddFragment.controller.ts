@@ -1,7 +1,7 @@
 /** sap.m */
 import Button from 'sap/m/Button';
-import type Dialog from 'sap/m/Dialog';
 import type ComboBox from 'sap/m/ComboBox';
+import type Dialog from 'sap/m/Dialog';
 
 /** sap.ui.core */
 import type UI5Element from 'sap/ui/core/Element';
@@ -23,16 +23,18 @@ import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 
 import { getResourceModel, getTextBundle } from '../../i18n';
 
-import ControlUtils from '../control-utils';
-import CommandExecutor from '../command-executor';
-import { getFragments } from '../api-handler';
-import BaseDialog from './BaseDialog.controller';
-import { notifyUser } from '../utils';
-import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { MessageBarType, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 import { getFragmentTemplateName } from '../../cpe/additional-change-info/add-xml-additional-info';
-import type { AddFragmentData, DeferredXmlFragmentData } from '../add-fragment';
-import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 import { CommunicationService } from '../../cpe/communication-service';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { getError } from '../../utils/error';
+import { showLocalizedMessage } from '../../utils/localized-message';
+import type { AddFragmentData, DeferredXmlFragmentData } from '../add-fragment';
+import { getFragments } from '../api-handler';
+import CommandExecutor from '../command-executor';
+import ControlUtils from '../control-utils';
+import { notifyUser } from '../utils';
+import BaseDialog from './BaseDialog.controller';
 
 const radix = 10;
 
@@ -215,7 +217,13 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
-            this.handleError(e);
+            const error = getError(e);
+            await showLocalizedMessage({
+                title: { key: 'ADP_ADD_FRAGMENT_FAILURE_TITLE' },
+                description: error.message,
+                type: MessageBarType.error
+            });
+            throw error;
         }
 
         this.model.setProperty('/selectedIndex', indexArray.length - 1);
