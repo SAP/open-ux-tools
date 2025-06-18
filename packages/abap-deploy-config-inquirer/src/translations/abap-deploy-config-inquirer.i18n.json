@@ -12,7 +12,7 @@
                 "message": "Target System URL"
             },
             "scp": {
-                "message": "SAP Business Technology Platform System",
+                "message": "Is this an SAP Business Technology Platform system?",
                 "breadcrumb": "SCP"
             },
             "clientChoice": {
