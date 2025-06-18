@@ -5,17 +5,17 @@
         }
     },
     "errors": {
-        "abortSignal": "Generator aborted",
-        "fileDoesNotExist": "File does not exist: {{- filePath}}",
-        "folderDoesNotExist": "Folder path does not exist: {{- filePath}}",
-        "noAppName": "Could not determine app name from manifest",
-        "noBaseConfig": "Error: could not read {{- baseConfig}}",
+        "abortSignal": "Generator aborted.",
+        "fileDoesNotExist": "This file does not exist: {{- filePath}}. Check the file permissions are correct.",
+        "folderDoesNotExist": "This folder path does not exist: {{- filePath}}. Check the folder permissions are correct.",
+        "noAppName": "Cannot determine the application name from the `manifest.json` file.",
+        "noBaseConfig": "Error: could not read {{- baseConfig}}.",
         "noBinary": "Cannot find the \"{{bin}}\" executable. Please add it to the path or use \"npm i -g {{- pkg}}\" to install it.",
-        "noManifest": "Error: could not read webapp/manifest.json",
-        "unrecognizedTarget": "Unrecognized target: {{target}}",
-        "unknownError": "Unknown error"
+        "noManifest": "Error: could not read the file: `webapp/manifest.json`.",
+        "unrecognizedTarget": "Unrecognized target: {{target}}.",
+        "unknownError": "An unknown error occurred. Please try again."
     },
     "debug": {
-        "loggerInitialised": "LogWrapper initialized for DeploymentGenerator"
+        "loggerInitialised": "`LogWrapper` initialized for `DeploymentGenerator`."
     }
 }
