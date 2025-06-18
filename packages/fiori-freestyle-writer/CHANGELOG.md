@@ -1,5 +1,14 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.4.12
+
+### Patch Changes
+
+-   Updated dependencies [3ea811a]
+    -   @sap-ux/ui5-application-writer@1.5.4
+    -   @sap-ux/cap-config-writer@0.10.9
+    -   @sap-ux/ui5-test-writer@0.7.4
+
 ## 2.4.11
 
 ### Patch Changes
