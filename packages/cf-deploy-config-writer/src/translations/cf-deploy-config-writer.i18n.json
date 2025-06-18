@@ -6,7 +6,7 @@
         "capMtaCreated": "CAP MTA configuration created.",
         "capMtaUpdated": "CAP MTA configuration updated.",
         "capGenerationCompleted": "CAP generation completed.",
-        "mtaCreated": "The MTA configuration created: {{- mtaPath}}.",
+        "mtaCreated": "The MTA configuration has been created: {{- mtaPath}}.",
         "mtaSaved": "The MTA configuration has been saved.",
         "mtaSavedFailed": "Saving the MTA configuration failed with the error: {{- error }}.",
         "addingRouter": "Adding {{routerType}} app router...",
