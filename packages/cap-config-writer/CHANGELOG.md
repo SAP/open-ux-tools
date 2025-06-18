@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.10.9
+
+### Patch Changes
+
+-   3ea811a: Bump @ui5/cli version
+
 ## 0.10.8
 
 ### Patch Changes
