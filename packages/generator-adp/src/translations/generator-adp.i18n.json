@@ -44,7 +44,7 @@
         "isPartiallySupportedAdpOverAdpLabel": "You have selected 'Adaptation Project' as the base. The selected system has an SAPUI5 version lower than 1.96 and for your adaptation project based on an adaptation project to work after deployment, you need to apply SAP Note 756 SP0 on your system.",
         "v4AppNotOfficialLabel": "You have selected an app based on SAP Fiori elements for OData V4. Note the following important information when you create adaptation changes: https://wiki.wdf.sap.corp/wiki/display/fioritech/Adaptation+Project+Support",
         "projectNameLengthErrorExt": "The name cannot contain more than 61 characters or end with the word 'component'.",
-        "projectNameValidationErrorExt": "The name must only contain latin alphanumeric characters. Every part must start with a letter and different parts can be separated by a period.",
+        "projectNameValidationErrorExt": "The name must only contain Latin alphanumeric characters. Every part must start with a letter and different parts can be separated by a period.",
         "projectNameLengthErrorInt": "The name cannot start with the word 'customer', contain more than 61 characters, or end with the word 'component'.",
         "projectNameValidationErrorInt": "The name must only contain latin alphanumeric characters and it must have at least two parts. Every part must start with a letter and the different parts must be separated by a period."
     },
