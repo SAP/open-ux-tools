@@ -338,7 +338,7 @@ async function tryDeploy(
  */
 export async function deploy(archive: Buffer, config: AbapDeployConfig, logger: Logger): Promise<void> {
     if (config.keep) {
-        writeFileSync(`archive.zip`, archive);
+        writeFileSync(`archive.zip`, new Uint8Array(archive));
     }
     const provider = await createProvider(config, logger);
     logger.info(`Starting to deploy${config.test === true ? ' in test mode' : ''}.`);
