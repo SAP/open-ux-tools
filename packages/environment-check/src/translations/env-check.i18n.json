@@ -34,7 +34,7 @@
         "numDestinationsFound": "Found {{destinationNumber}} destinations.",
         "numSapSystemsFound": "Found {{sapSystemNumber}} SAP systems.",
         "numServicesForSystem": "v{{odataVersion}} catalog request for {{- system}} returned {{numServicesForSystem}}.",
-        "platform": "Platform: {{platform}}.",
+        "platform": "Platform: {{platform}}",
         "sapUI5RepoAvailable": "SAPUI5 repository service for deployment available.",
         "serviceMod": "SAP Fiori tools - Service Modeler: {{- serviceMod}}",
         "ui5LanguageAssistant": "UI5 Language Assistant Support: {{- ui5LanguageAssistant}}",
