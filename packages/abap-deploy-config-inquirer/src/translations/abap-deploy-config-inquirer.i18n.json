@@ -85,7 +85,7 @@
     },
     "choices": {
         "common": {
-            "listExisting": "Choose from Existing"
+            "listExisting": "Choose from existing"
         },
         "targetSystemUrl": "Enter Target System URL",
         "clientChoice": {
