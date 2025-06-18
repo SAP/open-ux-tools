@@ -1,6 +1,6 @@
 {
     "info": {
-        "ui5VersionSource": "Using SAPUI5 version: {{version}} based on: {{-source}}."
+        "ui5VersionSource": "Using UI5 version: {{version}} based on: {{-source}}."
     },
     "error": {
         "noCodeError": "An error: {{-error}} was thrown for the request: {{-request}}."
