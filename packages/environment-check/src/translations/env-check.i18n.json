@@ -112,7 +112,7 @@
         "v2CatalogNotAvailable": "OData V2 catalog service not available.",
         "v2CatalogReturned": "OData V2 catalog call returned",
         "v4CatalogNotAvailable": "OData V4 catalog service not available.",
-        "v4CatalogReturned": "OData V4 catalog call returned.",
+        "v4CatalogReturned": "OData V4 catalog call returned",
         "versions": "Versions",
         "wrongConfig": "Incorrect configuration. SAP Fiori Generator cannot use this destination. Please check the configuration properties."
     }
