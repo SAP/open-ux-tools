@@ -4518,7 +4518,7 @@ importers:
         specifier: workspace:*
         version: link:../logger
       '@sap-ux/project-access':
-        specifier: 1.30.2
+        specifier: workspace:*
         version: link:../project-access
       '@sap-ux/ui5-application-writer':
         specifier: workspace:*
