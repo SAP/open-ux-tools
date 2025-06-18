@@ -1,5 +1,11 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.2
+
+### Patch Changes
+
+-   7739504: adds new option addProjectToWorkspace for post gen task
+
 ## 0.5.1
 
 ### Patch Changes
