@@ -1,5 +1,36 @@
 # @sap-ux/preview-middleware
 
+## 0.20.37
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.25
+
+## 0.20.36
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.24
+
+## 0.20.35
+
+### Patch Changes
+
+-   59771f3: fix: Bump required versions of SAPUI5 for using ElementRegistry and RTA plugins
+
+## 0.20.34
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.23
+
+## 0.20.33
+
+### Patch Changes
+
+-   Updated dependencies [65edfba]
+    -   @sap-ux/adp-tooling@0.14.22
+
 ## 0.20.32
 
 ### Patch Changes
