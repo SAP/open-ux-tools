@@ -36,7 +36,7 @@
         "LICENSE"
     ],
     "dependencies": {
-        "jest-environment-jsdom": "^30.0.1",
+        "jest-environment-jsdom": "^29.7.0",
         "tsconfig-paths": "^3.15.0"
     },
     "peerDependencies": {
