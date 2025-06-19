@@ -1,5 +1,18 @@
 # @sap-ux/cap-config-writer
 
+## 0.10.9
+
+### Patch Changes
+
+-   3ea811a: Bump @ui5/cli version
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+
 ## 0.10.7
 
 ### Patch Changes

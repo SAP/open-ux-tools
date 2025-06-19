@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.22.0
+
+### Minor Changes
+
+-   aaf0c14: support rap service generation
+
 ## 1.21.4
 
 ### Patch Changes
