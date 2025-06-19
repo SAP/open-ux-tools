@@ -1,5 +1,11 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.6
+
+### Patch Changes
+
+-   5529c63: adds preview settings to external service state
+
 ## 0.5.5
 
 ### Patch Changes
