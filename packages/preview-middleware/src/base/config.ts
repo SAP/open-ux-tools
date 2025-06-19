@@ -222,12 +222,12 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
  * @returns sanitized RTA configuration
  */
 //prettier-ignore
-export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], logger: Logger): RtaConfig | undefined { //NOSONAR
+export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], logger?: Logger): RtaConfig | undefined { //NOSONAR
     let rtaConfig: RtaConfig | undefined;
     if (deprecatedRtaConfig) {
         const { editors, ...rta } = deprecatedRtaConfig;
         rtaConfig = { ...rta, endpoints: [...editors] };
-        logger.warn(`The configuration option 'rta' is deprecated. Please use 'editors.rta' instead.`);
+        logger?.warn(`The configuration option 'rta' is deprecated. Please use 'editors.rta' instead.`);
     }
     return rtaConfig;
 }

@@ -1,5 +1,73 @@
 # @sap-ux/app-config-writer
 
+## 0.6.13
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+
+## 0.6.12
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+
+## 0.6.11
+
+### Patch Changes
+
+-   14c2776: fix preview middleware dependency
+
+## 0.6.10
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+
+## 0.6.9
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [61d4060]
+    -   @sap-ux/axios-extension@1.21.2
+
+## 0.6.7
+
+### Patch Changes
+
+-   58cea5c: fix card generator log message
+
+## 0.6.6
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/project-access@1.30.2
+    -   @sap-ux/axios-extension@1.21.1
+
+## 0.6.5
+
+### Patch Changes
+
+-   af47fcc: fix: sanitize preview middleware configuration if necessary
+
+## 0.6.4
+
+### Patch Changes
+
+-   f8deed9: Remove '@sap-ux/cards-editor-middleware' dependency and 'sap-cards-generator' custom middleware for application having card generation enabled already.
+
 ## 0.6.3
 
 ### Patch Changes

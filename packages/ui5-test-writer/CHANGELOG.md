@@ -1,5 +1,31 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.5
+
+### Patch Changes
+
+-   7fd2583: Fix wrong dependency type
+
+## 0.7.4
+
+### Patch Changes
+
+-   Updated dependencies [3ea811a]
+    -   @sap-ux/ui5-application-writer@1.5.4
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/ui5-application-writer@1.5.3
+
+## 0.7.2
+
+### Patch Changes
+
+-   @sap-ux/ui5-application-writer@1.5.2
+
 ## 0.7.1
 
 ### Patch Changes

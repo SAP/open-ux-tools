@@ -1,5 +1,50 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.8
+
+### Patch Changes
+
+-   163522f: fix non-virtual endpoint preview config
+
+## 0.12.7
+
+### Patch Changes
+
+-   4e6c22e: adds support for external param abapCSN
+
+## 0.12.6
+
+### Patch Changes
+
+-   95a816d: update external params on app gen info type
+
+## 0.12.5
+
+### Patch Changes
+
+-   15ec5c4: adds support for adding deployment config via headless generator
+
+## 0.12.4
+
+### Patch Changes
+
+-   91726b0: loop through workspace folders to find correct default
+
+## 0.12.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+-   @sap-ux/telemetry@0.6.3
+
+## 0.12.2
+
+### Patch Changes
+
+-   ac55cca: adds .appGenInfo.json file
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/telemetry@0.6.2
+
 ## 0.12.1
 
 ### Patch Changes

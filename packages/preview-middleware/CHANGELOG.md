@@ -1,5 +1,183 @@
 # @sap-ux/preview-middleware
 
+## 0.20.39
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.27
+-   @sap-ux/system-access@0.6.6
+
+## 0.20.38
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.26
+-   @sap-ux/system-access@0.6.5
+
+## 0.20.37
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.25
+
+## 0.20.36
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.24
+
+## 0.20.35
+
+### Patch Changes
+
+-   59771f3: fix: Bump required versions of SAPUI5 for using ElementRegistry and RTA plugins
+
+## 0.20.34
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.23
+
+## 0.20.33
+
+### Patch Changes
+
+-   Updated dependencies [65edfba]
+    -   @sap-ux/adp-tooling@0.14.22
+
+## 0.20.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.21
+
+## 0.20.31
+
+### Patch Changes
+
+-   a9e93ff: fix: disable cards generator for CAP projects
+
+## 0.20.30
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.20
+
+## 0.20.29
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.19
+-   @sap-ux/system-access@0.6.4
+
+## 0.20.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.18
+-   @sap-ux/system-access@0.6.3
+
+## 0.20.27
+
+### Patch Changes
+
+-   Updated dependencies [f4439f1]
+    -   @sap-ux/adp-tooling@0.14.17
+
+## 0.20.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.16
+
+## 0.20.25
+
+### Patch Changes
+
+-   135c3ae: fix: Duplicate Extension Points are selected in outline tree
+
+## 0.20.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.15
+
+## 0.20.23
+
+### Patch Changes
+
+-   ec78662: fix: variant changes are not shown in Adaptation Editor
+
+## 0.20.22
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.14
+
+## 0.20.21
+
+### Patch Changes
+
+-   461c297: fix: only parse change files from `changes` folder.
+
+## 0.20.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.13
+
+## 0.20.19
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.12
+-   @sap-ux/system-access@0.6.2
+
+## 0.20.18
+
+### Patch Changes
+
+-   920c23d: Fix custom connector for flex changes in UI5 < 1.78
+
+## 0.20.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.11
+
+## 0.20.16
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/adp-tooling@0.14.10
+    -   @sap-ux/project-access@1.30.2
+    -   @sap-ux/system-access@0.6.1
+
+## 0.20.15
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.9
+
+## 0.20.14
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.8
+
+## 0.20.13
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.7
+
+## 0.20.12
+
+### Patch Changes
+
+-   87ecdb8: fix: change indicators missing for change with control id in outline and scrollbar styling issue on quick action panel
+
 ## 0.20.11
 
 ### Patch Changes

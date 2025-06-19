@@ -1,11 +1,12 @@
 import type { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
 import cloneDeep from 'lodash/cloneDeep';
-import type { Destination } from '@sap-ux/btp-utils';
 import {
     getDestinationUrlForAppStudio,
     getCredentialsForDestinationService,
     isAbapSystem,
-    BAS_DEST_INSTANCE_CRED_HEADER
+    BAS_DEST_INSTANCE_CRED_HEADER,
+    isAppStudio,
+    type Destination
 } from '@sap-ux/btp-utils';
 import { type AgentOptions, Agent as HttpsAgent } from 'https';
 import type { ServiceInfo, RefreshTokenChanged } from './auth';
@@ -73,7 +74,7 @@ function createInstance<T extends ServiceProvider>(
         rejectUnauthorized: !providerConfig.ignoreCertErrors
     };
     const localProxy = getProxyForUrl(config.baseURL);
-    if (localProxy) {
+    if (localProxy && !isAppStudio()) {
         // axios doesn't handle proxies correctly, instead use a custom agent with axios proxy disabled
         providerConfig.httpsAgent = new PatchedHttpsProxyAgent(
             localProxy,

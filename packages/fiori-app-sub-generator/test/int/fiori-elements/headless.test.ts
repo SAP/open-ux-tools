@@ -12,7 +12,6 @@ import { EXPECTED_OUTPUT_DIR_NAME } from './test-utils';
 
 const testDir: string = getTestDir('headless');
 const fixturesPath = join(__dirname, './fixtures');
-let tmpTestDir: string;
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
@@ -104,6 +103,13 @@ describe('Headless generation', () => {
     let expectedOutputPath: string;
     jest.setTimeout(60000);
 
+    /**
+     * Ignoring `appGenInfo.json` in headless tests as output has slight variations
+     * vs those shared with regular writer tests (not worth duplicatig expected output apps)
+     * Also, headless configs are very similar to appGenInfo.json
+     */
+    const matcherOptions = { ...ignoreMatcherOpts, exclude: ['**/.appGenInfo.json'] };
+
     beforeAll(() => {
         console.warn = () => {}; // Suppress warning messages from generator caching
         cleanTestDir(testDir);
@@ -129,7 +135,7 @@ describe('Headless generation', () => {
         expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
 
         await runHeadlessGen('LROP-v2-0.2', 'sepmra_prod_man_v2');
-        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
+        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
         cleanTestDir(join(testDir, testProjectName));
     });
 
@@ -141,7 +147,7 @@ describe('Headless generation', () => {
         testProjectName = 'lrop_v2_no_url';
         expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, 'headless', testProjectName);
         await runHeadlessGen('LROP-v2-0.2-no-url', 'sepmra_prod_man_v2');
-        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
+        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
         cleanTestDir(join(testDir, testProjectName));
     });
 
@@ -150,7 +156,7 @@ describe('Headless generation', () => {
         expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
 
         await runHeadlessGen('ALP-v2-0.2', 'sepmra_so_ana_alp_v2');
-        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
+        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
         cleanTestDir(join(testDir, testProjectName));
     });
 
@@ -159,13 +165,13 @@ describe('Headless generation', () => {
         expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, testProjectName);
 
         await runHeadlessGen('LROP-v4-0.2', 'travel_v4');
-        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
+        expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, matcherOptions);
         cleanTestDir(join(testDir, testProjectName));
 
         const testProjectNameNoVers = 'lrop_v4_no_ui5_version';
         await runHeadlessGen('LROP-v4-0.2-no-ui5-version', 'travel_v4');
         expectedOutputPath = join(__dirname, EXPECTED_OUTPUT_DIR_NAME, 'headless', testProjectNameNoVers);
-        expect(join(testDir, testProjectNameNoVers)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
+        expect(join(testDir, testProjectNameNoVers)).toMatchFolder(expectedOutputPath, matcherOptions);
         cleanTestDir(join(testDir, testProjectNameNoVers));
     });
 
@@ -182,7 +188,7 @@ describe('Headless generation', () => {
         );
 
         await runHeadlessGen('LROP-v4-CAP-0.2', undefined, testCAPProjectRoot);
-        expect(testCAPProjectRoot).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
+        expect(testCAPProjectRoot).toMatchFolder(expectedOutputPath, matcherOptions);
 
         //change the cwd, otherwise win32 will not be able to delete the directory
         process.chdir(testDir);

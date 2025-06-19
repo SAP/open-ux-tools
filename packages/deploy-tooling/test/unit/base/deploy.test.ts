@@ -15,6 +15,7 @@ import * as validate from '../../../src/base/validate';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { AbapDeployConfig } from '../../../src/types';
+import { Axios, AxiosError } from 'axios';
 
 const validateBeforeDeployMock = jest.spyOn(validate, 'validateBeforeDeploy');
 const showAdditionalInfoForOnPremMock = jest.spyOn(validate, 'showAdditionalInfoForOnPrem');
@@ -242,6 +243,20 @@ describe('base/deploy', () => {
                 fail('Should have thrown an error');
             } catch (error) {
                 expect(error).toBe(unknownError);
+            }
+        });
+
+        test('Certificate error with GA help link', async () => {
+            // ErrorHandler will only work with fully formed AxiosErrors
+            const certError = new AxiosError('Unable to verify signature in chain', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE');
+            mockedUi5RepoService.deploy.mockRejectedValueOnce(certError);
+            const logInfoSpy = jest.spyOn(nullLogger, 'info');
+            try {
+                await deploy(archive, { app, target, retry: false }, nullLogger);
+                fail('Should have thrown an error');
+            } catch (error) {
+                expect(error).toBe(certError);
+                expect(logInfoSpy).toHaveBeenNthCalledWith(2, expect.stringContaining('https://ga.support.sap.com/'));
             }
         });
 

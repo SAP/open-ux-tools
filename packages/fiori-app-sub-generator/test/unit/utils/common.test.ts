@@ -19,12 +19,10 @@ import {
     getAnnotations,
     getAppId,
     getCdsAnnotations,
-    getFlpId,
     getMinSupportedUI5Version,
     getODataVersion,
     getReadMeDataSourceLabel,
-    getRequiredOdataVersion,
-    getSemanticObject
+    getRequiredOdataVersion
 } from '../../../src/utils/common';
 
 const getProjectTypeMock = jest.fn();
@@ -53,7 +51,7 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    generateReadMe: jest.fn()
+    generateAppGenInfo: jest.fn()
 }));
 
 // rootPath exists only in SBAS
@@ -98,22 +96,6 @@ describe('Test utils', () => {
     test('getAppId', () => {
         const appId = getAppId('testApp', 'a.b.c');
         expect(appId).toBe('a.b.c.testApp');
-    });
-
-    test('getFlpId', () => {
-        const flpId = getFlpId('a.b.c.testApp', 'display');
-        expect(flpId).toBe('abctestApp-display');
-    });
-
-    test('getSematicObject', () => {
-        const semObj = getSemanticObject('a.b.c.#testApp_#');
-        expect(semObj).toBe('abctestApp');
-    });
-
-    test('getSematicObject length', () => {
-        const s = 'a.b.c.#testApp_#'.repeat(10);
-        const semObj = getSemanticObject(s);
-        expect(semObj.length).toBe(30);
     });
 
     test('getMinSupportedUI5Version - LROP v2', () => {

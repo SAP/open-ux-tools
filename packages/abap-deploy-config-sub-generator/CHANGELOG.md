@@ -1,5 +1,185 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.24
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.21
+-   @sap-ux/deploy-config-generator-shared@0.1.9
+-   @sap-ux/abap-deploy-config-writer@0.1.9
+
+## 0.1.23
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.20
+-   @sap-ux/deploy-config-generator-shared@0.1.9
+-   @sap-ux/abap-deploy-config-writer@0.1.8
+
+## 0.1.22
+
+### Patch Changes
+
+-   Updated dependencies [3ea811a]
+    -   @sap-ux/abap-deploy-config-writer@0.1.7
+
+## 0.1.21
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.19
+    -   @sap-ux/deploy-config-generator-shared@0.1.9
+
+## 0.1.20
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.18
+-   @sap-ux/deploy-config-generator-shared@0.1.8
+
+## 0.1.19
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.17
+-   @sap-ux/deploy-config-generator-shared@0.1.8
+
+## 0.1.18
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.16
+    -   @sap-ux/deploy-config-generator-shared@0.1.8
+
+## 0.1.17
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.15
+-   @sap-ux/deploy-config-generator-shared@0.1.8
+-   @sap-ux/abap-deploy-config-writer@0.1.6
+
+## 0.1.16
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.14
+-   @sap-ux/deploy-config-generator-shared@0.1.8
+-   @sap-ux/abap-deploy-config-writer@0.1.5
+
+## 0.1.15
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.13
+    -   @sap-ux/deploy-config-generator-shared@0.1.8
+
+## 0.1.14
+
+### Patch Changes
+
+-   7132e18: add conflicter force prop for yui usage
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.12
+    -   @sap-ux/deploy-config-generator-shared@0.1.7
+
+## 0.1.12
+
+### Patch Changes
+
+-   3630ec9: fixs for abap headless
+
+## 0.1.11
+
+### Patch Changes
+
+-   Updated dependencies [18c7e5d]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.11
+
+## 0.1.10
+
+### Patch Changes
+
+-   Updated dependencies [95a816d]
+    -   @sap-ux/fiori-generator-shared@0.12.6
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.10
+    -   @sap-ux/deploy-config-generator-shared@0.1.6
+
+## 0.1.9
+
+### Patch Changes
+
+-   15ec5c4: adds support for adding deployment config via headless generator
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.9
+    -   @sap-ux/fiori-generator-shared@0.12.5
+    -   @sap-ux/deploy-config-generator-shared@0.1.5
+
+## 0.1.8
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.8
+-   @sap-ux/deploy-config-generator-shared@0.1.4
+-   @sap-ux/abap-deploy-config-writer@0.1.4
+
+## 0.1.7
+
+### Patch Changes
+
+-   Updated dependencies [91726b0]
+    -   @sap-ux/fiori-generator-shared@0.12.4
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.7
+    -   @sap-ux/deploy-config-generator-shared@0.1.4
+
+## 0.1.6
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.6
+    -   @sap-ux/abap-deploy-config-writer@0.1.3
+    -   @sap-ux/project-access@1.30.2
+    -   @sap-ux/telemetry@0.6.3
+    -   @sap-ux/fiori-generator-shared@0.12.3
+    -   @sap-ux/deploy-config-generator-shared@0.1.3
+
+## 0.1.5
+
+### Patch Changes
+
+-   4c6b7a1: add package default to fiori gen settings
+-   Updated dependencies [4c6b7a1]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.5
+
+## 0.1.4
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/telemetry@0.6.2
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.4
+    -   @sap-ux/deploy-config-generator-shared@0.1.2
+
+## 0.1.3
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.3
+-   @sap-ux/deploy-config-generator-shared@0.1.1
+
 ## 0.1.2
 
 ### Patch Changes

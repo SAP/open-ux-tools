@@ -12,10 +12,14 @@ import RepoAppDownloadLogger from '../src/utils/logger';
 import { TestFixture } from './fixtures';
 import { join } from 'path';
 import { qfaJsonFileName } from '../src/utils/constants';
+import { type OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 
 jest.mock('../src/utils/logger', () => ({
     logger: {
-        error: jest.fn()
+        error: jest.fn(),
+        info: jest.fn(),
+        warn: jest.fn(),
+        debug: jest.fn()
     }
 }));
 
@@ -34,9 +38,8 @@ jest.mock('@sap-ux/project-access', () => ({
     getMinimumUI5Version: jest.fn()
 }));
 
-
 jest.mock('@sap-ux/feature-toggle', () => ({
-    isInternalFeaturesSettingEnabled: jest.fn(),
+    isInternalFeaturesSettingEnabled: jest.fn()
 }));
 
 const testFixture = new TestFixture();
@@ -46,10 +49,44 @@ describe('getAppConfig', () => {
     const mockApp: AppInfo = {
         appId: 'testAppId',
         title: 'Test App',
-        description: 'Test Description', 
+        description: 'Test Description',
         repoName: 'testRepoName',
         url: 'https://example.com/testApp'
     };
+    const mockSystem: OdataServiceAnswers = {
+        connectedSystem: {
+            destination: {
+                Authentication: 'Basic',
+                Host: 'test-url.com',
+                Name: 'TEST_DESTINATION',
+                Type: 'HTTP',
+                ProxyType: 'Internet',
+                Description: 'Test Destination'
+            },
+            backendSystem: {
+                url: 'https://test-url.com',
+                client: '100',
+                name: 'TEST_BACKEND_SYSTEM'
+            },
+
+            serviceProvider: {
+                defaults: {
+                    baseURL: 'https://test-url.com',
+                    params: { 'sap-client': '100' },
+                    headers: {
+                        common: {},
+                        delete: {},
+                        get: {},
+                        head: {},
+                        post: {},
+                        put: {},
+                        patch: {}
+                    }
+                }
+            }
+        }
+    } as OdataServiceAnswers;
+
     const mockFs = {} as Editor;
     const expectedAppConfig = {
         app: {
@@ -76,6 +113,10 @@ describe('getAppConfig', () => {
             }
         },
         service: {
+            'client': '100',
+            'destination': {
+                'name': 'TEST_DESTINATION'
+            },
             path: '/odata/service',
             version: expect.any(String),
             metadata: undefined,
@@ -112,28 +153,28 @@ describe('getAppConfig', () => {
 
     it('should generate app configuration successfully', async () => {
         const mockServiceProvider = {
-            defaults: { 
+            defaults: {
                 baseURL: 'https://test-url.com',
                 params: { 'sap-client': '100' }
             }
         } as unknown as AbapServiceProvider;
 
         PromptState.systemSelection = {
-            connectedSystem: { serviceProvider: mockServiceProvider }
+            connectedSystem: mockSystem.connectedSystem
         };
 
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
         (getMinimumUI5Version as jest.Mock).mockReturnValue('1.90.0');
         const mockQfaJsonWithoutNavEntity = {
-            ...mockQfaJson, 
+            ...mockQfaJson,
             serviceBindingDetails: {
                 name: mockQfaJson.serviceBindingDetails.name,
                 serviceName: mockQfaJson.serviceBindingDetails.serviceName,
                 serviceVersion: mockQfaJson.serviceBindingDetails.serviceVersion,
-                mainEntityName: mockQfaJson.serviceBindingDetails.mainEntityName,
+                mainEntityName: mockQfaJson.serviceBindingDetails.mainEntityName
             }
-        }
-        const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJsonWithoutNavEntity, mockFs);
+        };
+        const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJsonWithoutNavEntity, mockSystem, mockFs);
         expect(result).toEqual(expectedAppConfig);
     });
 
@@ -150,15 +191,8 @@ describe('getAppConfig', () => {
             }
         };
 
-        const mockServiceProvider = {
-            defaults: { 
-                baseURL: 'https://test-url.com',
-                params: { 'sap-client': '100' } 
-            }
-        } as unknown as AbapServiceProvider;
-
         PromptState.systemSelection = {
-            connectedSystem: { serviceProvider: mockServiceProvider }
+            connectedSystem: mockSystem.connectedSystem
         };
 
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
@@ -171,8 +205,14 @@ describe('getAppConfig', () => {
                 main_entity_name: mockQfaJson.serviceBindingDetails.mainEntityName,
                 navigation_entity: mockQfaJson.serviceBindingDetails.navigationEntity
             }
-        }
-        const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJsonJsonWithNavEntity, mockFs);
+        };
+        const result = await getAppConfig(
+            mockApp,
+            '/path/to/project',
+            mockQfaJsonJsonWithNavEntity,
+            mockSystem,
+            mockFs
+        );
         expect(result).toEqual(expectedAppConfig);
     });
 
@@ -189,19 +229,16 @@ describe('getAppConfig', () => {
             }
         };
 
-        const mockServiceProvider = {
-            defaults: { 
-                baseURL: 'https://test-url.com',
-                params: { 'sap-client': '100' } 
-            }
-        } as unknown as AbapServiceProvider;
-
         PromptState.systemSelection = {
-            connectedSystem: { serviceProvider: mockServiceProvider }
+            connectedSystem: mockSystem.connectedSystem
         };
 
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
-        (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.134.0' }, { version: '1.132.0' }, { version: '1.124.0' }]);   
+        (getUI5Versions as jest.Mock).mockResolvedValue([
+            { version: '1.134.0' },
+            { version: '1.132.0' },
+            { version: '1.124.0' }
+        ]);
 
         const mockQfaJsonJsonWithNavEntity = {
             ...mockQfaJson,
@@ -210,8 +247,14 @@ describe('getAppConfig', () => {
                 main_entity_name: mockQfaJson.serviceBindingDetails.mainEntityName,
                 navigation_entity: mockQfaJson.serviceBindingDetails.navigationEntity
             }
-        }
-        const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJsonJsonWithNavEntity, mockFs);
+        };
+        const result = await getAppConfig(
+            mockApp,
+            '/path/to/project',
+            mockQfaJsonJsonWithNavEntity,
+            mockSystem,
+            mockFs
+        );
         expect(result).toEqual({
             ...expectedAppConfig,
             ui5: {
@@ -226,8 +269,8 @@ describe('getAppConfig', () => {
         };
 
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
-        const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJson, mockFs);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.dataSourcesNotFound')); 
+        const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJson, mockSystem, mockFs);
+        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.dataSourcesNotFound'));
     });
 
     it('should log an error if fetchServiceMetadata throws an error', async () => {
@@ -243,24 +286,17 @@ describe('getAppConfig', () => {
         };
 
         const errorMsg = 'Metadata fetch failed';
-        const mockServiceProvider = {
-            defaults: { 
-                baseURL: 'https://test-url.com',
-                params: { 'sap-client': '100' } 
-            },
-            service: jest.fn().mockReturnValue({
-                metadata: jest.fn().mockRejectedValue(new Error(errorMsg))
-            })
-        } as unknown as AbapServiceProvider;
 
         PromptState.systemSelection = {
-            connectedSystem: { serviceProvider: mockServiceProvider }
+            connectedSystem: mockSystem.connectedSystem
         };
 
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
 
-        await getAppConfig(mockApp, '/path/to/project', mockQfaJson, mockFs);
-        expect(RepoAppDownloadLogger.logger?.error).toHaveBeenCalledWith(t('error.metadataFetchError', { error: errorMsg }));
+        await getAppConfig(mockApp, '/path/to/project', mockQfaJson, mockSystem, mockFs);
+        expect(RepoAppDownloadLogger.logger?.error).toHaveBeenCalledWith(
+            t('error.metadataFetchError', { error: errorMsg })
+        );
     });
 
     it('should generate app config when minUi5Version is not provided in manifest', async () => {
@@ -277,7 +313,7 @@ describe('getAppConfig', () => {
         };
 
         const mockServiceProvider = {
-            defaults: { 
+            defaults: {
                 baseURL: 'https://test-url.com',
                 params: { 'sap-client': '100' }
             },
@@ -289,9 +325,12 @@ describe('getAppConfig', () => {
                 })
             })
         } as unknown as AbapServiceProvider;
-
+        const mockSystem2 = mockSystem;
+        if (mockSystem2.connectedSystem?.serviceProvider) {
+            mockSystem2.connectedSystem.serviceProvider = mockServiceProvider;
+        }
         PromptState.systemSelection = {
-            connectedSystem: { serviceProvider: mockServiceProvider }
+            connectedSystem: mockSystem.connectedSystem
         };
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
         (getMinimumUI5Version as jest.Mock).mockReturnValue('1.90.0');
@@ -303,27 +342,18 @@ describe('getAppConfig', () => {
                 minimum_ui5_version: null
             }
         } as unknown as QfaJsonConfig;
-        await getAppConfig(mockApp, '/path/to/project', mockQfaJsonJsonWithoutUi5Version, mockFs);
+        await getAppConfig(mockApp, '/path/to/project', mockQfaJsonJsonWithoutUi5Version, mockSystem, mockFs);
         expect(RepoAppDownloadLogger.logger?.error).not.toHaveBeenCalled();
     });
-
 });
 
 describe('getAbapDeployConfig', () => {
     it('should generate the correct deployment configuration', () => {
-        const app: AppInfo = {
-            url: 'https://target-url.com',
-            repoName: 'TEST_REPO', 
-            appId: 'TEST_APP_ID',
-            title: 'Test App',
-            description: 'Test Description'
-        };
-
         const expectedConfig = {
             target: {
                 url: 'https://test-url.com',
                 client: '100',
-                destination: 'TEST_REPO'
+                destination: 'TEST_DESTINATION'
             },
             app: {
                 name: 'TEST_REPOSITORY_NAME',
@@ -332,9 +362,7 @@ describe('getAbapDeployConfig', () => {
                 transport: 'REPLACE_WITH_TRANSPORT'
             }
         };
-        const result = getAbapDeployConfig(app, mockQfaJson);
+        const result = getAbapDeployConfig(mockQfaJson);
         expect(result).toEqual(expectedConfig);
     });
 });
-
-             
