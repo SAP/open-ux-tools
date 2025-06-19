@@ -437,7 +437,7 @@ describe('Test FioriAppGenerator', () => {
                 promptSettings: undefined,
                 promptExtension: undefined
             },
-            expect.objectContaining([
+            expect.arrayContaining([
                 {
                     activeSteps: expect.any(YeomanUiSteps),
                     dependentMap: expect.any(Object)
@@ -507,7 +507,7 @@ describe('Test FioriAppGenerator', () => {
                 promptSettings: options.promptSettings,
                 promptExtension: options.extensions
             },
-            expect.objectContaining([
+            expect.arrayContaining([
                 {
                     activeSteps: expect.any(YeomanUiSteps),
                     dependentMap: expect.any(Object)
