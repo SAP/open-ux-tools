@@ -1,5 +1,27 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.6
+
+### Patch Changes
+
+-   5529c63: adds preview settings to external service state
+
+## 0.5.5
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+    -   @sap-ux/odata-service-inquirer@2.5.2
+
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+    -   @sap-ux/odata-service-inquirer@2.5.1
+
 ## 0.5.3
 
 ### Patch Changes
