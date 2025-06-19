@@ -12,13 +12,15 @@ const client = '010';
 const expectedMetadata = '<METADATA>';
 const destinationServiceCreds = 'EXAMPLE_BASE64';
 
+const mockIsAppStudio = jest.fn();
 jest.mock('@sap-ux/btp-utils', () => {
     const original = jest.requireActual('@sap-ux/btp-utils');
     return {
         ...original,
         getCredentialsForDestinationService: jest.fn(() => {
             return destinationServiceCreds;
-        })
+        }),
+        isAppStudio: () => mockIsAppStudio()
     };
 });
 
@@ -30,11 +32,6 @@ jest.mock('https-proxy-agent', () => {
     };
 });
 
-jest.mock('@sap-ux/feature-toggle', () => ({
-    ...jest.requireActual('@sap-ux/feature-toggle'),
-    isFeatureEnabled: jest.fn().mockImplementation((featureId) => featureId === 'sap.ux.enablePatchProxy')
-}));
-
 jest.mock('proxy-from-env');
 
 beforeAll(() => {
@@ -45,8 +42,10 @@ beforeAll(() => {
 afterAll(() => {
     nock.cleanAll();
     nock.enableNetConnect();
+    jest.clearAllMocks();
 });
 test('create', async () => {
+    mockIsAppStudio.mockReturnValue(true);
     const getProxyForUrlSpy = jest.spyOn(ProxyFromEnv, 'getProxyForUrl').mockReturnValue(undefined);
     const response = await axios.get(`${server}${servicePath}${metadataPath}`, {
         params: { 'sap-client': client }
@@ -78,6 +77,7 @@ test('create', async () => {
 });
 
 test('create with proxy', async () => {
+    mockIsAppStudio.mockReturnValue(false);
     const getProxyForUrlSpy = jest.spyOn(ProxyFromEnv, 'getProxyForUrl').mockReturnValue('http://proxy.example:8080');
     const provider = create({
         baseURL: server,

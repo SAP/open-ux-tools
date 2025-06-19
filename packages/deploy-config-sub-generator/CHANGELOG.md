@@ -1,5 +1,36 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.3.19
+
+### Patch Changes
+
+-   @sap-ux/deploy-config-generator-shared@0.1.9
+-   @sap-ux/odata-service-inquirer@2.5.2
+-   @sap-ux/abap-deploy-config-sub-generator@0.1.24
+
+## 0.3.18
+
+### Patch Changes
+
+-   @sap-ux/deploy-config-generator-shared@0.1.9
+-   @sap-ux/odata-service-inquirer@2.5.1
+-   @sap-ux/abap-deploy-config-sub-generator@0.1.23
+
+## 0.3.17
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-sub-generator@0.1.22
+-   @sap-ux/cf-deploy-config-sub-generator@0.2.18
+-   @sap-ux/odata-service-inquirer@2.5.0
+
+## 0.3.16
+
+### Patch Changes
+
+-   Updated dependencies [45e1035]
+    -   @sap-ux/odata-service-inquirer@2.5.0
+
 ## 0.3.15
 
 ### Patch Changes

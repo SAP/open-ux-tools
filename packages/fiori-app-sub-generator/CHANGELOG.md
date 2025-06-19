@@ -1,5 +1,64 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.6
+
+### Patch Changes
+
+-   5529c63: adds preview settings to external service state
+
+## 0.5.5
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+    -   @sap-ux/odata-service-inquirer@2.5.2
+
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+    -   @sap-ux/odata-service-inquirer@2.5.1
+
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.2
+-   @sap-ux/fiori-freestyle-writer@2.4.13
+-   @sap-ux/odata-service-inquirer@2.5.0
+
+## 0.5.2
+
+### Patch Changes
+
+-   7739504: adds new option addProjectToWorkspace for post gen task
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [3ea811a]
+    -   @sap-ux/cap-config-writer@0.10.9
+    -   @sap-ux/fiori-elements-writer@2.5.1
+    -   @sap-ux/fiori-freestyle-writer@2.4.12
+    -   @sap-ux/odata-service-inquirer@2.5.0
+    -   @sap-ux/ui5-application-inquirer@0.14.14
+
+## 0.5.0
+
+### Minor Changes
+
+-   45e1035: Add support for parameterised main entities across FE writer and OData service inquirer
+
+### Patch Changes
+
+-   Updated dependencies [45e1035]
+    -   @sap-ux/odata-service-inquirer@2.5.0
+    -   @sap-ux/fiori-elements-writer@2.5.0
+
 ## 0.4.25
 
 ### Patch Changes
