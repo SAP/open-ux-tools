@@ -27,6 +27,7 @@ import {
 } from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import {
+    DefaultLogger,
     TelemetryHelper,
     sendTelemetry,
     isCli,
@@ -84,12 +85,13 @@ export default class AdpFlpConfigGenerator extends Generator {
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.launchAsSubGen = !!opts.launchAsSubGen;
         this.toolsLogger = new ToolsLogger();
+        this.logger = opts.logger ?? DefaultLogger;
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
         this.options = opts;
         this.vscode = opts.vscode;
         this.inbounds = opts.inbounds;
 
-        initAppWizardCache(opts.logger, this.appWizard);
+        initAppWizardCache(this.logger, this.appWizard);
         this._setupFLPConfigPrompts();
         this._setupLogging();
     }
