@@ -327,7 +327,11 @@ describe('Generate v2 apps', () => {
             floorplan: FloorplanFE.FE_WORKLIST,
             service: {
                 ...v2Service,
-                ignoreCertError: true
+                client: undefined,
+                ignoreCertError: true,
+                previewSettings: {
+                    scp: true
+                }
             },
             entityRelatedConfig: v2EntityConfig
         });

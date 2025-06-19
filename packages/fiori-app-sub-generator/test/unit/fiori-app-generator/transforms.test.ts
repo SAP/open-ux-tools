@@ -101,7 +101,7 @@ describe('Test transform state', () => {
                 } as Service['connectedSystem']
             }
         };
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.bas);
 
         let ffApp = await transformState<FreestyleApp<BasicAppSettings>>(state);
         expect(ffApp.service?.previewSettings?.scp).toBe(true);
