@@ -1,5 +1,11 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.42
+
+### Patch Changes
+
+-   1afb7a3: update validation logic to return ValidationLink or string in repo-app-import-sub-generator when no app is selected
+
 ## 0.3.41
 
 ### Patch Changes
