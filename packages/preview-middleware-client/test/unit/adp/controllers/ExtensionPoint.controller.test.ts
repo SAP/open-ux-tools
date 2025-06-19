@@ -213,7 +213,7 @@ describe('ExtensionPoint', () => {
                 expect(e.message).toBe(errorMsg);
             }
 
-            expect(resolveSpy).not.toHaveBeenCalled();
+            expect(resolveSpy).toHaveBeenCalled();
         });
     });
 
