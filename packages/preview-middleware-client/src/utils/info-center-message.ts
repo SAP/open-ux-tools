@@ -40,7 +40,7 @@ export async function sendInfoCenterMessage({ title, description, details, type,
 
     if (showToast) {
         MessageToast.show(description, {
-            duration: toastDuration ?? DEFAULT_TOAST_DURATION_IN_MS,
+            duration: toastDuration ?? DEFAULT_TOAST_DURATION_IN_MS
         });
     }
 
