@@ -209,8 +209,10 @@ describe('<UIDialog />', () => {
             const dialog = wrapper.find(Dialog);
             const props = dialog.props();
             expect(props.modalProps?.overlay?.styles).toEqual({
-                background: 'var(--vscode-editor-background)',
-                opacity: 0.8
+                root: {
+                    background: 'var(--vscode-editor-background)',
+                    opacity: 0.8
+                }
             });
         });
         it('Title - single line', () => {
