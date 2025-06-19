@@ -7,7 +7,7 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 import { getError } from '../utils/error';
-import { showLocalizedMessage } from '../utils/localized-message';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
 type CommandNames = 'addXML' | 'codeExt' | 'appDescriptor';
 
 /**
@@ -37,7 +37,7 @@ export default class CommandExecutor {
         designMetadata?: DesignTimeMetadata
     ): Promise<FlexCommand<T>> {
         try {
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'ADP_CREATE_COMMAND_TITLE' },
                 description: { key: `ADP_CREATE_COMMAND_DESCRIPTION`, params: [commandName, runtimeControl.getId()] },
                 type: MessageBarType.info,
@@ -52,7 +52,7 @@ export default class CommandExecutor {
             );
         } catch (e) {
             const error = getError(e);
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'ADP_GET_COMMAND_FAILURE_TITLE' },
                 description: {
                     key: 'ADP_GET_COMMAND_FAILURE_DESCRIPTION',
@@ -75,7 +75,7 @@ export default class CommandExecutor {
             return await CommandFactory.getCommandFor<CompositeCommand>(runtimeControl, 'composite');
         } catch (e) {
             const error = getError(e);
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'ADP_GET_COMMAND_FAILURE_TITLE' },
                 description: {
                     key: 'ADP_GET_COMPOSITE_COMMAND_FAILURE_DESCRIPTION',
@@ -100,7 +100,7 @@ export default class CommandExecutor {
             await this.rta.getCommandStack().pushAndExecute(command);
         } catch (e) {
             const error = getError(e);
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'ADP_RUN_COMMAND_FAILED_TITLE' },
                 description: error.message,
                 type: MessageBarType.error

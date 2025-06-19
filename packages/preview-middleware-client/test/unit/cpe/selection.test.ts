@@ -6,7 +6,7 @@ import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';
 import { fetchMock, sapCoreMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
-import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
+import { sendInfoCenterMessage } from '../../../src/utils/info-center-message';
 
 describe('SelectionService', () => {
     const sendActionMock = jest.fn();
@@ -723,7 +723,7 @@ describe('SelectionService', () => {
             }
         });
         expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), changeService, undefined);
-        expect(showLocalizedMessage).toHaveBeenCalledWith({
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'CPE_DOCUMENT_LOAD_FAILED_TITLE' },
             description: expect.any(String),
             type: MessageBarType.error,

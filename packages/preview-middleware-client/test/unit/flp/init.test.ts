@@ -16,7 +16,7 @@ import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { CommunicationService } from '../../../src/cpe/communication-service';
 import type Component from 'sap/ui/core/Component';
 import { Window } from 'types/global';
-import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
+import { sendInfoCenterMessage } from '../../../src//utils/info-center-message';
 import { createDeferred } from 'open/ux/preview/client/adp/utils';
 
 jest.mock('../../../src/i18n', () => {
@@ -176,7 +176,7 @@ describe('flp/init', () => {
             } catch (error) {
                 expect(error).toEqual('Error');
             }
-            expect(showLocalizedMessage).toHaveBeenCalledWith({
+            expect(sendInfoCenterMessage).toHaveBeenCalledWith({
                 title: { key: 'FLP_REGISTER_LIBS_FAILED_TITLE' },
                 description: 'Error',
                 type: MessageBarType.error,
@@ -250,7 +250,7 @@ describe('flp/init', () => {
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
             expect(sapMock.ushell.Container.createRendererInternal).not.toBeCalled();
-            expect(showLocalizedMessage).toHaveBeenCalledWith({
+            expect(sendInfoCenterMessage).toHaveBeenCalledWith({
                 title: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_TITLE' },
                 description: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_DESCRIPTION' },
                 type: MessageBarType.warning,
@@ -398,7 +398,7 @@ describe('flp/init', () => {
                     shouldHideIframe: false
                 }
             });           
-            expect(showLocalizedMessage).toHaveBeenCalledWith({
+            expect(sendInfoCenterMessage).toHaveBeenCalledWith({
                 title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
                 description: expect.any(String),
                 type: MessageBarType.error,

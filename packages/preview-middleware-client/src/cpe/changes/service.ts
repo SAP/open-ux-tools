@@ -31,7 +31,7 @@ import { getTextBundle } from '../../i18n';
 import { setAdditionalChangeInfo } from '../../utils/additional-change-info';
 import { getControlById, isA } from '../../utils/core';
 import { getError } from '../../utils/error';
-import { showLocalizedMessage } from '../../utils/localized-message';
+import { sendInfoCenterMessage } from '../../utils/info-center-message';
 import { modeAndStackChangeHandler } from '../rta-service';
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
 import { applyChange } from './flex-change';
@@ -116,7 +116,7 @@ export class ChangeService extends EventTarget {
                     const modifiedMessage = modifyRTAErrorMessage(error.toString(), id, name);
                     const errorMessage =
                         modifiedMessage || `RTA Exception applying expression "${action.payload.value}"`;
-                    await showLocalizedMessage({
+                    await sendInfoCenterMessage({
                         title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
                         description: errorMessage,
                         type: MessageBarType.error,
@@ -212,7 +212,7 @@ export class ChangeService extends EventTarget {
                             }
                             throw new Error('Unknown change type');
                         } catch (error) {
-                            await showLocalizedMessage({
+                            await sendInfoCenterMessage({
                                 title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
                                 description: getError(error).message,
                                 type: MessageBarType.error,
@@ -327,7 +327,7 @@ export class ChangeService extends EventTarget {
                 } catch (error) {
                     const extendedError = getError(error);
                     Log.error('CPE: Change creation Failed', extendedError);
-                    await showLocalizedMessage({
+                    await sendInfoCenterMessage({
                         title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
                         description: extendedError.message,
                         type: MessageBarType.error,
@@ -343,7 +343,7 @@ export class ChangeService extends EventTarget {
                     0
                 );
                 if (changesRequiringReload > this.changesRequiringReload) {
-                    await showLocalizedMessage({
+                    await sendInfoCenterMessage({
                         title: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_TITLE' },
                         description: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_DESCRIPTION' },
                         type: MessageBarType.info,
@@ -531,12 +531,6 @@ export class ChangeService extends EventTarget {
                 }
                 return result;
             } catch (error) {
-                void showLocalizedMessage({
-                    title: { key: 'ADP_OPERATION_FAILURE_TITLE' },
-                    description: getError(error).message,
-                    type: MessageBarType.error,
-                    showToast: false
-                });
                 continue;
             }
         }

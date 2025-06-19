@@ -21,19 +21,18 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 /** sap.ui.fl */
 import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 
-import { getResourceModel, getTextBundle } from '../../i18n';
+import { getResourceModel } from '../../i18n';
 
 import { MessageBarType, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 import { getFragmentTemplateName } from '../../cpe/additional-change-info/add-xml-additional-info';
 import { CommunicationService } from '../../cpe/communication-service';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 import { getError } from '../../utils/error';
-import { showLocalizedMessage } from '../../utils/localized-message';
+import { sendInfoCenterMessage } from '../../utils/info-center-message';
 import type { AddFragmentData, DeferredXmlFragmentData } from '../add-fragment';
 import { getFragments } from '../api-handler';
 import CommandExecutor from '../command-executor';
 import ControlUtils from '../control-utils';
-import { notifyUser } from '../utils';
 import BaseDialog from './BaseDialog.controller';
 
 const radix = 10;
@@ -164,8 +163,12 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             CommunicationService.sendAction(setApplicationRequiresReload(true));
         }
 
-        const bundle = await getTextBundle();
-        notifyUser(bundle.getText('ADP_ADD_FRAGMENT_NOTIFICATION', [fragmentName]), 8000);
+        await sendInfoCenterMessage({
+            title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+            description: { key: 'ADP_ADD_FRAGMENT_NOTIFICATION' },
+            type: MessageBarType.info,
+            toastDuration: 8000
+        });
 
         this.handleDialogClose();
     }
@@ -218,7 +221,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
             const error = getError(e);
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'ADP_ADD_FRAGMENT_FAILURE_TITLE' },
                 description: error.message,
                 type: MessageBarType.error

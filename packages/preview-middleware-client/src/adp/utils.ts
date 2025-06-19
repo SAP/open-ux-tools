@@ -9,8 +9,6 @@ import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
-import { showLocalizedMessage } from '../utils/localized-message';
-import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 export interface Deferred<T> {
     promise: Promise<T>;
@@ -120,22 +118,6 @@ export function matchesChangeProperty(command: FlexCommand, propertyPath: string
     const nestedProperty = getNestedProperty(change, propertyPath);
     return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
 }
-
-/**
- * Displays a message to the user indicating that an XML fragment will be created upon saving a change.
- *
- * @param {string} message - The message to be shown in the message toast.
- * @param {number} duration - The duration during which message toast will be active.
- */
-export function notifyUser(message: string, duration: number = 5000) {
-    void showLocalizedMessage({
-        title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
-        description: message,
-        type: MessageBarType.info,
-        toastDuration: duration
-    });
-}
-
 interface ControllerInfo {
     controllerName: string;
     viewId: string;

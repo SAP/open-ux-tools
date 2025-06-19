@@ -12,7 +12,7 @@ import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/qu
 import { getApplicationType } from '../../../utils/application';
 import { getError } from '../../../utils/error';
 import { getV4AppComponent } from '../../../utils/fe-v4';
-import { showLocalizedMessage } from '../../../utils/localized-message';
+import { sendInfoCenterMessage } from '../../../utils/info-center-message';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import type { AnnotationDataSourceResponse } from '../../api-handler';
 import { getDataSourceAnnotationFileMap } from '../../api-handler';
@@ -56,7 +56,7 @@ export class AddNewAnnotationFile
             this.annotationDataSourceData = await getDataSourceAnnotationFileMap();
         } catch (e) {
             const error = getError(e);
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'ADP_GET_ANNOTATION_ERROR_TITLE' },
                 description: error.message,
                 type: MessageBarType.error

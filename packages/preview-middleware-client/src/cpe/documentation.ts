@@ -3,7 +3,7 @@ import type { SchemaForApiJsonFiles, Ui5Metadata, Ui5Property } from './api-json
 import type { Properties } from './utils';
 import Log from 'sap/base/Log';
 import { MessageBarType, PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
-import { showLocalizedMessage } from '../utils/localized-message';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
 import { getError } from '../utils/error';
 
 export interface ControlMetadata {
@@ -47,7 +47,7 @@ export function loadDefaultLibraries(): void {
         })
         .catch((reason) => {
             Log.error('Loading Library Failed: ' + reason);
-            return showLocalizedMessage({
+            return sendInfoCenterMessage({
                 title: { key: 'CPE_LIBRARAY_ERROR_TITLE' },
                 description: getError(reason).message,
                 type: MessageBarType.error,
@@ -173,7 +173,7 @@ export async function getDocumentation(controlName: string, contLibName: string)
         doc = await getControlPropertyDocumentation(controlName, contLibName);
     } catch (err) {
         Log.error(`Error in getting documentation for ${contLibName}`);
-        await showLocalizedMessage({
+        await sendInfoCenterMessage({
             title: { key: 'CPE_DOCUMENTATION_ERROR_TITLE' },
             description: { key: 'CPE_DOCUMENTATION_ERROR_DESCRIPTION', params: [contLibName] },
             type: MessageBarType.error,

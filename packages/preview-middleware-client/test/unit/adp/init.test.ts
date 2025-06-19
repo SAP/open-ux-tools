@@ -10,7 +10,7 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 import Element from 'mock/sap/ui/core/Element';
-import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
+import { sendInfoCenterMessage } from '../../../src/utils/info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import { resetSyncViews } from '../../../src/adp/sync-views-utils';
 
@@ -141,7 +141,7 @@ describe('adp', () => {
                 shouldHideIframe: true
             }
         });
-        expect(showLocalizedMessage).toHaveBeenCalledWith({
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'FLP_UI5_VERSION_WARNING_TITLE' },
             description: {
                 key: 'FLP_UI5_VERSION_WARNING_DESCRIPTION', params: [
@@ -233,7 +233,7 @@ describe('adp', () => {
 
         expect(addFragmentServiceMock).toHaveBeenCalledWith(rtaMock);
         expect(extendControllerServiceMock).toHaveBeenCalledWith(rtaMock);
-        expect(showLocalizedMessage).toHaveBeenCalledWith({
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'ADP_SYNC_VIEWS_TITLE' },
             description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
             type: MessageBarType.warning,

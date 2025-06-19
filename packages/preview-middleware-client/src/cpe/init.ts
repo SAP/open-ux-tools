@@ -16,7 +16,7 @@ import { QuickActionService } from './quick-actions/quick-action-service';
 import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
 import { CommunicationService } from './communication-service';
 import { ContextMenuService } from './context-menu-service';
-import { showLocalizedMessage } from '../utils/localized-message';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
 
 export default function init(
     rta: RuntimeAuthoring,
@@ -62,7 +62,7 @@ export default function init(
             return service.init(CommunicationService.sendAction, subscribe)?.catch((error) => {
                 const extendedError = getError(error);
                 Log.error('Service Initialization Failed: ', extendedError);
-                return showLocalizedMessage({
+                return sendInfoCenterMessage({
                     title: { key: 'CPE_INIT_ERROR_TITLE' },
                     description: extendedError.message,
                     type: MessageBarType.error,
@@ -77,7 +77,7 @@ export default function init(
             // eslint-disable-next-line @typescript-eslint/unbound-method
             .catch((error) => {
                 Log.error(error);
-                return showLocalizedMessage({
+                return sendInfoCenterMessage({
                     title: { key: 'CPE_INIT_ERROR_TITLE' },
                     description: getError(error).message,
                     type: MessageBarType.error,
@@ -89,7 +89,7 @@ export default function init(
     } catch (error) {
         const extendedError = getError(error);
         Log.error('Error during initialization of Control Property Editor', extendedError);
-        void showLocalizedMessage({
+        void sendInfoCenterMessage({
             title: { key: 'CPE_INIT_ERROR_TITLE' },
             description: extendedError.message,
             type: MessageBarType.error,

@@ -1,6 +1,6 @@
 import VersionInfo from 'sap/ui/VersionInfo';
 import Log from 'sap/base/Log';
-import { showLocalizedMessage } from './localized-message';
+import { sendInfoCenterMessage } from './info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 type SingleVersionInfo =
@@ -34,8 +34,8 @@ function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
     if (isNaN(versionInfo.major) ||
         isNaN(versionInfo.minor) ||
         isNaN(versionInfo.patch ?? 0)) {
-        void showLocalizedMessage({
-            title: { key: 'FLP_UI_VERSION_RETREIVAL_FAILURE_TITLE' },
+        void sendInfoCenterMessage({
+            title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
             description: '',
             type: MessageBarType.error,
             showToast: false
@@ -58,9 +58,9 @@ export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui
     if (!version) {
         Log.error('Could not get UI5 version of application. Using version: 1.130.0 as fallback.');
         version = '1.130.0';
-        await showLocalizedMessage({
-            title: { key: 'FLP_UI_VERSION_RETREIVAL_FAILURE_TITLE' },
-            description: { key: 'FLP_UI_VERSION_RETREIVAL_FAILURE_DESCRIPTION', params: [version] },
+        await sendInfoCenterMessage({
+            title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
+            description: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_DESCRIPTION', params: [version] },
             type: MessageBarType.error,
             showToast: false
         });

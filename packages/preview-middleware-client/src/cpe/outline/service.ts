@@ -12,7 +12,7 @@ import { getError } from '../../utils/error';
 import { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';
 import { ChangeService } from '../changes';
-import { showLocalizedMessage } from '../../utils/localized-message';
+import { sendInfoCenterMessage } from '../../utils/info-center-message';
 
 export const OUTLINE_CHANGE_EVENT = 'OUTLINE_CHANGED';
 
@@ -62,7 +62,7 @@ export class OutlineService extends EventTarget {
             } catch (error) {
                 const extendError = getError(error);
                 Log.error('Outline sync failed!', extendError);
-                await showLocalizedMessage({
+                await sendInfoCenterMessage({
                     title: { key: 'CPE_OUTLINE_ERROR_TITLE' },
                     description: extendError.message,
                     type: MessageBarType.error,

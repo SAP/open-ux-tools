@@ -26,8 +26,7 @@ import { ChangeService } from '../changes';
 import { DialogFactory } from '../../adp/dialog-factory';
 import { getApplicationType } from '../../utils/application';
 import { getUi5Version } from '../../utils/version';
-import { showLocalizedMessage } from '../../utils/localized-message';
-import { getError } from '../../utils/error';
+import { sendInfoCenterMessage } from '../../utils/info-center-message';
 
 
 /**
@@ -138,7 +137,7 @@ export class QuickActionService implements Service {
                         await this.addAction(group, instance);
                     } catch {
                         Log.warning(`Failed to initialize ${Definition.name} quick action.`);
-                        await showLocalizedMessage({
+                        await sendInfoCenterMessage({
                             title: { key: 'CPE_QUICK_ACTION_FAILURE_TITLE' },
                             description: { key: 'CPE_QUICK_ACTION_FAILURE_DESCRIPTION', params: [Definition.name] },
                             type: MessageBarType.warning,
@@ -175,12 +174,6 @@ export class QuickActionService implements Service {
             });
         } catch (error) {
             Log.error('Error in reporting Telemetry:', error);
-            await showLocalizedMessage({
-                title: { key: 'CPE_QUICK_ACTION_TELEMETRY_FAILURE_TITLE' },
-                description: getError(error).message,
-                type: MessageBarType.error,
-                showToast: false
-            });
         }
         if (payload.kind === SIMPLE_QUICK_ACTION_KIND && actionInstance.kind === SIMPLE_QUICK_ACTION_KIND) {
             return actionInstance.execute();
