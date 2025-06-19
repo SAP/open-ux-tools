@@ -21,8 +21,7 @@ import {
     getDefaultTargetFolder,
     getHostEnvironment,
     hostEnvironment,
-    sendTelemetry,
-    type ILogWrapper
+    sendTelemetry
 } from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
@@ -73,7 +72,7 @@ export default class extends Generator {
     /**
      * Instance of the logger.
      */
-    private logger: ILogWrapper;
+    private logger: ToolsLogger;
     /**
      * Flex layer indicating customer or vendor base.
      */
@@ -133,7 +132,7 @@ export default class extends Generator {
         this._setupLogging();
 
         const jsonInputString = getFirstArgAsString(args);
-        this.jsonInput = parseJsonInput(jsonInputString, this.toolsLogger);
+        this.jsonInput = parseJsonInput(jsonInputString, this.logger);
 
         if (!this.jsonInput) {
             this.env.lookup({
@@ -157,7 +156,7 @@ export default class extends Generator {
         this.layer = getFlexLayer();
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
         this.isCli = getHostEnvironment() === hostEnvironment.cli;
-        this.systemLookup = new SystemLookup(this.toolsLogger);
+        this.systemLookup = new SystemLookup(this.logger);
 
         if (!this.jsonInput) {
             this.prompts.splice(0, 0, getWizardPages());
@@ -339,7 +338,7 @@ export default class extends Generator {
             return cached;
         }
 
-        const prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
+        const prompter = new ConfigPrompter(this.systemLookup, this.layer, this.logger);
         cachePut(this.appWizard, { prompter }, this.logger);
         return prompter;
     }
@@ -365,7 +364,7 @@ export default class extends Generator {
             this.options.logLevel,
             this.options.logWrapper
         );
-        this.logger = AdpFlpConfigLogger.logger;
+        this.logger = AdpFlpConfigLogger.logger as unknown as ToolsLogger;
     }
 
     /**
@@ -395,7 +394,7 @@ export default class extends Generator {
             system
         });
 
-        this.publicVersions = await fetchPublicVersions(this.toolsLogger);
+        this.publicVersions = await fetchPublicVersions(this.logger);
 
         const providerOptions = {
             system,
@@ -403,7 +402,7 @@ export default class extends Generator {
             username,
             password
         };
-        this.abapProvider = await getConfiguredProvider(providerOptions, this.toolsLogger);
+        this.abapProvider = await getConfiguredProvider(providerOptions, this.logger);
 
         const applications = await loadApps(this.abapProvider, this.isCustomerBase);
         const application = applications.find((application) => application.id === baseApplicationName);
