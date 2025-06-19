@@ -15,7 +15,7 @@ import { ExtendControllerData } from 'open/ux/preview/client/adp/extend-controll
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import * as utils from '../../../../src/utils/version';
 import * as coreUtils from '../../../../src/utils/core';
-import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
+import { sendInfoCenterMessage } from '../../../../src/utils/info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 jest.mock('../../../../src/adp/command-executor', () => {
@@ -668,8 +668,8 @@ describe('ControllerExtension', () => {
                 codeRef: 'coding/testController.js',
                 viewId: 'viewId'
             });
-            expect(showLocalizedMessage).toHaveBeenCalledWith({
-                description: 'Note: The `testController` controller extension will be created once you save the change.',
+            expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+                description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION' , params: ['testController']},
                 title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
                 toastDuration: 8000,
                 type: MessageBarType.info

@@ -6,7 +6,7 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
-import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
+import { sendInfoCenterMessage } from '../../../src/utils/info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 describe('client/command-executor', () => {
@@ -40,7 +40,7 @@ describe('client/command-executor', () => {
             } catch (e) {
                 expect(e.message).toBe('Could not execute command!');
                 expect(pushAndExecuteSpy.mock.calls.length).toBe(1);
-                expect(showLocalizedMessage).toHaveBeenCalledWith({
+                expect(sendInfoCenterMessage).toHaveBeenCalledWith({
                     title: { key: 'ADP_RUN_COMMAND_FAILED_TITLE' },
                     description: e.message,
                     type: MessageBarType.error
@@ -83,7 +83,7 @@ describe('client/command-executor', () => {
                 designMetadata,
                 flexSettings
             );
-            expect(showLocalizedMessage).toHaveBeenCalledWith({
+            expect(sendInfoCenterMessage).toHaveBeenCalledWith({
                 title: { key: 'ADP_CREATE_COMMAND_TITLE' },
                 description: { key: `ADP_CREATE_COMMAND_DESCRIPTION`, params: [commandName, mockRuntimeControl.getId()] },
                 type: MessageBarType.info,
@@ -109,7 +109,7 @@ describe('client/command-executor', () => {
                 )
             ).rejects.toThrow(`Could not get command for '${commandName}'. ${errorMessage}`);
 
-            expect(showLocalizedMessage).toHaveBeenCalledWith({
+            expect(sendInfoCenterMessage).toHaveBeenCalledWith({
                 title: { key: 'ADP_GET_COMMAND_FAILURE_TITLE' },
                 description: {
                     key: 'ADP_GET_COMMAND_FAILURE_DESCRIPTION',

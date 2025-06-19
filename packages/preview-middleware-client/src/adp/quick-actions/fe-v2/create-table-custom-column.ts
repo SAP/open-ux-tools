@@ -26,9 +26,9 @@ import {
     TREE_TABLE_TYPE
 } from '../control-types';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
-import { notifyUser } from '../../utils';
-import { getTextBundle } from '../../../i18n';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { sendInfoCenterMessage } from '../../../utils/info-center-message';
 
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';
 
@@ -115,8 +115,12 @@ export class AddTableCustomColumnQuickAction
             isA(M_TABLE_TYPE, tableInternal) &&
             (tableInternal.getAggregation('items') as ManagedObject[]).length === 0
         ) {
-            const bundle = await getTextBundle();
-            notifyUser(bundle.getText('TABLE_ROWS_NEEDED_TO_CREATE_CUSTOM_COLUMN'), 8000);
+            await sendInfoCenterMessage({
+                title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+                description: { key: 'TABLE_ROWS_NEEDED_TO_CREATE_CUSTOM_COLUMN' },
+                type: MessageBarType.info,
+                toastDuration: 8000
+            });
             return [];
         }
         const dialog = [TREE_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE].some((type) =>

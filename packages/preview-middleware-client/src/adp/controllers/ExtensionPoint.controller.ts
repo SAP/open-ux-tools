@@ -17,10 +17,9 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import { getError } from '../../utils/error';
-import { showLocalizedMessage } from '../../utils/localized-message';
+import { sendInfoCenterMessage } from '../../utils/info-center-message';
 import { getFragments } from '../api-handler';
 import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
-import { notifyUser } from '../utils';
 import BaseDialog from './BaseDialog.controller';
 
 type ExtensionPointModel = JSONModel & {
@@ -73,7 +72,12 @@ export default class ExtensionPoint extends BaseDialog<ExtensionPointModel> {
 
         this.createExtensionPointFragmentChange(fragmentName);
 
-        notifyUser(`Note: The '${fragmentName}.fragment.xml' fragment will be created once you save the change.`, 8000);
+        await sendInfoCenterMessage({
+            title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+            description: { key: 'ADP_CREATE_XML_FRAGMENT_DESCRIPTION', params: [fragmentName]},
+            type: MessageBarType.info,
+            toastDuration: 8000
+        });
 
         this.handleDialogClose();
     }
@@ -142,7 +146,7 @@ export default class ExtensionPoint extends BaseDialog<ExtensionPointModel> {
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
             const error = getError(e);
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'ADP_EXTENSION_POINT_ERROR_TITLE' },
                 description: error.message,
                 type: MessageBarType.error

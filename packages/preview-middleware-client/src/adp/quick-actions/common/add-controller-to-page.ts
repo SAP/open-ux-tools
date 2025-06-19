@@ -1,15 +1,12 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import type {
     QuickActionContext,
     SimpleQuickActionDefinition
 } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { getTextBundle } from '../../../i18n';
-import { getError } from '../../../utils/error';
-import { showLocalizedMessage } from '../../../utils/localized-message';
 import { getUi5Version } from '../../../utils/version';
 import { getExistingController } from '../../api-handler';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
@@ -58,28 +55,17 @@ export class AddControllerToPageQuickAction
             this.context.view,
             CONTROL_TYPES
         )) {
-            try {
-                const syncViewsIds = await getAllSyncViewsIds(version);
-                const controlInfo = getControllerInfoForControl(control);
-                const data = await getExistingController(controlInfo.controllerName);
-                this.controllerExists = data?.controllerExists;
-                const isActiveAction = isControllerExtensionEnabledForControl(
-                    control,
-                    syncViewsIds,
-                    isReuseComponent,
-                    this.context.flexSettings.isCloud
-                );
-                this.control = isActiveAction ? control : undefined;
-            } catch (e) {
-                const error = getError(e);
-                await showLocalizedMessage({
-                    title: { key: 'ADP_CONTROLLER_ERROR_TITLE' },
-                    description: error.message,
-                    type: MessageBarType.error
-                });
-                throw error;
-            }
-
+            const syncViewsIds = await getAllSyncViewsIds(version);
+            const controlInfo = getControllerInfoForControl(control);
+            const data = await getExistingController(controlInfo.controllerName);
+            this.controllerExists = data?.controllerExists;
+            const isActiveAction = isControllerExtensionEnabledForControl(
+                control,
+                syncViewsIds,
+                isReuseComponent,
+                this.context.flexSettings.isCloud
+            );
+            this.control = isActiveAction ? control : undefined;
             break;
         }
     }

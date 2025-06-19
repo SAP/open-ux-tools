@@ -13,7 +13,7 @@ import { getTextBundle } from '../i18n';
 import { loadDefinitions } from './quick-actions/load';
 import { getAllSyncViewsIds } from './utils';
 import { initDialogs } from './init-dialogs';
-import { showLocalizedMessage } from '../utils/localized-message';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
 
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
@@ -48,7 +48,7 @@ export default async function (rta: RuntimeAuthoring) {
     await init(rta, quickActionRegistries);
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
-        await showLocalizedMessage({
+        await sendInfoCenterMessage({
             title: { key: 'FLP_UI5_VERSION_WARNING_TITLE' },
             description: {
                 key: 'FLP_UI5_VERSION_WARNING_DESCRIPTION', params: [
@@ -65,7 +65,7 @@ export default async function (rta: RuntimeAuthoring) {
     }
 
     if (syncViewsIds.length > 0) {
-        await showLocalizedMessage({
+        await sendInfoCenterMessage({
             title: { key: 'ADP_SYNC_VIEWS_TITLE' },
             description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
             type: MessageBarType.warning,

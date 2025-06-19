@@ -4,15 +4,15 @@
  * like beforeEach etc.
  */
 
-import { showLocalizedMessage } from '../src/utils/localized-message';
+import { sendInfoCenterMessage } from '../src/utils/info-center-message';
 
-jest.mock('../src/utils/localized-message', () => ({
-  showLocalizedMessage: jest.fn().mockResolvedValue(undefined),
+jest.mock('../src/utils/info-center-message', () => ({
+    sendInfoCenterMessage: jest.fn().mockResolvedValue(undefined),
 }));
 
-const showLocalizedMessageMock = showLocalizedMessage as jest.Mock;
+const sendInfoCenterMessageMock = sendInfoCenterMessage as jest.Mock;
 
 beforeEach(() => {
-  // Clear mock history.
-  showLocalizedMessageMock.mockClear();
+    // Clear mock history.
+    sendInfoCenterMessageMock.mockClear();
 });

@@ -3,7 +3,7 @@ import MessageToast from 'sap/m/MessageToast';
 import { CommunicationService } from '../cpe/communication-service';
 import { getTextBundle } from '../i18n';
 
-const FIVE_SEC_IN_MS = 5000;
+const DEFAULT_TOAST_DURATION_IN_MS = 5000;
 
 /**
  * Localization key interface for defining message keys and optional parameters.
@@ -14,10 +14,10 @@ interface LocalizationKey {
 }
 
 /**
- * LocalizedMessage interface for defining the structure of a localized message.
+ * InfoCenterMessage interface for defining the structure of an Info center message.
  * It includes title, description, optional details, type, and options for toast display.
  */
-interface LocalizedMessage {
+interface InfoCenterMessage {
     title: LocalizationKey | string;
     description: LocalizationKey | string;
     details?: LocalizationKey | string;
@@ -31,25 +31,24 @@ interface LocalizedMessage {
  * toast message is optional, and the info center message is always sent. By default, the toast
  * message is shown for five seconds, but this can be customized.
  * 
- * @param {LocalizedMessage} message - The message object containing title, description, type, and whether to show a toast.
+ * @param {InfoCenterMessage} message - The message object containing title, description, type, and whether to show a toast.
  */
-export async function showLocalizedMessage(message: LocalizedMessage): Promise<void> {
-    const title = isString(message.title) ? message.title : await getTranslation(message.title);
-    const description = isString(message.description) ? message.description : await getTranslation(message.description);
-    const details = isString(message.details) || !message.details ? message.details : await getTranslation(message.details);
-    const showToast = message.showToast ?? true;
+export async function sendInfoCenterMessage({ title, description, details, type, showToast = true, toastDuration }: InfoCenterMessage): Promise<void> {
+    title = isString(title) ? title : await getTranslation(title);
+    description = isString(description) ? description : await getTranslation(description);
+    details = isString(details) || !details ? details : await getTranslation(details);
 
     if (showToast) {
         MessageToast.show(description, {
-            duration: message.toastDuration ?? FIVE_SEC_IN_MS,
+            duration: toastDuration ?? DEFAULT_TOAST_DURATION_IN_MS,
         });
     }
 
     CommunicationService.sendAction(showInfoCenterMessage({
-        ...message,
         title,
         description,
-        details
+        details,
+        type
     }));
 }
 
@@ -65,10 +64,10 @@ function isString(value: unknown): value is string {
 
 /**
  * 
- * @param key - The localization key to retrieve the translation for.
+ * @param {LocalizationKey} localizationKey - The localization key to retrieve the translation for.
  * @returns {Promise<string>} A promise that resolves to the translated string.
  */
-async function getTranslation(key: LocalizationKey): Promise<string> {
+async function getTranslation({ key, params }: LocalizationKey): Promise<string> {
     const bundle = await getTextBundle();
-    return bundle.getText(key.key, key.params);
+    return bundle.getText(key, params);
 }
