@@ -752,6 +752,8 @@ export interface AddInboundModel {
     title: string;
     /** Optional: Subtitle associated with the inbound navigation data. */
     subTitle?: string;
+    /** Optional: Icon associated with the inbound navigation data. */
+    icon?: string;
     signature: AddInboundSignitureModel;
 }
 export interface AddInboundSignitureModel {

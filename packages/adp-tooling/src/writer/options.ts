@@ -283,6 +283,7 @@ function getInboundChangeContentWithNewInboundID(
             [flpConfiguration.inboundId]: {
                 action: flpConfiguration.action,
                 semanticObject: flpConfiguration.semanticObject,
+                icon: flpConfiguration.icon,
                 title: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.title}}`,
                 signature: {
                     additionalParameters: 'allowed',
