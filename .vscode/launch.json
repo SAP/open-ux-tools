@@ -33,6 +33,22 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "axios-extension: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/axios-extension",
+            "env": {
+                "UX_DEBUG": "false"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "examples/ui-prompting-examples: Run Example",
             "runtimeExecutable": "pnpm",
             "runtimeArgs": ["storybook"],
@@ -332,7 +348,7 @@
             "request": "launch",
             "name": "cds-annotation-parser: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
-            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "args": ["${file}", "--config", "jest.config.js", "--coverage=false", "--runInBand"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "windows": {
