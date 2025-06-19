@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.22.1
+
+### Patch Changes
+
+-   a9f1808: Disable proxy for BAS
+
 ## 1.22.0
 
 ### Minor Changes
