@@ -26,7 +26,7 @@ import { type SimpleForm } from 'sap/ui/layout/form';
 import { MessageBarType, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 
 import { CommunicationService } from '../../cpe/communication-service';
-import { getResourceModel, getTextBundle } from '../../i18n';
+import { getResourceModel } from '../../i18n';
 
 import Input from 'sap/m/Input';
 import ManagedObject from 'sap/ui/base/ManagedObject';
@@ -35,11 +35,10 @@ import { ValueState } from 'sap/ui/core/library';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 import { setAdditionalChangeInfoForChangeFile } from '../../utils/additional-change-info';
 import { getError } from '../../utils/error';
-import { showLocalizedMessage } from '../../utils/localized-message';
+import { sendInfoCenterMessage } from '../../utils/info-center-message';
 import { getFragments } from '../api-handler';
 import CommandExecutor from '../command-executor';
 import ControlUtils from '../control-utils';
-import { notifyUser } from '../utils';
 import { type AddFragmentModel, type AddFragmentOptions } from './AddFragment.controller';
 import BaseDialog from './BaseDialog.controller';
 
@@ -127,15 +126,12 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
 
         await this.createFragmentChange(fragmentData);
 
-        const textKey = 'ADP_ADD_TWO_FRAGMENTS_WITH_TEMPLATE_NOTIFICATION';
-        const bundle = await getTextBundle();
-        notifyUser(
-            bundle.getText(
-                textKey,
-                fragmentData.fragments.map((item) => item.fragmentName)
-            ),
-            8000
-        );
+        await sendInfoCenterMessage({
+            title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+            description: { key: 'ADP_ADD_TWO_FRAGMENTS_WITH_TEMPLATE_NOTIFICATION' },
+            type: MessageBarType.info,
+            toastDuration: 8000
+        });
 
         this.handleDialogClose();
     }
@@ -176,7 +172,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
             const error = getError(e);
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'ADP_GET_FRAGMENTS_FAILURE_TITLE' },
                 description: error.message,
                 type: MessageBarType.error

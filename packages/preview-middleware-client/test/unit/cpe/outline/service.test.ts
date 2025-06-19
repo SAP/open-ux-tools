@@ -6,7 +6,7 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import Log from 'sap/base/Log';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
-import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
+import { sendInfoCenterMessage } from '../../../../src/utils/info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 const mockChangeService = {
@@ -97,7 +97,7 @@ describe('index', () => {
         // transformNodesSpy called but rejected.
         expect(transformNodesSpy).toHaveBeenCalled();
         expect(mockSendAction).not.toHaveBeenCalled();
-        expect(showLocalizedMessage).toHaveBeenCalledWith({
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'CPE_OUTLINE_ERROR_TITLE' },
             description: 'error',
             type: MessageBarType.error,

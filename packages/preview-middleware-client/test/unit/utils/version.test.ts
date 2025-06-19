@@ -5,7 +5,7 @@ import {
     isVersionEqualOrHasNewerPatch
 } from 'open/ux/preview/client/utils/version';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
-import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
+import { sendInfoCenterMessage } from '../../../src//utils/info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 describe('utils/version', () => {
@@ -38,9 +38,9 @@ describe('utils/version', () => {
         const version = await getUi5Version();
         expect(version.major).toEqual(1);
         expect(version.minor).toEqual(130);
-        expect(showLocalizedMessage).toHaveBeenCalledWith({
-            title: { key: 'FLP_UI_VERSION_RETREIVAL_FAILURE_TITLE' },
-            description: { key: 'FLP_UI_VERSION_RETREIVAL_FAILURE_DESCRIPTION', params: ['1.130.0'] },
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+            title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
+            description: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_DESCRIPTION', params: ['1.130.0'] },
             type: MessageBarType.error,
             showToast: false
         });
@@ -116,8 +116,8 @@ describe('utils/version', () => {
         expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrow();
         //throw error in case on NaN
         expect(() => isLowerThanMinimalUi5Version({ major: 1, minor: 1, patch: NaN })).toThrowError();
-        expect(showLocalizedMessage).toHaveBeenCalledWith({
-            title: { key: 'FLP_UI_VERSION_RETREIVAL_FAILURE_TITLE' },
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+            title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
             description: '',
             type: MessageBarType.error,
             showToast: false

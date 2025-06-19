@@ -19,7 +19,7 @@ import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
 import { QuickActionService } from '../../../src/cpe/quick-actions/quick-action-service';
 import { SelectionService } from '../../../src/cpe/selection';
 import { ContextMenuService } from '../../../src/cpe/context-menu-service';
-import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
+import { sendInfoCenterMessage } from '../../../src/utils/info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 describe('main', () => {
@@ -140,7 +140,7 @@ describe('main', () => {
         // assert
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
         expect(Log.error).toBeCalledWith('Service Initialization Failed: ', error);
-        expect(showLocalizedMessage).toHaveBeenCalledWith({
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'CPE_INIT_ERROR_TITLE' },
             description: error.message,
             type: MessageBarType.error,

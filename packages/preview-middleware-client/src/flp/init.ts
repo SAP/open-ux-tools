@@ -16,7 +16,7 @@ import { getTextBundle } from '../i18n';
 import type Component from 'sap/ui/core/Component';
 import type Extension from 'sap/ushell/services/Extension';
 import type { CardGeneratorType } from 'sap/cards/ap/generator';
-import { showLocalizedMessage } from '../utils/localized-message';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -198,7 +198,7 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
             registerModules((await response.json()) as AppIndexData);
         } catch (error) {
             Log.error(`Registering of reuse libs failed. Error:${error}`);
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'FLP_REGISTER_LIBS_FAILED_TITLE' },
                 description: getError(error).message,
                 type: MessageBarType.error,
@@ -359,7 +359,7 @@ export async function init({
                         try {
                             await startAdaptation(options, pluginScript);
                         } catch (error) {
-                            await showLocalizedMessage({
+                            await sendInfoCenterMessage({
                                 title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
                                 description: getError(error).message, 
                                 type: MessageBarType.error,
@@ -382,7 +382,7 @@ export async function init({
         });
     } else {  
         Log.warning('Card generator is not supported for the current UI5 version.');
-        await showLocalizedMessage({
+        await sendInfoCenterMessage({
             title: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_TITLE' },
             description: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_DESCRIPTION' },
             type: MessageBarType.warning,
@@ -436,7 +436,7 @@ if (bootstrapConfig) {
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);
-        return showLocalizedMessage({
+        return sendInfoCenterMessage({
             title: { key: 'FLP_SANDBOX_INIT_FAILED_TITLE' },
             description: error.message,
             type: MessageBarType.error,
@@ -462,7 +462,7 @@ export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: U
                 message: bundle.getText('HIGHER_LAYER_CHANGES_INFO_MESSAGE'),
                 shouldHideIframe: false
             });
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'HIGHER_LAYER_CHANGES_TITLE' },
                 description: { key: 'HIGHER_LAYER_CHANGES_INFO_MESSAGE' },
                 type: MessageBarType.warning,

@@ -1,23 +1,19 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import MessageToast from 'mock/sap/m/MessageToast';
 import FlexUtils from 'mock/sap/ui/fl/Utils';
 import isReuseComponentApi from 'mock/sap/ui/rta/util/isReuseComponent';
 import * as Utils from '../../../src/utils/core';
 import Element from 'sap/ui/core/Element';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
-import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
 
 import {
     createDeferred,
-    notifyUser,
     getReuseComponentChecker,
     resetReuseComponentChecker,
     matchesChangeProperty,
     checkForExistingChange
 } from '../../../src/adp/utils';
-import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 describe('utils', () => {
     describe('createDeferred', () => {
@@ -170,24 +166,6 @@ describe('utils', () => {
         it('should return false if a matching change is not found and command does subCommands', () => {
             const result = checkForExistingChange(mockRta, 'codeExt', 'content.codeRef', 'coding/test.js');
             expect(result).toBe(false);
-        });
-    });
-
-    describe('notifyUser', () => {
-        beforeEach(() => {
-            MessageToast.show.mockClear();
-        });
-
-        it('displays the message in the info center and shows a toaster message', () => {
-            const message = 'Hello, world!';
-            notifyUser(message);
-
-            expect(showLocalizedMessage).toHaveBeenCalledWith({
-                title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
-                description: message,
-                type: MessageBarType.info,
-                toastDuration: 5000
-            });
         });
     });
 

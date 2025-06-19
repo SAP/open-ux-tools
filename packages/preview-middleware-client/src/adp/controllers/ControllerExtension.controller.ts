@@ -25,13 +25,13 @@ import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-d
 import { getResourceModel, getTextBundle, TextBundle } from '../../i18n';
 import { getControlById } from '../../utils/core';
 import { getError } from '../../utils/error';
-import { showLocalizedMessage } from '../../utils/localized-message';
+import { sendInfoCenterMessage } from '../../utils/info-center-message';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
 import type { CodeExtResponse, ControllersResponse } from '../api-handler';
 import { getExistingController, readControllers, writeChange, writeController } from '../api-handler';
 import CommandExecutor from '../command-executor';
 import type { DeferredExtendControllerData, ExtendControllerData } from '../extend-controller';
-import { checkForExistingChange, getControllerInfo, notifyUser } from '../utils';
+import { checkForExistingChange, getControllerInfo } from '../utils';
 import BaseDialog from './BaseDialog.controller';
 
 interface ControllerExtensionService {
@@ -188,7 +188,12 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
             if (this.data) {
                 this.data.deferred.resolve(controllerRef);
-                notifyUser(this.bundle.getText('ADP_CREATE_CONTROLLER_EXTENSION', [controllerName]), 8000);
+                await sendInfoCenterMessage({
+                    title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+                    description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION', params: [controllerName]},
+                    type: MessageBarType.info,
+                    toastDuration: 8000
+                });
             } else {
                 await this.createNewController(controllerName, controllerRef);
             }
@@ -290,7 +295,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             data = await getExistingController(controllerName);
         } catch (e) {
             const error = getError(e);
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'ADP_CONTROLLER_ERROR_TITLE' },
                 description: error.message,
                 type: MessageBarType.error
@@ -310,7 +315,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             this.model.setProperty('/controllersList', controllers);
         } catch (e) {
             const error = getError(e);
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'ADP_CONTROLLER_ERROR_TITLE' },
                 description: error.message,
                 type: MessageBarType.error
@@ -346,7 +351,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             MessageToast.show(`Controller extension with name '${controllerName}' was created.`);
         } catch (e) {
             const error = getError(e);
-            await showLocalizedMessage({
+            await sendInfoCenterMessage({
                 title: { key: 'ADP_CONTROLLER_ERROR_TITLE' },
                 description: error.message,
                 type: MessageBarType.error
@@ -380,6 +385,11 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
         await commandExecutor.pushAndExecuteCommand(command);
 
-        notifyUser(this.bundle.getText('ADP_CREATE_CONTROLLER_EXTENSION', [controllerName]), 8000);
+        await sendInfoCenterMessage({
+            title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+            description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION', params: [controllerName]},
+            type: MessageBarType.info,
+            toastDuration: 8000
+        });
     }
 }

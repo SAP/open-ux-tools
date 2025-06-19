@@ -11,7 +11,7 @@ import { QuickActionActivationContext, QuickActionDefinitionGroup } from './quic
 import type { ControlTreeIndex } from '../types';
 import { getControlById } from '../../utils/core';
 import { getRootControlFromComponentContainer } from '../utils';
-import { showLocalizedMessage } from '../../utils/localized-message';
+import { sendInfoCenterMessage } from '../../utils/info-center-message';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 const NAV_CONTAINER_CONTROL_TYPE = 'sap.m.NavContainer';
@@ -73,7 +73,7 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
                 });
             } else {
                 Log.warning(`Could not find matching page for view of type "${name}".`);
-                void showLocalizedMessage({
+                void sendInfoCenterMessage({
                     title: { key: 'CPE_PAGE_NOT_FOUND_TITLE' },
                     description: { key: 'CPE_PAGE_NOT_FOUND_DESCRIPTION', params: [name] },
                     type: MessageBarType.warning,

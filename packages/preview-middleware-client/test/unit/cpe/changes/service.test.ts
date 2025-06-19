@@ -16,7 +16,7 @@ import JsControlTreeModifierMock from 'mock/sap/ui/core/util/reflection/JsContro
 import Control from 'sap/ui/core/Control';
 import * as Utils from '../../../../src/utils/version';
 import ChangesWriteAPIMock from 'mock/sap/ui/fl/write/api/ChangesWriteAPI';
-import { showLocalizedMessage } from 'open/ux/preview/client/utils/localized-message';
+import { sendInfoCenterMessage } from '../../../../src/utils/info-center-message';
 
 describe('ChangeService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
@@ -205,7 +205,7 @@ describe('ChangeService', () => {
                 ]
             }
         });
-        expect(showLocalizedMessage).toHaveBeenCalledWith({
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
             description: expect.any(String),
             type: MessageBarType.error,
@@ -829,12 +829,6 @@ describe('ChangeService', () => {
                 saved: [],
                 pending: []
             }
-        });
-        expect(showLocalizedMessage).toHaveBeenCalledWith({
-            title: { key: 'ADP_OPERATION_FAILURE_TITLE' },
-            description: expect.any(String),
-            type: MessageBarType.error,
-            showToast: false
         });
     });
 
@@ -1636,7 +1630,7 @@ describe('ChangeService', () => {
                 ]
             }
         });
-        expect(showLocalizedMessage).toHaveBeenCalledWith({
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_TITLE' },
             description: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_DESCRIPTION' },
             type: MessageBarType.info,
@@ -1825,7 +1819,7 @@ describe('ChangeService', () => {
             } as any)
         );
         
-        expect(showLocalizedMessage).toHaveBeenCalledWith({
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
             description: `Error: ${JSON.stringify(errorMessage)}`,
             type: MessageBarType.error,

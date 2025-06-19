@@ -25,7 +25,7 @@ import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import { getComponent, getControlById } from '../utils/core';
 import { getError } from '../utils/error';
 import { ChangeService } from './changes';
-import { showLocalizedMessage } from '../utils/localized-message';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
 
 export interface PropertyChangeParams {
     name: string;
@@ -88,7 +88,7 @@ async function addDocumentationForProperties(control: ManagedObject, controlData
     } catch (e) {
         const extendedError = getError(e);
         Log.error('Document loading failed', extendedError);
-        void showLocalizedMessage({
+        void sendInfoCenterMessage({
             title: { key: 'CPE_DOCUMENT_LOAD_FAILED_TITLE' },
             description: extendedError.message,
             type: MessageBarType.error,
@@ -124,7 +124,7 @@ export class SelectionService implements Service {
             onselectionChange(event).catch((error) => {
                 const extendedError = getError(error);
                 Log.error('Event interrupted: ', extendedError);
-                return showLocalizedMessage({
+                return sendInfoCenterMessage({
                     title: { key: 'CPE_EVENT_INTERRUPTED_TITLE' },
                     description: extendedError.message,
                     type: MessageBarType.error,
@@ -236,7 +236,7 @@ export class SelectionService implements Service {
                     } catch (error) {
                         const extendedError = getError(error);
                         Log.error('Failed to report telemetry', extendedError);
-                        await showLocalizedMessage({
+                        await sendInfoCenterMessage({
                             title: { key: 'CPE_TELEMETRY_REPORT_FAILURE_TITLE' },
                             description: extendedError.message,
                             type: MessageBarType.error,
