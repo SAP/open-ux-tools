@@ -155,7 +155,7 @@ function isSyncView(element: DTElement): boolean {
 export async function getAllSyncViewsIds(ui5VersionInfo: Ui5VersionInfo): Promise<string[]> {
     const syncViewIds: string[] = [];
     try {
-        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 120 })) {
+        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 120, patch: 2 })) {
             const elements = Element.registry.filter(() => true) as DTElement[];
             elements.forEach((ui5Element) => {
                 if (isSyncView(ui5Element)) {
