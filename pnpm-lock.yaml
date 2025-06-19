@@ -5295,7 +5295,7 @@ packages:
       '@babel/core': ^7.13.0
     dependencies:
       '@babel/core': 7.25.2
-      '@babel/helper-plugin-utils': 7.27.1
+      '@babel/helper-plugin-utils': 7.24.8
       '@babel/helper-skip-transparent-expression-wrappers': 7.22.5
       '@babel/plugin-transform-optional-chaining': 7.24.1(@babel/core@7.25.2)
     dev: true
@@ -6204,7 +6204,7 @@ packages:
     dependencies:
       '@babel/core': 7.25.2
       '@babel/helper-builder-binary-assignment-operator-visitor': 7.22.15
-      '@babel/helper-plugin-utils': 7.27.1
+      '@babel/helper-plugin-utils': 7.24.8
     dev: true
 
   /@babel/plugin-transform-export-namespace-from@7.24.1(@babel/core@7.22.20):
@@ -6407,7 +6407,7 @@ packages:
     dependencies:
       '@babel/core': 7.25.2
       '@babel/helper-module-transforms': 7.25.2(@babel/core@7.25.2)
-      '@babel/helper-plugin-utils': 7.27.1
+      '@babel/helper-plugin-utils': 7.24.8
       '@babel/helper-simple-access': 7.24.6
     transitivePeerDependencies:
       - supports-color
@@ -6437,7 +6437,7 @@ packages:
       '@babel/core': 7.25.2
       '@babel/helper-hoist-variables': 7.24.6
       '@babel/helper-module-transforms': 7.25.2(@babel/core@7.25.2)
-      '@babel/helper-plugin-utils': 7.27.1
+      '@babel/helper-plugin-utils': 7.24.8
       '@babel/helper-validator-identifier': 7.24.7
     transitivePeerDependencies:
       - supports-color
