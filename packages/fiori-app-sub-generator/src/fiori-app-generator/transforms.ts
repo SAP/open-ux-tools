@@ -208,7 +208,7 @@ export async function transformState<T>(
             name: MAIN_DATASOURCE_NAME,
             client: service.client,
             model: appConfig.template?.type === TemplateTypeFE.OverviewPage ? MAIN_MODEL_NAME : '', // OVP requires a named default model
-            previewSettings: {},
+            previewSettings: service.previewSettings ?? {},
             annotations:
                 project.skipAnnotations !== true
                     ? await getAnnotations(project.name, service.annotations?.[0], service?.capService)
@@ -240,7 +240,7 @@ export async function transformState<T>(
         } else if (
             service.connectedSystem?.backendSystem?.serviceKeys ||
             // If 'cloud' write `scp` property to yamls to enable preview on VSCode (using oAuth)
-            (getHostEnvironment() === hostEnvironment.vscode &&
+            (getHostEnvironment() === hostEnvironment.bas &&
                 service.connectedSystem?.destination &&
                 isAbapEnvironmentOnBtp(service.connectedSystem?.destination))
         ) {
