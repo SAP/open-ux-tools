@@ -10,7 +10,8 @@ import type { AbapCDSView, AtoSettings, BusinessObject } from './types';
 import { TenantType } from './types';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { AdtService, AtoService, GeneratorService } from './adt-catalog/services';
+import { AdtService, AtoService, GeneratorService, RapGeneratorService } from './adt-catalog/services';
+import { ODataServiceGenerator } from './adt-catalog/generators/odata-service-generator';
 import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
 import type { GeneratorEntry } from './adt-catalog/generators/types';
 
@@ -229,6 +230,27 @@ export class AbapServiceProvider extends ServiceProvider {
     }
 
     /**
+     * Gets an OData Service generator.
+     *
+     * @param packageName - Name of package to be used for generated artifacts in ABAP system
+     * @returns An OData Service generator
+     */
+    public async getODataServiceGenerator(packageName: string): Promise<ODataServiceGenerator> {
+        const generatorService = await this.getAdtService<RapGeneratorService>(RapGeneratorService);
+        if (!generatorService) {
+            throw new Error('RAP Generator are not support on this system');
+        }
+        const config = await generatorService.getRAPGeneratorConfig();
+        const generator = this.createService<ODataServiceGenerator>(
+            this.getServiceUrlFromConfig(config),
+            ODataServiceGenerator
+        );
+        generator.setContentType(this.getContentType(config));
+        generator.configure(config, packageName || '$TMP');
+        return generator;
+    }
+
+    /**
      * Get the service URL from the generator config.
      *
      * @param config - generator config
@@ -244,8 +266,6 @@ export class AbapServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Get the content type from the generator config.
-     *
      * @param config - generator config
      * @returns the type of the content link from service generator config
      */
