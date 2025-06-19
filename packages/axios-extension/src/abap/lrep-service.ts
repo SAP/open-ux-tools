@@ -9,6 +9,7 @@ import { isAxiosError } from '../base/odata-request-error';
 import type { Service } from '../base/service-provider';
 import { logError } from './message';
 import type { TransportConfig } from './ui5-abap-repository-service';
+import qs from 'qs';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 /**
@@ -353,20 +354,20 @@ export class LayeredRepositoryService extends Axios implements Service {
      */
     public async getSystemInfo(language: string = 'EN', cloudPackage?: string, appId?: string): Promise<SystemInfo> {
         try {
-            const params = new URLSearchParams({
+            const params = {
                 'sap-language': language
-            });
+            };
             if (cloudPackage) {
-                params.append('package', cloudPackage);
+                params['package'] = cloudPackage;
             }
             if (appId) {
-                params.append('sap-app-id', appId);
+                params['sap-app-id'] = appId;
             }
-
             const response = await this.get(`${DTA_PATH_SUFFIX}system_info`, {
                 params,
-                paramsSerializer: decodeUrlParams
+                paramsSerializer: (params) => qs.stringify(params, { encode: false })
             });
+
             this.tryLogResponse(response, 'Successful getting system info.');
             return JSON.parse(response.data) as SystemInfo;
         } catch (error) {
