@@ -46,7 +46,7 @@
         "projectNameLengthErrorExt": "The name cannot contain more than 61 characters or end with the word 'component'.",
         "projectNameValidationErrorExt": "The name must only contain Latin alphanumeric characters. Every part must start with a letter and different parts can be separated by a period.",
         "projectNameLengthErrorInt": "The name cannot start with the word 'customer', contain more than 61 characters, or end with the word 'component'.",
-        "projectNameValidationErrorInt": "The name must only contain latin alphanumeric characters and it must have at least two parts. Every part must start with a letter and the different parts must be separated by a period."
+        "projectNameValidationErrorInt": "The name must only contain Latin alphanumeric characters and it must have at least two parts. Every part must start with a letter and the different parts must be separated by a period."
     },
     "error": {
         "selectCannotBeEmptyError": "The {{value}} has to be selected.",
