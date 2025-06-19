@@ -252,8 +252,8 @@ export default class AdpFlpConfigGenerator extends Generator {
         if (!this.launchAsSubGen) {
             this.prompts.splice(0, 0, [
                 {
-                    name: t('yuiNavSteps.flpConfigName'),
-                    description: t('yuiNavSteps.flpConfigDesc', { projectName: path.basename(this.projectRootPath) })
+                    name: t('yuiNavSteps.flpConfigName', { projectName: path.basename(this.projectRootPath) }),
+                    description: ''
                 }
             ]);
         }
@@ -378,10 +378,10 @@ export default class AdpFlpConfigGenerator extends Generator {
         const promptsIndex = this.prompts.size() === 1 ? 0 : 1;
         this.prompts.splice(promptsIndex, 0, [
             {
-                name: t('yuiNavSteps.tileSettingsName'),
-                description: t('yuiNavSteps.tileSettingsDescr', {
+                name: t('yuiNavSteps.tileSettingsName', {
                     projectName: path.basename(this.projectRootPath)
-                })
+                }),
+                description: ''
             }
         ]);
     }

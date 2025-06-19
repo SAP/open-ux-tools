@@ -4,10 +4,8 @@
         "configurationDescr": "Configure the system and select an application.",
         "projectAttributesName": "Project Attributes",
         "projectAttributesDescr": "Configure the main project attributes.",
-        "flpConfigName": "SAP Fiori Launchpad Configuration",
-        "flpConfigDescr": "Configure SAP Fiori launchpad settings for {{- projectName}}.",
-        "tileSettingsName": "FLP Configuration - tile settings",
-        "tileSettingsDescr": "Tile settings for {{- projectName}}",
+        "flpConfigName": "Fiori Launchpad Configuration",
+        "tileSettingsName": "Fiori Launchpad Configuration Configuration - Tile Settings for {{- projectName}}",
         "deployConfigName": "Deployment Configuration",
         "deployConfigDescr": "Configure deployment settings."
     },

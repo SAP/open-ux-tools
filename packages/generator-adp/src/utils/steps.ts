@@ -31,13 +31,13 @@ export function getFlpPages(showTileSettingsPage: boolean, projectName: string):
     const pages = [
         {
             name: t('yuiNavSteps.flpConfigName'),
-            description: t('yuiNavSteps.flpConfigDescr', { projectName })
+            description: ''
         }
     ];
     if (showTileSettingsPage) {
         pages.unshift({
-            name: t('yuiNavSteps.tileSettingsName'),
-            description: t('yuiNavSteps.tileSettingsDescr', { projectName })
+            name: t('yuiNavSteps.tileSettingsName', { projectName }),
+            description: ''
         });
     }
 

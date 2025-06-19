@@ -3,10 +3,8 @@
         "flpCredentialsName": "FLP Configuration - Credentials",
         "flpCredentialsDesc": "Enter credentials for your adaptation project's system ({{- system}})",
         "sysConfirmDesc": "Validates connection to configured system",
-        "flpConfigName": "FLP Configuration",
-        "flpConfigDesc": "FLP Configuration for {{- projectName}}",
-        "tileSettingsName": "FLP Configuration - tile settings",
-        "tileSettingsDescr": "Tile settings for {{- projectName}}"
+        "flpConfigName": "Fiori Launchpad Configuration",
+        "tileSettingsName": "Fiori Launchpad Configuration - Tile Settings for {{- projectName}}"
     },
     "info": {
         "flpConfigAdded": "FLP Configuration added successfully"
