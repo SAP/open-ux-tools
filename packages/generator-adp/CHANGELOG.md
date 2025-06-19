@@ -1,5 +1,96 @@
 # @sap-ux/generator-adp
 
+## 0.3.24
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.24
+    -   @sap-ux/inquirer-common@0.7.13
+    -   @sap-ux/adp-tooling@0.14.24
+
+## 0.3.23
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/inquirer-common@0.7.12
+    -   @sap-ux/adp-tooling@0.14.23
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.23
+
+## 0.3.22
+
+### Patch Changes
+
+-   65edfba: feat(generator-adp): Align @ui5/cli with latest v4 release
+-   Updated dependencies [65edfba]
+    -   @sap-ux/adp-tooling@0.14.22
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.22
+
+## 0.3.21
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.21
+-   @sap-ux/inquirer-common@0.7.11
+-   @sap-ux/adp-flp-config-sub-generator@0.1.21
+
+## 0.3.20
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.20
+    -   @sap-ux/adp-tooling@0.14.20
+
+## 0.3.19
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.19
+    -   @sap-ux/adp-tooling@0.14.19
+    -   @sap-ux/system-access@0.6.4
+
+## 0.3.18
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.18
+    -   @sap-ux/adp-tooling@0.14.18
+    -   @sap-ux/system-access@0.6.3
+
+## 0.3.17
+
+### Patch Changes
+
+-   f4439f1: feat(generator-adp): Consume FLP generator and Deployment generator
+-   Updated dependencies [f4439f1]
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.17
+    -   @sap-ux/adp-tooling@0.14.17
+
+## 0.3.16
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/inquirer-common@0.7.9
+    -   @sap-ux/adp-tooling@0.14.16
+
+## 0.3.15
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+    -   @sap-ux/adp-tooling@0.14.15
+
 ## 0.3.14
 
 ### Patch Changes

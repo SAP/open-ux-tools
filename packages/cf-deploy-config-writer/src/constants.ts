@@ -106,6 +106,7 @@ export const HTMLAppBuildParams = {
     commands: ['npm install', 'npm run build:cf'],
     'supported-platforms': []
 };
+export const UI5DeployBuildScriptForCap = 'npm run build:cf';
 export const UI5DeployBuildScript =
     'ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo';
 export const MTABuildScript = 'rimraf resources mta_archives && mbt build';

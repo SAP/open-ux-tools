@@ -58,7 +58,8 @@ describe('Freestyle generation', () => {
                 localUI5Version: '1.82.2',
                 skipAnnotations: false,
                 namespace: 'simplenamespace',
-                targetFolder: testDir
+                targetFolder: testDir,
+                enableVirtualEndpoints: true
             },
             service: {
                 version: OdataVersion.v2,
@@ -258,7 +259,8 @@ describe('Freestyle generation', () => {
                 localUI5Version: '1.82.2',
                 skipAnnotations: false,
                 namespace: '',
-                targetFolder: testDir
+                targetFolder: testDir,
+                enableVirtualEndpoints: true
             },
             service: {
                 servicePath: '',
@@ -287,7 +289,8 @@ describe('Freestyle generation', () => {
                 localUI5Version: '1.82.2',
                 skipAnnotations: false,
                 namespace: '',
-                targetFolder: testDir
+                targetFolder: testDir,
+                enableVirtualEndpoints: true
             },
             service: {
                 servicePath: '',
@@ -317,7 +320,8 @@ describe('Freestyle generation', () => {
                 localUI5Version: '1.102.1',
                 skipAnnotations: false,
                 namespace: 'test.namespace',
-                targetFolder: testDir
+                targetFolder: testDir,
+                enableVirtualEndpoints: true
             },
             service: {
                 servicePath: '',
@@ -392,7 +396,8 @@ describe('Freestyle generation', () => {
                 ui5Version: '1.82.2',
                 localUI5Version: '1.82.2',
                 namespace: 'sap.com',
-                targetFolder: testDir
+                targetFolder: testDir,
+                enableVirtualEndpoints: true
             },
             service: {
                 source: DatasourceType.none
