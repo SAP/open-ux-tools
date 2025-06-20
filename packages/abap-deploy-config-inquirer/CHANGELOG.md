@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.4.22
+
+### Patch Changes
+
+-   5a88606: Remove warning messages, no longer applicable and GA link is too complex to follow
+
 ## 1.4.21
 
 ### Patch Changes

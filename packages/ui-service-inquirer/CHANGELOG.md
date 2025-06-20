@@ -1,5 +1,12 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.1.28
+
+### Patch Changes
+
+-   Updated dependencies [5a88606]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.22
+
 ## 0.1.27
 
 ### Patch Changes
