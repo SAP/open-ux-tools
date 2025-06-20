@@ -28,8 +28,7 @@ describe('utils', () => {
             expect(promptOptions).toEqual(
                 expect.objectContaining({
                     existingFlpConfigInfo: { hide: true },
-                    semanticObject: { showTooltip: true },
-                    action: { executeDuplicateValidation: true, showTooltip: true },
+                    action: { executeDuplicateValidation: true },
                     inboundId: { hide: true },
                     overwrite: { hide: true }
                 })
@@ -51,8 +50,7 @@ describe('utils', () => {
             expect(promptOptions).toEqual(
                 expect.objectContaining({
                     existingFlpConfigInfo: { hide: false },
-                    semanticObject: { showTooltip: true },
-                    action: { executeDuplicateValidation: true, showTooltip: true },
+                    action: { executeDuplicateValidation: true },
                     inboundId: { hide: true },
                     overwrite: { hide: true }
                 })

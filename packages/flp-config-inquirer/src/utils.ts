@@ -27,8 +27,7 @@ export function getAdpFlpConfigPromptOptions(
         const hideExistingFlpConfigInfo = variant ? !(!inbounds && flpConfigurationExists(variant)) : true;
         return {
             existingFlpConfigInfo: { hide: hideExistingFlpConfigInfo },
-            semanticObject: { showTooltip: true },
-            action: { executeDuplicateValidation: true, showTooltip: true },
+            action: { executeDuplicateValidation: true },
             inboundId: { hide: true },
             overwrite: { hide: true }
         };
