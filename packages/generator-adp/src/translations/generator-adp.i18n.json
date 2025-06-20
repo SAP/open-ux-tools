@@ -5,7 +5,7 @@
         "projectAttributesName": "Project Attributes",
         "projectAttributesDescr": "Configure the main project attributes.",
         "flpConfigName": "Fiori Launchpad Configuration",
-        "tileSettingsName": "Fiori Launchpad Configuration Configuration - Tile Settings for {{- projectName}}",
+        "tileSettingsName": "Fiori Launchpad Configuration - Tile Settings for {{- projectName}}",
         "deployConfigName": "Deployment Configuration",
         "deployConfigDescr": "Configure deployment settings."
     },
