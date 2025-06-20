@@ -31,7 +31,7 @@ export interface FioriAppGeneratorOptions extends Generator.GeneratorOptions, Fi
      * Additional (non-specified option) data may be passed using this property. e.g. Adaptor data
      * todo: External -> FioriGeneratorOptions
      */
-    data?: Object; // todo: Is this used anywhere? Adaptors set state directly
+    data?: object; // todo: Is this used anywhere? Adaptors set state directly
     /**
      * Customer provided extensions used to customize existing questions
      */

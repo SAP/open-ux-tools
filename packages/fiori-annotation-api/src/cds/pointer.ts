@@ -483,6 +483,12 @@ class Visitor {
         }
         return undefined;
     }
+    /**
+     *
+     * @param astNode
+     * @param node
+     * @param pointer
+     */
     private flattenedAnnotationValue(
         astNode: Annotation,
         node: ElementChild,

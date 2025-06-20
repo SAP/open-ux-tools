@@ -40,11 +40,8 @@ describe('Optional settings', () => {
                 cleanTestDir(testDir);
             }
             process.chdir(originalCwd);
-        } catch {
-            () => {
-                // Needed for lint
-            };
-        }
+            // eslint-disable-next-line no-empty
+        } catch {}
     });
 
     beforeEach(() => {

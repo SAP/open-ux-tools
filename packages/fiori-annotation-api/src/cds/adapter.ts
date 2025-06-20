@@ -1111,6 +1111,14 @@ function adaptRecordPropertyIndex(record: Record, currentIndex?: number): number
     }
     return adaptedIdx;
 }
+/**
+ *
+ * @param writer
+ * @param document
+ * @param change
+ * @param parentAstNode
+ * @param greatGrandParentAstNode
+ */
 function checkAndDeleteFlattenedStructures(
     writer: CDSWriter,
     document: Document,
@@ -1137,7 +1145,15 @@ function checkAndDeleteFlattenedStructures(
 }
 
 // Splitting the logic into multiple functions would make the code more difficult to follow than it currently is.
-// eslint-disable-next-line sonarjs/cognitive-complexity
+
+/**
+ *
+ * @param targetName
+ * @param term
+ * @param qualifier
+ * @param ast
+ * @param writer
+ */
 function deleteChildFlattenedStructures(
     targetName: string | undefined,
     term: string,
@@ -1175,6 +1191,13 @@ function deleteChildFlattenedStructures(
     }
 }
 
+/**
+ *
+ * @param node
+ * @param prefix
+ * @param term
+ * @param qualifier
+ */
 function isMatchingAnnotation(node: AstNode, prefix: string, term: string | undefined, qualifier?: string): boolean {
     if (node.type !== ANNOTATION_TYPE) {
         return false;

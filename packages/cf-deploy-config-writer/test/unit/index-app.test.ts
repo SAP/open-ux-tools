@@ -60,7 +60,7 @@ describe('CF Writer App', () => {
         isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
         listDestinationsMock = jest.spyOn(btp, 'listDestinations');
         hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
-        commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 } as any));
+        commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 }) as any);
     });
 
     beforeAll(() => {

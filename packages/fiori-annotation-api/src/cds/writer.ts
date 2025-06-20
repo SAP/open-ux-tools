@@ -752,6 +752,7 @@ export class CDSWriter implements ChangeHandler {
      * @param change
      * @param indentLevel
      * @param firstInsert
+     * @param referenceNode
      */
     private insertIntoNodeWithContent<T extends ElementInserts>(
         content: ContainerContentBlock[],
@@ -1101,6 +1102,11 @@ function deleteValue(
     }
 }
 
+/**
+ *
+ * @param parent
+ * @param referenceNode
+ */
 function printChange(parent: ContainerNode | undefined, referenceNode?: Annotation) {
     return function (change: ElementInserts): string {
         if (change.type === INSERT_EMBEDDED_ANNOTATION_CHANGE_TYPE) {

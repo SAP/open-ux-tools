@@ -892,7 +892,6 @@ export class ChangeConverter {
                     })
                 );
                 return acc;
-                // eslint-disable-next-line no-array-constructor
             }, new Array<JsonPointer>())
         };
         this.annotationFileChanges.push(internal);

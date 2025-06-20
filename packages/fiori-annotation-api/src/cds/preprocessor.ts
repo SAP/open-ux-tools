@@ -233,6 +233,11 @@ class ChangePreprocessor {
         this.processDeletionMap(deletionMap, insertionMap);
     }
 
+    /**
+     *
+     * @param deletionMap
+     * @param insertionMap
+     */
     private processDeletionMap(
         deletionMap: Record<string, DeletionIndex[]>,
         insertionMap: Record<string, boolean>
@@ -535,6 +540,13 @@ class ChangePreprocessor {
         }
     }
 
+    /**
+     *
+     * @param pointer
+     * @param change
+     * @param deletionChangeIndex
+     * @param changeIndex
+     */
     private createReplaceCommand(
         pointer: string,
         change: InsertEmbeddedAnnotation | InsertAnnotation,
@@ -550,6 +562,11 @@ class ChangePreprocessor {
         });
     }
 
+    /**
+     *
+     * @param change
+     * @param parent
+     */
     private flattenAnnotationTerm(change: InsertEmbeddedAnnotation, parent: AstNode): void {
         const element = createReferenceElement(parent);
         const last = structuredClone(change.element);
