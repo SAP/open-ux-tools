@@ -1,5 +1,25 @@
 # @sap-ux/app-config-writer
 
+## 0.6.13
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+
+## 0.6.12
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+
+## 0.6.11
+
+### Patch Changes
+
+-   14c2776: fix preview middleware dependency
+
 ## 0.6.10
 
 ### Patch Changes
