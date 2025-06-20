@@ -1,8 +1,8 @@
 import type Generator from 'yeoman-generator';
 import { type AppWizard } from '@sap-devx/yeoman-ui-types';
 
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { ConfigAnswers, AttributesAnswers, SystemLookup } from '@sap-ux/adp-tooling';
 
 import { t } from './i18n';
@@ -52,7 +52,7 @@ interface DeployGenOptions {
 export function addFlpGen(
     { projectRootPath, system, manifest }: FlpGenProps,
     composeWith: Generator['composeWith'],
-    logger: ILogWrapper,
+    logger: ToolsLogger,
     appWizard: AppWizard
 ): void {
     try {
@@ -91,7 +91,7 @@ export function addFlpGen(
 export function addDeployGen(
     { projectName, targetFolder, client, connectedSystem, destinationName }: DeployGenOptions,
     composeWith: Generator['composeWith'],
-    logger: ILogWrapper,
+    logger: ToolsLogger,
     appWizard: AppWizard
 ): void {
     try {
@@ -130,7 +130,7 @@ export function addDeployGen(
 export async function addExtProjectGen(
     { configAnswers, attributeAnswers, systemLookup }: ExtProjectGenProps,
     composeWith: Generator['composeWith'],
-    logger: ILogWrapper,
+    logger: ToolsLogger,
     appWizard?: AppWizard
 ): Promise<void> {
     try {
