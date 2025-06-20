@@ -1,14 +1,17 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
-import FlexBox from 'sap/m/FlexBox';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import type FlexBox from 'sap/m/FlexBox';
 
 import { DialogFactory, DialogNames } from '../../dialog-factory';
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    SimpleQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { isA } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
-import { EnablementValidatorResult } from '../enablement-validator';
+import type { EnablementValidatorResult } from '../enablement-validator';
 import { getTextBundle } from '../../../i18n';
 
 export const OP_ADD_HEADER_FIELD_TYPE = 'op-add-header-field';
@@ -21,6 +24,10 @@ export class AddHeaderFieldQuickAction
     extends SimpleQuickActionDefinitionBase<ObjectPageLayout>
     implements SimpleQuickActionDefinition
 {
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(OP_ADD_HEADER_FIELD_TYPE, CONTROL_TYPES, 'QUICK_ACTION_OP_ADD_HEADER_FIELD', context, [
             DIALOG_ENABLEMENT_VALIDATOR,
@@ -39,6 +46,9 @@ export class AddHeaderFieldQuickAction
         ]);
     }
 
+    /**
+     *
+     */
     async execute(): Promise<FlexCommand[]> {
         if (!this.control) {
             return [];

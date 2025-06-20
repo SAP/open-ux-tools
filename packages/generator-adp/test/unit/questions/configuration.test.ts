@@ -1,8 +1,7 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import type { AxiosError } from '@sap-ux/axios-extension';
+import type { AxiosError, isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ConfigAnswers, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
 import { FlexLayer, SourceManifest, getConfiguredProvider, isAppSupported, loadApps } from '@sap-ux/adp-tooling';

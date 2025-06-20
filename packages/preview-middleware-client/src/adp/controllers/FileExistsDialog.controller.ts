@@ -15,8 +15,17 @@ export interface FileExistsDialogOptions {
 }
 
 type FileExistModel = JSONModel & {
+    /**
+     *
+     */
     getProperty(sPath: '/filePath'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/filePathFromRoot'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/isRunningInBAS'): boolean;
 };
 
@@ -26,6 +35,11 @@ type FileExistModel = JSONModel & {
 export default class FileExistsDialog extends BaseDialog<FileExistModel> {
     private options: FileExistsDialogOptions;
     public model: JSONModel;
+    /**
+     *
+     * @param name
+     * @param options
+     */
     constructor(name: string, options: FileExistsDialogOptions) {
         super(name);
         this.model = new JSONModel();

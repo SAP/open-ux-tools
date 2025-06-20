@@ -8,8 +8,12 @@ import {
     BASE_I18N_DESCRIPTION,
     TRANSLATION_UUID_TEXT
 } from '../../../../src';
-import { getI18nDescription } from '../../../../src/writer/i18n';
-import { writeI18nModels, extractResourceModelPath, getI18nModels } from '../../../../src/writer/i18n';
+import {
+    getI18nDescription,
+    writeI18nModels,
+    extractResourceModelPath,
+    getI18nModels
+} from '../../../../src/writer/i18n';
 
 jest.mock('uuid', () => ({
     v4: jest.fn()

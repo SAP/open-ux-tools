@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 // Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
 import { withCondition, extendWithOptions } from '@sap-ux/inquirer-common';
 import {
@@ -49,7 +48,7 @@ export function getQuestions(
     const targetDir =
         typeof promptOptions?.[promptNames.targetFolder]?.default === 'string'
             ? promptOptions[promptNames.targetFolder].default // Default functions will be applied later, these replace the existing defaults
-            : promptOptions?.[promptNames.targetFolder]?.defaultValue ?? process.cwd();
+            : (promptOptions?.[promptNames.targetFolder]?.defaultValue ?? process.cwd());
     const isCapProject = !!capCdsInfo;
 
     const keyedPrompts: Record<promptNames, UI5ApplicationQuestion> = {

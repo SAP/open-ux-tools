@@ -1,9 +1,12 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type Table from 'sap/m/Table';
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
-import ManagedObject from 'sap/ui/base/ManagedObject';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    NestedQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
@@ -14,10 +17,17 @@ const M_TABLE_TYPE = 'sap.m.Table';
 // maintain order if action id
 const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, 'sap.ui.table.TreeTable', 'sap.ui.table.Table'];
 
+/**
+ *
+ */
 export class ChangeTableColumnsQuickAction
     extends TableQuickActionDefinitionBase
     implements NestedQuickActionDefinition
 {
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(
             CHANGE_TABLE_COLUMNS,
@@ -30,6 +40,10 @@ export class ChangeTableColumnsQuickAction
             [DIALOG_ENABLEMENT_VALIDATOR]
         );
     }
+    /**
+     *
+     * @param path
+     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, changeColumnActionId, sectionInfo } = this.tableMap[path];
         if (!table) {
@@ -68,6 +82,11 @@ export class ChangeTableColumnsQuickAction
         return [];
     }
 
+    /**
+     *
+     * @param element
+     * @param aggregationName
+     */
     private isAbsoluteAggregationBinding(element: ManagedObject, aggregationName: string): boolean {
         const mBindingInfo = element.getBindingInfo(aggregationName);
         const path = mBindingInfo?.path;

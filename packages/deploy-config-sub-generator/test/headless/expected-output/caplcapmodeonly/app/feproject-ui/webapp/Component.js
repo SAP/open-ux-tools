@@ -1,9 +1,9 @@
-sap.ui.define(["sap/fe/core/AppComponent"], function(AppComponent) {
+sap.ui.define(['sap/fe/core/AppComponent'], function (AppComponent) {
     'use strict';
 
-    return AppComponent.extend("headless.test.feprojectui.Component", {
+    return AppComponent.extend('headless.test.feprojectui.Component', {
         metadata: {
-            manifest: "json"
+            manifest: 'json'
         }
     });
 });

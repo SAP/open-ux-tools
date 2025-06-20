@@ -23,7 +23,7 @@ export interface PropertyDocumentationProps {
      *
      * @param controlId - The ID of the control.
      * @param propertyName - The name of the property.
-     * @param propertyName - The filename of the saved property.
+     * @param fileName - The filename of the saved property.
      */
     onDelete?(controlId: string, propertyName: string, fileName?: string): void;
 }

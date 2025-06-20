@@ -1,9 +1,0 @@
-{
-    "extends": [
-        "../../.eslintrc"
-    ],
-    "parserOptions": {
-        "EXPERIMENTAL_useSourceOfProjectReferenceRedirect": true,
-        "project": "./tsconfig.eslint.json"
-    }
-}

@@ -1,5 +1,5 @@
 import XMLView from 'sap/ui/core/mvc/XMLView';
-import Control from 'sap/ui/core/Control';
+import type Control from 'sap/ui/core/Control';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 
 import type {
@@ -39,6 +39,10 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
         [OBJECT_PAGE_TYPE]: 'objectPage',
         [ANALYTICAL_LIST_PAGE_TYPE]: 'analyticalListPage'
     };
+    /**
+     *
+     * @param context
+     */
     getDefinitions(context: QuickActionActivationContext): QuickActionDefinitionGroup[] {
         const activePages = this.getActivePageContent(context.controlIndex);
 
@@ -110,6 +114,10 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
         return definitionGroups;
     }
 
+    /**
+     *
+     * @param page
+     */
     protected getComponentContainerFromPage(page: Control): ComponentContainer | undefined {
         // in ui5 version 1.71 there is no XMLView wrapper around ComponentContainer
         const componentContainer = page instanceof XMLView ? page.getContent()[0] : page;

@@ -19,7 +19,6 @@ const refLibGenPath = path.join(__dirname, '../../src/app');
 let yoEnv4 = false;
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     TelemetryHelper: {
         initTelemetrySettings: jest.fn(),

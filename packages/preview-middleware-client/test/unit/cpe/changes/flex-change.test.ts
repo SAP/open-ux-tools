@@ -4,10 +4,10 @@ import { PropertyType, type PropertyChange } from '@sap-ux-private/control-prope
 import { sapCoreMock } from 'mock/window';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
-import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
-import { ManifestPropertyChange } from 'sap/ui/dt/DesignTimeMetadata';
+import type { ManifestPropertyChange } from 'sap/ui/dt/DesignTimeMetadata';
 
 describe('flexChange', () => {
     // prepare
