@@ -119,6 +119,45 @@ describe('validateMtaId', () => {
     });
 });
 
+describe('validateMtaId regex /^[a-zA-Z][a-zA-Z0-9_-.]*$/', () => {
+    const previousAnswers = { mtaPath: '/valid/path' } as unknown as CfAppRouterDeployConfigAnswers;
+    beforeEach(() => {
+        mockedExistsSync.mockReturnValue(false);
+    });
+    it('should allow IDs starting with a letter', () => {
+        expect(validateMtaId('A', previousAnswers)).toBe(true);
+        expect(validateMtaId('Z_123', previousAnswers)).toBe(true);
+        expect(validateMtaId('a1_b.c-d', previousAnswers)).toBe(true);
+        expect(validateMtaId('b-1.2_3', previousAnswers)).toBe(true);
+    });
+    it('should not allow IDs starting with a number', () => {
+        mockedT.mockReturnValue('Invalid MTA ID format');
+        expect(validateMtaId('1abc', previousAnswers)).toBe('Invalid MTA ID format');
+        expect(mockedT).toHaveBeenCalledWith('errors.invalidMtaIdError');
+    });
+    it('should not allow IDs starting with underscore, hyphen, or dot', () => {
+        mockedT.mockReturnValue('Invalid MTA ID format');
+        expect(validateMtaId('_abc', previousAnswers)).toBe('Invalid MTA ID format');
+        expect(validateMtaId('-abc', previousAnswers)).toBe('Invalid MTA ID format');
+        expect(validateMtaId('.abc', previousAnswers)).toBe('Invalid MTA ID format');
+    });
+    it('should allow numbers after the first character', () => {
+        expect(validateMtaId('a1', previousAnswers)).toBe(true);
+        expect(validateMtaId('b2c3', previousAnswers)).toBe(true);
+    });
+    it('should allow underscores, hyphens, and dots after the first character', () => {
+        expect(validateMtaId('a_b', previousAnswers)).toBe(true);
+        expect(validateMtaId('a-b', previousAnswers)).toBe(true);
+        expect(validateMtaId('a.b', previousAnswers)).toBe(true);
+    });
+    it('should not allow spaces or special characters', () => {
+        mockedT.mockReturnValue('Invalid MTA ID format');
+        expect(validateMtaId('a bc', previousAnswers)).toBe('Invalid MTA ID format');
+        expect(validateMtaId('a$bc', previousAnswers)).toBe('Invalid MTA ID format');
+        expect(validateMtaId('a@bc', previousAnswers)).toBe('Invalid MTA ID format');
+    });
+});
+
 describe('validateMtaId long Windows path', () => {
     let originalPlatform: PropertyDescriptor | undefined;
 
