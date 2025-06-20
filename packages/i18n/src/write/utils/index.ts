@@ -54,12 +54,12 @@ function removeKeyFromI18nPropertiesFile(content: string, keysToRemove: string[]
 
     for (let i = 0; i < ast.length; i++) {
         const line = ast[i];
-        if (line.type === 'key-element-line' && keysToRemove.includes(line.key.value)) {
+        if (line.type === 'key-element-line' && keysToRemove.findIndex((key) => line.key.value.includes(key)) !== -1) {
             const previousLine = ast[i - 1];
             const start = previousLine.type === 'comment-line' ? previousLine.range.start : line.range.start;
             const end = line.endOfLineToken ? document.positionAt(line.endOfLineToken.end) : line.range.end;
             textEdits.push(TextEdit.del(Range.create(start, end)));
         }
     }
-    return TextDocument.applyEdits(document, textEdits);
+    return TextDocument.applyEdits(document, textEdits).trim();
 }

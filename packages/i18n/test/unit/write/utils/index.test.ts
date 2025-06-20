@@ -229,14 +229,14 @@ describe('index', () => {
                     ['# Comment', '', 'key1=oldValue1', 'key2=oldValue2', '', 'key3=oldValue3'].join('\n')
                 );
                 const newI18nEntries = [{ key: 'key4', value: 'newValue4', annotation: undefined }];
-                const keysToRemove = ['key1'];
+                const keysToRemove = ['key3'];
 
                 await writeToExistingI18nPropertiesFile(i18nFilePath, newI18nEntries, keysToRemove, fs);
 
                 // The comment and empty line above key2 should remain, but if there were only comments/empty lines above, they would be removed.
                 expect(utils.writeFile).toHaveBeenCalledWith(
                     i18nFilePath,
-                    ['key2=oldValue2', '', 'key3=oldValue3', 'key4=newValue4', ''].join('\n'),
+                    ['# Comment', '', 'key1=oldValue1', 'key2=oldValue2', 'key4=newValue4', ''].join('\n'),
                     fs
                 );
             });
