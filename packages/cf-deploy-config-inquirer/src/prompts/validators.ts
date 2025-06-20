@@ -84,7 +84,7 @@ export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployC
         return t('errors.noMtaIdError');
     }
     if (input.length > 100) {
-        return t('errors.invalidMtaIdError');
+        return t('errors.mtaIdLengthError');
     }
     // The MTA ID must start with a letter (a–z, A–Z). After the first character, any combination of letters, numbers, underscores (_), hyphens (-), or dots (.) is allowed.
     const idPattern = /^[a-zA-Z][a-zA-Z0-9_\-.]*$/;

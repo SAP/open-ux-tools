@@ -156,6 +156,12 @@ describe('validateMtaId regex /^[a-zA-Z][a-zA-Z0-9_-.]*$/', () => {
         expect(validateMtaId('a$bc', previousAnswers)).toBe('Invalid MTA ID format');
         expect(validateMtaId('a@bc', previousAnswers)).toBe('Invalid MTA ID format');
     });
+    it('should not allow IDs longer than 100 characters', () => {
+        mockedT.mockReturnValue('MTA ID too long');
+        const longId = 'a'.repeat(101);
+        expect(validateMtaId(longId, previousAnswers)).toBe('MTA ID too long');
+        expect(mockedT).toHaveBeenCalledWith('errors.mtaIdLengthError');
+    });
 });
 
 describe('validateMtaId long Windows path', () => {
