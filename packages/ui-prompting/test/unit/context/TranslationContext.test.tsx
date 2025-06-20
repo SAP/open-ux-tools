@@ -50,8 +50,8 @@ describe('TranslationProvider', () => {
         clickI18nButton();
 
         acceptI18nCallout(id);
-        expect(translationProps.onEvent).toBeCalledTimes(1);
-        expect(translationProps.onEvent).toBeCalledWith('testInput', {
+        expect(translationProps.onEvent).toHaveBeenCalledTimes(1);
+        expect(translationProps.onEvent).toHaveBeenCalledWith('testInput', {
             entry: { key: { value: 'dummyValue' }, value: { value: 'dummy value' } },
             name: TRANSLATE_EVENT_UPDATE,
             properties: annotationProps
@@ -67,8 +67,8 @@ describe('TranslationProvider', () => {
         expect(isI18nLoading()).toEqual(false);
         clickI18nButton(false);
 
-        expect(translationProps.onEvent).toBeCalledTimes(1);
-        expect(translationProps.onEvent).toBeCalledWith('testInput', {
+        expect(translationProps.onEvent).toHaveBeenCalledTimes(1);
+        expect(translationProps.onEvent).toHaveBeenCalledWith('testInput', {
             entry: { key: { value: 'test' }, value: { value: 'Test value' } },
             name: TRANSLATE_EVENT_SHOW
         });

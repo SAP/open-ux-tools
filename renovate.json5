@@ -77,7 +77,7 @@
             groupName: 'dependencies [lodash]'
         },
         {
-            matchPackagePrefixes: ['jest', 'ts-jest', '@​types/jest', 'babel-jest'],
+            matchPackagePrefixes: ['jest', '@​types/jest', '@jest/​types', 'jest-*', '*-jest', '@​types/*jest*' ],
             groupName: 'dev dependencies [jest]',
             matchDepTypes: ['devDependencies']
         },

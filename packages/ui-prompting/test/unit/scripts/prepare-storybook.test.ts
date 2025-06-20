@@ -34,11 +34,11 @@ describe('prepare-storybook.ts', () => {
         readdirSyncSpy.mockReturnValue(['file1.css', 'file2.css']);
         await run([]);
         // "static" folder creation
-        expect(mkdirSyncSpy).toBeCalledTimes(1);
+        expect(mkdirSyncSpy).toHaveBeenCalledTimes(1);
         const mkdirFolter = mkdirSyncSpy.mock.calls[0][0];
         expect(mkdirFolter.endsWith('static')).toBeTruthy();
         // copy files
-        expect(copyFileSyncSpy).toBeCalledTimes(4);
+        expect(copyFileSyncSpy).toHaveBeenCalledTimes(4);
         const copiedFiles = getCopiedFilePaths();
         expect(copiedFiles).toEqual([
             {
@@ -65,9 +65,9 @@ describe('prepare-storybook.ts', () => {
         readdirSyncSpy.mockReturnValue(['file1.css', 'file2.css']);
         await run([]);
         // "static" folder creation
-        expect(mkdirSyncSpy).toBeCalledTimes(0);
+        expect(mkdirSyncSpy).toHaveBeenCalledTimes(0);
         // copy files
-        expect(copyFileSyncSpy).toBeCalledTimes(0);
+        expect(copyFileSyncSpy).toHaveBeenCalledTimes(0);
     });
 
     test('Files already exists - overwrite true', async () => {
@@ -75,9 +75,9 @@ describe('prepare-storybook.ts', () => {
         readdirSyncSpy.mockReturnValue(['file1.css']);
         await run(['--overwrite']);
         // "static" folder creation
-        expect(mkdirSyncSpy).toBeCalledTimes(0);
+        expect(mkdirSyncSpy).toHaveBeenCalledTimes(0);
         // copy files
-        expect(copyFileSyncSpy).toBeCalledTimes(3);
+        expect(copyFileSyncSpy).toHaveBeenCalledTimes(3);
         const copiedFiles = getCopiedFilePaths();
         expect(copiedFiles).toEqual([
             {

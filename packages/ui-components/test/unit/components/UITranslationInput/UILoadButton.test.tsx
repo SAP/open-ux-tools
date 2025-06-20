@@ -56,10 +56,10 @@ describe('<UILoadButton />', () => {
         });
 
         it('Release in timeout', () => {
-            expect(setTimeoutSpy).toBeCalledTimes(0);
+            expect(setTimeoutSpy).toHaveBeenCalledTimes(0);
             const { rerender } = render(<UILoadButton onClick={onClick} busy={true} useMinWaitingTime={true} />);
             expect(isLoading()).toEqual(true);
-            expect(setTimeoutSpy).toBeCalledTimes(1);
+            expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
             expect(setTimeoutSpy.mock.calls[0][1]).toEqual(500);
             // Try to release loader - it still should busy, because min waiting time was not completed
             rerender(<UILoadButton onClick={onClick} busy={false} useMinWaitingTime={true} />);
@@ -70,10 +70,10 @@ describe('<UILoadButton />', () => {
         });
 
         it('Release after timeout', () => {
-            expect(setTimeoutSpy).toBeCalledTimes(0);
+            expect(setTimeoutSpy).toHaveBeenCalledTimes(0);
             const { rerender } = render(<UILoadButton onClick={onClick} busy={true} useMinWaitingTime={true} />);
             expect(isLoading()).toEqual(true);
-            expect(setTimeoutSpy).toBeCalledTimes(1);
+            expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
             expect(setTimeoutSpy.mock.calls[0][1]).toEqual(500);
             // Simulate timeout handler
             setTimeoutSpy.mock.calls[0][0]();
@@ -84,20 +84,20 @@ describe('<UILoadButton />', () => {
         });
 
         it('Unmount', () => {
-            expect(setTimeoutSpy).toBeCalledTimes(0);
+            expect(setTimeoutSpy).toHaveBeenCalledTimes(0);
             const { unmount } = render(<UILoadButton onClick={onClick} busy={true} useMinWaitingTime={true} />);
-            expect(setTimeoutSpy).toBeCalledTimes(1);
+            expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
             // Simulate timeout handler
             unmount();
-            expect(clearTimeoutSpy).toBeCalledTimes(1);
+            expect(clearTimeoutSpy).toHaveBeenCalledTimes(1);
         });
 
         it('Custom waiting time', () => {
             const useMinWaitingTime = 200;
-            expect(setTimeoutSpy).toBeCalledTimes(0);
+            expect(setTimeoutSpy).toHaveBeenCalledTimes(0);
             render(<UILoadButton onClick={onClick} busy={true} useMinWaitingTime={useMinWaitingTime} />);
             expect(isLoading()).toEqual(true);
-            expect(setTimeoutSpy).toBeCalledTimes(1);
+            expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
             expect(setTimeoutSpy.mock.calls[0][1]).toEqual(useMinWaitingTime);
         });
     });

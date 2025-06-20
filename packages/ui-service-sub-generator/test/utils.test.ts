@@ -50,7 +50,7 @@ describe('test helper functions', () => {
             get: jest.fn()
         } as any;
         expect(checkConnection(providerMock)).toBeDefined();
-        expect(providerMock.get).toBeCalled();
+        expect(providerMock.get).toHaveBeenCalled();
     });
 
     test('test checkConnection - throws', async () => {
@@ -60,7 +60,7 @@ describe('test helper functions', () => {
             })
         } as any;
         expect(await checkConnection(providerMock)).toEqual(false);
-        expect(providerMock.get).toBeCalled();
+        expect(providerMock.get).toHaveBeenCalled();
     });
 
     describe('generate functions', () => {
@@ -138,7 +138,7 @@ describe('test helper functions', () => {
             await expect(
                 utils.generateService(generatorMock, state.content, 'tr12345', appWizardMock as AppWizard)
             ).resolves.not.toThrow();
-            expect(appWizardMock.showError).toBeCalled();
+            expect(appWizardMock.showError).toHaveBeenCalled();
         });
 
         test('generateService - should write BAS service metadata file', async () => {
@@ -343,7 +343,7 @@ describe('test helper functions', () => {
         mockIsAppStudio.mockReturnValue(false);
         await utils.runPostGenHook(options, system, content, providerMock);
         jest.advanceTimersByTime(1000);
-        expect(options.vscode.commands.executeCommand).toBeCalledWith('sap.ux.service.generated.handler', {
+        expect(options.vscode.commands.executeCommand).toHaveBeenCalledWith('sap.ux.service.generated.handler', {
             type: 'SERVICE_GEN_DATA',
             service: {
                 metadata: '',
@@ -397,7 +397,7 @@ describe('test helper functions', () => {
         };
         await utils.runPostGenHook(options, system, content, providerMock);
         jest.advanceTimersByTime(1000);
-        expect(options.vscode.commands.executeCommand).toBeCalledWith('sap.ux.service.generated.handler', {
+        expect(options.vscode.commands.executeCommand).toHaveBeenCalledWith('sap.ux.service.generated.handler', {
             type: 'SERVICE_GEN_DATA',
             service: {
                 metadata: '',

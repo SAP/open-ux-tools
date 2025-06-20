@@ -32,28 +32,28 @@ describe('<UIDatePicker />', () => {
     it('onInputChange', () => {
         const wrapper = Enzyme.mount(<UIDatePicker {...defaultProps} dateOnly />);
         wrapper.find('input[type="text"]').simulate('change', { target: { value: '2022-08-22' } });
-        expect(onChangeSpy).toBeCalledTimes(1);
+        expect(onChangeSpy).toHaveBeenCalledTimes(1);
         expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22');
     });
 
     it('onInputChange, undefined', () => {
         const wrapper = Enzyme.mount(<UIDatePicker {...defaultProps} dateOnly />);
         wrapper.instance()['onInputChange']({}, undefined);
-        expect(onChangeSpy).toBeCalledTimes(1);
+        expect(onChangeSpy).toHaveBeenCalledTimes(1);
         expect(onChangeSpy.mock.calls[0][1]).toBe('');
     });
 
     it('onPickerChange', () => {
         const wrapper = Enzyme.mount(<UIDatePicker {...defaultProps} dateOnly />);
         wrapper.find('input[type="date"]').simulate('change', { target: { value: '2022-08-22' } });
-        expect(onChangeSpy).toBeCalledTimes(1);
+        expect(onChangeSpy).toHaveBeenCalledTimes(1);
         expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22');
     });
 
     it('onPickerChange, datetime without seconds', () => {
         const wrapper = Enzyme.mount(<UIDatePicker {...defaultProps} />);
         wrapper.find('input[type="datetime-local"]').simulate('change', { target: { value: '2022-08-22T22:00' } });
-        expect(onChangeSpy).toBeCalledTimes(1);
+        expect(onChangeSpy).toHaveBeenCalledTimes(1);
         expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22T22:00:00');
     });
 });

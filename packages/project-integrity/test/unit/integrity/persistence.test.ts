@@ -43,7 +43,7 @@ describe('Test writeIntegrityData()', () => {
             contentIntegrity: []
         };
         await writeIntegrityData(integrityFilePath, content as Integrity);
-        expect(mockedMkdir).toBeCalledWith(expect.stringContaining('new-folder'), { recursive: true });
+        expect(mockedMkdir).toHaveBeenCalledWith(expect.stringContaining('new-folder'), { recursive: true });
     });
 
     test('Read and write integrity data, content should be same', async () => {
@@ -52,7 +52,7 @@ describe('Test writeIntegrityData()', () => {
         const originalContent = await readFile(integrityFilePath, { encoding: 'utf-8' });
         const content = await readIntegrityData(integrityFilePath);
         await writeIntegrityData(integrityFilePath, content);
-        expect(mockedWriteFile).toBeCalledWith(integrityFilePath, originalContent, { encoding: 'utf-8' });
+        expect(mockedWriteFile).toHaveBeenCalledWith(integrityFilePath, originalContent, { encoding: 'utf-8' });
     });
 
     // Other, valid cases, are tested in project.test.ts

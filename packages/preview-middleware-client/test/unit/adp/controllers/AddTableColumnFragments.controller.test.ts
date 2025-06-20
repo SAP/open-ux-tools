@@ -249,7 +249,7 @@ describe('AddTableColumnsFragments controller', () => {
                 expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(1, '');
                 expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(2, 'Duplicate name');
                 expect(mocks.setValueStateTextMock).toHaveBeenNthCalledWith(3, 'Duplicate name');
-                expect(beginBtnSetEnabledMock).lastCalledWith(false);
+                expect(beginBtnSetEnabledMock).toHaveBeenLastCalledWith(false);
             });
 
             test('does not override other errors', () => {
@@ -284,7 +284,7 @@ describe('AddTableColumnsFragments controller', () => {
                 expect(mocks.setValueStateMock).toHaveBeenCalledTimes(3);
                 expect(mocks.setValueStateMock.mock.calls.every((call) => call[0] === ValueState.Success)).toBe(true);
                 expect(mocks.setValueStateMock).toHaveBeenNthCalledWith(2, ValueState.Success);
-                expect(beginBtnSetEnabledMock).lastCalledWith(true);
+                expect(beginBtnSetEnabledMock).toHaveBeenLastCalledWith(true);
             });
         });
 
@@ -299,7 +299,7 @@ describe('AddTableColumnsFragments controller', () => {
             addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
             expect(mocks.setValueStateMock).toHaveBeenCalledWith(ValueState.None);
-            expect(beginBtnSetEnabledMock).lastCalledWith(false);
+            expect(beginBtnSetEnabledMock).toHaveBeenLastCalledWith(false);
         });
 
         test('sets error when the fragment name has special characters', () => {
@@ -316,7 +316,7 @@ describe('AddTableColumnsFragments controller', () => {
             expect(mocks.setValueStateTextMock).toHaveBeenCalledWith(
                 'The fragment name cannot contain white spaces or special characters.'
             );
-            expect(beginBtnSetEnabledMock).lastCalledWith(false);
+            expect(beginBtnSetEnabledMock).toHaveBeenLastCalledWith(false);
         });
 
         test('sets error when the fragment name contains a whitespace at the end', () => {
@@ -333,7 +333,7 @@ describe('AddTableColumnsFragments controller', () => {
             expect(mocks.setValueStateTextMock).toHaveBeenCalledWith(
                 'The fragment name cannot contain white spaces or special characters.'
             );
-            expect(beginBtnSetEnabledMock).lastCalledWith(false);
+            expect(beginBtnSetEnabledMock).toHaveBeenLastCalledWith(false);
         });
 
         test('sets error when the fragment name exceeds 64 characters', () => {
@@ -352,7 +352,7 @@ describe('AddTableColumnsFragments controller', () => {
             expect(mocks.setValueStateTextMock).toHaveBeenCalledWith(
                 'A fragment file name cannot contain more than 64 characters.'
             );
-            expect(beginBtnSetEnabledMock).lastCalledWith(false);
+            expect(beginBtnSetEnabledMock).toHaveBeenLastCalledWith(false);
         });
 
         test('does not crash if composite command exists in command stack', () => {

@@ -265,14 +265,14 @@ describe('OutlinePanel', () => {
         // Simulate a right-click event
         fireEvent.contextMenu(spanElement);
 
-        expect(dispatch).nthCalledWith(1, { type: '[ext] select-control', payload: '04' });
+        expect(dispatch).toHaveBeenNthCalledWith(1, { type: '[ext] select-control', payload: '04' });
 
         // shown context menu item.
         const contextMenuItems = screen.getAllByText(/Add Fragment at Extension Point/i);
         expect(contextMenuItems.length).toBe(1);
 
         fireEvent.click(contextMenuItems[0]);
-        expect(dispatch).nthCalledWith(
+        expect(dispatch).toHaveBeenNthCalledWith(
             2,
             addExtensionPoint({
                 children: [],
@@ -401,15 +401,18 @@ describe('OutlinePanel', () => {
         // Simulate a right-click event
         fireEvent.contextMenu(spanElement);
 
-        expect(dispatch).nthCalledWith(1, { type: '[ext] select-control', payload: '01' });
-        expect(dispatch).nthCalledWith(2, { type: '[ext] request-control-context-menu <pending>', payload: '01' });
+        expect(dispatch).toHaveBeenNthCalledWith(1, { type: '[ext] select-control', payload: '01' });
+        expect(dispatch).toHaveBeenNthCalledWith(2, {
+            type: '[ext] request-control-context-menu <pending>',
+            payload: '01'
+        });
 
         // find context menu items.
         const contextMenuItems = screen.getAllByText(/^test-action/i);
         expect(contextMenuItems.length).toBe(2);
 
         fireEvent.click(contextMenuItems[0]);
-        expect(dispatch).nthCalledWith(
+        expect(dispatch).toHaveBeenNthCalledWith(
             3,
             executeContextMenuAction({
                 controlId: '01',

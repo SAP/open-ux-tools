@@ -119,7 +119,7 @@ describe('<UITreeDropdown />', () => {
         openDropdown();
         expect(wrapper.find(selectors.treeContextMenu).length).toBeGreaterThan(0);
         // Focus should be called for input
-        expect(focusSpy).toBeCalledTimes(1);
+        expect(focusSpy).toHaveBeenCalledTimes(1);
         // Check wrapper
         expect(wrapper.find(selectors.wrapper.disabled).length).toEqual(0);
         expect(wrapper.find(selectors.wrapper.closed).length).toEqual(0);
@@ -134,7 +134,7 @@ describe('<UITreeDropdown />', () => {
             target
         } as React.FocusEvent<HTMLInputElement>;
         wrapper.find(UITextInput).prop('onFocus')(event);
-        expect(event.target.select).toBeCalledTimes(1);
+        expect(event.target.select).toHaveBeenCalledTimes(1);
     });
 
     it('Open with keyboard and check value', () => {
@@ -187,15 +187,15 @@ describe('<UITreeDropdown />', () => {
             // In focuszone click callback handled also when ewnter key pressed on focused item
             wrapper.find('button.ms-ContextualMenu-link').first().simulate('click');
             expect(wrapper.state().value).toEqual('Title2');
-            expect(onChange).toBeCalledTimes(1);
-            expect(onChange).toBeCalledWith('Title2');
+            expect(onChange).toHaveBeenCalledTimes(1);
+            expect(onChange).toHaveBeenCalledWith('Title2');
             // Try another select
             onChange.mockClear();
             openDropdown();
             wrapper.find('button.ms-ContextualMenu-link').last().simulate('click');
             expect(wrapper.state().value).toEqual('Title3');
-            expect(onChange).toBeCalledTimes(1);
-            expect(onChange).toBeCalledWith('Title3');
+            expect(onChange).toHaveBeenCalledTimes(1);
+            expect(onChange).toHaveBeenCalledWith('Title3');
         });
 
         it('Change value and reset with "Escape" key', () => {
@@ -203,8 +203,8 @@ describe('<UITreeDropdown />', () => {
             // In focuszone click callback handled also when ewnter key pressed on focused item
             wrapper.find('button.ms-ContextualMenu-link').first().simulate('click');
             expect(wrapper.state().value).toEqual('Title2');
-            expect(onChange).toBeCalledTimes(1);
-            expect(onChange).toBeCalledWith('Title2');
+            expect(onChange).toHaveBeenCalledTimes(1);
+            expect(onChange).toHaveBeenCalledWith('Title2');
             // Try another select
             onChange.mockClear();
             openDropdown();
@@ -213,7 +213,7 @@ describe('<UITreeDropdown />', () => {
             };
             dismissMenuWithEvent(event as React.KeyboardEvent<Element>);
             expect(wrapper.state().value).toEqual('Title2');
-            expect(onChange).toBeCalledTimes(0);
+            expect(onChange).toHaveBeenCalledTimes(0);
         });
     });
 
@@ -425,8 +425,8 @@ describe('<UITreeDropdown />', () => {
                 preventDefault: jest.fn()
             };
             windowEventMock.simulateEvent('keydown', event);
-            expect(event.stopPropagation).toBeCalledTimes(0);
-            expect(event.preventDefault).toBeCalledTimes(0);
+            expect(event.stopPropagation).toHaveBeenCalledTimes(0);
+            expect(event.preventDefault).toHaveBeenCalledTimes(0);
         });
 
         describe('Last and first item at same time', () => {
@@ -446,9 +446,9 @@ describe('<UITreeDropdown />', () => {
                 };
                 focusSpy.mockClear();
                 windowEventMock.simulateEvent('keydown', event);
-                expect(event.stopPropagation).toBeCalledTimes(1);
-                expect(event.preventDefault).toBeCalledTimes(1);
-                expect(focusSpy).toBeCalledTimes(0);
+                expect(event.stopPropagation).toHaveBeenCalledTimes(1);
+                expect(event.preventDefault).toHaveBeenCalledTimes(1);
+                expect(focusSpy).toHaveBeenCalledTimes(0);
             });
 
             it('ArrowUp', () => {
@@ -463,9 +463,9 @@ describe('<UITreeDropdown />', () => {
                 };
                 focusSpy.mockClear();
                 windowEventMock.simulateEvent('keydown', event);
-                expect(event.stopPropagation).toBeCalledTimes(1);
-                expect(event.preventDefault).toBeCalledTimes(1);
-                expect(focusSpy).toBeCalledTimes(1);
+                expect(event.stopPropagation).toHaveBeenCalledTimes(1);
+                expect(event.preventDefault).toHaveBeenCalledTimes(1);
+                expect(focusSpy).toHaveBeenCalledTimes(1);
             });
         });
 
@@ -554,9 +554,9 @@ describe('<UITreeDropdown />', () => {
                     };
                     focusSpy.mockClear();
                     windowEventMock.simulateEvent('keydown', event);
-                    expect(event.stopPropagation).toBeCalledTimes(testCase.stopPropagation);
-                    expect(event.preventDefault).toBeCalledTimes(testCase.stopPropagation);
-                    expect(focusSpy).toBeCalledTimes(testCase.focusSpy);
+                    expect(event.stopPropagation).toHaveBeenCalledTimes(testCase.stopPropagation);
+                    expect(event.preventDefault).toHaveBeenCalledTimes(testCase.stopPropagation);
+                    expect(focusSpy).toHaveBeenCalledTimes(testCase.focusSpy);
                 });
             }
         });
@@ -623,7 +623,7 @@ describe('<UITreeDropdown />', () => {
             wrapper.find('input').simulate('keyDown', { key: 'Enter' });
             await new Promise((resolve) => setTimeout(resolve, 100));
             expect(wrapper.find(selectors.treeContextMenu).length).toBeGreaterThan(0);
-            expect(focusSpy).toBeCalledTimes(0);
+            expect(focusSpy).toHaveBeenCalledTimes(0);
         });
 
         const firstLevelCases = [
@@ -648,7 +648,7 @@ describe('<UITreeDropdown />', () => {
                 wrapper.find('input').simulate('keyDown', { key: 'Enter' });
                 await new Promise((resolve) => setTimeout(resolve, 100));
                 expect(wrapper.find(selectors.treeContextMenu).length).toBeGreaterThan(0);
-                expect(focusSpy).toBeCalledTimes(1);
+                expect(focusSpy).toHaveBeenCalledTimes(1);
                 expect(getFocusedElementIndexInList(0)).toEqual(testCase.expectIndex);
             });
         }
@@ -660,7 +660,7 @@ describe('<UITreeDropdown />', () => {
             wrapper.find('input').simulate('keyDown', { key: 'Enter' });
             await new Promise((resolve) => setTimeout(resolve, 100));
             expect(wrapper.find(selectors.treeContextMenu).length).toBeGreaterThan(0);
-            expect(focusSpy).toBeCalledTimes(0);
+            expect(focusSpy).toHaveBeenCalledTimes(0);
         });
 
         const secondLevelCases = [
@@ -693,7 +693,7 @@ describe('<UITreeDropdown />', () => {
                 wrapper.find('input').simulate('keyDown', { key: 'Enter' });
                 await new Promise((resolve) => setTimeout(resolve, 100));
                 expect(wrapper.find(selectors.treeContextMenu).length).toBeGreaterThan(0);
-                expect(focusSpy).toBeCalledTimes(2);
+                expect(focusSpy).toHaveBeenCalledTimes(2);
                 // As first we need focus container to avoid focus blinking after we will focus submenu's item
                 const focusedElement = getFocusedElement(1);
                 expect(focusedElement.className).toContain('ms-ContextualMenu-container');
@@ -703,7 +703,7 @@ describe('<UITreeDropdown />', () => {
                 items[testCase.parentIndex].subMenuProps.focusZoneProps.onFocus({
                     target: focusedElement
                 } as React.FocusEvent<HTMLElement>);
-                expect(focusSpy).toBeCalledTimes(1);
+                expect(focusSpy).toHaveBeenCalledTimes(1);
                 expect(getFocusedElementIndexInList(0)).toEqual(testCase.expectIndex);
                 focusSpy.mockClear();
             });

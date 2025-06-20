@@ -55,14 +55,14 @@ describe('addVariantsManagementScript', () => {
 
     test('add no script to package.json when there is no RTA editor', async () => {
         const openSourceConfig = join(basePath, 'open-source-config');
-        await expect(addVariantsManagementScript(fs, openSourceConfig, yamlPath, logger)).rejects.toThrowError(
+        await expect(addVariantsManagementScript(fs, openSourceConfig, yamlPath, logger)).rejects.toThrow(
             'No RTA editor specified in ui5.yaml.'
         );
     });
 
     test('no package.json file', async () => {
         const basePath = join(__dirname, '../../fixtures/a-folder-that-does-not-exist');
-        await expect(addVariantsManagementScript(fs, basePath, yamlPath, logger)).rejects.toThrowError(
+        await expect(addVariantsManagementScript(fs, basePath, yamlPath, logger)).rejects.toThrow(
             `Script 'start-variants-management' cannot be written to package.json. File 'package.json' not found at ${basePath}`
         );
     });

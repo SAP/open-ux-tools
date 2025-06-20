@@ -21,7 +21,7 @@ describe('rta-service', () => {
 
         await subscribeMock.mock.calls[0][0](setAppMode('navigation'));
 
-        expect(rtaMock.setMode).toBeCalledWith('navigation');
+        expect(rtaMock.setMode).toHaveBeenCalledWith('navigation');
     });
 
     test('setMode - adaptation', async () => {
@@ -31,7 +31,7 @@ describe('rta-service', () => {
 
         await subscribeMock.mock.calls[0][0](setAppMode('adaptation'));
 
-        expect(rtaMock.setMode).toBeCalledWith('adaptation');
+        expect(rtaMock.setMode).toHaveBeenCalledWith('adaptation');
     });
 
     test('undo', async () => {
@@ -41,7 +41,7 @@ describe('rta-service', () => {
 
         await subscribeMock.mock.calls[0][0](undo());
 
-        expect(rtaMock.undo).toBeCalledWith();
+        expect(rtaMock.undo).toHaveBeenCalledWith();
     });
 
     test('redo', async () => {
@@ -51,7 +51,7 @@ describe('rta-service', () => {
 
         await subscribeMock.mock.calls[0][0](redo());
 
-        expect(rtaMock.redo).toBeCalledWith();
+        expect(rtaMock.redo).toHaveBeenCalledWith();
     });
 
     test('save', async () => {
@@ -61,7 +61,7 @@ describe('rta-service', () => {
 
         await subscribeMock.mock.calls[0][0](save());
 
-        expect(rtaMock.save).toBeCalledWith();
+        expect(rtaMock.save).toHaveBeenCalledWith();
     });
 
     test('save - _serializeToLrep', async () => {
@@ -72,7 +72,7 @@ describe('rta-service', () => {
 
         await subscribeMock.mock.calls[0][0](save());
 
-        expect(rtaMock._serializeToLrep).toBeCalledWith();
+        expect(rtaMock._serializeToLrep).toHaveBeenCalledWith();
     });
 
     test('reload application', async () => {
@@ -95,7 +95,7 @@ describe('rta-service', () => {
             }
         });
         service.init(sendActionMock, subscribeMock);
-        expect(rtaMock.attachStop).toBeCalledTimes(1);
+        expect(rtaMock.attachStop).toHaveBeenCalledTimes(1);
 
         rtaMock.attachStop.mock.calls[0][0]();
         expect(reloadSpy).toHaveBeenCalled();
@@ -108,7 +108,7 @@ describe('rta-service', () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
         const service = new RtaService(rtaMock as unknown as RuntimeAuthoring);
         const promise = service.init(sendActionMock, subscribeMock);
-        expect(rtaMock.attachStart).toBeCalledTimes(1);
+        expect(rtaMock.attachStart).toHaveBeenCalledTimes(1);
 
         rtaMock.attachStart.mock.calls[0][0]();
         expect(promise).resolves.toBe(undefined);

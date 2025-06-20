@@ -1776,7 +1776,7 @@ describe('ChangeService', () => {
             value: 'abc'
         });
 
-        expect(sendActionMock).toBeCalledWith(
+        expect(sendActionMock).toHaveBeenCalledWith(
             propertyChangeFailed({
                 controlId: 'control1',
                 propertyName: 'text',

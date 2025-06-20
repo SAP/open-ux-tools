@@ -179,22 +179,22 @@ describe('<UITranslationInput />', () => {
             expect(document.querySelectorAll(selectors.callout).length).toEqual(0);
             // Check if callbacks executed
             if (result.create) {
-                expect(onCreateNewEntryMock).toBeCalledTimes(1);
-                expect(onCreateNewEntryMock).toBeCalledWith({
+                expect(onCreateNewEntryMock).toHaveBeenCalledTimes(1);
+                expect(onCreateNewEntryMock).toHaveBeenCalledWith({
                     'key': { 'value': result.create.key },
                     'value': { 'value': result.create.value }
                 });
             } else {
-                expect(onCreateNewEntryMock).toBeCalledTimes(0);
+                expect(onCreateNewEntryMock).toHaveBeenCalledTimes(0);
             }
             if (result.change) {
-                expect(onChangeMock).toBeCalledTimes(1);
+                expect(onChangeMock).toHaveBeenCalledTimes(1);
                 expect(onChangeMock.mock.calls[0][1]).toEqual(result.change);
             } else {
-                expect(onChangeMock).toBeCalledTimes(0);
+                expect(onChangeMock).toHaveBeenCalledTimes(0);
             }
 
-            expect(onUpdateValueMock).toBeCalledTimes(0);
+            expect(onUpdateValueMock).toHaveBeenCalledTimes(0);
         }
     );
 
@@ -254,13 +254,13 @@ describe('<UITranslationInput />', () => {
 
             clickI18nButton(false);
             // Check if callbacks executed
-            expect(onCreateNewEntryMock).toBeCalledTimes(0);
-            expect(onChangeMock).toBeCalledTimes(0);
-            expect(onUpdateValueMock).toBeCalledTimes(0);
+            expect(onCreateNewEntryMock).toHaveBeenCalledTimes(0);
+            expect(onChangeMock).toHaveBeenCalledTimes(0);
+            expect(onUpdateValueMock).toHaveBeenCalledTimes(0);
             expect(container.querySelectorAll(getButtonIdSelector(id, false)).length).toEqual(0);
             expect(container.querySelectorAll(getButtonIdSelector(id, true)).length).toEqual(1);
-            expect(onShowExistingEntryMock).toBeCalledTimes(1);
-            expect(onShowExistingEntryMock).toBeCalledWith({
+            expect(onShowExistingEntryMock).toHaveBeenCalledTimes(1);
+            expect(onShowExistingEntryMock).toHaveBeenCalledWith({
                 'key': { 'value': result.entry.key },
                 'value': { 'value': result.entry.value }
             });
@@ -342,7 +342,7 @@ describe('<UITranslationInput />', () => {
             };
             const { rerender } = render(<UITranslationInput {...props} />);
             expect(isLoading()).toEqual(true);
-            expect(setTimeoutSpy).toBeCalledTimes(1);
+            expect(setTimeoutSpy).toHaveBeenCalledTimes(1);
             expect(setTimeoutSpy.mock.calls[0][1]).toEqual(500);
             // Try to release loader - it still should busy, because min waiting time was not completed
             props.busy = { busy: false, useMinWaitingTime: true };
