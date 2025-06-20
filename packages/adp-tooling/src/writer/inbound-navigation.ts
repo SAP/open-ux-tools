@@ -2,7 +2,7 @@ import path from 'path';
 import { create as createStorage } from 'mem-fs';
 import { type Editor, create } from 'mem-fs-editor';
 
-import { type NewI18nEntry, createOrReplaceI18nEntries } from '@sap-ux/i18n';
+import { type NewI18nEntry, SapShortTextType, removeAndCreateI18nEntries } from '@sap-ux/i18n';
 
 import { getVariant, updateVariant } from '../';
 import type { Content, InternalInboundNavigation, DescriptorVariantContent } from '../types';
@@ -52,9 +52,17 @@ export function getFlpI18nKeys(config: InternalInboundNavigation, appId: string)
     const newEntries: NewI18nEntry[] = [];
     const baseKey = `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}`;
 
-    newEntries.push({ key: `${baseKey}.title`, value: config.title });
+    newEntries.push({
+        key: `${baseKey}.title`,
+        value: config.title,
+        annotation: { textType: SapShortTextType.TableTitle, note: 'Fiori Launchpad Tile Title' }
+    });
     if (config?.subTitle) {
-        newEntries.push({ key: `${baseKey}.subTitle`, value: config.subTitle });
+        newEntries.push({
+            key: `${baseKey}.subTitle`,
+            value: config.subTitle,
+            annotation: { textType: SapShortTextType.TableTitle, note: 'Fiori Launchpad Tile Subtitle' }
+        });
     }
 
     return newEntries;
@@ -78,7 +86,7 @@ export async function updateI18n(
     const newEntries = getFlpI18nKeys(config, appId);
     const i18nPath = path.join(basePath, 'webapp', 'i18n', 'i18n.properties');
     const keysToRemove = [`${appId}_sap.app.crossNavigation.inbounds`];
-    await createOrReplaceI18nEntries(i18nPath, newEntries, keysToRemove, basePath, fs);
+    await removeAndCreateI18nEntries(i18nPath, newEntries, keysToRemove, basePath, fs);
 }
 
 /**

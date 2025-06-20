@@ -1,4 +1,4 @@
-import { createPropertiesI18nEntries, createOrReplaceI18nEntries } from '../../../../src';
+import { createPropertiesI18nEntries, removeAndCreateI18nEntries } from '../../../../src';
 import * as utilsWrite from '../../../../src/write/utils';
 import * as utils from '../../../../src/utils';
 import { create as createStorage } from 'mem-fs';
@@ -30,6 +30,7 @@ describe('create', () => {
                     1,
                     'i18n.properties',
                     newEntries,
+                    [],
                     undefined
                 );
             });
@@ -52,6 +53,7 @@ describe('create', () => {
                     1,
                     'i18n.properties',
                     newEntries,
+                    [],
                     undefined
                 );
             });
@@ -72,6 +74,7 @@ describe('create', () => {
                     1,
                     'i18n.properties',
                     newEntries,
+                    [],
                     memFs
                 );
             });
@@ -88,6 +91,7 @@ describe('create', () => {
                 1,
                 'i18n.properties',
                 newEntries,
+                [],
                 undefined
             );
         });
@@ -111,7 +115,7 @@ describe('create', () => {
                 `# This is the resource bundle for ${basename(root)}\n`,
                 memFs
             );
-            expect(writeToExistingI18nPropertiesFileSpy).toHaveBeenCalledWith(i18nFilePath, newEntries, memFs);
+            expect(writeToExistingI18nPropertiesFileSpy).toHaveBeenCalledWith(i18nFilePath, newEntries, [], memFs);
         });
         test('create a new i18n file if it exists in the real file system, but does not exist in the passed virtual file system', async () => {
             const i18nFilePath = 'path/to/i18n.properties';
@@ -133,7 +137,7 @@ describe('create', () => {
                 `# This is the resource bundle for ${basename(root)}\n`,
                 memFs
             );
-            expect(writeToExistingI18nPropertiesFileSpy).toHaveBeenCalledWith(i18nFilePath, newEntries, memFs);
+            expect(writeToExistingI18nPropertiesFileSpy).toHaveBeenCalledWith(i18nFilePath, newEntries, [], memFs);
         });
         test('exception / error case', async () => {
             jest.spyOn(utilsWrite, 'writeToExistingI18nPropertiesFile').mockImplementation(() => {
@@ -170,9 +174,11 @@ describe('create', () => {
         it('creates a new i18n file if it does not exist (real fs)', async () => {
             const doesExistSpy = jest.spyOn(utils, 'doesExist').mockResolvedValue(false);
             const createNewI18nFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
-            const replaceI18nPropertiesSpy = jest.spyOn(utilsWrite, 'replaceI18nProperties').mockResolvedValue();
+            const replaceI18nPropertiesSpy = jest
+                .spyOn(utilsWrite, 'writeToExistingI18nPropertiesFile')
+                .mockResolvedValue(true);
 
-            await createOrReplaceI18nEntries(i18nFilePath, newEntries, keysToRemove, root);
+            await removeAndCreateI18nEntries(i18nFilePath, newEntries, keysToRemove, root);
 
             expect(doesExistSpy).toHaveBeenCalledWith(i18nFilePath);
             expect(createNewI18nFileSpy).toHaveBeenCalledWith(
@@ -187,9 +193,11 @@ describe('create', () => {
             memFs.exists = jest.fn().mockReturnValue(false);
             const doesExistSpy = jest.spyOn(utils, 'doesExist');
             const createNewI18nFileSpy = jest.spyOn(utils, 'writeFile').mockResolvedValue();
-            const replaceI18nPropertiesSpy = jest.spyOn(utilsWrite, 'replaceI18nProperties').mockResolvedValue();
+            const replaceI18nPropertiesSpy = jest
+                .spyOn(utilsWrite, 'writeToExistingI18nPropertiesFile')
+                .mockResolvedValue(true);
 
-            await createOrReplaceI18nEntries(i18nFilePath, newEntries, keysToRemove, root, memFs);
+            await removeAndCreateI18nEntries(i18nFilePath, newEntries, keysToRemove, root, memFs);
 
             expect(doesExistSpy).not.toHaveBeenCalled();
             expect(memFs.exists).toHaveBeenCalledWith(i18nFilePath);
@@ -204,9 +212,11 @@ describe('create', () => {
         it('calls replaceI18nProperties if file exists (real fs)', async () => {
             const doesExistSpy = jest.spyOn(utils, 'doesExist').mockResolvedValue(true);
             const createNewI18nFileSpy = jest.spyOn(utils, 'writeFile');
-            const replaceI18nPropertiesSpy = jest.spyOn(utilsWrite, 'replaceI18nProperties').mockResolvedValue();
+            const replaceI18nPropertiesSpy = jest
+                .spyOn(utilsWrite, 'writeToExistingI18nPropertiesFile')
+                .mockResolvedValue(true);
 
-            await createOrReplaceI18nEntries(i18nFilePath, newEntries, keysToRemove);
+            await removeAndCreateI18nEntries(i18nFilePath, newEntries, keysToRemove);
 
             expect(doesExistSpy).toHaveBeenCalledWith(i18nFilePath);
             expect(createNewI18nFileSpy).not.toHaveBeenCalled();
@@ -217,9 +227,11 @@ describe('create', () => {
             memFs.exists = jest.fn().mockReturnValue(true);
             const doesExistSpy = jest.spyOn(utils, 'doesExist');
             const createNewI18nFileSpy = jest.spyOn(utils, 'writeFile');
-            const replaceI18nPropertiesSpy = jest.spyOn(utilsWrite, 'replaceI18nProperties').mockResolvedValue();
+            const replaceI18nPropertiesSpy = jest
+                .spyOn(utilsWrite, 'writeToExistingI18nPropertiesFile')
+                .mockResolvedValue(true);
 
-            await createOrReplaceI18nEntries(i18nFilePath, newEntries, keysToRemove, root, memFs);
+            await removeAndCreateI18nEntries(i18nFilePath, newEntries, keysToRemove, root, memFs);
 
             expect(doesExistSpy).not.toHaveBeenCalled();
             expect(memFs.exists).toHaveBeenCalledWith(i18nFilePath);
@@ -229,9 +241,11 @@ describe('create', () => {
 
         it('uses default keysToRemove and root', async () => {
             const doesExistSpy = jest.spyOn(utils, 'doesExist').mockResolvedValue(true);
-            const replaceI18nPropertiesSpy = jest.spyOn(utilsWrite, 'replaceI18nProperties').mockResolvedValue();
+            const replaceI18nPropertiesSpy = jest
+                .spyOn(utilsWrite, 'writeToExistingI18nPropertiesFile')
+                .mockResolvedValue(true);
 
-            await createOrReplaceI18nEntries(i18nFilePath, newEntries);
+            await removeAndCreateI18nEntries(i18nFilePath, newEntries);
 
             expect(doesExistSpy).toHaveBeenCalledWith(i18nFilePath);
             expect(replaceI18nPropertiesSpy).toHaveBeenCalledWith(i18nFilePath, newEntries, [], undefined);
