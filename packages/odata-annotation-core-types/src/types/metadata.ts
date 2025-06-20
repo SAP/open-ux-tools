@@ -18,6 +18,12 @@ export type ElementName = string;
  * Identifier for MetadataElement, consists of segments of SimpleNames separated by '/'
  */
 export type Path = string;
+
+export interface EnumValue {
+    name: string;
+    value: unknown;
+}
+
 /**
  * Properties of a metadata element
  * e.g. for reuse in representation of metadata file content
@@ -63,6 +69,12 @@ export interface MetadataElementProperties {
      * To restrict paths correctly, e.g. to 'Edm.String' values, to apply 'Core.RequiresType' constraint for terms.
      */
     edmPrimitiveType?: string;
+    /**
+     * Only for primitive values with `edmPrimitiveType`;
+     * Currently only supported by CAP CDS, where enum names are translated to the primitive type values during OData conversion.
+     *
+     */
+    enumValues?: EnumValue[];
     /**
      * For all structured values: (absolute) path to metadata element defining the structure.
      * (e.g. EntityType for EDM NavigationProperty, target for CDS association)

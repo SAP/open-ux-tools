@@ -2,11 +2,12 @@ import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { ToolsLogger } from '@sap-ux/logger';
-import { updatePreviewMiddlewareConfigs, updatePreviewMiddlewareConfig } from '../../../src/preview-config/ui5-yaml';
+import { updatePreviewMiddlewareConfigs } from '../../../src/preview-config/ui5-yaml';
 import type { PreviewConfigOptions } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import * as projectAccess from '@sap-ux/project-access';
-import type { Script } from '../../../src/preview-config/ui5-yaml';
+import type { Script } from '../../../src/common/package-json';
+import { updatePreviewMiddlewareConfig } from '../../../src/common/ui5-yaml';
 
 describe('update preview middleware config', () => {
     const logger = new ToolsLogger();
@@ -477,7 +478,7 @@ describe('update preview middleware config', () => {
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
-        expect(warnLogMock).toHaveBeenCalledTimes(5);
+        expect(warnLogMock).toHaveBeenCalledTimes(6);
     });
 
     test('same yaml config different endpoints', async () => {

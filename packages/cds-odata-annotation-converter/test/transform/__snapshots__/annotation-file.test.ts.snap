@@ -1207,9 +1207,6 @@ Map {
     "AdminService/Books => AdminService => Books",
     "AdminService/Currencies => AdminService => Currencies",
     "AdminService/getOrderStatus => AdminService => getOrderStatus",
-    "sap.capire.bookshop.Pricing_Terms => ROOT => sap.capire.bookshop.Pricing_Terms",
-    "sap.common.Currencies => ROOT => sap.common.Currencies",
-    "sap.common.Currencies/code => sap.common.Currencies => code",
   ],
   "bookshop/app/browse/fiori-service.cds" => Array [
     "CatalogService.Books => ROOT => CatalogService.Books",

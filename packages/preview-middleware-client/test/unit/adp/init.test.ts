@@ -11,6 +11,16 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 import Element from 'mock/sap/ui/core/Element';
 
+const addFragmentServiceMock = jest.fn();
+jest.mock('open/ux/preview/client/adp/add-fragment', () => ({
+    initAddXMLPlugin: addFragmentServiceMock
+}));
+
+const extendControllerServiceMock = jest.fn();
+jest.mock('open/ux/preview/client/adp/extend-controller', () => ({
+    initExtendControllerPlugin: extendControllerServiceMock
+}));
+
 describe('adp', () => {
     const addMenuItemSpy = jest.fn();
     let initOutlineSpy: jest.SpyInstance;
@@ -55,6 +65,7 @@ describe('adp', () => {
                 addMenuItem: addMenuItemSpy
             }
         });
+        rtaMock.getPlugins.mockReturnValue({});
     });
 
     afterEach(() => {
@@ -70,12 +81,20 @@ describe('adp', () => {
 
         expect(initOutlineSpy).toBeCalledTimes(1);
         expect(addMenuItemSpy).toBeCalledTimes(2);
-        expect(setPluginsSpy).toBeCalledTimes(1);
+        expect(setPluginsSpy).toBeCalledTimes(2);
         expect(enableTelemetry).toBeCalledTimes(2);
 
         const callBackFn = spyPostMessage.mock.calls[0][0];
 
-        const action = common.addExtensionPoint({
+        const action1 = common.addExtensionPoint({
+            controlId: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport--PgLayout',
+            children: [],
+            controlType: '',
+            editable: true,
+            name: 'PgLayout',
+            visible: true
+        });
+        const action2 = common.addExtensionPoint({
             controlId: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport',
             children: [],
             controlType: '',
@@ -84,9 +103,19 @@ describe('adp', () => {
             visible: true
         });
 
-        await callBackFn(action);
+        await callBackFn(action1);
+        await callBackFn(action2);
 
-        expect(executeSpy).toHaveBeenCalledWith(action.payload.controlId, 'CTX_ADDXML_AT_EXTENSIONPOINT');
+        expect(executeSpy).toHaveBeenNthCalledWith(
+            1,
+            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport',
+            'CTX_ADDXML_AT_EXTENSIONPOINT'
+        );
+        expect(executeSpy).toHaveBeenNthCalledWith(
+            2,
+            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport',
+            'CTX_ADDXML_AT_EXTENSIONPOINT'
+        );
     });
 
     test('init - send notification for UI5 version lower than 1.71', async () => {
@@ -163,5 +192,43 @@ describe('adp', () => {
                 shouldHideIframe: false
             }
         });
+    });
+
+    test('init - use AddXMLPlugin and ExtendControllerPlugin for UI5 version higher than 1.136.1', async () => {
+        const mockUI5Element = {
+            getMetadata: jest.fn().mockReturnValue({
+                getName: jest.fn().mockReturnValue('XMLView')
+            }),
+            oAsyncState: undefined,
+            getId: jest.fn().mockReturnValue('application-app-preview-component---fin.ar.lineitems.display.appView')
+        };
+
+        Element.registry.filter.mockReturnValue([mockUI5Element]);
+
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.2' });
+
+        await init(rtaMock as unknown as RuntimeAuthoring);
+
+        expect(addFragmentServiceMock).toHaveBeenCalledWith(rtaMock);
+        expect(extendControllerServiceMock).toHaveBeenCalledWith(rtaMock);
+    });
+
+    test('init - use for UI5 version higher than 1.136.1', async () => {
+        const mockUI5Element = {
+            getMetadata: jest.fn().mockReturnValue({
+                getName: jest.fn().mockReturnValue('XMLView')
+            }),
+            oAsyncState: undefined,
+            getId: jest.fn().mockReturnValue('application-app-preview-component---fin.ar.lineitems.display.appView')
+        };
+
+        Element.registry.filter.mockReturnValue([mockUI5Element]);
+
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.0' });
+
+        await init(rtaMock as unknown as RuntimeAuthoring);
+
+        expect(addFragmentServiceMock).not.toHaveBeenCalledWith(rtaMock);
+        expect(extendControllerServiceMock).not.toHaveBeenCalledWith(rtaMock);
     });
 });

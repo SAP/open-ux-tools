@@ -1,0 +1,70 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "generators"
+  },
+  "references": [
+    {
+      "path": "../abap-deploy-config-writer"
+    },
+    {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-elements-writer"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../fiori-tools-settings"
+    },
+    {
+      "path": "../guided-answers-helper"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../launch-config"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../nodejs-utils"
+    },
+    {
+      "path": "../odata-service-inquirer"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../project-input-validator"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../system-access"
+    },
+    {
+      "path": "../ui5-config"
+    },
+    {
+      "path": "../ui5-info"
+    }
+  ]
+}

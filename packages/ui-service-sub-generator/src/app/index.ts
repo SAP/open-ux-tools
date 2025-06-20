@@ -6,7 +6,7 @@ import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import { sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import { type Logger } from '@sap-ux/logger';
 import type { ServiceConfig, SystemSelectionAnswers, UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
-import { getConfigPrompts, getSystemSelectionPrompts } from '@sap-ux/ui-service-inquirer';
+import { getConfigPrompts, getSystemSelectionPrompts, ObjectType } from '@sap-ux/ui-service-inquirer';
 import Generator from 'yeoman-generator';
 import { boUri, cdsUri, initI18n, prompts, SERVICE_GENERATION_SUCCESS, t, UI_SERVICE_CACHE } from '../utils';
 import UiServiceGenLogger from '../utils/logger';
@@ -39,7 +39,8 @@ export default class extends Generator {
     systemSelectionAnswers: SystemSelectionAnswers = {};
     serviceConfigAnswers: ServiceConfig = {
         content: '',
-        serviceName: ''
+        serviceName: '',
+        showDraftEnabled: false
     };
     setPromptsCallback: (fn: any) => void;
 
@@ -153,6 +154,11 @@ export default class extends Generator {
         // prompt service configuration
         const configPrompts = await getConfigPrompts(
             this.systemSelectionAnswers,
+            {
+                useDraftEnabled: !(
+                    this.answers.objectType === ObjectType.CDS_VIEW || this.options.data?.type === BAS_OBJECT.CDS
+                )
+            },
             UiServiceGenLogger.logger as unknown as Logger
         );
 

@@ -52,18 +52,18 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
         return (this.context.rta.getRootControlInstance().getModel() as ODataModelV2)?.getMetaModel();
     }
 
-    protected getEntitySetNameFromPageComponent(component: Component | undefined): string {
+    protected getEntitySetNameFromPageComponent(component: Component | undefined): Promise<string> {
         if (!isA<TemplateComponent>('sap.suite.ui.generic.template.lib.TemplateComponent', component)) {
             throw new Error('Unexpected type of page owner component');
         }
-        return component.getEntitySet();
+        return Promise.resolve(component.getEntitySet());
     }
 
-    protected async prepareNavigationData(entitySetName: string, metaModel: ODataMetaModelV2): Promise<void> {
-        const entitySet = metaModel.getODataEntitySet(entitySetName) as EntitySet;
+    protected async prepareNavigationData(metaModel: ODataMetaModelV2): Promise<void> {
+        const entitySet = metaModel.getODataEntitySet(this.entitySet!) as EntitySet;
         const entityType = metaModel.getODataEntityType(entitySet.entityType) as EntityType;
 
-        for (const navProp of entityType?.navigationProperty || []) {
+        for (const navProp of entityType?.navigationProperty ?? []) {
             const associationEnd = metaModel.getODataAssociationEnd(entityType, navProp.name);
             if (associationEnd?.multiplicity !== '*') {
                 continue;

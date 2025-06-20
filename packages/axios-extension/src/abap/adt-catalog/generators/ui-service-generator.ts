@@ -7,15 +7,22 @@ import { AdtService } from '../services';
  */
 export class UiServiceGenerator extends AdtService {
     protected referencedObject!: BusinessObject | AbapCDSView;
+    protected contentType!: string;
 
     /**
      * Configure the UI service generator.
      *
      * @param _config - The generator configuration.
      * @param referencedObject - The referenced object (business object or abap cds view).
+     * @param contentType - The header accept type for content.
      */
-    public configure(_config: GeneratorEntry, referencedObject: BusinessObject | AbapCDSView) {
+    public configure(
+        _config: GeneratorEntry,
+        referencedObject: BusinessObject | AbapCDSView,
+        contentType: string
+    ): void {
         this.referencedObject = referencedObject;
+        this.contentType = contentType;
     }
 
     /**
@@ -44,7 +51,7 @@ export class UiServiceGenerator extends AdtService {
     public async getContent(pckg: string): Promise<string> {
         const response = await this.get('/content', {
             headers: {
-                Accept: 'application/vnd.sap.adt.repository.generator.content.v1+json'
+                Accept: this.contentType
             },
             params: {
                 referencedObject: this.referencedObject.uri,
@@ -91,7 +98,7 @@ export class UiServiceGenerator extends AdtService {
     public async validateContent(content: string): Promise<ValidationResponse> {
         const response = await this.post('/validation', content, {
             headers: {
-                'Content-Type': 'application/vnd.sap.adt.repository.generator.content.v1+json',
+                'Content-Type': this.contentType,
                 Accept: 'application/vnd.sap.adt.validationMessages.v1+xml'
             },
             params: {
@@ -113,7 +120,7 @@ export class UiServiceGenerator extends AdtService {
     public async generate(content: string, transport: string): Promise<unknown> {
         const response = await this.post('', content, {
             headers: {
-                'Content-Type': 'application/vnd.sap.adt.repository.generator.content.v1+json',
+                'Content-Type': this.contentType,
                 Accept: 'application/vnd.sap.adt.repository.generator.v1+json, application/vnd.sap.as+xml;charset=UTF-8;dataname=com.sap.adt.StatusMessage'
             },
             params: {

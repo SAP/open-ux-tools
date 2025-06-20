@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { initI18n, t } from '../../src/i18n';
 import LoggerHelper from '../../src/logger-helper';
 import { listPackagesFromService } from '../../src/service-provider-utils';
@@ -31,7 +32,7 @@ describe('Test list packages', () => {
         expect(allPackages).toBe(packages);
     });
 
-    it('should log error and return an empty array', async () => {
+    it('should log errors and return an empty array, if not a cert error', async () => {
         const errorObj = new Error('Failed to create service provider');
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
         mockGetOrCreateServiceProvider.mockRejectedValueOnce(errorObj);
@@ -40,6 +41,19 @@ describe('Test list packages', () => {
         expect(allPackages).toStrictEqual([]);
         expect(loggerSpy).toBeCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'listPackagesFromService', error: errorObj.message })
+        );
+    });
+
+    it('should log cert errors and throw', async () => {
+        const error = new AxiosError('self signed certificate', 'DEPTH_ZERO_SELF_SIGNED_CERT');
+        const logWarnSpy = jest.spyOn(LoggerHelper.logger, 'warn');
+        mockGetOrCreateServiceProvider.mockRejectedValueOnce(error);
+
+        await expect(
+            listPackagesFromService(phrase, { abapTarget: { url: 'http://somehost:1234' } })
+        ).rejects.toThrowError('self signed cert');
+        expect(logWarnSpy).toBeCalledWith(
+            t('warnings.certificateError', { url: 'http://somehost:1234', error: error.message })
         );
     });
 });

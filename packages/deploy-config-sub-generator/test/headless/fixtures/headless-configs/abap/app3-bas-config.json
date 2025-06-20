@@ -1,0 +1,14 @@
+{
+    "project": {
+        "targetFolder": "./test-output"
+    },
+    "service": {},
+    "deployConfig": {
+        "deployTarget": "ABAP",
+        "destination": "Dest2",
+        "ui5AbapRepo": "MY_UI5_ABAP_REPO",
+        "description": "Headless ABAP deployment for S4HC",
+        "package": "ZPKG123",
+        "transport": "TEST_TR"
+    }
+}

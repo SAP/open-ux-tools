@@ -80,9 +80,9 @@ describe('Test entity helper functions', () => {
 
             const filteredChoicesWithAggregationAlias = [
                 {
-                    name: 'C_MockAccountReconciliationType',
+                    name: 'C_MockAccountReconciliation',
                     value: {
-                        entitySetName: 'C_MockAccountReconciliationType',
+                        entitySetName: 'C_MockAccountReconciliation',
                         entitySetType:
                             'com.sap.mock.srvd.z_mockaccountreconciliation.v0001.C_MockAccountReconciliationType'
                     }
@@ -90,13 +90,11 @@ describe('Test entity helper functions', () => {
             ];
 
             const filteredEntities = getEntityChoices(metadataV4WithAggregateTransforms, {
-                useEntityTypeAsName: true,
                 entitySetFilter: 'filterAggregateTransformationsOnly'
             });
             expect(filteredEntities.choices).toEqual(fitleredChoices);
 
             const filteredEntitiesAggregationAlias = getEntityChoices(metadataV4WithAliasAggregateTransforms, {
-                useEntityTypeAsName: true,
                 entitySetFilter: 'filterAggregateTransformationsOnly'
             });
             expect(filteredEntitiesAggregationAlias.choices).toEqual(filteredChoicesWithAggregationAlias);
@@ -141,44 +139,43 @@ describe('Test entity helper functions', () => {
 
         test('should return draft enabled entity sets only', async () => {
             const entityOptions = getEntityChoices(metadataV4WithDraftEntities, {
-                useEntityTypeAsName: true,
                 entitySetFilter: 'filterDraftEnabled'
             });
-            expect(entityOptions.choices[4].name).toEqual('TravelType');
+            expect(entityOptions.choices[4].name).toEqual('Travel');
             expect(entityOptions.choices).toMatchInlineSnapshot(`
                 [
                   {
-                    "name": "BookingType",
+                    "name": "Booking",
                     "value": {
-                      "entitySetName": "BookingType",
+                      "entitySetName": "Booking",
                       "entitySetType": "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.BookingType",
                     },
                   },
                   {
-                    "name": "BookingSupplementType",
+                    "name": "BookingSupplement",
                     "value": {
-                      "entitySetName": "BookingSupplementType",
+                      "entitySetName": "BookingSupplement",
                       "entitySetType": "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.BookingSupplementType",
                     },
                   },
                   {
-                    "name": "SupplementType",
+                    "name": "Supplement",
                     "value": {
-                      "entitySetName": "SupplementType",
+                      "entitySetName": "Supplement",
                       "entitySetType": "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.SupplementType",
                     },
                   },
                   {
-                    "name": "SupplementTextType",
+                    "name": "SupplementText",
                     "value": {
-                      "entitySetName": "SupplementTextType",
+                      "entitySetName": "SupplementText",
                       "entitySetType": "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.SupplementTextType",
                     },
                   },
                   {
-                    "name": "TravelType",
+                    "name": "Travel",
                     "value": {
-                      "entitySetName": "TravelType",
+                      "entitySetName": "Travel",
                       "entitySetType": "com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelType",
                     },
                   },
@@ -187,14 +184,121 @@ describe('Test entity helper functions', () => {
         });
 
         test('should use entity type name as choice name', async () => {
-            const entityOptions = getEntityChoices(metadataV2, {
-                useEntityTypeAsName: true
-            });
+            const entityOptions = getEntityChoices(metadataV2, {});
             const typeNameChoices = entityOptions.choices;
             expect(typeNameChoices).toMatchSnapshot();
-            expect(typeNameChoices[0].name).toEqual('I_CurrencyType');
-            expect(typeNameChoices[0].value.entitySetName).toEqual('I_CurrencyType');
+            expect(typeNameChoices[0].name).toEqual('I_Currency');
+            expect(typeNameChoices[0].value.entitySetName).toEqual('I_Currency');
             expect(typeNameChoices[0].value.entitySetType).toEqual('SEPMRA_PROD_MAN.I_CurrencyType');
+        });
+
+        test('should set mainEntityParameterName for a single valid parameterised main entity', async () => {
+            const v4ParamertrisedEntitiesMetadata = await readFile(
+                join(__dirname, '../test-data/parameterised-entity-metadata.xml'),
+                'utf8'
+            );
+            const result = getEntityChoices(v4ParamertrisedEntitiesMetadata);
+            // Check that the choices contain the mainEntityParameterName property
+            const expectedChoicesWithParameterisedMainEntity = [
+                {
+                    name: 'ZC_STOCKAGEING',
+                    value: {
+                        entitySetName: 'ZC_STOCKAGEING',
+                        entitySetType: 'com.sap.gateway.srvd.zserv_d_stock_ageing.v0001.ZC_STOCKAGEINGParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                }
+            ];
+            expect(result.choices).toEqual(expectedChoicesWithParameterisedMainEntity);
+        });
+
+        test('should set mainEntityParameterName for multiple valid parameterised main entities', async () => {
+            const v4MultiParamertrisedEntitiesMetadata = await readFile(
+                join(__dirname, '../test-data/multiple-parameterised-entities-metadata.xml'),
+                'utf8'
+            );
+            const result = getEntityChoices(v4MultiParamertrisedEntitiesMetadata);
+            const expectedMultiParamEntities = [
+                {
+                    name: 'ChangeableFields',
+                    value: {
+                        entitySetName: 'ChangeableFields',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.ChangeableFieldsParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'CustomFunction',
+                    value: {
+                        entitySetName: 'CustomFunction',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomFunctionParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'CustomHint',
+                    value: {
+                        entitySetName: 'CustomHint',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomHintParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'CustomLink',
+                    value: {
+                        entitySetName: 'CustomLink',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomLinkParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'CustomText',
+                    value: {
+                        entitySetName: 'CustomText',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomTextParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'InterfaceDisplayName',
+                    value: {
+                        entitySetName: 'InterfaceDisplayName',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.InterfaceDisplayNameParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'InterfaceStatistics',
+                    value: {
+                        entitySetName: 'InterfaceStatistics',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.InterfaceStatisticsParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'MessageComment',
+                    value: {
+                        entitySetName: 'MessageComment',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.MessageCommentType'
+                    }
+                },
+                {
+                    name: 'MessageProcessStatus',
+                    value: {
+                        entitySetName: 'MessageProcessStatus',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.MessageProcessStatusType'
+                    }
+                }
+            ];
+            expect(result.choices).toEqual(expectedMultiParamEntities);
+        });
+
+        test('should return no mainEntityParameterName when no valid parameterised navigation property exists', async () => {
+            const result = getEntityChoices(metadataV4WithDraftEntities);
+            // Check that none of the choices have mainEntityParameterName defined
+            result.choices.forEach((choice) => {
+                expect(choice.value).not.toHaveProperty('mainEntityParameterName');
+            });
         });
     });
 });

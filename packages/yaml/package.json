@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Ayaml"
     },
-    "version": "0.16.0",
+    "version": "0.17.0",
     "main": "dist/index.js",
     "license": "Apache-2.0",
     "scripts": {
@@ -38,6 +38,6 @@
         "@types/lodash": "4.14.202"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }

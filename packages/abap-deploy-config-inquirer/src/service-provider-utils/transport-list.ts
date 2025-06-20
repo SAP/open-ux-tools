@@ -5,6 +5,7 @@ import LoggerHelper from '../logger-helper';
 import { PromptState } from '../prompts/prompt-state';
 import type { BackendTarget, TransportListItem } from '../types';
 import type { ListChoiceOptions } from 'inquirer';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**
  * Get the transport list from the service.
@@ -40,6 +41,13 @@ export async function getTransportListFromService(
         LoggerHelper.logger.debug(
             t('errors.debugAbapTargetSystem', { method: 'getTransportListFromService', error: e.message })
         );
+
+        if (ErrorHandler.isCertError(e)) {
+            LoggerHelper.logger.warn(
+                t('warnings.certificateError', { url: backendTarget?.abapTarget?.url, error: e.message })
+            );
+            throw e;
+        }
         return undefined;
     }
     return transportListItems;

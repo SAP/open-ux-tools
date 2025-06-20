@@ -240,9 +240,10 @@ server:
           - framework: QUnit
             path: test/unit/unitTests.qunit.html
           - framework: Testsuite
-        rta:
-          editors:
-            - path: preview.html
+        editors:
+          rta:
+            endpoints:
+              - path: preview.html
 "
 `;
 
@@ -269,9 +270,10 @@ server:
           - framework: QUnit
             path: test/unit/unitTests.qunit.html
           - framework: Testsuite
-        rta:
-          editors:
-            - path: preview.html
+        editors:
+          rta:
+            endpoints:
+              - path: preview.html
 "
 `;
 
@@ -298,9 +300,10 @@ server:
           - framework: QUnit
             path: test/unit/unitTests.qunit.html
           - framework: Testsuite
-        rta:
-          editors:
-            - path: preview.html
+        editors:
+          rta:
+            endpoints:
+              - path: preview.html
 "
 `;
 

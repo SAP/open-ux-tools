@@ -8,6 +8,44 @@ Object {
 }
 `;
 
+exports[`ListReport generate Add when "sap.fe.ariba" dependency is listed 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.ariba": Object {},
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "RootEntityListReport",
+          "pattern": ":?query:",
+          "target": "RootEntityListReport",
+        },
+      ],
+      "targets": Object {
+        "RootEntityListReport": Object {
+          "id": "RootEntityListReport",
+          "name": "sap.fe.ariba.ListReport",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/RootEntity",
+              "navigation": Object {},
+            },
+          },
+          "type": "Component",
+        },
+      },
+    },
+  },
+}
+`;
+
 exports[`ListReport generate all optional settings used 1`] = `
 Object {
   "sap.app": Object {

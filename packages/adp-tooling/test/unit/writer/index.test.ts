@@ -39,8 +39,7 @@ describe('ADP writer', () => {
     const configWithI18n: AdpWriterConfig = {
         app: {
             id: 'my.test.app',
-            reference: 'the.original.app',
-            i18nDescription: 'some-description'
+            reference: 'the.original.app'
         },
         target: {
             url: 'http://sap.example'
@@ -163,7 +162,7 @@ describe('ADP writer', () => {
                         enableTypeScript: false
                     },
                     ui5: {
-                        version: '1.122.1'
+                        version: '1.133.0'
                     },
                     flp: {
                         semanticObject: 'sampleObj',
@@ -272,7 +271,7 @@ describe('ADP writer', () => {
                         enableTypeScript: false
                     },
                     ui5: {
-                        version: '1.122.1'
+                        version: '1.133.0'
                     },
                     flp: {
                         inboundId: 'sampleId',

@@ -18,6 +18,7 @@ import {
 } from '../../../types';
 import type { InputQuestion, ListQuestion, Question } from 'inquirer';
 import { useCreateTrDuringDeploy } from '../../../utils';
+import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Returns the transport prompts.
@@ -53,16 +54,17 @@ export function getTransportRequestPrompts(
             validate: async (
                 input: TransportChoices,
                 previousAnswers: AbapDeployConfigAnswersInternal
-            ): Promise<boolean | string> => {
-                const result = validateTransportChoiceInput(
+            ): Promise<boolean | string | IValidationLink> => {
+                const result = await validateTransportChoiceInput({
                     useStandalone,
                     input,
                     previousAnswers,
-                    true,
-                    transportInputChoice,
-                    options.backendTarget,
-                    options.ui5AbapRepo?.default
-                );
+                    validateInputChanged: true,
+                    prevTransportInputChoice: transportInputChoice,
+                    backendTarget: options.backendTarget,
+                    ui5AbapRepoName: options.ui5AbapRepo?.default,
+                    transportDescription: options.transportCreated?.description
+                });
                 transportInputChoice = input;
                 return result;
             }
@@ -72,15 +74,14 @@ export function getTransportRequestPrompts(
             // Use this hidden question for calling ADT services.
             when: async (previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
                 if (!PromptState.isYUI) {
-                    const result = await validateTransportChoiceInput(
+                    const result = await validateTransportChoiceInput({
                         useStandalone,
-                        previousAnswers.transportInputChoice,
+                        input: previousAnswers.transportInputChoice,
                         previousAnswers,
-                        false,
-                        undefined,
-                        options.backendTarget,
-                        options.ui5AbapRepo?.default
-                    );
+                        validateInputChanged: false,
+                        backendTarget: options.backendTarget,
+                        ui5AbapRepoName: options.ui5AbapRepo?.default
+                    });
                     if (result !== true) {
                         throw new Error(result as string);
                     }

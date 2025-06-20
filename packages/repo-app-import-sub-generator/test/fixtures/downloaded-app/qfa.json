@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "package": "TEST_PACKAGE",
+        "masterLanguage": "TEST_LANGUAGE"
+    },
+    "serviceBindingDetails": {
+        "name": "TEST_SERVICE_NAME",
+        "serviceName": "/TEST/SERVICE/NAME",
+        "serviceVersion": "TEST_VERSION",
+        "mainEntityName": "TEST_ENTITY",
+        "navigationEntity": "TEST_NAVIGATION"
+    },
+    "projectAttribute": {
+        "moduleName": "TEST_MODULE_NAME",
+        "applicationTitle": "TEST_APPLICATION_TITLE"
+    },
+    "deploymentDetails": {
+        "repositoryName": "TEST_REPOSITORY_NAME",
+        "repositoryDescription": "TEST_REPOSITORY_DESCRIPTION"
+    },
+    "fioriLaunchpadConfiguration": {
+        "semanticObject": "TEST_SEMANTIC_OBJECT",
+        "action": "TEST_ACTION",
+        "title": "TEST_TITLE",
+        "subtitle": "TEST_SUBTITLE"
+    }
+}

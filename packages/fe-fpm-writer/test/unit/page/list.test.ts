@@ -128,5 +128,16 @@ describe('ListReport', () => {
                 (fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].dependencies
             ).toMatchSnapshot();
         });
+
+        test('Add when "sap.fe.ariba" dependency is listed', async () => {
+            const testManifest = JSON.parse(testAppManifest);
+            testManifest['sap.ui5'].dependencies.libs['sap.fe.ariba'] = {};
+            const target = join(testDir, 'ariba');
+            fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(testManifest));
+            //act
+            await generate(target, minimalInput, fs);
+            //check
+            expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+        });
     });
 });

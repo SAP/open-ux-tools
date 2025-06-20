@@ -151,7 +151,7 @@ describe('<UIToggle />', () => {
                   "svg": Object {
                     "height": "100%",
                     "path": Object {
-                      "stroke": "var(--vscode-button-secondaryForeground)",
+                      "fill": "var(--vscode-button-secondaryForeground)",
                     },
                     "width": "100%",
                   },
@@ -206,7 +206,7 @@ describe('<UIToggle />', () => {
                   "svg": Object {
                     "height": "100%",
                     "path": Object {
-                      "stroke": "var(--vscode-button-foreground)",
+                      "fill": "var(--vscode-button-foreground)",
                     },
                     "width": "100%",
                   },

@@ -48,7 +48,6 @@ export class OutlineService extends EventTarget {
                     this.changeService,
                     configPropertyIdMap
                 );
-
                 const event = new CustomEvent(OUTLINE_CHANGE_EVENT, {
                     detail: {
                         controlIndex

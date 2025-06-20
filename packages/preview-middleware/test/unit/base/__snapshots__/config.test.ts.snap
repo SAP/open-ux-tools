@@ -4,6 +4,7 @@ exports[`config createFlpTemplateConfig minimum settings 1`] = `
 Object {
   "apps": Object {},
   "basePath": "..",
+  "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": undefined,
@@ -41,6 +42,7 @@ exports[`config createFlpTemplateConfig minimum settings with one reuse lib 1`] 
 Object {
   "apps": Object {},
   "basePath": "..",
+  "enableCardGenerator": false,
   "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": undefined,

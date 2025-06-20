@@ -1,0 +1,35 @@
+_schema-version: '3.1'
+ID: rootmta
+description: Fiori elements app
+version: 0.0.1
+modules:
+  - name: rootmta-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: rootmta-app-front
+        parameters:
+          content-target: true
+      - name: rootmta-uaa
+    parameters:
+      config:
+        destinations:
+          - name: ui5
+            url: 'https://ui5.sap.com'
+resources:
+  - name: rootmta-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: rootmta-xsuaa-service
+      service-plan: application
+  - name: rootmta-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-name: rootmta-app-front-service
+      service-plan: developer
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true

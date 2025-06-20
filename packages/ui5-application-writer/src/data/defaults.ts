@@ -21,7 +21,7 @@ export function packageDefaults(version?: string, description?: string, isEdmxPr
         version: version || '0.0.1',
         description: description || '',
         devDependencies: {
-            '@ui5/cli': '^3.0.0',
+            '@ui5/cli': '^4.0.16',
             '@sap/ux-ui5-tooling': '1'
         }
     };

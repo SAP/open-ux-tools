@@ -8,7 +8,8 @@ import type {
     AnnotationRecord,
     RawSchema,
     RawAction,
-    RawActionImport
+    RawActionImport,
+    AnnotationList
 } from '@sap-ux/vocabularies-types';
 import type { Range } from 'vscode-languageserver-textdocument';
 
@@ -30,16 +31,30 @@ function adaptedUrl(url: string, root: string): string {
     result = isGhost ? url.slice(1) : url;
     const path = fileURLToPath(result);
     result = toUnifiedUri(relative(root, path));
+    result = normalizeCdsVersionInPath(result);
     result = (isGhost ? GHOST_FILENAME_PREFIX : '') + result;
     return result;
 }
 
+export function normalizeCdsVersionInPath(path: string): string {
+    return path.replaceAll(/cds-maintenance|cds-latest|cds-next/g, 'CDS_ROOT');
+}
+
 export function serialize(schema: RawSchema, root: string): string {
+    return [
+        serializeAnnotations(schema.annotations, root),
+        'Actions: ' + serializeActions(schema.actions, 0),
+        'ActionImports: ' + serializeActionImports(schema.actionImports, 0)
+    ].join('\n');
+}
+export function serializeAnnotations(
+    annotations: {
+        [id: string]: AnnotationList[];
+    },
+    root: string
+): string {
     let result = '';
     let indent = 0;
-    const annotations = schema.annotations;
-    const actions = schema.actions;
-    const actionImports = schema.actionImports;
 
     const files = Object.keys(annotations);
     for (const uri of files) {
@@ -52,10 +67,6 @@ export function serialize(schema: RawSchema, root: string): string {
         }
         indent--;
     }
-
-    result += '\nActions: ' + serializeActions(actions, indent);
-
-    result += '\nActionImports: ' + serializeActionImports(actionImports, indent);
 
     return result;
 }

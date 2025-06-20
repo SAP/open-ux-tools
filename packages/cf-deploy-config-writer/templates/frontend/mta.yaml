@@ -1,0 +1,51 @@
+_schema-version: "3.2"
+ID: <%- id %>
+description: <%- mtaDescription %>
+version: <%- mtaVersion %>
+
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install
+        - npx cds build --production
+        - cp -R db/data gen/srv/srv/
+
+modules:
+  - name: <%- id %>-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: <%- id %>-app-front
+        parameters:
+          content-target: true
+    parameters:
+      config:
+        destinations:
+          - name: ui5
+            url: https://ui5.sap.com
+  - name: <%- id %>-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-type: http
+      readiness-health-check-http-endpoint: /health
+    build-parameters:
+      builder: npm
+      ignore:
+        - "node_modules/"
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+resources:
+  - name: <%- id %>-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-name: <%- id %>-app-front-service
+      service-plan: developer

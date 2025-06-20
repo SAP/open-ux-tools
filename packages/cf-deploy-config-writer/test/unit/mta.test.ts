@@ -2,7 +2,7 @@ import { join } from 'path';
 import fs from 'fs';
 import * as memfs from 'memfs';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { isMTAFound, useAbapDirectServiceBinding, MtaConfig } from '../../src/';
+import { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } from '../../src/';
 import { deployMode, ResourceMTADestination } from '../../src/constants';
 import type { mta } from '@sap/mta-lib';
 
@@ -97,7 +97,7 @@ describe('Validate MtaConfig Instance', () => {
     const appDir = `${OUTPUT_DIR_PREFIX}/app1`;
 
     beforeEach(() => {
-        jest.resetModules();
+        jest.restoreAllMocks();
         memfs.vol.reset();
     });
 
@@ -167,6 +167,21 @@ describe('Validate MtaConfig Instance', () => {
         const formattedDestinationName = mtaConfig.getFormattedPrefix(destinationName);
         expect(formattedDestinationName).toEqual(correctDest);
     });
+
+    it('Validate mta config is reloaded if it fails', async () => {
+        const mockMtaConfig = {
+            resources: {},
+            app: {},
+            prefix: 'test-prefix'
+        } as unknown as MtaConfig;
+        // Mocking the failure twice and then success
+        jest.spyOn(MtaConfig, 'newInstance')
+            .mockRejectedValueOnce(new Error('Error'))
+            .mockRejectedValueOnce(new Error('Error'))
+            .mockResolvedValueOnce(mockMtaConfig);
+        const mtaConfig = await getMtaConfig(appDir);
+        expect(mtaConfig?.prefix).toBe('test-prefix');
+    });
 });
 
 describe('Validate common flows', () => {
@@ -185,7 +200,7 @@ describe('Validate common flows', () => {
     );
 
     beforeEach(() => {
-        jest.resetModules();
+        jest.restoreAllMocks();
         memfs.vol.reset();
     });
 
@@ -287,7 +302,7 @@ describe('Validate common flows', () => {
         const params = { ...parameters, ...{} } as mta.Parameters;
         params[deployMode] = 'html5-repo';
         await mtaConfig.updateParameters(params);
-        await mtaConfig.appendInstanceBasedDestination(mtaConfig.getFormattedPrefix(ResourceMTADestination));
+        await mtaConfig.addDestinationToAppRouter(mtaConfig.getFormattedPrefix(ResourceMTADestination));
         expect(mtaConfig.cloudServiceName).toEqual('managedAppCAPProject');
         expect(mtaConfig.hasManagedXsuaaResource()).toBeTruthy();
         await mtaConfig.save();

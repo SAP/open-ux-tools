@@ -19,7 +19,11 @@ export const FileName = {
     Ui5LocalYaml: 'ui5-local.yaml',
     Ui5MockYaml: 'ui5-mock.yaml',
     UI5DeployYaml: 'ui5-deploy.yaml',
-    PackageLock: 'package-lock.json'
+    PackageLock: 'package-lock.json',
+    XSAppJson: 'xs-app.json',
+    XSSecurityJson: 'xs-security.json',
+    DotGitIgnore: '.gitignore',
+    MtaExtYaml: 'mta-ext.mtaext'
 } as const;
 
 export const DirName = {

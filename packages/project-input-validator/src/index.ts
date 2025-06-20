@@ -1,6 +1,6 @@
 export * from './deploy/validators';
 export * from './ui5/validators';
-export * from './ui5/project-path-validators';
+export * from './general/project-path-validators';
 export * from './general/validators';
 export * from './adp/validators';
 export * from './flp/validators';

@@ -7,8 +7,7 @@ import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import type { BasicAppSettings } from '../src/types';
 import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { create as createStorage } from 'mem-fs';
-import { create, type Editor } from 'mem-fs-editor';
-import { types } from 'util';
+import { create } from 'mem-fs-editor';
 
 const TEST_NAME = 'basicTemplate';
 jest.setTimeout(240000); // Needed when debug.enabled
@@ -35,7 +34,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             id: 'nods1',
             title: 'App Title',
             description: 'A Fiori application.',
-            flpAppId: 'nods1-tile',
+            flpAction: 'display',
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: 'test-template'
@@ -89,10 +88,10 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             }
         },
         {
-            name: 'basic_without_reuse_libs',
+            name: 'basic_without_reuse_libs_use_virtual_endpoints',
             config: {
                 ...commonConfig,
-                appOptions: { loadReuseLibs: false }
+                appOptions: { loadReuseLibs: false, useVirtualPreviewEndpoints: true }
             },
             settings: {}
         },

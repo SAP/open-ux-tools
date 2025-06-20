@@ -1,0 +1,28 @@
+{
+  "version": "0.2",
+  "floorplan": "FE_LROP",
+  "project": {
+    "title": "Project's \"Title\"",
+    "description": "Test 'Project' \"Description\"",
+    "namespace": "testNameSpace",
+    "ui5Version": "1.98.0",
+    "name": "lrop_v4_cap",
+    "sapux": true
+  },
+  "service": {
+    "host": "http://ims.saplabs.com:50017",
+    "servicePath": "/admin/",
+    "capService": {
+      "projectPath": "/abs/path/to/cap/project/root",
+      "serviceName": "AdminService",
+      "serviceCdsPath": "srv/admin-service",
+      "appPath": "app",
+      "capType": "Node.js"
+    }
+  },
+  "entityConfig": {
+    "mainEntity": {
+      "entityName": "Books"
+    }
+  }
+}

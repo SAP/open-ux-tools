@@ -28,18 +28,18 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
     \\"start\\": \\"echo \\\\\\\\\\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\\\\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"echo \\\\\\\\\\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\\\\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
     \\"start-variants-management\\": \\"echo \\\\\\\\\\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\\\\\\\\\"\\"
   }
 }
@@ -77,8 +77,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -129,8 +133,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -174,8 +182,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
 ",
     "state": "modified",
   },
@@ -6298,7 +6310,7 @@ function (JSONModel, Device) {
                 }
             },
             applications: {
-                \\"wrk1-tile\\": {
+                \\"wrk1-display\\": {
                     title: \\"App Title\\",
                     description: \\"A Fiori application.\\",
                     additionalInformation: \\"SAPUI5.Component=wrk1\\",
@@ -6788,19 +6800,19 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?&sap-client=012&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -6837,8 +6849,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -6895,8 +6911,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -6943,8 +6963,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
 ",
     "state": "modified",
   },
@@ -9658,7 +9682,7 @@ function (JSONModel, Device) {
                 }
             },
             applications: {
-                \\"wrk1-tile\\": {
+                \\"wrk1-display\\": {
                     title: \\"App Title\\",
                     description: \\"A Fiori application.\\",
                     additionalInformation: \\"SAPUI5.Component=wrk1\\",
@@ -10158,19 +10182,19 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -10207,8 +10231,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_fiori_3_dark
+        flp:
+          theme: sap_fiori_3_dark
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -10259,8 +10287,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_fiori_3_dark
+        flp:
+          theme: sap_fiori_3_dark
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -10304,8 +10336,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_fiori_3_dark
+        flp:
+          theme: sap_fiori_3_dark
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
 ",
     "state": "modified",
   },
@@ -12609,7 +12645,7 @@ function (JSONModel, Device) {
                 }
             },
             applications: {
-                \\"wrk1-tile\\": {
+                \\"wrk1-display\\": {
                     title: \\"App Title\\",
                     description: \\"A Fiori application.\\",
                     additionalInformation: \\"SAPUI5.Component=wrk1\\",
@@ -13107,7 +13143,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -13118,8 +13154,8 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
@@ -13127,9 +13163,9 @@ archive.zip
     \\"prebuild\\": \\"npm run ts-typecheck\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?&sap-client=012&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -13203,8 +13239,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -13269,8 +13309,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -13333,8 +13377,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -15994,7 +16042,7 @@ export function createDeviceModel () {
                 }
             },
             applications: {
-                \\"wrk1-tile\\": {
+                \\"wrk1-display\\": {
                     title: \\"App Title\\",
                     description: \\"A Fiori application.\\",
                     additionalInformation: \\"SAPUI5.Component=wrk1\\",
@@ -16502,7 +16550,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -16513,8 +16561,8 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
@@ -16522,9 +16570,9 @@ archive.zip
     \\"prebuild\\": \\"npm run ts-typecheck\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-client=012&sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-client=012&sap-ui-xx-viewCache=false#wrk1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?&sap-client=012&sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#wrk1-display\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -16594,8 +16642,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -16660,8 +16712,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -16724,8 +16780,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: wrk1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: wrk1
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -19380,7 +19440,7 @@ export function createDeviceModel () {
                 }
             },
             applications: {
-                \\"wrk1-tile\\": {
+                \\"wrk1-display\\": {
                     title: \\"App Title\\",
                     description: \\"A Fiori application.\\",
                     additionalInformation: \\"SAPUI5.Component=wrk1\\",

@@ -62,8 +62,8 @@ describe('client/command-executor', () => {
                 mockRuntimeControl as ManagedObject,
                 commandName,
                 modifiedValue,
-                designMetadata as DesignTimeMetadata,
-                flexSettings as FlexSettings
+                flexSettings as FlexSettings,
+                designMetadata as DesignTimeMetadata
             );
 
             expect(result).toBe(mockCommand);
@@ -89,8 +89,8 @@ describe('client/command-executor', () => {
                     mockRuntimeControl as ManagedObject,
                     commandName,
                     modifiedValue,
-                    designMetadata as DesignTimeMetadata,
-                    flexSettings as FlexSettings
+                    flexSettings as FlexSettings,
+                    designMetadata as DesignTimeMetadata
                 )
             ).rejects.toThrow(`Could not get command for '${commandName}'. ${errorMessage}`);
 

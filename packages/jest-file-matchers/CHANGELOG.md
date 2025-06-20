@@ -1,5 +1,11 @@
 # @sap-ux/jest-file-matchers
 
+## 0.2.2
+
+### Patch Changes
+
+-   ac55cca: adds .appGenInfo.json file
+
 ## 0.2.1
 
 ### Patch Changes

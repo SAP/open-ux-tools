@@ -1,5 +1,11 @@
 # @sap-ux/logger
 
+## 0.7.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
 ## 0.6.0
 
 ### Minor Changes

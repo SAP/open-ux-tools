@@ -78,7 +78,9 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: [
         /UNABLE_TO_GET_ISSUER_CERT/,
         /UNABLE_TO_GET_ISSUER_CERT_LOCALLY/,
-        /unable to get local issuer certificate/
+        /unable to get local issuer certificate/,
+        /UNABLE_TO_VERIFY_LEAF_SIGNATURE/,
+        /ERR_TLS_CERT_ALTNAME_INVALID/
     ],
     [ERROR_TYPE.CERT_EXPIRED]: [/CERT_HAS_EXPIRED/],
     [ERROR_TYPE.CERT_SELF_SIGNED]: [/DEPTH_ZERO_SELF_SIGNED_CERT/],
@@ -279,6 +281,7 @@ export class ErrorHandler {
         const errorToHelp: Record<ERROR_TYPE, number | undefined> = {
             [ERROR_TYPE.SERVICES_UNAVAILABLE]: isBAS ? HELP_NODES.BAS_CATALOG_SERVICES_REQUEST_FAILED : undefined,
             [ERROR_TYPE.CERT]: HELP_NODES.CERTIFICATE_ERROR,
+            [ERROR_TYPE.CERT_EXPIRED]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.CERT_SELF_SIGNED]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.INVALID_SSL_CERTIFICATE]: HELP_NODES.CERTIFICATE_ERROR,
@@ -293,7 +296,6 @@ export class ErrorHandler {
             [ERROR_TYPE.AUTH]: undefined,
             [ERROR_TYPE.AUTH_TIMEOUT]: undefined,
             [ERROR_TYPE.REDIRECT]: undefined,
-            [ERROR_TYPE.CERT_EXPIRED]: undefined,
             [ERROR_TYPE.UNKNOWN]: undefined,
             [ERROR_TYPE.INVALID_URL]: undefined,
             [ERROR_TYPE.CONNECTION]: undefined,
@@ -332,10 +334,12 @@ export class ErrorHandler {
      * Create an instance of the ErrorHandler.
      *
      * @param logger the logger instance to use
-     * @param enableGuidedAnswers if true, the end user validation errors will include guided answers to provide help
+     * @param enableGuidedAnswers if true, Guided Answers help links will include a command to launch the Guided Answers UI.
+     *     Should be set to true if the Guided Answers UI extension is available.
+     * @param logPrefix optional, a prefix to be used for the logger to distinguish the source of the log messages, if a logger is not provided
      */
-    constructor(logger?: Logger, enableGuidedAnswers = false) {
-        ErrorHandler._logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/odata-service-inquirer' });
+    constructor(logger?: Logger, enableGuidedAnswers = false, logPrefix?: string) {
+        ErrorHandler._logger = logger ?? new ToolsLogger({ logPrefix: logPrefix ?? '@sap-ux/inquirer-common' });
         ErrorHandler.guidedAnswersEnabled = enableGuidedAnswers;
     }
 
@@ -376,10 +380,10 @@ export class ErrorHandler {
     /**
      * Tests if the error is a general certificate error.
      *
-     * @param status the error type
+     * @param status the error status, code, or error object to check
      * @returns true if the error is a general certificate error
      */
-    public static isCertError(status: string | number): boolean {
+    public static isCertError(status: string | number | Error): boolean {
         return [
             ERROR_TYPE.CERT,
             ERROR_TYPE.CERT_EXPIRED,

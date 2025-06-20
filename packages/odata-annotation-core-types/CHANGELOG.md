@@ -1,5 +1,18 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.4.4
+
+### Patch Changes
+
+-   08ed948: feat: add `enumValues` property to `MetadataElement` and new `NoWhitespaceInPathExpression` diagnostic type.
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/text-document-utils@0.3.0
+
 ## 0.4.2
 
 ### Patch Changes

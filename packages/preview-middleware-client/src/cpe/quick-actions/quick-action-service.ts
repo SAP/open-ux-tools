@@ -30,6 +30,9 @@ import type { TextBundle } from '../../i18n';
 import { getTextBundle } from '../../i18n';
 import type { ChangeService } from '../changes';
 import { DialogFactory } from '../../adp/dialog-factory';
+import { getApplicationType } from '../../utils/application';
+import { getUi5Version } from '../../utils/version';
+
 
 /**
  * Service providing Quick Actions.
@@ -165,11 +168,14 @@ export class QuickActionService implements Service {
 
     private async executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
         try {
+            const versionInfo = await getUi5Version();
             await reportTelemetry({
                 category: 'QuickAction',
                 actionName: actionInstance.type,
                 telemetryEventIdentifier: actionInstance.getTelemetryIdentifier(true),
-                quickActionSteps: actionInstance.quickActionSteps
+                quickActionSteps: actionInstance.quickActionSteps,
+                appType: getApplicationType(this.rta.getRootControlInstance().getManifest()),
+                ui5Version: `${versionInfo.major}.${versionInfo.minor}.${versionInfo.patch}`
             });
         } catch (error) {
             Log.error('Error in reporting Telemetry:', error);

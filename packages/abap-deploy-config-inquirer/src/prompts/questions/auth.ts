@@ -3,6 +3,7 @@ import { showPasswordQuestion, showUsernameQuestion } from '../conditions';
 import { validateCredentials } from '../validators';
 import { promptNames, type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions } from '../../types';
 import type { InputQuestion, PasswordQuestion, Question } from 'inquirer';
+import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Returns the username prompt.
@@ -39,7 +40,10 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<Aba
             type: 'login',
             mandatory: true
         },
-        validate: async (input: string, previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
+        validate: async (
+            input: string,
+            previousAnswers: AbapDeployConfigAnswersInternal
+        ): Promise<boolean | string | IValidationLink> =>
             await validateCredentials(input, previousAnswers, options.backendTarget)
     } as PasswordQuestion<AbapDeployConfigAnswersInternal>;
 }

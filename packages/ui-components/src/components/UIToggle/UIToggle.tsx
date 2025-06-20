@@ -286,7 +286,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                         width: '100%',
                         height: '100%',
                         path: {
-                            stroke: styleProps.checked
+                            fill: styleProps.checked
                                 ? 'var(--vscode-button-foreground)'
                                 : 'var(--vscode-button-secondaryForeground)'
                         }

@@ -1,4 +1,7 @@
-import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-inquirer';
+import type {
+    AbapDeployConfigAnswersInternal,
+    AbapDeployConfigPromptOptions
+} from '@sap-ux/abap-deploy-config-inquirer';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ConnectedSystem } from '@sap-ux/deploy-config-generator-shared';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
@@ -48,41 +51,13 @@ export interface AbapDeployConfigOptions extends AbapDeployConfigAnswersInternal
      * Telemetry data to be send after deployment configuration has been added
      */
     telemetryData?: TelemetryData;
+    /**
+     * Prompts options for the ABAP deploy config inquirer
+     */
+    promptOptions?: AbapDeployConfigPromptOptions;
 }
 
 export enum DeployProjectType {
     Application = 'application',
     Library = 'library'
 }
-
-/**
- * Enum defining prompt names for ABAP deployment configuration.
- */
-enum promptNames {
-    ui5AbapRepo = 'ui5AbapRepo',
-    packageManual = 'packageManual',
-    packageAutocomplete = 'packageAutocomplete',
-    transportInputChoice = 'transportInputChoice',
-    targetSystem = 'targetSystem'
-}
-
-type HideIfOnPremisePromptOption = {
-    hideIfOnPremise?: boolean;
-};
-
-type TargetSystemPromptOptions = {
-    shouldRestrictDifferentSystemType: boolean;
-};
-
-type PackageAdditionalValidationPrompOptions = {
-    shouldValidatePackageType?: boolean;
-    shouldValidatePackageForStartingPrefix?: boolean;
-};
-
-export type AbapDeployConfigPromptOptions = Partial<
-    Record<promptNames.ui5AbapRepo, HideIfOnPremisePromptOption> &
-        Record<promptNames.transportInputChoice, HideIfOnPremisePromptOption> &
-        Record<promptNames.packageManual, PackageAdditionalValidationPrompOptions> &
-        Record<promptNames.packageAutocomplete, PackageAdditionalValidationPrompOptions> &
-        Record<promptNames.targetSystem, TargetSystemPromptOptions>
->;

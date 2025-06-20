@@ -126,14 +126,24 @@ async function getAppProperties(appPath: string): Promise<Record<string, string>
 }
 
 /**
- * Read template type from README.md of an Fiori app. This will be improved once we have the floor
- * plan information added to e.g. manifest.json of generated app.
+ * Read template type from the .appGenInfo.json file or README.md of an Fiori app.
  *
  * @param appPath Root folder path of Fiori app
  * @returns Template type used in the Fiori app
  */
 async function getTemplateType(appPath: string): Promise<string> {
     const readmeFilePath = path.join(appPath, 'README.md');
+    const appGenInfoPath = path.join(appPath, '.appGenInfo.json');
+
+    // N.B.: Keep this order i.e .appGenInfo.json file is read first, then README.md.
+    if (fs.existsSync(appGenInfoPath)) {
+        const appGenInfo = await fs.promises.readFile(appGenInfoPath, 'utf-8');
+        const appGenInfoParsed = JSON.parse(appGenInfo);
+        if (appGenInfoParsed?.generationParameters?.template) {
+            return appGenInfoParsed.generationParameters.template.trim();
+        }
+    }
+
     if (fs.existsSync(readmeFilePath)) {
         const readmeContent = await fs.promises.readFile(readmeFilePath, 'utf-8');
         if (readmeContent) {

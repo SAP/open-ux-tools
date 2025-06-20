@@ -1,0 +1,13 @@
+UI : {
+    HeaderInfo.Title.$Type : 'UI.DataFieldForAnnotation',
+    HeaderInfo.Title.Target : '@Communication.Contact',
+    Chart.$Type : 'UI.ChartDefinitionType',
+    PresentationVariant.$Type:12,
+    SelectionVariant.$Type,
+    Badge.$Type.Title.Value: 'test',
+    ![Badge#test].$Type.Title.Value,
+    Chart.$Type.ChartType : 'UI.ChartDefinitionType',
+    ![Chart#test].$Type : ,
+    ![Chart#qualifier2].$Type : '',
+    Badge.$MyType: 'test'
+};

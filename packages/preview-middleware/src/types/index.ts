@@ -65,29 +65,35 @@ export interface FlpConfig {
     enhancedHomePage?: boolean;
 }
 
-interface OptionalTestConfig {
-    /**
-     * Optional: path hosting the main test page
-     */
-    path: string;
-
-    /**
-     * Optional: path to the init script
-     */
-    init: string;
-
-    /**
-     * Optional: pattern to match the test files
-     */
-    pattern: string;
-}
-
-export interface TestConfig extends Partial<OptionalTestConfig> {
+/**
+ * Configration for the virtual test pages endpoints.
+ */
+export interface TestConfig {
     framework: 'OPA5' | 'QUnit' | 'Testsuite';
+    /**
+     * Path hosting the main test page
+     */
+    path?: string;
+
+    /**
+     * Path to the init script
+     */
+    init?: string;
+
+    /**
+     * Pattern to match the test files
+     */
+    pattern?: string;
 }
 
-export type InternalTestConfig = TestConfig & OptionalTestConfig;
+/**
+ * Test configuration that has been enriched with the defaults in case of missing values.
+ */
+export type CompleteTestConfig = Required<TestConfig>;
 
+/**
+ * Test configuration defaults.
+ */
 export type TestConfigDefaults = {
     qunit: {
         path: '/test/unitTests.qunit.html';
@@ -109,6 +115,10 @@ export type TestConfigDefaults = {
     };
 };
 
+export type CardGeneratorConfig = {
+    path?: string;
+};
+
 /**
  * Middleware configuration.
  */
@@ -121,6 +131,7 @@ export interface MiddlewareConfig {
     rta?: InternalRtaConfig;
     editors?: {
         rta?: RtaConfig;
+        cardGenerator?: CardGeneratorConfig;
     };
     adp?: AdpPreviewConfig;
     debug?: boolean;
@@ -243,3 +254,24 @@ export const FLPHomePageDefaults = {
     catalogId: 'homeCatalog',
     sectionId: 'homeAppsSection'
 };
+
+export interface MultiCardsPayload {
+    type: string;
+    manifest: CardManifest;
+    entitySet: string;
+}
+
+export interface I18nEntry {
+    key: string;
+    value: string;
+    comment?: string;
+    annotation?: string;
+}
+
+export interface CardManifest {
+    'sap.insights': {
+        versions?: {
+            dtpMiddleware?: string;
+        };
+    };
+}

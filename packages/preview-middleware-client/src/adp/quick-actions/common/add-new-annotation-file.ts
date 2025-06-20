@@ -1,9 +1,6 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import {
-    QuickActionContext,
-    NestedQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
+import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import type { AnnotationDataSourceResponse } from '../../api-handler';
 import { getDataSourceAnnotationFileMap } from '../../api-handler';
 import type { NestedQuickAction, NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
@@ -69,6 +66,7 @@ export class AddNewAnnotationFile
                 const { annotationExistsInWS } = source.annotationDetails;
                 if (source.metadataReadErrorMsg) {
                     this.children.push({
+                        path: this.children.length.toString(),
                         enabled: false,
                         tooltip: source.metadataReadErrorMsg,
                         label: this.context.resourceBundle.getText('ADD_ANNOTATION_FILE', [key]),
@@ -76,6 +74,7 @@ export class AddNewAnnotationFile
                     });
                 } else {
                     this.children.push({
+                        path: this.children.length.toString(),
                         enabled: true,
                         label: annotationExistsInWS
                             ? this.context.resourceBundle.getText('SHOW_ANNOTATION_FILE', [key])

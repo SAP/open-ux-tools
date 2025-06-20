@@ -262,14 +262,14 @@ export async function writeRemoteServiceAnnotationXmlFiles(
             const annotation = edmxAnnotations[annotationName];
             if (annotation?.xml) {
                 fs.write(
-                    join(webappPath, DirName.LocalService, serviceName, `${annotation.technicalName}.xml`),
+                    join(webappPath, DirName.LocalService, serviceName, `${annotation.name}.xml`),
                     prettifyXml(annotation.xml, { indent: 4 })
                 );
             }
         }
     } else if (edmxAnnotations?.xml) {
         fs.write(
-            join(webappPath, DirName.LocalService, serviceName, `${edmxAnnotations.technicalName}.xml`),
+            join(webappPath, DirName.LocalService, serviceName, `${edmxAnnotations.name}.xml`),
             prettifyXml(edmxAnnotations.xml, { indent: 4 })
         );
     }

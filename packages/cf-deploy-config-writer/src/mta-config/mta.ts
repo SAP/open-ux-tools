@@ -5,16 +5,14 @@ import { render } from 'ejs';
 import { Mta, type mta } from '@sap/mta-lib';
 import { type Destination, isGenericODataDestination, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
 import { YamlDocument } from '@sap-ux/yaml';
-import { getMtaPath } from '@sap-ux/project-access';
+import { FileName, getMtaPath, hasDependency, type Package } from '@sap-ux/project-access';
 import {
     CloudFoundry,
     RouterModule,
-    MTAYamlFile,
     ResourceMTADestination,
     DefaultMTADestination,
     SRV_API,
     ManagedXSUAA,
-    MTAFileExtension,
     MTABuildParams,
     MTABuildResult,
     DestinationServiceConfig,
@@ -24,7 +22,12 @@ import {
     UI5StandaloneModuleDestination,
     ServiceAPIRequires,
     HTMLAppBuildParams,
-    HTML5RepoHost
+    HTML5RepoHost,
+    UI5AppfrontDestinationParameter,
+    ManagedAppFront,
+    CAPAppfrontDestination,
+    deployMode,
+    enableParallelDeployments
 } from '../constants';
 import { t } from '../i18n';
 import type { Logger } from '@sap-ux/logger';
@@ -34,7 +37,9 @@ import {
     type HTML5App,
     type ModuleType,
     type ResourceType,
-    type MTADestinationType
+    type MTADestinationType,
+    type SupportedResources,
+    RouterModuleType
 } from '../types';
 
 /**
@@ -124,6 +129,8 @@ export class MtaConfig {
                     );
                 } else if (resource.parameters?.service === 'xsuaa') {
                     this.resources.set(ManagedXSUAA, resource);
+                } else if (resource.parameters?.service === 'app-front') {
+                    this.resources.set(ManagedAppFront, resource);
                 } else if (resource.type === CloudFoundryServiceType.Existing) {
                     this.resources.set(resource.name, resource);
                 } else {
@@ -144,6 +151,8 @@ export class MtaConfig {
                     this.modules.set('com.sap.application.content:destination', module);
                 } else if (this.targetExists(module.requires ?? [], HTML5RepoHost)) {
                     this.modules.set('com.sap.application.content:resource', module);
+                } else if (this.targetExists(module.requires ?? [], ManagedAppFront)) {
+                    this.modules.set('com.sap.application.content:appfront', module);
                 } else {
                     this.modules.set(module.type as ModuleType, module); // i.e. 'approuter.nodejs'
                 }
@@ -156,10 +165,11 @@ export class MtaConfig {
         if (!this.resources.has(HTML5RepoHost)) {
             await this.addHtml5Host();
         }
+
         // Set up the basic module template, artifacts will be added in another step
         const appHostName = this.resources.get(HTML5RepoHost)?.name;
         if (appHostName) {
-            const deployer: mta.Module = {
+            const appContentModule: mta.Module = {
                 name: `${this.prefix.slice(0, 100)}-app-content`,
                 type: 'com.sap.application.content',
                 path: '.',
@@ -176,8 +186,8 @@ export class MtaConfig {
                     requires: []
                 }
             };
-            await this.mta.addModule(deployer);
-            this.modules.set('com.sap.application.content:resource', deployer);
+            await this.mta.addModule(appContentModule);
+            this.modules.set('com.sap.application.content:resource', appContentModule);
             this.dirty = true;
         }
     }
@@ -209,9 +219,10 @@ export class MtaConfig {
     }
 
     /**
+     *  Update the service name for the given resource.
      *
-     * @param serviceName
-     * @param resourceName
+     * @param {string} serviceName - application name
+     * @param {string} resourceName - resource name
      */
     private async updateServiceName(serviceName: string, resourceName: string): Promise<void> {
         const resource = this.resources.get(resourceName);
@@ -224,6 +235,21 @@ export class MtaConfig {
             this.resources.set(resourceName, resource);
             this.dirty = true;
         }
+    }
+
+    private async addAppFrontResource(): Promise<void> {
+        const resource: mta.Resource = {
+            name: `${this.prefix.slice(0, 94)}-app-front`,
+            type: 'org.cloudfoundry.managed-service',
+            parameters: {
+                service: 'app-front',
+                'service-name': `${this.prefix.slice(0, 96)}-app-front-service`,
+                'service-plan': 'developer'
+            }
+        };
+        await this.mta.addResource(resource);
+        this.resources.set(ManagedAppFront, resource);
+        this.dirty = true;
     }
 
     private async addHtml5Host(): Promise<void> {
@@ -308,20 +334,22 @@ export class MtaConfig {
      * Update the server module to include the required dependencies to ensure endpoints are secured.
      *
      * @param moduleType known module type
+     * @param supportedResource selected resource to be added
+     * @param appendSrvApi if `srv-api` should be appended, typically used for CAP flows
      */
-    private async updateServerModule(moduleType: ModuleType): Promise<void> {
-        // Update the CAP API to only allow xsuaa calls, this requires the security.json to be present
-        const uaaResource = this.resources.get(ManagedXSUAA);
+    private async updateServerModule(
+        moduleType: ModuleType,
+        supportedResource: SupportedResources = ManagedXSUAA,
+        appendSrvApi = true
+    ): Promise<void> {
+        const mtaResource = this.resources.get(supportedResource);
         const serverModule = this.modules.get(moduleType);
         if (serverModule) {
-            // Ensure the server module is providing srv-api
-            if (!serverModule.provides?.some((ele) => ele.name === SRV_API)) {
-                // Add it back for all this to work!
+            if (appendSrvApi && !serverModule.provides?.some((ele) => ele.name === SRV_API)) {
                 serverModule.provides = [...(serverModule.provides ?? []), ...[ServiceAPIRequires]];
             }
-            // Ensure there is an xsuaa instance to allow the xs-app.json to use xsuaa to lockdown the endpoints
-            if (uaaResource && !serverModule.requires?.some((ele) => ele.name === uaaResource.name)) {
-                serverModule.requires = [...(serverModule.requires ?? []), ...[{ name: uaaResource.name }]];
+            if (mtaResource && !serverModule.requires?.some((ele) => ele.name === mtaResource.name)) {
+                serverModule.requires = [...(serverModule.requires ?? []), ...[{ name: mtaResource.name }]];
             }
             await this.mta.updateModule(serverModule);
             this.modules.set(moduleType, serverModule);
@@ -329,7 +357,13 @@ export class MtaConfig {
         }
     }
 
-    private async addManagedUaa(): Promise<void> {
+    /**
+     * Add a managed XSUAA service to the MTA.
+     *
+     * @private
+     */
+    private async addManagedUAAWithSecurity(): Promise<void> {
+        this.log?.debug(t('debug.addXsuaaService'));
         const resource: mta.Resource = {
             name: `${this.prefix.slice(0, 100)}-uaa`,
             type: 'org.cloudfoundry.managed-service',
@@ -337,7 +371,15 @@ export class MtaConfig {
                 path: './xs-security.json',
                 service: 'xsuaa',
                 'service-name': `${this.prefix.slice(0, 100)}-xsuaa-service`,
-                'service-plan': 'application'
+                'service-plan': 'application',
+                ...(this.modules.has('nodejs') && this.modules.has('com.sap.application.content:appfront')
+                    ? {
+                          config: {
+                              xsappname: `${this.prefix.slice(0, 100)}-\${org}-\${space}`,
+                              'tenant-mode': 'dedicated'
+                          }
+                      }
+                    : {})
             }
         };
         await this.mta.addResource(resource);
@@ -356,23 +398,56 @@ export class MtaConfig {
     }
 
     /**
-     * Cleanup missing content for the respective approuter types.
+     * Cleanup missing content for Managed | Standalone router types.
      *
      * @private
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     private async cleanupMissingResources(): Promise<void> {
-        if (!this.modules.has('com.sap.application.content:resource')) {
-            await this.addAppContent();
-        }
+        this.log?.debug(t('debug.addMissingModules'));
+        if (!this.modules.has('com.sap.application.content:appfront')) {
+            if (!this.modules.has('com.sap.application.content:resource')) {
+                await this.addAppContent();
+            }
 
-        // For Approuter Configuration generators, the destination resource is missing for both Standalone | Managed
-        if (this.resources.get('destination')) {
-            // Ensure the resource is added
-            await this.updateDestinationResource(this.modules.has('com.sap.application.content:destination'));
-        } else {
-            // No destination resource found, add it, more common for standalone
-            await this.addDestinationResource(this.modules.has('com.sap.application.content:destination'));
+            // For Approuter Configuration generators, the destination resource is missing for both Standalone | Managed
+            if (this.resources.get('destination')) {
+                // Ensure the resource is added
+                await this.updateDestinationResource(this.modules.has('com.sap.application.content:destination'));
+            } else {
+                // No destination resource found, add it, more common for standalone
+                await this.addDestinationResource(this.modules.has('com.sap.application.content:destination'));
+            }
+        }
+    }
+
+    private async cleanupModules(): Promise<void> {
+        this.log?.debug(t('debug.cleanupModules'));
+        // Handle standalone | managed
+        for (const module of [
+            this.modules.get('com.sap.application.content:destination'),
+            this.modules.get('approuter.nodejs')
+        ].filter((elem) => elem !== undefined)) {
+            const destinationName =
+                this.resources.get('destination')?.name ?? `${this.prefix.slice(0, 100)}-destination-service`;
+            if (module?.requires?.findIndex((app) => app.name === destinationName) === -1) {
+                if (module.type === 'approuter.nodejs') {
+                    module.requires.push({
+                        name: destinationName,
+                        ...UI5StandaloneModuleDestination
+                    });
+                }
+                if (module.type === 'com.sap.application.content') {
+                    module.requires.push({
+                        name: destinationName,
+                        parameters: {
+                            'content-target': true
+                        }
+                    });
+                }
+                await this.mta.updateModule(module);
+                this.dirty = true;
+            }
         }
     }
 
@@ -418,6 +493,15 @@ export class MtaConfig {
     }
 
     /**
+     * Returns true if the MTA contains an approuter module of type App Frontend Service.
+     *
+     * @returns {boolean} true if the mta contains an App Frontend Service
+     */
+    public hasAppFrontendRouter(): boolean {
+        return this.modules.has('com.sap.application.content:appfront');
+    }
+
+    /**
      * Returns the mta parameters.
      *
      * @returns {Promise<mta.Parameters>} the MTA parameters
@@ -460,20 +544,19 @@ export class MtaConfig {
     /**
      * Append the UI5 app to the MTA.
      *
-     * @param {string} appModule the name of the app module i.e. myui5app
+     * @param {string} appName the name of the app module i.e. myui5app
      * @param {string} appPath path to the UI5 app i.e. ./apps/myui5app
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
-    public async addApp(appModule: string, appPath: string): Promise<void> {
-        // If an existing content module exists whether standalone/managed, append the new artifact
-        const contentModule = this.modules.get('com.sap.application.content:resource');
+    public async addApp(appName: string, appPath: string): Promise<void> {
+        const contentModule = this.getAppContentModule();
         let isHTML5AlreadyExisting = false; // False by default
         if (contentModule) {
             contentModule[MTABuildParams] = contentModule[MTABuildParams] ?? {};
             contentModule[MTABuildParams][MTABuildResult] =
                 contentModule[MTABuildParams]?.[MTABuildResult] ?? `resources`; // Default
             contentModule[MTABuildParams].requires = contentModule[MTABuildParams].requires ?? [];
-            const artifactName = `${appModule.slice(0, 128)}.zip`;
+            const artifactName = `${appName}.zip`;
             // The name of the HTML5 app will always be the artifact name
             if (
                 contentModule[MTABuildParams].requires?.findIndex(
@@ -481,10 +564,11 @@ export class MtaConfig {
                         app.artifacts?.includes?.(artifactName)
                 ) !== -1
             ) {
+                this.log?.debug(t('debug.html5AlreadyExists', { appName }));
                 isHTML5AlreadyExisting = true;
             } else {
                 contentModule[MTABuildParams].requires.push({
-                    name: appModule.slice(0, 128),
+                    name: appName.slice(0, 128),
                     artifacts: [artifactName],
                     'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`.replace(/\/{2,}/g, '/') // Matches two or more consecutive slashes where at least 2 repetitions of /
                 });
@@ -492,26 +576,43 @@ export class MtaConfig {
             await this.mta.updateModule(contentModule);
             this.dirty = true;
         }
-        // Need to handle where existing HTML5 apps are added by `cds` which follow a different naming convention when added to mta
-        const modules = await this.mta.getModules();
-        for (const module of modules) {
-            if (module.type === 'html5' && module.name.endsWith(appModule) && isHTML5AlreadyExisting) {
-                module['build-parameters'] = HTMLAppBuildParams as HTML5App['build-parameters'];
-                await this.mta.updateModule(module);
-                this.dirty = true;
-            }
-        }
+
         // Add application module, if not found already
-        if (!isHTML5AlreadyExisting && !this.apps.get(appModule)) {
+        if (!isHTML5AlreadyExisting && !this.apps.get(appName)) {
             const app: HTML5App = {
-                name: appModule.slice(0, 128),
+                name: appName.slice(0, 128),
                 type: 'html5',
                 path: appPath,
                 'build-parameters': HTMLAppBuildParams as HTML5App['build-parameters']
             } as HTML5App;
             await this.mta.addModule(app);
-            this.apps.set(appModule, app);
+            this.apps.set(appName, app);
             this.dirty = true;
+            this.log?.debug(t('debug.html5AppAdded', { appName }));
+        }
+        await this.syncHtml5Apps();
+        await this.addMtaDeployParameters();
+    }
+
+    private async syncHtml5Apps(): Promise<void> {
+        // Need to handle where existing HTML5 apps are added by `cds` which follow a different naming convention when added to mta
+        for (const [appName, app] of this.apps.entries()) {
+            if (app.type === 'html5' && app.path && app['build-parameters']) {
+                this.log?.debug(t('debug.processHTML5App', { appName }));
+                try {
+                    // Supported apps will have a dependency on`@sap/ux-ui5-tooling`, assume it's a UI5 app managed by our tooling
+                    const packageJson = JSON.parse(
+                        readFileSync(join(this.mtaDir, app.path, FileName.Package), 'utf8')
+                    ) as Package;
+                    if (packageJson && hasDependency(packageJson, '@sap/ux-ui5-tooling')) {
+                        app['build-parameters'].commands = ['npm install', 'npm run build:cf'];
+                        await this.mta.updateModule(app);
+                        this.dirty = true;
+                    }
+                } catch (error) {
+                    this.log?.debug(t('debug.unableToReadPackageJson', { error }));
+                }
+            }
         }
     }
 
@@ -550,52 +651,71 @@ export class MtaConfig {
     }
 
     /**
-     * @param {object} Options
-     * @param {boolean} Options.isManagedApp - if true, append managed approuter configuration
-     * @param {boolean} Options.addMissingModules - if true, will ensure any missing modules | resources are appended
+     * Append different routers to mta configuration.
+     *
+     * @async
+     * @param {object} Options - Configuration options for routing modules
+     * @param Options.routerType Router type to be generated managed | standalone | appfront
+     * @param Options.addMissingModules if true, will ensure any missing modules | resources are appended
      * @returns {Promise<void>} - A promise that resolves when the change request has been processed.
+     */
+    public async addRouterType({
+        routerType,
+        addMissingModules = true
+    }: {
+        routerType?: RouterModuleType;
+        addMissingModules?: boolean;
+    } = {}): Promise<void> {
+        if (routerType === RouterModuleType.Standard) {
+            await this.addStandaloneRouter(true);
+        }
+        if (routerType === RouterModuleType.Managed) {
+            await this.addManagedAppRouter();
+        }
+        if (routerType === RouterModuleType.AppFront) {
+            await this.addAppFrontAppRouter();
+        }
+        if (routerType !== RouterModuleType.AppFront) {
+            if (addMissingModules) {
+                await this.cleanupMissingResources();
+            }
+            await this.cleanupModules();
+        }
+        await this.addMtaDeployParameters();
+    }
+
+    /**
+     * Append different routers to mta configuration.
+     *
+     * @async
+     * @param {object} options - Configuration options for routing modules
+     * @param {boolean} [options.isManagedApp] - Indicates if the application is managed
+     * @param {boolean} [options.isAppFrontApp] - Indicates if the application is an AppFront application
+     * @param {boolean} [options.addMissingModules] - Whether to add any missing modules automatically
+     * @returns {Promise<void>} - A promise that resolves when routing modules have been added
+     * @throws {Error} May throw an error if adding routing modules fails
      */
     public async addRoutingModules({
         isManagedApp = false,
+        isAppFrontApp = false,
         addMissingModules = true
     }: {
         isManagedApp?: boolean;
+        isAppFrontApp?: boolean;
         addMissingModules?: boolean;
     } = {}): Promise<void> {
         if (isManagedApp) {
             await this.addManagedAppRouter();
         }
+        if (isAppFrontApp) {
+            await this.addAppFrontAppRouter();
+        }
 
+        // Only update if managed | standalone
         if (addMissingModules) {
             await this.cleanupMissingResources();
         }
-
-        // Handle standalone | managed
-        for (const module of [
-            this.modules.get('com.sap.application.content:destination'),
-            this.modules.get('approuter.nodejs')
-        ].filter((elem) => elem !== undefined)) {
-            const destinationName =
-                this.resources.get('destination')?.name ?? `${this.prefix.slice(0, 100)}-destination-service`;
-            if (module?.requires?.findIndex((app) => app.name === destinationName) === -1) {
-                if (module.type === 'approuter.nodejs') {
-                    module.requires.push({
-                        name: destinationName,
-                        ...UI5StandaloneModuleDestination
-                    });
-                }
-                if (module.type === 'com.sap.application.content') {
-                    module.requires.push({
-                        name: destinationName,
-                        parameters: {
-                            'content-target': true
-                        }
-                    });
-                }
-                await this.mta.updateModule(module);
-                this.dirty = true;
-            }
-        }
+        await this.cleanupModules();
     }
 
     /**
@@ -655,7 +775,8 @@ export class MtaConfig {
      * @param {boolean} fromServerGenerator If true, the request is from the server generator, so the path changes.
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
-    public async addStandaloneRouter(fromServerGenerator = false): Promise<void> {
+    public async addStandaloneRouter(fromServerGenerator: boolean = false): Promise<void> {
+        this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.Standard }));
         if (!this.resources.has('xsuaa')) {
             await this.addUaa();
         }
@@ -736,7 +857,7 @@ export class MtaConfig {
         }
 
         const appMtaId = this.mtaId;
-        const mtaExtFilePath = join(this.mta.mtaDirPath, MTAFileExtension);
+        const mtaExtFilePath = join(this.mta.mtaDirPath, FileName.MtaExtYaml);
         let mtaExtensionYamlFile;
 
         try {
@@ -744,7 +865,7 @@ export class MtaConfig {
             mtaExtensionYamlFile = await YamlDocument.newInstance(mtaExtContents);
         } catch (err) {
             // File does not exist or cannot be parsed, either way we create a new one
-            this.log?.info(t('info.existingMTAExtensionNotFound'));
+            this.log?.info(t('info.existingMTAExtensionNotFound', { error: err.message }));
         }
 
         // Create a new mta extension file
@@ -759,9 +880,9 @@ export class MtaConfig {
                 destinationServiceName: destinationServiceName,
                 mtaVersion: '1.0.0'
             };
-            const mtaExtTemplate = readFileSync(join(__dirname, `../../templates/app/${MTAFileExtension}`), 'utf-8');
+            const mtaExtTemplate = readFileSync(join(__dirname, `../../templates/app/${FileName.MtaExtYaml}`), 'utf-8');
             writeFileSync(mtaExtFilePath, render(mtaExtTemplate, mtaExt));
-            this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: MTAFileExtension }));
+            this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: FileName.MtaExtYaml }));
         } else {
             // Create an entry in an existing mta extension file
             const resources: YAMLSeq = mtaExtensionYamlFile.getSequence({ path: 'resources' });
@@ -782,7 +903,7 @@ export class MtaConfig {
                     value: nodeToInsert
                 });
                 writeFileSync(mtaExtFilePath, mtaExtensionYamlFile.toString());
-                this.log?.info(t('info.mtaExtensionUpdated', { mtaExtFile: MTAFileExtension }));
+                this.log?.info(t('info.mtaExtensionUpdated', { mtaExtFile: FileName.MtaExtYaml }));
             } else {
                 this.log?.error(t('error.updatingMTAExtensionFailed', { mtaExtFilePath }));
             }
@@ -790,12 +911,58 @@ export class MtaConfig {
     }
 
     /**
-     * Append a destination instance to the mta.yaml file, required by consumers of CAP services (e.g. approuter, destinations).
+     * Add a destination to the approuter.
+     *
+     * @param cfDestination The name of the destination to be appended
+     * @returns {void}
+     */
+    public async addDestinationToAppRouter(cfDestination: string | undefined): Promise<void> {
+        if (this.hasAppFrontendRouter()) {
+            // Append destination directly to app frontend
+            await this.appendAppfrontCAPDestination(cfDestination);
+        } else {
+            await this.appendInstanceBasedDestination(cfDestination);
+        }
+    }
+
+    /**
+     *  Add destination to App Frontend router.
+     *
+     * @param cfDestination Then name of the destination to be appended
+     */
+    private async appendAppfrontCAPDestination(cfDestination: string | undefined): Promise<void> {
+        const module = this.modules.get('com.sap.application.content:appfront');
+        if (module) {
+            // If the destination provided is `fiori-default-srv-api` then use the default destination name
+            const destName =
+                cfDestination === DefaultMTADestination
+                    ? this.getFormattedPrefix(ResourceMTADestination)
+                    : cfDestination;
+
+            // Ensure the destination does not exist already!
+            if (
+                !module.parameters?.config?.destinations?.some(
+                    (destination: MTADestinationType) => destination.Name === destName
+                )
+            ) {
+                const destination = {
+                    ...CAPAppfrontDestination,
+                    name: destName
+                };
+
+                module.parameters?.config?.destinations.push(destination);
+                await this.mta.updateModule(module);
+            }
+        }
+    }
+
+    /**
+     * Append a destination instance to the mta.yaml file, required by consumers of CAP services when using Standalone or Managed approuter.
      *
      * @param {string} cfDestination The new destination instance name
      * @returns {Promise<void>} A promise that resolves when the change request has been processed
      */
-    public async appendInstanceBasedDestination(cfDestination: string | undefined): Promise<void> {
+    private async appendInstanceBasedDestination(cfDestination: string | undefined): Promise<void> {
         // Part 1. Update the destination service with the new instance based destination
         const destinationResource = this.resources.get('destination');
         if (destinationResource) {
@@ -848,6 +1015,54 @@ export class MtaConfig {
     }
 
     /**
+     * Add an App Router to the MTA.
+     */
+    public async addAppFrontAppRouter(): Promise<void> {
+        if (!this.resources.has(ManagedXSUAA)) {
+            await this.addManagedUAAWithSecurity();
+        }
+        await this.updateServiceName('xsuaa', ManagedXSUAA);
+        if (!this.resources.has(ManagedAppFront)) {
+            await this.addAppFrontResource();
+        }
+
+        if (!this.modules.has('com.sap.application.content:appfront')) {
+            this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.AppFront }));
+            const appHostName = this.resources.get(ManagedAppFront)?.name;
+            if (appHostName) {
+                const appContentModule: mta.Module = {
+                    name: `${this.prefix.slice(0, 100)}-app-content`,
+                    type: 'com.sap.application.content',
+                    path: '.',
+                    requires: [
+                        {
+                            name: appHostName,
+                            parameters: {
+                                'content-target': true
+                            }
+                        }
+                    ],
+                    parameters: {
+                        config: {
+                            destinations: [UI5AppfrontDestinationParameter]
+                        }
+                    }
+                };
+                // Append missing requires if CAP is found
+                if (this.modules.has('nodejs')) {
+                    appContentModule.requires?.push({ name: SRV_API });
+                }
+                await this.mta.addModule(appContentModule);
+                this.modules.set('com.sap.application.content:appfront', appContentModule);
+                this.dirty = true;
+            }
+        }
+        // Append resources
+        await this.updateServerModule('com.sap.application.content:appfront' as ModuleType, ManagedXSUAA, false);
+        await this.updateServerModule('nodejs' as ModuleType, ManagedXSUAA, false);
+    }
+
+    /**
      * Add a managed app router to the MTA.
      *
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
@@ -857,7 +1072,7 @@ export class MtaConfig {
             await this.addDestinationResource(true);
         }
         if (!this.resources.has(ManagedXSUAA)) {
-            await this.addManagedUaa();
+            await this.addManagedUAAWithSecurity();
         }
         if (!this.resources.has(HTML5RepoHost)) {
             await this.addHtml5Host();
@@ -869,6 +1084,7 @@ export class MtaConfig {
 
         // We only want to append a new one, if missing from the existing mta config
         if (!this.modules.has('com.sap.application.content:destination')) {
+            this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.Managed }));
             const destinationName = this.resources.get('destination')?.name;
             const appHostName = this.resources.get(HTML5RepoHost)?.name;
             const appHostServiceName = this.resources.get(HTML5RepoHost)?.parameters?.['service-name'];
@@ -941,7 +1157,7 @@ export class MtaConfig {
      * @param {boolean} checkWebIDEUsage - check if the destination contains WebIDEUsage property odata_gen or odata_abap
      * @returns {string[]} Return a list of destination names read from the mta.yaml
      */
-    public getExposedDestinations(checkWebIDEUsage = false): string[] {
+    public getExposedDestinations(checkWebIDEUsage: boolean = false): string[] {
         const exposedDestinations: string[] = [];
         // Pull destinations from two places:
         // 1. Resources
@@ -979,6 +1195,45 @@ export class MtaConfig {
     public getFormattedPrefix(formatString: string): string {
         return format(formatString, this.prefix).replace(/[^\w-]/g, '_');
     }
+
+    /**
+     * Retrieve the app-content module, different types can be found depending on the router type configuration.
+     *
+     * @returns {mta.Module} return the app-content module
+     */
+    private getAppContentModule(): undefined | mta.Module {
+        // Default for managed and standalone
+        return (
+            this.modules.get('com.sap.application.content:resource') ??
+            this.modules.get('com.sap.application.content:appfront')
+        );
+    }
+
+    /**
+     *  Add the build parameters to the MTA configuration.
+     *
+     */
+    public async addMtaBuildParameters(): Promise<void> {
+        const params = (await this.getBuildParameters()) ?? {};
+        params['before-all'] ??= [];
+        params['before-all'].push({
+            builder: 'custom',
+            commands: ['npm install']
+        } as mta.BuildParameters);
+        await this.updateBuildParams(params as mta.ProjectBuildParameters);
+    }
+
+    /**
+     * Add the deployment parameters to the MTA configuration.
+     *
+     */
+    public async addMtaDeployParameters(): Promise<void> {
+        let params = await this.getParameters();
+        params = { ...(params ?? {}), ...{} } as mta.Parameters;
+        params[deployMode] = 'html5-repo';
+        params[enableParallelDeployments] = true;
+        await this.updateParameters(params);
+    }
 }
 
 /**
@@ -988,7 +1243,7 @@ export class MtaConfig {
  * @returns {boolean} true | false if MTA configuration file is found
  */
 export function isMTAFound(dir: string): boolean {
-    return existsSync(join(dir, MTAYamlFile));
+    return existsSync(join(dir, FileName.MtaYaml));
 }
 
 /**
@@ -1003,7 +1258,7 @@ export function isMTAFound(dir: string): boolean {
 export async function useAbapDirectServiceBinding(
     appPath: string,
     findMtaPath: boolean,
-    mtaPath = '',
+    mtaPath: string = '',
     logger?: Logger
 ): Promise<boolean> {
     try {

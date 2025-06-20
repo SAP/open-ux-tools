@@ -1,5 +1,17 @@
 # @sap-ux/btp-utils
 
+## 1.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+## 1.0.3
+
+### Patch Changes
+
+-   d638daa: Update @sap/bas-sdk dependency
+
 ## 1.0.2
 
 ### Patch Changes

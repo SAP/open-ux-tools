@@ -8,10 +8,10 @@ import * as previewFiles from '../../../src/preview-config/preview-files';
 import * as prerequisites from '../../../src/preview-config/prerequisites';
 import * as ui5Yaml from '../../../src/preview-config/ui5-yaml';
 
+jest.useFakeTimers();
+
 describe('index', () => {
     const logger = new ToolsLogger();
-    const errorLogMock = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
-
     const basePath = join(__dirname, '../../fixtures/preview-config');
 
     let fs: Editor;

@@ -1,0 +1,42 @@
+.timestamp {
+    color: var(--vscode-editor-foreground);
+    font-size: 11px;
+    line-height: 15px;
+    opacity: 0.5;
+}
+
+.property {
+    overflow-wrap: anywhere;
+}
+.item {
+    padding: 1px;
+    padding-right: 25px;
+}
+.item:hover {
+    background-color: var(--vscode-dropdown-background);
+    color: var(--vscode-dropdown-foreground);
+    outline: 1px dashed var(--vscode-contrastActiveBorder);
+    .actions {
+        visibility: visible;
+    }
+}
+
+.actions {
+    padding-left: 10px;
+    visibility: hidden;
+}
+
+.line {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.label {
+    font-weight: bold;
+}
+
+.label,
+.text,
+.timestamp {
+    color: var(--vscode-editor-foreground);
+}

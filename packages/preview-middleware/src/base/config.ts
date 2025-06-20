@@ -5,7 +5,7 @@ import type {
     DefaultIntent,
     FlpConfig,
     Intent,
-    InternalTestConfig,
+    CompleteTestConfig,
     MiddlewareConfig,
     RtaConfig,
     TestConfig
@@ -77,6 +77,7 @@ export interface TemplateConfig {
     features?: { feature: string; isEnabled: boolean }[];
     locateReuseLibsScript?: boolean;
     enhancedHomePage?: boolean;
+    enableCardGenerator?: boolean;
 }
 
 /**
@@ -90,6 +91,12 @@ export const PREVIEW_URL = {
         ns: 'open.ux.preview.client'
     },
     api: '/preview/api'
+} as const;
+
+export const CARD_GENERATOR_DEFAULT = {
+    previewGeneratorSandbox: '/test/flpCardGeneratorSandbox.html',
+    cardsStore: '/cards/store',
+    i18nStore: '/editor/i18n'
 } as const;
 
 /**
@@ -215,12 +222,12 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
  * @returns sanitized RTA configuration
  */
 //prettier-ignore
-export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], logger: Logger): RtaConfig | undefined { //NOSONAR
+export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], logger?: Logger): RtaConfig | undefined { //NOSONAR
     let rtaConfig: RtaConfig | undefined;
     if (deprecatedRtaConfig) {
         const { editors, ...rta } = deprecatedRtaConfig;
         rtaConfig = { ...rta, endpoints: [...editors] };
-        logger.warn(`The configuration option 'rta' is deprecated. Please use 'editors.rta' instead.`);
+        logger?.warn(`The configuration option 'rta' is deprecated. Please use 'editors.rta' instead.`);
     }
     return rtaConfig;
 }
@@ -362,7 +369,8 @@ export function createFlpTemplateConfig(
             bootstrapOptions: ''
         },
         locateReuseLibsScript: config.libs,
-        enhancedHomePage: config.enhancedHomePage
+        enhancedHomePage: config.enhancedHomePage,
+        enableCardGenerator: false
     } satisfies TemplateConfig;
 }
 
@@ -374,7 +382,7 @@ export function createFlpTemplateConfig(
  * @param theme theme to be used
  * @returns configuration object for the test template
  */
-export function createTestTemplateConfig(config: InternalTestConfig, id: string, theme: string): TestTemplateConfig {
+export function createTestTemplateConfig(config: CompleteTestConfig, id: string, theme: string): TestTemplateConfig {
     return {
         id,
         framework: config.framework,

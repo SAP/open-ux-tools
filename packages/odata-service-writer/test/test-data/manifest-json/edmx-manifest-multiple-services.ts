@@ -17,7 +17,7 @@ export const expectedEdmxManifestMultipleServices = {
                 uri: "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='annotation1Technical',Version='0001')/$value/",
                 type: 'ODataAnnotation',
                 settings: {
-                    localUri: 'localService/aname/annotation1Technical.xml'
+                    localUri: 'localService/aname/annotation1.xml'
                 }
             },
             localTest: {

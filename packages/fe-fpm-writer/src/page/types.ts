@@ -142,6 +142,10 @@ export interface FCL {
  */
 export type InternalFpmPage = FCL & {
     settings: Record<string, unknown | undefined>;
+    /**
+     * Allows setting a non-standard template (sets the "name" property in manifest.json for the page).
+     */
+    template: string;
 };
 
 export enum PageType {

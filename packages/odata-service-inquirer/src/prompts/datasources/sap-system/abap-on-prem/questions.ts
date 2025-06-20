@@ -12,7 +12,7 @@ import {
 import { PromptState } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions';
-import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
+import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts';
 import { newSystemPromptNames } from '../new-system/types';
 import { getSystemServiceQuestion, type ServiceAnswer } from '../service-selection';
 
@@ -100,11 +100,7 @@ export function getAbapOnPremSystemQuestions(
                 return valRes;
             }
         } as InputQuestion<AbapOnPremAnswers>,
-        ...getCredentialsPrompts<AbabpOnPremCredentialsAnswers>(
-            connectValidator,
-            abapOnPremPromptNamespace,
-            sapClientRef
-        )
+        ...getCredentialsPrompts<AbapOnPremAnswers>(connectValidator, abapOnPremPromptNamespace, sapClientRef)
     ];
 
     if (systemNamePromptOptions?.hide !== true) {

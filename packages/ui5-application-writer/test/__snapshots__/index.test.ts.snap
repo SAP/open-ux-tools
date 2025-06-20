@@ -28,7 +28,7 @@ archive.zip
     \\"main\\": \\"webapp/index.html\\",
     \\"dependencies\\": {},
     \\"devDependencies\\": {
-        \\"@ui5/cli\\": \\"^3.0.0\\",
+        \\"@ui5/cli\\": \\"^4.0.16\\",
         \\"@sap/ux-ui5-tooling\\": \\"1\\"
 },
     \\"scripts\\": {
@@ -64,8 +64,9 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: testAppId
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -96,8 +97,9 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: testAppId
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },

@@ -1,3 +1,4 @@
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 
 export enum OdataVersion {
@@ -90,3 +91,5 @@ export interface ProjectPaths {
     ui5LocalYaml?: string;
     ui5MockYaml?: string;
 }
+
+export type DataSources = { [k: string]: ManifestNamespace.DataSource };

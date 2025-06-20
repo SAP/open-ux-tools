@@ -8,11 +8,7 @@ import { t } from '../../../i18n';
 import { getSystemConfig } from '../../../utils';
 import { getPackageChoices, getPackageInputChoices } from '../../helpers';
 import { defaultPackage, defaultPackageChoice } from '../../defaults';
-import {
-    validatePackageChoiceInput,
-    validatePackageChoiceInputForCli,
-    validatePackageExtended
-} from '../../validators';
+import { validatePackageChoiceInput, validatePackageChoiceInputForCli, validatePackage } from '../../validators';
 import {
     promptNames,
     type PackageInputChoices,
@@ -21,6 +17,7 @@ import {
 } from '../../../types';
 import type { InputQuestion, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Returns the package prompts.
@@ -35,7 +32,7 @@ export function getPackagePrompts(
     useStandalone = true,
     isYUI = false
 ): Question<AbapDeployConfigAnswersInternal>[] {
-    let packageInputChoiceValid: boolean | string;
+    let packageInputChoiceValid: boolean | string | IValidationLink;
     let morePackageResultsMsg = '';
     PromptState.isYUI = isYUI;
 
@@ -51,7 +48,7 @@ export function getPackagePrompts(
             choices: () => getPackageInputChoices(),
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackageChoice(previousAnswers.packageInputChoice),
-            validate: async (input: PackageInputChoices): Promise<boolean | string> => {
+            validate: async (input: PackageInputChoices): Promise<boolean | string | IValidationLink> => {
                 packageInputChoiceValid = await validatePackageChoiceInput(
                     input,
                     getSystemConfig(useStandalone, PromptState.abapDeployConfig, options.backendTarget),
@@ -93,13 +90,7 @@ export function getPackagePrompts(
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackage(previousAnswers.packageManual || options.packageManual?.default, options?.packageManual),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-                await validatePackageExtended(
-                    input,
-                    answers,
-                    options.packageManual,
-                    options.ui5AbapRepo,
-                    options.backendTarget
-                )
+                await validatePackage(input, answers, options.packageManual, options.ui5AbapRepo, options.backendTarget)
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
@@ -141,7 +132,7 @@ export function getPackagePrompts(
                 const pkgValue: string = (input as ListChoiceOptions)?.value
                     ? (input as ListChoiceOptions).value
                     : input;
-                return await validatePackageExtended(
+                return await validatePackage(
                     pkgValue,
                     answers,
                     options.packageAutocomplete,

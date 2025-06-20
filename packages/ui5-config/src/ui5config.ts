@@ -278,14 +278,27 @@ export class UI5Config {
      * Adds the Fiori Tools preview middleware configuration to the UI5 server configuration.
      * This middleware is used to preview the Fiori application with the specified UI5 theme.
      *
-     * @param {string} appId - The ID of the application for which the preview middleware is configured.
-     * @param {string} ui5Theme - The UI5 theme to be used.
+     * @param previewMiddlewareOpts - options for configuring the fiori tools preview middleware.
+     * @param {string} previewMiddlewareOpts.ui5Theme - The UI5 theme to be used.
+     * @param {string} previewMiddlewareOpts.appId - The ID of the application for which the preview middleware is configured.
+     * @param {string} previewMiddlewareOpts.flpAction - The FLP action to be used for the preview.
+     * @param {string} [previewMiddlewareOpts.localStartFile] - The local start file to be used for the preview.
      * @returns {UI5Config} The updated UI5 configuration object.
      */
-    public addFioriToolsPreviewMiddleware(appId: string, ui5Theme: string): UI5Config {
+    public addFioriToolsPreviewMiddleware({
+        appId,
+        ui5Theme,
+        flpAction,
+        localStartFile
+    }: {
+        ui5Theme: string;
+        appId?: string;
+        flpAction?: string;
+        localStartFile?: string;
+    }): UI5Config {
         this.document.appendTo({
             path: 'server.customMiddleware',
-            value: getPreviewMiddlewareConfig(appId, ui5Theme)
+            value: getPreviewMiddlewareConfig({ ui5Theme, appId, flpAction, localStartFile })
         });
         return this;
     }
@@ -314,6 +327,24 @@ export class UI5Config {
     }
 
     /**
+     * Returns a fiori-tools-proxy middleware YAML configuration.
+     *
+     * @returns {unknown} The fiori-tools-proxy middleware configuration
+     * @memberof UI5Config
+     */
+    private getFioriToolsProxyMiddlewareConfiguration(): YAMLMap<unknown, unknown> {
+        const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
+        const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
+        if (!proxyMiddleware) {
+            throw new Error('Could not find fiori-tools-proxy');
+        }
+        return this.document.getMap({
+            start: proxyMiddleware as YAMLMap,
+            path: 'configuration'
+        });
+    }
+
+    /**
      * Adds a backend configuration to an existing fiori-tools-proxy middleware keeping any existing 'fiori-tools-proxy' backend configurations. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
      *
      * @param backend config of backend that is to be proxied
@@ -325,18 +356,9 @@ export class UI5Config {
         backend: FioriToolsProxyConfigBackend,
         ignoreCertError: boolean = false
     ): this {
-        const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
-        const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
-        if (!proxyMiddleware) {
-            throw new Error('Could not find fiori-tools-proxy');
-        }
+        const configuration = this.getFioriToolsProxyMiddlewareConfiguration();
+        const proxyMiddlewareConfig = configuration.toJSON() as FioriToolsProxyConfig;
         const comments = getBackendComments(backend);
-        const proxyMiddlewareYamlContent = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
-        const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration;
-        const configuration = this.document.getMap({
-            start: proxyMiddleware as YAMLMap,
-            path: 'configuration'
-        });
         const backendNode = this.document.createNode({
             value: backend,
             comments
@@ -357,6 +379,34 @@ export class UI5Config {
         } else {
             // Create a new 'backend' node in yaml for middleware config
             configuration.set('backend', [backendNode]);
+        }
+        return this;
+    }
+
+    /**
+     * Updates backend configuration to an existing fiori-tools-proxy middleware that matches path. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     *
+     * @param backend config of backend that is to be proxied
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public updateBackendToFioriToolsProxydMiddleware(backend: FioriToolsProxyConfigBackend): this {
+        const configuration = this.getFioriToolsProxyMiddlewareConfiguration();
+        const proxyMiddlewareConfig = configuration.toJSON() as FioriToolsProxyConfig;
+        const comments = getBackendComments(backend);
+        const backendNode = this.document.createNode({
+            value: backend,
+            comments
+        });
+        // Update existing backend entry with matching path
+        if (proxyMiddlewareConfig?.backend) {
+            const matchingBackendIndex = proxyMiddlewareConfig?.backend.findIndex(
+                (existingBackend) => existingBackend.path && existingBackend.path === backend.path
+            );
+            if (matchingBackendIndex !== -1) {
+                const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
+                backendConfigs.set(matchingBackendIndex, backendNode);
+            }
         }
         return this;
     }
@@ -633,22 +683,11 @@ export class UI5Config {
         this.document.appendTo({
             path: 'builder.customTasks',
             value: {
-                name: 'webide-extension-task-updateManifestJson',
-                afterTask: 'replaceVersion',
-                configuration: {
-                    appFolder: 'webapp',
-                    destDir: 'dist'
-                }
-            }
-        });
-
-        this.document.appendTo({
-            path: 'builder.customTasks',
-            value: {
                 name: 'ui5-task-zipper',
                 afterTask: 'generateCachebusterInfo',
                 configuration: {
                     archiveName,
+                    relativePaths: true,
                     additionalFiles: ['xs-app.json']
                 }
             }

@@ -4,6 +4,7 @@ import { t } from '../i18n';
 import {
     DatasourceType,
     promptNames,
+    type ConnectedSystem,
     type DatasourceTypePromptOptions,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
@@ -19,13 +20,17 @@ import { getDatasourceTypeChoices } from './prompt-helpers';
  * Get the prompts for the OData service inquirer.
  *
  * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
+ * @param connectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns the prompts used to provide input for OData service generation
  */
-export async function getQuestions(promptOptions?: OdataServicePromptOptions): Promise<OdataServiceQuestion[]> {
+export async function getQuestions(
+    promptOptions?: OdataServicePromptOptions,
+    connectedSystem?: ConnectedSystem
+): Promise<OdataServiceQuestion[]> {
     const questions: OdataServiceQuestion[] = [getDatasourceTypeQuestion(promptOptions?.datasourceType)];
 
     // Add conditional questions depending on the selected source
-    questions.push(...(await getDatasourceTypeConditionalQuestions(promptOptions)));
+    questions.push(...(await getDatasourceTypeConditionalQuestions(promptOptions, connectedSystem)));
 
     return questions;
 }
@@ -54,16 +59,18 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
  * Apply addiitonal when conditions based on the datasource type answer.
  *
  * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
+ * @param connectedSystem
  * @returns the conditional questions based on the datasource type answer
  */
 async function getDatasourceTypeConditionalQuestions(
-    promptOptions?: OdataServicePromptOptions
+    promptOptions?: OdataServicePromptOptions,
+    connectedSystem?: ConnectedSystem
 ): Promise<OdataServiceQuestion[]> {
     const conditionalQuestions: OdataServiceQuestion[] = [];
 
     conditionalQuestions.push(
         ...(withCondition(
-            (await getSystemSelectionQuestions(promptOptions)) as Question[],
+            (await getSystemSelectionQuestions(promptOptions, connectedSystem)) as Question[],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem
         ) as OdataServiceQuestion[])
     );

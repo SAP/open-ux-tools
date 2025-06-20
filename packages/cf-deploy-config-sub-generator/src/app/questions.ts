@@ -5,8 +5,8 @@ import {
     appRouterPromptNames,
     type CfAppRouterDeployConfigPromptOptions,
     type CfAppRouterDeployConfigQuestions,
-    type CfDeployConfigPromptOptions,
     type CfDeployConfigQuestions,
+    type CfDeployConfigPromptOptions,
     getAppRouterPrompts,
     getPrompts,
     promptNames
@@ -17,6 +17,7 @@ import { t } from '../utils';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Answers, Question } from 'inquirer';
 import { withCondition } from '@sap-ux/inquirer-common';
+import type { Logger } from '@sap-ux/logger';
 
 /**
  * Fetches the Cloud Foundry deployment configuration questions.
@@ -28,6 +29,7 @@ import { withCondition } from '@sap-ux/inquirer-common';
  * @param options.isCap - whether the project is a CAP project.
  * @param options.addOverwrite - whether to add the overwrite prompt.
  * @param options.apiHubConfig - the API Hub configuration.
+ * @param options.promptOptions - additional prompt options.
  * @returns the cf deploy config questions.
  */
 export async function getCFQuestions({
@@ -36,7 +38,8 @@ export async function getCFQuestions({
     cfDestination,
     isCap,
     addOverwrite,
-    apiHubConfig
+    apiHubConfig,
+    promptOptions
 }: {
     projectRoot: string;
     isAbapDirectServiceBinding: boolean;
@@ -44,6 +47,7 @@ export async function getCFQuestions({
     isCap: boolean;
     addOverwrite: boolean;
     apiHubConfig?: ApiHubConfig;
+    promptOptions?: CfDeployConfigPromptOptions;
 }): Promise<CfDeployConfigQuestions[]> {
     const isBAS = isAppStudio();
     const mtaYamlExists = !!(await getMtaPath(projectRoot));
@@ -56,6 +60,7 @@ export async function getCFQuestions({
     });
 
     const options: CfDeployConfigPromptOptions = {
+        ...promptOptions,
         [promptNames.destinationName]: {
             defaultValue: destinationQuestionDefaultOption(isAbapDirectServiceBinding, isBAS, cfDestination),
             hint: !!isAbapDirectServiceBinding,
@@ -63,12 +68,12 @@ export async function getCFQuestions({
             addBTPDestinationList: isBAS ? !isAbapDirectServiceBinding : false,
             additionalChoiceList: cfChoices
         },
-        [promptNames.addManagedAppRouter]: !mtaYamlExists && !isCap,
+        [promptNames.routerType]: !mtaYamlExists && !isCap,
         [promptNames.overwrite]: addOverwrite
     };
 
     DeploymentGenerator.logger?.debug(t('cfGen.debug.promptOptions', { options: JSON.stringify(options) }));
-    return getPrompts(options);
+    return getPrompts(options, DeploymentGenerator.logger as unknown as Logger);
 }
 
 /**

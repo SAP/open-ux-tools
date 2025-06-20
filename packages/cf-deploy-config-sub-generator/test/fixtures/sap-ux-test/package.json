@@ -1,5 +1,5 @@
 {
-    "name": "mta-project",
+    "name": "sap-ux-test",
     "version": "0.0.1",
     "description": "Build and deployment scripts",
     "scripts": {

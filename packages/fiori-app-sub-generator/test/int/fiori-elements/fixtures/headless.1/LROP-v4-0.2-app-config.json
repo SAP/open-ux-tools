@@ -1,0 +1,23 @@
+{
+  "version": "0.2",
+  "floorplan": "FE_LROP",
+  "project": {
+    "title": "Project's \"Title\"",
+    "description": "Test 'Project' \"Description\"",
+    "namespace": "testNameSpace",
+    "ui5Version": "1.84.0",
+    "localUI5Version": "1.82.2",
+    "targetFolder": "./test-output",
+    "name": "lrop_v4",
+    "sapux": true
+  },
+  "service": {
+    "servicePath": "/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/",
+    "host": "https://sap-ux-mock-services-v4-feop.cfapps.us10.hana.ondemand.com",
+    "edmx": "<Set in tests to avoid replication: add from ../travel_v4/metadata.xml>"
+  },
+  "entityConfig": {
+    "mainEntity": { "entityName": "Travel" },
+    "navigationEntity": { "EntitySet": "Booking", "Name": "_Booking" }
+  }
+}

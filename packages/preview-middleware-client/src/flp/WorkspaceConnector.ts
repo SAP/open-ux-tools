@@ -4,6 +4,7 @@ import Layer from 'sap/ui/fl/Layer';
 import type { FlexChange } from './common';
 import { CHANGES_API_PATH, getFlexSettings } from './common';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
+import { getAdditionalChangeInfo } from '../utils/additional-change-info';
 
 const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
@@ -17,17 +18,24 @@ const connector = merge({}, ObjectStorageConnector, {
                 change.support.generator = settings.generator;
             }
 
+            const additionalChangeInfo = getAdditionalChangeInfo(change);
+
             if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
                 try {
-                    this.fileChangeRequestNotifier(change.fileName, 'create', change);
-                } catch {
+                    this.fileChangeRequestNotifier(change.fileName, 'create', change, additionalChangeInfo);
+                } catch (e) {
                     // exceptions in the listener call are ignored
                 }
             }
 
+            const body = {
+                change,
+                additionalChangeInfo
+            };
+
             return fetch(CHANGES_API_PATH, {
                 method: 'POST',
-                body: JSON.stringify(change, null, 2),
+                body: JSON.stringify(body, null, 2),
                 headers: {
                     'content-type': 'application/json'
                 }

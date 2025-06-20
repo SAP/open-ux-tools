@@ -39,10 +39,8 @@ describe('Tools Suite Telemetry Tests', () => {
 
     beforeAll(() => {
         jest.clearAllMocks();
-    });
-
-    afterAll(() => {
         jest.resetAllMocks();
+        jest.restoreAllMocks();
     });
 
     it('No additional properties, Not SBAS', async () => {
@@ -187,6 +185,10 @@ describe('Tools Suite Telemetry Tests', () => {
     it('telemetryHelperProperties - tsTemplate - Form Object Object Page', async () => {
         memfs.vol.fromNestedJSON(
             {
+                ['/project1/.appGenInfo.json']: fs.readFileSync(
+                    join(__dirname, 'fixtures/fiori_elements/.appGenInfo.json'),
+                    'utf-8'
+                ),
                 ['/project1/README.md']: fs.readFileSync(
                     join(__dirname, '/fixtures/fiori_elements/README_Form.md'),
                     'utf-8'
@@ -209,7 +211,7 @@ describe('Tools Suite Telemetry Tests', () => {
         });
         expect(commonProperties).toEqual({
             appstudio: false,
-            'cmn.template': 'Form Entry Object Page',
+            'cmn.template': 'Form Entry Object Page V4',
             'cmn.toolsId': 'NO_TOOLS_ID',
             'cmn.deployTarget': 'NO_DEPLOY_CONFIG',
             'cmn.odataSource': 'ABAP',

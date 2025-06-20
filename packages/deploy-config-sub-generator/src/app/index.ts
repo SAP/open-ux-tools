@@ -166,7 +166,9 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             if (!checkTarget) {
                 bail(ErrorHandler.unrecognizedTarget(this.target));
             }
-        } else {
+        }
+
+        if (!this.target || this.launchDeployConfigAsSubGenerator) {
             // if there is no specified target then prompting will occur
             const { target, answers } = await promptDeployConfigQuestions(
                 this.fs,
@@ -182,7 +184,8 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
                     isCap: this.isCap,
                     apiHubConfig: this.apiHubConfig,
                     isLibrary: this.isLibrary
-                }
+                },
+                this.target
             );
             this.target = target;
             this.answers = answers;

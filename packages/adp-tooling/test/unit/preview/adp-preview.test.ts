@@ -18,7 +18,7 @@ import * as editors from '../../../src/writer/editors';
 import { AdpPreview } from '../../../src';
 import * as manifestService from '../../../src/base/abap/manifest-service';
 import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
-import { addXmlFragment, tryFixChange } from '../../../src/preview/change-handler';
+import { addXmlFragment, tryFixChange, addControllerExtension } from '../../../src/preview/change-handler';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -44,7 +44,8 @@ jest.mock('os', () => ({
 jest.mock('../../../src/preview/change-handler', () => ({
     ...jest.requireActual('../../../src/preview/change-handler'),
     tryFixChange: jest.fn(),
-    addXmlFragment: jest.fn()
+    addXmlFragment: jest.fn(),
+    addControllerExtension: jest.fn()
 }));
 
 jest.mock('@sap-ux/store', () => {
@@ -67,6 +68,7 @@ const renderFileMock = renderFile as jest.Mock;
 
 const tryFixChangeMock = tryFixChange as jest.Mock;
 const addXmlFragmentMock = addXmlFragment as jest.Mock;
+const addControllerExtensionMock = addControllerExtension as jest.Mock;
 
 const mockProject = {
     byGlob: jest.fn().mockResolvedValue([])
@@ -474,6 +476,14 @@ describe('AdaptationProject', () => {
             reference: 'some.reference'
         } as unknown as CommonChangeProperties;
 
+        const addCodeExtChange = {
+            changeType: 'codeExt',
+            content: {
+                codeRef: 'coding/test.js',
+                view: 'view'
+            }
+        } as unknown as CommonChangeProperties;
+
         beforeEach(() => {
             jest.clearAllMocks();
         });
@@ -487,7 +497,13 @@ describe('AdaptationProject', () => {
         it('should add an XML fragment if type is "write" and change is AddXMLChange', async () => {
             await adp.onChangeRequest('write', addXMLChange, mockFs, mockLogger);
 
-            expect(addXmlFragmentMock).toHaveBeenCalledWith('/adp.project/webapp', addXMLChange, mockFs, mockLogger);
+            expect(addXmlFragmentMock).toHaveBeenCalledWith(
+                '/adp.project/webapp',
+                addXMLChange,
+                mockFs,
+                mockLogger,
+                undefined
+            );
         });
 
         it('should not perform any action if type is "delete"', async () => {
@@ -496,6 +512,18 @@ describe('AdaptationProject', () => {
 
             expect(tryFixChange).not.toHaveBeenCalled();
             expect(addXmlFragment).not.toHaveBeenCalled();
+        });
+
+        it('should add an Controller Extension if type is "write" and change is addCodeExtChange', async () => {
+            await adp.onChangeRequest('write', addCodeExtChange, mockFs, mockLogger);
+
+            expect(addControllerExtensionMock).toHaveBeenCalledWith(
+                '/projects/adp.project',
+                '/adp.project/webapp',
+                addCodeExtChange,
+                mockFs,
+                mockLogger
+            );
         });
     });
 
@@ -629,13 +657,13 @@ describe('AdaptationProject', () => {
         });
 
         test('GET /adp/api/controller', async () => {
-            const expectedNames = [{ controllerName: 'my.js' }, { controllerName: 'other.js' }];
+            const expectedNames = [{ controllerName: 'my' }, { controllerName: 'other' }];
             mockProject.byGlob.mockResolvedValueOnce([
                 {
-                    getName: () => expectedNames[0].controllerName
+                    getName: () => 'my.js'
                 },
                 {
-                    getName: () => expectedNames[1].controllerName
+                    getName: () => 'other.js'
                 }
             ]);
             const response = await server.get('/adp/api/controller').expect(200);
@@ -738,7 +766,7 @@ describe('AdaptationProject', () => {
             expect(message).toBe('Input must be string');
         });
 
-        test('GET /adp/api/code_ext/:controllerName - returns existing controller data', async () => {
+        test('GET /adp/api/code_ext - returns existing controller data', async () => {
             mockExistsSync.mockReturnValue(true);
             const changeFileStr =
                 '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js"}}';
@@ -749,13 +777,32 @@ describe('AdaptationProject', () => {
                 }
             ]);
             const response = await server
-                .get('/adp/api/code_ext/sap.suite.ui.generic.template.ListReport.view.ListReport')
+                .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport')
                 .expect(200);
             const data: CodeExtResponse = JSON.parse(response.text);
             expect(data.controllerExists).toEqual(true);
         });
 
-        test('GET /adp/api/code_ext/:controllerName - returns empty existing controller data (no control found)', async () => {
+        test('GET /adp/api/code_ext - returns existing controller data with new syntax', async () => {
+            mockExistsSync.mockReturnValue(true);
+            const changeFileStr =
+                '{"selector":{"controllerName":"module:sap/suite/ui/generic/template/ListReport/view.ListReport.controller"},"content":{"codeRef":"coding/share.js"}}';
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getString: () => changeFileStr,
+                    getName: () => 'id_124_codeExt.change'
+                }
+            ]);
+            const response = await server
+                .get(
+                    '/adp/api/code_ext?name=module:sap/suite/ui/generic/template/ListReport/view.ListReport.controller'
+                )
+                .expect(200);
+            const data: CodeExtResponse = JSON.parse(response.text);
+            expect(data.controllerExists).toEqual(true);
+        });
+
+        test('GET /adp/api/code_ext - returns empty existing controller data (no control found)', async () => {
             mockExistsSync.mockReturnValue(true);
             const changeFileStr =
                 '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js"}}';
@@ -764,12 +811,12 @@ describe('AdaptationProject', () => {
                     getString: () => changeFileStr
                 }
             ]);
-            const response = await server.get('/adp/api/code_ext/sap.suite.ui.generic.template.Dummy').expect(200);
+            const response = await server.get('/adp/api/code_ext?name=sap.suite.ui.generic.template.Dummy').expect(200);
             const data: CodeExtResponse = JSON.parse(response.text);
             expect(data.controllerExists).toEqual(false);
         });
 
-        test('GET /adp/api/code_ext/:controllerName - returns not found if no controller extension file was found locally', async () => {
+        test('GET /adp/api/code_ext - returns not found if no controller extension file was found locally', async () => {
             mockExistsSync.mockReturnValue(false);
             const changeFileStr =
                 '{"selector":{"controllerName":"sap.suite.ui.generic.template.ListReport.view.ListReport"},"content":{"codeRef":"coding/share.js"}}';
@@ -779,10 +826,12 @@ describe('AdaptationProject', () => {
                     getName: () => 'id_124_codeExt.change'
                 }
             ]);
-            await server.get('/adp/api/code_ext/sap.suite.ui.generic.template.ListReport.view.ListReport').expect(404);
+            await server
+                .get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport')
+                .expect(404);
         });
 
-        test('GET /adp/api/code_ext/:controllerName - throws error', async () => {
+        test('GET /adp/api/code_ext - throws error', async () => {
             const errorMsg = 'Could not retrieve existing controller data!';
             mockProject.byGlob.mockResolvedValueOnce([
                 {
@@ -793,7 +842,7 @@ describe('AdaptationProject', () => {
             ]);
 
             try {
-                await server.get('/adp/api/code_ext/sap.suite.ui.generic.template.ListReport.view.ListReport');
+                await server.get('/adp/api/code_ext?name=sap.suite.ui.generic.template.ListReport.view.ListReport');
             } catch (e) {
                 expect(e.message).toEqual(errorMsg);
             }

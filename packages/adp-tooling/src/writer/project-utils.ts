@@ -2,7 +2,7 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import type { Editor } from 'mem-fs-editor';
-import type { CloudApp, AdpWriterConfig, CustomConfig, PackageJson } from '../types';
+import type { CloudApp, AdpWriterConfig, CustomConfig, TypesConfig } from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -12,15 +12,16 @@ import {
     enhanceUI5YamlWithTranspileMiddleware
 } from './options';
 
-import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
+import type { Package } from '@sap-ux/project-access';
 import type { OperationsType } from '@sap-ux/axios-extension';
+import { UI5Config, UI5_DEFAULT, getEsmTypesVersion, getTypesPackage, getTypesVersion } from '@sap-ux/ui5-config';
 
 /**
  * Retrieves the package name and version from the package.json file located two levels up the directory tree.
  *
- * @returns {PackageJson} An object containing the `name` and `version` of the package.
+ * @returns {Package} An object containing the `name` and `version` of the package.
  */
-export function getPackageJSONInfo(): PackageJson {
+export function getPackageJSONInfo(): Package {
     const defaultPackage = {
         name: '@sap-ux/adp-tooling',
         version: 'NO_VERSION_FOUND'
@@ -34,6 +35,34 @@ export function getPackageJSONInfo(): PackageJson {
 }
 
 /**
+ * Determines the correct TypeScript definitions package and version based on a given UI5 version.
+ *
+ * If the version includes `"snapshot"`, it returns a predefined default types package and version.
+ * Otherwise, it selects the appropriate package and computes the corresponding version using either
+ * `getTypesVersion` or `getEsmTypesVersion`.
+ *
+ * @param {string} [ui5Version] - The version of UI5 (e.g., `"1.108.0"` or `"snapshot"`).
+ * @returns {TypesConfig} - The package name and version string for the UI5 types.
+ */
+export function getTypes(ui5Version?: string): TypesConfig {
+    if (ui5Version?.includes('snapshot')) {
+        return {
+            typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
+            typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_BEST}`
+        };
+    }
+
+    const typesPackage = getTypesPackage(ui5Version);
+    const isTypesPackage = typesPackage === UI5_DEFAULT.TYPES_PACKAGE_NAME;
+    const typesVersion = isTypesPackage ? getTypesVersion(ui5Version) : getEsmTypesVersion(ui5Version);
+
+    return {
+        typesPackage,
+        typesVersion
+    };
+}
+
+/**
  * Constructs a custom configuration object for the Adaptation Project (ADP).
  *
  * @param {OperationsType} environment - The operations type ('P' for on-premise or 'C' for cloud ready).
@@ -42,13 +71,13 @@ export function getPackageJSONInfo(): PackageJson {
  * @param {string} pkg.version - The version of the tool generating the config.
  * @returns {CustomConfig} The generated ADP custom configuration object.
  */
-export function getCustomConfig(environment: OperationsType, { name: id, version }: PackageJson): CustomConfig {
+export function getCustomConfig(environment: OperationsType, { name: id, version }: Package): CustomConfig {
     return {
         adp: {
             environment,
             support: {
-                id,
-                version,
+                id: id ?? '',
+                version: version ?? '',
                 toolsId: uuidv4()
             }
         }
@@ -70,10 +99,11 @@ export function writeTemplateToFolder(
     data: AdpWriterConfig,
     fs: Editor
 ): void {
+    const ui5Version = data.ui5?.version;
     const tmplPath = join(baseTmplPath, 'project', '**/*.*');
     const tsConfigPath = join(baseTmplPath, 'typescript', 'tsconfig.json');
-    const typesVersion = getEsmTypesVersion(data.ui5?.version);
-    const typesPackage = getTypesPackage(typesVersion);
+
+    const { typesPackage, typesVersion } = getTypes(ui5Version);
 
     try {
         fs.copyTpl(tmplPath, projectPath, { ...data, typesPackage, typesVersion }, undefined, {

@@ -1112,4 +1112,57 @@ describe('<UIComboBox />', () => {
             });
         }
     });
+
+    describe('externalSearchProps', () => {
+        const selectors = {
+            noDataText: '.option-no-data'
+        };
+        beforeEach(() => {
+            wrapper.setProps({
+                options: [],
+                isForceEnabled: true
+            });
+        });
+
+        it('Check "noDataLabel"', () => {
+            const noDataLabel = 'Dummy text';
+            wrapper.setProps({
+                externalSearchProps: {
+                    noDataLabel,
+                    onExternalSearch: jest.fn()
+                }
+            });
+            openDropdown();
+            expect(wrapper.find(selectors.noDataText).length).toEqual(1);
+            expect(wrapper.find(selectors.noDataText).getDOMNode().textContent).toEqual(noDataLabel);
+        });
+
+        it('Handle "onInputChange" and "onExternalSearch"', async () => {
+            const noDataLabel = 'Dummy text';
+            const onInputChange = jest.fn();
+            const onExternalSearch = jest.fn();
+            wrapper = Enzyme.mount(
+                <UIComboBox
+                    options={[]}
+                    highlight={true}
+                    allowFreeform={true}
+                    autoComplete="on"
+                    isForceEnabled={true}
+                    externalSearchProps={{
+                        noDataLabel,
+                        onInputChange,
+                        onExternalSearch,
+                        debounceTime: 10
+                    }}
+                />
+            );
+            wrapper.find('input').simulate('input', { target: { value: 'My' } });
+            wrapper.find('input').simulate('input', { target: { value: 'My dummy' } });
+            wrapper.find('input').simulate('input', { target: { value: 'My dummy value' } });
+            await new Promise((resolve) => setTimeout(resolve, 20));
+            expect(onInputChange).toBeCalledTimes(3);
+            expect(onExternalSearch).toBeCalledTimes(1);
+            expect(onExternalSearch).toHaveBeenCalledWith('My dummy value');
+        });
+    });
 });

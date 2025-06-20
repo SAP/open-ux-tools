@@ -17,7 +17,8 @@ export default {
                     getDefinition: jest.fn(),
                     getJson: jest.fn(),
                     getContent: jest.fn(),
-                    setContent: jest.fn()
+                    setContent: jest.fn(),
+                    getProperty: jest.fn(),
                 };
             }
         )

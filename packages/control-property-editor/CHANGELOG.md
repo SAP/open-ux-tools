@@ -1,5 +1,29 @@
 # @sap-ux/control-property-editor
 
+## 0.6.6
+
+### Patch Changes
+
+-   87ecdb8: fix: change indicators missing for change with control id in outline and scrollbar styling issue on quick action panel
+
+## 0.6.5
+
+### Patch Changes
+
+-   e856125: Fix: Generic handling for change type and new UI component for displaying
+
+## 0.6.4
+
+### Patch Changes
+
+-   a4cb2f6: chore(deps): update dependency http-proxy-middleware to v2.0.9
+
+## 0.6.3
+
+### Patch Changes
+
+-   838d2de: fix: nested Quick Actions not working if there are sections with only one child (e.g Change Table Columns)
+
 ## 0.6.2
 
 ### Patch Changes

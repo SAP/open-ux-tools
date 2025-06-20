@@ -1,14 +1,14 @@
 import { createForAbap, type AxiosRequestConfig, type ODataService, type ODataVersion } from '@sap-ux/axios-extension';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import { setGlobalRejectUnauthorized } from '@sap-ux/nodejs-utils';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { t } from '../../../i18n';
 import { SAP_CLIENT_KEY } from '../../../types';
 import { PromptState, originToRelative } from '../../../utils';
-import { ConnectionValidator } from '../../connectionValidator';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
 import { validateODataVersion } from '../../validators';
-import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 type ValidateServiceUrlResult = {
     validationResult: boolean | string;
@@ -35,7 +35,7 @@ export async function validateService(
 ): Promise<ValidateServiceUrlResult> {
     try {
         if (ignoreCertError === true) {
-            ConnectionValidator.setGlobalRejectUnauthorized(!ignoreCertError);
+            setGlobalRejectUnauthorized(!ignoreCertError);
         }
         const metadata = await odataService.metadata();
         const odataVersionValResult = validateODataVersion(metadata, requiredVersion);
@@ -49,6 +49,7 @@ export async function validateService(
         // Remove all occurrences of the origin from the metadata to make backend uris relative
         PromptState.odataService.metadata = originToRelative(metadata);
         PromptState.odataService.odataVersion = serviceOdataVersion;
+        PromptState.odataService.ignoreCertError = ignoreCertError;
 
         // Extract sap-client and keep the rest of the query params as part of the url
         const fullUrl = new URL(url);
@@ -100,6 +101,6 @@ export async function validateService(
             validationResult: errorHandler.logErrorMsgs(error)
         };
     } finally {
-        ConnectionValidator.setGlobalRejectUnauthorized(true);
+        setGlobalRejectUnauthorized(true);
     }
 }

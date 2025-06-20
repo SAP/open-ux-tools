@@ -24,9 +24,13 @@ export function getDefaultTargetFolder(vscode: any): string | undefined {
     }
     const workspace = vscode.workspace;
 
-    // If this is not a workspace default to the first folder (`rootPath` is deprecated)
-    if (workspace.workspaceFolders?.length > 0 && workspace.workspaceFolders[0].uri.scheme === 'file') {
-        return workspace.workspaceFolders[0].uri.fsPath;
+    // default to the first suitable folder found in the workspace folders
+    if (workspace.workspaceFolders?.length > 0) {
+        for (const folder of workspace.workspaceFolders) {
+            if (folder.uri.scheme === 'file') {
+                return folder.uri.fsPath;
+            }
+        }
     }
     // Otherwise use <home-dir>/projects,
     return existsSync(DEFAULT_PROJECTS_FOLDER) ? DEFAULT_PROJECTS_FOLDER : undefined;

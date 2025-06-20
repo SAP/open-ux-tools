@@ -1,6 +1,6 @@
-import { validateCapPath } from '../../../../src/prompts/datasources/cap-project/validators';
 import path from 'path';
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
+import { validateCapPath } from '../../../../src/prompts/datasources/cap-project/validators';
 
 describe('Test validators', () => {
     beforeAll(async () => {

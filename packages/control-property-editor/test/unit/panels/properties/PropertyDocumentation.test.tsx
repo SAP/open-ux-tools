@@ -54,16 +54,20 @@ describe('PropertyDoc', () => {
                                     saved: 0,
                                     pending: 1,
                                     lastChange: {
-                                        kind: 'property',
-                                        propertyName: 'testProperty',
-                                        value: 'c value',
+                                        kind: 'generic',
                                         type: 'pending',
                                         isActive: true,
                                         controlId: 'control1',
-                                        changeType: 'propertyChange',
+                                        changeType: 'property',
                                         fileName: 'testFile1',
                                         controlName: 'controlName1',
-                                        propertyType: PropertyType.ControlProperty
+                                        properties: [
+                                            {
+                                                label: 'testProperty',
+                                                value: 'c value'
+                                            }
+                                        ],
+                                        title: 'Random Title'
                                     }
                                 }
                             }
@@ -102,12 +106,18 @@ describe('PropertyDoc', () => {
                                     saved: 1,
                                     pending: 0,
                                     lastSavedChange: {
-                                        propertyName: 'testProperty',
-                                        value: 'old value',
+                                        kind: 'generic',
                                         type: 'saved',
                                         fileName: 'file',
                                         timestamp: 123,
-                                        controlId: 'control1'
+                                        controlId: 'control1',
+                                        changeType: 'property',
+                                        properties: [
+                                            {
+                                                label: 'testProperty',
+                                                value: 'old value'
+                                            }
+                                        ]
                                     }
                                 }
                             }

@@ -41,7 +41,7 @@ describe('cds annotation parser', () => {
     const allTests = getAllNormalizeFolderPath();
     const skip: string[] = [];
     const todo: string[] = [];
-    // const only: string[] = [];  // to be used for debugging purposes only
+    // const only: string[] = []; // to be used for debugging purposes only
     for (const t of allTests) {
         if (skip.includes(t)) {
             test.skip(`${t}`, () => {
@@ -53,15 +53,15 @@ describe('cds annotation parser', () => {
             test.todo(`${t}`);
             continue;
         }
-        /*
-        // Sonar is compaining about test.only(). Use this code for debugging purposes only
-        if (only.includes(t)) {
-            test.only(`${t}`, async () => {
-                await testParser(t, t.startsWith('valid'));
-            });
-            continue;
-        }
-        */
+
+        // // Sonar is compaining about test.only(). Use this code for debugging purposes only
+        // if (only.includes(t)) {
+        //     test.only(`${t}`, async () => {
+        //         await testParser(t, t.startsWith('valid'));
+        //     });
+        //     continue;
+        // }
+
         test(`${t}`, async () => {
             await testParser(t, t.startsWith('valid'));
         });

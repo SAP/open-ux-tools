@@ -9,6 +9,13 @@ import LoggerHelper from '../logger-helper';
 export type EntityAnswer = {
     entitySetName: string;
     entitySetType: string;
+    /**
+     * Represents a parameter used along with the main entity to query data.
+     * When this parameter is set, the prompt for selecting navigation properties is skipped
+     * This property is populated only if the metadata entity set includes a `Common.ResultContext` annotation,
+     * indicating that the entity set requires additional parameters for querying.
+     */
+    mainEntityParameterName?: string;
 };
 
 export type NavigationEntityAnswer = {
@@ -25,12 +32,61 @@ export interface EntityChoiceOptions {
 }
 
 export type EntitySetFilter = 'filterDraftEnabled' | 'filterAggregateTransformationsOnly';
+
+/**
+ * Finds the navigation property name that links a parameterised entity set to its target entity set.
+ *
+ * This function checks if the given entity set has the `Common.ResultContext` annotation, indicating
+ * that it is a parameterised entity. It then searches for a navigation property that:
+ * - Points to a target entity (`containsTarget === true`).
+ * - Has a partner navigation property named `Parameters` (linking back to the parameters entity).
+ *
+ * If such a navigation property is found, its name is returned and skips navigation entity selection prompt
+ * Otherwise, `null` is returned.
+ *
+ * @param entitySet - The entity set to search for navigation properties.
+ * @param entityTypes - The list of entity types to search for matching navigation properties.
+ * @returns The name of the matching navigation property, or `null` if no match is found.
+ */
+function getNavigationPropertyForParameterisedEntity(
+    entitySet: EntitySet,
+    entityTypes?: ConvertedMetadata['entityTypes']
+): string | undefined {
+    // Check if the entity type has the Common.ResultContext annotation
+    const hasResultContextAnnotation = Boolean(entitySet?.entityType?.annotations?.Common?.ResultContext);
+
+    if (!hasResultContextAnnotation) {
+        // If the entity set is not parameterised, no parametrised navigation is expected
+        return undefined;
+    }
+
+    // Get all navigation properties of the parameterised entity type
+    const navigationProperties = entitySet?.entityType?.navigationProperties ?? [];
+    // Find the first navigation property that meets the criteria.
+    for (const navigationProperty of navigationProperties) {
+        if (
+            navigationProperty.containsTarget === true && // Points to a target entity
+            navigationProperty.partner // The partner navigation property name is defined
+        ) {
+            const isMatchingEntitySet = entityTypes?.filter(
+                (entityType: any) => entityType.fullyQualifiedName === navigationProperty.targetTypeName
+            );
+            // Check if the target type name matches the provided entity type name
+            if (isMatchingEntitySet) {
+                // Return the navigation property name
+                return navigationProperty.name;
+            }
+        }
+    }
+
+    // If no matching navigation property is found, return undefined
+    return undefined;
+}
 /**
  * Returns the entity choice options for use in a list inquirer prompt.
  *
  * @param edmx metadata string
  * @param options
- * @param options.useEntityTypeAsName Choice options will use the non-namepspaced entity set type as the choice name (label) and value property `entitySetName` when true, otherwise the entity set name will be used.
  * @param options.entitySetFilter
  *     `filterDraftEnabled` : Only draft enabled entities wil be returned when true, useful for Form Object Page app generation.
  *     `filterAggregateTransformationsOnly` : Only return entity choices that have an aggregate annotation (Aggregation.ApplySupported) with the `Transformations` property set,
@@ -41,11 +97,9 @@ export type EntitySetFilter = 'filterDraftEnabled' | 'filterAggregateTransformat
 export function getEntityChoices(
     edmx: string,
     {
-        useEntityTypeAsName = false,
         entitySetFilter,
         defaultMainEntityName
     }: {
-        useEntityTypeAsName?: boolean;
         entitySetFilter?: EntitySetFilter;
         defaultMainEntityName?: string;
     } = {}
@@ -58,14 +112,12 @@ export function getEntityChoices(
     try {
         convertedMetadata = convert(parse(edmx));
         const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
-
         if (Number.isNaN(parsedOdataVersion)) {
             LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
             throw new Error(t('errors.unparseableOdataVersion'));
         }
         // Note that odata version > `4` e.g. `4.1`, is not currently supported by `@sap-ux/edmx-converter`
         odataVersion = parsedOdataVersion === 4 ? OdataVersion.v4 : OdataVersion.v2;
-
         let entitySets: EntitySet[] = [];
 
         if (entitySetFilter === 'filterDraftEnabled') {
@@ -76,18 +128,19 @@ export function getEntityChoices(
         } else {
             entitySets = convertedMetadata.entitySets;
         }
-
         entitySets.forEach((entitySet, index) => {
-            // Determine whether to use the entity set type name or the entity set name as the choice name.
-            // Note that in the case of the entity type name, the namespace will be removed.
-            const entitySetChoiceName = useEntityTypeAsName
-                ? entitySet.entityTypeName.substring(entitySet.entityTypeName.lastIndexOf('.') + 1)
-                : entitySet.name;
+            const mainEntityParameterName = getNavigationPropertyForParameterisedEntity(
+                entitySet,
+                convertedMetadata?.entityTypes
+            );
             const choice: ListChoiceOptions<EntityAnswer> = {
-                name: entitySetChoiceName,
+                name: entitySet.name,
                 value: {
-                    entitySetName: entitySetChoiceName,
-                    entitySetType: entitySet.entityTypeName // Fully qualified entity type name
+                    entitySetName: entitySet.name,
+                    entitySetType: entitySet.entityTypeName, // Fully qualified entity type name
+                    ...(mainEntityParameterName && {
+                        mainEntityParameterName
+                    }) // parameterised navigation property name
                 }
             };
             choices.push(choice);

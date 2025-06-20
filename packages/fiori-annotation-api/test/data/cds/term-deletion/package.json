@@ -3,10 +3,7 @@
   "version": "1.0.0",
   "description": "Test project to test removal of annotations from CDS sources",
   "license": "SAP SAMPLE CODE LICENSE",
-  "dependencies": {
-    "@sap/cds": "7.9.2",
-    "express": "*"
-  },
+  "dependencies": {},
   "scripts": {
     "start": "cds run --in-memory?",
     "watch": "cds watch"

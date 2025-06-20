@@ -86,7 +86,6 @@ export function getEntitySelectionQuestions(
     }
 
     const entityChoices = getEntityChoices(metadata, {
-        useEntityTypeAsName: templateType === 'ovp',
         defaultMainEntityName: promptOptions?.defaultMainEntityName,
         entitySetFilter
     });
@@ -103,7 +102,7 @@ export function getEntitySelectionQuestions(
 
     // OVP only has filter entity, does not use tables and we do not add annotations
     if (templateType === 'ovp') {
-        entityQuestions.push(getFilterEntityTypeQuestions(entityChoices, useAutoComplete));
+        entityQuestions.push(getFilterEntitySetQuestions(entityChoices, useAutoComplete));
         // Return early since OVP does not have table layout prompts
         return entityQuestions;
     }
@@ -120,11 +119,18 @@ export function getEntitySelectionQuestions(
             searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
         default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
         validate: () => validateEntityChoices(entityChoices.choices, templateType, odataVersion, isCapService),
-        additionalMessages: () => {
+        additionalMessages: (answers: EntitySelectionAnswers) => {
             if (promptOptions?.defaultMainEntityName && entityChoices.defaultMainEntityIndex === undefined) {
                 return {
                     message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
                     severity: Severity.warning
+                };
+            }
+            if (answers.mainEntity?.mainEntityParameterName) {
+                // display a warning if the main entity has a mainEntityParameterName
+                return {
+                    message: t('prompts.mainEntitySelection.mainEntityParameterFoundInfo'),
+                    severity: Severity.information
                 };
             }
         }
@@ -136,7 +142,8 @@ export function getEntitySelectionQuestions(
         let navigationEntityChoices: ListChoiceOptions<NavigationEntityAnswer>[];
         entityQuestions.push({
             when: (answers: EntitySelectionAnswers) => {
-                if (answers.mainEntity) {
+                // Skip navigation entity selection if the selected main entity has mainEntityParameterName.
+                if (answers.mainEntity && !answers.mainEntity.mainEntityParameterName) {
                     navigationEntityChoices = getNavigationEntityChoices(
                         convertedMetadata,
                         odataVersion,
@@ -326,14 +333,14 @@ function getAddAnnotationQuestions(
  * @param useAutoComplete Determines if entity related prompts should use auto complete on user input
  * @returns the ovp specific filter entity type selection question
  */
-function getFilterEntityTypeQuestions(
+function getFilterEntitySetQuestions(
     entityChoices: EntityChoiceOptions,
     useAutoComplete = false
 ): Question<EntitySelectionAnswers> {
     return {
         type: useAutoComplete ? 'autocomplete' : 'list',
-        name: EntityPromptNames.filterEntityType,
-        message: t('prompts.filterEntityType.message'),
+        name: EntityPromptNames.filterEntitySet,
+        message: t('prompts.filterEntitySet.message'),
         guiOptions: {
             breadcrumb: true
         },
@@ -341,6 +348,6 @@ function getFilterEntityTypeQuestions(
         source: (preAnswers: EntitySelectionAnswers, input: string) =>
             searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
         default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
-        validate: () => (entityChoices.choices.length === 0 ? t('prompts.filterEntityType.noEntitiesError') : true)
+        validate: () => (entityChoices.choices.length === 0 ? t('prompts.filterEntitySet.noEntitiesError') : true)
     } as ListQuestion<EntitySelectionAnswers>;
 }

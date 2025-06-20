@@ -1,9 +1,10 @@
-import { AtoService } from '@sap-ux/axios-extension';
-import { t } from '../i18n';
-import { AbapServiceProviderManager } from './abap-service-provider';
-import LoggerHelper from '../logger-helper';
 import type { AtoSettings } from '@sap-ux/axios-extension';
-import type { TransportConfig, InitTransportConfigResult, Credentials, BackendTarget } from '../types';
+import { AtoService } from '@sap-ux/axios-extension';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
+import { t } from '../i18n';
+import LoggerHelper from '../logger-helper';
+import type { BackendTarget, Credentials, InitTransportConfigResult, TransportConfig } from '../types';
+import { AbapServiceProviderManager } from './abap-service-provider';
 
 /**
  * Dummy transport configuration.
@@ -126,13 +127,21 @@ class DefaultTransportConfig implements TransportConfig {
             const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget, credentials);
             const atoService = await provider.getAdtService<AtoService>(AtoService);
             const atoSettings = await atoService?.getAtoInfo();
-
             if (atoSettings) {
                 result.error = this.handleAtoResponse(atoSettings);
             }
         } catch (err) {
             AbapServiceProviderManager.deleteExistingServiceProvider();
-            if (err.response?.status === 401) {
+            if (ErrorHandler.isCertError(err)) {
+                LoggerHelper.logger.warn(
+                    t('warnings.certificateError', { url: backendTarget?.abapTarget?.url, error: err.message })
+                );
+                LoggerHelper.logger.info(
+                    `${new ErrorHandler(undefined, undefined, '@sap-ux/abap-deploy-config-inquirer')
+                        .getValidationErrorHelp(err)
+                        ?.toString()}`
+                );
+            } else if (err.response?.status === 401) {
                 const auth: string = err.response.headers?.['www-authenticate'];
                 result.transportConfigNeedsCreds = !!auth?.toLowerCase()?.startsWith('basic');
                 LoggerHelper.logger.debug(
@@ -142,7 +151,6 @@ class DefaultTransportConfig implements TransportConfig {
                 // Everything from network errors to service being inactive is a warning.
                 // Will be logged and the user is allowed to move on
                 // Business errors will be returned by the ATO response above and these act as hard stops
-                result.warning = err.message;
                 result.transportConfigNeedsCreds = false;
             }
             LoggerHelper.logger.debug(t('errors.debugAbapTargetSystem', { method: 'init', error: err.message }));
@@ -150,7 +158,6 @@ class DefaultTransportConfig implements TransportConfig {
         const initSuccessful = !result.error && !result.transportConfigNeedsCreds;
         // transportConfig is not initialised, so use dummy transport config
         result.transportConfig = initSuccessful ? this : this.getDummyConfig();
-
         return result;
     }
 

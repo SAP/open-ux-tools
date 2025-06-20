@@ -1,6 +1,9 @@
-import { PromptState } from '../../src/prompts/prompt-state';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { GUIDED_ANSWERS_ICON, HELP_NODES, HELP_TREE } from '@sap-ux/guided-answers-helper';
+import { AxiosError } from 'axios';
 import { AuthenticationType } from '../../../store/src';
 import { initI18n, t } from '../../src/i18n';
+import { PromptState } from '../../src/prompts/prompt-state';
 import {
     validateAppDescription,
     validateClient,
@@ -11,7 +14,6 @@ import {
     validatePackage,
     validatePackageChoiceInput,
     validatePackageChoiceInputForCli,
-    validatePackageExtended,
     validateTargetSystem,
     validateTargetSystemUrlCli,
     validateTransportChoiceInput,
@@ -19,13 +21,12 @@ import {
     validateUi5AbapRepoName,
     validateUrl
 } from '../../src/prompts/validators';
-import * as validatorUtils from '../../src/validator-utils';
+import * as serviceProviderUtils from '../../src/service-provider-utils';
+import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
 import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types';
 import * as utils from '../../src/utils';
+import * as validatorUtils from '../../src/validator-utils';
 import { mockDestinations } from '../fixtures/destinations';
-import * as serviceProviderUtils from '../../src/service-provider-utils';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
 
 jest.mock('../../src/service-provider-utils', () => ({
     getTransportListFromService: jest.fn(),
@@ -331,6 +332,21 @@ describe('Test validators', () => {
             const result = await validatePackageChoiceInput(PackageInputChoices.ListExistingChoice, {});
             expect(result).toBe(t('warnings.packageNotFound'));
         });
+
+        it('should return a GA link when list packages is selected and querying packages fails due to cert error', async () => {
+            jest.spyOn(utils, 'queryPackages').mockRejectedValueOnce(
+                new AxiosError('Expired certificate', 'CERT_HAS_EXPIRED')
+            );
+            const result = await validatePackageChoiceInput(PackageInputChoices.ListExistingChoice, {});
+            expect(result).toEqual({
+                link: {
+                    icon: GUIDED_ANSWERS_ICON,
+                    text: 'Need help with this error?',
+                    url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.CERTIFICATE_ERROR}`
+                },
+                message: 'The system URL is using an expired security certificate.'
+            });
+        });
     });
 
     describe('validatePackageChoiceInputForCli', () => {
@@ -345,52 +361,51 @@ describe('Test validators', () => {
     });
 
     describe('validatePackage', () => {
-        it('should return true for valid package input', async () => {
-            const result = await validatePackage('Zpackage');
-            expect(result).toBe(true);
-        });
-        it('should return error for empty package input', async () => {
-            const result = await validatePackage(' ');
-            expect(result).toBe(t('warnings.providePackage'));
-        });
-
-        it('should return error for special characters', async () => {
-            const result = await validatePackage('@TMP');
-            expect(result).toBe(t('errors.validators.charactersForbiddenInPackage'));
-        });
-
-        it('should return error for invalid format', async () => {
-            const result = await validatePackage('namespace/packageName');
-            expect(result).toBe(t('errors.validators.abapPackageInvalidFormat'));
-        });
-    });
-
-    describe('validatePackageExtended', () => {
         beforeEach(() => {
             PromptState.resetTransportAnswers();
+            jest.resetAllMocks();
+        });
+
+        it('should return true for default onPremise package', async () => {
+            const result = await validatePackage('$TMP', previousAnswers);
+            expect(result).toBe(true);
         });
 
         it('should return true for onPremise system with default onPremise package', async () => {
             PromptState.abapDeployConfig.isS4HC = false;
             const getSystemInfoSpy = jest.spyOn(serviceProviderUtils, 'getSystemInfo');
-            const result = await validatePackageExtended('$TMP', previousAnswers, {
+            const result = await validatePackage('$TMP', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
             expect(getSystemInfoSpy).not.toHaveBeenCalled();
             expect(result).toBe(true);
         });
 
-        it('should return error when base validation fail', async () => {
-            const result = await validatePackageExtended(' ', previousAnswers, {
+        it('should return error empty package', async () => {
+            const result = await validatePackage(' ', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
             expect(result).toBe(t('warnings.providePackage'));
         });
 
+        it('should return error for special characters', async () => {
+            const result = await validatePackage('@TMP', previousAnswers, {
+                additionalValidation: { shouldValidateFormatAndSpecialCharacters: true }
+            });
+            expect(result).toBe(t('errors.validators.charactersForbiddenInPackage'));
+        });
+
+        it('should return error for invalid format', async () => {
+            const result = await validatePackage('namespace/packageName', previousAnswers, {
+                additionalValidation: { shouldValidateFormatAndSpecialCharacters: true }
+            });
+            expect(result).toBe(t('errors.validators.abapPackageInvalidFormat'));
+        });
+
         it('should return error for invalid starting prefix', async () => {
             PromptState.abapDeployConfig.isS4HC = false;
             PromptState.abapDeployConfig.scp = true;
-            const result = await validatePackageExtended(
+            const result = await validatePackage(
                 'namespace',
                 {
                     ...previousAnswers,
@@ -409,7 +424,7 @@ describe('Test validators', () => {
         it('should return error for invalid ui5Repo starting prefix', async () => {
             PromptState.abapDeployConfig.isS4HC = true;
             PromptState.abapDeployConfig.scp = false;
-            const result = await validatePackageExtended(
+            const result = await validatePackage(
                 'ZPACKAGE',
                 {
                     ...previousAnswers,
@@ -428,7 +443,7 @@ describe('Test validators', () => {
         it('should return error for invalid ui5Repo starting prefix package starting with namespace', async () => {
             PromptState.abapDeployConfig.isS4HC = true;
             PromptState.abapDeployConfig.scp = false;
-            const result = await validatePackageExtended(
+            const result = await validatePackage(
                 '/NAMESPACE/ZPACKAGE',
                 {
                     ...previousAnswers,
@@ -453,7 +468,7 @@ describe('Test validators', () => {
                 }
             });
             PromptState.abapDeployConfig.isS4HC = true;
-            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
+            const result = await validatePackage('ZPACKAGE', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
             expect(result).toBe(t('errors.validators.invalidCloudPackage'));
@@ -467,14 +482,14 @@ describe('Test validators', () => {
                     activeLanguages: []
                 }
             });
-            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
+            const result = await validatePackage('ZPACKAGE', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
             expect(result).toBe(true);
         });
 
         it('should return true when package base validation passes and there are no additional validation', async () => {
-            const result = await validatePackageExtended('ZPACKAGE', previousAnswers);
+            const result = await validatePackage('ZPACKAGE', previousAnswers);
             expect(result).toBe(true);
         });
 
@@ -482,10 +497,43 @@ describe('Test validators', () => {
             jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
                 apiExist: false
             });
-            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
+            const result = await validatePackage('ZPACKAGE', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
             expect(result).toBe(true);
+        });
+
+        it('should run getTransportListFromService when package prompts are ran standalone', async () => {
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+            const result = await validatePackage('ZPACKAGE', previousAnswers, {}, {}, undefined, true);
+            expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should run getTransportListFromService when the system is on-prem', async () => {
+            PromptState.abapDeployConfig.scp = false;
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+            const result = await validatePackage('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should run getTransportListFromService when the cloud system is connected', async () => {
+            PromptState.abapDeployConfig.scp = true;
+            jest.spyOn(AbapServiceProviderManager, 'isConnected').mockReturnValue(true);
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+            const result = await validatePackage('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should not run getTransportListFromService when the cloud system is not connected', async () => {
+            PromptState.abapDeployConfig.scp = true;
+            jest.spyOn(AbapServiceProviderManager, 'isConnected').mockReturnValue(false);
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+            const result = await validatePackage('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).not.toHaveBeenCalled();
         });
     });
 
@@ -495,16 +543,20 @@ describe('Test validators', () => {
         });
 
         it('should return error for invalid package / ui5 abap repo name', async () => {
-            let result = await validateTransportChoiceInput(
-                false,
-                TransportChoices.ListExistingChoice,
+            let result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.ListExistingChoice,
                 previousAnswers
-            );
+            });
             expect(result).toBe(t('errors.validators.transportListPreReqs'));
 
-            result = await validateTransportChoiceInput(false, TransportChoices.ListExistingChoice, {
-                ...previousAnswers,
-                packageManual: 'ZPACKAGE'
+            result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.ListExistingChoice,
+                previousAnswers: {
+                    ...previousAnswers,
+                    packageManual: 'ZPACKAGE'
+                }
             });
             expect(result).toBe(t('errors.validators.transportListPreReqs'));
         });
@@ -513,41 +565,54 @@ describe('Test validators', () => {
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([
                 { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport request' }
             ]);
-            const result = await validateTransportChoiceInput(false, TransportChoices.ListExistingChoice, {
-                ...previousAnswers,
-                packageManual: 'ZPACKAGE',
-                ui5AbapRepo: 'ZUI5REPO'
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.ListExistingChoice,
+                previousAnswers: {
+                    ...previousAnswers,
+                    packageManual: 'ZPACKAGE',
+                    ui5AbapRepo: 'ZUI5REPO'
+                }
             });
+
             expect(result).toBe(true);
         });
 
         it('should return errors messages for listing transport when transport request empty or undefined', async () => {
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([]);
 
-            let result = await validateTransportChoiceInput(false, TransportChoices.ListExistingChoice, {
-                ...previousAnswers,
-                packageManual: 'ZPACKAGE',
-                ui5AbapRepo: 'ZUI5REPO'
+            let result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.ListExistingChoice,
+                previousAnswers: {
+                    ...previousAnswers,
+                    packageManual: 'ZPACKAGE',
+                    ui5AbapRepo: 'ZUI5REPO'
+                }
             });
             expect(result).toBe(t('warnings.noTransportReqs'));
 
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce(undefined);
-            result = await validateTransportChoiceInput(false, TransportChoices.ListExistingChoice, {
-                ...previousAnswers,
-                packageManual: 'ZPACKAGE',
-                ui5AbapRepo: 'ZUI5REPO'
+            result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.ListExistingChoice,
+                previousAnswers: {
+                    ...previousAnswers,
+                    packageManual: 'ZPACKAGE',
+                    ui5AbapRepo: 'ZUI5REPO'
+                }
             });
             expect(result).toBe(t('warnings.noExistingTransportReqList'));
         });
 
         it('should return true if transport request is same as previous', async () => {
-            const result = await validateTransportChoiceInput(
-                false,
-                TransportChoices.CreateNewChoice,
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.CreateNewChoice,
                 previousAnswers,
-                true,
-                TransportChoices.CreateNewChoice
-            );
+                validateInputChanged: true,
+                prevTransportInputChoice: TransportChoices.CreateNewChoice
+            });
             expect(result).toBe(true);
         });
 
@@ -556,54 +621,86 @@ describe('Test validators', () => {
                 { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport request' }
             ]);
 
-            const result = await validateTransportChoiceInput(
-                false,
-                TransportChoices.CreateNewChoice,
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.CreateNewChoice,
                 previousAnswers,
-                true,
-                undefined
-            );
+                validateInputChanged: true
+            });
             expect(PromptState.transportAnswers.newTransportNumber).toBe('K123456');
             expect(result).toBe(true);
         });
 
         it('should return true if creating a new transport request is successful', async () => {
-            jest.spyOn(validatorUtils, 'createTransportNumber').mockResolvedValueOnce('TR1234');
+            const createTransportNumberSpy = jest
+                .spyOn(validatorUtils, 'createTransportNumber')
+                .mockResolvedValueOnce('TR1234');
 
-            const result = await validateTransportChoiceInput(
-                false,
-                TransportChoices.CreateNewChoice,
-                previousAnswers,
-                false,
-                undefined
-            );
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.CreateNewChoice,
+                previousAnswers: {
+                    ...previousAnswers,
+                    packageManual: 'ZPACKAGE',
+                    ui5AbapRepo: 'ZUI5REPO'
+                },
+                validateInputChanged: false,
+                transportDescription: 'Mock description for new TR'
+            });
             expect(PromptState.transportAnswers.newTransportNumber).toBe('TR1234');
+            expect(createTransportNumberSpy.mock.calls[0][0]).toStrictEqual({
+                packageName: 'ZPACKAGE',
+                ui5AppName: 'ZUI5REPO',
+                description: 'Mock description for new TR'
+            });
             expect(result).toBe(true);
         });
 
         it('should return error if creating a new transport request returns undefined', async () => {
             jest.spyOn(validatorUtils, 'createTransportNumber').mockResolvedValueOnce(undefined);
 
-            const result = await validateTransportChoiceInput(
-                false,
-                TransportChoices.CreateNewChoice,
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.CreateNewChoice,
                 previousAnswers,
-                false,
-                undefined
-            );
+                validateInputChanged: false
+            });
             expect(PromptState.transportAnswers.newTransportNumber).toBe(undefined);
             expect(result).toBe(t('errors.createTransportReqFailed'));
         });
 
         it('should return error if creating a new transport request returns undefined', async () => {
-            const result = await validateTransportChoiceInput(
-                false,
-                TransportChoices.EnterManualChoice,
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.EnterManualChoice,
                 previousAnswers,
-                false,
-                undefined
-            );
+                validateInputChanged: false
+            });
             expect(result).toBe(true);
+        });
+
+        it('should handle cert error when listing transports', async () => {
+            jest.spyOn(validatorUtils, 'getTransportList').mockRejectedValueOnce(
+                new AxiosError('Unable to verify signature in chain', 'UNABLE_TO_VERIFY_LEAF_SIGNATURE')
+            );
+
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.ListExistingChoice,
+                previousAnswers: {
+                    ...previousAnswers,
+                    packageManual: 'ZPACKAGE',
+                    ui5AbapRepo: 'ZUI5REPO'
+                }
+            });
+            expect(result).toEqual({
+                link: {
+                    icon: GUIDED_ANSWERS_ICON,
+                    text: 'Need help with this error?',
+                    url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.CERTIFICATE_ERROR}`
+                },
+                message: 'The system URL is using an unknown or invalid security certificate.'
+            });
         });
     });
 

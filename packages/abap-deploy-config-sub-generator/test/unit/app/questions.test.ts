@@ -55,11 +55,20 @@ describe('Test getAbapQuestions', () => {
                 ui5AbapRepo: { hideIfOnPremise: false },
                 transportInputChoice: { hideIfOnPremise: false },
                 packageAutocomplete: {
-                    shouldValidatePackageForStartingPrefix: false,
-                    shouldValidatePackageType: false
+                    additionalValidation: {
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidatePackageType: false,
+                        shouldValidateFormatAndSpecialCharacters: false
+                    }
                 },
-                packageManual: { shouldValidatePackageForStartingPrefix: false, shouldValidatePackageType: false },
-                targetSystem: { shouldRestrictDifferentSystemType: false }
+                packageManual: {
+                    additionalValidation: {
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidatePackageType: false,
+                        shouldValidateFormatAndSpecialCharacters: false
+                    }
+                },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             }
         });
 
@@ -83,7 +92,8 @@ describe('Test getAbapQuestions', () => {
                     default: undefined,
                     additionalValidation: {
                         shouldValidatePackageType: false,
-                        shouldValidatePackageForStartingPrefix: false
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
                 transportManual: { default: undefined },
@@ -92,7 +102,8 @@ describe('Test getAbapQuestions', () => {
                     useAutocomplete: true,
                     additionalValidation: {
                         shouldValidatePackageType: false,
-                        shouldValidatePackageForStartingPrefix: false
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
                 overwrite: { hide: true },
@@ -127,11 +138,20 @@ describe('Test getAbapQuestions', () => {
                 ui5AbapRepo: { hideIfOnPremise: false },
                 transportInputChoice: { hideIfOnPremise: false },
                 packageAutocomplete: {
-                    shouldValidatePackageForStartingPrefix: false,
-                    shouldValidatePackageType: false
+                    additionalValidation: {
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidatePackageType: false,
+                        shouldValidateFormatAndSpecialCharacters: false
+                    }
                 },
-                packageManual: { shouldValidatePackageForStartingPrefix: false, shouldValidatePackageType: false },
-                targetSystem: { shouldRestrictDifferentSystemType: false }
+                packageManual: {
+                    additionalValidation: {
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidatePackageType: false,
+                        shouldValidateFormatAndSpecialCharacters: false
+                    }
+                },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             }
         });
 
@@ -155,7 +175,8 @@ describe('Test getAbapQuestions', () => {
                     default: undefined,
                     additionalValidation: {
                         shouldValidatePackageType: false,
-                        shouldValidatePackageForStartingPrefix: false
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
                 transportManual: { default: undefined },
@@ -164,7 +185,8 @@ describe('Test getAbapQuestions', () => {
                     useAutocomplete: true,
                     additionalValidation: {
                         shouldValidatePackageType: false,
-                        shouldValidatePackageForStartingPrefix: false
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
                 overwrite: { hide: true },

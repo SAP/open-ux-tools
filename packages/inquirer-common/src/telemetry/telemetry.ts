@@ -11,8 +11,8 @@ import type { TelemPropertyDestinationType } from '../types';
 import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 let telemetryClient: ToolsSuiteTelemetryClient | undefined;
-const osVersionName = osName();
-
+// cached os name to avoid multiple calls to os-name
+let osVersionName: string | undefined;
 /**
  * Set the telemetry client for use with sending telemetry events.
  *
@@ -54,6 +54,7 @@ export function sendTelemetryEvent(eventName: string, telemetryData: TelemetryPr
  * @returns the telemetry event
  */
 function createTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): TelemetryEvent {
+    osVersionName = osVersionName ?? osName(); // cache the os name
     const telemProps: TelemetryProperties = Object.assign(telemetryData, {
         OperatingSystem: osVersionName,
         Platform: telemetryData.Platform || getHostEnvironment().technical

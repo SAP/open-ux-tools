@@ -21,7 +21,10 @@ export default {
                 cache.set(key.value, value.value);
             }
             const bundle = {
-                getText: (key: string) => {
+                getText: (key: string, params: string[]) => {
+                    if(params && params.length) {
+                        return cache.get(key)?.replace(/\{(\d+)\}/g, (_, i) => params?.[i] ?? '');
+                    }
                     return cache.get(key);
                 },
                 hasText: (key: string) => {
