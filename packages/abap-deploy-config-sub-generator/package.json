@@ -44,13 +44,13 @@
         "@sap-devx/yeoman-ui-types": "1.14.4"
     },
     "devDependencies": {
-        "@types/mem-fs": "1.1.2",
-        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs": "1.1.5",
+        "@types/mem-fs-editor": "7.0.7",
         "@types/yeoman-test": "4.0.6",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "memfs": "3.4.13",
-        "mem-fs-editor": "9.4.0",
+        "mem-fs-editor": "9.7.0",
         "unionfs": "4.4.0",
         "yeoman-test": "6.3.0"
     }
