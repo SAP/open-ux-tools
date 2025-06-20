@@ -10,6 +10,8 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 import Element from 'mock/sap/ui/core/Element';
+import { sendInfoCenterMessage } from '../../../src/utils/info-center-message';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 const addFragmentServiceMock = jest.fn();
 jest.mock('open/ux/preview/client/adp/add-fragment', () => ({
@@ -136,6 +138,16 @@ describe('adp', () => {
                 shouldHideIframe: true
             }
         });
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+            title: { key: 'FLP_UI5_VERSION_WARNING_TITLE' },
+            description: {
+                key: 'FLP_UI5_VERSION_WARNING_DESCRIPTION', params: [
+                    '1.70',
+                    '1.71']
+            },
+            type: MessageBarType.warning,
+            showToast: false
+        });
     });
 
     test('init - send notification existence of sync views for minor UI5 version bigger than 120', async () => {
@@ -211,6 +223,12 @@ describe('adp', () => {
 
         expect(addFragmentServiceMock).toHaveBeenCalledWith(rtaMock);
         expect(extendControllerServiceMock).toHaveBeenCalledWith(rtaMock);
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+            title: { key: 'ADP_SYNC_VIEWS_TITLE' },
+            description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
+            type: MessageBarType.warning,
+            showToast: false
+        });
     });
 
     test('init - use for UI5 version higher than 1.136.1', async () => {

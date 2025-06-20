@@ -7,7 +7,8 @@ import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent'
 import {
     quickActionListChanged,
     executeQuickAction,
-    QuickAction
+    QuickAction,
+    MessageBarType
 } from '@sap-ux-private/control-property-editor-common';
 
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
@@ -48,6 +49,7 @@ import * as utils from 'open/ux/preview/client/adp/quick-actions/fe-v2/utils';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import * as appUtils from 'open/ux/preview/client/utils/application';
 import * as cpeCommon from '@sap-ux-private/control-property-editor-common';
+import { sendInfoCenterMessage } from 'open/ux/preview/client/utils/info-center-message';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -2945,8 +2947,6 @@ describe('FE V2 quick actions', () => {
                     ]
                 });
 
-                const notifySpy = jest.spyOn(adpUtils, 'notifyUser');
-
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({
                         id: 'objectPage0-create-table-custom-column',
@@ -2955,10 +2955,12 @@ describe('FE V2 quick actions', () => {
                     })
                 );
 
-                expect(notifySpy).toHaveBeenCalledWith(
-                    'At least one table row is required to create a new custom column. Make sure the table data is loaded and try again.',
-                    8000
-                );
+                expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+                    title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+                    description: { key: 'TABLE_ROWS_NEEDED_TO_CREATE_CUSTOM_COLUMN' },
+                    type: MessageBarType.info,
+                    toastDuration: 8000
+                });
             });
         });
 
