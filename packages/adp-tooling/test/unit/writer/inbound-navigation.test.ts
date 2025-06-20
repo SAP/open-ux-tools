@@ -2,7 +2,7 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import type { create, Editor } from 'mem-fs-editor';
 
-import { createOrReplaceI18nEntries } from '@sap-ux/i18n';
+import { removeAndCreateI18nEntries, SapShortTextType } from '@sap-ux/i18n';
 
 import { getVariant } from '../../../src/base/helper';
 import { getFlpI18nKeys, updateI18n } from '../../../src/writer/inbound-navigation';
@@ -14,11 +14,14 @@ jest.mock('../../../src/base/helper', () => ({
 }));
 
 jest.mock('@sap-ux/i18n', () => ({
-    createOrReplaceI18nEntries: jest.fn()
+    removeAndCreateI18nEntries: jest.fn(),
+    SapShortTextType: {
+        TableTitle: 'XTIT'
+    }
 }));
 
 const getVariantMock = getVariant as jest.Mock;
-const createOrReplaceI18nEntriesMock = createOrReplaceI18nEntries as jest.Mock;
+const removeAndCreateI18nEntriesMock = removeAndCreateI18nEntries as jest.Mock;
 
 describe('FLP Configuration Functions', () => {
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');
@@ -52,7 +55,7 @@ describe('FLP Configuration Functions', () => {
 
             expect(getVariantMock).toHaveBeenCalledWith(basePath, expect.any(Object));
             expect(fs.writeJSON).toHaveBeenCalledWith(join(basePath, 'webapp', 'manifest.appdescr_variant'), variant);
-            expect(createOrReplaceI18nEntriesMock).toHaveBeenCalledWith(
+            expect(removeAndCreateI18nEntriesMock).toHaveBeenCalledWith(
                 join(basePath, 'webapp', 'i18n', 'i18n.properties'),
                 expect.any(Array),
                 expect.any(Array),
@@ -68,7 +71,7 @@ describe('FLP Configuration Functions', () => {
 
             expect(fs).toBeDefined();
             expect(getVariantMock).toHaveBeenCalledWith(basePath, expect.any(Object));
-            expect(createOrReplaceI18nEntriesMock).toHaveBeenCalledWith(
+            expect(removeAndCreateI18nEntriesMock).toHaveBeenCalledWith(
                 join(basePath, 'webapp', 'i18n', 'i18n.properties'),
                 expect.any(Array),
                 expect.any(Array),
@@ -93,10 +96,15 @@ describe('FLP Configuration Functions', () => {
             const keys = getFlpI18nKeys(config, appId);
 
             expect(keys).toEqual([
-                { key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.title`, value: config.title },
+                {
+                    key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.title`,
+                    value: config.title,
+                    annotation: { textType: SapShortTextType.TableTitle, note: 'Fiori Launchpad Tile Title' }
+                },
                 {
                     key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.subTitle`,
-                    value: config.subTitle
+                    value: config.subTitle,
+                    annotation: { textType: SapShortTextType.TableTitle, note: 'Fiori Launchpad Tile Subtitle' }
                 }
             ]);
         });
@@ -106,7 +114,11 @@ describe('FLP Configuration Functions', () => {
             const keys = getFlpI18nKeys(newConfig, appId);
 
             expect(keys).toEqual([
-                { key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.title`, value: config.title }
+                {
+                    key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.title`,
+                    value: config.title,
+                    annotation: { textType: SapShortTextType.TableTitle, note: 'Fiori Launchpad Tile Title' }
+                }
             ]);
         });
     });
@@ -115,17 +127,22 @@ describe('FLP Configuration Functions', () => {
         it('should update the i18n.properties file with new FLP configuration entries', async () => {
             const i18nPath = join(basePath, 'webapp', 'i18n', 'i18n.properties');
             const expectedEntries = [
-                { key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.title`, value: config.title },
+                {
+                    key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.title`,
+                    value: config.title,
+                    annotation: { textType: SapShortTextType.TableTitle, note: 'Fiori Launchpad Tile Title' }
+                },
                 {
                     key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.subTitle`,
-                    value: config.subTitle
+                    value: config.subTitle,
+                    annotation: { textType: SapShortTextType.TableTitle, note: 'Fiori Launchpad Tile Subtitle' }
                 }
             ];
             const keysToRemove = [`${appId}_sap.app.crossNavigation.inbounds`];
 
             await updateI18n(basePath, appId, config, fs);
 
-            expect(createOrReplaceI18nEntriesMock).toHaveBeenCalledWith(
+            expect(removeAndCreateI18nEntriesMock).toHaveBeenCalledWith(
                 i18nPath,
                 expectedEntries,
                 keysToRemove,
