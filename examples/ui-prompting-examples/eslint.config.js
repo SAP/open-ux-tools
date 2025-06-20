@@ -2,6 +2,8 @@ const base = require('../../eslint.config.js');
 const reactPlugin = require('eslint-plugin-react');
 const globals = require('globals');
 const storybookPlugin = require('eslint-plugin-storybook');
+const tsParser = require('@typescript-eslint/parser');
+const { parser } = require('typescript-eslint');
 
 module.exports = [
     ...base,
@@ -14,8 +16,9 @@ module.exports = [
         languageOptions: {
             parserOptions: {
                 'EXPERIMENTAL_useSourceOfProjectReferenceRedirect': true,
+                parser: tsParser,
                 project: './tsconfig.eslint.json',
-                tsconfigRootDir: __dirname
+                // tsconfigRootDir: __dirname
             },
             globals: {
                 ...globals.browser
@@ -35,9 +38,7 @@ module.exports = [
     },
     {
         languageOptions: {
-            'parser': '@typescript-eslint/parser',
-            project: './tsconfig.eslint.json',
-            tsconfigRootDir: __dirname
+            'parser': tsParser
         },
         files: ['./test/**/*.tsx'],
         rules: {
@@ -46,9 +47,7 @@ module.exports = [
     },
     {
         languageOptions: {
-            parser: '@typescript-eslint/parser',
-            project: './tsconfig.eslint.json',
-            tsconfigRootDir: __dirname
+            parser: tsParser
         },
         files: ['./src/**/*.tsx'],
         rules: {
