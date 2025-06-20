@@ -1,6 +1,6 @@
 import { join } from 'path';
 import Generator from 'yeoman-generator';
-import { AppWizard, MessageType, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
 
 import {
     FlexLayer,
@@ -14,7 +14,8 @@ import {
     type ConfigAnswers,
     type UI5Version,
     SourceManifest,
-    isCFEnvironment
+    isCFEnvironment,
+    getBaseAppInbounds
 } from '@sap-ux/adp-tooling';
 import {
     TelemetryHelper,
@@ -25,7 +26,7 @@ import {
     type ILogWrapper
 } from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 
@@ -33,7 +34,7 @@ import { getFlexLayer } from './layer';
 import { initI18n, t } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import { setHeaderTitle } from '../utils/opts';
-import { getWizardPages } from '../utils/steps';
+import { getWizardPages, updateFlpWizardSteps, updateWizardSteps, getDeployPage } from '../utils/steps';
 import AdpFlpConfigLogger from '../utils/logger';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
@@ -42,7 +43,7 @@ import { getPackageInfo, installDependencies } from '../utils/deps';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
-import type { AdpGeneratorOptions, AttributePromptOptions, JsonInput } from './types';
+import { type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput } from './types';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
 
 /**
@@ -113,6 +114,10 @@ export default class extends Generator {
      * Indicates if the current layer is based on a customer base.
      */
     private isCustomerBase: boolean;
+    /**
+     * Base application inbounds, if the base application is an FLP app.
+     */
+    private baseAppInbounds?: ManifestNamespace.Inbound;
 
     /**
      * Creates an instance of the generator.
@@ -197,23 +202,30 @@ export default class extends Generator {
             prompts: this.prompts
         };
         const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
+        if (this.prompter.isCloud) {
+            this.baseAppInbounds = await getBaseAppInbounds(this.configAnswers.application.id, this.prompter.provider);
+        }
         const options: AttributePromptOptions = {
             targetFolder: { default: defaultFolder },
             ui5ValidationCli: { hide: !isCLI },
-            enableTypeScript: { hide: this.shouldCreateExtProject }
+            enableTypeScript: { hide: this.shouldCreateExtProject },
+            addFlpConfig: { hasBaseAppInbounds: !!this.baseAppInbounds }
         };
         const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
 
         this.attributeAnswers = await this.prompt(attributesQuestions);
+
+        // Steps need to be updated here to be available after back navigation in Yeoman UI.
+        this._updateWizardStepsAfterNavigation();
 
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
         if (this.attributeAnswers?.addFlpConfig) {
             addFlpGen(
                 {
+                    vscode: this.vscode,
                     projectRootPath: this._getProjectPath(),
-                    system: this.configAnswers.system,
-                    manifest: this.prompter.manifest!
+                    inbounds: this.baseAppInbounds
                 },
                 this.composeWith.bind(this),
                 this.logger,
@@ -423,6 +435,34 @@ export default class extends Generator {
             ui5Version: '',
             enableTypeScript: false
         };
+    }
+
+    /**
+     * Updates the FLP wizard steps in the prompt sequence if the FLP configuration page(s) does not already exist.
+     *
+     */
+    private _updateWizardStepsAfterNavigation(): void {
+        const pages: IPrompt[] = this.prompts['items'];
+        const flpPagesExist = pages.some((p) => p.name === t('yuiNavSteps.flpConfigName'));
+        const deployPageExists = pages.some((p) => p.name === t('yuiNavSteps.deployConfigName'));
+
+        if (!deployPageExists) {
+            updateWizardSteps(
+                this.prompts,
+                getDeployPage(),
+                t('yuiNavSteps.projectAttributesName'),
+                this.attributeAnswers.addDeployConfig
+            );
+        }
+
+        if (!flpPagesExist) {
+            updateFlpWizardSteps(
+                !!this.baseAppInbounds,
+                this.prompts,
+                this.attributeAnswers.projectName,
+                this.attributeAnswers.addFlpConfig
+            );
+        }
     }
 }
 

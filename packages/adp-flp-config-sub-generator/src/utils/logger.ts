@@ -5,7 +5,7 @@ import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
 /**
  * Static logger prevents passing of logger references through all functions, as this is a cross-cutting concern.
  */
-export default class AdpFlpConfigLogger {
+export class AdpFlpConfigLogger {
     private static _logger: ILogWrapper = DefaultLogger;
 
     /**

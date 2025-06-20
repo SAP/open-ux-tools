@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'fs';
 import type { create, Editor } from 'mem-fs-editor';
 
 import { UI5Config } from '@sap-ux/ui5-config';
-import { FileName } from '@sap-ux/project-access';
+import type { DescriptorVariant } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 
 import {
@@ -81,53 +81,31 @@ describe('helper', () => {
     });
 
     describe('flpConfigurationExists', () => {
-        const appDescrPath = join(basePath, 'webapp', FileName.ManifestAppDescrVar);
-
         beforeEach(() => {
             jest.clearAllMocks();
         });
 
         it('should return true if valid FLP configuration exists', async () => {
-            readFileSyncMock.mockReturnValue(
-                JSON.stringify({
-                    content: [
-                        { changeType: 'appdescr_app_changeInbound' },
-                        { changeType: 'appdescr_ui5_addNewModelEnhanceWith' }
-                    ]
-                })
-            );
+            const variantContent = {
+                content: [
+                    { changeType: 'appdescr_app_changeInbound' },
+                    { changeType: 'appdescr_ui5_addNewModelEnhanceWith' }
+                ]
+            };
 
-            const result = await flpConfigurationExists(basePath);
+            const result = flpConfigurationExists(variantContent as unknown as DescriptorVariant);
 
             expect(result).toBe(true);
-            expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath, 'utf-8');
         });
 
         it('should return false if no valid FLP configuration exists', async () => {
-            readFileSyncMock.mockReturnValue(
-                JSON.stringify({
-                    content: [
-                        { changeType: 'appdescr_ui5_setMinUI5Version' },
-                        { changeType: 'appdescr_ui5_addNewModelEnhanceWith' }
-                    ]
-                })
-            );
+            const variantContent = {
+                content: []
+            };
 
-            const result = await flpConfigurationExists(basePath);
+            const result = flpConfigurationExists(variantContent as unknown as DescriptorVariant);
 
             expect(result).toBe(false);
-            expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath, 'utf-8');
-        });
-
-        it('should throw an error if getVariant fails', async () => {
-            readFileSyncMock.mockImplementation(() => {
-                throw new Error('Failed to retrieve variant');
-            });
-
-            await expect(flpConfigurationExists(basePath)).rejects.toThrow(
-                'Failed to check if FLP configuration exists: Failed to retrieve variant'
-            );
-            expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath, 'utf-8');
         });
     });
 

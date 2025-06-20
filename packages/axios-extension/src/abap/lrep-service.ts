@@ -9,6 +9,7 @@ import { isAxiosError } from '../base/odata-request-error';
 import type { Service } from '../base/service-provider';
 import { logError } from './message';
 import type { TransportConfig } from './ui5-abap-repository-service';
+import qs from 'qs';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 /**
@@ -102,6 +103,12 @@ export interface SystemInfo {
      */
     adaptationProjectTypes: AdaptationProjectType[];
     activeLanguages: Language[];
+    /**
+     * Inbound objects of the application.
+     *
+     * @since ABAP Platform Cloud 2505
+     */
+    inbounds?: Inbound[];
 }
 
 interface Language {
@@ -109,6 +116,35 @@ interface Language {
     description: string;
     i18n: string;
 }
+
+export interface InboundContent {
+    semanticObject: string;
+    action: string;
+    hideLauncher: boolean;
+    icon: string;
+    title: string;
+    subTitle: string;
+    indicatorDataSource?: {
+        dataSource: string;
+        path: string;
+        /**
+         * Represents refresh interval
+         */
+        refresh?: number;
+        [k: string]: unknown;
+    };
+    deviceTypes?: ManifestNamespace.DeviceType;
+    signature: ManifestNamespace.SignatureDef;
+}
+
+export interface Inbound {
+    metadata: {
+        name: string;
+        deprecated: boolean;
+    };
+    content: InboundContent;
+}
+
 /**
  * Technically supported layers, however, in practice only `CUSTOMER_BASE` is used
  */
@@ -311,22 +347,27 @@ export class LayeredRepositoryService extends Axios implements Service {
     /**
      * Get system info.
      *
-     * @param language
+     * @param language language code (default: EN)
      * @param cloudPackage name
+     * @param appId application id (since ABAP Platform Cloud 2505)
      * @returns the system info object
      */
-    public async getSystemInfo(language: string = 'EN', cloudPackage?: string): Promise<SystemInfo> {
+    public async getSystemInfo(language: string = 'EN', cloudPackage?: string, appId?: string): Promise<SystemInfo> {
         try {
-            const params = new URLSearchParams({
+            const params = {
                 'sap-language': language
-            });
+            };
             if (cloudPackage) {
-                params.append('package', cloudPackage);
+                params['package'] = cloudPackage;
+            }
+            if (appId) {
+                params['sap-app-id'] = appId;
             }
             const response = await this.get(`${DTA_PATH_SUFFIX}system_info`, {
                 params,
-                paramsSerializer: decodeUrlParams
+                paramsSerializer: (params) => qs.stringify(params, { encode: false })
             });
+
             this.tryLogResponse(response, 'Successful getting system info.');
             return JSON.parse(response.data) as SystemInfo;
         } catch (error) {
