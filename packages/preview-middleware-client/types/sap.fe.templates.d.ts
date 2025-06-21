@@ -1,19 +1,33 @@
-declare module 'sap/fe/templates/ObjectPage/Component' {
-    import UIComponent from 'sap/ui/core/UIComponent';
-    interface FEObjectPageComponent extends UIComponent {
-        getEntitySet: () => string;
-        getContextPath: () => string;
+declare module 'sap/fe/templates/ListComponent' {
+    import type TemplateComponent from 'sap/fe/core/TemplateComponent';
+    import type VariantManagement from 'sap/fe/core/sap/VariantManagement';
+    interface ListComponent extends TemplateComponent {
+        getVariantManagement(): VariantManagement;
     }
 
-    export default FEObjectPageComponent;
+    export default ListComponent;
 }
 
 declare module 'sap/fe/templates/ListReport/Component' {
-    import UIComponent from 'sap/ui/core/UIComponent';
-    interface FEListReportComponent extends UIComponent {
-        getEntitySet: () => string;
-        getContextPath: () => string;
+    import type ListComponent from 'sap/fe/templates/ListComponent';
+    interface ListReportComponent extends ListComponent {}
+
+    export default ListReportComponent;
+}
+
+declare module 'sap/fe/templates/AnalyticalListPage/Component' {
+    import type ListComponent from 'sap/fe/templates/ListComponent';
+    interface AnalyticalListPageComponent extends ListComponent {}
+
+    export default AnalyticalListPageComponent;
+}
+
+declare module 'sap/fe/templates/ObjectPage/Component' {
+    import type TemplateComponent from 'sap/fe/core/TemplateComponent';
+    import type VariantManagement from 'sap/fe/core/sap/VariantManagement';
+    interface ObjectPageComponent extends TemplateComponent {
+        getVariantManagement(): VariantManagement;
     }
 
-    export default FEListReportComponent;
+    export default ObjectPageComponent;
 }
