@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.22.2
+
+### Patch Changes
+
+-   14214a3: Cleanup documentation
+
 ## 1.22.1
 
 ### Patch Changes
