@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.15
+
+### Patch Changes
+
+-   ff6ff97: Update the MTA ID error message.
+
 ## 0.3.14
 
 ### Patch Changes
