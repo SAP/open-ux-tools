@@ -43,8 +43,6 @@ export function isDataSourceURI(uri: string): boolean {
     return /^(?!.*\/\/)\/([^\s]*)\/$/.test(uri);
 }
 
-const projectNamePattern = /^[a-zA-Z]+([.][a-zA-Z0-9]+)*$/;
-
 /**
  * Validates that the project name is not empty and it is correct for VENDOR and CUSTOMER_BASE layer.
  *
@@ -80,7 +78,7 @@ export function validateProjectNameExternal(value: string): boolean | string {
     if (value.length > 61 || value.toLocaleLowerCase().endsWith('component')) {
         return t('adp.projectNameLengthErrorExt');
     }
-    if (!projectNamePattern.test(value)) {
+    if (!/^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)*$/.test(value)) {
         return t('adp.projectNameValidationErrorExt');
     }
 
@@ -102,7 +100,7 @@ export function validateProjectNameInternal(value: string): boolean | string {
         return t('adp.projectNameLengthErrorInt');
     }
 
-    if (!projectNamePattern.test(value)) {
+    if (!/^([a-z]{1,}[a-z0-9]*((\.){1}[a-z]{1,}[a-z0-9]*){1,})+$/i.test(value)) {
         return t('adp.projectNameValidationErrorInt');
     }
 
@@ -154,7 +152,7 @@ export function validateNamespaceAdp(
 
     if (namespace.length > 61 || namespace.toLowerCase().endsWith('component') === true) {
         return t('adp.namespaceLengthError');
-    } else if (namespace !== '' && projectNamePattern.test(namespace) === false) {
+    } else if (namespace !== '' && /^[a-z]+((\.)?[a-z0-9])*$/.test(namespace) === false) {
         return t('adp.namespaceValidationError');
     }
 

@@ -100,7 +100,7 @@ describe('project input validators', () => {
 
         it('delegates to internal validation if not customer base', () => {
             const result = validateProjectName('validname', path, false);
-            expect(result).toBe(true);
+            expect(result).toBe(t('adp.projectNameValidationErrorInt'));
         });
 
         it('delegates to external validation if customer base', () => {
@@ -110,8 +110,6 @@ describe('project input validators', () => {
     });
 
     describe('validateProjectNameExternal', () => {
-        const path = '/mock/path';
-
         beforeEach(() => {
             existsSyncMock.mockReturnValue(false);
         });
@@ -145,7 +143,7 @@ describe('project input validators', () => {
 
         it('returns true for valid internal project name', () => {
             existsSyncMock.mockReturnValue(false);
-            expect(validateProjectNameInternal('vendorapp')).toBe(true);
+            expect(validateProjectNameInternal('vendorapp')).toBe(t('adp.projectNameValidationErrorInt'));
         });
     });
 
