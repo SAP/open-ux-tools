@@ -16,24 +16,18 @@ import {
     SourceManifest,
     isCFEnvironment
 } from '@sap-ux/adp-tooling';
-import {
-    TelemetryHelper,
-    getDefaultTargetFolder,
-    getHostEnvironment,
-    hostEnvironment,
-    sendTelemetry
-} from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import { TelemetryHelper, getDefaultTargetFolder, isCli, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 
 import { getFlexLayer } from './layer';
 import { initI18n, t } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import { setHeaderTitle } from '../utils/opts';
 import { getWizardPages } from '../utils/steps';
-import AdpFlpConfigLogger from '../utils/logger';
+import AdpGeneratorLogger from '../utils/logger';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
 import { validateJsonInput } from './questions/helper/validators';
@@ -153,9 +147,9 @@ export default class extends Generator {
     async initializing(): Promise<void> {
         await initI18n();
 
+        this.isCli = isCli();
         this.layer = getFlexLayer();
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
-        this.isCli = getHostEnvironment() === hostEnvironment.cli;
         this.systemLookup = new SystemLookup(this.logger);
 
         if (!this.jsonInput) {
@@ -356,7 +350,7 @@ export default class extends Generator {
      * Configures logging for the generator.
      */
     private _setupLogging(): void {
-        AdpFlpConfigLogger.configureLogging(
+        AdpGeneratorLogger.configureLogging(
             this.options.logger,
             this.rootGeneratorName(),
             this.log,
@@ -364,7 +358,7 @@ export default class extends Generator {
             this.options.logLevel,
             this.options.logWrapper
         );
-        this.logger = AdpFlpConfigLogger.logger as unknown as ToolsLogger;
+        this.logger = AdpGeneratorLogger.logger as unknown as ToolsLogger;
     }
 
     /**
