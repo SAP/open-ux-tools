@@ -120,7 +120,7 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<C
         isDestinationFullUrl: cfAppConfig.isDestinationFullUrl ?? destinationIsFullUrl,
         apiHubConfig: cfAppConfig.apiHubConfig,
         firstServicePathSegment:
-            firstServicePathSegmentUI5Config || firstServicePathSegment || '<apply-service-segment-path>',
+            firstServicePathSegmentUI5Config ?? firstServicePathSegment ?? '<apply-service-segment-path>',
         mtaId,
         mtaPath,
         isCap,
