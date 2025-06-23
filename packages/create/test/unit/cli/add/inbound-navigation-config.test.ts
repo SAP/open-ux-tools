@@ -13,6 +13,7 @@ import * as common from '../../../../src/common';
 import * as tracer from '../../../../src/tracing/trace';
 import * as logger from '../../../../src/tracing/logger';
 import { addInboundNavigationConfigCommand } from '../../../../src/cli/add/navigation-config';
+import app from '../../../../../abap-deploy-config-sub-generator/src/app';
 
 jest.mock('prompts');
 
@@ -251,6 +252,46 @@ describe('Test command add navigation-config with ADP scenario', () => {
         await command.parseAsync(getArgv(['inbound-navigation', appRoot]));
 
         // Result check
+        expect(commitMock).toBeCalled();
+        expect(genAdpNavSpy).toBeCalledWith(
+            expect.stringContaining('bare-minimum'),
+            expect.objectContaining(flpConfigAnswers),
+            expect.any(Object)
+        );
+        expect(genNavSpy).not.toBeCalled();
+        expect(loggerMock.error).not.toBeCalled();
+    });
+
+    test('Test add inbound-navigation with ADP project where FLP configuration does not exist with custom yaml config file', async () => {
+        getAppTypeMock.mockResolvedValue('Fiori Adaptation');
+        flpConfigurationExistsMock.mockReturnValue(false);
+        getBaseAppInboundsMock.mockResolvedValue({
+            'semObject-action': {
+                semanticObject: 'so1',
+                action: 'act1',
+                title: 'Test Title',
+                subTitle: '',
+                hideLauncher: false
+            }
+        });
+
+        getVariantMock.mockReturnValue({
+            id: 'variantId',
+            content: []
+        });
+
+        getAdpConfigMock.mockResolvedValue({
+            target: {},
+            ignoreCertErrors: false
+        });
+
+        // Test execution
+        const command = new Command('add');
+        addInboundNavigationConfigCommand(command);
+        await command.parseAsync(getArgv(['inbound-navigation', appRoot, '--config=/test/custom.yaml']));
+
+        // Result check
+        expect(getAdpConfigMock).toBeCalledWith(appRoot, '/test/custom.yaml');
         expect(commitMock).toBeCalled();
         expect(genAdpNavSpy).toBeCalledWith(
             expect.stringContaining('bare-minimum'),

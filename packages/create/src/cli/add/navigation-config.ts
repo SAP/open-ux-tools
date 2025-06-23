@@ -1,4 +1,3 @@
-import { join } from 'path';
 import type { Command } from 'commander';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
@@ -40,11 +39,12 @@ export function addInboundNavigationConfigCommand(cmd: Command): void {
     cmd.command('inbound-navigation [path]')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')
+        .option('-c, --config <string>', 'Path to project configuration file in YAML format', FileName.Ui5Yaml)
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
             }
-            await addInboundNavigationConfig(path || process.cwd(), !!options.simulate);
+            await addInboundNavigationConfig(path || process.cwd(), !!options.simulate, options.config);
         });
 }
 
@@ -53,9 +53,10 @@ export function addInboundNavigationConfigCommand(cmd: Command): void {
  *
  * @param {string} basePath - The path to the application root.
  * @param {boolean} simulate - If true, simulates the changes without writing them; otherwise, writes changes.
+ * @param {string} yamlPath - The path to the project configuration file in YAML format.
  * @returns {Promise<void>} A promise that resolves when the operation is complete.
  */
-async function addInboundNavigationConfig(basePath: string, simulate: boolean): Promise<void> {
+async function addInboundNavigationConfig(basePath: string, simulate: boolean, yamlPath: string): Promise<void> {
     const logger = getLogger();
     try {
         logger.debug(`Called add inbound navigation-config for path '${basePath}', simulate is '${simulate}'`);
@@ -66,7 +67,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
 
         const fs = create(createStorage());
 
-        const inbounds = await getInbounds(basePath, isAdp, fs, logger);
+        const inbounds = await getInbounds(basePath, yamlPath, isAdp, fs, logger);
         let tileSettingsAnswers: TileSettingsAnswers | undefined;
         if (inbounds && isAdp) {
             tileSettingsAnswers = await promptYUIQuestions(getTileSettingsQuestions(), false);
@@ -101,6 +102,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
  * Retrieves the inbounds for the given project, handling both ADP and Fiori scenarios.
  *
  * @param {string} basePath - The base path to the project.
+ * @param {string} yamlPath - The path to the project configuration file in YAML format.
  * @param {boolean} isAdp - Indicates whether the project is an ADP project.
  * @param {Editor} fs - The mem-fs editor instance.
  * @param {ToolsLogger} logger - The logger instance.
@@ -108,13 +110,14 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
  */
 async function getInbounds(
     basePath: string,
+    yamlPath: string,
     isAdp: boolean,
     fs: Editor,
     logger: ToolsLogger
 ): Promise<ManifestNamespace.Inbound | undefined> {
     if (isAdp) {
         const appId = (await getVariant(basePath)).reference;
-        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
+        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
         const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
         return getBaseAppInbounds(appId, provider);
     }
