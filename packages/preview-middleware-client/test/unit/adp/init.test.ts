@@ -133,14 +133,6 @@ describe('adp', () => {
             payload: []
         });
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
-            type: '[ext] show-dialog-message',
-            payload: {
-                message:
-                    'The current SAPUI5 version set for this Adaptation project is 1.70. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71',
-                shouldHideIframe: true
-            }
-        });
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'FLP_UI5_VERSION_WARNING_TITLE' },
             description: {
@@ -148,8 +140,7 @@ describe('adp', () => {
                     '1.70',
                     '1.71']
             },
-            type: MessageBarType.warning,
-            showToast: false
+            type: MessageBarType.warning
         });
     });
 
@@ -177,13 +168,10 @@ describe('adp', () => {
             payload: []
         });
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
-            type: '[ext] show-dialog-message',
-            payload: {
-                message:
-                    'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
-                shouldHideIframe: false
-            }
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+            title: { key: 'ADP_SYNC_VIEWS_TITLE' },
+            description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
+            type: MessageBarType.warning
         });
     });
 
@@ -205,14 +193,10 @@ describe('adp', () => {
         const updateHandler = attachEventSpy.mock.calls[0][1];
         await updateHandler();
 
-
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
-            type: '[ext] show-dialog-message',
-            payload: {
-                message:
-                    'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
-                shouldHideIframe: false
-            }
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+            title: { key: 'ADP_SYNC_VIEWS_TITLE' },
+            description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
+            type: MessageBarType.warning
         });
     });
 
@@ -236,8 +220,7 @@ describe('adp', () => {
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'ADP_SYNC_VIEWS_TITLE' },
             description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
-            type: MessageBarType.warning,
-            showToast: false
+            type: MessageBarType.warning
         });
     });
 

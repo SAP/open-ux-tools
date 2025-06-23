@@ -86,8 +86,7 @@ describe('client/command-executor', () => {
             expect(sendInfoCenterMessage).toHaveBeenCalledWith({
                 title: { key: 'ADP_CREATE_COMMAND_TITLE' },
                 description: { key: `ADP_CREATE_COMMAND_DESCRIPTION`, params: [commandName, mockRuntimeControl.getId()] },
-                type: MessageBarType.info,
-                showToast: false
+                type: MessageBarType.info
             });
         });
 

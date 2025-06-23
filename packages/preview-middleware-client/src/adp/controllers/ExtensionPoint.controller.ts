@@ -75,8 +75,7 @@ export default class ExtensionPoint extends BaseDialog<ExtensionPointModel> {
         await sendInfoCenterMessage({
             title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
             description: { key: 'ADP_CREATE_XML_FRAGMENT_DESCRIPTION', params: [fragmentName]},
-            type: MessageBarType.info,
-            toastDuration: 8000
+            type: MessageBarType.info
         });
 
         this.handleDialogClose();

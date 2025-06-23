@@ -208,8 +208,7 @@ describe('ChangeService', () => {
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
             description: expect.any(String),
-            type: MessageBarType.error,
-            showToast: false
+            type: MessageBarType.error
         });
     });
     test('Sync Outline Changes', async () => {
@@ -1633,8 +1632,7 @@ describe('ChangeService', () => {
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_TITLE' },
             description: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_DESCRIPTION' },
-            type: MessageBarType.info,
-            toastDuration: 8000,
+            type: MessageBarType.info
         });
     });
     test('FE V4 manifest change', async () => {
@@ -1822,8 +1820,7 @@ describe('ChangeService', () => {
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
             description: `Error: ${JSON.stringify(errorMessage)}`,
-            type: MessageBarType.error,
-            showToast: false
+            type: MessageBarType.error
         });
     });
 });

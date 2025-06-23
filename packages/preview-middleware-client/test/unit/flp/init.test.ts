@@ -13,7 +13,6 @@ import { fetchMock, sapMock } from 'mock/window';
 import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
 import { MessageBarType, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
-import { CommunicationService } from '../../../src/cpe/communication-service';
 import type Component from 'sap/ui/core/Component';
 import { Window } from 'types/global';
 import { sendInfoCenterMessage } from '../../../src//utils/info-center-message';
@@ -179,8 +178,7 @@ describe('flp/init', () => {
             expect(sendInfoCenterMessage).toHaveBeenCalledWith({
                 title: { key: 'FLP_REGISTER_LIBS_FAILED_TITLE' },
                 description: 'Error',
-                type: MessageBarType.error,
-                showToast: false
+                type: MessageBarType.error
             });
         });
     });
@@ -253,8 +251,7 @@ describe('flp/init', () => {
             expect(sendInfoCenterMessage).toHaveBeenCalledWith({
                 title: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_TITLE' },
                 description: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_DESCRIPTION' },
-                type: MessageBarType.warning,
-                showToast: false
+                type: MessageBarType.warning
             });
         });
 
@@ -374,7 +371,6 @@ describe('flp/init', () => {
                 reloadComplete.resolve(undefined);
             });
 
-            const sendActionSpy = jest.spyOn(CommunicationService, 'sendAction');
             await init({ flex: JSON.stringify(flexSettings) });
             const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
                 .calls[0][0] as () => Promise<void>;
@@ -389,20 +385,11 @@ describe('flp/init', () => {
 
             // Wait for the reload to complete before continue with the test cases.
             await reloadComplete.promise;
-
-            expect(sendActionSpy).toHaveBeenCalled();
-            expect(sendActionSpy).toHaveBeenNthCalledWith(1, {
-                type: '[ext] show-dialog-message',
-                payload: {
-                    message: 'The application was reloaded because of changes in a higher layer.',
-                    shouldHideIframe: false
-                }
-            });           
+         
             expect(sendInfoCenterMessage).toHaveBeenCalledWith({
                 title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
                 description: expect.any(String),
-                type: MessageBarType.error,
-                showToast: false
+                type: MessageBarType.error
             });
             expect(reloadSpy).toHaveBeenCalled();
         });
