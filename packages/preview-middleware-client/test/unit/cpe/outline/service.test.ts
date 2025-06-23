@@ -100,8 +100,7 @@ describe('index', () => {
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'CPE_OUTLINE_ERROR_TITLE' },
             description: 'error',
-            type: MessageBarType.error,
-            showToast: false
+            type: MessageBarType.error
         });
     });
 

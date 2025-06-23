@@ -2,11 +2,10 @@ import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 
-import { showMessage, enableTelemetry, MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { enableTelemetry, MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
-import { getFullyQualifiedUi5Version, getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version, minVersionInfo } from '../utils/version';
+import { getFullyQualifiedUi5Version, getUi5Version, isLowerThanMinimalUi5Version, minVersionInfo } from '../utils/version';
 
-import { CommunicationService } from '../cpe/communication-service';
 import init from '../cpe/init';
 import { updateSyncViewsIds, showSyncViewsWarning } from './sync-views-utils';
 import { getApplicationType } from '../utils/application';
@@ -65,12 +64,8 @@ export default async function (rta: RuntimeAuthoring) {
                     getFullyQualifiedUi5Version(ui5VersionInfo),
                     getFullyQualifiedUi5Version(minVersionInfo)]
             },
-            type: MessageBarType.warning,
-            showToast: false
+            type: MessageBarType.warning
         });
-        CommunicationService.sendAction(
-            showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), shouldHideIframe: true })
-        );
         return;
     }
 

@@ -671,7 +671,6 @@ describe('ControllerExtension', () => {
             expect(sendInfoCenterMessage).toHaveBeenCalledWith({
                 description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION' , params: ['testController']},
                 title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
-                toastDuration: 8000,
                 type: MessageBarType.info
             });
         });

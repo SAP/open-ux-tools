@@ -191,8 +191,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             void sendInfoCenterMessage({
                 title: { key: 'ADP_INTERNAL_TABLE_RETRIEVAL_ERROR_TITLE' },
                 description: getError(error).message,
-                type: MessageBarType.error,
-                showToast: false
+                type: MessageBarType.error
             });
             return undefined;
         }

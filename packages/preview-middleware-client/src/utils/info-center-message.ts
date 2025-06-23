@@ -1,9 +1,6 @@
 import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
-import MessageToast from 'sap/m/MessageToast';
 import { CommunicationService } from '../cpe/communication-service';
 import { getTextBundle } from '../i18n';
-
-const DEFAULT_TOAST_DURATION_IN_MS = 5000;
 
 /**
  * Localization key interface for defining message keys and optional parameters.
@@ -22,27 +19,19 @@ interface InfoCenterMessage {
     description: LocalizationKey | string;
     details?: LocalizationKey | string;
     type: MessageBarType;
-    showToast?: boolean;
-    toastDuration?: number;
 }
 
 /**
- * Shows a localized/plain string message: displays a toast and sends an info center message. The
- * toast message is optional, and the info center message is always sent. By default, the toast
- * message is shown for five seconds, but this can be customized.
+ * Shows a localized/plain string message in the Info center.
  * 
- * @param {InfoCenterMessage} message - The message object containing title, description, type, and whether to show a toast.
+ * @param {InfoCenterMessage} message - The message object containing title, description,
+ * details and type for the message. Each text in the message can be localized or
+ * left as a plain string.
  */
-export async function sendInfoCenterMessage({ title, description, details, type, showToast = true, toastDuration }: InfoCenterMessage): Promise<void> {
+export async function sendInfoCenterMessage({ title, description, details, type }: InfoCenterMessage): Promise<void> {
     title = isString(title) ? title : await getTranslation(title);
     description = isString(description) ? description : await getTranslation(description);
     details = isString(details) || !details ? details : await getTranslation(details);
-
-    if (showToast) {
-        MessageToast.show(description, {
-            duration: toastDuration ?? DEFAULT_TOAST_DURATION_IN_MS,
-        });
-    }
 
     CommunicationService.sendAction(showInfoCenterMessage({
         title,

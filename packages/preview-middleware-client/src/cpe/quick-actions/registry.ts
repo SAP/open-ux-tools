@@ -76,8 +76,7 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
                 void sendInfoCenterMessage({
                     title: { key: 'CPE_PAGE_NOT_FOUND_TITLE' },
                     description: { key: 'CPE_PAGE_NOT_FOUND_DESCRIPTION', params: [name] },
-                    type: MessageBarType.warning,
-                    showToast: false
+                    type: MessageBarType.warning
                 });
             }
         }

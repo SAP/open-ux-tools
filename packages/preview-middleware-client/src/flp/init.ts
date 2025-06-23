@@ -1,7 +1,7 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import { MessageBarType, SCENARIO, showMessage, type Scenario } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, SCENARIO, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
@@ -11,8 +11,6 @@ import { getError } from '../utils/error';
 import initCdm from './initCdm';
 import initConnectors from './initConnectors';
 import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
-import { CommunicationService } from '../cpe/communication-service';
-import { getTextBundle } from '../i18n';
 import type Component from 'sap/ui/core/Component';
 import type Extension from 'sap/ushell/services/Extension';
 import type { CardGeneratorType } from 'sap/cards/ap/generator';
@@ -201,8 +199,7 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
             await sendInfoCenterMessage({
                 title: { key: 'FLP_REGISTER_LIBS_FAILED_TITLE' },
                 description: getError(error).message,
-                type: MessageBarType.error,
-                showToast: false
+                type: MessageBarType.error
             });
         }
     }
@@ -362,8 +359,7 @@ export async function init({
                             await sendInfoCenterMessage({
                                 title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
                                 description: getError(error).message, 
-                                type: MessageBarType.error,
-                                showToast: false
+                                type: MessageBarType.error
                             });
                             await handleHigherLayerChanges(error, ui5VersionInfo);
                         }
@@ -385,8 +381,7 @@ export async function init({
         await sendInfoCenterMessage({
             title: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_TITLE' },
             description: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_DESCRIPTION' },
-            type: MessageBarType.warning,
-            showToast: false
+            type: MessageBarType.warning
         });
     } 
 
@@ -439,8 +434,7 @@ if (bootstrapConfig) {
         return sendInfoCenterMessage({
             title: { key: 'FLP_SANDBOX_INIT_FAILED_TITLE' },
             description: error.message,
-            type: MessageBarType.error,
-            showToast: false        
+            type: MessageBarType.error    
         });
     });
 }
@@ -457,18 +451,11 @@ export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: U
     const err = getError(error);
     if (err.message.includes('Reload triggered')) {
         if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 84 })) {
-            const bundle = await getTextBundle();
-            const action = showMessage({
-                message: bundle.getText('HIGHER_LAYER_CHANGES_INFO_MESSAGE'),
-                shouldHideIframe: false
-            });
             await sendInfoCenterMessage({
                 title: { key: 'HIGHER_LAYER_CHANGES_TITLE' },
                 description: { key: 'HIGHER_LAYER_CHANGES_INFO_MESSAGE' },
-                type: MessageBarType.warning,
-                showToast: false
+                type: MessageBarType.warning
             });
-            CommunicationService.sendAction(action);
         }
 
         // eslint-disable-next-line fiori-custom/sap-no-location-reload
