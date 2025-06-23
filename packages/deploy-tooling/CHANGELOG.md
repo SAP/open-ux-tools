@@ -1,5 +1,14 @@
 # @sap-ux/deploy-tooling
 
+## 0.16.16
+
+### Patch Changes
+
+-   14214a3: Cleanup documentation
+-   Updated dependencies [14214a3]
+    -   @sap-ux/axios-extension@1.22.2
+    -   @sap-ux/system-access@0.6.7
+
 ## 0.16.15
 
 ### Patch Changes
