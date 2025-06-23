@@ -48,14 +48,12 @@ export function InfoMessageItem(item: Readonly<InfoCenterItem>): ReactElement {
                 <Text block={true} className="message-title">
                     {message.title}
                 </Text>
-                {message.type !== MessageBarType.error && (
-                    <UIIconButton
-                        aria-label="remove-message"
-                        className="remove-message"
-                        onClick={() => dispatch(clearInfoCenterMessage(id))}
-                        iconProps={{ iconName: UiIcons.TrashCan }}
-                    />
-                )}
+                <UIIconButton
+                    aria-label="remove-message"
+                    className="remove-message"
+                    onClick={() => dispatch(clearInfoCenterMessage(id))}
+                    iconProps={{ iconName: UiIcons.TrashCan }}
+                />
             </UIMessageBar>
             <Text
                 data-index={id}
