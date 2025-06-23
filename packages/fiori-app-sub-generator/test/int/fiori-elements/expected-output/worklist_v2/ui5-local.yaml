@@ -30,14 +30,18 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testNameSpaceworklistv2
+            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
         ignoreCertError: true # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - path: /sap
+          - scp: true
+            path: /sap
             url: https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com
-            client: '012'
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:

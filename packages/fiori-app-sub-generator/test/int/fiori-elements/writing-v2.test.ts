@@ -74,6 +74,7 @@ describe('Generate v2 apps', () => {
 
         const destService: Service = {
             localEdmxFilePath: '',
+            serviceId: 'ABCD_MockService_O2',
             servicePath: v2Service.servicePath,
             version: v2Service.version,
             host: v2Service.host!,
@@ -92,16 +93,15 @@ describe('Generate v2 apps', () => {
             entityRelatedConfig: v2EntityConfig,
             appGenInfo: {
                 externalParameters: {
-                    'testAdditionalEntry': [
-                        {
-                            key: 'testKey1',
-                            value: 'testValue1'
-                        },
-                        {
-                            key: 'testKey2',
-                            value: 'testValue2'
-                        }
-                    ]
+                    'abapCSN': {
+                        services: [
+                            { type: 'abapCSN', runtimeName: 'ABCD_MockService_O1', csnServiceName: 'MockService' },
+                            { type: 'abapCSN', runtimeName: 'ABCD_MockService_O2', csnServiceName: 'MockService2' },
+                            { type: 'abapCSN', runtimeName: 'ABCD_MockService_O3', csnServiceName: 'MockService3' }
+                        ],
+                        csnName: 'MOCKCSN55.abap.csn',
+                        packageUri: 'abapfs:/BAS_DEST/MOCK_CSN_TEST1'
+                    }
                 }
             }
         });
@@ -327,7 +327,11 @@ describe('Generate v2 apps', () => {
             floorplan: FloorplanFE.FE_WORKLIST,
             service: {
                 ...v2Service,
-                ignoreCertError: true
+                client: undefined,
+                ignoreCertError: true,
+                previewSettings: {
+                    scp: true
+                }
             },
             entityRelatedConfig: v2EntityConfig
         });

@@ -1,5 +1,46 @@
 # @sap-ux/inquirer-common
 
+## 0.7.13
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+
+## 0.7.12
+
+### Patch Changes
+
+-   20cc54f: enhance theme retrieval for latest UI5 versions
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/ui5-info@0.12.0
+
+## 0.7.11
+
+### Patch Changes
+
+-   Updated dependencies [7f35f6c]
+    -   @sap-ux/ui5-info@0.11.1
+
+## 0.7.10
+
+### Patch Changes
+
+-   bf752f3: Adds more specific cert error messages with GA links.
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+
+## 0.7.8
+
+### Patch Changes
+
+-   d6943aa: Adds GA link to deploy.
+
 ## 0.7.7
 
 ### Patch Changes

@@ -1,5 +1,88 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.18
+
+### Patch Changes
+
+-   Updated dependencies [3ea811a]
+    -   @sap-ux/cf-deploy-config-writer@0.3.5
+
+## 0.2.17
+
+### Patch Changes
+
+-   Updated dependencies [c9f79c1]
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.14
+
+## 0.2.16
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+    -   @sap-ux/deploy-config-generator-shared@0.1.9
+    -   @sap-ux/inquirer-common@0.7.13
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.13
+
+## 0.2.15
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/inquirer-common@0.7.12
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.12
+    -   @sap-ux/deploy-config-generator-shared@0.1.8
+
+## 0.2.14
+
+### Patch Changes
+
+-   Updated dependencies [11c317d]
+    -   @sap-ux/cf-deploy-config-writer@0.3.4
+
+## 0.2.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.11
+-   @sap-ux/cf-deploy-config-inquirer@0.3.11
+-   @sap-ux/deploy-config-generator-shared@0.1.8
+
+## 0.2.12
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.10
+    -   @sap-ux/deploy-config-generator-shared@0.1.8
+
+## 0.2.11
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/deploy-config-generator-shared@0.1.8
+    -   @sap-ux/inquirer-common@0.7.9
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.9
+
+## 0.2.10
+
+### Patch Changes
+
+-   7132e18: add conflicter force prop for yui usage
+
+## 0.2.9
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.8
+    -   @sap-ux/deploy-config-generator-shared@0.1.7
+    -   @sap-ux/cf-deploy-config-writer@0.3.3
+
 ## 0.2.8
 
 ### Patch Changes

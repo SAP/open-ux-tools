@@ -36,6 +36,7 @@ import type { Project } from '@sap-ux/project-access';
 import type { Record } from '@sap-ux/cds-annotation-parser';
 import {
     ANNOTATION_GROUP_ITEMS_TYPE,
+    ANNOTATION_GROUP_TYPE,
     ANNOTATION_TYPE,
     COLLECTION_TYPE,
     QUALIFIER_TYPE,
@@ -47,10 +48,13 @@ import {
     Edm,
     getAliasInformation,
     getAllNamespacesAndReferences,
+    getElementAttribute,
+    getElementAttributeValue,
     isElementWithName,
     parseIdentifier,
     toFullyQualifiedName
 } from '@sap-ux/odata-annotation-core';
+import type { Target as AstTarget } from '@sap-ux/cds-odata-annotation-converter';
 import { TARGET_TYPE, printTarget } from '@sap-ux/cds-odata-annotation-converter';
 
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
@@ -83,7 +87,7 @@ import {
     UPDATE_ATTRIBUTE_VALUE
 } from '../types';
 import { ApiError, ApiErrorCode } from '../error';
-import type { Document } from './document';
+import type { AstNode, CDSDocument, Document } from './document';
 
 import { CDSWriter } from './writer';
 import { getMissingRefs } from './references';
@@ -94,6 +98,7 @@ import { getGenericNodeFromPointer, pathFromUri, PRIMITIVE_TYPE_NAMES } from '..
 import {
     INSERT_PRIMITIVE_VALUE_TYPE,
     INSERT_TARGET_CHANGE_TYPE,
+    createDeleteAnnotationChange,
     createDeleteQualifierChange,
     createInsertCollectionChange,
     createInsertEmbeddedAnnotationChange,
@@ -472,7 +477,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         });
     }
 
-    private clearState() {
+    private clearState(): void {
         this.missingReferences = {};
     }
 
@@ -562,7 +567,10 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
 
     [DELETE_ELEMENT] = (writer: CDSWriter, document: Document, change: DeleteElement): void => {
         const { pointer } = convertPointer(document.annotationFile, change.pointer, document.ast);
-        const [currentAstNode, parentAstNode] = getAstNodesFromPointer(document.ast, pointer).reverse();
+        const [currentAstNode, parentAstNode, , greatGrandParentAstNode] = getAstNodesFromPointer(
+            document.ast,
+            pointer
+        ).reverse();
         if (currentAstNode?.type === RECORD_PROPERTY_TYPE) {
             writer.addChange({
                 type: 'delete-record-property',
@@ -588,6 +596,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
                 pointer: pointer,
                 target: change.target
             });
+            checkAndDeleteFlattenedStructures(writer, document, change, parentAstNode, greatGrandParentAstNode);
         } else if (currentAstNode?.type === RECORD_TYPE) {
             writer.addChange({
                 type: 'delete-record',
@@ -1010,4 +1019,78 @@ function adaptRecordPropertyIndex(record: Record, currentIndex?: number): number
         }
     }
     return adaptedIdx;
+}
+function checkAndDeleteFlattenedStructures(
+    writer: CDSWriter,
+    document: Document,
+    change: DeleteElement,
+    parentAstNode: AstNode,
+    greatGrandParentAstNode: AstNode
+): void {
+    const element = getGenericNodeFromPointer(document.annotationFile, change.pointer);
+    if (element?.type === ELEMENT_TYPE) {
+        let targetNode: AstTarget | undefined;
+        if (parentAstNode.type === TARGET_TYPE) {
+            targetNode = parentAstNode;
+        } else if (greatGrandParentAstNode.type === TARGET_TYPE) {
+            targetNode = greatGrandParentAstNode;
+        }
+        if (targetNode) {
+            const termName = getElementAttributeValue(element, Edm.Term);
+            const qualifier = getElementAttribute(element, Edm.Qualifier);
+            if (termName) {
+                deleteChildFlattenedStructures(targetNode.name, termName, qualifier?.value, document.ast, writer);
+            }
+        }
+    }
+}
+
+// Splitting the logic into multiple functions would make the code more difficult to follow than it currently is.
+// eslint-disable-next-line sonarjs/cognitive-complexity
+function deleteChildFlattenedStructures(
+    targetName: string | undefined,
+    term: string,
+    qualifier: string | undefined,
+    ast: CDSDocument,
+    writer: CDSWriter
+): void {
+    for (let targetIndex = 0; targetIndex < ast.targets.length; targetIndex++) {
+        const target = ast.targets[targetIndex];
+        if (target.name !== targetName) {
+            continue;
+        }
+        for (let assignmentIndex = 0; assignmentIndex < target.assignments.length; assignmentIndex++) {
+            const assignment = target.assignments[assignmentIndex];
+            if (isMatchingAnnotation(assignment, term, undefined, qualifier)) {
+                writer.addChange(
+                    createDeleteAnnotationChange(`/targets/${targetIndex}/assignments/${assignmentIndex}`, targetName)
+                );
+            } else if (assignment.type === ANNOTATION_GROUP_TYPE) {
+                for (let groupItemIndex = 0; groupItemIndex < assignment.items.items.length; groupItemIndex++) {
+                    const item = assignment.items.items[groupItemIndex];
+                    const combinedTerm = `${assignment.name.value}.${item.term.value}`;
+
+                    if (isMatchingAnnotation(item, term, combinedTerm, qualifier)) {
+                        writer.addChange(
+                            createDeleteAnnotationChange(
+                                `/targets/${targetIndex}/assignments/${assignmentIndex}/items/items/${groupItemIndex}`,
+                                targetName
+                            )
+                        );
+                    }
+                }
+            }
+        }
+    }
+}
+
+function isMatchingAnnotation(node: AstNode, prefix: string, term: string | undefined, qualifier?: string): boolean {
+    if (node.type !== ANNOTATION_TYPE) {
+        return false;
+    }
+
+    term ??= node.term.value;
+    const [match, next] = term.split(prefix);
+
+    return match === '' && next.startsWith('.') && node.qualifier?.value === qualifier;
 }

@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm" Version="4.0">
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="SAP__common"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="Org.OData.Measures.V1" Alias="SAP__measures"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CORE',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="Org.OData.Core.V1" Alias="SAP__core"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="SAP__capabilities"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="SAP__aggregation"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="Org.OData.Validation.V1" Alias="SAP__validation"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="SAP__CodeList"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="SAP__UI"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_HTML5',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.HTML5.v1" Alias="SAP__HTML5"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PDF',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.PDF.v1" Alias="SAP__PDF"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_SESSION',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.Session.v1" Alias="SAP__session"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ODM',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.ODM.v1" Alias="SAP__ODM"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_HIERARCHY',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.Hierarchy.v1" Alias="SAP__hierarchy"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="com.sap.gateway.srvd.zserv_d_stock_ageing.v0001" Alias="SAP__self">
+      <Annotation Term="SAP__core.SchemaVersion" String="1.0.0"/>
+      <EntityType Name="ZC_STOCKAGEINGType">
+        <Key>
+          <PropertyRef Name="Plant"/>
+          <PropertyRef Name="Material"/>
+          <PropertyRef Name="StorageLocation"/>
+          <PropertyRef Name="Batch"/>
+        </Key>
+        <Property Name="Plant" Type="Edm.String" Nullable="false" MaxLength="4"/>
+        <Property Name="Material" Type="Edm.String" Nullable="false" MaxLength="40"/>
+        <Property Name="StorageLocation" Type="Edm.String" Nullable="false" MaxLength="4"/>
+        <Property Name="Batch" Type="Edm.String" Nullable="false" MaxLength="10"/>
+        <Property Name="MaterialTypeName" Type="Edm.String" Nullable="false" MaxLength="25"/>
+        <Property Name="ProductDescription" Type="Edm.String" Nullable="false" MaxLength="40"/>
+        <Property Name="MaterialBaseUnit" Type="Edm.String" Nullable="false" MaxLength="3"/>
+        <Property Name="UnrestrictedStock" Type="Edm.Decimal" Nullable="false" Precision="19" Scale="3"/>
+        <Property Name="CompanyCodeCurrency" Type="Edm.String" Nullable="false" MaxLength="5"/>
+        <Property Name="UnrestrictedValue" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="variable"/>
+        <Property Name="BatchCreationDate" Type="Edm.String" Nullable="false" MaxLength="10"/>
+        <Property Name="CStock0to30" Type="Edm.Decimal" Nullable="false" Precision="19" Scale="3"/>
+        <Property Name="CValue0to30" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="variable"/>
+        <Property Name="CStock30to60" Type="Edm.Decimal" Nullable="false" Precision="20" Scale="3"/>
+        <Property Name="CValue30to60" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="variable"/>
+        <Property Name="CStock60to90" Type="Edm.Decimal" Nullable="false" Precision="21" Scale="3"/>
+        <Property Name="CValue60to90" Type="Edm.Decimal" Nullable="false" Precision="16" Scale="variable"/>
+        <Property Name="CStock90to180" Type="Edm.Decimal" Nullable="false" Precision="22" Scale="3"/>
+        <Property Name="CValue90to180" Type="Edm.Decimal" Nullable="false" Precision="17" Scale="variable"/>
+        <Property Name="CStock180to365" Type="Edm.Decimal" Nullable="false" Precision="23" Scale="3"/>
+        <Property Name="CValue180to365" Type="Edm.Decimal" Nullable="false" Precision="18" Scale="variable"/>
+        <Property Name="CStock366to99999" Type="Edm.Decimal" Nullable="false" Precision="24" Scale="3"/>
+        <Property Name="CValue366to99999" Type="Edm.Decimal" Nullable="false" Precision="19" Scale="variable"/>
+        <Property Name="QualityStock" Type="Edm.Decimal" Nullable="false" Precision="18" Scale="3"/>
+        <Property Name="QualityValue" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="variable"/>
+        <Property Name="CQStock0to30" Type="Edm.Decimal" Nullable="false" Precision="18" Scale="3"/>
+        <Property Name="CQValue0to30" Type="Edm.Decimal" Nullable="false" Precision="13" Scale="variable"/>
+        <Property Name="CQStock30to60" Type="Edm.Decimal" Nullable="false" Precision="19" Scale="3"/>
+        <Property Name="CQValue30to60" Type="Edm.Decimal" Nullable="false" Precision="14" Scale="variable"/>
+        <Property Name="CQStock60to90" Type="Edm.Decimal" Nullable="false" Precision="20" Scale="3"/>
+        <Property Name="CQValue60to90" Type="Edm.Decimal" Nullable="false" Precision="15" Scale="variable"/>
+        <Property Name="CQStock90to180" Type="Edm.Decimal" Nullable="false" Precision="21" Scale="3"/>
+        <Property Name="CQValue90to180" Type="Edm.Decimal" Nullable="false" Precision="16" Scale="variable"/>
+        <Property Name="CQStock180to365" Type="Edm.Decimal" Nullable="false" Precision="22" Scale="3"/>
+        <Property Name="CQValue180to365" Type="Edm.Decimal" Nullable="false" Precision="17" Scale="variable"/>
+        <Property Name="CQStock366to99999" Type="Edm.Decimal" Nullable="false" Precision="23" Scale="3"/>
+        <Property Name="CQValue366to99999" Type="Edm.Decimal" Nullable="false" Precision="18" Scale="variable"/>
+        <NavigationProperty Name="Parameters" Type="com.sap.gateway.srvd.zserv_d_stock_ageing.v0001.ZC_STOCKAGEINGParameters" Nullable="false"/>
+      </EntityType>
+      <EntityType Name="ZC_STOCKAGEINGParameters">
+        <Key>
+          <PropertyRef Name="p_refdate"/>
+        </Key>
+        <Property Name="p_refdate" Type="Edm.Date" Nullable="false"/>
+        <NavigationProperty Name="Set" Type="Collection(com.sap.gateway.srvd.zserv_d_stock_ageing.v0001.ZC_STOCKAGEINGType)" Partner="Parameters" ContainsTarget="true"/>
+      </EntityType>
+      <EntityContainer Name="Container">
+        <EntitySet Name="ZC_STOCKAGEING" EntityType="com.sap.gateway.srvd.zserv_d_stock_ageing.v0001.ZC_STOCKAGEINGParameters">
+          <NavigationPropertyBinding Path="Set/Parameters" Target="ZC_STOCKAGEING"/>
+        </EntitySet>
+      </EntityContainer>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/Plant">
+        <Annotation Term="SAP__common.Label" String="Plant"/>
+        <Annotation Term="SAP__common.IsUpperCase"/>
+        <Annotation Term="SAP__common.Heading" String="Plnt"/>
+        <Annotation Term="SAP__common.QuickInfo" String="Plant"/>
+        <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=WERKS_D"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/Material">
+        <Annotation Term="SAP__common.Label" String="Material"/>
+        <Annotation Term="SAP__common.IsUpperCase"/>
+        <Annotation Term="SAP__common.Heading" String="Material"/>
+        <Annotation Term="SAP__common.QuickInfo" String="Material Number"/>
+        <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MATNR"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/StorageLocation">
+        <Annotation Term="SAP__common.Label" String="Storage Location"/>
+        <Annotation Term="SAP__common.IsUpperCase"/>
+        <Annotation Term="SAP__common.Heading" String="Storage Location"/>
+        <Annotation Term="SAP__common.QuickInfo" String="Storage Location"/>
+        <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=LGORT_D"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/Batch">
+        <Annotation Term="SAP__common.Label" String="Batch"/>
+        <Annotation Term="SAP__common.IsUpperCase"/>
+        <Annotation Term="SAP__common.Heading" String="Batch"/>
+        <Annotation Term="SAP__common.QuickInfo" String="Batch Number"/>
+        <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=CHARG_D"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/MaterialTypeName">
+        <Annotation Term="SAP__common.Label" String="Material Type"/>
+        <Annotation Term="SAP__common.Heading" String="Product Type Description"/>
+        <Annotation Term="SAP__common.QuickInfo" String="Description of product type"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/ProductDescription">
+        <Annotation Term="SAP__common.Label" String="Material Description"/>
+        <Annotation Term="SAP__common.Heading" String="Product Description"/>
+        <Annotation Term="SAP__common.QuickInfo" String="Product Description"/>
+        <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=PRODUCTDESCRIPTION"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/MaterialBaseUnit">
+        <Annotation Term="SAP__common.IsUnit"/>
+        <Annotation Term="SAP__common.Label" String="Base Unit of Measure"/>
+        <Annotation Term="SAP__common.Heading" String="BUn"/>
+        <Annotation Term="SAP__common.QuickInfo" String="Base Unit of Measure"/>
+        <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=MEINS"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/UnrestrictedStock">
+        <Annotation Term="SAP__common.Label" String="Unrestricted Stock"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CompanyCodeCurrency">
+        <Annotation Term="SAP__common.IsCurrency"/>
+        <Annotation Term="SAP__common.Label" String="Currency"/>
+        <Annotation Term="SAP__common.IsUpperCase"/>
+        <Annotation Term="SAP__common.QuickInfo" String="Company Code Currency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/UnrestrictedValue">
+        <Annotation Term="SAP__common.Label" String="Value Unrestricted"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/BatchCreationDate">
+        <Annotation Term="SAP__common.Label" String="Batch Created On"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CStock0to30">
+        <Annotation Term="SAP__common.Label" String="Stock (0-30) days"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CValue0to30">
+        <Annotation Term="SAP__common.Label" String="Value (0-30) days"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CStock30to60">
+        <Annotation Term="SAP__common.Label" String="Stock (31-60) days"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CValue30to60">
+        <Annotation Term="SAP__common.Label" String="Value (31-60) days"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CStock60to90">
+        <Annotation Term="SAP__common.Label" String="Stock (61-90) days"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CValue60to90">
+        <Annotation Term="SAP__common.Label" String="Value (61-90) days"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CStock90to180">
+        <Annotation Term="SAP__common.Label" String="Stock (91-180) days"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CValue90to180">
+        <Annotation Term="SAP__common.Label" String="Value (91-180) days"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CStock180to365">
+        <Annotation Term="SAP__common.Label" String="Stock (181-365) days"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CValue180to365">
+        <Annotation Term="SAP__common.Label" String="Value (181-365) days"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CStock366to99999">
+        <Annotation Term="SAP__common.Label" String="Stock (366-99999) days"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CValue366to99999">
+        <Annotation Term="SAP__common.Label" String="Value (366-99999) days"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/QualityStock">
+        <Annotation Term="SAP__common.Label" String="Quality Stock"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/QualityValue">
+        <Annotation Term="SAP__common.Label" String="Quality Value"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CQStock0to30">
+        <Annotation Term="SAP__common.Label" String="Quality Stock (0-30) days"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CQValue0to30">
+        <Annotation Term="SAP__common.Label" String="Quality Value (0-30) days"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CQStock30to60">
+        <Annotation Term="SAP__common.Label" String="Quality Stock (31-60) days"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CQValue30to60">
+        <Annotation Term="SAP__common.Label" String="Quality Value (31-60) days"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CQStock60to90">
+        <Annotation Term="SAP__common.Label" String="Quality Stock (61-90) days"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CQValue60to90">
+        <Annotation Term="SAP__common.Label" String="Quality Value (61-90) days"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CQStock90to180">
+        <Annotation Term="SAP__common.Label" String="Quality Stock (91-180) days"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CQValue90to180">
+        <Annotation Term="SAP__common.Label" String="Quality Value (91-180) days"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CQStock180to365">
+        <Annotation Term="SAP__common.Label" String="Quality Stock (181-365) days"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CQValue180to365">
+        <Annotation Term="SAP__common.Label" String="Quality Value (181-365) days"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CQStock366to99999">
+        <Annotation Term="SAP__common.Label" String="Quality Stock (366-99999) days"/>
+        <Annotation Term="SAP__measures.Unit" Path="MaterialBaseUnit"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType/CQValue366to99999">
+        <Annotation Term="SAP__common.Label" String="Quality Stock (366-99999) days"/>
+        <Annotation Term="SAP__measures.ISOCurrency" Path="CompanyCodeCurrency"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGType">
+        <Annotation Term="SAP__common.Label" String="Stock Ageing Report"/>
+        <Annotation Term="SAP__UI.Facets">
+          <Collection>
+            <Record Type="SAP__UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="Stock Ageing"/>
+              <PropertyValue Property="ID" String="Header"/>
+              <PropertyValue Property="Target" AnnotationPath="@SAP__UI.Identification"/>
+              <Annotation Term="SAP__UI.IsSummary" Bool="true"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="SAP__UI.HeaderInfo">
+          <Record>
+            <PropertyValue Property="TypeName" String="Stock Ageing"/>
+            <PropertyValue Property="TypeNamePlural" String="Stock  Ageing"/>
+            <PropertyValue Property="Title">
+              <Record Type="SAP__UI.DataField">
+                <PropertyValue Property="Label" String="Stock"/>
+                <PropertyValue Property="Value" Path="Material"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="SAP__UI.Identification">
+          <Collection>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="MaterialTypeName"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="Material"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="Plant"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="ProductDescription"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="StorageLocation"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="Batch"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="MaterialBaseUnit"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="UnrestrictedStock"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CompanyCodeCurrency"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="UnrestrictedValue"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="BatchCreationDate"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CStock0to30"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CValue0to30"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CStock30to60"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CValue30to60"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CStock60to90"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CValue60to90"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CStock90to180"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CValue90to180"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CStock180to365"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CValue180to365"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CStock366to99999"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CValue366to99999"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="QualityStock"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="QualityValue"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQStock0to30"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQValue0to30"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQStock30to60"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQValue30to60"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQStock60to90"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQValue60to90"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQStock90to180"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQValue90to180"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQStock180to365"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQValue180to365"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQStock366to99999"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQValue366to99999"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="SAP__UI.LineItem">
+          <Collection>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="MaterialTypeName"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="Material"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="ProductDescription"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="Plant"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="StorageLocation"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="Batch"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="MaterialBaseUnit"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="UnrestrictedStock"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CompanyCodeCurrency"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="UnrestrictedValue"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="BatchCreationDate"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CStock0to30"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CValue0to30"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CStock30to60"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CValue30to60"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CStock60to90"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CValue60to90"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CStock90to180"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CValue90to180"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CStock180to365"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CValue180to365"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CStock366to99999"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CValue366to99999"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="QualityStock"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="QualityValue"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQStock0to30"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQValue0to30"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQStock30to60"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQValue30to60"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQStock60to90"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQValue60to90"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQStock90to180"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQValue90to180"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQStock180to365"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQValue180to365"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQStock366to99999"/>
+            </Record>
+            <Record Type="SAP__UI.DataField">
+              <PropertyValue Property="Value" Path="CQValue366to99999"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="SAP__UI.PresentationVariant">
+          <Record>
+            <PropertyValue Property="SortOrder">
+              <Collection>
+                <Record Type="SAP__common.SortOrderType">
+                  <PropertyValue Property="Property" PropertyPath="Plant"/>
+                  <PropertyValue Property="Descending" Bool="false"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="SAP__UI.SelectionFields">
+          <Collection>
+            <PropertyPath>MaterialTypeName</PropertyPath>
+            <PropertyPath>Material</PropertyPath>
+            <PropertyPath>Plant</PropertyPath>
+          </Collection>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="SAP__self.Container">
+        <Annotation Term="SAP__CodeList.CurrencyCodes">
+          <Record>
+            <PropertyValue Property="Url" String="../../../../default/iwbep/common/0001/$metadata"/>
+            <PropertyValue Property="CollectionPath" String="Currencies"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="SAP__CodeList.UnitsOfMeasure">
+          <Record>
+            <PropertyValue Property="Url" String="../../../../default/iwbep/common/0001/$metadata"/>
+            <PropertyValue Property="CollectionPath" String="UnitsOfMeasure"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="SAP__common.ApplyMultiUnitBehaviorForSortingAndFiltering" Bool="true"/>
+        <Annotation Term="SAP__capabilities.FilterFunctions">
+          <Collection>
+            <String>eq</String>
+            <String>ne</String>
+            <String>gt</String>
+            <String>ge</String>
+            <String>lt</String>
+            <String>le</String>
+            <String>and</String>
+            <String>or</String>
+            <String>contains</String>
+            <String>startswith</String>
+            <String>endswith</String>
+            <String>any</String>
+            <String>all</String>
+          </Collection>
+        </Annotation>
+        <Annotation Term="SAP__capabilities.SupportedFormats">
+          <Collection>
+            <String>application/json</String>
+            <String>application/pdf</String>
+          </Collection>
+        </Annotation>
+        <Annotation Term="SAP__PDF.Features">
+          <Record>
+            <PropertyValue Property="DocumentDescriptionReference" String="../../../../default/iwbep/common/0001/$metadata"/>
+            <PropertyValue Property="DocumentDescriptionCollection" String="MyDocumentDescriptions"/>
+            <PropertyValue Property="ArchiveFormat" Bool="true"/>
+            <PropertyValue Property="Border" Bool="true"/>
+            <PropertyValue Property="CoverPage" Bool="true"/>
+            <PropertyValue Property="FitToPage" Bool="true"/>
+            <PropertyValue Property="FontName" Bool="true"/>
+            <PropertyValue Property="FontSize" Bool="true"/>
+            <PropertyValue Property="HeaderFooter" Bool="true"/>
+            <PropertyValue Property="IANATimezoneFormat" Bool="true"/>
+            <PropertyValue Property="Margin" Bool="true"/>
+            <PropertyValue Property="Padding" Bool="true"/>
+            <PropertyValue Property="ResultSizeDefault" Int="20000"/>
+            <PropertyValue Property="ResultSizeMaximum" Int="20000"/>
+            <PropertyValue Property="Signature" Bool="true"/>
+            <PropertyValue Property="TextDirectionLayout" Bool="true"/>
+            <PropertyValue Property="Treeview" Bool="true"/>
+            <PropertyValue Property="UploadToFileShare" Bool="true"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="SAP__capabilities.KeyAsSegmentSupported"/>
+        <Annotation Term="SAP__capabilities.AsynchronousRequestsSupported"/>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGParameters/p_refdate">
+        <Annotation Term="SAP__common.Label" String="Reference Date"/>
+        <Annotation Term="SAP__common.QuickInfo" String="Document Date"/>
+        <Annotation Term="SAP__core.Computed"/>
+        <Annotation Term="SAP__common.Heading" String="Doc. Date"/>
+        <Annotation Term="SAP__common.DocumentationRef" String="urn:sap-com:documentation:key?=type=DE&amp;id=BLDAT"/>
+      </Annotations>
+      <Annotations Target="SAP__self.Container/ZC_STOCKAGEING">
+        <Annotation Term="SAP__capabilities.NavigationRestrictions">
+          <Record>
+            <PropertyValue Property="RestrictedProperties">
+              <Collection>
+                <Record>
+                  <PropertyValue Property="NavigationProperty" NavigationPropertyPath="Set"/>
+                  <PropertyValue Property="InsertRestrictions">
+                    <Record>
+                      <PropertyValue Property="Insertable" Bool="false"/>
+                    </Record>
+                  </PropertyValue>
+                  <PropertyValue Property="UpdateRestrictions">
+                    <Record>
+                      <PropertyValue Property="Updatable" Bool="false"/>
+                    </Record>
+                  </PropertyValue>
+                  <PropertyValue Property="DeleteRestrictions">
+                    <Record>
+                      <PropertyValue Property="Deletable" Bool="false"/>
+                    </Record>
+                  </PropertyValue>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="SAP__capabilities.SearchRestrictions">
+          <Record>
+            <PropertyValue Property="Searchable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="SAP__capabilities.FilterRestrictions">
+          <Record>
+            <PropertyValue Property="NonFilterableProperties">
+              <Collection>
+                <PropertyPath>p_refdate</PropertyPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="SAP__capabilities.SortRestrictions">
+          <Record>
+            <PropertyValue Property="NonSortableProperties">
+              <Collection>
+                <PropertyPath>p_refdate</PropertyPath>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="SAP__capabilities.ReadRestrictions">
+          <Record>
+            <PropertyValue Property="Readable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="SAP__capabilities.InsertRestrictions">
+          <Record>
+            <PropertyValue Property="Insertable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="SAP__capabilities.DeleteRestrictions">
+          <Record>
+            <PropertyValue Property="Deletable" Bool="false"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="SAP__capabilities.UpdateRestrictions">
+          <Record>
+            <PropertyValue Property="Updatable" Bool="false"/>
+            <PropertyValue Property="NonUpdatableNavigationProperties">
+              <Collection>
+                <PropertyPath>Set</PropertyPath>
+              </Collection>
+            </PropertyValue>
+            <PropertyValue Property="QueryOptions">
+              <Record>
+                <PropertyValue Property="SelectSupported" Bool="true"/>
+              </Record>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="SAP__self.ZC_STOCKAGEINGParameters">
+        <Annotation Term="SAP__common.ResultContext"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>

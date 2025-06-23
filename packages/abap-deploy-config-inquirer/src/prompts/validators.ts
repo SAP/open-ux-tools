@@ -1,44 +1,43 @@
-import { PromptState } from './prompt-state';
-import { type Destinations, isS4HC, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
-import {
-    createTransportNumber,
-    getTransportList,
-    isEmptyString,
-    isValidClient,
-    isValidUrl,
-    isAppNameValid
-} from '../validator-utils';
-import { DEFAULT_PACKAGE_ABAP } from '../constants';
-import { getTransportListFromService, getSystemInfo, isAbapCloud } from '../service-provider-utils';
-import { t } from '../i18n';
-import {
-    findBackendSystemByUrl,
-    initTransportConfig,
-    getPackageAnswer,
-    queryPackages,
-    getSystemConfig
-} from '../utils';
-import { handleTransportConfigError } from '../error-handler';
+import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { isAbapEnvironmentOnBtp, isS4HC, type Destinations } from '@sap-ux/btp-utils';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { AuthenticationType } from '@sap-ux/store';
-import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
+import { DEFAULT_PACKAGE_ABAP } from '../constants';
+import { handleTransportConfigError } from '../error-handler';
+import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
+import { getSystemInfo, getTransportListFromService, isAbapCloud } from '../service-provider-utils';
+import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
 import {
     ClientChoiceValue,
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
-    type SystemConfig,
     type AbapDeployConfigAnswersInternal,
     type AbapSystemChoice,
     type BackendTarget,
     type PackagePromptOptions,
+    type SystemConfig,
     type TargetSystemPromptOptions,
     type UI5AbapRepoPromptOptions
 } from '../types';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
-import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import {
+    findBackendSystemByUrl,
+    getPackageAnswer,
+    getSystemConfig,
+    initTransportConfig,
+    queryPackages
+} from '../utils';
+import {
+    createTransportNumber,
+    getTransportList,
+    isAppNameValid,
+    isEmptyString,
+    isValidClient,
+    isValidUrl
+} from '../validator-utils';
+import { PromptState } from './prompt-state';
 
 const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 
@@ -290,12 +289,7 @@ export async function validateCredentials(
         return t('errors.requireCredentials');
     }
 
-    let warning: unknown;
-    ({
-        transportConfig: PromptState.transportAnswers.transportConfig,
-        transportConfigNeedsCreds: PromptState.transportAnswers.transportConfigNeedsCreds,
-        warning
-    } = await initTransportConfig({
+    const { transportConfigNeedsCreds } = await initTransportConfig({
         backendTarget: backendTarget,
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
@@ -306,25 +300,10 @@ export async function validateCredentials(
         errorHandler: (e: string) => {
             handleTransportConfigError(e);
         }
-    }));
+    });
 
-    if (warning) {
-        const helpLink = getHelpUrl(HELP_TREE.FIORI_TOOLS, [57266]);
-        const warningMessage = t('warnings.transportConfigFailure', { helpLink });
-        LoggerHelper.logger.info(`\n${warningMessage}`);
-        LoggerHelper.logger.info(`\n${warning}`);
-        PromptState.transportAnswers.transportConfigNeedsCreds = false;
-
-        return true; // Log a warning and proceed
-    }
-
-    if (PromptState.transportAnswers.transportConfigNeedsCreds) {
-        LoggerHelper.logger.warn(t('errors.incorrectCredentials'));
-        return t('errors.incorrectCredentials');
-    } else {
-        LoggerHelper.logger.info(t('info.correctCredentials'));
-        return true;
-    }
+    PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
+    return transportConfigNeedsCreds ? t('errors.incorrectCredentials') : true;
 }
 
 /**
@@ -386,7 +365,11 @@ export async function validatePackageChoiceInput(
             }
         } catch (error) {
             if (ErrorHandler.isCertError(error)) {
-                helpLink = ErrorHandler.getHelpForError(ERROR_TYPE.CERT);
+                helpLink = new ErrorHandler(
+                    undefined,
+                    undefined,
+                    '@sap-ux/abap-deploy-config-inquirer'
+                ).getValidationErrorHelp(error);
                 return helpLink ?? true;
             }
             throw error;
@@ -596,7 +579,13 @@ export async function validateTransportChoiceInput({
             );
         } catch (error) {
             if (ErrorHandler.isCertError(error)) {
-                return ErrorHandler.getHelpForError(ERROR_TYPE.CERT) ?? true;
+                return (
+                    new ErrorHandler(
+                        undefined,
+                        undefined,
+                        '@sap-ux/abap-deploy-config-inquirer'
+                    ).getValidationErrorHelp(error) ?? true
+                );
             }
         }
     } else if (input === TransportChoices.CreateNewChoice) {
