@@ -7,6 +7,7 @@ import { parseProperties } from '../../parser/properties/parser';
 
 /**
  * Write i18n entries to an existing i18n.properties file.
+ * If keys to remove are provided, they will be removed from the file before writing new entries.
  *
  * @param i18nFilePath i18n file path
  * @param newI18nEntries  new i18n entries that will be maintained
@@ -27,7 +28,7 @@ export async function writeToExistingI18nPropertiesFile(
     let content = await readFile(i18nFilePath, fs);
 
     if (keysToRemove.length) {
-        content = removeKeyFromI18nPropertiesFile(content, keysToRemove);
+        content = removeKeysFromI18nPropertiesFile(content, keysToRemove);
     }
 
     const lines = content.split(/\r\n|\n/);
@@ -47,7 +48,7 @@ export async function writeToExistingI18nPropertiesFile(
  * @param keysToRemove Array of keys to remove from the file.
  * @returns string
  */
-function removeKeyFromI18nPropertiesFile(content: string, keysToRemove: string[]): string {
+function removeKeysFromI18nPropertiesFile(content: string, keysToRemove: string[]): string {
     const document = TextDocument.create('', '', 0, content);
     const textEdits: TextEdit[] = [];
     const { ast } = parseProperties(content);
