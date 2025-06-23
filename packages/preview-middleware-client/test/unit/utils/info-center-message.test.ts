@@ -1,5 +1,4 @@
 import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
-import MessageToast from 'mock/sap/m/MessageToast';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 // Since the function is globally mocked we need the actual implementation here.
@@ -19,18 +18,11 @@ jest.mock('@sap-ux-private/control-property-editor-common', () => ({
 }));
 
 describe('utils/info-center-message', () => {
-    const TOASTER_DEFAULT_TIMEOUT_IN_MS = 5000;
-    const messageA = {
-        title: 'title A',
-        description: 'description A',
-        type: MessageBarType.error
-    };
-    const messageB = {
-        title: { key: 'titleKeyB', params: ['a', 'b'] },
-        description: { key: 'descriptionKeyB' },
-        details: { key: 'detailsKeyB' },
-        type: MessageBarType.warning,
-        showToast: false
+    const message = {
+        title: { key: 'titleKey', params: ['a', 'b'] },
+        description: { key: 'descriptionKey' },
+        details: 'details',
+        type: MessageBarType.warning
     };
     const infoCenterResult = 'info center result';
 
@@ -45,21 +37,14 @@ describe('utils/info-center-message', () => {
         jest.spyOn(CommunicationService, 'sendAction');
     });
 
-    it('should display a toast message and a message in the info center by default', async () => {
-        await sendInfoCenterMessage(messageA)
-        expect(MessageToast.show).toHaveBeenCalledWith(messageA.description, { duration: TOASTER_DEFAULT_TIMEOUT_IN_MS });
-        expect(showInfoCenterMessageMock).toHaveBeenCalledWith(messageA);
-    });
-
     it('should send the message to the info center with translated key strings', async () => {
-        await sendInfoCenterMessage(messageB);
+        await sendInfoCenterMessage(message);
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(infoCenterResult);
         expect(showInfoCenterMessageMock).toHaveBeenCalledWith({
-            title: 'titleKeyB - a, b',
-            description: 'descriptionKeyB',
-            details: 'detailsKeyB',
+            title: 'titleKey - a, b',
+            description: 'descriptionKey',
+            details: 'details',
             type: MessageBarType.warning
         });
-        expect(MessageToast.show).not.toHaveBeenCalled();
     });
 });

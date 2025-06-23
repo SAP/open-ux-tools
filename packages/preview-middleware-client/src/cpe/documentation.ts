@@ -50,8 +50,7 @@ export function loadDefaultLibraries(): void {
             return sendInfoCenterMessage({
                 title: { key: 'CPE_LIBRARAY_ERROR_TITLE' },
                 description: getError(reason).message,
-                type: MessageBarType.error,
-                showToast: false    
+                type: MessageBarType.error 
             });
         });
 }
@@ -176,8 +175,7 @@ export async function getDocumentation(controlName: string, contLibName: string)
         await sendInfoCenterMessage({
             title: { key: 'CPE_DOCUMENTATION_ERROR_TITLE' },
             description: { key: 'CPE_DOCUMENTATION_ERROR_DESCRIPTION', params: [contLibName] },
-            type: MessageBarType.error,
-            showToast: false
+            type: MessageBarType.error
         });
     }
     return doc;

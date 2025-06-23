@@ -119,8 +119,7 @@ export class ChangeService extends EventTarget {
                     await sendInfoCenterMessage({
                         title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
                         description: errorMessage,
-                        type: MessageBarType.error,
-                        showToast: false
+                        type: MessageBarType.error
                     });
                     const propertyChangeFailedAction = propertyChangeFailed({ ...action.payload, errorMessage });
                     sendAction(propertyChangeFailedAction);
@@ -215,8 +214,7 @@ export class ChangeService extends EventTarget {
                             await sendInfoCenterMessage({
                                 title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
                                 description: getError(error).message,
-                                type: MessageBarType.error,
-                                showToast: false
+                                type: MessageBarType.error
                             });
                             // Gracefully handle change files with invalid content
                             const flexObject = await getFlexObject(change);
@@ -330,8 +328,7 @@ export class ChangeService extends EventTarget {
                     await sendInfoCenterMessage({
                         title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
                         description: extendedError.message,
-                        type: MessageBarType.error,
-                        showToast: false
+                        type: MessageBarType.error
                     });
                 }
             }
@@ -346,8 +343,7 @@ export class ChangeService extends EventTarget {
                     await sendInfoCenterMessage({
                         title: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_TITLE' },
                         description: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_DESCRIPTION' },
-                        type: MessageBarType.info,
-                        toastDuration: 8000
+                        type: MessageBarType.info
                     });
                     this.sendAction(setApplicationRequiresReload(changesRequiringReload > 0));
                 }

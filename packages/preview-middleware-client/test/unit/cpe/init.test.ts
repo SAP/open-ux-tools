@@ -143,8 +143,7 @@ describe('main', () => {
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'CPE_INIT_ERROR_TITLE' },
             description: error.message,
-            type: MessageBarType.error,
-            showToast: false
+            type: MessageBarType.error
         });
     });
 

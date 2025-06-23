@@ -1,7 +1,6 @@
 import {
     getUi5Version,
     isLowerThanMinimalUi5Version,
-    getUI5VersionValidationMessage,
     isVersionEqualOrHasNewerPatch
 } from 'open/ux/preview/client/utils/version';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
@@ -41,8 +40,7 @@ describe('utils/version', () => {
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
             description: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_DESCRIPTION', params: ['1.130.0'] },
-            type: MessageBarType.error,
-            showToast: false
+            type: MessageBarType.error
         });
     });
 
@@ -119,15 +117,7 @@ describe('utils/version', () => {
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
             description: '',
-            type: MessageBarType.error,
-            showToast: false
+            type: MessageBarType.error
         });
-    });
-
-    test('test validation message', () => {
-        //return message for lower version when app ui5 version is lower than 1.71
-        expect(getUI5VersionValidationMessage({ major: 1, minor: 70 })).toBe(
-            'The current SAPUI5 version set for this Adaptation project is 1.70. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71'
-        );
     });
 });

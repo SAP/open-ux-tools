@@ -129,8 +129,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
         await sendInfoCenterMessage({
             title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
             description: { key: 'ADP_ADD_TWO_FRAGMENTS_WITH_TEMPLATE_NOTIFICATION' },
-            type: MessageBarType.info,
-            toastDuration: 8000
+            type: MessageBarType.info
         });
 
         this.handleDialogClose();

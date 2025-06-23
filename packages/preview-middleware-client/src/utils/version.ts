@@ -37,8 +37,7 @@ function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
         void sendInfoCenterMessage({
             title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
             description: '',
-            type: MessageBarType.error,
-            showToast: false
+            type: MessageBarType.error
         });
         throw new Error('Invalid version info');
     }
@@ -61,8 +60,7 @@ export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui
         await sendInfoCenterMessage({
             title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
             description: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_DESCRIPTION', params: [version] },
-            type: MessageBarType.error,
-            showToast: false
+            type: MessageBarType.error
         });
     }
     const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
@@ -124,15 +122,6 @@ export function isVersionEqualOrHasNewerPatch(
         ui5VersionInfo.minor === targetUi5VersionInfo.minor &&
         (ui5VersionInfo?.patch ?? 0) >= (targetUi5VersionInfo?.patch ?? 0)
     );
-}
-
-/**
- * Get UI5 version validation message.
- * @param ui5VersionInfo to be mentioned in the message
- * @returns string with validation message.
- */
-export function getUI5VersionValidationMessage(ui5VersionInfo: Ui5VersionInfo): string {
-    return `The current SAPUI5 version set for this Adaptation project is ${getFullyQualifiedUi5Version(ui5VersionInfo)}. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is ${getFullyQualifiedUi5Version(minVersionInfo)}`;
 }
 
 /**

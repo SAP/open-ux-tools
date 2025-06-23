@@ -1,14 +1,12 @@
 import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { showMessage, enableTelemetry, MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { enableTelemetry, MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
-import { getFullyQualifiedUi5Version, getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version, minVersionInfo } from '../utils/version';
+import { getFullyQualifiedUi5Version, getUi5Version, isLowerThanMinimalUi5Version, minVersionInfo } from '../utils/version';
 
-import { CommunicationService } from '../cpe/communication-service';
 import init from '../cpe/init';
 import { getApplicationType } from '../utils/application';
-import { getTextBundle } from '../i18n';
 
 import { loadDefinitions } from './quick-actions/load';
 import { getAllSyncViewsIds } from './utils';
@@ -55,12 +53,8 @@ export default async function (rta: RuntimeAuthoring) {
                     getFullyQualifiedUi5Version(ui5VersionInfo),
                     getFullyQualifiedUi5Version(minVersionInfo)]
             },
-            type: MessageBarType.warning,
-            showToast: false
+            type: MessageBarType.warning
         });
-        CommunicationService.sendAction(
-            showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), shouldHideIframe: true })
-        );
         return;
     }
 
@@ -68,16 +62,8 @@ export default async function (rta: RuntimeAuthoring) {
         await sendInfoCenterMessage({
             title: { key: 'ADP_SYNC_VIEWS_TITLE' },
             description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
-            type: MessageBarType.warning,
-            showToast: false
+            type: MessageBarType.warning
         });
-        const bundle = await getTextBundle();
-        CommunicationService.sendAction(
-            showMessage({
-                message: bundle.getText('ADP_SYNC_VIEWS_MESSAGE'),
-                shouldHideIframe: false
-            })
-        );
     }
 
     log.debug('ADP init executed.');

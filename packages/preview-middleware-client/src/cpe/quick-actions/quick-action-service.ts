@@ -140,8 +140,7 @@ export class QuickActionService implements Service {
                         await sendInfoCenterMessage({
                             title: { key: 'CPE_QUICK_ACTION_FAILURE_TITLE' },
                             description: { key: 'CPE_QUICK_ACTION_FAILURE_DESCRIPTION', params: [Definition.name] },
-                            type: MessageBarType.warning,
-                            showToast: false
+                            type: MessageBarType.warning
                         });
                     }
                 }

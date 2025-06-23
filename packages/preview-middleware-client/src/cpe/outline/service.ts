@@ -65,8 +65,7 @@ export class OutlineService extends EventTarget {
                 await sendInfoCenterMessage({
                     title: { key: 'CPE_OUTLINE_ERROR_TITLE' },
                     description: extendError.message,
-                    type: MessageBarType.error,
-                    showToast: false
+                    type: MessageBarType.error
                 });
             }
         };

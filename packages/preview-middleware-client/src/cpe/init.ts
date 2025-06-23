@@ -64,8 +64,7 @@ export default function init(
                 return sendInfoCenterMessage({
                     title: { key: 'CPE_INIT_ERROR_TITLE' },
                     description: extendedError.message,
-                    type: MessageBarType.error,
-                    showToast: false
+                    type: MessageBarType.error
                 });
             });
         });
@@ -79,8 +78,7 @@ export default function init(
                 return sendInfoCenterMessage({
                     title: { key: 'CPE_INIT_ERROR_TITLE' },
                     description: getError(error).message,
-                    type: MessageBarType.error,
-                    showToast: false
+                    type: MessageBarType.error
                 });
             });
         const icons = getIcons();
@@ -91,8 +89,7 @@ export default function init(
         void sendInfoCenterMessage({
             title: { key: 'CPE_INIT_ERROR_TITLE' },
             description: extendedError.message,
-            type: MessageBarType.error,
-            showToast: false
+            type: MessageBarType.error
         });
     }
 

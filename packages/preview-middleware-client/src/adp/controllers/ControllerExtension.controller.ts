@@ -191,8 +191,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
                 await sendInfoCenterMessage({
                     title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
                     description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION', params: [controllerName]},
-                    type: MessageBarType.info,
-                    toastDuration: 8000
+                    type: MessageBarType.info
                 });
             } else {
                 await this.createNewController(controllerName, controllerRef);
@@ -388,8 +387,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         await sendInfoCenterMessage({
             title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
             description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION', params: [controllerName]},
-            type: MessageBarType.info,
-            toastDuration: 8000
+            type: MessageBarType.info
         });
     }
 }

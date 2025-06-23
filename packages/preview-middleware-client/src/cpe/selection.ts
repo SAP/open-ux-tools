@@ -91,8 +91,7 @@ async function addDocumentationForProperties(control: ManagedObject, controlData
         void sendInfoCenterMessage({
             title: { key: 'CPE_DOCUMENT_LOAD_FAILED_TITLE' },
             description: extendedError.message,
-            type: MessageBarType.error,
-            showToast: false
+            type: MessageBarType.error
         });
     }
 }
@@ -127,8 +126,7 @@ export class SelectionService implements Service {
                 return sendInfoCenterMessage({
                     title: { key: 'CPE_EVENT_INTERRUPTED_TITLE' },
                     description: extendedError.message,
-                    type: MessageBarType.error,
-                    showToast: false
+                    type: MessageBarType.error
                 });
             });
         });
@@ -239,8 +237,7 @@ export class SelectionService implements Service {
                         await sendInfoCenterMessage({
                             title: { key: 'CPE_TELEMETRY_REPORT_FAILURE_TITLE' },
                             description: extendedError.message,
-                            type: MessageBarType.error,
-                            showToast: false
+                            type: MessageBarType.error
                         });
                     } finally {
                         await this.buildProperties(runtimeControl, sendAction, overlayControl);

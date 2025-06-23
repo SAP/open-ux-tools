@@ -726,8 +726,7 @@ describe('SelectionService', () => {
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'CPE_DOCUMENT_LOAD_FAILED_TITLE' },
             description: expect.any(String),
-            type: MessageBarType.error,
-            showToast: false
+            type: MessageBarType.error
         });
     });
 

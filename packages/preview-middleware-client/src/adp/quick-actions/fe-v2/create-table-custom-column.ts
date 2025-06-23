@@ -118,8 +118,7 @@ export class AddTableCustomColumnQuickAction
             await sendInfoCenterMessage({
                 title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
                 description: { key: 'TABLE_ROWS_NEEDED_TO_CREATE_CUSTOM_COLUMN' },
-                type: MessageBarType.info,
-                toastDuration: 8000
+                type: MessageBarType.info
             });
             return [];
         }
