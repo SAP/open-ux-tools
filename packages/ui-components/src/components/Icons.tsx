@@ -384,8 +384,8 @@ export function initIcons(): void {
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g>
                         <path
-                            fill-rule="evenodd"
-                            clip-rule="evenodd"
+                            fillRule="evenodd"
+                            clipRule="evenodd"
                             d="M5.46976 13.0068C5.46176 13.0068 5.45376 13.0068 5.44576 13.0068C5.29476 12.9988 5.15476 12.9238 5.06576 12.8008L1.99976 8.59576L2.80776 8.00676L5.50776 11.7108L13.2428 2.99976L13.9908 3.66376L5.84376 12.8388C5.74876 12.9458 5.61276 13.0068 5.46976 13.0068Z"
                             fill={COLORS.default}
                         />
