@@ -48,8 +48,7 @@ import {
     createFlpTemplateConfig,
     PREVIEW_URL,
     type TemplateConfig,
-    type FlexConnector,
-    type CustomConnector,
+    isFlexConnector,
     createTestTemplateConfig,
     addApp,
     getAppName,
@@ -238,16 +237,6 @@ export class FlpSandbox {
     }
 
     /**
-     * Type guard for FlexConnector.
-     *
-     * @param connector - the connector to check
-     * @returns true if the connector is a FlexConnector, false otherwise
-     */
-    private isFlexConnector(connector: FlexConnector | CustomConnector): connector is FlexConnector {
-        return 'connector' in connector;
-    }
-
-    /**
      * Deletes the Fiori Tools local connector (WorkspaceConnector) in case of a not supported UI5 versions.
      * As an alternative the Fiori Tools fake connector (FakeLrepConnector) will be used as defined in preview-middleware-client/src/flp/initConnectors.ts.
      * Also deletes the ABAP connector in case of a CAP project.
@@ -259,7 +248,7 @@ export class FlpSandbox {
     private checkDeleteConnectors(ui5VersionMajor: number, ui5VersionMinor: number): void {
         if (ui5VersionMajor === 1 && ui5VersionMinor < 76) {
             this.templateConfig.ui5.flex = this.templateConfig.ui5.flex.filter((connector) =>
-                this.isFlexConnector(connector)
+                isFlexConnector(connector)
             );
             this.logger.debug(
                 `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it. The Fiori Tools fake connector (FakeLrepConnector) will be used instead.`
@@ -270,8 +259,8 @@ export class FlpSandbox {
         if (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs') {
             this.templateConfig.ui5.flex = this.templateConfig.ui5.flex.filter(
                 (connector) =>
-                    !this.isFlexConnector(connector) ||
-                    (this.isFlexConnector(connector) && connector.url?.startsWith('/sap/bc/lrep'))
+                    !isFlexConnector(connector) ||
+                    (isFlexConnector(connector) && connector.url?.startsWith('/sap/bc/lrep'))
             );
             this.logger.debug(
                 `The ABAP connector is not being used because the current project type is '${this.projectType}'.`
