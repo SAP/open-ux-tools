@@ -28,6 +28,7 @@ export enum UiIcons {
     Calendar = 'Calendar',
     Chart = 'Chart',
     ChatBubbles = 'ChatBubbles',
+    Check = 'Check',
     Chevron = 'Chevron',
     ChevronDown = 'ChevronDown',
     Clear = 'Clear',
@@ -377,6 +378,18 @@ export function initIcons(): void {
                         d="M3 1H4V2H12V1H13V2H14C14.5523 2 15 2.44772 15 3V13C15 13.5523 14.5523 14 14 14H2C1.44772 14 1 13.5523 1 13V3C1 2.44772 1.44772 2 2 2H3V1ZM2 3V5H14V3H2ZM14 6H2V13H14V6Z"
                         fill={COLORS.default}
                     />
+                </svg>
+            ),
+            [UiIcons.Check]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                        <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M5.46976 13.0068C5.46176 13.0068 5.45376 13.0068 5.44576 13.0068C5.29476 12.9988 5.15476 12.9238 5.06576 12.8008L1.99976 8.59576L2.80776 8.00676L5.50776 11.7108L13.2428 2.99976L13.9908 3.66376L5.84376 12.8388C5.74876 12.9458 5.61276 13.0068 5.46976 13.0068Z"
+                            fill={COLORS.default}
+                        />
+                    </g>
                 </svg>
             ),
             [UiIcons.Chevron]: (

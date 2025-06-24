@@ -26,7 +26,7 @@ export function transformAbapCSNForAppGenInfo(
     const serviceUri = serviceUrlObj?.pathname?.endsWith('/')
         ? serviceUrlObj.pathname
         : (serviceUrlObj?.pathname ?? '') + '/';
-    const serviceNameCsn = abapCSN.services.find((s) => s.runtimeName === serviceId)?.csnServiceName;
+    const serviceNameCsn = abapCSN.services.find((s) => s.runtimeName.toUpperCase() === serviceId)?.csnServiceName;
 
     return [
         {

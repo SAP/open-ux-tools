@@ -1,5 +1,35 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.17
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.15
+
+## 0.3.16
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.14
+
+## 0.3.15
+
+### Patch Changes
+
+-   ff6ff97: Update the MTA ID error message.
+
+## 0.3.14
+
+### Patch Changes
+
+-   c9f79c1: Check long Windows paths during project generation and deployment config generation.
+
+## 0.3.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.13
+
 ## 0.3.12
 
 ### Patch Changes

@@ -14,7 +14,8 @@ import {
     hostEnvironment,
     type ILogWrapper,
     sendTelemetry,
-    TelemetryHelper
+    TelemetryHelper,
+    getFlpId
 } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
@@ -42,7 +43,6 @@ import {
     deleteCache,
     getAppId,
     getCdsUi5PluginInfo,
-    getFlpId,
     getFromCache,
     getRequiredOdataVersion,
     getTelemetryBusinessHubType,
@@ -455,7 +455,8 @@ export class FioriAppGenerator extends Generator {
                 project: {
                     targetFolder: this.state.project.targetFolder,
                     name: this.state.project.name,
-                    flpAppId: this.state.project.flpAppId
+                    flpAppId: this.state.project.flpAppId,
+                    enableVirtualEndpoints: this.state.project.enableVirtualEndpoints
                 }
             },
             this.fs,

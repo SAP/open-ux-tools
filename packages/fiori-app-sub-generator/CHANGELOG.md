@@ -1,5 +1,139 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.10
+
+### Patch Changes
+
+-   15c1608: correct launch config start scripts for virtual endpoints
+-   Updated dependencies [15c1608]
+    -   @sap-ux/launch-config@0.10.6
+
+## 0.5.9
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+    -   @sap-ux/cap-config-writer@0.10.11
+    -   @sap-ux/fiori-elements-writer@2.5.4
+    -   @sap-ux/fiori-freestyle-writer@2.4.15
+    -   @sap-ux/odata-service-inquirer@2.5.5
+    -   @sap-ux/ui5-application-inquirer@0.14.16
+
+## 0.5.8
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/odata-service-inquirer@2.5.4
+    -   @sap-ux/project-access@1.30.3
+    -   @sap-ux/annotation-generator@0.3.41
+    -   @sap-ux/cap-config-writer@0.10.10
+    -   @sap-ux/fiori-generator-shared@0.12.9
+    -   @sap-ux/launch-config@0.10.5
+    -   @sap-ux/odata-service-writer@0.27.6
+    -   @sap-ux/telemetry@0.6.4
+    -   @sap-ux/ui5-application-inquirer@0.14.15
+    -   @sap-ux/fiori-elements-writer@2.5.3
+    -   @sap-ux/fiori-freestyle-writer@2.4.14
+
+## 0.5.7
+
+### Patch Changes
+
+-   Updated dependencies [14214a3]
+    -   @sap-ux/axios-extension@1.22.2
+    -   @sap-ux/odata-service-inquirer@2.5.3
+
+## 0.5.6
+
+### Patch Changes
+
+-   5529c63: adds preview settings to external service state
+
+## 0.5.5
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+    -   @sap-ux/odata-service-inquirer@2.5.2
+
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+    -   @sap-ux/odata-service-inquirer@2.5.1
+
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.2
+-   @sap-ux/fiori-freestyle-writer@2.4.13
+-   @sap-ux/odata-service-inquirer@2.5.0
+
+## 0.5.2
+
+### Patch Changes
+
+-   7739504: adds new option addProjectToWorkspace for post gen task
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [3ea811a]
+    -   @sap-ux/cap-config-writer@0.10.9
+    -   @sap-ux/fiori-elements-writer@2.5.1
+    -   @sap-ux/fiori-freestyle-writer@2.4.12
+    -   @sap-ux/odata-service-inquirer@2.5.0
+    -   @sap-ux/ui5-application-inquirer@0.14.14
+
+## 0.5.0
+
+### Minor Changes
+
+-   45e1035: Add support for parameterised main entities across FE writer and OData service inquirer
+
+### Patch Changes
+
+-   Updated dependencies [45e1035]
+    -   @sap-ux/odata-service-inquirer@2.5.0
+    -   @sap-ux/fiori-elements-writer@2.5.0
+
+## 0.4.25
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.40
+-   @sap-ux/fiori-elements-writer@2.4.20
+-   @sap-ux/odata-service-inquirer@2.4.23
+
+## 0.4.24
+
+### Patch Changes
+
+-   Updated dependencies [c9f79c1]
+    -   @sap-ux/ui5-application-inquirer@0.14.14
+    -   @sap-ux/odata-service-inquirer@2.4.23
+
+## 0.4.23
+
+### Patch Changes
+
+-   163522f: fix non-virtual endpoint preview config
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-freestyle-writer@2.4.11
+    -   @sap-ux/fiori-generator-shared@0.12.8
+    -   @sap-ux/fiori-elements-writer@2.4.19
+    -   @sap-ux/odata-service-inquirer@2.4.22
+    -   @sap-ux/cap-config-writer@0.10.8
+    -   @sap-ux/ui5-application-inquirer@0.14.13
+
 ## 0.4.22
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @sap-ux/launch-config
 
+## 0.10.6
+
+### Patch Changes
+
+-   15c1608: correct launch config start scripts for virtual endpoints
+
+## 0.10.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+
 ## 0.10.4
 
 ### Patch Changes
