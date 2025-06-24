@@ -400,15 +400,15 @@ describe('getAbapTargetPrompts', () => {
             expect(((clientChoicePrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
                 Array [
                   Object {
-                    "name": "Use project defined client ",
+                    "name": "Use Project Defined Client: ",
                     "value": "base",
                   },
                   Object {
-                    "name": "Enter client",
+                    "name": "Enter Client",
                     "value": "new",
                   },
                   Object {
-                    "name": "Use default system client",
+                    "name": "Use Default System Client",
                     "value": "blank",
                   },
                 ]

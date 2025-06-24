@@ -1,12 +1,12 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Tue Jun 17 2025 11:40:26 GMT+0100 (Irish Standard Time)|
+|**Generation Date and Time**<br>Tue Jun 24 2025 22:44:48 GMT+0100 (Irish Standard Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
 |**App Generator Version**<br>0.0.0|
 |**Generation Platform**<br>CLI|
 |**Template Used**<br>Form Entry Object Page V4|
-|**Service Type**<br>Local Cap|
+|**Service Type**<br>Local CAP|
 |**Service URL**<br>http://localhost:4004/admin/|
 |**Module Name**<br>lrop_v4_cap_java|
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|

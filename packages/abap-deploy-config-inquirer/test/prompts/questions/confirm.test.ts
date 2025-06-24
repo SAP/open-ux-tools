@@ -25,9 +25,9 @@ describe('getConfirmPrompts', () => {
               Object {
                 "default": true,
                 "guiOptions": Object {
-                  "hint": "Deployment config will abort if you choose no. Click Finish to abort.",
+                  "hint": "Deployment config will abort if you choose no. Click 'Finish' to abort.",
                 },
-                "message": "Editing the deployment configuration will overwrite existing configuration, are you sure you want to continue?",
+                "message": "Editing the deployment configuration will overwrite the existing configuration. Are you sure you want to continue?",
                 "name": "overwrite",
                 "type": "confirm",
                 "validate": [Function],

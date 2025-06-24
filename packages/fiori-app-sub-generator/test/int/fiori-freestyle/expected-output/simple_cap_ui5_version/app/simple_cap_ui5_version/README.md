@@ -1,12 +1,12 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Tue Jun 17 2025 11:40:30 GMT+0100 (Irish Standard Time)|
+|**Generation Date and Time**<br>Tue Jun 24 2025 22:44:34 GMT+0100 (Irish Standard Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
 |**App Generator Version**<br>0.0.0|
 |**Generation Platform**<br>CLI|
 |**Template Used**<br>Basic V4|
-|**Service Type**<br>Local Cap|
+|**Service Type**<br>Local CAP|
 |**Service URL**<br>http://localhost:4004|
 |**Module Name**<br>simple_cap_ui5_version|
 |**Application Title**<br>App Title|
