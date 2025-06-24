@@ -170,7 +170,7 @@ describe('utils', () => {
                 await sendRequest({ target: {} }, loggerMock);
                 fail('Error should have been thrown');
             } catch (error) {
-                expect(error.message).toEqual('Please provide a target for configuration.');
+                expect(error.message).toEqual('Please provide a target for the configuration.');
             }
         });
     });
