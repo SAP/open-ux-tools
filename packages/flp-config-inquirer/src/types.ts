@@ -1,34 +1,40 @@
 import type { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
 import type { ListQuestionOptions } from 'inquirer';
+import type { InboundContent } from '@sap-ux/axios-extension';
 
 /**
  * Enumeration of prompt names used in the FLP configuration.
  */
 export enum promptNames {
+    existingFlpConfigInfo = 'existingFlpConfigInfo',
     inboundId = 'inboundId',
-    emptyInboundsInfo = 'emptyInboundsInfo',
     semanticObject = 'semanticObject',
     action = 'action',
     overwrite = 'overwrite',
     title = 'title',
     subTitle = 'subTitle',
-    additionalParameters = 'additionalParameters',
-    createAnotherInbound = 'createAnotherInbound'
+    icon = 'icon',
+    additionalParameters = 'additionalParameters'
+}
+
+export enum tilePromptNames {
+    tileHandlingAction = 'tileHandlingAction',
+    copyFromExisting = 'copyFromExisting'
 }
 
 /**
  * Interface representing the answers collected from the FLP configuration prompts.
  */
 export interface FLPConfigAnswers {
-    [promptNames.inboundId]?: string;
-    [promptNames.emptyInboundsInfo]?: string;
+    [promptNames.existingFlpConfigInfo]?: string;
+    [promptNames.inboundId]?: InboundContent;
     [promptNames.semanticObject]: string;
     [promptNames.action]: string;
     [promptNames.overwrite]?: boolean;
     [promptNames.title]?: string;
     [promptNames.subTitle]?: string;
+    [promptNames.icon]?: string;
     [promptNames.additionalParameters]?: string;
-    [promptNames.createAnotherInbound]?: boolean;
     s4Continue?: boolean;
 }
 
@@ -61,7 +67,7 @@ export interface InboundIdPromptOptions {
 /**
  * Options for the 'empty inbound label' prompt.
  */
-export interface EmptyInboundsLabelOptions {
+export interface ExistingFlpConfigInfo {
     hide?: boolean;
 }
 
@@ -70,6 +76,11 @@ export interface EmptyInboundsLabelOptions {
  */
 export interface SemanticObjectPromptOptions {
     default?: string;
+    hide?: boolean;
+    /**
+     * If set to true, the prompt will show a tooltip with information about semantic objects prompt.
+     */
+    showTooltip?: boolean;
 }
 
 /**
@@ -77,6 +88,15 @@ export interface SemanticObjectPromptOptions {
  */
 export interface ActionPromptOptions {
     default?: string;
+    hide?: boolean;
+    /**
+     * If set to false, the prompt will not validate for duplicate semantic object/action combination.
+     */
+    executeDuplicateValidation?: boolean;
+    /**
+     * If set to true, the prompt will show a tooltip with information about action prompt.
+     */
+    showTooltip?: boolean;
 }
 
 /**
@@ -101,18 +121,15 @@ export interface SubTitlePromptOptions {
     default?: string;
 }
 
-/**
- * Options for the 'additionalParameters' prompt.
- */
-export interface ParameterStringPromptOptions {
+export interface IconPromptOptions {
     default?: string;
     hide?: boolean;
 }
 
 /**
- * Options for the 'createAnotherInbound' prompt.
+ * Options for the 'additionalParameters' prompt.
  */
-export interface CreateAnotherInboundPromptOptions {
+export interface ParameterStringPromptOptions {
     default?: string;
     hide?: boolean;
 }
@@ -128,16 +145,27 @@ type FLPConfigCommonInquirerOptions = {
  * The options for the FLP config inquirer & the prompts.
  */
 type flpConfigPromptOptions = Record<promptNames.inboundId, InboundIdPromptOptions> &
-    Record<promptNames.emptyInboundsInfo, EmptyInboundsLabelOptions> &
     Record<promptNames.semanticObject, SemanticObjectPromptOptions> &
     Record<promptNames.action, ActionPromptOptions> &
     Record<promptNames.overwrite, OverwritePromptOptions> &
     Record<promptNames.title, TitlePromptOptions> &
     Record<promptNames.subTitle, SubTitlePromptOptions> &
+    Record<promptNames.icon, IconPromptOptions> &
     Record<promptNames.additionalParameters, ParameterStringPromptOptions> &
-    Record<promptNames.createAnotherInbound, CreateAnotherInboundPromptOptions>;
+    Record<promptNames.existingFlpConfigInfo, ExistingFlpConfigInfo>;
 
 /**
  * The options for the FLP config inquirer & the prompts.
  */
 export type FLPConfigPromptOptions = Partial<flpConfigPromptOptions> & FLPConfigCommonInquirerOptions;
+
+export const tileActions = {
+    REPLACE: 'replace',
+    ADD: 'add'
+} as const;
+
+export interface TileSettingsAnswers {
+    [promptNames.existingFlpConfigInfo]?: string;
+    [tilePromptNames.tileHandlingAction]: string;
+    [tilePromptNames.copyFromExisting]: boolean;
+}

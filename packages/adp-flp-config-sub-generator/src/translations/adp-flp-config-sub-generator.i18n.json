@@ -3,15 +3,16 @@
         "flpCredentialsName": "FLP Configuration - Credentials",
         "flpCredentialsDesc": "Enter credentials for your adaptation project's system ({{- system}})",
         "sysConfirmDesc": "Validates connection to configured system",
-        "flpConfigName": "FLP Configuration",
-        "flpConfigDesc": "FLP Configuration for {{- projectName}}"
+        "flpConfigName": "Fiori Launchpad Configuration",
+        "tileSettingsName": "Fiori Launchpad Configuration - Tile Settings for {{- projectName}}"
     },
     "info": {
         "flpConfigAdded": "FLP Configuration added successfully"
     },
     "error": {
         "projectNotSupported": "Unable to find a supported adaptation project",
-        "fetchingManifest": "Error fetching merged manifest for base application",
+        "projectNotCloudReady": "FLP Configuration is supported for Cloud Ready adaptation projects only",
+        "baseAppInboundsFetching": "Error while fetching base application inbounds",
         "destinationNotFound": "Missing destination configuration in ui5.yaml",
         "destinationNotInSubaccount": "Destination not found in the subaccount: {{- destination}}",
         "systemNotFound": "Missing system configuration in ui5.yaml",
@@ -19,6 +20,7 @@
         "writingPhase": "Error in writing phase of the adaptation project FLP configuration",
         "telemetry": "Error sending telemetry data: {{- error}}",
         "updatingApp": "Error updating app with FLP configuration. Inspect the logs for full error.",
-        "authenticationFailed": "Authentication failed."
+        "authenticationFailed": "Authentication failed.",
+        "warningCachingNotSupported": "Warning: caching is not supported"
     }
 }

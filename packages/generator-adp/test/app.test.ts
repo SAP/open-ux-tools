@@ -12,7 +12,8 @@ import {
     getConfiguredProvider,
     getProviderConfig,
     loadApps,
-    validateUI5VersionExists
+    validateUI5VersionExists,
+    getBaseAppInbounds
 } from '@sap-ux/adp-tooling';
 import * as Logger from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -22,6 +23,7 @@ import { getCredentialsFromStore } from '@sap-ux/system-access';
 import type { AttributesAnswers, ConfigAnswers, Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
 import adpGenerator from '../src/app';
 import { initI18n, t } from '../src/utils/i18n';
@@ -74,7 +76,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     loadApps: jest.fn(),
     getProviderConfig: jest.fn(),
     validateUI5VersionExists: jest.fn(),
-    fetchPublicVersions: jest.fn()
+    fetchPublicVersions: jest.fn(),
+    getBaseAppInbounds: jest.fn()
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
@@ -142,6 +145,24 @@ const answers: ConfigAnswers & AttributesAnswers = {
     addFlpConfig: false
 };
 
+const inbounds = {
+    'display-bank': {
+        semanticObject: 'test',
+        action: 'action',
+        title: 'testTitle',
+        subTitle: 'testSubTitle',
+        icon: 'sap-icon://test',
+        signature: {
+            parameters: {
+                param1: {
+                    value: 'test1',
+                    isRequired: true
+                }
+            }
+        }
+    }
+} as unknown as ManifestNamespace.Inbound;
+
 const activeLanguages: Language[] = [{ sap: 'value', i18n: 'DE' }];
 const adaptationProjectTypes: AdaptationProjectType[] = [AdaptationProjectType.CLOUD_READY];
 const mockManifest = { 'sap.ui5': { flexEnabled: true } } as Manifest;
@@ -188,6 +209,7 @@ const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 const getCredentialsFromStoreMock = getCredentialsFromStore as jest.Mock;
 const validateUI5VersionExistsMock = validateUI5VersionExists as jest.Mock;
+const getBaseAppInboundsMock = getBaseAppInbounds as jest.Mock;
 
 describe('Adaptation Project Generator Integration Test', () => {
     jest.setTimeout(60000);
@@ -287,6 +309,7 @@ describe('Adaptation Project Generator Integration Test', () => {
         mockIsAppStudio.mockReturnValue(false);
         jest.spyOn(ConfigPrompter.prototype, 'isCloud', 'get').mockReturnValue(true);
         jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
+        getBaseAppInboundsMock.mockResolvedValue(inbounds);
 
         const addDeployGenSpy = jest.spyOn(subgenHelpers, 'addDeployGen').mockReturnValue();
         const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockReturnValue();
@@ -312,13 +335,9 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         expect(addFlpGenSpy).toHaveBeenCalledWith(
             {
-                manifest: {
-                    'sap.ui5': {
-                        flexEnabled: true
-                    }
-                },
+                inbounds: inbounds,
                 projectRootPath: join(testOutputDir, answers.projectName),
-                system: 'urlA'
+                vscode: vscodeMock
             },
             expect.any(Function),
             expect.any(Object),

@@ -1,1 +1,1 @@
-export { createPropertiesI18nEntries } from './create';
+export { createPropertiesI18nEntries, removeAndCreateI18nEntries } from './create';

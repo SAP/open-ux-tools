@@ -161,6 +161,17 @@ describe('debug config tests', () => {
         expect(findConfiguration(launchFile, `Start ${projectName} Local`)).toEqual(localConfig);
     });
 
+    it('Should return correct configuration when flp start file is provided', () => {
+        configOptions.flpSandboxAvailable = false;
+        configOptions.flpAppId = 'app-preview';
+        const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions, 'test/flp.html');
+        const localConfig = {
+            ...localConfigurationObj,
+            args: ['--config', './ui5-local.yaml', '--open', 'test/flp.html#app-preview']
+        };
+        expect(findConfiguration(launchFile, `Start ${projectName} Local`)).toEqual(localConfig);
+    });
+
     it('Should return correct configuration when migrator mock intent is provided', () => {
         configOptions.migratorMockIntent = 'flpSandboxMockFlpIntent';
         const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions);
