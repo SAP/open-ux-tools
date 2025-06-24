@@ -244,7 +244,7 @@ export async function generateLaunchConfig(
                 addStartCmd,
                 sapClientParam: options.sapClientParam,
                 flpAppId: options?.enableVirtualEndpoints ? 'app-preview' : options.flpAppId ?? '',
-                flpSandboxAvailable: options?.enableVirtualEndpoints ? false : true,
+                flpSandboxAvailable: !options?.enableVirtualEndpoints,
                 isAppStudio: isAppStudio(),
                 writeToAppOnly
             };
