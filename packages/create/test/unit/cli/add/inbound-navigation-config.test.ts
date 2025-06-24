@@ -291,15 +291,15 @@ describe('Test command add navigation-config with ADP scenario', () => {
         await command.parseAsync(getArgv(['inbound-navigation', appRoot, '--config=/test/custom.yaml']));
 
         // Result check
-        expect(getAdpConfigMock).toBeCalledWith(appRoot, '/test/custom.yaml');
-        expect(commitMock).toBeCalled();
-        expect(genAdpNavSpy).toBeCalledWith(
+        expect(getAdpConfigMock).toHaveBeenCalledWith(appRoot, '/test/custom.yaml');
+        expect(commitMock).toHaveBeenCalled();
+        expect(genAdpNavSpy).toHaveBeenCalledWith(
             expect.stringContaining('bare-minimum'),
             expect.objectContaining(flpConfigAnswers),
             expect.any(Object)
         );
-        expect(genNavSpy).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
+        expect(genNavSpy).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
     });
 
     test('Test add inbound-navigation with ADP project where getAdpConfig throws an error', async () => {

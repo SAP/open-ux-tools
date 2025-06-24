@@ -313,7 +313,7 @@ describe('Test utils', () => {
             };
 
             expect(createLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
-            expect(writeApplicationInfoSettings).toBeCalledWith(projectPath);
+            expect(writeApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
 
         it('should generate correct launch config for OData v4', async () => {
