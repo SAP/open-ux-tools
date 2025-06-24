@@ -455,7 +455,8 @@ export class FioriAppGenerator extends Generator {
                 project: {
                     targetFolder: this.state.project.targetFolder,
                     name: this.state.project.name,
-                    flpAppId: this.state.project.flpAppId
+                    flpAppId: this.state.project.flpAppId,
+                    enableVirtualEndpoints: this.state.project.enableVirtualEndpoints
                 }
             },
             this.fs,
