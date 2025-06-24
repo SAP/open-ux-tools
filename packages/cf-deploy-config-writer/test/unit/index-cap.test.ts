@@ -109,7 +109,7 @@ describe('CF Writer CAP', () => {
                 undefined,
                 logger
             )
-        ).rejects.toThrowError(/Target folder does not contain a Node.js CAP project./);
+        ).rejects.toThrowError('The target folder does not contain a Node.js CAP project. Please ensure the folder contains a Node.js CAP project.');
     });
 
     test('Validate CAP type if target contains mta.yaml', async () => {
@@ -127,6 +127,6 @@ describe('CF Writer CAP', () => {
                 undefined,
                 logger
             )
-        ).rejects.toThrowError(/An mta.yaml already exists in the target directory./);
+        ).rejects.toThrowError('An `mta.yaml` file already exists in the target directory.');
     });
 });
