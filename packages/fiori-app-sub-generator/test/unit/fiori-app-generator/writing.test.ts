@@ -101,7 +101,7 @@ describe('`writing` tests', () => {
             const expectedReadMe: AppGenInfo = {
                 generationDate: expect.any(String),
                 generatorPlatform: 'Visual Studio Code',
-                serviceType: 'SAP System (ABAP On Premise)',
+                serviceType: 'SAP System (ABAP On-Premise)',
                 metadataFilename: '',
                 serviceUrl: 'N/A',
                 appName: 'someProjectName',
@@ -118,7 +118,9 @@ describe('`writing` tests', () => {
                 template: 'Basic V4',
                 generatorName: '@sap/some-generator',
                 entityRelatedConfig: [],
-                launchText: t('readme.texts.runInstruction')
+                launchText: t('readme.texts.runInstruction'),
+                externalParameters: undefined,
+                serviceId: undefined
             };
             const project: Project = { ...baseProject };
             const service: Service = {
@@ -145,7 +147,7 @@ describe('`writing` tests', () => {
             const expectedReadMe: AppGenInfo = {
                 generationDate: expect.any(String),
                 generatorPlatform: 'CLI',
-                serviceType: 'Local Cap',
+                serviceType: 'Local CAP',
                 serviceUrl: 'http://localhost:4004/odata/service',
                 appName: 'someProjectName',
                 appTitle: 'someProjectTitle',
@@ -166,7 +168,7 @@ describe('`writing` tests', () => {
                 entityRelatedConfig: [],
                 externalParameters: { label: 'label1', value: 'value1' },
                 metadataFilename: '',
-                serviceId: undefined,
+                serviceId: undefined
             };
             const project: Project = { ...baseProject };
             const service: Service = {
@@ -203,7 +205,7 @@ describe('`writing` tests', () => {
             const expectedReadMe: AppGenInfo = {
                 generationDate: expect.any(String),
                 generatorPlatform: 'CLI',
-                serviceType: 'Local Cap',
+                serviceType: 'Local CAP',
                 serviceUrl: 'http://localhost:4004/odata/service',
                 appName: 'someProjectName',
                 appTitle: 'someProjectTitle',
@@ -227,7 +229,7 @@ describe('`writing` tests', () => {
                     { type: 'Filter Entity Type', value: 'filterEntitySetName1' }
                 ],
                 metadataFilename: '',
-                serviceId: undefined,
+                serviceId: undefined
             };
             const project: Project = { ...baseProject };
             const service: Service = {
