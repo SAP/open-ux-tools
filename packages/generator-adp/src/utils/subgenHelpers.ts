@@ -1,13 +1,12 @@
 import type Generator from 'yeoman-generator';
-import { type AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-import type { Manifest } from '@sap-ux/project-access';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { ConfigAnswers, AttributesAnswers, SystemLookup } from '@sap-ux/adp-tooling';
 
 import { t } from './i18n';
 import { getExtensionProjectData, resolveNodeModuleGenerator } from '../app/extension-project';
-
 /**
  * Parameters required for composing the extension project generator.
  */
@@ -21,9 +20,9 @@ interface ExtProjectGenProps {
  * Parameters required for composing the FLP config generator.
  */
 interface FlpGenProps {
+    vscode: unknown;
     projectRootPath: string;
-    system: string;
-    manifest: Manifest;
+    inbounds?: ManifestNamespace.Inbound;
 }
 
 /**
@@ -50,7 +49,7 @@ interface DeployGenOptions {
  * @param {AppWizard} appWizard - AppWizard instance for interacting with the UI (optional).
  */
 export function addFlpGen(
-    { projectRootPath, system, manifest }: FlpGenProps,
+    { projectRootPath, vscode, inbounds }: FlpGenProps,
     composeWith: Generator['composeWith'],
     logger: ILogWrapper,
     appWizard: AppWizard
@@ -61,8 +60,8 @@ export function addFlpGen(
          */
         composeWith(require.resolve('@sap-ux/adp-flp-config-sub-generator/generators/app'), {
             launchAsSubGen: true,
-            manifest,
-            system,
+            vscode,
+            inbounds,
             data: { projectRootPath },
             appWizard
         });

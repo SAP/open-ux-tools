@@ -1,5 +1,93 @@
 # @sap-ux/adp-tooling
 
+## 0.14.29
+
+### Patch Changes
+
+-   f9ea9e3: feat: Enhance ADP FLP configuration generator
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/i18n@0.3.1
+    -   @sap-ux/system-access@0.6.8
+    -   @sap-ux/project-access@1.30.3
+    -   @sap-ux/odata-service-writer@0.27.6
+    -   @sap-ux/project-input-validator@0.6.4
+    -   @sap-ux/inquirer-common@0.7.14
+
+## 0.14.28
+
+### Patch Changes
+
+-   Updated dependencies [14214a3]
+    -   @sap-ux/axios-extension@1.22.2
+    -   @sap-ux/system-access@0.6.7
+
+## 0.14.27
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+    -   @sap-ux/system-access@0.6.6
+
+## 0.14.26
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+    -   @sap-ux/system-access@0.6.5
+
+## 0.14.25
+
+### Patch Changes
+
+-   Updated dependencies [c9f79c1]
+    -   @sap-ux/project-input-validator@0.6.3
+
+## 0.14.24
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.13
+
+## 0.14.23
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/ui5-info@0.12.0
+    -   @sap-ux/inquirer-common@0.7.12
+
+## 0.14.22
+
+### Patch Changes
+
+-   65edfba: feat(generator-adp): Align @ui5/cli with latest v4 release
+
+## 0.14.21
+
+### Patch Changes
+
+-   Updated dependencies [7f35f6c]
+    -   @sap-ux/ui5-info@0.11.1
+    -   @sap-ux/inquirer-common@0.7.11
+
+## 0.14.20
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
+## 0.14.19
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+    -   @sap-ux/system-access@0.6.4
+
 ## 0.14.18
 
 ### Patch Changes

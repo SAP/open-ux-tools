@@ -2,6 +2,7 @@ import type { Command } from 'commander';
 import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
+import { findProjectRoot, getProjectType } from '@sap-ux/project-access';
 
 /**
  * Add the cards-editor command.
@@ -33,12 +34,19 @@ async function addCardsGeneratorConfig(basePath: string, simulate: boolean, yaml
     try {
         logger.debug(`Called add cards-generator-config for path '${basePath}', simulate is '${simulate}'`);
         await validateBasePath(basePath);
-
-        const fs = await enableCardGeneratorConfig(basePath, yamlPath, logger);
-        if (!simulate) {
-            fs.commit(() => logger.info(`Card Generator configuration written.`));
+        const projectRoot = await findProjectRoot(basePath, true, true);
+        const projectType = await getProjectType(projectRoot);
+        if (projectType === 'CAPJava' || projectType === 'CAPNodejs') {
+            await Promise.reject(
+                new Error(`Adding the card generator configuration is not supported for CAP projects.`)
+            );
         } else {
-            await traceChanges(fs);
+            const fs = await enableCardGeneratorConfig(basePath, yamlPath, logger);
+            if (!simulate) {
+                fs.commit(() => logger.info(`Card Generator configuration written.`));
+            } else {
+                await traceChanges(fs);
+            }
         }
     } catch (error) {
         logger.error(`Error while executing add cards generator configuration '${(error as Error).message}'`);

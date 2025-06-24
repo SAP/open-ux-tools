@@ -1,5 +1,38 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.6.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/cds-odata-annotation-converter@0.6.3
+
+## 0.6.3
+
+### Patch Changes
+
+-   bdff312: fix: flattened annotation deletion.
+-   Updated dependencies [bdff312]
+    -   @sap-ux/cds-odata-annotation-converter@0.6.3
+
+## 0.6.2
+
+### Patch Changes
+
+-   Updated dependencies [070dcb2]
+    -   @sap-ux/odata-vocabularies@0.4.10
+    -   @sap-ux/cds-annotation-parser@0.2.13
+    -   @sap-ux/cds-odata-annotation-converter@0.6.2
+    -   @sap-ux/xml-odata-annotation-converter@0.3.5
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [be6febe]
+    -   @sap-ux/cds-annotation-parser@0.2.12
+    -   @sap-ux/cds-odata-annotation-converter@0.6.1
+
 ## 0.6.0
 
 ### Minor Changes

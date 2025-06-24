@@ -30,7 +30,7 @@ export const MbtPackageVersion = '^1.2.29';
 export const UI5TaskZipperPackage = 'ui5-task-zipper';
 export const UI5TaskZipperPackageVersion = '^3.4.x';
 export const UI5Package = '@ui5/cli';
-export const UI5PackageVersion = '^3.9.2';
+export const UI5PackageVersion = '^4.0.16';
 export const CDSAddMtaParams = ['add', 'mta'];
 export const CDSXSUAAService = 'xsuaa';
 export const CDSHTML5RepoService = 'html5-repo';
@@ -106,6 +106,7 @@ export const HTMLAppBuildParams = {
     commands: ['npm install', 'npm run build:cf'],
     'supported-platforms': []
 };
+export const UI5DeployBuildScriptForCap = 'npm run build:cf';
 export const UI5DeployBuildScript =
     'ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo';
 export const MTABuildScript = 'rimraf resources mta_archives && mbt build';

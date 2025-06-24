@@ -1,5 +1,113 @@
 # @sap-ux/generator-adp
 
+## 0.3.29
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.29
+    -   @sap-ux/adp-tooling@0.14.29
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/system-access@0.6.8
+    -   @sap-ux/project-access@1.30.3
+    -   @sap-ux/fiori-generator-shared@0.12.9
+    -   @sap-ux/project-input-validator@0.6.4
+    -   @sap-ux/inquirer-common@0.7.14
+
+## 0.3.28
+
+### Patch Changes
+
+-   Updated dependencies [14214a3]
+    -   @sap-ux/axios-extension@1.22.2
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.28
+    -   @sap-ux/adp-tooling@0.14.28
+    -   @sap-ux/system-access@0.6.7
+
+## 0.3.27
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.27
+    -   @sap-ux/adp-tooling@0.14.27
+    -   @sap-ux/system-access@0.6.6
+
+## 0.3.26
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.26
+    -   @sap-ux/adp-tooling@0.14.26
+    -   @sap-ux/system-access@0.6.5
+
+## 0.3.25
+
+### Patch Changes
+
+-   Updated dependencies [c9f79c1]
+    -   @sap-ux/project-input-validator@0.6.3
+    -   @sap-ux/adp-tooling@0.14.25
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.25
+
+## 0.3.24
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.24
+    -   @sap-ux/inquirer-common@0.7.13
+    -   @sap-ux/adp-tooling@0.14.24
+
+## 0.3.23
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/inquirer-common@0.7.12
+    -   @sap-ux/adp-tooling@0.14.23
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.23
+
+## 0.3.22
+
+### Patch Changes
+
+-   65edfba: feat(generator-adp): Align @ui5/cli with latest v4 release
+-   Updated dependencies [65edfba]
+    -   @sap-ux/adp-tooling@0.14.22
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.22
+
+## 0.3.21
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.21
+-   @sap-ux/inquirer-common@0.7.11
+-   @sap-ux/adp-flp-config-sub-generator@0.1.21
+
+## 0.3.20
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.20
+    -   @sap-ux/adp-tooling@0.14.20
+
+## 0.3.19
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.19
+    -   @sap-ux/adp-tooling@0.14.19
+    -   @sap-ux/system-access@0.6.4
+
 ## 0.3.18
 
 ### Patch Changes

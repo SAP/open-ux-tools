@@ -1,5 +1,23 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+
+## 0.3.5
+
+### Patch Changes
+
+-   3ea811a: Bump @ui5/cli version
+
+## 0.3.4
+
+### Patch Changes
+
+-   11c317d: Suppprt MTA configuration from CDS
+
 ## 0.3.3
 
 ### Patch Changes

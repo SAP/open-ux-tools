@@ -1,5 +1,82 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.4.24
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/system-access@0.6.8
+    -   @sap-ux/fiori-generator-shared@0.12.9
+    -   @sap-ux/inquirer-common@0.7.14
+
+## 1.4.23
+
+### Patch Changes
+
+-   Updated dependencies [14214a3]
+    -   @sap-ux/axios-extension@1.22.2
+    -   @sap-ux/system-access@0.6.7
+
+## 1.4.22
+
+### Patch Changes
+
+-   5a88606: Remove warning messages, no longer applicable and GA link is too complex to follow
+
+## 1.4.21
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+    -   @sap-ux/system-access@0.6.6
+
+## 1.4.20
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+    -   @sap-ux/system-access@0.6.5
+
+## 1.4.19
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+    -   @sap-ux/inquirer-common@0.7.13
+
+## 1.4.18
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/inquirer-common@0.7.12
+
+## 1.4.17
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.11
+
+## 1.4.16
+
+### Patch Changes
+
+-   bf752f3: Adds more specific cert error messages with GA links.
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
+## 1.4.15
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+    -   @sap-ux/system-access@0.6.4
+
 ## 1.4.14
 
 ### Patch Changes

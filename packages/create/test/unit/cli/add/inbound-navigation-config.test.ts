@@ -13,6 +13,7 @@ import * as common from '../../../../src/common';
 import * as tracer from '../../../../src/tracing/trace';
 import * as logger from '../../../../src/tracing/logger';
 import { addInboundNavigationConfigCommand } from '../../../../src/cli/add/navigation-config';
+import app from '../../../../../abap-deploy-config-sub-generator/src/app';
 
 jest.mock('prompts');
 
@@ -34,7 +35,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     flpConfigurationExists: jest.fn(),
     getAdpConfig: jest.fn(),
     getVariant: jest.fn(),
-    generateInboundConfig: jest.fn()
+    generateInboundConfig: jest.fn(),
+    getBaseAppInbounds: jest.fn()
 }));
 
 jest.mock('@sap-ux/system-access', () => ({
@@ -54,19 +56,26 @@ jest.mock('@sap-ux/app-config-writer', () => ({
 
 jest.mock('@sap-ux/flp-config-inquirer', () => ({
     ...jest.requireActual('@sap-ux/flp-config-inquirer'),
-    getPrompts: jest.fn()
+    getPrompts: jest.fn(),
+    getTileSettingsQuestions: jest.fn(),
+    getAdpFlpConfigPromptOptions: jest.fn(),
+    getAdpFlpInboundsWriterConfig: jest.fn()
 }));
 
 const getAppTypeMock = getAppType as jest.Mock;
 const getVariantMock = adpTooling.getVariant as jest.Mock;
 const getAdpConfigMock = adpTooling.getAdpConfig as jest.Mock;
 const flpConfigurationExistsMock = adpTooling.flpConfigurationExists as jest.Mock;
+const getBaseAppInboundsMock = adpTooling.getBaseAppInbounds as jest.Mock;
 
 const flpConfigAnswers = {
     semanticObject: 'so1',
     action: 'act1',
     title: 'title1',
-    subTitle: ''
+    subTitle: '',
+    additionalParameters: '',
+    icon: '',
+    inboundId: 'so1-act1'
 };
 
 const fakeManifest = {
@@ -113,6 +122,9 @@ describe('Test command add navigation-config with ADP scenario', () => {
 
         jest.spyOn(appConfigWriter, 'readManifest').mockResolvedValue({ manifest: fakeManifest, manifestPath: '' });
         jest.spyOn(flpConfigInquirer, 'getPrompts').mockResolvedValue([]);
+        jest.spyOn(flpConfigInquirer, 'getTileSettingsQuestions').mockReturnValue([]);
+        jest.spyOn(flpConfigInquirer, 'getAdpFlpConfigPromptOptions').mockReturnValue({});
+        jest.spyOn(flpConfigInquirer, 'getAdpFlpInboundsWriterConfig').mockReturnValue(flpConfigAnswers);
     });
 
     afterEach(() => {
@@ -211,25 +223,18 @@ describe('Test command add navigation-config with ADP scenario', () => {
         expect(loggerMock.error).not.toBeCalled();
     });
 
-    test('Test add inbound-navigation with ADP project where FLP configuration already exists', async () => {
-        getAppTypeMock.mockResolvedValue('Fiori Adaptation');
-        flpConfigurationExistsMock.mockReturnValue(true);
-
-        // Test execution
-        const command = new Command('add');
-        addInboundNavigationConfigCommand(command);
-        await command.parseAsync(getArgv(['inbound-navigation', appRoot]));
-
-        // Result check
-        expect(loggerMock.info).toHaveBeenCalledWith('FLP Configuration already exists.');
-        expect(commitMock).not.toBeCalled();
-        expect(genAdpNavSpy).not.toBeCalled();
-        expect(genNavSpy).not.toBeCalled();
-    });
-
     test('Test add inbound-navigation with ADP project where FLP configuration does not exist', async () => {
         getAppTypeMock.mockResolvedValue('Fiori Adaptation');
         flpConfigurationExistsMock.mockReturnValue(false);
+        getBaseAppInboundsMock.mockResolvedValue({
+            'semObject-action': {
+                semanticObject: 'so1',
+                action: 'act1',
+                title: 'Test Title',
+                subTitle: '',
+                hideLauncher: false
+            }
+        });
 
         getVariantMock.mockReturnValue({
             id: 'variantId',
@@ -241,17 +246,52 @@ describe('Test command add navigation-config with ADP scenario', () => {
             ignoreCertErrors: false
         });
 
-        const manifestServiceMock = {
-            getManifest: jest.fn().mockReturnValue(fakeManifest)
-        } as unknown as adpTooling.ManifestService;
-        jest.spyOn(adpTooling.ManifestService, 'initMergedManifest').mockResolvedValue(manifestServiceMock);
-
         // Test execution
         const command = new Command('add');
         addInboundNavigationConfigCommand(command);
         await command.parseAsync(getArgv(['inbound-navigation', appRoot]));
 
         // Result check
+        expect(commitMock).toBeCalled();
+        expect(genAdpNavSpy).toBeCalledWith(
+            expect.stringContaining('bare-minimum'),
+            expect.objectContaining(flpConfigAnswers),
+            expect.any(Object)
+        );
+        expect(genNavSpy).not.toBeCalled();
+        expect(loggerMock.error).not.toBeCalled();
+    });
+
+    test('Test add inbound-navigation with ADP project where FLP configuration does not exist with custom yaml config file', async () => {
+        getAppTypeMock.mockResolvedValue('Fiori Adaptation');
+        flpConfigurationExistsMock.mockReturnValue(false);
+        getBaseAppInboundsMock.mockResolvedValue({
+            'semObject-action': {
+                semanticObject: 'so1',
+                action: 'act1',
+                title: 'Test Title',
+                subTitle: '',
+                hideLauncher: false
+            }
+        });
+
+        getVariantMock.mockReturnValue({
+            id: 'variantId',
+            content: []
+        });
+
+        getAdpConfigMock.mockResolvedValue({
+            target: {},
+            ignoreCertErrors: false
+        });
+
+        // Test execution
+        const command = new Command('add');
+        addInboundNavigationConfigCommand(command);
+        await command.parseAsync(getArgv(['inbound-navigation', appRoot, '--config=/test/custom.yaml']));
+
+        // Result check
+        expect(getAdpConfigMock).toBeCalledWith(appRoot, '/test/custom.yaml');
         expect(commitMock).toBeCalled();
         expect(genAdpNavSpy).toBeCalledWith(
             expect.stringContaining('bare-minimum'),
