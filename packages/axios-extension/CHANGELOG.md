@@ -1,5 +1,17 @@
 # @sap-ux/axios-extension
 
+## 1.22.3
+
+### Patch Changes
+
+-   f9ea9e3: feat: Enhance ADP FLP configuration generator
+
+## 1.22.2
+
+### Patch Changes
+
+-   14214a3: Cleanup documentation
+
 ## 1.22.1
 
 ### Patch Changes

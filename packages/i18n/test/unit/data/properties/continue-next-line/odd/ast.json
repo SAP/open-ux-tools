@@ -16,7 +16,13 @@
       "value": "This line \\continues",
       "range": "[(1,12)..(2,9)]"
     },
-    "range": "[(1,0)..(2,9)]"
+    "range": "[(1,0)..(2,9)]",
+    "endOfLineToken": {
+      "type": "end-of-line",
+      "image": "\n",
+      "start": 116,
+      "end": 117
+    }
   },
   {
     "type": "comment-line",
@@ -40,7 +46,13 @@
       "value": "This is line one and\\\\\\# This is line two",
       "range": "[(5,9)..(6,18)]"
     },
-    "range": "[(5,0)..(6,18)]"
+    "range": "[(5,0)..(6,18)]",
+    "endOfLineToken": {
+      "type": "end-of-line",
+      "image": "\n\n",
+      "start": 338,
+      "end": 340
+    }
   },
   {
     "type": "comment-line",
@@ -69,6 +81,12 @@
       "value": "Welcome to \\Wikipedia!",
       "range": "[(11,10)..(12,20)]"
     },
-    "range": "[(11,0)..(12,20)]"
+    "range": "[(11,0)..(12,20)]",
+    "endOfLineToken": {
+      "type": "end-of-line",
+      "image": "\n",
+      "start": 598,
+      "end": 599
+    }
   }
 ]

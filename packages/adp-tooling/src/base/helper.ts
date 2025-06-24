@@ -1,8 +1,9 @@
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join, isAbsolute, relative, basename, dirname } from 'path';
-import { getWebappPath, FileName, readUi5Yaml } from '@sap-ux/project-access';
+import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace } from '@sap-ux/project-access';
 import type { UI5Config } from '@sap-ux/ui5-config';
+import type { InboundContent, Inbound } from '@sap-ux/axios-extension';
 
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 
@@ -38,20 +39,13 @@ export async function updateVariant(basePath: string, variant: DescriptorVariant
  * This function determines whether there are changes of type `appdescr_app_changeInbound`
  * or `appdescr_app_addNewInbound` present in the content of the descriptor variant.
  *
- * @param {string} basePath - The base path of the project where the manifest.appdescr_variant is located.
+ * @param {DescriptorVariant} variant - The descriptor variant object to check for FLP configuration changes.
  * @returns {Promise<boolean>} Returns `true` if FLP configuration changes exist, otherwise `false`.
- * @throws {Error} Throws an error if the variant could not be retrieved.
  */
-export async function flpConfigurationExists(basePath: string): Promise<boolean> {
-    try {
-        const variant = await getVariant(basePath);
-        return variant.content?.some(
-            ({ changeType }) =>
-                changeType === 'appdescr_app_changeInbound' || changeType === 'appdescr_app_addNewInbound'
-        );
-    } catch (error) {
-        throw new Error(`Failed to check if FLP configuration exists: ${(error as Error).message}`);
-    }
+export function flpConfigurationExists(variant: DescriptorVariant): boolean {
+    return variant.content?.some(
+        ({ changeType }) => changeType === 'appdescr_app_changeInbound' || changeType === 'appdescr_app_addNewInbound'
+    );
 }
 
 /**
@@ -118,4 +112,28 @@ export async function getWebappFiles(basePath: string): Promise<{ relativePath: 
 
     getFilesRecursivelySync(dir);
     return files;
+}
+
+/**
+ * Transforms an array of inbound objects from the SystemInfo API format into a ManifestNamespace.Inbound object.
+ *
+ * @param {Inbound[]} inbounds - The array of inbound objects to transform.
+ * @returns {ManifestNamespace.Inbound | undefined} The transformed inbounds or undefined if input is empty.
+ */
+export function filterAndMapInboundsToManifest(inbounds: Inbound[]): ManifestNamespace.Inbound | undefined {
+    if (!inbounds || inbounds.length === 0) {
+        return undefined;
+    }
+    return inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
+        // Skip if hideLauncher is not false
+        if (!inbound?.content || inbound.content.hideLauncher !== false) {
+            return acc;
+        }
+        const { semanticObject, action } = inbound.content;
+        if (semanticObject && action) {
+            const key = `${semanticObject}-${action}`;
+            acc[key] = inbound.content;
+        }
+        return acc;
+    }, {} as { [key: string]: InboundContent });
 }
