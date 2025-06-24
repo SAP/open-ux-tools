@@ -1,5 +1,24 @@
 # @sap-ux/create
 
+## 0.13.51
+
+### Patch Changes
+
+-   f9ea9e3: feat: Enhance ADP FLP configuration generator
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/adp-tooling@0.14.29
+    -   @sap-ux/flp-config-inquirer@0.3.29
+    -   @sap-ux/preview-middleware@0.20.41
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.24
+    -   @sap-ux/app-config-writer@0.6.15
+    -   @sap-ux/system-access@0.6.8
+    -   @sap-ux/project-access@1.30.3
+    -   @sap-ux/abap-deploy-config-writer@0.1.11
+    -   @sap-ux/cap-config-writer@0.10.10
+    -   @sap-ux/cards-editor-config-writer@0.5.2
+    -   @sap-ux/mockserver-config-writer@0.9.3
+    -   @sap-ux/odata-service-writer@0.27.6
+
 ## 0.13.50
 
 ### Patch Changes
