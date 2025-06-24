@@ -10,6 +10,7 @@ export interface KeyElementLine {
     key: TextNode<'key'>;
     element: TextNode<'value'>;
     range: Range;
+    endOfLineToken?: Token;
 }
 
 export interface CommentLine {

@@ -3,27 +3,27 @@ import isNil from 'lodash/isNil';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 
-import { initI18n } from './i18n';
+import { initI18n, addi18nResourceBundle } from './i18n';
 import { promptNames } from './types';
-import { getQuestions } from './prompts';
-import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions } from './types';
+import { getExistingFlpConfigInfoPrompt } from './prompts/questions';
+import { getQuestions, getTileSettingsQuestions } from './prompts';
+import type { FLPConfigAnswers, FLPConfigQuestion, FLPConfigPromptOptions, TileSettingsAnswers } from './types';
+import { getAdpFlpConfigPromptOptions, getAdpFlpInboundsWriterConfig } from './utils';
 
 /**
  * Retrieves the inquirer prompts for the FLP configuration.
  *
  * @param {ManifestNamespace.Inbound | undefined} inbounds - An object containing existing inbound keys to check for duplicates.
- * @param {string | undefined} appId - The application ID used to generate unique prompt keys.
  * @param {FLPConfigPromptOptions | undefined} promptOptions - Options that control prompt behavior. See {@link FLPConfigPromptOptions} for details.
  * @returns {Promise<FLPConfigQuestion[]>} A promise that resolves to an array of FLP configuration questions.
  */
 async function getPrompts(
     inbounds?: ManifestNamespace.Inbound,
-    appId?: string,
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigQuestion[]> {
     await initI18n();
 
-    return getQuestions(inbounds, appId, promptOptions);
+    return getQuestions(inbounds, promptOptions);
 }
 
 /**
@@ -31,17 +31,15 @@ async function getPrompts(
  *
  * @param {InquirerAdapter} adapter - An instance of `InquirerAdapter` to handle prompting.
  * @param {ManifestNamespace.Inbound | undefined} inbounds - An object containing existing inbound keys to check for duplicates.
- * @param {string | undefined} appId - The application ID used to generate unique prompt keys.
  * @param {FLPConfigPromptOptions | undefined} promptOptions - Options that control prompt behavior. See {@link FLPConfigPromptOptions} for details.
  * @returns {Promise<FLPConfigAnswers>} A promise that resolves to the user's answers for the FLP configuration.
  */
 async function prompt(
     adapter: InquirerAdapter,
     inbounds?: ManifestNamespace.Inbound,
-    appId?: string,
     promptOptions?: FLPConfigPromptOptions
 ): Promise<FLPConfigAnswers> {
-    const flpPrompts = await getPrompts(inbounds, appId, promptOptions);
+    const flpPrompts = await getPrompts(inbounds, promptOptions);
 
     const answers = await adapter.prompt<FLPConfigAnswers>(flpPrompts);
     // Apply default values to prompts in case they have not been executed
@@ -101,10 +99,17 @@ function getDefaultValue(
 
 export {
     getPrompts,
+    getExistingFlpConfigInfoPrompt,
     prompt,
+    addi18nResourceBundle,
     promptNames,
     type InquirerAdapter,
     type PromptDefaultValue,
     type FLPConfigAnswers,
-    type FLPConfigPromptOptions
+    type FLPConfigPromptOptions,
+    type FLPConfigQuestion,
+    type TileSettingsAnswers,
+    getAdpFlpConfigPromptOptions,
+    getAdpFlpInboundsWriterConfig,
+    getTileSettingsQuestions
 };

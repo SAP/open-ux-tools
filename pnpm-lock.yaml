@@ -568,6 +568,9 @@ importers:
 
   packages/adp-tooling:
     dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.16.9
+        version: 1.16.9
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -2284,6 +2287,9 @@ importers:
       '@sap-ux/adp-tooling':
         specifier: workspace:*
         version: link:../adp-tooling
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
