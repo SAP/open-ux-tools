@@ -1,5 +1,12 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.46
+
+### Patch Changes
+
+-   Updated dependencies [15c1608]
+    -   @sap-ux/launch-config@0.10.6
+
 ## 0.3.45
 
 ### Patch Changes

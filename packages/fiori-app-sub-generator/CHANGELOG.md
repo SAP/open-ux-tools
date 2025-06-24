@@ -1,5 +1,13 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.10
+
+### Patch Changes
+
+-   15c1608: correct launch config start scripts for virtual endpoints
+-   Updated dependencies [15c1608]
+    -   @sap-ux/launch-config@0.10.6
+
 ## 0.5.9
 
 ### Patch Changes
