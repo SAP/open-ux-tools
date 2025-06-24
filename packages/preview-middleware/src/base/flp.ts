@@ -256,7 +256,7 @@ export class FlpSandbox {
      * @private
      */
     private checkDeleteConnectors(ui5VersionMajor: number, ui5VersionMinor: number): void {
-        if (ui5VersionMajor === 1 && ui5VersionMinor < 78) {
+        if (ui5VersionMajor === 1 && ui5VersionMinor < 76) {
             this.templateConfig.ui5.flex = this.templateConfig.ui5.flex.filter((connector) =>
                 this.isFlexConnector(connector)
             );
