@@ -43,12 +43,13 @@ import type {
     MultiCardsPayload,
     I18nEntry
 } from '../types';
-import type { FlexConnector, CustomConnector } from './config';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
     PREVIEW_URL,
     type TemplateConfig,
+    type FlexConnector,
+    type CustomConnector,
     createTestTemplateConfig,
     addApp,
     getAppName,
