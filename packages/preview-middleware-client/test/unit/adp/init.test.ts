@@ -137,7 +137,7 @@ describe('adp', () => {
                     '1.70',
                     '1.71']
             },
-            type: MessageBarType.warning
+            type: MessageBarType.error
         });
     });
 
