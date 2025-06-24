@@ -53,7 +53,7 @@ export default async function (rta: RuntimeAuthoring) {
                     getFullyQualifiedUi5Version(ui5VersionInfo),
                     getFullyQualifiedUi5Version(minVersionInfo)]
             },
-            type: MessageBarType.warning
+            type: MessageBarType.error
         });
         return;
     }
