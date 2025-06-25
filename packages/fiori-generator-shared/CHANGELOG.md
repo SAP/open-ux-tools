@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.10
+
+### Patch Changes
+
+-   4fef16a: ensure service runtimeName is upper case to match service id
+
 ## 0.12.9
 
 ### Patch Changes
