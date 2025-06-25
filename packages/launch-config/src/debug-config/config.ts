@@ -95,9 +95,15 @@ function configureLaunchConfig(
  * @param rootFolder - The root folder path where the app will be generated.
  * @param {string} cwd - The current working directory.
  * @param {DebugOptions} configOpts - Configuration options for the launch.json file.
+ * @param {string} startFile - Optional html file to be used in the launch configuration.
  * @returns {LaunchJSON} The configured launch.json object.
  */
-export function configureLaunchJsonFile(rootFolder: string, cwd: string, configOpts: DebugOptions): LaunchJSON {
+export function configureLaunchJsonFile(
+    rootFolder: string,
+    cwd: string,
+    configOpts: DebugOptions,
+    startFile?: string
+): LaunchJSON {
     const {
         isAppStudio,
         addStartCmd = true,
@@ -112,7 +118,7 @@ export function configureLaunchJsonFile(rootFolder: string, cwd: string, configO
     } = configOpts;
     const projectName = basename(rootFolder);
     const flpAppIdWithHash = flpAppId && !flpAppId.startsWith('#') ? `#${flpAppId}` : flpAppId;
-    const startHtmlFile = flpSandboxAvailable ? testFlpSandboxHtml : indexHtml;
+    const startHtmlFile = startFile ?? (flpSandboxAvailable ? testFlpSandboxHtml : indexHtml);
     const runConfig = isAppStudio
         ? JSON.stringify({
               handlerId: FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID,

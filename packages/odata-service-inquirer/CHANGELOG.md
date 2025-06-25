@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.5
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+    -   @sap-ux/inquirer-common@0.7.15
+
 ## 2.5.4
 
 ### Patch Changes
