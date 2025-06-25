@@ -2,7 +2,7 @@ import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 
-import { enableTelemetry, MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { enableTelemetry, MessageBarType, toggleAppPreviewVisibility } from '@sap-ux-private/control-property-editor-common';
 
 import { getFullyQualifiedUi5Version, getUi5Version, isLowerThanMinimalUi5Version, minVersionInfo } from '../utils/version';
 
@@ -13,6 +13,7 @@ import { getApplicationType } from '../utils/application';
 import { loadDefinitions } from './quick-actions/load';
 import { initDialogs } from './init-dialogs';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
+import { CommunicationService } from '../cpe/communication-service';
 
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
@@ -66,6 +67,7 @@ export default async function (rta: RuntimeAuthoring) {
             },
             type: MessageBarType.error
         });
+        CommunicationService.sendAction(toggleAppPreviewVisibility(false));
         return;
     }
 

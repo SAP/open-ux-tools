@@ -125,6 +125,7 @@ describe('adp', () => {
 
     test('init - send notification for UI5 version lower than 1.71', async () => {
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.70.0' });
+        jest.spyOn(CommunicationService, 'sendAction');
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
@@ -142,6 +143,8 @@ describe('adp', () => {
             },
             type: MessageBarType.error
         });
+
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(common.toggleAppPreviewVisibility(false));
     });
 
     test('init - send notification existence of sync views for minor UI5 version bigger than 120', async () => {
