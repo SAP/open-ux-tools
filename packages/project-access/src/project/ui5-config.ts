@@ -3,6 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { DirName, FileName } from '../constants';
 import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file';
+import { MockServerConfiguration, MockServerService, Nullable } from '../types/ui5config';
 
 /**
  * Get path to webapp.
@@ -72,25 +73,38 @@ export async function getAllUi5YamlFileNames(projectRoot: string, memFs?: Editor
     }
 }
 
-export async function getMockServerConfig(
-    projectRoot: string
-): Promise<Nullable<MockServerConfiguration>> {
-    const ui5Config = await getParsedUi5YamlConfig(projectRoot, FileName.Ui5MockYaml);
-    const middlewares = ui5Config.server?.customMiddleware;
-    if (middlewares) {
-        let mockMW: MockServerMiddleware;
-        const mockMWName = 'sap-fe-mockserver';
-        if (Array.isArray(middlewares)) {
-            mockMW = middlewares.find((mw) => mw.name === mockMWName) as MockServerMiddleware;
-            return mockMW?.configuration || null;
-        }
+export async function getMockServerConfig(projectRoot: string): Promise<Nullable<MockServerConfiguration>> {
+    const ui5MockYamlFile = await readUi5Yaml(projectRoot, FileName.Ui5MockYaml);
+    const mockserverMiddleware = ui5MockYamlFile.findCustomMiddleware('sap-fe-mockserver');
+    if (!mockserverMiddleware) {
+        throw new Error('Could not find sap-fe-mockserver');
+    } 
+    return mockserverMiddleware.configuration;
+}
 
-        const middleware = middlewares as MockServerMiddleware;
-        if (middleware.name === mockMWName) {
-            mockMW = middleware;
+export async function getMockDataPath(projectRoot: string): Promise<String[]> {
+    let mockdataPath: string[] = [];
+    const mockServerConfig: Nullable<MockServerConfiguration> = await getMockServerConfig(projectRoot);
+    if (mockServerConfig) {
+        let services: MockServerService[] | undefined;
+        // if ('service' in mockServerConfig && Array.isArray(mockServerConfig.service) ) {
+        //     services = mockServerConfig.service;
+        // } else if ('services' in mockServerConfig && Array.isArray(mockServerConfig.services)) {
+        //     services =  mockServerConfig.services;
+        // }
+        if ('service' in mockServerConfig && mockServerConfig.service) {
+            services = Array.isArray(mockServerConfig.service) ? mockServerConfig.service : [mockServerConfig.service];
+        } else if ('services' in mockServerConfig && mockServerConfig.services) {
+            services = Array.isArray(mockServerConfig.services) ? mockServerConfig.services : [mockServerConfig.services];
         }
-
-        return mockMW?.configuration || null;
+        if (Array.isArray(services)) {
+            for (const service of services) {
+                if (service.mockdataPath) {
+                    mockdataPath = service.mockdataPath.slice(2).split('/'); // remove './' and split by '/'
+                    break;
+                }
+            }
+        }
     }
-    return null;
+    return mockdataPath;
 }
