@@ -52,13 +52,8 @@ export async function connectWithBackendSystem(
     // Create a new connection with the selected system
     PromptState.resetConnectedSystem();
     let connectValResult: ValidationResult = false;
-    let backendSystem: BackendSystem | undefined;
-    // Fetch the credentials for the system
-    try {
-        backendSystem = await new SystemService(LoggerHelper.logger).read(backendKey);
-    } catch (error) {
-        LoggerHelper.logger.warn(t('warn.systemRead', { systemId: backendKey.getId() }));
-    }
+    const backendSystem = await new SystemService(LoggerHelper.logger).read(backendKey);
+
     if (backendSystem) {
         // Backend systems validation supports using a cached service provider to prevent re-authentication (e.g. re-opening a browser window)
         // In case the user has changed the URL, do not use the cached service provider.
