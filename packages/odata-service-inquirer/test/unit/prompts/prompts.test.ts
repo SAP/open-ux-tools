@@ -18,15 +18,17 @@ jest.mock('@sap-ux/btp-utils', () => {
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
-    SystemService: jest.fn().mockImplementation(() => ({
+    getFilesystemStore: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([
             {
                 name: 'storedSystem1',
-                url: 'http://url1'
+                url: 'http://url1',
+                systemType: 'OnPrem'
             },
             {
                 name: 'storedSystem2',
-                url: 'http://url2'
+                url: 'http://url2',
+                systemType: 'BTP'
             }
         ] as BackendSystem[])
     }))

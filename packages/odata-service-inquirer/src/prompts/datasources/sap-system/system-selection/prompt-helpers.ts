@@ -11,7 +11,8 @@ import {
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
-import { SystemService } from '@sap-ux/store';
+import { BackendSystemKey, getFilesystemStore, SystemService } from '@sap-ux/store';
+import { getBackendSystemType } from '../prompt-helpers';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { ConnectedSystem, DestinationFilters } from '../../../../types';
@@ -36,14 +37,14 @@ export type SystemSelectionAnswerType = {
  * Connects to the specified backend system and validates the connection.
  * Note this will return true in the case of basic auth validation failure to defer validation to the credentials prompt.
  *
- * @param backendSystem the backend system to connect to
+ * @param backendKey the key {url, client} of the backend system
  * @param connectionValidator the connection validator to use for the connection
  * @param requiredOdataVersion the required OData version for the service, this will be used to narrow the catalog service connections
  * @param cachedConnectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns the validation result of the backend system connection
  */
 export async function connectWithBackendSystem(
-    backendSystem: BackendSystem,
+    backendKey: BackendSystemKey,
     connectionValidator: ConnectionValidator,
     requiredOdataVersion?: OdataVersion,
     cachedConnectedSystem?: ConnectedSystem
@@ -51,6 +52,13 @@ export async function connectWithBackendSystem(
     // Create a new connection with the selected system
     PromptState.resetConnectedSystem();
     let connectValResult: ValidationResult = false;
+    let backendSystem: BackendSystem | undefined;
+    // Fetch the credentials for the system
+    try {
+        backendSystem = await new SystemService(LoggerHelper.logger).read(backendKey);
+    } catch (error) {
+        LoggerHelper.logger.warn(t('warn.systemRead', { systemId: backendKey.getId() }));
+    }
     if (backendSystem) {
         // Backend systems validation supports using a cached service provider to prevent re-authentication (e.g. re-opening a browser window)
         // In case the user has changed the URL, do not use the cached service provider.
@@ -90,7 +98,10 @@ export async function connectWithBackendSystem(
                 typeof backendSystem.password === 'string'
             ) {
                 LoggerHelper.logger.error(
-                    t('errors.storedSystemConnectionError', { systemName: backendSystem.name, error: connectValResult })
+                    t('errors.storedSystemConnectionError', {
+                        systemName: backendSystem.name,
+                        error: connectValResult
+                    })
                 );
                 return true;
             }
@@ -157,14 +168,51 @@ export async function connectWithDestination(
  */
 export function getBackendSystemDisplayName(system: BackendSystem): string {
     const userDisplayName = system.userDisplayName ? ` [${system.userDisplayName}]` : '';
-    let systemTypeName = '';
-    if (system.authenticationType === 'reentranceTicket') {
-        systemTypeName = ` (${t('texts.systemTypeS4HC')})`;
-    }
-    if (system.serviceKeys) {
-        systemTypeName = ` (${t('texts.systemTypeBTP')})`;
-    }
+    const systemTypeName = getBackendSystemTypeName(system.systemType);
     return `${system.name}${systemTypeName}${userDisplayName}`;
+}
+
+/**
+ * Returns the formatted system type name for the given backend system.
+ *
+ * @param systemType the system type to get the name for
+ * @returns system type name formatted as a string, e.g. " (BTP)" or " (S4HC)".
+ */
+function getBackendSystemTypeName(systemType?: string): string {
+    let systemTypeName = ''; // for on prem we do not show the system type
+    if (systemType === 'BTP' || systemType === 'S4HC') {
+        systemTypeName = ` (${systemType})`;
+    }
+    return systemTypeName;
+}
+
+/**
+ * Adds the system type to backend systems for all systems.
+ * Should be removed in a number of sprints.
+ */
+async function addSystemTypeToBackendSystems(): Promise<void> {
+    const allSystems = await new SystemService(LoggerHelper.logger).getAll();
+    for (const system of allSystems) {
+        // Set the system type based on the authentication type
+        const systemType = getBackendSystemType(system);
+        // Update the backend system in the systems.json file
+        await new SystemService(LoggerHelper.logger).partialUpdate(
+            BackendSystemKey.from(system as BackendSystem) as BackendSystemKey,
+            {
+                systemType
+            }
+        );
+    }
+}
+
+/**
+ * Simple check to see if the backend systems require a system type migration.
+ *
+ * @param systems - the list of backend systems to check
+ * @returns - true if any of the backend systems do not have a system type, false otherwise
+ */
+function requiresSystemTypeMigration(systems?: BackendSystem[]): boolean {
+    return Array.isArray(systems) && systems.some((system) => !system.systemType);
 }
 
 /**
@@ -252,7 +300,18 @@ export async function createSystemChoices(
             };
         }
     } else {
-        const backendSystems = await new SystemService(LoggerHelper.logger).getAll();
+        // Fetch backend systems from systems.json file, credential are fetched once the system is selected
+        const fileSystemStore = getFilesystemStore<BackendSystem>(LoggerHelper.logger);
+        let backendSystems = await fileSystemStore.getAll({ entityName: 'system' });
+
+        // to be removed in a number of sprints
+        if (requiresSystemTypeMigration(backendSystems)) {
+            // there are backend systems without a system type, so we perform a one-time migration to set the system type
+            LoggerHelper.logger.info(t('info.systemTypeMigration'));
+            await addSystemTypeToBackendSystems();
+            backendSystems = await fileSystemStore.getAll({ entityName: 'system' });
+        }
+
         systemChoices = backendSystems.map((system) => {
             return {
                 name: getBackendSystemDisplayName(system),

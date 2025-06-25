@@ -23,4 +23,4 @@ export interface DataAccessConstructor<Entity> {
     new (logger: Logger, options?: ServiceOptions): DataAccess<Entity>;
 }
 
-export { getFilesystemWatcherFor } from './filesystem';
+export { getFilesystemWatcherFor, getFilesystemStore } from './filesystem';

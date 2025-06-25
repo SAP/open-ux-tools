@@ -9,7 +9,7 @@ import { ConnectionValidator } from '../../../../../src/prompts/connectionValida
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
-    SystemService: jest.fn().mockImplementation(() => ({
+    getFilesystemStore: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([{ name: 'http://abap.on.prem:1234' }])
     }))
 }));
@@ -84,7 +84,8 @@ describe('Test new system prompt', () => {
             url: 'http://abap.on.prem:1234',
             userDisplayName: undefined,
             username: 'user01',
-            newOrUpdated: true
+            newOrUpdated: true,
+            systemType: 'OnPrem'
         });
     });
 
@@ -131,7 +132,8 @@ describe('Test new system prompt', () => {
             url: 'http://mock.abap.on.prem:4300',
             userDisplayName: undefined,
             username: 'testUser',
-            newOrUpdated: true
+            newOrUpdated: true,
+            systemType: 'OnPrem'
         });
     });
 });

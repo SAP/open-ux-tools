@@ -11,7 +11,7 @@ import { promptNames } from '../../../../types';
 import { PromptState, convertODataVersionType, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
 import { type NewSystemAnswers, newSystemPromptNames } from '../new-system/types';
-import { suggestSystemName } from '../prompt-helpers';
+import { getBackendSystemType, suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
@@ -164,6 +164,10 @@ export function getUserSystemNameQuestion(
                         password: connectValidator.axiosConfig?.auth?.password,
                         serviceKeys: connectValidator.serviceInfo,
                         userDisplayName: connectValidator.connectedUserName,
+                        systemType: getBackendSystemType({
+                            serviceKeys: connectValidator.serviceInfo,
+                            authenticationType: connectValidator.systemAuthType
+                        } as BackendSystem),
                         refreshToken: connectValidator.refreshToken
                     });
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;
