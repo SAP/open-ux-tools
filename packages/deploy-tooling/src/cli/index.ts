@@ -68,10 +68,7 @@ export function createCommand(name: 'deploy' | 'undeploy'): Command {
             '--query-params <param1=value&param2=value>',
             'Additional parameters that are to be added to calls to the target.'
         )
-        .option(
-            '--test',
-            `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing (use --no-test to deactivate it).`
-        );
+        .option('--test', `Run in test mode. ABAP backend reports ${name}ment errors without actually ${name}ing.`);
 
     if (name === 'deploy') {
         // additional parameters for deployment

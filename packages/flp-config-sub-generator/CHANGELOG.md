@@ -1,5 +1,45 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.2.36
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.3.31
+-   @sap-ux/app-config-writer@0.6.15
+
+## 0.2.35
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+    -   @sap-ux/deploy-config-generator-shared@0.1.11
+    -   @sap-ux/flp-config-inquirer@0.3.30
+    -   @sap-ux/inquirer-common@0.7.15
+    -   @sap-ux/app-config-writer@0.6.15
+
+## 0.2.34
+
+### Patch Changes
+
+-   f9ea9e3: feat: Enhance ADP FLP configuration generator
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/flp-config-inquirer@0.3.29
+    -   @sap-ux/i18n@0.3.1
+    -   @sap-ux/app-config-writer@0.6.15
+    -   @sap-ux/deploy-config-generator-shared@0.1.10
+    -   @sap-ux/project-access@1.30.3
+    -   @sap-ux/fiori-generator-shared@0.12.9
+    -   @sap-ux/inquirer-common@0.7.14
+
+## 0.2.33
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.6.14
+-   @sap-ux/deploy-config-generator-shared@0.1.9
+-   @sap-ux/flp-config-inquirer@0.3.28
+
 ## 0.2.32
 
 ### Patch Changes

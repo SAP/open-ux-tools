@@ -1,5 +1,5 @@
 import { Range, getLineOffsets, rangeAt } from '@sap-ux/text-document-utils';
-import type { CommentLine, PropertyList, TextNode, Token } from '../types';
+import type { CommentLine, KeyElementLine, PropertyList, TextNode, Token } from '../types';
 
 /**
  * Properties list class.
@@ -138,13 +138,17 @@ class PropertiesList {
                 range: { ...key.range, start: { line: key.range.end.line, character: key.range.end.character } }
             };
         }
-
-        this.list.push({
+        const nextToken = this.peek();
+        const line: KeyElementLine = {
             type: 'key-element-line',
             key,
             element,
             range: Range.create(key.range.start, element.range.end)
-        });
+        };
+        if (nextToken?.type === 'end-of-line') {
+            line.endOfLineToken = nextToken;
+        }
+        this.list.push(line);
     }
     /**
      * Create properties list.

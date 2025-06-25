@@ -82,6 +82,7 @@ async function runPostGenHooks(
  * @param state.project.targetFolder
  * @param state.project.name
  * @param state.project.flpAppId
+ * @param state.project.enableVirtualEndpoints
  * @param fs - the file system editor
  * @param logger - the logger
  * @param vscode - the vscode instance
@@ -110,6 +111,7 @@ export async function runPostGenerationTasks(
             targetFolder: string;
             name: string;
             flpAppId?: string;
+            enableVirtualEndpoints?: boolean;
         };
     },
     fs: Editor,
@@ -127,7 +129,8 @@ export async function runPostGenerationTasks(
                 flpAppId: project.flpAppId,
                 sapClientParam: service.sapClient ? buildSapClientParam(service.sapClient) : undefined,
                 odataVersion: service.odataVersion,
-                datasourceType: service.datasourceType
+                datasourceType: service.datasourceType,
+                enableVirtualEndpoints: project.enableVirtualEndpoints
             },
             fs,
             vscode,

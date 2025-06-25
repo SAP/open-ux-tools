@@ -1,5 +1,58 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.11
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.5.6
+-   @sap-ux/ui5-application-inquirer@0.14.17
+
+## 0.5.10
+
+### Patch Changes
+
+-   15c1608: correct launch config start scripts for virtual endpoints
+-   Updated dependencies [15c1608]
+    -   @sap-ux/launch-config@0.10.6
+
+## 0.5.9
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+    -   @sap-ux/cap-config-writer@0.10.11
+    -   @sap-ux/fiori-elements-writer@2.5.4
+    -   @sap-ux/fiori-freestyle-writer@2.4.15
+    -   @sap-ux/odata-service-inquirer@2.5.5
+    -   @sap-ux/ui5-application-inquirer@0.14.16
+
+## 0.5.8
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/odata-service-inquirer@2.5.4
+    -   @sap-ux/project-access@1.30.3
+    -   @sap-ux/annotation-generator@0.3.41
+    -   @sap-ux/cap-config-writer@0.10.10
+    -   @sap-ux/fiori-generator-shared@0.12.9
+    -   @sap-ux/launch-config@0.10.5
+    -   @sap-ux/odata-service-writer@0.27.6
+    -   @sap-ux/telemetry@0.6.4
+    -   @sap-ux/ui5-application-inquirer@0.14.15
+    -   @sap-ux/fiori-elements-writer@2.5.3
+    -   @sap-ux/fiori-freestyle-writer@2.4.14
+
+## 0.5.7
+
+### Patch Changes
+
+-   Updated dependencies [14214a3]
+    -   @sap-ux/axios-extension@1.22.2
+    -   @sap-ux/odata-service-inquirer@2.5.3
+
 ## 0.5.6
 
 ### Patch Changes
