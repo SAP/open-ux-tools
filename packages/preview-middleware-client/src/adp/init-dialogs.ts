@@ -17,7 +17,7 @@ import type { IsReuseComponentApi } from '../cpe/types';
 import { getTextBundle, type TextBundle } from '../i18n';
 import { getReuseComponentChecker } from './utils';
 import type { Ui5VersionInfo } from '../utils/version';
-import { getSyncViewIds } from '../cpe/sync-views-utils';
+import { getSyncViewIds } from './sync-views-utils';
 
 /**
  * Handler for enablement of Extend With Controller context menu entry

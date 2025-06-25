@@ -4,7 +4,7 @@ import type DTElement from 'sap/ui/dt/Element';
 import Element from 'sap/ui/core/Element';
 import Log from 'sap/base/Log';
 import { getTextBundle } from '../i18n';
-import { CommunicationService } from './communication-service';
+import { CommunicationService } from '../cpe/communication-service';
 import { showMessage } from '@sap-ux-private/control-property-editor-common';
 
 const syncViews = new Set<string>();

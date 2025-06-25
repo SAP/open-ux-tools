@@ -1,6 +1,6 @@
 import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-// import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
+import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 
 import { showMessage, enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 
@@ -8,7 +8,7 @@ import { getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Ver
 
 import { CommunicationService } from '../cpe/communication-service';
 import init from '../cpe/init';
-// import { showSyncViewsWarning } from '../cpe/sync-views-utils';
+import { updateSyncViewsIds, showSyncViewsWarning } from './sync-views-utils';
 import { getApplicationType } from '../utils/application';
 
 import { loadDefinitions } from './quick-actions/load';
@@ -45,11 +45,13 @@ export default async function (rta: RuntimeAuthoring) {
 
     await init(rta, quickActionRegistries);
 
-    // let outline: RTAOutlineService = {} as RTAOutlineService;
-    // outline = await rta.getService<RTAOutlineService>('outline');
-    // outline.attachEvent('update', async () => {
-    //     await showSyncViewsWarning();
-    // });
+    // Register synchronious views detection and warning
+    rta.getService<RTAOutlineService>('outline').then((outlineService) => {
+        outlineService.attachEvent('update', async () => {
+            await updateSyncViewsIds(ui5VersionInfo);
+            await showSyncViewsWarning();
+        });
+    });
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
         CommunicationService.sendAction(
