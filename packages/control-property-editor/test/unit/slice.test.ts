@@ -8,7 +8,6 @@ import {
     quickActionListChanged,
     reloadApplication,
     SCENARIO,
-    showMessage,
     storageFileChanged,
     updateQuickAction,
     PropertyType,
@@ -542,12 +541,6 @@ describe('main redux slice', () => {
                     ]
                 }
             });
-        });
-    });
-
-    test('showMessage', () => {
-        expect(reducer({} as any, showMessage({ message: 'testMessage', shouldHideIframe: false }))).toStrictEqual({
-            dialogMessage: { message: 'testMessage', shouldHideIframe: false }
         });
     });
 

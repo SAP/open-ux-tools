@@ -5,7 +5,12 @@ import { act } from 'react-dom/test-utils';
 import { render, mockDomEventListener } from './utils';
 
 import App from '../../src/App';
-import { controlSelected, PropertyType, SCENARIO } from '@sap-ux-private/control-property-editor-common';
+import {
+    controlSelected,
+    PropertyType,
+    SCENARIO,
+    toggleAppPreviewVisibility
+} from '@sap-ux-private/control-property-editor-common';
 
 import { InputType } from '../../src/panels/properties/types';
 import { DeviceType } from '../../src/devices';
@@ -175,41 +180,19 @@ test('renders warning dialog for "FE_FROM_SCRATCH" scenario', async () => {
     fireEvent.click(okButton);
 });
 
-test('renders warning message for "ADAPTATION_PROJECT" scenario', async () => {
-    const { rerender, store } = render(<App previewUrl="" scenario="ADAPTATION_PROJECT" />, {
+test('should show/hide app preview when visibility flag changes', async () => {
+    const appPreviewId = 'app-preview';
+    const { store } = render(<App previewUrl="" scenario={SCENARIO.AdaptationProject} />, {
         initialState: {
             scenario: SCENARIO.AdaptationProject,
             isAdpProject: true,
-            dialogMessage: {
-                message: 'Some Text',
-                shouldHideIframe: false
-            }
+            isAppPreviewVisible: true
         }
     });
 
-    const warningDialog = screen.getByText(/Some Text/i);
-    expect(warningDialog).toBeInTheDocument();
-    const okButton = screen.getByText(/ok/i);
-    expect(okButton).toBeInTheDocument();
-    fireEvent.click(okButton);
-    let notFoundException = null;
-    try {
-        screen.getByText(/Some Text/i);
-    } catch (e) {
-        notFoundException = e;
-    }
-    expect(notFoundException).toBeTruthy();
-
-    notFoundException = undefined;
-    const state = store.getState();
-    state.dialogMessage = { message: 'Other Text', shouldHideIframe: false };
-    rerender(<App previewUrl="" scenario="ADAPTATION_PROJECT" />);
-    try {
-        screen.getByText(/Other Text/i);
-    } catch (e) {
-        notFoundException = e;
-    }
-    expect(notFoundException).toBeTruthy();
+    expect(screen.getByTestId(appPreviewId)).toBeInTheDocument();
+    store.dispatch(toggleAppPreviewVisibility(false));
+    expect(screen.queryByTestId(appPreviewId)).toBeNull();
 });
 
 const testCases = [

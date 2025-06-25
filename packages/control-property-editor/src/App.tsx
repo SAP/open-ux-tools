@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
-import type { Scenario, ShowMessage } from '@sap-ux-private/control-property-editor-common';
+import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 import { LeftPanel, RightPanel } from './panels';
 import { Toolbar } from './toolbar';
 import { useLocalStorage } from './use-local-storage';
@@ -33,8 +33,6 @@ export default function App(appProps: AppProps): ReactElement {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
 
-    const isAdpProject = useSelector<RootState, boolean>((state) => state.isAdpProject);
-
     useEffect(() => {
         const sheet = window.document.styleSheets[0];
         sheet.insertRule(
@@ -46,8 +44,7 @@ export default function App(appProps: AppProps): ReactElement {
 
     const [hideWarningDialog, setHideWarningDialog] = useLocalStorage('hide-warning-dialog', false);
     const [isWarningDialogVisible, setWarningDialogVisibility] = useState(() => hideWarningDialog !== true);
-    const [shouldShowDialogMessage, setShouldShowDialogMessage] = useState(false);
-    const [shouldHideIframe, setShouldHideIframe] = useState(false);
+    const isAppPreviewVisible = useSelector<RootState, boolean>((state) => state.isAppPreviewVisible);
 
     const [isInitialized, setIsInitialized] = useState(false);
 
@@ -57,9 +54,6 @@ export default function App(appProps: AppProps): ReactElement {
     const previewScale = useSelector<RootState, number>((state) => state.scale);
     const fitPreview = useSelector<RootState, boolean>((state) => state.fitPreview ?? false);
     const windowSize = useWindowSize();
-    const dialogMessage = useSelector<RootState, ShowMessage | undefined>((state) => state.dialogMessage);
-    const [dialogQueue, setDialogQueue] = useState<ShowMessage[]>([]);
-    const [suppressDialog, setSuppressDialog] = useState<boolean>(false);
     const containerRef = useCallback(
         (node) => {
             if (node === null) {
@@ -95,20 +89,6 @@ export default function App(appProps: AppProps): ReactElement {
         setWarningDialogVisibility(false);
     }
 
-    const closeAdpWarningDialog = (): void => {
-        setDialogQueue((prevQueue) => prevQueue.slice(1));
-        setShouldShowDialogMessage(dialogQueue.length !== 0);
-        setSuppressDialog(true);
-    };
-
-    useEffect(() => {
-        if (dialogMessage && isAdpProject) {
-            setShouldShowDialogMessage(true);
-            setShouldHideIframe(dialogMessage.shouldHideIframe);
-            setDialogQueue((prevQueue) => [...prevQueue, dialogMessage]);
-        }
-    }, [dialogMessage, isAdpProject]);
-
     return (
         <div className="app-container">
             <Toolbar />
@@ -118,10 +98,11 @@ export default function App(appProps: AppProps): ReactElement {
                 </section>
                 <section ref={containerRef} className="app-content">
                     <div className="app-canvas">
-                        {!shouldHideIframe && (
+                        {isAppPreviewVisible && (
                             <iframe
                                 className="app-preview"
                                 id="preview"
+                                data-testid="app-preview"
                                 style={{
                                     width: previewWidth,
                                     transform: `scale(${previewScale})`
@@ -135,27 +116,6 @@ export default function App(appProps: AppProps): ReactElement {
                 <section className="app-panel app-panel-right">
                     <RightPanel />
                 </section>
-                {isAdpProject && shouldHideIframe && dialogQueue.length > 0 && (
-                    <UIDialog
-                        hidden={!shouldShowDialogMessage}
-                        dialogContentProps={{
-                            title: t('TOOL_DISCLAIMER_TITLE'),
-                            subText: dialogQueue[0]?.message
-                        }}
-                    />
-                )}
-                {isAdpProject && !shouldHideIframe && dialogQueue.length > 0 && !suppressDialog && (
-                    <UIDialog
-                        hidden={!shouldShowDialogMessage}
-                        dialogContentProps={{
-                            title: t('TOOL_DISCLAIMER_TITLE'),
-                            subText: dialogQueue[0]?.message
-                        }}
-                        acceptButtonText={t('OK')}
-                        onAccept={closeAdpWarningDialog}
-                    />
-                )}
-
                 {scenario === 'FE_FROM_SCRATCH' ? (
                     <UIDialog
                         hidden={!isWarningDialogVisible}
