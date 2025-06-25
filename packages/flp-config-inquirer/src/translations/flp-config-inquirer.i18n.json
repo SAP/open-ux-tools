@@ -1,7 +1,6 @@
 {
     "prompts": {
-        "inboundIds": "Inbound ID",
-        
+        "inboundIds": "Inbound ID",  
         "semanticObject": "Semantic Object",
         "action": "Action",
         "title": "Title",

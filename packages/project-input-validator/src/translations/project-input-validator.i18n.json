@@ -54,6 +54,13 @@
         "invalidValueForSpecialChars": "The input must only contain Latin alphanumeric characters or the following symbols: '-','_','$' and '.'.",
         "maxLength": "The maximum length is: {{maxLength}} characters.",
         "supportedFormats": "Only alphanumeric and '{{allowedCharacters}}' characters are allowed.",
+        "nameContainsSpecialCharacters": "Module name cannot contain special characters (\"~'!()*)",
+        "nameNotUrlFriendly": "Module name can only contain URL-friendly characters",
+        "invalidModuleName": "Invalid module name",
+        "moduleAlreadyExists": "The module folder named: {{folderName}} already exists at the specified path",
+        "appFolderExistsAtPath": "A module with this name already exists in the folder: {{-path}}",
+        "folderContainsCapApp": "The selected project folder is part of an existing CAP project. This application must therefore use the local CAP project as the data source.",
+        "folderContainsFioriApp": "The project folder path already contains an SAP Fiori application in the folder: {{-path}}. Please choose a different folder and try again.",
         "windowsFolderPathTooLong": "The combined length {{length}} of the target folder and module name exceeds the default Windows path length. This can cause issues with project generation."
     },
     "adp": {
