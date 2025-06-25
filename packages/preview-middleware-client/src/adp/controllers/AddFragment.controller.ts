@@ -165,7 +165,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
         await sendInfoCenterMessage({
             title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
-            description: { key: 'ADP_ADD_FRAGMENT_NOTIFICATION' },
+            description: { key: 'ADP_ADD_FRAGMENT_NOTIFICATION', params: [fragmentName] },
             type: MessageBarType.info
         });
 
