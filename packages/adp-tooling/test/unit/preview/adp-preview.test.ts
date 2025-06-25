@@ -16,7 +16,7 @@ import * as helper from '../../../src/base/helper';
 import * as editors from '../../../src/writer/editors';
 import { AdpPreview } from '../../../src';
 import * as manifestService from '../../../src/base/abap/manifest-service';
-import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
+import type { AddXMLChange, AdpPreviewConfig, CommonChangeProperties } from '../../../src';
 import { addXmlFragment, tryFixChange, addControllerExtension } from '../../../src/preview/change-handler';
 
 interface GetFragmentsResponse {
@@ -473,7 +473,7 @@ describe('AdaptationProject', () => {
                 fragmentPath: 'fragments/share.fragment.xml'
             },
             reference: 'some.reference'
-        } as unknown as CommonChangeProperties;
+        } as unknown as AddXMLChange;
 
         const addCodeExtChange = {
             changeType: 'codeExt',
@@ -498,7 +498,7 @@ describe('AdaptationProject', () => {
 
             expect(addXmlFragmentMock).toHaveBeenCalledWith(
                 '/adp.project/webapp',
-                addXMLChange,
+                { fragmentPath: addXMLChange.content.fragmentPath },
                 mockFs,
                 mockLogger,
                 undefined

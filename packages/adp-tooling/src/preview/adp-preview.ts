@@ -4,7 +4,7 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
-import type { UI5FlexLayer } from '@sap-ux/project-access';
+import { type UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider, LayeredRepositoryService, MergedAppDescriptor } from '@sap-ux/axios-extension';
 
@@ -25,7 +25,9 @@ import {
     isCodeExtChange,
     addControllerExtension,
     moduleNameContentMap,
-    tryFixChange
+    tryFixChange,
+    isV4DescriptorChange,
+    hasTemplate
 } from './change-handler';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
@@ -263,7 +265,14 @@ export class AdpPreview {
                 break;
             case 'write':
                 if (isAddXMLChange(change)) {
-                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger, additionalChangeInfo);
+                    const { fragmentPath, index } = change.content;
+                    addXmlFragment(
+                        this.util.getProject().getSourcePath(),
+                        { fragmentPath, ...(index && { index }) },
+                        fs,
+                        logger,
+                        additionalChangeInfo
+                    );
                 }
                 if (isCodeExtChange(change)) {
                     await addControllerExtension(
@@ -283,6 +292,28 @@ export class AdpPreview {
                         logger,
                         this.provider
                     );
+                }
+
+                if (isV4DescriptorChange(change)) {
+                    const propertyValue = change.content.entityPropertyChange.propertyValue;
+                    if (hasTemplate(propertyValue)) {
+                        const pathAfterNamespace = propertyValue.template.split(change.reference).pop();
+                        if (pathAfterNamespace) {
+                            const path = pathAfterNamespace
+                                .replace(/^\.?changes\.?/, '')
+                                .replace(/^\./, '')
+                                .replace(/\./g, '/');
+                            const fragmentPath = `${path}.fragment.xml`;
+                            // handle v4 descriptor changes
+                            addXmlFragment(
+                                this.util.getProject().getSourcePath(),
+                                { fragmentPath },
+                                fs,
+                                logger,
+                                additionalChangeInfo
+                            );
+                        }
+                    }
                 }
                 break;
             default:

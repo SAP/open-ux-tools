@@ -285,7 +285,12 @@ export interface AddXMLChange extends CommonChangeProperties {
     dependentSelector: Record<string, unknown>;
     jsOnly: boolean;
 }
-
+export interface AppDescriptorV4Change extends CommonChangeProperties {
+    changeType: 'appdescr_fe_changePageConfiguration';
+    content: {
+        entityPropertyChange: { propertyPath: string; operation: string; propertyValue: string | unknown };
+    };
+}
 export interface CodeExtChange extends CommonChangeProperties {
     changeType: 'codeExt';
     content: {

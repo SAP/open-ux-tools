@@ -534,15 +534,14 @@ describe('FE V4 quick actions', () => {
                     { actionName: 'add-controller-to-page', telemetryEventIdentifier }
                 );
 
-                expect(reportTelemetrySpy).toHaveBeenCalledWith(
-                   {
-                        category: 'QuickAction',
-                        quickActionSteps: 2,
-                        actionName: 'add-controller-to-page',
-                        telemetryEventIdentifier,
-                        ui5Version: '1.127.0',
-                        appType: 'fe-v4'
-                    })
+                expect(reportTelemetrySpy).toHaveBeenCalledWith({
+                    category: 'QuickAction',
+                    quickActionSteps: 2,
+                    actionName: 'add-controller-to-page',
+                    telemetryEventIdentifier,
+                    ui5Version: '1.127.0',
+                    appType: 'fe-v4'
+                });
             });
 
             test('initialize and execute action with existing controller change', async () => {
@@ -651,7 +650,8 @@ describe('FE V4 quick actions', () => {
                                     id: 'listReport0-add-controller-to-page',
                                     title: 'Add Controller to Page',
                                     enabled: false,
-                                    tooltip: 'This action is disabled because a pending change for a controller extension has been found. '
+                                    tooltip:
+                                        'This action is disabled because a pending change for a controller extension has been found. '
                                 }
                             ]
                         }
@@ -1981,6 +1981,13 @@ describe('FE V4 quick actions', () => {
                                 'title': 'OBJECT PAGE',
                                 'actions': [
                                     {
+                                        enabled: true,
+                                        id: 'objectPage0-op-add-custom-section',
+                                        kind: 'simple',
+                                        title: 'Add Custom Section',
+                                        tooltip: undefined
+                                    },
+                                    {
                                         'children': [
                                             {
                                                 path: '0',
@@ -2499,7 +2506,7 @@ describe('FE V4 quick actions', () => {
                             enabled: true,
                             id: 'objectPage0-add-controller-to-page',
                             kind: 'simple',
-                            title: 'Add Controller to Page',
+                            title: 'Add Controller to Page'
                         },
                         {
                             enabled: true,
@@ -2507,14 +2514,14 @@ describe('FE V4 quick actions', () => {
                             kind: 'simple',
                             title: 'Add Header Field',
                             tooltip: undefined
-                        },
-                        {
-                            enabled: true,
-                            id: 'objectPage0-op-add-custom-section',
-                            kind: 'simple',
-                            title: 'Add Custom Section',
-                            tooltip: undefined
                         }
+                        // {
+                        //     enabled: true,
+                        //     id: 'objectPage0-op-add-custom-section',
+                        //     kind: 'simple',
+                        //     title: 'Add Custom Section',
+                        //     tooltip: undefined
+                        // }
                     ] as QuickAction[];
 
                     const variantManagementAction = (enabled: boolean, tooltip?: string) =>

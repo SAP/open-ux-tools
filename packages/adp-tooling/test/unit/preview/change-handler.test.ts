@@ -14,7 +14,8 @@ import {
     isAddAnnotationChange,
     isAddXMLChange,
     moduleNameContentMap,
-    tryFixChange
+    tryFixChange,
+    type FragmentCreationParams
 } from '../../../src/preview/change-handler';
 import type { AddXMLChange, CommonChangeProperties, AnnotationFileChange, DescriptorVariant } from '../../../src';
 import * as manifestService from '../../../src/base/abap/manifest-service';
@@ -167,7 +168,12 @@ describe('change-handler', () => {
         it('should create the XML fragment and log information if it does not exist', () => {
             mockFs.exists.mockReturnValue(false);
 
-            addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+            addXmlFragment(
+                path,
+                { fragmentPath: change.content.fragmentPath, index: -1 },
+                mockFs as unknown as Editor,
+                mockLogger as unknown as Logger
+            );
 
             expect(mockFs.copy).toHaveBeenCalled();
             expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
@@ -179,7 +185,12 @@ describe('change-handler', () => {
                 throw new Error('Copy failed');
             });
 
-            addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+            addXmlFragment(
+                path,
+                { fragmentPath: change.content.fragmentPath },
+                mockFs as unknown as Editor,
+                mockLogger as unknown as Logger
+            );
 
             expect(mockLogger.error).toHaveBeenCalledWith(
                 expect.stringContaining(`Failed to create XML Fragment "${fragmentName}.fragment.xml"`)
@@ -196,9 +207,15 @@ describe('change-handler', () => {
 id="<%- ids.objectPageSection %>"
 id="<%- ids.objectPageSubSection %>"
 id="<%- ids.hBox %>"`);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
-                    templateName: `OBJECT_PAGE_CUSTOM_SECTION`
-                });
+                addXmlFragment(
+                    path,
+                    { fragmentPath: change.content.fragmentPath },
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger,
+                    {
+                        templateName: `OBJECT_PAGE_CUSTOM_SECTION`
+                    }
+                );
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -226,9 +243,15 @@ id="<%- ids.hBox %>"`);
                 mockFs.read.mockReturnValue(`
 id="<%- ids.vBoxContainer %>"
 id="<%- ids.label %>"`);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
-                    templateName: `OBJECT_PAGE_HEADER_FIELD`
-                });
+                addXmlFragment(
+                    path,
+                    { fragmentPath: change.content.fragmentPath },
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger,
+                    {
+                        templateName: `OBJECT_PAGE_HEADER_FIELD`
+                    }
+                );
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -254,9 +277,15 @@ id="<%- ids.label %>"`);
                 mockFs.exists.mockReturnValue(false);
                 mockFs.read.mockReturnValue(`
 id="<%- ids.toolbarActionButton %>`);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
-                    templateName: `CUSTOM_ACTION`
-                });
+                addXmlFragment(
+                    path,
+                    { fragmentPath: change.content.fragmentPath },
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger,
+                    {
+                        templateName: `CUSTOM_ACTION`
+                    }
+                );
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -292,9 +321,15 @@ id="<%- ids.columnTitle %>
 id="<%- ids.customData %>
 id="<%- ids.index %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
-                    templateName: `V2_SMART_TABLE_COLUMN`
-                });
+                addXmlFragment(
+                    path,
+                    { fragmentPath: updatedChange.content.fragmentPath, index: updatedChange.content.index },
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger,
+                    {
+                        templateName: `V2_SMART_TABLE_COLUMN`
+                    }
+                );
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -324,9 +359,15 @@ id="<%- ids.index %>
                 mockFs.read.mockReturnValue(`
 id="<%- ids.text %>
 `);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
-                    templateName: `V2_SMART_TABLE_CELL`
-                });
+                addXmlFragment(
+                    path,
+                    { fragmentPath: change.content.fragmentPath },
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger,
+                    {
+                        templateName: `V2_SMART_TABLE_CELL`
+                    }
+                );
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -354,9 +395,15 @@ id="<%- ids.text %>
 id="<%- ids.column %>
 id="<%- ids.text %>
 `);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
-                    templateName: `V4_MDC_TABLE_COLUMN`
-                });
+                addXmlFragment(
+                    path,
+                    { fragmentPath: change.content.fragmentPath },
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger,
+                    {
+                        templateName: `V4_MDC_TABLE_COLUMN`
+                    }
+                );
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -408,9 +455,15 @@ id="<%- ids.text %>
 id="<%- ids.customData %>
 id="<%- ids.index %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
-                    templateName: testCase.tableType
-                });
+                addXmlFragment(
+                    path,
+                    { fragmentPath: updatedChange.content.fragmentPath, index: updatedChange.content.index },
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger,
+                    {
+                        templateName: testCase.tableType
+                    }
+                );
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -439,9 +492,15 @@ id="<%- ids.index %>
                 mockFs.read.mockReturnValue(`
 id="<%- ids.customToolbarAction %>"
 id="<%- ids.customActionButton %>"`);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
-                    templateName: `TABLE_ACTION`
-                });
+                addXmlFragment(
+                    path,
+                    { fragmentPath: change.content.fragmentPath },
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger,
+                    {
+                        templateName: `TABLE_ACTION`
+                    }
+                );
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(

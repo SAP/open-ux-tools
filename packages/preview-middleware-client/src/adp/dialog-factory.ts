@@ -80,13 +80,14 @@ export class DialogFactory {
                     overlay,
                     rta,
                     {
+                        ...('appDescriptor' in options && { appDescriptor: options.appDescriptor }),
                         ...('aggregation' in options && { aggregation: options.aggregation }),
                         ...('defaultAggregationArrayIndex' in options && {
                             defaultAggregationArrayIndex: options.defaultAggregationArrayIndex
                         }),
                         title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
                     },
-                    (data as AddFragmentData),
+                    data as AddFragmentData,
                     telemetryData
                 );
                 break;
@@ -107,7 +108,7 @@ export class DialogFactory {
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     overlay,
                     rta,
-                    (data as ExtendControllerData),
+                    data as ExtendControllerData,
                     telemetryData
                 );
                 break;
@@ -116,7 +117,7 @@ export class DialogFactory {
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     overlay,
                     rta,
-                    (data as ExtensionPointData)
+                    data as ExtensionPointData
                 );
                 break;
             case DialogNames.FILE_EXISTS:

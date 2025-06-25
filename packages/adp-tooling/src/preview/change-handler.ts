@@ -4,7 +4,8 @@ import type {
     CommonChangeProperties,
     CodeExtChange,
     AnnotationFileChange,
-    CommonAdditionalChangeInfoProperties
+    CommonAdditionalChangeInfoProperties,
+    AppDescriptorV4Change
 } from '../types';
 import { ChangeType, TemplateFileName } from '../types';
 import { basename, join } from 'path';
@@ -33,7 +34,7 @@ interface FragmentTemplateConfig<T = { [key: string]: any }> {
      * Relative path to ../../templates/rta, includes template file name
      */
     path: string;
-    getData: (change: AddXMLChange) => T;
+    getData: (change: { index?: number }) => T;
 }
 
 const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
@@ -87,15 +88,15 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
     },
     [V2_SMART_TABLE_COLUMN]: {
         path: 'v2/m-table-custom-column.xml',
-        getData: (change: AddXMLChange) => {
+        getData: (change: { index?: number }) => {
             const uuid = randomBytes(4).toString('hex');
-            const columnIndex = change.content.index;
+            const columnIndex = change.index;
             return {
                 ids: {
                     column: `column-${uuid}`,
                     columnTitle: `column-title-${uuid}`,
                     customData: `custom-data-${uuid}`,
-                    index: columnIndex.toFixed(0)
+                    ...(columnIndex && { index: columnIndex.toFixed(0) })
                 }
             };
         }
@@ -125,37 +126,42 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
     },
     [GRID_TREE_TABLE_COLUMN]: {
         path: 'common/grid-tree-custom-column.xml',
-        getData: (change: AddXMLChange) => {
+        getData: (change: { index?: number }) => {
             const uuid = randomBytes(4).toString('hex');
-            const columnIndex = change.content.index;
+            const columnIndex = change.index;
             return {
                 ids: {
                     column: `column-${uuid}`,
                     label: `label-${uuid}`,
                     text: `text-${uuid}`,
                     customData: `custom-data-${uuid}`,
-                    index: columnIndex.toFixed(0)
+                    ...(columnIndex && { index: columnIndex.toFixed(0) })
                 }
             };
         }
     },
     [ANALYTICAL_TABLE_COLUMN]: {
         path: 'common/analytical-custom-column.xml',
-        getData: (change: AddXMLChange) => {
+        getData: (change: { index?: number }) => {
             const uuid = randomBytes(4).toString('hex');
-            const columnIndex = change.content.index;
+            const columnIndex = change.index;
             return {
                 ids: {
                     column: `column-${uuid}`,
                     label: `label-${uuid}`,
                     text: `text-${uuid}`,
                     customData: `custom-data-${uuid}`,
-                    index: columnIndex.toFixed(0)
+                    ...(columnIndex && { index: columnIndex.toFixed(0) })
                 }
             };
         }
     }
 };
+
+export interface FragmentCreationParams {
+    fragmentPath: string;
+    index?: number;
+}
 
 /**
  * A mapping object that defines how to extract change content data from changes based on their type.
@@ -221,22 +227,45 @@ export function isAddAnnotationChange(change: CommonChangeProperties): change is
 }
 
 /**
+ * Determines whether a given change is of type `V4 Descriptor Change`.
+ *
+ * @param {CommonChangeProperties} change - The change object to check.
+ * @returns {boolean} `true` if the `changeType` is either 'appdescr_fe_changePageConfiguration',
+ *          indicating the change is of type `V4 Descriptor Change`.
+ */
+export function isV4DescriptorChange(change: CommonChangeProperties): change is AppDescriptorV4Change {
+    return (
+        change.changeType === 'appdescr_fe_changePageConfiguration' && typeof change === 'object' && 'content' in change
+    );
+}
+
+/**
+ * Checks if the given object has a 'template' property of type string.
+ *
+ * @param obj - The object to check.
+ * @returns True if the object has a 'template' property of type string, false otherwise.
+ */
+export function hasTemplate(obj: unknown): obj is { template: string } {
+    return typeof obj === 'object' && obj !== null && 'template' in obj && typeof (obj as any).template === 'string';
+}
+
+/**
  * Asynchronously adds an XML fragment to the project if it doesn't already exist.
  *
  * @param {string} basePath - The base path of the project.
- * @param {AddXMLChange} change - The change data, including the fragment path.
+ * @param {FragmentCreationParams} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
  * @param {CommonAdditionalChangeInfoProperties} additionalChangeInfo - Optional extended change properties.
  */
 export function addXmlFragment(
     basePath: string,
-    change: AddXMLChange,
+    change: FragmentCreationParams,
     fs: Editor,
     logger: Logger,
     additionalChangeInfo?: CommonAdditionalChangeInfoProperties
 ): void {
-    const { fragmentPath } = change.content;
+    const { fragmentPath } = change;
     const fullPath = join(basePath, DirName.Changes, fragmentPath);
     const templateConfig = fragmentTemplateDefinitions[additionalChangeInfo?.templateName ?? ''];
     try {

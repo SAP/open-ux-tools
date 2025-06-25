@@ -36,6 +36,7 @@
                     <Select
                         id="aggregationIndex"
                         enabled="{/indexHandlingFlag}"
+                        visible="{/indexVisible}" 
                         selectedKey="{path: '/selectedIndex', type: 'sap.ui.model.type.Integer'}"
                         items="{
                             path: '/index',

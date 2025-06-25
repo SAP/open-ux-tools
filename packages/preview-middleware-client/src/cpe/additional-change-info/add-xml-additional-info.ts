@@ -16,10 +16,40 @@ export type AddXMLChangeContent = {
     targetAggregation?: string;
 };
 
-export function getAddXMLAdditionalInfo(change: FlexChange<AddXMLChangeContent>): AddXMLAdditionalInfo | undefined {
-    const selectorId = change.getSelector()?.id ?? '';
-    const targetAggregation = change.getContent()?.targetAggregation ?? '';
-    const templateName = getFragmentTemplateName(selectorId, targetAggregation);
+export type AppDescriptorV4Change = {
+    entityPropertyChange: {
+        propertyPath: string;
+        propertyValue: {
+            template: string;
+        };
+    };
+};
+
+function isAppDescriptorV4Change(content: any): content is AppDescriptorV4Change {
+    return !!content?.entityPropertyChange?.propertyValue?.template;
+}
+
+export function getAddXMLAdditionalInfo(
+    change: FlexChange<AddXMLChangeContent | AppDescriptorV4Change>,
+    control?: Element | undefined
+): AddXMLAdditionalInfo | undefined {
+    let templateName = '';
+    if (
+        control &&
+        change?.getChangeType?.() === 'appdescr_fe_changePageConfiguration' &&
+        isAppDescriptorV4Change(change.getContent())
+    ) {
+        const aggregation =
+            (change.getContent() as AppDescriptorV4Change).entityPropertyChange.propertyPath
+                .split('/')
+                .slice(-2)
+                .shift() ?? '';
+        templateName = getFragmentTemplateName(control.getId(), aggregation);
+    } else {
+        const selectorId = change.getSelector()?.id ?? '';
+        const targetAggregation = (change.getContent() as AddXMLChangeContent)?.targetAggregation ?? '';
+        templateName = getFragmentTemplateName(selectorId, targetAggregation);
+    }
     if (templateName) {
         return { templateName };
     }
