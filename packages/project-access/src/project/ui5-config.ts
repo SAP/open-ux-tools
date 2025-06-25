@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { DirName, FileName } from '../constants';
 import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file';
-import { MockServerConfiguration, MockServerService, Nullable } from '../types/ui5config';
+import type { MockServerConfiguration, MockServerService, Nullable } from '../types/ui5config';
 
 /**
  * Get path to webapp.
@@ -73,15 +73,28 @@ export async function getAllUi5YamlFileNames(projectRoot: string, memFs?: Editor
     }
 }
 
+/**
+ * Retrieves the mock server configuration from the UI5 mock YAML file.
+ *
+ * @param projectRoot - Path to the project root.
+ * @returns The mock server configuration or null if not found.
+ * @throws {Error} If the sap-fe-mockserver middleware is not found.
+ */
 export async function getMockServerConfig(projectRoot: string): Promise<Nullable<MockServerConfiguration>> {
     const ui5MockYamlFile = await readUi5Yaml(projectRoot, FileName.Ui5MockYaml);
     const mockserverMiddleware = ui5MockYamlFile.findCustomMiddleware('sap-fe-mockserver');
     if (!mockserverMiddleware) {
         throw new Error('Could not find sap-fe-mockserver');
-    } 
+    }
     return mockserverMiddleware.configuration;
 }
 
+/**
+ * Retrieves the mock data path from the mock server configuration.
+ *
+ * @param projectRoot - Path to the project root.
+ * @returns The mock data path as a string. Returns an empty string if not found.
+ */
 export async function getMockDataPath(projectRoot: string): Promise<String> {
     let mockdataPath: string = '';
     const mockServerConfig: Nullable<MockServerConfiguration> = await getMockServerConfig(projectRoot);
@@ -90,7 +103,9 @@ export async function getMockDataPath(projectRoot: string): Promise<String> {
         if ('service' in mockServerConfig && mockServerConfig.service) {
             services = Array.isArray(mockServerConfig.service) ? mockServerConfig.service : [mockServerConfig.service];
         } else if ('services' in mockServerConfig && mockServerConfig.services) {
-            services = Array.isArray(mockServerConfig.services) ? mockServerConfig.services : [mockServerConfig.services];
+            services = Array.isArray(mockServerConfig.services)
+                ? mockServerConfig.services
+                : [mockServerConfig.services];
         }
         if (Array.isArray(services)) {
             for (const service of services) {

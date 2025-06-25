@@ -1,7 +1,14 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml } from '../../src';
+import {
+    FileName,
+    getAllUi5YamlFileNames,
+    getMockDataPath,
+    getMockServerConfig,
+    getWebappPath,
+    readUi5Yaml
+} from '../../src';
 
 describe('Test getAllUi5YamlFileNames()', () => {
     const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'webapp-path');
@@ -14,6 +21,7 @@ describe('Test getAllUi5YamlFileNames()', () => {
             Array [
               "ui5-custom-multi.yaml",
               "ui5-custom.yaml",
+              "ui5-mock.yaml",
               "ui5.yaml",
             ]
         `);
@@ -28,6 +36,7 @@ describe('Test getAllUi5YamlFileNames()', () => {
         expect(await getAllUi5YamlFileNames(join(samplesRoot, 'default-with-ui5-yaml'), memFs)).toMatchInlineSnapshot(`
             Array [
               "ui5-custom-multi.yaml",
+              "ui5-mock.yaml",
               "ui5.yaml",
               "ui5-something.yaml",
             ]
@@ -179,5 +188,32 @@ describe('Test readUi5Yaml()', () => {
               },
             }
         `);
+    });
+});
+
+describe('get mock data path and mock service config', () => {
+    const samplesRoot = join(__dirname, '..', 'test-data', 'project', 'webapp-path');
+    const projectPath = join(samplesRoot, 'default-with-ui5-yaml');
+
+    it('returns mock server configuration if middleware sap-fe-mockserver exists', async () => {
+        const result = await getMockServerConfig(projectPath);
+        expect(result).toMatchInlineSnapshot(`
+            Object {
+              "annotations": Array [],
+              "mountPath": "/",
+              "services": Array [
+                Object {
+                  "generateMockData": true,
+                  "metadataPath": "./webapp/localService/mainService/metadata.xml",
+                  "mockdataPath": "./webapp/localService/mainService/data",
+                  "urlPath": "/sap/opu/odata4/sap/zz1ui_travels003_o4/srvd/sap/zz1ui_travels003_o4/0001",
+                },
+              ],
+            }
+        `);
+    });
+    it('returns mockdataPath from services', async () => {
+        const result = await getMockDataPath(projectPath);
+        expect(result).toBe('./webapp/localService/mainService/data');
     });
 });
