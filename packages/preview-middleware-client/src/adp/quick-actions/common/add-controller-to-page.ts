@@ -2,7 +2,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { getUi5Version } from '../../../utils/version';
-import { getAllSyncViewsIds, getControllerInfoForControl, getReuseComponentChecker, checkForExistingChange } from '../../utils';
+import { getControllerInfoForControl, getReuseComponentChecker, checkForExistingChange } from '../../utils';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import type {
     QuickActionContext,
@@ -56,13 +56,11 @@ export class AddControllerToPageQuickAction
             this.context.view,
             CONTROL_TYPES
         )) {
-            const syncViewsIds = await getAllSyncViewsIds(version);
             const controlInfo = getControllerInfoForControl(control);
             const data = await getExistingController(controlInfo.controllerName);
             this.controllerExists = data?.controllerExists;
             const isActiveAction = isControllerExtensionEnabledForControl(
                 control,
-                syncViewsIds,
                 isReuseComponent,
                 this.context.flexSettings.isCloud
             );

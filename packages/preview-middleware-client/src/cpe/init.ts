@@ -16,8 +16,10 @@ import { QuickActionService } from './quick-actions/quick-action-service';
 import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
 import { CommunicationService } from './communication-service';
 import { ContextMenuService } from './context-menu-service';
+import { getUi5Version } from '../utils/version';
+import { updateSyncViewsIds, showSyncViewsWarning } from './sync-views-utils';
 
-export default function init(
+export default async function init(
     rta: RuntimeAuthoring,
     registries: QuickActionDefinitionRegistry<string>[] = []
 ): Promise<void> {
@@ -54,6 +56,14 @@ export default function init(
         rtaService,
         quickActionService
     ];
+
+    // Detect synchronous views and show warning if any
+    const ui5VersionInfo = await getUi5Version();
+    outlineService.onOutlineChange(async () => {
+        await updateSyncViewsIds(ui5VersionInfo);
+        await showSyncViewsWarning();
+    })
+
     try {
         loadDefaultLibraries();
         const allPromises = services.map((service) => {
