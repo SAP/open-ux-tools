@@ -3,6 +3,7 @@ import type Generator from 'yeoman-generator';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { FlexLayer } from '@sap-ux/adp-tooling';
 
 export interface FlpConfigOptions extends Generator.GeneratorOptions {
     /**
@@ -22,10 +23,6 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
      */
     launchAsSubGen?: boolean;
     /**
-     * Application ID (refference ID) of the base application
-     */
-    appId?: string;
-    /**
      * Telemetry data to be send after deployment configuration has been added
      */
     telemetryData?: TelemetryData;
@@ -33,6 +30,10 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
      * Additional data for the generator
      */
     inbounds: ManifestNamespace.Inbound;
+    /**
+     * Layer for the FLP configuration
+     */
+    layer: FlexLayer;
     data?: {
         projectRootPath: string;
     };

@@ -8,7 +8,9 @@ import {
     getInboundsFromManifest,
     getVariant,
     getBaseAppInbounds,
-    type InternalInboundNavigation
+    type InternalInboundNavigation,
+    type FlexLayer,
+    type DescriptorVariant
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
@@ -67,7 +69,12 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
 
         const fs = create(createStorage());
 
-        const inbounds = await getInbounds(basePath, yamlPath, isAdp, fs, logger);
+        let variant: DescriptorVariant | undefined;
+        if (!isAdp) {
+            variant = await getVariant(basePath, fs);
+        }
+
+        const inbounds = await getInbounds(basePath, yamlPath, isAdp, fs, logger, variant);
         let tileSettingsAnswers: TileSettingsAnswers | undefined;
         if (inbounds && isAdp) {
             tileSettingsAnswers = await promptYUIQuestions(getTileSettingsQuestions(), false);
@@ -81,7 +88,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
         }
 
         if (isAdp) {
-            const config = getAdpFlpInboundsWriterConfig(answers, tileSettingsAnswers);
+            const config = getAdpFlpInboundsWriterConfig(answers, variant?.layer as FlexLayer, tileSettingsAnswers);
             await generateInboundConfig(basePath, config as InternalInboundNavigation, fs);
         } else {
             await generateInboundNavigationConfig(basePath, answers, true, fs);
@@ -106,6 +113,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean, y
  * @param {boolean} isAdp - Indicates whether the project is an ADP project.
  * @param {Editor} fs - The mem-fs editor instance.
  * @param {ToolsLogger} logger - The logger instance.
+ * @param {DescriptorVariant} [variant] - The descriptor variant, if applicable.
  * @returns {Promise<ManifestNamespace.Inbound | undefined>} The inbounds from the manifest or mapped from the system.
  */
 async function getInbounds(
@@ -113,13 +121,13 @@ async function getInbounds(
     yamlPath: string,
     isAdp: boolean,
     fs: Editor,
-    logger: ToolsLogger
+    logger: ToolsLogger,
+    variant?: DescriptorVariant
 ): Promise<ManifestNamespace.Inbound | undefined> {
     if (isAdp) {
-        const appId = (await getVariant(basePath)).reference;
         const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
         const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
-        return getBaseAppInbounds(appId, provider);
+        return getBaseAppInbounds(variant?.reference as string, provider);
     }
 
     const manifest = await retrieveManifest(basePath, fs);
