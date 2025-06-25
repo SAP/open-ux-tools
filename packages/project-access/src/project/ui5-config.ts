@@ -82,16 +82,11 @@ export async function getMockServerConfig(projectRoot: string): Promise<Nullable
     return mockserverMiddleware.configuration;
 }
 
-export async function getMockDataPath(projectRoot: string): Promise<String[]> {
-    let mockdataPath: string[] = [];
+export async function getMockDataPath(projectRoot: string): Promise<String> {
+    let mockdataPath: string = '';
     const mockServerConfig: Nullable<MockServerConfiguration> = await getMockServerConfig(projectRoot);
     if (mockServerConfig) {
         let services: MockServerService[] | undefined;
-        // if ('service' in mockServerConfig && Array.isArray(mockServerConfig.service) ) {
-        //     services = mockServerConfig.service;
-        // } else if ('services' in mockServerConfig && Array.isArray(mockServerConfig.services)) {
-        //     services =  mockServerConfig.services;
-        // }
         if ('service' in mockServerConfig && mockServerConfig.service) {
             services = Array.isArray(mockServerConfig.service) ? mockServerConfig.service : [mockServerConfig.service];
         } else if ('services' in mockServerConfig && mockServerConfig.services) {
@@ -100,7 +95,7 @@ export async function getMockDataPath(projectRoot: string): Promise<String[]> {
         if (Array.isArray(services)) {
             for (const service of services) {
                 if (service.mockdataPath) {
-                    mockdataPath = service.mockdataPath.slice(2).split('/'); // remove './' and split by '/'
+                    mockdataPath = service.mockdataPath;
                     break;
                 }
             }
