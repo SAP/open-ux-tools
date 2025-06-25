@@ -46,6 +46,7 @@ export default async function (rta: RuntimeAuthoring) {
     await init(rta, quickActionRegistries);
 
     // Register synchronious views detection and warning
+    // This is not awaited to prevent deadlock in the initialization
     rta.getService<RTAOutlineService>('outline').then((outlineService) => {
         outlineService.attachEvent('update', async () => {
             await updateSyncViewsIds(ui5VersionInfo);
