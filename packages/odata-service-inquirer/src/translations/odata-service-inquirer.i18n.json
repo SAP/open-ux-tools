@@ -187,7 +187,7 @@
         }
     },
     "info": {
-        "systemTypeMigration": "Performing a one-time migration to set system type for all backend systems."
+        "systemTypeMigration": "Performing a one-time migration to set the system type for all systems..."
     },
     "errors": {
         "destination": {
