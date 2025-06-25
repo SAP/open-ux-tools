@@ -77,6 +77,9 @@ export function validateConfig(config: AbapDeployConfig | undefined): AbapDeploy
     if (!config.app) {
         throwConfigMissingError('app');
     }
+    if (!config.credentials?.username?.startsWith('env:') || !config.credentials?.password?.startsWith('env:')) {
+        throw new Error('Invalid deployment configuration. Credentials must be set as environment variables.');
+    }
 
     return config;
 }
