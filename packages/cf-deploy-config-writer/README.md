@@ -17,7 +17,7 @@ Pnpm
 `pnpm add @sap-ux/cf-deploy-config-writer`
 
 ## Example: Reading and Writing MTA Configurations
-Generate an `MtaConfig` instance to read an `mta.yaml` configuration to allow you append different resources and modules. For example HTML5 resources, routing modules or append mta extension configurations. 
+Generate an `MtaConfig` instance to read an `mta.yaml` configuration to allow you to append different resources and modules. For example HTML5 resources, routing modules or append mta extension configurations.
 
 Dependent on the [MTA Tool](https://www.npmjs.com/package/mta) being installed globally on your dev space.
 - For VSCode, run the command `npm i -g mta`
@@ -131,6 +131,25 @@ const exampleWriter = async () => {
 // Calling the function
 await exampleWriter();
 ```
+
+## Additional Information
+
+* When appending Cloud Foundry deployment configuration to a HTML5 application that is missing a backend `path` in`ui5.yaml`, or there is no `dataSources` defined in `manifest.json`, the `xs-app.json` routing is appended with `'<apply-service-segment-path>'`. This is to allow you to append a custom service path if you introduce custom AJAX calls or add a new OData service.
+
+For example, the following configuration will be appended to the `xs-app.json` routing list:
+
+```json
+{
+  "source": "^<apply-service-segment-path>/(.*)$",
+  "target": "<apply-service-segment-path>/$1",
+  "destination": "mydestination",
+  "authenticationType": "xsuaa",
+  "csrfProtection": false
+}
+```
+
+Replace `<apply-service-segment-path>` with the actual service path you want to use, for example `/sap` or `/myservice`;
+
 
 ## Keywords
 SAP Fiori elements
