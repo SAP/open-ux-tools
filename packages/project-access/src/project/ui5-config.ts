@@ -71,3 +71,26 @@ export async function getAllUi5YamlFileNames(projectRoot: string, memFs?: Editor
         throw new Error(`There was an error reading files from the directory '${projectRoot}': ${error}`);
     }
 }
+
+export async function getMockServerConfig(
+    projectRoot: string
+): Promise<Nullable<MockServerConfiguration>> {
+    const ui5Config = await getParsedUi5YamlConfig(projectRoot, FileName.Ui5MockYaml);
+    const middlewares = ui5Config.server?.customMiddleware;
+    if (middlewares) {
+        let mockMW: MockServerMiddleware;
+        const mockMWName = 'sap-fe-mockserver';
+        if (Array.isArray(middlewares)) {
+            mockMW = middlewares.find((mw) => mw.name === mockMWName) as MockServerMiddleware;
+            return mockMW?.configuration || null;
+        }
+
+        const middleware = middlewares as MockServerMiddleware;
+        if (middleware.name === mockMWName) {
+            mockMW = middleware;
+        }
+
+        return mockMW?.configuration || null;
+    }
+    return null;
+}

@@ -34,6 +34,7 @@ export {
     getMinUI5VersionAsArray,
     getMinimumUI5Version,
     getMtaPath,
+    getMockServerConfig,
     getNodeModulesPath,
     getProject,
     getProjectType,
