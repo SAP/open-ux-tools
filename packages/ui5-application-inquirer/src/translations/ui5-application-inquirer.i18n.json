@@ -24,7 +24,7 @@
             "breadcrumb": "Project Path"
         },
         "ui5Version": {
-            "message": "Minimum SAPUI5 version",
+            "message": "Minimum SAPUI5 Version",
             "tooltip": "The minimum SAPUI5 version represents the minimum version of SAPUI5 that this application requires.",
             "breadcrumb": "SAPUI5 Version"
         },
