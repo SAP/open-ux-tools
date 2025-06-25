@@ -54,9 +54,7 @@ undeploy --config myproject/my-undeploy-config.yaml
 
 #### Minimal Configuration
 
-This is the minimal custom task configuration for deployment using package `$TMP`;
-* Supports `Basic Authentication` using environment variables
-* Change is recorded in a transport request
+This is the minimal custom task configuration for deployment using package `$TMP`, without the change being recorded in a transport request.
 
 ```yaml
 - name: abap-deploy-task
