@@ -1,5 +1,13 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.3.31
+
+### Patch Changes
+
+-   Updated dependencies [83109eb]
+    -   @sap-ux/project-input-validator@0.6.5
+    -   @sap-ux/adp-tooling@0.14.31
+
 ## 0.3.30
 
 ### Patch Changes

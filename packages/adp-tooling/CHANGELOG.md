@@ -1,5 +1,13 @@
 # @sap-ux/adp-tooling
 
+## 0.14.31
+
+### Patch Changes
+
+-   83109eb: feat(generator-adp): Various bug fixes and improvements for ADP generator
+-   Updated dependencies [83109eb]
+    -   @sap-ux/project-input-validator@0.6.5
+
 ## 0.14.30
 
 ### Patch Changes
