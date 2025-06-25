@@ -11,7 +11,8 @@ describe('Backend system data provider', () => {
         read: jest.fn(),
         del: jest.fn(),
         getAll: jest.fn(),
-        readAll: jest.fn()
+        readAll: jest.fn(),
+        partialUpdate: jest.fn()
     };
 
     const logger = new ToolsLogger({ transports: [new NullTransport()] });

@@ -122,6 +122,18 @@ class HybridStore<E extends object> implements DataAccess<E> {
 
         return deletedinFs || deletedInSecureStore;
     }
+
+    public async partialUpdate({
+        entityName: _entityName,
+        id: _id,
+        entity: _entity
+    }: {
+        entityName: string;
+        id: string;
+        entity: Partial<E>;
+    }): Promise<undefined> {
+        console.warn('Not yet implemented: partialUpdate for HybridStore');
+    }
 }
 
 /** A hybrid store

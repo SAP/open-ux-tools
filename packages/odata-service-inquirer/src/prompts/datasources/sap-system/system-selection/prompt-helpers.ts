@@ -10,7 +10,7 @@ import {
 } from '@sap-ux/btp-utils';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { BackendSystem } from '@sap-ux/store';
+import type { BackendSystem, DataAccess } from '@sap-ux/store';
 import { BackendSystemKey, getFilesystemStore, SystemService } from '@sap-ux/store';
 import { getBackendSystemType } from '../prompt-helpers';
 import type { ListChoiceOptions } from 'inquirer';
@@ -189,19 +189,20 @@ function getBackendSystemTypeName(systemType?: string): string {
 /**
  * Adds the system type to backend systems for all systems.
  * Should be removed in a number of sprints.
+ *
+ * @param fileSystemStore - the file system access for backend systems
  */
-async function addSystemTypeToBackendSystems(): Promise<void> {
+async function addSystemTypeToBackendSystems(fileSystemStore: DataAccess<BackendSystem>): Promise<void> {
     const allSystems = await new SystemService(LoggerHelper.logger).getAll();
     for (const system of allSystems) {
         // Set the system type based on the authentication type
         const systemType = getBackendSystemType(system);
         // Update the backend system in the systems.json file
-        await new SystemService(LoggerHelper.logger).partialUpdate(
-            BackendSystemKey.from(system as BackendSystem) as BackendSystemKey,
-            {
-                systemType
-            }
-        );
+        await fileSystemStore.partialUpdate({
+            entityName: 'system',
+            id: BackendSystemKey.from(system).getId(),
+            entity: { systemType }
+        });
     }
 }
 
@@ -307,8 +308,8 @@ export async function createSystemChoices(
         // to be removed in a number of sprints
         if (requiresSystemTypeMigration(backendSystems)) {
             // there are backend systems without a system type, so we perform a one-time migration to set the system type
-            LoggerHelper.logger.info(t('info.systemTypeMigration'));
-            await addSystemTypeToBackendSystems();
+            LoggerHelper.logger.debug(t('info.systemTypeMigration'));
+            await addSystemTypeToBackendSystems(fileSystemStore);
             backendSystems = await fileSystemStore.getAll({ entityName: 'system' });
         }
 

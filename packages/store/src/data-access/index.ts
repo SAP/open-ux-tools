@@ -17,6 +17,9 @@ export interface DataAccess<Entity> {
 
     /** Return entities as an object keyed by ID */
     readAll(options: { entityName: string }): Promise<{ [key: string]: Entity }>;
+
+    /** Updates chosen entity */
+    partialUpdate(options: { entityName: string; id: string; entity: Partial<Entity> }): Promise<undefined | Entity>;
 }
 
 export interface DataAccessConstructor<Entity> {

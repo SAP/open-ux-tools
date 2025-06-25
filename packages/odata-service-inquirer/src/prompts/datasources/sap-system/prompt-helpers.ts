@@ -2,7 +2,7 @@ import { t } from '../../../i18n';
 import { validateSystemName } from './validators';
 import type { BackendSystem } from '@sap-ux/store';
 
-export type SystemType = 'OnPrem' | 'S4HC' | 'BTP';
+export type SystemType = 'OnPrem' | 'S4HC' | 'BTP' | undefined;
 
 /**
  * Provides a system name suggestion based on the passed system name and client, validating the name is unique against the secure store.
@@ -44,11 +44,13 @@ async function appendSuffix(systemName: string) {
  * @returns - the system type
  */
 export function getBackendSystemType(system: BackendSystem): SystemType {
-    let backendSystemType: SystemType = 'OnPrem'; // Default to OnPrem
+    let backendSystemType: SystemType;
     if (system.authenticationType === 'reentranceTicket') {
         backendSystemType = 'S4HC';
     } else if (system.serviceKeys) {
         backendSystemType = 'BTP';
+    } else if (system.authenticationType === 'basic' || system.username) {
+        backendSystemType = 'OnPrem';
     }
     return backendSystemType;
 }

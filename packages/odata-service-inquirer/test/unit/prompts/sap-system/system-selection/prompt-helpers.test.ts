@@ -52,13 +52,13 @@ jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
     // Mock store access
     getFilesystemStore: jest.fn().mockImplementation(() => ({
-        getAll: jest.fn().mockResolvedValueOnce(backendSystemFromFile).mockResolvedValueOnce(backendSystems)
-    })),
-    SystemService: jest.fn().mockImplementation(() => ({
-        getAll: jest.fn().mockResolvedValue(backendSystems),
+        getAll: jest.fn().mockResolvedValueOnce(backendSystemFromFile).mockResolvedValueOnce(backendSystems),
         partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
             return Promise.resolve(system);
         })
+    })),
+    SystemService: jest.fn().mockImplementation(() => ({
+        getAll: jest.fn().mockResolvedValue(backendSystems)
     }))
 }));
 
