@@ -195,9 +195,8 @@ function getBackendSystemTypeName(systemType?: string): string {
 async function addSystemTypeToBackendSystems(fileSystemStore: DataAccess<BackendSystem>): Promise<void> {
     const allSystems = await new SystemService(LoggerHelper.logger).getAll();
     for (const system of allSystems) {
-        // Set the system type based on the authentication type
+        // determine and add the systemType to the systems (systems.json file edit only)
         const systemType = getBackendSystemType(system);
-        // Update the backend system in the systems.json file
         await fileSystemStore.partialUpdate({
             entityName: 'system',
             id: BackendSystemKey.from(system).getId(),
@@ -305,7 +304,7 @@ export async function createSystemChoices(
         const fileSystemStore = getFilesystemStore<BackendSystem>(LoggerHelper.logger);
         let backendSystems = await fileSystemStore.getAll({ entityName: 'system' });
 
-        // to be removed in a number of sprints
+        // N.B. should be removed in a number of sprints
         if (requiresSystemTypeMigration(backendSystems)) {
             // there are backend systems without a system type, so we perform a one-time migration to set the system type
             LoggerHelper.logger.debug(t('info.systemTypeMigration'));
