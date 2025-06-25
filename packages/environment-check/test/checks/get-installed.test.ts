@@ -79,7 +79,10 @@ describe('Test install functions', () => {
         const messages = logger.getMessages();
         expect(result).toBe(undefined);
         expect(messages).toStrictEqual([
-            { 'severity': 'error', 'text': 'An error occurred when retrieving the installed extensions: Could not read directory' }
+            {
+                'severity': 'error',
+                'text': 'An error occurred when retrieving the installed extensions: Could not read directory'
+            }
         ]);
     });
 

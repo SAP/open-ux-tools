@@ -66,7 +66,9 @@ describe('Test install queue functions', () => {
         );
         expect(infoLog.mock.lastCall).toEqual([
             new Error(
-                `Error code: 1 returned from \`${os.platform() === 'win32' ? 'npm.cmd' : 'npm'} install\`. Some process log, Stack trace error from stderr buffer`
+                `Error code: 1 returned from \`${
+                    os.platform() === 'win32' ? 'npm.cmd' : 'npm'
+                } install\`. Some process log, Stack trace error from stderr buffer`
             )
         ]);
     });

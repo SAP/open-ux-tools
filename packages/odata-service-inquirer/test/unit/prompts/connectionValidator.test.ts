@@ -104,7 +104,9 @@ describe('ConnectionValidator', () => {
         const validator = new ConnectionValidator();
         const result = await validator.validateUrl('https://example.com/service');
 
-        expect(result).toMatch('A connection error occurred. Please ensure the target host is available on the network: HTTP Status ENOTFOUND');
+        expect(result).toMatch(
+            'A connection error occurred. Please ensure the target host is available on the network: HTTP Status ENOTFOUND'
+        );
         expect(validator.validity).toEqual({
             urlFormat: true,
             reachable: false
@@ -803,7 +805,8 @@ describe('ConnectionValidator', () => {
             expect.objectContaining({
                 errorType: ERROR_TYPE.NOT_FOUND,
                 valResult: expect.objectContaining({
-                    message: 'The destination target URL cannot be found. The request failed with status code 404. Please check the destination target URL connectivity in your SAP BTP cockpit.'
+                    message:
+                        'The destination target URL cannot be found. The request failed with status code 404. Please check the destination target URL connectivity in your SAP BTP cockpit.'
                 })
             })
         );

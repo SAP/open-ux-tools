@@ -116,7 +116,9 @@ describe('getPrompts', () => {
             validation?.('customer.testName', {
                 dataSourceName: 'otherName'
             } as NewModelAnswers)
-        ).toBe('An OData annotation or service with the same name was already added to the project. Rename and try again.');
+        ).toBe(
+            'An OData annotation or service with the same name was already added to the project. Rename and try again.'
+        );
     });
 
     it('should return error message when validating service name prompt has name duplication', () => {
@@ -130,7 +132,9 @@ describe('getPrompts', () => {
                 addAnnotationMode: true,
                 dataSourceName: 'customer.testName'
             } as NewModelAnswers)
-        ).toBe('An OData Service Name must be different from an OData Annotation Data Source Name. Rename and try again.');
+        ).toBe(
+            'An OData Service Name must be different from an OData Annotation Data Source Name. Rename and try again.'
+        );
     });
 
     it('should return true when validating service uri prompt', () => {

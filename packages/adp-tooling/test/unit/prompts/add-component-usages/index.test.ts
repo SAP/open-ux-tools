@@ -263,7 +263,9 @@ describe('getPrompts', () => {
             const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
 
             expect(typeof validator).toBe('function');
-            expect(validator?.('library')).toBe('A library with the same name was already added to the project. Rename and try again.');
+            expect(validator?.('library')).toBe(
+                'A library with the same name was already added to the project. Rename and try again.'
+            );
         });
     });
 
