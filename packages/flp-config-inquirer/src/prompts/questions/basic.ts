@@ -1,5 +1,6 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { validateText } from '@sap-ux/project-input-validator';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 import type {
     ActionPromptOptions,
@@ -13,6 +14,7 @@ import type {
 } from '../../types';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Creates the 'semanticObject' prompt for FLP configuration.
@@ -22,18 +24,28 @@ import { promptNames } from '../../types';
  * @returns {FLPConfigQuestion} The prompt configuration for the semantic object.
  */
 export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObjectPromptOptions): FLPConfigQuestion {
+    const guiOptions: YUIQuestion['guiOptions'] = {
+        mandatory: true,
+        breadcrumb: true
+    };
+
+    if (options?.showTooltip) {
+        guiOptions.hint = t('tooltips.semObjectActionDuplication');
+    }
+
     return {
         name: promptNames.semanticObject,
         type: 'input',
-        guiOptions: {
-            mandatory: true,
-            breadcrumb: true
-        },
+        guiOptions,
         message: t('prompts.semanticObject'),
-        default: options?.default,
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.semanticObject ? `${answers?.inboundId?.semanticObject}_New` : '';
+        },
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, isCLI, 30, ['_']),
-        when: (answers: FLPConfigAnswers) => !answers?.inboundId
+        validate: (val) => validateText(val, isCLI, 30, ['_'])
     };
 }
 
@@ -42,21 +54,55 @@ export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObject
  *
  * @param {boolean} isCLI - Indicates if the platform is CLI.
  * @param {ActionPromptOptions} [options] - Optional configuration for the action prompt, including default values.
+ * @param {ManifestNamespace.Inbound} [inbounds] - Existing inbound configuration to derive default action.
  * @returns {FLPConfigQuestion} The prompt configuration for the action.
  */
-export function getActionPrompt(isCLI: boolean, options?: ActionPromptOptions): FLPConfigQuestion {
+export function getActionPrompt(
+    isCLI: boolean,
+    options?: ActionPromptOptions,
+    inbounds?: ManifestNamespace.Inbound
+): FLPConfigQuestion {
+    const guiOptions: YUIQuestion['guiOptions'] = {
+        mandatory: true,
+        breadcrumb: true
+    };
+
+    if (options?.showTooltip) {
+        guiOptions.hint = t('tooltips.semObjectActionDuplication');
+    }
+
     return {
         name: promptNames.action,
         type: 'input',
-        guiOptions: {
-            mandatory: true,
-            breadcrumb: true
-        },
+        guiOptions,
         message: t('prompts.action'),
-        default: options?.default,
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.action ? `${answers?.inboundId?.action}_New` : '';
+        },
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, isCLI, 60, ['_']),
-        when: (answers: FLPConfigAnswers) => !answers?.inboundId
+        validate: (val, answers: FLPConfigAnswers): string | boolean => {
+            const textValidation = validateText(val, isCLI, 60, ['_']);
+            if (textValidation !== true) {
+                return textValidation;
+            }
+
+            if (!inbounds || !answers.semanticObject) {
+                return true;
+            }
+
+            // If executeDuplicateValidation is not set to true, skip duplicate validation
+            if (!options?.executeDuplicateValidation) {
+                return true;
+            }
+
+            const isDuplicate = Object.values(inbounds).some(
+                (inbound: any) => inbound.semanticObject === answers.semanticObject && inbound.action === val
+            );
+            return isDuplicate ? t('validators.duplicateInbound') : true;
+        }
     };
 }
 
@@ -130,7 +176,12 @@ export function getTitlePrompt(
             breadcrumb: true
         },
         message: t('prompts.title'),
-        default: options?.default,
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.title ?? '';
+        },
         filter: (val: string): string => val?.trim(),
         validate: (val) => validateText(val, isCLI, 0)
     };
@@ -157,7 +208,12 @@ export function getSubTitlePrompt(
             breadcrumb: t('prompts.subTitle')
         },
         message: t('prompts.subTitle'),
-        default: options?.default,
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.subTitle ?? '';
+        },
         filter: (val: string): string => val?.trim()
     };
 }

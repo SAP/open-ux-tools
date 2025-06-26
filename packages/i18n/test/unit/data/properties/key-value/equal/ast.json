@@ -11,7 +11,13 @@
       "value": "https://en.wikipedia.org/",
       "range": "[(0,10)..(0,35)]"
     },
-    "range": "[(0,0)..(0,35)]"
+    "range": "[(0,0)..(0,35)]",
+    "endOfLineToken": {
+      "type": "end-of-line",
+      "image": "\n",
+      "start": 35,
+      "end": 36
+    }
   },
   {
     "type": "key-element-line",
@@ -25,7 +31,13 @@
       "value": "hello",
       "range": "[(1,6)..(1,11)]"
     },
-    "range": "[(1,0)..(1,11)]"
+    "range": "[(1,0)..(1,11)]",
+    "endOfLineToken": {
+      "type": "end-of-line",
+      "image": "\n",
+      "start": 47,
+      "end": 48
+    }
   },
   {
     "type": "key-element-line",

@@ -134,7 +134,7 @@ export function updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders?: UpdateWo
  * @param {Editor} fs - The file system editor to read and write the `launch.json` file.
  * @param {DebugOptions} debugOptions - Debug configuration options that dictate how the `launch.json`
  *     should be generated and what commands should be logged.
- * @param {boolean} enableVSCodeReload - A flag indicating whether the workspace should be reloaded in VS Code.
+ * @param {FioriOptions} fioriOptions - Options for the Fiori application - the html file for start commands and whether to enable reload.
  * @param {Logger} logger - Logger instance for logging information or warnings.
  * @returns {Promise<Editor>} - Returns the file system editor after potentially modifying the workspace
  *     and updating or creating the `launch.json` file.
@@ -143,14 +143,14 @@ async function handleDebugOptions(
     rootFolder: string,
     fs: Editor,
     debugOptions: DebugOptions,
-    enableVSCodeReload: boolean = true,
+    { startFile, enableVSCodeReload = true }: FioriOptions,
     logger?: Logger
 ): Promise<Editor> {
     const { launchJsonPath, workspaceFolderUri, cwd, appNotInWorkspace } = handleWorkspaceConfig(
         rootFolder,
         debugOptions
     );
-    const configurations = configureLaunchJsonFile(rootFolder, cwd, debugOptions).configurations;
+    const configurations = configureLaunchJsonFile(rootFolder, cwd, debugOptions, startFile).configurations;
 
     // If the `addStartCmd` option is set to `true`, the `npm start` command is used to start the server.
     const npmCommand = debugOptions.addStartCmd ? 'start' : 'run start-mock';
@@ -207,5 +207,5 @@ export async function createLaunchConfig(
     if (!debugOptions.vscode) {
         return fs;
     }
-    return await handleDebugOptions(rootFolder, fs, debugOptions, fioriOptions.enableVSCodeReload, logger);
+    return await handleDebugOptions(rootFolder, fs, debugOptions, fioriOptions, logger);
 }

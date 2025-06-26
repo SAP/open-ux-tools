@@ -21,7 +21,13 @@
       "value": "\\u3053\\u3093\\u306b\\u3061\\u306f",
       "range": "[(2,25)..(2,55)]"
     },
-    "range": "[(2,0)..(2,55)]"
+    "range": "[(2,0)..(2,55)]",
+    "endOfLineToken": {
+      "type": "end-of-line",
+      "image": "\n",
+      "start": 217,
+      "end": 218
+    }
   },
   {
     "type": "comment-line",

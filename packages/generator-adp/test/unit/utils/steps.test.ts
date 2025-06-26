@@ -1,7 +1,7 @@
 import { Prompts } from '@sap-devx/yeoman-ui-types';
 import type { IPrompt } from '@sap-devx/yeoman-ui-types';
 
-import { getWizardPages, getFlpPage, getDeployPage, updateWizardSteps } from '../../../src/utils/steps';
+import { getWizardPages, getFlpPages, getDeployPage, updateWizardSteps } from '../../../src/utils/steps';
 import { initI18n, t } from '../../../src/utils/i18n';
 
 describe('Wizard Steps Utility', () => {
@@ -16,7 +16,7 @@ describe('Wizard Steps Utility', () => {
     });
 
     it('should add a new step when it does not exist', () => {
-        const flpStep = getFlpPage();
+        const flpStep = getFlpPages(false, 'TestProject')[0];
         updateWizardSteps(prompts, flpStep, t('yuiNavSteps.projectAttributesName'), true);
 
         const steps = (prompts as any).items as IPrompt[];
@@ -24,7 +24,7 @@ describe('Wizard Steps Utility', () => {
     });
 
     it('should not add the step twice if it already exists', () => {
-        const flpStep = getFlpPage();
+        const flpStep = getFlpPages(false, 'TestProject')[0];
         updateWizardSteps(prompts, flpStep, t('yuiNavSteps.projectAttributesName'), true);
         updateWizardSteps(prompts, flpStep, t('yuiNavSteps.projectAttributesName'), true);
 
@@ -34,7 +34,7 @@ describe('Wizard Steps Utility', () => {
     });
 
     it('should remove an existing step', () => {
-        const flpStep = getFlpPage();
+        const flpStep = getFlpPages(false, 'TestProject')[0];
         updateWizardSteps(prompts, flpStep, '', true); // Add
         updateWizardSteps(prompts, flpStep, '', false); // Remove
 
@@ -54,7 +54,7 @@ describe('Wizard Steps Utility', () => {
 
     it('should move an existing step from end to middle', () => {
         const deployStep = getDeployPage();
-        const flpStep = getFlpPage();
+        const flpStep = getFlpPages(false, 'TestProject')[0];
 
         // Add FLP first → step order: Configuration, Project Attributes, FLP
         updateWizardSteps(prompts, flpStep, t('yuiNavSteps.projectAttributesName'), true);

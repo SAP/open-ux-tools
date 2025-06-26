@@ -147,6 +147,7 @@ export interface AddDeployConfigPromptOptions {
 
 export interface AddFlpConfigPromptOptions {
     hide?: boolean;
+    hasBaseAppInbounds?: boolean;
 }
 
 export type AttributePromptOptions = Partial<{

@@ -1,5 +1,17 @@
 # @sap-ux/project-input-validator
 
+## 0.6.5
+
+### Patch Changes
+
+-   83109eb: feat(generator-adp): Various bug fixes and improvements for ADP generator
+
+## 0.6.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+
 ## 0.6.3
 
 ### Patch Changes

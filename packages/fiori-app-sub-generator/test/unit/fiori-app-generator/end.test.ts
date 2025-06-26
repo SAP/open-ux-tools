@@ -63,7 +63,8 @@ describe('runPostGenerationTasks', () => {
         const project = {
             targetFolder: '/path/to/project',
             name: 'testProject',
-            flpAppId: 'testAppId'
+            flpAppId: 'testAppId',
+            enableVirtualEndpoints: false
         };
 
         await runPostGenerationTasks({ service, project }, fs, logger, vscode, appWizard);
@@ -75,7 +76,8 @@ describe('runPostGenerationTasks', () => {
                 flpAppId: project.flpAppId,
                 sapClientParam: 'sap-client=100',
                 odataVersion: service.odataVersion,
-                datasourceType: DatasourceType.sapSystem
+                datasourceType: DatasourceType.sapSystem,
+                enableVirtualEndpoints: project.enableVirtualEndpoints
             },
             fs,
             vscode,

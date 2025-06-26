@@ -93,4 +93,16 @@ describe('validateUI5VersionExists', () => {
         const result = await validateUI5VersionExists('1.120.0');
         expect(result).toBe(t('validators.ui5VersionDoesNotExistGeneric', { error: errorWith500.message }));
     });
+
+    it('should return true when fetch fails with not internet connection', async () => {
+        validateEmptyStringMock.mockReturnValue(null);
+        getOfficialBaseUI5VersionUrlMock.mockReturnValue('https://sapcdn.com/ui5/1.120.0');
+        getFormattedVersionMock.mockReturnValue('1.120.0.min.js');
+
+        const networkError = { message: 'fetch failed' };
+        fetchMock.mockRejectedValue(networkError);
+
+        const result = await validateUI5VersionExists('1.120.0');
+        expect(result).toBe(true);
+    });
 });

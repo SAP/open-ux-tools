@@ -243,8 +243,8 @@ export async function generateLaunchConfig(
                 vscode: vscode,
                 addStartCmd,
                 sapClientParam: options.sapClientParam,
-                flpAppId: options.flpAppId ?? '',
-                flpSandboxAvailable: true,
+                flpAppId: options?.enableVirtualEndpoints ? 'app-preview' : options.flpAppId ?? '',
+                flpSandboxAvailable: !options?.enableVirtualEndpoints,
                 isAppStudio: isAppStudio(),
                 writeToAppOnly
             };
@@ -254,6 +254,7 @@ export async function generateLaunchConfig(
             const fioriOptions: FioriOptions = {
                 name: basename(options.projectName),
                 projectRoot: projectPath,
+                startFile: options?.enableVirtualEndpoints ? 'test/flp.html' : undefined,
                 debugOptions
             };
             await createLaunchConfig(projectPath, fioriOptions, fs, log);

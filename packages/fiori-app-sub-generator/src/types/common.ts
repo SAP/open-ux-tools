@@ -57,4 +57,6 @@ export interface GenerateLaunchConfigOptions {
     flpAppId?: string;
     /** Optional OData service version (e.g. v2 or v4). */
     odataVersion?: OdataVersion;
+    /** Optional flag to enable virtual endpoints for the project. */
+    enableVirtualEndpoints?: boolean;
 }

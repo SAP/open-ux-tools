@@ -1,5 +1,11 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.9.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+
 ## 0.9.2
 
 ### Patch Changes
