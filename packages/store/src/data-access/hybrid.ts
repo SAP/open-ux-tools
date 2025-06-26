@@ -70,17 +70,17 @@ class HybridStore<E extends object> implements DataAccess<E> {
 
         const entitiesFs = (await this.filesystem.readAll({ entityName })) || {};
 
-        if (includeSensitiveData) {
-            const entitiesInSecureStore =
-                (await this.secureStore.getAll<E>(getFullyQualifiedServiceName(entityName))) || {};
-
-            for (const key of new Set([...Object.keys(entitiesFs), ...Object.keys(entitiesInSecureStore)])) {
-                // Make sure sensitive props override serialized ones
-                const entity: E = { ...entitiesFs[key], ...entitiesInSecureStore[key] };
-                result[key] = entity;
-            }
-        } else {
+        if (!includeSensitiveData) {
             return entitiesFs;
+        }
+
+        const entitiesInSecureStore =
+            (await this.secureStore.getAll<E>(getFullyQualifiedServiceName(entityName))) || {};
+
+        for (const key of new Set([...Object.keys(entitiesFs), ...Object.keys(entitiesInSecureStore)])) {
+            // Make sure sensitive props override serialized ones
+            const entity: E = { ...entitiesFs[key], ...entitiesInSecureStore[key] };
+            result[key] = entity;
         }
 
         return result;
