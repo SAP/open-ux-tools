@@ -230,7 +230,12 @@ describe('validateMtaId long Windows path', () => {
         };
         const combinedLength = `${longPath}\\${input}`.length;
         const result = validateMtaId(input, previousAnswers);
-        expect(result).toBe(t('error.windowsMtaIdPathTooLong', { length: combinedLength }));
+        expect(result).toBe(
+            t(
+                `The combined length {{length}} of the MTA ID and MTA path exceeds the default Windows paths length. This may cause issues with MTA project generation.`,
+                { length: combinedLength }
+            )
+        );
     });
 
     it('should use empty string for mtaPath if not provided and return error if length >= 256', () => {
@@ -246,7 +251,7 @@ describe('validateMtaId long Windows path', () => {
         };
         const combinedLength = `\\${input}`.length;
         const result = validateMtaId(input, previousAnswers);
-        expect(result).toBe(t('error.windowsMtaIdPathTooLong', { length: combinedLength }));
+        expect(result).toBe(t('errors.windowsMtaIdPathTooLong', { length: combinedLength }));
     });
 });
 
