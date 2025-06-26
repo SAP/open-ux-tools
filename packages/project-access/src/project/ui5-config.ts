@@ -102,7 +102,7 @@ export async function getMockDataPath(projectRoot: string): Promise<string> {
     }
 
     const services = extractServices(mockServerConfig);
-    if (!services || !Array.isArray(services)) {
+    if (!services) {
         return '';
     }
 
