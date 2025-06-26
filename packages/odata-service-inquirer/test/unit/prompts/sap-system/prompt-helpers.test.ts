@@ -1,6 +1,5 @@
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
 import { suggestSystemName } from '../../../../src/prompts/datasources/sap-system/prompt-helpers';
-import type { BackendSystem } from '@sap-ux/store';
 
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
