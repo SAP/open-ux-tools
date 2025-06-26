@@ -165,11 +165,30 @@ describe('debug config tests', () => {
         configOptions.flpSandboxAvailable = false;
         configOptions.flpAppId = 'app-preview';
         const launchFile = configureLaunchJsonFile(projectPath, cwd, configOptions, 'test/flp.html');
+
+        // live config
+        const liveConfig = {
+            ...liveConfigurationObj,
+            args: ['--config', './ui5-local.yaml', '--open', 'test/flp.html#app-preview']
+        };
+        expect(findConfiguration(launchFile, `Start ${projectName}`)).toEqual({
+            ...liveConfig,
+            args: ['--open', 'test/flp.html#app-preview']
+        });
+
+        // local config
         const localConfig = {
             ...localConfigurationObj,
             args: ['--config', './ui5-local.yaml', '--open', 'test/flp.html#app-preview']
         };
         expect(findConfiguration(launchFile, `Start ${projectName} Local`)).toEqual(localConfig);
+
+        // mock config
+        const mockConfig = {
+            ...mockConfigurationObj,
+            args: ['--config', './ui5-mock.yaml', '--open', 'test/flp.html#app-preview']
+        };
+        expect(findConfiguration(launchFile, `Start ${projectName} Mock`)).toEqual(mockConfig);
     });
 
     it('Should return correct configuration when migrator mock intent is provided', () => {
