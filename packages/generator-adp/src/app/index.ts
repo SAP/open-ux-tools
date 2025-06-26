@@ -460,7 +460,7 @@ export default class extends Generator {
                 !!this.baseAppInbounds,
                 this.prompts,
                 this.attributeAnswers.projectName,
-                this.attributeAnswers.addFlpConfig
+                !!this.attributeAnswers.addFlpConfig
             );
         }
     }
