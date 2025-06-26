@@ -1,4 +1,4 @@
-import { readFile, rm, stat, symlink, writeFile } from 'fs/promises';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
 import path from 'path';
 import fs from 'fs';
@@ -224,7 +224,7 @@ async function globalSetup(): Promise<void> {
     });
 
     // Start the server
-    const server = app.listen(port, () => {
+    app.listen(port, () => {
         console.log(`Mock ABAP backend is running on http://localhost:${port}`);
     });
 

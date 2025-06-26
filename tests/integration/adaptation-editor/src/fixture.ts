@@ -4,7 +4,7 @@ import { join } from 'path';
 import { getPortPromise } from 'portfinder';
 import { setup, teardown } from 'jest-dev-server';
 
-import type { FrameLocator, Page } from '@sap-ux-private/playwright';
+import type { FrameLocator } from '@sap-ux-private/playwright';
 import { test as base, expect } from '@sap-ux-private/playwright';
 
 import { SERVER_TIMEOUT, TIMEOUT } from './constant';
@@ -15,7 +15,7 @@ import {
     SIMPLE_APP,
     type ProjectConfig
 } from './project';
-import { lt, satisfies } from 'semver';
+import { satisfies } from 'semver';
 
 export type TestOptions = {
     previewFrame: FrameLocator;

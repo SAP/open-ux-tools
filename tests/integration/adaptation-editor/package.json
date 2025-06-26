@@ -12,7 +12,7 @@
         "lint:fix": "eslint . --ext .ts --fix",
         "test:clean": "rimraf --glob playwright-report",
         "test:run": "playwright test",
-        "test": "npm-run-all -l -s test:clean test:run",
+        "test:integration": "npm-run-all -l -s test:clean test:run",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },

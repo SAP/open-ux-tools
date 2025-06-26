@@ -1,4 +1,4 @@
-import { readdir, readFile, rm } from 'fs/promises';
+import { readdir, readFile } from 'fs/promises';
 import { join } from 'path';
 
 import { expect, type FrameLocator, type Page } from '@sap-ux-private/playwright';
@@ -322,7 +322,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
                     description: '<1.96.0'
                 }
             },
-            async ({ page, previewFrame, projectCopy, ui5Version }) => {
+            async ({ page, previewFrame, ui5Version }) => {
                 const tableSettings = new TableSettings(previewFrame);
                 const editor = new AdaptationEditorShell(page, ui5Version);
 
@@ -590,8 +590,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
                     description: '<1.96.0'
                 }
             },
-            async ({ page, previewFrame, projectCopy, ui5Version }) => {
-                const lr = new ListReport(previewFrame);
+            async ({ page, projectCopy, ui5Version }) => {
                 const editor = new AdaptationEditorShell(page, ui5Version);
 
                 await editor.quickActions.enableVariantManagementInTablesAndCharts.click();

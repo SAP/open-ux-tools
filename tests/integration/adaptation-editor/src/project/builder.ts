@@ -72,7 +72,7 @@ export async function createYamlFile(
     ui5Version: string,
     workerId: string
 ): Promise<string> {
-    const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(userParameters);
+    const { id, mainServiceUri } = getProjectParametersWithDefaults(userParameters);
     const template = await readFile(join(__dirname, 'templates', 'ui5.yaml'), 'utf-8');
     const document = await YamlDocument.newInstance(template);
 
@@ -84,7 +84,7 @@ export async function createYamlFile(
 }
 
 export function createComponent(userParameters: ProjectParameters, workerId: string): string {
-    const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(userParameters);
+    const { id } = getProjectParametersWithDefaults(userParameters);
     return `sap.ui.define(
     ["sap/suite/ui/generic/template/lib/AppComponent"],
     function (Component) {
@@ -117,7 +117,7 @@ export async function generateUi5Project(
     workerId: string,
     ui5Version: string
 ): Promise<string> {
-    const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(projectConfig);
+    const { id } = getProjectParametersWithDefaults(projectConfig);
     const root = join(__dirname, '..', '..', 'fixtures-copy', `${projectConfig.id}.${workerId}`);
     const yamlContent = await createYamlFile(projectConfig, ui5Version, workerId);
     const manifestContent = JSON.stringify(createV2Manifest(projectConfig, workerId), undefined, 2);
