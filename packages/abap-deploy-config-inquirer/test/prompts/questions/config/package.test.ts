@@ -22,7 +22,7 @@ describe('getPackagePrompts', () => {
                 "guiOptions": Object {
                   "applyDefaultWhenDirty": true,
                 },
-                "message": "Select how you want to enter the package.",
+                "message": "Select How You Want to Enter the Package",
                 "name": "packageInputChoice",
                 "type": "list",
                 "validate": [Function],
@@ -83,7 +83,7 @@ describe('getPackagePrompts', () => {
                     "value": "EnterManualChoice",
                   },
                   Object {
-                    "name": "Choose from existing",
+                    "name": "Choose from Existing",
                     "value": "ListExistingChoice",
                   },
                 ]

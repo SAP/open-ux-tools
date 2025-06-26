@@ -17,7 +17,7 @@ describe('getConfirmPrompts', () => {
                 "guiOptions": Object {
                   "breadcrumb": "prompts.confirm.index.hint",
                 },
-                "message": "Generate standalone index.html during deployment",
+                "message": "Generate Standalone index.html During Deployment",
                 "name": "index",
                 "type": "confirm",
                 "when": [Function],

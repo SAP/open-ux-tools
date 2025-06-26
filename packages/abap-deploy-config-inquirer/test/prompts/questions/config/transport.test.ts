@@ -25,7 +25,7 @@ describe('getTransportRequestPrompts', () => {
                 "guiOptions": Object {
                   "applyDefaultWhenDirty": true,
                 },
-                "message": "Select how you want to enter the transport request.",
+                "message": "Select How You Want to Enter the Transport Request",
                 "name": "transportInputChoice",
                 "type": "list",
                 "validate": [Function],
@@ -38,7 +38,7 @@ describe('getTransportRequestPrompts', () => {
               },
               Object {
                 "default": [Function],
-                "message": "Created new transport request.",
+                "message": "Created New Transport Request",
                 "name": "transportCreated",
                 "type": "input",
                 "when": [Function],
@@ -91,11 +91,11 @@ describe('getTransportRequestPrompts', () => {
                     "value": "EnterManualChoice",
                   },
                   Object {
-                    "name": "Choose from existing",
+                    "name": "Choose from Existing",
                     "value": "ListExistingChoice",
                   },
                   Object {
-                    "name": "Create during deployment",
+                    "name": "Create During Deployment",
                     "value": "CreateDuringDeployChoice",
                   },
                   Object {
@@ -131,7 +131,7 @@ describe('getTransportRequestPrompts', () => {
                     "value": "EnterManualChoice",
                   },
                   Object {
-                    "name": "Choose from existing",
+                    "name": "Choose from Existing",
                     "value": "ListExistingChoice",
                   },
                   Object {
