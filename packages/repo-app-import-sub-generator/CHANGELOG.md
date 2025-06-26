@@ -1,5 +1,20 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.48
+
+### Patch Changes
+
+-   Updated dependencies [bac9dbc]
+    -   @sap-ux/launch-config@0.10.7
+
+## 0.3.47
+
+### Patch Changes
+
+-   Updated dependencies [83109eb]
+    -   @sap-ux/project-input-validator@0.6.5
+    -   @sap-ux/odata-service-inquirer@2.5.6
+
 ## 0.3.46
 
 ### Patch Changes

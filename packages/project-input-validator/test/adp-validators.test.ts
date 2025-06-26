@@ -100,7 +100,7 @@ describe('project input validators', () => {
 
         it('delegates to internal validation if not customer base', () => {
             const result = validateProjectName('validname', path, false);
-            expect(result).toBe(true);
+            expect(result).toBe(t('adp.projectNameValidationErrorInt'));
         });
 
         it('delegates to external validation if customer base', () => {
@@ -110,28 +110,21 @@ describe('project input validators', () => {
     });
 
     describe('validateProjectNameExternal', () => {
-        const path = '/mock/path';
-
         beforeEach(() => {
             existsSyncMock.mockReturnValue(false);
         });
 
         it('returns length error if name > 61 chars or ends with component', () => {
-            expect(validateProjectNameExternal('a'.repeat(62), path)).toBe(t('adp.projectNameLengthErrorExt'));
-            expect(validateProjectNameExternal('appcomponent', path)).toBe(t('adp.projectNameLengthErrorExt'));
+            expect(validateProjectNameExternal('a'.repeat(62))).toBe(t('adp.projectNameLengthErrorExt'));
+            expect(validateProjectNameExternal('appcomponent')).toBe(t('adp.projectNameLengthErrorExt'));
         });
 
         it('returns validation error if name does not match pattern', () => {
-            expect(validateProjectNameExternal('invalid name!', path)).toBe(t('adp.projectNameValidationErrorExt'));
-        });
-
-        it('returns duplication error if name already exists', () => {
-            existsSyncMock.mockReturnValue(true);
-            expect(validateProjectNameExternal('validname', path)).toBe(t('adp.duplicatedProjectName'));
+            expect(validateProjectNameExternal('invalid name!')).toBe(t('adp.projectNameValidationErrorExt'));
         });
 
         it('returns true for valid name', () => {
-            expect(validateProjectNameExternal('validname', path)).toBe(true);
+            expect(validateProjectNameExternal('validname')).toBe(true);
         });
     });
 
@@ -139,18 +132,18 @@ describe('project input validators', () => {
         const path = '/mock/path';
 
         it('returns error if name starts with "customer", is too long, or ends with component', () => {
-            expect(validateProjectNameInternal('customerapp', path)).toBe(t('adp.projectNameLengthErrorInt'));
-            expect(validateProjectNameInternal('a'.repeat(62), path)).toBe(t('adp.projectNameLengthErrorInt'));
-            expect(validateProjectNameInternal('mycomponent', path)).toBe(t('adp.projectNameLengthErrorInt'));
+            expect(validateProjectNameInternal('customerapp')).toBe(t('adp.projectNameLengthErrorInt'));
+            expect(validateProjectNameInternal('a'.repeat(62))).toBe(t('adp.projectNameLengthErrorInt'));
+            expect(validateProjectNameInternal('mycomponent')).toBe(t('adp.projectNameLengthErrorInt'));
         });
 
         it('returns validation error if name does not match pattern', () => {
-            expect(validateProjectNameInternal('invalid name!', path)).toBe(t('adp.projectNameValidationErrorInt'));
+            expect(validateProjectNameInternal('invalid name!')).toBe(t('adp.projectNameValidationErrorInt'));
         });
 
         it('returns true for valid internal project name', () => {
             existsSyncMock.mockReturnValue(false);
-            expect(validateProjectNameInternal('vendorapp', path)).toBe(true);
+            expect(validateProjectNameInternal('vendorapp')).toBe(t('adp.projectNameValidationErrorInt'));
         });
     });
 

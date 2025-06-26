@@ -1,4 +1,4 @@
-import type { IChildLogger } from '@vscode-logging/logger';
+import type { ToolsLogger } from '@sap-ux/logger';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 import { initI18n } from '../../../src/utils/i18n';
@@ -13,7 +13,7 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
 const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 
 describe('appWizardCache', () => {
-    let logger: IChildLogger;
+    let logger: ToolsLogger;
     let mockWizard: AppWizardWithCache;
 
     beforeAll(async () => {
@@ -24,7 +24,7 @@ describe('appWizardCache', () => {
         logger = {
             debug: jest.fn(),
             info: jest.fn()
-        } as unknown as IChildLogger;
+        } as unknown as ToolsLogger;
         mockWizard = {} as AppWizardWithCache;
     });
 
