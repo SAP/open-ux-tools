@@ -49,22 +49,40 @@ class HybridStore<E extends object> implements DataAccess<E> {
         }
     }
 
-    public async getAll({ entityName }: { entityName: string }): Promise<[] | E[]> {
-        return Object.values(await this.readAll({ entityName })) as unknown as E[];
+    public async getAll({
+        entityName,
+        includeSensitiveData = true
+    }: {
+        entityName: string;
+        includeSensitiveData?: boolean;
+    }): Promise<[] | E[]> {
+        return Object.values(await this.readAll({ entityName, includeSensitiveData })) as unknown as E[];
     }
 
-    async readAll({ entityName }: { entityName: string }): Promise<{ [key: string]: E }> {
+    async readAll({
+        entityName,
+        includeSensitiveData = true
+    }: {
+        entityName: string;
+        includeSensitiveData?: boolean;
+    }): Promise<{ [key: string]: E }> {
         const result: { [key: string]: E } = {};
 
         const entitiesFs = (await this.filesystem.readAll({ entityName })) || {};
-        const entitiesInSecureStore =
-            (await this.secureStore.getAll<E>(getFullyQualifiedServiceName(entityName))) || {};
 
-        for (const key of new Set([...Object.keys(entitiesFs), ...Object.keys(entitiesInSecureStore)])) {
-            // Make sure sensitive props override serialized ones
-            const entity: E = { ...entitiesFs[key], ...entitiesInSecureStore[key] };
-            result[key] = entity;
+        if (includeSensitiveData) {
+            const entitiesInSecureStore =
+                (await this.secureStore.getAll<E>(getFullyQualifiedServiceName(entityName))) || {};
+
+            for (const key of new Set([...Object.keys(entitiesFs), ...Object.keys(entitiesInSecureStore)])) {
+                // Make sure sensitive props override serialized ones
+                const entity: E = { ...entitiesFs[key], ...entitiesInSecureStore[key] };
+                result[key] = entity;
+            }
+        } else {
+            return entitiesFs;
         }
+
         return result;
     }
 
@@ -124,15 +142,19 @@ class HybridStore<E extends object> implements DataAccess<E> {
     }
 
     public async partialUpdate({
-        entityName: _entityName,
-        id: _id,
-        entity: _entity
+        entityName,
+        id,
+        entity
     }: {
         entityName: string;
         id: string;
         entity: Partial<E>;
-    }): Promise<undefined> {
-        console.warn('Not yet implemented: partialUpdate for HybridStore');
+    }): Promise<undefined | E> {
+        return this.filesystem.partialUpdate({
+            entityName,
+            id,
+            entity
+        });
     }
 }
 

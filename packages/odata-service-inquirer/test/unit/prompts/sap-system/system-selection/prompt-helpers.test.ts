@@ -11,30 +11,22 @@ import type { AuthenticationType, BackendSystem } from '@sap-ux/store';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import type { AxiosError } from '@sap-ux/axios-extension';
 
-const backendSystemBasicFromFile: BackendSystem = {
-    name: 'http://abap.on.prem:1234',
-    url: 'http://abap.on.prem:1234'
-};
 const backendSystemBasic: BackendSystem = {
-    ...backendSystemBasicFromFile,
+    name: 'http://abap.on.prem:1234',
+    url: 'http://abap.on.prem:1234',
     username: 'user1',
     password: 'password1',
     systemType: 'OnPrem'
 };
 
-const backendSystemReentranceFromFile: BackendSystem = {
-    name: 'http://s4hc:1234',
-    url: 'http:/s4hc:1234'
-};
-
 const backendSystemReentrance: BackendSystem = {
-    ...backendSystemReentranceFromFile,
+    name: 'http://s4hc:1234',
+    url: 'http:/s4hc:1234',
     authenticationType: 'reentranceTicket',
     systemType: 'S4HC'
 };
 
 const backendSystems: BackendSystem[] = [backendSystemBasic, backendSystemReentrance];
-const backendSystemFromFile: BackendSystem[] = [backendSystemBasicFromFile, backendSystemReentranceFromFile];
 const destination1 = { Name: 'dest1', Host: 'http://dest1.com' } as Destination;
 const destination2 = { Name: 'dest2', Host: 'https://dest2.com:12345' } as Destination;
 const baseTestDestinations: Destinations = { 'dest1': destination1, 'dest2': destination2 };
@@ -51,14 +43,11 @@ jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
     // Mock store access
-    getFilesystemStore: jest.fn().mockImplementation(() => ({
-        getAll: jest.fn().mockResolvedValueOnce(backendSystemFromFile).mockResolvedValueOnce(backendSystems),
+    SystemService: jest.fn().mockImplementation(() => ({
+        getAll: jest.fn().mockResolvedValueOnce(backendSystems),
         partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
             return Promise.resolve(system);
         })
-    })),
-    SystemService: jest.fn().mockImplementation(() => ({
-        getAll: jest.fn().mockResolvedValue(backendSystems)
     }))
 }));
 

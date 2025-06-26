@@ -65,6 +65,7 @@ const destinations: Destinations = { 'dest1': destination1 };
 
 const systemServiceReadMock = jest.fn();
 const systemServiceMock = {
+    getAll: jest.fn().mockResolvedValue(backendSystems),
     read: systemServiceReadMock
 } as Partial<SystemService>;
 
@@ -72,10 +73,7 @@ jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
     // Mock store access
-    SystemService: jest.fn().mockImplementation(() => systemServiceMock),
-    getFilesystemStore: jest.fn().mockImplementation(() => ({
-        getAll: jest.fn().mockResolvedValue(backendSystems)
-    }))
+    SystemService: jest.fn().mockImplementation(() => systemServiceMock)
 }));
 
 jest.mock('@sap-ux/btp-utils', () => ({

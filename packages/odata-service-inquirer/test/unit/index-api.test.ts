@@ -19,7 +19,7 @@ jest.mock('../../src/prompts/datasources/sap-system/system-selection', () => ({
 jest.mock('@sap-ux/store', () => ({
     __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('@sap-ux/store'),
-    getFilesystemStore: jest.fn().mockImplementation(() => ({
+    SystemService: jest.fn().mockImplementation(() => ({
         getAll: jest.fn().mockResolvedValue([
             {
                 name: 'storedSystem1',

@@ -13,10 +13,10 @@ export interface DataAccess<Entity> {
     del(options: { entityName: string; id: string }): Promise<boolean>;
 
     /** Return an array of entities */
-    getAll(options: { entityName: string }): Promise<Entity[]>;
+    getAll(options: { entityName: string; includeSensitiveData?: boolean }): Promise<Entity[]>;
 
     /** Return entities as an object keyed by ID */
-    readAll(options: { entityName: string }): Promise<{ [key: string]: Entity }>;
+    readAll(options: { entityName: string; includeSensitiveData?: boolean }): Promise<{ [key: string]: Entity }>;
 
     /** Updates chosen entity */
     partialUpdate(options: { entityName: string; id: string; entity: Partial<Entity> }): Promise<undefined | Entity>;
@@ -26,4 +26,4 @@ export interface DataAccessConstructor<Entity> {
     new (logger: Logger, options?: ServiceOptions): DataAccess<Entity>;
 }
 
-export { getFilesystemWatcherFor, getFilesystemStore } from './filesystem';
+export { getFilesystemWatcherFor } from './filesystem';

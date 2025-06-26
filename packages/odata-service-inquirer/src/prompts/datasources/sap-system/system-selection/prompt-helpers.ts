@@ -10,9 +10,8 @@ import {
 } from '@sap-ux/btp-utils';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { BackendSystem, DataAccess } from '@sap-ux/store';
-import { BackendSystemKey, getFilesystemStore, SystemService } from '@sap-ux/store';
-import { getBackendSystemType } from '../prompt-helpers';
+import type { BackendSystem } from '@sap-ux/store';
+import { type BackendSystemKey, SystemService } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { ConnectedSystem, DestinationFilters } from '../../../../types';
@@ -175,39 +174,12 @@ export function getBackendSystemDisplayName(system: BackendSystem): string {
  */
 function getBackendSystemTypeName(systemType?: string): string {
     let systemTypeName = ''; // for on prem we do not show the system type
-    if (systemType === 'BTP' || systemType === 'S4HC') {
-        systemTypeName = ` (${systemType})`;
+    if (systemType === 'S4HC') {
+        systemTypeName = ` (${t('texts.systemTypeS4HC')})`;
+    } else if (systemType === 'BTP') {
+        systemTypeName = ` (${t('texts.systemTypeBTP')})`;
     }
     return systemTypeName;
-}
-
-/**
- * Adds the system type to backend systems for all systems.
- * Should be removed in a number of sprints.
- *
- * @param fileSystemStore - the file system access for backend systems
- */
-async function addSystemTypeToBackendSystems(fileSystemStore: DataAccess<BackendSystem>): Promise<void> {
-    const allSystems = await new SystemService(LoggerHelper.logger).getAll();
-    for (const system of allSystems) {
-        // determine and add the systemType to the systems (systems.json file edit only)
-        const systemType = getBackendSystemType(system);
-        await fileSystemStore.partialUpdate({
-            entityName: 'system',
-            id: BackendSystemKey.from(system).getId(),
-            entity: { systemType }
-        });
-    }
-}
-
-/**
- * Simple check to see if the backend systems require a system type migration.
- *
- * @param systems - the list of backend systems to check
- * @returns - true if any of the backend systems do not have a system type, false otherwise
- */
-function requiresSystemTypeMigration(systems?: BackendSystem[]): boolean {
-    return Array.isArray(systems) && systems.some((system) => !system.systemType);
 }
 
 /**
@@ -295,18 +267,7 @@ export async function createSystemChoices(
             };
         }
     } else {
-        // Fetch backend systems from systems.json file, credential are fetched once the system is selected
-        const fileSystemStore = getFilesystemStore<BackendSystem>(LoggerHelper.logger);
-        let backendSystems = await fileSystemStore.getAll({ entityName: 'system' });
-
-        // N.B. should be removed in a number of sprints
-        if (requiresSystemTypeMigration(backendSystems)) {
-            // there are backend systems without a system type, so we perform a one-time migration to set the system type
-            LoggerHelper.logger.debug(t('info.systemTypeMigration'));
-            await addSystemTypeToBackendSystems(fileSystemStore);
-            backendSystems = await fileSystemStore.getAll({ entityName: 'system' });
-        }
-
+        const backendSystems = await new SystemService(LoggerHelper.logger).getAll({ includeSensitiveData: false });
         systemChoices = backendSystems.map((system) => {
             return {
                 name: getBackendSystemDisplayName(system),
