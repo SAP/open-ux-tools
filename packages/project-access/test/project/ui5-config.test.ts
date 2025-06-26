@@ -22,6 +22,7 @@ describe('Test getAllUi5YamlFileNames()', () => {
             Array [
               "ui5-custom-multi.yaml",
               "ui5-custom.yaml",
+              "ui5-local.yaml",
               "ui5-mock.yaml",
               "ui5.yaml",
             ]
@@ -37,6 +38,7 @@ describe('Test getAllUi5YamlFileNames()', () => {
         expect(await getAllUi5YamlFileNames(join(samplesRoot, 'default-with-ui5-yaml'), memFs)).toMatchInlineSnapshot(`
             Array [
               "ui5-custom-multi.yaml",
+              "ui5-local.yaml",
               "ui5-mock.yaml",
               "ui5.yaml",
               "ui5-something.yaml",
@@ -245,8 +247,26 @@ describe('get configuration for sap-fe-mockserver', () => {
         );
     });
 
-    it('returns mock server configuration if middleware sap-fe-mockserver exists', async () => {
+    it('returns mock server configuration if middleware sap-fe-mockserver exists in UI5mockYaml', async () => {
         const result = await getMockServerConfig(projectPath);
+        expect(result).toMatchInlineSnapshot(`
+            Object {
+              "annotations": Array [],
+              "mountPath": "/",
+              "services": Array [
+                Object {
+                  "generateMockData": true,
+                  "metadataPath": "./webapp/localService/mainService/metadata.xml",
+                  "mockdataPath": "./webapp/localService/mainService/data",
+                  "urlPath": "/sap/opu/odata4/sap/zz1ui_travels003_o4/srvd/sap/zz1ui_travels003_o4/0001",
+                },
+              ],
+            }
+        `);
+    });
+
+    it('returns mock server configuration if middleware sap-fe-mockserver exists in Ui5LocalYaml', async () => {
+        const result = await getMockServerConfig(projectPath, FileName.Ui5LocalYaml);
         expect(result).toMatchInlineSnapshot(`
             Object {
               "annotations": Array [],
@@ -265,6 +285,11 @@ describe('get configuration for sap-fe-mockserver', () => {
 
     it('returns mockdataPath from services', async () => {
         const result = await getMockDataPath(projectPath);
+        expect(result).toBe('./webapp/localService/mainService/data');
+    });
+
+    it('returns mockdataPath from services', async () => {
+        const result = await getMockDataPath(projectPath, FileName.Ui5LocalYaml);
         expect(result).toBe('./webapp/localService/mainService/data');
     });
 
