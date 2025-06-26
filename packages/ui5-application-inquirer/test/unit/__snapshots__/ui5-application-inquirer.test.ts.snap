@@ -66,7 +66,7 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
       "breadcrumb": "SAPUI5 Version",
       "hint": "The minimum SAPUI5 version represents the minimum version of SAPUI5 that this application requires.",
     },
-    "message": "Minimum SAPUI5 version",
+    "message": "Minimum SAPUI5 Version",
     "name": "ui5Version",
     "source": [Function],
     "type": "list",
