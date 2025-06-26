@@ -5,6 +5,8 @@ import type {
     promptNames
 } from '@sap-ux/odata-service-inquirer';
 import type { UI5ApplicationPromptOptions } from '@sap-ux/ui5-application-inquirer';
+import type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-inquirer';
+import type { CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-inquirer';
 
 /**
  * package.json script entries (commands and tasks)
@@ -22,9 +24,11 @@ export type WorkspaceFolder = {
     path: string;
 };
 
-// Union type of all `@sap-ux/ui5-application-inquirer` and selected `@sap-ux/odata-service-inquirer` prompt options
+// Union type of all `@sap-ux/ui5-application-inquirer` and selected `@sap-ux/odata-service-inquirer` & `@sap-ux/abap-deploy-config-inquirer` prompt options
 export type FioriAppGeneratorPromptSettings = UI5ApplicationPromptOptions &
-    Pick<OdataServicePromptOptions, promptNames.systemSelection>;
+    Pick<OdataServicePromptOptions, promptNames.systemSelection | promptNames.serviceSelection> & {
+        '@sap-ux/deploy-config-sub-generator'?: AbapDeployConfigPromptOptions | CfDeployConfigPromptOptions;
+    };
 
 /**
  * Custom environment type until yeoman-environment provides one
@@ -53,4 +57,6 @@ export interface GenerateLaunchConfigOptions {
     flpAppId?: string;
     /** Optional OData service version (e.g. v2 or v4). */
     odataVersion?: OdataVersion;
+    /** Optional flag to enable virtual endpoints for the project. */
+    enableVirtualEndpoints?: boolean;
 }

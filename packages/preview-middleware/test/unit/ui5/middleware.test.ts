@@ -7,6 +7,7 @@ import { join } from 'path';
 import nock from 'nock';
 import type { EnhancedRouter } from '../../../src/base/flp';
 import { ToolsLogger } from '@sap-ux/logger';
+import * as projectAccess from '@sap-ux/project-access';
 
 jest.mock('@sap-ux/store', () => {
     return {
@@ -18,6 +19,9 @@ jest.mock('@sap-ux/store', () => {
         )
     };
 });
+
+jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
+jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
 
 async function getRouter(fixture?: string, configuration: Partial<MiddlewareConfig> = {}): Promise<EnhancedRouter> {
     return await (previewMiddleware as any).default({

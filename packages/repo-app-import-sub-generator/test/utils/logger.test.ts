@@ -32,10 +32,10 @@ describe('RepoAppDownloadLogger', () => {
     it('should create a new LogWrapper if none is provided', () => {
         const mockYoLogger = { log: jest.fn() } as unknown as Logger;
         const mockLogLevel: LogLevel = 'info';
-        const mockVscLogger = { 
+        const mockVscLogger = {
             log: jest.fn(),
             debug: jest.fn(),
-            getChildLogger: jest.fn().mockReturnValue({ 
+            getChildLogger: jest.fn().mockReturnValue({
                 log: jest.fn(),
                 debug: jest.fn()
             })

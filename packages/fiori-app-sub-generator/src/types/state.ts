@@ -1,3 +1,4 @@
+import type { AuthenticationType } from '@sap-ux/store';
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import type { CdsUi5PluginInfo, UI5FlexLayer } from '@sap-ux/project-access';
@@ -11,6 +12,7 @@ import type {
 } from '@sap-ux/odata-service-inquirer';
 import type { ApiHubType, SapSystemSourceType } from '../types/constants';
 import type { Script } from './common';
+import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
 
 export interface Project {
     targetFolder: string;
@@ -51,6 +53,7 @@ export interface Service {
     client?: string;
     destinationName?: string;
     servicePath?: string; // url path of odata or cap service
+    serviceId?: string; // id of the service
     edmx?: string; // Optional since Fiori Freestyle can be generated without datasource
     annotations?: Annotations[];
     version?: OdataVersion; // Not present for FF no datasource template flow
@@ -72,6 +75,13 @@ export interface Service {
     destinationAuthType?: string;
     apiHubConfig?: ApiHubConfig;
     ignoreCertError?: boolean;
+    /**
+     * Can be set by adaptors if preview settings have been determined
+     */
+    previewSettings?: {
+        scp?: boolean;
+        authenticationType?: AuthenticationType;
+    };
 }
 
 /**
@@ -125,6 +135,10 @@ export interface State {
      * The template selected by the user, maybe FE or FF
      */
     floorplan: Floorplan;
+    /**
+     * General information about the application - used for README and appGenInfo.json
+     */
+    appGenInfo?: Partial<AppGenInfo>;
 }
 
 /** Only used by headless */

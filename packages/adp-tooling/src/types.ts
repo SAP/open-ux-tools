@@ -122,6 +122,8 @@ export interface AttributesAnswers {
     targetFolder: string;
     ui5Version: string;
     enableTypeScript: boolean;
+    addDeployConfig?: boolean;
+    addFlpConfig?: boolean;
 }
 
 export interface SourceApplication {
@@ -148,6 +150,11 @@ export interface VersionDetail {
     version: string;
     support: string;
     lts: boolean;
+}
+
+export interface TypesConfig {
+    typesPackage: string;
+    typesVersion: string;
 }
 
 export interface ResourceModel {
@@ -193,13 +200,13 @@ export interface NewInboundNavigation {
     title: string;
     /** Optional: Subtitle associated with the inbound navigation. */
     subTitle?: string;
+    /** Icon associated with the inbound navigation. */
+    icon?: string;
 }
 
 export interface InternalInboundNavigation extends NewInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
-    /** Flag indicating if the new inbound navigation should be added. */
-    addInboundId?: boolean;
 }
 
 export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;
@@ -745,6 +752,8 @@ export interface AddInboundModel {
     title: string;
     /** Optional: Subtitle associated with the inbound navigation data. */
     subTitle?: string;
+    /** Optional: Icon associated with the inbound navigation data. */
+    icon?: string;
     signature: AddInboundSignitureModel;
 }
 export interface AddInboundSignitureModel {

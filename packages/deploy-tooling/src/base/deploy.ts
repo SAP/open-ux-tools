@@ -13,6 +13,7 @@ import { promptConfirmation } from './prompt';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
 import { getAppDescriptorVariant } from './archive';
 import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem, checkForCredentials } from './validate';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**
  * Internal deployment commands
@@ -42,6 +43,15 @@ async function handleError(
     logger: Logger,
     archive: Buffer
 ): Promise<void> {
+    if (ErrorHandler.isCertError(error)) {
+        const gaLink = new ErrorHandler(undefined, undefined, '@sap-ux/deploy-tooling')
+            .getValidationErrorHelp(error)
+            ?.toString();
+        if (gaLink) {
+            logger.info(gaLink);
+        }
+    }
+
     const retry = config.retry === undefined ? true : config.retry;
     if (retry && isAxiosError(error)) {
         const success = await axiosErrorRetryHandler(command, error.response, provider, config, logger, archive);

@@ -1,5 +1,24 @@
 # @sap-ux/ui5-application-writer
 
+## 1.5.4
+
+### Patch Changes
+
+-   3ea811a: Bump @ui5/cli version
+
+## 1.5.3
+
+### Patch Changes
+
+-   163522f: fix non-virtual endpoint preview config
+
+## 1.5.2
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+
 ## 1.5.1
 
 ### Patch Changes

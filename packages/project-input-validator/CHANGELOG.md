@@ -1,5 +1,29 @@
 # @sap-ux/project-input-validator
 
+## 0.6.5
+
+### Patch Changes
+
+-   83109eb: feat(generator-adp): Various bug fixes and improvements for ADP generator
+
+## 0.6.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+
+## 0.6.3
+
+### Patch Changes
+
+-   c9f79c1: Check long Windows paths during project generation and deployment config generation.
+
+## 0.6.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+
 ## 0.6.1
 
 ### Patch Changes

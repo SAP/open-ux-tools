@@ -1,5 +1,116 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.14.17
+
+### Patch Changes
+
+-   Updated dependencies [83109eb]
+    -   @sap-ux/project-input-validator@0.6.5
+
+## 0.14.16
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.15
+
+## 0.14.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/project-input-validator@0.6.4
+-   @sap-ux/inquirer-common@0.7.14
+
+## 0.14.14
+
+### Patch Changes
+
+-   c9f79c1: Check long Windows paths during project generation and deployment config generation.
+-   Updated dependencies [c9f79c1]
+    -   @sap-ux/project-input-validator@0.6.3
+
+## 0.14.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.13
+
+## 0.14.12
+
+### Patch Changes
+
+-   20cc54f: enhance theme retrieval for latest UI5 versions
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/ui5-info@0.12.0
+    -   @sap-ux/inquirer-common@0.7.12
+
+## 0.14.11
+
+### Patch Changes
+
+-   Updated dependencies [7f35f6c]
+    -   @sap-ux/ui5-info@0.11.1
+    -   @sap-ux/inquirer-common@0.7.11
+
+## 0.14.10
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
+## 0.14.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.9
+
+## 0.14.8
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+
+## 0.14.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.7
+
+## 0.14.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.6
+
+## 0.14.5
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.5
+
+## 0.14.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+-   @sap-ux/project-input-validator@0.6.2
+-   @sap-ux/inquirer-common@0.7.4
+
+## 0.14.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.3
+
+## 0.14.2
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+
 ## 0.14.1
 
 ### Patch Changes

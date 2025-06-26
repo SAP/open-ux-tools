@@ -1,3 +1,4 @@
+import { DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { PromptNames, type RepoAppDownloadAnswers } from '../app/types';
 
 // Title and description for the generator
@@ -16,7 +17,7 @@ export const qfaJsonFileName = 'qfa.json';
 
 // Default initial answers to use as a fallback.
 export const defaultAnswers: RepoAppDownloadAnswers = {
-    [PromptNames.systemSelection]: {},
+    [PromptNames.systemSelection]: { datasourceType: DatasourceType.sapSystem },
     [PromptNames.selectedApp]: {
         appId: '',
         title: '',

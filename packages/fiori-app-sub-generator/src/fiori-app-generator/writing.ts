@@ -1,5 +1,5 @@
-import type { ReadMe } from '@sap-ux/fiori-generator-shared';
-import { generateReadMe, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import type { AppGenInfo } from '@sap-ux/fiori-generator-shared';
+import { generateAppGenInfo, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Editor } from 'mem-fs-editor';
 import { basename, join } from 'path';
 import type { ApiHubConfig, State } from '../types';
@@ -7,26 +7,28 @@ import { DEFAULT_CAP_HOST } from '../types';
 import { getLaunchText, getReadMeDataSourceLabel, isBTPHosted, t } from '../utils';
 
 /**
- * Writes a README.md file based on project, service, and additional readme properties.
+ * Writes app related information files - README.md & .appGenInfo.json.
+ * The files are based on the project, service, and additional properties.
  *
  * @param state
  * @param state.project
  * @param state.service
  * @param state.floorplan
  * @param state.entityRelatedConfig
+ * @param state.appGenInfo
  * @param generatorName
  * @param generatorVersion
  * @param targetPath
  * @param fs
- * @param readMe
+ * @param existingAppGenInfo
  */
-export async function writeReadMe(
-    { project, service, floorplan, entityRelatedConfig }: State,
+export async function writeAppGenInfoFiles(
+    { project, service, floorplan, entityRelatedConfig, appGenInfo }: State,
     generatorName: string,
     generatorVersion: string,
     targetPath: string,
     fs: Editor,
-    readMe?: Partial<ReadMe>
+    existingAppGenInfo?: Partial<AppGenInfo>
 ): Promise<void> {
     const templateLabel = t(`floorplans.label.${floorplan}`, {
         odataVersion: service.version
@@ -39,7 +41,7 @@ export async function writeReadMe(
     );
 
     // Assign any custom overriding properties that may be provided via headless, adaptors
-    const readMeCustom: Partial<ReadMe> = Object.assign(
+    const appGenInfoCustom: Partial<AppGenInfo> = Object.assign(
         {
             generatorName,
             generatorVersion,
@@ -48,27 +50,28 @@ export async function writeReadMe(
             serviceUrl:
                 `${service.capService ? DEFAULT_CAP_HOST : service.host ?? ''}${service.servicePath ?? ''}` ||
                 t('texts.notApplicable')
-        } as Partial<ReadMe>,
-        readMe
+        } as Partial<AppGenInfo>,
+        existingAppGenInfo,
+        appGenInfo
     );
 
-    readMeCustom.additionalEntries ??= [];
+    appGenInfoCustom.entityRelatedConfig ??= [];
 
     if (entityRelatedConfig?.mainEntity) {
-        readMeCustom.additionalEntries.push({
-            label: t('readme.label.mainEntity'),
+        appGenInfoCustom.entityRelatedConfig.push({
+            type: t('readme.label.mainEntity'),
             value: entityRelatedConfig.mainEntity.entitySetName
         });
     }
     if (entityRelatedConfig?.navigationEntity) {
-        readMeCustom.additionalEntries.push({
-            label: t('readme.label.navigationEntity'),
+        appGenInfoCustom.entityRelatedConfig.push({
+            type: t('readme.label.navigationEntity'),
             value: entityRelatedConfig.navigationEntity.navigationPropertyName || 'None'
         });
     }
     if (entityRelatedConfig?.filterEntitySet) {
-        readMeCustom.additionalEntries.push({
-            label: t('readme.label.filterEntityType'),
+        appGenInfoCustom.entityRelatedConfig.push({
+            type: t('readme.label.filterEntityType'),
             value: entityRelatedConfig.filterEntitySet.entitySetName
         });
     }
@@ -80,29 +83,32 @@ export async function writeReadMe(
         project.namespace
     );
 
-    const readme: ReadMe = {
-        generationDate: readMeCustom?.generationDate ?? new Date().toString(),
-        generatorPlatform: readMeCustom?.generatorPlatform ?? getHostEnvironment().name,
-        serviceType: readMeCustom?.serviceType,
+    const genInfo: AppGenInfo = {
+        generationDate: appGenInfoCustom?.generationDate ?? new Date().toString(),
+        generatorPlatform: appGenInfoCustom?.generatorPlatform ?? getHostEnvironment().name,
+        serviceType: appGenInfoCustom?.serviceType,
         metadataFilename: service.localEdmxFilePath ? basename(service.localEdmxFilePath) : '',
-        serviceUrl: readMeCustom?.serviceUrl,
+        serviceId: service.serviceId,
+        serviceUrl: appGenInfoCustom?.serviceUrl,
         appName: project.name,
         appTitle: project.title,
         appDescription: project.description,
         appNamespace: project.namespace ?? '',
         ui5Theme: project.ui5Theme,
-        ui5Version: readMeCustom?.ui5Version || project.manifestMinUI5Version || project.ui5Version,
+        ui5Version: appGenInfoCustom?.ui5Version || project.manifestMinUI5Version || project.ui5Version,
         enableCodeAssist: project.enableCodeAssist,
         enableEslint: project.enableEslint,
         enableTypeScript: project.enableTypeScript,
         showMockDataInfo: !!service.edmx && !service.capService,
-        generatorVersion: readMeCustom?.generatorVersion ?? '',
-        template: readMeCustom?.template ?? '',
-        generatorName: readMeCustom?.generatorName ?? '',
-        additionalEntries: readMeCustom?.additionalEntries ?? [],
+        generatorVersion: appGenInfoCustom?.generatorVersion ?? '',
+        template: appGenInfoCustom?.template ?? '',
+        generatorName: appGenInfoCustom?.generatorName ?? '',
+        entityRelatedConfig: appGenInfoCustom?.entityRelatedConfig ?? [],
+        externalParameters: appGenInfoCustom?.externalParameters,
         launchText
     };
-    generateReadMe(targetPath, readme, fs);
+
+    generateAppGenInfo(targetPath, genInfo, fs);
 }
 
 /**

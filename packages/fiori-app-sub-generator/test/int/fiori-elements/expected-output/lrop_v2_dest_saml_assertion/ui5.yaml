@@ -31,3 +31,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testNameSpacelropv2destsamlassertion
+            action: tile

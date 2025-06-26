@@ -4,7 +4,7 @@ import type { AppInfo, AppItem } from '../app/types';
 import { PromptState } from './prompt-state';
 import { t } from '../utils/i18n';
 import RepoAppDownloadLogger from '../utils/logger';
-
+import { type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 /**
  * Returns the details for the YUI prompt.
  *
@@ -55,9 +55,14 @@ export const extractAppData = (app: AppItem): { name: string; value: AppInfo } =
 export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value: AppInfo }> => {
     return appList
         .filter((app: AppItem) => {
-            const hasRequiredFields = app['sap.app/id'] && app['sap.app/title'] && app['repoName'] && app['url'];
+            RepoAppDownloadLogger.logger?.debug(`formatAppChoices: ${JSON.stringify(app)}`);
+            const hasRequiredFields =
+                app['sap.app/id'] &&
+                app['repoName'] &&
+                app['url'] &&
+                Object.prototype.hasOwnProperty.call(app, 'sap.app/title'); // allow for empty title
             if (!hasRequiredFields) {
-                RepoAppDownloadLogger.logger?.warn(t('warn.requiredFieldsMissing', { app: app.appId }));
+                RepoAppDownloadLogger.logger?.warn(t('warn.requiredFieldsMissing', { app: app['sap.app/id'] }));
             }
             return hasRequiredFields;
         })
@@ -82,6 +87,7 @@ async function getAppList(provider: AbapServiceProvider, appId?: string): Promis
         return await provider.getAppIndex().search(searchParams, appListResultFields);
     } catch (error) {
         RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: error.message }));
+        RepoAppDownloadLogger.logger?.debug(t('error.applicationListFetchError', { error: JSON.stringify(error) }));
         return [];
     }
 }
@@ -89,19 +95,19 @@ async function getAppList(provider: AbapServiceProvider, appId?: string): Promis
 /**
  * Fetches the application list for the selected system.
  *
- * @param {AbapServiceProvider} serviceProvider - The ABAP service provider.
+ * @param {ConnectedSystem} connectedSystem - The ABAP service provider.
  * @param {string} appId - Application ID to be downloaded.
  * @returns {Promise<AppIndex>} A list of applications filtered by source template.
  */
 export async function fetchAppListForSelectedSystem(
-    serviceProvider: AbapServiceProvider,
+    connectedSystem: ConnectedSystem,
     appId?: string
 ): Promise<AppIndex> {
-    if (serviceProvider) {
+    if (connectedSystem?.serviceProvider) {
         PromptState.systemSelection = {
-            connectedSystem: { serviceProvider }
+            connectedSystem: connectedSystem
         };
-        return await getAppList(serviceProvider, appId);
+        return await getAppList(connectedSystem.serviceProvider as AbapServiceProvider, appId);
     }
     return [];
 }

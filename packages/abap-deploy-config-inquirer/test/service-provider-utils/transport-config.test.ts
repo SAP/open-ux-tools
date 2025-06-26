@@ -3,6 +3,9 @@ import { TenantType } from '@sap-ux/axios-extension';
 import { t } from '../../src/i18n';
 import { getTransportConfigInstance } from '../../src/service-provider-utils';
 import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
+import LoggerHelper from '../../src/logger-helper';
+import { AxiosError } from 'axios';
+import { addi18nResourceBundle } from '@sap-ux/inquirer-common';
 
 jest.mock('../../src/service-provider-utils/abap-service-provider', () => ({
     ...jest.requireActual('../../src/service-provider-utils/abap-service-provider'),
@@ -172,6 +175,34 @@ describe('getTransportConfigInstance', () => {
             credentials: {}
         });
         expect(transportConfigResult2.transportConfigNeedsCreds).toBe(false);
-        expect(transportConfigResult2.warning).toBe('Failed to get ATO info');
+
+        // Certificate errors
+        mockGetOrCreateServiceProvider.mockResolvedValueOnce({
+            getAdtService: jest
+                .fn()
+                .mockRejectedValueOnce(new AxiosError('self signed certificate', 'DEPTH_ZERO_SELF_SIGNED_CERT'))
+        });
+        const loggerSpyWarn = jest.spyOn(LoggerHelper.logger, 'warn');
+        const loggerSpyDebug = jest.spyOn(LoggerHelper.logger, 'debug');
+        const loggerSpyInfo = jest.spyOn(LoggerHelper.logger, 'info');
+        addi18nResourceBundle(); // Ensure i18n is initialized for GA link creation testing
+
+        const transportConfigResult3 = await getTransportConfigInstance({
+            backendTarget: {
+                abapTarget: { url: 'https://example.com' }
+            },
+            credentials: {}
+        });
+        expect(transportConfigResult3.transportConfigNeedsCreds).toBe(undefined);
+        // Expect GA link to be logged
+        expect(loggerSpyWarn).toHaveBeenCalledWith(
+            t('warnings.certificateError', { url: 'https://example.com', error: 'self signed certificate' })
+        );
+        expect(loggerSpyDebug).toHaveBeenCalledWith(
+            t('errors.debugAbapTargetSystem', { url: 'https://example.com', error: 'self signed certificate' })
+        );
+        expect(loggerSpyInfo).toHaveBeenCalledWith(
+            expect.stringContaining('https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/53643')
+        );
     });
 });

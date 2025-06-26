@@ -3,7 +3,8 @@ import { MiddlewareConfigs } from '../types';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types';
 import type { Editor } from 'mem-fs-editor';
-
+import { basename } from 'path';
+import type { ToolsLogger } from '@sap-ux/logger';
 /**
  * Type guard to check if the given configuration is a deprecated preview middleware configuration.
  *
@@ -76,4 +77,22 @@ export async function getCLIForPreview(
 ): Promise<string | undefined> {
     const previewMiddleware = await getPreviewMiddleware(undefined, basePath, yamlFileName, fs);
     return previewMiddleware?.name === MiddlewareConfigs.PreviewMiddleware ? 'ui5 serve' : 'fiori run';
+}
+
+/**
+ * Deletes the given file.
+ *
+ * @param fs - file system reference
+ * @param files - files to be deleted
+ * @param logger logger to report info to the user
+ */
+export async function deleteFiles(fs: Editor, files: string[], logger?: ToolsLogger): Promise<void> {
+    files.forEach((path: string): void => {
+        if (fs.exists(path)) {
+            fs.delete(path);
+            logger?.info(
+                `Deleted the '${basename(path)}' file. This file is no longer needed for the virtual endpoints.`
+            );
+        }
+    });
 }
