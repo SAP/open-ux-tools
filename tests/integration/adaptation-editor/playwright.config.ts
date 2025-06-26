@@ -8,7 +8,7 @@ import type { PlaywrightTestConfig, Project } from '@sap-ux-private/playwright';
  */
 import 'dotenv/config';
 
-import type { TestOptions } from './test/integration/fixture';
+import type { TestOptions } from './src/fixture';
 
 const versions = JSON.parse(readFileSync(join(__dirname, 'versions.json').toString()) as unknown as string) as string[];
 
@@ -16,7 +16,7 @@ const versions = JSON.parse(readFileSync(join(__dirname, 'versions.json').toStri
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig<TestOptions> = {
-    testDir: './test/integration',
+    testDir: './src',
     /* Run tests in files in parallel */
     fullyParallel: true,
     /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -44,7 +44,7 @@ const config: PlaywrightTestConfig<TestOptions> = {
         }
     })) as Project<{}, TestOptions>[],
     // timeout: 9999 * 1000,
-    globalSetup: require.resolve('./test/integration/global-setup')
+    globalSetup: require.resolve('./src/global-setup')
     // webServer: {
     //     command: 'node server',
     //     url: 'http://localhost:3050/status',

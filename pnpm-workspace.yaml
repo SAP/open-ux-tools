@@ -1,5 +1,7 @@
 packages:
     - 'packages/*'
     - 'examples/*'
+    - 'tests/integration/*'
+    - 'tests/fixtures/projects/mock'
     - 'types'
     - '!**/test/**'

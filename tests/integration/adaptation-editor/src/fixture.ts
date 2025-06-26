@@ -7,14 +7,14 @@ import { setup, teardown } from 'jest-dev-server';
 import type { FrameLocator, Page } from '@sap-ux-private/playwright';
 import { test as base, expect } from '@sap-ux-private/playwright';
 
-import { SERVER_TIMEOUT, TIMEOUT } from './utils/constant';
+import { SERVER_TIMEOUT, TIMEOUT } from './constant';
 import {
     ADAPTATION_EDITOR_PATH,
     generateUi5Project,
     generateAdpProject,
     SIMPLE_APP,
     type ProjectConfig
-} from '../project';
+} from './project';
 import { lt, satisfies } from 'semver';
 
 export type TestOptions = {
@@ -22,7 +22,8 @@ export type TestOptions = {
     testSkipper: boolean;
 };
 
-const PACKAGE_ROOT = join(__dirname, '..', 'fixtures', 'mock');
+// Avoid installing npm packages every time, but use symlink instead
+const PACKAGE_ROOT = join(__dirname, '..', '..', '..', 'fixtures', 'projects', 'mock');
 export type WorkerFixtures = {
     projectCopy: string;
     projectServer: number;

@@ -6,15 +6,12 @@ import fs from 'fs';
 import express from 'express';
 import ZipFile from 'adm-zip';
 
-import { install } from '@sap-ux-private/playwright';
-
 /**
  * Global setup.
  *
  * It fetches maintained UI5 versions and add them to `process.env` variable.
  */
 async function globalSetup(): Promise<void> {
-    await install(join(__dirname, '..', 'fixtures', 'mock'));
     const app = express();
     const port = 3050;
     const mapping: Record<string, Set<string>> = {};

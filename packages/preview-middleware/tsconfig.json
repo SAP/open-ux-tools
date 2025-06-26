@@ -31,9 +31,6 @@
       "path": "../logger"
     },
     {
-      "path": "../playwright"
-    },
-    {
       "path": "../project-access"
     },
     {
@@ -44,9 +41,6 @@
     },
     {
       "path": "../ui5-info"
-    },
-    {
-      "path": "../yaml"
     }
   ]
 }

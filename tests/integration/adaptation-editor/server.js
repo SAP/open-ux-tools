@@ -18,19 +18,18 @@ const playwright_1 = require('@sap-ux-private/playwright');
  * It fetches maintained UI5 versions and add them to `process.env` variable.
  */
 async function globalSetup() {
-    await (0, playwright_1.install)((0, path_1.join)(__dirname, 'test', 'fixtures', 'mock'));
+    // await (0, playwright_1.install)((0, path_1.join)(__dirname, 'test', 'fixtures', 'mock'));
     const app = (0, express_1.default)();
     const port = 3050;
     const mapping = {};
     // Define the path to the static content
-    const staticPath = path_2.default.join(__dirname, 'test', 'fixtures-copy');
+    const staticPath = path_2.default.join(__dirname, 'fixtures-copy');
     app.use((req, res, next) => {
         console.log('Request URL:', req.url);
         next();
     });
 
     app.get('/status', (req, res) => {
-        
         res.sendStatus(200);
     });
     // Serve static files
@@ -39,7 +38,7 @@ async function globalSetup() {
         res.sendStatus(200);
     });
     app.get('/sap/bc/adt/discovery', (req, res) => {
-        const filePath = path_2.default.join(__dirname, 'test', 'integration', 'responses', 'discovery.xml');
+        const filePath = path_2.default.join(__dirname, 'src', 'responses', 'discovery.xml');
         const readStream = fs_1.default.createReadStream(filePath);
         readStream.on('open', () => {
             res.setHeader('Content-Type', 'application/xml');
@@ -66,7 +65,7 @@ async function globalSetup() {
                 const manifestText = await (0, promises_1.readFile)(
                     (0, path_1.join)(
                         __dirname,
-                        'test',
+
                         'fixtures-copy',
                         `${variant.reference}`,
                         'webapp',

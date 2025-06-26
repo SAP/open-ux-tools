@@ -21,6 +21,11 @@ server:
     - name: preview-middleware
       afterMiddleware: reload-middleware
       configuration:
+        adp:
+          ignoreCertErrors: true
+          target:
+            url: http://localhost:3050
+            client: "000"
         rta:
           layer: CUSTOMER_BASE
           editors:
@@ -53,7 +58,7 @@ metadata:
 kind: extension
 type: server-middleware
 middleware:
-  path: ../../../dist/ui5/middleware.js
+  path: node_modules/@sap-ux/preview-middleware/dist/ui5/middleware.js
 ---
 specVersion: "3.0"
 metadata:
@@ -61,7 +66,7 @@ metadata:
 kind: extension
 type: server-middleware
 middleware:
-  path: ../../../../ui5-proxy-middleware/dist/ui5/middleware.js
+  path: node_modules/@sap-ux/ui5-proxy-middleware/dist/ui5/middleware.js
 ---
 specVersion: "3.0"
 metadata:
@@ -69,7 +74,7 @@ metadata:
 kind: extension
 type: server-middleware
 middleware:
-  path: ../../../../backend-proxy-middleware/dist/middleware.js
+  path: node_modules/@sap-ux/backend-proxy-middleware/dist/middleware.js
 ---
 specVersion: "3.0"
 metadata:
@@ -77,12 +82,4 @@ metadata:
 kind: extension
 type: server-middleware
 middleware:
-  path: ../../../../reload-middleware/dist/ui5/middleware.js
-# ---
-# specVersion: "3.0"
-# metadata:
-#   name: sap-fe-mockserver
-# kind: extension
-# type: server-middleware
-# middleware:
-#   path: ../../../node_modules/@sap-ux/ui5-middleware-fe-mockserver/dist/ui5/middleware.js
+  path: node_modules/@sap-ux/reload-middleware/dist/ui5/middleware.js

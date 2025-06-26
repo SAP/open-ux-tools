@@ -118,7 +118,7 @@ export async function generateUi5Project(
     ui5Version: string
 ): Promise<string> {
     const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(projectConfig);
-    const root = join(__dirname, '..', 'fixtures-copy', `${projectConfig.id}.${workerId}`);
+    const root = join(__dirname, '..', '..', 'fixtures-copy', `${projectConfig.id}.${workerId}`);
     const yamlContent = await createYamlFile(projectConfig, ui5Version, workerId);
     const manifestContent = JSON.stringify(createV2Manifest(projectConfig, workerId), undefined, 2);
 
@@ -221,7 +221,7 @@ export async function generateAdpProject(
     livereloadPort: number
 ): Promise<string> {
     const { id } = getAdpProjectParametersWithDefaults(projectConfig);
-    const root = join(__dirname, '..', 'fixtures-copy', `${projectConfig.id}.${workerId}`);
+    const root = join(__dirname, '..', '..', 'fixtures-copy', `${projectConfig.id}.${workerId}`);
     const yamlContent = await createAdpYamlFile(
         projectConfig,
         ui5Version,

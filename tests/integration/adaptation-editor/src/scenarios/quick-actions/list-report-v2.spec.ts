@@ -1,10 +1,11 @@
-import { expect, type FrameLocator, type Page } from '@sap-ux-private/playwright';
-
-import { test } from '../../../adp-fixture';
-import { ADP_FIORI_ELEMENTS_V2 } from '../../../../project';
-import { join } from 'path';
 import { readdir, readFile, rm } from 'fs/promises';
+import { join } from 'path';
+
+import { expect, type FrameLocator, type Page } from '@sap-ux-private/playwright';
 import { gte, lt, satisfies } from 'semver';
+
+import { test } from '../../fixture';
+import { ADP_FIORI_ELEMENTS_V2 } from '../../project';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
