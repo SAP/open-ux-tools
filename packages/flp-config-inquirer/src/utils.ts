@@ -68,7 +68,9 @@ function buildReplaceInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: Fl
         signature: { parameters } = {}
     } = flpConfigAnswers.inboundId ?? ({} as InboundContent);
     let inboundId = !semanticObject || !action ? '' : `${semanticObject}-${action}`;
-    inboundId = layer === FlexLayer.CUSTOMER_BASE ? `${NamespacePrefix.CUSTOMER}${inboundId}` : inboundId;
+    if (inboundId) {
+        inboundId = layer === FlexLayer.CUSTOMER_BASE ? `${NamespacePrefix.CUSTOMER}${inboundId}` : inboundId;
+    }
     return {
         inboundId,
         semanticObject: semanticObject ?? '',
@@ -92,7 +94,9 @@ function buildAddInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: FlexLa
         !flpConfigAnswers.semanticObject || !flpConfigAnswers.action
             ? ''
             : `${flpConfigAnswers.semanticObject}-${flpConfigAnswers.action}`;
-    inboundId = layer === FlexLayer.CUSTOMER_BASE ? `${NamespacePrefix.CUSTOMER}${inboundId}` : inboundId;
+    if (inboundId) {
+        inboundId = layer === FlexLayer.CUSTOMER_BASE ? `${NamespacePrefix.CUSTOMER}${inboundId}` : inboundId;
+    }
 
     return {
         inboundId,
