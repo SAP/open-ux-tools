@@ -260,7 +260,7 @@ export class FlpSandbox {
             this.templateConfig.ui5.flex = this.templateConfig.ui5.flex.filter(
                 (connector) =>
                     !isFlexConnector(connector) ||
-                    (isFlexConnector(connector) && connector.url?.startsWith('/sap/bc/lrep'))
+                    (isFlexConnector(connector) && !connector.url?.startsWith('/sap/bc/lrep'))
             );
             this.logger.debug(
                 `The ABAP connector is not being used because the current project type is '${this.projectType}'.`
