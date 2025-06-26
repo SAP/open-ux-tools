@@ -186,9 +186,6 @@
             "hint": "Enables page level variant."
         }
     },
-    "info": {
-        "systemTypeMigration": "Performing a one-time migration to set the system type for all systems..."
-    },
     "errors": {
         "destination": {
             "authError": "The selected system returned an authentication error. System name: {{systemName}}. Error: {{- error}}.",
