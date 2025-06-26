@@ -17,7 +17,6 @@
         "targetFound": "Deploy target definition found: {{-file}}.",
         "credentialsAvailable": "Credentials taken from stored system.",
         "credentialsRequired": "Credentials are required. Please enter your credentials below.",
-        "authNeeded": "Credentials are required. Do you want to enter your credentials?",
         "operationAborted": "Operation aborted by the user.",
         "connectTo": "Connecting to",
         "connectSuccess": "Connected"
