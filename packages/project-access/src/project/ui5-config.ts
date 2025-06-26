@@ -3,7 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { DirName, FileName } from '../constants';
 import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file';
-import type { MockServerConfiguration, MockServerService, Nullable } from '../types/ui5config';
+import type { MockserverConfig, MockServerService } from '@sap-ux/ui5-config/src/types';
 
 /**
  * Get path to webapp.
@@ -84,13 +84,13 @@ export async function getAllUi5YamlFileNames(projectRoot: string, memFs?: Editor
 export async function getMockServerConfig(
     projectRoot: string,
     fileName: string = FileName.Ui5MockYaml
-): Promise<Nullable<MockServerConfiguration>> {
+): Promise<MockserverConfig> {
     const ui5MockYamlFile = await readUi5Yaml(projectRoot, fileName);
     const mockserverMiddleware = ui5MockYamlFile.findCustomMiddleware('sap-fe-mockserver');
     if (!mockserverMiddleware) {
         throw new Error('Could not find sap-fe-mockserver');
     }
-    return mockserverMiddleware.configuration;
+    return mockserverMiddleware.configuration as MockserverConfig;
 }
 
 /**
@@ -101,7 +101,7 @@ export async function getMockServerConfig(
  * @returns The mock data path as a string. Returns an empty string if not found.
  */
 export async function getMockDataPath(projectRoot: string, fileName: string = FileName.Ui5MockYaml): Promise<string> {
-    const mockServerConfig: Nullable<MockServerConfiguration> = await getMockServerConfig(projectRoot, fileName);
+    const mockServerConfig: MockserverConfig = await getMockServerConfig(projectRoot, fileName);
     if (!mockServerConfig) {
         return '';
     }
@@ -121,10 +121,7 @@ export async function getMockDataPath(projectRoot: string, fileName: string = Fi
  * @param config - The mock server configuration object.
  * @returns An array of MockServerService objects, or undefined if not found.
  */
-function extractServices(config: MockServerConfiguration): MockServerService[] | undefined {
-    if ('service' in config && config.service) {
-        return Array.isArray(config.service) ? config.service : [config.service];
-    }
+function extractServices(config: MockserverConfig): MockServerService[] | undefined {
     if ('services' in config && config.services) {
         return Array.isArray(config.services) ? config.services : [config.services];
     }

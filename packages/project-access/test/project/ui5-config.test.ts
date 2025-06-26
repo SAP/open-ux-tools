@@ -293,15 +293,6 @@ describe('get configuration for sap-fe-mockserver', () => {
         expect(result).toBe('./webapp/localService/mainService/data');
     });
 
-    it('returns mockdataPath from service', async () => {
-        const ui5MockYamlPath = join(samplesRoot, 'default-with-ui5-yaml', FileName.Ui5MockYaml);
-        const ui5MockYamlContent = await readFile(ui5MockYamlPath);
-        const updatedContent = ui5MockYamlContent.toString().replace('services:', 'service:');
-        await writeFile(ui5MockYamlPath, updatedContent);
-        const result = await getMockDataPath(projectPath);
-        expect(result).toBe('./webapp/localService/mainService/data');
-    });
-
     it('throws an error if middleware sap-fe-mockserver does not exist', async () => {
         try {
             // Temporarily remove the sap-fe-mockserver middleware from the ui5-mock.yaml file

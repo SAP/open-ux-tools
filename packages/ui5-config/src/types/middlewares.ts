@@ -40,18 +40,20 @@ export interface FioriToolsProxyConfig {
     ignoreCertError?: boolean;
 }
 
+export interface MockServerService {
+    urlPath: string;
+    metadataPath: string;
+    mockdataPath?: string;
+    generateMockData?: boolean;
+}
+
 export interface MockserverConfig {
     mountPath: string;
     annotations?: {
         localPath?: string;
         urlPath: string;
     }[];
-    services?: {
-        urlPath: string;
-        metadataPath: string;
-        mockdataPath?: string;
-        generateMockData?: boolean;
-    }[];
+    services?: MockServerService[];
 }
 
 export interface FioriToolsServeStaticPath {
