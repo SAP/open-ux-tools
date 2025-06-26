@@ -5,8 +5,7 @@ import { getHybridStore } from '../data-access/hybrid';
 import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import type { Logger } from '@sap-ux/logger';
 import { Entities } from './constants';
-
-type SystemType = 'OnPrem' | 'S4HC' | 'BTP' | undefined;
+import { getBackendSystemType } from '../utils';
 
 export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendSystemKey> = class
     implements DataProvider<BackendSystem, BackendSystemKey>
@@ -94,7 +93,7 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
     private async assignSystemType(systemId: string): Promise<void> {
         const system = await this.dataAccessor.read({ entityName: this.entityName, id: systemId });
         if (system) {
-            const inferredType = this.inferSystemType(system);
+            const inferredType = getBackendSystemType(system);
             if (inferredType) {
                 await this.dataAccessor.partialUpdate({
                     entityName: this.entityName,
@@ -103,19 +102,5 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
                 });
             }
         }
-    }
-
-    private inferSystemType(system: BackendSystem): SystemType | undefined {
-        let backendType: SystemType;
-        if (system.authenticationType === 'reentranceTicket') {
-            backendType = 'S4HC';
-        }
-        if (system.serviceKeys) {
-            backendType = 'BTP';
-        }
-        if (system.authenticationType === 'basic' || system.username) {
-            backendType = 'OnPrem';
-        }
-        return backendType;
     }
 };

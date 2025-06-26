@@ -3,7 +3,7 @@
  */
 import { type InputQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import { AuthenticationType, BackendSystem, getBackendSystemType } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { ConnectedSystem } from '../../../../types';
@@ -11,7 +11,7 @@ import { promptNames } from '../../../../types';
 import { PromptState, convertODataVersionType, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
 import { type NewSystemAnswers, newSystemPromptNames } from '../new-system/types';
-import { getBackendSystemType, suggestSystemName } from '../prompt-helpers';
+import { suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
