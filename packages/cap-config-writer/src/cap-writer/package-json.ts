@@ -57,7 +57,7 @@ async function updateScripts(
 ): Promise<void> {
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(dirname(packageJsonPath), fs);
     let cdsScript;
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
     if (enableNPMWorkspaces || hasNPMworkspaces) {
         // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId
         cdsScript = getCDSWatchScript(projectName, appId);

@@ -19,7 +19,9 @@ import type { FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -33,7 +35,7 @@ jest.mock('process', () => ({
 }));
 const processMock = process as jest.Mocked<typeof process>;
 
-let foundGenExts: Partial<PackageInfo>[] = [];
+const foundGenExts: Partial<PackageInfo>[] = [];
 
 const sapApp = 'sap.app';
 const crossNavigation = 'crossNavigation';
@@ -81,7 +83,9 @@ describe('flp-config generator', () => {
         await initI18n();
         cwdBeforeTests = jest.requireActual('process').cwd();
         processMock.chdir = jest.fn().mockImplementation((dir): void => {
-            if (dir && dir.startsWith(OUTPUT_DIR_PREFIX)) cwd = dir;
+            if (dir?.startsWith(OUTPUT_DIR_PREFIX)) {
+                cwd = dir;
+            }
         }) as any;
     });
 

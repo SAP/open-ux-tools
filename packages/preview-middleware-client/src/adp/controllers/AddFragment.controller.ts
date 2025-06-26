@@ -1,5 +1,5 @@
 /** sap.m */
-import Button from 'sap/m/Button';
+import type Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import type ComboBox from 'sap/m/ComboBox';
 
@@ -37,10 +37,25 @@ import { CommunicationService } from '../../cpe/communication-service';
 const radix = 10;
 
 export type AddFragmentModel = JSONModel & {
+    /**
+     *
+     */
     getProperty(sPath: '/title'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/completeView'): boolean;
+    /**
+     *
+     */
     getProperty(sPath: '/newFragmentName'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/selectedIndex'): number;
+    /**
+     *
+     */
     getProperty(sPath: '/selectedAggregation/value'): string;
 };
 

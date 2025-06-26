@@ -714,7 +714,6 @@ describe('SelectionService', () => {
         expect(buildControlDataSpy).toHaveBeenNthCalledWith(1, {}, changeService, undefined);
         expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), changeService, undefined);
 
-
         // call buildControlData when stack changed
         changeService.onStackChange.mock.calls[0][0]({
             detail: {

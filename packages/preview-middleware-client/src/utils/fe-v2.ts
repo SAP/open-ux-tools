@@ -22,9 +22,7 @@ export function getV2ApplicationPages(manifest: Manifest): { id: string; entityS
     if (rootEntry) {
         const result: { id: string; entitySet: string | undefined }[] = [];
 
-        const collectPageData = <
-            T extends Record<string, V2ManifestPageDefinition> | Array<V2ManifestPageDefinition>
-        >(
+        const collectPageData = <T extends Record<string, V2ManifestPageDefinition> | Array<V2ManifestPageDefinition>>(
             pagesDefinitions: T | undefined,
             idPrefix: string
         ) => {

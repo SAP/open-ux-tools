@@ -1,5 +1,6 @@
-import { ExternalAction, reloadApplication, storageFileChanged } from '@sap-ux-private/control-property-editor-common';
-import { ActionSenderFunction, SubscribeFunction } from './types';
+import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import { reloadApplication, storageFileChanged } from '@sap-ux-private/control-property-editor-common';
+import type { ActionSenderFunction, SubscribeFunction } from './types';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 import { AdditionalChangeInfo } from '../utils/additional-change-info';
 /**

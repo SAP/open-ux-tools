@@ -45,7 +45,10 @@ export class ManifestService {
      * @param provider - The ABAP service provider.
      * @param logger - The logger instance.
      */
-    private constructor(private readonly provider: AbapServiceProvider, private readonly logger: ToolsLogger) {}
+    private constructor(
+        private readonly provider: AbapServiceProvider,
+        private readonly logger: ToolsLogger
+    ) {}
 
     /**
      * Creates an instance of the ManifestService and fetches the base manifest of the application.

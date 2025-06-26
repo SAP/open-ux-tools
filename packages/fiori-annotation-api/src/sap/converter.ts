@@ -46,6 +46,10 @@ export class SAPAnnotationConverter {
         return [...this.targets.values()];
     }
 
+    /**
+     *
+     * @param name
+     */
     private getTarget(name: string): Target {
         let target = this.targets.get(name);
         if (!target) {
@@ -55,6 +59,12 @@ export class SAPAnnotationConverter {
         return target;
     }
 
+    /**
+     *
+     * @param target
+     * @param term
+     * @param value
+     */
     private addLabel(target: string, term: ODataAnnotations['term'], value: ValueWithOrigin<string>): void {
         let labels = this.labels.get(target);
         if (!labels) {
@@ -86,6 +96,10 @@ export class SAPAnnotationConverter {
         return target;
     }
 
+    /**
+     *
+     * @param annotations
+     */
     private processLineItems(annotations: ODataAnnotations[]): void {
         const definitions = annotations.filter(
             (annotation): annotation is UILineItemDefinition => annotation.term === UI_LINE_ITEM
@@ -117,6 +131,10 @@ export class SAPAnnotationConverter {
         }
     }
 
+    /**
+     *
+     * @param annotations
+     */
     private processFieldGroups(annotations: ODataAnnotations[]): void {
         const definitions = annotations.filter(
             (annotation): annotation is UIFieldGroupDefinition => annotation.term === UI_FIELD_GROUP

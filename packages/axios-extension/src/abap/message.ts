@@ -59,7 +59,7 @@ function logLevel(severity: string, msg: string, log: Logger, error = false): vo
             log[severity](msg);
         }
     } else {
-        error ? log.error(msg) : log.info(msg);
+        log[error ? 'error' : 'info'](msg);
     }
 }
 

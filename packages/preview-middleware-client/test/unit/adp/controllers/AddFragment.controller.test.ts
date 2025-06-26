@@ -1,8 +1,8 @@
 import type Dialog from 'sap/m/Dialog';
-import Event from 'sap/ui/base/Event';
+import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
-import JSONModel from 'sap/ui/model/json/JSONModel';
-import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type JSONModel from 'sap/ui/model/json/JSONModel';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
@@ -14,7 +14,7 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
-import Core from 'sap/ui/core/Core';
+import type Core from 'sap/ui/core/Core';
 import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 import { AddFragmentData } from '../../../../src/adp/add-fragment';
 import * as addXMLAdditionalInfo from '../../../../src/cpe/additional-change-info/add-xml-additional-info';

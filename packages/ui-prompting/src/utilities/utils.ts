@@ -58,6 +58,8 @@ export function updateAnswers(
 ): Answers {
     let updatedAnswers = setAnswer(structuredClone(answers), name, value);
     const dependantPromptNames = getDependantQuestions(questions, name);
+    // TODO: check this code logic
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     dependantPromptNames?.length &&
         dependantPromptNames.forEach((dependantName) => {
             updatedAnswers = setAnswer(updatedAnswers, dependantName, undefined);

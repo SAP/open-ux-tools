@@ -2,7 +2,8 @@ import LrepConnector from 'sap/ui/fl/LrepConnector';
 import FakeLrepConnector from 'sap/ui/fl/FakeLrepConnector';
 import { getAdditionalChangeInfo } from '../utils/additional-change-info';
 
-import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
+import type { FlexChange } from './common';
+import { CHANGES_API_PATH, getFlexSettings } from './common';
 
 interface FetchedChanges {
     [key: string]: FlexChange;
@@ -69,6 +70,7 @@ export async function create(changes: FlexChange | FlexChange[]): Promise<void> 
  * Loads changes from a given path and processes them using an LrepConnector instance.
  * The changes are then formatted and returned in a specified structure.
  *
+ * @param {...any} args
  * @returns {Promise<LoadChangesResult>} A promise that resolves to an object of type LoadChangesResult.
  */
 export async function loadChanges(...args: []): Promise<LoadChangesResult> {

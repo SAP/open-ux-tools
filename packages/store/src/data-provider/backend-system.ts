@@ -13,15 +13,28 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
     private readonly entityName = Entities.BackendSystem;
     private readonly logger: Logger;
 
+    /**
+     *
+     * @param logger
+     * @param options
+     */
     constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
         this.dataAccessor = getHybridStore(this.logger, options);
     }
 
+    /**
+     *
+     * @param key
+     */
     public async read(key: BackendSystemKey): Promise<BackendSystem | undefined> {
         return this.dataAccessor.read({ entityName: this.entityName, id: key.getId() });
     }
 
+    /**
+     *
+     * @param entity
+     */
     public async write(entity: BackendSystem): Promise<BackendSystem | undefined> {
         let e: BackendSystem;
         if (!(entity instanceof BackendSystem)) {
@@ -37,6 +50,10 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         });
     }
 
+    /**
+     *
+     * @param entity
+     */
     public async delete(entity: BackendSystem): Promise<boolean> {
         return this.dataAccessor.del({
             entityName: this.entityName,
@@ -44,6 +61,9 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         });
     }
 
+    /**
+     *
+     */
     public async getAll(): Promise<BackendSystem[] | []> {
         const systems = await this.dataAccessor.readAll({ entityName: this.entityName });
         for (const id of Object.keys(systems)) {

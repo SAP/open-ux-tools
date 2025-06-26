@@ -52,7 +52,6 @@ export class ParamRecordConfig {
 export const wrongPathErr = (field: string, index: number): Error =>
     new Error(`Wrong path for '${field}' field is specified in instructions with index - ${index}`);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getValue = (obj: any, path: string, field: string, paramIndex: number): number | string => {
     const pathArr: string[] = path.split('/');
 
@@ -69,12 +68,11 @@ export const getValue = (obj: any, path: string, field: string, paramIndex: numb
     return node;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const paramsProcessing = (params: any, instructions: ParamRecordConfig): [dimensions, measurements] => {
     const processedDimensions: dimensions = {};
     const processedMeasurements: measurements = {};
 
-    let param: any = null; // eslint-disable-line @typescript-eslint/no-explicit-any
+    let param: any = null;
     if (instructions.paramIndex !== undefined) {
         param = params[instructions.paramIndex];
     }
@@ -100,7 +98,7 @@ export const paramsProcessing = (params: any, instructions: ParamRecordConfig): 
 };
 
 export const getParamsData = (
-    params: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+    params: any,
     instructions: ParamRecordConfig[] | ParamRecordConfig
 ): [dimensions, measurements] => {
     let processedDimensions, processedMeasurements;

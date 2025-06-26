@@ -1,4 +1,4 @@
-import { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
+import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 
 export interface FlexChange {
     [key: string]: string | object | undefined;

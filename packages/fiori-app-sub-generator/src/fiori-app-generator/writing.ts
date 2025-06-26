@@ -48,7 +48,7 @@ export async function writeAppGenInfoFiles(
             template: templateLabel,
             serviceType: datasourceLabel,
             serviceUrl:
-                `${service.capService ? DEFAULT_CAP_HOST : service.host ?? ''}${service.servicePath ?? ''}` ||
+                `${service.capService ? DEFAULT_CAP_HOST : (service.host ?? '')}${service.servicePath ?? ''}` ||
                 t('texts.notApplicable')
         } as Partial<AppGenInfo>,
         existingAppGenInfo,

@@ -79,6 +79,10 @@ export interface FioriAnnotationServiceOptions {
     ignoreChangedFileInitialContent: boolean;
 }
 
+/**
+ *
+ * @param options
+ */
 function getOptionsWithDefaults(options: Partial<FioriAnnotationServiceOptions>): FioriAnnotationServiceOptions {
     return {
         commitOnSave: options.commitOnSave ?? true,
@@ -399,6 +403,11 @@ export class FioriAnnotationService {
         return this.changeConverter.convert(compiledService, this.fileMergeMaps, schemaProvider, changes);
     }
 
+    /**
+     *
+     * @param path
+     * @param content
+     */
     private saveFile(path: string, content: string): void {
         this.fs.write(path, content);
     }
@@ -427,6 +436,13 @@ export interface SaveOptions {
     resyncAfterSave?: boolean;
 }
 
+/**
+ *
+ * @param fileUri
+ * @param languageId
+ * @param workspaceEdits
+ * @param content
+ */
 function applyWorkspaceEdits(
     fileUri: string,
     languageId: string,
@@ -434,10 +450,19 @@ function applyWorkspaceEdits(
     content: string
 ): string {
     const document = TextDocument.create(fileUri, languageId, 0, content);
-    const fileChanges = workspaceEdits.changes ? workspaceEdits.changes[fileUri] ?? [] : [];
+    const fileChanges = workspaceEdits.changes ? (workspaceEdits.changes[fileUri] ?? []) : [];
     return TextDocument.applyEdits(document, fileChanges);
 }
 
+/**
+ *
+ * @param compiledService
+ * @param rawMetadata
+ * @param serviceName
+ * @param options
+ * @param options.vocabulary
+ * @param mergeSplitAnnotations
+ */
 function mergeAnnotations(
     compiledService: CompiledService,
     rawMetadata: RawMetadata,
@@ -460,6 +485,14 @@ function mergeAnnotations(
     return fileMergeMaps;
 }
 
+/**
+ *
+ * @param project
+ * @param serviceName
+ * @param appName
+ * @param fsEditor
+ * @param clearCache
+ */
 async function getService(
     project: Project,
     serviceName: string,
@@ -483,6 +516,15 @@ async function getService(
     }
 }
 
+/**
+ *
+ * @param project
+ * @param service
+ * @param vocabularyService
+ * @param appName
+ * @param writeSapAnnotations
+ * @param ignoreChangedFileInitialContent
+ */
 function createAdapter(
     project: Project,
     service: Service,
@@ -507,6 +549,10 @@ function createAdapter(
     }
 }
 
+/**
+ *
+ * @param compileMessages
+ */
 function compilerMessagesToErrors(compileMessages: Map<string, CompilerMessage>): Map<string, string[]> {
     const result: Map<string, string[]> = new Map();
     [...compileMessages.entries()].forEach((entry) => {

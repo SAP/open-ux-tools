@@ -168,6 +168,12 @@ class ChangePreprocessor {
         }
     }
 
+    /**
+     *
+     * @param deletionMap
+     * @param insertionMap
+     * @param index
+     */
     private processChangesInputEntry(
         deletionMap: Record<string, DeletionIndex[]>,
         insertionMap: Record<string, boolean>,
@@ -227,6 +233,11 @@ class ChangePreprocessor {
         this.processDeletionMap(deletionMap, insertionMap);
     }
 
+    /**
+     *
+     * @param deletionMap
+     * @param insertionMap
+     */
     private processDeletionMap(
         deletionMap: Record<string, DeletionIndex[]>,
         insertionMap: Record<string, boolean>
@@ -266,6 +277,15 @@ class ChangePreprocessor {
         }
     }
 
+    /**
+     *
+     * @param parent
+     * @param grandParent
+     * @param greatGrandParent
+     * @param parentPointer
+     * @param deletionMap
+     * @param insertionMap
+     */
     private processRecordDeletion(
         parent: RecordNode,
         grandParent: AstNode | undefined,
@@ -286,6 +306,13 @@ class ChangePreprocessor {
         }
     }
 
+    /**
+     *
+     * @param parent
+     * @param parentPointer
+     * @param deletionMap
+     * @param insertionMap
+     */
     private processTargetDeletion(
         parent: Target,
         parentPointer: string,
@@ -301,6 +328,14 @@ class ChangePreprocessor {
         }
     }
 
+    /**
+     *
+     * @param parent
+     * @param grandParent
+     * @param parentPointer
+     * @param deletionMap
+     * @param insertionMap
+     */
     private processAnnotationGroupDeletion(
         parent: AnnotationGroup,
         grandParent: Target,
@@ -314,6 +349,14 @@ class ChangePreprocessor {
         }
     }
 
+    /**
+     *
+     * @param parent
+     * @param grandParent
+     * @param parentPointer
+     * @param deletionMap
+     * @param insertionMap
+     */
     private processAnnotationGroupItemsDeletion(
         parent: AnnotationGroupItems,
         grandParent: AnnotationGroup,
@@ -335,6 +378,13 @@ class ChangePreprocessor {
         }
     }
 
+    /**
+     *
+     * @param deletionMap
+     * @param grandParent
+     * @param greatGrandParent
+     * @param parentPointer
+     */
     private bubbleUpDeleteChange(
         deletionMap: Record<string, DeletionIndex[]>,
         grandParent: AstNode | undefined,
@@ -367,6 +417,12 @@ class ChangePreprocessor {
         });
     }
 
+    /**
+     *
+     * @param grandParent
+     * @param greatGrandParent
+     * @param parentPointer
+     */
     private getBubbleUpParentPointer(
         grandParent: AstNode | undefined,
         greatGrandParent: AstNode | undefined,
@@ -391,6 +447,12 @@ class ChangePreprocessor {
         return undefined;
     }
 
+    /**
+     *
+     * @param grandParent
+     * @param parentPointer
+     * @param greatGrandParent
+     */
     private getMergedChange(
         grandParent: AstNode,
         parentPointer: string,
@@ -478,6 +540,13 @@ class ChangePreprocessor {
         }
     }
 
+    /**
+     *
+     * @param pointer
+     * @param change
+     * @param deletionChangeIndex
+     * @param changeIndex
+     */
     private createReplaceCommand(
         pointer: string,
         change: InsertEmbeddedAnnotation | InsertAnnotation,
@@ -493,6 +562,11 @@ class ChangePreprocessor {
         });
     }
 
+    /**
+     *
+     * @param change
+     * @param parent
+     */
     private flattenAnnotationTerm(change: InsertEmbeddedAnnotation, parent: AstNode): void {
         const element = createReferenceElement(parent);
         const last = structuredClone(change.element);
@@ -564,6 +638,10 @@ class ChangePreprocessor {
         }
     }
 
+    /**
+     *
+     * @param index
+     */
     private dropMergedDeletionChanges(index: DeletionIndex[]): number {
         let lastChange = -1;
         for (const indexedValue of index) {
