@@ -3,7 +3,6 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer } from '@sap-ux/adp-tooling';
 
 import { t } from './i18n';
