@@ -95,26 +95,33 @@ export async function getMockServerConfig(projectRoot: string): Promise<Nullable
  * @param projectRoot - Path to the project root.
  * @returns The mock data path as a string. Returns an empty string if not found.
  */
-export async function getMockDataPath(projectRoot: string): Promise<String> {
-    let mockdataPath: string = '';
+export async function getMockDataPath(projectRoot: string): Promise<string> {
     const mockServerConfig: Nullable<MockServerConfiguration> = await getMockServerConfig(projectRoot);
-    if (mockServerConfig) {
-        let services: MockServerService[] | undefined;
-        if ('service' in mockServerConfig && mockServerConfig.service) {
-            services = Array.isArray(mockServerConfig.service) ? mockServerConfig.service : [mockServerConfig.service];
-        } else if ('services' in mockServerConfig && mockServerConfig.services) {
-            services = Array.isArray(mockServerConfig.services)
-                ? mockServerConfig.services
-                : [mockServerConfig.services];
-        }
-        if (Array.isArray(services)) {
-            for (const service of services) {
-                if (service.mockdataPath) {
-                    mockdataPath = service.mockdataPath;
-                    break;
-                }
-            }
-        }
+    if (!mockServerConfig) {
+        return '';
     }
-    return mockdataPath;
+
+    const services = extractServices(mockServerConfig);
+    if (!services || !Array.isArray(services)) {
+        return '';
+    }
+
+    const found = services.find((service) => !!service.mockdataPath);
+    return found?.mockdataPath ?? '';
+}
+
+/**
+ * Helper to extract the services array from a MockServerConfiguration.
+ *
+ * @param config - The mock server configuration object.
+ * @returns An array of MockServerService objects, or undefined if not found.
+ */
+function extractServices(config: MockServerConfiguration): MockServerService[] | undefined {
+    if ('service' in config && config.service) {
+        return Array.isArray(config.service) ? config.service : [config.service];
+    }
+    if ('services' in config && config.services) {
+        return Array.isArray(config.services) ? config.services : [config.services];
+    }
+    return undefined;
 }
