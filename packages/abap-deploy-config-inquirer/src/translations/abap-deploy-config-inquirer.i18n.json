@@ -5,21 +5,21 @@
                 "message": "Destination"
             },
             "targetSystem": {
-                "message": "Select Target system",
+                "message": "Select Target System",
                 "breadcrumb": "Target System"
             },
             "url": {
                 "message": "Target System URL"
             },
             "scp": {
-                "message": "Is this an SAP Business Technology Platform system?",
+                "message": "Is This an SAP Business Technology Platform System?",
                 "breadcrumb": "SCP"
             },
             "clientChoice": {
                 "message": "Client"
             },
             "client": {
-                "message": "Enter client",
+                "message": "Enter Client",
                 "breadcrumb": "Client"
             }
         },
@@ -45,7 +45,7 @@
             },
             "package": {
                 "packageInputChoice": {
-                    "message": "Select how you want to enter the package."
+                    "message": "Select How You Want to Enter the Package"
                 },
                 "packageManual": {
                     "message": "Package",
@@ -65,16 +65,16 @@
                     "provideTransportRequest": "Provide a transport request for your application."
                 },
                 "transportInputChoice": {
-                    "message": "Select how you want to enter the transport request."
+                    "message": "Select How You Want to Enter the Transport Request"
                 },
                 "transportCreated": {
-                    "message": "Created new transport request."
+                    "message": "Created New Transport Request"
                 }
             }
         },
         "confirm": {
             "index": {
-                "message": "Generate standalone index.html during deployment",
+                "message": "Generate Standalone index.html During Deployment",
                 "breadcrumb": "Generate index.html"
             },
             "overwrite": {
@@ -85,7 +85,7 @@
     },
     "choices": {
         "common": {
-            "listExisting": "Choose from existing"
+            "listExisting": "Choose from Existing"
         },
         "targetSystemUrl": "Enter Target System URL",
         "clientChoice": {
@@ -94,7 +94,7 @@
             "blank": "Use Default System Client"
         },
         "transport": {
-            "createDuringDeploy": "Create during deployment",
+            "createDuringDeploy": "Create During Deployment",
             "createNew": "Create New",
             "enterManually": "Enter Manually"
         }
