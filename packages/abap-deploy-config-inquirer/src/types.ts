@@ -120,6 +120,11 @@ export type PackagePromptOptions = {
          * Check if the given package matches ui5AbapRepo starting preffix or namespace
          */
         shouldValidatePackageForStartingPrefix?: boolean;
+
+        /**
+         * Check if the given package matches appropriate format and special characters
+         */
+        shouldValidateFormatAndSpecialCharacters?: boolean;
     };
 };
 
@@ -135,6 +140,13 @@ export type TransportManualPromptOptions = {
      * Default transport value.
      */
     default?: string;
+};
+
+export type TransportCreatedPromptOptions = {
+    /**
+     * Custom description for the new transport request.
+     */
+    description?: string;
 };
 
 export type OverwritePromptOptions = {
@@ -181,6 +193,7 @@ type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepo
     Record<promptNames.description, DescriptionPromptOptions> &
     Record<promptNames.packageManual, PackageManualPromptOptions> &
     Record<promptNames.transportManual, TransportManualPromptOptions> &
+    Record<promptNames.transportCreated, TransportCreatedPromptOptions> &
     Record<promptNames.overwrite, OverwritePromptOptions> &
     Record<promptNames.index, IndexPromptOptions> &
     Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions> &
@@ -269,7 +282,6 @@ export interface InitTransportConfigResult {
     transportConfig?: TransportConfig;
     transportConfigNeedsCreds?: boolean;
     error?: string;
-    warning?: string;
 }
 
 export interface SystemConfig {

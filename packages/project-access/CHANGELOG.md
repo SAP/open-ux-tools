@@ -1,5 +1,66 @@
 # @sap-ux/project-access
 
+## 1.30.3
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/i18n@0.3.1
+
+## 1.30.2
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+
+## 1.30.1
+
+### Patch Changes
+
+-   Updated dependencies [5e0020b]
+    -   @sap-ux/ui5-config@0.28.1
+
+## 1.30.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/i18n@0.3.0
+
+## 1.29.22
+
+### Patch Changes
+
+-   ea0e2c0: Use memFs if passed while application access creation
+
+## 1.29.21
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+
+## 1.29.20
+
+### Patch Changes
+
+-   294bbe3: code cleanup with help from copilot
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/ui5-config@0.27.1
+
+## 1.29.19
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+
 ## 1.29.18
 
 ### Patch Changes

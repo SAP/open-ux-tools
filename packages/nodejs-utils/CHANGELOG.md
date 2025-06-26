@@ -1,5 +1,29 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.1
+
+### Patch Changes
+
+-   d6943aa: Adds GA link to deploy.
+
+## 0.2.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/btp-utils@1.1.0
+
+## 0.1.9
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+
 ## 0.1.8
 
 ### Patch Changes

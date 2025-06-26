@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "es2022",
+    "skipLibCheck": true,
+    "allowJs": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
+    "rootDir": "./webapp",
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "test/namespace/simpletypescript/*": [
+        "./webapp/*"
+      ],
+      "unit/*": [
+        "./webapp/test/unit/*"
+      ],
+      "integration/*": [
+        "./webapp/test/integration/*"
+      ]
+    },
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@sapui5/ts-types-esm"
+    ]
+  },
+  "include": [
+    "./webapp/**/*"
+  ]
+}

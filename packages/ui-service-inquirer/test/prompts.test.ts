@@ -2,11 +2,12 @@ import { getSystemSelectionPrompts, getConfigPrompts } from '../src';
 import nock from 'nock';
 import type { Answers, Question as YoQuestion } from 'inquirer';
 import * as promptHelper from '../src/prompts/prompt-helper';
-import { genContent } from './fixtures/constants';
+import * as abapDeployConfigInquirer from '@sap-ux/abap-deploy-config-inquirer';
 import { PromptState } from '../src/prompts/prompt-state';
 import { ObjectType } from '../src/types';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { initI18n, t } from '../src/i18n';
 
 jest.mock('../src/logger-helper');
 
@@ -91,8 +92,45 @@ const answersMock = {
     packageInputChoice: 'manualInput'
 };
 
+const getContentMock = jest.fn().mockImplementation((pckg) => {
+    const serviceName = pckg === '' ? '' : 'serviceName';
+    return Promise.resolve(
+        JSON.stringify({
+            businessService: {
+                serviceBinding: {
+                    serviceBindingName: serviceName
+                }
+            },
+            businessObject: {
+                projectionBehavior: {
+                    withDraft: undefined
+                }
+            }
+        })
+    );
+});
+
+const getContentMockDraftTrue = jest.fn().mockImplementation((pckg) => {
+    const serviceName = pckg === '' ? '' : 'serviceName';
+    return Promise.resolve(
+        JSON.stringify({
+            businessService: {
+                serviceBinding: {
+                    serviceBindingName: serviceName
+                }
+            },
+            businessObject: {
+                projectionBehavior: {
+                    withDraft: true
+                }
+            }
+        })
+    );
+});
+
 describe('getSystemQuestions', () => {
-    beforeAll(() => {
+    beforeAll(async () => {
+        await initI18n();
         nock.disableNetConnect();
     });
 
@@ -102,7 +140,7 @@ describe('getSystemQuestions', () => {
     });
 
     let questions;
-    const q: { [key: string]: Question } = {};
+    let q: { [key: string]: Question } = {};
 
     test('getSystemQuestions', async () => {
         const businessObjectMockResp = {
@@ -133,8 +171,8 @@ describe('getSystemQuestions', () => {
 
         expect(q.objectType.when!({ systemSelection: 'system1' })).toEqual(true);
         expect(q.objectType.choices!()).toEqual([
-            { name: 'prompts.businessObjectInterfaceLabel', value: ObjectType.BUSINESS_OBJECT },
-            { name: 'prompts.abapCdsServiceLabel', value: ObjectType.CDS_VIEW }
+            { name: t('prompts.businessObjectInterfaceLabel'), value: ObjectType.BUSINESS_OBJECT },
+            { name: t('prompts.abapCdsServiceLabel'), value: ObjectType.CDS_VIEW }
         ]);
 
         const businessObjectMock = {
@@ -152,12 +190,14 @@ describe('getSystemQuestions', () => {
         expect(await q.businessObjectInterface.when!({ objectType: ObjectType.CDS_VIEW })).toEqual(false);
         expect(await q.businessObjectInterface.choices!()).toEqual([businessObjectMockResp]);
         expect(await q.businessObjectInterface.validate!(businessObjectMock, answersMock)).toEqual(
-            'error.noGeneratorFoundBo'
+            t('error.noGeneratorFoundBo')
         );
 
         expect(await q.abapCDSView.when!({ objectType: ObjectType.CDS_VIEW })).toEqual(true);
         expect(await q.abapCDSView.choices!()).toEqual([abapCDSViewsMockResp]);
-        expect(await q.abapCDSView.validate!(abapCDSViewMock, answersMock)).toEqual('error.noGeneratorFoundCdsService');
+        expect(await q.abapCDSView.validate!(abapCDSViewMock, answersMock)).toEqual(
+            t('error.noGeneratorFoundCdsService')
+        );
 
         mockIsAppStudio.mockReturnValue(false);
         questions = (await getSystemSelectionPrompts()).prompts;
@@ -167,25 +207,9 @@ describe('getSystemQuestions', () => {
     });
 
     test('getServiceConfigQuestions', async () => {
-        const getContentMock = jest.fn().mockImplementation((pckg) => {
-            const serviceName = pckg === '' ? '' : 'serviceName';
-            return Promise.resolve(
-                JSON.stringify({
-                    businessService: {
-                        serviceBinding: {
-                            serviceBindingName: serviceName
-                        }
-                    },
-                    businessObject: {
-                        projectionBehavior: {
-                            withDraft: undefined
-                        }
-                    }
-                })
-            );
-        });
+        const getTransportRequestPromptsSpy = jest.spyOn(abapDeployConfigInquirer, 'getTransportRequestPrompts');
         const genMock = {
-            getContent: getContentMock,
+            getContent: getContentMockDraftTrue,
             validateContent: jest.fn().mockResolvedValue({
                 severity: 'OK'
             })
@@ -193,7 +217,8 @@ describe('getSystemQuestions', () => {
         const systemSelectionAnswers = {
             connectedSystem: {
                 backendSystem: {
-                    name: 'system1'
+                    url: 'https://mock.sap.system/sap',
+                    client: '100'
                 },
                 destination: {
                     Name: 'system1'
@@ -206,24 +231,48 @@ describe('getSystemQuestions', () => {
             objectGenerator: genMock
         } as any;
 
-        questions = getConfigPrompts(systemSelectionAnswers).prompts;
+        questions = getConfigPrompts(systemSelectionAnswers, {
+            useDraftEnabled: undefined,
+            useLaunchGen: undefined
+        }).prompts;
         questions.forEach((question) => {
             q[question.name] = question as Question;
         });
         expect(questions).toMatchSnapshot();
+        expect(getTransportRequestPromptsSpy.mock.calls[0][0]).toStrictEqual({
+            backendTarget: {
+                abapTarget: {
+                    url: 'https://mock.sap.system/sap',
+                    client: '100'
+                },
+                serviceProvider: systemSelectionAnswers.connectedSystem.serviceProvider
+            },
+            transportCreated: {
+                description: t('prompts.options.transportDescription')
+            },
+            transportInputChoice: {
+                showCreateDuringDeploy: false
+            },
+            ui5AbapRepo: {
+                default: ''
+            }
+        });
         expect(q.transportInputChoice.choices!()).toMatchSnapshot();
         expect(await q.serviceName.when!({ packageManual: '', packageAutocomplete: 'package' })).toEqual(true);
+        expect(PromptState.serviceConfig.showDraftEnabled).toEqual(true);
         expect(q.serviceName.choices!()).toEqual([{ name: 'serviceName', value: 'serviceName' }]);
         expect(q.serviceName.default()).toEqual(0);
         expect(await q.serviceName.validate!('testPackage')).toEqual(true);
+        expect(q.draftEnabled.when!({})).toEqual(true);
         expect(await q.draftEnabled.validate!(true)).toEqual(true);
         expect(await q.draftEnabled.validate!(false)).toEqual(true);
         expect((q.launchAppGen as YUIQuestion).additionalMessages!(false)).toBeUndefined();
         expect((q.launchAppGen as YUIQuestion).additionalMessages!(true)).toEqual({
-            message: 'info.appGenLaunch',
+            message: t('info.appGenLaunch'),
             severity: 2
         });
-
+    });
+    test('getServiceConfigQuestions with error', async () => {
         const genMockValidateContent1 = {
             getContent: getContentMock,
             validateContent: jest.fn().mockResolvedValue({
@@ -247,19 +296,38 @@ describe('getSystemQuestions', () => {
         } as any;
 
         PromptState.resetConnectedSystem();
-        questions = getConfigPrompts(systemSelectionAnswers1).prompts;
+        q = {};
+        questions = getConfigPrompts(systemSelectionAnswers1, {
+            useDraftEnabled: false,
+            useLaunchGen: false
+        }).prompts;
         questions.forEach((question) => {
             q[question.name] = question as Question;
         });
         expect(await q.serviceName.when!({ packageManual: 'package' })).toEqual(true);
         expect(await q.serviceName.choices!()).toEqual([{ name: 'serviceName', value: 'serviceName' }]);
         expect(await q.serviceName.validate!('testPackage')).toMatchSnapshot();
-        expect(await q.draftEnabled.validate!(false)).toEqual('error.validatingContent');
+        expect(q.draftEnabled).toBeUndefined();
+        expect(q.launchAppGen).toBeUndefined();
         PromptState.resetServiceConfig();
         expect(await q.serviceName.when!({ packageManual: '', packageAutocomplete: '' })).toEqual(false);
         PromptState.resetServiceConfig();
         expect(await q.serviceName.when!({ packageManual: undefined, packageAutocomplete: undefined })).toEqual(false);
 
+        PromptState.resetConnectedSystem();
+        q = {};
+        questions = getConfigPrompts(systemSelectionAnswers1, {
+            useDraftEnabled: true,
+            useLaunchGen: false
+        }).prompts;
+        questions.forEach((question) => {
+            q[question.name] = question as Question;
+        });
+        expect(await q.serviceName.when!({ packageManual: 'package' })).toEqual(true);
+        expect(await q.draftEnabled.validate!(false)).toEqual(t('error.validatingContent'));
+    });
+
+    test('getServiceConfigQuestions with error in validateContent', async () => {
         const genMockValidateContent2 = {
             getContent: getContentMock,
             validateContent: jest.fn().mockImplementation(() => {

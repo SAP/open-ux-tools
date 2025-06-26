@@ -1,0 +1,82 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "generators"
+  },
+  "references": [
+    {
+      "path": "../abap-deploy-config-inquirer"
+    },
+    {
+      "path": "../annotation-generator"
+    },
+    {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../cap-config-writer"
+    },
+    {
+      "path": "../cf-deploy-config-inquirer"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-elements-writer"
+    },
+    {
+      "path": "../fiori-freestyle-writer"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../fiori-tools-settings"
+    },
+    {
+      "path": "../flp-config-sub-generator"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../jest-file-matchers"
+    },
+    {
+      "path": "../launch-config"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../odata-service-inquirer"
+    },
+    {
+      "path": "../odata-service-writer"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../telemetry"
+    },
+    {
+      "path": "../ui5-application-inquirer"
+    },
+    {
+      "path": "../ui5-info"
+    }
+  ]
+}

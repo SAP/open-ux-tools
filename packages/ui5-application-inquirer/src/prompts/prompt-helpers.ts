@@ -3,7 +3,13 @@ import { existsSync } from 'fs';
 import { join } from 'path';
 import { coerce, gte } from 'semver';
 import { defaultProjectNumber, t } from '../i18n';
-import { promptNames, type UI5ApplicationPromptOptions, type UI5ApplicationQuestion } from '../types';
+import {
+    promptNames,
+    type AddDeployPromptOptions,
+    type UI5ApplicationCommonPromptOptions,
+    type UI5ApplicationPromptOptions,
+    type UI5ApplicationQuestion
+} from '../types';
 
 /**
  * Tests if a directory with the specified `appName` exists at the path specified by `targetPath`.
@@ -23,9 +29,9 @@ export function appPathExists(appName: string, targetPath?: string): boolean | s
  */
 export function defaultAppName(targetPath: string): string {
     let defProjNum = defaultProjectNumber;
-    let defaultName = t('prompts.appNameDefault');
+    let defaultName = t('prompts.name.default');
     while (exports.appPathExists(`${defaultName}`, targetPath)) {
-        defaultName = t('prompts.appNameDefault', { defaultProjectNumber: ++defProjNum });
+        defaultName = t('prompts.name.default', { defaultProjectNumber: ++defProjNum });
         // Dont loop forever, user will need to provide input otherwise
         if (defProjNum > 999) {
             break;
@@ -64,14 +70,19 @@ export function isVersionIncluded(version: string, minVersion: string): boolean 
 export function hidePrompts(
     prompts: Record<promptNames, UI5ApplicationQuestion>,
     promptOptions?: UI5ApplicationPromptOptions,
-    isCapProject?: boolean
+    isCapProject = false
 ): UI5ApplicationQuestion[] {
     const questions: UI5ApplicationQuestion[] = [];
     if (promptOptions ?? isCapProject) {
         Object.keys(prompts).forEach((key) => {
             const promptKey = key as keyof typeof promptNames;
+            // Narrow the type as we are only dealing with `hide` options
+            const promptOpt = promptOptions?.[promptKey] as UI5ApplicationCommonPromptOptions | AddDeployPromptOptions;
+
+            const hidePrompt =
+                typeof promptOpt?.hide === 'function' ? promptOpt.hide(isCapProject) : promptOpt?.hide ?? false;
             if (
-                !promptOptions?.[promptKey]?.hide &&
+                !hidePrompt &&
                 // Target directory is determined by the CAP project. `enableEsLint` and `targetFolder` are not available for CAP projects
                 !([promptNames.targetFolder, promptNames.enableEslint].includes(promptNames[promptKey]) && isCapProject)
             ) {

@@ -1,5 +1,92 @@
 # @sap-ux/telemetry
 
+## 0.6.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/project-access@1.30.2
+
+## 0.6.2
+
+### Patch Changes
+
+-   ac55cca: adds .appGenInfo.json file
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [5e0020b]
+    -   @sap-ux/ui5-config@0.28.1
+    -   @sap-ux/project-access@1.30.1
+
+## 0.6.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/store@1.1.0
+
+## 0.5.78
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+
+## 0.5.77
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+    -   @sap-ux/project-access@1.29.21
+
+## 0.5.76
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/ui5-config@0.27.1
+
+## 0.5.75
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/project-access@1.29.19
+
+## 0.5.74
+
+### Patch Changes
+
+-   9392ebd: fix: types to allow numeric values in the telemetry properties
+
+## 0.5.73
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+
 ## 0.5.72
 
 ### Patch Changes

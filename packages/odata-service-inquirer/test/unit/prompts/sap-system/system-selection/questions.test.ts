@@ -1,4 +1,4 @@
-import type { ServiceProvider, V2CatalogService, V4CatalogService } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, ServiceProvider, V2CatalogService, V4CatalogService } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import { WebIDEAdditionalData, WebIDEUsage } from '@sap-ux/btp-utils';
@@ -12,16 +12,15 @@ import type { ValidationResult } from '../../../../../src/prompts/types';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import * as promptHelpers from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
+import type { SystemSelectionAnswerType } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
 import { NewSystemChoice } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import type {
-    SystemSelectionAnswers,
-    SystemSelectionAnswerType
-} from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
+import type { SystemSelectionAnswers } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
 import {
     getSystemConnectionQuestions,
     getSystemSelectionQuestions
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
 import LoggerHelper from '../../../../../src/prompts/logger-helper';
+import type { ConnectedSystem } from '../../../../../src/types';
 import { promptNames } from '../../../../../src/types';
 import { getPromptHostEnvironment, PromptState } from '../../../../../src/utils';
 
@@ -140,7 +139,8 @@ const connectionValidatorMock = {
     systemAuthType: 'basic',
     validateDestination,
     resetConnectionState,
-    validateServiceInfo: validateServiceInfoMock
+    validateServiceInfo: validateServiceInfoMock,
+    setConnectedSystem: jest.fn()
 };
 jest.mock('../../../../../src/prompts/connectionValidator', () => {
     return {
@@ -158,6 +158,7 @@ describe('Test system selection prompts', () => {
         mockIsAppStudio = false;
         isAuthRequiredMock.mockResolvedValue(false);
         validateServiceInfoResultMock = true;
+        validateUrlResultMock = true;
     });
 
     test('should return system selection prompts and choices based on development environment, BAS or non-BAS', async () => {
@@ -223,7 +224,6 @@ describe('Test system selection prompts', () => {
         const connectValidator = new ConnectionValidator();
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio = true;
-
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
         expect(systemConnectionQuestions).toHaveLength(5);
         expect(systemConnectionQuestions[0].name).toBe('systemSelection');
@@ -371,6 +371,7 @@ describe('Test system selection prompts', () => {
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
             backendSystemBasic,
             connectionValidatorMock,
+            undefined,
             undefined
         );
         connectWithBackendSystemSpy.mockClear();
@@ -388,6 +389,7 @@ describe('Test system selection prompts', () => {
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
             backendSystemBasic,
             connectionValidatorMock,
+            undefined,
             undefined
         );
         expect(loggerErrorSpy).toHaveBeenCalledWith(
@@ -437,6 +439,7 @@ describe('Test system selection prompts', () => {
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
             backendSystemReentrance,
             connectionValidatorMock,
+            undefined,
             undefined
         );
         connectWithBackendSystemSpy.mockClear();
@@ -452,7 +455,42 @@ describe('Test system selection prompts', () => {
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
             backendSystemReentrance,
             connectionValidatorMock,
+            undefined,
             undefined
+        );
+    });
+
+    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: reentranceTicket) - should support cached connections', async () => {
+        mockIsAppStudio = false;
+        const connectValidator = new ConnectionValidator();
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
+        // backendSystems.push(backendSystemReentrance);
+        const cachedConnectedSystem: ConnectedSystem = {
+            serviceProvider: {
+                catalog: {}
+            } as unknown as AbapServiceProvider,
+            backendSystem: backendSystemReentrance
+        };
+
+        const systemConnectionQuestions = await getSystemConnectionQuestions(
+            connectValidator,
+            undefined,
+            cachedConnectedSystem
+        );
+        const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'backendSystem',
+                system: backendSystemReentrance
+            } as SystemSelectionAnswerType)
+        ).toBe(true);
+        expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            backendSystemReentrance,
+            connectionValidatorMock,
+            undefined,
+            cachedConnectedSystem
         );
     });
 
@@ -461,7 +499,7 @@ describe('Test system selection prompts', () => {
         const connectValidator = new ConnectionValidator();
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
-        backendSystems.push(backendSystemReentrance);
+        backendSystems.push(backendSystemServiceKeys);
 
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
         const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
@@ -475,6 +513,7 @@ describe('Test system selection prompts', () => {
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
             backendSystemServiceKeys,
             connectionValidatorMock,
+            undefined,
             undefined
         );
         connectWithBackendSystemSpy.mockClear();
@@ -490,7 +529,41 @@ describe('Test system selection prompts', () => {
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
             backendSystemServiceKeys,
             connectionValidatorMock,
+            undefined,
             undefined
+        );
+    });
+
+    test('getSystemConnectionQuestions: non-BAS (BackendSystem, AuthType: serviceKeys) - should support cached connections', async () => {
+        mockIsAppStudio = false;
+        const connectValidator = new ConnectionValidator();
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        const connectWithBackendSystemSpy = jest.spyOn(promptHelpers, 'connectWithBackendSystem');
+        const cachedConnectedSystem: ConnectedSystem = {
+            serviceProvider: {
+                catalog: {}
+            } as unknown as AbapServiceProvider,
+            backendSystem: backendSystemServiceKeys
+        };
+
+        const systemConnectionQuestions = await getSystemConnectionQuestions(
+            connectValidator,
+            undefined,
+            cachedConnectedSystem
+        );
+        const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
+        expect(
+            await systemSelectionPrompt.validate?.({
+                type: 'backendSystem',
+                system: backendSystemServiceKeys
+            } as SystemSelectionAnswerType)
+        ).toBe(true);
+        expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined();
+        expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
+            backendSystemServiceKeys,
+            connectionValidatorMock,
+            undefined,
+            cachedConnectedSystem
         );
     });
 
@@ -539,6 +612,7 @@ describe('Test system selection prompts', () => {
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
             backendSystemBasic,
             connectionValidatorMock,
+            undefined,
             undefined
         );
         connectWithBackendSystemSpy.mockClear();
@@ -550,6 +624,7 @@ describe('Test system selection prompts', () => {
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(
             backendSystemBasic,
             connectionValidatorMock,
+            undefined,
             undefined
         );
     });

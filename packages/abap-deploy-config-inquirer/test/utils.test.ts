@@ -9,7 +9,8 @@ import {
     getPackageAnswer,
     useCreateTrDuringDeploy,
     queryPackages,
-    reconcileAnswers
+    reconcileAnswers,
+    getTransportAnswer
 } from '../src/utils';
 import { getService } from '@sap-ux/store';
 import { mockTargetSystems } from './fixtures/targets';
@@ -104,7 +105,9 @@ describe('Test utils', () => {
         // destination
         const destination = mockDestinations.Dest1;
         const abapSystemDest = {
-            destination: 'Dest1'
+            destination: 'Dest1',
+            client: '100', // should be ignored since dest is defined
+            url: 'http://dest.btp.url' // should be ignored since dest is defined
         };
         expect(isSameSystem(abapSystemDest, undefined, undefined, destination.Name)).toBe(true);
     });
@@ -251,5 +254,36 @@ describe('Test utils', () => {
         };
 
         expect(reconcileAnswers(internalAnswers, PromptState.abapDeployConfig)).toStrictEqual(expectedAnswers);
+    });
+
+    describe('getTransportAnswer', () => {
+        it('should return transportManual', () => {
+            const result = getTransportAnswer({ url: '', package: '', transportManual: 'TRMANUAL' });
+            expect(result).toBe('TRMANUAL');
+        });
+
+        it('should return transportFromList if transportManual is undefined', () => {
+            const result = getTransportAnswer({ url: '', package: '', transportFromList: 'TRLIST' });
+            expect(result).toBe('TRLIST');
+        });
+
+        it('should return transportCreated if others are undefined', () => {
+            const result = getTransportAnswer({ url: '', package: '', transportCreated: 'TRCREATED' });
+            expect(result).toBe('TRCREATED');
+        });
+
+        it('returns CREATE_TR_DURING_DEPLOY if transportInputChoice is CreateDuringDeployChoice', () => {
+            const result = getTransportAnswer({
+                url: '',
+                package: '',
+                transportInputChoice: TransportChoices.CreateDuringDeployChoice
+            });
+            expect(result).toBe(CREATE_TR_DURING_DEPLOY);
+        });
+
+        it('returns empty string if all inputs are undefined', () => {
+            const result = getTransportAnswer();
+            expect(result).toBe('');
+        });
     });
 });

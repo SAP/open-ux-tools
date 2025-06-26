@@ -1,9 +1,174 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ObjectPage FCL is enabled Create 2nd level page 1`] = `
+Object {
+  "config": Object {
+    "routerClass": "sap.f.routing.Router",
+  },
+  "routes": Array [
+    Object {
+      "name": "RootEntityObjectPage",
+      "pattern": "RootEntity({key}):?query:",
+      "target": Array [
+        "RootEntityObjectPage",
+      ],
+    },
+    Object {
+      "name": "ChildEntityObjectPage",
+      "pattern": "RootEntity({key})/navToChildEntity({navToChildEntityKey}):?query:",
+      "target": Array [
+        "RootEntityObjectPage",
+        "ChildEntityObjectPage",
+      ],
+    },
+  ],
+  "targets": Object {
+    "ChildEntityObjectPage": Object {
+      "controlAggregation": "midColumnPages",
+      "id": "ChildEntityObjectPage",
+      "name": "sap.fe.templates.ObjectPage",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/ChildEntity",
+          "navigation": Object {},
+        },
+      },
+      "type": "Component",
+    },
+    "RootEntityListReport": Object {},
+    "RootEntityObjectPage": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "navToChildEntity": Object {
+              "detail": Object {
+                "route": "ChildEntityObjectPage",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ObjectPage FCL is enabled Create 3rd level page 1`] = `
+Object {
+  "config": Object {
+    "routerClass": "sap.f.routing.Router",
+  },
+  "routes": Array [
+    Object {
+      "name": "RootEntityListReport",
+      "pattern": ":?query:",
+      "target": Array [
+        "TestListReport",
+      ],
+    },
+    Object {
+      "name": "RootEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey}):?query:",
+      "target": Array [
+        "TestListReport",
+        "RootEntityObjectPage",
+      ],
+    },
+    Object {
+      "name": "ChildEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey})/navToChildEntity({navToChildEntityKey}):?query:",
+      "target": Array [
+        "TestListReport",
+        "RootEntityObjectPage",
+        "ChildEntityObjectPage",
+      ],
+    },
+  ],
+  "targets": Object {
+    "ChildEntityObjectPage": Object {
+      "controlAggregation": "endColumnPages",
+      "id": "ChildEntityObjectPage",
+      "name": "sap.fe.templates.ObjectPage",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/ChildEntity",
+          "navigation": Object {},
+        },
+      },
+      "type": "Component",
+    },
+    "RootEntityListReport": Object {},
+    "RootEntityObjectPage": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "navToChildEntity": Object {
+              "detail": Object {
+                "route": "ChildEntityObjectPage",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
 exports[`ObjectPage generate Add library dependency \`sap.fe.templates\`  1`] = `
 Object {
   "libs": Object {
     "sap.fe.templates": Object {},
+  },
+}
+`;
+
+exports[`ObjectPage generate Add when "sap.fe.ariba" dependency is listed 1`] = `
+Object {
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.ariba": Object {},
+        "sap.fe.templates": Object {},
+      },
+    },
+    "routing": Object {
+      "routes": Array [
+        Object {
+          "name": "RootEntityListReport",
+          "pattern": ":?query:",
+          "target": "TestListReport",
+        },
+        Object {
+          "name": "RootEntityObjectPage",
+          "pattern": "RootEntity({RootEntityKey}):?query:",
+          "target": "RootEntityObjectPage",
+        },
+        Object {
+          "name": "OtherEntityObjectPage",
+          "pattern": "OtherEntity:?query:",
+          "target": "OtherEntityObjectPage",
+        },
+      ],
+      "targets": Object {
+        "OtherEntityObjectPage": Object {
+          "id": "OtherEntityObjectPage",
+          "name": "sap.fe.ariba.ObjectPage",
+          "options": Object {
+            "settings": Object {
+              "contextPath": "/OtherEntity",
+              "navigation": Object {},
+            },
+          },
+          "type": "Component",
+        },
+        "RootEntityListReport": Object {},
+        "RootEntityObjectPage": Object {},
+      },
+    },
   },
 }
 `;

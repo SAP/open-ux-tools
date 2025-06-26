@@ -42,7 +42,7 @@ export interface AnnotationFileDetails {
 }
 
 export interface AnnotationDataSourceMap {
-    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileDetails, metadataReadErrorMsg: string };
+    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileDetails; metadataReadErrorMsg: string };
 }
 
 export interface AnnotationDataSourceResponse {
@@ -171,7 +171,9 @@ export async function getDataSourceAnnotationFileMap(): Promise<AnnotationDataSo
  * @returns {CodeExtResponse} Returns path to existing controller if found
  */
 export async function getExistingController(controllerName: string): Promise<CodeExtResponse> {
-    return request<CodeExtResponse>(`${ApiEndpoints.CODE_EXT}/${controllerName}` as ApiEndpoints, RequestMethod.GET);
+    const params = new URLSearchParams({ name: controllerName });
+    const url = `${ApiEndpoints.CODE_EXT}?${params.toString()}` as ApiEndpoints;
+    return request<CodeExtResponse>(url, RequestMethod.GET);
 }
 
 /**
@@ -181,5 +183,5 @@ export async function getExistingController(controllerName: string): Promise<Cod
  * @returns Generic Promise<T>
  */
 export async function writeChange<T>(data: T): Promise<T> {
-    return request<T>(ApiEndpoints.CHANGES, RequestMethod.POST, data);
+    return request<T>(ApiEndpoints.CHANGES, RequestMethod.POST, { change: data });
 }

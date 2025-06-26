@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/nodejs-utils",
-    "version": "0.1.8",
+    "version": "0.2.1",
     "description": "Nodejs utility wrappers",
     "repository": {
         "type": "git",
@@ -43,6 +43,6 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }

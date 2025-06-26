@@ -1,5 +1,170 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.6.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/cds-odata-annotation-converter@0.6.3
+
+## 0.6.3
+
+### Patch Changes
+
+-   bdff312: fix: flattened annotation deletion.
+-   Updated dependencies [bdff312]
+    -   @sap-ux/cds-odata-annotation-converter@0.6.3
+
+## 0.6.2
+
+### Patch Changes
+
+-   Updated dependencies [070dcb2]
+    -   @sap-ux/odata-vocabularies@0.4.10
+    -   @sap-ux/cds-annotation-parser@0.2.13
+    -   @sap-ux/cds-odata-annotation-converter@0.6.2
+    -   @sap-ux/xml-odata-annotation-converter@0.3.5
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [be6febe]
+    -   @sap-ux/cds-annotation-parser@0.2.12
+    -   @sap-ux/cds-odata-annotation-converter@0.6.1
+
+## 0.6.0
+
+### Minor Changes
+
+-   d2c10e7: feat: write cds annotations using new syntax without `![]` escape sequence.
+
+### Patch Changes
+
+-   Updated dependencies [d2c10e7]
+    -   @sap-ux/cds-odata-annotation-converter@0.6.0
+
+## 0.5.8
+
+### Patch Changes
+
+-   Updated dependencies [08ed948]
+    -   @sap-ux/odata-annotation-core-types@0.4.4
+    -   @sap-ux/cds-odata-annotation-converter@0.5.9
+    -   @sap-ux/odata-annotation-core@0.2.5
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/odata-vocabularies@0.4.9
+    -   @sap-ux/xml-odata-annotation-converter@0.3.5
+    -   @sap-ux/cds-annotation-parser@0.2.11
+
+## 0.5.7
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+-   @sap-ux/cds-odata-annotation-converter@0.5.8
+
+## 0.5.6
+
+### Patch Changes
+
+-   e605d30: fix: [CDS] update change for path values does not replace `/` with `.`.
+
+## 0.5.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/cds-odata-annotation-converter@0.5.8
+
+## 0.5.4
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/cds-annotation-parser@0.2.10
+    -   @sap-ux/cds-odata-annotation-converter@0.5.8
+    -   @sap-ux/odata-annotation-core@0.2.4
+    -   @sap-ux/odata-annotation-core-types@0.4.3
+    -   @sap-ux/xml-odata-annotation-converter@0.3.4
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/odata-vocabularies@0.4.8
+
+## 0.5.3
+
+### Patch Changes
+
+-   aeb23b0: fix: support new cds parser
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/cds-odata-annotation-converter@0.5.7
+
+## 0.5.1
+
+### Patch Changes
+
+-   2024a9f: chore: update `@sap/ux-cds-compiler-facade` dependency
+-   Updated dependencies [2024a9f]
+    -   @sap-ux/cds-odata-annotation-converter@0.5.7
+
+## 0.5.0
+
+### Minor Changes
+
+-   2a16531: feat: for XML projects relax metadata reference check in annotation files.
+
+### Patch Changes
+
+-   Updated dependencies [2a16531]
+    -   @sap-ux/odata-annotation-core@0.2.3
+    -   @sap-ux/cds-annotation-parser@0.2.9
+    -   @sap-ux/cds-odata-annotation-converter@0.5.6
+    -   @sap-ux/xml-odata-annotation-converter@0.3.3
+
+## 0.4.27
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.26
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.25
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.24
+
+### Patch Changes
+
+-   Updated dependencies [fb49882]
+    -   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.23
+
+### Patch Changes
+
+-   7cda000: fix: writing empty path values results in a compile error in CDS projects
+-   Updated dependencies [7cda000]
+    -   @sap-ux/cds-odata-annotation-converter@0.5.4
+
 ## 0.4.22
 
 ### Patch Changes

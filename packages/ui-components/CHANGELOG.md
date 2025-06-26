@@ -1,5 +1,53 @@
 # @sap-ux/ui-components
 
+## 1.26.8
+
+### Patch Changes
+
+-   282f30e: feat(ui-components) add icon check
+
+## 1.26.7
+
+### Patch Changes
+
+-   a4e81fc: UIDialog: Override FluentUI overlay background with VSCode theme variable
+
+## 1.26.6
+
+### Patch Changes
+
+-   12faf8b: feat(ui-components) add icon pdf and word
+
+## 1.26.5
+
+### Patch Changes
+
+-   5b4af69: UIComboBox: Add support for external (backend) search with example in Storybook
+
+## 1.26.4
+
+### Patch Changes
+
+-   739045a: feat(ui-components) export pivot
+
+## 1.26.3
+
+### Patch Changes
+
+-   46c775f: Icons update. Update icons "SwitchOff" and "SwitchOn"
+
+## 1.26.2
+
+### Patch Changes
+
+-   077eae5: feat(ui-components): UIIcons. Add new icon "Shift"
+
+## 1.26.1
+
+### Patch Changes
+
+-   698b7e3: Fixes space between empty table and Add button.
+
 ## 1.26.0
 
 ### Minor Changes

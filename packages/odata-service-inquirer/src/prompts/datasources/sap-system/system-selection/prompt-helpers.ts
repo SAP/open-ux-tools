@@ -1,4 +1,4 @@
-import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
+import type { Destination, Destinations, ServiceInfo } from '@sap-ux/btp-utils';
 import {
     getDisplayName,
     isAbapODataDestination,
@@ -8,17 +8,16 @@ import {
     isPartialUrlDestination,
     listDestinations
 } from '@sap-ux/btp-utils';
+import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
 import { SystemService } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
-import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { t } from '../../../../i18n';
-import { type DestinationFilters } from '../../../../types';
-import { convertODataVersionType, PromptState } from '../../../../utils';
+import type { ConnectedSystem, DestinationFilters } from '../../../../types';
+import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
-import { type SystemSelectionAnswerType } from './questions';
 import type { ValidationResult } from '../../../types';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
@@ -28,6 +27,11 @@ export type NewSystemChoice = typeof NewSystemChoice;
 export const CfAbapEnvServiceChoice = 'cfAbapEnvService';
 export type CfAbapEnvServiceChoice = typeof CfAbapEnvServiceChoice;
 
+export type SystemSelectionAnswerType = {
+    type: 'destination' | 'backendSystem' | 'newSystemChoice' | CfAbapEnvServiceChoice;
+    system: Destination | BackendSystem | NewSystemChoice | CfAbapEnvServiceChoice;
+};
+
 /**
  * Connects to the specified backend system and validates the connection.
  * Note this will return true in the case of basic auth validation failure to defer validation to the credentials prompt.
@@ -35,17 +39,24 @@ export type CfAbapEnvServiceChoice = typeof CfAbapEnvServiceChoice;
  * @param backendSystem the backend system to connect to
  * @param connectionValidator the connection validator to use for the connection
  * @param requiredOdataVersion the required OData version for the service, this will be used to narrow the catalog service connections
+ * @param cachedConnectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns the validation result of the backend system connection
  */
 export async function connectWithBackendSystem(
     backendSystem: BackendSystem,
     connectionValidator: ConnectionValidator,
-    requiredOdataVersion?: OdataVersion
+    requiredOdataVersion?: OdataVersion,
+    cachedConnectedSystem?: ConnectedSystem
 ): Promise<ValidationResult> {
     // Create a new connection with the selected system
     PromptState.resetConnectedSystem();
     let connectValResult: ValidationResult = false;
     if (backendSystem) {
+        // Backend systems validation supports using a cached service provider to prevent re-authentication (e.g. re-opening a browser window)
+        // In case the user has changed the URL, do not use the cached service provider.
+        if (cachedConnectedSystem && cachedConnectedSystem.backendSystem?.url === backendSystem.url) {
+            connectionValidator.setConnectedSystem(cachedConnectedSystem);
+        }
         // Assumption: non-BAS systems are BackendSystems
         if (backendSystem.authenticationType === 'reentranceTicket') {
             connectValResult = await connectionValidator.validateUrl(backendSystem.url, {
@@ -87,7 +98,7 @@ export async function connectWithBackendSystem(
         // If the connection is successful, we will return the connected system from the inquirer
         if (connectValResult === true && connectionValidator.serviceProvider) {
             PromptState.odataService.connectedSystem = {
-                serviceProvider: connectionValidator.serviceProvider,
+                serviceProvider: removeCircularFromServiceProvider(connectionValidator.serviceProvider),
                 backendSystem
             };
         }
@@ -129,7 +140,7 @@ export async function connectWithDestination(
     // If the connection is successful, we will return the connected system from the inquirer
     if (connectValResult === true && connectionValidator.serviceProvider) {
         PromptState.odataService.connectedSystem = {
-            serviceProvider: connectionValidator.serviceProvider,
+            serviceProvider: removeCircularFromServiceProvider(connectionValidator.serviceProvider),
             destination
         };
     }
@@ -208,7 +219,16 @@ export async function createSystemChoices(
 
     // If this is BAS, return destinations, otherwise return stored backend systems
     if (isAppStudio()) {
-        const destinations = await listDestinations({ stripS4HCApiHosts: true });
+        let destinations: Destinations = {};
+        try {
+            destinations = await listDestinations({ stripS4HCApiHosts: true });
+        } catch (e) {
+            LoggerHelper.logger.error(
+                t('errors.destination.listDestinations', {
+                    error: e.message
+                })
+            );
+        }
         systemChoices = Object.values(destinations)
             .filter((destination) => {
                 return matchesFilters(destination, destinationFilters);

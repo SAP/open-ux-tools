@@ -28,7 +28,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -40,7 +40,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -77,8 +77,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: alp2
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: alp2
+            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -131,8 +135,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: alp2
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: alp2
+            action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -178,8 +186,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: alp2
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: alp2
+            action: tile
 ",
     "state": "modified",
   },
@@ -6008,7 +6020,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -6020,7 +6032,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   },
   \\"sapux\\": true
 }
@@ -6054,8 +6066,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: alp1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: alp1
+            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -6106,8 +6122,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: alp1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: alp1
+            action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -6151,8 +6171,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: alp1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: alp1
+            action: tile
 ",
     "state": "modified",
   },

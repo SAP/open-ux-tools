@@ -1,5 +1,109 @@
 # @sap-ux/odata-cli
 
+## 0.17.8
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/axios-extension@1.22.3
+
+## 0.17.7
+
+### Patch Changes
+
+-   Updated dependencies [14214a3]
+    -   @sap-ux/axios-extension@1.22.2
+
+## 0.17.6
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+
+## 0.17.5
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+
+## 0.17.4
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+
+## 0.17.3
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+
+## 0.17.2
+
+### Patch Changes
+
+-   Updated dependencies [61d4060]
+    -   @sap-ux/axios-extension@1.21.2
+
+## 0.17.1
+
+### Patch Changes
+
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+
+## 0.17.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+
+## 0.16.14
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.3
+
+## 0.16.13
+
+### Patch Changes
+
+-   Updated dependencies [1a01c5e]
+    -   @sap-ux/axios-extension@1.20.2
+
+## 0.16.12
+
+### Patch Changes
+
+-   Updated dependencies [a3a43b2]
+    -   @sap-ux/axios-extension@1.20.1
+
+## 0.16.11
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+
+## 0.16.10
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/axios-extension@1.19.3
+
 ## 0.16.9
 
 ### Patch Changes

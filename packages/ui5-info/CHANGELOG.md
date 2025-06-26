@@ -1,5 +1,40 @@
 # @sap-ux/ui5-info
 
+## 0.12.0
+
+### Minor Changes
+
+-   20cc54f: enhance theme retrieval for latest UI5 versions
+
+## 0.11.1
+
+### Patch Changes
+
+-   7f35f6c: Updates option `useCache` default to true.
+
+## 0.11.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/logger@0.7.0
+
+## 0.10.1
+
+### Patch Changes
+
+-   2050952: update Belize theme label and add version checks for deprecation
+
+## 0.10.0
+
+### Minor Changes
+
+-   c64de75: Remove UI Theme Belize from the generator for UI5 Version over 1.136
+
 ## 0.9.1
 
 ### Patch Changes

@@ -1,5 +1,76 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.6.3
+
+### Patch Changes
+
+-   bdff312: chore: update `@sap/ux-cds-compiler-facade` dependency.
+
+## 0.6.2
+
+### Patch Changes
+
+-   Updated dependencies [070dcb2]
+    -   @sap-ux/odata-vocabularies@0.4.10
+    -   @sap-ux/cds-annotation-parser@0.2.13
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [be6febe]
+    -   @sap-ux/cds-annotation-parser@0.2.12
+
+## 0.6.0
+
+### Minor Changes
+
+-   d2c10e7: feat: write cds annotations using new syntax without `![]` escape sequence.
+
+## 0.5.9
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core@0.2.5
+-   @sap-ux/odata-vocabularies@0.4.9
+-   @sap-ux/cds-annotation-parser@0.2.11
+
+## 0.5.8
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/text-document-utils@0.3.0
+    -   @sap-ux/cds-annotation-parser@0.2.10
+    -   @sap-ux/odata-annotation-core@0.2.4
+    -   @sap-ux/odata-vocabularies@0.4.8
+
+## 0.5.7
+
+### Patch Changes
+
+-   2024a9f: chore: update `@sap/ux-cds-compiler-facade` dependency
+
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [2a16531]
+    -   @sap-ux/odata-annotation-core@0.2.3
+    -   @sap-ux/cds-annotation-parser@0.2.9
+
+## 0.5.5
+
+### Patch Changes
+
+-   fb49882: fix: add flattened record type info in generic format
+
+## 0.5.4
+
+### Patch Changes
+
+-   7cda000: fix: writing empty path values results in a compile error in CDS projects
+
 ## 0.5.3
 
 ### Patch Changes

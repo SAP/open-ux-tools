@@ -1,42 +1,43 @@
-import { PromptState } from './prompt-state';
-import { type Destinations, isS4HC, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
-import {
-    createTransportNumber,
-    getTransportList,
-    isEmptyString,
-    isValidClient,
-    isValidUrl,
-    isAppNameValid
-} from '../validator-utils';
-import { DEFAULT_PACKAGE_ABAP } from '../constants';
-import { getTransportListFromService, getSystemInfo, isAbapCloud } from '../service-provider-utils';
-import { t } from '../i18n';
-import {
-    findBackendSystemByUrl,
-    initTransportConfig,
-    getPackageAnswer,
-    queryPackages,
-    getSystemConfig
-} from '../utils';
-import { handleTransportConfigError } from '../error-handler';
+import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { isAbapEnvironmentOnBtp, isS4HC, type Destinations } from '@sap-ux/btp-utils';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { AuthenticationType } from '@sap-ux/store';
-import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
+import { DEFAULT_PACKAGE_ABAP } from '../constants';
+import { handleTransportConfigError } from '../error-handler';
+import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
+import { getSystemInfo, getTransportListFromService, isAbapCloud } from '../service-provider-utils';
+import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
 import {
     ClientChoiceValue,
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
-    type SystemConfig,
     type AbapDeployConfigAnswersInternal,
     type AbapSystemChoice,
     type BackendTarget,
     type PackagePromptOptions,
+    type SystemConfig,
     type TargetSystemPromptOptions,
     type UI5AbapRepoPromptOptions
 } from '../types';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
+import {
+    findBackendSystemByUrl,
+    getPackageAnswer,
+    getSystemConfig,
+    initTransportConfig,
+    queryPackages
+} from '../utils';
+import {
+    createTransportNumber,
+    getTransportList,
+    isAppNameValid,
+    isEmptyString,
+    isValidClient,
+    isValidUrl
+} from '../validator-utils';
+import { PromptState } from './prompt-state';
 
 const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 
@@ -288,12 +289,7 @@ export async function validateCredentials(
         return t('errors.requireCredentials');
     }
 
-    let warning: unknown;
-    ({
-        transportConfig: PromptState.transportAnswers.transportConfig,
-        transportConfigNeedsCreds: PromptState.transportAnswers.transportConfigNeedsCreds,
-        warning
-    } = await initTransportConfig({
+    const { transportConfigNeedsCreds } = await initTransportConfig({
         backendTarget: backendTarget,
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
@@ -304,25 +300,10 @@ export async function validateCredentials(
         errorHandler: (e: string) => {
             handleTransportConfigError(e);
         }
-    }));
+    });
 
-    if (warning) {
-        const helpLink = getHelpUrl(HELP_TREE.FIORI_TOOLS, [57266]);
-        const warningMessage = t('warnings.transportConfigFailure', { helpLink });
-        LoggerHelper.logger.info(`\n${warningMessage}`);
-        LoggerHelper.logger.info(`\n${warning}`);
-        PromptState.transportAnswers.transportConfigNeedsCreds = false;
-
-        return true; // Log a warning and proceed
-    }
-
-    if (PromptState.transportAnswers.transportConfigNeedsCreds) {
-        LoggerHelper.logger.warn(t('errors.incorrectCredentials'));
-        return t('errors.incorrectCredentials');
-    } else {
-        LoggerHelper.logger.info(t('info.correctCredentials'));
-        return true;
-    }
+    PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
+    return transportConfigNeedsCreds ? t('errors.incorrectCredentials') : true;
 }
 
 /**
@@ -372,17 +353,29 @@ export async function validatePackageChoiceInput(
     input: PackageInputChoices,
     systemConfig: SystemConfig,
     backendTarget?: BackendTarget
-): Promise<boolean | string> {
+): Promise<boolean | string | IValidationLink> {
     if (input === PackageInputChoices.ListExistingChoice) {
-        const retrievedPackageList = await queryPackages('', systemConfig, backendTarget);
-        if (retrievedPackageList && retrievedPackageList.length > 0) {
-            return true;
-        } else {
-            return t('warnings.packageNotFound');
+        let helpLink: IValidationLink | string | undefined;
+        try {
+            const retrievedPackageList = await queryPackages('', systemConfig, backendTarget);
+            if (retrievedPackageList && retrievedPackageList.length > 0) {
+                return true;
+            } else {
+                return t('warnings.packageNotFound');
+            }
+        } catch (error) {
+            if (ErrorHandler.isCertError(error)) {
+                helpLink = new ErrorHandler(
+                    undefined,
+                    undefined,
+                    '@sap-ux/abap-deploy-config-inquirer'
+                ).getValidationErrorHelp(error);
+                return helpLink ?? true;
+            }
+            throw error;
         }
-    } else {
-        return true;
     }
+    return true;
 }
 
 /**
@@ -404,29 +397,6 @@ export async function validatePackageChoiceInputForCli(
             throw new Error(result as string);
         }
     }
-}
-
-/**
- * Validates the package name.
- *
- * @param input - package name entered
- * @returns boolean or error message as a string
- */
-export async function validatePackage(input: string): Promise<boolean | string> {
-    PromptState.transportAnswers.transportRequired = true; // reset to true every time package is validated
-    if (!input?.trim()) {
-        return t('warnings.providePackage');
-    }
-    //valiadtion for special characters
-    if (!/^[A-Za-z0-9$_/]*$/.test(input)) {
-        return t('errors.validators.charactersForbiddenInPackage');
-    }
-    //validate package format
-    if (!/^(?:\/\w+\/)?[$]?\w*$/.test(input)) {
-        return t('errors.validators.abapPackageInvalidFormat');
-    }
-
-    return true;
 }
 
 /**
@@ -459,6 +429,7 @@ function getPackageStartingPrefix(packageName: string): string {
  * @param params.prevTransportInputChoice - previous transport input choice
  * @param params.backendTarget - backend target
  * @param params.ui5AbapRepoName - ui5 app repository name derived from AbapDeployConfigPromptOptions[ui5AbapRepo]
+ * @param params.transportDescription - custom description for the transport request
  * @returns - boolean or error message as a string
  */
 async function handleCreateNewTransportChoice({
@@ -469,7 +440,8 @@ async function handleCreateNewTransportChoice({
     validateInputChanged,
     prevTransportInputChoice,
     backendTarget,
-    ui5AbapRepoName
+    ui5AbapRepoName,
+    transportDescription
 }: {
     packageAnswer: string;
     systemConfig: SystemConfig;
@@ -479,6 +451,7 @@ async function handleCreateNewTransportChoice({
     prevTransportInputChoice?: TransportChoices;
     backendTarget?: BackendTarget;
     ui5AbapRepoName?: string;
+    transportDescription?: string;
 }): Promise<boolean | string> {
     // Question is re-evaluated triggered by other user changes,
     // no need to create a new transport number
@@ -500,7 +473,10 @@ async function handleCreateNewTransportChoice({
             }
         }
     }
-    const description = `For ABAP repository ${previousAnswers?.ui5AbapRepo?.toUpperCase()}, created by SAP Fiori Tools`;
+    const description =
+        transportDescription ??
+        `For ABAP repository ${previousAnswers?.ui5AbapRepo?.toUpperCase()}, created by SAP Fiori Tools`;
+
     PromptState.transportAnswers.newTransportNumber = await createTransportNumber(
         {
             packageName: getPackageAnswer(previousAnswers, PromptState.abapDeployConfig.package),
@@ -559,53 +535,73 @@ async function handleListExistingTransportChoice(
 /**
  * Validates the transport choice input.
  *
- * @param useStandalone - if the transport prompts are used standalone
- * @param input - transport choice input
- * @param previousAnswers - previous answers
- * @param validateInputChanged - if the input has changed
- * @param prevTransportInputChoice - previous transport input choice
- * @param backendTarget - backend target
- * @param ui5AbapRepoName - ui5 app repository name derived from AbapDeployConfigPromptOptions[ui5AbapRepo]
+ * @param params - params for transport choice input
+ * @param params.useStandalone - if the transport prompts are used standalone
+ * @param params.input - transport choice input
+ * @param params.previousAnswers - previous answers
+ * @param params.validateInputChanged - if the input has changed
+ * @param params.prevTransportInputChoice - previous transport input choice
+ * @param params.backendTarget - backend target
+ * @param params.ui5AbapRepoName - ui5 app repository name derived from AbapDeployConfigPromptOptions[ui5AbapRepo]
+ * @param params.transportDescription - custom description for the transport request
  * @returns boolean or error message as a string
  */
-export async function validateTransportChoiceInput(
-    useStandalone: boolean,
-    input?: TransportChoices,
-    previousAnswers?: AbapDeployConfigAnswersInternal,
-    validateInputChanged?: boolean,
-    prevTransportInputChoice?: TransportChoices,
-    backendTarget?: BackendTarget,
-    ui5AbapRepoName?: string
-): Promise<boolean | string> {
+export async function validateTransportChoiceInput({
+    useStandalone,
+    input,
+    previousAnswers,
+    validateInputChanged,
+    prevTransportInputChoice,
+    backendTarget,
+    ui5AbapRepoName,
+    transportDescription
+}: {
+    useStandalone: boolean;
+    input?: TransportChoices;
+    previousAnswers?: AbapDeployConfigAnswersInternal;
+    validateInputChanged?: boolean;
+    prevTransportInputChoice?: TransportChoices;
+    backendTarget?: BackendTarget;
+    ui5AbapRepoName?: string;
+    transportDescription?: string;
+}): Promise<boolean | string | IValidationLink> {
     const packageAnswer = getPackageAnswer(previousAnswers, PromptState.abapDeployConfig.package);
     const systemConfig = getSystemConfig(useStandalone, PromptState.abapDeployConfig, backendTarget);
 
-    switch (input) {
-        case TransportChoices.ListExistingChoice: {
-            return handleListExistingTransportChoice(
+    if (input === TransportChoices.ListExistingChoice) {
+        try {
+            return await handleListExistingTransportChoice(
                 packageAnswer,
                 systemConfig,
                 previousAnswers,
                 backendTarget,
                 ui5AbapRepoName
             );
+        } catch (error) {
+            if (ErrorHandler.isCertError(error)) {
+                return (
+                    new ErrorHandler(
+                        undefined,
+                        undefined,
+                        '@sap-ux/abap-deploy-config-inquirer'
+                    ).getValidationErrorHelp(error) ?? true
+                );
+            }
         }
-        case TransportChoices.CreateNewChoice: {
-            return handleCreateNewTransportChoice({
-                packageAnswer,
-                systemConfig,
-                input,
-                previousAnswers,
-                validateInputChanged,
-                prevTransportInputChoice,
-                backendTarget,
-                ui5AbapRepoName
-            });
-        }
-        case TransportChoices.EnterManualChoice:
-        default:
-            return true;
+    } else if (input === TransportChoices.CreateNewChoice) {
+        return await handleCreateNewTransportChoice({
+            packageAnswer,
+            systemConfig,
+            input,
+            previousAnswers,
+            validateInputChanged,
+            prevTransportInputChoice,
+            backendTarget,
+            ui5AbapRepoName,
+            transportDescription
+        });
     }
+    return true;
 }
 
 /**
@@ -672,21 +668,24 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
  * @param {PackagePromptOptions} [promptOption] - Optional settings for additional package validation.
  * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional for ui5AbapRepo.
  * @param {BackendTarget} [backendTarget] - The backend target for validation context.
+ * @param {boolean} [useStandalone] - indicates if the package prompts are being ran in standalone.
  * @returns {Promise<boolean | string>} - Resolves to `true` if the package is valid,
  *                                        a `string` with an error message if validation fails,
  *                                        or the result of additional cloud package validation if applicable.
  */
-export async function validatePackageExtended(
+export async function validatePackage(
     input: string,
     answers: AbapDeployConfigAnswersInternal,
     promptOption?: PackagePromptOptions,
     ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
-    backendTarget?: BackendTarget
+    backendTarget?: BackendTarget,
+    useStandalone?: boolean
 ): Promise<boolean | string> {
-    const baseValidation = await validatePackage(input);
-    if (typeof baseValidation === 'string') {
-        return baseValidation;
+    PromptState.transportAnswers.transportRequired = true; // reset to true every time package is validated
+    if (!input?.trim()) {
+        return t('warnings.providePackage');
     }
+
     if (input === DEFAULT_PACKAGE_ABAP) {
         PromptState.transportAnswers.transportRequired = false;
         if (
@@ -698,9 +697,57 @@ export async function validatePackageExtended(
         }
     }
 
-    // checks if package is a local package and will update prompt state accordingly
-    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
+    const formatAndSpecialCharsValidation = validatePackageFormatAndSpecialCharacters(input, promptOption);
+    if (typeof formatAndSpecialCharsValidation === 'string') {
+        return formatAndSpecialCharsValidation;
+    }
 
+    if (
+        useStandalone ||
+        !PromptState.abapDeployConfig.scp ||
+        // we need to verify cloud systems are connected before checking the package to avoid multiple browser windows opening
+        (PromptState.abapDeployConfig.scp && AbapServiceProviderManager.isConnected())
+    ) {
+        try {
+            // checks if package is a local package and will update prompt state accordingly
+            await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
+        } catch (error) {
+            LoggerHelper.logger.warn(
+                `An error occurred while validating the local package for package: ${error.message}`
+            );
+        }
+    }
+
+    const startingPrefixValidation = validatePackageStartingPrefix(input, answers, promptOption, ui5AbapPromptOptions);
+    if (typeof startingPrefixValidation === 'string') {
+        return startingPrefixValidation;
+    }
+
+    if (promptOption?.additionalValidation?.shouldValidatePackageType) {
+        return await validatePackageType(input, backendTarget);
+    }
+
+    return true;
+}
+
+/**
+ * Validates that the provided ABAP package name has a correct starting prefix,
+ * and that the UI5 ABAP repository name aligns with this prefix.
+ *
+ * This validation only runs if certain conditions are met based on the provided answers and prompt options.
+ *
+ * @param {string} input - The ABAP package name to validate.
+ * @param {AbapDeployConfigAnswersInternal} answers - User-provided answers including the UI5 ABAP repository name.
+ * @param {PackagePromptOptions} [promptOption] - Optional prompt configuration for package validation.
+ * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional UI5-specific ABAP prompt configuration.
+ * @returns {string | boolean} - Returns `true` if the package is valid, otherwise returns an error message.
+ */
+function validatePackageStartingPrefix(
+    input: string,
+    answers: AbapDeployConfigAnswersInternal,
+    promptOption?: PackagePromptOptions,
+    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions
+): string | boolean {
     if (shouldValidatePackageForStartingPrefix(answers, promptOption, ui5AbapPromptOptions)) {
         const startingPrefix = getPackageStartingPrefix(input);
 
@@ -715,8 +762,32 @@ export async function validatePackageExtended(
         }
     }
 
-    if (promptOption?.additionalValidation?.shouldValidatePackageType) {
-        return await validatePackageType(input, backendTarget);
+    return true;
+}
+
+/**
+ * Validates the ABAP package name format and ensures it doesn't contain forbidden characters.
+ * This includes checking for special characters and adherence to ABAP package naming conventions.
+ *
+ * Validation only occurs if enabled via the prompt option.
+ *
+ * @param {string} input - The ABAP package name to validate.
+ * @param {PackagePromptOptions} [promptOption] - Optional prompt settings that enable format and character validation.
+ * @returns {string | boolean} - Returns `true` if valid, otherwise returns an error message.
+ */
+function validatePackageFormatAndSpecialCharacters(
+    input: string,
+    promptOption?: PackagePromptOptions
+): string | boolean {
+    if (promptOption?.additionalValidation?.shouldValidateFormatAndSpecialCharacters) {
+        //validate for special characters
+        if (!/^[A-Za-z0-9$_/]*$/.test(input)) {
+            return t('errors.validators.charactersForbiddenInPackage');
+        }
+        //validate package format
+        if (!/^(?:\/\w+\/)?[$]?\w*$/.test(input)) {
+            return t('errors.validators.abapPackageInvalidFormat');
+        }
     }
 
     return true;

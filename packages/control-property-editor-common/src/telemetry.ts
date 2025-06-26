@@ -6,6 +6,8 @@ interface TelemetryData {
     telemetryEventIdentifier?: string;
     dialogName?: string;
     quickActionSteps?: number;
+    ui5Version?: string;
+    appType?: string;
 }
 
 let enabled = false;

@@ -29,6 +29,7 @@ import {
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
 const SETTINGS_ID = 'CTX_SETTINGS';
+const REARRANGE_TOOLBAR_SETTINGS_ID = 'CTX_SETTINGS0';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
 
 async function getActionId(table: UI5Element): Promise<string[]> {
@@ -44,6 +45,15 @@ async function getActionId(table: UI5Element): Promise<string[]> {
 
     return [M_TABLE_ACTION_ID, SETTINGS_ID];
 }
+
+async function getRearrangeToolbarContentActionId(): Promise<string> {
+    const { major, minor } = await getUi5Version();
+    if (major === 1 && minor <= 127) {
+        return SETTINGS_ID;
+    }
+    return REARRANGE_TOOLBAR_SETTINGS_ID;
+}
+
 export type TableQuickActionsOptions = {
     includeServiceAction?: boolean;
     areTableRowsRequired?: boolean;
@@ -65,6 +75,7 @@ export abstract class TableQuickActionDefinitionBase<
             tableUpdateEventAttachedOnce: boolean;
             iconTabBarFilterKey?: string;
             changeColumnActionId?: string;
+            changeToolbarContentAction?: { id: string; enabled: boolean };
             sectionInfo?: {
                 section: ObjectPageSection;
                 subSection: ObjectPageSubSection;
@@ -100,11 +111,18 @@ export abstract class TableQuickActionDefinitionBase<
         if (this.options.includeServiceAction) {
             const actions = await this.context.actionService.get(table.getId());
             const actionsIds = await getActionId(table);
-
-            const changeColumnAction = actionsIds.find(
+            const changeColumnActionId = actionsIds.find(
                 (actionId) => actions.findIndex((action) => action.id === actionId) > -1
             );
-            this.tableMap[tableMapKey].changeColumnActionId = changeColumnAction;
+            this.tableMap[tableMapKey].changeColumnActionId = changeColumnActionId;
+            const changeToolbarContentActionId = await getRearrangeToolbarContentActionId();
+            const changeToolbarContentAction = actions.find((action) => action.id === changeToolbarContentActionId);
+            this.tableMap[tableMapKey].changeToolbarContentAction = changeToolbarContentAction
+                ? {
+                      id: changeToolbarContentAction.id,
+                      enabled: changeToolbarContentAction.enabled
+                  }
+                : undefined;
         }
     }
 
@@ -130,9 +148,9 @@ export abstract class TableQuickActionDefinitionBase<
                 await this.collectChildrenInSection(section, table);
             } else if (this.iconTabBar && tabKey) {
                 const label = `'${iconTabBarfilterMap[tabKey]}' table`;
-                const child = this.createChild(label, table);
+                const tableMapKey = this.children.length.toString();
+                const child = this.createChild(label, table, tableMapKey);
                 this.children.push(child);
-                const tableMapKey = `${this.children.length - 1}`;
                 this.tableMap[tableMapKey] = {
                     table,
                     iconTabBarFilterKey: tabKey,
@@ -184,9 +202,9 @@ export abstract class TableQuickActionDefinitionBase<
                 return `'${header}' table`;
             }
         } else if (isA<Table>(M_TABLE_TYPE, table)) {
-            const tilte = table?.getHeaderToolbar()?.getTitleControl()?.getText();
-            if (tilte) {
-                return `'${tilte}' table`;
+            const title = table?.getHeaderToolbar()?.getTitleControl()?.getText();
+            if (title) {
+                return `'${title}' table`;
             }
         }
 
@@ -237,20 +255,19 @@ export abstract class TableQuickActionDefinitionBase<
                 );
                 let tableMapIndex;
                 const label = this.getTableLabel(table);
-                const child = this.createChild(label, table);
                 if (existingChildIdx < 0) {
+                    tableMapIndex = `${this.children.length}/0`;
+                    const child = this.createChild(label, table, tableMapIndex);
                     this.children.push({
+                        path: this.children.length.toString(),
                         label: `'${section?.getTitle()}' section`,
                         enabled: true,
                         children: [child]
                     });
-
-                    tableMapIndex = `${this.children.length - 1}/0`;
                 } else {
+                    tableMapIndex = `${existingChildIdx}/${this.children[existingChildIdx].children.length}`;
+                    const child = this.createChild(label, table, tableMapIndex);
                     this.children[existingChildIdx].children.push(child);
-                    tableMapIndex = `${existingChildIdx.toFixed(0)}/${
-                        this.children[existingChildIdx].children.length - 1
-                    }`;
                 }
 
                 this.tableMap[tableMapIndex] = {
@@ -272,6 +289,7 @@ export abstract class TableQuickActionDefinitionBase<
         table: T,
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
     ): Promise<void> {
+        const tableMapKey = this.children.length.toString();
         if (
             [
                 SMART_TABLE_TYPE,
@@ -283,11 +301,10 @@ export abstract class TableQuickActionDefinitionBase<
             ].some((type) => isA(type, table))
         ) {
             const label = this.getTableLabel(table);
-            const child = this.createChild(label, table);
+            const child = this.createChild(label, table, tableMapKey);
             this.children.push(child);
         }
 
-        const tableMapKey = `${this.children.length - 1}`;
         this.tableMap[tableMapKey] = {
             table,
             sectionInfo: sectionInfo,
@@ -322,8 +339,9 @@ export abstract class TableQuickActionDefinitionBase<
         };
     }
 
-    createChild(label: string, table: UI5Element): NestedQuickActionChild {
+    createChild(label: string, table: UI5Element, path: string): NestedQuickActionChild {
         const child: NestedQuickActionChild = {
+            path,
             label,
             enabled: true,
             children: []

@@ -53,6 +53,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": "",
     "guiOptions": {
       "applyDefaultWhenDirty": true,
@@ -162,6 +163,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": "",
     "guiOptions": {
       "applyDefaultWhenDirty": true,
@@ -208,6 +210,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Enter the URL of the SAP System",
@@ -241,6 +244,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": "",
     "guiOptions": {
       "applyDefaultWhenDirty": true,
@@ -306,6 +310,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "Enter the URL of the SAP System",

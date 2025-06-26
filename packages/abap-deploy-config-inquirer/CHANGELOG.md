@@ -1,5 +1,369 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.4.25
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+    -   @sap-ux/inquirer-common@0.7.15
+
+## 1.4.24
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/system-access@0.6.8
+    -   @sap-ux/fiori-generator-shared@0.12.9
+    -   @sap-ux/inquirer-common@0.7.14
+
+## 1.4.23
+
+### Patch Changes
+
+-   Updated dependencies [14214a3]
+    -   @sap-ux/axios-extension@1.22.2
+    -   @sap-ux/system-access@0.6.7
+
+## 1.4.22
+
+### Patch Changes
+
+-   5a88606: Remove warning messages, no longer applicable and GA link is too complex to follow
+
+## 1.4.21
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+    -   @sap-ux/system-access@0.6.6
+
+## 1.4.20
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+    -   @sap-ux/system-access@0.6.5
+
+## 1.4.19
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+    -   @sap-ux/inquirer-common@0.7.13
+
+## 1.4.18
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/inquirer-common@0.7.12
+
+## 1.4.17
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.11
+
+## 1.4.16
+
+### Patch Changes
+
+-   bf752f3: Adds more specific cert error messages with GA links.
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
+## 1.4.15
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+    -   @sap-ux/system-access@0.6.4
+
+## 1.4.14
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+    -   @sap-ux/system-access@0.6.3
+
+## 1.4.13
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/inquirer-common@0.7.9
+
+## 1.4.12
+
+### Patch Changes
+
+-   d6943aa: Adds GA link to deploy.
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+    -   @sap-ux/nodejs-utils@0.2.1
+
+## 1.4.11
+
+### Patch Changes
+
+-   18c7e5d: Adds support for cert bypassing and cert error GA link generation
+
+## 1.4.10
+
+### Patch Changes
+
+-   Updated dependencies [95a816d]
+    -   @sap-ux/fiori-generator-shared@0.12.6
+    -   @sap-ux/inquirer-common@0.7.7
+
+## 1.4.9
+
+### Patch Changes
+
+-   15ec5c4: adds support for adding deployment config via headless generator
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/fiori-generator-shared@0.12.5
+    -   @sap-ux/inquirer-common@0.7.6
+
+## 1.4.8
+
+### Patch Changes
+
+-   Updated dependencies [61d4060]
+    -   @sap-ux/axios-extension@1.21.2
+    -   @sap-ux/system-access@0.6.2
+
+## 1.4.7
+
+### Patch Changes
+
+-   Updated dependencies [91726b0]
+    -   @sap-ux/fiori-generator-shared@0.12.4
+    -   @sap-ux/inquirer-common@0.7.5
+
+## 1.4.6
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/fiori-generator-shared@0.12.3
+    -   @sap-ux/system-access@0.6.1
+    -   @sap-ux/inquirer-common@0.7.4
+
+## 1.4.5
+
+### Patch Changes
+
+-   4c6b7a1: add package default to fiori gen settings
+
+## 1.4.4
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/inquirer-common@0.7.3
+
+## 1.4.3
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+
+## 1.4.2
+
+### Patch Changes
+
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+    -   @sap-ux/system-access@0.6.1
+
+## 1.4.1
+
+### Patch Changes
+
+-   Updated dependencies [5e0020b]
+-   Updated dependencies [66b88e1]
+    -   @sap-ux/ui5-config@0.28.1
+    -   @sap-ux/inquirer-common@0.7.1
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/fiori-generator-shared@0.12.1
+    -   @sap-ux/system-access@0.6.0
+
+## 1.4.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/guided-answers-helper@0.3.0
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/system-access@0.6.0
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/store@1.1.0
+
+## 1.3.2
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.3
+-   @sap-ux/inquirer-common@0.6.43
+-   @sap-ux/system-access@0.5.39
+
+## 1.3.1
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.2
+-   @sap-ux/fiori-generator-shared@0.11.3
+-   @sap-ux/system-access@0.5.38
+-   @sap-ux/inquirer-common@0.6.42
+
+## 1.3.0
+
+### Minor Changes
+
+-   cb8ff79: Adds new option to provide custom descriptions for new transport requests
+
+## 1.2.51
+
+### Patch Changes
+
+-   Updated dependencies [1a01c5e]
+    -   @sap-ux/axios-extension@1.20.2
+    -   @sap-ux/system-access@0.5.38
+
+## 1.2.50
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.41
+
+## 1.2.49
+
+### Patch Changes
+
+-   39cf280: apply validation for package format and starting prefix with flag
+
+## 1.2.48
+
+### Patch Changes
+
+-   Updated dependencies [a3a43b2]
+    -   @sap-ux/axios-extension@1.20.1
+    -   @sap-ux/system-access@0.5.37
+
+## 1.2.47
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.40
+
+## 1.2.46
+
+### Patch Changes
+
+-   55e7ebd: Fixes re-authentication should not be required
+
+## 1.2.45
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/fiori-generator-shared@0.11.2
+    -   @sap-ux/system-access@0.5.36
+    -   @sap-ux/inquirer-common@0.6.39
+
+## 1.2.44
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/ui5-config@0.27.1
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/fiori-generator-shared@0.11.1
+    -   @sap-ux/system-access@0.5.36
+    -   @sap-ux/inquirer-common@0.6.38
+
+## 1.2.43
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/inquirer-common@0.6.37
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/system-access@0.5.36
+
+## 1.2.42
+
+### Patch Changes
+
+-   Updated dependencies [e5f4915]
+    -   @sap-ux/guided-answers-helper@0.2.2
+    -   @sap-ux/inquirer-common@0.6.36
+
+## 1.2.41
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/system-access@0.5.36
+
+## 1.2.40
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.10.2
+-   @sap-ux/inquirer-common@0.6.35
+
+## 1.2.39
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/axios-extension@1.19.3
+    -   @sap-ux/fiori-generator-shared@0.10.1
+    -   @sap-ux/inquirer-common@0.6.34
+    -   @sap-ux/system-access@0.5.35
+
+## 1.2.38
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/inquirer-common@0.6.33
+
+## 1.2.37
+
+### Patch Changes
+
+-   36518cc: check cloud systems are connected before making backend call
+
 ## 1.2.36
 
 ### Patch Changes

@@ -36,7 +36,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -47,8 +47,8 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
@@ -57,8 +57,8 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -127,8 +127,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -187,8 +191,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -248,8 +256,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -2124,7 +2136,7 @@ export function createDeviceModel () {
                 }
             },
             applications: {
-                \\"testme-app\\": {
+                \\"testme-display\\": {
                     title: \\"My Test App\\",
                     description: \\"Description of test.me\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
@@ -2751,7 +2763,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -2762,8 +2774,8 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
@@ -2772,8 +2784,8 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -2842,8 +2854,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -2902,8 +2918,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -2963,8 +2983,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -4839,7 +4863,7 @@ export function createDeviceModel () {
                 }
             },
             applications: {
-                \\"testme-app\\": {
+                \\"testme-display\\": {
                     title: \\"My Test App\\",
                     description: \\"Description of test.me\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
@@ -5466,7 +5490,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"~1.113.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -5477,8 +5501,8 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
@@ -5487,8 +5511,8 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -5557,8 +5581,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -5617,8 +5645,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -5678,8 +5710,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -7554,7 +7590,7 @@ export function createDeviceModel () {
                 }
             },
             applications: {
-                \\"testme-app\\": {
+                \\"testme-display\\": {
                     title: \\"My Test App\\",
                     description: \\"Description of test.me\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
@@ -8184,7 +8220,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"eslint\\": \\"8.57.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
@@ -8195,15 +8231,15 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"lint\\": \\"eslint ./\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -8250,8 +8286,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -8302,8 +8342,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -8347,8 +8391,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
 ",
     "state": "modified",
   },
@@ -10185,7 +10233,7 @@ function (JSONModel, Device) {
                 }
             },
             applications: {
-                \\"testme-app\\": {
+                \\"testme-display\\": {
                     title: \\"My Test App\\",
                     description: \\"Description of test.me\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
@@ -10754,7 +10802,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -10765,8 +10813,8 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"lint\\": \\"eslint ./\\",
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
@@ -10775,8 +10823,8 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-app\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#testme-display\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -10845,8 +10893,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -10905,8 +10957,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -10966,8 +11022,12 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: test.me
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testme
+            action: display
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -12753,7 +12813,7 @@ export function createDeviceModel () {
                 }
             },
             applications: {
-                \\"testme-app\\": {
+                \\"testme-display\\": {
                     title: \\"My Test App\\",
                     description: \\"Description of test.me\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",

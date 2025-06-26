@@ -1,4 +1,4 @@
-import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace, Manifest } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { OperationsType } from '@sap-ux/axios-extension';
@@ -12,8 +12,6 @@ export interface DescriptorVariant {
     namespace: string;
     content: DescriptorVariantContent[];
 }
-
-export type PackageJson = { name: string; version: string };
 
 export interface DescriptorVariantContent {
     changeType: string;
@@ -46,12 +44,20 @@ export interface OnpremApp {
     id: string;
     /** Reference associated with the ID of the base application. */
     reference: string;
-    layer?: UI5FlexLayer;
+    layer?: FlexLayer;
+    fioriId?: string;
+    ach?: string;
     title?: string;
     /** Optional: Application variant change content. */
     content?: Content[];
     /** Optional: Description about i18n.properties. */
     i18nDescription?: string;
+    /** Optional: I18n resource models derived from the manifest. */
+    i18nModels?: ResourceModel[];
+    /** Optional: Application type derived from the manifest. */
+    appType?: ApplicationType;
+    /** The manifest of the application */
+    manifest?: Manifest;
 }
 
 export interface CloudApp extends OnpremApp {
@@ -72,6 +78,7 @@ export interface AdpWriterConfig {
         minVersion?: string;
         version?: string;
         frameworkUrl?: string;
+        shouldSetMinVersion?: boolean;
     };
     package?: {
         name?: string;
@@ -102,10 +109,24 @@ export interface ConfigAnswers {
     system: string;
     username: string;
     password: string;
-    application: TargetApplication;
+    application: SourceApplication;
+    fioriId?: string;
+    ach?: string;
+    shouldCreateExtProject?: boolean;
 }
 
-export interface TargetApplication {
+export interface AttributesAnswers {
+    projectName: string;
+    title: string;
+    namespace: string;
+    targetFolder: string;
+    ui5Version: string;
+    enableTypeScript: boolean;
+    addDeployConfig?: boolean;
+    addFlpConfig?: boolean;
+}
+
+export interface SourceApplication {
     id: string;
     title: string;
     ach: string;
@@ -113,6 +134,41 @@ export interface TargetApplication {
     fileType: string;
     bspUrl: string;
     bspName: string;
+}
+
+export interface FlexUISupportedSystem {
+    isUIFlex: boolean;
+    isOnPremise: boolean;
+}
+
+export interface UI5Version {
+    latest: VersionDetail;
+    [key: string]: VersionDetail;
+}
+
+export interface VersionDetail {
+    version: string;
+    support: string;
+    lts: boolean;
+}
+
+export interface TypesConfig {
+    typesPackage: string;
+    typesVersion: string;
+}
+
+export interface ResourceModel {
+    key: string;
+    path: string;
+    content?: string;
+}
+
+export interface SapModel {
+    type?: string;
+    uri?: string;
+    settings?: {
+        bundleName?: string;
+    };
 }
 
 export interface Endpoint extends Partial<Destination> {
@@ -144,13 +200,13 @@ export interface NewInboundNavigation {
     title: string;
     /** Optional: Subtitle associated with the inbound navigation. */
     subTitle?: string;
+    /** Icon associated with the inbound navigation. */
+    icon?: string;
 }
 
 export interface InternalInboundNavigation extends NewInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
-    /** Flag indicating if the new inbound navigation should be added. */
-    addInboundId?: boolean;
 }
 
 export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;
@@ -193,6 +249,10 @@ export interface CommonChangeProperties {
     fileType: string;
     fileName: string;
     texts: Record<string, unknown>;
+}
+
+export interface CommonAdditionalChangeInfoProperties {
+    templateName?: string;
 }
 
 export interface ManifestChangeProperties {
@@ -310,6 +370,13 @@ export type ParameterRules = {
      */
     isReference(param: string): ParamCheck;
 };
+
+export enum ApplicationType {
+    FIORI_ELEMENTS = 'FioriElements',
+    FIORI_ELEMENTS_OVP = 'FioriElementsOVP',
+    FREE_STYLE = 'FreeStyle',
+    NONE = ''
+}
 
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
@@ -685,6 +752,8 @@ export interface AddInboundModel {
     title: string;
     /** Optional: Subtitle associated with the inbound navigation data. */
     subTitle?: string;
+    /** Optional: Icon associated with the inbound navigation data. */
+    icon?: string;
     signature: AddInboundSignitureModel;
 }
 export interface AddInboundSignitureModel {

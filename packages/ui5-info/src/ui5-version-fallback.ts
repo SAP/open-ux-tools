@@ -8,11 +8,39 @@ export const supportState = {
     skipped: 'Skipped'
 } as const;
 
-// Updated Oct-25-2024 from https://ui5.sap.com/versionoverview.json
+// Updated June-09-2025 from https://ui5.sap.com/versionoverview.json
 export const ui5VersionFallbacks = [
     {
-        version: '1.129.*',
+        version: '1.136.*',
         support: supportState.maintenance
+    },
+    {
+        version: '1.135.*',
+        support: supportState.outOfMaintenance
+    },
+    {
+        version: '1.134.*',
+        support: supportState.outOfMaintenance
+    },
+    {
+        version: '1.133.*',
+        support: supportState.maintenance
+    },
+    {
+        version: '1.132.*',
+        support: supportState.outOfMaintenance
+    },
+    {
+        version: '1.131.*',
+        support: supportState.outOfMaintenance
+    },
+    {
+        version: '1.130.*',
+        support: supportState.maintenance
+    },
+    {
+        version: '1.129.*',
+        support: supportState.outOfMaintenance
     },
     {
         version: '1.128.*',
@@ -20,11 +48,11 @@ export const ui5VersionFallbacks = [
     },
     {
         version: '1.127.*',
-        support: supportState.maintenance
+        support: supportState.outOfMaintenance
     },
     {
         version: '1.126.*',
-        support: supportState.maintenance
+        support: supportState.outOfMaintenance
     },
     {
         version: '1.125.*',
@@ -32,7 +60,7 @@ export const ui5VersionFallbacks = [
     },
     {
         version: '1.124.*',
-        support: supportState.maintenance
+        support: supportState.outOfMaintenance
     },
     {
         version: '1.123.*',
@@ -44,7 +72,7 @@ export const ui5VersionFallbacks = [
     },
     {
         version: '1.121.*',
-        support: supportState.maintenance
+        support: supportState.outOfMaintenance
     },
     {
         version: '1.120.*',

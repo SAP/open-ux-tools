@@ -1,5 +1,217 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.17
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.15
+
+## 0.3.16
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.14
+
+## 0.3.15
+
+### Patch Changes
+
+-   ff6ff97: Update the MTA ID error message.
+
+## 0.3.14
+
+### Patch Changes
+
+-   c9f79c1: Check long Windows paths during project generation and deployment config generation.
+
+## 0.3.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.13
+
+## 0.3.12
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/inquirer-common@0.7.12
+
+## 0.3.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.11
+
+## 0.3.10
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
+## 0.3.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.9
+
+## 0.3.8
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+
+## 0.3.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.7
+
+## 0.3.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.6
+
+## 0.3.5
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.5
+
+## 0.3.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.4
+
+## 0.3.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.3
+
+## 0.3.2
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [66b88e1]
+    -   @sap-ux/inquirer-common@0.7.1
+
+## 0.3.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+
+## 0.2.37
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.43
+
+## 0.2.36
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.42
+
+## 0.2.35
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.41
+
+## 0.2.34
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.40
+
+## 0.2.33
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.39
+
+## 0.2.32
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.38
+
+## 0.2.31
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.37
+
+## 0.2.30
+
+### Patch Changes
+
+-   6578d86: text changes
+
+## 0.2.29
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+
+## 0.2.28
+
+### Patch Changes
+
+-   d809536: update text label and handle options
+
+## 0.2.27
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.35
+
+## 0.2.26
+
+### Patch Changes
+
+-   0cdc387: Expose App Frontend Service from cf-sub-generator, with minor code cleanup
+
+## 0.2.25
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/inquirer-common@0.6.34
+
+## 0.2.24
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.33
+
+## 0.2.23
+
+### Patch Changes
+
+-   88d2a71: expose new UI prompting to support app frontend service
+
 ## 0.2.22
 
 ### Patch Changes

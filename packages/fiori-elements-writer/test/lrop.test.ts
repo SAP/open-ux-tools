@@ -213,7 +213,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
-            name: 'lropV2_omit_reuse_libs',
+            name: 'lropV2_omit_reuse_libs_use_virtual_endpoints',
             config: {
                 ...Object.assign(feBaseConfig('felrop4'), {
                     template: {
@@ -225,7 +225,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         version: '1.77.2' // flex changes preview should be included with this version
                     },
                     appOptions: {
-                        loadReuseLibs: false
+                        loadReuseLibs: false,
+                        useVirtualPreviewEndpoints: true
                     }
                 }),
                 service: v2Service
@@ -396,6 +397,28 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     type: ServiceType.EDMX
                 }
             } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lrop_v4_add_test_virtual_endpoints',
+            config: {
+                ...Object.assign(feBaseConfig('lrop_v4_add_test_virtual_endpoints'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    },
+                    appOptions: {
+                        ...feBaseConfig('lrop_v4_add_test_virtual_endpoints').appOptions,
+                        generateIndex: false,
+                        addTests: true,
+                        useVirtualPreviewEndpoints: true
+                    }
+                }),
+                service: {
+                    ...v4Service,
+                    metadata: getTestData('annotation_v4', 'metadata'),
+                    type: ServiceType.EDMX
+                }
+            } as FioriElementsApp<LROPSettings>
         }
     ];
 
@@ -418,6 +441,166 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             }
         }).then(async () => {
             await projectChecks(testPath, config, debug?.debugFull);
+        });
+    });
+
+    test('should generate manifest with correct routing and context paths when parameterised main entity is selected', async () => {
+        const projectName = 'projectWithParametrisedMainEntity';
+        const config = {
+            ...Object.assign(feBaseConfig(projectName), {
+                template: {
+                    type: TemplateType.ListReportObjectPage,
+                    settings: {
+                        entityConfig: {
+                            mainEntityName: 'ZC_STOCKAGEING',
+                            mainEntityParameterName: 'Set'
+                        },
+                        tableType: 'ResponsiveTable'
+                    }
+                },
+                appOptions: {
+                    ...feBaseConfig(projectName).appOptions,
+                    generateIndex: false,
+                    addTests: true,
+                    useVirtualPreviewEndpoints: true
+                }
+            }),
+            service: {
+                ...v4Service,
+                type: ServiceType.EDMX
+            },
+            ui5: {
+                ...feBaseConfig(projectName).ui5,
+                minUI5Version: '1.94.0'
+            }
+        } as FioriElementsApp<LROPSettings>;
+
+        const testPath = join(curTestOutPath, projectName);
+        const fs = await generate(testPath, config);
+        const manifestPath = join(testPath, 'webapp', 'manifest.json');
+        const manifest = fs.readJSON(manifestPath);
+
+        const routing = (manifest as any)['sap.ui5'].routing;
+        const routingRoutes = routing.routes;
+
+        // check routing routes
+        expect(routingRoutes).toEqual([
+            {
+                pattern: ':?query:',
+                name: 'ZC_STOCKAGEINGList',
+                target: 'ZC_STOCKAGEINGList'
+            },
+            {
+                pattern: 'ZC_STOCKAGEING({key})/Set({key2}):?query:',
+                name: 'ZC_STOCKAGEINGObjectPage',
+                target: 'ZC_STOCKAGEINGObjectPage'
+            }
+        ]);
+
+        // check context paths
+        const contextPathForListPage = routing.targets.ZC_STOCKAGEINGList.options.settings.contextPath;
+        expect(contextPathForListPage).toBe('/ZC_STOCKAGEING/Set');
+
+        const contextPathForObjectPage = routing.targets.ZC_STOCKAGEINGObjectPage.options.settings.contextPath;
+        expect(contextPathForObjectPage).toBe('/ZC_STOCKAGEING/Set');
+    });
+
+    test('should omit navigation entity target when both `mainEntityParameterName` and `navigationEntity` are specified', async () => {
+        const projectName = 'parameterisedMainEntityWithNavigation';
+        const config = {
+            ...Object.assign(feBaseConfig(projectName), {
+                template: {
+                    type: TemplateType.ListReportObjectPage,
+                    settings: {
+                        entityConfig: {
+                            mainEntityName: 'Travel',
+                            mainEntityParameterName: 'Set',
+                            navigationEntity: {
+                                EntitySet: 'Booking',
+                                Name: '_Booking'
+                            }
+                        },
+                        tableType: 'ResponsiveTable'
+                    }
+                },
+                appOptions: {
+                    ...feBaseConfig(projectName).appOptions,
+                    generateIndex: false,
+                    addTests: true,
+                    useVirtualPreviewEndpoints: true
+                }
+            }),
+            service: {
+                ...v4Service,
+                type: ServiceType.EDMX
+            },
+            ui5: {
+                ...feBaseConfig(projectName).ui5,
+                minUI5Version: '1.94.0'
+            }
+        } as FioriElementsApp<LROPSettings>;
+
+        const testPath = join(curTestOutPath, projectName);
+        const fs = await generate(testPath, config);
+        const manifestPath = join(testPath, 'webapp', 'manifest.json');
+        const manifest = fs.readJSON(manifestPath);
+
+        const routing = (manifest as any)['sap.ui5'].routing;
+        const routingRoutes = routing.routes;
+
+        // Verify routing routes & targets to ensure that navigation entity routing is excluded
+        // when the mainEntityParameterName is set, as navigation entities are not supported in this scenario.
+        expect(routingRoutes).toEqual([
+            {
+                pattern: ':?query:',
+                name: 'TravelList',
+                target: 'TravelList'
+            },
+            {
+                name: 'TravelObjectPage',
+                pattern: 'Travel({key})/Set({key2}):?query:',
+                target: 'TravelObjectPage'
+            }
+        ]);
+
+        const targets = routing.targets;
+        expect(targets).toEqual({
+            TravelList: {
+                type: 'Component',
+                id: 'TravelList',
+                name: 'sap.fe.templates.ListReport',
+                options: {
+                    settings: {
+                        contextPath: '/Travel/Set',
+                        variantManagement: 'Page',
+                        navigation: {
+                            Travel: {
+                                detail: {
+                                    route: 'TravelObjectPage'
+                                }
+                            }
+                        },
+                        controlConfiguration: {
+                            '@com.sap.vocabularies.UI.v1.LineItem': {
+                                tableSettings: {
+                                    type: 'ResponsiveTable'
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            TravelObjectPage: {
+                type: 'Component',
+                id: 'TravelObjectPage',
+                name: 'sap.fe.templates.ObjectPage',
+                options: {
+                    settings: {
+                        editableHeaderContent: false,
+                        contextPath: '/Travel/Set'
+                    }
+                }
+            }
         });
     });
 

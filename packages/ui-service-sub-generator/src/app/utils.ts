@@ -11,7 +11,7 @@ import { ProviderType } from '@sap/service-provider-apis';
 import type { Editor } from 'mem-fs-editor';
 import { basename, dirname, join } from 'path';
 import type { GeneratorOptions } from 'yeoman-generator';
-import { SERVICE_GENERATION_FAIL, UI_SERVICE_CACHE } from '../utils';
+import { SAP_NAMESPACE, SERVICE_GENERATION_FAIL, UI_SERVICE_CACHE } from '../utils';
 import { t } from '../utils/i18n';
 import UiServiceGenLogger from '../utils/logger';
 import type { AppGenData, AppGenSystemSystemData, PromptOptions, ReqAuth } from './types';
@@ -35,6 +35,8 @@ export async function generateService(
         appWizard.showError(`${t('error.generatingService')}`, MessageType.notification);
         UiServiceGenLogger.logger.error(`Error generating service: ${error.message}`);
         UiServiceGenLogger.logger.error(`${error.code} ${error.response?.status} ${error.response?.data}`);
+        UiServiceGenLogger.logger?.error(JSON.stringify(error, null, 2));
+        UiServiceGenLogger.logger?.error(JSON.stringify(error.response, null, 2));
 
         TelemetryHelper.createTelemetryData({
             ErrorMessage: error.message,
@@ -106,7 +108,12 @@ export async function writeBASMetadata(
  */
 export function getRelativeUrlFromContent(content: string): string {
     const contentJson = JSON.parse(content);
-    return `/sap/opu/odata4/sap/${contentJson.businessService.serviceBinding.serviceBindingName}/srvd/sap/${contentJson.businessService.serviceDefinition.serviceDefinitionName}/0001/`;
+    let serviceNamespace = SAP_NAMESPACE;
+    if (contentJson.general?.namespace?.startsWith('/')) {
+        // set namespace to value from suggested content, removing leading and trailing slashes
+        serviceNamespace = contentJson.general.namespace.replace(/^\/|\/$/g, '');
+    }
+    return `/sap/opu/odata4/${serviceNamespace}/${contentJson.businessService.serviceBinding.serviceBindingName}/srvd/${serviceNamespace}/${contentJson.businessService.serviceDefinition.serviceDefinitionName}/0001/`;
 }
 
 /**

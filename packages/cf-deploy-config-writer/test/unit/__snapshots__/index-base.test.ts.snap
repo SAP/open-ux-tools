@@ -1,5 +1,92 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`CF Writer Base Generate Base Config - App Frontend Generate deployment configs - app frontend 1`] = `
+Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"appfrontend\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"description\\": \\"Build and deployment scripts\\",
+  \\"scripts\\": {
+    \\"clean\\": \\"rimraf resources mta_archives mta-op*\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\",
+    \\"undeploy\\": \\"cf undeploy appfrontend --delete-services --delete-service-keys --delete-service-brokers\\"
+  },
+  \\"devDependencies\\": {
+    \\"mbt\\": \\"^1.2.29\\",
+    \\"rimraf\\": \\"^5.0.5\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "xs-security.json": Object {
+    "contents": "{
+  \\"xsappname\\": \\"appfrontend\\",
+  \\"tenant-mode\\": \\"dedicated\\",
+  \\"description\\": \\"Security profile of called application\\",
+  \\"scopes\\": [],
+  \\"role-templates\\": []
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`CF Writer Base Generate Base Config - App Frontend Generate deployment configs - app frontend 2`] = `
+"_schema-version: \\"3.2\\"
+ID: appfrontend
+description: MyManagedDescription
+version: 0.0.1
+modules:
+- name: appfrontend-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: appfrontend-app-front
+    parameters:
+      content-target: true
+  - name: appfrontend-uaa
+  parameters:
+    config:
+      destinations:
+      - name: ui5
+        url: https://ui5.sap.com
+resources:
+- name: appfrontend-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: appfrontend-xsuaa-service
+    service-plan: application
+- name: appfrontend-app-front
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: app-front
+    service-name: appfrontend-app-front-service
+    service-plan: developer
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+"
+`;
+
 exports[`CF Writer Base Generate Base Config - Managed Generate deployment configs - managed 1`] = `
 Object {
   ".gitignore": Object {
@@ -17,7 +104,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"mta-project\\",
+  \\"name\\": \\"managed\\",
   \\"version\\": \\"0.0.1\\",
   \\"description\\": \\"Build and deployment scripts\\",
   \\"scripts\\": {
@@ -139,7 +226,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"mta-project\\",
+  \\"name\\": \\"standalonewithabapserviceprovider\\",
   \\"version\\": \\"0.0.1\\",
   \\"description\\": \\"Build and deployment scripts\\",
   \\"scripts\\": {
@@ -306,7 +393,7 @@ archive.zip
   },
   "package.json": Object {
     "contents": "{
-  \\"name\\": \\"mta-project\\",
+  \\"name\\": \\"standalone-with-connectivity-service\\",
   \\"version\\": \\"0.0.1\\",
   \\"description\\": \\"Build and deployment scripts\\",
   \\"scripts\\": {

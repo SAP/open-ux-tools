@@ -1,5 +1,9 @@
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
 import { getNewSystemQuestions } from '../../../../src/prompts/datasources/sap-system/new-system/questions';
+import type { ConnectedSystem } from '../../../../src/types';
+import type { BackendSystem } from '@sap-ux/store';
+import * as abapOnBtpQuestions from '../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
 
 describe('questions', () => {
     beforeAll(async () => {
@@ -27,6 +31,7 @@ describe('questions', () => {
                 "type": "list",
               },
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "breadcrumb": true,
                   "hint": "Enter the URL of the SAP System",
@@ -60,6 +65,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "default": "",
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
@@ -129,6 +135,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "breadcrumb": true,
                   "hint": "Enter the URL of the SAP System",
@@ -205,5 +212,22 @@ describe('questions', () => {
               },
             ]
         `);
+    });
+
+    test('Should use cached connected systems for new Abap on BTP connections if provided', () => {
+        const backendSystemReentrance: BackendSystem = {
+            name: 'http://s4hc:1234',
+            url: 'http:/s4hc:1234',
+            authenticationType: 'reentranceTicket'
+        };
+        const cachedConnectedSystem: ConnectedSystem = {
+            serviceProvider: {
+                catalog: {}
+            } as unknown as AbapServiceProvider,
+            backendSystem: backendSystemReentrance
+        };
+        const getAbapOnBTPSystemQuestionsSpy = jest.spyOn(abapOnBtpQuestions, 'getAbapOnBTPSystemQuestions');
+        getNewSystemQuestions(undefined, cachedConnectedSystem);
+        expect(getAbapOnBTPSystemQuestionsSpy).toHaveBeenCalledWith(undefined, cachedConnectedSystem);
     });
 });

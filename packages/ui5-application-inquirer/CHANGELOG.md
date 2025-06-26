@@ -1,5 +1,274 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.14.17
+
+### Patch Changes
+
+-   Updated dependencies [83109eb]
+    -   @sap-ux/project-input-validator@0.6.5
+
+## 0.14.16
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.15
+
+## 0.14.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/project-input-validator@0.6.4
+-   @sap-ux/inquirer-common@0.7.14
+
+## 0.14.14
+
+### Patch Changes
+
+-   c9f79c1: Check long Windows paths during project generation and deployment config generation.
+-   Updated dependencies [c9f79c1]
+    -   @sap-ux/project-input-validator@0.6.3
+
+## 0.14.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.13
+
+## 0.14.12
+
+### Patch Changes
+
+-   20cc54f: enhance theme retrieval for latest UI5 versions
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/ui5-info@0.12.0
+    -   @sap-ux/inquirer-common@0.7.12
+
+## 0.14.11
+
+### Patch Changes
+
+-   Updated dependencies [7f35f6c]
+    -   @sap-ux/ui5-info@0.11.1
+    -   @sap-ux/inquirer-common@0.7.11
+
+## 0.14.10
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
+## 0.14.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.9
+
+## 0.14.8
+
+### Patch Changes
+
+-   Updated dependencies [d6943aa]
+    -   @sap-ux/inquirer-common@0.7.8
+
+## 0.14.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.7
+
+## 0.14.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.6
+
+## 0.14.5
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.5
+
+## 0.14.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+-   @sap-ux/project-input-validator@0.6.2
+-   @sap-ux/inquirer-common@0.7.4
+
+## 0.14.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.3
+
+## 0.14.2
+
+### Patch Changes
+
+-   Updated dependencies [b3fe5b8]
+    -   @sap-ux/inquirer-common@0.7.2
+
+## 0.14.1
+
+### Patch Changes
+
+-   c05c016: fix hide fn logic
+
+## 0.14.0
+
+### Minor Changes
+
+-   66b88e1: updates types for ui5 app inquirer
+
+### Patch Changes
+
+-   Updated dependencies [66b88e1]
+    -   @sap-ux/inquirer-common@0.7.1
+    -   @sap-ux/project-access@1.30.1
+    -   @sap-ux/project-input-validator@0.6.1
+
+## 0.13.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-input-validator@0.6.0
+    -   @sap-ux/inquirer-common@0.7.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/ui5-info@0.11.0
+
+## 0.12.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.43
+
+## 0.12.8
+
+### Patch Changes
+
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/project-input-validator@0.5.6
+
+## 0.12.7
+
+### Patch Changes
+
+-   b94e186: fix typescript workspace warning for non cap projects
+
+## 0.12.6
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/project-input-validator@0.5.5
+    -   @sap-ux/inquirer-common@0.6.42
+
+## 0.12.5
+
+### Patch Changes
+
+-   5ce363e: fix when condition for typescript prompt
+
+## 0.12.4
+
+### Patch Changes
+
+-   Updated dependencies [2050952]
+    -   @sap-ux/ui5-info@0.10.1
+    -   @sap-ux/inquirer-common@0.6.41
+
+## 0.12.3
+
+### Patch Changes
+
+-   0d8918a: updates for cap and virtual endpoints
+
+## 0.12.2
+
+### Patch Changes
+
+-   Updated dependencies [c64de75]
+    -   @sap-ux/ui5-info@0.10.0
+    -   @sap-ux/inquirer-common@0.6.40
+
+## 0.12.1
+
+### Patch Changes
+
+-   7a87b92: cap checks for virtual endpoints prompt
+
+## 0.12.0
+
+### Minor Changes
+
+-   398e4da: adds new virtual endpoint prompt
+
+## 0.11.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/project-input-validator@0.5.4
+-   @sap-ux/inquirer-common@0.6.39
+
+## 0.11.8
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/project-input-validator@0.5.3
+    -   @sap-ux/inquirer-common@0.6.38
+
+## 0.11.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.37
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/project-input-validator@0.5.2
+
+## 0.11.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+
+## 0.11.5
+
+### Patch Changes
+
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+
+## 0.11.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.35
+
+## 0.11.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.34
+
+## 0.11.2
+
+### Patch Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+    -   @sap-ux/inquirer-common@0.6.33
+
 ## 0.11.1
 
 ### Patch Changes

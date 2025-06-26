@@ -1,5 +1,138 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.10
+
+### Patch Changes
+
+-   4fef16a: ensure service runtimeName is upper case to match service id
+
+## 0.12.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/telemetry@0.6.4
+
+## 0.12.8
+
+### Patch Changes
+
+-   163522f: fix non-virtual endpoint preview config
+
+## 0.12.7
+
+### Patch Changes
+
+-   4e6c22e: adds support for external param abapCSN
+
+## 0.12.6
+
+### Patch Changes
+
+-   95a816d: update external params on app gen info type
+
+## 0.12.5
+
+### Patch Changes
+
+-   15ec5c4: adds support for adding deployment config via headless generator
+
+## 0.12.4
+
+### Patch Changes
+
+-   91726b0: loop through workspace folders to find correct default
+
+## 0.12.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+-   @sap-ux/telemetry@0.6.3
+
+## 0.12.2
+
+### Patch Changes
+
+-   ac55cca: adds .appGenInfo.json file
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/telemetry@0.6.2
+
+## 0.12.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/telemetry@0.6.1
+
+## 0.12.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/telemetry@0.6.0
+
+## 0.11.3
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/telemetry@0.5.78
+
+## 0.11.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/telemetry@0.5.77
+
+## 0.11.1
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/telemetry@0.5.76
+
+## 0.11.0
+
+### Minor Changes
+
+-   1ca4004: updates for use for fiori tools preview middleware and use of virtual endpoints
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/telemetry@0.5.75
+
+## 0.10.2
+
+### Patch Changes
+
+-   Updated dependencies [9392ebd]
+    -   @sap-ux/telemetry@0.5.74
+
+## 0.10.1
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/telemetry@0.5.73
+
+## 0.10.0
+
+### Minor Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+
 ## 0.9.11
 
 ### Patch Changes

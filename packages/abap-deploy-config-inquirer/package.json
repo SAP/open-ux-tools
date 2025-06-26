@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-inquirer"
     },
-    "version": "1.2.36",
+    "version": "1.4.25",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -26,7 +26,7 @@
         "dist"
     ],
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     },
     "dependencies": {
         "@sap-ux/axios-extension": "workspace:*",
@@ -34,6 +34,7 @@
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/nodejs-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
@@ -43,6 +44,7 @@
         "inquirer-autocomplete-prompt": "2.0.1"
     },
     "devDependencies": {
+        "axios": "1.8.2",
         "@types/inquirer": "8.2.6",
         "@types/inquirer-autocomplete-prompt": "2.0.1"
     }

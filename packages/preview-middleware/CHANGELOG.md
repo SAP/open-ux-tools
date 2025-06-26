@@ -1,5 +1,515 @@
 # @sap-ux/preview-middleware
 
+## 0.20.43
+
+### Patch Changes
+
+-   Updated dependencies [83109eb]
+    -   @sap-ux/adp-tooling@0.14.31
+
+## 0.20.42
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.30
+
+## 0.20.41
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/adp-tooling@0.14.29
+    -   @sap-ux/system-access@0.6.8
+    -   @sap-ux/project-access@1.30.3
+
+## 0.20.40
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.28
+-   @sap-ux/system-access@0.6.7
+
+## 0.20.39
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.27
+-   @sap-ux/system-access@0.6.6
+
+## 0.20.38
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.26
+-   @sap-ux/system-access@0.6.5
+
+## 0.20.37
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.25
+
+## 0.20.36
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.24
+
+## 0.20.35
+
+### Patch Changes
+
+-   59771f3: fix: Bump required versions of SAPUI5 for using ElementRegistry and RTA plugins
+
+## 0.20.34
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.23
+
+## 0.20.33
+
+### Patch Changes
+
+-   Updated dependencies [65edfba]
+    -   @sap-ux/adp-tooling@0.14.22
+
+## 0.20.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.21
+
+## 0.20.31
+
+### Patch Changes
+
+-   a9e93ff: fix: disable cards generator for CAP projects
+
+## 0.20.30
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.20
+
+## 0.20.29
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.19
+-   @sap-ux/system-access@0.6.4
+
+## 0.20.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.18
+-   @sap-ux/system-access@0.6.3
+
+## 0.20.27
+
+### Patch Changes
+
+-   Updated dependencies [f4439f1]
+    -   @sap-ux/adp-tooling@0.14.17
+
+## 0.20.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.16
+
+## 0.20.25
+
+### Patch Changes
+
+-   135c3ae: fix: Duplicate Extension Points are selected in outline tree
+
+## 0.20.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.15
+
+## 0.20.23
+
+### Patch Changes
+
+-   ec78662: fix: variant changes are not shown in Adaptation Editor
+
+## 0.20.22
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.14
+
+## 0.20.21
+
+### Patch Changes
+
+-   461c297: fix: only parse change files from `changes` folder.
+
+## 0.20.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.13
+
+## 0.20.19
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.12
+-   @sap-ux/system-access@0.6.2
+
+## 0.20.18
+
+### Patch Changes
+
+-   920c23d: Fix custom connector for flex changes in UI5 < 1.78
+
+## 0.20.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.11
+
+## 0.20.16
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/adp-tooling@0.14.10
+    -   @sap-ux/project-access@1.30.2
+    -   @sap-ux/system-access@0.6.1
+
+## 0.20.15
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.9
+
+## 0.20.14
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.8
+
+## 0.20.13
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.7
+
+## 0.20.12
+
+### Patch Changes
+
+-   87ecdb8: fix: change indicators missing for change with control id in outline and scrollbar styling issue on quick action panel
+
+## 0.20.11
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.6
+
+## 0.20.10
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.5
+-   @sap-ux/system-access@0.6.1
+
+## 0.20.9
+
+### Patch Changes
+
+-   Updated dependencies [8e44d02]
+    -   @sap-ux/adp-tooling@0.14.4
+
+## 0.20.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.3
+
+## 0.20.7
+
+### Patch Changes
+
+-   2702f19: fix local flp file leading to error with virtual cards generator endpoint
+
+## 0.20.6
+
+### Patch Changes
+
+-   225e7d7: fix: Add message when controller extension pending change is created
+
+## 0.20.5
+
+### Patch Changes
+
+-   48872e8: fix(preview-middleware) fix template spacing
+
+## 0.20.4
+
+### Patch Changes
+
+-   c9b65f0: Migrate code from cards-editor-middleware to preview-middleware.
+
+## 0.20.3
+
+### Patch Changes
+
+-   b49c43f: fix: added apptype to quickactions and contextmenu
+
+## 0.20.2
+
+### Patch Changes
+
+-   5f3aa03: feat: Integration of ExtendControllerPlugin in Adaptation Editor
+-   Updated dependencies [5f3aa03]
+    -   @sap-ux/adp-tooling@0.14.2
+
+## 0.20.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.1
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/system-access@0.6.0
+
+## 0.20.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/system-access@0.6.0
+    -   @sap-ux/adp-tooling@0.14.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+
+## 0.19.43
+
+### Patch Changes
+
+-   Updated dependencies [2ba9fe9]
+    -   @sap-ux/adp-tooling@0.13.45
+
+## 0.19.42
+
+### Patch Changes
+
+-   a49ed05: Fix: Generic handling for change type and new UI component for displaying
+
+## 0.19.41
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+    -   @sap-ux/adp-tooling@0.13.44
+    -   @sap-ux/system-access@0.5.39
+
+## 0.19.40
+
+### Patch Changes
+
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/adp-tooling@0.13.43
+
+## 0.19.39
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/adp-tooling@0.13.42
+    -   @sap-ux/system-access@0.5.38
+
+## 0.19.38
+
+### Patch Changes
+
+-   c89bdc2: fix: new column is not visible after using `Add Custom Table Column` Quick Action
+
+## 0.19.37
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.41
+-   @sap-ux/system-access@0.5.38
+
+## 0.19.36
+
+### Patch Changes
+
+-   9e7fa23: fix: Issues for Adaptation Projects using TypeScipt
+-   Updated dependencies [9e7fa23]
+    -   @sap-ux/adp-tooling@0.13.40
+
+## 0.19.35
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.39
+
+## 0.19.34
+
+### Patch Changes
+
+-   e00e43f: adjust readme
+
+## 0.19.33
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.38
+
+## 0.19.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.37
+-   @sap-ux/system-access@0.5.37
+
+## 0.19.31
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.36
+
+## 0.19.30
+
+### Patch Changes
+
+-   258ecca: refactor: Enhance XML Fragment context menu control with addXMLPlugin Integration
+-   Updated dependencies [258ecca]
+    -   @sap-ux/adp-tooling@0.13.35
+
+## 0.19.29
+
+### Patch Changes
+
+-   091c3e9: fix: reuse component api consumption in Adaptation Editor
+
+## 0.19.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.34
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.27
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/adp-tooling@0.13.33
+    -   @sap-ux/system-access@0.5.36
+
+## 0.19.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.32
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.31
+
+## 0.19.24
+
+### Patch Changes
+
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/adp-tooling@0.13.30
+
+## 0.19.23
+
+### Patch Changes
+
+-   838d2de: fix: nested Quick Actions not working if there are sections with only one child (e.g Change Table Columns)
+
+## 0.19.22
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.29
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.21
+
+### Patch Changes
+
+-   8fe1ab6: fix: added telemetry tracking for context menu
+
+## 0.19.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.28
+
+## 0.19.19
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/adp-tooling@0.13.27
+    -   @sap-ux/system-access@0.5.35
+
+## 0.19.18
+
+### Patch Changes
+
+-   a64c215: feat: Change Table Actions CPE quick action added for ADP projects with OData V2 and V4
+
+## 0.19.17
+
+### Patch Changes
+
+-   Updated dependencies [c4278fb]
+    -   @sap-ux/adp-tooling@0.13.26
+
+## 0.19.16
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.25
+
+## 0.19.15
+
+### Patch Changes
+
+-   fccd2c2: feat: refactor types
+
+## 0.19.14
+
+### Patch Changes
+
+-   Updated dependencies [c81864a]
+    -   @sap-ux/adp-tooling@0.13.24
+
+## 0.19.13
+
+### Patch Changes
+
+-   Updated dependencies [4f0eaae]
+    -   @sap-ux/adp-tooling@0.13.23
+
 ## 0.19.12
 
 ### Patch Changes

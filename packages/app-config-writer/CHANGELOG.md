@@ -1,5 +1,202 @@
 # @sap-ux/app-config-writer
 
+## 0.6.15
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/project-access@1.30.3
+
+## 0.6.14
+
+### Patch Changes
+
+-   Updated dependencies [14214a3]
+    -   @sap-ux/axios-extension@1.22.2
+
+## 0.6.13
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+
+## 0.6.12
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+
+## 0.6.11
+
+### Patch Changes
+
+-   14c2776: fix preview middleware dependency
+
+## 0.6.10
+
+### Patch Changes
+
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+
+## 0.6.9
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [61d4060]
+    -   @sap-ux/axios-extension@1.21.2
+
+## 0.6.7
+
+### Patch Changes
+
+-   58cea5c: fix card generator log message
+
+## 0.6.6
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/project-access@1.30.2
+    -   @sap-ux/axios-extension@1.21.1
+
+## 0.6.5
+
+### Patch Changes
+
+-   af47fcc: fix: sanitize preview middleware configuration if necessary
+
+## 0.6.4
+
+### Patch Changes
+
+-   f8deed9: Remove '@sap-ux/cards-editor-middleware' dependency and 'sap-cards-generator' custom middleware for application having card generation enabled already.
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [2224d63]
+    -   @sap-ux/axios-extension@1.21.1
+
+## 0.6.2
+
+### Patch Changes
+
+-   c9b65f0: Migrate code from cards-editor-config-writer to app-config-writer
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [5e0020b]
+    -   @sap-ux/ui5-config@0.28.1
+    -   @sap-ux/project-access@1.30.1
+    -   @sap-ux/axios-extension@1.21.0
+
+## 0.6.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/axios-extension@1.21.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/store@1.1.0
+
+## 0.5.54
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.3
+
+## 0.5.53
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/axios-extension@1.20.2
+
+## 0.5.52
+
+### Patch Changes
+
+-   Updated dependencies [1a01c5e]
+    -   @sap-ux/axios-extension@1.20.2
+
+## 0.5.51
+
+### Patch Changes
+
+-   e32dd29: outsource methods for reuse
+
+## 0.5.50
+
+### Patch Changes
+
+-   Updated dependencies [a3a43b2]
+    -   @sap-ux/axios-extension@1.20.1
+
+## 0.5.49
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+    -   @sap-ux/project-access@1.29.21
+    -   @sap-ux/axios-extension@1.20.0
+
+## 0.5.48
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/ui5-config@0.27.1
+    -   @sap-ux/axios-extension@1.20.0
+
+## 0.5.47
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/project-access@1.29.19
+    -   @sap-ux/axios-extension@1.20.0
+
+## 0.5.46
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+
+## 0.5.45
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/axios-extension@1.19.3
+
 ## 0.5.44
 
 ### Patch Changes

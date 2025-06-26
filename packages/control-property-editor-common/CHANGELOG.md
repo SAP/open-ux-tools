@@ -1,5 +1,29 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.6.5
+
+### Patch Changes
+
+-   b49c43f: fix: added apptype to quickactions and contextmenu
+
+## 0.6.4
+
+### Patch Changes
+
+-   e856125: Fix: Generic handling for change type and new UI component for displaying
+
+## 0.6.3
+
+### Patch Changes
+
+-   838d2de: fix: nested Quick Actions not working if there are sections with only one child (e.g Change Table Columns)
+
+## 0.6.2
+
+### Patch Changes
+
+-   8fe1ab6: fix: added telemetry tracking for context menu
+
 ## 0.6.1
 
 ### Patch Changes

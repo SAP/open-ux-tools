@@ -1,11 +1,13 @@
 import type { ServiceProvider, V2CatalogService, V4CatalogService } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
-import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
+import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { getAbapOnPremQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-prem/questions';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import { promptNames } from '../../../../../src/types';
 import { PromptState } from '../../../../../src/utils';
+import type { InputQuestion } from '@sap-ux/inquirer-common';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue({ valResult: true });
@@ -28,7 +30,8 @@ const connectionValidatorMock = {
     isAuthRequired: isAuthRequiredMock,
     serviceProvider: serviceProviderMock,
     catalogs,
-    systemAuthType: 'basic'
+    systemAuthType: 'basic',
+    ignoreCertError: undefined
 };
 jest.mock('../../../../../src/prompts/connectionValidator', () => {
     return {
@@ -57,6 +60,7 @@ describe('questions', () => {
         expect(newSystemQuestions).toMatchInlineSnapshot(`
             [
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "breadcrumb": true,
                   "hint": "Enter the URL of the SAP System",
@@ -88,6 +92,7 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "default": "",
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
@@ -152,6 +157,7 @@ describe('questions', () => {
             (question) => question.name === `abapOnPrem:${newSystemPromptNames.newSystemUrl}`
         );
         const systemUrl = 'https://example.com';
+        connectionValidatorMock.validity.authenticated = true;
         expect(await (systemUrlQuestion?.validate as Function)(systemUrl)).toBe(true);
         expect(connectionValidatorMock.validateUrl).toHaveBeenCalledWith('https://example.com', {
             isSystem: true,
@@ -207,5 +213,19 @@ describe('questions', () => {
         expect((sapClientPrompt?.validate as Function)('')).toBe(true);
         expect((sapClientPrompt?.validate as Function)('123')).toBe(true);
         expect((sapClientPrompt?.validate as Function)('123x')).toEqual(expect.any(String));
+    });
+
+    test('Should show `NODE_TLD_REJECT_UNAUTHORIZED` warning if set when bypassing certificate errors', async () => {
+        const newSystemQuestions = getAbapOnPremQuestions();
+        const systemUrlQuestion = newSystemQuestions.find(
+            (question) => question.name === `abapOnPrem:${newSystemPromptNames.newSystemUrl}`
+        ) as InputQuestion;
+        const systemUrl = 'https://example.com';
+        // @ts-expect-error ignore type error for mock
+        connectionValidatorMock.ignoreCertError = true;
+        expect(await (systemUrlQuestion?.additionalMessages as Function)()).toEqual({
+            message: t('warnings.certErrorIgnoredByNodeSetting'),
+            severity: Severity.warning
+        });
     });
 });

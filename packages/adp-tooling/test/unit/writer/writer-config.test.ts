@@ -1,50 +1,85 @@
+import { join } from 'path';
+import { readFileSync } from 'fs';
+
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { Package } from '@sap-ux/project-access';
+import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import { FlexLayer, getAbapTarget, getConfig } from '../../../src';
-import type { ConfigAnswers, PackageJson, TargetApplication } from '../../../src';
+import { FlexLayer, getProviderConfig, getConfig } from '../../../src';
+import type {
+    AttributesAnswers,
+    ConfigAnswers,
+    ConfigOptions,
+    Language,
+    SourceApplication,
+    VersionDetail
+} from '../../../src';
+import { t } from '../../../src/i18n';
 
-jest.mock('../../../src/client/abap-provider.ts', () => ({
-    getAbapTarget: jest.fn()
+const basePath = join(__dirname, '../../fixtures/base-app/manifest.json');
+const manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
+
+jest.mock('../../../src/abap/config.ts', () => ({
+    getProviderConfig: jest.fn()
 }));
 
 const systemDetails = {
     client: '010',
-    url: 'https://SYS010'
+    url: 'some-url'
 };
 
+const activeLanguages: Language[] = [{ sap: 'value', i18n: 'DE' }];
+const adaptationProjectTypes: AdaptationProjectType[] = [AdaptationProjectType.CLOUD_READY];
+
 const getAtoInfoMock = jest.fn().mockResolvedValue({ operationsType: 'P' });
+const isAbapCloudMock = jest.fn();
+const getSystemInfoMock = jest.fn().mockResolvedValue({ adaptationProjectTypes, activeLanguages });
 const mockAbapProvider = {
-    getAtoInfo: getAtoInfoMock
+    getAtoInfo: getAtoInfoMock,
+    isAbapCloud: isAbapCloudMock,
+    getLayeredRepository: jest.fn().mockReturnValue({
+        getSystemInfo: getSystemInfoMock
+    })
 } as unknown as AbapServiceProvider;
 
-const getAbapTargetMock = getAbapTarget as jest.Mock;
+const getProviderConfigMock = getProviderConfig as jest.Mock;
 
 const configAnswers: ConfigAnswers = {
-    application: { id: '1' } as TargetApplication,
+    application: { id: '1', bspName: 'bsp.name' } as SourceApplication,
     system: 'SYS010',
     password: '',
     username: ''
 };
 
-const defaults = {
-    namespace: 'customer.app.variant1'
+const attributeAnswers: AttributesAnswers = {
+    namespace: 'customer.app.variant1',
+    enableTypeScript: false,
+    projectName: 'app.variant1',
+    targetFolder: '/some-path',
+    title: '',
+    ui5Version: '1.134.1'
+};
+
+const baseConfig: ConfigOptions = {
+    provider: mockAbapProvider,
+    configAnswers,
+    attributeAnswers,
+    layer: FlexLayer.CUSTOMER_BASE,
+    publicVersions: { latest: { version: '1.135.0' } as VersionDetail },
+    systemVersion: '1.137.0',
+    packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
+    logger: {} as ToolsLogger,
+    manifest
 };
 
 describe('getConfig', () => {
     beforeEach(() => {
-        getAbapTargetMock.mockResolvedValue(systemDetails);
+        getProviderConfigMock.mockResolvedValue(systemDetails);
     });
 
     it('returns the correct config with provided parameters when system is cloud ready', async () => {
-        const config = await getConfig({
-            provider: mockAbapProvider,
-            configAnswers,
-            layer: FlexLayer.CUSTOMER_BASE,
-            defaults,
-            packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as PackageJson,
-            logger: {} as ToolsLogger
-        });
+        isAbapCloudMock.mockResolvedValue(true);
+        const config = await getConfig(baseConfig);
 
         expect(config).toEqual({
             app: {
@@ -52,7 +87,9 @@ describe('getConfig', () => {
                 reference: '1',
                 layer: 'CUSTOMER_BASE',
                 title: '',
-                content: [expect.any(Object)]
+                bspName: 'bsp.name',
+                languages: activeLanguages,
+                manifest
             },
             customConfig: {
                 adp: {
@@ -66,7 +103,13 @@ describe('getConfig', () => {
             },
             target: {
                 client: '010',
-                url: 'https://SYS010'
+                url: 'some-url'
+            },
+            ui5: {
+                frameworkUrl: 'https://ui5.sap.com',
+                minVersion: '1.137.0',
+                shouldSetMinVersion: true,
+                version: '1.135.0'
             },
             options: { fioriTools: true, enableTypeScript: false }
         });

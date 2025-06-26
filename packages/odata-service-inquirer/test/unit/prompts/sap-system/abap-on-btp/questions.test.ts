@@ -1,5 +1,5 @@
-import type { ServiceInfo, ServiceProvider } from '@sap-ux/axios-extension';
-import type { Question } from 'inquirer';
+import type { AbapServiceProvider, ServiceInfo, ServiceProvider } from '@sap-ux/axios-extension';
+import type { InputQuestion, Question } from 'inquirer';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { apiGetServicesInstancesFilteredByType as getServicesFromCF, type ServiceInstanceInfo } from '@sap/cf-tools';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
@@ -8,6 +8,9 @@ import type { ConnectionValidator } from '../../../../../src/prompts/connectionV
 import { getAbapOnBTPSystemQuestions } from '../../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
 import { PromptState } from '../../../../../src/utils';
 import * as sapSystemValidators from '../../../../../src/prompts/datasources/sap-system/validators';
+import type { ConnectedSystem } from '../../../../../src/types';
+import type { BackendSystem } from '@sap-ux/store';
+import { url } from 'inspector';
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue(true);
@@ -26,7 +29,8 @@ const connectionValidatorMock = {
         connectionValidatorMock.connectedSystemName = undefined; // Mimic the behaviour of the real function
         return validateServiceInfoMock;
     }),
-    connectedSystemName: undefined
+    connectedSystemName: undefined,
+    setConnectedSystem: jest.fn()
 };
 jest.mock('../../../../../src/prompts/connectionValidator', () => {
     return {
@@ -35,8 +39,9 @@ jest.mock('../../../../../src/prompts/connectionValidator', () => {
 });
 
 let cfDiscoveredAbapEnvsMock: ServiceInstanceInfo[] = [];
-const uaaCredsMock = {
+let uaaCredsMock = {
     credentials: {
+        url: '',
         uaa: {}
     }
 };
@@ -90,6 +95,7 @@ describe('questions', () => {
                 "validate": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "breadcrumb": true,
                   "hint": "Enter the URL of the SAP System",
@@ -255,8 +261,8 @@ describe('questions', () => {
     });
 
     test('Cloud Foundry discovery prompt should connect to the choosen Abap environment (YUI)', async () => {
-        const newSystemQuestions = getAbapOnBTPSystemQuestions();
-        const cfDiscoPrompt = newSystemQuestions.find((q) => q.name === 'cloudFoundryAbapSystem');
+        let newSystemQuestions = getAbapOnBTPSystemQuestions();
+        let cfDiscoPrompt = newSystemQuestions.find((q) => q.name === 'cloudFoundryAbapSystem');
 
         PromptState.isYUI = true;
         cfDiscoveredAbapEnvsMock = [
@@ -290,6 +296,41 @@ describe('questions', () => {
         );
         expect(connectionValidatorMock.connectedSystemName).toBe(undefined);
         expect(PromptState.odataService.connectedSystem).toBeUndefined();
+
+        uaaCredsMock = {
+            credentials: {
+                url: 'http://s4hc:1234',
+                uaa: {
+                    url: 'http://s4hc:1234'
+                }
+            }
+        };
+        // Should connect using a cached connected system when provided
+        const backendCFServiceKeys: ConnectedSystem['backendSystem'] = {
+            name: 'testSystemName',
+            url: 'http://s4hc:1234',
+            authenticationType: 'oauth2',
+            refreshToken: '12345',
+            userDisplayName: 'testUser',
+            newOrUpdated: true,
+            serviceKeys: {
+                uaa: uaaCredsMock.credentials.uaa
+            }
+        };
+
+        const cachedConnectedSystem: ConnectedSystem = {
+            serviceProvider: {
+                catalog: {}
+            } as unknown as AbapServiceProvider,
+            backendSystem: backendCFServiceKeys
+        };
+        newSystemQuestions = getAbapOnBTPSystemQuestions(undefined, cachedConnectedSystem);
+        cfDiscoPrompt = newSystemQuestions.find((q) => q.name === 'cloudFoundryAbapSystem');
+        PromptState.reset();
+        validateServiceInfoMock = true;
+        expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)(cfDiscoveredAbapEnvsMock[1])).toBe(true);
+        expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined(); // Should be set from cached connected system
+        expect(connectionValidatorMock.setConnectedSystem).toHaveBeenCalledWith(cachedConnectedSystem);
     });
 
     test('Cloud Foundry discovery prompt should connect to the choosen Abap environment (cli)', async () => {
@@ -345,9 +386,9 @@ describe('questions', () => {
             uaa: {
                 clientid: 'clientid1',
                 clientsecret: 'clientSecret1',
-                url: 'url1'
+                url: 'http://abap.on.btp:1234'
             },
-            url: 'url1',
+            url: 'http://abap.on.btp:1234',
             catalogs: {
                 abap: {
                     path: 'path1',
@@ -359,9 +400,9 @@ describe('questions', () => {
             .spyOn(sapSystemValidators, 'validateServiceKey')
             .mockReturnValue(serviceInfoMock); // service key file is valid
         validateServiceInfoMock = true; // connection is successful
-        const newSystemQuestions = getAbapOnBTPSystemQuestions();
+        let newSystemQuestions = getAbapOnBTPSystemQuestions();
 
-        const serviceKeyPrompt = newSystemQuestions.find((q) => q.name === 'serviceKey');
+        let serviceKeyPrompt = newSystemQuestions.find((q) => q.name === 'serviceKey');
         expect(await (serviceKeyPrompt?.validate as Function)('path/to/service/key')).toBe(true);
         expect(validateServiceKeyFileMock).toHaveBeenCalledWith('path/to/service/key');
         expect(PromptState.odataService).toEqual({ connectedSystem: { serviceProvider: serviceProviderMock } });
@@ -370,5 +411,54 @@ describe('questions', () => {
             .spyOn(sapSystemValidators, 'validateServiceKey')
             .mockReturnValue('invalid service key file'); // service key file is valid
         expect(await (serviceKeyPrompt?.validate as Function)('path/to/service/key')).toBe('invalid service key file');
+
+        // Should connect using a cached connected system when provided
+        const backendSystemServiceKeys: BackendSystem = {
+            name: 'http://abap.on.btp:1234',
+            url: 'http://abap.on.btp:1234',
+            authenticationType: 'serviceKeys',
+            serviceKeys: {
+                uaa: serviceInfoMock.uaa,
+                url: serviceInfoMock.url,
+                systemid: 'abap_btp_001'
+            }
+        };
+        const cachedConnectedSystem: ConnectedSystem = {
+            serviceProvider: {
+                catalog: {}
+            } as unknown as AbapServiceProvider,
+            backendSystem: backendSystemServiceKeys
+        };
+
+        validateServiceKeyFileMock = jest
+            .spyOn(sapSystemValidators, 'validateServiceKey')
+            .mockReturnValue(serviceInfoMock); // service key file is valid
+        newSystemQuestions = getAbapOnBTPSystemQuestions(undefined, cachedConnectedSystem);
+        serviceKeyPrompt = newSystemQuestions.find((q) => q.name === 'serviceKey');
+        PromptState.reset();
+        validateServiceInfoMock = true;
+        expect(await ((serviceKeyPrompt as ListQuestion).validate as Function)('path/to/service/key')).toBe(true);
+        expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined(); // Should be set from cached connected system
+        expect(connectionValidatorMock.setConnectedSystem).toHaveBeenCalledWith(cachedConnectedSystem);
+    });
+
+    test('Reentrance ticket (system url) prompt should use cached connected system if provided', async () => {
+        const backendSystemReentrance: BackendSystem = {
+            name: 'http://s4hc:1234',
+            url: 'http:/s4hc:1234',
+            authenticationType: 'reentranceTicket'
+        };
+        const cachedConnectedSystem: ConnectedSystem = {
+            serviceProvider: {
+                catalog: {}
+            } as unknown as AbapServiceProvider,
+            backendSystem: backendSystemReentrance
+        };
+        connectionValidatorMock.validity.authenticated = true;
+        const newSystemQuestions = getAbapOnBTPSystemQuestions(undefined, cachedConnectedSystem);
+        const systemUrlPrompt = newSystemQuestions.find((q) => q.name === 'abapOnBtp:newSystemUrl');
+        expect(await ((systemUrlPrompt as InputQuestion).validate as Function)('http:/s4hc:1234')).toBe(true);
+        expect(PromptState.odataService.connectedSystem?.serviceProvider).toBeDefined(); // Should be set from cached connected system
+        expect(connectionValidatorMock.setConnectedSystem).toHaveBeenCalledWith(cachedConnectedSystem);
     });
 });

@@ -1,5 +1,22 @@
 # @sap-ux/i18n
 
+## 0.3.1
+
+### Patch Changes
+
+-   f9ea9e3: feat: Enhance ADP FLP configuration generator
+
+## 0.3.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/text-document-utils@0.3.0
+
 ## 0.2.3
 
 ### Patch Changes

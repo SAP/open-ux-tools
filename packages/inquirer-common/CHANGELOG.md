@@ -1,5 +1,208 @@
 # @sap-ux/inquirer-common
 
+## 0.7.15
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+
+## 0.7.14
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.9
+-   @sap-ux/telemetry@0.6.4
+
+## 0.7.13
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+
+## 0.7.12
+
+### Patch Changes
+
+-   20cc54f: enhance theme retrieval for latest UI5 versions
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/ui5-info@0.12.0
+
+## 0.7.11
+
+### Patch Changes
+
+-   Updated dependencies [7f35f6c]
+    -   @sap-ux/ui5-info@0.11.1
+
+## 0.7.10
+
+### Patch Changes
+
+-   bf752f3: Adds more specific cert error messages with GA links.
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+
+## 0.7.8
+
+### Patch Changes
+
+-   d6943aa: Adds GA link to deploy.
+
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [95a816d]
+    -   @sap-ux/fiori-generator-shared@0.12.6
+
+## 0.7.6
+
+### Patch Changes
+
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/fiori-generator-shared@0.12.5
+
+## 0.7.5
+
+### Patch Changes
+
+-   Updated dependencies [91726b0]
+    -   @sap-ux/fiori-generator-shared@0.12.4
+
+## 0.7.4
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.3
+-   @sap-ux/fiori-generator-shared@0.12.3
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+    -   @sap-ux/telemetry@0.6.2
+
+## 0.7.2
+
+### Patch Changes
+
+-   b3fe5b8: Adds support for bypassing cert errors in limited situations
+
+## 0.7.1
+
+### Patch Changes
+
+-   66b88e1: updates types for ui5 app inquirer
+    -   @sap-ux/telemetry@0.6.1
+    -   @sap-ux/fiori-generator-shared@0.12.1
+
+## 0.7.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/guided-answers-helper@0.3.0
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/telemetry@0.6.0
+    -   @sap-ux/ui5-info@0.11.0
+    -   @sap-ux/logger@0.7.0
+
+## 0.6.43
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+
+## 0.6.42
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.11.3
+-   @sap-ux/telemetry@0.5.78
+
+## 0.6.41
+
+### Patch Changes
+
+-   Updated dependencies [2050952]
+    -   @sap-ux/ui5-info@0.10.1
+
+## 0.6.40
+
+### Patch Changes
+
+-   Updated dependencies [c64de75]
+    -   @sap-ux/ui5-info@0.10.0
+
+## 0.6.39
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.77
+-   @sap-ux/fiori-generator-shared@0.11.2
+
+## 0.6.38
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.11.1
+-   @sap-ux/telemetry@0.5.76
+
+## 0.6.37
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/telemetry@0.5.75
+
+## 0.6.36
+
+### Patch Changes
+
+-   Updated dependencies [e5f4915]
+    -   @sap-ux/guided-answers-helper@0.2.2
+
+## 0.6.35
+
+### Patch Changes
+
+-   Updated dependencies [9392ebd]
+    -   @sap-ux/telemetry@0.5.74
+    -   @sap-ux/fiori-generator-shared@0.10.2
+
+## 0.6.34
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/fiori-generator-shared@0.10.1
+    -   @sap-ux/telemetry@0.5.73
+
+## 0.6.33
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+
 ## 0.6.32
 
 ### Patch Changes

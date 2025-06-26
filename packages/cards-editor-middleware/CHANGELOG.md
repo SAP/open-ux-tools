@@ -1,5 +1,61 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+
+## 0.5.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/logger@0.7.0
+
+## 0.4.67
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+
+## 0.4.66
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+
+## 0.4.65
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+
+## 0.4.64
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+
 ## 0.4.63
 
 ### Patch Changes

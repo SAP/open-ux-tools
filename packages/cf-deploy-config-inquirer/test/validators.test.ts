@@ -119,6 +119,137 @@ describe('validateMtaId', () => {
     });
 });
 
+describe('validateMtaId regex /^[a-zA-Z][a-zA-Z0-9_-.]*$/', () => {
+    const previousAnswers = { mtaPath: '/valid/path' } as unknown as CfAppRouterDeployConfigAnswers;
+    beforeEach(() => {
+        mockedExistsSync.mockReturnValue(false);
+    });
+    it('should allow IDs starting with a letter', () => {
+        expect(validateMtaId('A', previousAnswers)).toBe(true);
+        expect(validateMtaId('Z_123', previousAnswers)).toBe(true);
+        expect(validateMtaId('a1_b.c-d', previousAnswers)).toBe(true);
+        expect(validateMtaId('b-1.2_3', previousAnswers)).toBe(true);
+    });
+    it('should not allow IDs starting with a number', () => {
+        mockedT.mockReturnValue('Invalid MTA ID format');
+        expect(validateMtaId('1abc', previousAnswers)).toBe('Invalid MTA ID format');
+        expect(mockedT).toHaveBeenCalledWith('errors.invalidMtaIdError');
+    });
+    it('should not allow IDs starting with underscore, hyphen, or dot', () => {
+        mockedT.mockReturnValue('Invalid MTA ID format');
+        expect(validateMtaId('_abc', previousAnswers)).toBe('Invalid MTA ID format');
+        expect(validateMtaId('-abc', previousAnswers)).toBe('Invalid MTA ID format');
+        expect(validateMtaId('.abc', previousAnswers)).toBe('Invalid MTA ID format');
+    });
+    it('should allow numbers after the first character', () => {
+        expect(validateMtaId('a1', previousAnswers)).toBe(true);
+        expect(validateMtaId('b2c3', previousAnswers)).toBe(true);
+    });
+    it('should allow underscores, hyphens, and dots after the first character', () => {
+        expect(validateMtaId('a_b', previousAnswers)).toBe(true);
+        expect(validateMtaId('a-b', previousAnswers)).toBe(true);
+        expect(validateMtaId('a.b', previousAnswers)).toBe(true);
+    });
+    it('should not allow spaces or special characters', () => {
+        mockedT.mockReturnValue('Invalid MTA ID format');
+        expect(validateMtaId('a bc', previousAnswers)).toBe('Invalid MTA ID format');
+        expect(validateMtaId('a$bc', previousAnswers)).toBe('Invalid MTA ID format');
+        expect(validateMtaId('a@bc', previousAnswers)).toBe('Invalid MTA ID format');
+    });
+    it('should not allow IDs longer than 100 characters', () => {
+        mockedT.mockReturnValue('MTA ID too long');
+        const longId = 'a'.repeat(101);
+        expect(validateMtaId(longId, previousAnswers)).toBe('MTA ID too long');
+        expect(mockedT).toHaveBeenCalledWith('errors.mtaIdLengthError');
+    });
+});
+
+describe('validateMtaId long Windows path', () => {
+    let originalPlatform: PropertyDescriptor | undefined;
+
+    beforeAll(() => {
+        originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
+    });
+
+    beforeEach(() => {
+        Object.defineProperty(process, 'platform', {
+            value: 'win32',
+            configurable: true
+        });
+        mockedExistsSync.mockReturnValue(false);
+        mockedJoin.mockImplementation((...args) => args.join('/'));
+    });
+
+    afterEach(() => {
+        if (originalPlatform) {
+            Object.defineProperty(process, 'platform', originalPlatform);
+        }
+    });
+
+    it('should return true if not on win32 and input is valid', () => {
+        Object.defineProperty(process, 'platform', {
+            value: 'darwin',
+            configurable: true
+        });
+        const input = 'my-mta-id';
+        const previousAnswers: CfAppRouterDeployConfigAnswers = {
+            mtaPath: 'C\\test',
+            mtaId: input,
+            routerType: 'standard'
+        };
+        const result = validateMtaId(input, previousAnswers);
+        expect(result).toBe(true);
+    });
+
+    it('should return true if path length is less than 256 on win32 and input is valid', () => {
+        Object.defineProperty(process, 'platform', {
+            value: 'win32',
+            configurable: true
+        });
+        const input = 'shortid';
+        const previousAnswers: CfAppRouterDeployConfigAnswers = {
+            mtaPath: 'C\\shortpath',
+            mtaId: input,
+            routerType: 'standard'
+        };
+        const result = validateMtaId(input, previousAnswers);
+        expect(result).toBe(true);
+    });
+
+    it('should return error message if path length is >= 256 on win32', () => {
+        Object.defineProperty(process, 'platform', {
+            value: 'win32',
+            configurable: true
+        });
+        const input = 'bbb';
+        const longPath = 'C:'.padEnd(252, 'a');
+        const previousAnswers: CfAppRouterDeployConfigAnswers = {
+            mtaPath: longPath,
+            mtaId: input,
+            routerType: 'standard'
+        };
+        const combinedLength = `${longPath}\\${input}`.length;
+        const result = validateMtaId(input, previousAnswers);
+        expect(result).toBe(t('error.windowsMtaIdPathTooLong', { length: combinedLength }));
+    });
+
+    it('should use empty string for mtaPath if not provided and return error if length >= 256', () => {
+        Object.defineProperty(process, 'platform', {
+            value: 'win32',
+            configurable: true
+        });
+        const input = 'a'.repeat(256);
+        const previousAnswers: CfAppRouterDeployConfigAnswers = {
+            mtaPath: '',
+            mtaId: input,
+            routerType: 'standard'
+        };
+        const combinedLength = `\\${input}`.length;
+        const result = validateMtaId(input, previousAnswers);
+        expect(result).toBe(t('error.windowsMtaIdPathTooLong', { length: combinedLength }));
+    });
+});
+
 describe('validateAbapService', () => {
     let mockErrorHandler: ErrorHandler;
 

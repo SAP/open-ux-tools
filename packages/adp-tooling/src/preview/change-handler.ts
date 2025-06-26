@@ -1,16 +1,22 @@
 import type { Editor } from 'mem-fs-editor';
-import type { AddXMLChange, CommonChangeProperties, CodeExtChange, AnnotationFileChange } from '../types';
-import { ChangeType } from '../types';
+import type {
+    AddXMLChange,
+    CommonChangeProperties,
+    CodeExtChange,
+    AnnotationFileChange,
+    CommonAdditionalChangeInfoProperties
+} from '../types';
+import { ChangeType, TemplateFileName } from '../types';
 import { basename, join } from 'path';
-import { DirName, FileName } from '@sap-ux/project-access';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { render } from 'ejs';
 import { randomBytes } from 'crypto';
 import { ManifestService } from '../base/abap/manifest-service';
-import { getAdpConfig, getVariant } from '../base/helper';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { getVariant, isTypescriptSupported } from '../base/helper';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import { generateChange } from '../writer/editors';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { DirName } from '@sap-ux/project-access';
 
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
 const CUSTOM_ACTION = 'CUSTOM_ACTION';
@@ -194,6 +200,16 @@ export function isAddXMLChange(change: CommonChangeProperties): change is AddXML
 }
 
 /**
+ * Determines whether a given change is of type `codeExt`.
+ *
+ * @param {CommonChangeProperties} change - The change object to check.
+ * @returns {boolean} `true` if the `changeType` is `codeExt`, indicating the change is of type `codeExtChange`.
+ */
+export function isCodeExtChange(change: CommonChangeProperties): change is CodeExtChange {
+    return change.changeType === 'codeExt';
+}
+
+/**
  * Determines whether a given change is of type `AnnotationFileChange`.
  *
  * @param {CommonChangeProperties} change - The change object to check.
@@ -211,11 +227,18 @@ export function isAddAnnotationChange(change: CommonChangeProperties): change is
  * @param {AddXMLChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
+ * @param {CommonAdditionalChangeInfoProperties} additionalChangeInfo - Optional extended change properties.
  */
-export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Editor, logger: Logger): void {
+export function addXmlFragment(
+    basePath: string,
+    change: AddXMLChange,
+    fs: Editor,
+    logger: Logger,
+    additionalChangeInfo?: CommonAdditionalChangeInfoProperties
+): void {
     const { fragmentPath } = change.content;
     const fullPath = join(basePath, DirName.Changes, fragmentPath);
-    const templateConfig = fragmentTemplateDefinitions[change.content?.templateName ?? ''];
+    const templateConfig = fragmentTemplateDefinitions[additionalChangeInfo?.templateName ?? ''];
     try {
         if (templateConfig) {
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);
@@ -235,20 +258,58 @@ export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Edito
 }
 
 /**
+ * Asynchronously adds an controller extension to the project if it doesn't already exist.
+ *
+ * @param {string} rootPath - The root path of the project.
+ * @param {string} basePath - The base path of the project.
+ * @param {CodeExtChange} change - The change data, including the fragment path.
+ * @param {Editor} fs - The mem-fs-editor instance.
+ * @param {Logger} logger - The logging instance.
+ */
+export async function addControllerExtension(
+    rootPath: string,
+    basePath: string,
+    change: CodeExtChange,
+    fs: Editor,
+    logger: Logger
+): Promise<void> {
+    const { codeRef } = change.content;
+    const isTsSupported = isTypescriptSupported(rootPath, fs);
+    const fileName = basename(codeRef, '.js');
+    const fullName = `${fileName}.${isTsSupported ? 'ts' : 'js'}`;
+    const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
+    const tmplPath = join(__dirname, '../../templates/rta', tmplFileName);
+    try {
+        const text = fs.read(tmplPath);
+        const id = (await getVariant(rootPath))?.id;
+        const extensionPath = `${id}.${fileName}`;
+        const templateData = isTsSupported ? { name: fileName, ns: id } : { extensionPath };
+
+        const template = render(text, templateData);
+        fs.write(join(basePath, DirName.Changes, DirName.Coding, fullName), template);
+    } catch (error) {
+        logger.error(`Failed to create controller extension "${codeRef}": ${error}`);
+        throw new Error(`Failed to create controller extension: ${error.message}`);
+    }
+}
+
+/**
  * Asynchronously adds an XML fragment to the project if it doesn't already exist.
  *
  * @param {string} basePath - The base path of the project.
  * @param {string} projectRoot - The root path of the project.
- * @param {AddXMLChange} change - The change data, including the fragment path.
+ * @param {AnnotationFileChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
+ *@param {AbapServiceProvider} provider - abap provider.
  */
 export async function addAnnotationFile(
     basePath: string,
     projectRoot: string,
     change: AnnotationFileChange,
     fs: Editor,
-    logger: Logger
+    logger: Logger,
+    provider: AbapServiceProvider
 ): Promise<void> {
     const { dataSourceId, annotations, dataSource } = change.content;
     const annotationDataSourceKey = annotations[0];
@@ -256,7 +317,13 @@ export async function addAnnotationFile(
     annotationUriSegments.shift();
     const fullPath = join(basePath, DirName.Changes, ...annotationUriSegments);
     try {
-        const manifestService = await getManifestService(projectRoot, logger);
+        const variant = await getVariant(basePath);
+        const manifestService = await ManifestService.initMergedManifest(
+            provider,
+            basePath,
+            variant,
+            logger as unknown as ToolsLogger
+        );
         const metadata = await manifestService.getDataSourceMetadata(dataSourceId);
         const datasoruces = await manifestService.getManifestDataSources();
         const namespaces = getAnnotationNamespaces({ metadata });
@@ -279,18 +346,4 @@ export async function addAnnotationFile(
         logger.error(`Failed to create Local Annotation File "${fullPath}": ${error}`);
         throw new Error('Failed to create Local Annotation File' + error.message);
     }
-}
-
-/**
- * Returns manifest service.
- *
- * @param {string} basePath - The base path of the project.
- * @param {Logger} logger - The logging instance.
- * @returns Promise<ManifestService>
- */
-async function getManifestService(basePath: string, logger: Logger): Promise<ManifestService> {
-    const variant = await getVariant(basePath);
-    const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
-    const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
-    return await ManifestService.initMergedManifest(provider, basePath, variant, logger as unknown as ToolsLogger);
 }

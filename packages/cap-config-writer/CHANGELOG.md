@@ -1,5 +1,146 @@
 # @sap-ux/cap-config-writer
 
+## 0.10.11
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+
+## 0.10.10
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/fiori-generator-shared@0.12.9
+
+## 0.10.9
+
+### Patch Changes
+
+-   3ea811a: Bump @ui5/cli version
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+
+## 0.10.7
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+
+## 0.10.6
+
+### Patch Changes
+
+-   Updated dependencies [95a816d]
+    -   @sap-ux/fiori-generator-shared@0.12.6
+
+## 0.10.5
+
+### Patch Changes
+
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/fiori-generator-shared@0.12.5
+
+## 0.10.4
+
+### Patch Changes
+
+-   Updated dependencies [91726b0]
+    -   @sap-ux/fiori-generator-shared@0.12.4
+
+## 0.10.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+-   @sap-ux/fiori-generator-shared@0.12.3
+
+## 0.10.2
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+
+## 0.10.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/fiori-generator-shared@0.12.1
+
+## 0.10.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/yaml@0.17.0
+
+## 0.9.29
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/fiori-generator-shared@0.11.3
+
+## 0.9.28
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/fiori-generator-shared@0.11.2
+
+## 0.9.27
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/fiori-generator-shared@0.11.1
+
+## 0.9.26
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/project-access@1.29.19
+
+## 0.9.25
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.10.2
+
+## 0.9.24
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.10.1
+
+## 0.9.23
+
+### Patch Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+
 ## 0.9.22
 
 ### Patch Changes

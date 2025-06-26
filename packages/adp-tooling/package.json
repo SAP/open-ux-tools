@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aadp-tooling"
     },
-    "version": "0.13.22",
+    "version": "0.14.31",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -35,6 +35,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap-devx/yeoman-ui-types": "1.16.9",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
@@ -43,6 +44,7 @@
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
+        "@sap-ux/ui5-info": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
@@ -76,6 +78,6 @@
         "cross-env": "^7.0.3"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }
