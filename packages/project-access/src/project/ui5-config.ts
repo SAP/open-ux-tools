@@ -1,9 +1,9 @@
 import { basename, dirname, join } from 'path';
 import type { Editor } from 'mem-fs-editor';
+import type { MockserverConfig, MockserverService } from '@sap-ux/ui5-config';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { DirName, FileName } from '../constants';
 import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file';
-import type { MockserverConfig, MockServerService } from '@sap-ux/ui5-config/src/types';
 
 /**
  * Get path to webapp.
@@ -121,7 +121,7 @@ export async function getMockDataPath(projectRoot: string, fileName: string = Fi
  * @param config - The mock server configuration object.
  * @returns An array of MockServerService objects, or undefined if not found.
  */
-function extractServices(config: MockserverConfig): MockServerService[] | undefined {
+function extractServices(config: MockserverConfig): MockserverService[] | undefined {
     if ('services' in config && config.services) {
         return Array.isArray(config.services) ? config.services : [config.services];
     }

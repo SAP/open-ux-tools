@@ -40,7 +40,7 @@ export interface FioriToolsProxyConfig {
     ignoreCertError?: boolean;
 }
 
-export interface MockServerService {
+export interface MockserverService {
     urlPath: string;
     metadataPath: string;
     mockdataPath?: string;
@@ -53,7 +53,7 @@ export interface MockserverConfig {
         localPath?: string;
         urlPath: string;
     }[];
-    services?: MockServerService[];
+    services?: MockserverService[];
 }
 
 export interface FioriToolsServeStaticPath {
