@@ -124,7 +124,7 @@ export function filterAndMapInboundsToManifest(inbounds: Inbound[]): ManifestNam
     if (!inbounds || inbounds.length === 0) {
         return undefined;
     }
-    return inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
+    const filteredInbounds = inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
         // Skip if hideLauncher is not false
         if (!inbound?.content || inbound.content.hideLauncher !== false) {
             return acc;
@@ -142,6 +142,8 @@ export function filterAndMapInboundsToManifest(inbounds: Inbound[]): ManifestNam
         }
         return acc;
     }, {} as { [key: string]: InboundContent });
+
+    return Object.keys(filteredInbounds).length === 0 ? undefined : filteredInbounds;
 }
 
 /**
