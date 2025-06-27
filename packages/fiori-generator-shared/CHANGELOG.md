@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.11
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.5
+
 ## 0.12.10
 
 ### Patch Changes
