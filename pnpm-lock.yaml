@@ -2625,9 +2625,6 @@ importers:
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
-      jest:
-        specifier: 30.0.1
-        version: 30.0.1(@types/node@18.11.9)(ts-node@10.9.2)
 
   packages/jest-file-matchers:
     dependencies:
@@ -2735,9 +2732,6 @@ importers:
       '@types/vscode':
         specifier: 1.73.1
         version: 1.73.1
-      jest:
-        specifier: '>=30.0.1'
-        version: 30.0.1(@types/node@18.11.9)(ts-node@10.9.2)
       jest-extended:
         specifier: 6.0.0
         version: 6.0.0(jest@30.0.1)(typescript@5.8.2)
@@ -3473,9 +3467,6 @@ importers:
       fast-check:
         specifier: 2.19.0
         version: 2.19.0
-      jest:
-        specifier: '>=30.0.1'
-        version: 30.0.1(@types/node@18.11.9)(ts-node@10.9.2)
       jest-extended:
         specifier: 6.0.0
         version: 6.0.0(jest@30.0.1)(typescript@5.8.2)
