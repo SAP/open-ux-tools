@@ -1,10 +1,10 @@
 import type { Editor } from 'mem-fs-editor';
 import type { AppDescriptorV4Change } from '../types';
 import type { Logger } from '@sap-ux/logger';
-import { DirName } from '@sap-ux/project-access';
 import { render } from 'ejs';
 import { join } from 'path';
 import { objectPageCustomPageConfig } from './change-handler';
+import { getFragmentPathFromTemplate } from './utils';
 
 /**
  * Checks if the given object has a 'template' property of type string.
@@ -48,23 +48,4 @@ export function addCustomSectionFragment(
             logger.error(`Failed to create XML Fragment "${fragmentPath}": ${error}`);
         }
     }
-}
-
-/**
- * Generates the fragment path from the given template string and change object.
- *
- * @param template - The template string representing the fragment.
- * @param change - The AppDescriptorV4Change object containing change details.
- * @returns The computed fragment path as a string.
- */
-function getFragmentPathFromTemplate(template: string, change: AppDescriptorV4Change): string {
-    let path = '';
-    const segments = template.split(`${change.projectId}.${DirName.Changes}.${DirName.Fragments}.`);
-    const [namespace, fileName] = segments;
-    if (segments.length === 2 && namespace === '') {
-        path = join(DirName.Changes, DirName.Fragments, fileName);
-    } else {
-        path = join(...template.split('.'));
-    }
-    return path;
 }
