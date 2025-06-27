@@ -13,8 +13,6 @@ import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controll
 import AddTableColumnFragments from 'open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller';
 import FileExistsDialog from '../../../src/adp/controllers/FileExistsDialog.controller';
 import AddCustomFragment from 'open/ux/preview/client/adp/controllers/AddCustomFragment.controller';
-import * as core from '../../../src/utils/core';
-import ControlUtils from '../../../src/adp/control-utils';
 
 describe('DialogFactory', () => {
     afterEach(() => {
