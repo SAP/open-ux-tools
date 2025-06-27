@@ -13,20 +13,7 @@ import { fragmentTemplateDefinitions } from './change-handler';
  * @returns True if the object has a 'template' property of type string, false otherwise.
  */
 export function hasTemplate(obj: unknown): obj is { template: string } {
-    return typeof obj === 'object' && obj !== null && 'template' in obj && typeof (obj as any).template === 'string';
-}
-/**
- * Generic type guard for AppDescriptorV4Change with a predicate for propertyValue.
- *
- * @param propertyValue - The property value to check.
- * @param predicate - The predicate function to test the propertyValue.
- * @returns True if the propertyValue satisfies the predicate, otherwise false.
- */
-export function satisfiesType<T>(
-    propertyValue: unknown,
-    predicate: (propertyValue: unknown) => propertyValue is T
-): propertyValue is T {
-    return predicate(propertyValue);
+    return typeof obj === 'object' && obj !== null && 'template' in obj && typeof obj.template === 'string';
 }
 
 /**
@@ -48,7 +35,7 @@ export function addCustomFragment(
     const propertyValue = change.content.entityPropertyChange.propertyValue;
     const isCustomSectionPropertyPath =
         change.content.entityPropertyChange.propertyPath.startsWith('content/body/sections/');
-    if (isCustomSectionPropertyPath && satisfiesType<{ template: string }>(propertyValue, hasTemplate)) {
+    if (isCustomSectionPropertyPath && hasTemplate(propertyValue)) {
         const { template } = propertyValue;
         const path = template.replace(`${change.reference}.changes.`, '').replace(/^\./, '').replace(/\./g, '/');
         const fragmentPath = `${path}.fragment.xml`;
