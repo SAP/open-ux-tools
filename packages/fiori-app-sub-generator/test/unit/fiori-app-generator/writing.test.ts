@@ -119,7 +119,6 @@ describe('`writing` tests', () => {
                 generatorName: '@sap/some-generator',
                 entityRelatedConfig: [],
                 launchText: t('readme.texts.runInstruction'),
-                externalParameters: undefined,
                 serviceId: undefined
             };
             const project: Project = { ...baseProject };
@@ -167,8 +166,7 @@ describe('`writing` tests', () => {
                 enableTypeScript: false,
                 entityRelatedConfig: [],
                 externalParameters: { label: 'label1', value: 'value1' },
-                metadataFilename: '',
-                serviceId: undefined
+                metadataFilename: ''
             };
             const project: Project = { ...baseProject };
             const service: Service = {
@@ -228,8 +226,7 @@ describe('`writing` tests', () => {
                     { type: 'Navigation Entity', value: 'navigationProperty1' },
                     { type: 'Filter Entity Type', value: 'filterEntitySetName1' }
                 ],
-                metadataFilename: '',
-                serviceId: undefined
+                metadataFilename: ''
             };
             const project: Project = { ...baseProject };
             const service: Service = {
