@@ -136,12 +136,12 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
         const fragmentName = this.model.getProperty('/newFragmentName');
         const template = `${this.options.appDescriptor?.appReference}.changes.${name}`;
         this.model.setProperty('/template', template);
-        let sectionId = this.options.appDescriptor?.pageId; // TODO: use correct section ID
+        let sectionId = this.options.appDescriptor?.anchor;
         const flexSettings = this.rta.getFlexSettings();
         const modifiedValue = {
             reference: this.options.appDescriptor?.appReference,
             appComponent: this.options.appDescriptor?.appComponent,
-            changeType: 'appdescr_fe_changePageConfiguration',
+            changeType: 'appdescr_fe_changePageConfiguration', 
             parameters: {
                 page: this.options.appDescriptor?.pageId,
                 entityPropertyChange: {
