@@ -33,8 +33,6 @@ import { getFragmentTemplateName } from '../../cpe/additional-change-info/add-xm
 import type { AddFragmentData, DeferredXmlFragmentData } from '../add-fragment';
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 import { CommunicationService } from '../../cpe/communication-service';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import type AppComponentV4 from 'sap/fe/core/AppComponent';
 
 const radix = 10;
 
@@ -43,22 +41,13 @@ export type AddFragmentModel = JSONModel & {
     getProperty(sPath: '/completeView'): boolean;
     getProperty(sPath: '/newFragmentName'): string;
     getProperty(sPath: '/selectedIndex'): number;
-    getProperty(sPath: '/indexVisible'): boolean;
     getProperty(sPath: '/selectedAggregation/value'): string;
 };
-export interface PageDescriptorV4 {
-    appType: 'fe-v4';
-    appComponent: AppComponentV4;
-    pageId: string;
-    appReference?: string; // Optional, used for v4 app descriptor changes,
-    anchor: string;
-}
 
 export interface AddFragmentOptions {
     title: string;
     aggregation?: string;
     defaultAggregationArrayIndex?: number;
-    appDescriptor?: PageDescriptorV4;
 }
 
 /**
@@ -80,8 +69,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         this.overlays = overlays;
         this.model = new JSONModel({
             title: options.title,
-            completeView: options.aggregation === undefined,
-            indexVisible: options.appDescriptor ? false : true
+            completeView: options.aggregation === undefined
         });
         this.commandExecutor = new CommandExecutor(this.rta);
         this.data = data;
@@ -155,25 +143,21 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         const fragmentName = this.model.getProperty('/newFragmentName');
         const index = this.model.getProperty('/selectedIndex');
         const targetAggregation = this.model.getProperty('/selectedAggregation/value') ?? 'content';
-        const fragmentPath = `fragments/${fragmentName}.fragment.xml`;
+
         const modifiedValue = {
             fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
-            fragmentPath,
+            fragmentPath: `fragments/${fragmentName}.fragment.xml`,
             index: index ?? 0,
             targetAggregation: targetAggregation ?? 'content'
         };
-        const templateName = getFragmentTemplateName(this.runtimeControl.getId(), targetAggregation);
 
         if (this.data) {
             this.data.deferred.resolve(modifiedValue);
         } else {
-            if (this.options?.appDescriptor?.appType === 'fe-v4' && templateName === 'OBJECT_PAGE_CUSTOM_SECTION') {
-                await this.createAppDescriptorChangeForV4(fragmentPath);
-            } else {
-                await this.createFragmentChange(modifiedValue);
-            }
+            await this.createFragmentChange(modifiedValue);
         }
 
+        const templateName = getFragmentTemplateName(this.runtimeControl.getId(), targetAggregation);
         if (templateName) {
             CommunicationService.sendAction(setApplicationRequiresReload(true));
         }
@@ -261,44 +245,6 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             modifiedValue,
             flexSettings,
             designMetadata
-        );
-
-        await this.commandExecutor.pushAndExecuteCommand(command);
-    }
-
-    private async createAppDescriptorChangeForV4(fragmentPath: string) {
-        const [path, _] = fragmentPath.split('.');
-        const name = path.split('/').join('.');
-        const fragmentName = this.model.getProperty('/newFragmentName');
-        const template = `${this.options.appDescriptor?.appReference}.changes.${name}`;
-        let sectionId = this.options.appDescriptor?.pageId; // TODO: use correct section ID
-        const flexSettings = this.rta.getFlexSettings();
-        const modifiedValue = {
-            reference: this.options.appDescriptor?.appReference,
-            appComponent: this.options.appDescriptor?.appComponent,
-            changeType: 'appdescr_fe_changePageConfiguration',
-            parameters: {
-                page: this.options.appDescriptor?.pageId,
-                entityPropertyChange: {
-                    propertyPath: `content/body/sections/${fragmentName}`, // e.g. 'content/body/sections/test'
-                    operation: 'UPSERT',
-                    propertyValue: {
-                        template,
-                        title: 'my custom section (manifest)',
-                        position: {
-                            placement: 'After',
-                            anchor: `${sectionId}`
-                        }
-                    }
-                }
-            }
-        };
-
-        const command = await this.commandExecutor.getCommand<FlexCommand>(
-            this.runtimeControl,
-            'appDescriptor',
-            modifiedValue,
-            flexSettings
         );
 
         await this.commandExecutor.pushAndExecuteCommand(command);

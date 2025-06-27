@@ -37,7 +37,7 @@ interface FragmentTemplateConfig<T = { [key: string]: any }> {
     getData: (change: { index?: number }) => T;
 }
 
-const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
+export const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
     [OBJECT_PAGE_CUSTOM_SECTION]: {
         path: 'common/op-custom-section.xml',
         getData: () => {
@@ -234,19 +234,7 @@ export function isAddAnnotationChange(change: CommonChangeProperties): change is
  *          indicating the change is of type `V4 Descriptor Change`.
  */
 export function isV4DescriptorChange(change: CommonChangeProperties): change is AppDescriptorV4Change {
-    return (
-        change.changeType === 'appdescr_fe_changePageConfiguration' && typeof change === 'object' && 'content' in change
-    );
-}
-
-/**
- * Checks if the given object has a 'template' property of type string.
- *
- * @param obj - The object to check.
- * @returns True if the object has a 'template' property of type string, false otherwise.
- */
-export function hasTemplate(obj: unknown): obj is { template: string } {
-    return typeof obj === 'object' && obj !== null && 'template' in obj && typeof (obj as any).template === 'string';
+    return change.changeType === 'appdescr_fe_changePageConfiguration';
 }
 
 /**

@@ -26,9 +26,9 @@ import {
     addControllerExtension,
     moduleNameContentMap,
     tryFixChange,
-    isV4DescriptorChange,
-    hasTemplate
+    isV4DescriptorChange
 } from './change-handler';
+import { addCustomFragment } from './appDescriptorv4Handler';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
     // eslint-disable-next-line no-var
@@ -293,27 +293,8 @@ export class AdpPreview {
                         this.provider
                     );
                 }
-
                 if (isV4DescriptorChange(change)) {
-                    const propertyValue = change.content.entityPropertyChange.propertyValue;
-                    if (hasTemplate(propertyValue)) {
-                        const pathAfterNamespace = propertyValue.template.split(change.reference).pop();
-                        if (pathAfterNamespace) {
-                            const path = pathAfterNamespace
-                                .replace(/^\.?changes\.?/, '')
-                                .replace(/^\./, '')
-                                .replace(/\./g, '/');
-                            const fragmentPath = `${path}.fragment.xml`;
-                            // handle v4 descriptor changes
-                            addXmlFragment(
-                                this.util.getProject().getSourcePath(),
-                                { fragmentPath },
-                                fs,
-                                logger,
-                                additionalChangeInfo
-                            );
-                        }
-                    }
+                    addCustomFragment(this.util.getProject().getSourcePath(), change, fs, logger, additionalChangeInfo);
                 }
                 break;
             default:

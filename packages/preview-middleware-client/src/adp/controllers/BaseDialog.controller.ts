@@ -71,21 +71,25 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
         }
     }
 
+    protected setRunTimeControl(): void {
+        const selectorId = this.overlays.getId();
+        const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
+        if (overlayControl) {
+            this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
+        } else {
+            throw new Error('Cannot get overlay control');
+        }
+    }
+
     /**
      * Method is used in add fragment dialog controllers to get current control metadata which are needed on the dialog
      * @returns control metadata and target aggregations
      */
     protected getControlMetadata(): { controlMetadata: ManagedObjectMetadata; targetAggregation: string[] } {
-        const selectorId = this.overlays.getId();
-
-        let controlMetadata: ManagedObjectMetadata;
-
-        const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
-        if (overlayControl) {
-            this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
-            controlMetadata = this.runtimeControl.getMetadata();
-        } else {
-            throw new Error('Cannot get overlay control');
+        this.setRunTimeControl();
+        const controlMetadata: ManagedObjectMetadata = this.runtimeControl.getMetadata();
+        if (!controlMetadata) {
+            throw new Error('Cannot get control metadata');
         }
 
         const allAggregations = Object.keys(controlMetadata.getAllAggregations());
@@ -180,6 +184,23 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
                 'Enter a different name. The fragment name entered matches the name of an unsaved fragment.'
             );
             return;
+        }
+        const template = `${this.rta.getFlexSettings()?.projectId}.changes.fragments.${fragmentName}`; // changes.fragments is the current folder structure where fragment changes are written. this value is subjected to change if the folder structure changes
+        if (template) {
+            const v4CustomXMLChange = checkForExistingChange(
+                this.rta,
+                'appdescr_fe_changePageConfiguration',
+                'content.entityPropertyChange.propertyValue.template',
+                template
+            );
+
+            if (v4CustomXMLChange) {
+                updateDialogState(
+                    ValueState.Error,
+                    'Enter a different name. The fragment name entered matches the name of an unsaved fragment.'
+                );
+                return;
+            }
         }
 
         updateDialogState(ValueState.Success);

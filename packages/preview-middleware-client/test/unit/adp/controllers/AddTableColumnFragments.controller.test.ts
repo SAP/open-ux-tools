@@ -234,11 +234,14 @@ describe('AddTableColumnsFragments controller', () => {
             test('sets error when column and cell fragments have the same name', () => {
                 jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const event = mockInputEvent('Name1');
-
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+                rtaMock.getFlexSettings.mockReturnValue({
+                    projectId: 'adp.app'
+                });
                 createDialog([
                     mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error]),
                     mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error])
-                ] as unknown as Control[]);
+                ] as unknown as Control[], rtaMock);
 
                 addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -271,13 +274,18 @@ describe('AddTableColumnsFragments controller', () => {
             });
 
             test('clears errors on value change', () => {
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+
+                rtaMock.getFlexSettings.mockReturnValue({
+                    projectId: 'adp.app'
+                });
                 jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const event = mockInputEvent('Name2');
 
                 createDialog([
                     mockFormInput(true, 'Name2', [ValueState.Error, ValueState.Success], ['Duplicate name', '']),
                     mockFormInput(true, 'Delete', [ValueState.Error, ValueState.Success], ['Duplicate name', ''])
-                ] as unknown as Control[]);
+                ] as unknown as Control[], rtaMock);
 
                 addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
