@@ -1,11 +1,12 @@
-import { getError } from '../utils/error';
-import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import type DTElement from 'sap/ui/dt/Element';
 import Element from 'sap/ui/core/Element';
 import Log from 'sap/base/Log';
+import { showMessage } from '@sap-ux-private/control-property-editor-common';
+
+import { getError } from '../utils/error';
+import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import { getTextBundle } from '../i18n';
 import { CommunicationService } from '../cpe/communication-service';
-import { showMessage } from '@sap-ux-private/control-property-editor-common';
 
 const syncViews = new Set<string>();
 let warningShown = false;
@@ -49,6 +50,7 @@ export async function showSyncViewsWarning(): Promise<void> {
         return;
     }
 
+    warningShown = true;
     const bundle = await getTextBundle();
     CommunicationService.sendAction(
         showMessage({
@@ -68,6 +70,20 @@ export function isSyncView(element: DTElement): boolean {
     return element?.getMetadata()?.getName()?.includes('XMLView') && element?.oAsyncState === undefined;
 }
 
+/**
+ * Retrieves the set of synchronious view IDs.
+ *
+ * @returns Cached set containing the IDs of all synchronious views.
+ */
 export function getSyncViewIds(): Set<string> {
     return syncViews
+}
+
+/**
+ * Resets the cached synchronious views and warning state.
+ * Needed for testing purposes to ensure a clean state.
+ */
+export function resetSyncViews(): void {
+    syncViews.clear();
+    warningShown = false;
 }

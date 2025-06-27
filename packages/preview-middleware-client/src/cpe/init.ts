@@ -17,7 +17,7 @@ import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
 import { CommunicationService } from './communication-service';
 import { ContextMenuService } from './context-menu-service';
 
-export default async function init(
+export default function init(
     rta: RuntimeAuthoring,
     registries: QuickActionDefinitionRegistry<string>[] = []
 ): Promise<void> {
