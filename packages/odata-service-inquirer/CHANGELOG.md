@@ -1,5 +1,16 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.7
+
+### Patch Changes
+
+-   77b3b22: update fiori gen to fetch credentials only upon system selection
+-   Updated dependencies [77b3b22]
+    -   @sap-ux/store@1.1.1
+    -   @sap-ux/telemetry@0.6.5
+    -   @sap-ux/fiori-generator-shared@0.12.11
+    -   @sap-ux/inquirer-common@0.7.16
+
 ## 2.5.6
 
 ### Patch Changes
