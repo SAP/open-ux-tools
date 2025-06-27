@@ -14,7 +14,6 @@ const additionalChangeInfoMap = new Map<string, AdditionalChangeInfo>();
  * This function is used to set additional change information for a given change.
  *
  * @param change - The change object for which additional information is to be set.
- * @param control - Optional control element associated with the v4 descriptor change.
  */
 export function setAdditionalChangeInfo(change: FlexChange<AddXMLChangeContent> | undefined): void {
     if (!change) {
