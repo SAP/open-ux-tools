@@ -46,5 +46,5 @@ export * from './entities/api-hub';
 export { getFilesystemWatcherFor } from './data-access';
 export { ServiceOptions };
 export { Entity };
-
+export { SystemType, getBackendSystemType } from './utils';
 export { getFioriToolsDirectory, FioriToolsSettings } from './utils';
