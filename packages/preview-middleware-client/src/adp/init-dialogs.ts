@@ -34,7 +34,7 @@ export function isControllerExtensionEnabledForControl(
     isCloud: boolean
 ): boolean {
     const viewId = FlUtils.getViewForControl(control).getId();
-    const syncViewsIds = getSyncViewIds()
+    const syncViewsIds = getSyncViewIds();
     const isControlInSyncView = syncViewsIds.has(viewId);
 
     if (isCloud) {

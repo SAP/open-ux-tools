@@ -52,6 +52,8 @@ export default async function (rta: RuntimeAuthoring) {
             await updateSyncViewsIds(ui5VersionInfo);
             await showSyncViewsWarning();
         });
+    }).catch((error) => {
+        log.error('Failed to attach update event to outline service', error);
     });
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
