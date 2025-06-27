@@ -1074,7 +1074,7 @@ describe('Cloud foundry generator tests', () => {
                 })
                 .withPrompts({})
                 .run()
-        ).rejects.toThrowError(`Error: could not read webapp/manifest.json`);
+        ).rejects.toThrowError('Error: could not read the file: `webapp/manifest.json`.');
     });
 
     it('Should throw error when not app name is found in manifest', async () => {
@@ -1113,7 +1113,7 @@ describe('Cloud foundry generator tests', () => {
                 })
                 .withPrompts({})
                 .run()
-        ).rejects.toThrowError(`Could not determine app name from manifest`);
+        ).rejects.toThrowError('Cannot determine the application name from the `manifest.json` file.');
     });
 
     it('Should throw error if config writing fails', async () => {

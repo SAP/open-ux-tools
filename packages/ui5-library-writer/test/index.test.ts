@@ -111,7 +111,7 @@ describe('Reuse lib templates', () => {
                 libraryName: 'test"AppId'
             })
         ).rejects.toThrowErrorMatchingInlineSnapshot(
-            `"Please use lowercase alpha numeric characters only for the property libraryName"`
+            `"Only use lowercase alphanumeric characters for the property: libraryName."`
         );
 
         // Ensure undefined, null or '' cannot be used
@@ -120,6 +120,6 @@ describe('Reuse lib templates', () => {
                 ...ui5LibConfig,
                 libraryName: ''
             })
-        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: libraryName must have a value"`);
+        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: libraryName must have a value."`);
     });
 });

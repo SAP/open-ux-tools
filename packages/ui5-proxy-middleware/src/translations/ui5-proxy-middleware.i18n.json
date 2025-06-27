@@ -1,8 +1,8 @@
 {
     "info": {
-        "ui5VersionSource": "Using UI5 version {{version}} based on {{-source}}"
+        "ui5VersionSource": "Using UI5 version: {{version}} based on: {{-source}}."
     },
     "error": {
-        "noCodeError": "Error {{-error}} thrown for request {{-request}}"
+        "noCodeError": "An error: {{-error}} was thrown for the request: {{-request}}."
     }
 }

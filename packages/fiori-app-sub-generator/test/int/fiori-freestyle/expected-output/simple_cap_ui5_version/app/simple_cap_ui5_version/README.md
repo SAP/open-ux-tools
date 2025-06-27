@@ -1,12 +1,12 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Wed Apr 02 2025 20:06:34 GMT+0100 (Irish Standard Time)|
+|**Generation Date and Time**<br>Tue Jun 24 2025 22:44:34 GMT+0100 (Irish Standard Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
-|**App Generator Version**<br>0.0.1|
+|**App Generator Version**<br>0.0.0|
 |**Generation Platform**<br>CLI|
 |**Template Used**<br>Basic V4|
-|**Service Type**<br>Local Cap|
+|**Service Type**<br>Local CAP|
 |**Service URL**<br>http://localhost:4004|
 |**Module Name**<br>simple_cap_ui5_version|
 |**Application Title**<br>App Title|
@@ -23,7 +23,7 @@ An SAP Fiori application on CAP.
 
 ### Starting the generated app
 
--   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  In order to launch the generated app, simply start your CAP project and navigate to the following location in your browser:
+-   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  To launch the generated app, start your CAP project:  and navigate to the following location in your browser:
 
 http://localhost:4004/simple_cap_ui5_version/webapp/index.html
 

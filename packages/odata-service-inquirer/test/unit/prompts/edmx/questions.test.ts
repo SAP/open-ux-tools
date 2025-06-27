@@ -199,7 +199,9 @@ describe('Test entity prompts', () => {
         PromptState.isYUI = false;
         questions = getEntitySelectionQuestions(metadataV2NoEntities, 'worklist');
         mainEntityPrompt = questions.find((question) => question.name === EntityPromptNames.mainEntity) as ListQuestion;
-        expect(() => (mainEntityPrompt.validate as Function)()).toThrowError(t('errors.exitingGeneration'));
+        expect(() => (mainEntityPrompt.validate as Function)()).toThrowError(
+            'Exiting generation. Exit: The template and service selected have no relevant entities that you can use.'
+        );
     });
 
     test('should show line item annotation generation prompt and additional messages', async () => {

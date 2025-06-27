@@ -5,8 +5,8 @@
         "dependenciesInstalled": "Library dependencies have been installed."
     },
     "error": {
-        "unknown": "Unknown error",
-        "generatingUi5Lib": "Error generating reusable UI5 library",
-        "postLibGenHook": "Failed to run hook after library generation {{- error}}"
+        "unknown": "Unknown error.",
+        "generatingUi5Lib": "An error occurred when generating the reusable SAPUI5 library.",
+        "postLibGenHook": "Failed to run hook after library generation: {{- error}}"
     }
 }

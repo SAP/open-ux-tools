@@ -104,7 +104,9 @@ describe('ConnectionValidator', () => {
         const validator = new ConnectionValidator();
         const result = await validator.validateUrl('https://example.com/service');
 
-        expect(result).toMatch(t('errors.connectionError'));
+        expect(result).toMatch(
+            'A connection error occurred. Please ensure the target host is available on the network: HTTP Status ENOTFOUND'
+        );
         expect(validator.validity).toEqual({
             urlFormat: true,
             reachable: false
@@ -172,7 +174,7 @@ describe('ConnectionValidator', () => {
         getODataServiceSpy.mockClear();
 
         getODataServiceSpy = jest.spyOn(ODataService.prototype, 'get').mockRejectedValue(newAxiosErrorWithStatus(404));
-        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({ valResult: 'URL not found' });
+        expect(await validator.validateAuth(serviceUrl, 'user1', 'password1')).toEqual({ valResult: 'URL not found.' });
         expect(validator.validity).toEqual({ urlFormat: true, reachable: false });
         expect(getODataServiceSpy).toHaveBeenCalled();
     });
@@ -802,15 +804,15 @@ describe('ConnectionValidator', () => {
         ).toEqual(
             expect.objectContaining({
                 errorType: ERROR_TYPE.NOT_FOUND,
-                valResult: {
+                valResult: expect.objectContaining({
                     link: {
                         icon: GUIDED_ANSWERS_ICON,
                         text: 'Need help with this error?',
                         url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.DESTINATION_NOT_FOUND}`
                     },
                     message:
-                        'The destination target URL cannot be found. The request failed with status code 404. Please check the destination target URL connectivity in your BTP cockpit.'
-                }
+                        'The destination target URL cannot be found. The request failed with status code 404. Please check the destination target URL connectivity in your SAP BTP cockpit.'
+                })
             })
         );
 

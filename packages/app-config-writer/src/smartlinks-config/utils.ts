@@ -138,7 +138,7 @@ async function getTargetMappings(
 ): Promise<{ [key: string]: TargetMapping }> {
     const response: SystemDetailsResponse | undefined = await sendRequest(config, logger);
     if (!response?.targetMappings) {
-        throw Error(t('error.noTarget'));
+        throw Error(t('error.noTarget', { file: `${config.target.destination ?? config.target.url}` }));
     }
     return response.targetMappings;
 }

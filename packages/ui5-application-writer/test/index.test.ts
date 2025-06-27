@@ -75,12 +75,14 @@ describe('UI5 templates', () => {
         // Ensure double-quote cannot be used
         await expect(
             generate(projectDir, { ...ui5AppConfig, app: { id: 'test"AppId', projectType: 'EDMXBackend' } })
-        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: app.id contains disallowed characters: \\""`);
+        ).rejects.toThrowErrorMatchingInlineSnapshot(
+            `"The property: app.id contains disallowed characters: \\". Remove these characters and try again."`
+        );
 
         // Ensure undefined, null or '' cannot be used
         await expect(
             generate(projectDir, { ...ui5AppConfig, app: { id: '', projectType: 'EDMXBackend' } })
-        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: app.id must have a value"`);
+        ).rejects.toThrowErrorMatchingInlineSnapshot(`"The property: app.id must have a value."`);
     });
 
     it('generate and evolve to ts', async () => {

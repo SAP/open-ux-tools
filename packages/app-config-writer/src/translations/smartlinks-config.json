@@ -4,7 +4,7 @@
         "useTarget": "Do you want to use {{-target}}",
         "target": "SmartLinks configuration source {{-type}} {{-file}}",
         "client": "SAP client {{-file}}",
-        "credentials": "Credentials to be used",
+        "credentials": "Credentials",
         "credentialsDescription": "Provide username and password"
     },
     "warnings": {
@@ -13,19 +13,18 @@
     "info": {
         "username": "Username",
         "password": "Password",
-        "searchTarget": "Searching for deploy target definition {{-file}}",
-        "targetFound": "Deploy target definition found {{-file}}",
-        "credentialsAvailable": "Credentials taken from stored system",
-        "credentialsRequired": "Credentials are required. Please enter your credentials below",
-        "authNeeded": "Credentials might be required. Do you want to enter your credentials?",
+        "searchTarget": "Searching for deploy target definition: {{-file}}.",
+        "targetFound": "Deploy target definition found: {{-file}}.",
+        "credentialsAvailable": "Credentials taken from stored system.",
+        "credentialsRequired": "Credentials are required. Please enter your credentials below.",
         "operationAborted": "Operation aborted by the user.",
         "connectTo": "Connecting to",
-        "connectSuccess": "Connection successful"
+        "connectSuccess": "Connected"
     },
     "error": {
-        "target": "Please provide a target for configuration",
-        "noTarget": "No target definition found {{-file}}",
-        "emptyUsername": "Username can not be empty.",
-        "emptyPassword": "Password can not be empty."
+        "target": "Please provide a target for the configuration.",
+        "noTarget": "No target definition found: {{-file}}.",
+        "emptyUsername": "Username cannot be empty. Provide a value for the username.",
+        "emptyPassword": "Password cannot be empty. Provide a value for the password."
     }
 }

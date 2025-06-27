@@ -113,7 +113,7 @@ describe('questions', () => {
                   "mandatory": true,
                 },
                 "guiType": "file-browser",
-                "message": "Service key file path",
+                "message": "Service Key File Path",
                 "name": "serviceKey",
                 "type": "input",
                 "validate": [Function],
@@ -238,10 +238,10 @@ describe('questions', () => {
         expect(await ((cfDiscoPrompt as ListQuestion).choices as Function)()).toEqual([]);
         expect(errorHandlerSpy).toHaveBeenCalledWith(
             ERROR_TYPE.NO_ABAP_ENVS,
-            'No ABAP environments in CF space found.'
+            'No ABAP environments in CF space found. Ensure an ABAP environment exists.'
         );
         expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)()).toEqual(
-            'No ABAP environments in CF space found. See log for more details.'
+            'No ABAP environments in CF space found. Ensure an ABAP environment exists. For more information, view the logs.'
         );
 
         // CLI throws to exit, as you cannot continue
@@ -255,8 +255,7 @@ describe('questions', () => {
         (getServicesFromCF as jest.Mock).mockRejectedValueOnce(new Error('Not logged in'));
         expect(await ((cfDiscoPrompt as ListQuestion).choices as Function)()).toEqual([]);
         expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)()).toEqual(
-            'Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry ' +
-                '(see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login). See log for more details.'
+            'Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry. For more information, see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login. For more information, view the logs.'
         );
     });
 

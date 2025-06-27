@@ -1,6 +1,6 @@
 {
   "generationParameters": {
-    "generationDate": "Tue May 27 2025 15:05:12 GMT+0100 (Irish Standard Time)",
+    "generationDate": "Tue Jun 24 2025 22:45:02 GMT+0100 (Irish Standard Time)",
     "generatorPlatform": "CLI",
     "serviceType": "SAP API Business Hub Enterprise",
     "metadataFilename": "",
@@ -25,6 +25,6 @@
         "value": "to_ProductSalesData"
       }
     ],
-    "launchText": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
   }
 }

@@ -185,7 +185,7 @@ describe('CF Writer Base', () => {
             );
             delete config.routerType;
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
-                'Missing required parameters, MTA path, MTA ID or router type'
+                'Missing required parameters, MTA Path, MTA ID, or the Router type is missing.'
             );
             hasSyncMock.mockReturnValue(false);
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(MTABinNotFound);
@@ -204,7 +204,7 @@ describe('CF Writer Base', () => {
                     routerType: RouterModuleType.Managed
                 } as Partial<CFBaseConfig>;
                 await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
-                    'The MTA ID must start with a letter or underscore and be less than 128 characters long'
+                    'The MTA ID must start with a letter or underscore and be less than 128 characters.'
                 );
             }
         );
@@ -221,7 +221,7 @@ describe('CF Writer Base', () => {
                 routerType: RouterModuleType.Managed
             } as Partial<CFBaseConfig>;
             await expect(generateBaseConfig(config as CFBaseConfig)).rejects.toThrowError(
-                'The MTA ID can only contain letters, numbers, dashes, periods, underscores'
+                'The MTA ID can only contain letters, numbers, dashes, periods, and underscores.'
             );
         });
     });

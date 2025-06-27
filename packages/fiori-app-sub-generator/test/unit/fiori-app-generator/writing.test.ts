@@ -101,7 +101,7 @@ describe('`writing` tests', () => {
             const expectedReadMe: AppGenInfo = {
                 generationDate: expect.any(String),
                 generatorPlatform: 'Visual Studio Code',
-                serviceType: 'SAP System (ABAP On Premise)',
+                serviceType: 'SAP System (ABAP On-Premise)',
                 metadataFilename: '',
                 serviceUrl: 'N/A',
                 appName: 'someProjectName',
@@ -118,7 +118,8 @@ describe('`writing` tests', () => {
                 template: 'Basic V4',
                 generatorName: '@sap/some-generator',
                 entityRelatedConfig: [],
-                launchText: t('readme.texts.runInstruction')
+                launchText: t('readme.texts.runInstruction'),
+                serviceId: undefined
             };
             const project: Project = { ...baseProject };
             const service: Service = {
@@ -145,7 +146,7 @@ describe('`writing` tests', () => {
             const expectedReadMe: AppGenInfo = {
                 generationDate: expect.any(String),
                 generatorPlatform: 'CLI',
-                serviceType: 'Local Cap',
+                serviceType: 'Local CAP',
                 serviceUrl: 'http://localhost:4004/odata/service',
                 appName: 'someProjectName',
                 appTitle: 'someProjectTitle',
@@ -158,7 +159,7 @@ describe('`writing` tests', () => {
                 template: 'Basic',
                 generatorName: '@sap/some-generator',
                 launchText:
-                    'In order to launch the generated app, simply start your CAP project and navigate to the following location in your browser:' +
+                    'To launch the generated app, start your CAP project:  and navigate to the following location in your browser:' +
                     '\n\nhttp://localhost:4004/someProjectName/webapp/index.html',
                 enableCodeAssist: false,
                 enableEslint: false,
@@ -202,7 +203,7 @@ describe('`writing` tests', () => {
             const expectedReadMe: AppGenInfo = {
                 generationDate: expect.any(String),
                 generatorPlatform: 'CLI',
-                serviceType: 'Local Cap',
+                serviceType: 'Local CAP',
                 serviceUrl: 'http://localhost:4004/odata/service',
                 appName: 'someProjectName',
                 appTitle: 'someProjectTitle',
@@ -215,7 +216,7 @@ describe('`writing` tests', () => {
                 template: 'Basic',
                 generatorName: '@sap/some-generator',
                 launchText:
-                    'In order to launch the generated app, simply start your CAP project and navigate to the following location in your browser:' +
+                    'To launch the generated app, start your CAP project:  and navigate to the following location in your browser:' +
                     '\n\nhttp://localhost:4004/someProjectName/webapp/index.html',
                 enableCodeAssist: false,
                 enableEslint: false,
