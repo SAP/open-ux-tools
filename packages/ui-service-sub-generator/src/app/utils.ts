@@ -108,8 +108,8 @@ export async function writeBASMetadata(
  */
 export function getRelativeUrlFromContent(content: string): string {
     const contentJson = JSON.parse(content);
-    let serviceBinding = contentJson.businessService.serviceBinding.serviceBindingName.replace(/^\/|\/$/g, '');
-    let serviceDefinitionName = contentJson.businessService.serviceDefinition.serviceDefinitionName.replace(
+    let serviceBinding = contentJson?.businessService?.serviceBinding?.serviceBindingName?.replace(/^\/|\/$/g, '');
+    let serviceDefinitionName = contentJson?.businessService?.serviceDefinition?.serviceDefinitionName?.replace(
         /^\/|\/$/g,
         ''
     );
