@@ -44,16 +44,18 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
         "value": {
           "system": {
             "name": "storedSystem1",
+            "systemType": "OnPrem",
             "url": "http://url1",
           },
           "type": "backendSystem",
         },
       },
       {
-        "name": "storedSystem2",
+        "name": "storedSystem2 (BTP)",
         "value": {
           "system": {
             "name": "storedSystem2",
+            "systemType": "BTP",
             "url": "http://url2",
           },
           "type": "backendSystem",
