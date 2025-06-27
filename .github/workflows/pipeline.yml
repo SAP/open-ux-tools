@@ -85,7 +85,7 @@ jobs:
               run: find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && git restore .
             - name: Run SonarCloud scan
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
-              uses: sonarsource/sonarqube-scan-action@v4
+              uses: sonarsource/sonarqube-scan-action@v5
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
