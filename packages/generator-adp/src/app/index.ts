@@ -214,19 +214,6 @@ export default class extends Generator {
 
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
-        if (this.attributeAnswers?.addFlpConfig) {
-            addFlpGen(
-                {
-                    vscode: this.vscode,
-                    projectRootPath: this._getProjectPath(),
-                    inbounds: this.baseAppInbounds
-                },
-                this.composeWith.bind(this),
-                this.logger,
-                this.appWizard
-            );
-        }
-
         if (this.attributeAnswers.addDeployConfig) {
             const client = (await this.systemLookup.getSystemByName(this.configAnswers.system))?.Client;
             addDeployGen(
@@ -235,6 +222,19 @@ export default class extends Generator {
                     targetFolder: this.attributeAnswers.targetFolder,
                     connectedSystem: this.configAnswers.system,
                     client
+                },
+                this.composeWith.bind(this),
+                this.logger,
+                this.appWizard
+            );
+        }
+
+        if (this.attributeAnswers?.addFlpConfig) {
+            addFlpGen(
+                {
+                    vscode: this.vscode,
+                    projectRootPath: this._getProjectPath(),
+                    inbounds: this.baseAppInbounds
                 },
                 this.composeWith.bind(this),
                 this.logger,
