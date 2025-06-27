@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.20.45
+
+### Patch Changes
+
+-   0db69d6: fix: wrong property path used for Show Counts configuration change
+
 ## 0.20.44
 
 ### Patch Changes
