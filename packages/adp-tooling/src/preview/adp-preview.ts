@@ -28,7 +28,7 @@ import {
     tryFixChange,
     isV4DescriptorChange
 } from './change-handler';
-import { addCustomFragment } from './appDescriptorv4Handler';
+import { addCustomFragment } from './descriptor-change-handler';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
     // eslint-disable-next-line no-var

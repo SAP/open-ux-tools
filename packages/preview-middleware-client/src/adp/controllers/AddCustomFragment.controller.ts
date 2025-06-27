@@ -63,7 +63,6 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
             title: options.title
         });
         this.commandExecutor = new CommandExecutor(this.rta);
-        this.setRunTimeControl();
     }
 
     /**
@@ -75,7 +74,7 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
         this.dialog = dialog;
 
         this.setEscapeHandler();
-
+        this.setRunTimeControl();
         await this.buildDialogData();
         const resourceModel = await getResourceModel('open.ux.preview.client');
 
