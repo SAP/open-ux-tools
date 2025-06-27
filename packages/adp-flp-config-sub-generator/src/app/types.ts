@@ -2,8 +2,7 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type Generator from 'yeoman-generator';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { FlexLayer } from '@sap-ux/adp-tooling';
+import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
 
 export interface FlpConfigOptions extends Generator.GeneratorOptions {
     /**
@@ -33,7 +32,7 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
     /**
      * Layer for the FLP configuration
      */
-    layer: FlexLayer;
+    layer: UI5FlexLayer;
     data?: {
         projectRootPath: string;
     };

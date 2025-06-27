@@ -7,7 +7,7 @@ import {
     NamespacePrefix
 } from '@sap-ux/adp-tooling';
 import type { InboundContent } from '@sap-ux/axios-extension';
-import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
 import { type FLPConfigPromptOptions, type FLPConfigAnswers, type TileSettingsAnswers, tileActions } from './types';
 /**
  * Returns FLP configuration prompt options based on the provided inbounds, variant, and tile settings answers.
@@ -58,10 +58,10 @@ export function getAdpFlpConfigPromptOptions(
  * Builds the configuration for replacing an existing FLP inbound based on the provided answers and layer.
  *
  * @param {FLPConfigAnswers} flpConfigAnswers - The answers for FLP configuration.
- * @param {FlexLayer} layer - The layer of the project.
+ * @param {UI5FlexLayer} layer - The layer of the project.
  * @returns {InternalInboundNavigation} The configuration for the replaced FLP inbound.
  */
-function buildReplaceInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: FlexLayer): InternalInboundNavigation {
+function buildReplaceInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: UI5FlexLayer): InternalInboundNavigation {
     const {
         semanticObject,
         action,
@@ -89,7 +89,7 @@ function buildReplaceInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: Fl
  * @param {FlexLayer} layer - The layer of the project.
  * @returns {InternalInboundNavigation} The configuration for the new FLP inbound.
  */
-function buildAddInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: FlexLayer): InternalInboundNavigation {
+function buildAddInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: UI5FlexLayer): InternalInboundNavigation {
     let inboundId =
         !flpConfigAnswers.semanticObject || !flpConfigAnswers.action
             ? ''
@@ -119,7 +119,7 @@ function buildAddInboundConfig(flpConfigAnswers: FLPConfigAnswers, layer: FlexLa
  */
 export function getAdpFlpInboundsWriterConfig(
     flpConfigAnswers: FLPConfigAnswers,
-    layer: FlexLayer,
+    layer: UI5FlexLayer,
     tileSettingsAnswers?: TileSettingsAnswers
 ): InternalInboundNavigation | NewInboundNavigation {
     const { tileHandlingAction } = tileSettingsAnswers ?? {};
