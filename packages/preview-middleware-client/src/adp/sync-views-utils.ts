@@ -76,7 +76,7 @@ export function isSyncView(element: DTElement): boolean {
  * @returns Cached set containing the IDs of all synchronious views.
  */
 export function getSyncViewIds(): Set<string> {
-    return syncViews
+    return syncViews;
 }
 
 /**
