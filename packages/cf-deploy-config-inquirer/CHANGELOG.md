@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.19
+
+### Patch Changes
+
+-   48af01a: Validate long Windows path in deployment configuration.
+
 ## 0.3.18
 
 ### Patch Changes
