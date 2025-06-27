@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { Service } from '.';
+import type { Service, ServiceRetrievalOptions } from '.';
 import type { DataProvider } from '../data-provider';
 import { SystemDataProvider } from '../data-provider/backend-system';
 import type { BackendSystemKey } from '../entities/backend-system';
@@ -57,8 +57,8 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     public async delete(entity: BackendSystem): Promise<boolean> {
         return this.dataProvider.delete(entity);
     }
-    public async getAll(): Promise<BackendSystem[] | []> {
-        return this.dataProvider.getAll();
+    public async getAll(options: ServiceRetrievalOptions): Promise<BackendSystem[] | []> {
+        return this.dataProvider.getAll(options);
     }
 }
 

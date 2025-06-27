@@ -1,5 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { isSameSystem, setGlobalRejectUnauthorized } from '../utils';
+import { isSameSystem } from '../utils';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { AuthenticationType } from '@sap-ux/store';
 import { PromptState } from '../prompts/prompt-state';
@@ -8,6 +8,7 @@ import type { AbapServiceProvider, AxiosRequestConfig, ProviderConfiguration } f
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { BackendTarget, Credentials, SystemConfig } from '../types';
 import type { AbapTarget } from '@sap-ux/ui5-config';
+import { setGlobalRejectUnauthorized } from '@sap-ux/nodejs-utils';
 import { t } from '../i18n';
 
 /**

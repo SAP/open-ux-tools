@@ -28,7 +28,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -76,6 +76,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: fefeop1
+            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -128,6 +132,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: fefeop1
+            action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -173,6 +181,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: fefeop1
+            action: tile
 ",
     "state": "modified",
   },
@@ -3703,7 +3715,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -3798,6 +3810,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: fefeop2ts
+            action: tile
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -3858,6 +3874,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: fefeop2ts
+            action: tile
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -3919,6 +3939,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: fefeop2ts
+            action: tile
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:

@@ -18,11 +18,11 @@ describe('index', () => {
         });
 
         it('should return selected prompts from getPrompts prompt options', async () => {
-            const prompts = await getPrompts(undefined, undefined, {
+            const prompts = await getPrompts(undefined, {
                 inboundId: { hide: true },
-                emptyInboundsInfo: { hide: true },
-                additionalParameters: { hide: true },
-                createAnotherInbound: { hide: true }
+                icon: { hide: true },
+                existingFlpConfigInfo: { hide: true },
+                additionalParameters: { hide: true }
             });
 
             expect(prompts).toBeDefined();
@@ -68,7 +68,7 @@ describe('index', () => {
                 prompt: jest.fn().mockResolvedValueOnce(answers)
             };
 
-            const result = await prompt(adapter, undefined, undefined, {
+            const result = await prompt(adapter, undefined, {
                 overwrite: { hide: false },
                 // simulating behavior when default is a function
                 subTitle: { default: (() => 'defaultSubTitle') as unknown as string },

@@ -1,5 +1,66 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.4.16
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.28.2
+-   @sap-ux/fiori-generator-shared@0.12.11
+-   @sap-ux/cap-config-writer@0.10.12
+
+## 2.4.15
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+    -   @sap-ux/cap-config-writer@0.10.11
+
+## 2.4.14
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.10.10
+-   @sap-ux/fiori-generator-shared@0.12.9
+-   @sap-ux/odata-service-writer@0.27.6
+-   @sap-ux/ui5-application-writer@1.5.4
+-   @sap-ux/ui5-test-writer@0.7.6
+
+## 2.4.13
+
+### Patch Changes
+
+-   Updated dependencies [7fd2583]
+    -   @sap-ux/ui5-test-writer@0.7.5
+
+## 2.4.12
+
+### Patch Changes
+
+-   Updated dependencies [3ea811a]
+    -   @sap-ux/ui5-application-writer@1.5.4
+    -   @sap-ux/cap-config-writer@0.10.9
+    -   @sap-ux/ui5-test-writer@0.7.4
+
+## 2.4.11
+
+### Patch Changes
+
+-   163522f: fix non-virtual endpoint preview config
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+    -   @sap-ux/ui5-application-writer@1.5.3
+    -   @sap-ux/cap-config-writer@0.10.8
+    -   @sap-ux/ui5-test-writer@0.7.3
+
+## 2.4.10
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+    -   @sap-ux/cap-config-writer@0.10.7
+
 ## 2.4.9
 
 ### Patch Changes

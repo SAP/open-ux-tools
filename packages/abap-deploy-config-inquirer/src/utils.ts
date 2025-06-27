@@ -1,10 +1,11 @@
+import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 import { getService } from '@sap-ux/store';
-import { PackageInputChoices, TargetSystemType, TransportChoices } from './types';
-import { getTransportConfigInstance } from './service-provider-utils';
+import { CREATE_TR_DURING_DEPLOY } from './constants';
 import { t } from './i18n';
 import LoggerHelper from './logger-helper';
-import { listPackages } from './validator-utils';
+import { getTransportConfigInstance } from './service-provider-utils';
 import type {
     AbapDeployConfigAnswers,
     AbapDeployConfigAnswersInternal,
@@ -13,10 +14,8 @@ import type {
     InitTransportConfigResult,
     SystemConfig
 } from './types';
-import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
-import type { Destinations, Destination } from '@sap-ux/btp-utils';
-import { CREATE_TR_DURING_DEPLOY } from './constants';
-import https from 'https';
+import { PackageInputChoices, TargetSystemType, TransportChoices } from './types';
+import { listPackages } from './validator-utils';
 
 let cachedDestinations: Destinations = {};
 let cachedBackendSystems: BackendSystem[] = [];
@@ -134,7 +133,6 @@ export async function initTransportConfig({
             t('errors.debugAbapTargetSystem', { method: 'initTransportConfig', error: result.error })
         );
     }
-
     return result;
 }
 
@@ -293,20 +291,4 @@ export function getSystemConfig(
         client: configSource?.client,
         destination: configSource?.destination
     };
-}
-
-/**
- * Set the rejectUnauthorized option of the global https agent.
- *
- * @param rejectUnauthorized - true to reject unauthorized certificates, false to accept them
- */
-export function setGlobalRejectUnauthorized(rejectUnauthorized: boolean): void {
-    if (https.globalAgent.options) {
-        https.globalAgent.options.rejectUnauthorized = rejectUnauthorized;
-    }
-    //@ts-expect-error - fallbackAgent is only present in BoundHttpsProxyAgent implementation and is not part of the Node.js API
-    if (https.globalAgent.fallbackAgent) {
-        //@ts-expect-error - fallbackAgent is not typed in Node.js API
-        https.globalAgent.fallbackAgent.options.rejectUnauthorized = rejectUnauthorized;
-    }
 }

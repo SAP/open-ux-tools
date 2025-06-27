@@ -95,6 +95,7 @@ interface EditTestCase<T extends Record<string, string>> {
     fsEditor?: Editor;
     log?: boolean;
     fioriServiceOptions?: Partial<FioriAnnotationServiceOptions>;
+    throws?: boolean;
 }
 
 interface CustomTest<T extends Record<string, string>> {
@@ -114,6 +115,20 @@ const createEditTestCase = (<T extends Record<string, string>>(): CustomTest<T> 
                 test(
                     name,
                     async () => {
+                        if (testCase.throws) {
+                            await expect(() =>
+                                testEdit(
+                                    root,
+                                    testCase.getInitialChanges ? testCase.getInitialChanges(files) : [],
+                                    testCase.getChanges(files),
+                                    serviceName,
+                                    testCase.fsEditor,
+                                    testCase.log,
+                                    testCase.fioriServiceOptions
+                                )
+                            ).rejects.toThrowErrorMatchingSnapshot();
+                            return;
+                        }
                         const text = await testEdit(
                             root,
                             testCase.getInitialChanges ? testCase.getInitialChanges(files) : [],
@@ -1466,6 +1481,30 @@ rating : Rating;
                     }
                 ]
             });
+            createEditTestCase({
+                name: 'no existing annotation',
+                projectTestModels: TEST_TARGETS,
+                getInitialChanges: () => [],
+                getChanges: (files) => [
+                    {
+                        kind: ChangeType.InsertEmbeddedAnnotation,
+                        reference: {
+                            target: targetName,
+                            term: `${UI}.LineItem`
+                        },
+                        uri: files.annotations,
+                        pointer: '',
+                        content: {
+                            type: 'embedded-annotation',
+                            value: {
+                                term: 'UI.Hidden',
+                                value: { type: 'Bool', Bool: true }
+                            }
+                        }
+                    }
+                ],
+                throws: true
+            });
 
             createEditTestCase({
                 name: 'annotation with record value',
@@ -2458,6 +2497,172 @@ rating : Rating;
                 );
 
                 expect(text).toMatchSnapshot();
+            });
+            describe('cds clean up related flattened structures', () => {
+                test('with embedded annotation', async () => {
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with {
+                        priority @(
+                            Common.Text : priority.name,
+                            Common.Text.@UI.TextArrangement : #TextFirst,
+                        )
+                    };
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents/priority',
+                                    term: `${COMMON}.Text`
+                                },
+                                uri: project.files.annotations,
+                                pointer: ''
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+                test('with annotation group', async () => {
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+                    annotate service.Incidents with {
+                        priority @(
+                            Common: { Text : priority.name },
+                            Common.Text.@UI.TextArrangement : #TextFirst,
+                        )
+                    };
+
+                    annotate service.Incidents with {
+                        priority @(
+                            Common: { Text.@Core.Description : 'text', },
+                        )
+                    };
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents/priority',
+                                    term: `${COMMON}.Text`
+                                },
+                                uri: project.files.annotations,
+                                pointer: ''
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
+                test('with properties and embedded annotation', async () => {
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+
+                    annotate service.Incidents with @UI.HeaderInfo.@Core.Description : 'description';
+
+                    annotate service.Incidents with @(
+                        UI.HeaderInfo.TypeName : 'Incident',
+                        UI.HeaderInfo.TypeNamePlural : 'Incidents',
+                    );
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents',
+                                    term: `${UI}.HeaderInfo`
+                                },
+                                uri: project.files.annotations,
+                                pointer: ''
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
+
+                test('preserve other target annotations', async () => {
+                    const project = PROJECTS.V4_CDS_START;
+                    const root = project.root;
+                    const fsEditor = await createFsEditorForProject(root);
+                    const path = pathFromUri(project.files.annotations);
+                    const content = fsEditor.read(path);
+                    const testData = `${content}
+                    using from '../../srv/common';
+
+                    @UI.HeaderInfo.TypeName : 'Incident'
+                    annotate service.IncidentFlow with @UI.HeaderInfo.@Core.Description : 'description';
+
+                    annotate service.Incidents with @(
+                        UI.HeaderInfo.TypeName : 'Incident',
+                        UI.HeaderInfo.TypeNamePlural : 'Incidents',
+                    );
+                    
+                    annotate service.Incidents with @(
+                        ![UI.HeaderInfo#abc.TypeName] : 'Incident',
+                        ![UI.HeaderInfo#abc.TypeNamePlural] : 'Incidents',
+                    );
+                    `;
+                    fsEditor.write(path, testData);
+                    const text = await testEdit(
+                        root,
+                        [],
+                        [
+                            {
+                                kind: ChangeType.Delete,
+                                reference: {
+                                    target: 'IncidentService.Incidents',
+                                    term: `${UI}.HeaderInfo`
+                                },
+                                uri: project.files.annotations,
+                                pointer: ''
+                            }
+                        ],
+                        'IncidentService',
+                        fsEditor,
+                        false
+                    );
+
+                    expect(text).toMatchSnapshot();
+                });
             });
 
             describe('embedded annotation', () => {
@@ -3689,6 +3894,45 @@ rating : Rating;
                                     }
                                 ]
                             }
+                        }
+                    }
+                ],
+                'IncidentService',
+                fsEditor,
+                false
+            );
+
+            expect(text).toMatchSnapshot();
+        });
+        test('embedded annotation with update', async () => {
+            const project = PROJECTS.V4_CDS_START;
+            const root = project.root;
+            const fsEditor = await createFsEditorForProject(root);
+            const mdPath = pathFromUri(project.files.annotations);
+            const mdContent = fsEditor.read(mdPath);
+            const mdTestData = `${mdContent}
+            annotate service.Individual with {
+                createdAt @(
+                    Common.Text            : createdBy,
+                    Common.Text.@UI.TextArrangement : null,
+                )
+            };`;
+            fsEditor.write(mdPath, mdTestData);
+            const text = await testEdit(
+                root,
+                [],
+                [
+                    {
+                        kind: ChangeType.Update,
+                        uri: project.files.annotations,
+                        pointer: '/annotations/0/value',
+                        reference: {
+                            target: 'IncidentService.Individual/createdAt',
+                            term: `${COMMON}.Text`
+                        },
+                        content: {
+                            type: 'expression',
+                            value: { type: 'EnumMember', EnumMember: `${UI}.TextArrangementType/TextFirst` }
                         }
                     }
                 ],

@@ -32,7 +32,7 @@
 
     assigneesFromCodeOwners: true,
 
-    ignorePaths: ['**/templates/**', '**/test-input/**', '**/test-output/**', '**/test/fixtures/**', '**/test/fixture/**', '**/test/test-data/**'],
+    ignorePaths: ['**/templates/**', '**/test-input/**', '**/test-output/**', '**/test/fixtures/**', '**/test/fixture/**', '**/test/test-data/**', '**/expected-output/**' ],
 
     packageRules: [
         {

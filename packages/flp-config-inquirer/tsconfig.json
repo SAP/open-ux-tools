@@ -13,6 +13,9 @@
       "path": "../adp-tooling"
     },
     {
+      "path": "../axios-extension"
+    },
+    {
       "path": "../btp-utils"
     },
     {

@@ -8,7 +8,7 @@
                 "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ObjectPage<% } %>": {
                     "type": "Component",
                     "id": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ObjectPage<% } %>",
-                    "name": "sap.fe.templates.ObjectPage",<%if (locals.controlAggregation) {%>
+                    "name": "<%- template %>",<%if (locals.controlAggregation) {%>
                     "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
                     "options": {
                         "settings": <%- JSON.stringify(settings) %>

@@ -1,5 +1,23 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.14.8
+
+### Patch Changes
+
+-   59771f3: fix: Bump required versions of SAPUI5 for using ElementRegistry and RTA plugins
+
+## 0.14.7
+
+### Patch Changes
+
+-   d4107bd: fix: enhanced homepage loading issues in ui5 v1.137.0
+
+## 0.14.6
+
+### Patch Changes
+
+-   135c3ae: fix: Duplicate Extension Points are selected in outline tree
+
 ## 0.14.5
 
 ### Patch Changes

@@ -29,3 +29,7 @@ server:
       configuration:
         flp:
           theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: testnamepsacelropv4noui5version
+            action: tile

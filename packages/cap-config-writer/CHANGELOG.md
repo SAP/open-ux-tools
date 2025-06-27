@@ -1,5 +1,45 @@
 # @sap-ux/cap-config-writer
 
+## 0.10.12
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.11
+
+## 0.10.11
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+
+## 0.10.10
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/fiori-generator-shared@0.12.9
+
+## 0.10.9
+
+### Patch Changes
+
+-   3ea811a: Bump @ui5/cli version
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+
+## 0.10.7
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+
 ## 0.10.6
 
 ### Patch Changes

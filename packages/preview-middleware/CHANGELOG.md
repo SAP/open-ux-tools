@@ -1,5 +1,149 @@
 # @sap-ux/preview-middleware
 
+## 0.20.44
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.32
+-   @sap-ux/system-access@0.6.9
+
+## 0.20.43
+
+### Patch Changes
+
+-   Updated dependencies [83109eb]
+    -   @sap-ux/adp-tooling@0.14.31
+
+## 0.20.42
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.30
+
+## 0.20.41
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/adp-tooling@0.14.29
+    -   @sap-ux/system-access@0.6.8
+    -   @sap-ux/project-access@1.30.3
+
+## 0.20.40
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.28
+-   @sap-ux/system-access@0.6.7
+
+## 0.20.39
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.27
+-   @sap-ux/system-access@0.6.6
+
+## 0.20.38
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.26
+-   @sap-ux/system-access@0.6.5
+
+## 0.20.37
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.25
+
+## 0.20.36
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.24
+
+## 0.20.35
+
+### Patch Changes
+
+-   59771f3: fix: Bump required versions of SAPUI5 for using ElementRegistry and RTA plugins
+
+## 0.20.34
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.23
+
+## 0.20.33
+
+### Patch Changes
+
+-   Updated dependencies [65edfba]
+    -   @sap-ux/adp-tooling@0.14.22
+
+## 0.20.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.21
+
+## 0.20.31
+
+### Patch Changes
+
+-   a9e93ff: fix: disable cards generator for CAP projects
+
+## 0.20.30
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.20
+
+## 0.20.29
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.19
+-   @sap-ux/system-access@0.6.4
+
+## 0.20.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.18
+-   @sap-ux/system-access@0.6.3
+
+## 0.20.27
+
+### Patch Changes
+
+-   Updated dependencies [f4439f1]
+    -   @sap-ux/adp-tooling@0.14.17
+
+## 0.20.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.16
+
+## 0.20.25
+
+### Patch Changes
+
+-   135c3ae: fix: Duplicate Extension Points are selected in outline tree
+
+## 0.20.24
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.15
+
+## 0.20.23
+
+### Patch Changes
+
+-   ec78662: fix: variant changes are not shown in Adaptation Editor
+
 ## 0.20.22
 
 ### Patch Changes

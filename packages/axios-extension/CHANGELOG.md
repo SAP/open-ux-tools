@@ -1,5 +1,41 @@
 # @sap-ux/axios-extension
 
+## 1.22.3
+
+### Patch Changes
+
+-   f9ea9e3: feat: Enhance ADP FLP configuration generator
+
+## 1.22.2
+
+### Patch Changes
+
+-   14214a3: Cleanup documentation
+
+## 1.22.1
+
+### Patch Changes
+
+-   a9f1808: Disable proxy for BAS
+
+## 1.22.0
+
+### Minor Changes
+
+-   aaf0c14: support rap service generation
+
+## 1.21.4
+
+### Patch Changes
+
+-   b45093b: Revert toggle, required to support BAS CLI flows
+
+## 1.21.3
+
+### Patch Changes
+
+-   4303f99: fix(axios): Disable System info params encoding
+
 ## 1.21.2
 
 ### Patch Changes
