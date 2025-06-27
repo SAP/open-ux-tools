@@ -1,5 +1,11 @@
 # @sap-ux/launch-config
 
+## 0.10.7
+
+### Patch Changes
+
+-   bac9dbc: fix start mock args in launch config
+
 ## 0.10.6
 
 ### Patch Changes
