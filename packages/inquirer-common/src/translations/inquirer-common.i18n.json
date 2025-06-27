@@ -42,7 +42,7 @@
         "noSuchHostError": "No such host is known. Ensure the host is available.",
         "noAbapEnvsInCFSpace": "No ABAP environments in CF space found. Ensure an ABAP environment exists.",
         "abapEnvsCFDiscoveryFailed": "Discovering ABAP Environments failed. Please ensure you are logged into Cloud Foundry. For more information, see https://docs.cloudfoundry.org/cf-cli/getting-started.html#login.",
-        "systemConnectionValidationFailed": "A connection to the selected system cannot be established. Ensure the credentails are valid.",
+        "systemConnectionValidationFailed": "A connection to the selected system cannot be established. Ensure the credentials are valid.",
         "internalServerError": "Internal server error{{-errorMsg, addMsgWithColonFormatter}}",
         "badGateway": "Bad gateway{{- errorMsg, addMsgWithColonFormatter}}",
         "badRequest": "Bad request{{- errorMsg, addMsgWithColonFormatter}}",
