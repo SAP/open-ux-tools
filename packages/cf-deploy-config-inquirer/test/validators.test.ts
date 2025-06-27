@@ -76,7 +76,9 @@ describe('validators', () => {
         it('should return an error message when the file path does not exist', () => {
             mockedExistsSync.mockReturnValue(false);
             const result = validateMtaPath('/invalid/path');
-            expect(result).toBe('The folder path does not exist: /invalid/path. Check the folder has the correct permissions.');
+            expect(result).toBe(
+                'The folder path does not exist: /invalid/path. Check the folder has the correct permissions.'
+            );
         });
 
         it('should return an error message for empty input', () => {
@@ -114,7 +116,9 @@ describe('validators', () => {
         it('should return an error message if MTA ID already exists at the given path', () => {
             mockedExistsSync.mockReturnValue(true);
             const result = validateMtaId('existing_id', previousAnswers);
-            expect(result).toBe(`A folder with the same name already exists at: /valid/path. Choose a different MTA ID.`);
+            expect(result).toBe(
+                `A folder with the same name already exists at: /valid/path. Choose a different MTA ID.`
+            );
         });
     });
 
