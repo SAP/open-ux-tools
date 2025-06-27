@@ -222,7 +222,8 @@ describe('controlData', () => {
                     type: 'responsiveTable',
                     header: 'USA table',
                     frozenColumnCount: 12,
-                    enableExportExcel: false
+                    enableExportExcel: false,
+                    'view/showCounts': true
                 } as ManifestSettingsValue),
                 manifestSettings: jest.fn().mockReturnValue([
                     {
@@ -272,6 +273,14 @@ describe('controlData', () => {
                         id: 'enableExportExcel',
                         description: 'Enable Export Excel',
                         name: 'Enable Export Excel',
+                        value: false,
+                        type: 'boolean'
+                    },
+                    {
+                        id: 'showCounts',
+                        description: 'Show Counts',
+                        name: 'Show Counts',
+                        path: 'view/showCounts',
                         value: false,
                         type: 'boolean'
                     }
