@@ -287,12 +287,12 @@ describe('test helper functions', () => {
         const state = {
             content: `{"general":{"namespace":"/ITAPC1/"},"businessService": {
                 "serviceDefinition": {
-                    "serviceDefinitionName": "ZUI_BANKTP134_O4",
-                    "serviceDefinitionNameOrgn": "ZUI_BANKTP134_O4"
+                    "serviceDefinitionName": "/ITAPC1/ZUI_BANKTP134_O4",
+                    "serviceDefinitionNameOrgn": "/ITAPC1/ZUI_BANKTP134_O4"
                 },
                 "serviceBinding": {
-                    "serviceBindingName": "ZUI_BANKTP132_O4",
-                    "serviceBindingNameOrgn": "ZUI_BANKTP132_O4",
+                    "serviceBindingName": "/ITAPC1/ZUI_BANKTP132_O4",
+                    "serviceBindingNameOrgn": "/ITAPC1/ZUI_BANKTP132_O4",
                     "bindingType": "v4Ui"
                 }
             }
