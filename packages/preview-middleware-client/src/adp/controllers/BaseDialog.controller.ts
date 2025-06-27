@@ -23,6 +23,7 @@ import Log from 'sap/base/Log';
 
 type BaseDialogModel = JSONModel & {
     getProperty(sPath: '/fragmentList'): Fragments;
+    getProperty(sPath: '/template'): string;
 };
 
 /**
@@ -185,7 +186,9 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
             );
             return;
         }
-        const template = `${this.rta.getFlexSettings()?.projectId}.changes.fragments.${fragmentName}`; // changes.fragments is the current folder structure where fragment changes are written. this value is subjected to change if the folder structure changes
+        // 'changes.fragments' is the current folder structure where fragment changes are written. 
+        // following value is subjected to change if the folder structure changes
+        const template = `${this.rta.getFlexSettings()?.projectId}.changes.fragments.${fragmentName}`;
         if (template) {
             const v4CustomXMLChange = checkForExistingChange(
                 this.rta,

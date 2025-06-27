@@ -34,23 +34,25 @@ interface FragmentTemplateConfig<T = { [key: string]: any }> {
      * Relative path to ../../templates/rta, includes template file name
      */
     path: string;
-    getData: (change: { index?: number }) => T;
+    getData: (change: AddXMLChange) => T;
 }
 
+export const objectPageCustomPageConfig = {
+    path: 'common/op-custom-section.xml',
+    getData: (): { ids: Record<string, string> } => {
+        const uuid = randomBytes(4).toString('hex');
+        return {
+            ids: {
+                objectPageSection: `op-section-${uuid}`,
+                objectPageSubSection: `op-subsection-${uuid}`,
+                hBox: `hbox-${uuid}`
+            }
+        };
+    }
+};
+
 export const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
-    [OBJECT_PAGE_CUSTOM_SECTION]: {
-        path: 'common/op-custom-section.xml',
-        getData: () => {
-            const uuid = randomBytes(4).toString('hex');
-            return {
-                ids: {
-                    objectPageSection: `op-section-${uuid}`,
-                    objectPageSubSection: `op-subsection-${uuid}`,
-                    hBox: `hbox-${uuid}`
-                }
-            };
-        }
-    },
+    [OBJECT_PAGE_CUSTOM_SECTION]: objectPageCustomPageConfig,
     [CUSTOM_ACTION]: {
         path: 'common/custom-action.xml',
         getData: () => {
@@ -88,9 +90,9 @@ export const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig>
     },
     [V2_SMART_TABLE_COLUMN]: {
         path: 'v2/m-table-custom-column.xml',
-        getData: (change: { index?: number }) => {
+        getData: (change: AddXMLChange) => {
             const uuid = randomBytes(4).toString('hex');
-            const columnIndex = change.index;
+            const columnIndex = change.content.index;
             return {
                 ids: {
                     column: `column-${uuid}`,
@@ -126,9 +128,9 @@ export const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig>
     },
     [GRID_TREE_TABLE_COLUMN]: {
         path: 'common/grid-tree-custom-column.xml',
-        getData: (change: { index?: number }) => {
+        getData: (change: AddXMLChange) => {
             const uuid = randomBytes(4).toString('hex');
-            const columnIndex = change.index;
+            const columnIndex = change.content.index;
             return {
                 ids: {
                     column: `column-${uuid}`,
@@ -142,9 +144,9 @@ export const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig>
     },
     [ANALYTICAL_TABLE_COLUMN]: {
         path: 'common/analytical-custom-column.xml',
-        getData: (change: { index?: number }) => {
+        getData: (change: AddXMLChange) => {
             const uuid = randomBytes(4).toString('hex');
-            const columnIndex = change.index;
+            const columnIndex = change.content.index;
             return {
                 ids: {
                     column: `column-${uuid}`,
@@ -248,12 +250,12 @@ export function isV4DescriptorChange(change: CommonChangeProperties): change is 
  */
 export function addXmlFragment(
     basePath: string,
-    change: FragmentCreationParams,
+    change: AddXMLChange,
     fs: Editor,
     logger: Logger,
     additionalChangeInfo?: CommonAdditionalChangeInfoProperties
 ): void {
-    const { fragmentPath } = change;
+    const { fragmentPath } = change.content;
     const fullPath = join(basePath, DirName.Changes, fragmentPath);
     const templateConfig = fragmentTemplateDefinitions[additionalChangeInfo?.templateName ?? ''];
     try {

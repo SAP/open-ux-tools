@@ -1,10 +1,10 @@
 import type { Editor } from 'mem-fs-editor';
-import type { AppDescriptorV4Change, CommonAdditionalChangeInfoProperties } from '../types';
+import type { AppDescriptorV4Change } from '../types';
 import type { Logger } from '@sap-ux/logger';
 import { DirName } from '@sap-ux/project-access';
 import { render } from 'ejs';
 import { join } from 'path';
-import { fragmentTemplateDefinitions } from './change-handler';
+import { objectPageCustomPageConfig } from './change-handler';
 
 /**
  * Checks if the given object has a 'template' property of type string.
@@ -23,39 +23,48 @@ export function hasTemplate(obj: unknown): obj is { template: string } {
  * @param change - The AppDescriptorV4Change object containing change details.
  * @param fs - The mem-fs-editor instance for file operations.
  * @param logger - The logger instance for logging information and errors.
- * @param additionalChangeInfo - Optional additional change information properties.
  */
-export function addCustomFragment(
+export function addCustomSectionFragment(
     basePath: string,
     change: AppDescriptorV4Change,
     fs: Editor,
-    logger: Logger,
-    additionalChangeInfo?: CommonAdditionalChangeInfoProperties
+    logger: Logger
 ): void {
     const propertyValue = change.content.entityPropertyChange.propertyValue;
     const isCustomSectionPropertyPath =
         change.content.entityPropertyChange.propertyPath.startsWith('content/body/sections/');
     if (isCustomSectionPropertyPath && hasTemplate(propertyValue)) {
         const { template } = propertyValue;
-        const path = template.replace(`${change.reference}.changes.`, '').replace(/^\./, '').replace(/\./g, '/');
+        const path = getFragmentPathFromTemplate(template, change);
         const fragmentPath = `${path}.fragment.xml`;
-        const fullPath = join(basePath, DirName.Changes, fragmentPath);
-        const templateConfig = fragmentTemplateDefinitions[additionalChangeInfo?.templateName ?? ''];
+        const fullPath = join(basePath, fragmentPath);
         try {
-            if (templateConfig) {
-                const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);
-                const text = fs.read(fragmentTemplatePath);
-                const template = render(text, templateConfig.getData({}));
-                fs.write(fullPath, template);
-            } else {
-                // copy default fragment template
-                const templateName = 'fragment.xml'; /* TemplateFileName.Fragment */
-                const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateName);
-                fs.copy(fragmentTemplatePath, fullPath);
-            }
+            const fragmentTemplatePath = join(__dirname, '../../templates/rta', objectPageCustomPageConfig.path);
+            const text = fs.read(fragmentTemplatePath);
+            const template = render(text, objectPageCustomPageConfig.getData());
+            fs.write(fullPath, template);
             logger.info(`XML Fragment "${fragmentPath}" was created`);
         } catch (error) {
             logger.error(`Failed to create XML Fragment "${fragmentPath}": ${error}`);
         }
     }
+}
+
+/**
+ * Generates the fragment path from the given template string and change object.
+ *
+ * @param template - The template string representing the fragment.
+ * @param change - The AppDescriptorV4Change object containing change details.
+ * @returns The computed fragment path as a string.
+ */
+function getFragmentPathFromTemplate(template: string, change: AppDescriptorV4Change): string {
+    let path = '';
+    const segments = template.split(`${change.projectId}.${DirName.Changes}.${DirName.Fragments}.`);
+    const [namespace, fileName] = segments;
+    if (segments.length === 2 && namespace === '') {
+        path = join(DirName.Changes, DirName.Fragments, fileName);
+    } else {
+        path = join(...template.split('.'));
+    }
+    return path;
 }

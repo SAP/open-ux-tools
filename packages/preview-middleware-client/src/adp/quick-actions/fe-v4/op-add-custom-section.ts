@@ -24,7 +24,7 @@ export class AddCustomSectionQuickAction
 {
     protected get currentPageDescriptor(): PageDescriptorV4 {
         const appComponent = getV4AppComponent(this.context.view);
-        const appReference = this.context.flexSettings.projectId;
+        const projectId = this.context.flexSettings.projectId;
         const objectPageLayout = getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
@@ -42,7 +42,7 @@ export class AddCustomSectionQuickAction
         if (!pageId) {
             throw new Error('pageId is not defined');
         }
-        if (!appReference) {
+        if (!projectId) {
             throw new Error('app reference is not defined');
         }
         if (!appComponent) {
@@ -56,7 +56,7 @@ export class AddCustomSectionQuickAction
             appComponent,
             anchor,
             pageId,
-            appReference
+            projectId
         };
     }
     constructor(context: QuickActionContext) {
@@ -79,7 +79,7 @@ export class AddCustomSectionQuickAction
             DialogNames.ADD_CUSTOM_FRAGMENT,
             undefined,
             {
-                aggregation: 'sections',
+                propertyPath: 'content/body/sections/',
                 title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION',
                 appDescriptor: this.currentPageDescriptor
             },

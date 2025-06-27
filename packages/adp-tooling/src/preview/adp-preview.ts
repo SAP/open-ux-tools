@@ -28,7 +28,7 @@ import {
     tryFixChange,
     isV4DescriptorChange
 } from './change-handler';
-import { addCustomFragment } from './descriptor-change-handler';
+import { addCustomSectionFragment } from './descriptor-change-handler';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
     // eslint-disable-next-line no-var
@@ -265,14 +265,7 @@ export class AdpPreview {
                 break;
             case 'write':
                 if (isAddXMLChange(change)) {
-                    const { fragmentPath, index } = change.content;
-                    addXmlFragment(
-                        this.util.getProject().getSourcePath(),
-                        { fragmentPath, ...(index && { index }) },
-                        fs,
-                        logger,
-                        additionalChangeInfo
-                    );
+                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger, additionalChangeInfo);
                 }
                 if (isCodeExtChange(change)) {
                     await addControllerExtension(
@@ -294,7 +287,7 @@ export class AdpPreview {
                     );
                 }
                 if (isV4DescriptorChange(change)) {
-                    addCustomFragment(this.util.getProject().getSourcePath(), change, fs, logger, additionalChangeInfo);
+                    addCustomSectionFragment(this.util.getProject().getSourcePath(), change, fs, logger);
                 }
                 break;
             default:

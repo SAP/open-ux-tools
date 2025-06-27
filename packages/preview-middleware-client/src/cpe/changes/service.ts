@@ -399,10 +399,7 @@ export class ChangeService extends EventTarget {
         index: number,
         pendingChanges: PendingChange[]
     ): Promise<void> {
-        setAdditionalChangeInfo(
-            command?.getPreparedChange?.(),
-            command?.getChangeType() === 'appdescr_fe_changePageConfiguration' ? command.getElement() : undefined
-        );
+        setAdditionalChangeInfo(command?.getPreparedChange?.());
         const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, index);
         if (pendingChange) {
             pendingChanges.push(pendingChange);

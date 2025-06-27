@@ -20,7 +20,6 @@ import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
-import { getFragmentTemplateName } from '../../cpe/additional-change-info/add-xml-additional-info';
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 import { CommunicationService } from '../../cpe/communication-service';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
@@ -29,19 +28,18 @@ import type AppComponentV4 from 'sap/fe/core/AppComponent';
 export type AddFragmentModel = JSONModel & {
     getProperty(sPath: '/title'): string;
     getProperty(sPath: '/newFragmentName'): string;
-    getProperty(sPath: '/template'): string;
 };
 export interface PageDescriptorV4 {
     appType: 'fe-v4';
     appComponent: AppComponentV4;
     pageId: string;
-    appReference?: string; // Optional, used for v4 app descriptor changes,
+    projectId: string;
     anchor: string;
 }
 
 export interface AddCustomFragmentOptions {
     title: string;
-    aggregation: string;
+    propertyPath: string;
     appDescriptor?: PageDescriptorV4;
 }
 
@@ -74,7 +72,6 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
         this.dialog = dialog;
 
         this.setEscapeHandler();
-        this.setRunTimeControl();
         await this.buildDialogData();
         const resourceModel = await getResourceModel('open.ux.preview.client');
 
@@ -96,17 +93,9 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
         await super.onCreateBtnPressHandler();
 
         const fragmentName = this.model.getProperty('/newFragmentName');
-        const targetAggregation = this.model.getProperty('/selectedAggregation');
-        const fragmentPath = `fragments/${fragmentName}.fragment.xml`;
-        const templateName = getFragmentTemplateName(this.runtimeControl.getId(), targetAggregation);
-
-        if (this.options?.appDescriptor?.appType === 'fe-v4' && templateName) {
-            await this.createAppDescriptorChangeForV4(fragmentPath);
-        }
-
-        if (templateName) {
-            CommunicationService.sendAction(setApplicationRequiresReload(true));
-        }
+        const template = `fragments.${fragmentName}`;
+        await this.createAppDescriptorChangeForV4(template);
+        CommunicationService.sendAction(setApplicationRequiresReload(true));
 
         const bundle = await getTextBundle();
         notifyUser(bundle.getText('ADP_ADD_FRAGMENT_NOTIFICATION', [fragmentName]), 8000);
@@ -118,33 +107,27 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
      * Builds data that is used in the dialog
      */
     async buildDialogData(): Promise<void> {
-        this.model.setProperty('/selectedAggregation', this.options.aggregation);
-
         try {
             const { fragments } = await getFragments();
-            this.model.setProperty('/template', '');
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
             this.handleError(e);
         }
     }
 
-    private async createAppDescriptorChangeForV4(fragmentPath: string) {
-        const [path, _] = fragmentPath.split('.');
-        const name = path.split('/').join('.');
+    private async createAppDescriptorChangeForV4(templatePath: string) {
         const fragmentName = this.model.getProperty('/newFragmentName');
-        const template = `${this.options.appDescriptor?.appReference}.changes.${name}`;
-        this.model.setProperty('/template', template);
+        const template = `${this.options.appDescriptor?.projectId}.changes.${templatePath}`;
         let sectionId = this.options.appDescriptor?.anchor;
         const flexSettings = this.rta.getFlexSettings();
         const modifiedValue = {
-            reference: this.options.appDescriptor?.appReference,
+            reference: this.options.appDescriptor?.projectId,
             appComponent: this.options.appDescriptor?.appComponent,
-            changeType: 'appdescr_fe_changePageConfiguration', 
+            changeType: 'appdescr_fe_changePageConfiguration',
             parameters: {
                 page: this.options.appDescriptor?.pageId,
                 entityPropertyChange: {
-                    propertyPath: `content/body/sections/${fragmentName}`, // e.g. 'content/body/sections/test'
+                    propertyPath: `${this.options.propertyPath}${fragmentName}`, // e.g. 'content/body/sections/test'
                     operation: 'UPSERT',
                     propertyValue: {
                         template,

@@ -2667,7 +2667,7 @@ describe('FE V4 quick actions', () => {
                         { onStackChange: jest.fn() } as any
                     );
                     await service.init(sendActionMock, subscribeMock);
-
+                    mockTelemetryEventIdentifier();
                     await service.reloadQuickActions({
                         'sap.uxap.ObjectPageLayout': [
                             {
@@ -2715,17 +2715,20 @@ describe('FE V4 quick actions', () => {
                         'AddCustomFragment',
                         undefined,
                         {
-                            aggregation: 'sections',
+                            propertyPath: 'content/body/sections/',
                             appDescriptor: {
                                 anchor: 'BookingObjectPage',
                                 appComponent,
-                                appReference: 'dummyProjectId',
+                                projectId: 'dummyProjectId',
                                 appType: 'fe-v4',
                                 pageId: 'BookingObjectPage'
                             },
                             title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
                         },
-                        { actionName: 'op-add-custom-section', telemetryEventIdentifier }
+                        {
+                            'actionName': 'op-add-custom-section',
+                            telemetryEventIdentifier
+                        }
                     );
                 });
             });

@@ -74,9 +74,10 @@ describe('AddCustomFragment', () => {
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
                 {
-                    aggregation: 'sections',
+                    propertyPath: 'content/body/sections/',
                     appDescriptor: {
                         anchor: 'someAnchor',
+                        projectId: 'test',
                         appComponent: {} as any,
                         appType: 'fe-v4',
                         pageId: 'somePageId'
@@ -114,8 +115,9 @@ describe('AddCustomFragment', () => {
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
                 {
-                    aggregation: 'sections',
+                    propertyPath: 'content/body/sections/',
                     appDescriptor: {
+                        projectId: 'test',
                         anchor: 'someAnchor',
                         appComponent: {} as any,
                         appType: 'fe-v4',
@@ -149,7 +151,7 @@ describe('AddCustomFragment', () => {
         });
 
         test('sets error when fragment with the same named already exists', () => {
-             const overlays = {
+            const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
 
@@ -158,9 +160,10 @@ describe('AddCustomFragment', () => {
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
                 {
-                    aggregation: 'sections',
+                    propertyPath: 'content/body/sections/',
                     appDescriptor: {
                         anchor: 'someAnchor',
+                        projectId: 'test',
                         appComponent: {} as any,
                         appType: 'fe-v4',
                         pageId: 'somePageId'
@@ -191,7 +194,7 @@ describe('AddCustomFragment', () => {
         });
 
         test('sets error when the fragment name is empty', () => {
-             const overlays = {
+            const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
 
@@ -200,9 +203,10 @@ describe('AddCustomFragment', () => {
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
                 {
-                    aggregation: 'sections',
+                     propertyPath: 'content/body/sections/',
                     appDescriptor: {
                         anchor: 'someAnchor',
+                        projectId: 'test',
                         appComponent: {} as any,
                         appType: 'fe-v4',
                         pageId: 'somePageId'
@@ -233,7 +237,7 @@ describe('AddCustomFragment', () => {
         });
 
         test('sets error when the fragment name has special characters', () => {
-             const overlays = {
+            const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
 
@@ -242,9 +246,10 @@ describe('AddCustomFragment', () => {
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
                 {
-                    aggregation: 'sections',
+                    propertyPath: 'content/body/sections/',
                     appDescriptor: {
                         anchor: 'someAnchor',
+                        projectId: 'test',
                         appComponent: {} as any,
                         appType: 'fe-v4',
                         pageId: 'somePageId'
@@ -275,7 +280,7 @@ describe('AddCustomFragment', () => {
         });
 
         test('sets error when the fragment name contains a whitespace at the end', () => {
-             const overlays = {
+            const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
 
@@ -284,10 +289,11 @@ describe('AddCustomFragment', () => {
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
                 {
-                    aggregation: 'sections',
+                    propertyPath: 'content/body/sections/',
                     appDescriptor: {
                         anchor: 'someAnchor',
                         appComponent: {} as any,
+                        projectId: 'test',
                         appType: 'fe-v4',
                         pageId: 'somePageId'
                     },
@@ -317,7 +323,7 @@ describe('AddCustomFragment', () => {
         });
 
         test('sets error when the fragment name exceeds 64 characters', () => {
-             const overlays = {
+            const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
 
@@ -326,12 +332,13 @@ describe('AddCustomFragment', () => {
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
                 {
-                    aggregation: 'sections',
+                    propertyPath: 'content/body/sections/',
                     appDescriptor: {
                         anchor: 'someAnchor',
                         appComponent: {} as any,
                         appType: 'fe-v4',
-                        pageId: 'somePageId'
+                        pageId: 'somePageId',
+                        projectId: 'test'
                     },
                     title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
                 }
@@ -377,7 +384,7 @@ describe('AddCustomFragment', () => {
                 getCommands: jest.fn().mockReturnValue([command])
             });
 
-             const overlays = {
+            const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
 
@@ -386,12 +393,13 @@ describe('AddCustomFragment', () => {
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
                 {
-                    aggregation: 'sections',
+                    propertyPath: 'content/body/sections/',
                     appDescriptor: {
                         anchor: 'someAnchor',
                         appComponent: {} as any,
                         appType: 'fe-v4',
-                        pageId: 'somePageId'
+                        pageId: 'somePageId',
+                        projectId: 'test'
                     },
                     title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
                 }
@@ -439,7 +447,7 @@ describe('AddCustomFragment', () => {
                 getCommands: jest.fn().mockReturnValue([compositeCommand])
             });
 
-             const overlays = {
+            const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
 
@@ -448,12 +456,13 @@ describe('AddCustomFragment', () => {
                 overlays as unknown as UI5Element,
                 {} as unknown as RuntimeAuthoring,
                 {
-                    aggregation: 'sections',
+                    propertyPath: 'content/body/sections/',
                     appDescriptor: {
                         anchor: 'someAnchor',
                         appComponent: {} as any,
                         appType: 'fe-v4',
-                        pageId: 'somePageId'
+                        pageId: 'somePageId',
+                        projectId: 'test'
                     },
                     title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
                 }
@@ -487,9 +496,9 @@ describe('AddCustomFragment', () => {
                 getCommands: jest.fn().mockReturnValue([])
             });
             rtaMock.getFlexSettings.mockReturnValue({
-                    projectId: 'adp.app'
-                });
-             const overlays = {
+                projectId: 'adp.app'
+            });
+            const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
 
@@ -498,12 +507,13 @@ describe('AddCustomFragment', () => {
                 overlays as unknown as UI5Element,
                 rtaMock,
                 {
-                    aggregation: 'sections',
+                    propertyPath: 'content/body/sections/',
                     appDescriptor: {
                         anchor: 'someAnchor',
                         appComponent: {} as any,
                         appType: 'fe-v4',
-                        pageId: 'somePageId'
+                        pageId: 'somePageId',
+                        projectId: 'test'
                     },
                     title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
                 }
@@ -570,12 +580,13 @@ describe('AddCustomFragment', () => {
                 overlays as unknown as UI5Element,
                 rtaMock as unknown as RuntimeAuthoring,
                 {
-                    aggregation: 'sections',
+                    propertyPath: 'content/body/sections/',
                     appDescriptor: {
                         anchor: 'someAnchor',
                         appComponent: {} as any,
                         appType: 'fe-v4',
-                        pageId: 'somePageId'
+                        pageId: 'somePageId',
+                        projectId: 'test'
                     },
                     title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE'
                 }
@@ -629,6 +640,6 @@ describe('AddCustomFragment', () => {
             });
             expect(CommandFactory.getCommandFor.mock.calls[0][4].selector).toBeUndefined();
             expect(mockSendAction).toHaveBeenCalled();
-        });   
+        });
     });
 });

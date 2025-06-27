@@ -1,12 +1,10 @@
 import FlexChange from 'sap/ui/fl/Change';
 import {
-    AppDescriptorV4Change,
     getAddXMLAdditionalInfo,
     type AddXMLAdditionalInfo,
     type AddXMLChangeContent
 } from '../cpe/additional-change-info/add-xml-additional-info';
 import { FlexChange as Change } from '../flp/common';
-import Element from 'sap/ui/core/Element';
 
 export type AdditionalChangeInfo = AddXMLAdditionalInfo | undefined;
 
@@ -18,17 +16,14 @@ const additionalChangeInfoMap = new Map<string, AdditionalChangeInfo>();
  * @param change - The change object for which additional information is to be set.
  * @param control - Optional control element associated with the v4 descriptor change.
  */
-export function setAdditionalChangeInfo(
-    change: FlexChange<AddXMLChangeContent | AppDescriptorV4Change> | undefined,
-    control?: Element
-): void {
+export function setAdditionalChangeInfo(change: FlexChange<AddXMLChangeContent> | undefined): void {
     if (!change) {
         return;
     }
 
     let additionalChangeInfo;
-    if (change?.getChangeType?.() === 'addXML' || change?.getChangeType?.() === 'appdescr_fe_changePageConfiguration') {
-        additionalChangeInfo = getAddXMLAdditionalInfo(change, control);
+    if (change?.getChangeType?.() === 'addXML') {
+        additionalChangeInfo = getAddXMLAdditionalInfo(change);
     }
 
     if (additionalChangeInfo) {
