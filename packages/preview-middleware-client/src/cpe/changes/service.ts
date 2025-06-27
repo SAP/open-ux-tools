@@ -330,7 +330,7 @@ export class ChangeService extends EventTarget {
                     this.sendAction(setApplicationRequiresReload(changesRequiringReload > 0));
                 }
                 this.changesRequiringReload = changesRequiringReload;
-  0          }
+            }
             this.eventStack.splice(eventIndex, 1);
             if (Array.isArray(allCommands) && allCommands.length === 0) {
                 this.pendingChanges = [];
@@ -402,7 +402,7 @@ export class ChangeService extends EventTarget {
         setAdditionalChangeInfo(
             command?.getPreparedChange?.(),
             command?.getChangeType() === 'appdescr_fe_changePageConfiguration' ? command.getElement() : undefined
-        ); 
+        );
         const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, index);
         if (pendingChange) {
             pendingChanges.push(pendingChange);

@@ -25,19 +25,17 @@ export type AppDescriptorV4Change = {
     };
 };
 
-function isAppDescriptorV4Change(content: any): content is AppDescriptorV4Change {
-    return !!content?.entityPropertyChange?.propertyValue?.template;
-}
-
 export function getAddXMLAdditionalInfo(
     change: FlexChange<AddXMLChangeContent | AppDescriptorV4Change>,
     control?: Element | undefined
 ): AddXMLAdditionalInfo | undefined {
     let templateName = '';
+    const v4Change = change.getContent() as AppDescriptorV4Change;
     if (
         control &&
         change?.getChangeType?.() === 'appdescr_fe_changePageConfiguration' &&
-        isAppDescriptorV4Change(change.getContent())
+        v4Change.entityPropertyChange.propertyPath.startsWith('content/body/sections') &&
+        v4Change.entityPropertyChange.propertyValue.template
     ) {
         const aggregation =
             (change.getContent() as AppDescriptorV4Change).entityPropertyChange.propertyPath
