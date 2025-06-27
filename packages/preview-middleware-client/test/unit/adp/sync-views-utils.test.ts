@@ -28,7 +28,7 @@ describe('sync-views-utils', () => {
                 oAsyncState: undefined
             };
 
-            (Element.registry.filter as jest.Mock).mockReturnValue([mockElement]);
+            Element.registry.filter.mockReturnValue([mockElement]);
 
             await updateSyncViewsIds({ major: 1, minor: 119, patch: 9 });
 
@@ -54,7 +54,7 @@ describe('sync-views-utils', () => {
         });
 
         it('should log an error if an exception occurs', async () => {
-            (Element.registry.filter as jest.Mock).mockImplementation(() => {
+            Element.registry.filter.mockImplementation(() => {
                 throw new Error('Test error');
             });
 
@@ -74,7 +74,7 @@ describe('sync-views-utils', () => {
                 oAsyncState: undefined
             };
 
-            (Element.registry.filter as jest.Mock).mockReturnValue([mockElement]);
+            Element.registry.filter.mockReturnValue([mockElement]);
 
             await updateSyncViewsIds({ major: 1, minor: 119, patch: 9 });
             await showSyncViewsWarning();
