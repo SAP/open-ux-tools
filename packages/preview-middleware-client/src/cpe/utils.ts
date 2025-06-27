@@ -124,7 +124,7 @@ export function getManifestProperties(
             },
             item: DesigntimeSetting
         ) => {
-            const propertyId = item.id;
+            const propertyId = item.path ?? item.id;
             const value = changeService.getConfigurationPropertyValue(control.getId(), propertyId);
             let propertyValue = value === 0 || value === false || value ? value : manifestPropertiesValue[propertyId];
             if (item?.type && ['boolean', 'number', 'string'].includes(item?.type)) {
