@@ -41,7 +41,7 @@ describe('Test create transport', () => {
 
         const transportNumber = await createTransportNumberFromService(createTransportParams);
         expect(transportNumber).toBe(undefined);
-        expect(loggerSpy).toBeCalledWith(
+        expect(loggerSpy).toHaveBeenCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'createTransportNumberFromService', error: errorObj.message })
         );
     });

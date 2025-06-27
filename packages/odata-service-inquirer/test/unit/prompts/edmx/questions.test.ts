@@ -47,7 +47,7 @@ describe('Test entity prompts', () => {
         const errorLogSpy = jest.spyOn(LoggerHelper.logger, 'error');
         questions = getEntitySelectionQuestions('{}', 'lrop');
         expect(questions).toEqual([]);
-        expect(errorLogSpy).toBeCalledWith(expect.stringMatching('Unable to parse entities'));
+        expect(errorLogSpy).toHaveBeenCalledWith(expect.stringMatching('Unable to parse entities'));
     });
 
     test('getEntityQuestions should return prompts based options specified', () => {
@@ -199,7 +199,7 @@ describe('Test entity prompts', () => {
         PromptState.isYUI = false;
         questions = getEntitySelectionQuestions(metadataV2NoEntities, 'worklist');
         mainEntityPrompt = questions.find((question) => question.name === EntityPromptNames.mainEntity) as ListQuestion;
-        expect(() => (mainEntityPrompt.validate as Function)()).toThrowError(t('errors.exitingGeneration'));
+        expect(() => (mainEntityPrompt.validate as Function)()).toThrow(t('errors.exitingGeneration'));
     });
 
     test('should show line item annotation generation prompt and additional messages', async () => {

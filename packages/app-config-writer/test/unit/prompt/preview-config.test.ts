@@ -22,7 +22,7 @@ describe('Test prompts for convert preview', () => {
 
     test('Test simulatePrompt - cancel', async () => {
         promptReturnObject = { undefined };
-        await expect(simulatePrompt()).rejects.toThrowError();
+        await expect(simulatePrompt()).rejects.toThrow();
     });
 
     test('Test includeTestRunnersPrompt - true', async () => {
@@ -37,6 +37,6 @@ describe('Test prompts for convert preview', () => {
 
     test('Test includeTestRunnersPrompt - cancel', async () => {
         promptReturnObject = { undefined };
-        await expect(includeTestRunnersPrompt()).rejects.toThrowError();
+        await expect(includeTestRunnersPrompt()).rejects.toThrow();
     });
 });

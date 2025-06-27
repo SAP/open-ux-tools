@@ -76,7 +76,7 @@ describe('Test getAbapQuestions', () => {
             }
         });
 
-        expect(getPromptsSpy).toBeCalledWith(
+        expect(getPromptsSpy).toHaveBeenCalledWith(
             {
                 backendTarget: {
                     abapTarget: {
@@ -159,7 +159,7 @@ describe('Test getAbapQuestions', () => {
             }
         });
 
-        expect(getPromptsSpy).toBeCalledWith(
+        expect(getPromptsSpy).toHaveBeenCalledWith(
             {
                 backendTarget: {
                     abapTarget: {

@@ -81,7 +81,7 @@ describe('connector-service', () => {
             fileName: 'sap.ui.fl.testFile',
             support: {}
         });
-        expect(sendActionMock).toBeCalledTimes(1);
+        expect(sendActionMock).toHaveBeenCalledTimes(1);
         expect(sendActionMock).toHaveBeenCalledWith(common.storageFileChanged('testFile'));
     });
 

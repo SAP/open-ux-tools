@@ -113,9 +113,9 @@ describe('change/data-source', () => {
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalledWith('This command is not supported for CF projects.');
-        expect(generateChangeSpy).not.toBeCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for CF projects.');
+        expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 
     test('change-data-source - no system configuration', async () => {
@@ -125,9 +125,9 @@ describe('change/data-source', () => {
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv());
 
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalledWith('No system configuration found in ui5.yaml');
-        expect(generateChangeSpy).not.toBeCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith('No system configuration found in ui5.yaml');
+        expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 
     test('change-data-source - not an adaptation project', async () => {
@@ -139,9 +139,9 @@ describe('change/data-source', () => {
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalledWith('This command can only be used for an adaptation project');
-        expect(generateChangeSpy).not.toBeCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith('This command can only be used for an adaptation project');
+        expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 
     test('change data-source - preview-middleware custom configuration', async () => {
@@ -167,8 +167,8 @@ describe('change/data-source', () => {
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(promptYUIQuestionsSpy).toBeCalled();
-        expect(generateChangeSpy).toBeCalled();
+        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
+        expect(generateChangeSpy).toHaveBeenCalled();
     });
 
     test('change data-source - --simulate', async () => {
@@ -176,9 +176,9 @@ describe('change/data-source', () => {
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot, '--simulate'));
 
-        expect(promptYUIQuestionsSpy).toBeCalled();
-        expect(generateChangeSpy).toBeCalled();
-        expect(traceSpy).toBeCalled();
+        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
+        expect(generateChangeSpy).toHaveBeenCalled();
+        expect(traceSpy).toHaveBeenCalled();
     });
 
     test('change data-source - authentication error', async () => {
@@ -204,13 +204,13 @@ describe('change/data-source', () => {
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(loggerMock.error).toBeCalledWith('401:Unauthorized');
-        expect(loggerMock.error).toBeCalledWith(
+        expect(loggerMock.error).toHaveBeenCalledWith('401:Unauthorized');
+        expect(loggerMock.error).toHaveBeenCalledWith(
             'Authentication failed. Please check your credentials. Login attempts left: 2'
         );
-        expect(loggerMock.debug).not.toBeCalledWith();
-        expect(promptYUIQuestionsSpy).not.toBeCalled();
-        expect(generateChangeSpy).not.toBeCalled();
+        expect(loggerMock.debug).not.toHaveBeenCalledWith();
+        expect(promptYUIQuestionsSpy).not.toHaveBeenCalled();
+        expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 
     test('change data-source - no data sources in manifest', async () => {
@@ -223,8 +223,8 @@ describe('change/data-source', () => {
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(loggerMock.error).toBeCalledWith('No data sources found in the manifest');
-        expect(promptYUIQuestionsSpy).not.toBeCalled();
-        expect(generateChangeSpy).not.toBeCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith('No data sources found in the manifest');
+        expect(promptYUIQuestionsSpy).not.toHaveBeenCalled();
+        expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 });

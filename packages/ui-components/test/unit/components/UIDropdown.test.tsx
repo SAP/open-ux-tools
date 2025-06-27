@@ -414,9 +414,9 @@ describe('<UIDropdown />', () => {
                     calloutProps?.preventDismissOnEvent?.({} as Event);
                     calloutProps?.layerProps?.onLayerDidMount?.();
                     calloutProps?.layerProps?.onLayerWillUnmount?.();
-                    expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(1);
-                    expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(1);
-                    expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(1);
+                    expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toHaveBeenCalledTimes(1);
+                    expect(CalloutCollisionTransformSpy.applyTransformation).toHaveBeenCalledTimes(1);
+                    expect(CalloutCollisionTransformSpy.resetTransformation).toHaveBeenCalledTimes(1);
                 } else {
                     expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
                     expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
@@ -450,12 +450,12 @@ describe('<UIDropdown />', () => {
             calloutProps?.preventDismissOnEvent?.({} as Event);
             calloutProps?.layerProps?.onLayerDidMount?.();
             calloutProps?.layerProps?.onLayerWillUnmount?.();
-            expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(1);
-            expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(1);
-            expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(1);
-            expect(externalListeners.calloutProps.preventDismissOnEvent).toBeCalledTimes(1);
-            expect(externalListeners.calloutProps.layerProps.onLayerDidMount).toBeCalledTimes(1);
-            expect(externalListeners.calloutProps.layerProps.onLayerWillUnmount).toBeCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toHaveBeenCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.applyTransformation).toHaveBeenCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.resetTransformation).toHaveBeenCalledTimes(1);
+            expect(externalListeners.calloutProps.preventDismissOnEvent).toHaveBeenCalledTimes(1);
+            expect(externalListeners.calloutProps.layerProps.onLayerDidMount).toHaveBeenCalledTimes(1);
+            expect(externalListeners.calloutProps.layerProps.onLayerWillUnmount).toHaveBeenCalledTimes(1);
         });
     });
 

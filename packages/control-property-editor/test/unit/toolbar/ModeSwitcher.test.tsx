@@ -24,10 +24,10 @@ test('renders ModeSwitcher', () => {
     expect(liveBtn).toBeInTheDocument();
 
     liveBtn.click();
-    expect(dispatch).toBeCalledWith(setAppMode('navigation'));
+    expect(dispatch).toHaveBeenCalledWith(setAppMode('navigation'));
 
     editBtn.click();
-    expect(dispatch).toBeCalledWith(setAppMode('adaptation'));
+    expect(dispatch).toHaveBeenCalledWith(setAppMode('adaptation'));
 });
 
 test('renders ModeSwitcher with changed button names for ADP', () => {
@@ -49,8 +49,8 @@ test('renders ModeSwitcher with changed button names for ADP', () => {
     expect(navigationBtn).toBeInTheDocument();
 
     navigationBtn.click();
-    expect(dispatch).toBeCalledWith(setAppMode('navigation'));
+    expect(dispatch).toHaveBeenCalledWith(setAppMode('navigation'));
 
     uiAdaptationBtn.click();
-    expect(dispatch).toBeCalledWith(setAppMode('adaptation'));
+    expect(dispatch).toHaveBeenCalledWith(setAppMode('adaptation'));
 });

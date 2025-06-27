@@ -71,9 +71,9 @@ describe('CF Writer', () => {
                 },
                 unitTestFs
             );
-            expect(getMtaPathMock).toBeCalledWith(expect.stringContaining(capPath));
+            expect(getMtaPathMock).toHaveBeenCalledWith(expect.stringContaining(capPath));
             expect(findCapProjectRootMock).toHaveBeenCalledTimes(1);
-            expect(findCapProjectRootMock).toBeCalledWith(expect.stringContaining(capPath));
+            expect(findCapProjectRootMock).toHaveBeenCalledWith(expect.stringContaining(capPath));
             expect(commandRunnerMock).not.toHaveBeenCalled();
             expect(unitTestFs.dump(capPath)).toMatchSnapshot();
             expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
@@ -82,7 +82,7 @@ describe('CF Writer', () => {
         test('Validate dependency on MTA binary', async () => {
             hasSyncMock.mockReturnValue(false);
             const capPath = join(outputDir, 'cap');
-            await expect(generateAppConfig({ appPath: capPath }, unitTestFs, undefined)).rejects.toThrowError(
+            await expect(generateAppConfig({ appPath: capPath }, unitTestFs, undefined)).rejects.toThrow(
                 MTABinNotFound
             );
         });
@@ -103,7 +103,7 @@ describe('CF Writer', () => {
                     unitTestFs,
                     undefined
                 )
-            ).rejects.toThrowError(/An error occurred when creating the mta.yaml file/);
+            ).rejects.toThrow(/An error occurred when creating the mta.yaml file/);
             expect(commandRunnerMock).toHaveBeenCalledTimes(1);
         });
     });

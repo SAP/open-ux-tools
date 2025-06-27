@@ -56,7 +56,7 @@ describe('getOrCreateServiceProvider', () => {
 
         expect(serviceProvider).toBeInstanceOf(AbapServiceProvider);
         expect(isAbapCloudSpy).toHaveBeenCalled();
-        expect(mockCreateAbapServiceProvider).toBeCalledWith(
+        expect(mockCreateAbapServiceProvider).toHaveBeenCalledWith(
             {
                 url: 'http://target.url',
                 client: '100',
@@ -85,7 +85,7 @@ describe('getOrCreateServiceProvider', () => {
 
         expect(serviceProvider).toBeInstanceOf(AbapServiceProvider);
         expect(isAbapCloudSpy).toHaveBeenCalled();
-        expect(mockCreateAbapServiceProvider).toBeCalledWith(
+        expect(mockCreateAbapServiceProvider).toHaveBeenCalledWith(
             {
                 destination: 'MOCK_DESTINATION'
             },

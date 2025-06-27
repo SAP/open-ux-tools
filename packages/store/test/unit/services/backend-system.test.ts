@@ -87,7 +87,7 @@ describe('BackendSystem service', () => {
                 update
             );
             expect(updatedEntity).toEqual({ ...existingSystem, ...update });
-            expect(SystemDataProvider.prototype.write).toBeCalledWith(updatedEntity);
+            expect(SystemDataProvider.prototype.write).toHaveBeenCalledWith(updatedEntity);
         });
 
         it('partial update does not change keys', async () => {
@@ -107,7 +107,7 @@ describe('BackendSystem service', () => {
                 update
             );
             expect(updatedEntity).toEqual({ ...existingSystem, name: update.name });
-            expect(SystemDataProvider.prototype.write).toBeCalledWith(updatedEntity);
+            expect(SystemDataProvider.prototype.write).toHaveBeenCalledWith(updatedEntity);
         });
 
         it('partial update can be used to set properties to undefined', async () => {
@@ -127,7 +127,7 @@ describe('BackendSystem service', () => {
                 update
             );
             expect(updatedEntity).toEqual({ ...existingSystem, name: update.name });
-            expect(SystemDataProvider.prototype.write).toBeCalledWith(updatedEntity);
+            expect(SystemDataProvider.prototype.write).toHaveBeenCalledWith(updatedEntity);
         });
     });
 });

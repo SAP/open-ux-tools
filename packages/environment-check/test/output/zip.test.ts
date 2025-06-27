@@ -44,10 +44,10 @@ describe('Test to check zip save, storeResultsZip()', () => {
         writeStreamCloseCallback();
 
         // Result check
-        expect(zipMock.pipe).toBeCalledWith(writeStreamMock);
-        expect(zipMock.append).toBeCalledTimes(2);
-        expect(zipMock.finalize).toBeCalled();
-        expect(console.log).toBeCalledWith(`Results written to file 'envcheck-results.zip' 117.74 MB`);
+        expect(zipMock.pipe).toHaveBeenCalledWith(writeStreamMock);
+        expect(zipMock.append).toHaveBeenCalledTimes(2);
+        expect(zipMock.finalize).toHaveBeenCalled();
+        expect(console.log).toHaveBeenCalledWith(`Results written to file 'envcheck-results.zip' 117.74 MB`);
     });
 
     test('Check writer for file size 0 bytes, different filename, and ENOENT warning', () => {
@@ -79,11 +79,11 @@ describe('Test to check zip save, storeResultsZip()', () => {
         zipMock.on.mock.calls.find((c) => c[0] === 'warning')[1]({ code: 'ENOENT' });
 
         // Result check
-        expect(zipMock.pipe).toBeCalledWith(writeStreamMock);
-        expect(zipMock.append).toBeCalled();
-        expect(zipMock.finalize).toBeCalled();
-        expect(console.log).toBeCalledWith(`Results written to file 'ANY_NAME' 0 Bytes`);
-        expect(console.warn).toBeCalledWith({ code: 'ENOENT' });
+        expect(zipMock.pipe).toHaveBeenCalledWith(writeStreamMock);
+        expect(zipMock.append).toHaveBeenCalled();
+        expect(zipMock.finalize).toHaveBeenCalled();
+        expect(console.log).toHaveBeenCalledWith(`Results written to file 'ANY_NAME' 0 Bytes`);
+        expect(console.warn).toHaveBeenCalledWith({ code: 'ENOENT' });
     });
 
     test('Should throw exception for wrong writer warning', () => {

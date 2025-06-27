@@ -24,7 +24,7 @@ describe('generateVariantsConfig', () => {
 
     test('adding variants configuration to a non existing project', async () => {
         const basePath = join(__dirname, '../../fixtures/a-folder-that-does-not-exist');
-        await expect(generateVariantsConfig(basePath, 'hugo.yaml', new ToolsLogger())).rejects.toThrowError(
+        await expect(generateVariantsConfig(basePath, 'hugo.yaml', new ToolsLogger())).rejects.toThrow(
             `File 'hugo.yaml' not found in project '${basePath}'`
         );
     });

@@ -43,7 +43,7 @@ describe('ClientFactory Send Report Tests', () => {
             return;
         });
         await telemetryClient.report(EventName.Test, {}, {}, SampleRate.NoSampling);
-        expect((telemetryClient as any).trackEvent).toBeCalledTimes(0);
+        expect((telemetryClient as any).trackEvent).toHaveBeenCalledTimes(0);
         spy.mockClear();
     });
 });
