@@ -4,7 +4,8 @@ import type {
     CommonChangeProperties,
     CodeExtChange,
     AnnotationFileChange,
-    CommonAdditionalChangeInfoProperties
+    CommonAdditionalChangeInfoProperties,
+    AppDescriptorV4Change
 } from '../types';
 import { ChangeType, TemplateFileName } from '../types';
 import { basename, join } from 'path';
@@ -36,20 +37,22 @@ interface FragmentTemplateConfig<T = { [key: string]: any }> {
     getData: (change: AddXMLChange) => T;
 }
 
-const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
-    [OBJECT_PAGE_CUSTOM_SECTION]: {
-        path: 'common/op-custom-section.xml',
-        getData: () => {
-            const uuid = randomBytes(4).toString('hex');
-            return {
-                ids: {
-                    objectPageSection: `op-section-${uuid}`,
-                    objectPageSubSection: `op-subsection-${uuid}`,
-                    hBox: `hbox-${uuid}`
-                }
-            };
-        }
-    },
+export const objectPageCustomPageConfig = {
+    path: 'common/op-custom-section.xml',
+    getData: (): { ids: Record<string, string> } => {
+        const uuid = randomBytes(4).toString('hex');
+        return {
+            ids: {
+                objectPageSection: `op-section-${uuid}`,
+                objectPageSubSection: `op-subsection-${uuid}`,
+                hBox: `hbox-${uuid}`
+            }
+        };
+    }
+};
+
+export const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
+    [OBJECT_PAGE_CUSTOM_SECTION]: objectPageCustomPageConfig,
     [CUSTOM_ACTION]: {
         path: 'common/custom-action.xml',
         getData: () => {
@@ -95,7 +98,7 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
                     column: `column-${uuid}`,
                     columnTitle: `column-title-${uuid}`,
                     customData: `custom-data-${uuid}`,
-                    index: columnIndex.toFixed(0)
+                    ...(columnIndex && { index: columnIndex.toFixed(0) })
                 }
             };
         }
@@ -134,7 +137,7 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
                     label: `label-${uuid}`,
                     text: `text-${uuid}`,
                     customData: `custom-data-${uuid}`,
-                    index: columnIndex.toFixed(0)
+                    ...(columnIndex && { index: columnIndex.toFixed(0) })
                 }
             };
         }
@@ -150,12 +153,17 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
                     label: `label-${uuid}`,
                     text: `text-${uuid}`,
                     customData: `custom-data-${uuid}`,
-                    index: columnIndex.toFixed(0)
+                    ...(columnIndex && { index: columnIndex.toFixed(0) })
                 }
             };
         }
     }
 };
+
+export interface FragmentCreationParams {
+    fragmentPath: string;
+    index?: number;
+}
 
 /**
  * A mapping object that defines how to extract change content data from changes based on their type.
@@ -221,10 +229,21 @@ export function isAddAnnotationChange(change: CommonChangeProperties): change is
 }
 
 /**
+ * Determines whether a given change is of type `V4 Descriptor Change`.
+ *
+ * @param {CommonChangeProperties} change - The change object to check.
+ * @returns {boolean} `true` if the `changeType` is either 'appdescr_fe_changePageConfiguration',
+ *          indicating the change is of type `V4 Descriptor Change`.
+ */
+export function isV4DescriptorChange(change: CommonChangeProperties): change is AppDescriptorV4Change {
+    return change.changeType === 'appdescr_fe_changePageConfiguration';
+}
+
+/**
  * Asynchronously adds an XML fragment to the project if it doesn't already exist.
  *
  * @param {string} basePath - The base path of the project.
- * @param {AddXMLChange} change - The change data, including the fragment path.
+ * @param {FragmentCreationParams} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
  * @param {CommonAdditionalChangeInfoProperties} additionalChangeInfo - Optional extended change properties.

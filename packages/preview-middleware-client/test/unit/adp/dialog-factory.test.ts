@@ -12,6 +12,7 @@ import ControllerExtension from '../../../src/adp/controllers/ControllerExtensio
 import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
 import AddTableColumnFragments from 'open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller';
 import FileExistsDialog from '../../../src/adp/controllers/FileExistsDialog.controller';
+import AddCustomFragment from 'open/ux/preview/client/adp/controllers/AddCustomFragment.controller';
 
 describe('DialogFactory', () => {
     afterEach(() => {
@@ -161,5 +162,26 @@ describe('DialogFactory', () => {
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(FileExistsDialog);
+    });
+
+    test('create Add Custom Fragment dialog', async () => {
+        const controller = { overlays: {}, rta: { 'yes': 'no' } };
+        Controller.create.mockResolvedValue(controller);
+        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+
+        AddCustomFragment.prototype.setup = jest.fn();
+        await DialogFactory.createDialog(
+            {} as unknown as UI5Element,
+            rtaMock as unknown as RuntimeAuthoring,
+            DialogNames.ADD_CUSTOM_FRAGMENT
+        );
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.AddCustomFragment');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(AddCustomFragment);
+
+        expect(DialogFactory.canOpenDialog).toBe(false);
     });
 });

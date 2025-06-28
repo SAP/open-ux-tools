@@ -4,7 +4,7 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
-import type { UI5FlexLayer } from '@sap-ux/project-access';
+import { type UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider, LayeredRepositoryService, MergedAppDescriptor } from '@sap-ux/axios-extension';
 
@@ -25,8 +25,10 @@ import {
     isCodeExtChange,
     addControllerExtension,
     moduleNameContentMap,
-    tryFixChange
+    tryFixChange,
+    isV4DescriptorChange
 } from './change-handler';
+import { addCustomSectionFragment } from './descriptor-change-handler';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
     // eslint-disable-next-line no-var
@@ -283,6 +285,9 @@ export class AdpPreview {
                         logger,
                         this.provider
                     );
+                }
+                if (isV4DescriptorChange(change)) {
+                    addCustomSectionFragment(this.util.getProject().getSourcePath(), change, fs, logger);
                 }
                 break;
             default:
