@@ -1,0 +1,14 @@
+{
+    "name": "test-project",
+    "version": "0.0.1",
+    "private": true,
+    "devDependencies": {
+        "@sap-ux/ui5-middleware-fe-mockserver": "2.2.97",
+        "@sap-ux/fe-mockserver-plugin-cds": "1.2.6",
+        "@sap-ux/preview-middleware": "workspace:*",
+        "@sap-ux/reload-middleware": "workspace:*",
+        "@sap-ux/backend-proxy-middleware": "workspace:*",
+        "@sap-ux/ui5-proxy-middleware": "workspace:*",
+        "@ui5/cli": "3"
+    }
+}
