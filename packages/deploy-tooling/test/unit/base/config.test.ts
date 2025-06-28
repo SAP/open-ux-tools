@@ -3,6 +3,7 @@ import { getConfigForLogging, validateConfig } from '../../../src/base/config';
 import type { AbapDeployConfig } from '../../../src/types';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
+import type { AxiosRequestConfig } from '@sap-ux/axios-extension';
 
 jest.mock('@sap-ux/btp-utils');
 const mockIsAppStudio = isAppStudio as jest.Mock;
@@ -85,6 +86,26 @@ describe('base/config', () => {
             config.target.client = '1';
             validateConfig(config);
             expect(config.target.client).toBe('001');
+        });
+
+        test('username and password in cleartext should not be supported', () => {
+            const config = {
+                app: validConfig.app,
+                credentials: { username: 'user', password: 'user' } as AxiosRequestConfig['auth'],
+                target: { ...validConfig.target }
+            };
+            expect(() => validateConfig(config)).toThrowError(
+                'Invalid deployment configuration. Credentials must be set as environment variables'
+            );
+            expect(() =>
+                validateConfig({
+                    ...config,
+                    credentials: {
+                        username: 'env:USER',
+                        password: 'env:PASSWORD'
+                    }
+                })
+            ).not.toThrowError();
         });
     });
 });
