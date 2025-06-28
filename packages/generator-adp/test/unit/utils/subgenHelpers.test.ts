@@ -1,6 +1,6 @@
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-import { type AttributesAnswers, type ConfigAnswers, type SystemLookup } from '@sap-ux/adp-tooling';
+import { FlexLayer, type AttributesAnswers, type ConfigAnswers, type SystemLookup } from '@sap-ux/adp-tooling';
 
 import { t } from '../../../src/utils/i18n';
 import { addFlpGen, addDeployGen, addExtProjectGen } from '../../../src/utils/subgenHelpers';
@@ -47,6 +47,7 @@ describe('Sub-generator helpers', () => {
                         }
                     }
                 } as unknown as ManifestNamespace.Inbound,
+                layer: FlexLayer.CUSTOMER_BASE,
                 vscode: {}
             };
             const resolvePath = 'flp-generator';

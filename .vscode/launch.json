@@ -11,6 +11,38 @@
     ],
     "configurations": [
         {
+            "request": "launch",
+            "type": "extensionHost",
+            "name": "ADP: Launch Extension for Debugging",
+            "runtimeExecutable": "${execPath}",
+            "args": [
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/adp-tooling",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/system-access",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/axios-extension",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/project-access",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/generator-adp",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/adp-flp-config-sub-generator",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/abap-deploy-config-sub-generator",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/deploy-config-sub-generator",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/ui5-application-inquirer",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/ui5-info",
+                "--extensionDevelopmentPath=${workspaceFolder}/packages/ui5-config"
+            ],
+            "outFiles": [
+                "${workspaceRoot}/packages/adp-tooling/dist/**/*.js",
+                "${workspaceRoot}/packages/system-access/dist/**/*.js",
+                "${workspaceRoot}/packages/axios-extension/dist/**/*.js",
+                "${workspaceRoot}/packages/project-access/dist/**/*.js",
+                "${workspaceRoot}/packages/generator-adp/generators/**/*.js",
+                "${workspaceRoot}/packages/adp-flp-config-sub-generator/generators/**/*.js",
+                "${workspaceRoot}/packages/abap-deploy-config-sub-generator/generators/**/*.js",
+                "${workspaceRoot}/packages/deploy-config-sub-generator/generators/**/*.js",
+                "${workspaceRoot}/packages/ui5-application-inquirer/dist/**/*.js",
+                "${workspaceRoot}/packages/ui5-info/dist/**/*.js",
+                "${workspaceRoot}/packages/ui5-config/dist/**/*.js"
+            ]
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "examples/odata-cli: Run Example",

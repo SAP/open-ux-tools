@@ -3,7 +3,7 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { ConfigAnswers, AttributesAnswers, SystemLookup } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer } from '@sap-ux/adp-tooling';
 
 import { t } from './i18n';
 import { getExtensionProjectData, resolveNodeModuleGenerator } from '../app/extension-project';
@@ -23,6 +23,7 @@ interface FlpGenProps {
     vscode: unknown;
     projectRootPath: string;
     inbounds?: ManifestNamespace.Inbound;
+    layer: FlexLayer;
 }
 
 /**
@@ -48,7 +49,7 @@ interface DeployGenOptions {
  * @param {AppWizard} appWizard - AppWizard instance for interacting with the UI (optional).
  */
 export function addFlpGen(
-    { projectRootPath, vscode, inbounds }: FlpGenProps,
+    { projectRootPath, vscode, inbounds, layer }: FlpGenProps,
     composeWith: Generator['composeWith'],
     logger: ToolsLogger,
     appWizard: AppWizard
@@ -61,6 +62,7 @@ export function addFlpGen(
             launchAsSubGen: true,
             vscode,
             inbounds,
+            layer,
             data: { projectRootPath },
             appWizard
         });
