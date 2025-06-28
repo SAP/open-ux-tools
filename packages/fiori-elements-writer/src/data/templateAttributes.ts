@@ -96,6 +96,11 @@ const templateLibs: TemplateLibs = {
             baseComponent: appComponentLibFioriElements,
             ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.core', 'sap.ushell'],
             manifestLibs: ['sap.m', 'sap.fe.core']
+        },
+        [TemplateType.AribaListReportObjectPage]: {
+            baseComponent: appComponentLibFioriElements,
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ushell', 'sap.fe.ariba'],
+            manifestLibs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.ariba']
         }
     }
 };
@@ -198,6 +203,12 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         supportedODataVersions: [OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v4]: '1.94.0'
+        }
+    },
+    [TemplateType.AribaListReportObjectPage]: {
+        supportedODataVersions: [OdataVersion.v4],
+        minimumUi5Version: {
+            [OdataVersion.v4]: '1.137.0'
         }
     }
 };
