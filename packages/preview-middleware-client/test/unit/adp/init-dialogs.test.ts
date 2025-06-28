@@ -12,9 +12,11 @@ import {
     getExtendControllerItemText
 } from '../../../src/adp/init-dialogs';
 import { getTextBundle } from '../../../src/i18n';
+import * as syncViewsUtils from '../../../src/adp/sync-views-utils';
 
 describe('Dialogs', () => {
     let isReuseComponentMock = jest.fn().mockReturnValue(false);
+    jest.spyOn(syncViewsUtils, 'getSyncViewIds').mockReturnValue(new Set<string>());
     describe('initDialogs', () => {
         afterEach(() => {
             jest.restoreAllMocks();
@@ -28,7 +30,7 @@ describe('Dialogs', () => {
                     addMenuItem: addMenuItemSpy
                 }
             });
-            await initDialogs(rtaMock as unknown as RuntimeAuthoring, [], { major: 1, minor: 118 });
+            await initDialogs(rtaMock as unknown as RuntimeAuthoring, { major: 1, minor: 118 });
             expect(addMenuItemSpy).toHaveBeenCalledTimes(2);
         });
     });
@@ -117,7 +119,9 @@ describe('Dialogs', () => {
 
             const result = getAddFragmentItemText(overlay, isReuseComponentMock, false, resources);
 
-            expect(result).toBe('Add: Fragment (This action is disabled because the control or parent control has an unstable ID)');
+            expect(result).toBe(
+                'Add: Fragment (This action is disabled because the control or parent control has an unstable ID)'
+            );
             expect(hasStableId).toHaveBeenCalledWith({
                 getElement: expect.any(Function)
             });
@@ -153,7 +157,6 @@ describe('Dialogs', () => {
             jest.resetAllMocks();
         });
 
-
         it('should return simple text if the control is a reuse component in OnPremise', async () => {
             FlUtils.getViewForControl.mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId1') });
             const resources = await getTextBundle();
@@ -165,7 +168,7 @@ describe('Dialogs', () => {
                 })
             } as ElementOverlay;
             isReuseComponentMock.mockReturnValueOnce(true);
-            const result = getExtendControllerItemText(overlay, [], isReuseComponentMock, false, resources);
+            const result = getExtendControllerItemText(overlay, isReuseComponentMock, false, resources);
 
             expect(result).toBe('Extend Controller');
             expect(isReuseComponentMock).not.toHaveBeenCalled();
@@ -181,7 +184,7 @@ describe('Dialogs', () => {
                     }
                 })
             } as ElementOverlay;
-            const result = getExtendControllerItemText(overlay, [], isReuseComponentMock, true, resources);
+            const result = getExtendControllerItemText(overlay, isReuseComponentMock, true, resources);
 
             expect(result).toBe('Extend Controller');
             expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
@@ -199,7 +202,7 @@ describe('Dialogs', () => {
             } as ElementOverlay;
             isReuseComponentMock.mockReturnValueOnce(true);
 
-            const result = getExtendControllerItemText(overlay, [], isReuseComponentMock, true, resources);
+            const result = getExtendControllerItemText(overlay, isReuseComponentMock, true, resources);
 
             expect(result).toBe('Extend Controller (This action is disabled because the control is a reuse component)');
             expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
@@ -215,17 +218,21 @@ describe('Dialogs', () => {
                     }
                 })
             } as ElementOverlay;
-            const syncViewsIds = ['syncViewId1', 'syncViewId2'];
+            const syncViewsIds = new Set<string>(['syncViewId1', 'syncViewId2']);
+            jest.spyOn(syncViewsUtils, 'getSyncViewIds').mockReturnValueOnce(syncViewsIds);
 
-            const result = getExtendControllerItemText(overlay, syncViewsIds, isReuseComponentMock, false, resources);
+            const result = getExtendControllerItemText(overlay, isReuseComponentMock, false, resources);
 
-            expect(result).toBe('Extend Controller (This action is disabled because the controls are part of a synchronous view)');
+            expect(result).toBe(
+                'Extend Controller (This action is disabled because the controls are part of a synchronous view)'
+            );
         });
     });
 
     describe('isControllerExtensionEnabled', () => {
         const elementOverlayMock = { getElement: jest.fn() } as unknown as ElementOverlay;
-        const syncViewsIds = ['syncViewId1', 'syncViewId2'];
+        const syncViewsIds = new Set<string>(['syncViewId1', 'syncViewId2']);
+        jest.spyOn(syncViewsUtils, 'getSyncViewIds').mockReturnValue(syncViewsIds);
 
         afterEach(() => {
             jest.resetAllMocks();
@@ -233,20 +240,20 @@ describe('Dialogs', () => {
         });
 
         it('should return false when overlays array is empty', () => {
-            expect(isControllerExtensionEnabled([], syncViewsIds, isReuseComponentMock, false)).toBe(false);
+            expect(isControllerExtensionEnabled([], isReuseComponentMock, false)).toBe(false);
         });
 
         it('should return true when overlays length is 1 and clickedControlId is not in syncViewsIds and it is not reuse component', () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId2') });
             const overlays: ElementOverlay[] = [elementOverlayMock];
-            expect(isControllerExtensionEnabled(overlays, syncViewsIds, isReuseComponentMock, false)).toBe(true);
+            expect(isControllerExtensionEnabled(overlays, isReuseComponentMock, false)).toBe(true);
         });
 
         it('should return true when overlays length is 1 and clickedControlId is not in syncViewsIds and it is reuse component - OnPremise', () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId4') });
             const overlays: ElementOverlay[] = [elementOverlayMock];
             isReuseComponentMock.mockReturnValueOnce(true);
-            expect(isControllerExtensionEnabled(overlays, syncViewsIds, isReuseComponentMock, false)).toBe(true);
+            expect(isControllerExtensionEnabled(overlays, isReuseComponentMock, false)).toBe(true);
             expect(isReuseComponentMock).not.toHaveBeenCalled();
         });
 
@@ -261,14 +268,13 @@ describe('Dialogs', () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('syncViewId3') });
             const overlays: ElementOverlay[] = [elementOverlayMock];
             isReuseComponentMock.mockReturnValueOnce(true);
-            expect(isControllerExtensionEnabled(overlays, syncViewsIds, isReuseComponentMock, true)).toBe(false);
+            expect(isControllerExtensionEnabled(overlays, isReuseComponentMock, true)).toBe(false);
         });
 
         it('should return false when overlays length is more than 1', () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('syncViewId3') });
             const overlays: ElementOverlay[] = [elementOverlayMock, elementOverlayMock];
-            const syncViewsIds = ['syncViewId1', 'syncViewId2'];
-            expect(isControllerExtensionEnabled(overlays, syncViewsIds, isReuseComponentMock, false)).toBe(false);
+            expect(isControllerExtensionEnabled(overlays, isReuseComponentMock, false)).toBe(false);
         });
     });
 });
