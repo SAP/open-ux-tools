@@ -61,12 +61,12 @@ describe('Test install queue functions', () => {
         expect(infoLog).toHaveBeenCalledWith('Stack trace error from stderr buffer');
         expect(infoLog).toHaveBeenCalledWith(
             os.platform() === 'win32'
-                ? '`npm.cmd install` failed with error code 1.'
-                : '`npm install` failed with error code 1.'
+                ? '`npm.cmd install` failed with error code: 1.'
+                : '`npm install` failed with error code: 1.'
         );
         expect(infoLog.mock.lastCall).toEqual([
             new Error(
-                `Error code 1 returned from \`${
+                `Error code: 1 returned from \`${
                     os.platform() === 'win32' ? 'npm.cmd' : 'npm'
                 } install\`. Some process log, Stack trace error from stderr buffer`
             )
