@@ -351,7 +351,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
                     (choice) => choice.name === 'destination' && choice.initial === 'ABC123'
                 );
                 expect(destination?.name).toEqual('destination');
-                expect((destination?.validate as any)()).toEqual('Please provide a target for configuration');
+                expect((destination?.validate as any)()).toEqual('Please provide a target for the configuration.');
                 expect((destination?.validate as any)('abc')).toBeTruthy();
                 return { destination: destination?.initial };
             });
@@ -362,7 +362,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             promptMock.mockImplementationOnce((choices: PromptObject[]) => {
                 const url = choices[0];
                 expect(url.name).toBe('url');
-                expect((url.validate as any)()).toEqual('Please provide a target for configuration');
+                expect((url.validate as any)()).toEqual('Please provide a target for the configuration.');
                 expect((url.validate as any)('abc')).toBeTruthy();
                 const client = choices[1];
                 expect(client.name).toBe('client');
@@ -386,12 +386,14 @@ describe('Test promptUserPass', () => {
         promptMock.mockImplementation((choices: PromptObject[]) => {
             const username = choices[0];
             expect(username.name).toBe('username');
-            expect((username.validate as any)()).toEqual('Username can not be empty.');
+            expect((username.validate as any)()).toEqual('Username cannot be empty. Provide a value for the username.');
             expect((username.validate as any)('abc')).toBeTruthy();
             const password = choices[1];
             expect(password.name).toBe('password');
-            expect((password.validate as any)()).toEqual('Password can not be empty.');
-            expect((password.validate as any)(' ')).toEqual('Password can not be empty.');
+            expect((password.validate as any)()).toEqual('Password cannot be empty. Provide a value for the password.');
+            expect((password.validate as any)(' ')).toEqual(
+                'Password cannot be empty. Provide a value for the password.'
+            );
             expect((password.validate as any)('123')).toBeTruthy();
             return userPrompt;
         });
