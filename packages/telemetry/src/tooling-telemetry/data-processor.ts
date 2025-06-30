@@ -330,6 +330,7 @@ function populateSourceTemplate(sourceTemplate: SourceTemplate): SourceTemplate 
 async function getProcessVersions(): Promise<NodeJS.ProcessVersions> {
     try {
         const output = await spawnCommand('node', ['-p', 'JSON.stringify(process.versions)']);
+        console.log('Node Version Check :' + output);
         return JSON.parse(output);
     } catch {
         return {} as NodeJS.ProcessVersions;
