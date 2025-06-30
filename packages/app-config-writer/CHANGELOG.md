@@ -1,5 +1,20 @@
 # @sap-ux/app-config-writer
 
+## 0.6.18
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.6.17
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+    -   @sap-ux/axios-extension@1.22.3
+
 ## 0.6.16
 
 ### Patch Changes
