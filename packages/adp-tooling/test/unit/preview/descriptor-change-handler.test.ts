@@ -704,7 +704,7 @@ id="<%- ids.customActionButton %>"`);
         };
 
         const pathOfProject = 'project/path';
-        const fragmentName = path.join(...'changes/fragments/test'.split('/'));
+        const fragmentName = ['changes', 'fragments', 'test'].join(path.sep);
         beforeEach(() => {
             mockFs.exists.mockClear();
             mockFs.copy.mockClear();
