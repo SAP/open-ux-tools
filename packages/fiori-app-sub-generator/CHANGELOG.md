@@ -1,5 +1,20 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.15
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/ui5-application-inquirer@0.14.20
+    -   @sap-ux/fiori-freestyle-writer@2.4.18
+    -   @sap-ux/fiori-generator-shared@0.12.13
+    -   @sap-ux/odata-service-inquirer@2.5.9
+    -   @sap-ux/fiori-elements-writer@2.5.7
+    -   @sap-ux/odata-service-writer@0.27.8
+    -   @sap-ux/cap-config-writer@0.10.14
+    -   @sap-ux/launch-config@0.10.9
+
 ## 0.5.14
 
 ### Patch Changes

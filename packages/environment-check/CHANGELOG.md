@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.18.13
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
 ## 0.18.12
 
 ### Patch Changes

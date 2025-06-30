@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.8
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
 ## 0.27.7
 
 ### Patch Changes

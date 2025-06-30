@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.5.4
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
 ## 1.5.3
 
 ### Patch Changes

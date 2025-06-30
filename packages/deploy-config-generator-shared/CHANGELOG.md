@@ -1,5 +1,13 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.14
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/fiori-generator-shared@0.12.13
+
 ## 0.1.13
 
 ### Patch Changes

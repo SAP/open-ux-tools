@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.5.6
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
 ## 1.5.5
 
 ### Patch Changes

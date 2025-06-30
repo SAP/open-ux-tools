@@ -1,5 +1,14 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.21
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   b9675bb: Update the MTA ID error message.
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/inquirer-common@0.7.18
+
 ## 0.3.20
 
 ### Patch Changes
