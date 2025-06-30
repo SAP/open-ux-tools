@@ -1,0 +1,40 @@
+{
+    "name": "@sap-ux-private/adaptation-editor-tests",
+    "description": "Adaptation Editor UI tests",
+    "version": "0.0.1",
+    "license": "Apache-2.0",
+    "author": "@SAP/ux-tools-team",
+    "main": "dist/index.js",
+    "private": true,
+    "scripts": {
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test:clean": "rimraf --glob playwright-report",
+        "test:run": "playwright test",
+        "test:integration": "npm-run-all -l -s test:clean test:run",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "dependencies": {
+        "@sap-ux/ui5-info": "workspace:*",
+        "@sap-ux-private/playwright": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/yaml": "workspace:*",
+        "adm-zip": "0.5.10",
+        "dotenv": "16.3.1",
+        "express": "4.21.2",
+        "jest-dev-server": "10.0.0",
+        "npm-run-all2": "6.2.0",
+        "portfinder": "1.0.32",
+        "semver": "7.7.1"
+    },
+    "devDependencies": {
+        "@types/adm-zip": "0.5.5",
+        "@types/express": "4.17.21",
+        "@types/semver": "7.7.0"
+    },
+    "engines": {
+        "node": ">=20.x"
+    }
+}
