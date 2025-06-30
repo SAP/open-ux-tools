@@ -98,7 +98,7 @@ export const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig>
                     column: `column-${uuid}`,
                     columnTitle: `column-title-${uuid}`,
                     customData: `custom-data-${uuid}`,
-                    ...(columnIndex && { index: columnIndex.toFixed(0) })
+                    index: columnIndex.toFixed(0)
                 }
             };
         }
@@ -137,7 +137,7 @@ export const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig>
                     label: `label-${uuid}`,
                     text: `text-${uuid}`,
                     customData: `custom-data-${uuid}`,
-                    ...(columnIndex && { index: columnIndex.toFixed(0) })
+                    index: columnIndex.toFixed(0)
                 }
             };
         }
@@ -153,17 +153,12 @@ export const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig>
                     label: `label-${uuid}`,
                     text: `text-${uuid}`,
                     customData: `custom-data-${uuid}`,
-                    ...(columnIndex && { index: columnIndex.toFixed(0) })
+                    index: columnIndex.toFixed(0)
                 }
             };
         }
     }
 };
-
-export interface FragmentCreationParams {
-    fragmentPath: string;
-    index?: number;
-}
 
 /**
  * A mapping object that defines how to extract change content data from changes based on their type.
@@ -243,7 +238,7 @@ export function isV4DescriptorChange(change: CommonChangeProperties): change is 
  * Asynchronously adds an XML fragment to the project if it doesn't already exist.
  *
  * @param {string} basePath - The base path of the project.
- * @param {FragmentCreationParams} change - The change data, including the fragment path.
+ * @param {AddXMLChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
  * @param {CommonAdditionalChangeInfoProperties} additionalChangeInfo - Optional extended change properties.

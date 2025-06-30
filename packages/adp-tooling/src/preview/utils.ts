@@ -9,14 +9,11 @@ import { join } from 'path';
  * @param change - The AppDescriptorV4Change object containing change details.
  * @returns The computed fragment path as a string.
  */
-export function getFragmentPathFromTemplate(template: string, change: AppDescriptorV4Change): string {
-    let path = '';
+export function getFragmentPathFromTemplate(template: string, change: AppDescriptorV4Change): string | undefined {
     const segments = template.split(`${change.projectId}.${DirName.Changes}.${DirName.Fragments}.`);
     const [namespace, fileName] = segments;
     if (segments.length === 2 && namespace === '') {
-        path = join(DirName.Changes, DirName.Fragments, fileName);
-    } else {
-        path = join(...template.split('.'));
+        return join(DirName.Changes, DirName.Fragments, fileName);
     }
-    return path;
+    return undefined;
 }

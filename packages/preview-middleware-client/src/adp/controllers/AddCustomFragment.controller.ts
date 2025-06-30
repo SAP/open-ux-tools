@@ -140,7 +140,6 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
                 }
             }
         };
-        this.setRunTimeControl();
         const command = await this.commandExecutor.getCommand<FlexCommand>(
             this.runtimeControl,
             'appDescriptor',

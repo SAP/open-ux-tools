@@ -23,7 +23,6 @@ import Log from 'sap/base/Log';
 
 type BaseDialogModel = JSONModel & {
     getProperty(sPath: '/fragmentList'): Fragments;
-    getProperty(sPath: '/template'): string;
 };
 
 /**
@@ -45,7 +44,7 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
     /**
      * Runtime control managed object
      */
-    protected runtimeControl: ManagedObject;
+    private _runtimeControl: ManagedObject;
     /**
      * Dialog instance
      */
@@ -72,14 +71,16 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
         }
     }
 
-    protected setRunTimeControl(): void {
-        const selectorId = this.overlays.getId();
-        const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
-        if (overlayControl) {
-            this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
-        } else {
-            throw new Error('Cannot get overlay control');
+    protected get runtimeControl(): ManagedObject {
+        if (!this._runtimeControl) {
+            const selectorId = this.overlays.getId();
+            const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
+            if (!overlayControl) {
+                throw new Error('Cannot get overlay control');
+            }
+            this._runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
         }
+        return this._runtimeControl;
     }
 
     /**
@@ -87,7 +88,6 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
      * @returns control metadata and target aggregations
      */
     protected getControlMetadata(): { controlMetadata: ManagedObjectMetadata; targetAggregation: string[] } {
-        this.setRunTimeControl();
         const controlMetadata: ManagedObjectMetadata = this.runtimeControl.getMetadata();
         if (!controlMetadata) {
             throw new Error('Cannot get control metadata');
@@ -186,24 +186,22 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
             );
             return;
         }
-        // 'changes.fragments' is the current folder structure where fragment changes are written. 
+        // 'changes.fragments' is the current folder structure where fragment changes are written.
         // following value is subjected to change if the folder structure changes
         const template = `${this.rta.getFlexSettings()?.projectId}.changes.fragments.${fragmentName}`;
-        if (template) {
-            const v4CustomXMLChange = checkForExistingChange(
-                this.rta,
-                'appdescr_fe_changePageConfiguration',
-                'content.entityPropertyChange.propertyValue.template',
-                template
-            );
+        const v4CustomXMLChange = checkForExistingChange(
+            this.rta,
+            'appdescr_fe_changePageConfiguration',
+            'content.entityPropertyChange.propertyValue.template',
+            template
+        );
 
-            if (v4CustomXMLChange) {
-                updateDialogState(
-                    ValueState.Error,
-                    'Enter a different name. The fragment name entered matches the name of an unsaved fragment.'
-                );
-                return;
-            }
+        if (v4CustomXMLChange) {
+            updateDialogState(
+                ValueState.Error,
+                'Enter a different name. The fragment name entered matches the name of an unsaved fragment.'
+            );
+            return;
         }
 
         updateDialogState(ValueState.Success);

@@ -794,7 +794,7 @@ describe('ChangeService', () => {
                 ]
             }
         });
-    }, 500000);
+    });
 
     test('composite command - unknown commands', async () => {
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
@@ -1467,7 +1467,7 @@ describe('ChangeService', () => {
                 ]
             }
         });
-    }, 5555555);
+    });
 
     test('change property', async () => {
         fetchMock.mockResolvedValue({

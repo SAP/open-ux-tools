@@ -36,16 +36,19 @@ export function addCustomSectionFragment(
     if (isCustomSectionPropertyPath && hasTemplate(propertyValue)) {
         const { template } = propertyValue;
         const path = getFragmentPathFromTemplate(template, change);
-        const fragmentPath = `${path}.fragment.xml`;
-        const fullPath = join(basePath, fragmentPath);
         try {
+            if (!path) {
+                throw new Error('Fragment Path could not be determined');
+            }
+            const fragmentPath = `${path}.fragment.xml`;
+            const fullPath = join(basePath, fragmentPath);
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', objectPageCustomPageConfig.path);
             const text = fs.read(fragmentTemplatePath);
             const template = render(text, objectPageCustomPageConfig.getData());
             fs.write(fullPath, template);
             logger.info(`XML Fragment "${fragmentPath}" was created`);
         } catch (error) {
-            logger.error(`Failed to create XML Fragment "${fragmentPath}": ${error}`);
+            logger.error(`Failed to create XML Fragment: ${error}`);
         }
     }
 }

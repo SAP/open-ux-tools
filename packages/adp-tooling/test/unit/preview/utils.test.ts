@@ -9,13 +9,13 @@ describe('getFragmentPathFromTemplate', () => {
     it('should handle template with only one segment', () => {
         const template = 'Hello';
         const path = getFragmentPathFromTemplate(template, mockChange);
-        expect(path).toBe('Hello');
+        expect(path).toBe(undefined);
     });
 
     it('should handle template with two segments', () => {
         const template = 'Hello.World';
         const path = getFragmentPathFromTemplate(template, mockChange);
-        expect(path).toBe('Hello/World');
+        expect(path).toBe(undefined);
     });
 
     it('should handle template with more than two segments', () => {

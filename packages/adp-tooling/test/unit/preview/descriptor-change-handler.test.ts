@@ -455,10 +455,10 @@ id="<%- ids.customActionButton %>"`);
                     `"project/path/changes/Share.fragment.xml"`
                 );
                 expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
-"
-id=\\"toolbarAction-30303030\\"
-id=\\"btn-30303030\\""
-`);
+                    "
+                    id=\\"toolbarAction-30303030\\"
+                    id=\\"btn-30303030\\""
+                `);
 
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
             });
@@ -704,7 +704,7 @@ id=\\"btn-30303030\\""
         };
 
         const path = 'project/path';
-        const fragmentName = 'adp/v1/changes/fragment/test';
+        const fragmentName = 'changes/fragments/test';
         beforeEach(() => {
             mockFs.exists.mockClear();
             mockFs.copy.mockClear();
@@ -739,14 +739,11 @@ id=\\"btn-30303030\\""
             );
 
             expect(mockLogger.error).toHaveBeenCalledWith(
-                expect.stringContaining(`Failed to create XML Fragment "${fragmentName}.fragment.xml"`)
+                expect.stringContaining(`Failed to create XML Fragment: Error: Fragment Path could not be determined`)
             );
         });
 
         describe('custom fragment', () => {
-            beforeEach(() => {
-                jest.spyOn(crypto, 'randomBytes').mockImplementation((size: number) => Buffer.from('0'.repeat(size)));
-            });
             it('should create Object Page custom section fragment', () => {
                 mockFs.exists.mockReturnValue(false);
                 mockFs.read.mockReturnValue(`
@@ -756,13 +753,14 @@ id=\\"btn-30303030\\""
                 addCustomSectionFragment(
                     path,
                     {
+                        projectId: 'adp.v1',
                         changeType: 'appdescr_fe_changePageConfiguration',
                         content: {
                             entityPropertyChange: {
                                 propertyPath: 'content/body/sections/test',
                                 operation: 'UPSERT',
                                 propertyValue: {
-                                    template: 'adp.v1.changes.fragment.test'
+                                    template: 'adp.v1.changes.fragments.test'
                                 }
                             }
                         }
@@ -780,7 +778,7 @@ id=\\"btn-30303030\\""
 
                 expect(mockFs.write).toHaveBeenCalled();
                 expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
-                    `"project/path/adp/v1/changes/fragment/test.fragment.xml"`
+                    `"project/path/changes/fragments/test.fragment.xml"`
                 );
                 expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
                                 "
