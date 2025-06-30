@@ -218,7 +218,7 @@ resources:
                 URL: 'https://ui5.sap.com'
                 ProxyType: Internet
                 Authentication: NoAuthentication
-              - Name: managedAppCAPProject-srv-api
+              - Name: srv-api
                 Type: HTTP
                 URL: '~{srv-api/srv-url}'
                 ProxyType: Internet

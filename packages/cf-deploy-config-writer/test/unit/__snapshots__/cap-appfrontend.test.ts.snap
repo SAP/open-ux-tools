@@ -8,7 +8,7 @@ exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 ap
     {
       \\"source\\": \\"^/sap/(.*)$\\",
       \\"target\\": \\"/sap/$1\\",
-      \\"destination\\": \\"cappapp-srv-api\\",
+      \\"destination\\": \\"srv-api\\",
       \\"authenticationType\\": \\"ias\\",
       \\"csrfProtection\\": false
     },
@@ -121,7 +121,7 @@ modules:
         destinations:
           - name: ui5
             url: 'https://ui5.sap.com'
-          - name: cappapp-srv-api
+          - name: srv-api
             url: '~{srv-api/srv-url}'
             forwardAuthToken: true
     build-parameters:
