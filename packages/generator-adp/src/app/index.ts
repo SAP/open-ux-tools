@@ -200,10 +200,11 @@ export default class extends Generator {
             this.baseAppInbounds = await getBaseAppInbounds(this.configAnswers.application.id, this.prompter.provider);
         }
         const options: AttributePromptOptions = {
-            targetFolder: { default: defaultFolder },
+            targetFolder: { default: defaultFolder, hide: this.shouldCreateExtProject },
             ui5ValidationCli: { hide: !this.isCli },
             enableTypeScript: { hide: this.shouldCreateExtProject },
-            addFlpConfig: { hasBaseAppInbounds: !!this.baseAppInbounds }
+            addFlpConfig: { hasBaseAppInbounds: !!this.baseAppInbounds, hide: this.shouldCreateExtProject },
+            addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase }
         };
         const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
 
@@ -302,6 +303,10 @@ export default class extends Generator {
     }
 
     async end(): Promise<void> {
+        if (this.shouldCreateExtProject) {
+            return;
+        }
+
         const telemetryData =
             TelemetryHelper.createTelemetryData({
                 appType: 'generator-adp',
