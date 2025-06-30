@@ -278,7 +278,7 @@ describe('test helper functions', () => {
         } as any;
         await utils.writeBASMetadata(serviceConfig, memFs, appWizardMock, inputData, providerMockError);
         expect(appWizardMock.showInformation).toHaveBeenLastCalledWith(
-            'UI Service ZUI_BANKTP132_O4 has been created successfully, but could not be added to your project',
+            'The UI service: ZUI_BANKTP132_O4 has been created but could not be added to your project.',
             1
         );
     });
