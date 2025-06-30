@@ -41,6 +41,9 @@ export async function updateSyncViewsIds(ui5VersionInfo: Ui5VersionInfo): Promis
     }
 }
 
+/**
+ * Show warning message if there are sync views in the application and the warning has not been shown yet.
+ */
 export async function showSyncViewsWarning(): Promise<void> {
     if (warningShown) {
         return;
