@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.8
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/fiori-generator-shared@0.12.12
+    -   @sap-ux/project-input-validator@0.6.6
+    -   @sap-ux/telemetry@0.6.6
+    -   @sap-ux/inquirer-common@0.7.17
+
 ## 2.5.7
 
 ### Patch Changes
