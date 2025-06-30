@@ -42,7 +42,7 @@
                 "sharedGlobals"
             ],
             "outputs": ["{projectRoot}/coverage"],
-            "cache": true
+            "cache": false
         },
         "test:integration": {
             "inputs": [
