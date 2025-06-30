@@ -21,7 +21,7 @@
     },
     "defaults": {
         "projectName": "project{{defaultProjectNumber}}",
-        "projectTitle": "App Title",
+        "projectTitle": "Application Title",
         "projectDescription": "An SAP Fiori application."
     },
     "readme": {
@@ -32,21 +32,21 @@
             "sapSystemType": {
                 "abapOnBtp": "ABAP Environment on SAP Business Technology Platform",
                 "s4hc": "SAP S/4HANA Cloud Environment",
-                "onPrem": "ABAP On Premise"
+                "onPrem": "ABAP On-Premise"
             },
             "datasourceType": {
                 "sapSystem": "SAP System",
                 "buinessHub": "SAP Business Accelerator Hub",
                 "apiBusinessHubEnterprise": "SAP API Business Hub Enterprise",
-                "capProject": "Local Cap",
-                "odataServiceUrl": "OData Url",
+                "capProject": "Local CAP",
+                "odataServiceUrl": "OData URL",
                 "none": "None",
                 "metadataFile": "File",
                 "projectSpecificDestination": "MTA File"
             }
         },
         "texts": {
-            "runInstruction": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
+            "runInstruction": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
         }
     },
     "texts": {
@@ -74,44 +74,44 @@
             "title": "Deployment Configuration"
         },
         "flpConfig": {
-            "description": "Configure Fiori Launchpad settings{{appFolderName}}.",
-            "title": "Fiori Launchpad Configuration"
+            "description": "Configure SAP Fiori launchpad settings {{appFolderName}}.",
+            "title": "SAP Fiori Launchpad Configuration"
         }
     },
     "logMessages": {
         "installingDependencies": "Installing dependencies to package path: {{- path}}...",
-        "dependenciesInstalled": "Project dependencies installed in {{installTime}} seconds",
-        "errorInstallingDependencies": "Unknown error while installing project dependencies.",
-        "commandFailedWithError": "{{command}} failed with error code {{errorCode}}.",
-        "commandErrorCodeWithStack": "Error code {{errorCode}} returned from {{command}}. {{stack}}",
-        "applicationGenerationSuccess": "Application generated successfully, available at {{- targetFolder}}",
-        "copyingTemplateFiles": "Copying '{{templateName}}' template files...",
+        "dependenciesInstalled": "Project dependencies installed in {{installTime}} seconds.",
+        "errorInstallingDependencies": "An unknown error occurred when installing the project dependencies.",
+        "commandFailedWithError": "{{command}} failed with error code: {{errorCode}}.",
+        "commandErrorCodeWithStack": "Error code: {{errorCode}} returned from {{command}}. {{stack}}",
+        "applicationGenerationSuccess": "The application has been generated and is available at {{- targetFolder}}",
+        "copyingTemplateFiles": "Copying {{templateName}} template files...",
         "generatingAppWithVersion": "Generating application with {{- generatorName}} {{generatorVersion}}",
-        "warningCachingNotSupported": "Warning: caching is not supported",
+        "warningCachingNotSupported": "Warning: caching is not supported.",
         "attemptingToExecutePostGenerationCommand": "Attempting to execute command after app generation: {{- command}}",
         "installSkippedOptionSpecified": "Option `--skipInstall` was specified. Installation of dependencies will be skipped.",
         "generatorExiting": "Application generation exiting due to error: {{error}}"
     },
     "error": {
-        "fatalError": "An error has occurred, please restart the generator",
-        "errorWritingApplicationFiles": "An error occurred writing application files",
-        "appConfigVersion": "Application config version must match a supported version: {{versions}}",
-        "appConfigUnparseableEdmx": "Application config property edmx cannot be parsed",
-        "appConfigMissingRequiredProperty": "Application config is missing a required property: {{propertyName}}",
-        "edmxNotFound": "Edmx (metadata) is required to continue with generation. Application generation exiting.",
-        "unsupportedPostGenerationEvent": "Unsupported post generation event: {{event}}",
-        "commandFailed": "Command failed with error",
-        "invalidYUIStepConfig": "Invalid Yeoman UI step config: First step cannot have dependency property"
+        "fatalError": "An error has occurred, please restart the generator.",
+        "errorWritingApplicationFiles": "An error occurred writing application files.",
+        "appConfigVersion": "The application config version must match a supported version: {{versions}}.",
+        "appConfigUnparseableEdmx": "Application config property: edmx cannot be parsed.",
+        "appConfigMissingRequiredProperty": "The application config is missing a required property: {{propertyName}}.",
+        "edmxNotFound": "Edmx metadata is required to continue with generation. Application generation exiting.",
+        "unsupportedPostGenerationEvent": "Unsupported post generation event: {{event}}.",
+        "commandFailed": "Command failed with error.",
+        "invalidYUIStepConfig": "Invalid Yeoman UI step config: First step cannot have a dependency property."
     },
     "wizardMessages": {
         "filesGenerated": "The files have been generated."
     },
     "prompts": {
         "viewName": {
-            "message": "View name",
+            "message": "View Name",
             "validationMessages": {
-                "viewNameRequired": "You must provide a view name in order to continue.",
-                "viewNameTooLong": "View name cannot contain more than 120 characters",
+                "viewNameRequired": "You must provide a view name to continue.",
+                "viewNameTooLong": "The view name cannot contain more than 120 characters.",
                 "viewNameInvalid": "The view name must start with a letter and may contain letters, digits, dashes, and underscores."
             }
         }

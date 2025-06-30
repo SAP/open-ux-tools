@@ -11,6 +11,8 @@ export {
     FioriToolsProxyConfigUI5,
     FioriToolsServeStaticPath,
     FioriToolsServeStaticConfig,
+    MockserverService,
+    MockserverConfig,
     ServeStaticPath,
     Adp,
     BspApp,
