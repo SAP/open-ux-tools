@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.8
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
 ## 0.3.7
 
 ### Patch Changes

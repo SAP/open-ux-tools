@@ -1,5 +1,15 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.35
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/fiori-generator-shared@0.12.13
+    -   @sap-ux/ui-service-inquirer@0.1.35
+    -   @sap-ux/inquirer-common@0.7.18
+
 ## 0.1.34
 
 ### Patch Changes

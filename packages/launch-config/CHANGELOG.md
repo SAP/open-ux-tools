@@ -1,5 +1,11 @@
 # @sap-ux/launch-config
 
+## 0.10.9
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
 ## 0.10.8
 
 ### Patch Changes

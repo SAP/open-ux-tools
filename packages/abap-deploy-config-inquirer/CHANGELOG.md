@@ -1,5 +1,14 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.4.28
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/fiori-generator-shared@0.12.13
+    -   @sap-ux/inquirer-common@0.7.18
+
 ## 1.4.27
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.6.18
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
 ## 0.6.17
 
 ### Patch Changes

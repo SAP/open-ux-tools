@@ -1,5 +1,18 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.51
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/project-input-validator@0.6.7
+    -   @sap-ux/fiori-generator-shared@0.12.13
+    -   @sap-ux/odata-service-inquirer@2.5.9
+    -   @sap-ux/fiori-elements-writer@2.5.7
+    -   @sap-ux/inquirer-common@0.7.18
+    -   @sap-ux/launch-config@0.10.9
+
 ## 0.3.50
 
 ### Patch Changes

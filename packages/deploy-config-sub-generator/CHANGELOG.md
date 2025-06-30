@@ -1,5 +1,18 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.3.29
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.31
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.25
+    -   @sap-ux/deploy-config-generator-shared@0.1.14
+    -   @sap-ux/fiori-generator-shared@0.12.13
+    -   @sap-ux/odata-service-inquirer@2.5.9
+    -   @sap-ux/inquirer-common@0.7.18
+
 ## 0.3.28
 
 ### Patch Changes
