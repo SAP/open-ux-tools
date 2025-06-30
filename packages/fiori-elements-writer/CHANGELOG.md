@@ -1,5 +1,17 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.5.7
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/fiori-generator-shared@0.12.13
+    -   @sap-ux/ui5-application-writer@1.5.6
+    -   @sap-ux/odata-service-writer@0.27.8
+    -   @sap-ux/cap-config-writer@0.10.14
+    -   @sap-ux/ui5-test-writer@0.7.8
+
 ## 2.5.6
 
 ### Patch Changes

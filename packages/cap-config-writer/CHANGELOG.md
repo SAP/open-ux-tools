@@ -1,5 +1,13 @@
 # @sap-ux/cap-config-writer
 
+## 0.10.14
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/fiori-generator-shared@0.12.13
+
 ## 0.10.13
 
 ### Patch Changes

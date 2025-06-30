@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.13
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
 ## 0.12.12
 
 ### Patch Changes

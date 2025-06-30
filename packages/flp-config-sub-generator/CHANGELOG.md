@@ -1,5 +1,17 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.2.39
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/deploy-config-generator-shared@0.1.14
+    -   @sap-ux/fiori-generator-shared@0.12.13
+    -   @sap-ux/flp-config-inquirer@0.3.34
+    -   @sap-ux/app-config-writer@0.6.18
+    -   @sap-ux/inquirer-common@0.7.18
+
 ## 0.2.38
 
 ### Patch Changes
