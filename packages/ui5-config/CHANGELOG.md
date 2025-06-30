@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.28.3
+
+### Patch Changes
+
+-   f75b89d: Get mock data server config from ui5 yaml file
+
 ## 0.28.2
 
 ### Patch Changes
