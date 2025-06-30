@@ -1,5 +1,11 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.36
+
+### Patch Changes
+
+-   602e60d: handle namespace for storyboard metadata retrieval
+
 ## 0.1.35
 
 ### Patch Changes
