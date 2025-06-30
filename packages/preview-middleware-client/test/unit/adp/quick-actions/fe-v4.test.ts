@@ -1201,6 +1201,7 @@ describe('FE V4 quick actions', () => {
 
                 mockOverlay.getDesignTimeMetadata.mockReturnValue({
                     getData: jest.fn().mockReturnValue({
+                        manifestSettings: jest.fn().mockReturnValue([]),
                         manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
                         manifestPropertyChange: jest.fn().mockImplementation((propertyValue, propertyPath) => [
                             {
@@ -1519,6 +1520,7 @@ describe('FE V4 quick actions', () => {
 
                         mockOverlay.getDesignTimeMetadata.mockReturnValue({
                             getData: jest.fn().mockReturnValue({
+                                manifestSettings: jest.fn().mockReturnValue([]),
                                 manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
                                 manifestPropertyChange: jest.fn().mockImplementation((propertyValue, propertyPath) => [
                                     {
@@ -2154,6 +2156,7 @@ describe('FE V4 quick actions', () => {
 
                         mockOverlay.getDesignTimeMetadata.mockReturnValue({
                             getData: jest.fn().mockReturnValue({
+                                manifestSettings: jest.fn().mockReturnValue([]),
                                 manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
                                 manifestPropertyChange: jest.fn().mockImplementation((propertyValue, propertyPath) => [
                                     {
@@ -2427,6 +2430,7 @@ describe('FE V4 quick actions', () => {
 
                             mockOverlay.getDesignTimeMetadata.mockReturnValue({
                                 getData: jest.fn().mockReturnValue({
+                                    manifestSettings: jest.fn().mockReturnValue([]),
                                     manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
                                     manifestPropertyChange: jest
                                         .fn()

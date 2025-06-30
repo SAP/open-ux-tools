@@ -53,27 +53,27 @@ describe('ui5-test-writer', () => {
             {
                 description: 'Another component view (not supported)',
                 targetKey: 'AnotherCustomPageTarget',
-                errorMsg: 'Validation error: Cannot generate page file for target AnotherCustomPageTarget'
+                errorMsg: 'Validation error: Cannot generate the page file for target: AnotherCustomPageTarget.'
             },
             {
                 description: 'Plain XML view (not supported)',
                 targetKey: 'XMLView',
-                errorMsg: 'Validation error: Cannot generate page file for target XMLView'
+                errorMsg: 'Validation error: Cannot generate the page file for target: XMLView.'
             },
             {
                 description: 'Missing ID',
                 targetKey: 'NoID',
-                errorMsg: 'Validation error: Cannot generate page file for target NoID'
+                errorMsg: 'Validation error: Cannot generate the page file for target: NoID.'
             },
             {
                 description: 'Missing entityset',
                 targetKey: 'NoEntitySet',
-                errorMsg: 'Validation error: Cannot generate page file for target NoEntitySet'
+                errorMsg: 'Validation error: Cannot generate the page file for target: NoEntitySet.'
             },
             {
                 description: 'Bad target',
                 targetKey: 'XXX',
-                errorMsg: 'Validation error: Cannot generate page file for target XXX'
+                errorMsg: 'Validation error: Cannot generate the page file for target: XXX.'
             }
         ];
 
@@ -104,7 +104,7 @@ describe('ui5-test-writer', () => {
                 error = (e as Error).message;
             }
 
-            expect(error?.startsWith('Validation error: Cannot read manifest file')).toEqual(true);
+            expect(error?.startsWith('Validation error: Cannot read the `manifest.json` file:')).toEqual(true);
         });
 
         it('Providing an app ID', async () => {
@@ -187,7 +187,7 @@ describe('ui5-test-writer', () => {
                 error = (e as Error).message;
             }
 
-            expect(error?.startsWith('Validation error: Cannot read manifest file')).toEqual(true);
+            expect(error?.startsWith('Validation error: Cannot read the `manifest.json` file:')).toEqual(true);
         });
 
         it('Missing app ID', async () => {
@@ -199,7 +199,7 @@ describe('ui5-test-writer', () => {
                 error = (e as Error).message;
             }
 
-            expect(error).toEqual('Validation error: Cannot read appID in the manifest file');
+            expect(error).toEqual('Validation error: Cannot read `appID` in the `manifest.json` file.');
         });
 
         it('Providing an app ID', async () => {
@@ -218,7 +218,7 @@ describe('ui5-test-writer', () => {
             }
 
             expect(error).toEqual(
-                'Validation error: Cannot determine application type from the manifest, or unsupported type'
+                'Validation error: Cannot determine the application type from the `manifest.json` file or it uses an unsupported type.'
             );
         });
 
@@ -232,7 +232,7 @@ describe('ui5-test-writer', () => {
             }
 
             expect(error).toEqual(
-                'Validation error: Cannot determine application type from the manifest, or unsupported type'
+                'Validation error: Cannot determine the application type from the `manifest.json` file or it uses an unsupported type.'
             );
         });
     });

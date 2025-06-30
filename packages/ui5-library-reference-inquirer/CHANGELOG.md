@@ -1,5 +1,21 @@
 # @sap-ux/ui5-library-reference-inquirer
 
+## 0.4.18
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.4.17
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/inquirer-common@0.7.17
+
 ## 0.4.16
 
 ### Patch Changes
