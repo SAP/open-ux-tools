@@ -270,7 +270,7 @@ describe('flexChange', () => {
         await applyChange(testOptions, change);
 
         // assert
-        expect(CommandFactory.getCommandFor).toBeCalledWith(
+        expect(CommandFactory.getCommandFor).toHaveBeenCalledWith(
             control,
             'appDescriptor',
             {
@@ -297,6 +297,6 @@ describe('flexChange', () => {
             'someConfiguration/test/component/settings',
             { 'getMetadata': expect.any(Function), 'name': 'sap.m.Button' }
         );
-        expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
+        expect(pushAndExecuteMock).toHaveBeenCalledWith(mockCommand);
     });
 });
