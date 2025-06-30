@@ -19,7 +19,7 @@ describe('getConfirmPrompts', () => {
                 "filter": [Function],
                 "guiOptions": Object {
                   "breadcrumb": "SAPUI5 ABAP Repository",
-                  "hint": "Enter the name for the deployed application. The name must follow the rules of creating a BSP application. It must not exceed 15 characters and must consist of alphanumeric characters or underscores only. Name should be unique in the BSP repository and its namespace is compatible with the selected package.",
+                  "hint": "Enter the name for the deployed application. The name must follow the rules of creating a BSP application. It must not exceed 15 characters and must consist of alphanumeric characters or underscores only. The name must be unique in the BSP repository and its namespace must be compatible with the selected package.",
                   "mandatory": true,
                 },
                 "message": [Function],

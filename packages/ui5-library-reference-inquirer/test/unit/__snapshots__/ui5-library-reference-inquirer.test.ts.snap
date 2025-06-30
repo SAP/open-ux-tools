@@ -8,7 +8,7 @@ Array [
     "guiOptions": Object {
       "breadcrumb": true,
     },
-    "message": "Project folder path",
+    "message": "Project Folder Path",
     "name": "targetProjectFolder",
     "type": "list",
     "validate": [Function],
