@@ -1,5 +1,44 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.13
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.12.12
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/telemetry@0.6.6
+
+## 0.12.11
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.5
+
+## 0.12.10
+
+### Patch Changes
+
+-   4fef16a: ensure service runtimeName is upper case to match service id
+
+## 0.12.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/telemetry@0.6.4
+
+## 0.12.8
+
+### Patch Changes
+
+-   163522f: fix non-virtual endpoint preview config
+
 ## 0.12.7
 
 ### Patch Changes

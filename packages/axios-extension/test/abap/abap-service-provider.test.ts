@@ -192,4 +192,79 @@ describe('AbapServiceProvider', () => {
             expect(service).toBe(provider.service(alias));
         });
     });
+
+    describe('getODataServiceGenerator', () => {
+        let provider: any;
+        let mockRapGeneratorService: any;
+        let mockGenerator: any;
+        const packageName = 'Z_MY_PKG';
+        const config = {
+            category: {
+                term: 'ABAP RESTful Application Programming Model',
+                label: 'Services of ABAP RESTful Application Programming Model (RAP).'
+            },
+            content: {
+                'type': 'application/vnd.sap.adt.repository.generator.v1+json',
+                'src': 'published-x-ui-service'
+            },
+            id: 'published-x-ui-service',
+            link: [
+                {
+                    'href': '/sap/bc/adt/rap/generators/webapi/published-x-ui-service/content',
+                    'rel': 'http://www.sap.com/adt/repository/generator/content',
+                    'type': 'application/vnd.sap.adt.serverdriven.content.v1+json; framework=generators.v1'
+                }
+            ],
+            'published': '2024-06-13T00:00:00Z',
+            'summary':
+                'An OData UI service makes it possible to consume a RAP service with a Fiori Elements UI or other UI clients',
+            'title': 'API OData UI Service From Scratch',
+            'updated': '2024-06-13T00:00:00Z',
+            'referencedObjectTypes': ''
+        };
+
+        beforeEach(() => {
+            mockRapGeneratorService = {
+                getRAPGeneratorConfig: jest.fn().mockResolvedValue(config)
+            };
+            mockGenerator = {
+                setContentType: jest.fn(),
+                configure: jest.fn()
+            };
+            provider = createForAbap({
+                baseURL: 'https://server.example',
+                auth: { username: 'USER', password: 'SECRET' }
+            });
+            // Mock methods
+            provider.getAdtService = jest.fn().mockResolvedValue(mockRapGeneratorService);
+            provider.createService = jest.fn().mockReturnValue(mockGenerator);
+        });
+
+        test('should create and configure ODataServiceGenerator', async () => {
+            const result = await provider.getODataServiceGenerator(packageName);
+            expect(provider.getAdtService).toHaveBeenCalledWith(expect.any(Function));
+            expect(mockRapGeneratorService.getRAPGeneratorConfig).toHaveBeenCalled();
+            expect(provider.createService).toHaveBeenCalledWith(
+                '/sap/bc/adt/rap/generators/webapi/published-x-ui-service',
+                expect.any(Function)
+            );
+            expect(mockGenerator.setContentType).toHaveBeenCalledWith(
+                'application/vnd.sap.adt.serverdriven.content.v1+json; framework=generators.v1'
+            );
+            expect(mockGenerator.configure).toHaveBeenCalledWith(config, packageName);
+            expect(result).toBe(mockGenerator);
+        });
+
+        test('should use $TMP if packageName is falsy', async () => {
+            await provider.getODataServiceGenerator('');
+            expect(mockGenerator.configure).toHaveBeenCalledWith(config, '$TMP');
+        });
+
+        test('should throw if RAP Generator not supported', async () => {
+            provider.getAdtService = jest.fn().mockResolvedValue(null);
+            await expect(provider.getODataServiceGenerator(packageName)).rejects.toThrow(
+                'RAP Generator are not support on this system'
+            );
+        });
+    });
 });

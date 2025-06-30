@@ -9,7 +9,7 @@ import {
     getTitlePrompt
 } from '../../../src/prompts/questions';
 import { initI18n, t } from '../../../src/i18n';
-import { promptNames } from '../../../src/types';
+import { type FLPConfigAnswers, promptNames } from '../../../src/types';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
     ...jest.requireActual('@sap-ux/project-input-validator'),
@@ -17,6 +17,21 @@ jest.mock('@sap-ux/project-input-validator', () => ({
 }));
 
 describe('basic prompts', () => {
+    const inbounds = {
+        'display-bank': {
+            semanticObject: 'test',
+            action: 'action',
+            title: 'testTitle',
+            subTitle: 'testSubTitle',
+            icon: 'sap-icon://test',
+            additionalParameters: {}
+        }
+    };
+    const choices = Object.entries(inbounds).map(([inboundId, data]) => ({
+        name: inboundId,
+        value: data
+    }));
+
     beforeAll(async () => {
         await initI18n();
     });
@@ -40,17 +55,36 @@ describe('basic prompts', () => {
                     breadcrumb: true
                 },
                 message: t('prompts.semanticObject'),
-                default: 'DefaultSemanticObject',
+                default: expect.any(Function),
                 filter: expect.any(Function),
-                validate: expect.any(Function),
-                when: expect.any(Function)
+                validate: expect.any(Function)
             });
         });
 
-        it('should set default to undefined if no options are provided', () => {
+        it('should set default to empty string if no options are provided', () => {
             const prompt = getSemanticObjectPrompt(true);
 
-            expect(prompt.default).toBeUndefined();
+            expect(prompt.default()).toBe('');
+        });
+
+        it('should set default to selected inbound with added _New suffix', () => {
+            const prompt = getSemanticObjectPrompt(true);
+
+            expect(prompt.default({ inboundId: { ...choices[0].value } })).toBe('test_New');
+        });
+
+        it('should set default to provided value if options.default is given', () => {
+            const options = { default: 'TestSemanticObject' };
+            const prompt = getSemanticObjectPrompt(true, options);
+
+            expect(prompt.default(choices[0].value)).toBe('TestSemanticObject');
+        });
+
+        it('should show tooltip if requested via the options', () => {
+            const options = { showTooltip: true };
+            const prompt = getSemanticObjectPrompt(true, options);
+
+            expect(prompt.guiOptions?.hint).toBe(t('tooltips.semObjectActionDuplication'));
         });
 
         it('should trim the input value in the filter function', () => {
@@ -84,19 +118,6 @@ describe('basic prompts', () => {
             expect(mockValidateText).toHaveBeenCalledWith('invalidValue', true, 30, ['_']);
             expect(result).toBe(false);
         });
-
-        it('should evaluate "when" to true if no inboundId is provided', () => {
-            const prompt = getSemanticObjectPrompt(false);
-
-            expect((prompt.when as Function)({})).toBe(true);
-        });
-
-        it('should evaluate "when" to false if inboundId is provided', () => {
-            const answers = { inboundId: 'display' };
-            const prompt = getSemanticObjectPrompt(false);
-
-            expect((prompt.when as Function)(answers)).toBe(false);
-        });
     });
 
     describe('getActionPrompt', () => {
@@ -118,10 +139,9 @@ describe('basic prompts', () => {
                     breadcrumb: true
                 },
                 message: t('prompts.action'),
-                default: 'defaultAction',
+                default: expect.any(Function),
                 filter: expect.any(Function),
-                validate: expect.any(Function),
-                when: expect.any(Function)
+                validate: expect.any(Function)
             });
         });
 
@@ -131,6 +151,26 @@ describe('basic prompts', () => {
 
             expect(filterFn('   actionValue   ')).toBe('actionValue');
             expect(filterFn('')).toBe('');
+        });
+
+        it('should set default to provided value if options.default is given', () => {
+            const options = { default: 'TestAction' };
+            const prompt = getActionPrompt(true, options);
+
+            expect(prompt.default(choices[0].value)).toBe('TestAction');
+        });
+
+        it('should set default to selected inbound with added _New suffix', () => {
+            const prompt = getActionPrompt(true);
+
+            expect(prompt.default({ inboundId: { ...choices[0].value } })).toBe('action_New');
+        });
+
+        it('should show tooltip if requested via the options', () => {
+            const options = { showTooltip: true };
+            const prompt = getActionPrompt(true, options);
+
+            expect(prompt.guiOptions?.hint).toBe(t('tooltips.semObjectActionDuplication'));
         });
 
         it('should validate the input value using validateText', () => {
@@ -160,21 +200,27 @@ describe('basic prompts', () => {
         it('should set default to undefined if no options are provided', () => {
             const prompt = getActionPrompt(true);
 
-            expect(prompt.default).toBeUndefined();
+            expect(prompt.default()).toBe('');
         });
 
-        it('should evaluate "when" to true if no inboundId is provided', () => {
-            const answers = {};
-            const prompt = getActionPrompt(false);
+        it('should validate for duplicates if request via options', () => {
+            mockValidateText.mockReturnValue(true);
+            const prompt = getActionPrompt(true, { executeDuplicateValidation: true }, inbounds);
 
-            expect((prompt.when as Function)(answers)).toBe(true);
+            const validationResult = (prompt.validate as Function)(inbounds['display-bank'].action, {
+                semanticObject: inbounds['display-bank'].semanticObject
+            } as FLPConfigAnswers);
+            expect(validationResult).toBe(t('validators.duplicateInbound'));
         });
 
-        it('should evaluate "when" to false if inboundId is provided', () => {
-            const answers = { inboundId: 'display' };
-            const prompt = getActionPrompt(false);
+        it('should skip validation for duplicates if request via options', () => {
+            mockValidateText.mockReturnValue(true);
+            const prompt = getActionPrompt(true, { executeDuplicateValidation: false }, inbounds);
 
-            expect((prompt.when as Function)(answers)).toBe(false);
+            const validationResult = (prompt.validate as Function)(inbounds['display-bank'].action, {
+                semanticObject: inbounds['display-bank'].semanticObject
+            } as FLPConfigAnswers);
+            expect(validationResult).toBe(true);
         });
     });
 
@@ -210,7 +256,7 @@ describe('basic prompts', () => {
             const result = messageFn({ semanticObject: 'so1', action: 'act1' });
 
             expect(result).toBe(
-                "An inbound configuration with the key: 'so1-act1' is already defined. Overwrite existing configuration?"
+                'An inbound configuration with the key: so1-act1 is already defined. Choose another key. Overwrite existing configuration?'
             );
         });
 
@@ -231,7 +277,7 @@ describe('basic prompts', () => {
             const result = additionalMessagesFn(null, { semanticObject: 'so1', action: 'act1' });
 
             expect(result).toEqual({
-                message: "An inbound configuration with the key: 'so1-act1' is already defined.",
+                message: 'An inbound configuration with the key: so1-act1 is already defined. Choose another key.',
                 severity: Severity.warning
             });
         });
@@ -268,10 +314,19 @@ describe('basic prompts', () => {
                     breadcrumb: true
                 },
                 message: t('prompts.title'),
-                default: 'Default Title',
+                default: expect.any(Function),
                 filter: expect.any(Function),
                 validate: expect.any(Function)
             });
+        });
+
+        it('should set default to provided value if options.default is given', () => {
+            const existingKeyRef = { value: false };
+            const options = { default: 'Test Title' };
+
+            const prompt = getTitlePrompt(existingKeyRef, false, true, options);
+
+            expect(prompt.default({})).toBe('Test Title');
         });
 
         it('should execute the "when" function correctly', () => {
@@ -322,7 +377,7 @@ describe('basic prompts', () => {
         it('should set default to undefined if no options are provided', () => {
             const prompt = getTitlePrompt({ value: false }, false, true);
 
-            expect(prompt.default).toBeUndefined();
+            expect(prompt.default()).toBe('');
         });
     });
 
@@ -345,9 +400,18 @@ describe('basic prompts', () => {
                     breadcrumb: t('prompts.subTitle')
                 },
                 message: t('prompts.subTitle'),
-                default: 'Default Subtitle',
+                default: expect.any(Function),
                 filter: expect.any(Function)
             });
+        });
+
+        it('should set default to provided value if options.default is given', () => {
+            const existingKeyRef = { value: false };
+            const options = { default: 'Test Subtitle' };
+
+            const prompt = getSubTitlePrompt(existingKeyRef, false, options);
+
+            expect(prompt.default({})).toBe('Test Subtitle');
         });
 
         it('should execute the "when" function correctly', () => {
@@ -374,7 +438,7 @@ describe('basic prompts', () => {
         it('should set default to undefined if no options are provided', () => {
             const prompt = getSubTitlePrompt({ value: false }, false);
 
-            expect(prompt.default).toBeUndefined();
+            expect(prompt.default()).toBe('');
         });
     });
 });

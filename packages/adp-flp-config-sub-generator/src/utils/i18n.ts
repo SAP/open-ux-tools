@@ -2,6 +2,7 @@ import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from '../translations/adp-flp-config-sub-generator.i18n.json';
 import { addi18nResourceBundle as addInquirerCommonResourceBundle } from '@sap-ux/inquirer-common';
+import { addi18nResourceBundle as addFlpConfigInquirerResourceBundler } from '@sap-ux/flp-config-inquirer';
 
 const adpFlpConfigI18nNamespace = 'adp-flp-config-sub-generator';
 export const i18n: i18nNext = i18next.createInstance();
@@ -16,6 +17,7 @@ export async function initI18n(): Promise<void> {
     });
     i18n.addResourceBundle('en', adpFlpConfigI18nNamespace, translations);
     addInquirerCommonResourceBundle();
+    addFlpConfigInquirerResourceBundler();
 }
 
 /**

@@ -24,13 +24,13 @@ import {
     getAnnotations,
     getAppId,
     getCdsAnnotations,
-    getFlpId,
     getMinSupportedUI5Version,
     getODataVersion,
     getReadMeDataSourceLabel,
-    getRequiredOdataVersion,
-    getSemanticObject
+    getRequiredOdataVersion
 } from '../../../src/utils/common';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import type { Logger } from '@sap-ux/logger';
 
 const getProjectTypeMock = jest.fn();
 jest.mock('@sap-ux/project-access', () => ({
@@ -41,6 +41,10 @@ jest.mock('@sap-ux/project-access', () => ({
 
 jest.mock('@sap-ux/fiori-tools-settings', () => ({
     writeApplicationInfoSettings: jest.fn()
+}));
+
+jest.mock('@sap-ux/launch-config', () => ({
+    createLaunchConfig: jest.fn()
 }));
 
 jest.mock('fs', () => {
@@ -55,6 +59,8 @@ jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
     isAppStudio: jest.fn()
 }));
+
+const isAppStudioMock = isAppStudio as jest.Mock;
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
@@ -99,29 +105,13 @@ describe('Test utils', () => {
         expect(getODataVersion(validMetadataV4)).toEqual(OdataVersion.v4);
 
         expect(() => getODataVersion('<?xml version="1.0" encoding="utf-8"?>')).toThrowError(
-            'Application config property edmx cannot be parsed'
+            'Application config property: edmx cannot be parsed.'
         );
     });
 
     test('getAppId', () => {
         const appId = getAppId('testApp', 'a.b.c');
         expect(appId).toBe('a.b.c.testApp');
-    });
-
-    test('getFlpId', () => {
-        const flpId = getFlpId('a.b.c.testApp', 'display');
-        expect(flpId).toBe('abctestApp-display');
-    });
-
-    test('getSematicObject', () => {
-        const semObj = getSemanticObject('a.b.c.#testApp_#');
-        expect(semObj).toBe('abctestApp');
-    });
-
-    test('getSematicObject length', () => {
-        const s = 'a.b.c.#testApp_#'.repeat(10);
-        const semObj = getSemanticObject(s);
-        expect(semObj.length).toBe(30);
     });
 
     test('getMinSupportedUI5Version - LROP v2', () => {
@@ -294,6 +284,7 @@ describe('Test utils', () => {
         });
 
         it('should generate correct launch config for OData v2', async () => {
+            isAppStudioMock.mockReturnValue(true);
             // Call the function under test
             await generateLaunchConfig(
                 {
@@ -306,7 +297,7 @@ describe('Test utils', () => {
                 },
                 editor,
                 mockVsCode,
-                undefined,
+                {} as Logger,
                 false
             );
 
@@ -325,14 +316,16 @@ describe('Test utils', () => {
             const expectedFioriOptions = {
                 name: mockProject.name,
                 projectRoot: projectPath,
-                debugOptions: expectedDebugOptions
+                debugOptions: expectedDebugOptions,
+                startFile: undefined
             };
 
-            await createLaunchConfig(projectPath, expectedFioriOptions, editor);
+            expect(createLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
             expect(writeApplicationInfoSettings).toBeCalledWith(projectPath);
         });
 
         it('should generate correct launch config for OData v4', async () => {
+            isAppStudioMock.mockReturnValue(false);
             await generateLaunchConfig(
                 {
                     targetFolder: mockProject.targetFolder,
@@ -340,19 +333,21 @@ describe('Test utils', () => {
                     flpAppId: mockProject.flpAppId,
                     sapClientParam: buildSapClientParam('001'),
                     odataVersion: OdataVersion.v4,
-                    datasourceType: 'odataServiceUrl' as DatasourceType
+                    datasourceType: 'odataServiceUrl' as DatasourceType,
+                    enableVirtualEndpoints: true
                 },
                 editor,
                 mockVsCode,
-                undefined,
+                {} as Logger,
                 true
             );
 
             const expectedDebugOptions: DebugOptions = {
+                addStartCmd: true,
                 vscode: mockVsCode,
                 sapClientParam: 'sap-client=001',
-                flpAppId: mockProject.flpAppId,
-                flpSandboxAvailable: true,
+                flpAppId: 'app-preview',
+                flpSandboxAvailable: false,
                 isAppStudio: false,
                 odataVersion: '4.0',
                 writeToAppOnly: true
@@ -361,13 +356,15 @@ describe('Test utils', () => {
             const expectedFioriOptions: FioriOptions = {
                 name: mockProject.name,
                 projectRoot: projectPath,
-                debugOptions: expectedDebugOptions
+                debugOptions: expectedDebugOptions,
+                startFile: 'test/flp.html'
             };
-            await createLaunchConfig(projectPath, expectedFioriOptions, editor);
+            expect(createLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
             expect(writeApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
 
         it('should not set odataVersion if service version is not OData v2 or v4', async () => {
+            isAppStudioMock.mockReturnValue(false);
             await generateLaunchConfig(
                 {
                     targetFolder: mockProject.targetFolder,
@@ -377,12 +374,13 @@ describe('Test utils', () => {
                     datasourceType: 'odataServiceUrl' as DatasourceType
                 },
                 editor,
-                mockVsCode
+                mockVsCode,
+                {} as Logger
             );
 
             const expectedDebugOptions: DebugOptions = {
                 vscode: mockVsCode,
-                sapClientParam: '',
+                sapClientParam: 'sap-client=001',
                 addStartCmd: true,
                 flpAppId: mockProject.flpAppId,
                 flpSandboxAvailable: true,
@@ -393,10 +391,11 @@ describe('Test utils', () => {
             const expectedFioriOptions: FioriOptions = {
                 name: mockProject.name,
                 projectRoot: projectPath,
-                debugOptions: expectedDebugOptions
+                debugOptions: expectedDebugOptions,
+                startFile: undefined
             };
 
-            await createLaunchConfig(projectPath, expectedFioriOptions, editor);
+            expect(createLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
             expect(writeApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
     });

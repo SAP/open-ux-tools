@@ -147,4 +147,18 @@ export type AbapCDSView = {
 };
 
 export type PublishResponse = { SEVERITY: string; SHORT_TEXT: string; LONG_TEXT: string };
+
+// messages com.sap.adt.StatusMessage
+export type ValidationMessage = {
+    severity?: string;
+    text?: string;
+};
+
+// details of a generated OData service, needed to determine service URI
+export type ODataServiceTechnicalDetails = {
+    serviceName: string;
+    serviceVersion: string;
+    serviceDefinitionName: string;
+};
+
 export type ValidationResponse = { severity: string; short_text: string; long_text: string };

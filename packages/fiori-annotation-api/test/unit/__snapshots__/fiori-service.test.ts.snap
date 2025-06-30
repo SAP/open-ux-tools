@@ -18,6 +18,47 @@ exports[`fiori annotation service delete annotation all annotations EDMXBackend 
 "
 `;
 
+exports[`fiori annotation service delete annotation cds clean up related flattened structures preserve other target annotations 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
+
+                    @UI.HeaderInfo.TypeName : 'Incident'
+                    annotate service.IncidentFlow with @UI.HeaderInfo.@Core.Description : 'description';
+
+                    annotate service.Incidents with @(
+                        ![UI.HeaderInfo#abc.TypeName] : 'Incident',
+                        ![UI.HeaderInfo#abc.TypeNamePlural] : 'Incidents',
+                    );
+                    "
+`;
+
+exports[`fiori annotation service delete annotation cds clean up related flattened structures with annotation group 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
+                    "
+`;
+
+exports[`fiori annotation service delete annotation cds clean up related flattened structures with embedded annotation 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
+                    "
+`;
+
+exports[`fiori annotation service delete annotation cds clean up related flattened structures with properties and embedded annotation 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+                    using from '../../srv/common';
+
+                    "
+`;
+
 exports[`fiori annotation service delete annotation embedded annotation from nested record CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
@@ -60,8 +101,8 @@ exports[`fiori annotation service delete annotation embedded annotation from roo
 
 annotate service.test with @(
     UI.LineItem : [
-        ]
-);
+    ],
+    );
 
 "
 `;
@@ -93,7 +134,8 @@ using from '../../srv/common';
 
 
 annotate service.Incidents with {
-    category @(Common.ValueListWithFixedValues : true
+    category @(
+        Common.ValueListWithFixedValues : true,
 )};
 
 "
@@ -136,7 +178,7 @@ exports[`fiori annotation service delete annotation with no qualifier CAPNodejs 
 
 annotate service.test with @(
     UI.LineItem #qualifier : [
-    ]
+    ],
 );
 
 "
@@ -186,8 +228,8 @@ exports[`fiori annotation service delete annotation with qualifier CAPNodejs cap
 
 annotate service.test with @(
     UI.LineItem : [
-    ]
-);
+    ],
+    );
 
 "
 `;
@@ -598,7 +640,8 @@ exports[`fiori annotation service insert SAP annotations for CDS projects UI.Fac
 "using IncidentService as service from '../../srv/incidentservice';
 
 annotate service.Incidents with {
-    path @(UI.fieldGroup : [
+    path @(
+        UI.fieldGroup : [
             {
                 position : 10,
                 qualifier : 'GeneralInformation',
@@ -612,7 +655,7 @@ annotate service.Incidents with {
                 targetQualifier : 'GeneralInformation',
                 position : 10,
             },
-        ]
+        ],
 )};
 
 "
@@ -622,13 +665,14 @@ exports[`fiori annotation service insert SAP annotations for CDS projects UI.Lin
 "using IncidentService as service from '../../srv/incidentservice';
 
 annotate service.Incidents with {
-    path @(UI.lineItem : [
+    path @(
+        UI.lineItem : [
             {
                 position : 10,
                 importance : #HIGH,
             },
         ],
-        EndUserText.label : 'Test Label'
+        EndUserText.label : 'Test Label',
 )};
 
 "
@@ -637,13 +681,14 @@ annotate service.Incidents with {
 exports[`fiori annotation service insert SAP annotations for CDS projects external cds file CAPNodejs cap-start v4 1`] = `
 "using from '../data/cds/cap-start/srv/incidentservice';
 annotate IncidentService.Incidents with {
-    path @(UI.lineItem : [
+    path @(
+        UI.lineItem : [
             {
                 position : 10,
                 importance : #HIGH,
             },
         ],
-        EndUserText.label : 'Test Label'
+        EndUserText.label : 'Test Label',
 )};
 
 "
@@ -820,14 +865,12 @@ exports[`fiori annotation service insert embedded annotation and update collecti
 "using IncidentService as service from '../../srv/incidentservice';
 
 annotate service.test with @(
-    UI.LineItem : {
-        $value : [
-            {
-                $Type : 'UI.DataFieldForAnnotation',
-            },
-        ],
-        ![@UI.Criticality] : value
-    }
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataFieldForAnnotation',
+        },
+    ],
+    UI.LineItem.@UI.Criticality : value,
 );
 
 "
@@ -864,8 +907,8 @@ annotate service.test with @(
     UI.FieldGroup : {
         Data : [
         ],
-        ![@UI.Hidden],
-    }
+    },
+    UI.FieldGroup.@UI.Hidden,
 );
 
 "
@@ -904,7 +947,7 @@ annotate service.test with @(
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            ![@UI.Hidden] : true,
+            @UI.Hidden : true,
         },
     ]
 );
@@ -941,11 +984,9 @@ exports[`fiori annotation service insert embedded annotation in root CAPNodejs c
 "using IncidentService as service from '../../srv/incidentservice';
 
 annotate service.test with @(
-    UI.LineItem : {
-        $value : [
-        ],
-        ![@UI.Hidden] : true
-    }
+    UI.LineItem : [
+    ],
+    UI.LineItem.@UI.Hidden : true,
 );
 
 "
@@ -973,19 +1014,21 @@ exports[`fiori annotation service insert embedded annotation in root EDMXBackend
 "
 `;
 
+exports[`fiori annotation service insert embedded annotation no existing annotation CAPNodejs cap-start v4 1`] = `"Term 'IncidentService.test/com.sap.vocabularies.UI.v1.LineItem' does not exist"`;
+
+exports[`fiori annotation service insert embedded annotation no existing annotation EDMXBackend xml-start v4 1`] = `"Term 'IncidentService.test/com.sap.vocabularies.UI.v1.LineItem' does not exist"`;
+
 exports[`fiori annotation service insert embedded annotation subsequent inserts CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
 annotate service.test with @(
-    UI.LineItem : {
-        $value : [
-            {
-                $Type : 'UI.DataField',
-                Value : a,
-            },
-        ],
-        ![@UI.Hidden] : true,
-    }
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : a,
+        },
+    ],
+    UI.LineItem.@UI.Hidden : true,
 );
 
 "
@@ -1023,10 +1066,10 @@ using from '../../srv/common';
 
 
 annotate service.Incidents with {
-    category @Common.Text : {
-        $value : descr,
-        ![@UI.TextArrangement] : #TextFirst
-    }
+    category @(
+        Common.Text : descr,
+        Common.Text.@UI.TextArrangement : #TextFirst,
+    )
 };
 
 "
@@ -1098,7 +1141,7 @@ annotate service.Incidents with @(
     UI.LineItem : [
         {
             $Type : 'UI.DataField',
-            ![@UI.Hidden] : Test,
+            @UI.Hidden : Test,
         },
     ]
 );
@@ -1406,7 +1449,7 @@ annotate service.test with @(
         },
         {
             $Type : 'UI.DataField',
-            ![@UI.Importance] : 'Test',
+            @UI.Importance : 'Test',
             Value : path,
         },
     ]
@@ -1425,7 +1468,7 @@ annotate service.test with @(
             Value : path,
         },
         {
-            ![@UI.Importance] : 'Test',
+            @UI.Importance : 'Test',
             Value : path,
         },
     ]
@@ -1815,7 +1858,7 @@ annotate service.test with @(
     UI.LineItem : [
     ],
     UI.LineItem #second : [
-    ]
+    ],
 );
 
 annotate service.test with {
@@ -2179,7 +2222,7 @@ annotate service.test with @(
             $Type : 'UI.DataField',
             Value : test1,
         },
-    ]
+    ],
 );
 
 "
@@ -3385,19 +3428,17 @@ exports[`fiori annotation service update collection collection with annotation C
 "using IncidentService as service from '../../srv/incidentservice';
 
 annotate service.test with @(
-    UI.LineItem : {
-        $value : [
-            {
-                $Type : 'UI.DataField',
-                Value : path,
-            },
-            {
-                $Type : 'UI.DataField',
-                Value : path2,
-            },
-        ],
-        ![@UI.Criticality] : criticality,
-    }
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : path,
+        },
+        {
+            $Type : 'UI.DataField',
+            Value : path2,
+        },
+    ],
+    UI.LineItem.@UI.Criticality : criticality,
 );
 
 "
@@ -3706,7 +3747,7 @@ annotate service.test with @(
         {
             $Type : 'UI.DataField',
             Value : path,
-            ![@UI.Importance] : #Medium,
+            @UI.Importance : #Medium,
         },
     ]
 );
@@ -3910,7 +3951,7 @@ annotate service.Incidents with @(
         {
             $Type : 'UI.DataFieldForAnnotation',
             Target : 'incidentFlow/@UI.LineItem',
-            ![@UI.Hidden] : incidentFlow.incident.createdBy,
+            @UI.Hidden : incidentFlow.incident.createdBy,
         },
         {
             $Type : 'UI.DataFieldForIntentBasedNavigation',
@@ -4089,13 +4130,24 @@ using from '../../srv/common';
 
 
 annotate service.Individual with {
-    createdAt @Common.Text : {
-        $value : undefined,
-        ![@UI.TextArrangement] : #TextFirst,
-    }
-};
+    createdAt @(
+        Common.Text,
+        Common.Text.@UI.TextArrangement : #TextFirst,
+)};
 
 "
+`;
+
+exports[`fiori annotation service using change embedded annotation with update 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+
+            annotate service.Individual with {
+                createdAt @(
+                    Common.Text            : createdBy,
+                    Common.Text.@UI.TextArrangement : #TextFirst,
+                )
+            };"
 `;
 
 exports[`serializeTarget cds Delete Criticality and criticality Representation 1`] = `

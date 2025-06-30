@@ -1,24 +1,27 @@
 {
     "yuiNavSteps": {
-        "flpCredentialsName": "FLP Configuration - Credentials",
-        "flpCredentialsDesc": "Enter credentials for your adaptation project's system ({{- system}})",
-        "sysConfirmDesc": "Validates connection to configured system",
-        "flpConfigName": "FLP Configuration",
-        "flpConfigDesc": "FLP Configuration for {{- projectName}}"
+        "flpCredentialsName": "SAP Fiori Launchpad Configuration - Credentials",
+        "flpCredentialsDesc": "Enter credentials for your adaptation project's system: ({{- system}}).",
+        "sysConfirmDesc": "Validates connection to the configured system.",
+        "flpConfigName": "SAP Fiori Launchpad Configuration",
+        "flpConfigDesc": "SAP Fiori launchpad configuration for {{- projectName}}."
     },
     "info": {
-        "flpConfigAdded": "FLP Configuration added successfully"
+        "flpConfigAdded": "SAP Fiori launchpad configuration added."
     },
     "error": {
-        "projectNotSupported": "Unable to find a supported adaptation project",
-        "fetchingManifest": "Error fetching merged manifest for base application",
-        "destinationNotFound": "Missing destination configuration in ui5.yaml",
-        "destinationNotInSubaccount": "Destination not found in the subaccount: {{- destination}}",
-        "systemNotFound": "Missing system configuration in ui5.yaml",
-        "systemNotFoundInStore" : "System not found in the system store: {{- systemUrl}}",
-        "writingPhase": "Error in writing phase of the adaptation project FLP configuration",
-        "telemetry": "Error sending telemetry data: {{- error}}",
-        "updatingApp": "Error updating app with FLP configuration. Inspect the logs for full error.",
-        "authenticationFailed": "Authentication failed."
+        "projectNotSupported": "Unable to find a supported adaptation project.",
+        "fetchingManifest": "An error occurred when fetching the merged `manifest.json` file for the base application.",
+        "destinationNotFound": "Missing destination configuration in the `ui5.yaml` file.",
+        "destinationNotInSubaccount": "Destination not found in the subaccount: {{- destination}}.",
+        "systemNotFound": "Missing system configuration in the `ui5.yaml` file.",
+        "systemNotFoundInStore": "System not found in the system store: {{- systemUrl}}.",
+        "writingPhase": "An error occurred in the writing phase of the adaptation project's SAP Fiori launchpad configuration.",
+        "telemetry": "An error occurred when sending telemetry data. Error: {{- error}}.",
+        "updatingApp": "An error occurred updating the application with the SAP Fiori launchpad configuration. For more information, view the logs.",
+        "authenticationFailed": "Authentication failed.",
+        "projectNotCloudReady": "FLP Configuration is supported for Cloud Ready adaptation projects only",
+        "baseAppInboundsFetching": "Error while fetching base application inbounds",
+        "warningCachingNotSupported": "Warning: caching is not supported"
     }
 }

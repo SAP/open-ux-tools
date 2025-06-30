@@ -12,28 +12,36 @@ import {
     getConfiguredProvider,
     getProviderConfig,
     loadApps,
-    validateUI5VersionExists
+    validateUI5VersionExists,
+    getBaseAppInbounds
 } from '@sap-ux/adp-tooling';
 import * as Logger from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
-import type { Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
+import type { ManifestNamespace } from '@sap-ux/project-access';
+import { isCli, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
-import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import type { AttributesAnswers, ConfigAnswers, Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
 
+import {
+    existsInWorkspace,
+    showWorkspaceFolderWarning,
+    handleWorkspaceFolderChoice,
+    workspaceChoices
+} from '../src/utils/workspace';
 import adpGenerator from '../src/app';
 import { initI18n, t } from '../src/utils/i18n';
 import type { JsonInput } from '../src/app/types';
 import { EventName } from '../src/telemetryEvents';
 import type { AdpGeneratorOptions } from '../src/app';
+import * as subgenHelpers from '../src/utils/subgenHelpers';
 import { ConfigPrompter } from '../src/app/questions/configuration';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
 
-jest.mock('@sap-devx/feature-toggle-node', () => ({
-    // Is BAS this will mean that the layer is CUSTOMER_BASE
-    isFeatureEnabled: jest.fn().mockResolvedValue(false)
+jest.mock('@sap-ux/feature-toggle', () => ({
+    isInternalFeaturesSettingEnabled: jest.fn().mockReturnValue(false)
 }));
 
 jest.mock('../src/app/questions/helper/default-values.ts', () => ({
@@ -73,13 +81,17 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     loadApps: jest.fn(),
     getProviderConfig: jest.fn(),
     validateUI5VersionExists: jest.fn(),
-    fetchPublicVersions: jest.fn()
+    fetchPublicVersions: jest.fn(),
+    isCFEnvironment: jest.fn().mockReturnValue(false),
+    getBaseAppInbounds: jest.fn()
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
     ...jest.requireActual('../src/utils/deps.ts'),
     getPackageInfo: jest.fn().mockReturnValue({ name: '@sap-ux/generator-adp', version: 'mocked-version' })
 }));
+
+jest.mock('../src/utils/appWizardCache.ts');
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
@@ -93,7 +105,7 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     },
     isExtensionInstalled: jest.fn().mockReturnValue(true),
     getHostEnvironment: jest.fn(),
-    isCli: jest.fn().mockReturnValue(false),
+    isCli: jest.fn(),
     getDefaultTargetFolder: jest.fn().mockReturnValue(undefined)
 }));
 
@@ -104,6 +116,13 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 jest.mock('uuid', () => ({
     v4: jest.fn().mockReturnValue('mocked-uuid')
+}));
+
+jest.mock('../src/utils/workspace', () => ({
+    ...jest.requireActual('../src/utils/workspace'),
+    existsInWorkspace: jest.fn(),
+    showWorkspaceFolderWarning: jest.fn(),
+    handleWorkspaceFolderChoice: jest.fn()
 }));
 
 const originalCwd = process.cwd();
@@ -123,19 +142,39 @@ const apps: SourceApplication[] = [
     }
 ];
 
-const answers = {
+const answers: ConfigAnswers & AttributesAnswers = {
     system: 'urlA',
     username: 'user1',
     password: 'pass1',
-    application: { id: 'sap.ui.demoapps.f1', title: 'App One' },
+    application: apps[0],
     projectName: 'app.variant',
     namespace: 'customer.app.variant',
     title: 'App Title',
     ui5Version: '1.134.1',
     targetFolder: testOutputDir,
     enableTypeScript: false,
-    shouldCreateExtProject: false
+    shouldCreateExtProject: false,
+    addDeployConfig: false,
+    addFlpConfig: false
 };
+
+const inbounds = {
+    'display-bank': {
+        semanticObject: 'test',
+        action: 'action',
+        title: 'testTitle',
+        subTitle: 'testSubTitle',
+        icon: 'sap-icon://test',
+        signature: {
+            parameters: {
+                param1: {
+                    value: 'test1',
+                    isRequired: true
+                }
+            }
+        }
+    }
+} as unknown as ManifestNamespace.Inbound;
 
 const activeLanguages: Language[] = [{ sap: 'value', i18n: 'DE' }];
 const adaptationProjectTypes: AdaptationProjectType[] = [AdaptationProjectType.CLOUD_READY];
@@ -166,23 +205,44 @@ const loggerMock: ToolsLogger = {
 jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 const executeCommandSpy = jest.fn();
+const showWarningMessageSpy = jest.fn();
+const getWorkspaceFolderSpy = jest.fn();
+const onDidChangeWorkspaceFoldersSpy = jest.fn();
+const updateWorkspaceFoldersSpy = jest.fn();
+
 const vscodeMock = {
     commands: {
-        executeCommand: executeCommandSpy
+        executeCommand: executeCommandSpy.mockResolvedValue(undefined)
+    },
+    window: {
+        showWarningMessage: showWarningMessageSpy
+    },
+    workspace: {
+        getWorkspaceFolder: getWorkspaceFolderSpy,
+        workspaceFolders: [],
+        onDidChangeWorkspaceFolders: onDidChangeWorkspaceFoldersSpy,
+        updateWorkspaceFolders: updateWorkspaceFoldersSpy
+    },
+    Uri: {
+        file: jest.fn((path: string) => ({ path }))
     }
 };
 
+const isCliMock = isCli as jest.Mock;
 const loadAppsMock = loadApps as jest.Mock;
 const execMock = exec as unknown as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 const getProviderConfigMock = getProviderConfig as jest.Mock;
 const fetchPublicVersionsMock = fetchPublicVersions as jest.Mock;
 const sendTelemetryMock = sendTelemetry as jest.Mock;
-const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
+const existsInWorkspaceMock = existsInWorkspace as jest.Mock;
+const showWorkspaceFolderWarningMock = showWorkspaceFolderWarning as jest.Mock;
+const handleWorkspaceFolderChoiceMock = handleWorkspaceFolderChoice as jest.Mock;
 const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 const getCredentialsFromStoreMock = getCredentialsFromStore as jest.Mock;
 const validateUI5VersionExistsMock = validateUI5VersionExists as jest.Mock;
+const getBaseAppInboundsMock = getBaseAppInbounds as jest.Mock;
 
 describe('Adaptation Project Generator Integration Test', () => {
     jest.setTimeout(60000);
@@ -206,7 +266,7 @@ describe('Adaptation Project Generator Integration Test', () => {
         execMock.mockImplementation((_: string, callback: Function) => {
             callback(null, { stdout: 'ok', stderr: '' });
         });
-        getHostEnvironmentMock.mockReturnValue(hostEnvironment.vscode);
+        isCliMock.mockReturnValue(false);
         getProviderConfigMock.mockResolvedValue({ url: 'urlA', client: '010' });
         isAbapCloudMock.mockResolvedValue(false);
         getAtoInfoMock.mockResolvedValue({ operationsType: 'P' });
@@ -215,6 +275,9 @@ describe('Adaptation Project Generator Integration Test', () => {
         getCredentialsFromStoreMock.mockResolvedValue(undefined);
 
         fetchPublicVersionsMock.mockResolvedValue(publicVersions);
+        existsInWorkspaceMock.mockReturnValue(true);
+        showWorkspaceFolderWarningMock.mockResolvedValue(workspaceChoices.OPEN_FOLDER);
+        handleWorkspaceFolderChoiceMock.mockResolvedValue(undefined);
     });
 
     beforeAll(async () => {
@@ -245,7 +308,8 @@ describe('Adaptation Project Generator Integration Test', () => {
 
     it('should call composeWith to generate an extension project in case the application is not supported', async () => {
         mockIsAppStudio.mockReturnValue(false);
-        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
+        jest.spyOn(Generator.prototype, 'composeWith');
+        const addExtProjectGenSpy = jest.spyOn(subgenHelpers, 'addExtProjectGen').mockResolvedValue();
 
         const runContext = yeomanTest
             .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
@@ -254,15 +318,75 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(composeWithSpy).toHaveBeenCalledWith(
-            expect.stringMatching(''),
+        expect(addExtProjectGenSpy).toHaveBeenCalledWith(
             expect.objectContaining({
-                arguments: [
-                    '{"destination":{"name":"SystemA"},"applicationNS":"customer.app.variant","applicationName":"app.variant","userUI5Ver":"1.134.1","namespace":"sap.ui.demoapps.f1"}'
-                ],
-                appWizard: expect.anything()
-            })
+                attributeAnswers: {
+                    addDeployConfig: false,
+                    namespace: 'customer.app.variant',
+                    projectName: 'app.variant',
+                    targetFolder: testOutputDir,
+                    title: 'App Title',
+                    ui5Version: '1.134.1'
+                },
+                configAnswers: {
+                    application: apps[0],
+                    shouldCreateExtProject: true,
+                    system: 'urlA'
+                },
+                systemLookup: expect.any(Object)
+            }),
+            expect.any(Function),
+            expect.any(Object),
+            expect.any(Object)
         );
+    });
+
+    it('should call composeWith for FLP and Deploy sub-generators and generate a cloud project successfully', async () => {
+        mockIsAppStudio.mockReturnValue(false);
+        existsInWorkspaceMock.mockReturnValue(false);
+        jest.spyOn(ConfigPrompter.prototype, 'isCloud', 'get').mockReturnValue(true);
+        jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
+        getBaseAppInboundsMock.mockResolvedValue(inbounds);
+
+        const addDeployGenSpy = jest.spyOn(subgenHelpers, 'addDeployGen').mockReturnValue();
+        const addFlpGenSpy = jest.spyOn(subgenHelpers, 'addFlpGen').mockReturnValue();
+
+        const runContext = yeomanTest
+            .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+            .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+            .withPrompts({ ...answers, addDeployConfig: true, addFlpConfig: true });
+
+        await expect(runContext.run()).resolves.not.toThrow();
+
+        expect(addDeployGenSpy).toHaveBeenCalledWith(
+            {
+                client: '010',
+                connectedSystem: 'urlA',
+                projectName: 'app.variant',
+                targetFolder: testOutputDir
+            },
+            expect.any(Function),
+            expect.any(Object),
+            expect.any(Object)
+        );
+
+        expect(addFlpGenSpy).toHaveBeenCalledWith(
+            {
+                inbounds: inbounds,
+                projectRootPath: join(testOutputDir, answers.projectName),
+                vscode: vscodeMock
+            },
+            expect.any(Function),
+            expect.any(Object),
+            expect.any(Object)
+        );
+
+        expect(executeCommandSpy).toHaveBeenCalledTimes(0);
+        expect(showWorkspaceFolderWarningMock).toHaveBeenCalledTimes(1);
+        expect(handleWorkspaceFolderChoiceMock).toHaveBeenCalledTimes(1);
+
+        const generatedDirs = fs.readdirSync(testOutputDir);
+        expect(generatedDirs).toContain(answers.projectName);
     });
 
     it('should generate an onPremise adaptation project successfully', async () => {
