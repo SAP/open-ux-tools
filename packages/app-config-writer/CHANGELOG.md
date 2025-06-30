@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.6.19
+
+### Patch Changes
+
+-   a9df80c: fix ui5.yaml file path error
+
 ## 0.6.18
 
 ### Patch Changes
