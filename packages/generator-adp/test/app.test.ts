@@ -321,10 +321,8 @@ describe('Adaptation Project Generator Integration Test', () => {
         expect(addExtProjectGenSpy).toHaveBeenCalledWith(
             expect.objectContaining({
                 attributeAnswers: {
-                    addDeployConfig: false,
                     namespace: 'customer.app.variant',
                     projectName: 'app.variant',
-                    targetFolder: testOutputDir,
                     title: 'App Title',
                     ui5Version: '1.134.1'
                 },
