@@ -703,8 +703,8 @@ id="<%- ids.customActionButton %>"`);
             error: jest.fn()
         };
 
-        const path = 'project/path';
-        const fragmentName = 'changes/fragments/test';
+        const pathOfProject = 'project/path';
+        const fragmentName = path.join(...'changes/fragments/test'.split('/'));
         beforeEach(() => {
             mockFs.exists.mockClear();
             mockFs.copy.mockClear();
@@ -721,7 +721,7 @@ id="<%- ids.customActionButton %>"`);
             });
 
             addCustomSectionFragment(
-                path,
+                pathOfProject,
                 {
                     changeType: 'appdescr_fe_changePageConfiguration',
                     content: {
@@ -751,7 +751,7 @@ id="<%- ids.customActionButton %>"`);
         id="<%- ids.objectPageSubSection %>"
         id="<%- ids.hBox %>"`);
                 addCustomSectionFragment(
-                    path,
+                    pathOfProject,
                     {
                         projectId: 'adp.v1',
                         changeType: 'appdescr_fe_changePageConfiguration',
