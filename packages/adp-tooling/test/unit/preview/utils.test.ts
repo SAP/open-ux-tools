@@ -1,5 +1,6 @@
 import { DirName } from '@sap-ux/project-access';
 import { getFragmentPathFromTemplate } from '../../../src/preview/utils';
+import { sep } from 'path';
 
 describe('getFragmentPathFromTemplate', () => {
     const mockChange = {
@@ -21,12 +22,12 @@ describe('getFragmentPathFromTemplate', () => {
     it('should handle template with more than two segments', () => {
         const template = 'adp.v2.changes.fragments.Hello';
         const path = getFragmentPathFromTemplate(template, mockChange);
-        expect(path).toBe('changes/fragments/Hello');
+        expect(path).toBe(['changes', 'fragments', 'Hello'].join(sep));
     });
 
     it('should handle template with projectId.changes.fragments and namespace', () => {
         const template = 'myspace.changes.fragments.Hello';
         const path = getFragmentPathFromTemplate(template, { projectId: 'myspace' } as any);
-        expect(path).toBe(`${DirName.Changes}/${DirName.Fragments}/Hello`);
+        expect(path).toBe([DirName.Changes, DirName.Fragments, 'Hello'].join(sep));
     });
 });
