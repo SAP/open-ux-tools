@@ -32,7 +32,7 @@ import type {
 } from '@sap-ux/odata-annotation-core-types';
 
 import { MetadataService } from '@sap-ux/odata-entity-model';
-import { normalizePath, type Project } from '@sap-ux/project-access';
+import type { Project } from '@sap-ux/project-access';
 import type { Record } from '@sap-ux/cds-annotation-parser';
 import {
     ANNOTATION_GROUP_ITEMS_TYPE,
@@ -94,7 +94,7 @@ import { getMissingRefs } from './references';
 import { addAllVocabulariesToAliasInformation } from '../vocabularies';
 import { CDS_DOCUMENT_TYPE, getDocument, getGhostFileDocument } from './document';
 import { convertPointer, getAstNodesFromPointer } from './pointer';
-import { getGenericNodeFromPointer, PRIMITIVE_TYPE_NAMES } from '../utils';
+import { getGenericNodeFromPointer, pathFromUri, PRIMITIVE_TYPE_NAMES } from '../utils';
 import {
     INSERT_PRIMITIVE_VALUE_TYPE,
     INSERT_TARGET_CHANGE_TYPE,
@@ -501,7 +501,7 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
             const normalizedReferences = [...missingReferences].map((reference) => {
                 if (reference.startsWith('file://')) {
                     // uri => convert to relative path to root
-                    const path = normalizePath(reference);
+                    const path = pathFromUri(reference);
                     return relative(this.project.root, path);
                 } else {
                     return reference;
