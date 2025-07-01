@@ -1,5 +1,77 @@
 # @sap-ux/preview-middleware
 
+## 0.20.47
+
+### Patch Changes
+
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/adp-tooling@0.14.34
+
+## 0.20.46
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/adp-tooling@0.14.33
+    -   @sap-ux/system-access@0.6.9
+
+## 0.20.45
+
+### Patch Changes
+
+-   0db69d6: fix: wrong property path used for Show Counts configuration change
+
+## 0.20.44
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.32
+-   @sap-ux/system-access@0.6.9
+
+## 0.20.43
+
+### Patch Changes
+
+-   Updated dependencies [83109eb]
+    -   @sap-ux/adp-tooling@0.14.31
+
+## 0.20.42
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.30
+
+## 0.20.41
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/adp-tooling@0.14.29
+    -   @sap-ux/system-access@0.6.8
+    -   @sap-ux/project-access@1.30.3
+
+## 0.20.40
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.28
+-   @sap-ux/system-access@0.6.7
+
+## 0.20.39
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.27
+-   @sap-ux/system-access@0.6.6
+
+## 0.20.38
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.26
+-   @sap-ux/system-access@0.6.5
+
 ## 0.20.37
 
 ### Patch Changes

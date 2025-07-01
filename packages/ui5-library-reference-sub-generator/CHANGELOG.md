@@ -1,5 +1,51 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.18
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/ui5-library-reference-inquirer@0.4.18
+    -   @sap-ux/fiori-generator-shared@0.12.13
+
+## 0.1.17
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/fiori-generator-shared@0.12.12
+    -   @sap-ux/telemetry@0.6.6
+    -   @sap-ux/ui5-library-reference-inquirer@0.4.17
+    -   @sap-ux/ui5-library-reference-writer@0.2.4
+
+## 0.1.16
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.5
+-   @sap-ux/fiori-generator-shared@0.12.11
+-   @sap-ux/ui5-library-reference-inquirer@0.4.16
+
+## 0.1.15
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+    -   @sap-ux/ui5-library-reference-inquirer@0.4.15
+
+## 0.1.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/fiori-generator-shared@0.12.9
+-   @sap-ux/telemetry@0.6.4
+-   @sap-ux/ui5-library-reference-inquirer@0.4.14
+-   @sap-ux/ui5-library-reference-writer@0.2.3
+
 ## 0.1.13
 
 ### Patch Changes

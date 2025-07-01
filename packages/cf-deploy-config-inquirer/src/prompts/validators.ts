@@ -84,9 +84,10 @@ export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployC
         return t('errors.noMtaIdError');
     }
     if (input.length > 100) {
-        return t('errors.invalidMtaIdError');
+        return t('errors.mtaIdLengthError');
     }
-    const idPattern = /^[a-zA-Z_]+[a-zA-Z0-9_\-.]*$/;
+    // The MTA ID must start with a letter (a–z, A–Z). After the first character, any combination of letters, numbers, underscores (_), hyphens (-), or dots (.) is allowed.
+    const idPattern = /^[a-zA-Z][a-zA-Z0-9_\-.]*$/;
     if (!idPattern.exec(input)) {
         return t('errors.invalidMtaIdError');
     }
@@ -95,7 +96,7 @@ export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployC
     }
     const mtaPath = previousAnswers.mtaPath || '';
     // Windows path length validation
-    const winPathResult = validateWindowsPathLength(join(mtaPath, input), t('error.windowsMtaIdPathTooLong'));
+    const winPathResult = validateWindowsPathLength(join(mtaPath, input), t('errors.windowsMtaIdPathTooLong'));
     if (winPathResult !== true) {
         return winPathResult;
     }

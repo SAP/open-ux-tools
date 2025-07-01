@@ -1,5 +1,41 @@
 # @sap-ux/inquirer-common
 
+## 0.7.18
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/fiori-generator-shared@0.12.13
+
+## 0.7.17
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.12
+-   @sap-ux/telemetry@0.6.6
+
+## 0.7.16
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.5
+-   @sap-ux/fiori-generator-shared@0.12.11
+
+## 0.7.15
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+
+## 0.7.14
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.9
+-   @sap-ux/telemetry@0.6.4
+
 ## 0.7.13
 
 ### Patch Changes

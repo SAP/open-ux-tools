@@ -27,7 +27,7 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"description\\": \\"Description of test.me\\",
+  \\"description\\": \\"Description of test.me.\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -36,7 +36,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -1213,7 +1213,7 @@ export default class NotFound extends BaseController {
 appTitle=My Test App
 
 #YDES: Application description
-appDescription=Description of test.me
+appDescription=Description of test.me.
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
@@ -2138,7 +2138,7 @@ export function createDeviceModel () {
             applications: {
                 \\"testme-display\\": {
                     title: \\"My Test App\\",
-                    description: \\"Description of test.me\\",
+                    description: \\"Description of test.me.\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
@@ -2754,7 +2754,7 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"description\\": \\"Description of test.me\\",
+  \\"description\\": \\"Description of test.me.\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -2763,7 +2763,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -3940,7 +3940,7 @@ export default class NotFound extends BaseController {
 appTitle=My Test App
 
 #YDES: Application description
-appDescription=Description of test.me
+appDescription=Description of test.me.
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
@@ -4865,7 +4865,7 @@ export function createDeviceModel () {
             applications: {
                 \\"testme-display\\": {
                     title: \\"My Test App\\",
-                    description: \\"Description of test.me\\",
+                    description: \\"Description of test.me.\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
@@ -5481,7 +5481,7 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"description\\": \\"Description of test.me\\",
+  \\"description\\": \\"Description of test.me.\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -5490,7 +5490,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/types\\": \\"~1.113.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -6667,7 +6667,7 @@ export default class NotFound extends BaseController {
 appTitle=My Test App
 
 #YDES: Application description
-appDescription=Description of test.me
+appDescription=Description of test.me.
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
@@ -7592,7 +7592,7 @@ export function createDeviceModel () {
             applications: {
                 \\"testme-display\\": {
                     title: \\"My Test App\\",
-                    description: \\"Description of test.me\\",
+                    description: \\"Description of test.me.\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
@@ -8211,7 +8211,7 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"description\\": \\"Description of test.me\\",
+  \\"description\\": \\"Description of test.me.\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -8220,7 +8220,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"eslint\\": \\"8.57.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
@@ -9321,7 +9321,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
 appTitle=My Test App
 
 #YDES: Application description
-appDescription=Description of test.me
+appDescription=Description of test.me.
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
@@ -10235,7 +10235,7 @@ function (JSONModel, Device) {
             applications: {
                 \\"testme-display\\": {
                     title: \\"My Test App\\",
-                    description: \\"Description of test.me\\",
+                    description: \\"Description of test.me.\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"
@@ -10793,7 +10793,7 @@ archive.zip
     "contents": "{
   \\"name\\": \\"test.me\\",
   \\"version\\": \\"0.0.1\\",
-  \\"description\\": \\"Description of test.me\\",
+  \\"description\\": \\"Description of test.me.\\",
   \\"keywords\\": [
     \\"ui5\\",
     \\"openui5\\",
@@ -10802,7 +10802,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -11920,7 +11920,7 @@ export default class NotFound extends BaseController {
 appTitle=My Test App
 
 #YDES: Application description
-appDescription=Description of test.me
+appDescription=Description of test.me.
 #~~~ List View ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 #XTIT: List view title with placeholder for the number of items
@@ -12815,7 +12815,7 @@ export function createDeviceModel () {
             applications: {
                 \\"testme-display\\": {
                     title: \\"My Test App\\",
-                    description: \\"Description of test.me\\",
+                    description: \\"Description of test.me.\\",
                     additionalInformation: \\"SAPUI5.Component=test.me\\",
                     applicationType: \\"URL\\",
                     url: \\"../\\"

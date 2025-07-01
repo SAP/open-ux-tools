@@ -1,5 +1,101 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.1.35
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.28
+    -   @sap-ux/odata-service-inquirer@2.5.9
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.1.34
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/odata-service-inquirer@2.5.8
+-   @sap-ux/telemetry@0.6.6
+-   @sap-ux/abap-deploy-config-inquirer@1.4.27
+-   @sap-ux/inquirer-common@0.7.17
+
+## 0.1.33
+
+### Patch Changes
+
+-   Updated dependencies [77b3b22]
+    -   @sap-ux/odata-service-inquirer@2.5.7
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.26
+    -   @sap-ux/telemetry@0.6.5
+    -   @sap-ux/inquirer-common@0.7.16
+
+## 0.1.32
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.5.6
+
+## 0.1.31
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.25
+-   @sap-ux/inquirer-common@0.7.15
+-   @sap-ux/odata-service-inquirer@2.5.5
+
+## 0.1.30
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.24
+    -   @sap-ux/odata-service-inquirer@2.5.4
+    -   @sap-ux/telemetry@0.6.4
+    -   @sap-ux/inquirer-common@0.7.14
+
+## 0.1.29
+
+### Patch Changes
+
+-   Updated dependencies [14214a3]
+    -   @sap-ux/axios-extension@1.22.2
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.23
+    -   @sap-ux/odata-service-inquirer@2.5.3
+
+## 0.1.28
+
+### Patch Changes
+
+-   Updated dependencies [5a88606]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.22
+
+## 0.1.27
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.21
+    -   @sap-ux/odata-service-inquirer@2.5.2
+
+## 0.1.26
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.20
+    -   @sap-ux/odata-service-inquirer@2.5.1
+
+## 0.1.25
+
+### Patch Changes
+
+-   Updated dependencies [45e1035]
+    -   @sap-ux/odata-service-inquirer@2.5.0
+
 ## 0.1.24
 
 ### Patch Changes
