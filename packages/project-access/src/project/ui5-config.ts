@@ -1,5 +1,6 @@
 import { basename, dirname, join } from 'path';
 import type { Editor } from 'mem-fs-editor';
+import type { MockserverConfig, MockserverService } from '@sap-ux/ui5-config';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { DirName, FileName } from '../constants';
 import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file';
@@ -70,4 +71,59 @@ export async function getAllUi5YamlFileNames(projectRoot: string, memFs?: Editor
     } catch (error) {
         throw new Error(`There was an error reading files from the directory '${projectRoot}': ${error}`);
     }
+}
+
+/**
+ * Retrieves the mock server configuration from the UI5 mock YAML file.
+ *
+ * @param projectRoot - Path to the project root.
+ * @param fileName - Name of the YAML file to read. Defaults to FileName.Ui5MockYaml.
+ * @returns The mock server configuration or null if not found.
+ * @throws {Error} If the sap-fe-mockserver middleware is not found.
+ */
+export async function getMockServerConfig(
+    projectRoot: string,
+    fileName: string = FileName.Ui5MockYaml
+): Promise<MockserverConfig> {
+    const ui5MockYamlFile = await readUi5Yaml(projectRoot, fileName);
+    const mockserverMiddleware = ui5MockYamlFile.findCustomMiddleware('sap-fe-mockserver');
+    if (!mockserverMiddleware) {
+        throw new Error('Could not find sap-fe-mockserver');
+    }
+    return mockserverMiddleware.configuration as MockserverConfig;
+}
+
+/**
+ * Retrieves the mock data path from the mock server configuration.
+ *
+ * @param projectRoot - Path to the project root.
+ * @param fileName - Name of the YAML file to read. Defaults to FileName.Ui5MockYaml.
+ * @returns The mock data path as a string. Returns an empty string if not found.
+ */
+export async function getMockDataPath(projectRoot: string, fileName: string = FileName.Ui5MockYaml): Promise<string> {
+    const mockServerConfig: MockserverConfig = await getMockServerConfig(projectRoot, fileName);
+    if (!mockServerConfig) {
+        return '';
+    }
+
+    const services = extractServices(mockServerConfig);
+    if (!services) {
+        return '';
+    }
+
+    const found = services.find((service) => !!service.mockdataPath);
+    return found?.mockdataPath ?? '';
+}
+
+/**
+ * Helper to extract the services array from a MockServerConfiguration.
+ *
+ * @param config - The mock server configuration object.
+ * @returns An array of MockServerService objects, or undefined if not found.
+ */
+function extractServices(config: MockserverConfig): MockserverService[] | undefined {
+    if ('services' in config && config.services) {
+        return Array.isArray(config.services) ? config.services : [config.services];
+    }
+    return undefined;
 }

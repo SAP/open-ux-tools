@@ -1,5 +1,25 @@
 # @sap-ux/launch-config
 
+## 0.10.9
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+
+## 0.10.7
+
+### Patch Changes
+
+-   bac9dbc: fix start mock args in launch config
+
 ## 0.10.6
 
 ### Patch Changes

@@ -4,7 +4,7 @@ import { isAppStudio, isPartialUrlDestination } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { type InputQuestion, type ListQuestion, searchChoices, withCondition } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { BackendSystem } from '@sap-ux/store';
+import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import { type ConnectedSystem, type OdataServicePromptOptions, promptNames } from '../../../../types';
@@ -69,8 +69,9 @@ async function validateSystemSelection(
     let connectValResult: ValidationResult = false;
 
     if (systemSelection.type === 'backendSystem') {
+        const backendKey = BackendSystemKey.from(systemSelection.system as BackendSystem) as BackendSystemKey;
         connectValResult = await connectWithBackendSystem(
-            systemSelection.system as BackendSystem,
+            backendKey,
             connectionValidator,
             requiredOdataVersion,
             cachedConnectedSystem

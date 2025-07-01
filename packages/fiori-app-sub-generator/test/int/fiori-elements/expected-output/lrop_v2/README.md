@@ -1,12 +1,12 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Wed Apr 02 2025 20:06:38 GMT+0100 (Irish Standard Time)|
+|**Generation Date and Time**<br>Tue Jun 24 2025 22:44:57 GMT+0100 (Irish Standard Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
-|**App Generator Version**<br>0.0.1|
+|**App Generator Version**<br>0.0.0|
 |**Generation Platform**<br>CLI|
 |**Template Used**<br>List Report Page V2|
-|**Service Type**<br>OData Url|
+|**Service Type**<br>OData URL|
 |**Service URL**<br>https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com/sap/opu/odata/sap/SEPMRA_PROD_MAN|
 |**Module Name**<br>lrop_v2|
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
@@ -25,7 +25,7 @@ Test &#39;Project&#39; &#34;Description&#34;
 
 ### Starting the generated app
 
--   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  In order to launch the generated app, simply run the following from the generated app root folder:
+-   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  To launch the generated application, run the following from the generated application root folder:
 
 ```
     npm start

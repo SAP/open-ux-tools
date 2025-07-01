@@ -549,7 +549,7 @@ export class FlpSandbox {
             }
         }
         if (!version) {
-            this.logger.error('Could not get UI5 version of application. Using 1.130.0 as fallback.');
+            this.logger.error('Could not get UI5 version of application. Using version: 1.130.0 as fallback.');
             version = '1.130.0';
         }
         const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
@@ -560,7 +560,7 @@ export class FlpSandbox {
             ((major < 2 && minor < 123) || major >= 2 || label?.includes('legacy-free'))
         ) {
             this.flpConfig.enhancedHomePage = this.templateConfig.enhancedHomePage = false;
-            this.logger.warn(`Feature enhancedHomePage disabled: UI5 version ${version} not supported.`);
+            this.logger.warn(`Feature enhancedHomePage disabled: UI5 version: ${version} not supported.`);
         }
 
         return {
@@ -579,7 +579,7 @@ export class FlpSandbox {
      */
     private getSandboxTemplate(ui5Version: Ui5Version): string {
         this.logger.info(
-            `Using sandbox template for UI5 version ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
+            `Using sandbox template for UI5 version: ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
                 ui5Version.label ? `-${ui5Version.label}` : ''
             }.`
         );
