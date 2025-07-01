@@ -36,7 +36,7 @@ export async function getProject(root: string, memFs?: Editor): Promise<Project>
     const appFolders = await getAppFolders(root, memFs);
     const apps = await getApps(root, appFolders, memFs);
     return {
-        root: normalizePath(root, false),
+        root: normalizePath(root),
         projectType,
         apps
     };
