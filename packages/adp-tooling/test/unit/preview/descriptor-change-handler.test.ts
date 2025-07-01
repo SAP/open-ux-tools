@@ -771,7 +771,7 @@ id="<%- ids.customActionButton %>"`);
                 expect(
                     (mockFs.read.mock.calls[0][0] as string)
                         .replace(/\\/g, '/')
-                        .endsWith('templates/rta/common/custom-fragment.xml')
+                        .endsWith('templates/rta/v4/custom-section.xml')
                 ).toBe(true);
 
                 expect(mockFs.write).toHaveBeenCalled();

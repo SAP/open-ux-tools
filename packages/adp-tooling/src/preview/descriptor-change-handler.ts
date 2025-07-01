@@ -7,7 +7,7 @@ import { randomBytes } from 'crypto';
 import { render } from 'ejs';
 
 export const customFragmentConfig = {
-    path: 'common/custom-fragment.xml',
+    path: 'v4/custom-section.xml',
     getData: (): { ids: Record<string, string> } => {
         const uuid = randomBytes(4).toString('hex');
         return {
