@@ -747,8 +747,6 @@ id="<%- ids.customActionButton %>"`);
             it('should create Object Page custom section fragment', () => {
                 mockFs.exists.mockReturnValue(false);
                 mockFs.read.mockReturnValue(`
-        id="<%- ids.objectPageSection %>"
-        id="<%- ids.objectPageSubSection %>"
         id="<%- ids.hBox %>"`);
                 addCustomSectionFragment(
                     pathOfProject,
@@ -773,7 +771,7 @@ id="<%- ids.customActionButton %>"`);
                 expect(
                     (mockFs.read.mock.calls[0][0] as string)
                         .replace(/\\/g, '/')
-                        .endsWith('templates/rta/common/op-custom-section.xml')
+                        .endsWith('templates/rta/common/custom-fragment.xml')
                 ).toBe(true);
 
                 expect(mockFs.write).toHaveBeenCalled();
@@ -782,8 +780,6 @@ id="<%- ids.customActionButton %>"`);
                 );
                 expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
                                 "
-                                        id=\\"op-section-30303030\\"
-                                        id=\\"op-subsection-30303030\\"
                                         id=\\"hbox-30303030\\""
                             `);
 

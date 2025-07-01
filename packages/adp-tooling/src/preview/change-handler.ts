@@ -37,22 +37,20 @@ interface FragmentTemplateConfig<T = { [key: string]: any }> {
     getData: (change: AddXMLChange) => T;
 }
 
-export const objectPageCustomPageConfig = {
-    path: 'common/op-custom-section.xml',
-    getData: (): { ids: Record<string, string> } => {
-        const uuid = randomBytes(4).toString('hex');
-        return {
-            ids: {
-                objectPageSection: `op-section-${uuid}`,
-                objectPageSubSection: `op-subsection-${uuid}`,
-                hBox: `hbox-${uuid}`
-            }
-        };
-    }
-};
-
 export const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
-    [OBJECT_PAGE_CUSTOM_SECTION]: objectPageCustomPageConfig,
+    [OBJECT_PAGE_CUSTOM_SECTION]: {
+        path: 'common/op-custom-section.xml',
+        getData: (): { ids: Record<string, string> } => {
+            const uuid = randomBytes(4).toString('hex');
+            return {
+                ids: {
+                    objectPageSection: `op-section-${uuid}`,
+                    objectPageSubSection: `op-subsection-${uuid}`,
+                    hBox: `hbox-${uuid}`
+                }
+            };
+        }
+    },
     [CUSTOM_ACTION]: {
         path: 'common/custom-action.xml',
         getData: () => {

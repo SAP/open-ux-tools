@@ -131,7 +131,7 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
                     operation: 'UPSERT',
                     propertyValue: {
                         template,
-                        title: 'my custom section (manifest)',
+                        title: 'New Custom Section',
                         position: {
                             placement: 'After',
                             anchor: `${sectionId}`
@@ -141,7 +141,7 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
             }
         };
         const command = await this.commandExecutor.getCommand<FlexCommand>(
-            this.runtimeControl,
+            this.getRuntimeControl(),
             'appDescriptor',
             modifiedValue,
             flexSettings

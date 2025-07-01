@@ -71,8 +71,8 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
         }
     }
 
-    protected get runtimeControl(): ManagedObject {
-        if (!this._runtimeControl) {
+    protected getRuntimeControl(): ManagedObject {
+        if (!this._runtimeControl && this.overlays) {
             const selectorId = this.overlays.getId();
             const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
             if (!overlayControl) {
@@ -88,7 +88,7 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
      * @returns control metadata and target aggregations
      */
     protected getControlMetadata(): { controlMetadata: ManagedObjectMetadata; targetAggregation: string[] } {
-        const controlMetadata: ManagedObjectMetadata = this.runtimeControl.getMetadata();
+        const controlMetadata: ManagedObjectMetadata = this.getRuntimeControl().getMetadata();
         if (!controlMetadata) {
             throw new Error('Cannot get control metadata');
         }
@@ -244,14 +244,14 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
      * @param specialIndexAggregation string | number
      */
     protected specialIndexHandling(specialIndexAggregation: string | number): void {
-        const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
+        const overlay = OverlayRegistry.getOverlay(this.getRuntimeControl() as UI5Element);
         const aggregations = overlay.getDesignTimeMetadata().getData().aggregations;
 
         if (
             specialIndexAggregation in aggregations &&
             'specialIndexHandling' in aggregations[specialIndexAggregation]
         ) {
-            const controlType = this.runtimeControl.getMetadata().getName();
+            const controlType = this.getRuntimeControl().getMetadata().getName();
             this.model.setProperty('/indexHandlingFlag', false);
             this.model.setProperty('/specialIndexHandlingIcon', true);
             this.model.setProperty(

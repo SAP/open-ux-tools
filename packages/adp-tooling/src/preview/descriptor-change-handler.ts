@@ -1,10 +1,22 @@
 import type { Editor } from 'mem-fs-editor';
-import type { AppDescriptorV4Change } from '../types';
+import { type AppDescriptorV4Change } from '../types';
 import type { Logger } from '@sap-ux/logger';
-import { render } from 'ejs';
 import { join } from 'path';
-import { objectPageCustomPageConfig } from './change-handler';
 import { getFragmentPathFromTemplate } from './utils';
+import { randomBytes } from 'crypto';
+import { render } from 'ejs';
+
+export const customFragmentConfig = {
+    path: 'common/custom-fragment.xml',
+    getData: (): { ids: Record<string, string> } => {
+        const uuid = randomBytes(4).toString('hex');
+        return {
+            ids: {
+                hBox: `hbox-${uuid}`
+            }
+        };
+    }
+};
 
 /**
  * Checks if the given object has a 'template' property of type string.
@@ -42,9 +54,9 @@ export function addCustomSectionFragment(
             }
             const fragmentPath = `${path}.fragment.xml`;
             const fullPath = join(basePath, fragmentPath);
-            const fragmentTemplatePath = join(__dirname, '../../templates/rta', objectPageCustomPageConfig.path);
+            const fragmentTemplatePath = join(__dirname, '../../templates/rta', customFragmentConfig.path);
             const text = fs.read(fragmentTemplatePath);
-            const template = render(text, objectPageCustomPageConfig.getData());
+            const template = render(text, customFragmentConfig.getData());
             fs.write(fullPath, template);
             logger.info(`XML Fragment "${fragmentPath}" was created`);
         } catch (error) {
