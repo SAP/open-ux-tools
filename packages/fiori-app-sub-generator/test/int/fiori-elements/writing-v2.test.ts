@@ -74,7 +74,7 @@ describe('Generate v2 apps', () => {
 
         const destService: Service = {
             localEdmxFilePath: '',
-            serviceId: 'ABCD_MockService_O2',
+            serviceId: 'ABCD_MOCKSERVICE_O2',
             servicePath: v2Service.servicePath,
             version: v2Service.version,
             host: v2Service.host!,

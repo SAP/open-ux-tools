@@ -103,13 +103,24 @@ export async function createManifestPropertyChange(
     if (!overlay) {
         return undefined;
     }
-    const overlayData = overlay?.getDesignTimeMetadata().getData();
+    const overlayData = overlay.getDesignTimeMetadata().getData();
+    const settings = overlayData.manifestSettings(modifiedControl);
     let manifestPropertyPath = overlayData.manifestPropertyPath(modifiedControl);
     if (propertyPathExtraSegments) {
         manifestPropertyPath += '/' + propertyPathExtraSegments.join('/');
     }
+    const adjustedChanges: Record<string, string | string[] | boolean | number | object | undefined> = {};
+    for (const [key, value] of Object.entries(propertyChanges)) {
+        const setting = settings.find((s) => s.id === key);
+        if (setting) {
+            adjustedChanges[setting.path ?? setting.id] = value;
+        } else {
+            adjustedChanges[key] = value;
+        }
+        
+    }
     const [manifestPropertyChange] = overlayData.manifestPropertyChange(
-        propertyChanges,
+        adjustedChanges,
         manifestPropertyPath,
         modifiedControl
     );

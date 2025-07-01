@@ -50,7 +50,7 @@ describe('prompting.ts', () => {
             expect(question).toEqual({
                 type: 'input',
                 name: 'viewName',
-                message: 'View name',
+                message: 'View Name',
                 guiOptions: {
                     breadcrumb: true
                 },

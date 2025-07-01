@@ -1,5 +1,57 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.36
+
+### Patch Changes
+
+-   602e60d: handle namespace for storyboard metadata retrieval
+
+## 0.1.35
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/fiori-generator-shared@0.12.13
+    -   @sap-ux/ui-service-inquirer@0.1.35
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.1.34
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/fiori-generator-shared@0.12.12
+-   @sap-ux/system-access@0.6.9
+-   @sap-ux/telemetry@0.6.6
+-   @sap-ux/inquirer-common@0.7.17
+-   @sap-ux/ui-service-inquirer@0.1.34
+
+## 0.1.33
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.1.33
+-   @sap-ux/system-access@0.6.9
+-   @sap-ux/telemetry@0.6.5
+-   @sap-ux/fiori-generator-shared@0.12.11
+-   @sap-ux/inquirer-common@0.7.16
+
+## 0.1.32
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.1.32
+
+## 0.1.31
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+    -   @sap-ux/inquirer-common@0.7.15
+    -   @sap-ux/ui-service-inquirer@0.1.31
+
 ## 0.1.30
 
 ### Patch Changes

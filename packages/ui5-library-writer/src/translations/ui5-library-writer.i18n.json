@@ -1,16 +1,16 @@
 {
     "error": {
-        "missingRequiredProperty": "The property: {{ propertyName }} must have a value",
-        "useAlphaNumeric": "Please use lowercase alpha numeric characters only for the property {{ propertyName }}",
-        "invalidUI5Version": "The specified UI5 version is invalid: {{ version }}",
+        "missingRequiredProperty": "The property: {{ propertyName }} must have a value.",
+        "useAlphaNumeric": "Only use lowercase alphanumeric characters for the property: {{ propertyName }}.",
+        "invalidUI5Version": "The specified SAPUI5 version is invalid: {{ version }}. Choose a valid SAPUI5 version.",
         "invalidNamespace": {
-            "mustStartWithLetter": "The namespace must start with a letter",
-            "endsInPeriod": "The namespace cannot end with a period",
-            "isSap": "The namespace cannot be {{ str }}",
-            "startsWithNew": "The namespace cannot start with {{ str }}",
-            "numAfterPeriod": "A number cannot follow a period in the namespace",
-            "specialCharacter": "The namespace can only contain letters, digits, dots, and underscores",
-            "tooLong": "The combined length of the application namespace and module name must not exceed {{ length }} characters"
+            "mustStartWithLetter": "The namespace must start with a letter.",
+            "endsInPeriod": "The namespace cannot end with a period.",
+            "isSap": "The namespace cannot be {{ str }}.",
+            "startsWithNew": "The namespace cannot start with {{ str }}.",
+            "numAfterPeriod": "A number cannot follow a period in the namespace.",
+            "specialCharacter": "The namespace must only contain letters, digits, dots, and underscores.",
+            "tooLong": "The combined length of the application namespace and module name must not exceed {{ length }} characters."
         }
     }
 }
