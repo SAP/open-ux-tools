@@ -1,21 +1,24 @@
 import { realpathSync } from 'fs';
-
-/**
- *  Normalize path to canonical form.
- *
- * @param path - URI or string.
- * @returns File path.
- */
-export function normalizePath(path: string): string {
-    // for windows, some NodeJS methods will output uppercase drive letters, some in lowercase
-    if (process.platform === 'win32') {
-        return toggleCase(path.charAt(0)) + path.slice(1);
-    }
-
-    return path;
-}
+import { fileURLToPath } from 'url';
 
 const driveLetter = process.platform === 'win32' ? realpathSync.native('\\')[0] : '';
+
+/**
+ *  Converts URI to path.
+ *
+ * @param uri - URI.
+ * @returns File path.
+ */
+export function pathFromUri(uri: string): string {
+    const parsedUri = fileURLToPath(uri);
+
+    // for windows, some NodeJS methods will output uppercase drive letters, some in lowercase
+    if (process.platform === 'win32') {
+        return toggleCase(parsedUri.charAt(0)) + parsedUri.slice(1);
+    }
+
+    return parsedUri;
+}
 
 /**
  * Changes the drive letter to the same as `realpathSync`.
