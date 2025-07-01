@@ -1,5 +1,49 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.34
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/fiori-generator-shared@0.12.13
+    -   @sap-ux/flp-config-inquirer@0.3.34
+    -   @sap-ux/inquirer-common@0.7.18
+    -   @sap-ux/adp-tooling@0.14.34
+
+## 0.1.33
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/adp-tooling@0.14.33
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/fiori-generator-shared@0.12.12
+    -   @sap-ux/flp-config-inquirer@0.3.33
+    -   @sap-ux/system-access@0.6.9
+    -   @sap-ux/inquirer-common@0.7.17
+
+## 0.1.32
+
+### Patch Changes
+
+-   Updated dependencies [77b3b22]
+    -   @sap-ux/store@1.1.1
+    -   @sap-ux/adp-tooling@0.14.32
+    -   @sap-ux/system-access@0.6.9
+    -   @sap-ux/flp-config-inquirer@0.3.32
+    -   @sap-ux/fiori-generator-shared@0.12.11
+    -   @sap-ux/inquirer-common@0.7.16
+
+## 0.1.31
+
+### Patch Changes
+
+-   Updated dependencies [83109eb]
+    -   @sap-ux/adp-tooling@0.14.31
+    -   @sap-ux/flp-config-inquirer@0.3.31
+
 ## 0.1.30
 
 ### Patch Changes

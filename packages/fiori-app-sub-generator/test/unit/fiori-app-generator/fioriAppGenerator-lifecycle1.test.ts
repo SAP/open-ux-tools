@@ -231,7 +231,7 @@ describe('Test FioriAppGenerator', () => {
             {
                 default: 'View1',
                 guiOptions: { breadcrumb: true },
-                message: 'View name',
+                message: 'View Name',
                 name: 'viewName',
                 type: 'input',
                 validate: expect.any(Function)

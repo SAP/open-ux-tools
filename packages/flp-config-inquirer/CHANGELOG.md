@@ -1,5 +1,44 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.3.34
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/project-input-validator@0.6.7
+    -   @sap-ux/fiori-generator-shared@0.12.13
+    -   @sap-ux/inquirer-common@0.7.18
+    -   @sap-ux/adp-tooling@0.14.34
+
+## 0.3.33
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/adp-tooling@0.14.33
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/fiori-generator-shared@0.12.12
+    -   @sap-ux/project-input-validator@0.6.6
+    -   @sap-ux/inquirer-common@0.7.17
+
+## 0.3.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.32
+-   @sap-ux/fiori-generator-shared@0.12.11
+-   @sap-ux/inquirer-common@0.7.16
+
+## 0.3.31
+
+### Patch Changes
+
+-   Updated dependencies [83109eb]
+    -   @sap-ux/project-input-validator@0.6.5
+    -   @sap-ux/adp-tooling@0.14.31
+
 ## 0.3.30
 
 ### Patch Changes
