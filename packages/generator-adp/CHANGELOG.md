@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.3.35
+
+### Patch Changes
+
+-   Updated dependencies [6c2d08a]
+    -   @sap-ux/adp-tooling@0.14.35
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.35
+
 ## 0.3.34
 
 ### Patch Changes
