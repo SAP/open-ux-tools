@@ -20,8 +20,8 @@ import type { AddXMLChange, CommonChangeProperties, AnnotationFileChange, Descri
 import * as manifestService from '../../../src/base/abap/manifest-service';
 import * as helper from '../../../src/base/helper';
 import * as editors from '../../../src/writer/editors';
-import * as systemAccess from '@sap-ux/system-access/dist/base/connect';
 import * as serviceWriter from '@sap-ux/odata-service-writer/dist/data/annotations';
+import { addCustomSectionFragment } from '../../../src/preview/descriptor-change-handler';
 
 describe('change-handler', () => {
     describe('moduleNameContentMap', () => {
@@ -455,10 +455,10 @@ id="<%- ids.customActionButton %>"`);
                     `"project/path/changes/Share.fragment.xml"`
                 );
                 expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
-"
-id=\\"toolbarAction-30303030\\"
-id=\\"btn-30303030\\""
-`);
+                    "
+                    id=\\"toolbarAction-30303030\\"
+                    id=\\"btn-30303030\\""
+                `);
 
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
             });
@@ -687,6 +687,104 @@ id=\\"btn-30303030\\""
             );
 
             expect(generateChangeSpy).toHaveBeenCalled();
+        });
+    });
+
+    describe('addXmlFragmentForV4', () => {
+        const mockFs = {
+            exists: jest.fn(),
+            copy: jest.fn(),
+            read: jest.fn(),
+            write: jest.fn()
+        };
+
+        const mockLogger = {
+            info: jest.fn(),
+            error: jest.fn()
+        };
+
+        const pathOfProject = 'project/path';
+        const fragmentName = ['changes', 'fragments', 'test'].join(path.sep);
+        beforeEach(() => {
+            mockFs.exists.mockClear();
+            mockFs.copy.mockClear();
+            mockFs.read.mockClear();
+            mockFs.write.mockClear();
+            mockLogger.info.mockClear();
+            mockLogger.error.mockClear();
+        });
+
+        it('should log an error if the XML fragment creation fails', () => {
+            mockFs.exists.mockReturnValue(false);
+            mockFs.copy.mockImplementation(() => {
+                throw new Error('Copy failed');
+            });
+
+            addCustomSectionFragment(
+                pathOfProject,
+                {
+                    changeType: 'appdescr_fe_changePageConfiguration',
+                    content: {
+                        entityPropertyChange: {
+                            propertyPath: 'content/body/sections/test',
+                            operation: 'UPSERT',
+                            propertyValue: {
+                                template: 'adp.v1.changes.fragment.test'
+                            }
+                        }
+                    }
+                } as any,
+                mockFs as unknown as Editor,
+                mockLogger as unknown as Logger
+            );
+
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                expect.stringContaining(`Failed to create XML Fragment: Error: Fragment Path could not be determined`)
+            );
+        });
+
+        describe('custom fragment', () => {
+            it('should create Object Page custom section fragment', () => {
+                mockFs.exists.mockReturnValue(false);
+                mockFs.read.mockReturnValue(`
+        id="<%- ids.hBox %>"`);
+                addCustomSectionFragment(
+                    pathOfProject,
+                    {
+                        projectId: 'adp.v1',
+                        changeType: 'appdescr_fe_changePageConfiguration',
+                        content: {
+                            entityPropertyChange: {
+                                propertyPath: 'content/body/sections/test',
+                                operation: 'UPSERT',
+                                propertyValue: {
+                                    template: 'adp.v1.changes.fragments.test'
+                                }
+                            }
+                        }
+                    } as any,
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger
+                );
+
+                expect(mockFs.read).toHaveBeenCalled();
+                expect(
+                    (mockFs.read.mock.calls[0][0] as string)
+                        .replace(/\\/g, '/')
+                        .endsWith('templates/rta/v4/custom-section.xml')
+                ).toBe(true);
+
+                expect(mockFs.write).toHaveBeenCalled();
+                expect(mockFs.write.mock.calls[0][0].replace(/\\/g, '/')).toMatchInlineSnapshot(
+                    `"project/path/changes/fragments/test.fragment.xml"`
+                );
+                expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+                                "
+                                        id=\\"hbox-30303030\\""
+                            `);
+
+                expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
+            });
         });
     });
 });
