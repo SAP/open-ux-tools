@@ -337,6 +337,9 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect.any(Object),
             expect.any(Object)
         );
+        expect(sendTelemetryMock).toHaveBeenCalledTimes(0);
+        expect(executeCommandSpy).toHaveBeenCalledTimes(0);
+        expect(showWorkspaceFolderWarningMock).toHaveBeenCalledTimes(0);
     });
 
     it('should call composeWith for FLP and Deploy sub-generators and generate a cloud project successfully', async () => {
