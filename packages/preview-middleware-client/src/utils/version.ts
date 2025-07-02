@@ -36,7 +36,7 @@ function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
         isNaN(versionInfo.patch ?? 0)) {
         void sendInfoCenterMessage({
             title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
-            description: '',
+            description: { key: 'FLP_UI_INVALID_UI5_VERSION_DESCRIPTION' },
             type: MessageBarType.error
         });
         throw new Error('Invalid version info');
