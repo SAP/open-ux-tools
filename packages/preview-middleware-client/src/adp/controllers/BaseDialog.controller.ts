@@ -44,7 +44,7 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
     /**
      * Runtime control managed object
      */
-    protected runtimeControl: ManagedObject;
+    private _runtimeControl: ManagedObject;
     /**
      * Dialog instance
      */
@@ -71,21 +71,26 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
         }
     }
 
+    protected getRuntimeControl(): ManagedObject {
+        if (!this._runtimeControl && this.overlays) {
+            const selectorId = this.overlays.getId();
+            const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
+            if (!overlayControl) {
+                throw new Error('Cannot get overlay control');
+            }
+            this._runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
+        }
+        return this._runtimeControl;
+    }
+
     /**
      * Method is used in add fragment dialog controllers to get current control metadata which are needed on the dialog
      * @returns control metadata and target aggregations
      */
     protected getControlMetadata(): { controlMetadata: ManagedObjectMetadata; targetAggregation: string[] } {
-        const selectorId = this.overlays.getId();
-
-        let controlMetadata: ManagedObjectMetadata;
-
-        const overlayControl = getControlById(selectorId) as unknown as ElementOverlay;
-        if (overlayControl) {
-            this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
-            controlMetadata = this.runtimeControl.getMetadata();
-        } else {
-            throw new Error('Cannot get overlay control');
+        const controlMetadata: ManagedObjectMetadata = this.getRuntimeControl().getMetadata();
+        if (!controlMetadata) {
+            throw new Error('Cannot get control metadata');
         }
 
         const allAggregations = Object.keys(controlMetadata.getAllAggregations());
@@ -181,6 +186,23 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
             );
             return;
         }
+        // 'changes.fragments' is the current folder structure where fragment changes are written.
+        // following value is subjected to change if the folder structure changes
+        const template = `${this.rta.getFlexSettings()?.projectId}.changes.fragments.${fragmentName}`;
+        const v4CustomXMLChange = checkForExistingChange(
+            this.rta,
+            'appdescr_fe_changePageConfiguration',
+            'content.entityPropertyChange.propertyValue.template',
+            template
+        );
+
+        if (v4CustomXMLChange) {
+            updateDialogState(
+                ValueState.Error,
+                'Enter a different name. The fragment name entered matches the name of an unsaved fragment.'
+            );
+            return;
+        }
 
         updateDialogState(ValueState.Success);
         this.model.setProperty('/newFragmentName', fragmentName);
@@ -222,14 +244,14 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
      * @param specialIndexAggregation string | number
      */
     protected specialIndexHandling(specialIndexAggregation: string | number): void {
-        const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
+        const overlay = OverlayRegistry.getOverlay(this.getRuntimeControl() as UI5Element);
         const aggregations = overlay.getDesignTimeMetadata().getData().aggregations;
 
         if (
             specialIndexAggregation in aggregations &&
             'specialIndexHandling' in aggregations[specialIndexAggregation]
         ) {
-            const controlType = this.runtimeControl.getMetadata().getName();
+            const controlType = this.getRuntimeControl().getMetadata().getName();
             this.model.setProperty('/indexHandlingFlag', false);
             this.model.setProperty('/specialIndexHandlingIcon', true);
             this.model.setProperty(

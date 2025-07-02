@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.14.35
+
+### Patch Changes
+
+-   6c2d08a: Create app descriptor changes for v4 add custom section quick action
+
 ## 0.14.34
 
 ### Patch Changes

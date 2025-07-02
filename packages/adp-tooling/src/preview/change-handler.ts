@@ -4,7 +4,8 @@ import type {
     CommonChangeProperties,
     CodeExtChange,
     AnnotationFileChange,
-    CommonAdditionalChangeInfoProperties
+    CommonAdditionalChangeInfoProperties,
+    AppDescriptorV4Change
 } from '../types';
 import { ChangeType, TemplateFileName } from '../types';
 import { basename, join } from 'path';
@@ -36,10 +37,10 @@ interface FragmentTemplateConfig<T = { [key: string]: any }> {
     getData: (change: AddXMLChange) => T;
 }
 
-const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
+export const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
     [OBJECT_PAGE_CUSTOM_SECTION]: {
         path: 'common/op-custom-section.xml',
-        getData: () => {
+        getData: (): { ids: Record<string, string> } => {
             const uuid = randomBytes(4).toString('hex');
             return {
                 ids: {
@@ -218,6 +219,17 @@ export function isCodeExtChange(change: CommonChangeProperties): change is CodeE
  */
 export function isAddAnnotationChange(change: CommonChangeProperties): change is AnnotationFileChange {
     return change.changeType === 'appdescr_app_addAnnotationsToOData';
+}
+
+/**
+ * Determines whether a given change is of type `V4 Descriptor Change`.
+ *
+ * @param {CommonChangeProperties} change - The change object to check.
+ * @returns {boolean} `true` if the `changeType` is either 'appdescr_fe_changePageConfiguration',
+ *          indicating the change is of type `V4 Descriptor Change`.
+ */
+export function isV4DescriptorChange(change: CommonChangeProperties): change is AppDescriptorV4Change {
+    return change.changeType === 'appdescr_fe_changePageConfiguration';
 }
 
 /**
