@@ -1,5 +1,42 @@
 # @sap-ux/preview-middleware
 
+## 0.20.48
+
+### Patch Changes
+
+-   6c2d08a: Create app descriptor changes for v4 add custom section quick action
+-   Updated dependencies [6c2d08a]
+    -   @sap-ux/adp-tooling@0.14.35
+
+## 0.20.47
+
+### Patch Changes
+
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/adp-tooling@0.14.34
+
+## 0.20.46
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/adp-tooling@0.14.33
+    -   @sap-ux/system-access@0.6.9
+
+## 0.20.45
+
+### Patch Changes
+
+-   0db69d6: fix: wrong property path used for Show Counts configuration change
+
+## 0.20.44
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.32
+-   @sap-ux/system-access@0.6.9
+
 ## 0.20.43
 
 ### Patch Changes

@@ -1,5 +1,44 @@
 # @sap-ux/adp-tooling
 
+## 0.14.35
+
+### Patch Changes
+
+-   6c2d08a: Create app descriptor changes for v4 add custom section quick action
+
+## 0.14.34
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/project-input-validator@0.6.7
+    -   @sap-ux/odata-service-writer@0.27.8
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.14.33
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/odata-service-writer@0.27.7
+    -   @sap-ux/project-input-validator@0.6.6
+    -   @sap-ux/system-access@0.6.9
+    -   @sap-ux/inquirer-common@0.7.17
+
+## 0.14.32
+
+### Patch Changes
+
+-   Updated dependencies [77b3b22]
+    -   @sap-ux/store@1.1.1
+    -   @sap-ux/system-access@0.6.9
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/inquirer-common@0.7.16
+
 ## 0.14.31
 
 ### Patch Changes
