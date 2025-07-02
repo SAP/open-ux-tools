@@ -1,5 +1,35 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.1.35
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.28
+    -   @sap-ux/odata-service-inquirer@2.5.9
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.1.34
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/odata-service-inquirer@2.5.8
+-   @sap-ux/telemetry@0.6.6
+-   @sap-ux/abap-deploy-config-inquirer@1.4.27
+-   @sap-ux/inquirer-common@0.7.17
+
+## 0.1.33
+
+### Patch Changes
+
+-   Updated dependencies [77b3b22]
+    -   @sap-ux/odata-service-inquirer@2.5.7
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.26
+    -   @sap-ux/telemetry@0.6.5
+    -   @sap-ux/inquirer-common@0.7.16
+
 ## 0.1.32
 
 ### Patch Changes
