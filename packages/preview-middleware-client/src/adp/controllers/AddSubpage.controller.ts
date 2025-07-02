@@ -179,7 +179,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         }
 
         const command = await CommandFactory.getCommandFor(
-            this.runtimeControl,
+            this.getRuntimeControl(),
             'appDescriptor',
             modifiedValue,
             null,

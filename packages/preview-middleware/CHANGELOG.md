@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.20.48
+
+### Patch Changes
+
+-   6c2d08a: Create app descriptor changes for v4 add custom section quick action
+-   Updated dependencies [6c2d08a]
+    -   @sap-ux/adp-tooling@0.14.35
+
 ## 0.20.47
 
 ### Patch Changes
