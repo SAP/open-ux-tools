@@ -1,22 +1,13 @@
-#  EXPERIMENTAL `@sap-ux/cards-editor-middleware`
+# ⚠️ DEPRECATED ⚠️
 
-A middleware to generate a card manifest and i18n text in the project. Middleware is configured by `@sap-ux/cards-editor-config-writer`
+**This package is officially deprecated and will no longer be maintained.**
 
-## Installation
-Npm
-`npm install --save @sap-ux/@sap-ux/cards-editor-middleware`
+---
 
-Yarn
-`yarn add @sap-ux/@sap-ux/cards-editor-middleware`
+## **🛑 IMPORTANT: This Package is Deprecated!**
 
-Pnpm
-`pnpm add @sap-ux/@sap-ux/cards-editor-middleware`
+**Please discontinue use of this package immediately.**
 
-## Usage
-Once `@sap-ux/cards-editor-config-writer` runs successfully, it will add `sap-cards-generator` to ui5.yaml configuration. Generated cards along with the i18n will be saved in the application repository.
+### **Reason for Deprecation:**
 
-See more complex example in [`/test/unit`](./test/unit)
-
-## Keywords
-SAP Fiori elements
-EXPERIMENTAL
+* The functionality provided by this package has been integrated into the `@sap-ux/preview-middleware` package, which is now the recommended way to manage cards in SAP UX projects.
