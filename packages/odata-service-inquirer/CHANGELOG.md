@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.11
+
+### Patch Changes
+
+-   a41030c: ensure userdisplayname is assigned to backend system
+
 ## 2.5.10
 
 ### Patch Changes
