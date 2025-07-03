@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.20.50
+
+### Patch Changes
+
+-   fc8cc4a: fix: detect all sync views
+
 ## 0.20.49
 
 ### Patch Changes
