@@ -16,12 +16,14 @@ import { ExtendControllerData } from './extend-controller';
 import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller';
 import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpage.controller';
 import { QuickActionTelemetryData } from '../cpe/quick-actions/quick-action-definition';
+import AddCustomFragment, { AddCustomFragmentOptions } from './controllers/AddCustomFragment.controller';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
     ADD_TABLE_COLUMN_FRAGMENTS = 'AddTableColumnFragments',
     CONTROLLER_EXTENSION = 'ControllerExtension',
     ADD_FRAGMENT_AT_EXTENSION_POINT = 'ExtensionPoint',
+    ADD_CUSTOM_FRAGMENT = 'AddCustomFragment',
     FILE_EXISTS = 'FileExistsDialog',
     ADD_SUBPAGE = 'AddSubpage'
 }
@@ -32,7 +34,8 @@ type Controller =
     | ControllerExtension
     | ExtensionPoint
     | FileExistsDialog
-    | AddSubpage;
+    | AddSubpage
+    | AddCustomFragment;
 
 type DialogData = ExtensionPointData | AddFragmentData | ExtendControllerData;
 
@@ -64,7 +67,11 @@ export class DialogFactory {
         rta: RuntimeAuthoring,
         dialogName: DialogNames,
         data?: DialogData,
-        options: Partial<AddFragmentOptions> | Partial<FileExistsDialogOptions> | AddSubpageOptions = {},
+        options:
+            | Partial<AddFragmentOptions>
+            | Partial<FileExistsDialogOptions>
+            | AddCustomFragmentOptions
+            | AddSubpageOptions = {},
         telemetryData?: QuickActionTelemetryData
     ): Promise<void> {
         if (this.isDialogOpen) {
@@ -86,8 +93,19 @@ export class DialogFactory {
                         }),
                         title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
                     },
-                    (data as AddFragmentData),
+                    data as AddFragmentData,
                     telemetryData
+                );
+                break;
+            case DialogNames.ADD_CUSTOM_FRAGMENT:
+                controller = new AddCustomFragment(
+                    `open.ux.preview.client.adp.controllers.${dialogName}`,
+                    overlay,
+                    rta,
+                    {
+                        ...options,
+                        title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
+                    } as AddCustomFragmentOptions
                 );
                 break;
             case DialogNames.ADD_TABLE_COLUMN_FRAGMENTS:
@@ -107,7 +125,7 @@ export class DialogFactory {
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     overlay,
                     rta,
-                    (data as ExtendControllerData),
+                    data as ExtendControllerData,
                     telemetryData
                 );
                 break;
@@ -116,7 +134,7 @@ export class DialogFactory {
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     overlay,
                     rta,
-                    (data as ExtensionPointData)
+                    data as ExtensionPointData
                 );
                 break;
             case DialogNames.FILE_EXISTS:
