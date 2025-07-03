@@ -390,7 +390,7 @@ describe('UI5Config', () => {
             );
         });
 
-        test('Should not preview middleware when it is exists and update is set to false', () => {
+        test('Should not update preview middleware when it is exists and update is set to false', () => {
             ui5Config.addFioriToolsPreviewMiddleware({
                 name: 'fiori-tools-preview',
                 afterMiddleware: 'fiori-tools-appreload',
