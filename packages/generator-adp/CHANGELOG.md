@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.3.36
+
+### Patch Changes
+
+-   e10af5d: feat(generator-adp): Various improvements for ADP generator
+
 ## 0.3.35
 
 ### Patch Changes
