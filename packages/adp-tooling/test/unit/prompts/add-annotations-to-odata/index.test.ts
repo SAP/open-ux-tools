@@ -34,6 +34,7 @@ describe('getPrompts', () => {
 
     beforeAll(async () => {
         await i18n.initI18n();
+        jest.spyOn(fs.realpathSync, 'native').mockImplementation(jest.requireActual('fs').realpathSync.native);
     });
 
     test('should return prompts with data sources', () => {

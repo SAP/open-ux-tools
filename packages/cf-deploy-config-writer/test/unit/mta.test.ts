@@ -12,7 +12,10 @@ jest.mock('fs', () => {
     const Union = require('unionfs').Union;
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const vol = require('memfs').vol;
-    return new Union().use(fs1).use(vol as unknown as typeof fs);
+    const memfs = new Union().use(fs1).use(vol as unknown as typeof fs);
+    memfs.realpath = fs1.realpath;
+    memfs.realpathSync = fs1.realpathSync;
+    return memfs;
 });
 
 jest.mock('@sap/mta-lib', () => {

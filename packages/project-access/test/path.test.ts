@@ -1,6 +1,5 @@
 import { normalizePath } from '../src';
 import * as fs from 'fs';
-import url from 'url';
 
 describe('normalizePath', () => {
     const originalPlatform = process.platform;

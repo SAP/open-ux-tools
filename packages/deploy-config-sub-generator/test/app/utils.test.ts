@@ -17,6 +17,7 @@ describe('Test utils - Deploy', () => {
 
     beforeAll(() => {
         jest.clearAllMocks();
+        jest.spyOn(mockFs.realpathSync, 'native').mockImplementation(jest.requireActual('fs').realpathSync.native);
         jest.spyOn(mockFs, 'existsSync').mockImplementation(() => true);
     });
 

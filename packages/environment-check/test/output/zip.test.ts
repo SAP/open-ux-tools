@@ -12,6 +12,9 @@ jest.mock('archiver', () => ({
 }));
 
 describe('Test to check zip save, storeResultsZip()', () => {
+    beforeAll(() => {
+        jest.spyOn(mockFs.realpathSync, 'native').mockImplementation(jest.requireActual('fs').realpathSync.native);
+    });
     beforeEach(() => {
         jest.clearAllMocks();
     });
