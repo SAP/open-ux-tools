@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.5.5
+
+### Patch Changes
+
+-   7a4543e: fix: remove usage of static webapp folder
+
 ## 1.5.4
 
 ### Patch Changes

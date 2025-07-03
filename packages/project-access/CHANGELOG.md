@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.30.5
+
+### Patch Changes
+
+-   7a4543e: fix: remove usage of static webapp folder
+
 ## 1.30.4
 
 ### Patch Changes
