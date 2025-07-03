@@ -437,7 +437,7 @@ describe('Test FioriAppGenerator', () => {
                 promptSettings: undefined,
                 promptExtension: undefined
             },
-            expect.objectContaining([
+            expect.arrayContaining([
                 {
                     activeSteps: expect.any(YeomanUiSteps),
                     dependentMap: expect.any(Object)
@@ -507,7 +507,7 @@ describe('Test FioriAppGenerator', () => {
                 promptSettings: options.promptSettings,
                 promptExtension: options.extensions
             },
-            expect.objectContaining([
+            expect.arrayContaining([
                 {
                     activeSteps: expect.any(YeomanUiSteps),
                     dependentMap: expect.any(Object)
@@ -644,14 +644,14 @@ describe('Test FioriAppGenerator', () => {
         options.floorplan = undefined; // Force an error since supported odata version lookup requires a floorplan
         const fioriAppGen = new FioriAppGenerator([], options);
         await fioriAppGen.initializing();
-        await expect(fioriAppGen.prompting()).rejects.toThrowError(t('error.fatalError'));
+        await expect(fioriAppGen.prompting()).rejects.toThrow(t('error.fatalError'));
 
         expect(DefaultLogger.error).toHaveBeenCalledWith(expect.stringContaining(t('error.fatalError')));
 
         // Fatal error must exit YUI or genertion continues
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
         await fioriAppGen.initializing();
-        await expect(fioriAppGen.prompting()).rejects.toThrowError(t('error.fatalError'));
+        await expect(fioriAppGen.prompting()).rejects.toThrow(t('error.fatalError'));
         expect(DefaultLogger.error).toHaveBeenCalledWith(expect.stringContaining(t('error.fatalError')));
         expect(options.appWizard?.showError).toHaveBeenCalledWith(
             expect.stringContaining(t('error.fatalError')),

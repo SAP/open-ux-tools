@@ -62,7 +62,7 @@ describe('<UITooltip />', () => {
         it('showOnFocus=true', async () => {
             wrapper.find(buttonSelector).simulate('focus');
             await new Promise((resolve) => setTimeout(resolve, 1000));
-            expect(onLayerMount).toBeCalledTimes(1);
+            expect(onLayerMount).toHaveBeenCalledTimes(1);
         });
 
         it('showOnFocus=false', async () => {
@@ -71,7 +71,7 @@ describe('<UITooltip />', () => {
             });
             wrapper.find(buttonSelector).simulate('focus');
             await new Promise((resolve) => setTimeout(resolve, 1000));
-            expect(onLayerMount).toBeCalledTimes(0);
+            expect(onLayerMount).toHaveBeenCalledTimes(0);
         });
     });
 });

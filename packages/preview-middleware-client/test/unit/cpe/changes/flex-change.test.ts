@@ -63,7 +63,7 @@ describe('flexChange', () => {
         await applyChange(testOptions, change);
 
         // assert
-        expect(CommandFactory.getCommandFor).toBeCalledWith(
+        expect(CommandFactory.getCommandFor).toHaveBeenCalledWith(
             control,
             'Property',
             {
@@ -74,7 +74,7 @@ describe('flexChange', () => {
             null,
             flexSettings
         );
-        expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
+        expect(pushAndExecuteMock).toHaveBeenCalledWith(mockCommand);
     });
 
     test('applyChange - simple string', async () => {
@@ -92,7 +92,7 @@ describe('flexChange', () => {
         await applyChange(testOptions, change);
 
         // assert
-        expect(CommandFactory.getCommandFor).toBeCalledWith(
+        expect(CommandFactory.getCommandFor).toHaveBeenCalledWith(
             control,
             'Property',
             {
@@ -103,7 +103,7 @@ describe('flexChange', () => {
             null,
             flexSettings
         );
-        expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
+        expect(pushAndExecuteMock).toHaveBeenCalledWith(mockCommand);
     });
 
     test('applyChange - binding expression', async () => {
@@ -121,7 +121,7 @@ describe('flexChange', () => {
         await applyChange(testOptions, change);
 
         // assert
-        expect(CommandFactory.getCommandFor).toBeCalledWith(
+        expect(CommandFactory.getCommandFor).toHaveBeenCalledWith(
             control,
             'BindProperty',
             {
@@ -132,7 +132,7 @@ describe('flexChange', () => {
             null,
             flexSettings
         );
-        expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
+        expect(pushAndExecuteMock).toHaveBeenCalledWith(mockCommand);
     });
 
     test('applyChange - undefined control', async () => {
@@ -150,7 +150,7 @@ describe('flexChange', () => {
         await applyChange(testOptions, change);
 
         // assert
-        expect(pushAndExecuteMock).not.toBeCalled();
+        expect(pushAndExecuteMock).not.toHaveBeenCalled();
     });
 
     test('applyChange - manifest change', async () => {
@@ -199,7 +199,7 @@ describe('flexChange', () => {
         await applyChange(testOptions, change);
 
         // assert
-        expect(CommandFactory.getCommandFor).toBeCalledWith(
+        expect(CommandFactory.getCommandFor).toHaveBeenCalledWith(
             control,
             'appDescriptor',
             {
@@ -219,7 +219,7 @@ describe('flexChange', () => {
             null,
             flexSettings
         );
-        expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
+        expect(pushAndExecuteMock).toHaveBeenCalledWith(mockCommand);
     });
 
     test('applyChange - manifest change with path', async () => {
@@ -270,7 +270,7 @@ describe('flexChange', () => {
         await applyChange(testOptions, change);
 
         // assert
-        expect(CommandFactory.getCommandFor).toBeCalledWith(
+        expect(CommandFactory.getCommandFor).toHaveBeenCalledWith(
             control,
             'appDescriptor',
             {
@@ -297,6 +297,6 @@ describe('flexChange', () => {
             'someConfiguration/test/component/settings',
             { 'getMetadata': expect.any(Function), 'name': 'sap.m.Button' }
         );
-        expect(pushAndExecuteMock).toBeCalledWith(mockCommand);
+        expect(pushAndExecuteMock).toHaveBeenCalledWith(mockCommand);
     });
 });

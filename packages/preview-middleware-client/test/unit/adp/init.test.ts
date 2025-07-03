@@ -82,10 +82,10 @@ describe('adp', () => {
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
-        expect(initOutlineSpy).toBeCalledTimes(1);
-        expect(addMenuItemSpy).toBeCalledTimes(2);
-        expect(setPluginsSpy).toBeCalledTimes(2);
-        expect(enableTelemetry).toBeCalledTimes(2);
+        expect(initOutlineSpy).toHaveBeenCalledTimes(1);
+        expect(addMenuItemSpy).toHaveBeenCalledTimes(2);
+        expect(setPluginsSpy).toHaveBeenCalledTimes(2);
+        expect(enableTelemetry).toHaveBeenCalledTimes(2);
 
         const callBackFn = spyPostMessage.mock.calls[0][0];
 

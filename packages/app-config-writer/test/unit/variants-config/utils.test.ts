@@ -70,7 +70,7 @@ describe('utils', () => {
         });
 
         test('exception handling - file not found', async () => {
-            await expect(utils.getRTAUrl('path/to/chicken', '', 'chicken.yaml')).rejects.toThrowError(
+            await expect(utils.getRTAUrl('path/to/chicken', '', 'chicken.yaml')).rejects.toThrow(
                 `No chicken.yaml file found. Error: File 'chicken.yaml' not found in project 'path/to/chicken'`
             );
         });

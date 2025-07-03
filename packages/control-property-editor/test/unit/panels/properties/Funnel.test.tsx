@@ -29,7 +29,7 @@ describe('Funnel', () => {
 
         checkBox?.click();
         expect(checkBox).not.toBeChecked();
-        expect(dispatch).toBeCalled();
-        expect(dispatch).toBeCalledWith(filterNodes([{ name: 'show-editable-properties' as any, value: false }]));
+        expect(dispatch).toHaveBeenCalled();
+        expect(dispatch).toHaveBeenCalledWith(filterNodes([{ name: 'show-editable-properties' as any, value: false }]));
     });
 });

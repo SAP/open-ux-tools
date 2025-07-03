@@ -40,42 +40,44 @@ describe('ExtensionLogger', () => {
         const logger = new ExtensionLogger('test');
         logger.error('error test');
         await flushPromises();
-        expect(channelMock.error).toBeCalledWith('error test');
+        expect(channelMock.error).toHaveBeenCalledWith('error test');
     });
 
     test('log error with args', async () => {
         const logger = new ExtensionLogger('test');
         logger.error('error args', { 'one': 1, 'two': 2 }, undefined, null, [1, 2, 3], 'string');
         await flushPromises();
-        expect(channelMock.error).toBeCalledWith(`error args { one: 1, two: 2 } undefined null [ 1, 2, 3 ] 'string'`);
+        expect(channelMock.error).toHaveBeenCalledWith(
+            `error args { one: 1, two: 2 } undefined null [ 1, 2, 3 ] 'string'`
+        );
     });
 
     test('log warn', async () => {
         const logger = new ExtensionLogger('test');
         logger.warn('warn test');
         await flushPromises();
-        expect(channelMock.warn).toBeCalledWith('warn test');
+        expect(channelMock.warn).toHaveBeenCalledWith('warn test');
     });
 
     test('log info', async () => {
         const logger = new ExtensionLogger('test');
         logger.info('info test');
         await flushPromises();
-        expect(channelMock.info).toBeCalledWith('info test');
+        expect(channelMock.info).toHaveBeenCalledWith('info test');
     });
 
     test('log debug', async () => {
         const logger = new ExtensionLogger('test');
         logger.debug('debug test');
         await flushPromises();
-        expect(channelMock.debug).toBeCalledWith('debug test');
+        expect(channelMock.debug).toHaveBeenCalledWith('debug test');
     });
 
     test('log trace', async () => {
         const logger = new ExtensionLogger('test');
         logger.trace('trace test');
         await flushPromises();
-        expect(channelMock.trace).toBeCalledWith('trace test');
+        expect(channelMock.trace).toHaveBeenCalledWith('trace test');
     });
 
     test('log with args and unknown log level', async () => {
@@ -90,13 +92,15 @@ describe('ExtensionLogger', () => {
             'string'
         );
         await flushPromises();
-        expect(channelMock.trace).toBeCalledWith(`wrong level { one: 1, two: 2 } undefined null [ 1, 2, 3 ] 'string'`);
+        expect(channelMock.trace).toHaveBeenCalledWith(
+            `wrong level { one: 1, two: 2 } undefined null [ 1, 2, 3 ] 'string'`
+        );
     });
 
     test('calling show on channel', async () => {
         const logger = new ExtensionLogger('test');
         logger.show();
         await flushPromises();
-        expect(channelMock.show).toBeCalled();
+        expect(channelMock.show).toHaveBeenCalled();
     });
 });

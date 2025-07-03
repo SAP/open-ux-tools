@@ -50,8 +50,8 @@ describe('Test getSpecification', () => {
         const root = join(__dirname, '../test-data/specification/app');
         const specification = await getSpecification<Specification>(root, { logger });
         expect(specification.exec()).toBe('specification-mock');
-        expect(logger.debug).toBeCalledWith(expect.stringContaining('Specification dist-tags not found'));
-        expect(npmCommandSpy).toBeCalledWith(['view', '@sap/ux-specification', 'dist-tags', '--json'], {
+        expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('Specification dist-tags not found'));
+        expect(npmCommandSpy).toHaveBeenCalledWith(['view', '@sap/ux-specification', 'dist-tags', '--json'], {
             logger
         });
     });
@@ -63,7 +63,7 @@ describe('Test getSpecification', () => {
             expect('should not reach here').toBe('call to getSpecification should have thrown an error');
         } catch (error) {
             expect(error.message).toContain('Failed to load specification');
-            expect(logger.error).toBeCalled();
+            expect(logger.error).toHaveBeenCalled();
         }
     });
 
@@ -110,15 +110,15 @@ describe('Test refreshSpecificationDistTags()', () => {
         const moduleSpy = jest.spyOn(moduleMock, 'deleteModule').mockResolvedValueOnce();
         const logger = getMockLogger();
         await refreshSpecificationDistTags({ logger });
-        expect(moduleSpy).toBeCalledWith('@sap/ux-specification', '0.1.2');
-        expect(logger.debug).toBeCalledWith(expect.stringContaining('0.1.2'));
+        expect(moduleSpy).toHaveBeenCalledWith('@sap/ux-specification', '0.1.2');
+        expect(logger.debug).toHaveBeenCalledWith(expect.stringContaining('0.1.2'));
     });
 
     test('Refresh specification dist tags, error handling', async () => {
         jest.spyOn(commandMock, 'execNpmCommand').mockRejectedValueOnce('NPM_ERROR');
         const logger = getMockLogger();
         await refreshSpecificationDistTags({ logger });
-        expect(logger.error).toBeCalledWith(expect.stringContaining('NPM_ERROR'));
+        expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('NPM_ERROR'));
     });
 });
 

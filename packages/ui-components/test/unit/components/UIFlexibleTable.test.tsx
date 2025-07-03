@@ -655,7 +655,7 @@ describe('<UIFlexibleTable />', () => {
 
                 expect(onReorder.mock.calls.length).toBe(1);
                 expect(onReorder.mock.calls[0][0]).toStrictEqual({ oldIndex: 0, newIndex: 1 });
-                expect(focusSpy).toBeCalledTimes(2);
+                expect(focusSpy).toHaveBeenCalledTimes(2);
                 expect(idMismatches).toBe(0);
                 // Focus should not be reseted anymore
                 focusSpy.mockReset();
@@ -664,7 +664,7 @@ describe('<UIFlexibleTable />', () => {
                 wrapper.setProps({ isContentLoading: true });
                 await delay(200);
                 wrapper.setProps({ isContentLoading: false });
-                expect(focusSpy).toBeCalledTimes(0);
+                expect(focusSpy).toHaveBeenCalledTimes(0);
             });
 
             it('click last available down button', async () => {
@@ -977,12 +977,12 @@ describe('<UIFlexibleTable />', () => {
                     // Check touch event handling
                     const touchStartEvent = getNativeEventMock();
                     row.simulate('touchStart', touchStartEvent);
-                    expect(touchStartEvent.nativeEvent.stopImmediatePropagation).toBeCalledTimes(
+                    expect(touchStartEvent.nativeEvent.stopImmediatePropagation).toHaveBeenCalledTimes(
                         stopImmediatePropagation ? 1 : 0
                     );
                     const touchEndEvent = getNativeEventMock();
                     row.simulate('touchEnd', touchEndEvent);
-                    expect(touchEndEvent.nativeEvent.stopImmediatePropagation).toBeCalledTimes(
+                    expect(touchEndEvent.nativeEvent.stopImmediatePropagation).toHaveBeenCalledTimes(
                         stopImmediatePropagation ? 1 : 0
                     );
                 });

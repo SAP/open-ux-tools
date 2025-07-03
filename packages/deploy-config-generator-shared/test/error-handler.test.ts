@@ -12,7 +12,7 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
 describe('bail', () => {
     it('should throw an error with the provided message', () => {
         const errorMessage = 'Test error';
-        expect(() => bail(errorMessage)).toThrowError(new Error(errorMessage));
+        expect(() => bail(errorMessage)).toThrow(new Error(errorMessage));
     });
 });
 
@@ -71,9 +71,7 @@ describe('handleErrorMessage', () => {
         const expectedErrMsg = ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ABORT_SIGNAL);
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
 
-        expect(() => handleErrorMessage(appWizardMock, { errorType: ERROR_TYPE.ABORT_SIGNAL })).toThrowError(
-            expectedErrMsg
-        );
+        expect(() => handleErrorMessage(appWizardMock, { errorType: ERROR_TYPE.ABORT_SIGNAL })).toThrow(expectedErrMsg);
     });
 
     it('should log error and call appWizard.showError if environment is not CLI', () => {

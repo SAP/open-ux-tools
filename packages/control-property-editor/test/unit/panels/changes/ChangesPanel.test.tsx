@@ -804,8 +804,8 @@ describe('ChangePanel', () => {
         expect(link).toBeInTheDocument();
 
         link.click();
-        expect(reactRedux.useDispatch).toBeCalled();
-        expect(cpeCommon.selectControl).toBeCalledWith('testId1');
+        expect(reactRedux.useDispatch).toHaveBeenCalled();
+        expect(cpeCommon.selectControl).toHaveBeenCalledWith('testId1');
     });
 
     test('Filter unsaved changes', () => {

@@ -45,7 +45,7 @@ describe('flp/init', () => {
     });
     test('registerSAPFonts', () => {
         registerSAPFonts();
-        expect(IconPoolMock.registerFont).toBeCalledTimes(2);
+        expect(IconPoolMock.registerFont).toHaveBeenCalledTimes(2);
     });
     test('setI18nTitle', () => {
         const title = '~testTitle';
@@ -72,7 +72,7 @@ describe('flp/init', () => {
             ]
         } as unknown as apiHandler.ManifestAppdescr);
         await loadI18nResourceBundle('other' as Scenario);
-        expect(mockBundle.create).toBeCalledWith({
+        expect(mockBundle.create).toHaveBeenCalledWith({
             url: 'i18n/i18n.properties'
         });
     });
@@ -87,7 +87,7 @@ describe('flp/init', () => {
             ]
         } as unknown as apiHandler.ManifestAppdescr);
         await loadI18nResourceBundle('ADAPTATION_PROJECT');
-        expect(mockBundle.create).toBeCalledWith({
+        expect(mockBundle.create).toHaveBeenCalledWith({
             url: '../i18n/i18n.properties',
             enhanceWith: [
                 {
@@ -120,7 +120,7 @@ describe('flp/init', () => {
         test('single app, no reuse libs', async () => {
             fetchMock.mockResolvedValueOnce({ json: () => testManifest });
             await registerComponentDependencyPaths(['/'], new URLSearchParams());
-            expect(loaderMock).not.toBeCalled();
+            expect(loaderMock).not.toHaveBeenCalled();
         });
 
         test('single app, one reuse lib', async () => {
@@ -135,7 +135,7 @@ describe('flp/init', () => {
                 })
             });
             await registerComponentDependencyPaths(['/'], new URLSearchParams());
-            expect(loaderMock).toBeCalledWith({ paths: { 'test/lib/component': '~url' } });
+            expect(loaderMock).toHaveBeenCalledWith({ paths: { 'test/lib/component': '~url' } });
         });
 
         test('single app, one reuse lib and one componentUsage', async () => {
@@ -159,7 +159,7 @@ describe('flp/init', () => {
                 })
             });
             await registerComponentDependencyPaths(['/'], new URLSearchParams());
-            expect(loaderMock).toBeCalledWith({ paths: { 'test/lib/component': '~url' } });
+            expect(loaderMock).toHaveBeenCalledWith({ paths: { 'test/lib/component': '~url' } });
         });
 
         test('registerComponentDependencyPaths: error case', async () => {
@@ -199,21 +199,21 @@ describe('flp/init', () => {
         test('default', async () => {
             window.location.hash = 'preview-app';
             await resetAppState(Container);
-            expect(mockService.deleteAppState).not.toBeCalled();
+            expect(mockService.deleteAppState).not.toHaveBeenCalled();
         });
 
         test('hash key equals "/?sap-iapp-state"', async () => {
             window.location.hash = 'preview-app&/?sap-iapp-state=dummyHash1234';
             await resetAppState(Container);
-            expect(mockService.deleteAppState).toBeCalled();
-            expect(mockService.deleteAppState).toBeCalledWith('dummyHash1234');
+            expect(mockService.deleteAppState).toHaveBeenCalled();
+            expect(mockService.deleteAppState).toHaveBeenCalledWith('dummyHash1234');
         });
 
         test('hash key equals "sap-iapp-state"', async () => {
             window.location.hash = 'preview-app&/?sap-iapp-state-history&sap-iapp-state=dummyHash5678';
             await resetAppState(Container);
-            expect(mockService.deleteAppState).toBeCalled();
-            expect(mockService.deleteAppState).toBeCalledWith('dummyHash5678');
+            expect(mockService.deleteAppState).toHaveBeenCalled();
+            expect(mockService.deleteAppState).toHaveBeenCalledWith('dummyHash5678');
         });
     });
 
@@ -241,9 +241,9 @@ describe('flp/init', () => {
         test('nothing configured', async () => {
             VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
             await init({});
-            expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
-            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
-            expect(sapMock.ushell.Container.createRendererInternal).not.toBeCalled();
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toHaveBeenCalled();
+            expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRendererInternal).not.toHaveBeenCalled();
         });
 
         test('flex configured', async () => {
@@ -263,13 +263,13 @@ describe('flp/init', () => {
             const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
                 .calls[0][0] as () => Promise<void>;
             await rendererCb();
-            expect(mockService.attachAppLoaded).toBeCalled();
-            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
-            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+            expect(mockService.attachAppLoaded).toHaveBeenCalled();
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toHaveBeenCalled();
+            expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
 
             const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
             loadedCb({ getParameter: () => {} });
-            expect(sapMock.ui.require).toBeCalledWith(
+            expect(sapMock.ui.require).toHaveBeenCalledWith(
                 ['sap/ui/rta/api/startAdaptation', flexSettings.pluginScript],
                 expect.anything()
             );
@@ -288,17 +288,17 @@ describe('flp/init', () => {
             };
             sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
             await init({ flex: JSON.stringify(flexSettings) });
-            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
-            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toHaveBeenCalled();
+            expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
 
             const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
                 .calls[0][0] as () => Promise<void>;
             await rendererCb();
-            expect(mockService.attachAppLoaded).toBeCalled();
+            expect(mockService.attachAppLoaded).toHaveBeenCalled();
 
             const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
             loadedCb({ getParameter: () => {} });
-            expect(sapMock.ui.require).toBeCalledWith(
+            expect(sapMock.ui.require).toHaveBeenCalledWith(
                 ['open/ux/preview/client/flp/initRta', flexSettings.pluginScript],
                 expect.anything()
             );
@@ -310,7 +310,7 @@ describe('flp/init', () => {
             const initRtaMock = jest.fn();
             const plugnScriptMock = jest.fn();
             await requireCb(initRtaMock, plugnScriptMock);
-            expect(initRtaMock).toBeCalled();
+            expect(initRtaMock).toHaveBeenCalled();
         });
 
         test('custom init module configured & ui5 version is 1.120.9', async () => {
@@ -319,8 +319,8 @@ describe('flp/init', () => {
 
             await init({ customInit: customInit });
 
-            expect(sapMock.ui.require).toBeCalledWith([customInit]);
-            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+            expect(sapMock.ui.require).toHaveBeenCalledWith([customInit]);
+            expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
         });
 
         test('custom init module configured & ui5 version is 2.0.0', async () => {
@@ -329,9 +329,9 @@ describe('flp/init', () => {
 
             await init({ customInit: customInit });
 
-            expect(sapMock.ushell.Container.createRendererInternal).toBeCalledWith(undefined, true);
-            expect(sapMock.ushell.Container.createRenderer).not.toBeCalled();
-            expect(sapMock.ui.require).toBeCalledWith([customInit]);
+            expect(sapMock.ushell.Container.createRendererInternal).toHaveBeenCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRenderer).not.toHaveBeenCalled();
+            expect(sapMock.ui.require).toHaveBeenCalledWith([customInit]);
         });
 
         test('custom init module configured & ui5 version is legacy-free', async () => {
@@ -339,8 +339,8 @@ describe('flp/init', () => {
 
             await init({});
 
-            expect(sapMock.ushell.Container.createRendererInternal).toBeCalledWith(undefined, true);
-            expect(sapMock.ushell.Container.createRenderer).not.toBeCalled();
+            expect(sapMock.ushell.Container.createRendererInternal).toHaveBeenCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRenderer).not.toHaveBeenCalled();
         });
 
         test('handle higher layer changes', async () => {
@@ -407,11 +407,11 @@ describe('flp/init', () => {
             const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
                 .calls[0][0] as () => Promise<void>;
             await rendererCb();
-            expect(mockService.attachAppLoaded).toBeCalled();
+            expect(mockService.attachAppLoaded).toHaveBeenCalled();
             expect(mockService.attachAppLoaded).toHaveBeenCalledTimes(1);
             expect(mockService.attachAppLoaded.mock.calls[0][0]).toBeInstanceOf(Function);
-            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
-            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toHaveBeenCalled();
+            expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
         });
 
         test('enhancedHomePage mode is enabled', async () => {
@@ -419,7 +419,7 @@ describe('flp/init', () => {
             await init({ enhancedHomePage: true });
 
             expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();
-            expect(sapMock.ushell.Container.init).toBeCalledWith('cdm');
+            expect(sapMock.ushell.Container.init).toHaveBeenCalledWith('cdm');
         });
     });
 });

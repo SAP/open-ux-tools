@@ -79,12 +79,12 @@ describe('utils', () => {
 
             // do nothing if no error is provided, but log for debug purposes
             proxyErrorHandler(undefined as unknown as Error, request, logger);
-            expect(debugSpy).toBeCalled();
+            expect(debugSpy).toHaveBeenCalled();
 
             // forward or throw other errors
             const otherError = new Error();
             proxyErrorHandler(otherError, requestWithNext, logger);
-            expect(mockNext).toBeCalledTimes(1);
+            expect(mockNext).toHaveBeenCalledTimes(1);
             try {
                 proxyErrorHandler(otherError, request, logger);
             } catch (error) {
@@ -95,8 +95,8 @@ describe('utils', () => {
             debugSpy.mockReset();
             const emptyError = { message: '', stack: 'Error' } as Error;
             proxyErrorHandler(emptyError, requestCausingError, logger);
-            expect(debugSpy).toBeCalledTimes(1);
-            expect(debugSpy).toBeCalledWith(
+            expect(debugSpy).toHaveBeenCalledTimes(1);
+            expect(debugSpy).toHaveBeenCalledWith(
                 'An error: ' +
                     JSON.stringify(emptyError, null, 2) +
                     ' was thrown for the request: ' +
@@ -255,12 +255,12 @@ describe('utils', () => {
             } as unknown as any;
             const html = '<html></html>';
             sendResponse(res, html);
-            expect(res.writeHead).toBeCalledTimes(1);
-            expect(res.writeHead).toBeCalledWith(200, {
+            expect(res.writeHead).toHaveBeenCalledTimes(1);
+            expect(res.writeHead).toHaveBeenCalledWith(200, {
                 'Content-Type': 'text/html'
             });
             expect(res.write).toHaveBeenCalledWith(html);
-            expect(res.end).toBeCalledTimes(1);
+            expect(res.end).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -274,7 +274,7 @@ describe('utils', () => {
             };
             const result = await baseUtils.resolveUI5Version(version, log);
             expect(result).toEqual(version);
-            expect(log.info).toBeCalledTimes(1);
+            expect(log.info).toHaveBeenCalledTimes(1);
             expect(log.info).toHaveBeenCalledWith('Using UI5 version: 1.90.0 based on: ui5.yaml.');
         });
 
@@ -287,7 +287,7 @@ describe('utils', () => {
             const result = await baseUtils.resolveUI5Version(version, log);
             delete process.env.FIORI_TOOLS_UI5_VERSION;
             expect(result).toEqual(version);
-            expect(log.info).toBeCalledTimes(1);
+            expect(log.info).toHaveBeenCalledTimes(1);
             expect(log.info).toHaveBeenCalledWith(
                 'Using UI5 version: latest based on: CLI arguments / Run configuration.'
             );
@@ -303,7 +303,7 @@ describe('utils', () => {
             } as Manifest;
             const result = await baseUtils.resolveUI5Version(undefined, log, manifest);
             expect(result).toEqual('1.96.0');
-            expect(log.info).toBeCalledTimes(1);
+            expect(log.info).toHaveBeenCalledTimes(1);
             expect(log.info).toHaveBeenCalledWith('Using UI5 version: 1.96.0 based on: manifest.json.');
         });
 
@@ -320,7 +320,7 @@ describe('utils', () => {
             );
             const result = await baseUtils.resolveUI5Version(undefined, log);
             expect(result).toEqual('');
-            expect(log.info).toBeCalledTimes(1);
+            expect(log.info).toHaveBeenCalledTimes(1);
             expect(log.info).toHaveBeenCalledWith('Using UI5 version: latest based on: manifest.json.');
         });
     });
@@ -435,11 +435,11 @@ describe('utils', () => {
                 [{ path: '/test-resources', url: 'http://ui5.sap.com', version: '1.124.0' }],
                 rootProject
             );
-            expect(respMock.writeHead).toBeCalledTimes(1);
-            expect(respMock.writeHead).toBeCalledWith(200, {
+            expect(respMock.writeHead).toHaveBeenCalledTimes(1);
+            expect(respMock.writeHead).toHaveBeenCalledWith(200, {
                 'Content-Type': 'text/html'
             });
-            expect(respMock.write).toBeCalledWith(
+            expect(respMock.write).toHaveBeenCalledWith(
                 '<html><script src="http://ui5.sap.com/1.124.0/test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script></html>'
             );
             expect(respMock.end).toHaveBeenCalled();
@@ -462,11 +462,11 @@ describe('utils', () => {
                 [{ path: '/test-resources', url: 'http://ui5.sap.com', version: '1.124.0' }],
                 rootProject
             );
-            expect(respMock.writeHead).toBeCalledTimes(1);
-            expect(respMock.writeHead).toBeCalledWith(200, {
+            expect(respMock.writeHead).toHaveBeenCalledTimes(1);
+            expect(respMock.writeHead).toHaveBeenCalledWith(200, {
                 'Content-Type': 'text/html'
             });
-            expect(respMock.write).toBeCalledWith(
+            expect(respMock.write).toHaveBeenCalledWith(
                 '<html><script src="http://ui5.sap.com/1.124.0/resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script></html>'
             );
             expect(respMock.end).toHaveBeenCalled();
@@ -489,11 +489,11 @@ describe('utils', () => {
                 [{ path: '/resources', url: 'http://ui5.sap.com', version: '1.124.0' }],
                 rootProject
             );
-            expect(respMock.writeHead).toBeCalledTimes(1);
-            expect(respMock.writeHead).toBeCalledWith(200, {
+            expect(respMock.writeHead).toHaveBeenCalledTimes(1);
+            expect(respMock.writeHead).toHaveBeenCalledWith(200, {
                 'Content-Type': 'text/html'
             });
-            expect(respMock.write).toBeCalledWith(
+            expect(respMock.write).toHaveBeenCalledWith(
                 '<html><script src="http://ui5.sap.com/1.124.0/resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script></html>'
             );
             expect(respMock.end).toHaveBeenCalled();
@@ -511,7 +511,7 @@ describe('utils', () => {
 
         test('calls next(error) in case of exception', async () => {
             await baseUtils.injectScripts(null as any, null as any, nextMock, [], rootProject);
-            expect(nextMock).toBeCalledWith(expect.any(Error));
+            expect(nextMock).toHaveBeenCalledWith(expect.any(Error));
         });
     });
 

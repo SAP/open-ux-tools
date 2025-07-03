@@ -134,15 +134,15 @@ describe('App Studio', () => {
         });
 
         it('Invalid instance', async () => {
-            expect(getCredentialsForDestinationService('invalid')).rejects.toThrowError();
+            expect(getCredentialsForDestinationService('invalid')).rejects.toThrow();
         });
 
         it('Instance does not exist', async () => {
-            expect(getCredentialsForDestinationService('noinstance')).rejects.toThrowError();
+            expect(getCredentialsForDestinationService('noinstance')).rejects.toThrow();
         });
 
         it('Instance does not have credentials', async () => {
-            expect(getCredentialsForDestinationService('nocredentials')).rejects.toThrowError();
+            expect(getCredentialsForDestinationService('nocredentials')).rejects.toThrow();
         });
     });
 
@@ -318,8 +318,8 @@ describe('App Studio', () => {
                   "tokenServiceURLType": "Dedicated",
                 }
             `);
-            expect(infoMock).toBeCalledTimes(1);
-            expect(debugMock).toBeCalledTimes(1);
+            expect(infoMock).toHaveBeenCalledTimes(1);
+            expect(debugMock).toHaveBeenCalledTimes(1);
         });
 
         test('throw exception if no destination found in SAP BTP', async () => {
@@ -350,7 +350,7 @@ describe('App Studio', () => {
             const getCredsSpy = jest.spyOn(cfTools, 'apiGetInstanceCredentials');
             const dest = await createOAuth2UserTokenExchangeDest(serviceInstanceName);
             expect(dest.Name).toBe('abap-cloud-my-abap-env-testorg-testspace');
-            expect(getCredsSpy).toBeCalledWith(serviceInstanceName);
+            expect(getCredsSpy).toHaveBeenCalledWith(serviceInstanceName);
             expect(createDestSpy).toHaveBeenCalledWith({
                 basProperties: {
                     html5DynamicDestination: 'true',

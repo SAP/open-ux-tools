@@ -20,7 +20,7 @@ describe('reportTelemetry', () => {
         disableTelemetry();
         await reportTelemetry(testEvent);
         await reportTelemetry(testEvent);
-        expect(fetchMock).toBeCalledTimes(0);
+        expect(fetchMock).toHaveBeenCalledTimes(0);
     });
 
     test('error caught when sending telemetry data', async () => {

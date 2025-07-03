@@ -38,13 +38,13 @@ test('renders UndoRedoSaveActions', () => {
     expect(saveBtn).toBeInTheDocument();
 
     undoBtn.click();
-    expect(dispatch).toBeCalledWith(undo());
+    expect(dispatch).toHaveBeenCalledWith(undo());
 
     redoBtn.click();
-    expect(dispatch).toBeCalledWith(redo());
+    expect(dispatch).toHaveBeenCalledWith(redo());
 
     saveBtn.click();
-    expect(dispatch).toBeCalledWith(save());
+    expect(dispatch).toHaveBeenCalledWith(save());
 });
 
 describe('toolbar', () => {
@@ -63,7 +63,7 @@ describe('toolbar', () => {
         expect(saveBtn).toBeInTheDocument();
 
         saveBtn.click();
-        expect(dispatch).toBeCalledWith(
+        expect(dispatch).toHaveBeenCalledWith(
             reloadApplication({
                 save: true
             })

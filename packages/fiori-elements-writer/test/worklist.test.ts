@@ -138,9 +138,9 @@ describe('Should generate annotations correctly for Worklist projects', () => {
             }
         };
         await generate(curTestOutPath, fioriElementsApp, fs);
-        expect(generateAnnotations).toBeCalledTimes(1);
+        expect(generateAnnotations).toHaveBeenCalledTimes(1);
 
-        expect(generateAnnotations).toBeCalledWith(
+        expect(generateAnnotations).toHaveBeenCalledWith(
             fs,
             {
                 serviceName: sampleCapService.serviceName,
@@ -165,7 +165,7 @@ describe('Should generate annotations correctly for Worklist projects', () => {
             }
         };
         await generate(curTestOutPath, fioriElementsApp, fs);
-        expect(generateAnnotations).not.toBeCalled();
+        expect(generateAnnotations).not.toHaveBeenCalled();
     });
 
     test('Should not generate annotations for Worklist projects when service is OData V2 and addAnnotations is enabled', async () => {
@@ -182,6 +182,6 @@ describe('Should generate annotations correctly for Worklist projects', () => {
         };
         fioriElementsApp.service.version = OdataVersion.v2;
         await generate(curTestOutPath, fioriElementsApp, fs);
-        expect(generateAnnotations).not.toBeCalled();
+        expect(generateAnnotations).not.toHaveBeenCalled();
     });
 });
