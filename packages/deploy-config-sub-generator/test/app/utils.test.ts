@@ -5,7 +5,7 @@ import hasbin from 'hasbin';
 import mockFs from 'fs';
 
 jest.mock('fs');
-
+jest.spyOn(mockFs.realpathSync, 'native').mockImplementation(jest.requireActual('fs').realpathSync.native);
 jest.mock('hasbin', () => ({
     sync: jest.fn()
 }));
@@ -17,7 +17,6 @@ describe('Test utils - Deploy', () => {
 
     beforeAll(() => {
         jest.clearAllMocks();
-        jest.spyOn(mockFs.realpathSync, 'native').mockImplementation(jest.requireActual('fs').realpathSync.native);
         jest.spyOn(mockFs, 'existsSync').mockImplementation(() => true);
     });
 

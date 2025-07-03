@@ -5,6 +5,7 @@ import { Check } from '../../src';
 
 // Need to mock fs and archiver on top level before any test is run
 jest.mock('fs');
+jest.spyOn(mockFs.realpathSync, 'native').mockImplementation(jest.requireActual('fs').realpathSync.native);
 let zipMock;
 jest.mock('archiver', () => ({
     __esModule: true,
@@ -12,9 +13,6 @@ jest.mock('archiver', () => ({
 }));
 
 describe('Test to check zip save, storeResultsZip()', () => {
-    beforeAll(() => {
-        jest.spyOn(mockFs.realpathSync, 'native').mockImplementation(jest.requireActual('fs').realpathSync.native);
-    });
     beforeEach(() => {
         jest.clearAllMocks();
     });

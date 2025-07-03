@@ -6,6 +6,7 @@ import * as validators from '@sap-ux/project-input-validator';
 import * as fs from 'fs';
 
 jest.mock('fs');
+jest.spyOn(fs.realpathSync, 'native').mockImplementation(jest.requireActual('fs').realpathSync.native);
 jest.mock('@sap-ux/project-input-validator');
 
 describe('getPrompts', () => {
@@ -34,7 +35,6 @@ describe('getPrompts', () => {
 
     beforeAll(async () => {
         await i18n.initI18n();
-        jest.spyOn(fs.realpathSync, 'native').mockImplementation(jest.requireActual('fs').realpathSync.native);
     });
 
     test('should return prompts with data sources', () => {
