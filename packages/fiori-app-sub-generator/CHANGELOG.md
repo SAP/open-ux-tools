@@ -1,5 +1,23 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.17
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/annotation-generator@0.3.43
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/cap-config-writer@0.10.15
+    -   @sap-ux/fiori-generator-shared@0.12.14
+    -   @sap-ux/launch-config@0.10.10
+    -   @sap-ux/odata-service-inquirer@2.5.10
+    -   @sap-ux/odata-service-writer@0.27.9
+    -   @sap-ux/telemetry@0.6.7
+    -   @sap-ux/ui5-application-inquirer@0.14.22
+    -   @sap-ux/fiori-elements-writer@2.5.8
+    -   @sap-ux/fiori-freestyle-writer@2.4.19
+
 ## 0.5.16
 
 ### Patch Changes
