@@ -197,4 +197,16 @@ describe('CF Writer App', () => {
         expect(fs.read(join(appPath, '.gitignore'))).toMatchSnapshot();
         expect(fs.read(join(appPath, 'xs-security.json'))).toMatchSnapshot();
     });
+
+    test('Generate deployment configs - HTML5 app with no datasource configured', async () => {
+        isAppStudioMock.mockResolvedValue(true);
+        listDestinationsMock.mockResolvedValue(destinationsMock);
+        const appName = 'basicappnodatasource';
+        const appPath = join(outputDir, appName);
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(appPath);
+        fsExtra.copySync(join(__dirname, '../sample/basicappnodatasource'), appPath);
+        const localFs = await generateAppConfig({ appPath, destinationName: 'test' }, undefined, logger);
+        expect(localFs.dump(appPath)).toMatchSnapshot();
+    });
 });
