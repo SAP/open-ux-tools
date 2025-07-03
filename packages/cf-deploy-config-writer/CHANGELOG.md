@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.9
+
+### Patch Changes
+
+-   1998ebb: Update approuter configuration
+
 ## 0.3.8
 
 ### Patch Changes
