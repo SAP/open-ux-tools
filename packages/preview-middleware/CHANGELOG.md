@@ -1,5 +1,26 @@
 # @sap-ux/preview-middleware
 
+## 0.20.51
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/adp-tooling@0.14.36
+    -   @sap-ux/system-access@0.6.9
+
+## 0.20.50
+
+### Patch Changes
+
+-   fc8cc4a: fix: detect all sync views
+
+## 0.20.49
+
+### Patch Changes
+
+-   67cf59e: make connector handling more robust and adjust min UI5 version for workspace connector usage to 1.76
+
 ## 0.20.48
 
 ### Patch Changes
