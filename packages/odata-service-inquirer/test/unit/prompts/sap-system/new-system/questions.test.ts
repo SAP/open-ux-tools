@@ -82,7 +82,7 @@ describe('Test new system prompt', () => {
             refreshToken: undefined,
             serviceKeys: undefined,
             url: 'http://abap.on.prem:1234',
-            userDisplayName: undefined,
+            userDisplayName: 'user01',
             username: 'user01',
             newOrUpdated: true,
             systemType: 'OnPrem'
@@ -130,7 +130,7 @@ describe('Test new system prompt', () => {
             refreshToken: undefined,
             serviceKeys: undefined,
             url: 'http://mock.abap.on.prem:4300',
-            userDisplayName: undefined,
+            userDisplayName: 'testUser',
             username: 'testUser',
             newOrUpdated: true,
             systemType: 'OnPrem'

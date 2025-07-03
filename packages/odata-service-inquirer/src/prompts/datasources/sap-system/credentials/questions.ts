@@ -155,6 +155,7 @@ function updatePromptStateWithConnectedSystem(
             PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
                 username: username,
                 password,
+                userDisplayName: username, // userDisplayName needs also to be updated
                 newOrUpdated: true
             } as Partial<BackendSystem>);
         }
