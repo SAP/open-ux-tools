@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.14.21
+
+### Patch Changes
+
+-   d152617: Align text on mta message and non mta deploy config
+
 ## 0.14.20
 
 ### Patch Changes
