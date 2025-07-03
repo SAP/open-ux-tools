@@ -25,7 +25,12 @@ export async function getSystemQuestions(
     const systemQuestions = await getSystemSelectionQuestions(
         {
             serviceSelection: { hide: true },
-            systemSelection: { defaultChoice: systemName }
+            systemSelection: {
+                defaultChoice: systemName,
+                destinationFilters: {
+                    odata_abap: true
+                }
+            }
         },
         true
     );
