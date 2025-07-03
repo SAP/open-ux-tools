@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.11
+
+### Patch Changes
+
+-   58df005: Handle service segement when no datasource is selected
+
 ## 0.3.10
 
 ### Patch Changes
