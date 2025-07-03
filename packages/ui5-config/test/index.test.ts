@@ -339,7 +339,11 @@ describe('UI5Config', () => {
         });
 
         test('Should add preview middlewares correctly', () => {
-            ui5Config.addFioriToolsPreviewMiddleware({ appId: 'my.app', ui5Theme: 'sap_fiori_3' });
+            ui5Config.addFioriToolsPreviewMiddleware({
+                name: 'fiori-tools-preview',
+                afterMiddleware: 'fiori-tools-appreload',
+                configuration: { flp: { theme: 'sap_fiori_3' } }
+            });
             expect(ui5Config.toString().replace(/\s+/g, ' ').trim()).toBe(
                 `
                     server:
@@ -357,10 +361,94 @@ describe('UI5Config', () => {
 
         test('Should add preview middlewares correctly with more flp config options', () => {
             ui5Config.addFioriToolsPreviewMiddleware({
-                appId: 'testapp',
-                ui5Theme: 'sap_fiori_3',
-                flpAction: 'display',
-                localStartFile: 'test/flpSandbox.html'
+                name: 'fiori-tools-preview',
+                afterMiddleware: 'fiori-tools-appreload',
+                configuration: {
+                    flp: {
+                        theme: 'sap_fiori_3',
+                        path: 'test/flpSandbox.html',
+                        intent: { object: 'testapp', action: 'display' }
+                    }
+                }
+            });
+            expect(ui5Config.toString().replace(/\s+/g, ' ').trim()).toBe(
+                `
+                    server:
+                        customMiddleware:
+                            - name: fiori-tools-preview
+                            afterMiddleware: fiori-tools-appreload
+                            configuration:
+                            flp: 
+                            theme: sap_fiori_3
+                            path: test/flpSandbox.html
+                            intent:
+                                object: testapp
+                                action: display
+                `
+                    .replace(/\s+/g, ' ')
+                    .trim()
+            );
+        });
+
+        test('Should not preview middleware when it is exists and update is set to false', () => {
+            ui5Config.addFioriToolsPreviewMiddleware({
+                name: 'fiori-tools-preview',
+                afterMiddleware: 'fiori-tools-appreload',
+                configuration: {
+                    flp: {
+                        theme: 'sap_fiori_3'
+                    }
+                }
+            });
+            ui5Config.addFioriToolsPreviewMiddleware(
+                {
+                    name: 'fiori-tools-preview',
+                    afterMiddleware: 'fiori-tools-appreload',
+                    configuration: {
+                        flp: {
+                            theme: 'sap_fiori_3',
+                            path: 'test/flpSandbox.html',
+                            intent: { object: 'testapp', action: 'display' }
+                        }
+                    }
+                },
+                false
+            );
+            expect(ui5Config.toString().replace(/\s+/g, ' ').trim()).toBe(
+                `
+                    server:
+                        customMiddleware:
+                            - name: fiori-tools-preview
+                            afterMiddleware: fiori-tools-appreload
+                            configuration:
+                            flp: 
+                            theme: sap_fiori_3
+                `
+                    .replace(/\s+/g, ' ')
+                    .trim()
+            );
+        });
+
+        test('Should update preview middleware when it is exists (update defaults as true)', () => {
+            ui5Config.addFioriToolsPreviewMiddleware({
+                name: 'fiori-tools-preview',
+                afterMiddleware: 'fiori-tools-appreload',
+                configuration: {
+                    flp: {
+                        theme: 'sap_fiori_3'
+                    }
+                }
+            });
+            ui5Config.addFioriToolsPreviewMiddleware({
+                name: 'fiori-tools-preview',
+                afterMiddleware: 'fiori-tools-appreload',
+                configuration: {
+                    flp: {
+                        theme: 'sap_fiori_3',
+                        path: 'test/flpSandbox.html',
+                        intent: { object: 'testapp', action: 'display' }
+                    }
+                }
             });
             expect(ui5Config.toString().replace(/\s+/g, ' ').trim()).toBe(
                 `

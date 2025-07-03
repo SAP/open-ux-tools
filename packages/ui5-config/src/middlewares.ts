@@ -44,7 +44,7 @@ export function getPreviewMiddlewareConfig({
     flpAction,
     localStartFile
 }: {
-    ui5Theme: string;
+    ui5Theme?: string;
     appId?: string;
     flpAction?: string;
     localStartFile?: string;
@@ -54,7 +54,7 @@ export function getPreviewMiddlewareConfig({
         afterMiddleware: 'fiori-tools-appreload',
         configuration: {
             flp: {
-                theme: ui5Theme
+                ...(ui5Theme && { theme: ui5Theme })
             }
         }
     };

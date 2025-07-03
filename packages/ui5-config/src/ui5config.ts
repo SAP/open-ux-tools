@@ -14,7 +14,8 @@ import type {
     MockserverConfig,
     ServeStaticPath,
     DataSourceConfig,
-    AbapDeployConfig
+    AbapDeployConfig,
+    FioriPreviewConfig
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -22,10 +23,9 @@ import {
     getAppReloadMiddlewareConfig,
     getBackendComments,
     getFioriToolsProxyMiddlewareConfig,
-    getMockServerMiddlewareConfig,
-    getPreviewMiddlewareConfig
+    getMockServerMiddlewareConfig
 } from './middlewares';
-import { fioriToolsProxy, serveStatic } from './constants';
+import { fioriToolsPreview, fioriToolsProxy, serveStatic } from './constants';
 import Ajv, { type ValidateFunction } from 'ajv';
 import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
 import { join, posix, relative, sep } from 'path';
@@ -278,27 +278,30 @@ export class UI5Config {
      * Adds the Fiori Tools preview middleware configuration to the UI5 server configuration.
      * This middleware is used to preview the Fiori application with the specified UI5 theme.
      *
-     * @param previewMiddlewareOpts - options for configuring the fiori tools preview middleware.
-     * @param {string} previewMiddlewareOpts.ui5Theme - The UI5 theme to be used.
-     * @param {string} previewMiddlewareOpts.appId - The ID of the application for which the preview middleware is configured.
-     * @param {string} previewMiddlewareOpts.flpAction - The FLP action to be used for the preview.
-     * @param {string} [previewMiddlewareOpts.localStartFile] - The local start file to be used for the preview.
-     * @returns {UI5Config} The updated UI5 configuration object.
+     * @param fioriToolsPreviewMiddlewareConfig - the custom middleware configuration
+     * @param {boolean} update - defaults to true, if set to false and existing config is found, it will not make any changes
+     * @returns {UI5Config} - the updated UI5 configuration object
      */
-    public addFioriToolsPreviewMiddleware({
-        appId,
-        ui5Theme,
-        flpAction,
-        localStartFile
-    }: {
-        ui5Theme: string;
-        appId?: string;
-        flpAction?: string;
-        localStartFile?: string;
-    }): UI5Config {
-        this.document.appendTo({
-            path: 'server.customMiddleware',
-            value: getPreviewMiddlewareConfig({ ui5Theme, appId, flpAction, localStartFile })
+    public addFioriToolsPreviewMiddleware(
+        fioriToolsPreviewMiddlewareConfig?: CustomMiddleware<FioriPreviewConfig>,
+        update: boolean = true
+    ): this {
+        let existingMiddleware: CustomMiddleware<FioriPreviewConfig> | undefined;
+        try {
+            existingMiddleware = this.findCustomMiddleware<FioriPreviewConfig>(fioriToolsPreview);
+        } catch {
+            // no existing fiori preview middleware found
+        }
+
+        if (existingMiddleware) {
+            if (!update) {
+                return this; // don't update existing middleware
+            }
+        }
+        this.updateCustomMiddleware({
+            ...fioriToolsPreviewMiddlewareConfig,
+            name: fioriToolsPreview,
+            configuration: fioriToolsPreviewMiddlewareConfig?.configuration
         });
         return this;
     }
