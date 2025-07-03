@@ -329,8 +329,8 @@ function populateSourceTemplate(sourceTemplate: SourceTemplate): SourceTemplate 
  */
 async function getProcessVersions(): Promise<NodeJS.ProcessVersions> {
     // try {
-        const output = await spawnCommand('node', ['-p', 'JSON.stringify(process.versions)']);
-        return JSON.parse(output);
+    const output = await spawnCommand('node', ['-p', 'JSON.stringify(process.versions)']);
+    return JSON.parse(output);
     // } catch {
     //     return {} as NodeJS.ProcessVersions;
     // }
