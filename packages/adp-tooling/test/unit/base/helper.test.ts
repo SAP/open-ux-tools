@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'fs';
 import type { create, Editor } from 'mem-fs-editor';
 
 import { UI5Config } from '@sap-ux/ui5-config';
+import type { Inbound } from '@sap-ux/axios-extension';
 import type { DescriptorVariant } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
 
@@ -12,7 +13,8 @@ import {
     getWebappFiles,
     flpConfigurationExists,
     updateVariant,
-    isTypescriptSupported
+    isTypescriptSupported,
+    filterAndMapInboundsToManifest
 } from '../../../src/base/helper';
 
 const readFileSyncMock = readFileSync as jest.Mock;
@@ -215,6 +217,152 @@ describe('helper', () => {
                     content: expect.any(String)
                 }
             ]);
+        });
+    });
+
+    describe('filterAndMapInboundsToManifest', () => {
+        test('should map inbounds to manifest format', () => {
+            const inbounds = [
+                {
+                    content: {
+                        semanticObject: 'Test',
+                        action: 'action1',
+                        title: 'Test Action 1',
+                        description: 'Description 1',
+                        url: '/test/action1',
+                        hideLauncher: false
+                    }
+                },
+                {
+                    content: {
+                        semanticObject: 'Test',
+                        action: 'action2',
+                        title: 'Test Action 2',
+                        description: 'Description 2',
+                        url: '/test/action2',
+                        hideLauncher: false
+                    }
+                }
+            ] as unknown as Inbound[];
+
+            const result = filterAndMapInboundsToManifest(inbounds);
+
+            expect(result).toEqual({
+                'Test-action1': {
+                    semanticObject: 'Test',
+                    action: 'action1',
+                    title: 'Test Action 1',
+                    description: 'Description 1',
+                    url: '/test/action1',
+                    hideLauncher: false
+                },
+                'Test-action2': {
+                    semanticObject: 'Test',
+                    action: 'action2',
+                    title: 'Test Action 2',
+                    description: 'Description 2',
+                    url: '/test/action2',
+                    hideLauncher: false
+                }
+            });
+        });
+
+        test('should filter out inbounds with hideLauncher not false', () => {
+            const inbounds = [
+                {
+                    content: {
+                        semanticObject: 'Test',
+                        action: 'action1',
+                        title: 'Test Action 1',
+                        description: 'Description 1',
+                        url: '/test/action1',
+                        hideLauncher: true
+                    }
+                },
+                {
+                    content: {
+                        semanticObject: 'Test',
+                        action: 'action2',
+                        title: 'Test Action 2',
+                        description: 'Description 2',
+                        url: '/test/action2',
+                        hideLauncher: false
+                    }
+                }
+            ] as unknown as Inbound[];
+
+            const result = filterAndMapInboundsToManifest(inbounds);
+
+            expect(result).toEqual({
+                'Test-action2': {
+                    semanticObject: 'Test',
+                    action: 'action2',
+                    title: 'Test Action 2',
+                    description: 'Description 2',
+                    url: '/test/action2',
+                    hideLauncher: false
+                }
+            });
+        });
+
+        test('should return undefined if no inbounds are provided', () => {
+            const result = filterAndMapInboundsToManifest([]);
+
+            expect(result).toBeUndefined();
+        });
+
+        test('should filter out parameters with invalid entries', () => {
+            const inbounds = [
+                {
+                    content: {
+                        semanticObject: 'Test',
+                        action: 'action1',
+                        signature: {
+                            parameters: {
+                                param1: {
+                                    defaultValue: { format: '', value: '' },
+                                    filter: { format: '' },
+                                    launcherValue: { value: 'test' }
+                                },
+                                param2: {
+                                    defaultValue: { format: 'plain', value: 'value' },
+                                    filter: { format: '' },
+                                    launcherValue: { value: 'test' }
+                                },
+                                param3: {
+                                    defaultValue: { format: 'plain', value: 'value' },
+                                    filter: { format: 'plain' },
+                                    launcherValue: { value: 'test', additionalProp: 'extra' }
+                                }
+                            }
+                        },
+                        hideLauncher: false
+                    }
+                }
+            ] as unknown as Inbound[];
+
+            const result = filterAndMapInboundsToManifest(inbounds);
+
+            expect(result).toEqual({
+                'Test-action1': {
+                    semanticObject: 'Test',
+                    action: 'action1',
+                    signature: {
+                        parameters: {
+                            param2: {
+                                defaultValue: { format: 'plain', value: 'value' },
+                                launcherValue: { value: 'test' }
+                            },
+                            param3: {
+                                defaultValue: { format: 'plain', value: 'value' },
+                                filter: { format: 'plain' },
+                                launcherValue: { value: 'test' }
+                            }
+                        }
+                    },
+                    hideLauncher: false
+                }
+            });
         });
     });
 });
