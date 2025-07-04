@@ -33,14 +33,14 @@
         "@sap-ux/yaml": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "i18next": "25.3.0",
-        "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
+        "mem-fs": "2.3.0",
+        "mem-fs-editor": "9.7.0",
         "semver": "7.5.4",
         "xml-js": "1.6.11"
     },
     "devDependencies": {
-        "@types/mem-fs": "1.1.2",
-        "@types/mem-fs-editor": "7.0.1",
+        "@types/mem-fs": "1.1.5",
+        "@types/mem-fs-editor": "7.0.7",
         "@types/semver": "7.5.2"
     },
     "engines": {
