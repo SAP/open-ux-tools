@@ -1,5 +1,11 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.5.7
+
+### Patch Changes
+
+-   fca048c: Deprecate cards-editor-\* packages
+
 ## 0.5.6
 
 ### Patch Changes
