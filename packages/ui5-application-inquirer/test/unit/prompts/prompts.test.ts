@@ -363,7 +363,7 @@ describe('getQuestions', () => {
         expect(getMtaPathSpy).toHaveBeenCalledWith(targetFolder);
 
         expect((addDeployConfigQuestion?.message as Function)()).toMatchInlineSnapshot(
-            `"Add a deployment configuration to the MTA project: (any/path)."`
+            `"Add Deployment Configuration to the MTA Project: (any/path)."`
         );
         expect(await (addDeployConfigQuestion?.default as Function)()).toEqual(true);
     });

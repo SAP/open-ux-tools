@@ -251,7 +251,7 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.84.50' });
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.76.0' });
 
             // testing the nested callbacks
             const mockService = {
