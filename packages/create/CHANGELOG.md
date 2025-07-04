@@ -1,5 +1,16 @@
 # @sap-ux/create
 
+## 0.13.64
+
+### Patch Changes
+
+-   e9beeb4: fix: Various bugs in FLP config generator for Adaptation Project
+-   Updated dependencies [e9beeb4]
+    -   @sap-ux/adp-tooling@0.14.38
+    -   @sap-ux/flp-config-inquirer@0.3.38
+    -   @sap-ux/preview-middleware@0.20.53
+    -   @sap-ux/app-config-writer@0.6.21
+
 ## 0.13.63
 
 ### Patch Changes

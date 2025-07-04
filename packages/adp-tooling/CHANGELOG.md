@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.14.38
+
+### Patch Changes
+
+-   e9beeb4: fix: Various bugs in FLP config generator for Adaptation Project
+
 ## 0.14.37
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.3.38
+
+### Patch Changes
+
+-   e9beeb4: fix: Various bugs in FLP config generator for Adaptation Project
+-   Updated dependencies [e9beeb4]
+    -   @sap-ux/adp-tooling@0.14.38
+
 ## 0.3.37
 
 ### Patch Changes
