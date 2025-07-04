@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 0.13.65
+
+### Patch Changes
+
+-   fca048c: Remove unused dependency to @sap-ux/cards-editor-config-writer
+
 ## 0.13.64
 
 ### Patch Changes
