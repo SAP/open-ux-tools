@@ -220,11 +220,6 @@ describe('adp', () => {
 
         expect(addFragmentServiceMock).toHaveBeenCalledWith(rtaMock);
         expect(extendControllerServiceMock).toHaveBeenCalledWith(rtaMock);
-        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'ADP_SYNC_VIEWS_TITLE' },
-            description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
-            type: MessageBarType.warning
-        });
     });
 
     test('init - use for UI5 version higher than 1.136.1', async () => {

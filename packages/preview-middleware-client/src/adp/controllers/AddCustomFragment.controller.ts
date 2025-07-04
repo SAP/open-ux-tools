@@ -14,16 +14,17 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { getResourceModel, getTextBundle } from '../../i18n';
+import { getResourceModel } from '../../i18n';
 import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
-import { notifyUser } from '../utils';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
-import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 import { CommunicationService } from '../../cpe/communication-service';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type AppComponentV4 from 'sap/fe/core/AppComponent';
+import { sendInfoCenterMessage } from '../../utils/info-center-message';
+import { getError } from '../../utils/error';
 
 export type AddFragmentModel = JSONModel & {
     getProperty(sPath: '/title'): string;
@@ -97,8 +98,11 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
         await this.createAppDescriptorChangeForV4(template);
         CommunicationService.sendAction(setApplicationRequiresReload(true));
 
-        const bundle = await getTextBundle();
-        notifyUser(bundle.getText('ADP_ADD_FRAGMENT_NOTIFICATION', [fragmentName]), 8000);
+        await sendInfoCenterMessage({
+            title: { key: 'ADP_ADD_FRAGMENT_DIALOG_TITLE' },
+            description: { key: 'ADP_ADD_FRAGMENT_NOTIFICATION', params: [fragmentName] },
+            type: MessageBarType.warning
+        });
 
         this.handleDialogClose();
     }
@@ -111,7 +115,13 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
             const { fragments } = await getFragments();
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
-            this.handleError(e);
+            const error = getError(e);
+            await sendInfoCenterMessage({
+                title: { key: 'ADP_ADD_FRAGMENT_DIALOG_TITLE' },
+                description: getError(e).message,
+                type: MessageBarType.error
+            });
+            throw error;
         }
     }
 

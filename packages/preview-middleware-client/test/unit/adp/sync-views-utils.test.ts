@@ -10,6 +10,8 @@ import Element from 'mock/sap/ui/core/Element';
 import Log from 'mock/sap/base/Log';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 import { CommunicationService } from '../../../src/cpe/communication-service';
+import { sendInfoCenterMessage } from '../../../src/utils/info-center-message';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 describe('sync-views-utils', () => {
     jest.spyOn(CommunicationService, 'sendAction');
@@ -65,7 +67,7 @@ describe('sync-views-utils', () => {
     });
 
     describe('showSyncViewsWarning', () => {
-        it('should send a warning message if sync views exist', async () => {
+        it('should send a warning message if sync views exist to the info center', async () => {
             const mockElement = {
                 getId: jest.fn(() => 'view1'),
                 getMetadata: jest.fn(() => ({
@@ -79,16 +81,11 @@ describe('sync-views-utils', () => {
             await updateSyncViewsIds({ major: 1, minor: 119, patch: 9 });
             await showSyncViewsWarning();
 
-            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    type: '[ext] show-dialog-message',
-                    payload: {
-                        message:
-                            'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
-                        shouldHideIframe: false
-                    }
-                })
-            );
+            expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+                title: { key: 'ADP_SYNC_VIEWS_TITLE' },
+                description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
+                type: MessageBarType.warning    
+            });
         });
 
         it('should not send a warning message if no sync views exist', async () => {
@@ -112,7 +109,7 @@ describe('sync-views-utils', () => {
             await showSyncViewsWarning();
             await showSyncViewsWarning(); // Call again
 
-            expect(CommunicationService.sendAction).toHaveBeenCalledTimes(1);
+            expect(sendInfoCenterMessage).toHaveBeenCalledTimes(1);
         });
     });
 
