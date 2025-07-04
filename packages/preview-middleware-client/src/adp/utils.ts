@@ -1,4 +1,3 @@
-import Element from 'sap/ui/core/Element';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
