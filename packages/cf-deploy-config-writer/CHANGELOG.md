@@ -1,5 +1,12 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.13
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/ui5-config@0.29.0
+
 ## 0.3.12
 
 ### Patch Changes

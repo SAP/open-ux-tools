@@ -1,5 +1,13 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.24
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/inquirer-common@0.7.21
+
 ## 0.3.23
 
 ### Patch Changes

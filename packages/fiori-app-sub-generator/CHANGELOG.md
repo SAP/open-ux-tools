@@ -1,5 +1,23 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.20
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/ui5-application-inquirer@0.14.24
+    -   @sap-ux/fiori-freestyle-writer@2.4.21
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/odata-service-inquirer@2.5.13
+    -   @sap-ux/fiori-elements-writer@2.5.10
+    -   @sap-ux/odata-service-writer@0.27.11
+    -   @sap-ux/cap-config-writer@0.10.17
+    -   @sap-ux/launch-config@0.10.12
+    -   @sap-ux/store@1.1.2
+    -   @sap-ux/telemetry@0.6.9
+    -   @sap-ux/annotation-generator@0.3.45
+
 ## 0.5.19
 
 ### Patch Changes

@@ -1,5 +1,20 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.3.35
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.34
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.30
+    -   @sap-ux/deploy-config-generator-shared@0.1.17
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/odata-service-inquirer@2.5.13
+    -   @sap-ux/inquirer-common@0.7.21
+    -   @sap-ux/store@1.1.2
+    -   @sap-ux/ui5-config@0.29.0
+
 ## 0.3.34
 
 ### Patch Changes

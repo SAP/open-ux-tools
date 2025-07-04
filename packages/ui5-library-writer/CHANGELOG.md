@@ -1,5 +1,12 @@
 # @sap-ux/ui5-library-writer
 
+## 0.6.8
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/ui5-config@0.29.0
+
 ## 0.6.7
 
 ### Patch Changes

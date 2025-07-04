@@ -1,5 +1,12 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.12.16
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/telemetry@0.6.9
+
 ## 0.12.15
 
 ### Patch Changes
