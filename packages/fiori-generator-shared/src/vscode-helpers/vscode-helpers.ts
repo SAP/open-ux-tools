@@ -37,21 +37,38 @@ export function getDefaultTargetFolder(vscode: any): string | undefined {
 }
 
 /**
- * Check for an installed extension, optionally specifying a minimum version.
- * Note, this does not check for activation state of specified extension.
+ * Check for an installed extension, optionally specifying a minimum version and activation state.
+ * Note, this does not check for activation state unless `isActive` is specified.
  *
  * @param vscode - vscode instance
  * @param extensionId - the id of the extension to find
  * @param minVersion - the minimum version of the specified extension, lower versions will not be returned. Must be a valid SemVer string.
- * @returns true if the extension is installed and the version is >= minVersion (if provided), false otherwise
+ * @param isActive - If `true`, the function will only return `true` if the extension is also active. Defaults to `false`.
+ * @returns true if the extension is installed, the version is >= minVersion (if provided), and is active (if specified), false otherwise
  */
-export function isExtensionInstalled(vscode: any, extensionId: string, minVersion?: string): boolean {
+export function isExtensionInstalled(
+    vscode: any,
+    extensionId: string,
+    minVersion?: string,
+    isActive: boolean = false
+): boolean {
     const foundExt = vscode?.extensions?.getExtension(extensionId);
     if (foundExt) {
         const extVersion = coerce(foundExt.packageJSON.version);
         if (extVersion) {
-            // Check installed ver is >= minVersion or return true if minVersion is not specified
-            return !(minVersion && lt(extVersion, minVersion));
+            // If a minimum version is specified and the extension's version is less than it, return false.
+            if (minVersion && lt(extVersion, minVersion)) {
+                return false;
+            }
+
+            // If the caller explicitly requires the extension to check if active, and it's not then return false.
+            if (isActive && !foundExt.isActive) {
+                return false;
+            }
+
+            // If all checks pass (version is sufficient or not required, and isActive is true or not required),
+            // then the extension is considered "installed"
+            return true;
         }
     }
     return false;
