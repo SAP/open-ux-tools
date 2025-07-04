@@ -43,18 +43,20 @@ export function getDefaultTargetFolder(vscode: any): string | undefined {
  * @param vscode - vscode instance
  * @param extensionId - the id of the extension to find
  * @param minVersion - the minimum version of the specified extension, lower versions will not be returned. Must be a valid SemVer string.
- * @param isActive - If `true`, the function will only return `true` if the extension is also active. Defaults to `false`.
- * @returns true if the extension is installed, the version is >= minVersion (if provided), and is active (if specified), false otherwise
+ * @param isActive - If `true`, the function will only return `true` if the extension is also active. Defaults to `true`.
+ * @returns true if the extension is installed, the version is >= minVersion, and is active, false otherwise
  */
 export function isExtensionInstalled(
     vscode: any,
     extensionId: string,
     minVersion?: string,
-    isActive: boolean = false
+    isActive: boolean = true
 ): boolean {
     const foundExt = vscode?.extensions?.getExtension(extensionId);
+
     if (foundExt) {
         const extVersion = coerce(foundExt.packageJSON.version);
+
         if (extVersion) {
             // If a minimum version is specified and the extension's version is less than it, return false.
             if (minVersion && lt(extVersion, minVersion)) {
@@ -66,8 +68,6 @@ export function isExtensionInstalled(
                 return false;
             }
 
-            // If all checks pass (version is sufficient or not required, and isActive is true or not required),
-            // then the extension is considered "installed"
             return true;
         }
     }

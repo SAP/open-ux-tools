@@ -9,7 +9,8 @@ describe('Installed module checker', () => {
                 getExtension: () => ({
                     packageJSON: {
                         version: '1.2.3'
-                    }
+                    },
+                    isActive: true
                 })
             }
         };
