@@ -116,7 +116,9 @@ describe('utils/version', () => {
         expect(() => isLowerThanMinimalUi5Version({ major: 1, minor: 1, patch: NaN })).toThrowError();
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
             title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
-            description: '',
+            description: {
+                key: 'FLP_UI_INVALID_UI5_VERSION_DESCRIPTION',
+            },
             type: MessageBarType.error
         });
     });
