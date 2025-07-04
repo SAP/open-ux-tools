@@ -41,7 +41,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "dotenv": "16.3.1",
+        "dotenv": "16.6.1",
         "hasbin": "1.2.3",
         "i18next": "25.3.0",
         "yeoman-generator": "5.10.0"
