@@ -22,9 +22,9 @@
     "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
     "deploy": "fiori verify",
     "deploy-config": "fiori add deploy-config",
-    "start-noflp": "fiori run --open \"index.html?sap-ui-xx-viewCache=false\"",
+    "start-noflp": "fiori run --open \"/index.html?sap-ui-xx-viewCache=false\"",
     "int-test": "fiori run --open 'test/integration/opaTests.qunit.html'",
-    "start-variants-management": "fiori run --open \"preview.html#app-preview\"",
+    "start-variants-management": "fiori run --open \"/preview.html#app-preview\"",
     "unit-test": "fiori run --open 'test/unit/unitTests.qunit.html'"
   },
   "sapuxLayer": "CUSTOMER_BASE"
