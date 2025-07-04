@@ -73,3 +73,15 @@ export function isExtensionInstalled(
     }
     return false;
 }
+
+/**
+ * Check if a specific command is registered in VS Code.
+ *
+ * @param vscode - vscode instance
+ * @param commandId - the id of the command to check
+ * @returns true if the command is registered, else false
+ */
+export async function isCommandRegistered(vscode: any, commandId: string): Promise<boolean> {
+    const commands = await vscode.commands.getCommands();
+    return commands.includes(commandId);
+}
