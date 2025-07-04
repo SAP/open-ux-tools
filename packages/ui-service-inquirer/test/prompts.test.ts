@@ -52,38 +52,44 @@ jest.mock('@sap-ux/system-access', () => {
     };
 });
 
-jest.mock('@sap-ux/odata-service-inquirer', () => ({
-    ...(jest.requireActual('@sap-ux/odata-service-inquirer') as object),
-    getSystemSelectionQuestions: jest.fn().mockResolvedValue({
-        prompts: [
-            {
-                type: 'list',
-                name: 'systemSelection',
-                message: 'Select a system',
-                choices: [
-                    { name: 'system1', value: 'system1' },
-                    { name: 'system2', value: 'system2' },
-                    { name: 'system3', value: 'system3' }
-                ]
-            }
-        ],
-        answers: {
-            connectedSystem: {
-                backendSystem: {
-                    name: 'system1'
-                },
-                destination: {
-                    name: 'system1'
-                },
-                serviceProvider: {
-                    getUiServiceGenerator: {
-                        generate: jest.fn()
-                    }
-                } as unknown as AbapServiceProvider
-            }
+const getSystemSelectionQuestionsMock = jest.fn();
+jest.mock('@sap-ux/odata-service-inquirer', () => {
+    return {
+        ...(jest.requireActual('@sap-ux/odata-service-inquirer') as object),
+        getSystemSelectionQuestions: (promptOptions: any, isYUI: boolean) =>
+            getSystemSelectionQuestionsMock(promptOptions, isYUI)
+    };
+});
+
+getSystemSelectionQuestionsMock.mockResolvedValue({
+    prompts: [
+        {
+            type: 'list',
+            name: 'systemSelection',
+            message: 'Select a system',
+            choices: [
+                { name: 'system1', value: 'system1' },
+                { name: 'system2', value: 'system2' },
+                { name: 'system3', value: 'system3' }
+            ]
         }
-    })
-}));
+    ],
+    answers: {
+        connectedSystem: {
+            backendSystem: {
+                name: 'system1'
+            },
+            destination: {
+                name: 'system1'
+            },
+            serviceProvider: {
+                getUiServiceGenerator: {
+                    generate: jest.fn()
+                }
+            } as unknown as AbapServiceProvider
+        }
+    }
+});
 
 const answersMock = {
     systemSelection: 'system1',
@@ -164,6 +170,20 @@ describe('getSystemQuestions', () => {
         jest.spyOn(promptHelper, 'getBusinessObjects').mockResolvedValue([businessObjectMockResp]);
         jest.spyOn(promptHelper, 'getAbapCDSViews').mockResolvedValue([abapCDSViewsMockResp]);
         questions = (await getSystemSelectionPrompts()).prompts;
+
+        expect(getSystemSelectionQuestionsMock).toHaveBeenCalledWith(
+            {
+                serviceSelection: { hide: true },
+                systemSelection: {
+                    defaultChoice: undefined,
+                    destinationFilters: {
+                        odata_abap: true
+                    }
+                }
+            },
+            true
+        );
+
         questions.forEach((question: any) => {
             q[question.name] = question as Question;
         });
