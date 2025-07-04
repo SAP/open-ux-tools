@@ -14,8 +14,7 @@ import type {
     MockserverConfig,
     ServeStaticPath,
     DataSourceConfig,
-    AbapDeployConfig,
-    FioriPreviewConfig
+    AbapDeployConfig
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -25,7 +24,7 @@ import {
     getFioriToolsProxyMiddlewareConfig,
     getMockServerMiddlewareConfig
 } from './middlewares';
-import { fioriToolsPreview, fioriToolsProxy, serveStatic } from './constants';
+import { fioriToolsProxy, serveStatic } from './constants';
 import Ajv, { type ValidateFunction } from 'ajv';
 import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
 import { join, posix, relative, sep } from 'path';
@@ -270,38 +269,6 @@ export class UI5Config {
         this.document.appendTo({
             path: 'server.customMiddleware',
             value: getAppReloadMiddlewareConfig()
-        });
-        return this;
-    }
-
-    /**
-     * Adds the Fiori Tools preview middleware configuration to the UI5 server configuration.
-     * This middleware is used to preview the Fiori application with the specified UI5 theme.
-     *
-     * @param fioriToolsPreviewMiddlewareConfig - the custom middleware configuration
-     * @param {boolean} update - defaults to true, if set to false and existing config is found, it will not make any changes
-     * @returns {UI5Config} - the updated UI5 configuration object
-     */
-    public addFioriToolsPreviewMiddleware(
-        fioriToolsPreviewMiddlewareConfig?: CustomMiddleware<FioriPreviewConfig>,
-        update: boolean = true
-    ): this {
-        let existingMiddleware: CustomMiddleware<FioriPreviewConfig> | undefined;
-        try {
-            existingMiddleware = this.findCustomMiddleware<FioriPreviewConfig>(fioriToolsPreview);
-        } catch {
-            // no existing fiori preview middleware found
-        }
-
-        if (existingMiddleware) {
-            if (!update) {
-                return this; // don't update existing middleware
-            }
-        }
-        this.updateCustomMiddleware({
-            ...fioriToolsPreviewMiddlewareConfig,
-            name: fioriToolsPreview,
-            configuration: fioriToolsPreviewMiddlewareConfig?.configuration
         });
         return this;
     }

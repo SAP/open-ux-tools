@@ -64,11 +64,11 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ui5App.ui5?.ui5Theme,
         ui5AppConfig.appOptions?.useVirtualPreviewEndpoints
     );
-    const fioriToolsPreviewConfig = getPreviewMiddlewareConfig(previewMiddleWareOpts);
+    const fioriToolsPreviewConfigMiddlware = getPreviewMiddlewareConfig(previewMiddleWareOpts);
 
     // add preview middleware to ui5Config for edmx projects and cap apps using virtual endpoints
     if (isEdmxProjectType || ui5AppConfig.appOptions?.useVirtualPreviewEndpoints) {
-        ui5Config.addFioriToolsPreviewMiddleware(fioriToolsPreviewConfig);
+        ui5Config.updateCustomMiddleware(fioriToolsPreviewConfigMiddlware);
     }
 
     if (isEdmxProjectType) {
@@ -85,7 +85,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         // Add optional features
         await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
         // add preview middleware to ui5LocalConfig
-        ui5LocalConfig.addFioriToolsPreviewMiddleware(fioriToolsPreviewConfig);
+        ui5LocalConfig.updateCustomMiddleware(fioriToolsPreviewConfigMiddlware);
         // write ui5 local yaml
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     } else {
