@@ -1,5 +1,7 @@
 import { realpathSync } from 'fs';
 
+let toUpperCase: boolean;
+
 /**
  *  Normalize path to canonical form.
  *
@@ -9,20 +11,13 @@ import { realpathSync } from 'fs';
 export function normalizePath(path: string): string {
     // for windows, some NodeJS methods will output uppercase drive letters, some in lowercase
     if (process.platform === 'win32') {
-        return toggleCase(path.charAt(0)) + path.slice(1);
+        if (toUpperCase === undefined) {
+            const driveLetter = realpathSync.native('\\')[0];
+            toUpperCase = driveLetter === driveLetter.toUpperCase();
+        }
+        const correctedDriveLetter = toUpperCase ? path.charAt(0).toUpperCase() : path.charAt(0).toLowerCase();
+        return correctedDriveLetter + path.slice(1);
     }
 
     return path;
-}
-
-const driveLetter = process.platform === 'win32' ? realpathSync.native('\\')[0] : '';
-
-/**
- * Changes the drive letter to the same as `realpathSync`.
- *
- * @param character Drive letter character
- * @returns Normalized drive letter character
- */
-function toggleCase(character: string): string {
-    return driveLetter === driveLetter.toUpperCase() ? character.toUpperCase() : character.toLowerCase();
 }
