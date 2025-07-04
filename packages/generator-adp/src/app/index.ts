@@ -235,7 +235,8 @@ export default class extends Generator {
                 {
                     vscode: this.vscode,
                     projectRootPath: this._getProjectPath(),
-                    inbounds: this.baseAppInbounds
+                    inbounds: this.baseAppInbounds,
+                    layer: this.layer
                 },
                 this.composeWith.bind(this),
                 this.logger,

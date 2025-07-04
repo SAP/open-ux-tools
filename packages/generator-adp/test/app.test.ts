@@ -13,7 +13,8 @@ import {
     getProviderConfig,
     loadApps,
     validateUI5VersionExists,
-    getBaseAppInbounds
+    getBaseAppInbounds,
+    FlexLayer
 } from '@sap-ux/adp-tooling';
 import * as Logger from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -375,6 +376,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             {
                 inbounds: inbounds,
                 projectRootPath: join(testOutputDir, answers.projectName),
+                layer: FlexLayer.CUSTOMER_BASE,
                 vscode: vscodeMock
             },
             expect.any(Function),
