@@ -1,5 +1,24 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.11
+
+### Patch Changes
+
+-   58df005: Handle service segement when no datasource is selected
+
+## 0.3.10
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+
+## 0.3.9
+
+### Patch Changes
+
+-   1998ebb: Update approuter configuration
+
 ## 0.3.8
 
 ### Patch Changes

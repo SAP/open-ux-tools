@@ -1,5 +1,19 @@
 # @sap-ux/app-config-writer
 
+## 0.6.20
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/axios-extension@1.22.3
+
+## 0.6.19
+
+### Patch Changes
+
+-   a9df80c: fix ui5.yaml file path error
+
 ## 0.6.18
 
 ### Patch Changes
