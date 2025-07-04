@@ -8,13 +8,13 @@ import type {
     QuickActionContext,
     SimpleQuickActionDefinition
 } from '../../../cpe/quick-actions/quick-action-definition';
+import { getTextBundle } from '../../../i18n';
+import { getExistingController } from '../../api-handler';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { isControllerExtensionEnabledForControl } from '../../init-dialogs';
-import { getExistingController } from '../../api-handler';
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 import type { EnablementValidatorResult } from '../enablement-validator';
-import { getTextBundle } from '../../../i18n';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
 export const ADD_CONTROLLER_TO_PAGE_TYPE = 'add-controller-to-page';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
@@ -24,8 +24,7 @@ const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
  */
 export class AddControllerToPageQuickAction
     extends SimpleQuickActionDefinitionBase
-    implements SimpleQuickActionDefinition
-{
+    implements SimpleQuickActionDefinition {
     constructor(context: QuickActionContext) {
         super(ADD_CONTROLLER_TO_PAGE_TYPE, CONTROL_TYPES, '', context, [
             DIALOG_ENABLEMENT_VALIDATOR,
