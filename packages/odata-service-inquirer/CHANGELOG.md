@@ -1,5 +1,22 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.12
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/telemetry@0.6.8
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/fiori-generator-shared@0.12.15
+-   @sap-ux/project-input-validator@0.6.9
+-   @sap-ux/inquirer-common@0.7.20
+
+## 2.5.11
+
+### Patch Changes
+
+-   a41030c: ensure userdisplayname is assigned to backend system
+
 ## 2.5.10
 
 ### Patch Changes
