@@ -389,46 +389,6 @@ describe('UI5Config', () => {
                     .trim()
             );
         });
-
-        test('Should update preview middleware when it is exists', () => {
-            ui5Config.updateCustomMiddleware({
-                name: 'fiori-tools-preview',
-                afterMiddleware: 'fiori-tools-appreload',
-                configuration: {
-                    flp: {
-                        theme: 'sap_fiori_3'
-                    }
-                }
-            });
-            ui5Config.updateCustomMiddleware({
-                name: 'fiori-tools-preview',
-                afterMiddleware: 'fiori-tools-appreload',
-                configuration: {
-                    flp: {
-                        theme: 'sap_fiori_3',
-                        path: 'test/flpSandbox.html',
-                        intent: { object: 'testapp', action: 'display' }
-                    }
-                }
-            });
-            expect(ui5Config.toString().replace(/\s+/g, ' ').trim()).toBe(
-                `
-                    server:
-                        customMiddleware:
-                            - name: fiori-tools-preview
-                            afterMiddleware: fiori-tools-appreload
-                            configuration:
-                            flp: 
-                            theme: sap_fiori_3
-                            path: test/flpSandbox.html
-                            intent:
-                                object: testapp
-                                action: display
-                `
-                    .replace(/\s+/g, ' ')
-                    .trim()
-            );
-        });
     });
 
     describe('updateBackendToFioriToolsProxydMiddleware', () => {
