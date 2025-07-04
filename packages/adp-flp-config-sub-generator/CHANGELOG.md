@@ -1,5 +1,47 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.38
+
+### Patch Changes
+
+-   e9beeb4: fix: Various bugs in FLP config generator for Adaptation Project
+-   Updated dependencies [e9beeb4]
+    -   @sap-ux/adp-tooling@0.14.38
+    -   @sap-ux/flp-config-inquirer@0.3.38
+
+## 0.1.37
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.37
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/flp-config-inquirer@0.3.37
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/fiori-generator-shared@0.12.15
+-   @sap-ux/system-access@0.6.9
+-   @sap-ux/inquirer-common@0.7.20
+
+## 0.1.36
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/adp-tooling@0.14.36
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/fiori-generator-shared@0.12.14
+    -   @sap-ux/flp-config-inquirer@0.3.36
+    -   @sap-ux/system-access@0.6.9
+    -   @sap-ux/inquirer-common@0.7.19
+
+## 0.1.35
+
+### Patch Changes
+
+-   Updated dependencies [6c2d08a]
+    -   @sap-ux/adp-tooling@0.14.35
+    -   @sap-ux/flp-config-inquirer@0.3.35
+
 ## 0.1.34
 
 ### Patch Changes

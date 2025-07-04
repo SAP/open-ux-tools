@@ -1,5 +1,28 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.14.23
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/project-input-validator@0.6.9
+-   @sap-ux/inquirer-common@0.7.20
+
+## 0.14.22
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/project-input-validator@0.6.8
+    -   @sap-ux/inquirer-common@0.7.19
+
+## 0.14.21
+
+### Patch Changes
+
+-   d152617: Align text on mta message and non mta deploy config
+
 ## 0.14.20
 
 ### Patch Changes

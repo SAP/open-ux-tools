@@ -1054,6 +1054,7 @@ export class ConnectionValidator {
 
             if (valResult === true) {
                 if (this.validity.authenticated === true) {
+                    this._connectedUserName = username;
                     return { valResult: true };
                 } else if (this.validity.authenticated === false) {
                     return { valResult: t('errors.authenticationFailed'), errorType: ERROR_TYPE.AUTH };

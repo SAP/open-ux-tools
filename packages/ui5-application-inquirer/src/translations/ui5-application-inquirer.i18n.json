@@ -34,7 +34,7 @@
         },
         "addDeployConfig": {
             "message": "Add Deployment Configuration",
-            "mtaMessage": "Add a deployment configuration to the MTA project: ({{-path}}).",
+            "mtaMessage": "Add Deployment Configuration to the MTA Project: ({{-path}}).",
             "breadcrumb": "Deploy Config"
         },
         "addFlpConfig": {
