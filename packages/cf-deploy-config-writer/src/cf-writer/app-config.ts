@@ -26,7 +26,7 @@ import {
     MbtPackage,
     MbtPackageVersion,
     MTABuildScript,
-    ResourceMTADestination,
+    SRV_API,
     Rimraf,
     RimrafVersion,
     UI5DeployBuildScript,
@@ -282,16 +282,13 @@ async function appendAppRouter(cfConfig: CFConfig, fs: Editor): Promise<void> {
             isAppFrontApp: cfConfig.addAppFrontendRouter,
             addMissingModules: !cfConfig.addAppFrontendRouter
         });
-
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ?? '.');
         if ((cfConfig.addMtaDestination && cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination) {
             // If the destination instance identifier is passed, create a destination instance
             cfConfig.destinationName =
-                cfConfig.destinationName === DefaultMTADestination
-                    ? mtaInstance.getFormattedPrefix(ResourceMTADestination)
-                    : cfConfig.destinationName;
+                cfConfig.destinationName === DefaultMTADestination ? SRV_API : cfConfig.destinationName;
             await mtaInstance.addDestinationToAppRouter(cfConfig.destinationName);
             // This is required where a managed or standalone router hasn't been added yet to mta.yaml
             if (!mtaInstance.hasManagedXsuaaResource()) {
