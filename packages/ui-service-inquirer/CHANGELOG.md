@@ -1,5 +1,11 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.1.41
+
+### Patch Changes
+
+-   4459a7f: add filter for abap destinations
+
 ## 0.1.40
 
 ### Patch Changes
