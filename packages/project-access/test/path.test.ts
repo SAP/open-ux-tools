@@ -1,4 +1,4 @@
-import { normalizePath } from '../src';
+import { normalizePath } from '../src/path';
 import * as fs from 'fs';
 
 describe('normalizePath', () => {
