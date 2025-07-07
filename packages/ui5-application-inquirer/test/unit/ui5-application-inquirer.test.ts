@@ -59,7 +59,7 @@ describe('ui5-application-inquirer API', () => {
             useCache: true,
             includeMaintained: true,
             includeDefault: true,
-            onlyVersionNumbers: true,
+            onlyVersionNumbers: undefined,
             minSupportedUI5Version: undefined
         };
         expect(getUI5VersionsSpy).toHaveBeenCalledWith(filterOptions);
@@ -108,12 +108,13 @@ describe('ui5-application-inquirer API', () => {
         const minUI5Version = '1.999.9';
         const promptOptions: UI5ApplicationPromptOptions = {
             [promptNames.ui5Version]: {
-                minUI5Version
+                minUI5Version,
+                onlyVersionNumbers: true
             }
         };
         await getPrompts(promptOptions);
         expect(getUI5VersionsSpy).toHaveBeenCalledWith(
-            expect.objectContaining({ minSupportedUI5Version: minUI5Version })
+            expect.objectContaining({ minSupportedUI5Version: minUI5Version, onlyVersionNumbers: true })
         );
     });
 

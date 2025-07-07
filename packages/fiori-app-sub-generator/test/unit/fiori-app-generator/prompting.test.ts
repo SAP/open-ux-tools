@@ -120,6 +120,7 @@ describe('prompting.ts', () => {
                     "hide": false,
                     "includeSeparators": false,
                     "minUI5Version": "1.65.0",
+                    "onlyVersionNumbers": true,
                     "useAutocomplete": true,
                   },
                 }
@@ -394,6 +395,7 @@ describe('prompting.ts', () => {
                         hide: false,
                         includeSeparators: false,
                         minUI5Version: expect.toBeString(),
+                        onlyVersionNumbers: true,
                         useAutocomplete: true
                     }
                 },

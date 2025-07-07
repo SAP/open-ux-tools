@@ -81,6 +81,10 @@ type UI5VersionPromptOptions = {
      *
      */
     defaultChoice?: UI5VersionChoice;
+    /**
+     * Removes non-numeric versions, e.g. '--legacy-free', 'snapshot-1.120', 'Latest'
+     */
+    onlyVersionNumbers?: boolean;
 };
 
 type TargetFolderPromptOptions = {
