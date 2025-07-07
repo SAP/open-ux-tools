@@ -1,5 +1,17 @@
 # @sap-ux/project-input-validator
 
+## 0.6.10
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+
+## 0.6.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+
 ## 0.6.8
 
 ### Patch Changes

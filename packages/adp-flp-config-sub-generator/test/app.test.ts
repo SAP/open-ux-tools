@@ -226,7 +226,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(generateInboundConfigSpy).toBeCalledWith(
             testProjectPath,
             expect.objectContaining({
-                inboundId: 'baseAppSo-baseAppAction',
+                inboundId: 'customer.baseAppSo-baseAppAction',
                 semanticObject: 'baseAppSo',
                 action: 'baseAppAction',
                 title: 'testTitle',
@@ -287,7 +287,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(generateInboundConfigSpy).toBeCalledWith(
             testProjectPath,
             expect.objectContaining({
-                inboundId: 'testSo_New-testAct_New',
+                inboundId: 'customer.testSo_New-testAct_New',
                 semanticObject: 'testSo_New',
                 action: 'testAct_New',
                 title: 'testTitle',
@@ -352,7 +352,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(generateInboundConfigSpy).toBeCalledWith(
             testProjectPath,
             expect.objectContaining({
-                inboundId: 'testSo_New-testAct_New',
+                inboundId: 'customer.testSo_New-testAct_New',
                 semanticObject: 'testSo_New',
                 action: 'testAct_New',
                 title: 'testTitle_New',
@@ -450,7 +450,8 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 appWizard: mockAppWizard,
                 loggerMock,
                 launchAsSubGen: true,
-                inbounds: inbounds
+                inbounds: inbounds,
+                layer: adpTooling.FlexLayer.CUSTOMER_BASE
             })
             .withPrompts(answers);
         await expect(runContext.run()).resolves.not.toThrow();
@@ -466,7 +467,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(generateInboundConfigSpy).toBeCalledWith(
             testProjectPath,
             expect.objectContaining({
-                inboundId: 'baseAppSo-baseAppAction',
+                inboundId: 'customer.baseAppSo-baseAppAction',
                 semanticObject: 'baseAppSo',
                 action: 'baseAppAction',
                 title: 'testTitle',

@@ -6,6 +6,7 @@ export {
     CustomTask,
     CustomMiddleware,
     FioriAppReloadConfig,
+    FioriPreviewConfig,
     FioriToolsProxyConfig,
     FioriToolsProxyConfigBackend,
     FioriToolsProxyConfigUI5,
@@ -24,5 +25,6 @@ export {
 } from './types';
 export { UI5_DEFAULT } from './defaults';
 export { mergeObjects, getEsmTypesVersion, getTypesVersion, getTypesPackage, replaceEnvVariables } from './utils';
+export { getPreviewMiddlewareConfig } from './middlewares';
 export { errorCode as yamlErrorCode, YAMLError, NodeComment } from '@sap-ux/yaml';
 export { fioriToolsProxy } from './constants';
