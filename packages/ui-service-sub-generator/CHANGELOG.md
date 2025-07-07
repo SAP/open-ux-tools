@@ -1,5 +1,26 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.41
+
+### Patch Changes
+
+-   Updated dependencies [58abe82]
+    -   @sap-ux/fiori-generator-shared@0.13.0
+    -   @sap-ux/inquirer-common@0.7.22
+    -   @sap-ux/ui-service-inquirer@0.1.40
+
+## 0.1.40
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/ui-service-inquirer@0.1.39
+    -   @sap-ux/inquirer-common@0.7.21
+    -   @sap-ux/system-access@0.6.10
+    -   @sap-ux/telemetry@0.6.9
+
 ## 0.1.39
 
 ### Patch Changes

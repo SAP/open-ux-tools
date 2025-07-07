@@ -1,5 +1,13 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.11
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/ui5-application-writer@1.5.8
+
 ## 0.7.10
 
 ### Patch Changes

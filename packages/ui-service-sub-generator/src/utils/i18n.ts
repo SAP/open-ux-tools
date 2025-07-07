@@ -1,13 +1,16 @@
-import type { TOptions } from 'i18next';
+import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from '../translations/ui-service-generator.i18n.json';
 
 const uiServiceGeneratorNs = 'ui-service-generator';
+export const i18n: i18nNext = i18next.createInstance();
 
 export async function initI18n(): Promise<void> {
-    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', uiServiceGeneratorNs, translations)
-    );
+    await i18n.init({
+        lng: 'en',
+        fallbackLng: 'en'
+    });
+    i18n.addResourceBundle('en', uiServiceGeneratorNs, translations);
 }
 
 /**
@@ -21,7 +24,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: uiServiceGeneratorNs });
     }
-    return i18next.t(key, options);
+    return i18n.t(key, options);
 }
 
 initI18n().catch(() => {

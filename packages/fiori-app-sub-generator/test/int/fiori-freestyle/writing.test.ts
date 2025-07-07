@@ -6,6 +6,7 @@ import { join } from 'path';
 import { rimraf } from 'rimraf';
 import { FloorplanFF, type State } from '../../../src/types';
 import { cleanTestDir, getTestDir, ignoreMatcherOpts, runWritingPhaseGen } from '../test-utils';
+import { initI18nFioriAppSubGenerator } from '../../../src';
 
 const EXPECTED_OUT_PATH = './expected-output';
 const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
@@ -27,8 +28,9 @@ describe('Freestyle generation', () => {
     let mockModulePath: string;
     const testDir = getTestDir('fiori-freestyle');
 
-    beforeAll(() => {
+    beforeAll(async () => {
         cleanTestDir(testDir);
+        await initI18nFioriAppSubGenerator();
     });
 
     afterAll(() => {

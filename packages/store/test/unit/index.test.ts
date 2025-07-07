@@ -16,9 +16,8 @@ describe('store', () => {
         });
 
         it('throws an error for an invalid entity name', async () => {
-            await expect(getService({ entityName: 'foo' as EnityName })).rejects.toThrow(
-                i18n.text('error.unsupportedEntity')
-            );
+            const expectedMessage = i18n.text('error.unsupportedEntity', { entityName: 'foo' });
+            await expect(getService({ entityName: 'foo' as EnityName })).rejects.toThrow(expectedMessage);
         });
     });
 });
