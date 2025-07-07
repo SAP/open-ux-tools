@@ -1,5 +1,17 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.34
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/deploy-config-generator-shared@0.1.17
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.31
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/abap-deploy-config-writer@0.1.16
+
 ## 0.1.33
 
 ### Patch Changes

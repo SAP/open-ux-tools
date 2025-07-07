@@ -227,9 +227,13 @@ describe('validators', () => {
                 mtaId: input,
                 routerType: 'standard'
             };
-            validateMtaId(input, previousAnswers);
+            const fullPath = join(longPath, input);
+            projectInputValidator.validateWindowsPathLength(
+                fullPath,
+                t('errors.windowsMtaIdPathTooLong', { length: '' })
+            );
             expect(validateWindowsPathLengthSpy).toHaveBeenCalledWith(
-                join(longPath, input),
+                fullPath,
                 'The combined length  of the MTA ID and MTA path exceeds the default Windows paths length. This may cause issues with MTA project generation.'
             );
         });

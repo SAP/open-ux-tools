@@ -1,5 +1,18 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.1.39
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/flp-config-inquirer@0.3.39
+    -   @sap-ux/inquirer-common@0.7.21
+    -   @sap-ux/adp-tooling@0.14.39
+    -   @sap-ux/store@1.1.2
+    -   @sap-ux/system-access@0.6.10
+
 ## 0.1.38
 
 ### Patch Changes

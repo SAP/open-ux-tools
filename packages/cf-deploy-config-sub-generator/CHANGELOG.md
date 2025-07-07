@@ -1,5 +1,17 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.30
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/deploy-config-generator-shared@0.1.17
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.24
+    -   @sap-ux/cf-deploy-config-writer@0.3.13
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/inquirer-common@0.7.21
+
 ## 0.2.29
 
 ### Patch Changes

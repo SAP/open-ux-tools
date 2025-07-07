@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 0.14.39
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/project-input-validator@0.6.10
+    -   @sap-ux/odata-service-writer@0.27.11
+    -   @sap-ux/inquirer-common@0.7.21
+    -   @sap-ux/store@1.1.2
+    -   @sap-ux/system-access@0.6.10
+    -   @sap-ux/ui5-config@0.29.0
+
 ## 0.14.38
 
 ### Patch Changes

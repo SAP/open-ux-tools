@@ -1,5 +1,12 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.35.10
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/fiori-annotation-api@0.6.8
+
 ## 0.35.9
 
 ### Patch Changes
