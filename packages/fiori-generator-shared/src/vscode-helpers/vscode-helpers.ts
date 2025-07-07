@@ -37,22 +37,51 @@ export function getDefaultTargetFolder(vscode: any): string | undefined {
 }
 
 /**
- * Check for an installed extension, optionally specifying a minimum version.
- * Note, this does not check for activation state of specified extension.
+ * Check for an installed extension, optionally specifying a minimum version and activation state.
+ * Note, this does not check for activation state unless `isActive` is specified.
  *
  * @param vscode - vscode instance
  * @param extensionId - the id of the extension to find
  * @param minVersion - the minimum version of the specified extension, lower versions will not be returned. Must be a valid SemVer string.
- * @returns true if the extension is installed and the version is >= minVersion (if provided), false otherwise
+ * @param isActive - If `true`, the function will only return `true` if the extension is also active. Defaults to `true`.
+ * @returns true if the extension is installed, the version is >= minVersion, and is active, false otherwise
  */
-export function isExtensionInstalled(vscode: any, extensionId: string, minVersion?: string): boolean {
+export function isExtensionInstalled(
+    vscode: any,
+    extensionId: string,
+    minVersion?: string,
+    isActive: boolean = true
+): boolean {
     const foundExt = vscode?.extensions?.getExtension(extensionId);
+
     if (foundExt) {
         const extVersion = coerce(foundExt.packageJSON.version);
+
         if (extVersion) {
-            // Check installed ver is >= minVersion or return true if minVersion is not specified
-            return !(minVersion && lt(extVersion, minVersion));
+            // If a minimum version is specified and the extension's version is less than it, return false.
+            if (minVersion && lt(extVersion, minVersion)) {
+                return false;
+            }
+
+            // If the caller explicitly requires the extension to check if active, and it's not then return false.
+            if (isActive && !foundExt.isActive) {
+                return false;
+            }
+
+            return true;
         }
     }
     return false;
+}
+
+/**
+ * Check if a specific command is registered in VS Code.
+ *
+ * @param vscode - vscode instance
+ * @param commandId - the id of the command to check
+ * @returns true if the command is registered, else false
+ */
+export async function isCommandRegistered(vscode: any, commandId: string): Promise<boolean> {
+    const commands = await vscode.commands.getCommands();
+    return commands.includes(commandId);
 }

@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
+import { UI5Config, getEsmTypesVersion, getPreviewMiddlewareConfig, getTypesPackage } from '@sap-ux/ui5-config';
 import { getMinimumUI5Version, type Manifest, type Package } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
@@ -64,10 +64,11 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ui5App.ui5?.ui5Theme,
         ui5AppConfig.appOptions?.useVirtualPreviewEndpoints
     );
+    const fioriToolsPreviewConfigMiddlware = getPreviewMiddlewareConfig(previewMiddleWareOpts);
 
     // add preview middleware to ui5Config for edmx projects and cap apps using virtual endpoints
     if (isEdmxProjectType || ui5AppConfig.appOptions?.useVirtualPreviewEndpoints) {
-        ui5Config.addFioriToolsPreviewMiddleware(previewMiddleWareOpts);
+        ui5Config.updateCustomMiddleware(fioriToolsPreviewConfigMiddlware);
     }
 
     if (isEdmxProjectType) {
@@ -84,7 +85,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         // Add optional features
         await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
         // add preview middleware to ui5LocalConfig
-        ui5LocalConfig.addFioriToolsPreviewMiddleware(previewMiddleWareOpts);
+        ui5LocalConfig.updateCustomMiddleware(fioriToolsPreviewConfigMiddlware);
         // write ui5 local yaml
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     } else {
@@ -105,7 +106,7 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
  * @param useVirtualPreviewEndpoints - boolean to determine if virtual endpoints are used
  * @returns preview middleware options
  */
-function getPreviewMiddlewareOpts(app: App, ui5Theme: string, useVirtualPreviewEndpoints = false) {
+function getPreviewMiddlewareOpts(app: App, ui5Theme?: string, useVirtualPreviewEndpoints = false) {
     return {
         ui5Theme,
         ...(useVirtualPreviewEndpoints && {

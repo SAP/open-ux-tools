@@ -108,11 +108,12 @@ describe('utils', () => {
 
             const writerConfig = getAdpFlpInboundsWriterConfig(
                 flpConfigAnswers as unknown as FLPConfigAnswers,
+                adpTooling.FlexLayer.CUSTOMER_BASE,
                 tileSettingsAnswers as TileSettingsAnswers
             );
 
             expect(writerConfig).toEqual({
-                inboundId: 'semanticObject_Base-action_Base',
+                inboundId: 'customer.semanticObject_Base-action_Base',
                 semanticObject: 'semanticObject_Base',
                 action: 'action_Base',
                 title: 'title_New',
@@ -127,6 +128,7 @@ describe('utils', () => {
 
             const writerConfig = getAdpFlpInboundsWriterConfig(
                 {} as unknown as FLPConfigAnswers,
+                adpTooling.FlexLayer.CUSTOMER_BASE,
                 tileSettingsAnswers as TileSettingsAnswers
             );
 
@@ -152,10 +154,14 @@ describe('utils', () => {
             };
             const tileSettingsAnswers = { tileHandlingAction: tileActions.ADD, copyFromExisting: false };
 
-            const writerConfig = getAdpFlpInboundsWriterConfig(flpConfigAnswers, tileSettingsAnswers);
+            const writerConfig = getAdpFlpInboundsWriterConfig(
+                flpConfigAnswers,
+                adpTooling.FlexLayer.CUSTOMER_BASE,
+                tileSettingsAnswers
+            );
 
             expect(writerConfig).toEqual({
-                inboundId: 'semanticObject_New-action_New',
+                inboundId: 'customer.semanticObject_New-action_New',
                 semanticObject: 'semanticObject_New',
                 action: 'action_New',
                 title: 'title_New',
@@ -168,7 +174,11 @@ describe('utils', () => {
         it('should return config emptry strings for config if no answers ADD scenario', () => {
             const tileSettingsAnswers = { tileHandlingAction: tileActions.ADD, copyFromExisting: false };
 
-            const writerConfig = getAdpFlpInboundsWriterConfig({} as unknown as FLPConfigAnswers, tileSettingsAnswers);
+            const writerConfig = getAdpFlpInboundsWriterConfig(
+                {} as unknown as FLPConfigAnswers,
+                adpTooling.FlexLayer.CUSTOMER_BASE,
+                tileSettingsAnswers
+            );
 
             expect(writerConfig).toEqual({
                 inboundId: '',
@@ -191,7 +201,7 @@ describe('utils', () => {
                 additionalParameters: 'params3'
             };
 
-            const writerConfig = getAdpFlpInboundsWriterConfig(flpConfigAnswers);
+            const writerConfig = getAdpFlpInboundsWriterConfig(flpConfigAnswers, adpTooling.FlexLayer.VENDOR);
 
             expect(writerConfig).toEqual({
                 inboundId: 'so3-act3',

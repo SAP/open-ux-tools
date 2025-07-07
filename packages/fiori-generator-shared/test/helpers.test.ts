@@ -2,7 +2,11 @@ import { join } from 'path';
 import os from 'os';
 import fs from 'fs';
 import { getBootstrapResourceUrls } from '../src/index';
-import { YEOMANUI_TARGET_FOLDER_CONFIG_PROP, getDefaultTargetFolder } from '../src/vscode-helpers/vscode-helpers';
+import {
+    YEOMANUI_TARGET_FOLDER_CONFIG_PROP,
+    getDefaultTargetFolder,
+    isCommandRegistered
+} from '../src/vscode-helpers/vscode-helpers';
 
 describe('getResourceUrlsForUi5Bootstrap', () => {
     it('should return relative paths for Edmx projects', () => {
@@ -99,5 +103,40 @@ describe('getDefaultTargetFolder', () => {
         };
         expect(getDefaultTargetFolder(undefined)).toBeUndefined();
         expect(getDefaultTargetFolder(vscodeMock)).toBe(YEOMANUI_TARGET_FOLDER_CONFIG_PROP);
+    });
+});
+
+describe('isCommandRegistered', () => {
+    const testCommand = 'test.command';
+    const testCommand1 = 'test.command.1';
+    const mockVscode = {
+        commands: {
+            getCommands: jest.fn()
+        }
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should return true if the command is registered', async () => {
+        mockVscode.commands.getCommands.mockResolvedValue([testCommand, testCommand1]);
+
+        const result = await isCommandRegistered(mockVscode, testCommand);
+        expect(result).toBe(true);
+    });
+
+    it('should return false if the command is not registered', async () => {
+        mockVscode.commands.getCommands.mockResolvedValue([testCommand1]);
+
+        const result = await isCommandRegistered(mockVscode, testCommand);
+        expect(result).toBe(false);
+    });
+
+    it('should handle empty command list', async () => {
+        mockVscode.commands.getCommands.mockResolvedValue([]);
+
+        const result = await isCommandRegistered(mockVscode, testCommand);
+        expect(result).toBe(false);
     });
 });

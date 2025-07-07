@@ -1,5 +1,34 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.1.40
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.32
+-   @sap-ux/inquirer-common@0.7.22
+-   @sap-ux/odata-service-inquirer@2.5.14
+
+## 0.1.39
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.31
+    -   @sap-ux/odata-service-inquirer@2.5.13
+    -   @sap-ux/inquirer-common@0.7.21
+    -   @sap-ux/telemetry@0.6.9
+
+## 0.1.38
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.30
+-   @sap-ux/telemetry@0.6.8
+-   @sap-ux/odata-service-inquirer@2.5.12
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/inquirer-common@0.7.20
+
 ## 0.1.37
 
 ### Patch Changes
