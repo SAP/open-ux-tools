@@ -1,5 +1,14 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.11
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/mockserver-config-writer@0.9.7
+    -   @sap-ux/ui5-config@0.29.0
+
 ## 0.27.10
 
 ### Patch Changes

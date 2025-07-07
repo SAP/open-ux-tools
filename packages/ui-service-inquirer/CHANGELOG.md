@@ -1,5 +1,16 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.1.39
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.31
+    -   @sap-ux/odata-service-inquirer@2.5.13
+    -   @sap-ux/inquirer-common@0.7.21
+    -   @sap-ux/telemetry@0.6.9
+
 ## 0.1.38
 
 ### Patch Changes
