@@ -12,7 +12,7 @@ interface LocalizationKey {
 
 /**
  * InfoCenterMessage interface for defining the structure of an Info center message.
- * It includes title, description, optional details, type, and options for toast display.
+ * It includes title, description, optional details, and type.
  */
 interface InfoCenterMessage {
     title: LocalizationKey | string;
