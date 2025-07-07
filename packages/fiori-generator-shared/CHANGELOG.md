@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.0
+
+### Minor Changes
+
+-   58abe82: Add optional isActive parameter to isExtensionInstalled function & add support for checking command registration
+
 ## 0.12.16
 
 ### Patch Changes
