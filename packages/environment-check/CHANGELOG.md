@@ -1,5 +1,14 @@
 # @sap-ux/environment-check
 
+## 0.18.16
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/store@1.1.2
+    -   @sap-ux/ui5-config@0.29.0
+
 ## 0.18.15
 
 ### Patch Changes

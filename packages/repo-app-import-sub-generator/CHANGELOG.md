@@ -1,5 +1,31 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.56
+
+### Patch Changes
+
+-   Updated dependencies [58abe82]
+    -   @sap-ux/fiori-generator-shared@0.13.0
+    -   @sap-ux/fiori-elements-writer@2.5.11
+    -   @sap-ux/inquirer-common@0.7.22
+    -   @sap-ux/odata-service-inquirer@2.5.14
+
+## 0.3.55
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/project-input-validator@0.6.10
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/odata-service-inquirer@2.5.13
+    -   @sap-ux/fiori-elements-writer@2.5.10
+    -   @sap-ux/inquirer-common@0.7.21
+    -   @sap-ux/launch-config@0.10.12
+    -   @sap-ux/store@1.1.2
+    -   @sap-ux/system-access@0.6.10
+    -   @sap-ux/abap-deploy-config-writer@0.1.16
+
 ## 0.3.54
 
 ### Patch Changes

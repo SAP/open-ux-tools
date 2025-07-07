@@ -1,5 +1,25 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.14
+
+### Patch Changes
+
+-   Updated dependencies [58abe82]
+    -   @sap-ux/fiori-generator-shared@0.13.0
+    -   @sap-ux/inquirer-common@0.7.22
+
+## 2.5.13
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/project-input-validator@0.6.10
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/inquirer-common@0.7.21
+    -   @sap-ux/store@1.1.2
+    -   @sap-ux/telemetry@0.6.9
+
 ## 2.5.12
 
 ### Patch Changes

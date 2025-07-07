@@ -143,7 +143,9 @@ export class PromptsAPI {
                 result[name] = {
                     isValid: false,
                     errorMessage:
-                        type === 'input' ? t('validation.errorMessage.input') : t('validation.errorMessage.select')
+                        type === 'input'
+                            ? (t('validation.errorMessage.input') as string)
+                            : (t('validation.errorMessage.select') as string)
                 };
             } else if (typeof validate === 'function') {
                 const validationResult = await validate(answer, answers);
