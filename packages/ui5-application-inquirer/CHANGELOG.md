@@ -1,5 +1,20 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.14.25
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.22
+
+## 0.14.24
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/project-input-validator@0.6.10
+    -   @sap-ux/inquirer-common@0.7.21
+
 ## 0.14.23
 
 ### Patch Changes
