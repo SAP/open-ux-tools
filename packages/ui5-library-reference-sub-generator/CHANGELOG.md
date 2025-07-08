@@ -1,5 +1,16 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.1.23
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/fiori-generator-shared@0.13.1
+    -   @sap-ux/telemetry@0.6.10
+    -   @sap-ux/ui5-library-reference-inquirer@0.4.23
+    -   @sap-ux/ui5-library-reference-writer@0.2.7
+
 ## 0.1.22
 
 ### Patch Changes
