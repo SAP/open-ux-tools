@@ -133,7 +133,6 @@ export async function initTransportConfig({
             t('errors.debugAbapTargetSystem', { method: 'initTransportConfig', error: result.error })
         );
     }
-
     return result;
 }
 

@@ -1,5 +1,126 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.14.25
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.22
+
+## 0.14.24
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/project-input-validator@0.6.10
+    -   @sap-ux/inquirer-common@0.7.21
+
+## 0.14.23
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/project-input-validator@0.6.9
+-   @sap-ux/inquirer-common@0.7.20
+
+## 0.14.22
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/project-input-validator@0.6.8
+    -   @sap-ux/inquirer-common@0.7.19
+
+## 0.14.21
+
+### Patch Changes
+
+-   d152617: Align text on mta message and non mta deploy config
+
+## 0.14.20
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/project-input-validator@0.6.7
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.14.19
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/project-input-validator@0.6.6
+    -   @sap-ux/inquirer-common@0.7.17
+
+## 0.14.18
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.16
+
+## 0.14.17
+
+### Patch Changes
+
+-   Updated dependencies [83109eb]
+    -   @sap-ux/project-input-validator@0.6.5
+
+## 0.14.16
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.15
+
+## 0.14.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/project-input-validator@0.6.4
+-   @sap-ux/inquirer-common@0.7.14
+
+## 0.14.14
+
+### Patch Changes
+
+-   c9f79c1: Check long Windows paths during project generation and deployment config generation.
+-   Updated dependencies [c9f79c1]
+    -   @sap-ux/project-input-validator@0.6.3
+
+## 0.14.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.13
+
+## 0.14.12
+
+### Patch Changes
+
+-   20cc54f: enhance theme retrieval for latest UI5 versions
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/ui5-info@0.12.0
+    -   @sap-ux/inquirer-common@0.7.12
+
+## 0.14.11
+
+### Patch Changes
+
+-   Updated dependencies [7f35f6c]
+    -   @sap-ux/ui5-info@0.11.1
+    -   @sap-ux/inquirer-common@0.7.11
+
+## 0.14.10
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
 ## 0.14.9
 
 ### Patch Changes

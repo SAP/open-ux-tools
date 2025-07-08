@@ -1,8 +1,8 @@
 {
     "error": {
-        "requiredProjectFileNotFound": "Invalid project structure. Cannot find required file {{-path}}",
-        "requiredProjectPropertyNotFound": "Required project property: {{-property}} was not found in file: {{-path}}",
+        "requiredProjectFileNotFound": "Invalid project structure. Cannot find the required file: {{-path}}.",
+        "requiredProjectPropertyNotFound": "The required project property: {{-property}} was not found in the file: {{-path}}.",
         "requiredServiceAlreadyExists": "A service with the {{-uri}} URI already exists. Choose another service.",
-        "unparseableXML": "Unparseable XML was specified: {{-error}}"
+        "unparseableXML": "Unparseable XML was specified: {{-error}}."
     }
 }

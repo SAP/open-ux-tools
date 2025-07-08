@@ -10,6 +10,7 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 import Element from 'mock/sap/ui/core/Element';
+import { resetSyncViews } from '../../../src/adp/sync-views-utils';
 
 const addFragmentServiceMock = jest.fn();
 jest.mock('open/ux/preview/client/adp/add-fragment', () => ({
@@ -35,7 +36,8 @@ describe('adp', () => {
     });
 
     const executeSpy = jest.fn();
-    rtaMock.getService = jest.fn().mockResolvedValue({ execute: executeSpy });
+    const attachEventSpy = jest.fn();
+    rtaMock.getService = jest.fn().mockResolvedValue({ execute: executeSpy, attachEvent: attachEventSpy});
     const setPluginsSpy = jest.fn();
     rtaMock.setPlugins = setPluginsSpy;
 
@@ -70,6 +72,7 @@ describe('adp', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
+        resetSyncViews();
     });
 
     test('init', async () => {
@@ -146,20 +149,23 @@ describe('adp', () => {
             oAsyncState: undefined
         };
 
-        ElementRegistry.all.mockReturnValue({
+        ElementRegistry.all.mockReturnValueOnce({
             'application-app-preview-component---fin.ar.lineitems.display.appView': mockUI5Element
         });
 
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.123.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
+        // Simulate the 'update' event
+        const updateHandler = attachEventSpy.mock.calls[0][1];
+        await updateHandler();
 
         expect(sendActionMock).toHaveBeenNthCalledWith(2, {
             type: '[ext] icons-loaded',
             payload: []
         });
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(3, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:
@@ -183,6 +189,10 @@ describe('adp', () => {
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
+        // Simulate the 'update' event
+        const updateHandler = attachEventSpy.mock.calls[0][1];
+        await updateHandler();
+
 
         expect(sendActionMock).toHaveBeenNthCalledWith(3, {
             type: '[ext] show-dialog-message',
@@ -194,7 +204,7 @@ describe('adp', () => {
         });
     });
 
-    test('init - use AddXMLPlugin and ExtendControllerPlugin for UI5 version higher than 1.136', async () => {
+    test('init - use AddXMLPlugin and ExtendControllerPlugin for UI5 version higher than 1.136.1', async () => {
         const mockUI5Element = {
             getMetadata: jest.fn().mockReturnValue({
                 getName: jest.fn().mockReturnValue('XMLView')
@@ -205,11 +215,30 @@ describe('adp', () => {
 
         Element.registry.filter.mockReturnValue([mockUI5Element]);
 
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.137.0' });
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.2' });
 
         await init(rtaMock as unknown as RuntimeAuthoring);
 
         expect(addFragmentServiceMock).toHaveBeenCalledWith(rtaMock);
         expect(extendControllerServiceMock).toHaveBeenCalledWith(rtaMock);
+    });
+
+    test('init - use for UI5 version higher than 1.136.1', async () => {
+        const mockUI5Element = {
+            getMetadata: jest.fn().mockReturnValue({
+                getName: jest.fn().mockReturnValue('XMLView')
+            }),
+            oAsyncState: undefined,
+            getId: jest.fn().mockReturnValue('application-app-preview-component---fin.ar.lineitems.display.appView')
+        };
+
+        Element.registry.filter.mockReturnValue([mockUI5Element]);
+
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.0' });
+
+        await init(rtaMock as unknown as RuntimeAuthoring);
+
+        expect(addFragmentServiceMock).not.toHaveBeenCalledWith(rtaMock);
+        expect(extendControllerServiceMock).not.toHaveBeenCalledWith(rtaMock);
     });
 });

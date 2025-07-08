@@ -30,3 +30,7 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: testNameSpacelropv2codeassist
+            action: tile

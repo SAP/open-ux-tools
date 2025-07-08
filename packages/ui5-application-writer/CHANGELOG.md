@@ -1,5 +1,45 @@
 # @sap-ux/ui5-application-writer
 
+## 1.5.8
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/ui5-config@0.29.0
+
+## 1.5.7
+
+### Patch Changes
+
+-   c0fa1d1: enhance support for adding and updating preview configuration
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+
+## 1.5.6
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 1.5.5
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/ui5-config@0.28.3
+
+## 1.5.4
+
+### Patch Changes
+
+-   3ea811a: Bump @ui5/cli version
+
+## 1.5.3
+
+### Patch Changes
+
+-   163522f: fix non-virtual endpoint preview config
+
 ## 1.5.2
 
 ### Patch Changes

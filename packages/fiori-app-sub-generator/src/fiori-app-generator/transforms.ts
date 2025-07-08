@@ -27,9 +27,7 @@ import {
     FloorplanFF,
     MAIN_DATASOURCE_NAME,
     MAIN_MODEL_NAME,
-    UI5_VERSION_PROPS,
-    defaultNavActionDisplay,
-    defaultNavActionTile
+    UI5_VERSION_PROPS
 } from '../types';
 import {
     assignSapUxLayerValue,
@@ -37,7 +35,6 @@ import {
     generateToolsId,
     getAnnotations,
     getAppId,
-    getFlpId,
     getMinSupportedUI5Version
 } from '../utils';
 import type { Package } from '@sap-ux/project-access';
@@ -93,6 +90,10 @@ export function transformTemplateType(
         _entityConfig = {
             mainEntityName: entityRelatedConfig.mainEntity.entitySetName
         };
+
+        if (entityRelatedConfig.mainEntity.mainEntityParameterName) {
+            _entityConfig.mainEntityParameterName = entityRelatedConfig.mainEntity.mainEntityParameterName;
+        }
 
         if (entityRelatedConfig?.navigationEntity?.navigationPropertyName) {
             _entityConfig.navigationEntity = {
@@ -212,7 +213,7 @@ export async function transformState<T>(
             name: MAIN_DATASOURCE_NAME,
             client: service.client,
             model: appConfig.template?.type === TemplateTypeFE.OverviewPage ? MAIN_MODEL_NAME : '', // OVP requires a named default model
-            previewSettings: {},
+            previewSettings: service.previewSettings ?? {},
             annotations:
                 project.skipAnnotations !== true
                     ? await getAnnotations(project.name, service.annotations?.[0], service?.capService)
@@ -244,7 +245,7 @@ export async function transformState<T>(
         } else if (
             service.connectedSystem?.backendSystem?.serviceKeys ||
             // If 'cloud' write `scp` property to yamls to enable preview on VSCode (using oAuth)
-            (getHostEnvironment() === hostEnvironment.vscode &&
+            (getHostEnvironment() === hostEnvironment.bas &&
                 service.connectedSystem?.destination &&
                 isAbapEnvironmentOnBtp(service.connectedSystem?.destination))
         ) {
@@ -321,10 +322,6 @@ function getBaseAppConfig(
             id: appId,
             title: project.title,
             description: project.description,
-            flpAppId: getFlpId(
-                appId,
-                floorplan === FloorplanFF.FF_SIMPLE ? defaultNavActionDisplay : defaultNavActionTile
-            ),
             sourceTemplate: {
                 toolsId: generateToolsId()
             },

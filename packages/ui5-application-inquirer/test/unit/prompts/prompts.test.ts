@@ -8,7 +8,7 @@ import { promptNames } from '../../../src/types';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { defaultVersion, minUi5VersionSupportingCodeAssist, ui5ThemeIds } from '@sap-ux/ui5-info';
-import { ui5VersionsGrouped, type ListQuestion } from '@sap-ux/inquirer-common';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { inc } from 'semver';
 
 jest.mock('@sap-ux/project-input-validator', () => {
@@ -63,7 +63,9 @@ describe('getQuestions', () => {
         });
         expect(
             (questions.find((question) => question.name === promptNames.name)?.validate as Function)('project1', {})
-        ).toMatchInlineSnapshot(`"A module with this name already exists in the folder: /cap/specific/target/path"`);
+        ).toMatchInlineSnapshot(
+            `"A module with this name already exists in the folder: /cap/specific/target/path. Choose a different module name."`
+        );
 
         // Test default when CAP project info provided
         questions = getQuestions(
@@ -78,7 +80,9 @@ describe('getQuestions', () => {
         );
         expect(
             (questions.find((question) => question.name === promptNames.name)?.validate as Function)('project1', {})
-        ).toMatchInlineSnapshot(`"A module with this name already exists in the folder: /cap/specific/target/path1"`);
+        ).toMatchInlineSnapshot(
+            `"A module with this name already exists in the folder: /cap/specific/target/path1. Choose a different module name."`
+        );
 
         // Non-Cli usage (YUI)
         questions = getQuestions(
@@ -345,7 +349,7 @@ describe('getQuestions', () => {
         // Mta path is calculated by the when condition which is executed before the message function
         expect(await (addDeployConfigQuestion?.when as Function)()).toEqual(false);
         expect((addDeployConfigQuestion?.message as Function)()).toMatchInlineSnapshot(
-            `"Add deployment configuration"`
+            `"Add Deployment Configuration"`
         );
 
         getMtaPathSpy.mockResolvedValue({ mtaPath: 'any/path', hasRoot: false });
@@ -359,7 +363,7 @@ describe('getQuestions', () => {
         expect(getMtaPathSpy).toHaveBeenCalledWith(targetFolder);
 
         expect((addDeployConfigQuestion?.message as Function)()).toMatchInlineSnapshot(
-            `"Add deployment configuration to MTA project (any/path)"`
+            `"Add Deployment Configuration to the MTA Project: (any/path)."`
         );
         expect(await (addDeployConfigQuestion?.default as Function)()).toEqual(true);
     });
@@ -389,7 +393,9 @@ describe('getQuestions', () => {
         expect(questions).toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.addFlpConfig })])
         );
-        expect((addFlpConfigQuestion?.message as Function)()).toMatchInlineSnapshot(`"Add FLP configuration"`);
+        expect((addFlpConfigQuestion?.message as Function)()).toMatchInlineSnapshot(
+            `"Add SAP Fiori Launchpad Configuration"`
+        );
 
         expect(await (addFlpConfigQuestion?.validate as Function)()).toEqual(true);
         const validatorCbSpy = jest.fn();
@@ -417,7 +423,7 @@ describe('getQuestions', () => {
         );
         expect((enableVirtualEndpointsQuestion?.when as Function)({})).toBe(true);
         expect((enableVirtualEndpointsQuestion?.message as Function)()).toMatchInlineSnapshot(
-            `"Use virtual endpoints for local preview"`
+            `"Use Virtual Endpoints for Local Preview"`
         );
 
         // CAP project with cds-ui5 plugin enabled
@@ -478,8 +484,8 @@ describe('getQuestions', () => {
             { id: ui5ThemeIds.SAP_FIORI_3_DARK, label: 'Theme One' },
             { id: ui5ThemeIds.SAP_HORIZON_DARK, label: 'Theme Two' }
         ];
-        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockReturnValue(mockThemes);
-        expect(((ui5ThemeQuestion as ListQuestion)?.choices as Function)({})).toMatchInlineSnapshot(`
+        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockResolvedValue(mockThemes);
+        expect(await ((ui5ThemeQuestion as ListQuestion)?.choices as Function)({})).toMatchInlineSnapshot(`
             [
               {
                 "name": "Theme One",
@@ -586,7 +592,7 @@ describe('getQuestions', () => {
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
         expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual({
             message:
-                'The CAP project will be updated to use NPM workspaces (this is a requirement for generating with TypeScript)',
+                'The CAP project will be updated to use NPM workspaces. This is a requirement for generating with TypeScript.',
             severity: 1
         });
     });

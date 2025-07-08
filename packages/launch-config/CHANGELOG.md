@@ -1,5 +1,73 @@
 # @sap-ux/launch-config
 
+## 0.10.12
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/ui5-config@0.29.0
+
+## 0.10.11
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/project-access@1.30.6
+
+## 0.10.10
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+
+## 0.10.9
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+
+## 0.10.7
+
+### Patch Changes
+
+-   bac9dbc: fix start mock args in launch config
+
+## 0.10.6
+
+### Patch Changes
+
+-   15c1608: correct launch config start scripts for virtual endpoints
+
+## 0.10.5
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+
+## 0.10.4
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/ui5-info@0.12.0
+
+## 0.10.3
+
+### Patch Changes
+
+-   Updated dependencies [7f35f6c]
+    -   @sap-ux/ui5-info@0.11.1
+
 ## 0.10.2
 
 ### Patch Changes

@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.26.8
+
+### Patch Changes
+
+-   282f30e: feat(ui-components) add icon check
+
+## 1.26.7
+
+### Patch Changes
+
+-   a4e81fc: UIDialog: Override FluentUI overlay background with VSCode theme variable
+
+## 1.26.6
+
+### Patch Changes
+
+-   12faf8b: feat(ui-components) add icon pdf and word
+
 ## 1.26.5
 
 ### Patch Changes

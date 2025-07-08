@@ -1,7 +1,7 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { AdtCatalogService, UI5RtVersionService } from '@sap-ux/axios-extension';
 
-import { getFlexUISupportedSystem, getSystemUI5Version } from '../../../src';
+import { getFlexUISupportedSystem, getSystemUI5Version, getBaseAppInbounds } from '../../../src';
 
 describe('getFlexUISupportedSystem', () => {
     it('should return immediately when isCustomerBase is false', async () => {
@@ -60,5 +60,107 @@ describe('getSystemUI5Version', () => {
         const result = await getSystemUI5Version(provider);
 
         expect(result).toBeUndefined();
+    });
+});
+
+describe('getBaseAppInbounds', () => {
+    it('should return inbounds for the given appId', async () => {
+        const appId = 'testApp';
+        const inbounds = [
+            {
+                content: {
+                    semanticObject: 'semanticObject',
+                    action: 'action',
+                    hideLauncher: false,
+                    icon: 'sap-icon://task',
+                    title: 'Title',
+                    subTitle: 'Subtitle'
+                }
+            }
+        ];
+        const lrepService = {
+            getSystemInfo: jest.fn().mockResolvedValue({ inbounds })
+        };
+        const provider = {
+            getLayeredRepository: jest.fn().mockReturnValue(lrepService)
+        } as unknown as AbapServiceProvider;
+
+        const result = await getBaseAppInbounds(appId, provider);
+
+        expect(provider.getLayeredRepository).toHaveBeenCalled();
+        expect(lrepService.getSystemInfo).toHaveBeenCalledWith(undefined, undefined, appId);
+        expect(result).toEqual({
+            'semanticObject-action': {
+                'action': 'action',
+                'hideLauncher': false,
+                'icon': 'sap-icon://task',
+                'semanticObject': 'semanticObject',
+                'subTitle': 'Subtitle',
+                'title': 'Title'
+            }
+        });
+    });
+
+    it('should return undefined if no inbounds are found', async () => {
+        const appId = 'testApp';
+        const lrepService = {
+            getSystemInfo: jest.fn().mockResolvedValue({ inbounds: [] })
+        };
+        const provider = {
+            getLayeredRepository: jest.fn().mockReturnValue(lrepService)
+        } as unknown as AbapServiceProvider;
+
+        const result = await getBaseAppInbounds(appId, provider);
+
+        expect(provider.getLayeredRepository).toHaveBeenCalled();
+        expect(lrepService.getSystemInfo).toHaveBeenCalledWith(undefined, undefined, appId);
+        expect(result).toBeUndefined();
+    });
+
+    it('should filter out inbounds with hideLauncher=true', async () => {
+        const appId = 'testApp';
+        const inbounds = [
+            {
+                content: {
+                    semanticObject: 'semanticObject',
+                    action: 'action',
+                    hideLauncher: false,
+                    icon: 'sap-icon://task',
+                    title: 'Title',
+                    subTitle: 'Subtitle'
+                }
+            },
+            {
+                content: {
+                    semanticObject: 'semanticObject1',
+                    action: 'action1',
+                    hideLauncher: true,
+                    icon: 'sap-icon://task',
+                    title: 'Title1',
+                    subTitle: 'Subtitle1'
+                }
+            }
+        ];
+        const lrepService = {
+            getSystemInfo: jest.fn().mockResolvedValue({ inbounds })
+        };
+        const provider = {
+            getLayeredRepository: jest.fn().mockReturnValue(lrepService)
+        } as unknown as AbapServiceProvider;
+
+        const result = await getBaseAppInbounds(appId, provider);
+
+        expect(provider.getLayeredRepository).toHaveBeenCalled();
+        expect(lrepService.getSystemInfo).toHaveBeenCalledWith(undefined, undefined, appId);
+        expect(result).toEqual({
+            'semanticObject-action': {
+                'action': 'action',
+                'hideLauncher': false,
+                'icon': 'sap-icon://task',
+                'semanticObject': 'semanticObject',
+                'subTitle': 'Subtitle',
+                'title': 'Title'
+            }
+        });
     });
 });

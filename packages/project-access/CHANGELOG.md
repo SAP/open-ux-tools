@@ -1,5 +1,33 @@
 # @sap-ux/project-access
 
+## 1.30.6
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+
+## 1.30.5
+
+### Patch Changes
+
+-   7a4543e: fix: remove usage of static webapp folder
+
+## 1.30.4
+
+### Patch Changes
+
+-   f75b89d: Get mock data server config from ui5 yaml file
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/ui5-config@0.28.3
+
+## 1.30.3
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/i18n@0.3.1
+
 ## 1.30.2
 
 ### Patch Changes

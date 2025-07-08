@@ -1,12 +1,12 @@
 {
     "error": {
-        "endPhase": "Error end phase deployment-generator:flp: {{- error}}",
-        "telemetry": "Failed to send telemetry data after FLP configuration has been added. {{- error}}",
-        "noManifest": "Manifest not found at path: {{- path}}",
-        "sapNotDefined": "Manifest is missing required section 'sap.app'"
+        "endPhase": "An error occurred in the end phase of the `deployment-generator:flp`: {{- error}}",
+        "telemetry": "Failed to send telemetry data after SAP Fiori launchpad configuration has been added: {{- error}}",
+        "noManifest": "The `manifest.json` file was not found at path: {{- path}}.",
+        "sapNotDefined": "The `manifest.json file` is missing the required section: sap.app. Add the required section."
     },
     "warning": {
-        "updatei18n": "Cannot update i18n properties file: {{- path}}"
+        "updatei18n": "Cannot update the i18n properties file: {{- path}}. For more information, view the logs."
     },
     "info": {
         "filesGenerated": "The files have been generated."

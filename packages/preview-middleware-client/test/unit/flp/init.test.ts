@@ -15,6 +15,7 @@ import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { CommunicationService } from '../../../src/cpe/communication-service';
 import type Component from 'sap/ui/core/Component';
+import { Window } from 'types/global';
 
 jest.mock('../../../src/i18n', () => {
     return {
@@ -250,7 +251,7 @@ describe('flp/init', () => {
                 layer: 'CUSTOMER_BASE',
                 pluginScript: 'my/script'
             };
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.84.50' });
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.76.0' });
 
             // testing the nested callbacks
             const mockService = {
@@ -411,6 +412,14 @@ describe('flp/init', () => {
             expect(mockService.attachAppLoaded.mock.calls[0][0]).toBeInstanceOf(Function);
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+        });
+
+        test('enhancedHomePage mode is enabled', async () => {
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.130.0' });
+            await init({ enhancedHomePage: true });
+
+            expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();
+            expect(sapMock.ushell.Container.init).toBeCalledWith('cdm');
         });
     });
 });

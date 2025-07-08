@@ -13,7 +13,7 @@ import { promptConfirmation } from './prompt';
 import { createAbapServiceProvider, getCredentialsWithPrompts } from '@sap-ux/system-access';
 import { getAppDescriptorVariant } from './archive';
 import { validateBeforeDeploy, formatSummary, showAdditionalInfoForOnPrem, checkForCredentials } from './validate';
-import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**
  * Internal deployment commands
@@ -44,7 +44,9 @@ async function handleError(
     archive: Buffer
 ): Promise<void> {
     if (ErrorHandler.isCertError(error)) {
-        const gaLink = ErrorHandler.getHelpForError(ERROR_TYPE.CERT)?.toString();
+        const gaLink = new ErrorHandler(undefined, undefined, '@sap-ux/deploy-tooling')
+            .getValidationErrorHelp(error)
+            ?.toString();
         if (gaLink) {
             logger.info(gaLink);
         }

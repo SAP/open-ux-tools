@@ -278,7 +278,7 @@ describe('Filtering UI5 themes based on UI5 version', () => {
 
         const questions = await getPrompts(promptOpts);
         const ui5ThemeQuestion = questions.find((q) => q.name === promptNames.ui5Theme);
-        const choices = (ui5ThemeQuestion as any)?.choices({ ui5Version: version });
+        const choices = await (ui5ThemeQuestion as any)?.choices({ ui5Version: version });
 
         const expectedChoices = getExpectedChoices(version);
 

@@ -1,10 +1,12 @@
 import readPkgUp from 'read-pkg-up';
-import type { BasicAppSettings, FioriApp, FreestyleApp } from './types';
 import { TemplateType } from './types';
 import { compareUI5VersionGte, ui5LtsVersion_1_120 } from './utils';
+import { getFlpId } from '@sap-ux/fiori-generator-shared';
+import type { BasicAppSettings, FioriApp, FreestyleApp } from './types';
 
 const defaultVirtualPreviewFile = 'test/flp.html'; // Default virtual preview file name
 const defaultIntent = 'app-preview';
+const defaultNavActionDisplay = 'display';
 
 /**
  * Set defaults for missing parameters on the given Fiori/UI5 app instance.
@@ -13,7 +15,8 @@ const defaultIntent = 'app-preview';
  */
 function setAppDefaults(app: FioriApp): void {
     app.baseComponent = app.baseComponent || 'sap/ui/core/UIComponent';
-    app.flpAppId = app.flpAppId || `${app.id.replace(/[-_.]/g, '')}-tile`;
+    app.flpAction = app.flpAction || defaultNavActionDisplay;
+    app.flpAppId = app.flpAppId || getFlpId(app.id, app.flpAction);
 }
 
 /**

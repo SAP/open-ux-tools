@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import type { IChildLogger } from '@vscode-logging/logger';
+import type { ToolsLogger } from '@sap-ux/logger';
 
 import { setHeaderTitle } from '../../../src/utils/opts';
 
@@ -14,7 +14,7 @@ const readFileSyncMock = readFileSync as jest.Mock;
 const mockPackage = { name: '@sap-ux/generator-adp', version: '0.0.1', displayName: 'SAPUI5 Adaptation Project' };
 
 describe('setHeaderTitle', () => {
-    const logger = { error: jest.fn() } as unknown as IChildLogger;
+    const logger = { error: jest.fn() } as unknown as ToolsLogger;
 
     beforeEach(() => {
         jest.clearAllMocks();

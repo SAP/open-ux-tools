@@ -12,15 +12,18 @@ import type { Destination, Destinations } from '@sap-ux/btp-utils';
 import type { AxiosError } from '@sap-ux/axios-extension';
 
 const backendSystemBasic: BackendSystem = {
-    name: 'http://abap.on.prem:1234 (ABAP-on-Prem)',
+    name: 'http://abap.on.prem:1234',
     url: 'http://abap.on.prem:1234',
     username: 'user1',
-    password: 'password1'
+    password: 'password1',
+    systemType: 'OnPrem'
 };
+
 const backendSystemReentrance: BackendSystem = {
-    name: 'http://s4hc:1234 (S4HC)',
+    name: 'http://s4hc:1234',
     url: 'http:/s4hc:1234',
-    authenticationType: 'reentranceTicket'
+    authenticationType: 'reentranceTicket',
+    systemType: 'S4HC'
 };
 
 const backendSystems: BackendSystem[] = [backendSystemBasic, backendSystemReentrance];
@@ -41,7 +44,10 @@ jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
     // Mock store access
     SystemService: jest.fn().mockImplementation(() => ({
-        getAll: jest.fn().mockResolvedValue(backendSystems)
+        getAll: jest.fn().mockResolvedValueOnce(backendSystems),
+        partialUpdate: jest.fn().mockImplementation((system: BackendSystem) => {
+            return Promise.resolve(system);
+        })
     }))
 }));
 
@@ -69,7 +75,8 @@ describe('Test system selection prompt helpers', () => {
                 getBackendSystemDisplayName({
                     name: 'systemA',
                     userDisplayName: 'userDisplayName1',
-                    authenticationType: 'reentranceTicket' as AuthenticationType
+                    authenticationType: 'reentranceTicket' as AuthenticationType,
+                    systemType: 'S4HC'
                 } as BackendSystem)
             ).toEqual('systemA (S4HC) [userDisplayName1]');
 
@@ -77,7 +84,8 @@ describe('Test system selection prompt helpers', () => {
                 getBackendSystemDisplayName({
                     name: 'systemB',
                     userDisplayName: 'userDisplayName2',
-                    serviceKeys: { url: 'Im a service key' }
+                    serviceKeys: { url: 'Im a service key' },
+                    systemType: 'BTP'
                 } as BackendSystem)
             ).toEqual('systemB (BTP) [userDisplayName2]');
         });
@@ -85,7 +93,7 @@ describe('Test system selection prompt helpers', () => {
         test('Should create backend system selection choices', async () => {
             expect(await createSystemChoices()).toEqual([
                 {
-                    name: 'New system',
+                    name: 'New System',
                     value: {
                         system: '!@£*&937newSystem*X~qy^',
                         type: 'newSystemChoice'

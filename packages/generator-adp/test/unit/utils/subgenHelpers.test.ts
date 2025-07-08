@@ -1,11 +1,11 @@
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-import type { Manifest } from '@sap-ux/project-access';
-import type { AttributesAnswers, ConfigAnswers, SystemLookup } from '@sap-ux/adp-tooling';
+import { FlexLayer, type AttributesAnswers, type ConfigAnswers, type SystemLookup } from '@sap-ux/adp-tooling';
 
 import { t } from '../../../src/utils/i18n';
 import { addFlpGen, addDeployGen, addExtProjectGen } from '../../../src/utils/subgenHelpers';
 import { getExtensionProjectData, resolveNodeModuleGenerator } from '../../../src/app/extension-project';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
 jest.mock('../../../src/app/extension-project', () => ({
     getExtensionProjectData: jest.fn(),
@@ -30,8 +30,25 @@ describe('Sub-generator helpers', () => {
         it('should compose FLP generator with correct parameters', () => {
             const flpOptions = {
                 projectRootPath: '/test/path',
-                system: 'SYS',
-                manifest: { 'sap.app': {} } as Manifest
+                inbounds: {
+                    'display-bank': {
+                        semanticObject: 'test',
+                        action: 'action',
+                        title: 'testTitle',
+                        subTitle: 'testSubTitle',
+                        icon: 'sap-icon://test',
+                        signature: {
+                            parameters: {
+                                param1: {
+                                    value: 'test1',
+                                    isRequired: true
+                                }
+                            }
+                        }
+                    }
+                } as unknown as ManifestNamespace.Inbound,
+                layer: FlexLayer.CUSTOMER_BASE,
+                vscode: {}
             };
             const resolvePath = 'flp-generator';
             jest.spyOn(require, 'resolve').mockReturnValue(resolvePath);
@@ -41,8 +58,8 @@ describe('Sub-generator helpers', () => {
             expect(composeWith).toHaveBeenCalledWith(
                 expect.any(String),
                 expect.objectContaining({
-                    manifest: flpOptions.manifest,
-                    system: flpOptions.system,
+                    inbounds: flpOptions.inbounds,
+                    vscode: {},
                     data: { projectRootPath: flpOptions.projectRootPath }
                 })
             );

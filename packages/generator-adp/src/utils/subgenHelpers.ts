@@ -1,13 +1,12 @@
 import type Generator from 'yeoman-generator';
-import { type AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-import type { Manifest } from '@sap-ux/project-access';
-import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
-import type { ConfigAnswers, AttributesAnswers, SystemLookup } from '@sap-ux/adp-tooling';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer } from '@sap-ux/adp-tooling';
 
 import { t } from './i18n';
 import { getExtensionProjectData, resolveNodeModuleGenerator } from '../app/extension-project';
-
 /**
  * Parameters required for composing the extension project generator.
  */
@@ -21,9 +20,10 @@ interface ExtProjectGenProps {
  * Parameters required for composing the FLP config generator.
  */
 interface FlpGenProps {
+    vscode: unknown;
     projectRootPath: string;
-    system: string;
-    manifest: Manifest;
+    inbounds?: ManifestNamespace.Inbound;
+    layer: FlexLayer;
 }
 
 /**
@@ -44,15 +44,14 @@ interface DeployGenOptions {
  * @param {FlpGenProps} options - Configuration object for the FLP generator.
  * @param {string} options.projectRootPath - Full path to the root of the project.
  * @param {string} options.system - System identifier string.
- * @param {Manifest} options.manifest - The manifest object to pass to the FLP generator.
  * @param {Generator['composeWith']} composeWith - `composeWith` method provided by Yeoman Generator instance.
- * @param {ILogWrapper} logger - Logger instance for tracking operations and errors.
+ * @param {ToolsLogger} logger - Logger instance for tracking operations and errors.
  * @param {AppWizard} appWizard - AppWizard instance for interacting with the UI (optional).
  */
 export function addFlpGen(
-    { projectRootPath, system, manifest }: FlpGenProps,
+    { projectRootPath, vscode, inbounds, layer }: FlpGenProps,
     composeWith: Generator['composeWith'],
-    logger: ILogWrapper,
+    logger: ToolsLogger,
     appWizard: AppWizard
 ): void {
     try {
@@ -61,8 +60,9 @@ export function addFlpGen(
          */
         composeWith(require.resolve('@sap-ux/adp-flp-config-sub-generator/generators/app'), {
             launchAsSubGen: true,
-            manifest,
-            system,
+            vscode,
+            inbounds,
+            layer,
             data: { projectRootPath },
             appWizard
         });
@@ -85,13 +85,13 @@ export function addFlpGen(
  * @param {string} options.connectedSystem - (Optional) Connected system data
  * @param {string} options.destinationName - (Optional) Destination name for deployment
  * @param {Generator['composeWith']} composeWith - Yeoman composeWith method from generator context
- * @param {ILogWrapper} logger - Logger for info and error output
+ * @param {ToolsLogger} logger - Logger for info and error output
  * @param {AppWizard} appWizard - Optional AppWizard instance for displaying UI messages
  */
 export function addDeployGen(
     { projectName, targetFolder, client, connectedSystem, destinationName }: DeployGenOptions,
     composeWith: Generator['composeWith'],
-    logger: ILogWrapper,
+    logger: ToolsLogger,
     appWizard: AppWizard
 ): void {
     try {
@@ -124,13 +124,13 @@ export function addDeployGen(
  * @param {AttributesAnswers} options.attributeAnswers - The collected attribute prompt answers.
  * @param {SystemLookup} options.systemLookup - Instance of the system lookup.
  * @param {Generator['composeWith']} composeWith - `composeWith` method provided by Yeoman Generator instance.
- * @param {ILogWrapper} logger - Logger instance for tracking operations and errors.
+ * @param {ToolsLogger} logger - Logger instance for tracking operations and errors.
  * @param {AppWizard} appWizard - AppWizard instance for interacting with the UI (optional).
  */
 export async function addExtProjectGen(
     { configAnswers, attributeAnswers, systemLookup }: ExtProjectGenProps,
     composeWith: Generator['composeWith'],
-    logger: ILogWrapper,
+    logger: ToolsLogger,
     appWizard?: AppWizard
 ): Promise<void> {
     try {

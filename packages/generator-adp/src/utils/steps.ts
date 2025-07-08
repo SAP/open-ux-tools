@@ -23,13 +23,49 @@ export function getWizardPages(): IPrompt[] {
 /**
  * Returns the FLP configuration page step.
  *
+ * @param {boolean} showTileSettingsPage - Flag to determine if the tile settings page should be shown.
+ * @param {string} projectName - The name of the project.
  * @returns {IPrompt} The FLP configuration wizard page.
  */
-export function getFlpPage(): IPrompt {
-    return {
-        name: t('yuiNavSteps.flpConfigName'),
-        description: t('yuiNavSteps.flpConfigDescr')
-    };
+export function getFlpPages(showTileSettingsPage: boolean, projectName: string): IPrompt[] {
+    const pages = [
+        {
+            name: t('yuiNavSteps.flpConfigName'),
+            description: ''
+        }
+    ];
+    if (showTileSettingsPage) {
+        pages.unshift({
+            name: t('yuiNavSteps.tileSettingsName', { projectName }),
+            description: ''
+        });
+    }
+
+    return pages;
+}
+
+/**
+ * Updates the FLP wizard steps by adding or removing FLP-related pages based on the presence of a base app inbound.
+ *
+ * @param {boolean} hasBaseAppInbound - Indicates if the base app inbound exists.
+ * @param {YeomanUiSteps} prompts - The Yeoman UI Prompts container object.
+ * @param {string} projectName - The name of the project.
+ * @param {boolean} shouldAdd - Whether to add (`true`) or remove (`false`) the steps.
+ */
+export function updateFlpWizardSteps(
+    hasBaseAppInbound: boolean,
+    prompts: YeomanUiSteps,
+    projectName: string,
+    shouldAdd: boolean
+): void {
+    const pages = getFlpPages(hasBaseAppInbound, projectName);
+    if (pages.length === 2) {
+        updateWizardSteps(prompts, pages[0], t('yuiNavSteps.deployConfigName'), shouldAdd);
+        updateWizardSteps(prompts, pages[1], t('yuiNavSteps.tileSettingsName'), shouldAdd);
+        return;
+    }
+
+    updateWizardSteps(prompts, pages[0], t('yuiNavSteps.deployConfigName'), shouldAdd);
 }
 
 /**

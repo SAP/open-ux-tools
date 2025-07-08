@@ -4,7 +4,7 @@ import { TARGET_TYPE } from '@sap-ux/cds-odata-annotation-converter';
 import type { AstNode, CDSDocument } from './document';
 import { getAstNodesFromPointer } from './pointer';
 import type { CompilerToken } from './cds-compiler-tokens';
-import { findLastTokenBeforePosition, tokenColumn, tokenLine } from './cds-compiler-tokens';
+import { createTokenRange, findLastTokenBeforePosition, tokenColumn, tokenLine } from './cds-compiler-tokens';
 
 const printOptions: typeof defaultPrintOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
 const ANNOTATE_PATTERN = /annotate/i;
@@ -46,10 +46,15 @@ function getLineStartCharacter(node: AstNode, tokens: CompilerToken[]): number {
         return 0;
     }
     if (node.type === TARGET_TYPE && node.range) {
+        const token = findLastTokenBeforePosition(ANNOTATE_PATTERN, tokens, node.range.end);
         if (node.kind === 'element' && node.nameRange) {
+            const range = token ? createTokenRange(token) : undefined;
+            if (token && range?.start?.line === node.nameRange.start.line) {
+                // element is in the same line as the annotate statement, so we should use the indent level of the annotate statement
+                return tokenColumn(token);
+            }
             return node.nameRange.start.character;
         }
-        const token = findLastTokenBeforePosition(ANNOTATE_PATTERN, tokens, node.range.end);
         if (token) {
             return tokenColumn(token);
         }

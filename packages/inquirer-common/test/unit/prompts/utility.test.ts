@@ -279,7 +279,7 @@ describe('utility.ts', () => {
         `);
     });
 
-    it('getUI5ThemeChoices', () => {
+    it('getUI5ThemeChoices', async () => {
         const mockThemes = [
             {
                 id: ui5ThemeIds.SAP_HORIZON,
@@ -291,8 +291,8 @@ describe('utility.ts', () => {
             }
         ];
         const testUI5Version = '1.1.1';
-        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockReturnValue(mockThemes);
-        expect(getUI5ThemesChoices(testUI5Version)).toEqual([
+        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockResolvedValue(mockThemes);
+        expect(await getUI5ThemesChoices(testUI5Version)).toEqual([
             {
                 'name': 'Morning Horizon',
                 'value': 'sap_horizon'

@@ -220,7 +220,7 @@ describe('Test FioriAppGenerator', () => {
             await fioriAppGen.writing();
             console.log('Floorplan wrote:', floorplan);
 
-            expect(DefaultLogger.info).toHaveBeenCalledWith(`Copying '${floorplan}' template files...`);
+            expect(DefaultLogger.info).toHaveBeenCalledWith(`Copying ${floorplan} template files...`);
             expect(transformState).toHaveBeenCalledWith(fioriAppGen['state'], true);
             expect(testFloorplan.generateMockFunc).toHaveBeenCalledWith(
                 appPath,
@@ -391,7 +391,7 @@ describe('Test FioriAppGenerator', () => {
     });
 
     test('Should call `runPostGenerationTasks` during end phase', async () => {
-        const fioriAppGen = new FioriAppGenerator([], { ...options, followUpCommand: 'testCommand' });
+        const fioriAppGen = new FioriAppGenerator([], { ...options, followUpCommand: { cmdName: 'testCommand' } });
         // Note: The state object is not representative of a real state object, only for testing purposes
         const mockState: State = {
             project: {
@@ -449,7 +449,7 @@ describe('Test FioriAppGenerator', () => {
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
             undefined, // vscode
             { appWizard: 'appWizard' }, // appWizard
-            'testCommand' // followUpCommand
+            { cmdName: 'testCommand' } // followUpCommand
         );
         expect(deleteCache).toHaveBeenCalled();
     });

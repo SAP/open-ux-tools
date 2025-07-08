@@ -1,5 +1,68 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.35.10
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/fiori-annotation-api@0.6.8
+
+## 0.35.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/fiori-annotation-api@0.6.7
+
+## 0.35.8
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/fiori-annotation-api@0.6.6
+
+## 0.35.7
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/fiori-annotation-api@0.6.5
+
+## 0.35.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/fiori-annotation-api@0.6.4
+
+## 0.35.5
+
+### Patch Changes
+
+-   Updated dependencies [bdff312]
+    -   @sap-ux/fiori-annotation-api@0.6.3
+
+## 0.35.4
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.2
+
+## 0.35.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.1
+
+## 0.35.2
+
+### Patch Changes
+
+-   Updated dependencies [d2c10e7]
+    -   @sap-ux/fiori-annotation-api@0.6.0
+
 ## 0.35.1
 
 ### Patch Changes

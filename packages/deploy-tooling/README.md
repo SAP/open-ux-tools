@@ -216,15 +216,19 @@ Options:
 
 ### Proxy Support
 
-To enable support for TLS (Transport Layer Security), enable the `HTTPS_PROXY` environment variable, as shown;
+To enable support for TLS (Transport Layer Security) connections when using `HTTPS_PROXY`, update your environment by setting the `HTTPS_PROXY` environment variable, as shown;
 
 ```bash
 export HTTPS_PROXY=<YOUR-PROXY:PORT>
-# With Credentials
-export HTTPS_PROXY=<USERNAME>:<PASSWORD>@<YOUR-PROXY:PORT>
 ```
 
-Ensure you restart any running processes or applications to apply the changes.
+In order to support credentials in the proxy URL, you can set the `HTTPS_PROXY` environment variable to include the username and password in the URL. For example:
+
+```bash
+export HTTPS_PROXY=http://user:password@proxy.domain.com:3128
+```
+
+Ensure you restart any running processes to apply the changes.
 
 Example Scenario
 

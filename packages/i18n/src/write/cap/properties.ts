@@ -38,5 +38,5 @@ export async function tryAddPropertiesTexts(
     }
 
     // add to existing `.properties` file
-    return await writeToExistingI18nPropertiesFile(i18nFilePath, newI18nEntries, fs);
+    return await writeToExistingI18nPropertiesFile(i18nFilePath, newI18nEntries, [], fs);
 }

@@ -1,10 +1,10 @@
 {
     "error": {
-        "cannotReadManifest": "Cannot read manifest file {{ filePath }}",
-        "cannotReadAppID": "Cannot read appID in the manifest file",
-        "badApplicationType": "Cannot determine application type from the manifest, or unsupported type",
-        "cannotGeneratePageFile": "Cannot generate page file for target {{ targetKey }}",
-        "errorCopyingFreestyleTestTemplates": "Error copying freestyle test templates: {{ error }}",
-        "errorWritingTsConfig": "Error writing tsconfig.json: {{ error }}"
+        "cannotReadManifest": "Cannot read the `manifest.json` file: {{ filePath }}.",
+        "cannotReadAppID": "Cannot read `appID` in the `manifest.json` file.",
+        "badApplicationType": "Cannot determine the application type from the `manifest.json` file or it uses an unsupported type.",
+        "cannotGeneratePageFile": "Cannot generate the page file for target: {{ targetKey }}.",
+        "errorCopyingFreestyleTestTemplates": "An error occurred when copying freestyle test templates: {{ error }}",
+        "errorWritingTsConfig": "An error occurred when writing the `tsconfig.json` file: {{ error }}"
     }
 }

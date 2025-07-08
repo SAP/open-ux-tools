@@ -299,7 +299,7 @@ describe('Test headless generator', () => {
         await initI18n();
         const testAppName = 'app6-missingappconfig';
         await expect(runHeadlessGen(testAppName, DeployTarget.CF, OUTPUT_DIR)).rejects.toThrow(
-            /The first argument of the filepath/i
+            'Please provide one of the following: 1) The first argument of the file path to the application config file, 2) The first argument of the application config file as a JSON string, or 3) The option `appconfig` as a JSON object.'
         );
         rimraf.sync(join(OUTPUT_DIR, testAppName));
     });

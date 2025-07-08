@@ -16,9 +16,9 @@ server:
             - /test-resources
           url: https://ui5.sap.com
         backend:
-          - path: /sap
+          - scp: true
+            path: /sap
             url: https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com
-            client: '012'
     - name: fiori-tools-appreload
       afterMiddleware: compression
       configuration:
@@ -30,6 +30,10 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
+          intent:
+            object: testNameSpaceworklistv2
+            action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:

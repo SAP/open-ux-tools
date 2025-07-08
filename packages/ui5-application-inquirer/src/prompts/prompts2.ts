@@ -38,7 +38,8 @@ export function getUI5ThemePrompt(): UI5ApplicationQuestion {
             applyDefaultWhenDirty: true,
             breadcrumb: true
         },
-        choices: ({ ui5Version = defaultVersion }): ListChoiceOptions[] => getUI5ThemesChoices(ui5Version),
+        choices: async ({ ui5Version = defaultVersion }): Promise<ListChoiceOptions[]> =>
+            await getUI5ThemesChoices(ui5Version),
         default: ({ ui5Theme, ui5Version }: UI5ApplicationAnswers): string => {
             ui5Theme ??= getDefaultUI5Theme(ui5Version);
             return ui5Theme;

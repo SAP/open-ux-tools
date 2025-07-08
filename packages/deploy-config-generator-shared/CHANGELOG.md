@@ -1,5 +1,72 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.18
+
+### Patch Changes
+
+-   Updated dependencies [58abe82]
+    -   @sap-ux/fiori-generator-shared@0.13.0
+
+## 0.1.17
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/fiori-generator-shared@0.12.16
+
+## 0.1.16
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.15
+
+## 0.1.15
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.14
+
+## 0.1.14
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/fiori-generator-shared@0.12.13
+
+## 0.1.13
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.12
+
+## 0.1.12
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.11
+
+## 0.1.11
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+
+## 0.1.10
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.9
+
+## 0.1.9
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+
 ## 0.1.8
 
 ### Patch Changes

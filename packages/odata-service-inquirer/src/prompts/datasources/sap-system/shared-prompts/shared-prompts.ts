@@ -3,7 +3,7 @@
  */
 import { type InputQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import { AuthenticationType, BackendSystem, getBackendSystemType } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { ConnectedSystem } from '../../../../types';
@@ -164,6 +164,10 @@ export function getUserSystemNameQuestion(
                         password: connectValidator.axiosConfig?.auth?.password,
                         serviceKeys: connectValidator.serviceInfo,
                         userDisplayName: connectValidator.connectedUserName,
+                        systemType: getBackendSystemType({
+                            serviceKeys: connectValidator.serviceInfo,
+                            authenticationType: connectValidator.systemAuthType
+                        } as BackendSystem),
                         refreshToken: connectValidator.refreshToken
                     });
                     PromptState.odataService.connectedSystem.backendSystem = backendSystem;

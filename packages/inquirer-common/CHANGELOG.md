@@ -1,5 +1,99 @@
 # @sap-ux/inquirer-common
 
+## 0.7.22
+
+### Patch Changes
+
+-   Updated dependencies [58abe82]
+    -   @sap-ux/fiori-generator-shared@0.13.0
+
+## 0.7.21
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/telemetry@0.6.9
+
+## 0.7.20
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.8
+-   @sap-ux/fiori-generator-shared@0.12.15
+
+## 0.7.19
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.14
+-   @sap-ux/telemetry@0.6.7
+
+## 0.7.18
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/fiori-generator-shared@0.12.13
+
+## 0.7.17
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.12
+-   @sap-ux/telemetry@0.6.6
+
+## 0.7.16
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.5
+-   @sap-ux/fiori-generator-shared@0.12.11
+
+## 0.7.15
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+
+## 0.7.14
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.9
+-   @sap-ux/telemetry@0.6.4
+
+## 0.7.13
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+
+## 0.7.12
+
+### Patch Changes
+
+-   20cc54f: enhance theme retrieval for latest UI5 versions
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/ui5-info@0.12.0
+
+## 0.7.11
+
+### Patch Changes
+
+-   Updated dependencies [7f35f6c]
+    -   @sap-ux/ui5-info@0.11.1
+
+## 0.7.10
+
+### Patch Changes
+
+-   bf752f3: Adds more specific cert error messages with GA links.
+
 ## 0.7.9
 
 ### Patch Changes

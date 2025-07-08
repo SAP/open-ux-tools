@@ -4,6 +4,7 @@ import { getOfficialBaseUI5VersionUrl, getFormattedVersion } from '../../../src/
 import { validateUI5VersionExists } from '../../../src';
 import { fetchMock } from '../../__mock__/global';
 import { t } from '../../../src/i18n';
+import { initI18n } from '../../../src/i18n';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
     validateEmptyString: jest.fn()
@@ -17,6 +18,10 @@ jest.mock('../../../src/ui5/format', () => ({
 const validateEmptyStringMock = validateEmptyString as jest.Mock;
 const getOfficialBaseUI5VersionUrlMock = getOfficialBaseUI5VersionUrl as jest.Mock;
 const getFormattedVersionMock = getFormattedVersion as jest.Mock;
+
+beforeAll(async () => {
+    await initI18n();
+});
 
 describe('validateUI5VersionExists', () => {
     beforeEach(() => {
@@ -54,7 +59,7 @@ describe('validateUI5VersionExists', () => {
         const version = '1.120.0-snapshot';
         const result = await validateUI5VersionExists(version);
         expect(result).toBe(
-            'The URL of the SAPUI5 version you have selected is not reachable. The URL https://sapcdn.com/ui5/1.120.0-snapshot should be made accessible through cloud connector and the destination configuration so it can be consumed within the SAPUI5 adaptation project and its SAPUI5 Adaptation Editor.'
+            'The URL of the SAPUI5 version you have selected is not reachable. The https://sapcdn.com/ui5/1.120.0-snapshot URL must be made accessible through the cloud connector and the destination configuration so it can be consumed within the SAPUI5 adaptation project and its SAPUI5 Adaptation Editor.'
         );
     });
 
@@ -92,5 +97,17 @@ describe('validateUI5VersionExists', () => {
 
         const result = await validateUI5VersionExists('1.120.0');
         expect(result).toBe(t('validators.ui5VersionDoesNotExistGeneric', { error: errorWith500.message }));
+    });
+
+    it('should return true when fetch fails with not internet connection', async () => {
+        validateEmptyStringMock.mockReturnValue(null);
+        getOfficialBaseUI5VersionUrlMock.mockReturnValue('https://sapcdn.com/ui5/1.120.0');
+        getFormattedVersionMock.mockReturnValue('1.120.0.min.js');
+
+        const networkError = { message: 'fetch failed' };
+        fetchMock.mockRejectedValue(networkError);
+
+        const result = await validateUI5VersionExists('1.120.0');
+        expect(result).toBe(true);
     });
 });

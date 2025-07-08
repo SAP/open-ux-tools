@@ -8,7 +8,7 @@ import { PromptState } from './prompt-state';
 import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helpers';
 import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
 import { validateAppSelection } from '../utils/validators';
-import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard, IValidationLink } from '@sap-devx/yeoman-ui-types';
 import RepoAppDownloadLogger from '../utils/logger';
 import { type Question } from 'inquirer';
 
@@ -130,9 +130,8 @@ export async function getPrompts(
                 },
                 message: t('prompts.appSelection.message'),
                 choices: (): { name: string; value: AppInfo }[] => (appList.length ? formatAppChoices(appList) : []),
-                validate: async (answers: AppInfo): Promise<boolean> => {
-                    const result = await validateAppSelection(answers, appList, quickDeployedAppConfig, appWizard);
-                    return !!result;
+                validate: async (answers: AppInfo): Promise<boolean | IValidationLink | string> => {
+                    return await validateAppSelection(answers, appList, quickDeployedAppConfig, appWizard);
                 }
             }
         ];

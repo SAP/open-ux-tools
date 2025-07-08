@@ -1,5 +1,11 @@
 # @sap-ux/jest-file-matchers
 
+## 0.2.3
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
 ## 0.2.2
 
 ### Patch Changes

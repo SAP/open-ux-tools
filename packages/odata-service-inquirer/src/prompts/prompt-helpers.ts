@@ -4,7 +4,7 @@ import { t } from '../i18n';
 import { DatasourceType, type DatasourceTypePromptOptions } from '../types';
 
 // Error handling is a cross-cutting concern, a single instance is required
-export const errorHandler = new ErrorHandler();
+export const errorHandler = new ErrorHandler(undefined, undefined, '@sap-ux/odata-service-inquirer');
 
 /**
  * Get the datasource type choices.

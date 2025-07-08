@@ -48,6 +48,7 @@ import {
     createFlpTemplateConfig,
     PREVIEW_URL,
     type TemplateConfig,
+    isFlexConnector,
     createTestTemplateConfig,
     addApp,
     getAppName,
@@ -245,8 +246,10 @@ export class FlpSandbox {
      * @private
      */
     private checkDeleteConnectors(ui5VersionMajor: number, ui5VersionMinor: number): void {
-        if (ui5VersionMajor === 1 && ui5VersionMinor < 78) {
-            this.templateConfig.ui5.flex?.splice(1, 1);
+        if (ui5VersionMajor === 1 && ui5VersionMinor < 76) {
+            this.templateConfig.ui5.flex = this.templateConfig.ui5.flex.filter((connector) =>
+                isFlexConnector(connector)
+            );
             this.logger.debug(
                 `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it. The Fiori Tools fake connector (FakeLrepConnector) will be used instead.`
             );
@@ -254,7 +257,11 @@ export class FlpSandbox {
             this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
         }
         if (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs') {
-            this.templateConfig.ui5.flex?.splice(0, 1);
+            this.templateConfig.ui5.flex = this.templateConfig.ui5.flex.filter(
+                (connector) =>
+                    !isFlexConnector(connector) ||
+                    (isFlexConnector(connector) && !connector.url?.startsWith('/sap/bc/lrep'))
+            );
             this.logger.debug(
                 `The ABAP connector is not being used because the current project type is '${this.projectType}'.`
             );
@@ -501,7 +508,12 @@ export class FlpSandbox {
                 res: Response | http.ServerResponse,
                 next: NextFunction
             ) => {
-                this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
+                if (this.projectType === 'EDMXBackend') {
+                    this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
+                } else {
+                    this.logger.warn(`The Card Generator is not available for CAP projects.`);
+                    this.templateConfig.enableCardGenerator = false;
+                }
                 await this.flpGetHandler(req, res, next);
             }
         );
@@ -537,7 +549,7 @@ export class FlpSandbox {
             }
         }
         if (!version) {
-            this.logger.error('Could not get UI5 version of application. Using 1.130.0 as fallback.');
+            this.logger.error('Could not get UI5 version of application. Using version: 1.130.0 as fallback.');
             version = '1.130.0';
         }
         const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
@@ -548,7 +560,7 @@ export class FlpSandbox {
             ((major < 2 && minor < 123) || major >= 2 || label?.includes('legacy-free'))
         ) {
             this.flpConfig.enhancedHomePage = this.templateConfig.enhancedHomePage = false;
-            this.logger.warn(`Feature enhancedHomePage disabled: UI5 version ${version} not supported.`);
+            this.logger.warn(`Feature enhancedHomePage disabled: UI5 version: ${version} not supported.`);
         }
 
         return {
@@ -567,7 +579,7 @@ export class FlpSandbox {
      */
     private getSandboxTemplate(ui5Version: Ui5Version): string {
         this.logger.info(
-            `Using sandbox template for UI5 version ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
+            `Using sandbox template for UI5 version: ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
                 ui5Version.label ? `-${ui5Version.label}` : ''
             }.`
         );
@@ -1016,6 +1028,9 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreCardManifestRoute(): Promise<void> {
+        if (this.projectType !== 'EDMXBackend') {
+            return;
+        }
         this.router.use(CARD_GENERATOR_DEFAULT.cardsStore, json());
         this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.cardsStore}`);
 
@@ -1058,6 +1073,9 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreI18nKeysRoute(): Promise<void> {
+        if (this.projectType !== 'EDMXBackend') {
+            return;
+        }
         this.router.use(CARD_GENERATOR_DEFAULT.i18nStore, json());
         this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.i18nStore}`);
 

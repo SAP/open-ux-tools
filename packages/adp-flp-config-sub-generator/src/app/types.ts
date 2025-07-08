@@ -1,7 +1,8 @@
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import type { Manifest } from '@sap-ux/project-access';
 import type Generator from 'yeoman-generator';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { ManifestNamespace, UI5FlexLayer } from '@sap-ux/project-access';
 
 export interface FlpConfigOptions extends Generator.GeneratorOptions {
     /**
@@ -21,17 +22,22 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
      */
     launchAsSubGen?: boolean;
     /**
-     * The manifest of the base application
-     */
-    manifest: Manifest;
-    /**
      * Telemetry data to be send after deployment configuration has been added
      */
     telemetryData?: TelemetryData;
     /**
      * Additional data for the generator
      */
+    inbounds: ManifestNamespace.Inbound;
+    /**
+     * Layer for the FLP configuration
+     */
+    layer: UI5FlexLayer;
     data?: {
         projectRootPath: string;
     };
+}
+
+export interface State {
+    provider?: AbapServiceProvider;
 }

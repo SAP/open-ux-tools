@@ -15,6 +15,8 @@ import * as Types from '../../../../src/types';
 import { EntityPromptNames } from '../../../../src/types';
 import { PromptState } from '../../../../src/utils';
 import { join } from 'path';
+import { parse } from '@sap-ux/edmx-parser';
+import { convert } from '@sap-ux/annotation-converter';
 
 describe('Test entity prompts', () => {
     let metadataV4WithAggregateTransforms: string;
@@ -197,7 +199,9 @@ describe('Test entity prompts', () => {
         PromptState.isYUI = false;
         questions = getEntitySelectionQuestions(metadataV2NoEntities, 'worklist');
         mainEntityPrompt = questions.find((question) => question.name === EntityPromptNames.mainEntity) as ListQuestion;
-        expect(() => (mainEntityPrompt.validate as Function)()).toThrowError(t('errors.exitingGeneration'));
+        expect(() => (mainEntityPrompt.validate as Function)()).toThrowError(
+            'Exiting generation. Exit: The template and service selected have no relevant entities that you can use.'
+        );
     });
 
     test('should show line item annotation generation prompt and additional messages', async () => {
@@ -376,5 +380,146 @@ describe('Test entity prompts', () => {
         expect((hierarchyQualifier.validate as Function)('')).toEqual(
             t('prompts.hierarchyQualifier.qualifierRequiredForV4Warning')
         );
+    });
+
+    test('should skip navigation entity prompt when metadata contains a valid parameterised main entity', async () => {
+        const getEntityChoicesSpy = jest.spyOn(EntityHelper, 'getEntityChoices');
+        const v4ParamertrisedEntitiesMetadata = await readFile(
+            join(__dirname, '../test-data/parameterised-entity-metadata.xml'),
+            'utf8'
+        );
+        const mockChoices = [
+            {
+                name: 'ZC_STOCKAGEING',
+                value: {
+                    entitySetName: 'ZC_STOCKAGEING',
+                    entitySetType: 'com.sap.gateway.srvd.zserv_d_stock_ageing.v0001.ZC_STOCKAGEINGParameters',
+                    mainEntityParameterName: 'Set'
+                }
+            }
+        ];
+        getEntityChoicesSpy.mockReturnValueOnce({
+            choices: mockChoices,
+            odataVersion: OdataVersion.v4,
+            convertedMetadata: convert(parse(v4ParamertrisedEntitiesMetadata)) as ConvertedMetadata
+        });
+        const questions = getEntitySelectionQuestions(v4ParamertrisedEntitiesMetadata, 'lrop', false, {
+            defaultMainEntityName: 'ZC_STOCKAGEING'
+        });
+        const mainEntityPrompt = questions.find(
+            (question) => question.name === EntityPromptNames.mainEntity
+        ) as ListQuestion;
+        // Expect additional messages to be shown for parameterised main entity
+        expect(mainEntityPrompt.additionalMessages!()).toEqual({
+            message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
+            severity: Severity.warning
+        });
+        const navEntityPrompt = questions.find(
+            (question) => question.name === EntityPromptNames.navigationEntity
+        ) as ListQuestion;
+        // expect nav entity prompt to be hidden since main entity is parameterised
+        expect(
+            (navEntityPrompt.when as Function)({
+                [EntityPromptNames.mainEntity]: {
+                    entitySetName: 'ZC_STOCKAGEING',
+                    entitySetType: 'com.sap.gateway.srvd.zserv_d_stock_ageing.v0001.ZC_STOCKAGEINGParameters',
+                    mainEntityParameterName: 'Set'
+                } as EntityAnswer
+            })
+        ).toBe(false);
+    });
+
+    test('should skip navigation entity prompt when metadata contains multiple parameterised main entities', async () => {
+        const getEntityChoicesSpy = jest.spyOn(EntityHelper, 'getEntityChoices');
+        const metadataV4WithMultipleParameterisedEntities = await readFile(
+            join(__dirname, '../test-data/multiple-parameterised-entities-metadata.xml'),
+            'utf8'
+        );
+        // Pass a mix of parameterised and non-parameterised entities
+        const mockChoices = [
+            {
+                name: 'ChangeableFields',
+                value: {
+                    entitySetName: 'ChangeableFields',
+                    entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.ChangeableFieldsParameters',
+                    mainEntityParameterName: 'Set'
+                }
+            },
+            {
+                name: 'CustomFunction',
+                value: {
+                    entitySetName: 'CustomFunction',
+                    entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomFunctionParameters'
+                }
+            },
+            {
+                name: 'CustomHint',
+                value: {
+                    entitySetName: 'CustomHint',
+                    entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomHintParameters',
+                    mainEntityParameterName: 'Set'
+                }
+            }
+        ];
+
+        // Mock for the first main entity
+        getEntityChoicesSpy.mockReturnValueOnce({
+            choices: mockChoices,
+            odataVersion: OdataVersion.v4,
+            convertedMetadata: convert(parse(metadataV4WithMultipleParameterisedEntities)) as ConvertedMetadata,
+            defaultMainEntityIndex: 0
+        });
+        const questionsForChangeableFields = getEntitySelectionQuestions(
+            metadataV4WithMultipleParameterisedEntities,
+            'lrop',
+            false,
+            {
+                defaultMainEntityName: 'ChangeableFields'
+            }
+        );
+        const navEntityPromptForChangeableFields = questionsForChangeableFields.find(
+            (question) => question.name === EntityPromptNames.navigationEntity
+        ) as ListQuestion;
+
+        // Check if navigation entity prompt is hidden for parameterised main entity
+        expect(
+            (navEntityPromptForChangeableFields.when as Function)({
+                [EntityPromptNames.mainEntity]: {
+                    entitySetName: 'ChangeableFields',
+                    entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.ChangeableFieldsParameters',
+                    mainEntityParameterName: 'Set'
+                } as EntityAnswer
+            })
+        ).toBe(false);
+
+        // Mock for the second main entity
+        getEntityChoicesSpy.mockReturnValueOnce({
+            choices: mockChoices,
+            odataVersion: OdataVersion.v4,
+            convertedMetadata: convert(parse(metadataV4WithMultipleParameterisedEntities)) as ConvertedMetadata,
+            defaultMainEntityIndex: 1
+        });
+
+        const questionsForCustomFunction = getEntitySelectionQuestions(
+            metadataV4WithMultipleParameterisedEntities,
+            'lrop',
+            false,
+            {
+                defaultMainEntityName: 'CustomFunction'
+            }
+        );
+        const navEntityPromptForCustomFunction = questionsForCustomFunction.find(
+            (question) => question.name === EntityPromptNames.navigationEntity
+        ) as ListQuestion;
+
+        // Check if navigation entity prompt is shown for non-parameterised main entity
+        expect(
+            (navEntityPromptForCustomFunction.when as Function)({
+                [EntityPromptNames.mainEntity]: {
+                    entitySetName: 'CustomFunction',
+                    entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomFunctionParameters'
+                } as EntityAnswer
+            })
+        ).toBe(true);
     });
 });

@@ -1,5 +1,72 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.0
+
+### Minor Changes
+
+-   58abe82: Add optional isActive parameter to isExtensionInstalled function & add support for checking command registration
+
+## 0.12.16
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/telemetry@0.6.9
+
+## 0.12.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/telemetry@0.6.8
+
+## 0.12.14
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/telemetry@0.6.7
+
+## 0.12.13
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.12.12
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/telemetry@0.6.6
+
+## 0.12.11
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.5
+
+## 0.12.10
+
+### Patch Changes
+
+-   4fef16a: ensure service runtimeName is upper case to match service id
+
+## 0.12.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/telemetry@0.6.4
+
+## 0.12.8
+
+### Patch Changes
+
+-   163522f: fix non-virtual endpoint preview config
+
 ## 0.12.7
 
 ### Patch Changes

@@ -1,4 +1,5 @@
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { ToolsLogger } from '@sap-ux/logger';
 
 import { getHostEnvironment, hostEnvironment, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 
@@ -27,7 +28,7 @@ export type AppWizardWithCache = AppWizard & { [ADP_CACHE_KEY]?: Partial<State> 
  * @param {AppWizardWithCache} [wizard] - The AppWizard instance to augment with cache storage.
  * @returns {void}
  */
-export function initCache(logger: ILogWrapper, wizard?: AppWizardWithCache): void {
+export function initCache(logger: ToolsLogger, wizard?: AppWizardWithCache): void {
     if (wizard && !wizard[ADP_CACHE_KEY]) {
         wizard[ADP_CACHE_KEY] = {};
         logger.debug('ADP-wizard cache initialised.');
@@ -42,7 +43,7 @@ export function initCache(logger: ILogWrapper, wizard?: AppWizardWithCache): voi
  * @param {ILogWrapper} logger - Logger instance for diagnostics.
  * @returns {void}
  */
-export function cachePut(wizard: AppWizardWithCache | undefined, state: Partial<State>, logger: ILogWrapper): void {
+export function cachePut(wizard: AppWizardWithCache | undefined, state: Partial<State>, logger: ToolsLogger): void {
     ensureCache(logger, wizard);
     if (wizard?.[ADP_CACHE_KEY]) {
         Object.assign(wizard[ADP_CACHE_KEY], state);
@@ -61,7 +62,7 @@ export function cachePut(wizard: AppWizardWithCache | undefined, state: Partial<
 export function cacheGet<T>(
     wizard: AppWizardWithCache | undefined,
     key: keyof State,
-    logger: ILogWrapper
+    logger: ToolsLogger
 ): T | undefined {
     ensureCache(logger, wizard);
     return wizard?.[ADP_CACHE_KEY]?.[key] as T | undefined;
@@ -74,7 +75,7 @@ export function cacheGet<T>(
  * @param {ILogWrapper} logger - Logger instance for diagnostics.
  * @returns {void}
  */
-export function cacheClear(wizard: AppWizardWithCache | undefined, logger: ILogWrapper): void {
+export function cacheClear(wizard: AppWizardWithCache | undefined, logger: ToolsLogger): void {
     ensureCache(logger, wizard);
     if (wizard?.[ADP_CACHE_KEY]) {
         delete wizard[ADP_CACHE_KEY];
@@ -89,7 +90,7 @@ export function cacheClear(wizard: AppWizardWithCache | undefined, logger: ILogW
  * @param {AppWizardWithCache | undefined} wizard - The AppWizard instance to check.
  * @returns {void}
  */
-function ensureCache(logger: ILogWrapper, wizard?: AppWizardWithCache): void {
+function ensureCache(logger: ToolsLogger, wizard?: AppWizardWithCache): void {
     const hostEnv = getHostEnvironment();
     if (hostEnv === hostEnvironment.vscode && !wizard?.[ADP_CACHE_KEY]) {
         logger.info('Warning: caching is not supported');

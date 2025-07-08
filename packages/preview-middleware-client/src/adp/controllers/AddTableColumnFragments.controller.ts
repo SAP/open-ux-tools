@@ -147,7 +147,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
         const selectedControlName = controlMetadata.getName();
 
         let selectedControlChildren: string[] | number[] = Object.keys(
-            ControlUtils.getControlAggregationByName(this.runtimeControl, defaultAggregation)
+            ControlUtils.getControlAggregationByName(this.getRuntimeControl(), defaultAggregation)
         );
 
         selectedControlChildren = selectedControlChildren.map((key) => {
@@ -260,10 +260,10 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
 
         const flexSettings = this.rta.getFlexSettings();
 
-        const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
+        const overlay = OverlayRegistry.getOverlay(this.getRuntimeControl() as UI5Element);
         const designMetadata = overlay.getDesignTimeMetadata();
 
-        const compositeCommand = await this.commandExecutor.createCompositeCommand(this.runtimeControl);
+        const compositeCommand = await this.commandExecutor.createCompositeCommand(this.getRuntimeControl());
 
         for (const fragment of fragments) {
             const modifiedValue = {
@@ -276,8 +276,8 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
 
             const targetObject =
                 fragment.targetAggregation === COLUMNS_AGGREGATION
-                    ? this.runtimeControl
-                    : (this.runtimeControl.getAggregation(ITEMS_AGGREGATION) as ManagedObject[])[0];
+                    ? this.getRuntimeControl()
+                    : (this.getRuntimeControl().getAggregation(ITEMS_AGGREGATION) as ManagedObject[])[0];
 
             const command = await this.commandExecutor.getCommand<AddTableCellFragmentChangeContentType>(
                 targetObject,

@@ -1,5 +1,55 @@
 # @sap-ux/project-input-validator
 
+## 0.6.10
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+
+## 0.6.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+
+## 0.6.7
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.6.6
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+
+## 0.6.5
+
+### Patch Changes
+
+-   83109eb: feat(generator-adp): Various bug fixes and improvements for ADP generator
+
+## 0.6.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+
+## 0.6.3
+
+### Patch Changes
+
+-   c9f79c1: Check long Windows paths during project generation and deployment config generation.
+
 ## 0.6.2
 
 ### Patch Changes

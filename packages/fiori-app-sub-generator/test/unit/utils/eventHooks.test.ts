@@ -27,7 +27,7 @@ describe('runHooks', () => {
         await runHooks('app-generated', {
             hookParameters: { fsPath: generatedProjectRootPath },
             vscodeInstance: getVscodeInstance,
-            options: { followUpCommand: postGenCommand }
+            options: { command: postGenCommand }
         });
         expect(mockExecuteCommand).toBeCalledWith(postGenCommand, { fsPath: generatedProjectRootPath });
     });

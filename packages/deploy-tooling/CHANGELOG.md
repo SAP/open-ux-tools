@@ -1,5 +1,167 @@
 # @sap-ux/deploy-tooling
 
+## 0.16.26
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.22
+
+## 0.16.25
+
+### Patch Changes
+
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/project-input-validator@0.6.10
+    -   @sap-ux/inquirer-common@0.7.21
+    -   @sap-ux/system-access@0.6.10
+    -   @sap-ux/ui5-config@0.29.0
+
+## 0.16.24
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/project-input-validator@0.6.9
+    -   @sap-ux/system-access@0.6.9
+    -   @sap-ux/inquirer-common@0.7.20
+
+## 0.16.23
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/project-input-validator@0.6.8
+-   @sap-ux/system-access@0.6.9
+-   @sap-ux/inquirer-common@0.7.19
+
+## 0.16.22
+
+### Patch Changes
+
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/project-input-validator@0.6.7
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.16.21
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/ui5-config@0.28.3
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/project-input-validator@0.6.6
+    -   @sap-ux/system-access@0.6.9
+    -   @sap-ux/inquirer-common@0.7.17
+
+## 0.16.20
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.9
+-   @sap-ux/ui5-config@0.28.2
+-   @sap-ux/inquirer-common@0.7.16
+
+## 0.16.19
+
+### Patch Changes
+
+-   Updated dependencies [83109eb]
+    -   @sap-ux/project-input-validator@0.6.5
+
+## 0.16.18
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.15
+
+## 0.16.17
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/system-access@0.6.8
+    -   @sap-ux/project-input-validator@0.6.4
+    -   @sap-ux/inquirer-common@0.7.14
+
+## 0.16.16
+
+### Patch Changes
+
+-   14214a3: Cleanup documentation
+-   Updated dependencies [14214a3]
+    -   @sap-ux/axios-extension@1.22.2
+    -   @sap-ux/system-access@0.6.7
+
+## 0.16.15
+
+### Patch Changes
+
+-   Updated dependencies [a9f1808]
+    -   @sap-ux/axios-extension@1.22.1
+    -   @sap-ux/system-access@0.6.6
+
+## 0.16.14
+
+### Patch Changes
+
+-   Updated dependencies [aaf0c14]
+    -   @sap-ux/axios-extension@1.22.0
+    -   @sap-ux/system-access@0.6.5
+
+## 0.16.13
+
+### Patch Changes
+
+-   Updated dependencies [c9f79c1]
+    -   @sap-ux/project-input-validator@0.6.3
+
+## 0.16.12
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.13
+
+## 0.16.11
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/inquirer-common@0.7.12
+
+## 0.16.10
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.11
+
+## 0.16.9
+
+### Patch Changes
+
+-   bf752f3: Adds more specific cert error messages with GA links.
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
+## 0.16.8
+
+### Patch Changes
+
+-   b45093b: Revert toggle, required to support BAS CLI flows
+-   Updated dependencies [b45093b]
+    -   @sap-ux/axios-extension@1.21.4
+    -   @sap-ux/system-access@0.6.4
+
+## 0.16.7
+
+### Patch Changes
+
+-   Updated dependencies [4303f99]
+    -   @sap-ux/axios-extension@1.21.3
+    -   @sap-ux/system-access@0.6.3
+
 ## 0.16.6
 
 ### Patch Changes

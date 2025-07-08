@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/store",
-    "version": "1.1.0",
+    "version": "1.1.2",
     "description": "NPM module for storing persistent data",
     "repository": {
         "type": "git",
@@ -27,8 +27,7 @@
     },
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "i18next": "20.6.1",
-        "i18next-fs-backend": "1.2.0",
+        "i18next": "25.3.0",
         "pluralize": "8.0.0",
         "reflect-metadata": "0.1.13"
     },
@@ -36,7 +35,6 @@
         "@zowe/secrets-for-zowe-sdk": "8.1.2"
     },
     "devDependencies": {
-        "@types/i18next-fs-backend": "1.1.2",
         "@types/pluralize": "0.0.30",
         "@types/qs": "6.9.1",
         "fast-check": "2.19.0",

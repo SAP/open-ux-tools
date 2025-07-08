@@ -43,7 +43,7 @@ describe('Unit tests for navigation config generation', () => {
                 subTitle: 'subtitle2'
             })
         ).rejects.toThrowErrorMatchingInlineSnapshot(
-            `"Inbound definition already exists for key: semanticObject1-action1"`
+            `"An inbound definition already exists for key: semanticObject1-action1. Choose another key."`
         );
 
         // Inbounds override, should be replaced
@@ -72,7 +72,7 @@ describe('Unit tests for navigation config generation', () => {
                 title: 'title1',
                 subTitle: 'subtitle1'
             })
-        ).rejects.toThrowError(/^Manifest not found at path: /);
+        ).rejects.toThrowError(/^The `manifest.json` file was not found at path: /);
     });
 
     test('"sap.app" not defined', async () => {
@@ -84,6 +84,8 @@ describe('Unit tests for navigation config generation', () => {
                 title: 'title1',
                 subTitle: 'subtitle1'
             })
-        ).rejects.toThrowErrorMatchingInlineSnapshot(`"Manifest is missing required section 'sap.app'"`);
+        ).rejects.toThrowErrorMatchingInlineSnapshot(
+            `"The \`manifest.json\` file is missing the \`sap.app\` required section."`
+        );
     });
 });

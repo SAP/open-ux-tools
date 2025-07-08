@@ -1,6 +1,12 @@
-import { type AbapServiceProvider, AdtCatalogService, UI5RtVersionService } from '@sap-ux/axios-extension';
-
+import {
+    AdtCatalogService,
+    UI5RtVersionService,
+    type AbapServiceProvider,
+    type Inbound
+} from '@sap-ux/axios-extension';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { FlexUISupportedSystem } from '../types';
+import { filterAndMapInboundsToManifest } from '../base/helper';
 
 const FILTER = {
     'scheme': 'http://www.sap.com/adt/categories/ui_flex',
@@ -46,4 +52,25 @@ export async function getFlexUISupportedSystem(
 export async function getSystemUI5Version(provider: AbapServiceProvider): Promise<string | undefined> {
     const service = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
     return service?.getUI5Version();
+}
+
+/**
+ * Retrieves the list of tile inbounds of the application.
+ *
+ * @param {string} appId - The ID of the application for which to retrieve inbounds.
+ * @param {AbapServiceProvider} provider - Instance of the ABAP provider.
+ * @returns {Promise<ManifestNamespace.Inbound>} list of tile inbounds of the application.
+ */
+export async function getBaseAppInbounds(
+    appId: string,
+    provider: AbapServiceProvider
+): Promise<ManifestNamespace.Inbound | undefined> {
+    const lrepService = provider.getLayeredRepository();
+    const inbounds = (await lrepService.getSystemInfo(undefined, undefined, appId)).inbounds as Inbound[];
+
+    if (!inbounds?.length) {
+        return undefined;
+    }
+
+    return filterAndMapInboundsToManifest(inbounds);
 }

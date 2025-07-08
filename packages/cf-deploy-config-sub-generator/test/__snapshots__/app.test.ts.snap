@@ -82,7 +82,7 @@ exports[`Cloud foundry generator tests Generate CF deployment to an app within a
 exports[`Cloud foundry generator tests Validate app is added and configured for standalone approuter 5`] = `
 {
   "devDependencies": {
-    "@ui5/cli": "^3.9.2",
+    "@ui5/cli": "^4.0.16",
     "mbt": "^1.2.29",
     "rimraf": "^5.0.5",
     "ui5-task-zipper": "^3.4.x",

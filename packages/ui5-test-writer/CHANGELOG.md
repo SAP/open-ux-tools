@@ -1,5 +1,72 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.11
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/ui5-application-writer@1.5.8
+
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-application-writer@1.5.7
+    -   @sap-ux/project-access@1.30.6
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/ui5-application-writer@1.5.6
+
+## 0.7.8
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/ui5-application-writer@1.5.6
+
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-application-writer@1.5.5
+
+## 0.7.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/ui5-application-writer@1.5.4
+
+## 0.7.5
+
+### Patch Changes
+
+-   7fd2583: Fix wrong dependency type
+
+## 0.7.4
+
+### Patch Changes
+
+-   Updated dependencies [3ea811a]
+    -   @sap-ux/ui5-application-writer@1.5.4
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/ui5-application-writer@1.5.3
+
 ## 0.7.2
 
 ### Patch Changes

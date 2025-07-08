@@ -1,5 +1,38 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.6.4
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+
+## 0.6.3
+
+### Patch Changes
+
+-   bdff312: chore: update `@sap/ux-cds-compiler-facade` dependency.
+
+## 0.6.2
+
+### Patch Changes
+
+-   Updated dependencies [070dcb2]
+    -   @sap-ux/odata-vocabularies@0.4.10
+    -   @sap-ux/cds-annotation-parser@0.2.13
+
+## 0.6.1
+
+### Patch Changes
+
+-   Updated dependencies [be6febe]
+    -   @sap-ux/cds-annotation-parser@0.2.12
+
+## 0.6.0
+
+### Minor Changes
+
+-   d2c10e7: feat: write cds annotations using new syntax without `![]` escape sequence.
+
 ## 0.5.9
 
 ### Patch Changes

@@ -44,8 +44,22 @@ export function extendManifestJson<T>(
         const minVersion = semVer.coerce(feApp.ui5?.minUI5Version);
         if (!minVersion || semVer.gte(minVersion, '1.94.0')) {
             const entityConfig = (feApp.template.settings as LROPSettings).entityConfig as ManifestEntitySettings;
-            entityConfig.contextPath = `/${entityConfig.mainEntityName}`;
 
+            if (entityConfig.mainEntityParameterName) {
+                // If the main entity is parameterised, clear the navigation entity configuration
+                // as we dont support the navigation entity in this scenario.
+                entityConfig.navigationEntity = undefined;
+            }
+
+            // Set the contextPath for the main entity
+            // If the main entity is parameterised, include the parameter name in the contextPath.
+            // Otherwise, use only the main entity name.
+            entityConfig.contextPath = entityConfig.mainEntityParameterName
+                ? `/${entityConfig.mainEntityName}/${entityConfig.mainEntityParameterName}`
+                : `/${entityConfig.mainEntityName}`;
+
+            // Set the contextPath for the navigation entity
+            // If the navigation entity exists, append its name to the main entity's contextPath.
             if (entityConfig.navigationEntity?.EntitySet) {
                 entityConfig.navigationEntity.contextPath = `${entityConfig.contextPath}/${entityConfig.navigationEntity.Name}`;
             }

@@ -24,7 +24,10 @@ export interface UI5VersionFilterOptions {
      */
     minSupportedUI5Version?: string;
     /**
-     * Will use the cached versions from previous network calls if available otherwise will make network calls and populate cache
+     * Will use the cached versions from previous network calls if available otherwise will make network calls and populate cache.
+     * If false, always make a network call to return the very latest UI5 versions, also populating the cache.
+     *
+     * @default true
      */
     useCache?: boolean;
     /**

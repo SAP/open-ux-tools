@@ -344,7 +344,7 @@ describe('Test validators', () => {
                     text: 'Need help with this error?',
                     url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.CERTIFICATE_ERROR}`
                 },
-                message: 'A certificate error has occurred'
+                message: 'The system URL is using an expired security certificate.'
             });
         });
     });
@@ -699,7 +699,7 @@ describe('Test validators', () => {
                     text: 'Need help with this error?',
                     url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.CERTIFICATE_ERROR}`
                 },
-                message: 'A certificate error has occurred'
+                message: 'The system URL is using an unknown or invalid security certificate.'
             });
         });
     });

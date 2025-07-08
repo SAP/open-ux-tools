@@ -32,10 +32,10 @@ exports[`Test system selection prompts should return system selection prompts an
     "guiOptions": {
       "applyDefaultWhenDirty": true,
       "breadcrumb": true,
-      "hint": "Enter the path to the OData service, relative to the selected destination URL.",
+      "hint": "Enter the path to the OData service relative to the selected destination URL.",
       "mandatory": true,
     },
-    "message": "Service path",
+    "message": "Service Path",
     "name": "destinationServicePath",
     "type": "input",
     "validate": [Function],
@@ -121,7 +121,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "additionalMessages": [Function],
     "choices": [
       {
-        "name": "New system",
+        "name": "New System",
         "value": {
           "system": "!@£*&937newSystem*X~qy^",
           "type": "newSystemChoice",
@@ -133,6 +133,7 @@ exports[`Test system selection prompts should return system selection prompts an
           "system": {
             "name": "http://abap.on.prem:1234",
             "password": "password1",
+            "systemType": "OnPrem",
             "url": "http://abap.on.prem:1234",
             "username": "user1",
           },
@@ -204,7 +205,7 @@ exports[`Test system selection prompts should return system selection prompts an
         "value": "abapOnPrem",
       },
     ],
-    "message": "System type",
+    "message": "System Type",
     "name": "newSystemType",
     "type": "list",
     "when": [Function],
@@ -328,7 +329,7 @@ exports[`Test system selection prompts should return system selection prompts an
       "mandatory": true,
     },
     "guiType": "file-browser",
-    "message": "Service key file path",
+    "message": "Service Key File Path",
     "name": "serviceKey",
     "type": "input",
     "validate": [Function],

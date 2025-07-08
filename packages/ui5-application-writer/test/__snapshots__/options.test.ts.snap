@@ -39,7 +39,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"eslint\\": \\"8.57.0\\",
     \\"@sap/eslint-plugin-ui5-jsdocs\\": \\"2.0.5\\",
@@ -101,6 +101,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -133,6 +134,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -313,7 +315,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
@@ -353,6 +355,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
           intent:
             object: appwithnamespace
             action: display
@@ -388,6 +391,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
           intent:
             object: appwithnamespace
             action: display
@@ -571,7 +575,7 @@ archive.zip
     \\"main\\": \\"webapp/index.html\\",
     \\"dependencies\\": {},
     \\"devDependencies\\": {
-        \\"@ui5/cli\\": \\"^3.0.0\\",
+        \\"@ui5/cli\\": \\"^4.0.16\\",
         \\"@sap/ux-ui5-tooling\\": \\"1\\"
 },
     \\"scripts\\": {
@@ -609,6 +613,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -641,6 +646,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -1065,7 +1071,7 @@ archive.zip
     \\"main\\": \\"webapp/index.html\\",
     \\"dependencies\\": {},
     \\"devDependencies\\": {
-        \\"@ui5/cli\\": \\"^3.0.0\\",
+        \\"@ui5/cli\\": \\"^4.0.16\\",
         \\"@sap/ux-ui5-tooling\\": \\"1\\"
 },
     \\"scripts\\": {
@@ -1103,6 +1109,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -1135,6 +1142,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -1586,7 +1594,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\"
   },
   \\"scripts\\": {
@@ -1823,7 +1831,7 @@ exports[`UI5 templates option: \`typescript and code assist\` to check for confl
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -1918,7 +1926,7 @@ archive.zip
   \\"main\\": \\"webapp/index.html\\",
   \\"dependencies\\": {},
   \\"devDependencies\\": {
-    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@ui5/cli\\": \\"^4.0.16\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
@@ -2009,6 +2017,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -2052,6 +2061,7 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+          path: test/flpSandbox.html
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:

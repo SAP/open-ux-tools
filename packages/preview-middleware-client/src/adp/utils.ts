@@ -1,17 +1,13 @@
 import MessageToast from 'sap/m/MessageToast';
-import Element from 'sap/ui/core/Element';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import type DTElement from 'sap/ui/dt/Element';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
-import Log from 'sap/base/Log';
 import FlexUtils from 'sap/ui/fl/Utils';
 import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
 import { getControlById } from '../utils/core';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { getError } from '../utils/error';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 
 export interface Deferred<T> {
@@ -133,49 +129,6 @@ export function notifyUser(message: string, duration: number = 5000) {
     MessageToast.show(message, {
         duration
     });
-}
-
-/**
- * Check if element is sync view
- *
- * @param element Design time Element
- * @returns boolean if element is sync view or not
- */
-function isSyncView(element: DTElement): boolean {
-    return element?.getMetadata()?.getName()?.includes('XMLView') && element?.oAsyncState === undefined;
-}
-
-/**
- * Get Ids for all sync views
- *
- * @param ui5VersionInfo UI5 Version Information
- *
- * @returns array of Ids for application sync views
- */
-export async function getAllSyncViewsIds(ui5VersionInfo: Ui5VersionInfo): Promise<string[]> {
-    const syncViewIds: string[] = [];
-    try {
-        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 120 })) {
-            const elements = Element.registry.filter(() => true) as DTElement[];
-            elements.forEach((ui5Element) => {
-                if (isSyncView(ui5Element)) {
-                    syncViewIds.push(ui5Element.getId());
-                }
-            });
-        } else {
-            const ElementRegistry = (await import('sap/ui/core/ElementRegistry')).default;
-            const elements = ElementRegistry.all() as Record<string, DTElement>;
-            Object.entries(elements).forEach(([key, ui5Element]) => {
-                if (isSyncView(ui5Element)) {
-                    syncViewIds.push(key);
-                }
-            });
-        }
-    } catch (error) {
-        Log.error('Could not get application sync views', getError(error));
-    }
-
-    return syncViewIds;
 }
 
 interface ControllerInfo {

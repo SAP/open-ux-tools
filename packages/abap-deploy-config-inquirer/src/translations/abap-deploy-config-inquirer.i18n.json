@@ -5,21 +5,21 @@
                 "message": "Destination"
             },
             "targetSystem": {
-                "message": "Select Target system",
+                "message": "Select Target System",
                 "breadcrumb": "Target System"
             },
             "url": {
                 "message": "Target System URL"
             },
             "scp": {
-                "message": "Is this an SAP Business Technology Platform system?",
+                "message": "Is This an SAP Business Technology Platform System?",
                 "breadcrumb": "SCP"
             },
             "clientChoice": {
                 "message": "Client"
             },
             "client": {
-                "message": "Enter client",
+                "message": "Enter Client",
                 "breadcrumb": "Client"
             }
         },
@@ -35,8 +35,8 @@
             "app": {
                 "ui5AbapRepo": {
                     "message": "SAPUI5 ABAP Repository",
-                    "messageMaxLength": "SAPUI5 ABAP Repository (Maximum length: 15 characters, should start with {{ applicationPrefix }})",
-                    "hint": "Enter the name for the deployed application. The name must follow the rules of creating a BSP application. It must not exceed 15 characters and must consist of alphanumeric characters or underscores only. Name should be unique in the BSP repository and its namespace is compatible with the selected package."
+                    "messageMaxLength": "SAPUI5 ABAP Repository (maximum length: 15 characters) must start with {{ applicationPrefix }}.",
+                    "hint": "Enter the name for the deployed application. The name must follow the rules of creating a BSP application. It must not exceed 15 characters and must consist of alphanumeric characters or underscores only. The name must be unique in the BSP repository and its namespace must be compatible with the selected package."
                 },
                 "description": {
                     "message": "Deployment Description",
@@ -45,7 +45,7 @@
             },
             "package": {
                 "packageInputChoice": {
-                    "message": "How do you want to enter the package?"
+                    "message": "Select How You Want to Enter the Package"
                 },
                 "packageManual": {
                     "message": "Package",
@@ -55,101 +55,101 @@
                     "message": "Package",
                     "messageTypeFilter": " (Type to filter matching records)",
                     "hint": "Select a package for the deployed application.",
-                    "sourceMessage": "More than {{numResults}} results, keep typing to narrow down"
+                    "sourceMessage": "More than {{numResults}} results. Keep typing to narrow down the list."
                 }
             },
             "transport": {
                 "common": {
                     "transportRequest": "Transport Request",
                     "transportRequestMandatory": "Transport Request (mandatory)",
-                    "provideTransportRequest": "Provide a transport request for your application"
+                    "provideTransportRequest": "Provide a transport request for your application."
                 },
                 "transportInputChoice": {
-                    "message": "How do you want to enter the transport request?"
+                    "message": "Select How You Want to Enter the Transport Request"
                 },
                 "transportCreated": {
-                    "message": "Created new Transport Request"
+                    "message": "Created New Transport Request"
                 }
             }
         },
         "confirm": {
             "index": {
-                "message": "Generate standalone index.html during deployment",
+                "message": "Generate Standalone index.html During Deployment",
                 "breadcrumb": "Generate index.html"
             },
             "overwrite": {
-                "message": "Editing the deployment configuration will overwrite existing configuration, are you sure you want to continue?",
-                "hint": "Deployment config will abort if you choose no. Click Finish to abort."
+                "message": "Editing the deployment configuration will overwrite the existing configuration. Are you sure you want to continue?",
+                "hint": "Deployment config will abort if you choose no. Click 'Finish' to abort."
             }
         }
     },
     "choices": {
         "common": {
-            "listExisting": "Choose from existing"
+            "listExisting": "Choose from Existing"
         },
         "targetSystemUrl": "Enter Target System URL",
         "clientChoice": {
-            "existing": "Use project defined client {{client}}",
-            "new": "Enter client",
-            "blank": "Use default system client"
+            "existing": "Use Project Defined Client: {{client}}",
+            "new": "Enter Client",
+            "blank": "Use Default System Client"
         },
         "transport": {
-            "createDuringDeploy": "Create during deployment",
-            "createNew": "Create new",
-            "enterManually": "Enter manually"
+            "createDuringDeploy": "Create During Deployment",
+            "createNew": "Create New",
+            "enterManually": "Enter Manually"
         }
     },
     "info": {
-        "correctCredentials": "Correct credentials"
+        "correctCredentials": "Correct credentials."
     },
     "warnings": {
-        "packageNotFound": "Package list cannot be fetched. Please enter the Package manually.",
-        "providePackage": "Provide a package",
-        "transportConfigFailure": "Cannot get transport configuration from the backend. You can still proceed with deployment configuration by manually providing the package and transport request needed. \nFor more information on this error, please see Guided Answers {{-helpLink}}",
-        "noTransportReqs": "There are no Transport Requests for the supplied package. You can choose to create a new one now or during deployment.",
-        "noExistingTransportReqList": "Transport Request list cannot be fetched. Please enter Transport Request manually.",
+        "packageNotFound": "The package list cannot be fetched. Please enter the package manually.",
+        "providePackage": "Provide a package.",
+        "transportConfigFailure": "Cannot retrieve the transport configuration from the backend. You can still proceed with adding deployment configuration by manually providing the package and transport request. \nFor more information on this error, please see Guided Answers {{-helpLink}}.",
+        "noTransportReqs": "There are no transport requests for the supplied package. You can choose to create a new one now or during deployment.",
+        "noExistingTransportReqList": "The transport request list cannot be fetched. Please enter the transport request manually.",
         "virtualHost": "The destination is using a virtual host. You need to replace the host in the URL with the internal host that is configured with your SAP Cloud Connector when viewing your deployed application.",
         "allowingUnauthorizedCertsNode": "Setting the `NODE_TLS_REJECT_UNAUTHORIZED` environment variable to `0` makes TLS connections and HTTPS requests insecure by disabling certificate verification. It is important to understand the security risks when using this setting.",
         "certificateError": "A certificate error occurred when connecting to the host: {{-url}}. Certificate error: {{error}}."
     },
     "errors": {
-        "abapSystemChoices": "Failed to get ABAP system choices",
-        "targetNotDeployable": "{{systemError}} To continue with project generation choose a different deployment target or skip adding deploy config.",
-        "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. See log for more details.",
-        "invalidUrl": "Invalid URL: [{{url}}]",
-        "invalidClient": "[{{client}}] is invalid. Enter blank or a value between 000-999",
-        "debugAbapTargetSystem": "Error while getting ABAP target system during {{method}}, error {{error}}",
-        "debugAbapTargetSystemAuthFound": "HTTP 401 returned, www-authentication method found {{isFound}}",
-        "s4SystemNoExtensible": "S4 system not configured as Extensibility Development system. Cannot deploy to it.",
+        "abapSystemChoices": "Failed to retrieve ABAP system choices.",
+        "targetNotDeployable": "{{systemError}} To continue with project generation, choose a different deployment target or skip adding a deployment configuration.",
+        "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. For more information, view the log.",
+        "invalidUrl": "Invalid URL: [{{url}}].",
+        "invalidClient": "[{{client}}] is invalid. Enter blank or a value between 000-999.",
+        "debugAbapTargetSystem": "An error occurred when retrieving the ABAP target system during {{method}}. Error: {{error}}",
+        "debugAbapTargetSystemAuthFound": "HTTP 401 returned. www-authentication method found: {{isFound}}",
+        "s4SystemNoExtensible": "SAP S4/HANA system not configured as an extensibility development system. Cannot deploy to it.",
         "incorrectAtoSettings": "Incorrect ATO settings. Package or prefix settings missing.",
-        "incorrectCredentials": "Incorrect credentials. Try again",
-        "atoUnauthorisedSystem": "Authentication required to access the ATO Service",
-        "createTransportReqFailed": "Create new Transport Request failed. Please enter Transport Request manually.",
-        "requireCredentials": "Please provide credentials to authenticate with backend system",
+        "incorrectCredentials": "Incorrect credentials. Try again.",
+        "atoUnauthorisedSystem": "Authentication required to access the ATO Service.",
+        "createTransportReqFailed": "Create new transport request failed. Please enter the transport request manually.",
+        "requireCredentials": "Please provide credentials to authenticate with the back-end system.",
         "validators": {
-            "appNameRequired": "Application name required",
-            "appNameInvalid": "Application name invalid",
-            "appNameInvalidLength": "Application name limited to 15 characters, entered {{length}}",
-            "appNameInvalidPrefix": "Application name needs to be prefixed with [{{prefix}}]",
-            "abapAppDescLength": "Deployment Description must not exceed 60 characters",
+            "appNameRequired": "The application name is required. Enter an application name.",
+            "appNameInvalid": "The application name is invalid. Check your application name is correct.",
+            "appNameInvalidLength": "The application name cannot exceed 15 characters. Entered {{length}}.",
+            "appNameInvalidPrefix": "The application name must be prefixed with [{{prefix}}].",
+            "abapAppDescLength": "The deployment description must not exceed 60 characters.",
             "abapTransportNumRequired": "Provide a transport request for your application",
-            "abapPackageWarn": "Provide a package",
+            "abapPackageWarn": "Provide a package.",
             "abapPackageInvalidFormat": "The package name does not match the expected format. The expected format is `/<namespace>/<package_name>` or a package name. If a namespace is not specified, the package name must start with '$', 'Z', 'Y', or 'SAP'.",
-            "abapPackageStartingPrefix": "The package must start with either a namespace, '$', 'Z', 'Y', or 'SAP'",
-            "abapInvalidNamespaceLength": "The namespace is limited to 10 characters. You entered {{length}}.",
-            "abapInvalidAppNameLength": "The application name is limited to 15 characters. You entered {{length}}.",
-            "abapInvalidAppName": "The application name must be prefixed with [{{prefix}}]",
-            "charactersForbiddenInAppName": "Only alphanumeric, underscore, and slash characters are allowed",
-            "charactersForbiddenInPackage": "Only alphanumeric, underscore, $, and slash characters are allowed",
+            "abapPackageStartingPrefix": "The package must start with either a namespace, '$', 'Z', 'Y', or 'SAP'.",
+            "abapInvalidNamespaceLength": "The namespace cannot exceed 10 characters. You entered {{length}}.",
+            "abapInvalidAppNameLength": "The application name cannot exceed 15 characters. You entered {{length}}.",
+            "abapInvalidAppName": "The application name must be prefixed with [{{prefix}}].",
+            "charactersForbiddenInAppName": "Only alphanumeric, underscore, and slash characters are allowed.",
+            "charactersForbiddenInPackage": "Only alphanumeric, underscore, $, and slash characters are allowed.",
             "invalidNamespace": "The namespace is invalid because there are too many forward slashes.",
-            "forbiddenCharacters": "Only alphanumeric, underscore, and slash characters are allowed",
+            "forbiddenCharacters": "Only alphanumeric, underscore, and slash characters are allowed.",
             "descriptionLength": "Deployment Description must not exceed 60 characters",
-            "transportListPreReqs": "Name (SAPUI5 ABAP Repository) and Package are required to retrieve existing transport requests",
-            "abapInvalidAppNameNamespaceOrStartingPrefix": "The SAPUI5 ABAP Repository and Package must start in the same way, that is, using a namespace or capital letters: 'Z', 'Y' or 'SAP'",
+            "transportListPreReqs": "Name (SAPUI5 ABAP Repository) and Package are required to retrieve existing transport requests.",
+            "abapInvalidAppNameNamespaceOrStartingPrefix": "The SAPUI5 ABAP Repository and Package must start in the same way. Use either a namespace or capital letters: 'Z', 'Y' or 'SAP'.",
             "invalidCloudPackage": "The provided package is not intended for cloud deployment.",
             "invalidOnPremPackage": "The provided package is not intended for on-premise deployments.",
-            "invalidOnPremSystem": "You have selected a cloud system, but you previously created a project residing on an on-premise system. Please select an on-premise system to proceed with the deployment.",
-            "invalidCloudSystem": "You have selected an on-premise system, but you previously created a project residing on a cloud system. Please select a cloud system to proceed with the deployment."
+            "invalidOnPremSystem": "You have selected a cloud system but you previously created a project residing on an on-premise system. Please select an on-premise system to proceed with the deployment.",
+            "invalidCloudSystem": "You have selected an on-premise system but you previously created a project residing on a cloud system. Please select a cloud system to proceed with the deployment."
         }
     }
 }

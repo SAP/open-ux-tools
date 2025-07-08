@@ -5,6 +5,7 @@ import { Command } from 'commander';
 import type { Store } from 'mem-fs';
 import type { Editor, create } from 'mem-fs-editor';
 import { join } from 'path';
+import * as projectAccess from '@sap-ux/project-access';
 
 jest.mock('mem-fs-editor', () => {
     const editor = jest.requireActual<{ create: typeof create }>('mem-fs-editor');
@@ -32,6 +33,11 @@ const testArgv = (args: string[]) => ['', '', 'cards-editor', appRoot, ...args];
 describe('add/cards-generator', () => {
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
 
+    beforeEach(() => {
+        jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
+    });
+
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -44,6 +50,18 @@ describe('add/cards-generator', () => {
 
         // Flow check
         expect(enableCardGeneratorConfigMock).toBeCalled();
+        expect(traceSpy).not.toBeCalled();
+    });
+
+    test('add cards-generator CAP', async () => {
+        jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('CAPNodejs'));
+        // Test execution
+        const command = new Command('add');
+        addCardsEditorConfigCommand(command);
+        await command.parseAsync(testArgv([]));
+
+        // Flow check
+        expect(enableCardGeneratorConfigMock).not.toBeCalled();
         expect(traceSpy).not.toBeCalled();
     });
 

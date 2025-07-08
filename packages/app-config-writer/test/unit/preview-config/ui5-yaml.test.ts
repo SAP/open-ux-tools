@@ -478,7 +478,7 @@ describe('update preview middleware config', () => {
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, false, logger);
-        expect(warnLogMock).toHaveBeenCalledTimes(5);
+        expect(warnLogMock).toHaveBeenCalledTimes(6);
     });
 
     test('same yaml config different endpoints', async () => {

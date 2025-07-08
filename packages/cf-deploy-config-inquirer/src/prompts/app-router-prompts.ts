@@ -159,7 +159,7 @@ function getDestinationService(): CfAppRouterDeployConfigQuestions {
  * @returns {CfAppRouterDeployConfigQuestions} - The prompt configuration object for selecting for selecting an ABAP environment service.
  */
 function getServiceProvider(): CfAppRouterDeployConfigQuestions {
-    const errorHandler = new ErrorHandler();
+    const errorHandler = new ErrorHandler(undefined, undefined, '@sap-ux/cf-deploy-config-inquirer');
     return {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean => {
             return !!previousAnswers.addABAPServiceBinding && previousAnswers.routerType === RouterModuleType.Standard;

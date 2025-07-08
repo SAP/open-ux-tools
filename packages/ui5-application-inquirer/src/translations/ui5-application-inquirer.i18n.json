@@ -1,80 +1,74 @@
 {
     "prompts": {
         "name": {
-            "message": "Module name",
+            "message": "Module Name",
             "tooltip": "The name of the module for this application that will be loaded at runtime. This also determines the directory name of the generated application.",
             "default": "project{{defaultProjectNumber}}"
         },
         "title": {
-            "message": "Application title",
+            "message": "Application Title",
             "tooltip": "The title of your application that is displayed in the header of the application.",
             "default": "App Title"
         },
         "namespace": {
-            "message": "Application namespace",
-            "tooltip": "A unique package name for the application module being created. It should follow the standard Java package notation."
+            "message": "Application Namespace",
+            "tooltip": "The package name for the application module being created. It must follow the standard Java package notation."
         },
         "description": {
             "message": "Description",
-            "tooltip": "Project description in package.json of your project",
+            "tooltip": "The project description in the `package.json` file of your project.",
             "default": "An SAP Fiori application."
         },
         "targetFolder": {
-            "message": "Project folder path",
+            "message": "Project Folder Path",
             "breadcrumb": "Project Path"
         },
         "ui5Version": {
-            "message": "Minimum SAPUI5 version",
-            "tooltip": "Represents the minimum version of SAPUI5 that this application requires.",
-            "breadcrumb": "UI5 Version"
+            "message": "Minimum SAPUI5 Version",
+            "tooltip": "The minimum SAPUI5 version represents the minimum version of SAPUI5 that this application requires.",
+            "breadcrumb": "SAPUI5 Version"
         },
         "enableTypeScript": {
             "message": "Enable TypeScript",
-            "warningMsg": "The CAP project will be updated to use NPM workspaces (this is a requirement for generating with TypeScript)"
+            "warningMsg": "The CAP project will be updated to use NPM workspaces. This is a requirement for generating with TypeScript."
         },
         "addDeployConfig": {
-            "message": "Add deployment configuration",
-            "mtaMessage": "Add deployment configuration to MTA project ({{-path}})",
+            "message": "Add Deployment Configuration",
+            "mtaMessage": "Add Deployment Configuration to the MTA Project: ({{-path}}).",
             "breadcrumb": "Deploy Config"
         },
         "addFlpConfig": {
-            "message": "Add FLP configuration",
-            "breadcrumb": "FLP Config"
+            "message": "Add SAP Fiori Launchpad Configuration",
+            "breadcrumb": "SAP Fiori Launchpad Config"
         },
         "enableVirtualEndpoints": {
-            "message": "Use virtual endpoints for local preview",
+            "message": "Use Virtual Endpoints for Local Preview",
             "tooltip": "Using virtual endpoints allows the generated application to use the latest features of SAP Fiori tools.",
             "breadcrumb": "Virtual Endpoints"
         },
         "showAdvanced": {
-            "message": "Configure advanced options",
-            "tooltip": "Choosing 'No' will apply defaults"
+            "message": "Configure Advanced Options",
+            "tooltip": "Choosing 'No' will apply the default options."
         },
         "ui5Theme": {
-            "message": "UI5 theme"
+            "message": "SAPUI5 Theme"
         },
         "enableEslint": {
-            "message": "Add Eslint configuration to the project",
-            "breadcrumb": "Eslint"
+            "message": "Add ESLint Configuration to the Project",
+            "breadcrumb": "ESLint"
         },
         "enableCodeAssist": {
-            "message": "Add code assist libraries to your project",
+            "message": "Add Code Assist Libraries to your Project",
             "breadcrumb": "Code Assist"
         },
         "skipAnnotations": {
-            "message": "Skip generation of associated annotations.cds file",
+            "message": "Skip Generation of Associated `annotations.cds` File",
             "breadcrumb": "Skip Annotations"
         }
     },
     "validators": {
-        "appFolderExistsAtPath": "A module with this name already exists in the folder: {{-path}}",
+        "appFolderExistsAtPath": "A module with this name already exists in the folder: {{-path}}. Choose a different module name.",
         "folderContainsFioriApp": "The project folder path already contains an SAP Fiori application in the folder: {{-path}}. Please choose a different folder and try again.",
-        "folderContainsCapApp": "The selected project folder is part of an existing CAP project. This application must therefore use the local CAP project as the data source."
-    },
-    "ui5VersionLabels": {
-        "maintained": "Maintained",
-        "outOfMaintenance": "Out of maintenance",
-        "version_one": "version",
-        "version_other": "versions"
+        "folderContainsCapApp": "The selected project folder is part of an existing CAP project. This application must use the local CAP project as the data source."
     }
 }

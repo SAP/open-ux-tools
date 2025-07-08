@@ -305,6 +305,12 @@ export async function init({
     enhancedHomePage?: boolean | null;
     enableCardGenerator?: boolean
 }): Promise<void> {
+    // Set CDM configuration before importing ushell container
+    // to ensure proper configuration pickup during bootstrap
+    if (enhancedHomePage) {
+        initCdm();
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ??
         (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
@@ -389,7 +395,7 @@ export async function init({
     registerSAPFonts();
 
     if (enhancedHomePage) {
-        await initCdm(container);
+        await container.init('cdm');
     }
 
     const renderer =

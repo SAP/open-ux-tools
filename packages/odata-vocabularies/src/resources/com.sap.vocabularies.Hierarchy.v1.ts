@@ -1,4 +1,4 @@
-// Last content update: Mon Feb 10 2025 23:35:57 GMT+0100 (Mitteleuropäische Normalzeit)
+// Last content update: Sat Jun 14 2025 13:41:16 GMT+0200 (Mitteleuropäische Sommerzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -60,39 +60,73 @@ export default {
             '$Type': 'com.sap.vocabularies.Hierarchy.v1.RecursiveHierarchyType',
             '$AppliesTo': ['EntityType'],
             '$BaseTerm': 'Org.OData.Aggregation.V1.RecursiveHierarchy',
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@com.sap.vocabularies.Common.v1.IsInstanceAnnotation': true,
             '@Org.OData.Core.V1.Description':
                 'Hierarchy-specific information in the result set of a hierarchical request',
             '@Org.OData.Core.V1.LongDescription':
                 'The [base term](https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Aggregation.V1.html#RecursiveHierarchy)\n          governs what are the nodes and parents in the hierarchy, whereas this term defines derived information.'
         },
+        'HierarchyType': {
+            '$Kind': 'ComplexType',
+            '@Org.OData.Core.V1.LongDescription':
+                'The properties in this complex type contain information about\n          an entry in the result set of a request with multiple aggregation levels, some of which are expanded.\n          These properties also serve in the derived [`RecursiveHierarchyType`](#RecursiveHierarchyType)\n          with their definitions rephrased in the concept of recursive hierarchies.',
+            'LimitedDescendantCount': {
+                '$Type': 'Edm.Int64',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description':
+                    'Number of entries from finer-grained aggregation levels that are expanded'
+            },
+            'DrillState': {
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Drill state of an entry',
+                '@Org.OData.Validation.V1.AllowedValues': [
+                    {
+                        'Value': 'expanded',
+                        '@Org.OData.Core.V1.Description':
+                            'The entry precedes entries from finer-grained aggregation levels'
+                    },
+                    {
+                        'Value': 'subtotal',
+                        '@com.sap.vocabularies.Common.v1.Experimental': true,
+                        '@Org.OData.Core.V1.Description':
+                            'The entry follows entries from finer-grained aggregation levels and contains subtotals'
+                    },
+                    {
+                        'Value': 'leaf',
+                        '@Org.OData.Core.V1.Description': 'The entry belongs to the finest-grained aggregation level'
+                    },
+                    {
+                        'Value': 'collapsed',
+                        '@Org.OData.Core.V1.Description':
+                            'The entry belongs to an aggregation level coarser than the finest-grained but is neither expanded nor subtotal'
+                    }
+                ]
+            },
+            'DistanceFromRoot': {
+                '$Type': 'Edm.Int64',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description':
+                    'Position of the current aggregation level in the list of all aggregation levels'
+            }
+        },
         'RecursiveHierarchyType': {
             '$Kind': 'ComplexType',
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '$BaseType': 'com.sap.vocabularies.Hierarchy.v1.HierarchyType',
             '@Org.OData.Core.V1.LongDescription':
                 "The properties in this complex type contain information about\na node in the result set of a hierarchical request. If the same node occurs multiple times\nwith different parents, certain properties may differ between the occurrences.\nThe properties are derived when hierarchical transformations\nare applied whose first parameter has the annotated entity type\nand whose second parameter is the annotation qualifier.\n\nFor requests like\n```\nSalesOrganizations?$apply=\ndescendants(..., ID, filter(ID eq 'US'), keep start)\n/ancestors(..., ID, filter(contains(Name, 'New York')), keep start)\n/Hierarchy.TopLevels(..., NodeProperty='ID', Levels=2)\n&$top=10\n```\nor\n```\nSalesOrganizations?$apply=groupby((rolluprecursive(..., ID,\n  descendants(..., ID, filter(ID eq 'US')),\n  ancestors(..., ID, filter(contains(Name, 'New York')), keep start))), aggregate(...))\n/Hierarchy.TopLevels(..., NodeProperty='ID', Levels=2)\n&$top=10\n```\n(where `...,` stands for hierarchy nodes and hierarchy qualifier)\nthe following collections of hierarchy nodes are distinguished:\n\n|Collection|Definition|Value|Where in request|\n|----------|----------|-----|----------------|\n|sub-hierarchy|output set of a `descendants` transformation, possibly embedded in a `rolluprecursive` transformation, that is not preceded by an `ancestors` or `descendants` transformation|US sales organizations|rows 1–2|\n|matching nodes|see [`MatchCount`](#MatchCount)|US sales organizations with \"New York\" in their name|output set of `filter` transformation in row 3|\n|unlimited hierarchy|output set of the last `ancestors`, `descendants` or `traverse` transformation, possibly embedded in a `rolluprecursive` transformation, disregarding numeric fifth parameters|US sales organizations with leaves containing \"New York\"|rows 1–3|\n|limited hierarchy|output set of the last `ancestors`, `descendants`, `traverse` or [`Hierarchy.TopLevels`](#TopLevels) transformation, possibly embedded in a `rolluprecursive` transformation|2 levels of US sales organizations with leaves containing \"New York\"|rows 1–4|\n",
             'ExternalKey': {
                 '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
                 '@Org.OData.Core.V1.Description': 'Human-readable key value for a node',
                 '@Org.OData.Core.V1.LongDescription':
                     'If a `NodeType` exists, the external key is unique only in combination with it.\n            Or the external key can coincide with the [`Aggregation.RecursiveHierarchy/NodeProperty`](https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Aggregation.V1.html#RecursiveHierarchyType).'
             },
             'NodeType': {
                 '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
                 '@Org.OData.Core.V1.Description': 'Type of a node',
                 '@Org.OData.Core.V1.LongDescription':
                     'In a recursive hierarchy with mixed types, nodes can\n- have a type-specific (navigation) property whose name is the node type or\n- be represented by entities of different subtypes of a common entity type that is\n\nannotated with the `RecursiveHierarchy` annotation. The qualified name of the subtype is the node type.'
-            },
-            'ChildCount': {
-                '$Type': 'Edm.Int64',
-                '$Nullable': true,
-                '@Org.OData.Core.V1.Description': 'Number of children a node has in the unlimited hierarchy'
-            },
-            'DescendantCount': {
-                '$Type': 'Edm.Int64',
-                '$Nullable': true,
-                '@Org.OData.Core.V1.Description': 'Number of descendants a node has in the unlimited hierarchy'
             },
             'LimitedDescendantCount': {
                 '$Type': 'Edm.Int64',
@@ -102,8 +136,21 @@ export default {
             'DrillState': {
                 '$Nullable': true,
                 '@Org.OData.Core.V1.Description': 'Drill state of an occurrence of a node',
-                '@Org.OData.Core.V1.LongDescription':
-                    'Possible drill states are:\n            <br>- `expanded` if a node has children in the limited hierarchy\n            <br>- `collapsed` if a node has children in the unlimited hierarchy but not in the limited hierarchy\n            <br>- `leaf` if a node has no children in the unlimited hierarchy'
+                '@Org.OData.Validation.V1.AllowedValues': [
+                    {
+                        'Value': 'expanded',
+                        '@Org.OData.Core.V1.Description': 'The node has children in the limited hierarchy'
+                    },
+                    {
+                        'Value': 'collapsed',
+                        '@Org.OData.Core.V1.Description':
+                            'The node has children in the unlimited hierarchy but not in the limited hierarchy'
+                    },
+                    {
+                        'Value': 'leaf',
+                        '@Org.OData.Core.V1.Description': 'The node has no children in the unlimited hierarchy'
+                    }
+                ]
             },
             'DistanceFromRoot': {
                 '$Type': 'Edm.Int64',
@@ -112,6 +159,18 @@ export default {
                     'Number of ancestors an occurrence of a node has in the limited hierarchy',
                 '@Org.OData.Core.V1.LongDescription':
                     'This equals the number of ancestors in the sub-hierarchy, if the request involves a sub-hierarchy.'
+            },
+            'ChildCount': {
+                '$Type': 'Edm.Int64',
+                '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description': 'Number of children a node has in the unlimited hierarchy'
+            },
+            'DescendantCount': {
+                '$Type': 'Edm.Int64',
+                '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description': 'Number of descendants a node has in the unlimited hierarchy'
             },
             'LimitedRank': {
                 '$Type': 'Edm.Int64',
@@ -123,6 +182,7 @@ export default {
             'SiblingRank': {
                 '$Type': 'Edm.Int64',
                 '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
                 '@Org.OData.Core.V1.Description': 'Sibling rank of a node',
                 '@Org.OData.Core.V1.LongDescription':
                     'The sibling rank of a node is the index of the node in the sequence of all nodes\n            in the unlimited hierarchy with the same parent. The first sibling has rank 0.'
@@ -130,11 +190,13 @@ export default {
             'Matched': {
                 '$Type': 'Edm.Boolean',
                 '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
                 '@Org.OData.Core.V1.Description': 'Flag indicating [matching](#MatchCount) nodes'
             },
             'MatchedDescendantCount': {
                 '$Type': 'Edm.Int64',
                 '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
                 '@Org.OData.Core.V1.Description':
                     'Number of [matching](#MatchCount) descendants a node has in the unlimited hierarchy'
             }
@@ -144,7 +206,6 @@ export default {
             '$Type': 'com.sap.vocabularies.Hierarchy.v1.RecursiveHierarchyActionsType',
             '$AppliesTo': ['EntityType'],
             '$BaseTerm': 'Org.OData.Aggregation.V1.RecursiveHierarchy',
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 'Actions for maintaining the recursive hierarchy defined by the [base term](https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Aggregation.V1.html#RecursiveHierarchy)',
             '@Org.OData.Core.V1.LongDescription':
@@ -157,6 +218,8 @@ export default {
             'ChangeNextSiblingAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
                 '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.OperationTemplate':
+                    'com.sap.vocabularies.Hierarchy.v1.Template_ChangeNextSiblingAction',
                 '@Org.OData.Core.V1.Description':
                     'Action that moves a node among its siblings, following [this template](#Template_ChangeNextSiblingAction)'
             },
@@ -168,6 +231,8 @@ export default {
             'CopyAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
                 '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.OperationTemplate':
+                    'com.sap.vocabularies.Hierarchy.v1.Template_CopyAction',
                 '@Org.OData.Core.V1.Description':
                     'Action that copies a node and its descendants, following [this template](#Template_CopyAction)'
             }
@@ -188,7 +253,6 @@ export default {
                 '$Kind': 'Function',
                 '$EntitySetPath': 'InputSet',
                 '$IsBound': true,
-                '@com.sap.vocabularies.Common.v1.Experimental': true,
                 '@Org.OData.Core.V1.Description':
                     'Returns the first n levels of a hierarchical collection in preorder with individual nodes expanded or collapsed',
                 '@Org.OData.Core.V1.LongDescription':
@@ -244,7 +308,6 @@ export default {
         ],
         'TopLevelsExpandType': {
             '$Kind': 'ComplexType',
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description': 'Information about nodes to be expanded',
             'NodeID': {
                 '@Org.OData.Core.V1.Description': 'Identifier of a node to be expanded'
@@ -272,7 +335,6 @@ export default {
             {
                 '$Kind': 'Action',
                 '$IsBound': true,
-                '@com.sap.vocabularies.Common.v1.Experimental': true,
                 '@Org.OData.Core.V1.Description':
                     'Template for actions that move a node among its siblings and are named in [`RecursiveHierarchyActions/ChangeNextSiblingAction`](#RecursiveHierarchyActionsType)',
                 '$Parameter': [
@@ -288,7 +350,7 @@ export default {
                         '@Org.OData.Core.V1.Description':
                             "Key of the node's new next sibling S (null if the node shall become the last sibling)",
                         '@Org.OData.Core.V1.LongDescription':
-                            'This parameter has properties with the same names as the key properties of the entity type.\n            next(T) = S after the action.\n            If R is a node with next(R) = S before the action, then next(R) = T after the action, even if S = null.\n            It is an error if S has a different parent than T.'
+                            'This parameter has properties with the same names, types, and type facets as the key properties of the entity type.\n            next(T) = S after the action.\n            If R is a node with next(R) = S before the action, then next(R) = T after the action, even if S = null.\n            It is an error if S has a different parent than T.'
                     }
                 ]
             }
@@ -298,11 +360,10 @@ export default {
                 '$Kind': 'Action',
                 '$EntitySetPath': 'Node',
                 '$IsBound': true,
-                '@com.sap.vocabularies.Common.v1.Experimental': true,
                 '@Org.OData.Core.V1.Description':
                     'Template for actions that copy a node and its descendants and are named in [`RecursiveHierarchyActions/CopyAction`](#RecursiveHierarchyActionsType)',
                 '@Org.OData.Core.V1.LongDescription':
-                    'To give the copied sub-hierarchy a parent, the action invocation can be followed\nby a PATCH that binds the parent navigation property (for example, `Superordinate` in the following JSON batch request).\n```json\n{"requests": [{\n  "id": "1",\n  "method": "post",\n  "url": "HierarchyDirectory(1)/Nodes(\'A\')/CopyAction"\n}, {\n  "id": "2",\n  "dependsOn": ["1"],\n  "method": "patch",\n  "url": "$1",\n  "body": {\n    "Superordinate@odata.bind": "Nodes(\'B\')"\n  }\n}]}\n```',
+                    'The action copies a node A and its descendants and the parent navigation properties between them\nso that the copied nodes form a sub-hierarchy. It returns the copy of A. No assumption is made about the parent of the copy of A.\n\nTo specify the parent of the copy of A, the action invocation MUST be followed\nby a PATCH that binds its parent navigation property (for example, `Superordinate` in the following JSON batch request)\nto the desired parent B or to `null`.\n```json\n{"requests": [{\n  "id": "1",\n  "method": "post",\n  "url": "HierarchyDirectory(1)/Nodes(\'A\')/CopyAction"\n}, {\n  "id": "2",\n  "dependsOn": ["1"],\n  "method": "patch",\n  "url": "$1",\n  "body": {\n    "Superordinate@odata.bind": "Nodes(\'B\')"\n  }\n}]}\n```\nIf a certain position of the copy of A among its new siblings is desired, an additional invocation of\n[`ChangeNextSiblingAction`](#Template_ChangeNextSiblingAction) can be included in the batch request.',
                 '$Parameter': [
                     {
                         '$Name': 'Node',

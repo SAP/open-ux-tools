@@ -1,13 +1,11 @@
-import { Severity } from '@sap-devx/yeoman-ui-types';
-
 import { parseParameters } from '@sap-ux/adp-tooling';
-import { validateEmptyString } from '@sap-ux/project-input-validator';
+import * as inputValidator from '@sap-ux/project-input-validator';
 
 import {
-    getCreateAnotherInboundPrompt,
-    getEmptyInboundsLabelPrompt,
     getInboundIdsPrompt,
-    getParameterStringPrompt
+    getParameterStringPrompt,
+    getExistingFlpConfigInfoPrompt,
+    getIconPrompt
 } from '../../../src/prompts/questions';
 import { t } from '../../../src/i18n';
 import { promptNames } from '../../../src';
@@ -18,20 +16,36 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     parseParameters: jest.fn()
 }));
 
-describe('advanced prompts', () => {
-    describe('getInboundIdsPrompt', () => {
-        const inboundIds = ['display-bank', 'new-upsert'];
+jest.mock('@sap-ux/project-input-validator', () => ({
+    validateEmptyString: jest.fn()
+}));
 
+describe('advanced prompts', () => {
+    const inbounds = {
+        'display-bank': {
+            semanticObject: 'test',
+            action: 'action',
+            title: 'testTitle',
+            subTitle: 'testSubTitle',
+            icon: 'sap-icon://test',
+            additionalParameters: {}
+        }
+    };
+    const choices = Object.entries(inbounds).map(([inboundId, data]) => ({
+        name: inboundId,
+        value: data
+    }));
+    describe('getInboundIdsPrompt', () => {
         it('should return a valid prompt object with inboundIds', () => {
-            const prompt = getInboundIdsPrompt(inboundIds);
+            const prompt = getInboundIdsPrompt(inbounds);
 
             expect(prompt).toEqual({
                 type: 'list',
                 name: promptNames.inboundId,
                 message: t('prompts.inboundIds'),
-                choices: inboundIds,
-                default: inboundIds[0],
-                validate: validateEmptyString,
+                choices: choices,
+                default: expect.any(Function),
+                validate: expect.any(Function),
                 when: true,
                 guiOptions: {
                     hint: t('tooltips.inboundId'),
@@ -41,89 +55,18 @@ describe('advanced prompts', () => {
             });
         });
 
-        it('should return a warning message when inboundIds are empty', () => {
-            const emptyInboundIds: string[] = [];
-            const prompt = getInboundIdsPrompt(emptyInboundIds);
-
-            expect(prompt.when).toBe(false);
-        });
-
         it('should use the first inbound ID as the default value', () => {
-            const prompt = getInboundIdsPrompt(inboundIds);
+            const prompt = getInboundIdsPrompt(inbounds);
 
-            expect(prompt.default).toBe(inboundIds[0]);
+            expect(prompt.default()).toBe(choices[0]?.value);
         });
 
         it('should validate using validateEmptyString', () => {
-            const prompt = getInboundIdsPrompt(inboundIds);
-
-            expect(prompt.validate).toBe(validateEmptyString);
-        });
-    });
-
-    describe('getEmptyInboundsLabelPrompt', () => {
-        it('should return a label prompt when inboundIds is empty', () => {
-            const inboundIds: string[] = [];
-            const prompt = getEmptyInboundsLabelPrompt(inboundIds, 'app.variant1');
-
-            expect(prompt).toEqual({
-                type: 'input',
-                name: promptNames.emptyInboundsInfo,
-                message: t('prompts.emptyInboundsInfo'),
-                guiOptions: {
-                    type: 'label',
-                    mandatory: false,
-                    link: {
-                        text: 'application page.',
-                        url: `https://fioriappslibrary.hana.ondemand.com/sap/fix/externalViewer/index.html?appId=app.variant1&releaseGroupTextCombined=SC`
-                    }
-                },
-                when: true
-            });
-        });
-
-        it('should return a label prompt with a default URL when appId is not provided', () => {
-            const inboundIds: string[] = [];
-            const prompt = getEmptyInboundsLabelPrompt(inboundIds);
-
-            expect(prompt).toEqual({
-                type: 'input',
-                name: promptNames.emptyInboundsInfo,
-                message: t('prompts.emptyInboundsInfo'),
-                guiOptions: {
-                    type: 'label',
-                    mandatory: false,
-                    link: {
-                        text: 'application page.',
-                        url: `https://fioriappslibrary.hana.ondemand.com/sap/fix/externalViewer/#/home`
-                    }
-                },
-                when: true
-            });
-        });
-
-        it('should not display the prompt when inboundIds is not empty', () => {
-            const inboundIds = ['display-bank', 'new-upsert'];
-            const prompt = getEmptyInboundsLabelPrompt(inboundIds, 'app.variant1');
-
-            expect(prompt.when).toBe(false);
-        });
-
-        it('should generate the correct link URL based on appId', () => {
-            const appId = 'app.variant1';
-            const prompt = getEmptyInboundsLabelPrompt([], appId);
-
-            expect(prompt.guiOptions?.link?.url).toBe(
-                `https://fioriappslibrary.hana.ondemand.com/sap/fix/externalViewer/index.html?appId=app.variant1&releaseGroupTextCombined=SC`
-            );
-        });
-
-        it('should generate the default link URL when appId is undefined', () => {
-            const prompt = getEmptyInboundsLabelPrompt([]);
-
-            expect(prompt.guiOptions?.link?.url).toBe(
-                `https://fioriappslibrary.hana.ondemand.com/sap/fix/externalViewer/#/home`
-            );
+            const validateEmptyStringMock = jest.spyOn(inputValidator, 'validateEmptyString').mockReturnValue(true);
+            const prompt = getInboundIdsPrompt(inbounds);
+            (prompt.validate as Function)(inbounds['display-bank']);
+            expect(validateEmptyStringMock).toHaveBeenCalledWith(inbounds['display-bank'].semanticObject);
+            expect(validateEmptyStringMock).toHaveBeenCalledWith(inbounds['display-bank'].action);
         });
     });
 
@@ -131,14 +74,14 @@ describe('advanced prompts', () => {
         const inboundIds: string[] = [];
 
         it('should return a valid parameter string prompt configuration', () => {
-            const prompt = getParameterStringPrompt(inboundIds);
+            const prompt = getParameterStringPrompt();
 
             expect(prompt).toEqual({
                 type: 'editor',
                 name: promptNames.additionalParameters,
                 message: t('prompts.additionalParameters'),
                 validate: expect.any(Function),
-                when: true,
+                default: expect.any(Function),
                 guiOptions: {
                     hint: t('tooltips.additionalParameters'),
                     mandatory: false
@@ -146,14 +89,22 @@ describe('advanced prompts', () => {
             });
         });
 
-        it('should set "when" to true if inboundIds is empty', () => {
-            const prompt = getParameterStringPrompt(inboundIds);
+        it('should set the default value based on inboundId signature parameters', () => {
+            const answers = {
+                inboundId: {
+                    signature: {
+                        parameters: { key: 'value' }
+                    }
+                }
+            };
+            const prompt = getParameterStringPrompt();
 
-            expect(prompt.when).toBe(true);
+            const defaultValue = prompt.default!(answers);
+            expect(defaultValue).toBe(JSON.stringify(answers.inboundId.signature.parameters, null, 2));
         });
 
         it('should validate successfully when the input value is empty', () => {
-            const prompt = getParameterStringPrompt(inboundIds);
+            const prompt = getParameterStringPrompt();
 
             const result = prompt.validate!('');
             expect(result).toBe(true);
@@ -162,11 +113,10 @@ describe('advanced prompts', () => {
         it('should validate successfully when parseParameters does not throw an error', () => {
             parseParametersMock.mockImplementation(() => undefined);
 
-            const prompt = getParameterStringPrompt(inboundIds);
+            const prompt = getParameterStringPrompt();
 
             const result = prompt.validate!('{"key": "value"}');
             expect(result).toBe(true);
-            expect(parseParameters).toHaveBeenCalledWith('{"key": "value"}');
         });
 
         it('should return an error message when parseParameters throws an error', () => {
@@ -175,57 +125,68 @@ describe('advanced prompts', () => {
                 throw new Error(errorMessage);
             });
 
-            const inboundIds: string[] = [];
-            const prompt = getParameterStringPrompt(inboundIds);
+            const prompt = getParameterStringPrompt();
 
             const result = prompt.validate!('invalid json');
-            expect(result).toBe(errorMessage);
-            expect(parseParameters).toHaveBeenCalledWith('invalid json');
+            expect(result).toBe(t('validators.invalidParameterString'));
         });
     });
 
-    describe('getCreateAnotherInboundPrompt', () => {
-        it('should return a valid prompt configuration for non-CLI environments', () => {
-            const prompt = getCreateAnotherInboundPrompt(false);
+    describe('getExistingFlpConfigInfoPrompt', () => {
+        it('should return a valid prompt configuration for existing FLP config info', () => {
+            const prompt = getExistingFlpConfigInfoPrompt(false);
 
             expect(prompt).toEqual({
-                type: 'confirm',
-                name: promptNames.createAnotherInbound,
-                message: t('prompts.createAnotherInbound'),
-                default: false,
+                type: 'input',
+                name: promptNames.existingFlpConfigInfo,
+                message: t('prompts.existingFLPConfig'),
                 when: expect.any(Function),
                 guiOptions: {
-                    hint: t('tooltips.inboundId'),
-                    breadcrumb: t('prompts.inboundIds')
+                    type: 'label',
+                    mandatory: false
                 }
             });
         });
 
-        it('should set "when" to a function if options.hide is not true', () => {
-            const prompt = getCreateAnotherInboundPrompt(false);
+        it('should not show the prompt when isCLI is true', () => {
+            const prompt = getExistingFlpConfigInfoPrompt(true);
+            expect((prompt.when as Function)()).toBe(false);
+        });
+    });
 
-            expect(typeof prompt.when).toBe('function');
+    describe('getIconPrompt', () => {
+        it('should return a valid icon prompt configuration', () => {
+            const prompt = getIconPrompt();
+
+            expect(prompt).toEqual({
+                type: 'input',
+                name: promptNames.icon,
+                message: t('prompts.icon'),
+                default: expect.any(Function),
+                filter: expect.any(Function),
+                guiOptions: {
+                    breadcrumb: true
+                }
+            });
         });
 
-        it('should evaluate "when" to true if platform is not CLI and inboundId is present', () => {
-            const answers = { inboundId: 'testInboundId' };
-            const prompt = getCreateAnotherInboundPrompt(false);
+        it('should set default value when passed with options', () => {
+            const options = { default: 'sap-icon://home' };
+            const prompt = getIconPrompt(options);
 
-            expect((prompt.when as Function)(answers)).toBe(true);
+            expect(prompt.default()).toBe(options.default);
         });
 
-        it('should evaluate "when" to false if platform is CLI', () => {
-            const answers = { inboundId: 'testInboundId' };
-            const prompt = getCreateAnotherInboundPrompt(true);
+        it('should set default value based on selected inbound', () => {
+            const prompt = getIconPrompt();
 
-            expect((prompt.when as Function)(answers)).toBe(false);
+            expect(prompt.default({ inboundId: { ...choices[0].value } })).toBe(choices[0].value.icon);
         });
 
-        it('should evaluate "when" to false if no inboundId is provided', () => {
-            const answers = {};
-            const prompt = getCreateAnotherInboundPrompt(false);
-
-            expect((prompt.when as Function)(answers)).toBe(false);
+        it('should trim value provided by user', () => {
+            const prompt = getIconPrompt();
+            const trimmedValue = (prompt.filter as Function)('  sap-icon://home  ');
+            expect(trimmedValue).toBe('sap-icon://home');
         });
     });
 });

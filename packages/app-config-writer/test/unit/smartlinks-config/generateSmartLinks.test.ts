@@ -67,7 +67,7 @@ describe('Test generateSmartLinksConfig', () => {
             fs = await generateSmartLinksConfig(basePath, configMock);
             fail('Error should have been thrown');
         } catch (error) {
-            expect(error.message).toEqual(t('error.noTarget'));
+            expect(error.message).toEqual(`No target definition found: ${configMock.target.url}.`);
             expect(fs?.readJSON(join(basePath, 'appconfig', 'fioriSandboxConfig.json'))).not.toBeDefined();
             expect(fs?.read(join(basePath, 'ui5.yaml'))).not.toBeDefined();
         }

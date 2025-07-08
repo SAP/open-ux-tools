@@ -101,7 +101,7 @@ describe('Test transform state', () => {
                 } as Service['connectedSystem']
             }
         };
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.bas);
 
         let ffApp = await transformState<FreestyleApp<BasicAppSettings>>(state);
         expect(ffApp.service?.previewSettings?.scp).toBe(true);
@@ -211,6 +211,38 @@ describe('Test transform state', () => {
             selectionMode: 'Auto',
             smartVariantManagement: true,
             tableType: 'GridTable'
+        });
+    });
+
+    test('should transform parameterised entity related config correctly', async () => {
+        const state: State = {
+            ...baseState,
+            project: {
+                ...baseState.project
+            },
+            entityRelatedConfig: {
+                mainEntity: {
+                    entitySetName: 'ZC_STOCKAGEING',
+                    entitySetType: 'com.sap.gateway.srvd.zserv_d_stock_ageing.v0001.ZC_STOCKAGEINGParameters',
+                    mainEntityParameterName: 'Set'
+                },
+                navigationEntity: {} as EntityRelatedAnswers['navigationEntity'],
+                presentationQualifier: '',
+                tableType: 'ResponsiveTable',
+                tableSelectionMode: 'None'
+            },
+            floorplan: FloorplanFE.FE_LROP
+        };
+
+        const feApp = await transformState<FioriElementsApp<unknown>>(state);
+        // Check for parametrised main entity
+        expect(feApp.template.settings).toEqual({
+            entityConfig: {
+                mainEntityName: 'ZC_STOCKAGEING',
+                mainEntityParameterName: 'Set'
+            },
+            hierarchyQualifier: undefined,
+            tableType: 'ResponsiveTable'
         });
     });
 

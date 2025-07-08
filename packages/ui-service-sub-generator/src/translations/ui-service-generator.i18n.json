@@ -1,17 +1,17 @@
 {
     "error": {
-        "fetchingGenerator": "Error fetching generator: {{error}}",
-        "sendingTelemetry": "Error sending telemetry event",
-        "connectionFailed": "Connection to the discovery service on backend system {{system}} failed.",
-        "authentication": "Authentication failed with system data provided, unable to continue with UI Service generation.",
-        "generatingService": "The UI Service failed to create successfully. Please see the log in 'Application Wizard.Generators' output for more details.",
-        "noGeneratorFoundBo": "No generator found for the selected business object interface"
+        "fetchingGenerator": "An error occurred when fetching the generator: {{error}}",
+        "sendingTelemetry": "An error occurred sending the telemetry event.",
+        "connectionFailed": "The connection to the discovery service on the back-end system: {{system}} failed. Please check the system details are correct.",
+        "authentication": "Authentication failed with the system data provided. Unable to continue with UI Service generation. Check the system details are correct.",
+        "generatingService": "The UI Service creation process failed. For more information, see the log in the `Application Wizard.Generators` output.",
+        "noGeneratorFoundBo": "No generator found for the selected business object interface."
     },
     "info": {
-        "generationSuccessful": "UI Service {{serviceName}} was generated successfully",
-        "generationSuccessfulWriteFile": "UI Service {{serviceName}} has been created successfully and has been added to your project",
-        "generationSuccessfulMetadataFail": "UI Service {{serviceName}} has been created successfully, but could not be added to your project",
-        "generationWarning": "Generation of UI Service might take a few minutes. Please be patient.",
+        "generationSuccessful": "The UI service: {{serviceName}} was generated.",
+        "generationSuccessfulWriteFile": "The UI service: {{serviceName}} has been created and added to your project.",
+        "generationSuccessfulMetadataFail": "The UI service: {{serviceName}} has been created but could not be added to your project.",
+        "generationWarning": "Generating the UI Service can take a few minutes. Please be patient.",
         "generatingUiService": "Generating UI service..."
     }
 }

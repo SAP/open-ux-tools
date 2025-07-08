@@ -164,6 +164,22 @@ Object {
     },
     Object {
       "documentation": Object {
+        "defaultValue": "false",
+        "description": "Show Counts",
+        "propertyName": "showCounts",
+        "type": "boolean",
+      },
+      "editor": "checkbox",
+      "isEnabled": true,
+      "name": "showCounts",
+      "propertyType": "configuration",
+      "readableName": "Show Counts",
+      "type": "boolean",
+      "ui5Type": undefined,
+      "value": true,
+    },
+    Object {
+      "documentation": Object {
         "defaultValue": "gridTable",
         "description": "table type",
         "propertyName": "type",

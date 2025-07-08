@@ -6,7 +6,7 @@ import {
     hasDependency
 } from '@sap-ux/project-access';
 
-const minCdsPluginUi5Version = '0.9.3';
+const minCdsPluginUi5Version = '0.13.0';
 
 /**
  * Ensure a minimum version of @sap/cds in dependencies.

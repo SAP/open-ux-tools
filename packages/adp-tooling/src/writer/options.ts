@@ -9,17 +9,14 @@ import type {
 
 import type {
     AdpWriterConfig,
-    InboundContent,
     Language,
     InboundChangeContentAddInboundId,
     Content,
     CloudApp,
-    ChangeInboundNavigation,
     InternalInboundNavigation,
     CloudCustomTaskConfig,
     CloudCustomTaskConfigTarget
 } from '../types';
-import { parseParameters } from '../common';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 
@@ -269,54 +266,6 @@ function getAdpCloudCustomTasks(config: AdpWriterConfig & { target: AbapTarget }
 }
 
 /**
- * Get a Inbound change content with provided inboundId.
- *
- * @param flpConfiguration FLP cloud project configuration
- * @param appId application id
- * @returns Inbound change content.
- */
-function getInboundChangeContentWithExistingInboundId(
-    flpConfiguration: ChangeInboundNavigation,
-    appId: string
-): InboundContent {
-    const inboundContent: InboundContent = {
-        inboundId: flpConfiguration.inboundId,
-        entityPropertyChange: [
-            {
-                propertyPath: 'title',
-                operation: 'UPSERT',
-                propertyValue: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.title}}`
-            }
-        ]
-    };
-
-    if (flpConfiguration.subTitle) {
-        inboundContent.entityPropertyChange.push({
-            propertyPath: 'subTitle',
-            operation: 'UPSERT',
-            propertyValue: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.subTitle}}`
-        });
-    }
-
-    inboundContent.entityPropertyChange.push({
-        propertyPath: 'signature/parameters/sap-appvar-id',
-        operation: 'UPSERT',
-        propertyValue: {
-            required: true,
-            filter: {
-                value: appId,
-                format: 'plain'
-            },
-            launcherValue: {
-                value: appId
-            }
-        }
-    });
-
-    return inboundContent;
-}
-
-/**
  * Get a Inbound change content without provided inboundId.
  *
  * @param flpConfiguration FLP cloud project configuration
@@ -327,15 +276,14 @@ function getInboundChangeContentWithNewInboundID(
     flpConfiguration: InternalInboundNavigation,
     appId: string
 ): InboundChangeContentAddInboundId {
-    const parameters = flpConfiguration?.additionalParameters
-        ? parseParameters(flpConfiguration?.additionalParameters)
-        : {};
+    const parameters = flpConfiguration?.additionalParameters ? JSON.parse(flpConfiguration.additionalParameters) : {};
 
     const content: InboundChangeContentAddInboundId = {
         inbound: {
             [flpConfiguration.inboundId]: {
                 action: flpConfiguration.action,
                 semanticObject: flpConfiguration.semanticObject,
+                icon: flpConfiguration.icon,
                 title: `{{${appId}_sap.app.crossNavigation.inbounds.${flpConfiguration.inboundId}.title}}`,
                 signature: {
                     additionalParameters: 'allowed',
@@ -377,12 +325,10 @@ export function enhanceManifestChangeContentWithFlpConfig(
     appId: string,
     manifestChangeContent: Content[] = []
 ): void {
-    const inboundChangeContent = flpConfiguration.addInboundId
-        ? getInboundChangeContentWithNewInboundID(flpConfiguration, appId)
-        : getInboundChangeContentWithExistingInboundId(flpConfiguration as ChangeInboundNavigation, appId);
+    const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfiguration, appId);
     if (inboundChangeContent) {
         const addInboundChange = {
-            changeType: flpConfiguration.addInboundId ? 'appdescr_app_addNewInbound' : 'appdescr_app_changeInbound',
+            changeType: 'appdescr_app_addNewInbound',
             content: inboundChangeContent,
             texts: {
                 'i18n': 'i18n/i18n.properties'

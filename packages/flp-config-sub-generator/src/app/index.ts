@@ -143,12 +143,12 @@ export default class extends Generator {
         }
 
         const silentOverwrite = this.options.overwrite;
-        let questions: Question[] = (await getPrompts(inbounds, undefined, {
+        let questions: Question[] = (await getPrompts(inbounds, {
             silentOverwrite,
             inboundId: { hide: true },
-            emptyInboundsInfo: { hide: true },
-            additionalParameters: { hide: true },
-            createAnotherInbound: { hide: true }
+            existingFlpConfigInfo: { hide: true },
+            icon: { hide: true },
+            additionalParameters: { hide: true }
         })) as Question[];
 
         if (this.extensionPromptOpts && !this.launchFlpConfigAsSubGenerator) {

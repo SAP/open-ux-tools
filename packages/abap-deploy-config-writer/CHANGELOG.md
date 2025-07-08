@@ -1,5 +1,88 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.1.16
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.10
+-   @sap-ux/ui5-config@0.29.0
+
+## 0.1.15
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/project-access@1.30.6
+    -   @sap-ux/system-access@0.6.9
+
+## 0.1.14
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/system-access@0.6.9
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+    -   @sap-ux/system-access@0.6.9
+
+## 0.1.12
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.9
+-   @sap-ux/ui5-config@0.28.2
+
+## 0.1.11
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.8
+-   @sap-ux/project-access@1.30.3
+
+## 0.1.10
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.7
+
+## 0.1.9
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.6
+
+## 0.1.8
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.5
+
+## 0.1.7
+
+### Patch Changes
+
+-   3ea811a: Bump @ui5/cli version
+
+## 0.1.6
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.4
+
+## 0.1.5
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.3
+
 ## 0.1.4
 
 ### Patch Changes

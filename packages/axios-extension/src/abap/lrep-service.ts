@@ -1,13 +1,15 @@
-import type { Service } from '../base/service-provider';
-import type { AxiosResponse } from 'axios';
+import type { AxiosResponse, CustomParamsSerializer } from 'axios';
 import { Axios } from 'axios';
-import { LogLevel } from '@sap-ux/logger';
-import type { Logger } from '@sap-ux/logger';
 import { readFileSync } from 'fs';
-import { isAxiosError } from '../base/odata-request-error';
+import { URLSearchParams } from 'url';
+import type { Logger } from '@sap-ux/logger';
+import { LogLevel } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { TransportConfig } from './ui5-abap-repository-service';
+import { isAxiosError } from '../base/odata-request-error';
+import type { Service } from '../base/service-provider';
 import { logError } from './message';
+import type { TransportConfig } from './ui5-abap-repository-service';
+import qs from 'qs';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
 /**
@@ -101,6 +103,12 @@ export interface SystemInfo {
      */
     adaptationProjectTypes: AdaptationProjectType[];
     activeLanguages: Language[];
+    /**
+     * Inbound objects of the application.
+     *
+     * @since ABAP Platform Cloud 2505
+     */
+    inbounds?: Inbound[];
 }
 
 interface Language {
@@ -108,6 +116,35 @@ interface Language {
     description: string;
     i18n: string;
 }
+
+export interface InboundContent {
+    semanticObject: string;
+    action: string;
+    hideLauncher: boolean;
+    icon: string;
+    title: string;
+    subTitle: string;
+    indicatorDataSource?: {
+        dataSource: string;
+        path: string;
+        /**
+         * Represents refresh interval
+         */
+        refresh?: number;
+        [k: string]: unknown;
+    };
+    deviceTypes?: ManifestNamespace.DeviceType;
+    signature: ManifestNamespace.SignatureDef;
+}
+
+export interface Inbound {
+    metadata: {
+        name: string;
+        deprecated: boolean;
+    };
+    content: InboundContent;
+}
+
 /**
  * Technically supported layers, however, in practice only `CUSTOMER_BASE` is used
  */
@@ -132,6 +169,14 @@ function getNamespaceAsString(namespace: Namespace): string {
 function isBuffer(input: string | Buffer): input is Buffer {
     return (input as Buffer).BYTES_PER_ELEMENT !== undefined;
 }
+
+/**
+ * Decodes url parameters.
+ *
+ * @param params An object containing the parameters to be decoded.
+ * @returns The decoded parameters as a string.
+ */
+const decodeUrlParams: CustomParamsSerializer = (params: URLSearchParams) => decodeURIComponent(params.toString());
 
 /**
  * Path suffix for all DTA actions.
@@ -182,7 +227,7 @@ export class LayeredRepositoryService extends Axios implements Service {
 
         try {
             const response = await this.put(path, appDescriptorVariant, {
-                paramsSerializer: (params) => decodeURIComponent(params.toString()),
+                paramsSerializer: decodeUrlParams,
                 params,
                 headers: {
                     'Content-Type': 'application/zip'
@@ -302,11 +347,12 @@ export class LayeredRepositoryService extends Axios implements Service {
     /**
      * Get system info.
      *
-     * @param language
+     * @param language language code (default: EN)
      * @param cloudPackage name
+     * @param appId application id (since ABAP Platform Cloud 2505)
      * @returns the system info object
      */
-    public async getSystemInfo(language: string = 'EN', cloudPackage?: string): Promise<SystemInfo> {
+    public async getSystemInfo(language: string = 'EN', cloudPackage?: string, appId?: string): Promise<SystemInfo> {
         try {
             const params = {
                 'sap-language': language
@@ -314,8 +360,14 @@ export class LayeredRepositoryService extends Axios implements Service {
             if (cloudPackage) {
                 params['package'] = cloudPackage;
             }
+            if (appId) {
+                params['sap-app-id'] = appId;
+            }
+            const response = await this.get(`${DTA_PATH_SUFFIX}system_info`, {
+                params,
+                paramsSerializer: (params) => qs.stringify(params, { encode: false })
+            });
 
-            const response = await this.get(`${DTA_PATH_SUFFIX}system_info`, { params });
             this.tryLogResponse(response, 'Successful getting system info.');
             return JSON.parse(response.data) as SystemInfo;
         } catch (error) {

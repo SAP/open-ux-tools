@@ -1,4 +1,5 @@
 import type { IChildLogger } from '@vscode-logging/logger';
+import type { ToolsLogger } from '@sap-ux/logger';
 
 import { getPackageInfo } from './deps';
 import type { AdpGeneratorOptions } from '../app/types';
@@ -10,7 +11,7 @@ import type { AdpGeneratorOptions } from '../app/types';
  * @param {AdpGeneratorOptions} opts - The generator options, potentially including the AppWizard instance.
  * @param {IChildLogger} logger - Logger instance used for logging any errors that occur during execution.
  */
-export function setHeaderTitle(opts: AdpGeneratorOptions, logger: IChildLogger): void {
+export function setHeaderTitle(opts: AdpGeneratorOptions, logger: ToolsLogger): void {
     try {
         if (typeof opts?.appWizard?.setHeaderTitle === 'function') {
             const { name = '', version = '', displayName = '' } = getPackageInfo();

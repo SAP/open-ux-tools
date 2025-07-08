@@ -30,6 +30,10 @@ server:
       configuration:
         flp:
           theme: sap_belize
+          path: test/flpSandbox.html
+          intent:
+            object: testNameSpacelropv2codeassist
+            action: tile
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:

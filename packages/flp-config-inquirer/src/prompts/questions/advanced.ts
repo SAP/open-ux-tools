@@ -1,24 +1,30 @@
-import { parseParameters } from '@sap-ux/adp-tooling';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
+import type { InboundContent } from '@sap-ux/axios-extension';
 import { t } from '../../i18n';
 import { promptNames } from '../../types';
-import type { FLPConfigQuestion, FLPConfigAnswers } from '../../types';
+import type { FLPConfigQuestion, FLPConfigAnswers, IconPromptOptions } from '../../types';
+import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**
  * Creates the 'inboundId' prompt for FLP configuration.
  *
- * @param {string[]} inboundIds - List of existing inbound IDs to populate the prompt choices.
+ * @param {ManifestNamespace.Inbound} inbounds - List of existing inbounds to populate the prompt choices.
  * @returns {FLPConfigQuestion} The prompt configuration for selecting an inbound ID.
  */
-export function getInboundIdsPrompt(inboundIds: string[]): FLPConfigQuestion {
+export function getInboundIdsPrompt(inbounds: ManifestNamespace.Inbound): FLPConfigQuestion {
+    const choices = Object.entries(inbounds).map(([inboundId, data]) => ({
+        name: inboundId,
+        value: data
+    }));
     return {
         type: 'list',
         name: promptNames.inboundId,
         message: t('prompts.inboundIds'),
-        choices: inboundIds,
-        default: inboundIds[0],
-        validate: validateEmptyString,
-        when: inboundIds?.length > 0,
+        choices: choices,
+        default: () => choices[0]?.value,
+        validate: (value: InboundContent): boolean | string =>
+            validateEmptyString(value.semanticObject) && validateEmptyString(value.action),
+        when: choices?.length > 0,
         guiOptions: {
             hint: t('tooltips.inboundId'),
             breadcrumb: t('prompts.inboundIds'),
@@ -28,55 +34,30 @@ export function getInboundIdsPrompt(inboundIds: string[]): FLPConfigQuestion {
 }
 
 /**
- * Creates the 'emptyInboundsInfo' label prompt for cases where no inbounds exist.
- *
- * @param {string[]} inboundIds - List of existing inbound IDs to determine whether to display this label.
- * @param {string} [appId] - Application ID to generate a link for the Fiori application library.
- * @returns {FLPConfigQuestion} The prompt configuration for displaying an information label when no inbounds exist.
- */
-export function getEmptyInboundsLabelPrompt(inboundIds: string[], appId?: string): FLPConfigQuestion {
-    return {
-        type: 'input',
-        name: promptNames.emptyInboundsInfo,
-        message: t('prompts.emptyInboundsInfo'),
-        guiOptions: {
-            type: 'label',
-            mandatory: false,
-            link: {
-                text: 'application page.',
-                url: `https://fioriappslibrary.hana.ondemand.com/sap/fix/externalViewer/${
-                    appId ? `index.html?appId=${appId}&releaseGroupTextCombined=SC` : '#/home'
-                }`
-            }
-        },
-        when: inboundIds.length === 0
-    };
-}
-
-/**
  * Creates the 'additionalParameters' prompt for specifying parameters in JSON format.
  *
- * @param {string[]} inboundIds - List of existing inbound IDs to conditionally display this prompt.
  * @returns {FLPConfigQuestion} The prompt configuration for specifying a parameter string.
  */
-export function getParameterStringPrompt(inboundIds: string[]): FLPConfigQuestion {
+export function getParameterStringPrompt(): FLPConfigQuestion {
     return {
         type: 'editor',
         name: promptNames.additionalParameters,
         message: t('prompts.additionalParameters'),
-        validate: (value: string) => {
-            if (!value) {
-                return true;
-            }
-
-            try {
-                parseParameters(value);
-            } catch (error) {
-                return error.message;
-            }
-            return true;
+        default: (answers: FLPConfigAnswers): string => {
+            const parameters = answers?.inboundId?.signature?.parameters;
+            return parameters ? JSON.stringify(parameters, null, 2) : '';
         },
-        when: inboundIds?.length === 0,
+        validate: (value: string): string | boolean => {
+            if (!value) {
+                return true; // No additional parameters provided, skip validation
+            }
+            try {
+                JSON.parse(value);
+                return true;
+            } catch {
+                return t('validators.invalidParameterString');
+            }
+        },
         guiOptions: {
             hint: t('tooltips.additionalParameters'),
             mandatory: false
@@ -85,21 +66,44 @@ export function getParameterStringPrompt(inboundIds: string[]): FLPConfigQuestio
 }
 
 /**
- * Creates the 'createAnotherInbound' confirmation prompt for adding additional inbounds.
+ * Creates the 'existingFlpConfigInfo' prompt for displaying existing FLP configuration information.
  *
- * @param {boolean} isCLI - Indicates if the platform is CLI.
- * @returns {FLPConfigQuestion} The prompt configuration for confirming whether to create another inbound.
+ * @param isCLI - Indicates if the platform is CLI (unused).
+ * @returns {FLPConfigQuestion} The prompt configuration for displaying existing FLP config info.
  */
-export function getCreateAnotherInboundPrompt(isCLI: boolean): FLPConfigQuestion {
+export function getExistingFlpConfigInfoPrompt(isCLI: boolean): FLPConfigQuestion {
     return {
-        type: 'confirm',
-        name: promptNames.createAnotherInbound,
-        message: t('prompts.createAnotherInbound'),
-        default: false,
-        when: (answers: FLPConfigAnswers) => !isCLI && !!answers?.inboundId,
+        type: 'input',
+        name: promptNames.existingFlpConfigInfo,
+        message: t('prompts.existingFLPConfig'),
+        when: () => !isCLI,
         guiOptions: {
-            hint: t('tooltips.inboundId'),
-            breadcrumb: t('prompts.inboundIds')
+            type: 'label',
+            mandatory: false
         }
+    };
+}
+
+/**
+ * Creates the 'icon' prompt for FLP configuration.
+ *
+ * @param {IconPromptOptions} [options] - Optional configuration for the icon prompt, including default values.
+ * @returns {FLPConfigQuestion} The prompt configuration for the icon.
+ */
+export function getIconPrompt(options?: IconPromptOptions): FLPConfigQuestion {
+    return {
+        name: promptNames.icon,
+        type: 'input',
+        guiOptions: {
+            breadcrumb: true
+        },
+        message: t('prompts.icon'),
+        default: (answers: FLPConfigAnswers): string => {
+            if (options?.default) {
+                return options.default;
+            }
+            return answers?.inboundId?.icon ?? '';
+        },
+        filter: (val: string): string => val?.trim()
     };
 }

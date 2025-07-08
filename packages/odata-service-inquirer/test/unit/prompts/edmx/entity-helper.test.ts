@@ -191,5 +191,114 @@ describe('Test entity helper functions', () => {
             expect(typeNameChoices[0].value.entitySetName).toEqual('I_Currency');
             expect(typeNameChoices[0].value.entitySetType).toEqual('SEPMRA_PROD_MAN.I_CurrencyType');
         });
+
+        test('should set mainEntityParameterName for a single valid parameterised main entity', async () => {
+            const v4ParamertrisedEntitiesMetadata = await readFile(
+                join(__dirname, '../test-data/parameterised-entity-metadata.xml'),
+                'utf8'
+            );
+            const result = getEntityChoices(v4ParamertrisedEntitiesMetadata);
+            // Check that the choices contain the mainEntityParameterName property
+            const expectedChoicesWithParameterisedMainEntity = [
+                {
+                    name: 'ZC_STOCKAGEING',
+                    value: {
+                        entitySetName: 'ZC_STOCKAGEING',
+                        entitySetType: 'com.sap.gateway.srvd.zserv_d_stock_ageing.v0001.ZC_STOCKAGEINGParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                }
+            ];
+            expect(result.choices).toEqual(expectedChoicesWithParameterisedMainEntity);
+        });
+
+        test('should set mainEntityParameterName for multiple valid parameterised main entities', async () => {
+            const v4MultiParamertrisedEntitiesMetadata = await readFile(
+                join(__dirname, '../test-data/multiple-parameterised-entities-metadata.xml'),
+                'utf8'
+            );
+            const result = getEntityChoices(v4MultiParamertrisedEntitiesMetadata);
+            const expectedMultiParamEntities = [
+                {
+                    name: 'ChangeableFields',
+                    value: {
+                        entitySetName: 'ChangeableFields',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.ChangeableFieldsParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'CustomFunction',
+                    value: {
+                        entitySetName: 'CustomFunction',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomFunctionParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'CustomHint',
+                    value: {
+                        entitySetName: 'CustomHint',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomHintParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'CustomLink',
+                    value: {
+                        entitySetName: 'CustomLink',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomLinkParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'CustomText',
+                    value: {
+                        entitySetName: 'CustomText',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.CustomTextParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'InterfaceDisplayName',
+                    value: {
+                        entitySetName: 'InterfaceDisplayName',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.InterfaceDisplayNameParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'InterfaceStatistics',
+                    value: {
+                        entitySetName: 'InterfaceStatistics',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.InterfaceStatisticsParameters',
+                        mainEntityParameterName: 'Set'
+                    }
+                },
+                {
+                    name: 'MessageComment',
+                    value: {
+                        entitySetName: 'MessageComment',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.MessageCommentType'
+                    }
+                },
+                {
+                    name: 'MessageProcessStatus',
+                    value: {
+                        entitySetName: 'MessageProcessStatus',
+                        entitySetType: 'com.sap.gateway.srvd.aif.messagemonitor.v0001.MessageProcessStatusType'
+                    }
+                }
+            ];
+            expect(result.choices).toEqual(expectedMultiParamEntities);
+        });
+
+        test('should return no mainEntityParameterName when no valid parameterised navigation property exists', async () => {
+            const result = getEntityChoices(metadataV4WithDraftEntities);
+            // Check that none of the choices have mainEntityParameterName defined
+            result.choices.forEach((choice) => {
+                expect(choice.value).not.toHaveProperty('mainEntityParameterName');
+            });
+        });
     });
 });

@@ -1,7 +1,8 @@
-import { defaultVersion } from './constants';
+import { defaultVersion, latestVersionString } from './constants';
 import type { UI5Theme } from './types';
 import type { SemVer } from 'semver';
 import { coerce, gte, lt } from 'semver';
+import { getLatestUI5Version } from './ui5-version-info';
 
 const MIN_UI5_VER_DARK_THEME = '1.72.0';
 const MIN_UI5_VER_HORIZON_THEME = '1.102.0';
@@ -78,15 +79,22 @@ function isSupported(theme: UI5Theme, cleanSemVer: SemVer): boolean {
 }
 
 /**
- * Return supported UI5 themes.
+ * Returns the list of supported UI5 themes for a given UI5 version.
  *
- * @param [ui5Version] - optional, restrict the returned themes to only those supported by specified UI5 version
- * If the passed version is not a valid semantic version all themes will be returned.
- * @returns UI5 themes array
+ * - If ui5Version is `Latest`, the latest supported UI5 version is used.
+ * - If ui5Version is a snapshot version (e.g., 'snapshot-1.137.0'), the snapshot prefix is removed.
+ * - If ui5Version is invalid or cannot be parsed into a semantic version, all themes are returned.
+ * - Themes that are deprecated for the given version are marked with "(deprecated)" in their label.
+ *
+ * @param [ui5Version] - The UI5 version to filter themes by. Defaults to `defaultVersion`.
+ * @returns {Promise<UI5Theme[]>}  A promise that returns an array of UI5 themes supported for the specified version.
  */
-export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
-    const ui5VersionSince = ui5Version.replace('snapshot-', '');
-    const cleanSemVer = coerce(ui5VersionSince);
+export async function getUi5Themes(ui5Version: string = defaultVersion): Promise<UI5Theme[]> {
+    // Handle 'Latest' versions by using the latest supported UI5 version
+    const resolvedUi5Version =
+        ui5Version === latestVersionString ? await getLatestUI5Version(true) : ui5Version.replace('snapshot-', '');
+
+    const cleanSemVer = coerce(resolvedUi5Version);
 
     if (!cleanSemVer) {
         return Object.values(ui5Themes);

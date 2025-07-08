@@ -1,5 +1,108 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.25
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.22
+
+## 0.3.24
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/inquirer-common@0.7.21
+
+## 0.3.23
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.20
+
+## 0.3.22
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.19
+
+## 0.3.21
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   b9675bb: Update the MTA ID error message.
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.3.20
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.17
+
+## 0.3.19
+
+### Patch Changes
+
+-   48af01a: Validate long Windows path in deployment configuration.
+
+## 0.3.18
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.16
+
+## 0.3.17
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.15
+
+## 0.3.16
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.14
+
+## 0.3.15
+
+### Patch Changes
+
+-   ff6ff97: Update the MTA ID error message.
+
+## 0.3.14
+
+### Patch Changes
+
+-   c9f79c1: Check long Windows paths during project generation and deployment config generation.
+
+## 0.3.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.13
+
+## 0.3.12
+
+### Patch Changes
+
+-   Updated dependencies [20cc54f]
+    -   @sap-ux/inquirer-common@0.7.12
+
+## 0.3.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.11
+
+## 0.3.10
+
+### Patch Changes
+
+-   Updated dependencies [bf752f3]
+    -   @sap-ux/inquirer-common@0.7.10
+
 ## 0.3.9
 
 ### Patch Changes

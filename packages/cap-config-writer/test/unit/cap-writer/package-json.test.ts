@@ -80,7 +80,7 @@ describe('Writing/package json files', () => {
         const devDependencies = packageJson.devDependencies;
         const scripts = packageJson.scripts;
         expect(devDependencies).toEqual({
-            'cds-plugin-ui5': '^0.9.3'
+            'cds-plugin-ui5': '^0.13.0'
         });
         expect(scripts?.['watch-test-cap-package-sapux']).toBeDefined();
         expect(scripts?.['watch-test-cap-package-sapux']).toEqual(
@@ -99,7 +99,7 @@ describe('Writing/package json files', () => {
             name: 'test-project-ws-already-enabled',
             workspaces: ['app/*'],
             devDependencies: {
-                'cds-plugin-ui5': '^0.9.3'
+                'cds-plugin-ui5': '^0.13.0'
             }
         });
         await updateRootPackageJson(

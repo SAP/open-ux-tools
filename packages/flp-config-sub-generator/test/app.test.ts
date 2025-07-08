@@ -16,6 +16,7 @@ import { assertInboundsHasConfig } from './utils';
 import type { PackageInfo } from '@sap-ux/nodejs-utils';
 import type { Manifest } from '@sap-ux/project-access';
 import type { FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
+import { join } from 'path';
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
@@ -516,8 +517,10 @@ describe('flp-config generator', () => {
                 .run()
         ).resolves.not.toThrow();
 
+        const dirprefix =
+            process.platform == 'win32' ? join(path.parse(process.cwd()).root, OUTPUT_DIR_PREFIX) : OUTPUT_DIR_PREFIX;
         expect(showWarningSpy).toHaveBeenCalledWith(
-            t('warning.updatei18n', { path: `.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json` }),
+            t('warning.updatei18n', { path: `${join(dirprefix, '/app1/webapp/i18n/i18n.properties')}` }),
             MessageType.notification
         );
     });

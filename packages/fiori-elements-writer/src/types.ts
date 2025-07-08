@@ -30,7 +30,44 @@ export class ValidationError extends Error {
 }
 
 export interface EntityConfig {
-    mainEntityName: string; // Defines the main list page entity
+    /**
+     * The name of the main entity used for list page entity
+     */
+    mainEntityName: string;
+    /**
+     * Represents a parameter used alongside the main entity to query for data.
+     * When this parameter is set, the prompt for selecting navigation properties is skipped,
+     * as the entity set is parameterised and directly linked to its target entity set.
+     * If a value is provided, navigation routes will always include it.
+     *
+     * @example
+     * Example input:
+     * ```
+     * {
+     *   mainEntityName: `Products`,
+     *   mainEntityParameterName: 'ProductFilter'
+     * }
+     * ```
+     * Example of the resulting routing entry:
+     * ```
+     * "routes": [
+     *    {
+     *      "pattern": ":?query:",
+     *      "name": "ProductsList",
+     *      "target": "ProductsList"
+     *    },
+     *    {
+     *      "pattern": "Products({key})/ProductFilter({key2}):?query:",
+     *      "name": "ProductsObjectPage",
+     *      "target": "ProductsObjectPage"
+     *    }
+     *  ]
+     * ```
+     */
+    mainEntityParameterName?: string;
+    /**
+     * Configuration for the navigation entity used for object page navigation.
+     */
     navigationEntity?: {
         EntitySet: string; // Defines the entity set for object page navigation
         Name: string; // Defines the entity name for object page navigation

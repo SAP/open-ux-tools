@@ -32,7 +32,7 @@ When this middleware is used together with the `reload-middleware`, then the ord
 | `editors.rta`           | `array`    | optional                                       | `undefined`      | Configuration allowing to add mount points for runtime adaptation                                                                                                                                                                                     |
 | `editors.rta.layer`     | `string`   | optional                                       | `(calculated)`   | Property for defining the runtime adaptation layer for changes (default is `CUSTOMER_BASE` or read from the project for adaptation projects)                                                                                                          |
 | `editors.rta.endpoints` | `array`    | optional                                       | `undefined`      | List of mount points for editing                                                                                                                                               
-| `editors.cardGenerator` | ---    | optional                                       | `undefined`      | Configuration object to enable card generation for an application.
+| `editors.cardGenerator` | ---    | optional                                       | `undefined`      | Configuration object to enable card generation for an application (only supported for non-CAP apps).
 | `editors.cardGenerator.path` | `string`   | optional                              | `test/flpGeneratorSandbox.html`      | The mount point of the local SAP Fiori launchpad which will be considered for card generation.          
 | `test`                  | `array`    | optional                                       | `undefined`      | List of configurations for automated testing.                                                                                                                                                                                                         |
 | `debug`                 | `boolean`  | optional                                       | `false`          | Enables the debug output                                                                                                                                                                                                                              |
@@ -127,10 +127,11 @@ server:
   - name: preview-middleware
     afterMiddleware: compression
     configuration:
-      rta:
-        layer: CUSTOMER_BASE
-        editors:
-          - path: /test/variant-editor.html
+      editors:
+        rta:
+          layer: CUSTOMER_BASE
+          endpoints:
+            - path: /test/variant-editor.html
 ```
 This mount path can be used with a run script that looks as follows.
 ```Json

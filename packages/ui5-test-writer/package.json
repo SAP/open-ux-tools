@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui5-test-writer",
     "description": "SAP UI5 tests writer",
-    "version": "0.7.2",
+    "version": "0.7.11",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -33,14 +33,14 @@
     ],
     "dependencies": {
         "ejs": "3.1.10",
-        "i18next": "20.6.1",
+        "i18next": "25.3.0",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "@sap-ux/ui5-application-writer": "workspace:*",
-        "@sap-ux/logger": "workspace:*"
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/project-access": "workspace:*"
     },
     "devDependencies": {
-        "@sap-ux/project-access": "workspace:*",
         "@types/ejs": "3.1.2",
         "@types/fs-extra": "9.0.13",
         "@types/mem-fs": "1.1.2",
