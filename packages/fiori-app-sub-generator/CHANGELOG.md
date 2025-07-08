@@ -1,5 +1,11 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.22
+
+### Patch Changes
+
+-   63f1eb7: Update translation bookmark
+
 ## 0.5.21
 
 ### Patch Changes
