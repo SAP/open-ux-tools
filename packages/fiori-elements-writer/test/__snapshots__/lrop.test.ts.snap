@@ -7311,8 +7311,8 @@ archive.zip
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^8.28.0\\",
+    \\"@typescript-eslint/parser\\": \\"^8.28.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -24116,8 +24116,8 @@ Object {
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^8.28.0\\",
+    \\"@typescript-eslint/parser\\": \\"^8.28.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\"
   },
   \\"scripts\\": {
@@ -47721,8 +47721,8 @@ archive.zip
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^8.28.0\\",
+    \\"@typescript-eslint/parser\\": \\"^8.28.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -51223,8 +51223,8 @@ archive.zip
     \\"@sapui5/ts-types-esm\\": \\"~1.111.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^8.28.0\\",
+    \\"@typescript-eslint/parser\\": \\"^8.28.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
@@ -54725,8 +54725,8 @@ archive.zip
     \\"@sapui5/types\\": \\"~1.113.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.3.7\\",
     \\"typescript\\": \\"^5.1.6\\",
-    \\"@typescript-eslint/eslint-plugin\\": \\"^7.1.1\\",
-    \\"@typescript-eslint/parser\\": \\"^7.1.1\\",
+    \\"@typescript-eslint/eslint-plugin\\": \\"^8.28.0\\",
+    \\"@typescript-eslint/parser\\": \\"^8.28.0\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^0.4.0\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },

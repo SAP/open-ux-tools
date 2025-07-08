@@ -15,7 +15,7 @@
     "@sap-ux/eslint-plugin-fiori-tools": "^0.4.0",
     "eslint": "8.57.0",
     "eslint-plugin-fiori-custom": "2.6.7",
-    "@babel/eslint-parser": "7.14.7"
+    "@babel/eslint-parser": "8.28.0"
   },
   "scripts": {
     "start": "fiori run --open \"test/flp.html#app-preview\"",
