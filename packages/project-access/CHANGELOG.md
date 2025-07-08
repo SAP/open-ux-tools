@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.30.7
+
+### Patch Changes
+
+-   58cdce6: fix: Windows path issue for CAP CDS projects
+
 ## 1.30.6
 
 ### Patch Changes
