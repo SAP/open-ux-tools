@@ -33,7 +33,7 @@ describe('Test readUi5DeployConfigTarget', () => {
             await readUi5DeployConfigTarget(basePath);
             fail('Error should have been thrown');
         } catch (error) {
-            expect(error.message).toContain('No target definition found (ui5-deploy.yaml)');
+            expect(error.message).toContain('No target definition found: ui5-deploy.yaml');
         }
     });
 });

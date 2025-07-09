@@ -734,6 +734,7 @@ describe('ChangeService', () => {
         function createCommand(): {
             getElement: () => any;
             getPreparedChange: () => any;
+            getChangeType: () => any;
         } {
             return {
                 getElement: jest.fn().mockReturnValue({
@@ -752,7 +753,8 @@ describe('ChangeService', () => {
                         changeType: 'page',
                         fileName: 'fileName'
                     })
-                })
+                }),
+                getChangeType: jest.fn().mockReturnValue('page')
             };
         }
         const subCommands = [createCommand(), createCommand()];
@@ -834,8 +836,10 @@ describe('ChangeService', () => {
         function createCommand(): {
             getElement: () => any;
             getPreparedChange: () => any;
+            getChangeType: () => any;
         } {
             return {
+                getChangeType: jest.fn().mockReturnValue('page'),
                 getElement: jest.fn().mockReturnValue({
                     getMetadata: jest
                         .fn()
@@ -906,8 +910,10 @@ describe('ChangeService', () => {
         function createCommand(): {
             getElement: () => any;
             getPreparedChange: () => any;
+            getChangeType: () => any;
         } {
             return {
+                getChangeType: jest.fn().mockReturnValue('page'),
                 getElement: jest.fn().mockReturnValue({
                     getMetadata: jest
                         .fn()
@@ -980,6 +986,7 @@ describe('ChangeService', () => {
         function createCommand(): {
             getElement: () => any;
             getPreparedChange: () => any;
+            getChangeType: () => any;
         } {
             return {
                 getElement: jest.fn().mockReturnValue({
@@ -988,6 +995,7 @@ describe('ChangeService', () => {
                         .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
                     getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
                 }),
+                getChangeType: jest.fn().mockReturnValue('page'),
                 getPreparedChange: jest.fn().mockReturnValue({
                     getSelector: jest.fn().mockReturnValue({
                         id: '_ST_SmartVariantManagement'
@@ -1054,8 +1062,10 @@ describe('ChangeService', () => {
         function createCommand(): {
             getElement: () => any;
             getPreparedChange: () => any;
+            getChangeType: () => any;
         } {
             return {
+                getChangeType: jest.fn().mockReturnValue('page'),
                 getElement: jest.fn().mockReturnValue({
                     getMetadata: jest
                         .fn()
@@ -1120,6 +1130,7 @@ describe('ChangeService', () => {
         function createCommand(): {
             getElement: () => any;
             getPreparedChange: () => any;
+            getChangeType: () => any;
         } {
             return {
                 getElement: jest.fn().mockReturnValue({
@@ -1128,6 +1139,7 @@ describe('ChangeService', () => {
                         .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
                     getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
                 }),
+                getChangeType: jest.fn().mockReturnValue('page'),
                 getPreparedChange: jest.fn().mockReturnValue({
                     getSelector: jest.fn().mockReturnValue({
                         id: '_ST_SmartVariantManagement'
@@ -1194,6 +1206,7 @@ describe('ChangeService', () => {
         function createCommand(): {
             getElement: () => any;
             getPreparedChange: () => any;
+            getChangeType: () => any;
         } {
             return {
                 getElement: jest.fn().mockReturnValue({
@@ -1202,6 +1215,7 @@ describe('ChangeService', () => {
                         .mockReturnValue({ getName: jest.fn().mockReturnValue('sap.ui.layout.form.SimpleForm') }),
                     getProperty: jest.fn().mockReturnValue('_ST_SmartVariantManagement')
                 }),
+                getChangeType: jest.fn().mockReturnValue('page'),
                 getPreparedChange: jest.fn().mockReturnValue({
                     getSelector: jest.fn().mockReturnValue({
                         id: '_ST_SmartVariantManagement'
@@ -1260,8 +1274,10 @@ describe('ChangeService', () => {
         function createCommand(): {
             getElement: () => any;
             getPreparedChange: () => any;
+            getChangeType: () => any;
         } {
             return {
+                getChangeType: jest.fn().mockReturnValue('page'),
                 getElement: jest.fn().mockReturnValue({
                     getMetadata: jest
                         .fn()

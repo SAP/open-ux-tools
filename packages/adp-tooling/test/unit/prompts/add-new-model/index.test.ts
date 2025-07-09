@@ -76,7 +76,7 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('testName', { dataSourceName: 'otherName' } as NewModelAnswers)).toBe(
-            "OData Service Name should start with 'customer.'"
+            "OData Service Name must start with 'customer.'."
         );
     });
 
@@ -87,7 +87,7 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('customer.', { dataSourceName: 'otherName' } as NewModelAnswers)).toBe(
-            "OData Service Name should contain at least one character in addition to 'customer.'"
+            "OData Service Name must contain at least one character in addition to 'customer.'."
         );
     });
 
@@ -116,7 +116,9 @@ describe('getPrompts', () => {
             validation?.('customer.testName', {
                 dataSourceName: 'otherName'
             } as NewModelAnswers)
-        ).toBe('OData Annotation or OData Service with the same name was already added to the project');
+        ).toBe(
+            'An OData annotation or service with the same name was already added to the project. Rename and try again.'
+        );
     });
 
     it('should return error message when validating service name prompt has name duplication', () => {
@@ -130,7 +132,9 @@ describe('getPrompts', () => {
                 addAnnotationMode: true,
                 dataSourceName: 'customer.testName'
             } as NewModelAnswers)
-        ).toBe('OData Service Name must be different from OData Annotation Data Source Name');
+        ).toBe(
+            'An OData Service Name must be different from an OData Annotation Data Source Name. Rename and try again.'
+        );
     });
 
     it('should return true when validating service uri prompt', () => {
@@ -228,7 +232,7 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'modelName')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('testName')).toBe("OData Service SAPUI5 Model Name should start with 'customer.'");
+        expect(validation?.('testName')).toBe("OData Service SAPUI5 Model Name must start with 'customer.'.");
     });
 
     it('should return error message when validating model name contains only "customer."', () => {
@@ -238,7 +242,7 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('customer.')).toBe(
-            "OData Service SAPUI5 Model Name should contain at least one character in addition to 'customer.'"
+            "OData Service SAPUI5 Model Name must contain at least one character in addition to 'customer.'."
         );
     });
 
@@ -262,7 +266,7 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('customer.testName')).toBe(
-            'SAPUI5 Model with the same name was already added to the project'
+            'An SAPUI5 model with the same name was already added to the project. Rename and try again.'
         );
     });
 
@@ -305,7 +309,7 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('testName', { name: 'testName' } as NewModelAnswers)).toBe(
-            "OData Annotation Data Source Name should start with 'customer.'"
+            "OData Annotation Data Source Name must start with 'customer.'."
         );
     });
 
@@ -316,7 +320,7 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('customer.', { name: 'customer.testName' } as NewModelAnswers)).toBe(
-            "OData Annotation Data Source Name should contain at least one character in addition to 'customer.'"
+            "OData Annotation Data Source Name must contain at least one character in addition to 'customer.'."
         );
     });
 
@@ -354,7 +358,7 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('customer.testName', { name: 'otherName' } as NewModelAnswers)).toBe(
-            'OData Annotation or OData Service with the same name was already added to the project'
+            'An OData annotation or service with the same name was already added to the project. Rename and try again.'
         );
     });
 
@@ -365,7 +369,7 @@ describe('getPrompts', () => {
 
         expect(typeof validation).toBe('function');
         expect(validation?.('customer.testName', { name: 'customer.testName' } as NewModelAnswers)).toBe(
-            'OData Service Name must be different from OData Annotation Data Source Name'
+            'An OData Service Name must be different from an OData Annotation Data Source Name. Rename and try again.'
         );
     });
 

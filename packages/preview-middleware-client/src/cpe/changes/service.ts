@@ -36,7 +36,7 @@ import UI5Element from 'sap/ui/core/Element';
 import { setAdditionalChangeInfo } from '../../utils/additional-change-info';
 import {
     ChangeHandler,
-    changeType,
+    ChangeType,
     ConfigChange,
     GENERIC_CHANGE_HANDLER,
     getControlIdByChange,
@@ -444,7 +444,7 @@ export class ChangeService extends EventTarget {
 
         const changeDefinition = change.getDefinition ? change.getDefinition() : (change.getJson() as ChangeDefinition);
         const { fileName } = changeDefinition;
-        const handler = GENERIC_CHANGE_HANDLER[changeType as changeType] as unknown as ChangeHandler<GenericChange>;
+        const handler = GENERIC_CHANGE_HANDLER[changeType as ChangeType] as unknown as ChangeHandler<GenericChange>;
         if (handler) {
             const {
                 properties,

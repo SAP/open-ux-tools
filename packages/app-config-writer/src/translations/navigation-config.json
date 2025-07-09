@@ -1,7 +1,7 @@
 {
     "error": {
-        "sapAppNotDefined": "Manifest is missing required section 'sap.app'",
-        "manifestNotFound": "Manifest not found at path: {{- path}}",
-        "inboundExists": "Inbound definition already exists for key: {{inboundKey}}"
+        "sapAppNotDefined": "The `manifest.json` file is missing the `sap.app` required section.",
+        "manifestNotFound": "The `manifest.json` file was not found at path: {{- path}}. Check the file exists.",
+        "inboundExists": "An inbound definition already exists for key: {{inboundKey}}. Choose another key."
     }
 }

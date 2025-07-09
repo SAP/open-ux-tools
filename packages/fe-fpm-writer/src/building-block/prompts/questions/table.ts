@@ -1,5 +1,4 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { TFunction } from 'i18next';
 import type { Answers } from 'inquirer';
 import { i18nNamespaces, translate } from '../../../i18n';
 import {
@@ -52,17 +51,17 @@ const defaultAnswers = {
  */
 export async function getTableBuildingBlockPrompts(context: PromptContext): Promise<Prompts<TablePromptsAnswer>> {
     const { project } = context;
-    const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.table.');
+    const t = translate(i18nNamespaces.buildingBlock, 'prompts.table.');
     const groups: PromptsGroup[] = [
         {
             id: groupIds.commonTableBuildingBlockProperties,
-            title: t('tableBuildingBlockPropertiesTitle'),
-            description: t('tableBuildingBlockPropertiesDescription', { returnObjects: true })
+            title: t('tableBuildingBlockPropertiesTitle') as string,
+            description: t('tableBuildingBlockPropertiesDescription', { returnObjects: true }) as string[]
         },
         {
             id: groupIds.visualisationProperties,
-            title: t('tableVisualizationPropertiesTitle'),
-            description: t('tableVisualizationPropertiesDescription', { returnObjects: true })
+            title: t('tableVisualizationPropertiesTitle') as string,
+            description: t('tableVisualizationPropertiesDescription', { returnObjects: true }) as string[]
         },
         MANIFEST_LIBRARIES_GROUP
     ];
@@ -71,16 +70,16 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
         groups,
         questions: [
             //first prompt group
-            getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate'), {
-                message: t('viewOrFragmentPath.message'),
+            getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate') as string, {
+                message: t('viewOrFragmentPath.message') as string,
                 guiOptions: {
                     groupId: groupIds.commonTableBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['aggregationPath', 'buildingBlockData.filterBar']
                 }
             }),
-            getBuildingBlockIdPrompt(context, t('id.validation'), {
-                message: t('id.message'),
+            getBuildingBlockIdPrompt(context, t('id.validation') as string, {
+                message: t('id.message') as string,
                 default: defaultAnswers.id,
                 guiOptions: {
                     groupId: groupIds.commonTableBuildingBlockProperties,
@@ -88,7 +87,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 }
             }),
             getBindingContextTypePrompt({
-                message: t('bindingContextType'),
+                message: t('bindingContextType') as string,
                 default: defaultAnswers.bindingContextType,
                 guiOptions: {
                     groupId: groupIds.commonTableBuildingBlockProperties,
@@ -99,7 +98,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             ...(project && isCapProject(project)
                 ? [
                       await getCAPServicePrompt(context, {
-                          message: t('service'),
+                          message: t('service') as string,
                           guiOptions: {
                               groupId: groupIds.commonTableBuildingBlockProperties,
                               mandatory: true,
@@ -109,7 +108,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                   ]
                 : []),
             getEntityPrompt(context, {
-                message: t('entity'),
+                message: t('entity') as string,
                 guiOptions: {
                     groupId: groupIds.commonTableBuildingBlockProperties,
                     mandatory: true,
@@ -119,37 +118,37 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             getAnnotationPathQualifierPrompt(
                 context,
                 {
-                    message: t('qualifier'),
+                    message: t('qualifier') as string,
                     guiOptions: {
-                        hint: t('valuesDependentOnEntityTypeInfo'),
+                        hint: t('valuesDependentOnEntityTypeInfo') as string,
                         groupId: groupIds.commonTableBuildingBlockProperties,
                         mandatory: true,
-                        placeholder: t('qualifierPlaceholder')
+                        placeholder: t('qualifierPlaceholder') as string
                     }
                 },
                 [UIAnnotationTerms.LineItem]
             ),
             getAggregationPathPrompt(context, {
-                message: t('aggregation'),
+                message: t('aggregation') as string,
                 guiOptions: {
                     groupId: groupIds.commonTableBuildingBlockProperties,
                     mandatory: true
                 }
             }),
             getFilterBarIdPrompt(context, {
-                message: t('filterBar.message'),
+                message: t('filterBar.message') as string,
                 type: 'list',
                 guiOptions: {
                     groupId: groupIds.commonTableBuildingBlockProperties,
-                    placeholder: t('filterBar.placeholder'),
-                    creation: { placeholder: t('filterBar.inputPlaceholder') }
+                    placeholder: t('filterBar.placeholder') as string,
+                    creation: { placeholder: t('filterBar.inputPlaceholder') as string }
                 }
             }),
             //second prompt group
             {
                 type: 'list',
                 name: 'buildingBlockData.type',
-                message: t('tableType.message'),
+                message: t('tableType.message') as string,
                 choices: [
                     // ResponsiveTable | GridTable
                     { name: 'Responsive Table', value: 'ResponsiveTable' },
@@ -163,13 +162,13 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             {
                 type: 'list',
                 name: 'buildingBlockData.selectionMode',
-                message: t('selectionMode.message'),
+                message: t('selectionMode.message') as string,
                 choices: [
                     // None, Single, Multi or Auto
-                    { name: t('selectionMode.choices.single'), value: 'Single' },
-                    { name: t('selectionMode.choices.multiple'), value: 'Multi' },
-                    { name: t('selectionMode.choices.auto'), value: 'Auto' },
-                    { name: t('selectionMode.choices.none'), value: 'None' }
+                    { name: t('selectionMode.choices.single') as string, value: 'Single' },
+                    { name: t('selectionMode.choices.multiple') as string, value: 'Multi' },
+                    { name: t('selectionMode.choices.auto') as string, value: 'Auto' },
+                    { name: t('selectionMode.choices.none') as string, value: 'None' }
                 ],
                 default: defaultAnswers.selectionMode,
                 guiOptions: {
@@ -178,7 +177,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             },
             getBooleanPrompt({
                 name: 'buildingBlockData.headerVisible',
-                message: t('headerVisible'),
+                message: t('headerVisible') as string,
                 default: defaultAnswers.headerVisible,
                 guiOptions: {
                     groupId: groupIds.visualisationProperties
@@ -187,23 +186,23 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             {
                 type: 'input',
                 name: 'buildingBlockData.header',
-                message: t('header.message'),
+                message: t('header.message') as string,
                 guiOptions: {
                     groupId: groupIds.visualisationProperties,
                     translationProperties: {
                         type: SapShortTextType.TableTitle,
-                        annotation: t('header.translationAnnotation')
+                        annotation: t('header.translationAnnotation') as string
                     }
                 }
             },
             {
                 type: 'checkbox',
                 name: 'buildingBlockData.personalization',
-                message: t('personalization.message'),
+                message: t('personalization.message') as string,
                 choices: [
-                    { name: t('personalization.choices.Sort'), value: 'Sort' },
-                    { name: t('personalization.choices.Column'), value: 'Column' },
-                    { name: t('personalization.choices.Filter'), value: 'Filter' }
+                    { name: t('personalization.choices.Sort') as string, value: 'Sort' },
+                    { name: t('personalization.choices.Column') as string, value: 'Column' },
+                    { name: t('personalization.choices.Filter') as string, value: 'Filter' }
                 ],
                 guiOptions: {
                     groupId: groupIds.visualisationProperties
@@ -212,7 +211,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             {
                 type: 'list',
                 name: 'buildingBlockData.variantManagement',
-                message: t('tableVariantManagement'),
+                message: t('tableVariantManagement') as string,
                 choices: [
                     { name: 'Page', value: 'Page' },
                     { name: 'Control', value: 'Control' },
@@ -225,7 +224,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             },
             getBooleanPrompt({
                 name: 'buildingBlockData.readOnly',
-                message: t('readOnlyMode'),
+                message: t('readOnlyMode') as string,
                 default: defaultAnswers.readOnly,
                 guiOptions: {
                     groupId: groupIds.visualisationProperties
@@ -233,7 +232,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             }),
             getBooleanPrompt({
                 name: 'buildingBlockData.enableAutoColumnWidth',
-                message: t('autoColumnWidth'),
+                message: t('autoColumnWidth') as string,
                 default: defaultAnswers.enableAutoColumnWidth,
                 guiOptions: {
                     groupId: groupIds.visualisationProperties
@@ -241,7 +240,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             }),
             getBooleanPrompt({
                 name: 'buildingBlockData.enableExport',
-                message: t('dataExport'),
+                message: t('dataExport') as string,
                 default: defaultAnswers.enableExport,
                 guiOptions: {
                     groupId: groupIds.visualisationProperties
@@ -249,7 +248,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             }),
             getBooleanPrompt({
                 name: 'buildingBlockData.enableFullScreen',
-                message: t('fullScreenMode'),
+                message: t('fullScreenMode') as string,
                 default: defaultAnswers.enableFullScreen,
                 guiOptions: {
                     groupId: groupIds.visualisationProperties
@@ -257,7 +256,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             }),
             getBooleanPrompt({
                 name: 'buildingBlockData.enablePaste',
-                message: t('pasteFromClipboard'),
+                message: t('pasteFromClipboard') as string,
                 default: defaultAnswers.enablePaste,
                 guiOptions: {
                     groupId: groupIds.visualisationProperties
@@ -265,7 +264,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             }),
             getBooleanPrompt({
                 name: 'buildingBlockData.isSearchable',
-                message: t('tableSearchableToggle'),
+                message: t('tableSearchableToggle') as string,
                 default: defaultAnswers.isSearchable,
                 guiOptions: {
                     groupId: groupIds.visualisationProperties

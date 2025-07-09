@@ -361,7 +361,7 @@ describe('BAS service center', () => {
                 .withOptions({ appWizard, data: inputData, vscode: {}, state })
         ).resolves.not.toThrow();
         expect(generateSpy).toHaveBeenCalled();
-        expect(appWizard.showInformation).toHaveBeenCalledWith('UI Service  was generated successfully', 1);
+        expect(appWizard.showInformation).toHaveBeenCalledWith('The UI service:  was generated.', 1);
         expect(runPostGenHookSpy).toHaveBeenCalled();
     });
 
@@ -605,7 +605,7 @@ describe('test ui service generator', () => {
                 })
         ).rejects.toThrow();
         expect(appWizard.showError).toHaveBeenCalledWith(
-            'No generator found for the selected business object interface',
+            'No generator found for the selected business object interface.',
             0
         );
         expect(authenicationSpy).toHaveBeenCalled();

@@ -1,4 +1,4 @@
-import type { TOptions } from 'i18next';
+import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/ui5-application-inquirer.i18n.json';
 import { addi18nResourceBundle as addi18nResourceBundleInquirerCommon } from '@sap-ux/inquirer-common';
@@ -6,11 +6,12 @@ import { addi18nResourceBundle as addi18nResourceBundleProjectInputValidator } f
 
 const ui5AppInquirerNamespace = 'ui5-application-inquirer';
 export const defaultProjectNumber = 1;
+export const i18n: i18nNext = i18next.createInstance();
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18nUi5AppInquirer(): Promise<void> {
-    await i18next.init({
+    await i18n.init({
         lng: 'en',
         fallbackLng: 'en',
         interpolation: {
@@ -19,7 +20,7 @@ export async function initI18nUi5AppInquirer(): Promise<void> {
             }
         }
     });
-    i18next.addResourceBundle('en', ui5AppInquirerNamespace, translations);
+    i18n.addResourceBundle('en', ui5AppInquirerNamespace, translations);
     // Add bundles on which this module depends (this is a temp workaround as the init from the imported modules is not called)
     addi18nResourceBundleProjectInputValidator();
     addi18nResourceBundleInquirerCommon();
@@ -36,7 +37,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: ui5AppInquirerNamespace });
     }
-    return i18next.t(key, options);
+    return i18n.t(key, options);
 }
 
 initI18nUi5AppInquirer().catch(() => {

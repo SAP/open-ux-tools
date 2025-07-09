@@ -364,7 +364,8 @@ async function filterAdaptations(pathMap: FileMapAndCache, memFs?: Editor): Prom
     for (const manifestAppDescrVar of manifestAppDescrVars) {
         const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestAppDescrVar), memFs);
         const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
-        if (projectRoot && (await fileExists(join(projectRoot, 'webapp', FileName.ManifestAppDescrVar), memFs))) {
+        const webappPath = await getWebappPath(projectRoot ?? '', memFs);
+        if (projectRoot && (await fileExists(join(webappPath, FileName.ManifestAppDescrVar), memFs))) {
             results.push({ appRoot: projectRoot, manifestAppdescrVariantPath: manifestAppDescrVar });
         }
     }

@@ -5,7 +5,6 @@ import hasbin from 'hasbin';
 import mockFs from 'fs';
 
 jest.mock('fs');
-
 jest.mock('hasbin', () => ({
     sync: jest.fn()
 }));

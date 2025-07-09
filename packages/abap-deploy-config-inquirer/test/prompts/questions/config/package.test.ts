@@ -22,7 +22,7 @@ describe('getPackagePrompts', () => {
                 "guiOptions": Object {
                   "applyDefaultWhenDirty": true,
                 },
-                "message": "How do you want to enter the package?",
+                "message": "Select How You Want to Enter the Package",
                 "name": "packageInputChoice",
                 "type": "list",
                 "validate": [Function],
@@ -77,17 +77,17 @@ describe('getPackagePrompts', () => {
             expect((packageInputChoicePrompt.when as Function)()).toBe(true);
             expect(packageInputChoicePrompt.message).toBe(t('prompts.config.package.packageInputChoice.message'));
             expect(((packageInputChoicePrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
-                              Array [
-                                Object {
-                                  "name": "Enter manually",
-                                  "value": "EnterManualChoice",
-                                },
-                                Object {
-                                  "name": "Choose from existing",
-                                  "value": "ListExistingChoice",
-                                },
-                              ]
-                      `);
+                Array [
+                  Object {
+                    "name": "Enter Manually",
+                    "value": "EnterManualChoice",
+                  },
+                  Object {
+                    "name": "Choose from Existing",
+                    "value": "ListExistingChoice",
+                  },
+                ]
+            `);
 
             expect(
                 (packageInputChoicePrompt.default as Function)({

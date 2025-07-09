@@ -41,10 +41,10 @@ describe('package.json task generation', () => {
             })
         ).toMatchInlineSnapshot(`
             Object {
-              "start": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
+              "start": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: \`npm run start-mock\`.\\\\\\"",
               "start-local": "fiori run --config ./ui5-local.yaml --open \\"testLocalStart.html?sap-ui-xx-viewCache=false#testApp-tile\\"",
-              "start-noflp": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
-              "start-variants-management": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
+              "start-noflp": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: \`npm run start-mock\`.\\\\\\"",
+              "start-variants-management": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: \`npm run start-mock\`.\\\\\\"",
             }
         `);
     });
@@ -82,10 +82,10 @@ describe('package.json task generation', () => {
         ).toMatchInlineSnapshot(`
             Object {
               "int-test": "fiori run --config ./ui5-mock.yaml --open \\"test/integration/opaTests.qunit.html\\"",
-              "start": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
+              "start": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: \`npm run start-mock\`.\\\\\\"",
               "start-local": "fiori run --config ./ui5-local.yaml --open \\"testLocalStart.html?sap-ui-xx-viewCache=false#testApp-tile\\"",
-              "start-noflp": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
-              "start-variants-management": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock\\\\\\"",
+              "start-noflp": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: \`npm run start-mock\`.\\\\\\"",
+              "start-variants-management": "echo \\\\\\"This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: \`npm run start-mock\`.\\\\\\"",
             }
         `);
     });

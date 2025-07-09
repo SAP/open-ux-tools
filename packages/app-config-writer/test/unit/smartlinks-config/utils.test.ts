@@ -109,7 +109,7 @@ describe('utils', () => {
         };
         const expectDebugInfo = (calls: unknown[][]) => {
             expect(calls[0][0]).toContain('Connecting to');
-            expect(calls[1][0]).toContain('Connection successful');
+            expect(calls[1][0]).toContain('Connected');
         };
         test('local environment: all parameters provided', async () => {
             nock(config.target.url)
@@ -170,7 +170,7 @@ describe('utils', () => {
                 await sendRequest({ target: {} }, loggerMock);
                 fail('Error should have been thrown');
             } catch (error) {
-                expect(error.message).toEqual('Please provide a target for configuration');
+                expect(error.message).toEqual('Please provide a target for the configuration.');
             }
         });
     });

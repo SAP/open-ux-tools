@@ -12,7 +12,8 @@ const mockFilesystemStore = {
     read: jest.fn(),
     del: jest.fn(),
     getAll: jest.fn(),
-    readAll: jest.fn()
+    readAll: jest.fn(),
+    partialUpdate: jest.fn()
 };
 mockFileSystemAccess.mockReturnValue(mockFilesystemStore);
 

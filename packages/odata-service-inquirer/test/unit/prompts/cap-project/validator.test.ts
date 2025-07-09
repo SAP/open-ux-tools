@@ -13,7 +13,7 @@ describe('Test validators', () => {
 
         expect(await validateCapPath('')).toBe(false);
         expect(await validateCapPath(invalidBookshopPath)).toBe(
-            'The folder you have selected does not seem to contain a valid CAP project. Please check and try again.'
+            'The folder you have selected does not contain a valid CAP project. Please check and try again.'
         );
         expect(await validateCapPath(bookshopPath)).toBe(true);
     });

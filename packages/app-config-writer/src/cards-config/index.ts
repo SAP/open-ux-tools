@@ -79,12 +79,12 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const ui5YamlFile = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
     const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile, fs);
-    const previewMiddleware = await getPreviewMiddleware(ui5YamlConfig, basePath, yamlPath, fs);
+    const previewMiddleware = await getPreviewMiddleware(ui5YamlConfig, basePath, ui5YamlFile, fs);
     const intent = getIntentFromPreviewConfig(previewMiddleware?.configuration) ?? '#app-preview';
     const cardGeneratorPath =
         (previewMiddleware?.configuration as PreviewConfig)?.editors?.cardGenerator?.path ??
         '/test/flpCardGeneratorSandbox.html';
-    const cliForPreview = await getCLIForPreview(basePath, yamlPath ?? '', fs);
+    const cliForPreview = await getCLIForPreview(basePath, ui5YamlFile, fs);
 
     packageJson.scripts ??= {};
     packageJson.scripts['start-cards-generator'] = `${cliForPreview} --open "${cardGeneratorPath}${intent}"`;

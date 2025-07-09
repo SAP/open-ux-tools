@@ -146,6 +146,16 @@ const UI5_LIBS = [
 ] as const;
 
 /**
+ * Type guard for FlexConnector.
+ *
+ * @param connector - the connector to check
+ * @returns true if the connector is a FlexConnector, false otherwise
+ */
+export function isFlexConnector(connector: FlexConnector | CustomConnector): connector is FlexConnector {
+    return 'connector' in connector;
+}
+
+/**
  * Gets the UI5 libs dependencies from manifest.json.
  *
  * @param manifest application manifest

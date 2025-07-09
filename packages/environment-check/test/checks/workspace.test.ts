@@ -58,9 +58,9 @@ describe('Test for getDestinationsFromWorkspace()', () => {
         // Result check
         expect(result.destinations.sort()).toEqual(['TEST_DEST_A', 'TEST_DEST_B1', 'TEST_DEST_B2']);
         expect(noUI5YamlMessage?.text).toMatch(
-            `No destination defined for app ${sampleAppNoUI5Yaml} : App ${sampleAppNoUI5Yaml} has no ui5.yaml. Not able to get destinations`
+            `No destination defined for application: ${sampleAppNoUI5Yaml} - The application: ${sampleAppNoUI5Yaml} does not have a \`ui5.yaml\` file. Unable to retrieve the destinations.`
         );
-        expect(noBackendMessage?.text).toMatch(`No destinations found in app ${sampleAppNoBackend}`);
-        expect(noDestMessage?.text).toMatch(`No destinations found in app ${sampleAppNoDest}`);
+        expect(noBackendMessage?.text).toMatch(`No destinations found in application: ${sampleAppNoBackend}.`);
+        expect(noDestMessage?.text).toMatch(`No destinations found in application: ${sampleAppNoDest}.`);
     });
 });

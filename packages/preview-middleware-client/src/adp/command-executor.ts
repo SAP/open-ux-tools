@@ -8,7 +8,7 @@ import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import { getError } from '../utils/error';
 
-type CommandNames = 'addXML' | 'codeExt';
+type CommandNames = 'addXML' | 'codeExt' | 'appDescriptor';
 
 /**
  * Class responsible for handling rta calls

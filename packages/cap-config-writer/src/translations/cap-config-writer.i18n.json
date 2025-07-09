@@ -1,13 +1,13 @@
 {
     "info": {
-        "capServiceName": "cap service name {{ capServiceName }}.",
-        "cdsUpdateInfo": "Update cds file with projectPath: {{ projectPath }}, annotationPath: {{ annotationPath }}, capService: {{ capService }}."
+        "capServiceName": "CAP Service Name: {{ capServiceName }}.",
+        "cdsUpdateInfo": "Update CDS file with `projectPath`: {{ projectPath }}, `annotationPath`: {{ annotationPath }} and `capService`: {{ capService }}."
     },
     "warn": {
-        "cdsDKNotInstalled": "minimum cds-dk {{ minCdsVersion }} version is required to add cds watch scripts"
+        "cdsDKNotInstalled": "`cds-dk` {{ minCdsVersion }} or higher is required to add CDS watch scripts. Install `cds-dk` to continue."
     },
     "error": {
-        "updateApplicationYaml": "Error occured while updating application yaml {{ error }}"
+        "updateApplicationYaml": "An error occured when updating the application YAML. Error: {{ error }}."
     },
-    "launchCapText": "In order to launch the generated app, simply start your CAP project{{mvnCommand}} and navigate to the following location in your browser:\n\n{{- capUrl}}"
+    "launchCapText": "To launch the generated app, start your CAP project: {{mvnCommand}} and navigate to the following location in your browser:\n\n{{- capUrl}}"
 }

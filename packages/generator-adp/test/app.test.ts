@@ -13,7 +13,8 @@ import {
     getProviderConfig,
     loadApps,
     validateUI5VersionExists,
-    getBaseAppInbounds
+    getBaseAppInbounds,
+    FlexLayer
 } from '@sap-ux/adp-tooling';
 import * as Logger from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -321,10 +322,8 @@ describe('Adaptation Project Generator Integration Test', () => {
         expect(addExtProjectGenSpy).toHaveBeenCalledWith(
             expect.objectContaining({
                 attributeAnswers: {
-                    addDeployConfig: false,
                     namespace: 'customer.app.variant',
                     projectName: 'app.variant',
-                    targetFolder: testOutputDir,
                     title: 'App Title',
                     ui5Version: '1.134.1'
                 },
@@ -339,6 +338,9 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect.any(Object),
             expect.any(Object)
         );
+        expect(sendTelemetryMock).toHaveBeenCalledTimes(0);
+        expect(executeCommandSpy).toHaveBeenCalledTimes(0);
+        expect(showWorkspaceFolderWarningMock).toHaveBeenCalledTimes(0);
     });
 
     it('should call composeWith for FLP and Deploy sub-generators and generate a cloud project successfully', async () => {
@@ -374,6 +376,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             {
                 inbounds: inbounds,
                 projectRootPath: join(testOutputDir, answers.projectName),
+                layer: FlexLayer.CUSTOMER_BASE,
                 vscode: vscodeMock
             },
             expect.any(Function),

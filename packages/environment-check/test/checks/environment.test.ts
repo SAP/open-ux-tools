@@ -227,16 +227,16 @@ describe('Test for checkEnvironment() (VSCODE)', () => {
 
     test('Testing getToolsExtensions (no extensions installed)', async () => {
         const expectedData = {
-            fioriGenVersion: '1',
+            annotationMod: 'Not installed.',
+            appMod: 'Not installed.',
+            appWizard: 'Not installed.',
+            cds: 'Not installed.',
             cloudCli: '2',
-            appWizard: 'Not installed',
-            ui5LanguageAssistant: 'Not installed',
-            xmlToolkit: 'Not installed',
-            annotationMod: 'Not installed',
-            appMod: 'Not installed',
-            help: 'Not installed',
-            serviceMod: 'Not installed',
-            cds: 'Not installed'
+            fioriGenVersion: '1',
+            help: 'Not installed.',
+            serviceMod: 'Not installed.',
+            ui5LanguageAssistant: 'Not installed.',
+            xmlToolkit: 'Not installed.'
         };
 
         jest.spyOn(install, 'getFioriGenVersion').mockResolvedValueOnce('1');

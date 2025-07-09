@@ -137,3 +137,5 @@
 **/i18n.json @SAP/ux-tools-text-reviewers
 **/*.i18n.json @SAP/ux-tools-text-reviewers
 packages/preview-middleware-client/src/messagebundle.properties @SAP/ux-tools-text-reviewers
+**/translations/i18n.ts @SAP/ux-tools-text-reviewers
+

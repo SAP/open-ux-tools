@@ -220,7 +220,7 @@ describe('Test FioriAppGenerator', () => {
             await fioriAppGen.writing();
             console.log('Floorplan wrote:', floorplan);
 
-            expect(DefaultLogger.info).toHaveBeenCalledWith(`Copying '${floorplan}' template files...`);
+            expect(DefaultLogger.info).toHaveBeenCalledWith(`Copying ${floorplan} template files...`);
             expect(transformState).toHaveBeenCalledWith(fioriAppGen['state'], true);
             expect(testFloorplan.generateMockFunc).toHaveBeenCalledWith(
                 appPath,

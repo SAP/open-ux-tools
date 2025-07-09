@@ -749,7 +749,7 @@ describe('Test new system prompt', () => {
         const choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)();
         expect(choices).toEqual([]);
         const valResult = await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)();
-        expect(valResult).toBe('An error occurred retrieving service(s) for SAP System.');
+        expect(valResult).toBe('An error occurred retrieving services for the SAP System.');
         expect(loggerSpy).toHaveBeenCalledWith(
             t('errors.serviceCatalogRequest', {
                 catalogRequestUri: mockV2CatUri,

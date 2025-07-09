@@ -17,8 +17,9 @@ import * as helper from '../../../src/base/helper';
 import * as editors from '../../../src/writer/editors';
 import { AdpPreview } from '../../../src';
 import * as manifestService from '../../../src/base/abap/manifest-service';
-import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
+import type { AddXMLChange, AdpPreviewConfig, CommonChangeProperties } from '../../../src';
 import { addXmlFragment, tryFixChange, addControllerExtension } from '../../../src/preview/change-handler';
+import { addCustomSectionFragment } from '../../../src/preview/descriptor-change-handler';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -48,6 +49,11 @@ jest.mock('../../../src/preview/change-handler', () => ({
     addControllerExtension: jest.fn()
 }));
 
+jest.mock('../../../src/preview/descriptor-change-handler', () => ({
+    ...jest.requireActual('../../../src/preview/descriptor-change-handler'),
+    addCustomSectionFragment: jest.fn()
+}));
+
 jest.mock('@sap-ux/store', () => {
     return {
         ...jest.requireActual('@sap-ux/store'),
@@ -69,6 +75,7 @@ const renderFileMock = renderFile as jest.Mock;
 const tryFixChangeMock = tryFixChange as jest.Mock;
 const addXmlFragmentMock = addXmlFragment as jest.Mock;
 const addControllerExtensionMock = addControllerExtension as jest.Mock;
+const addCustomFragmentMock = addCustomSectionFragment as jest.Mock;
 
 const mockProject = {
     byGlob: jest.fn().mockResolvedValue([])
@@ -474,7 +481,7 @@ describe('AdaptationProject', () => {
                 fragmentPath: 'fragments/share.fragment.xml'
             },
             reference: 'some.reference'
-        } as unknown as CommonChangeProperties;
+        } as unknown as AddXMLChange;
 
         const addCodeExtChange = {
             changeType: 'codeExt',
@@ -521,6 +528,42 @@ describe('AdaptationProject', () => {
                 '/projects/adp.project',
                 '/adp.project/webapp',
                 addCodeExtChange,
+                mockFs,
+                mockLogger
+            );
+        });
+
+        it('should add an custom XML fragment if type is "write" and change is v4 Descriptor change', async () => {
+            await adp.onChangeRequest(
+                'write',
+                {
+                    changeType: 'appdescr_fe_changePageConfiguration',
+                    content: {
+                        entityPropertyChange: {
+                            propertyPath: 'content/body/sections/test',
+                            propertyValue: {
+                                template: 'adp.v1.changes.fragment.test'
+                            }
+                        }
+                    }
+                } as unknown as CommonChangeProperties,
+                mockFs,
+                mockLogger
+            );
+
+            expect(addCustomFragmentMock).toHaveBeenCalledWith(
+                '/adp.project/webapp',
+                {
+                    changeType: 'appdescr_fe_changePageConfiguration',
+                    content: {
+                        entityPropertyChange: {
+                            propertyPath: 'content/body/sections/test',
+                            propertyValue: {
+                                template: 'adp.v1.changes.fragment.test'
+                            }
+                        }
+                    }
+                },
                 mockFs,
                 mockLogger
             );

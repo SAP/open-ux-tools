@@ -1,6 +1,6 @@
 {
     "prompts": {
-        "targetProjectFolderLabel": "Project folder path",
+        "targetProjectFolderLabel": "Project Folder Path",
         "sourceLabel": "Reusable Library Source",
         "referenceLibrariesLabel": "Select Reusable Libraries"
     },
@@ -8,11 +8,11 @@
         "workspace": "Workspace"
     },
     "addtionalMsgs": {
-        "missingDeps": "Missing dependencies detected: {{dependencies}}"
+        "missingDeps": "Missing dependencies detected: {{dependencies}}. Install these dependencies."
     },
     "error": {
-        "noProjectsFound": "No Fiori tools projects found in the workspace",
-        "noLibsFound": "No reuse libraries or components found in the workspace",
-        "noLibSelected": "You must select at least one reuse library or component"
+        "noProjectsFound": "No SAP Fiori tools projects were found in this workspace.",
+        "noLibsFound": "No reuse libraries or components were found in this workspace.",
+        "noLibSelected": "You must select at least one reuse library or component."
     }
 }

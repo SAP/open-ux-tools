@@ -256,7 +256,7 @@ describe('basic prompts', () => {
             const result = messageFn({ semanticObject: 'so1', action: 'act1' });
 
             expect(result).toBe(
-                "An inbound configuration with the key: 'so1-act1' is already defined. Overwrite existing configuration?"
+                'An inbound configuration with the key: so1-act1 is already defined. Choose another key. Overwrite existing configuration?'
             );
         });
 
@@ -277,7 +277,7 @@ describe('basic prompts', () => {
             const result = additionalMessagesFn(null, { semanticObject: 'so1', action: 'act1' });
 
             expect(result).toEqual({
-                message: "An inbound configuration with the key: 'so1-act1' is already defined.",
+                message: 'An inbound configuration with the key: so1-act1 is already defined. Choose another key.',
                 severity: Severity.warning
             });
         });

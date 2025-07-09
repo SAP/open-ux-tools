@@ -67,24 +67,31 @@ class HybridStore<E extends object> implements DataAccess<E> {
         }
     }
 
-    /**
-     *
-     * @param root0
-     * @param root0.entityName
-     */
-    public async getAll({ entityName }: { entityName: string }): Promise<[] | E[]> {
-        return Object.values(await this.readAll({ entityName })) as unknown as E[];
+    public async getAll({
+        entityName,
+        includeSensitiveData = true
+    }: {
+        entityName: string;
+        includeSensitiveData?: boolean;
+    }): Promise<[] | E[]> {
+        return Object.values(await this.readAll({ entityName, includeSensitiveData })) as unknown as E[];
     }
 
-    /**
-     *
-     * @param root0
-     * @param root0.entityName
-     */
-    async readAll({ entityName }: { entityName: string }): Promise<{ [key: string]: E }> {
+    async readAll({
+        entityName,
+        includeSensitiveData = true
+    }: {
+        entityName: string;
+        includeSensitiveData?: boolean;
+    }): Promise<{ [key: string]: E }> {
         const result: { [key: string]: E } = {};
 
         const entitiesFs = (await this.filesystem.readAll({ entityName })) || {};
+
+        if (!includeSensitiveData) {
+            return entitiesFs;
+        }
+
         const entitiesInSecureStore =
             (await this.secureStore.getAll<E>(getFullyQualifiedServiceName(entityName))) || {};
 
@@ -93,6 +100,7 @@ class HybridStore<E extends object> implements DataAccess<E> {
             const entity: E = { ...entitiesFs[key], ...entitiesInSecureStore[key] };
             result[key] = entity;
         }
+
         return result;
     }
 
@@ -162,6 +170,22 @@ class HybridStore<E extends object> implements DataAccess<E> {
         this.logger.debug(`hybrid/del - delete result for id [${id}] in the secure store: ${deletedInSecureStore}`);
 
         return deletedinFs || deletedInSecureStore;
+    }
+
+    public async partialUpdate({
+        entityName,
+        id,
+        entity
+    }: {
+        entityName: string;
+        id: string;
+        entity: Partial<E>;
+    }): Promise<undefined | E> {
+        return this.filesystem.partialUpdate({
+            entityName,
+            id,
+            entity
+        });
     }
 }
 

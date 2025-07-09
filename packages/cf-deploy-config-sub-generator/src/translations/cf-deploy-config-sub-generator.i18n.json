@@ -16,23 +16,23 @@
         },
         "info": {
             "filesGenerated": "The files have been generated.",
-            "skippedInstallation": "Option `--skipInstall` was specified. Installation of dependencies will be skipped."
+            "skippedInstallation": "Option: `--skipInstall` was specified. Installation of dependencies will be skipped."
         },
         "error": {
-            "mtaDestinations": "No destinations loaded from mta.yaml. {{- error}}",
-            "writing": "Error in writing phase: {{- error}}",
-            "install": "Error in install phase: {{- error}}",
-            "end": "Error in end phase: {{- error}}"
+            "mtaDestinations": "No destinations loaded from the `mta.yaml` file. {{- error}}",
+            "writing": "An error occurred in the writing phase: {{- error}}",
+            "install": "An error occurred in the install phase: {{- error}}",
+            "end": "An error occurred in the end phase: {{- error}}"
         },
         "debug": {
             "promptOptions": "Retrieving CF prompts using: \n {{- options}}",
-            "initTelemetry": "Initializing telemetry in CF deployment configuration generator",
-            "capMissingMTA": "CAP project detected with no MTA configuration"
+            "initTelemetry": "Initializing telemetry in CF deployment configuration generator...",
+            "capMissingMTA": "CAP project detected with no MTA configuration. Add an MTA configuration."
         }
     },
     "appRouterGen": {
         "debug": {
-            "projectPath": "Project loaded from {{- destinationPath}}"
+            "projectPath": "Project loaded from {{- destinationPath}}."
         }
     }
 }

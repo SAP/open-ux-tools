@@ -18,6 +18,7 @@ export class BackendSystem {
     @serializable public readonly url: string;
     @serializable public readonly client?: string;
     @serializable public readonly userDisplayName?: string;
+    @serializable public readonly systemType?: string;
     @sensitiveData public readonly serviceKeys?: unknown;
     @sensitiveData public readonly refreshToken?: string;
     @sensitiveData public readonly username?: string;
@@ -41,6 +42,7 @@ export class BackendSystem {
         name,
         url,
         client,
+        systemType,
         serviceKeys,
         refreshToken,
         username,
@@ -51,6 +53,7 @@ export class BackendSystem {
         name: string;
         url: string;
         client?: string;
+        systemType?: string;
         serviceKeys?: unknown;
         refreshToken?: string;
         username?: string;
@@ -61,6 +64,7 @@ export class BackendSystem {
         this.name = name;
         this.url = url;
         this.client = client;
+        this.systemType = systemType;
         this.serviceKeys = serviceKeys;
         this.refreshToken = refreshToken;
         this.username = username;

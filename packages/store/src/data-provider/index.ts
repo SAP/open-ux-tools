@@ -21,9 +21,11 @@ export interface DataProvider<E, K extends EntityKey> {
      */
     delete(entity: E): Promise<boolean>;
     /**
+     * Returns the data as an array related to the entity.
      *
+     * @param includeSensitiveData If true and relevant for the entity, sensitive data will be returned - defaults to true.
      */
-    getAll(): Promise<E[] | []>;
+    getAll(options?: { includeSensitiveData?: boolean }): Promise<E[] | []>;
 }
 
 export interface DataProviderConstructor<E, K extends EntityKey> {

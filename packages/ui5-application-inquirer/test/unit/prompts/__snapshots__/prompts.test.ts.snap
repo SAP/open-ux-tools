@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`getQuestions getQuestions, no options 1`] = `
 [
@@ -10,7 +10,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
       "hint": "The name of the module for this application that will be loaded at runtime. This also determines the directory name of the generated application.",
       "mandatory": true,
     },
-    "message": "Module name",
+    "message": "Module Name",
     "name": "name",
     "type": "input",
     "validate": [Function],
@@ -21,7 +21,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
       "breadcrumb": true,
       "hint": "The title of your application that is displayed in the header of the application.",
     },
-    "message": "Application title",
+    "message": "Application Title",
     "name": "title",
     "type": "input",
   },
@@ -29,9 +29,9 @@ exports[`getQuestions getQuestions, no options 1`] = `
     "default": [Function],
     "guiOptions": {
       "breadcrumb": true,
-      "hint": "A unique package name for the application module being created. It should follow the standard Java package notation.",
+      "hint": "The package name for the application module being created. It must follow the standard Java package notation.",
     },
-    "message": "Application namespace",
+    "message": "Application Namespace",
     "name": "namespace",
     "type": "input",
     "validate": [Function],
@@ -40,7 +40,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
     "default": [Function],
     "guiOptions": {
       "breadcrumb": true,
-      "hint": "Project description in package.json of your project",
+      "hint": "The project description in the \`package.json\` file of your project.",
     },
     "message": "Description",
     "name": "description",
@@ -54,7 +54,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
       "mandatory": true,
     },
     "guiType": "folder-browser",
-    "message": "Project folder path",
+    "message": "Project Folder Path",
     "name": "targetFolder",
     "type": "input",
     "validate": [Function],
@@ -63,10 +63,10 @@ exports[`getQuestions getQuestions, no options 1`] = `
     "choices": [Function],
     "default": [Function],
     "guiOptions": {
-      "breadcrumb": "UI5 Version",
-      "hint": "Represents the minimum version of SAPUI5 that this application requires.",
+      "breadcrumb": "SAPUI5 Version",
+      "hint": "The minimum SAPUI5 version represents the minimum version of SAPUI5 that this application requires.",
     },
-    "message": "Minimum SAPUI5 version",
+    "message": "Minimum SAPUI5 Version",
     "name": "ui5Version",
     "source": [Function],
     "type": "list",
@@ -97,7 +97,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
   {
     "default": false,
     "guiOptions": {
-      "breadcrumb": "FLP Config",
+      "breadcrumb": "SAP Fiori Launchpad Config",
     },
     "message": [Function],
     "name": "addFlpConfig",
@@ -118,9 +118,9 @@ exports[`getQuestions getQuestions, no options 1`] = `
   {
     "default": false,
     "guiOptions": {
-      "hint": "Choosing 'No' will apply defaults",
+      "hint": "Choosing 'No' will apply the default options.",
     },
-    "message": "Configure advanced options",
+    "message": "Configure Advanced Options",
     "name": "showAdvanced",
     "type": "confirm",
   },
@@ -131,16 +131,16 @@ exports[`getQuestions getQuestions, no options 1`] = `
       "applyDefaultWhenDirty": true,
       "breadcrumb": true,
     },
-    "message": "UI5 theme",
+    "message": "SAPUI5 Theme",
     "name": "ui5Theme",
     "type": "list",
   },
   {
     "default": false,
     "guiOptions": {
-      "breadcrumb": "Eslint",
+      "breadcrumb": "ESLint",
     },
-    "message": "Add Eslint configuration to the project",
+    "message": "Add ESLint Configuration to the Project",
     "name": "enableEslint",
     "type": "confirm",
   },
@@ -149,7 +149,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
     "guiOptions": {
       "breadcrumb": "Code Assist",
     },
-    "message": "Add code assist libraries to your project",
+    "message": "Add Code Assist Libraries to your Project",
     "name": "enableCodeAssist",
     "type": "confirm",
     "when": [Function],
@@ -159,7 +159,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
     "guiOptions": {
       "breadcrumb": "Skip Annotations",
     },
-    "message": "Skip generation of associated annotations.cds file",
+    "message": "Skip Generation of Associated \`annotations.cds\` File",
     "name": "skipAnnotations",
     "type": "confirm",
   },

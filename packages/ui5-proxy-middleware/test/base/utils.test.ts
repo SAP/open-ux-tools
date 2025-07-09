@@ -2,7 +2,6 @@ import {
     filterCompressedHtmlFiles,
     getCorporateProxyServer,
     getHtmlFile,
-    getWebAppFolderFromYaml,
     getYamlFile,
     hideProxyCredentials,
     injectUI5Url,
@@ -13,15 +12,12 @@ import {
     updateProxyEnv
 } from '../../src/base/utils';
 import type { Response } from 'express';
-import YAML from 'yaml';
-import fs, { readdirSync, readFileSync } from 'fs';
+import fs from 'fs';
 import * as baseUtils from '../../src/base/utils';
 import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import { join } from 'path';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 
 describe('utils', () => {
@@ -101,7 +97,11 @@ describe('utils', () => {
             proxyErrorHandler(emptyError, requestCausingError, logger);
             expect(debugSpy).toBeCalledTimes(1);
             expect(debugSpy).toBeCalledWith(
-                `Error ${JSON.stringify(emptyError, null, 2)} thrown for request ${requestCausingError.originalUrl}`
+                'An error: ' +
+                    JSON.stringify(emptyError, null, 2) +
+                    ' was thrown for the request: ' +
+                    requestCausingError.originalUrl +
+                    '.'
             );
         });
     });
@@ -231,73 +231,6 @@ describe('utils', () => {
         });
     });
 
-    describe('getWebAppFolderFromYaml', () => {
-        const readFileMock = jest.spyOn(fs, 'readFileSync');
-        const existsMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-
-        const baseYamlConfig = {
-            specVersion: '1.0',
-            metadata: { name: 'testapp' },
-            type: 'application'
-        };
-
-        test('return webapp as default if no yaml is found', async () => {
-            existsMock.mockReturnValueOnce(false);
-            const result = await getWebAppFolderFromYaml('no-ui5.yaml');
-            expect(result).toBe('webapp');
-        });
-
-        test('return webapp as default if yaml file has no resources section', async () => {
-            readFileMock.mockReturnValueOnce(YAML.stringify(baseYamlConfig));
-            const result = await getWebAppFolderFromYaml('ui5.yaml');
-            expect(result).toBe('webapp');
-        });
-
-        test('return webapp as default if yaml file with empty resources section', async () => {
-            readFileMock.mockReturnValueOnce(
-                YAML.stringify({
-                    ...baseYamlConfig,
-                    resources: {}
-                })
-            );
-            const result = await getWebAppFolderFromYaml('ui5.yaml');
-            expect(result).toBe('webapp');
-        });
-
-        test('return webapp as default if yaml file with empty configuration section', async () => {
-            readFileMock.mockReturnValueOnce(
-                YAML.stringify({
-                    ...baseYamlConfig,
-                    resources: { configuration: {} }
-                })
-            );
-            const result = await getWebAppFolderFromYaml('ui5.yaml');
-            expect(result).toBe('webapp');
-        });
-
-        test('return webapp as default if yaml file with empty paths', async () => {
-            readFileMock.mockReturnValueOnce(
-                YAML.stringify({
-                    ...baseYamlConfig,
-                    resources: { configuration: { paths: {} } }
-                })
-            );
-            const result = await getWebAppFolderFromYaml('ui5.yaml');
-            expect(result).toBe('webapp');
-        });
-
-        test('return path from the yaml file', async () => {
-            readFileMock.mockReturnValueOnce(
-                YAML.stringify({
-                    ...baseYamlConfig,
-                    resources: { configuration: { paths: { webapp: 'dist' } } }
-                })
-            );
-            const result = await getWebAppFolderFromYaml('ui5.yaml');
-            expect(result).toBe('dist');
-        });
-    });
-
     describe('sendResponse', () => {
         test('use livereload write if present', () => {
             const mockWrite = jest.fn();
@@ -342,7 +275,7 @@ describe('utils', () => {
             const result = await baseUtils.resolveUI5Version(version, log);
             expect(result).toEqual(version);
             expect(log.info).toBeCalledTimes(1);
-            expect(log.info).toHaveBeenCalledWith('Using UI5 version 1.90.0 based on ui5.yaml');
+            expect(log.info).toHaveBeenCalledWith('Using UI5 version: 1.90.0 based on: ui5.yaml.');
         });
 
         test('take version from CLI', async () => {
@@ -356,7 +289,7 @@ describe('utils', () => {
             expect(result).toEqual(version);
             expect(log.info).toBeCalledTimes(1);
             expect(log.info).toHaveBeenCalledWith(
-                'Using UI5 version latest based on CLI arguments / Run configuration'
+                'Using UI5 version: latest based on: CLI arguments / Run configuration.'
             );
         });
 
@@ -371,7 +304,7 @@ describe('utils', () => {
             const result = await baseUtils.resolveUI5Version(undefined, log, manifest);
             expect(result).toEqual('1.96.0');
             expect(log.info).toBeCalledTimes(1);
-            expect(log.info).toHaveBeenCalledWith('Using UI5 version 1.96.0 based on manifest.json');
+            expect(log.info).toHaveBeenCalledWith('Using UI5 version: 1.96.0 based on: manifest.json.');
         });
 
         test('take version from manifest.json, version is variable', async () => {
@@ -388,7 +321,7 @@ describe('utils', () => {
             const result = await baseUtils.resolveUI5Version(undefined, log);
             expect(result).toEqual('');
             expect(log.info).toBeCalledTimes(1);
-            expect(log.info).toHaveBeenCalledWith('Using UI5 version latest based on manifest.json');
+            expect(log.info).toHaveBeenCalledWith('Using UI5 version: latest based on: manifest.json.');
         });
     });
 

@@ -11,12 +11,14 @@ describe('Backend system data provider', () => {
         read: jest.fn(),
         del: jest.fn(),
         getAll: jest.fn(),
-        readAll: jest.fn()
+        readAll: jest.fn(),
+        partialUpdate: jest.fn()
     };
 
     const logger = new ToolsLogger({ transports: [new NullTransport()] });
     beforeEach(() => {
         mockGetHybridStore.mockReturnValue(mockHybridStore);
+        jest.clearAllMocks();
     });
 
     it('read delegates to the data accessor', async () => {
@@ -112,7 +114,8 @@ describe('Backend system data provider', () => {
         mockHybridStore.readAll.mockResolvedValueOnce({ sys1, sys2, sys3 });
         await expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1, sys2, sys3]);
         expect(mockHybridStore.readAll).toBeCalledWith({
-            entityName: Entities.BackendSystem
+            entityName: Entities.BackendSystem,
+            includeSensitiveData: true
         });
     });
 
@@ -148,7 +151,61 @@ describe('Backend system data provider', () => {
         mockHybridStore.readAll.mockResolvedValueOnce({ sys1, sys2, sys3, sys4, sys5: undefined });
         await expect(new SystemDataProvider(logger).getAll()).resolves.toEqual([sys1]);
         expect(mockHybridStore.readAll).toBeCalledWith({
-            entityName: Entities.BackendSystem
+            entityName: Entities.BackendSystem,
+            includeSensitiveData: true
+        });
+    });
+
+    it('getAll performs necessary migration to add the system type', async () => {
+        const sys1: BackendSystem = {
+            name: 'sys1',
+            url: 'url1'
+        };
+        const sys2: BackendSystem = {
+            name: 'sys2',
+            url: 'url2'
+        };
+        const sys3: BackendSystem = {
+            name: 'sys3',
+            url: 'url3'
+        };
+
+        mockHybridStore.readAll.mockResolvedValue({ sys1, sys2, sys3 });
+
+        mockHybridStore.read
+            .mockResolvedValueOnce({ ...sys1, authenticationType: 'reentranceTicket' })
+            .mockResolvedValueOnce({ ...sys2, serviceKeys: '<serviceKey>' })
+            .mockResolvedValueOnce({ ...sys3, username: 'username' });
+
+        mockHybridStore.partialUpdate.mockResolvedValue(Promise.resolve());
+
+        await expect(new SystemDataProvider(logger).getAll({ includeSensitiveData: false })).resolves.toEqual([
+            sys1,
+            sys2,
+            sys3
+        ]);
+
+        expect(mockHybridStore.partialUpdate).toBeCalledTimes(3);
+        expect(mockHybridStore.partialUpdate).toHaveBeenNthCalledWith(1, {
+            entityName: Entities.BackendSystem,
+            id: 'sys1',
+            entity: { systemType: 'S4HC' }
+        });
+        expect(mockHybridStore.partialUpdate).toHaveBeenNthCalledWith(2, {
+            entityName: Entities.BackendSystem,
+            id: 'sys2',
+            entity: { systemType: 'BTP' }
+        });
+        expect(mockHybridStore.partialUpdate).toHaveBeenNthCalledWith(3, {
+            entityName: Entities.BackendSystem,
+            id: 'sys3',
+            entity: { systemType: 'OnPrem' }
+        });
+
+        expect(mockHybridStore.readAll).toBeCalledTimes(2);
+        expect(mockHybridStore.readAll).toBeCalledWith({
+            entityName: Entities.BackendSystem,
+            includeSensitiveData: false
         });
     });
 });

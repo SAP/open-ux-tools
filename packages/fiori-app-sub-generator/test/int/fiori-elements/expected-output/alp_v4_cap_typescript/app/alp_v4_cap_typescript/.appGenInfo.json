@@ -1,8 +1,8 @@
 {
   "generationParameters": {
-    "generationDate": "Tue May 27 2025 15:05:10 GMT+0100 (Irish Standard Time)",
+    "generationDate": "Tue Jun 24 2025 22:44:47 GMT+0100 (Irish Standard Time)",
     "generatorPlatform": "CLI",
-    "serviceType": "Local Cap",
+    "serviceType": "Local CAP",
     "metadataFilename": "",
     "serviceUrl": "http://localhost:4004/admin/",
     "appName": "alp_v4_cap_typescript",
@@ -22,6 +22,6 @@
         "value": "Books"
       }
     ],
-    "launchText": "In order to launch the generated app, simply start your CAP project and navigate to the following location in your browser:\n\nhttp://localhost:4004/testNameSpace.alpv4captypescript/index.html"
+    "launchText": "To launch the generated app, start your CAP project:  and navigate to the following location in your browser:\n\nhttp://localhost:4004/testNameSpace.alpv4captypescript/index.html"
   }
 }

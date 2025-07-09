@@ -209,7 +209,7 @@ describe('AddFragment', () => {
                 })
             });
 
-            addFragment['runtimeControl'] = {
+            addFragment['_runtimeControl'] = {
                 getMetadata: jest.fn().mockReturnValue({
                     getName: jest.fn().mockReturnValue('Toolbar')
                 })

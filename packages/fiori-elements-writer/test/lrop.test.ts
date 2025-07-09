@@ -23,6 +23,7 @@ import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writ
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { generateAnnotations } from '@sap-ux/annotation-generator';
+import { initI18n } from '../src/i18n';
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
@@ -421,7 +422,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         }
     ];
 
-    beforeAll(() => {
+    beforeAll(async () => {
+        await initI18n();
         removeSync(curTestOutPath); // even for in memory
     });
 

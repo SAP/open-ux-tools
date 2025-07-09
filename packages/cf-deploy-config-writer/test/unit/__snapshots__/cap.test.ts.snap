@@ -248,7 +248,7 @@ builder:
     {
       \\"source\\": \\"^/sap/(.*)$\\",
       \\"target\\": \\"/sap/$1\\",
-      \\"destination\\": \\"cappapp-srv-api\\",
+      \\"destination\\": \\"srv-api\\",
       \\"authenticationType\\": \\"xsuaa\\",
       \\"csrfProtection\\": false
     },
@@ -420,7 +420,7 @@ resources:
                 URL: 'https://ui5.sap.com'
                 ProxyType: Internet
                 Authentication: NoAuthentication
-              - Name: cappapp-srv-api
+              - Name: srv-api
                 Type: HTTP
                 URL: '~{srv-api/srv-url}'
                 ProxyType: Internet
@@ -634,7 +634,7 @@ builder:
     {
       \\"source\\": \\"^/odata/(.*)$\\",
       \\"target\\": \\"/odata/$1\\",
-      \\"destination\\": \\"captestproject-srv-api\\",
+      \\"destination\\": \\"srv-api\\",
       \\"authenticationType\\": \\"xsuaa\\",
       \\"csrfProtection\\": false
     },
@@ -766,7 +766,7 @@ builder:
     {
       \\"source\\": \\"^/odata/(.*)$\\",
       \\"target\\": \\"/odata/$1\\",
-      \\"destination\\": \\"captestproject-srv-api\\",
+      \\"destination\\": \\"srv-api\\",
       \\"authenticationType\\": \\"xsuaa\\",
       \\"csrfProtection\\": false
     },
@@ -1024,7 +1024,7 @@ builder:
     {
       \\"source\\": \\"^/odata/(.*)$\\",
       \\"target\\": \\"/odata/$1\\",
-      \\"destination\\": \\"captestproject-srv-api\\",
+      \\"destination\\": \\"srv-api\\",
       \\"authenticationType\\": \\"xsuaa\\",
       \\"csrfProtection\\": false
     },
@@ -1228,6 +1228,13 @@ resources:
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
+              - Name: srv-api
+                Type: HTTP
+                URL: '~{srv-api/srv-url}'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
     requires:
       - name: srv-api
   - name: captestproject-db

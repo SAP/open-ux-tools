@@ -79,7 +79,10 @@ describe('Test install functions', () => {
         const messages = logger.getMessages();
         expect(result).toBe(undefined);
         expect(messages).toStrictEqual([
-            { 'severity': 'error', 'text': 'Error retrieving installed extensions: Could not read directory' }
+            {
+                'severity': 'error',
+                'text': 'An error occurred when retrieving the installed extensions: Could not read directory'
+            }
         ]);
     });
 
@@ -133,7 +136,7 @@ describe('Test install functions', () => {
             throw new Error('Command not found');
         });
         const result = await getCFCliToolVersion();
-        expect(result).toStrictEqual('Not installed or not found');
+        expect(result).toStrictEqual('Not installed or found.');
     });
 
     test('getFioriGenVersion() (VSCODE)', async () => {
@@ -155,7 +158,7 @@ describe('Test install functions', () => {
         jest.spyOn(fs, 'existsSync').mockReturnValue(false);
 
         const result = await getFioriGenVersion();
-        expect(result).toStrictEqual('Not installed or not found');
+        expect(result).toStrictEqual('Not installed or found.');
     });
 
     test('getFioriGenVersion() (throw error) (VSCODE)', async () => {
@@ -164,7 +167,7 @@ describe('Test install functions', () => {
             throw new Error('Command not found');
         });
         const result = await getFioriGenVersion();
-        expect(result).toStrictEqual('Not installed or not found');
+        expect(result).toStrictEqual('Not installed or found.');
     });
 
     test('getFioriGenVersion() (BAS)', async () => {
@@ -273,7 +276,7 @@ describe('Test install functions', () => {
         const messages = logger.getMessages();
         expect(result).toStrictEqual({});
         expect(messages).toStrictEqual([
-            { 'severity': 'error', 'text': 'Error retrieving process versions: spawn error' }
+            { 'severity': 'error', 'text': 'An error occurred when retrieving the process versions: spawn error' }
         ]);
     });
 

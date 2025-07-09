@@ -8,7 +8,7 @@ import { AddControllerToPageQuickAction } from '../common/add-controller-to-page
 import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar';
 import { ChangeTableColumnsQuickAction } from './change-table-columns';
 import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
-import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
+import { AddCustomSectionQuickAction } from './op-add-custom-section';
 import { AddTableCustomColumnQuickAction } from './create-table-custom-column';
 import { AddPageActionQuickAction } from '../common/create-page-action';
 import { AddTableActionQuickAction } from './create-table-action';
