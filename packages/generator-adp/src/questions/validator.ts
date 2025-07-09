@@ -7,4 +7,4 @@
  */
 export function validateForEmptyValue(value: string, propertyName: string): true | string {
     return value && value.trim().length > 0 ? true : `${propertyName} cannot be empty.`;
-} 
+}
