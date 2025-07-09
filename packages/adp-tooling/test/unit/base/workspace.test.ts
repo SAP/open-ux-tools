@@ -1,6 +1,6 @@
 import { getAdpProjectData } from '../../../src/base/workspace';
 
-import * as fs from 'fs';
+import type * as fs from 'fs';
 import * as path from 'path';
 import { existsSync, readFileSync } from 'fs';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -43,9 +43,11 @@ describe('getAdpProjectData', () => {
     });
 
     it('returns data for legacy BAS project (.adp/config.json)', async () => {
-        existsSyncMock.mockImplementation((p: any) => String(p).includes('.adp/config.json'));
-        readFileSyncMock.mockImplementation((p: any) => {
-            if (String(p).includes('manifest.appdescr_variant')) {
+        existsSyncMock.mockImplementation((filePath: fs.PathLike) => {
+            return typeof filePath === 'string' && filePath.includes('.adp/config.json');
+        });
+        readFileSyncMock.mockImplementation((filePath: fs.PathLike | number) => {
+            if (typeof filePath === 'string' && filePath.includes('manifest.appdescr_variant')) {
                 return JSON.stringify(variantContent);
             }
             return JSON.stringify({
@@ -66,9 +68,11 @@ describe('getAdpProjectData', () => {
 
     it('returns data for ui5.yaml-based project (App Studio)', async () => {
         // arrange – config.json missing, ui5.yaml present
-        existsSyncMock.mockImplementation((p: any) => String(p).endsWith('ui5.yaml'));
-        readFileSyncMock.mockImplementation((p: any) => {
-            if (String(p).includes('manifest.appdescr_variant')) {
+        existsSyncMock.mockImplementation((filePath: fs.PathLike) => {
+            return typeof filePath === 'string' && filePath.endsWith('ui5.yaml');
+        });
+        readFileSyncMock.mockImplementation((filePath: fs.PathLike | number) => {
+            if (typeof filePath === 'string' && filePath.includes('manifest.appdescr_variant')) {
                 return JSON.stringify(variantContent);
             }
             return '';
