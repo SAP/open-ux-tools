@@ -1,6 +1,4 @@
 import path from 'path';
-import type Generator from 'yeoman-generator';
-import type { IPrompt } from '@sap-devx/yeoman-ui-types';
 import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import {
@@ -22,11 +20,12 @@ import type { DataSource, DataSources, DescriptorVariant } from '@sap-ux/adp-too
 import type { AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
 
 import { t } from '../utils/i18n';
-import { GeneratorTypes } from '../types';
 import type { Credentials } from '../types';
 import SubGeneratorBase from './sub-gen-base';
+import type { GeneratorTypes } from '../types';
 import { configPromptNames } from '../app/types';
 import type { GeneratorOpts } from '../utils/opts';
+import { getSubGenAuthPages, getSubGenErrorPage } from '../utils/steps';
 
 /**
  * Base class for *sub* generators that need authentication handling.
@@ -150,7 +149,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
     protected async getManifest(): Promise<void> {
         let requestOptions: (AxiosRequestConfig & Partial<ProviderConfiguration>) | undefined;
         if (this.requiresAuthentication) {
-            const credentials = (await this.prompt(this.getABAPCredentialsPrompts(this.projectData))) as Credentials;
+            const credentials = (await this.prompt(this.getCredentialsPrompts(this.projectData))) as Credentials;
             requestOptions = { auth: { username: credentials.username, password: credentials.password } };
         }
 
@@ -193,57 +192,9 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         };
 
         if (this.validationError) {
-            this.prompts = new Prompts(this._errorPage(this.generatorType));
+            this.prompts = new Prompts(getSubGenErrorPage(this.generatorType));
         } else {
-            this.prompts = new Prompts(
-                this.getSubGeneratorsWithAuthenticationPages(this.generatorType, this.projectData?.sourceSystem)
-            );
-        }
-    }
-
-    /**
-     * Returns the error page for the given sub generator type.
-     *
-     * @param subGenType - The type of sub generator.
-     * @returns The error page for the given sub generator type.
-     */
-    private _errorPage(subGenType: GeneratorTypes): IPrompt[] {
-        switch (subGenType) {
-            case GeneratorTypes.ADD_ANNOTATIONS_TO_DATA:
-                return [{ name: 'Add Local Annotation File', description: '' }];
-            case GeneratorTypes.CHANGE_DATA_SOURCE:
-                return [{ name: 'Replace OData Service', description: '' }];
-            default:
-                return [];
-        }
-    }
-
-    /**
-     * Returns the prompts for the given sub generator type.
-     *
-     * @param type - The type of sub generator.
-     * @param destination - The destination of the sub generator.
-     * @returns The prompts for the given sub generator type.
-     */
-    private getSubGeneratorsWithAuthenticationPages(type: GeneratorTypes, destination: string): IPrompt[] {
-        const getCredentialsPageProps = (nameBase: string): { name: string; description: string } => ({
-            name: `${nameBase} - Credentials`,
-            description: `Enter credentials for your adaptation project's system (${destination})`
-        });
-
-        switch (type) {
-            case GeneratorTypes.ADD_ANNOTATIONS_TO_DATA:
-                return [
-                    getCredentialsPageProps('Add Local Annotation File'),
-                    { name: 'Add Local Annotation File', description: 'Select OData Service and Annotation XML' }
-                ];
-            case GeneratorTypes.CHANGE_DATA_SOURCE:
-                return [
-                    getCredentialsPageProps('Replace OData Service'),
-                    { name: 'Replace OData Service', description: 'Select OData Service and new OData URI' }
-                ];
-            default:
-                return [];
+            this.prompts = new Prompts(getSubGenAuthPages(this.generatorType, this.projectData?.sourceSystem ?? ''));
         }
     }
 
@@ -253,7 +204,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
      * @param projectData - The project data.
      * @returns The username prompt.
      */
-    protected getABAPCredentialsPrompts(projectData: AdpProjectData): YUIQuestion<Credentials>[] {
+    protected getCredentialsPrompts(projectData: AdpProjectData): YUIQuestion<Credentials>[] {
         return [this.getUsernamePrompt(), this.getPasswordPrompt(projectData)];
     }
 

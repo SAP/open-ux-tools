@@ -85,8 +85,7 @@ export default class SubGeneratorBase extends Generator {
                 type: 'label',
                 hint: errorMessage
             },
-            // Always keep the wizard on this page
-            validate: () => false
+            validate: () => false // Always keep the wizard on this page
         };
     }
 }
