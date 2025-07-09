@@ -1,0 +1,77 @@
+import { MessageType } from '@sap-devx/yeoman-ui-types';
+
+import {
+    ChangeType,
+    generateChange,
+    AnnotationsData,
+    AddAnnotationsAnswers,
+    AnnotationFileSelectType,
+    getPromptsForAddAnnotationsToOData
+} from '@sap-ux/adp-tooling';
+import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
+
+import { GeneratorTypes } from '../types';
+import SubGeneratorWithAuthBase from '../base/sub-gen-auth-base';
+
+class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
+    private answers: AddAnnotationsAnswers;
+
+    constructor(args: string | string[], opts: any) {
+        super(args, opts, GeneratorTypes.ADD_ANNOTATIONS_TO_DATA);
+    }
+
+    async initializing(): Promise<void> {
+        await this.onInit();
+    }
+
+    async prompting(): Promise<void> {
+        try {
+            await this.getManifest();
+
+            this.answers = await this.prompt(
+                getPromptsForAddAnnotationsToOData(this.projectPath, this.manifest?.['sap.app'].dataSources ?? {})
+            );
+            this.logger.log(`Current OData services\n${JSON.stringify(this.answers, null, 2)}`);
+        } catch (error) {
+            await this.handleRuntimeCrash(error.message);
+        }
+    }
+
+    public async writing(): Promise<void> {
+        const changeData = {
+            variant: this.variant,
+            isCommand: true,
+            annotation: {
+                dataSource: this.answers.id,
+                filePath: this.answers.filePath,
+                serviceUrl: this.manifest?.['sap.app']?.dataSources?.[this.answers.id]?.uri
+            }
+        } as AnnotationsData;
+
+        if (!this.answers.filePath) {
+            const metadata = await this.manifestService.getDataSourceMetadata(this.answers.id);
+            changeData.annotation.namespaces = getAnnotationNamespaces({ metadata });
+        }
+
+        await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
+            this.projectPath,
+            ChangeType.ADD_ANNOTATIONS_TO_ODATA,
+            changeData,
+            this.fs
+        );
+        this.logger.log(`Change written to changes folder`);
+
+        if (this.answers.fileSelectOption === AnnotationFileSelectType.NewEmptyFile) {
+            this.appWizard.showInformation(
+                'Empty annotation file will be created in webapp/changes/annotations folder of your project',
+                MessageType.notification
+            );
+        }
+    }
+
+    public end(): void {
+        this.logger.log('Successfully created annotation file!');
+    }
+}
+
+export = AddAnnotationsToDataGenerator;
