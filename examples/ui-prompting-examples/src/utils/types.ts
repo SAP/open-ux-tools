@@ -2,10 +2,10 @@ import type {
     Answers,
     CodeSnippet,
     SupportedGeneratorAnswers,
-    type FilterBarPromptsAnswer,
-    type ChartPromptsAnswer,
-    type TablePromptsAnswer,
-    type Prompts
+    FilterBarPromptsAnswer,
+    ChartPromptsAnswer,
+    TablePromptsAnswer,
+    Prompts
 } from '@sap-ux/fe-fpm-writer';
 import { PromptsType } from '@sap-ux/fe-fpm-writer/dist/prompts/types';
 import type { AddonActions } from '../addons/types';
