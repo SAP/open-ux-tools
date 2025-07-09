@@ -19,7 +19,7 @@ export async function getAdpProjectData(projectPath: string): Promise<AdpProject
         const variant = await getVariant(projectPath);
 
         return configExists ? getOldConfigBAS(variant, projectPath) : await getConfig(variant, projectPath);
-    } catch (e: any) {
+    } catch (e) {
         throw new Error(`Unable to get project files: ${e.message}`);
     }
 }
@@ -89,16 +89,4 @@ async function getConfig(variant: DescriptorVariant, projectPath: string): Promi
         ui5Version,
         authenticationType
     };
-}
-
-/**
- * Utility to synchronously read & parse a JSON file relative to `projectPath`.
- *
- * @template T - Expected JSON shape.
- * @param {string} projectPath - Project root
- * @param {string} filePath - File path *relative* to `projectPath`
- * @returns {T} Parsed JSON content typed as `T`
- */
-export function parseFile<T>(projectPath: string, filePath: string): T {
-    return JSON.parse(readFileSync(resolve(projectPath, filePath), 'utf-8'));
 }
