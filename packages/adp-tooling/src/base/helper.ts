@@ -63,8 +63,9 @@ export function isTypescriptSupported(basePath: string, fs?: Editor): boolean {
 /**
  * Reads the UI5 YAML configuration and returns the parsed `UI5Config` instance.
  *
- * @param basePath  Adaptation project root
- * @param yamlPath  Relative or absolute path to the ui5.yaml file
+ * @param {string} basePath - Adaptation project root
+ * @param {string} yamlPath - Relative or absolute path to the ui5.yaml file
+ * @returns {Promise<UI5Config>} The `UI5Config` object.
  */
 export async function readUi5Config(basePath: string, yamlPath: string): Promise<UI5Config> {
     const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
@@ -125,11 +126,10 @@ export async function getAdpConfig(basePath: string, yamlPath: string): Promise<
         const ui5Conf = await readUi5Config(basePath, yamlPath);
         const adp = extractAdpConfig(ui5Conf);
         if (!adp) {
-            throw new Error('No system configuration found');
+            throw new Error('Could not extract ADP configuration from ui5.yaml');
         }
         return adp;
     } catch (error) {
-        // re-throw with context
         const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
         throw new Error(`No system configuration found in ${basename(ui5ConfigPath)}`);
     }
