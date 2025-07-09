@@ -1,4 +1,4 @@
-import { Manifest } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 
 export function assertInboundsHasConfig(
     crossNavigation: Manifest['sap.app']['crossNavigation'],

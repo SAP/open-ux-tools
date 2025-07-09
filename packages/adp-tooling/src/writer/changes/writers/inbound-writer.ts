@@ -18,7 +18,10 @@ export class InboundWriter implements IWriter<InboundData> {
      * @param {Editor} fs - The filesystem editor instance.
      * @param {string} projectPath - The root path of the project.
      */
-    constructor(private fs: Editor, private projectPath: string) {}
+    constructor(
+        private fs: Editor,
+        private projectPath: string
+    ) {}
 
     /**
      * Constructs the content for an inbound data change based on provided data.

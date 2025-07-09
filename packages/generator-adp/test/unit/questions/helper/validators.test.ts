@@ -3,8 +3,7 @@ import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input
 
 import { t } from '../../../../src/utils/i18n';
 import { resolveNodeModuleGenerator } from '../../../../src/app/extension-project';
-import { validateJsonInput } from '../../../../src/app/questions/helper/validators';
-import { validateExtensibilityGenerator } from '../../../../src/app/questions/helper/validators';
+import { validateJsonInput, validateExtensibilityGenerator } from '../../../../src/app/questions/helper/validators';
 
 jest.mock('../../../../src/app/extension-project', () => ({
     resolveNodeModuleGenerator: jest.fn()

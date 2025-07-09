@@ -29,9 +29,9 @@ mockGetService.mockResolvedValueOnce({
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-unsafe-assignment
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -41,7 +41,6 @@ jest.mock('fs', () => {
 });
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: jest.fn(),
     isExtensionInstalled: jest.fn().mockReturnValue(true),
@@ -54,6 +53,11 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
 
 const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 const mockSendTelemetry = sendTelemetry as jest.Mock;
+
+jest.mock('@sap-ux/telemetry', () => ({
+    ...(jest.requireActual('@sap-ux/telemetry') as {}),
+    initTelemetrySettings: jest.fn()
+}));
 
 const abapDeployGenPath = join(__dirname, '../../src/app');
 

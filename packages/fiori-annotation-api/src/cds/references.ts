@@ -25,6 +25,11 @@ import type { Document } from './document';
 import type { ProjectInfo } from '../types';
 import { toUnifiedUri } from './utils';
 
+/**
+ *
+ * @param metadataService
+ * @param files
+ */
 function buildDefinitionIndex(
     metadataService: MetadataService,
     files: AnnotationFile[]
@@ -47,6 +52,14 @@ function buildDefinitionIndex(
     return { definitionIndex, virtualProperties };
 }
 
+/**
+ *
+ * @param definitionIndex
+ * @param virtualProperties
+ * @param metadataElement
+ * @param target
+ * @param fileUri
+ */
 function buildDefinitionIndexForTarget(
     definitionIndex: Map<string, string[]>,
     virtualProperties: Map<string, string>,
@@ -76,6 +89,13 @@ function buildDefinitionIndexForTarget(
     }
 }
 
+/**
+ *
+ * @param virtualProperties
+ * @param fileUri
+ * @param metadataElement
+ * @param collection
+ */
 function collectVirtualProperties(
     virtualProperties: Map<string, string>,
     fileUri: string,
@@ -105,6 +125,13 @@ function collectVirtualProperties(
     }
 }
 
+/**
+ *
+ * @param definitionIndex
+ * @param fileUri
+ * @param prefix
+ * @param element
+ */
 function collectAnnotations(
     definitionIndex: Map<string, string[]>,
     fileUri: string,
@@ -125,6 +152,13 @@ function collectAnnotations(
     }
 }
 
+/**
+ *
+ * @param definitionIndex
+ * @param fileUri
+ * @param prefix
+ * @param collection
+ */
 function traverseCollection(
     definitionIndex: Map<string, string[]>,
     fileUri: string,
@@ -147,6 +181,13 @@ function traverseCollection(
     }
 }
 
+/**
+ *
+ * @param definitionIndex
+ * @param fileUri
+ * @param prefix
+ * @param element
+ */
 function traverseRecord(
     definitionIndex: Map<string, string[]>,
     fileUri: string,
@@ -172,6 +213,13 @@ function traverseRecord(
     }
 }
 
+/**
+ *
+ * @param definitionIndex
+ * @param fileUri
+ * @param prefix
+ * @param element
+ */
 function traverseAnnotation(
     definitionIndex: Map<string, string[]>,
     fileUri: string,
@@ -188,6 +236,12 @@ function traverseAnnotation(
     }
 }
 
+/**
+ *
+ * @param definitionIndex
+ * @param fileUri
+ * @param path
+ */
 function registerReference(definitionIndex: Map<string, string[]>, fileUri: string, path: string): void {
     const entry = definitionIndex.get(path);
     // We can't point to ghost files, we need to use the real url
@@ -199,6 +253,11 @@ function registerReference(definitionIndex: Map<string, string[]>, fileUri: stri
     }
 }
 
+/**
+ *
+ * @param element
+ * @param basePath
+ */
 function getPathsInElement(element: Element, basePath: string): { path: string }[] {
     const paths: { path: string }[] = [];
     // add all paths in attributes
@@ -226,6 +285,12 @@ function getPathsInElement(element: Element, basePath: string): { path: string }
     return paths;
 }
 
+/**
+ *
+ * @param target
+ * @param metadata
+ * @param aliasInfo
+ */
 function getPathsInTarget(
     target: AnnotationFileTarget,
     metadata: MetadataService,
@@ -243,6 +308,13 @@ function getPathsInTarget(
     return paths;
 }
 
+/**
+ *
+ * @param element
+ * @param paths
+ * @param targetName
+ * @param pathBase
+ */
 function getPathsInAnnotation(
     element: Element,
     paths: { path: string; forOverriding?: boolean }[],
@@ -261,6 +333,14 @@ function getPathsInAnnotation(
     paths.push(...getPathsInElement(element, pathBase));
 }
 
+/**
+ *
+ * @param fileUri
+ * @param namespaceMap
+ * @param projectRoot
+ * @param documents
+ * @param fileUrisDone
+ */
 function addAvailableNamespaces(
     fileUri: string,
     namespaceMap: Map<string, Reference>,
@@ -346,6 +426,15 @@ export function resolvePath(path: PathValue, aliasInfo: AliasInformation): PathV
     return segmentsNoAlias.join('/');
 }
 
+/**
+ *
+ * @param fileUri
+ * @param references
+ * @param missingReferences
+ * @param segments
+ * @param metadataService
+ * @param projectRoot
+ */
 function checkSegments(
     fileUri: string,
     references: Reference[],
@@ -380,6 +469,19 @@ function checkSegments(
     return currentMdElementPath;
 }
 
+/**
+ *
+ * @param fileUri
+ * @param aliasInfo
+ * @param references
+ * @param missingReferences
+ * @param virtualProperties
+ * @param entry
+ * @param entry.path
+ * @param entry.forOverriding
+ * @param metadataService
+ * @param projectRoot
+ */
 function checkMetadataDefinitions(
     fileUri: string,
     aliasInfo: AliasInformation,
@@ -508,6 +610,12 @@ export function getMissingRefs(
     return missingReferences;
 }
 
+/**
+ *
+ * @param projectRoot
+ * @param definitionIndex
+ * @param annotationPath
+ */
 function findDefinitionForEntry(
     projectRoot: string,
     definitionIndex: Map<string, string[]>,
@@ -524,6 +632,12 @@ function findDefinitionForEntry(
     return uris;
 }
 
+/**
+ *
+ * @param uri
+ * @param appName
+ * @param apps
+ */
 function getCrossAppFolder(uri: string, appName: string, apps: string[]): string {
     let crossAppFolder = '';
     if (!isSubDirectory(toUnifiedUri(`${appName}/`), uri)) {
@@ -536,11 +650,23 @@ function getCrossAppFolder(uri: string, appName: string, apps: string[]): string
     return crossAppFolder;
 }
 
+/**
+ *
+ * @param parent
+ * @param child
+ */
 function isSubDirectory(parent: string, child: string): boolean {
     const relativePath = relative(parent, child);
     return !!(relativePath && !relativePath.startsWith('..') && !isAbsolute(relativePath));
 }
 
+/**
+ *
+ * @param uris
+ * @param fileUri
+ * @param references
+ * @param projectRoot
+ */
 function hasMissingUri(uris: string[], fileUri: string, references: Reference[], projectRoot: string) {
     if (uris.length === 0) {
         return false;

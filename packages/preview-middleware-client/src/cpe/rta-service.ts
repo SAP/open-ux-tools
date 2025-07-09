@@ -1,3 +1,4 @@
+import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import {
     setAppMode,
     setUndoRedoEnablement,
@@ -5,12 +6,11 @@ import {
     undo,
     redo,
     save,
-    ExternalAction,
     reloadApplication,
     applicationModeChanged
 } from '@sap-ux-private/control-property-editor-common';
-import { ActionSenderFunction, SubscribeFunction } from './types';
-import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type { ActionSenderFunction, SubscribeFunction } from './types';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 /**
  * A Class of RtaService
@@ -19,6 +19,7 @@ export class RtaService {
     /**
      *
      * @param options ui5 adaptation options.
+     * @param rta
      */
     constructor(private readonly rta: RuntimeAuthoring) {}
 
@@ -64,6 +65,9 @@ export class RtaService {
         });
     }
 
+    /**
+     *
+     */
     private save(): Promise<void> {
         if (this.rta.save) {
             // v1.107.x and above
@@ -75,6 +79,11 @@ export class RtaService {
     }
 }
 
+/**
+ *
+ * @param sendAction
+ * @param rta
+ */
 export function modeAndStackChangeHandler(sendAction: (action: ExternalAction) => void, rta: RuntimeAuthoring) {
     return () => {
         const canUndo = rta.canUndo();

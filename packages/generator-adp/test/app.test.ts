@@ -19,9 +19,8 @@ import {
 import * as Logger from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
-import type { ManifestNamespace } from '@sap-ux/project-access';
 import { isCli, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 import type { AttributesAnswers, ConfigAnswers, Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';

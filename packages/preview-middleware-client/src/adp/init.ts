@@ -14,6 +14,10 @@ import { getApplicationType } from '../utils/application';
 import { loadDefinitions } from './quick-actions/load';
 import { initDialogs } from './init-dialogs';
 
+/**
+ *
+ * @param rta
+ */
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
     if (flexSettings.telemetry === true) {

@@ -1,8 +1,8 @@
 import type Dialog from 'sap/m/Dialog';
-import Event from 'sap/ui/base/Event';
+import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
-import JSONModel from 'sap/ui/model/json/JSONModel';
-import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type JSONModel from 'sap/ui/model/json/JSONModel';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type AppComponentV4 from 'sap/fe/core/AppComponent';
 import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent';
@@ -15,8 +15,8 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
-import SimpleForm from 'sap/ui/layout/form';
-import Control from 'sap/ui/core/Control';
+import type SimpleForm from 'sap/ui/layout/form';
+import type Control from 'sap/ui/core/Control';
 import AddSubpage from 'open/ux/preview/client/adp/controllers/AddSubpage.controller';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
@@ -29,6 +29,7 @@ const mocks = {
 /**
  * Simulates various values returns in sequential calls
  * the last value stays persistent and is returned in further calls
+ *
  * @param v - value or array of values
  * @returns jest mock function returning provided values, the last value stays persistent and is returned in further calls
  */
@@ -47,7 +48,7 @@ const nCallsMock = <T>(v: T | T[]) => {
 type StateType = ValueState | keyof typeof ValueState;
 const mockFormInput = (
     isInput: boolean,
-    values: String | String[] = '',
+    values: string | string[] = '',
     states?: StateType | StateType[],
     stateTexts?: string | string[]
 ) => ({
@@ -141,7 +142,7 @@ describe('AddSubpage controller', () => {
                                 ];
                         }
                     })
-                } as unknown as JSONModel);
+                }) as unknown as JSONModel;
             addSubpage.model = getTestModel();
 
             const dialogMock = {
@@ -243,7 +244,7 @@ describe('AddSubpage controller', () => {
             ({
                 setProperty: jest.fn(),
                 getProperty: jest.fn()
-            } as unknown as JSONModel);
+            }) as unknown as JSONModel;
 
         let addSubpage: AddSubpage;
         let beginBtnSetEnabledMock: jest.Mock<any, any, any>;

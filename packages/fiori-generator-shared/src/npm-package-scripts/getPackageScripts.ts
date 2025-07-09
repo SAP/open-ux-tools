@@ -75,7 +75,7 @@ function getVariantPreviewAppScript(addSearchParams: boolean): string {
     }
     // Please keep the special characters in the below command
     // as removing them may cause the browser to misinterpret the URI components without the necessary escaping and quotes.
-    // eslint-disable-next-line no-useless-escape
+
     return `fiori run --open \"preview.html${urlParam}${previewAppAnchor}\"`;
 }
 

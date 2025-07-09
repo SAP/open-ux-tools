@@ -103,7 +103,7 @@ async function getBackendTargetChoices(
             return {
                 name: isDefault
                     ? `${getBackendDisplayName({ backendSystem: system })} (Source system)`
-                    : getBackendDisplayName({ backendSystem: system }) ?? '',
+                    : (getBackendDisplayName({ backendSystem: system }) ?? ''),
                 value: system.url,
                 isDefault,
                 scp: !!system.serviceKeys,

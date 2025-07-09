@@ -17,6 +17,11 @@ import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
 import { CommunicationService } from './communication-service';
 import { ContextMenuService } from './context-menu-service';
 
+/**
+ *
+ * @param rta
+ * @param registries
+ */
 export default function init(
     rta: RuntimeAuthoring,
     registries: QuickActionDefinitionRegistry<string>[] = []
@@ -66,7 +71,7 @@ export default function init(
             .then(() => {
                 CommunicationService.sendAction(appLoaded());
             })
-            // eslint-disable-next-line @typescript-eslint/unbound-method
+
             .catch(Log.error);
         const icons = getIcons();
         CommunicationService.sendAction(iconsLoaded(icons));

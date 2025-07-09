@@ -43,7 +43,7 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         Mta: require('./mockMta').MockMta
     };
 });
@@ -73,7 +73,7 @@ describe('Test headless generator', () => {
     });
 
     beforeEach(() => {
-        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 } as any));
+        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 }) as any);
     });
 
     afterEach(() => {

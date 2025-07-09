@@ -1,9 +1,16 @@
 import { getControlById } from '../../../utils/core';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getV4AppComponent, getPageName, getReference } from '../../../utils/fe-v4';
 
+/**
+ *
+ * @param context
+ * @param isButtonEnabled
+ * @param controlType
+ * @param propertyPath
+ */
 export async function executeToggleAction(
     context: QuickActionContext,
     isButtonEnabled: boolean,

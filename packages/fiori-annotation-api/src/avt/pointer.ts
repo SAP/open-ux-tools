@@ -104,6 +104,11 @@ export function convertPointerInAnnotationToInternal(
     return path.join('/');
 }
 
+/**
+ *
+ * @param currentElement
+ * @param valueType
+ */
 function handleExpressionValueSegment(currentElement: Element, valueType?: string): string[] {
     if (valueType === undefined) {
         return [];
@@ -120,6 +125,11 @@ function handleExpressionValueSegment(currentElement: Element, valueType?: strin
     return [];
 }
 
+/**
+ *
+ * @param segment
+ * @param currentElement
+ */
 function handleStringSegment(
     segment: string,
     currentElement: Element
@@ -138,6 +148,11 @@ function handleStringSegment(
     }
 }
 
+/**
+ *
+ * @param currentElement
+ * @param segment
+ */
 function handleExpressionNameSegment(
     currentElement: Element,
     segment: string
@@ -170,10 +185,20 @@ function handleExpressionNameSegment(
     return { subElement, pathSegments };
 }
 
+/**
+ *
+ * @param element
+ */
 function getFirstTextNodeIndex(element: Element): number {
     return element.content.findIndex((subNode) => subNode.type === TEXT_TYPE);
 }
 
+/**
+ *
+ * @param element
+ * @param subElementName
+ * @param occurrence
+ */
 function findSubElement(
     element: Element,
     subElementName: ElementName | undefined,
@@ -196,6 +221,10 @@ function findSubElement(
     return result;
 }
 
+/**
+ *
+ * @param source
+ */
 function firstCharToUpper(source: string): string {
     let out: string = source;
     if (source) {

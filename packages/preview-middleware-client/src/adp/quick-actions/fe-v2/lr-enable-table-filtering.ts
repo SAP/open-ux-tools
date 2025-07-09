@@ -1,8 +1,11 @@
-import SmartTable from 'sap/ui/comp/smarttable/SmartTable';
+import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    SimpleQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage, pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
@@ -23,6 +26,10 @@ export class EnableTableFilteringQuickAction
     extends SimpleQuickActionDefinitionBase
     implements SimpleQuickActionDefinition
 {
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(ENABLE_TABLE_FILTERING, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context, [
             {
@@ -77,6 +84,9 @@ export class EnableTableFilteringQuickAction
         }
     }
 
+    /**
+     *
+     */
     async execute(): Promise<FlexCommand[]> {
         if (!this.control) {
             return [];

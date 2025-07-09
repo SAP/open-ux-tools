@@ -1,4 +1,3 @@
-// @ts-ignore
 import packageJson from '../../package.json';
 
 /**

@@ -6,9 +6,9 @@ import { FileName } from '@sap-ux/project-access';
 
 jest.mock('fs', () => {
     const fs1 = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const vol = require('memfs').vol;
     const memfs = new Union().use(fs1).use(vol as unknown as typeof fs);
     memfs.realpath = fs1.realpath;
@@ -18,7 +18,7 @@ jest.mock('fs', () => {
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         Mta: require('./mockMta').MockMta
     };
 });

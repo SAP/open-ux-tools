@@ -7,14 +7,27 @@ import { BackendSystem } from '../entities/backend-system';
 import { text } from '../i18n';
 import type { ServiceOptions } from '../types';
 
+/**
+ *
+ */
 export class SystemService implements Service<BackendSystem, BackendSystemKey> {
     private readonly dataProvider: DataProvider<BackendSystem, BackendSystemKey>;
     private readonly logger: Logger;
 
+    /**
+     *
+     * @param logger
+     * @param options
+     */
     constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
         this.dataProvider = new SystemDataProvider(this.logger, options);
     }
+    /**
+     *
+     * @param key
+     * @param entity
+     */
     public async partialUpdate(
         key: BackendSystemKey,
         entity: Partial<BackendSystem>
@@ -25,6 +38,11 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         return this.write(updatedEntity);
     }
 
+    /**
+     *
+     * @param update
+     * @param existingSystem
+     */
     private mergeProperties(update: Partial<BackendSystem>, existingSystem: BackendSystem): BackendSystem {
         const patch = { ...update };
         // Make sure we don't mess with key fields
@@ -34,6 +52,10 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         return new BackendSystem({ ...updatedEntity });
     }
 
+    /**
+     *
+     * @param key
+     */
     private async readOrThrow(key: BackendSystemKey): Promise<BackendSystem> {
         const existingSystem = await this.read(key);
         if (!existingSystem) {
@@ -42,26 +64,51 @@ export class SystemService implements Service<BackendSystem, BackendSystemKey> {
         return existingSystem;
     }
 
+    /**
+     *
+     * @param entity
+     */
     private validatePartialUpdateInput(entity: Partial<BackendSystem>): void {
         if (!entity || !Object.keys(entity).length) {
             throw new Error(text('error.noPropertiesSpecified'));
         }
     }
 
+    /**
+     *
+     * @param key
+     */
     public async read(key: BackendSystemKey): Promise<BackendSystem | undefined> {
         return this.dataProvider.read(key);
     }
+    /**
+     *
+     * @param entity
+     */
     public async write(entity: BackendSystem): Promise<BackendSystem | undefined> {
         return this.dataProvider.write(entity);
     }
+    /**
+     *
+     * @param entity
+     */
     public async delete(entity: BackendSystem): Promise<boolean> {
         return this.dataProvider.delete(entity);
     }
+    /**
+     *
+     * @param options
+     */
     public async getAll(options: ServiceRetrievalOptions): Promise<BackendSystem[] | []> {
         return this.dataProvider.getAll(options);
     }
 }
 
+/**
+ *
+ * @param logger
+ * @param options
+ */
 export function getInstance(logger: Logger, options: ServiceOptions = {}): SystemService {
     return new SystemService(logger, options);
 }
