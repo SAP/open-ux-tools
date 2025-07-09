@@ -3,7 +3,7 @@ import fs from 'fs';
 import * as memfs from 'memfs';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } from '../../src/';
-import { deployMode, ResourceMTADestination } from '../../src/constants';
+import { deployMode, SRV_API } from '../../src/constants';
 import type { mta } from '@sap/mta-lib';
 
 jest.mock('fs', () => {
@@ -305,7 +305,7 @@ describe('Validate common flows', () => {
         const params = { ...parameters, ...{} } as mta.Parameters;
         params[deployMode] = 'html5-repo';
         await mtaConfig.updateParameters(params);
-        await mtaConfig.addDestinationToAppRouter(mtaConfig.getFormattedPrefix(ResourceMTADestination));
+        await mtaConfig.addDestinationToAppRouter(SRV_API);
         expect(mtaConfig.cloudServiceName).toEqual('managedAppCAPProject');
         expect(mtaConfig.hasManagedXsuaaResource()).toBeTruthy();
         await mtaConfig.save();
