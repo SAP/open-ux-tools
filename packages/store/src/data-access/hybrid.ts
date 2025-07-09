@@ -67,6 +67,12 @@ class HybridStore<E extends object> implements DataAccess<E> {
         }
     }
 
+    /**
+     *
+     * @param root0
+     * @param root0.entityName
+     * @param root0.includeSensitiveData
+     */
     public async getAll({
         entityName,
         includeSensitiveData = true
@@ -77,6 +83,12 @@ class HybridStore<E extends object> implements DataAccess<E> {
         return Object.values(await this.readAll({ entityName, includeSensitiveData })) as unknown as E[];
     }
 
+    /**
+     *
+     * @param root0
+     * @param root0.entityName
+     * @param root0.includeSensitiveData
+     */
     async readAll({
         entityName,
         includeSensitiveData = true
@@ -172,6 +184,13 @@ class HybridStore<E extends object> implements DataAccess<E> {
         return deletedinFs || deletedInSecureStore;
     }
 
+    /**
+     *
+     * @param root0
+     * @param root0.entityName
+     * @param root0.id
+     * @param root0.entity
+     */
     public async partialUpdate({
         entityName,
         id,

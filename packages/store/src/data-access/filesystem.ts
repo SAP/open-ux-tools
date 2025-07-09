@@ -150,6 +150,13 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return Promise.resolve(entity);
     }
 
+    /**
+     *
+     * @param root0
+     * @param root0.entityName
+     * @param root0.id
+     * @param root0.entity
+     */
     public async partialUpdate({
         entityName,
         id,
@@ -173,11 +180,22 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return this.write({ entityName, id, entity: updatedEntity });
     }
 
+    /**
+     *
+     * @param update
+     * @param existingSystem
+     */
     private mergeProperties(update: Partial<E>, existingSystem: E): E {
         const updatedEntity = { ...existingSystem, ...update };
         return { ...updatedEntity };
     }
 
+    /**
+     *
+     * @param root0
+     * @param root0.entityName
+     * @param root0.id
+     */
     async del({ entityName, id }: { entityName: string; id: string }): Promise<boolean> {
         const name = toPersistenceName(entityName);
         if (!name) {

@@ -23,6 +23,9 @@ export interface Service<Entity, EntityKey> {
      *
      */
     delete(entity: Entity): Promise<boolean>;
+    /**
+     *
+     */
     getAll(options?: ServiceRetrievalOptions): Promise<Entity[] | []>;
 }
 

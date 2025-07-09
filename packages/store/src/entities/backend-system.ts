@@ -37,6 +37,7 @@ export class BackendSystem {
      * @param root0.password
      * @param root0.userDisplayName
      * @param root0.authenticationType
+     * @param root0.systemType
      */
     constructor({
         name,

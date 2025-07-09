@@ -124,24 +124,27 @@ export function filterAndMapInboundsToManifest(inbounds: Inbound[]): ManifestNam
     if (!inbounds || inbounds.length === 0) {
         return undefined;
     }
-    const filteredInbounds = inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
-        // Skip if hideLauncher is not false
-        if (!inbound?.content || inbound.content.hideLauncher !== false) {
-            return acc;
-        }
-        const { semanticObject, action, signature } = inbound.content;
-        if (semanticObject && action) {
-            const key = `${semanticObject}-${action}`;
-
-            // Temporary filtration of parameters to avoid issues with merged manifest until release of ABAP Platform Cloud 2508
-            if (signature?.parameters) {
-                filterIboundsParameters(signature);
+    const filteredInbounds = inbounds.reduce(
+        (acc: { [key: string]: InboundContent }, inbound) => {
+            // Skip if hideLauncher is not false
+            if (!inbound?.content || inbound.content.hideLauncher !== false) {
+                return acc;
             }
+            const { semanticObject, action, signature } = inbound.content;
+            if (semanticObject && action) {
+                const key = `${semanticObject}-${action}`;
 
-            acc[key] = inbound.content;
-        }
-        return acc;
-    }, {} as { [key: string]: InboundContent });
+                // Temporary filtration of parameters to avoid issues with merged manifest until release of ABAP Platform Cloud 2508
+                if (signature?.parameters) {
+                    filterIboundsParameters(signature);
+                }
+
+                acc[key] = inbound.content;
+            }
+            return acc;
+        },
+        {} as { [key: string]: InboundContent }
+    );
 
     return Object.keys(filteredInbounds).length === 0 ? undefined : filteredInbounds;
 }

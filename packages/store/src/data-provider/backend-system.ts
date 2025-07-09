@@ -62,6 +62,11 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         });
     }
 
+    /**
+     *
+     * @param root0
+     * @param root0.includeSensitiveData
+     */
     public async getAll({
         includeSensitiveData = true
     }: {
@@ -89,6 +94,10 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         return Object.values(systems);
     }
 
+    /**
+     *
+     * @param systems
+     */
     private async ensureSystemTypesExist(systems: Record<string, BackendSystem>): Promise<boolean> {
         let allSystemsHaveType = true;
 
