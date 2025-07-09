@@ -1,11 +1,18 @@
 import { resolve } from 'path';
 import { readFileSync, existsSync } from 'fs';
+
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
+import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 
 import { getAdpConfig, getProxyConfig, getVariant } from './helper';
-import { AdpConfig, DescriptorVariant, AdpProjectData } from '../types';
+import type { AdpConfig, DescriptorVariant, AdpProjectData } from '../types';
 
+/**
+ * Get the project data for the adaptation project.
+ *
+ * @param {string} projectPath - The path to the adaptation project.
+ * @returns {Promise<AdpProjectData>} The project data.
+ */
 export async function getAdpProjectData(projectPath: string): Promise<AdpProjectData> {
     try {
         const configExists = existsSync(resolve(projectPath, '.adp', 'config.json'));
@@ -17,6 +24,14 @@ export async function getAdpProjectData(projectPath: string): Promise<AdpProject
     }
 }
 
+/**
+ * Reads `.adp/config.json` (legacy BAS workspace) and maps it to
+ * `AdpProjectData` plus information from the descriptor variant.
+ *
+ * @param {DescriptorVariant} variant - Parsed `manifest.appdescr_variant`
+ * @param {string} projectPath - Project root
+ * @returns {AdpProjectData} Legacy BAS project data mapping
+ */
 function getOldConfigBAS(variant: DescriptorVariant, projectPath: string): AdpProjectData {
     const config: AdpConfig = JSON.parse(readFileSync(resolve(projectPath, '.adp/config.json'), 'utf-8'));
 
@@ -38,6 +53,13 @@ function getOldConfigBAS(variant: DescriptorVariant, projectPath: string): AdpPr
     };
 }
 
+/**
+ * Creates an `AdpProjectData` object for projects that rely on `ui5.yaml` middleware configuration.
+ *
+ * @param {DescriptorVariant} variant - Parsed `manifest.appdescr_variant`
+ * @param {string} projectPath - Project root
+ * @returns {Promise<AdpProjectData>} Project data extracted from ui5.yaml configuration
+ */
 async function getConfig(variant: DescriptorVariant, projectPath: string): Promise<AdpProjectData> {
     if (!existsSync(resolve(projectPath, 'ui5.yaml'))) {
         throw new Error('Missing ui5.yaml!');
@@ -69,7 +91,14 @@ async function getConfig(variant: DescriptorVariant, projectPath: string): Promi
     };
 }
 
-/* generic file-read helper (unchanged) */
+/**
+ * Utility to synchronously read & parse a JSON file relative to `projectPath`.
+ *
+ * @template T - Expected JSON shape.
+ * @param {string} projectPath - Project root
+ * @param {string} filePath - File path *relative* to `projectPath`
+ * @returns {T} Parsed JSON content typed as `T`
+ */
 export function parseFile<T>(projectPath: string, filePath: string): T {
     return JSON.parse(readFileSync(resolve(projectPath, filePath), 'utf-8'));
 }
