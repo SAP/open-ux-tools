@@ -1,10 +1,8 @@
-import Generator = require('yeoman-generator');
+import path from 'path';
+import type Generator from 'yeoman-generator';
 import type { IPrompt } from '@sap-devx/yeoman-ui-types';
 import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 
-import SubGeneratorBase from './sub-gen-base';
-import { validateEmptyString } from '@sap-ux/project-input-validator';
-import type { DataSource, DataSources, DescriptorVariant } from '@sap-ux/adp-tooling';
 import {
     getVariant,
     getAdpConfig,
@@ -14,21 +12,25 @@ import {
     getSystemUI5Version,
     getAdpProjectData
 } from '@sap-ux/adp-tooling';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
-import path = require('path');
-import type { Credentials } from '../types';
-import { GeneratorTypes } from '../types';
 import type { Manifest } from '@sap-ux/project-access';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import type { AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
-import { t } from '../utils/i18n';
-import { configPromptNames } from '../app/types';
 import type { AdpProjectData } from '@sap-ux/adp-tooling';
-import type { PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { validateEmptyString } from '@sap-ux/project-input-validator';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import type { InputQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { DataSource, DataSources, DescriptorVariant } from '@sap-ux/adp-tooling';
+import type { AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
+
+import { t } from '../utils/i18n';
+import { GeneratorTypes } from '../types';
+import type { Credentials } from '../types';
+import SubGeneratorBase from './sub-gen-base';
+import { configPromptNames } from '../app/types';
+import type { GeneratorOpts } from '../utils/opts';
 
 /**
  * Base class for *sub* generators that need authentication handling.
- * Adds functionality on top of {@link AdaptationProjectGeneratorBase}:
+ * Adds functionality on top of {@link SubGeneratorBase}:
  *  - automatic credential prompts depending on the target environment (CF / ABAP / S4HC)
  *  - convenience helpers for manifest & OData processing
  */
@@ -92,7 +94,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
      * @param {Generator.GeneratorOptions} opts - The options for the generator.
      * @param {GeneratorTypes} type - The type of generator.
      */
-    constructor(args: string | string[], opts: Generator.GeneratorOptions, type: GeneratorTypes) {
+    constructor(args: string | string[], opts: GeneratorOpts, type: GeneratorTypes) {
         super(args, opts, type);
         this.generatorType = type;
 
@@ -176,7 +178,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
                 return {
                     dataSourceName: dS[0],
                     uri: dS[1]?.uri,
-                    annotations: dS[1]?.settings?.annotations || []
+                    annotations: dS[1]?.settings?.annotations ?? []
                 };
             });
         this.logger.log(`OData target sources\n${JSON.stringify(this.oDataTargetSources, null, 2)}`);
@@ -260,16 +262,15 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
      *
      * @returns The username prompt.
      */
-    private getUsernamePrompt() {
+    private getUsernamePrompt(): InputQuestion<Credentials> {
         return {
             type: 'input',
             name: configPromptNames.username,
             message: t('prompts.usernameLabel'),
-            validate: (value: string) => validateEmptyString(value),
+            validate: validateEmptyString,
             guiOptions: {
                 mandatory: true
-            },
-            store: false
+            }
         };
     }
 
@@ -289,7 +290,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
                 mandatory: true,
                 type: 'login'
             },
-            validate: async (value: string, answers: Credentials) => {
+            validate: async (value: string, answers: Credentials): Promise<boolean | string> => {
                 const validationResult = validateEmptyString(value);
                 if (typeof validationResult === 'string') {
                     return validationResult;

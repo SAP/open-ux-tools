@@ -1,10 +1,9 @@
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 
+import type { AnnotationsData, AddAnnotationsAnswers } from '@sap-ux/adp-tooling';
 import {
     ChangeType,
     generateChange,
-    AnnotationsData,
-    AddAnnotationsAnswers,
     AnnotationFileSelectType,
     getPromptsForAddAnnotationsToOData
 } from '@sap-ux/adp-tooling';
@@ -12,11 +11,21 @@ import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 
 import { GeneratorTypes } from '../types';
 import SubGeneratorWithAuthBase from '../base/sub-gen-auth-base';
+import type { GeneratorOpts } from '../utils/opts';
 
+/**
+ * Generator for adding annotations to OData services.
+ */
 class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
     private answers: AddAnnotationsAnswers;
 
-    constructor(args: string | string[], opts: any) {
+    /**
+     * Creates an instance of the generator.
+     *
+     * @param {string | string[]} args - The arguments passed to the generator.
+     * @param {GeneratorOpts} opts - The options for the generator.
+     */
+    constructor(args: string | string[], opts: GeneratorOpts) {
         super(args, opts, GeneratorTypes.ADD_ANNOTATIONS_TO_DATA);
     }
 

@@ -1,10 +1,11 @@
 import Generator = require('yeoman-generator');
 import { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-import { ToolsLogger } from '@sap-ux/logger';
-import { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
-import { GeneratorTypes } from '../types';
+import type { GeneratorTypes } from '../types';
+import type { GeneratorOpts } from '../utils/opts';
 import { setHeaderTitle } from '../utils/opts';
 import AdpGeneratorLogger from '../utils/logger';
 
@@ -37,9 +38,10 @@ export default class SubGeneratorBase extends Generator {
      * Creates an instance of the generator.
      *
      * @param {string | string[]} args - The arguments passed to the generator.
-     * @param {AdpGeneratorOptions} opts - The options for the generator.
+     * @param {Generator.GeneratorOptions} opts - The options for the generator.
+     * @param {GeneratorTypes} type - The type of generator.
      */
-    constructor(args: string | string[], opts: any, type: GeneratorTypes) {
+    constructor(args: string | string[], opts: GeneratorOpts, type: GeneratorTypes) {
         super(args, opts);
         this.type = type;
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
@@ -61,7 +63,8 @@ export default class SubGeneratorBase extends Generator {
      * Centralized error handler that ensures resources are cleaned up and a helpful
      * error prompt is shown to the user.
      *
-     * @param {string} errorMessage - Human-readable error message
+     * @param {string} errorMessage - Human-readable error message.
+     * @returns {Promise<void>} A promise that resolves when the error is handled.
      */
     protected async handleRuntimeCrash(errorMessage: string): Promise<void> {
         await this.prompt([this._getErrorMessagePrompt(errorMessage)]);
@@ -69,6 +72,9 @@ export default class SubGeneratorBase extends Generator {
 
     /**
      * Builds a Yeoman question that simply displays the error message and blocks the wizard.
+     *
+     * @param {string} errorMessage - Human-readable error message.
+     * @returns {YUIQuestion<InputQuestion>} The Yeoman question that displays the error message.
      */
     private _getErrorMessagePrompt(errorMessage: string): YUIQuestion<InputQuestion> {
         return {
