@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.2
+
+### Patch Changes
+
+-   d75db00: Append leading forward slash
+
 ## 0.13.1
 
 ### Patch Changes
