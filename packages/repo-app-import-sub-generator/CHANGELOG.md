@@ -1,5 +1,11 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.58
+
+### Patch Changes
+
+-   5a465db: Add useVirtualPreviewEndpoints defaulted to true to App Configuration of repo app import sub generator
+
 ## 0.3.57
 
 ### Patch Changes
