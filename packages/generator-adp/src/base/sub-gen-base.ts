@@ -4,11 +4,11 @@ import { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
+import { t } from '../utils/i18n';
 import type { GeneratorTypes } from '../types';
-import type { GeneratorOpts } from '../utils/opts';
 import { setHeaderTitle } from '../utils/opts';
 import AdpGeneratorLogger from '../utils/logger';
-import { t } from '../utils/i18n';
+import type { GeneratorOpts } from '../utils/opts';
 
 /**
  * Shared base class for all ADP generators.

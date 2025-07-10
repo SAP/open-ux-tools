@@ -137,11 +137,9 @@ describe('AddAnnotationsToDataGenerator', () => {
     });
 
     it('invokes handleRuntimeCrash when system lookup fails during onInit', async () => {
-        // Mock dependencies
         getVariantMock.mockResolvedValue(variant);
         getAdpConfigMock.mockResolvedValue({ target, ignoreCertErrors: false } as any);
 
-        // Force SystemLookup.getSystemRequiresAuth to reject
         jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockRejectedValueOnce(
             new Error('system lookup fail')
         );

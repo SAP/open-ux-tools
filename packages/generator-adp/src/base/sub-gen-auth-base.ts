@@ -157,6 +157,9 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         return manifest;
     }
 
+    /**
+     * Sets the prompts for the generator.
+     */
     private _setPrompts(): void {
         this.setPromptsCallback = (fn): void => {
             if (this.prompts) {
