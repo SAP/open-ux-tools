@@ -98,7 +98,7 @@ describe('index', () => {
         expect(transformNodesSpy).toHaveBeenCalled();
         expect(mockSendAction).not.toHaveBeenCalled();
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'CPE_OUTLINE_ERROR_TITLE' },
+            title: { key: 'OUTLINE_ERROR_TITLE' },
             description: 'error',
             type: MessageBarType.error
         });

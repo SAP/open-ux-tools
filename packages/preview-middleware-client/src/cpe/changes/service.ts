@@ -117,7 +117,7 @@ export class ChangeService extends EventTarget {
                     const errorMessage =
                         modifiedMessage || `RTA Exception applying expression "${action.payload.value}"`;
                     await sendInfoCenterMessage({
-                        title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
+                        title: { key: 'CHANGE_CREATION_FAILED_TITLE' },
                         description: errorMessage,
                         type: MessageBarType.error
                     });
@@ -209,13 +209,13 @@ export class ChangeService extends EventTarget {
                                     title: textBundle.getText(changeTitle)
                                 };
                             }
+                            await sendInfoCenterMessage({
+                                title: { key: 'UNKNOWN_CHANGE_TYPE_TITLE' },
+                                description: { key: 'UNKNOWN_CHANGE_TYPE_DESCRIPTION', params: [key] },
+                                type: MessageBarType.info
+                            });
                             throw new Error('Unknown change type');
                         } catch (error) {
-                            await sendInfoCenterMessage({
-                                title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
-                                description: getError(error).message,
-                                type: MessageBarType.error
-                            });
                             // Gracefully handle change files with invalid content
                             const flexObject = await getFlexObject(change);
                             const selectorId = await getControlIdByChange(
@@ -323,13 +323,7 @@ export class ChangeService extends EventTarget {
                         i++;
                     }
                 } catch (error) {
-                    const extendedError = getError(error);
-                    Log.error('CPE: Change creation Failed', extendedError);
-                    await sendInfoCenterMessage({
-                        title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
-                        description: extendedError.message,
-                        type: MessageBarType.error
-                    });
+                    Log.error('CPE: Change creation Failed', getError(error));
                 }
             }
             const eventIndex = this.eventStack.indexOf(event);
@@ -341,8 +335,8 @@ export class ChangeService extends EventTarget {
                 );
                 if (changesRequiringReload > this.changesRequiringReload) {
                     await sendInfoCenterMessage({
-                        title: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_TITLE' },
-                        description: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_DESCRIPTION' },
+                        title: { key: 'CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_TITLE' },
+                        description: { key: 'CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_DESCRIPTION' },
                         type: MessageBarType.info
                     });
                     this.sendAction(setApplicationRequiresReload(changesRequiringReload > 0));

@@ -63,7 +63,7 @@ export default function init(
                 const extendedError = getError(error);
                 Log.error('Service Initialization Failed: ', extendedError);
                 return sendInfoCenterMessage({
-                    title: { key: 'CPE_INIT_ERROR_TITLE' },
+                    title: { key: 'INIT_ERROR_TITLE' },
                     description: extendedError.message,
                     type: MessageBarType.error
                 });
@@ -77,7 +77,7 @@ export default function init(
             .catch((error) => {
                 Log.error(error);
                 return sendInfoCenterMessage({
-                    title: { key: 'CPE_INIT_ERROR_TITLE' },
+                    title: { key: 'INIT_ERROR_TITLE' },
                     description: getError(error).message,
                     type: MessageBarType.error
                 });
@@ -88,7 +88,7 @@ export default function init(
         const extendedError = getError(error);
         Log.error('Error during initialization of Control Property Editor', extendedError);
         void sendInfoCenterMessage({
-            title: { key: 'CPE_INIT_ERROR_TITLE' },
+            title: { key: 'INIT_ERROR_TITLE' },
             description: extendedError.message,
             type: MessageBarType.error
         });

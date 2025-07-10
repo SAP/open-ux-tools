@@ -48,7 +48,7 @@ export function loadDefaultLibraries(): void {
         .catch((reason) => {
             Log.error('Loading Library Failed: ' + reason);
             return sendInfoCenterMessage({
-                title: { key: 'CPE_LIBRARAY_ERROR_TITLE' },
+                title: { key: 'LIBRARY_ERROR_TITLE' },
                 description: getError(reason).message,
                 type: MessageBarType.error 
             });
@@ -173,8 +173,8 @@ export async function getDocumentation(controlName: string, contLibName: string)
     } catch (err) {
         Log.error(`Error in getting documentation for ${contLibName}`);
         await sendInfoCenterMessage({
-            title: { key: 'CPE_DOCUMENTATION_ERROR_TITLE' },
-            description: { key: 'CPE_DOCUMENTATION_ERROR_DESCRIPTION', params: [contLibName] },
+            title: { key: 'DOCUMENTATION_ERROR_TITLE' },
+            description: { key: 'DOCUMENTATION_ERROR_DESCRIPTION', params: [contLibName] },
             type: MessageBarType.error
         });
     }

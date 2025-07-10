@@ -98,12 +98,6 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
         await this.createAppDescriptorChangeForV4(template);
         CommunicationService.sendAction(setApplicationRequiresReload(true));
 
-        await sendInfoCenterMessage({
-            title: { key: 'ADP_ADD_FRAGMENT_DIALOG_TITLE' },
-            description: { key: 'ADP_ADD_FRAGMENT_NOTIFICATION', params: [fragmentName] },
-            type: MessageBarType.warning
-        });
-
         this.handleDialogClose();
     }
 

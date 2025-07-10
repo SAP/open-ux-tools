@@ -12,8 +12,7 @@ import {
     QuickActionGroup,
     updateQuickAction,
     externalFileChange,
-    reportTelemetry,
-    MessageBarType
+    reportTelemetry
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
@@ -26,7 +25,6 @@ import { ChangeService } from '../changes';
 import { DialogFactory } from '../../adp/dialog-factory';
 import { getApplicationType } from '../../utils/application';
 import { getUi5Version } from '../../utils/version';
-import { sendInfoCenterMessage } from '../../utils/info-center-message';
 
 
 /**
@@ -52,7 +50,7 @@ export class QuickActionService implements Service {
         private readonly outlineService: OutlineService,
         private readonly registries: QuickActionDefinitionRegistry<string>[],
         private readonly changeService: ChangeService
-    ) { }
+    ) {}
 
     /**
      * Initialize selection service.
@@ -137,11 +135,6 @@ export class QuickActionService implements Service {
                         await this.addAction(group, instance);
                     } catch {
                         Log.warning(`Failed to initialize ${Definition.name} quick action.`);
-                        await sendInfoCenterMessage({
-                            title: { key: 'CPE_QUICK_ACTION_FAILURE_TITLE' },
-                            description: { key: 'CPE_QUICK_ACTION_FAILURE_DESCRIPTION', params: [Definition.name] },
-                            type: MessageBarType.warning
-                        });
                     }
                 }
                 groups.push(group);

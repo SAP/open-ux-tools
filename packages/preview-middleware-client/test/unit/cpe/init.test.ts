@@ -141,7 +141,7 @@ describe('main', () => {
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
         expect(Log.error).toBeCalledWith('Service Initialization Failed: ', error);
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'CPE_INIT_ERROR_TITLE' },
+            title: { key: 'INIT_ERROR_TITLE' },
             description: error.message,
             type: MessageBarType.error
         });

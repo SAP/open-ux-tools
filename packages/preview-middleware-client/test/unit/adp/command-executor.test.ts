@@ -83,11 +83,6 @@ describe('client/command-executor', () => {
                 designMetadata,
                 flexSettings
             );
-            expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-                title: { key: 'ADP_CREATE_COMMAND_TITLE' },
-                description: { key: `ADP_CREATE_COMMAND_DESCRIPTION`, params: [commandName, mockRuntimeControl.getId()] },
-                type: MessageBarType.info
-            });
         });
 
         it('should show a message in the info center and throw an error if getting command fails', async () => {

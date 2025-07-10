@@ -66,7 +66,7 @@ function getPropertyDocument(
             propertyName: property.name,
             type: ui5Type ?? '-',
             propertyType: ui5Type ?? '-'
-        } as PropertiesInfo);
+          } as PropertiesInfo);
 }
 
 async function addDocumentationForProperties(control: ManagedObject, controlData: Control): Promise<void> {
@@ -86,13 +86,7 @@ async function addDocumentationForProperties(control: ManagedObject, controlData
             }
         });
     } catch (e) {
-        const extendedError = getError(e);
-        Log.error('Document loading failed', extendedError);
-        void sendInfoCenterMessage({
-            title: { key: 'CPE_DOCUMENT_LOAD_FAILED_TITLE' },
-            description: extendedError.message,
-            type: MessageBarType.error
-        });
+        Log.error('Document loading failed', getError(e));
     }
 }
 
@@ -124,7 +118,7 @@ export class SelectionService implements Service {
                 const extendedError = getError(error);
                 Log.error('Event interrupted: ', extendedError);
                 return sendInfoCenterMessage({
-                    title: { key: 'CPE_EVENT_INTERRUPTED_TITLE' },
+                    title: { key: 'CHANGE_SELECTION_ERROR_TITLE' },
                     description: extendedError.message,
                     type: MessageBarType.error
                 });
@@ -234,11 +228,6 @@ export class SelectionService implements Service {
                     } catch (error) {
                         const extendedError = getError(error);
                         Log.error('Failed to report telemetry', extendedError);
-                        await sendInfoCenterMessage({
-                            title: { key: 'CPE_TELEMETRY_REPORT_FAILURE_TITLE' },
-                            description: extendedError.message,
-                            type: MessageBarType.error
-                        });
                     } finally {
                         await this.buildProperties(runtimeControl, sendAction, overlayControl);
                         eventOrigin.delete('outline');

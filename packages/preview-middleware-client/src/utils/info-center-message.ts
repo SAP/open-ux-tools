@@ -29,34 +29,30 @@ interface InfoCenterMessage {
  * left as a plain string.
  */
 export async function sendInfoCenterMessage({ title, description, details, type }: InfoCenterMessage): Promise<void> {
-    title = isString(title) ? title : await getTranslation(title);
-    description = isString(description) ? description : await getTranslation(description);
-    details = isString(details) || !details ? details : await getTranslation(details);
-
     CommunicationService.sendAction(showInfoCenterMessage({
-        title,
-        description,
-        details,
+        title: (await getTranslation(title))!,
+        description: (await getTranslation(description))!,
+        details: await getTranslation(details),
         type
     }));
 }
 
 /**
- * Type guard for a string values.
- *
- * @param {unknown} value - The value being checked.
- * @returns {boolean} True if the value is of type string.
- */
-function isString(value: unknown): value is string {
-    return typeof value === 'string';
-}
-
-/**
+ * Util function which returns translation for a localization key or a plain string.
+ * If the value is undefined, it returns undefined.
  * 
- * @param {LocalizationKey} localizationKey - The localization key to retrieve the translation for.
+ * @param {LocalizationKey | string | undefined} value - The localization key, plain string or undefined.
  * @returns {Promise<string>} A promise that resolves to the translated string.
  */
-async function getTranslation({ key, params }: LocalizationKey): Promise<string> {
+async function getTranslation(value: LocalizationKey | string | undefined): Promise<string | undefined> {
+    if (value === undefined) {
+        return undefined;
+    }
+
+    if (typeof value === 'string') {
+        return value;
+    }
+
     const bundle = await getTextBundle();
-    return bundle.getText(key, params);
+    return bundle.getText(value.key, value.params);
 }
