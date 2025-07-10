@@ -47,7 +47,8 @@
         "projectNameValidationErrorExt": "The name must only contain Latin alphanumeric characters. Every part must start with a letter and different parts can be separated by a period.",
         "projectNameLengthErrorInt": "The name cannot start with the word 'customer', contain more than 61 characters, or end with the word 'component'.",
         "projectNameValidationErrorInt": "The name must only contain Latin alphanumeric characters and it must have at least two parts. Every part must start with a letter and the different parts must be separated by a period.",
-        "projectNotInWorkspace": "The project: '{{- path}}' is not in the workspace. Some adaptation project tools may not work. What do you want to do?"
+        "projectNotInWorkspace": "The project: '{{- path}}' is not in the workspace. Some adaptation project tools may not work. What do you want to do?",
+        "emptyAnnotationFile": "Empty annotation file will be created in webapp/changes/annotations folder of your project."
     },
     "error": {
         "selectCannotBeEmptyError": "The {{value}} has to be selected.",
@@ -66,6 +67,8 @@
         "appParameterMissing": "Could not create an extension project because the application parameters are missing. Please select a different application.",
         "destinationInfoMissing": "Could not create an extension project because the destination info is missing. Please select a different system.",
         "systemNotFound": "System not found or not supported: {{system}}. Please check the system exists.",
-        "applicationNotFound": "Application not found or not supported: {{appName}}. Please check the application exists."
+        "applicationNotFound": "Application not found or not supported: {{appName}}. Please check the application exists.",
+        "backendCommunicationError": "There is problem with communication with the backend. Please try again later.",
+        "pleaseProvideAllRequiredData": "Please provide all required data and try again."
     }
 }

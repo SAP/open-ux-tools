@@ -4,7 +4,6 @@ import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
-import type { AuthenticationType } from '@sap-ux/store';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -38,46 +37,6 @@ export interface AdpPreviewConfig {
      * If set to true then certification validation errors are ignored.
      */
     ignoreCertErrors?: boolean;
-}
-
-/**
- * Old ADP config that is no longer used. Mainly used for backward compatibility for CF projects    .
- */
-export interface AdpConfig {
-    sourceSystem?: string;
-    client?: string;
-    componentname: string;
-    appvariant: string;
-    layer: string;
-    isOVPApp: boolean;
-    isFioriElement: boolean;
-    environment: string;
-    ui5Version: string;
-    cfSpace?: string;
-    cfOrganization?: string;
-    cfApiUrl?: string;
-}
-
-/**
- * Project data that is used for manifest change wizards.
- */
-export interface AdpProjectData {
-    path: string;
-    title: string;
-    namespace: string;
-    ui5Version: string;
-    name: string;
-    layer: UI5FlexLayer;
-    environment: string;
-    sourceSystem: string;
-    applicationIdx: string;
-    reference: string;
-    id: string;
-    authenticationType?: AuthenticationType;
-    client?: string | null;
-    cfSpace?: string;
-    cfOrganization?: string;
-    cfApiUrl?: string;
 }
 
 export interface OnpremApp {

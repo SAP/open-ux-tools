@@ -7,7 +7,6 @@ export * from './ui5';
 export * from './base/cf';
 export * from './base/helper';
 export * from './base/constants';
-export * from './base/workspace';
 export * from './base/project-builder';
 export * from './base/abap/manifest-service';
 export { promptGeneratorInput, PromptDefaults } from './base/prompt';

@@ -1,30 +1,18 @@
 import path from 'path';
 import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 
-import {
-    getVariant,
-    getAdpConfig,
-    ManifestService,
-    SystemLookup,
-    getConfiguredProvider,
-    getSystemUI5Version,
-    getAdpProjectData
-} from '@sap-ux/adp-tooling';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Manifest } from '@sap-ux/project-access';
-import type { AdpProjectData } from '@sap-ux/adp-tooling';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
-import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import type { InputQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import type { DataSource, DataSources, DescriptorVariant } from '@sap-ux/adp-tooling';
+import { createAbapServiceProvider, type AbapTarget } from '@sap-ux/system-access';
+import type { DescriptorVariant } from '@sap-ux/adp-tooling';
 import type { AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
+import { getVariant, getAdpConfig, ManifestService, SystemLookup } from '@sap-ux/adp-tooling';
 
-import { t } from '../utils/i18n';
 import type { Credentials } from '../types';
 import SubGeneratorBase from './sub-gen-base';
 import type { GeneratorTypes } from '../types';
-import { configPromptNames } from '../app/types';
 import type { GeneratorOpts } from '../utils/opts';
+import { getCredentialsPrompts } from './questions/credentials';
 import { getSubGenAuthPages, getSubGenErrorPage } from '../utils/steps';
 
 /**
@@ -35,12 +23,16 @@ import { getSubGenAuthPages, getSubGenErrorPage } from '../utils/steps';
  */
 export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
     public setPromptsCallback: (fn: any) => void;
-    public prompts!: Prompts;
+    public prompts: Prompts;
 
+    /**
+     * The ABAP target.
+     */
+    protected abapTarget: AbapTarget;
     /**
      * The project data.
      */
-    protected projectData: AdpProjectData;
+    protected system: string;
     /**
      * The project path.
      */
@@ -50,29 +42,13 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
      */
     protected readonly generatorType: GeneratorTypes;
     /**
-     * The manifest.
-     */
-    protected manifest: Manifest;
-    /**
      * The manifest service.
      */
     public manifestService: ManifestService;
     /**
-     * The OData target sources.
-     */
-    protected oDataTargetSources: DataSource[] = [];
-    /**
-     * The OData sources.
-     */
-    protected oDataSources: DataSources;
-    /**
-     * Whether the generator is used internally.
-     */
-    protected isInternalUsage = false;
-    /**
      * Whether the generator requires authentication.
      */
-    protected requiresAuthentication = false;
+    protected requiresAuth = false;
     /**
      * The descriptor variant.
      */
@@ -106,7 +82,6 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
             this.validationError = e as Error;
         }
 
-        this.isInternalUsage = isInternalFeaturesSettingEnabled();
         this._setPrompts();
     }
 
@@ -116,8 +91,10 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
      */
     protected async onInit(): Promise<void> {
         this.systemLookup = new SystemLookup(this.logger);
-        this.projectData = await getAdpProjectData(this.projectPath);
-        this.logger.log(`Successfully retrieved project data\n${JSON.stringify(this.projectData, null, 2)}`);
+        const adpConfig = await getAdpConfig(this.projectPath, path.join(this.projectPath, 'ui5.yaml'));
+        this.abapTarget = adpConfig.target;
+        this.system = (isAppStudio() ? this.abapTarget.destination : this.abapTarget.url) ?? '';
+        this.logger.log(`Successfully retrieved abap target\n${JSON.stringify(this.abapTarget, null, 2)}`);
 
         if (this.validationError) {
             this.appWizard.showError(this.validationError.message, MessageType.notification);
@@ -126,14 +103,10 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         }
 
         try {
-            this.requiresAuthentication = await this.systemLookup.getSystemRequiresAuth(this.projectData.sourceSystem);
-            this.logger.log(
-                `Destination ${this.projectData.sourceSystem} ${
-                    this.requiresAuthentication ? 'requires' : 'does not require'
-                } authentication`
-            );
+            this.requiresAuth = await this.systemLookup.getSystemRequiresAuth(this.system);
+            this.logger.log(`System ${this.system} requires authentication: ${this.requiresAuth}`);
 
-            if (!this.requiresAuthentication) {
+            if (!this.requiresAuth) {
                 // Remove the credential page when authentication is not required
                 this.prompts.splice(0, 1, [] as unknown as any);
             }
@@ -145,14 +118,15 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
     /**
      * Retrieves and parses the manifest (app descriptor) of the current project.
      * Requests credentials when required by the destination system.
+     *
+     * @returns {Promise<Manifest>} The manifest.
      */
-    protected async getManifest(): Promise<void> {
+    protected async getManifest(): Promise<Manifest> {
         let requestOptions: (AxiosRequestConfig & Partial<ProviderConfiguration>) | undefined;
-        if (this.requiresAuthentication) {
-            const credentials = (await this.prompt(this.getCredentialsPrompts(this.projectData))) as Credentials;
+        if (this.requiresAuth) {
+            const credentials = (await this.prompt(getCredentialsPrompts(this.abapTarget, this.logger))) as Credentials;
             requestOptions = { auth: { username: credentials.username, password: credentials.password } };
         }
-
         this.variant = await getVariant(this.projectPath);
         const yamlPath = path.join(this.projectPath, 'ui5.yaml');
         const { target, ignoreCertErrors = false } = await getAdpConfig(this.projectPath, yamlPath);
@@ -169,9 +143,10 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
             this.logger
         );
         const manifest = this.manifestService.getManifest();
-        this.oDataSources = this.manifestService.getManifestDataSources();
-        this.logger.log(`OData sources from manifest\n${JSON.stringify(this.oDataSources, null, 2)}`);
-        this.oDataTargetSources = Object.entries(this.oDataSources ?? {})
+        const oDataSources = this.manifestService.getManifestDataSources();
+        this.logger.log(`OData sources from manifest\n${JSON.stringify(oDataSources, null, 2)}`);
+
+        const oDataTargetSources = Object.entries(oDataSources ?? {})
             .filter((dS) => dS[1]?.type === 'OData')
             .map((dS) => {
                 return {
@@ -180,8 +155,9 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
                     annotations: dS[1]?.settings?.annotations ?? []
                 };
             });
-        this.logger.log(`OData target sources\n${JSON.stringify(this.oDataTargetSources, null, 2)}`);
-        this.manifest = manifest;
+        this.logger.log(`OData target sources\n${JSON.stringify(oDataTargetSources, null, 2)}`);
+
+        return manifest;
     }
 
     private _setPrompts(): void {
@@ -194,79 +170,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         if (this.validationError) {
             this.prompts = new Prompts(getSubGenErrorPage(this.generatorType));
         } else {
-            this.prompts = new Prompts(getSubGenAuthPages(this.generatorType, this.projectData?.sourceSystem ?? ''));
+            this.prompts = new Prompts(getSubGenAuthPages(this.generatorType, this.system));
         }
-    }
-
-    /**
-     * Returns the username prompt.
-     *
-     * @param projectData - The project data.
-     * @returns The username prompt.
-     */
-    protected getCredentialsPrompts(projectData: AdpProjectData): YUIQuestion<Credentials>[] {
-        return [this.getUsernamePrompt(), this.getPasswordPrompt(projectData)];
-    }
-
-    /**
-     * Returns the username prompt.
-     *
-     * @returns The username prompt.
-     */
-    private getUsernamePrompt(): InputQuestion<Credentials> {
-        return {
-            type: 'input',
-            name: configPromptNames.username,
-            message: t('prompts.usernameLabel'),
-            validate: validateEmptyString,
-            guiOptions: {
-                mandatory: true
-            }
-        };
-    }
-
-    /**
-     * Returns the password prompt.
-     *
-     * @param projectData - The project data.
-     * @returns The password prompt.
-     */
-    private getPasswordPrompt(projectData: AdpProjectData): PasswordQuestion<Credentials> {
-        return {
-            type: 'password',
-            name: configPromptNames.password,
-            message: t('prompts.passwordLabel'),
-            mask: '*',
-            guiOptions: {
-                mandatory: true,
-                type: 'login'
-            },
-            validate: async (value: string, answers: Credentials): Promise<boolean | string> => {
-                const validationResult = validateEmptyString(value);
-                if (typeof validationResult === 'string') {
-                    return validationResult;
-                }
-
-                if (!answers.username) {
-                    return 'Please provide all required data';
-                }
-
-                try {
-                    const options = {
-                        system: projectData.sourceSystem,
-                        client: projectData.client ?? '',
-                        username: answers.username,
-                        password: answers.password
-                    };
-
-                    const abapProvider = await getConfiguredProvider(options, this.logger);
-                    await getSystemUI5Version(abapProvider);
-
-                    return true;
-                } catch (e) {
-                    return e.response ? `Login failed: ${e.response.status} ${e.response.statusText}` : 'Login failed.';
-                }
-            }
-        };
     }
 }

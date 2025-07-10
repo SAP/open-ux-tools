@@ -8,6 +8,7 @@ import type { GeneratorTypes } from '../types';
 import type { GeneratorOpts } from '../utils/opts';
 import { setHeaderTitle } from '../utils/opts';
 import AdpGeneratorLogger from '../utils/logger';
+import { t } from '../utils/i18n';
 
 /**
  * Shared base class for all ADP generators.
@@ -55,7 +56,6 @@ export default class SubGeneratorBase extends Generator {
             this.options.logWrapper
         );
         this.logger = AdpGeneratorLogger.logger as unknown as ToolsLogger;
-
         setHeaderTitle(opts, this.logger);
     }
 
@@ -80,7 +80,7 @@ export default class SubGeneratorBase extends Generator {
         return {
             type: 'input',
             name: 'errorMessagePrompt',
-            message: 'There is problem with communication with the backend. Please try again later.',
+            message: t('error.backendCommunicationError'),
             guiOptions: {
                 type: 'label',
                 hint: errorMessage

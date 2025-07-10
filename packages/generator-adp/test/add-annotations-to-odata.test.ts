@@ -3,17 +3,17 @@ import { join, resolve } from 'path';
 import yeomanTest from 'yeoman-test';
 
 import type { Manifest } from '@sap-ux/project-access';
-import type { AdpProjectData, DescriptorVariant } from '@sap-ux/adp-tooling';
+import type { DescriptorVariant } from '@sap-ux/adp-tooling';
 import {
     ChangeType,
     generateChange,
     getAdpConfig,
     getVariant,
-    getAdpProjectData,
     ManifestService,
     SystemLookup,
     AnnotationFileSelectType
 } from '@sap-ux/adp-tooling';
+import type { AbapTarget } from '@sap-ux/system-access';
 
 import annotationGen from '../src/add-annotations-to-odata';
 
@@ -36,7 +36,6 @@ jest.mock('@sap-ux/system-access', () => ({
 const generateChangeMock = generateChange as jest.MockedFunction<typeof generateChange>;
 const getVariantMock = getVariant as jest.MockedFunction<typeof getVariant>;
 const getAdpConfigMock = getAdpConfig as jest.MockedFunction<typeof getAdpConfig>;
-const getAdpProjectDataMock = getAdpProjectData as jest.MockedFunction<typeof getAdpProjectData>;
 
 const manifest = {
     'sap.app': {
@@ -53,10 +52,11 @@ const variant = {
     namespace: 'apps/fin.test.appvar.av1/appVariants/customer.adp.variant/'
 } as DescriptorVariant;
 
-const projectData = {
-    sourceSystem: 'SYS_010',
-    client: '100'
-} as AdpProjectData;
+const target: AbapTarget = {
+    url: 'some-system',
+    client: '100',
+    destination: 'SYS_010'
+};
 
 const answers = {
     id: 'Z_SRV',
@@ -87,8 +87,7 @@ describe('AddAnnotationsToDataGenerator', () => {
         } as unknown as ManifestService);
 
         getVariantMock.mockResolvedValue(variant);
-        getAdpConfigMock.mockResolvedValue({ target: {} as any, ignoreCertErrors: false } as any);
-        getAdpProjectDataMock.mockResolvedValue(projectData);
+        getAdpConfigMock.mockResolvedValue({ target, ignoreCertErrors: false } as any);
 
         const runContext = yeomanTest
             .create(annotationGen, { resolved: generatorPath }, { cwd: tmpDir })
@@ -109,8 +108,7 @@ describe('AddAnnotationsToDataGenerator', () => {
 
     it('invokes handleRuntimeCrash when manifest merge fails', async () => {
         getVariantMock.mockResolvedValue(variant);
-        getAdpConfigMock.mockResolvedValue({ target: {} as any, ignoreCertErrors: false } as any);
-        getAdpProjectDataMock.mockResolvedValue(projectData);
+        getAdpConfigMock.mockResolvedValue({ target, ignoreCertErrors: false } as any);
 
         jest.spyOn(ManifestService, 'initMergedManifest').mockRejectedValueOnce(new Error('merge fail'));
 
@@ -138,8 +136,7 @@ describe('AddAnnotationsToDataGenerator', () => {
     it('invokes handleRuntimeCrash when system lookup fails during onInit', async () => {
         // Mock dependencies
         getVariantMock.mockResolvedValue(variant);
-        getAdpConfigMock.mockResolvedValue({ target: {} as any, ignoreCertErrors: false } as any);
-        getAdpProjectDataMock.mockResolvedValue(projectData);
+        getAdpConfigMock.mockResolvedValue({ target, ignoreCertErrors: false } as any);
 
         // Force SystemLookup.getSystemRequiresAuth to reject
         jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockRejectedValueOnce(
