@@ -15,7 +15,7 @@ import {
 } from '@sap-ux/adp-tooling';
 import type { AbapTarget } from '@sap-ux/system-access';
 
-import annotationGen from '../src/add-annotations-to-odata';
+import annotationGen from '../../../src/add-annotations-to-odata';
 
 jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
@@ -73,8 +73,6 @@ const generatorPath = join(__dirname, '../../src/add-annotations-to-odata/index.
 const tmpDir = resolve(__dirname, 'test-output');
 
 describe('AddAnnotationsToDataGenerator', () => {
-    beforeAll(() => fs.mkdirSync(tmpDir, { recursive: true }));
-
     afterEach(() => {
         jest.clearAllMocks();
     });
