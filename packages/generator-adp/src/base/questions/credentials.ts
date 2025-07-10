@@ -70,7 +70,7 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
                     system,
                     client: abapTarget.client ?? '',
                     username: answers.username,
-                    password: answers.password
+                    password: value
                 };
 
                 const abapProvider = await getConfiguredProvider(options, logger);
