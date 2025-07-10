@@ -16,9 +16,7 @@ import {
     updateVariant,
     isTypescriptSupported,
     filterAndMapInboundsToManifest,
-    readUi5Config,
-    extractProxyConfig,
-    getProxyConfig
+    readUi5Config
 } from '../../../src/base/helper';
 import { readUi5Yaml } from '@sap-ux/project-access';
 
@@ -64,42 +62,6 @@ describe('helper', () => {
 
         expect(readUi5YamlMock).toHaveBeenCalledWith(basePath, yamlRelative);
         expect(result).toBe(dummyConfig);
-    });
-
-    it('extractProxyConfig returns configuration of fiori-tools-proxy middleware', () => {
-        const proxyCfg = { ui5: { version: '1.99.0' } } as FioriToolsProxyConfig;
-        const ui5Conf = {
-            findCustomMiddleware: jest.fn().mockImplementation((name: string) => {
-                if (name === 'fiori-tools-proxy') {
-                    return { configuration: proxyCfg } as unknown as CustomMiddleware<object>;
-                }
-                return undefined;
-            })
-        } as unknown as UI5Config;
-
-        expect(extractProxyConfig(ui5Conf)).toBe(proxyCfg);
-    });
-
-    describe('getProxyConfig', () => {
-        it('returns proxy config when present', async () => {
-            const proxyCfg = { ui5: { version: '2.0.0' } } as FioriToolsProxyConfig;
-            readUi5YamlMock.mockResolvedValue({
-                findCustomMiddleware: () => ({ configuration: proxyCfg })
-            } as unknown as UI5Config);
-
-            const result = await getProxyConfig(basePath, yamlRelative);
-            expect(result).toBe(proxyCfg);
-        });
-
-        it('throws when proxy config is missing', async () => {
-            readUi5YamlMock.mockResolvedValue({
-                findCustomMiddleware: () => undefined
-            } as unknown as UI5Config);
-
-            await expect(getProxyConfig(basePath, yamlRelative)).rejects.toThrow(
-                'No fiori-tools-proxy middleware configuration found.'
-            );
-        });
     });
 
     describe('getVariant', () => {

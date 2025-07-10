@@ -1,9 +1,10 @@
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join, isAbsolute, relative, basename, dirname } from 'path';
-import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace } from '@sap-ux/project-access';
-import type { UI5Config, FioriToolsProxyConfig } from '@sap-ux/ui5-config';
+
+import type { UI5Config } from '@sap-ux/ui5-config';
 import type { InboundContent, Inbound } from '@sap-ux/axios-extension';
+import { getWebappPath, FileName, readUi5Yaml, type ManifestNamespace } from '@sap-ux/project-access';
 
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 
@@ -83,34 +84,6 @@ export function extractAdpConfig(ui5Conf: UI5Config): AdpPreviewConfig | undefin
         ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
         ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
     return customMiddleware?.configuration?.adp;
-}
-
-/**
- * Extracts the `fiori-tools-proxy` middleware configuration from the parsed ui5.yaml.
- *
- * @param {UI5Config} ui5Conf Parsed UI5 configuration
- * @returns The `FioriToolsProxyConfig` object if found, otherwise `undefined`.
- */
-export function extractProxyConfig(ui5Conf: UI5Config): FioriToolsProxyConfig | undefined {
-    const proxyMw = ui5Conf.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy');
-    return proxyMw?.configuration;
-}
-
-/**
- * Reads ui5.yaml and returns the proxy middleware configuration if present.
- * Throws when not found so callers can handle the error consistently.
- *
- * @param {string} basePath  Adaptation project root
- * @param {string} yamlPath  Relative or absolute path to the ui5.yaml file
- * @returns The `FioriToolsProxyConfig` object if found, otherwise `undefined`.
- */
-export async function getProxyConfig(basePath: string, yamlPath: string): Promise<FioriToolsProxyConfig> {
-    const ui5Conf = await readUi5Config(basePath, yamlPath);
-    const proxyCfg = extractProxyConfig(ui5Conf);
-    if (!proxyCfg) {
-        throw new Error('No fiori-tools-proxy middleware configuration found.');
-    }
-    return proxyCfg;
 }
 
 /**
