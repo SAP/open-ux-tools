@@ -12,10 +12,6 @@ import { t } from '../utils/i18n';
 
 /**
  * Shared base class for all ADP generators.
- *
- * 1. Provides a unified logger that writes both to the Yeoman log and to the generator UI.
- * 2. Handles consistent error display and recovery logic (e.g. CF logout).
- * 3. Takes care of setting the generator title so that the UI always reflects the active generator.
  */
 export default class SubGeneratorBase extends Generator {
     /**
