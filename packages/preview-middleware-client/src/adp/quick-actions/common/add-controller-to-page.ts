@@ -24,7 +24,8 @@ const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
  */
 export class AddControllerToPageQuickAction
     extends SimpleQuickActionDefinitionBase
-    implements SimpleQuickActionDefinition {
+    implements SimpleQuickActionDefinition
+{
     constructor(context: QuickActionContext) {
         super(ADD_CONTROLLER_TO_PAGE_TYPE, CONTROL_TYPES, '', context, [
             DIALOG_ENABLEMENT_VALIDATOR,

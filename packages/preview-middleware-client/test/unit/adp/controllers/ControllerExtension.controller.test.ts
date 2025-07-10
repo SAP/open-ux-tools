@@ -506,9 +506,9 @@ describe('ControllerExtension', () => {
 
             jest.spyOn(global, 'Date').mockImplementation(
                 () =>
-                    ({
-                        toISOString: () => '2020-01-01T00:00:00.000Z'
-                    } as unknown as Date)
+                ({
+                    toISOString: () => '2020-01-01T00:00:00.000Z'
+                } as unknown as Date)
             );
             jest.spyOn(apiHandler, 'writeChange').mockImplementation(async (data) => {
                 return Promise.resolve(data);
@@ -669,9 +669,9 @@ describe('ControllerExtension', () => {
                 viewId: 'viewId'
             });
             expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-                description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION' , params: ['testController']},
-                title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
-                type: MessageBarType.info
+                description: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_DESCRIPTION', params: ['1.130.0'] },
+                title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
+                type: MessageBarType.error
             });
         });
 

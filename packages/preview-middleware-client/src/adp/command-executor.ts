@@ -37,11 +37,6 @@ export default class CommandExecutor {
         designMetadata?: DesignTimeMetadata
     ): Promise<FlexCommand<T>> {
         try {
-            await sendInfoCenterMessage({
-                title: { key: 'ADP_CREATE_COMMAND_TITLE' },
-                description: { key: `ADP_CREATE_COMMAND_DESCRIPTION`, params: [commandName, runtimeControl.getId()] },
-                type: MessageBarType.info
-            });
             return await CommandFactory.getCommandFor<FlexCommand<T>>(
                 runtimeControl,
                 commandName,

@@ -58,6 +58,8 @@ type ControllerModel = JSONModel & {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
+    /* The minimum version of UI5 framework which supports controller extensions. */
+    private static readonly CONTROLLER_EXT_MIN_UI5_VERSION = { major: 1, minor: 135 };
     public readonly data?: ExtendControllerData;
     private bundle: TextBundle;
 
@@ -188,13 +190,16 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
             if (this.data) {
                 this.data.deferred.resolve(controllerRef);
-                await sendInfoCenterMessage({
-                    title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
-                    description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION', params: [controllerName]},
-                    type: MessageBarType.info
-                });
             } else {
                 await this.createNewController(controllerName, controllerRef);
+            }
+
+            if (this.data && await this.isControllerExtensionSupported()) {
+                await sendInfoCenterMessage({
+                    title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+                    description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION', params: [controllerName] },
+                    type: MessageBarType.info
+                });
             }
         } else {
             const controllerPath = this.model.getProperty('/controllerPath');
@@ -333,8 +338,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         controllerName: string,
         controllerRef: DeferredExtendControllerData
     ): Promise<void> {
-        const ui5Version = await getUi5Version();
-        if (!isLowerThanMinimalUi5Version(ui5Version, { major: 1, minor: 135 })) {
+        if (await this.isControllerExtensionSupported()) {
             await this.createControllerCommand(controllerName, controllerRef);
             return;
         }
@@ -386,8 +390,13 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
         await sendInfoCenterMessage({
             title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
-            description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION', params: [controllerName]},
+            description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION', params: [controllerName] },
             type: MessageBarType.info
         });
+    }
+
+    private async isControllerExtensionSupported(): Promise<boolean> {
+        const ui5Version = await getUi5Version();
+        return !isLowerThanMinimalUi5Version(ui5Version, ControllerExtension.CONTROLLER_EXT_MIN_UI5_VERSION);
     }
 }

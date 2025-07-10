@@ -63,7 +63,7 @@ export class OutlineService extends EventTarget {
                 const extendError = getError(error);
                 Log.error('Outline sync failed!', extendError);
                 await sendInfoCenterMessage({
-                    title: { key: 'CPE_OUTLINE_ERROR_TITLE' },
+                    title: { key: 'OUTLINE_ERROR_TITLE' },
                     description: extendError.message,
                     type: MessageBarType.error
                 });

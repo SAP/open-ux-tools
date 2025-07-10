@@ -206,9 +206,9 @@ describe('ChangeService', () => {
             }
         });
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
-            description: expect.any(String),
-            type: MessageBarType.error
+            title: { key: 'UNKNOWN_CHANGE_TYPE_TITLE' },
+            description: { key: 'UNKNOWN_CHANGE_TYPE_DESCRIPTION', params: ['change2'] },
+            type: MessageBarType.info
         });
     });
     test('Sync Outline Changes', async () => {
@@ -1630,8 +1630,8 @@ describe('ChangeService', () => {
             }
         });
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_TITLE' },
-            description: { key: 'CPE_CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_DESCRIPTION' },
+            title: { key: 'CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_TITLE' },
+            description: { key: 'CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_DESCRIPTION' },
             type: MessageBarType.info
         });
     });
@@ -1818,7 +1818,7 @@ describe('ChangeService', () => {
         );
         
         expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'CPE_CHANGE_CREATION_FAILED_TITLE' },
+            title: { key: 'CHANGE_CREATION_FAILED_TITLE' },
             description: `Error: ${JSON.stringify(errorMessage)}`,
             type: MessageBarType.error
         });
