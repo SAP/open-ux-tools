@@ -54,7 +54,7 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
         }
     }
 
-    public async writing(): Promise<void> {
+    async writing(): Promise<void> {
         const changeData: AnnotationsData = {
             variant: this.variant,
             isCommand: true,
@@ -83,7 +83,7 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
         }
     }
 
-    public end(): void {
+    end(): void {
         this.logger.log('Successfully created annotation file!');
     }
 }
