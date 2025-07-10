@@ -5,7 +5,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { getPackageInfo } from './deps';
 
 export interface GeneratorOpts {
-    appWizard?: AppWizard | undefined;
+    appWizard?: AppWizard;
     vscode?: any;
     data?: {
         path: string;

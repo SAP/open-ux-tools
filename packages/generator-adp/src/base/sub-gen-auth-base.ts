@@ -8,10 +8,9 @@ import type { DescriptorVariant } from '@sap-ux/adp-tooling';
 import type { AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
 import { getVariant, getAdpConfig, ManifestService, SystemLookup } from '@sap-ux/adp-tooling';
 
-import type { Credentials } from '../types';
 import SubGeneratorBase from './sub-gen-base';
-import type { GeneratorTypes } from '../types';
 import type { GeneratorOpts } from '../utils/opts';
+import type { GeneratorTypes, Credentials } from '../types';
 import { getCredentialsPrompts } from './questions/credentials';
 import { getSubGenAuthPages, getSubGenErrorPage } from '../utils/steps';
 
