@@ -23,7 +23,6 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
      * The answers from the prompts.
      */
     private answers: AddAnnotationsAnswers;
-
     /**
      * The data sources from the manifest.
      */
