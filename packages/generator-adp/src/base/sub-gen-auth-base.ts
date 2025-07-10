@@ -17,9 +17,7 @@ import { getSubGenAuthPages, getSubGenErrorPage } from '../utils/steps';
 
 /**
  * Base class for *sub* generators that need authentication handling.
- * Adds functionality on top of {@link SubGeneratorBase}:
- *  - automatic credential prompts depending on the target environment (CF / ABAP / S4HC)
- *  - convenience helpers for manifest & OData processing
+ * Adds functionality on top of {@link SubGeneratorBase}.
  */
 export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
     public setPromptsCallback: (fn: any) => void;
