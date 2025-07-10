@@ -71,10 +71,15 @@ jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(tr
 
 const generatorPath = join(__dirname, '../../src/add-annotations-to-odata/index.ts');
 const tmpDir = resolve(__dirname, 'test-output');
+const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
 
 describe('AddAnnotationsToDataGenerator', () => {
     afterEach(() => {
         jest.clearAllMocks();
+    });
+
+    afterAll(() => {
+        process.chdir(originalCwd);
     });
 
     it('generates change with namespaces when new empty file selected', async () => {
