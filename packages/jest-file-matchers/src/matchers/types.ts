@@ -44,3 +44,4 @@ export const PACKAGE_JSON_UI5_TYPES_VERSION = /(?<=@sapui5\/types: )(\d{1,3}.\d{
 export const APPGEN_INFO_DATE_REGEX = /"generationDate":\s*"([^"]*)"/;
 export const APPGEN_INFO_GEN_VERSION = /"generatorVersion":\s*"([^"]*)"/;
 export const APPGEN_INFO_PLATFORM_REGEX = /"generatorPlatform":\s*"([^"]*)"/;
+export const APPGEN_INFO_UI5_VERSION = /"ui5Version":\s*"([^"]*)"/;
