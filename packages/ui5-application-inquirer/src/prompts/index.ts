@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 // Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
+import os from 'os';
+import { join } from 'path';
 import { withCondition, extendWithOptions } from '@sap-ux/inquirer-common';
 import {
     getNamePrompt,
@@ -20,6 +22,7 @@ import {
     getEnableCodeAssistPrompt,
     getSkipAnnotationsPrompt
 } from './prompts2';
+import { validateFioriAppProjectFolder } from '@sap-ux/project-input-validator';
 import { promptNames } from '../types';
 import { hidePrompts } from './prompt-helpers';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
@@ -35,21 +38,30 @@ import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
  * @param [isYUI] - optional, default is `false`. Changes the behaviour of some validation since YUI does not re-validate prompts that may be inter-dependant.
  * @returns the prompts
  */
-export function getQuestions(
+export async function getQuestions(
     ui5Versions: UI5Version[],
     promptOptions?: UI5ApplicationPromptOptions,
     capCdsInfo?: CdsUi5PluginInfo,
     isYUI = false
-): UI5ApplicationQuestion[] {
+): Promise<UI5ApplicationQuestion[]> {
     // Set shared defaults
     const appName =
         typeof promptOptions?.[promptNames.name]?.default === 'string'
             ? promptOptions[promptNames.name].default
             : promptOptions?.[promptNames.name]?.defaultValue;
-    const targetDir =
+
+    let targetDir =
         typeof promptOptions?.[promptNames.targetFolder]?.default === 'string'
             ? promptOptions[promptNames.targetFolder].default // Default functions will be applied later, these replace the existing defaults
             : promptOptions?.[promptNames.targetFolder]?.defaultValue ?? process.cwd();
+
+    if (promptOptions?.[promptNames.targetFolder]?.validateFioriAppFolder) {
+        const isValidFolder = await validateFioriAppProjectFolder(targetDir);
+        if (isValidFolder !== true) {
+            targetDir = join(os.homedir(), 'projects');
+        }
+    }
+
     const isCapProject = !!capCdsInfo;
 
     const keyedPrompts: Record<promptNames, UI5ApplicationQuestion> = {
@@ -57,10 +69,7 @@ export function getQuestions(
         [promptNames.title]: getTitlePrompt(),
         [promptNames.namespace]: getNamespacePrompt(appName),
         [promptNames.description]: getDescriptionPrompt(),
-        [promptNames.targetFolder]: getTargetFolderPrompt(
-            targetDir,
-            promptOptions?.[promptNames.targetFolder]?.validateFioriAppFolder
-        ),
+        [promptNames.targetFolder]: getTargetFolderPrompt(targetDir),
         [promptNames.ui5Version]: getUI5VersionPrompt(ui5Versions, promptOptions?.ui5Version),
         [promptNames.enableTypeScript]: getEnableTypeScriptPrompt(capCdsInfo),
         [promptNames.addDeployConfig]: getAddDeployConfigPrompt(
