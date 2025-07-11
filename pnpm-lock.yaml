@@ -717,9 +717,9 @@ importers:
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
-      npm-run-all:
-        specifier: 4.1.5
-        version: 4.1.5
+      npm-run-all2:
+        specifier: 5.0.0
+        version: 5.0.0
 
   packages/app-config-writer:
     dependencies:
@@ -1910,9 +1910,9 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
-      npm-run-all:
-        specifier: 4.1.5
-        version: 4.1.5
+      npm-run-all2:
+        specifier: 5.0.0
+        version: 5.0.0
 
   packages/fiori-app-sub-generator:
     dependencies:
@@ -20247,6 +20247,20 @@ packages:
       - supports-color
     dev: true
 
+  /npm-run-all2@5.0.0:
+    resolution: {integrity: sha512-twczQhEpj55UROtg0Xz0nzn83TanS5Re12g5g1hcdnyAhlWOt9VNHdSHf2Z6MO3/wOVqy9tEdi0ruJt5NnMgmw==}
+    engines: {node: '>= 10'}
+    hasBin: true
+    dependencies:
+      ansi-styles: 4.3.0
+      cross-spawn: 7.0.6
+      memorystream: 0.3.1
+      minimatch: 3.0.5
+      pidtree: 0.5.0
+      read-pkg: 5.2.0
+      shell-quote: 1.7.3
+    dev: true
+
   /npm-run-all2@6.2.0:
     resolution: {integrity: sha512-wA7yVIkthe6qJBfiJ2g6aweaaRlw72itsFGF6HuwCHKwtwAx/4BY1vVpk6bw6lS8RLMsexoasOkd0aYOmsFG7Q==}
     engines: {node: ^14.18.0 || >=16.0.0, npm: '>= 8'}
@@ -20273,21 +20287,6 @@ packages:
       read-package-json-fast: 4.0.0
       shell-quote: 1.7.3
       which: 5.0.0
-    dev: true
-
-  /npm-run-all@4.1.5:
-    resolution: {integrity: sha512-Oo82gJDAVcaMdi3nuoKFavkIHBRVqQ1qvMb+9LHk/cF4P6B2m8aP04hGf7oL6wZ9BuGwX1onlLhpuoofSyoQDQ==}
-    engines: {node: '>= 4'}
-    dependencies:
-      ansi-styles: 3.2.1
-      chalk: 2.4.2
-      cross-spawn: 6.0.6
-      memorystream: 0.3.1
-      minimatch: 3.0.5
-      pidtree: 0.3.1
-      read-pkg: 3.0.0
-      shell-quote: 1.7.3
-      string.prototype.padend: 3.1.6
     dev: true
 
   /npm-run-path@2.0.2:
@@ -21253,9 +21252,10 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /pidtree@0.3.1:
-    resolution: {integrity: sha512-qQbW94hLHEqCg7nhby4yRC7G2+jYHY4Rguc2bjw7Uug4GIJuu1tvf2uHaZv5Q8zdt+WKJ6qK1FOI6amaWUo5FA==}
+  /pidtree@0.5.0:
+    resolution: {integrity: sha512-9nxspIM7OpZuhBxPg73Zvyq7j1QMPMPsGKTqRc2XOaFQauDvoNz9fM1Wdkjmeo7l9GXOZiRs97sPkuayl39wjA==}
     engines: {node: '>=0.10'}
+    hasBin: true
     dev: true
 
   /pidtree@0.6.0:
@@ -23594,16 +23594,6 @@ packages:
       internal-slot: 1.0.7
       regexp.prototype.flags: 1.5.2
       side-channel: 1.0.6
-    dev: true
-
-  /string.prototype.padend@3.1.6:
-    resolution: {integrity: sha512-XZpspuSB7vJWhvJc9DLSlrXl1mcA2BdoY5jjnS135ydXqLoqhs96JjDtCkjJEQHvfqZIp9hBuBMgI589peyx9Q==}
-    engines: {node: '>= 0.4'}
-    dependencies:
-      call-bind: 1.0.7
-      define-properties: 1.2.1
-      es-abstract: 1.23.3
-      es-object-atoms: 1.0.0
     dev: true
 
   /string.prototype.trim@1.2.6:
