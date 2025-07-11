@@ -4,8 +4,8 @@ import {
     isVersionEqualOrHasNewerPatch
 } from 'open/ux/preview/client/utils/version';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
-import { sendInfoCenterMessage } from '../../../src//utils/info-center-message';
-import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 describe('utils/version', () => {
     test('getUi5Version with lib sap.m', async () => {
@@ -34,14 +34,17 @@ describe('utils/version', () => {
     });
 
     test('getUi5Version fallback to 1.130.0', async () => {
+        jest.spyOn(CommunicationService, 'sendAction');
         const version = await getUi5Version();
         expect(version.major).toEqual(1);
         expect(version.minor).toEqual(130);
-        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
-            description: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_DESCRIPTION', params: ['1.130.0'] },
-            type: MessageBarType.error
-        });
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'UI5 Version Retrieval Failed',
+                description: `Could not get the UI5 version of the application. Using 1.130.0 as fallback.`,
+                type: MessageBarType.error
+            })
+        );
     });
 
     test('getUi5Version for snapshot', async () => {
@@ -111,15 +114,16 @@ describe('utils/version', () => {
             )
         ).toBeFalsy();
         //throw error in case on NaN
-        expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrow();
+        expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrowError();
+        jest.spyOn(CommunicationService, 'sendAction');
         //throw error in case on NaN
         expect(() => isLowerThanMinimalUi5Version({ major: 1, minor: 1, patch: NaN })).toThrowError();
-        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
-            description: {
-                key: 'FLP_UI_INVALID_UI5_VERSION_DESCRIPTION',
-            },
-            type: MessageBarType.error
-        });
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'UI5 Version Retrieval Failed',
+                description: `Invalid version info`,
+                type: MessageBarType.error
+            })
+        );
     });
 });

@@ -6,8 +6,8 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
-import { sendInfoCenterMessage } from '../../../src/utils/info-center-message';
-import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 describe('client/command-executor', () => {
     describe('generateAndExecuteCommand', () => {
@@ -32,7 +32,7 @@ describe('client/command-executor', () => {
         });
 
         test('throws error when pushAndExecute fails', async () => {
-
+            jest.spyOn(CommunicationService, 'sendAction');
             pushAndExecuteSpy.mockRejectedValueOnce(new Error('Could not execute command!'));
             const commandExecutor = new CommandExecutor(rta as unknown as RuntimeAuthoring);
             try {
@@ -40,11 +40,13 @@ describe('client/command-executor', () => {
             } catch (e) {
                 expect(e.message).toBe('Could not execute command!');
                 expect(pushAndExecuteSpy.mock.calls.length).toBe(1);
-                expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-                    title: { key: 'ADP_RUN_COMMAND_FAILED_TITLE' },
-                    description: e.message,
-                    type: MessageBarType.error
-                });
+                expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                    showInfoCenterMessage({
+                        title: 'Run Command Failed',
+                        description: e.message,
+                        type: MessageBarType.error
+                    })
+                );
             }
         });
     });
@@ -86,6 +88,8 @@ describe('client/command-executor', () => {
         });
 
         it('should show a message in the info center and throw an error if getting command fails', async () => {
+            jest.spyOn(CommunicationService, 'sendAction');
+
             const errorMessage = 'Missing properties';
             CommandFactory.getCommandFor.mockImplementation(() => {
                 throw new Error(errorMessage);
@@ -102,15 +106,13 @@ describe('client/command-executor', () => {
                     designMetadata as DesignTimeMetadata
                 )
             ).rejects.toThrow(`Could not get command for '${commandName}'. ${errorMessage}`);
-
-            expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-                title: { key: 'ADP_GET_COMMAND_FAILURE_TITLE' },
-                description: {
-                    key: 'ADP_GET_COMMAND_FAILURE_DESCRIPTION',
-                    params: [commandName, errorMessage]
-                },
-                type: MessageBarType.error
-            });
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'Get Command Failed',
+                    description: `Could not get the command for '${commandName}'. ${errorMessage}.`,
+                    type: MessageBarType.error
+                })
+            );
         });
     });
 });

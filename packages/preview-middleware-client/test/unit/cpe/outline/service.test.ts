@@ -6,8 +6,8 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import Log from 'sap/base/Log';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
-import { sendInfoCenterMessage } from '../../../../src/utils/info-center-message';
-import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 const mockChangeService = {
     syncOutlineChanges: jest.fn()
@@ -92,16 +92,19 @@ describe('index', () => {
 
     test('initOutline - exception', async () => {
         transformNodesSpy.mockRejectedValue(new Error('error'));
+        jest.spyOn(CommunicationService, 'sendAction');
         const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
         await service.init(mockSendAction);
         // transformNodesSpy called but rejected.
         expect(transformNodesSpy).toHaveBeenCalled();
         expect(mockSendAction).not.toHaveBeenCalled();
-        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'OUTLINE_ERROR_TITLE' },
-            description: 'error',
-            type: MessageBarType.error
-        });
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'CPE: Outline Sync Failed',
+                description: 'error',
+                type: MessageBarType.error
+            })
+        );
     });
 
     test('initOutline - empty additional data', async () => {

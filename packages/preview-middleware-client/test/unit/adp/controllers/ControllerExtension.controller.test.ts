@@ -15,8 +15,8 @@ import { ExtendControllerData } from 'open/ux/preview/client/adp/extend-controll
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import * as utils from '../../../../src/utils/version';
 import * as coreUtils from '../../../../src/utils/core';
-import { sendInfoCenterMessage } from '../../../../src/utils/info-center-message';
-import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 jest.mock('../../../../src/adp/command-executor', () => {
     return jest.fn().mockImplementation(() => ({
@@ -654,6 +654,8 @@ describe('ControllerExtension', () => {
 
             controllerExt.handleDialogClose = jest.fn();
 
+            jest.spyOn(CommunicationService, 'sendAction');
+
             await controllerExt.setup({
                 setEscapeHandler: jest.fn(),
                 destroy: jest.fn(),
@@ -668,11 +670,13 @@ describe('ControllerExtension', () => {
                 codeRef: 'coding/testController.js',
                 viewId: 'viewId'
             });
-            expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-                description: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_DESCRIPTION', params: ['1.130.0'] },
-                title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
-                type: MessageBarType.error
-            });
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'UI5 Version Retrieval Failed',
+                    description: 'Could not get the UI5 version of the application. Using 1.130.0 as fallback.',
+                    type: MessageBarType.error
+                })
+            );
         });
 
         test('opens link to existing controller', async () => {

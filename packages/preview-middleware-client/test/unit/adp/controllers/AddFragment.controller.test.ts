@@ -20,6 +20,7 @@ import { AddFragmentData } from '../../../../src/adp/add-fragment';
 import * as addXMLAdditionalInfo from '../../../../src/cpe/additional-change-info/add-xml-additional-info';
 import { CommunicationService } from '../../../../src/cpe/communication-service';
 import * as adpUtils from '../../../../src/adp/utils';
+import { showInfoCenterMessage, MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -701,6 +702,13 @@ describe('AddFragment', () => {
             });
             expect(CommandFactory.getCommandFor.mock.calls[0][4].selector).toBeUndefined();
             expect(mockSendAction).toHaveBeenCalled();
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'Create XML Fragment',
+                    description: 'Note: The `Share.fragment.xml` fragment will be created once you save the change.',
+                    type: MessageBarType.info
+                })
+            );
         });
 
         test('add header field fragment and a change if targetAggregation is items and not a dynamic header', async () => {

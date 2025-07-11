@@ -18,5 +18,4 @@ config.transform = {
         }
     ]
 };
-config.setupFilesAfterEnv = ['<rootDir>/test/global.mock.ts'];
 module.exports = config;

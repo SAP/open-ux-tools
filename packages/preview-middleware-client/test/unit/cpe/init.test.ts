@@ -19,8 +19,29 @@ import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
 import { QuickActionService } from '../../../src/cpe/quick-actions/quick-action-service';
 import { SelectionService } from '../../../src/cpe/selection';
 import { ContextMenuService } from '../../../src/cpe/context-menu-service';
-import { sendInfoCenterMessage } from '../../../src/utils/info-center-message';
-import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
+import { createDeferred } from 'open/ux/preview/client/adp/utils';
+
+function getAppLoadedWaitPromise(): Promise<boolean> {
+    const appLoaded = createDeferred<boolean>();
+    CommunicationService.sendAction = jest.fn().mockImplementation(({ type }) => {
+        if (type === common.appLoaded().type) {
+            appLoaded.resolve(true);
+        }
+    });
+    return appLoaded.promise;
+}
+
+async function waitForCpeInit(rta: RuntimeAuthoring): Promise<void> {
+    const isAppLoadedPromise = getAppLoadedWaitPromise();
+    // a.vasilev: Inside the init function we have a bunch of promises not included
+    // in the await so the only way to include them in the test await so to be able
+    // to verify sendAction gets called before the test ends is to use a deferred promise.
+    // The deffered promise is resolved when the app-loaded action is sent. This
+    // action is sent when all unawaited promises are resolved.
+    await init(rta);
+    await isAppLoadedPromise;
+}
 
 describe('main', () => {
     VersionInfo.load.mockResolvedValue({ version: '1.120.4' });
@@ -106,8 +127,7 @@ describe('main', () => {
     test('init - 1', async () => {
         initOutlineSpy.mockResolvedValue();
         rtaSpy.mockResolvedValue();
-        // const rta = new RuntimeAuthoringMock();
-        await init(rta);
+        await waitForCpeInit(rta);
         const callBackFn = spyPostMessage.mock.calls[2][0];
         (callBackFn as any)('test');
         // apply change without error
@@ -135,21 +155,21 @@ describe('main', () => {
         rtaSpy.mockResolvedValue();
 
         // act
-        await init(rta);
+        await waitForCpeInit(rta);
 
         // assert
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
         expect(Log.error).toBeCalledWith('Service Initialization Failed: ', error);
-        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'INIT_ERROR_TITLE' },
-            description: error.message,
-            type: MessageBarType.error
-        });
+        expect(CommunicationService.sendAction).toHaveBeenNthCalledWith(3,
+            showInfoCenterMessage({
+                title: 'Control Property Editor Initialization Failed',
+                description: error.message,
+                type: MessageBarType.error
+            })
+        );
     });
 
     test('init and appLoaed called', async () => {
-        CommunicationService.sendAction = jest.fn();
-
         initOutlineSpy.mockResolvedValue();
         rtaSpy.mockResolvedValue();
         changesServiceSpy.mockResolvedValue();
@@ -158,16 +178,7 @@ describe('main', () => {
         quickActionServiceSpy.mockResolvedValue();
         contextMenuServiceSpy.mockResolvedValue();
 
-        await init(rta);
-        await Promise.all([
-            initOutlineSpy,
-            rtaSpy,
-            changesServiceSpy,
-            contextMenuServiceSpy,
-            connectorServiceSpy,
-            selectionServiceSpy,
-            quickActionServiceSpy
-        ]);
-        expect(CommunicationService.sendAction).toHaveBeenCalledWith(common.appLoaded());
+        await waitForCpeInit(rta);
+        expect(CommunicationService.sendAction).toBeCalledWith(common.appLoaded());
     });
 });
