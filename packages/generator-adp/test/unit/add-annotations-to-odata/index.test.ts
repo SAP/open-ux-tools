@@ -79,6 +79,7 @@ describe('AddAnnotationsToDataGenerator', () => {
     });
 
     afterAll(() => {
+        fs.rmSync(tmpDir, { recursive: true, force: true });
         process.chdir(originalCwd);
     });
 
@@ -103,7 +104,19 @@ describe('AddAnnotationsToDataGenerator', () => {
             tmpDir,
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
             expect.objectContaining({
-                annotation: expect.objectContaining({ namespaces: [{ namespace: 'ns', alias: 'ALIAS' }] })
+                annotation: {
+                    dataSource: 'Z_SRV',
+                    filePath: undefined,
+                    namespaces: [{ alias: 'ALIAS', namespace: 'ns' }],
+                    serviceUrl: '/sap/opu/odata'
+                },
+                isCommand: true,
+                variant: {
+                    id: 'customer.adp.variant',
+                    layer: 'CUSTOMER_BASE',
+                    namespace: 'apps/fin.test.appvar.av1/appVariants/customer.adp.variant/',
+                    reference: 'customer.adp.variant'
+                }
             }),
             expect.anything()
         );

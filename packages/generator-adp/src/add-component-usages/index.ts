@@ -72,7 +72,7 @@ class AddComponentUsagesGenerator extends SubGeneratorBase {
         await generateChange<ChangeType.ADD_COMPONENT_USAGES>(
             this.projectPath,
             ChangeType.ADD_COMPONENT_USAGES,
-            this.createComponentUsageData(),
+            this._createComponentUsageData(),
             this.fs
         );
         this.logger.log(`Changes written to changes folder`);
@@ -87,7 +87,7 @@ class AddComponentUsagesGenerator extends SubGeneratorBase {
      *
      * @returns {ComponentUsagesData} The component usage data.
      */
-    private createComponentUsageData(): ComponentUsagesData {
+    private _createComponentUsageData(): ComponentUsagesData {
         const { usageId, data, settings, isLazy, name, shouldAddLibrary } = this.answers;
 
         return {
