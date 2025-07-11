@@ -292,7 +292,7 @@ export class FlpSandbox {
             config.ui5.libs = libs.join(',');
         }
         config.flex = {
-            layer: rta.layer,
+            layer: rta.layer ?? 'CUSTOMER_BASE',
             ...rta.options,
             generator: editor.generator ?? defaultGenerator,
             developerMode: editor.developerMode === true,
