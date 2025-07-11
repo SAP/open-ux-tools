@@ -6,6 +6,8 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import Log from 'sap/base/Log';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
+import { sendInfoCenterMessage } from '../../../../src/utils/info-center-message';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 const mockChangeService = {
     syncOutlineChanges: jest.fn()
@@ -89,12 +91,17 @@ describe('index', () => {
     });
 
     test('initOutline - exception', async () => {
-        transformNodesSpy.mockRejectedValue('error');
+        transformNodesSpy.mockRejectedValue(new Error('error'));
         const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
         await service.init(mockSendAction);
         // transformNodesSpy called but rejected.
         expect(transformNodesSpy).toHaveBeenCalled();
         expect(mockSendAction).not.toHaveBeenCalled();
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+            title: { key: 'OUTLINE_ERROR_TITLE' },
+            description: 'error',
+            type: MessageBarType.error
+        });
     });
 
     test('initOutline - empty additional data', async () => {

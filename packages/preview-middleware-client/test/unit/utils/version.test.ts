@@ -1,10 +1,11 @@
 import {
     getUi5Version,
     isLowerThanMinimalUi5Version,
-    getUI5VersionValidationMessage,
     isVersionEqualOrHasNewerPatch
 } from 'open/ux/preview/client/utils/version';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
+import { sendInfoCenterMessage } from '../../../src//utils/info-center-message';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 describe('utils/version', () => {
     test('getUi5Version with lib sap.m', async () => {
@@ -36,6 +37,11 @@ describe('utils/version', () => {
         const version = await getUi5Version();
         expect(version.major).toEqual(1);
         expect(version.minor).toEqual(130);
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+            title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
+            description: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_DESCRIPTION', params: ['1.130.0'] },
+            type: MessageBarType.error
+        });
     });
 
     test('getUi5Version for snapshot', async () => {
@@ -108,12 +114,12 @@ describe('utils/version', () => {
         expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrowError();
         //throw error in case on NaN
         expect(() => isLowerThanMinimalUi5Version({ major: 1, minor: 1, patch: NaN })).toThrowError();
-    });
-
-    test('test validation message', () => {
-        //return message for lower version when app ui5 version is lower than 1.71
-        expect(getUI5VersionValidationMessage({ major: 1, minor: 70 })).toBe(
-            'The current SAPUI5 version set for this Adaptation project is 1.70. The minimum version to use for SAPUI5 Adaptation Project and its SAPUI5 Visual Editor is 1.71'
-        );
+        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+            title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
+            description: {
+                key: 'FLP_UI_INVALID_UI5_VERSION_DESCRIPTION',
+            },
+            type: MessageBarType.error
+        });
     });
 });

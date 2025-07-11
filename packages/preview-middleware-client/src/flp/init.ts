@@ -1,7 +1,7 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import { SCENARIO, showMessage, type Scenario } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, SCENARIO, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
@@ -11,11 +11,10 @@ import { getError } from '../utils/error';
 import initCdm from './initCdm';
 import initConnectors from './initConnectors';
 import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
-import { CommunicationService } from '../cpe/communication-service';
-import { getTextBundle } from '../i18n';
 import type Component from 'sap/ui/core/Component';
 import type Extension from 'sap/ushell/services/Extension';
 import type { CardGeneratorType } from 'sap/cards/ap/generator';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -197,6 +196,11 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
             registerModules((await response.json()) as AppIndexData);
         } catch (error) {
             Log.error(`Registering of reuse libs failed. Error:${error}`);
+            await sendInfoCenterMessage({
+                title: { key: 'FLP_REGISTER_LIBS_FAILED_TITLE' },
+                description: getError(error).message,
+                type: MessageBarType.error
+            });
         }
     }
 }
@@ -352,6 +356,11 @@ export async function init({
                         try {
                             await startAdaptation(options, pluginScript);
                         } catch (error) {
+                            await sendInfoCenterMessage({
+                                title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
+                                description: getError(error).message, 
+                                type: MessageBarType.error
+                            });
                             await handleHigherLayerChanges(error, ui5VersionInfo);
                         }
                     }
@@ -369,6 +378,11 @@ export async function init({
         });
     } else {  
         Log.warning('Card generator is not supported for the current UI5 version.');
+        await sendInfoCenterMessage({
+            title: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_TITLE' },
+            description: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_DESCRIPTION' },
+            type: MessageBarType.warning
+        });
     } 
 
     // reset app state if requested
@@ -417,6 +431,11 @@ if (bootstrapConfig) {
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);
+        return sendInfoCenterMessage({
+            title: { key: 'FLP_SANDBOX_INIT_FAILED_TITLE' },
+            description: error.message,
+            type: MessageBarType.error    
+        });
     });
 }
 
@@ -432,12 +451,11 @@ export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: U
     const err = getError(error);
     if (err.message.includes('Reload triggered')) {
         if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 84 })) {
-            const bundle = await getTextBundle();
-            const action = showMessage({
-                message: bundle.getText('HIGHER_LAYER_CHANGES_INFO_MESSAGE'),
-                shouldHideIframe: false
+            await sendInfoCenterMessage({
+                title: { key: 'HIGHER_LAYER_CHANGES_TITLE' },
+                description: { key: 'HIGHER_LAYER_CHANGES_INFO_MESSAGE' },
+                type: MessageBarType.warning
             });
-            CommunicationService.sendAction(action);
         }
 
         // eslint-disable-next-line fiori-custom/sap-no-location-reload

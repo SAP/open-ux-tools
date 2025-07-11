@@ -7,7 +7,6 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { ValueState } from 'mock/sap/ui/core/library';
 import { fetchMock, openMock, sapCoreMock } from 'mock/window';
-import MessageToast from 'mock/sap/m/MessageToast';
 
 import * as apiHandler from '../../../../src/adp/api-handler';
 
@@ -16,6 +15,8 @@ import { ExtendControllerData } from 'open/ux/preview/client/adp/extend-controll
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import * as utils from '../../../../src/utils/version';
 import * as coreUtils from '../../../../src/utils/core';
+import { sendInfoCenterMessage } from '../../../../src/utils/info-center-message';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 jest.mock('../../../../src/adp/command-executor', () => {
     return jest.fn().mockImplementation(() => ({
@@ -505,9 +506,9 @@ describe('ControllerExtension', () => {
 
             jest.spyOn(global, 'Date').mockImplementation(
                 () =>
-                    ({
-                        toISOString: () => '2020-01-01T00:00:00.000Z'
-                    } as unknown as Date)
+                ({
+                    toISOString: () => '2020-01-01T00:00:00.000Z'
+                } as unknown as Date)
             );
             jest.spyOn(apiHandler, 'writeChange').mockImplementation(async (data) => {
                 return Promise.resolve(data);
@@ -667,10 +668,11 @@ describe('ControllerExtension', () => {
                 codeRef: 'coding/testController.js',
                 viewId: 'viewId'
             });
-            expect(MessageToast.show).toHaveBeenCalledWith(
-                'Note: The `testController` controller extension will be created once you save the change.',
-                { 'duration': 8000 }
-            );
+            expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+                description: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_DESCRIPTION', params: ['1.130.0'] },
+                title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
+                type: MessageBarType.error
+            });
         });
 
         test('opens link to existing controller', async () => {

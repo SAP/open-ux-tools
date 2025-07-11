@@ -9,6 +9,8 @@ import { fetchMock } from 'mock/window';
 import { type ExtensionPointData } from '../../../../src/adp/extension-point';
 
 import ExtensionPoint from '../../../../src/adp/controllers/ExtensionPoint.controller';
+import { sendInfoCenterMessage } from '../../../../src/utils/info-center-message';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 describe('ExtensionPoint', () => {
     beforeAll(() => {
@@ -120,6 +122,11 @@ describe('ExtensionPoint', () => {
                 } as unknown as Dialog);
             } catch (e) {
                 expect(e.message).toBe(errorMsg);
+                expect(sendInfoCenterMessage).toHaveBeenCalledWith({
+                    title: { key: 'ADP_EXTENSION_POINT_ERROR_TITLE' },
+                    description: e.message,
+                    type: MessageBarType.error
+                });
             }
 
             expect(openSpy).not.toBeCalled;
