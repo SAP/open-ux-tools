@@ -32,7 +32,7 @@ export interface RtaEditor {
 export type RtaConfig = Omit<InternalRtaConfig, 'editors'> & { endpoints: RtaEditor[] };
 
 interface InternalRtaConfig {
-    layer: UI5FlexLayer;
+    layer?: UI5FlexLayer;
     options?: {
         [key: string]: unknown;
         baseId?: string;
