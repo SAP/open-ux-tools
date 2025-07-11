@@ -134,9 +134,9 @@ export function updateWizardSteps(
 export function getSubGenErrorPage(subGenType: GeneratorTypes): IPrompt[] {
     switch (subGenType) {
         case GeneratorTypes.ADD_ANNOTATIONS_TO_DATA:
-            return [{ name: 'Add Local Annotation File', description: '' }];
+            return [{ name: t('yuiNavSteps.addLocalAnnotationFileName'), description: '' }];
         case GeneratorTypes.CHANGE_DATA_SOURCE:
-            return [{ name: 'Replace OData Service', description: '' }];
+            return [{ name: t('yuiNavSteps.replaceODataServiceName'), description: '' }];
         default:
             return [];
     }
@@ -161,18 +161,18 @@ export function getSubGenAuthPages(type: GeneratorTypes, destination: string): I
     switch (type) {
         case GeneratorTypes.ADD_ANNOTATIONS_TO_DATA:
             return [
-                getCredentialsPageProps('Add Local Annotation File'),
+                getCredentialsPageProps(t('yuiNavSteps.addLocalAnnotationFileName')),
                 {
-                    name: 'Add Local Annotation File',
-                    description: 'Select OData Service and Annotation XML'
+                    name: t('yuiNavSteps.addLocalAnnotationFileName'),
+                    description: t('yuiNavSteps.addLocalAnnotationFileDescr')
                 }
             ];
         case GeneratorTypes.CHANGE_DATA_SOURCE:
             return [
-                getCredentialsPageProps('Replace OData Service'),
+                getCredentialsPageProps(t('yuiNavSteps.replaceODataServiceName')),
                 {
-                    name: 'Replace OData Service',
-                    description: 'Select OData Service and new OData URI'
+                    name: t('yuiNavSteps.replaceODataServiceName'),
+                    description: t('yuiNavSteps.replaceODataServiceDescr')
                 }
             ];
         default:

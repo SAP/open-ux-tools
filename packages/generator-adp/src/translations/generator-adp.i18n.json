@@ -7,7 +7,15 @@
         "flpConfigName": "SAP Fiori Launchpad Configuration",
         "tileSettingsName": "SAP Fiori Launchpad Configuration - Tile Settings for {{- projectName}}",
         "deployConfigName": "Deployment Configuration",
-        "deployConfigDescr": "Configure deployment settings."
+        "deployConfigDescr": "Configure deployment settings.",
+        "addComponentUsagesName": "Add SAPUI5 Component Usages",
+        "addComponentUsagesDescr": "Select SAPUI5 Component Usages",
+        "addNewModelName": "Add OData Service and SAPUI5 Model",
+        "addNewModelDescr": "Select OData Service and SAPUI5 Model",
+        "addLocalAnnotationFileName": "Add Local Annotation File",
+        "addLocalAnnotationFileDescr": "Select OData Service and Annotation XML",
+        "replaceODataServiceName": "Replace OData Service",
+        "replaceODataServiceDescr": "Select OData Service and new OData URI"
     },
     "prompts": {
         "systemLabel": "System",

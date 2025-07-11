@@ -1,9 +1,11 @@
 import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
-import { ChangeType, generateChange, getPromptsForAddComponentUsages, getVariant } from '@sap-ux/adp-tooling';
-import SubGeneratorBase from '../base/sub-gen-base';
-import { GeneratorTypes } from '../types';
 import type { AddComponentUsageAnswers, ComponentUsagesData, DescriptorVariant } from '@sap-ux/adp-tooling';
+import { ChangeType, generateChange, getPromptsForAddComponentUsages, getVariant } from '@sap-ux/adp-tooling';
+
+import { GeneratorTypes } from '../types';
+import { initI18n, t } from '../utils/i18n';
 import type { GeneratorOpts } from '../utils/opts';
+import SubGeneratorBase from '../base/sub-gen-base';
 
 /**
  * Generator for adding component usages to a project.
@@ -33,18 +35,22 @@ class AddComponentUsagesGenerator extends SubGeneratorBase {
         if (opts.data) {
             this.projectPath = opts.data.path;
         }
+        this.prompts = new Prompts([]);
         this.setPromptsCallback = (fn): void => {
             if (this.prompts) {
                 this.prompts.setCallback(fn);
             }
         };
-        this.prompts = new Prompts([
-            { name: 'Add SAPUI5 Component Usages', description: 'Select SAPUI5 Component Usages' }
-        ]);
     }
 
     async initializing(): Promise<void> {
+        await initI18n();
+
         try {
+            this.prompts = new Prompts([
+                { name: t('yuiNavSteps.addComponentUsagesName'), description: t('yuiNavSteps.addComponentUsagesDescr') }
+            ]);
+
             this.variant = await getVariant(this.projectPath);
         } catch (e) {
             this.appWizard.showError(e.message, MessageType.notification);

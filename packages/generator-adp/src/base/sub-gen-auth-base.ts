@@ -8,6 +8,7 @@ import type { DescriptorVariant } from '@sap-ux/adp-tooling';
 import type { AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
 import { getVariant, getAdpConfig, ManifestService, SystemLookup } from '@sap-ux/adp-tooling';
 
+import { initI18n } from '../utils/i18n';
 import SubGeneratorBase from './sub-gen-base';
 import type { GeneratorOpts } from '../utils/opts';
 import type { GeneratorTypes, Credentials } from '../types';
@@ -79,7 +80,12 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
             this.validationError = e as Error;
         }
 
-        this._setPrompts();
+        this.prompts = new Prompts([]);
+        this.setPromptsCallback = (fn): void => {
+            if (this.prompts) {
+                this.prompts.setCallback(fn);
+            }
+        };
     }
 
     /**
@@ -87,6 +93,14 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
      * Subclasses must call this to benefit from the built-in auth handling.
      */
     protected async onInit(): Promise<void> {
+        await initI18n();
+
+        if (this.validationError) {
+            this.prompts = new Prompts(getSubGenErrorPage(this.generatorType));
+        } else {
+            this.prompts = new Prompts(getSubGenAuthPages(this.generatorType, this.system));
+        }
+
         this.systemLookup = new SystemLookup(this.logger);
         const adpConfig = await getAdpConfig(this.projectPath, path.join(this.projectPath, 'ui5.yaml'));
         this.abapTarget = adpConfig.target;
@@ -155,22 +169,5 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         this.logger.log(`OData target sources\n${JSON.stringify(oDataTargetSources, null, 2)}`);
 
         return manifest;
-    }
-
-    /**
-     * Sets the prompts for the generator.
-     */
-    private _setPrompts(): void {
-        this.setPromptsCallback = (fn): void => {
-            if (this.prompts) {
-                this.prompts.setCallback(fn);
-            }
-        };
-
-        if (this.validationError) {
-            this.prompts = new Prompts(getSubGenErrorPage(this.generatorType));
-        } else {
-            this.prompts = new Prompts(getSubGenAuthPages(this.generatorType, this.system));
-        }
     }
 }
