@@ -291,7 +291,7 @@ export class FlpSandbox {
             libs.push('sap.ui.rta');
             config.ui5.libs = libs.join(',');
         }
-        config.flex = {
+        config.flexSettings = {
             layer: rta.layer ?? 'CUSTOMER_BASE',
             ...rta.options,
             generator: editor.generator ?? defaultGenerator,
