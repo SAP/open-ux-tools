@@ -1,5 +1,13 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.60
+
+### Patch Changes
+
+-   Updated dependencies [a1f282f]
+    -   @sap-ux/project-input-validator@0.6.12
+    -   @sap-ux/odata-service-inquirer@2.5.17
+
 ## 0.3.59
 
 ### Patch Changes
