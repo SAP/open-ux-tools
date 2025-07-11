@@ -617,7 +617,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
                                 "test-app-typescript": "../../",
                                 "integration": "./"
                         }'
-                        data-sap-ui-animation="false"
+                        data-sap-ui-animation-mode="false"
                         data-sap-ui-compatVersion="edge"
                         data-sap-ui-async="true"
                         data-sap-ui-preload="async"
