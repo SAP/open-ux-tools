@@ -5,13 +5,13 @@ const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
     qunit: {
         path: '/test/unitTests.qunit.html',
         init: '/test/unitTests.qunit.js',
-        pattern: '/test/**/*Test.*',
+        pattern: '/test/**/*Test.{js,ts}',
         framework: 'QUnit'
     },
     opa5: {
         path: '/test/opaTests.qunit.html',
         init: '/test/opaTests.qunit.js',
-        pattern: '/test/**/*Journey.*',
+        pattern: '/test/**/*Journey.{js,ts}',
         framework: 'OPA5'
     },
     testsuite: {
