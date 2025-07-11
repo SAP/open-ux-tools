@@ -8,7 +8,8 @@ import {
     quickActionListChanged,
     executeQuickAction,
     QuickAction,
-    MessageBarType
+    MessageBarType,
+    showInfoCenterMessage
 } from '@sap-ux-private/control-property-editor-common';
 
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
@@ -49,7 +50,7 @@ import * as utils from 'open/ux/preview/client/adp/quick-actions/fe-v2/utils';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import * as appUtils from 'open/ux/preview/client/utils/application';
 import * as cpeCommon from '@sap-ux-private/control-property-editor-common';
-import { sendInfoCenterMessage } from 'open/ux/preview/client/utils/info-center-message';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -2932,6 +2933,7 @@ describe('FE V2 quick actions', () => {
                     [registry],
                     { onStackChange: jest.fn() } as any
                 );
+                jest.spyOn(CommunicationService, 'sendAction');
 
                 await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({
@@ -2955,11 +2957,13 @@ describe('FE V2 quick actions', () => {
                     })
                 );
 
-                expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-                    title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
-                    description: { key: 'TABLE_ROWS_NEEDED_TO_CREATE_CUSTOM_COLUMN' },
-                    type: MessageBarType.error
-                });
+                expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                    showInfoCenterMessage({
+                        title: 'Create XML Fragment',
+                        description: 'At least one table row is required to create a new custom column. Make sure the table data is loaded and try again.',
+                        type: MessageBarType.error
+                    })
+                );
             });
         });
 

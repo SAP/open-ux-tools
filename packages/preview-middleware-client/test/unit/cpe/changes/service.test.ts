@@ -7,7 +7,8 @@ import {
     MessageBarType,
     propertyChangeFailed,
     PropertyType,
-    setApplicationRequiresReload
+    setApplicationRequiresReload,
+    showInfoCenterMessage
 } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
@@ -16,7 +17,7 @@ import JsControlTreeModifierMock from 'mock/sap/ui/core/util/reflection/JsContro
 import Control from 'sap/ui/core/Control';
 import * as Utils from '../../../../src/utils/version';
 import ChangesWriteAPIMock from 'mock/sap/ui/fl/write/api/ChangesWriteAPI';
-import { sendInfoCenterMessage } from '../../../../src/utils/info-center-message';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 describe('ChangeService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
@@ -128,6 +129,7 @@ describe('ChangeService', () => {
                 })
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
+        jest.spyOn(CommunicationService, 'sendAction');
 
         const service = new ChangeService({ rta: rtaMock } as any);
 
@@ -205,11 +207,13 @@ describe('ChangeService', () => {
                 ]
             }
         });
-        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'UNKNOWN_CHANGE_TYPE_TITLE' },
-            description: { key: 'UNKNOWN_CHANGE_TYPE_DESCRIPTION', params: ['change2'] },
-            type: MessageBarType.info
-        });
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'Unknown Change Type',
+                description: 'An unknown change type has been found. Please check the change file change2.',
+                type: MessageBarType.info
+            })
+        );
     });
     test('Sync Outline Changes', async () => {
         fetchMock.mockResolvedValue({
@@ -1582,6 +1586,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(commands),
             getAllExecutedCommands: jest.fn().mockReturnValue(commands)
         });
+        jest.spyOn(CommunicationService, 'sendAction');
         const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
@@ -1629,11 +1634,13 @@ describe('ChangeService', () => {
                 ]
             }
         });
-        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_TITLE' },
-            description: { key: 'CHANGES_VISIBLE_AFTER_SAVE_AND_RELOAD_DESCRIPTION' },
-            type: MessageBarType.info
-        });
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'Save and Reload Required',
+                description: 'Note: The change will be visible after save and reload.',
+                type: MessageBarType.info
+            })
+        );
     });
     test('FE V4 manifest change', async () => {
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
@@ -1780,6 +1787,7 @@ describe('ChangeService', () => {
         const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
             throw errorMessage;
         });
+        jest.spyOn(CommunicationService, 'sendAction');
 
         const service = new ChangeService({ rta: rtaMock } as any);
 
@@ -1817,10 +1825,12 @@ describe('ChangeService', () => {
             } as any)
         );
         
-        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'CHANGE_CREATION_FAILED_TITLE' },
-            description: `Error: ${JSON.stringify(errorMessage)}`,
-            type: MessageBarType.error
-        });
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'CPE: Change Creation Failed',
+                description: `Error: ${JSON.stringify(errorMessage)}`,
+                type: MessageBarType.error
+            })
+        );
     });
 });

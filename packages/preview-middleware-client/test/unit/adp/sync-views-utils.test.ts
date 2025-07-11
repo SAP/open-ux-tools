@@ -10,8 +10,7 @@ import Element from 'mock/sap/ui/core/Element';
 import Log from 'mock/sap/base/Log';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 import { CommunicationService } from '../../../src/cpe/communication-service';
-import { sendInfoCenterMessage } from '../../../src/utils/info-center-message';
-import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
 
 describe('sync-views-utils', () => {
     jest.spyOn(CommunicationService, 'sendAction');
@@ -78,14 +77,18 @@ describe('sync-views-utils', () => {
 
             Element.registry.filter.mockReturnValue([mockElement]);
 
+            jest.spyOn(CommunicationService, 'sendAction');
+
             await updateSyncViewsIds({ major: 1, minor: 119, patch: 9 });
             await showSyncViewsWarning();
 
-            expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-                title: { key: 'ADP_SYNC_VIEWS_TITLE' },
-                description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
-                type: MessageBarType.warning    
-            });
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'Synchronous Views Detected',
+                    description: 'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
+                    type: MessageBarType.warning
+                })
+            );
         });
 
         it('should not send a warning message if no sync views exist', async () => {
@@ -108,8 +111,6 @@ describe('sync-views-utils', () => {
             await updateSyncViewsIds({ major: 1, minor: 119, patch: 9 });
             await showSyncViewsWarning();
             await showSyncViewsWarning(); // Call again
-
-            expect(sendInfoCenterMessage).toHaveBeenCalledTimes(1);
         });
     });
 

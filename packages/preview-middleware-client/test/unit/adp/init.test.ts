@@ -10,8 +10,7 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 import Element from 'mock/sap/ui/core/Element';
-import { sendInfoCenterMessage } from '../../../src/utils/info-center-message';
-import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
 import { resetSyncViews } from '../../../src/adp/sync-views-utils';
 
 const addFragmentServiceMock = jest.fn();
@@ -134,15 +133,13 @@ describe('adp', () => {
             payload: []
         });
 
-        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'FLP_UI5_VERSION_WARNING_TITLE' },
-            description: {
-                key: 'FLP_UI5_VERSION_WARNING_DESCRIPTION', params: [
-                    '1.70',
-                    '1.71']
-            },
-            type: MessageBarType.error
-        });
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'SAPUI5 Version Warning',
+                description: 'The current SAPUI5 version set for this adaptation project is 1.70. The minimum version for SAPUI5 Adaptation Project and its SAPUI5 Adaptation Editor is 1.71. Install version 1.71 or higher.',
+                type: MessageBarType.error
+            })
+        );
 
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(common.toggleAppPreviewVisibility(false));
     });
@@ -161,6 +158,8 @@ describe('adp', () => {
 
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.123.1' });
 
+        jest.spyOn(CommunicationService, 'sendAction');
+
         await init(rtaMock as unknown as RuntimeAuthoring);
         // Simulate the 'update' event
         const updateHandler = attachEventSpy.mock.calls[0][1];
@@ -171,11 +170,13 @@ describe('adp', () => {
             payload: []
         });
 
-        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'ADP_SYNC_VIEWS_TITLE' },
-            description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
-            type: MessageBarType.warning
-        });
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'Synchronous Views Detected',
+                description: 'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
+                type: MessageBarType.warning
+            })
+        );
     });
 
     test('init - send notification existence of sync views for minor UI5 version lower than 120', async () => {
@@ -191,16 +192,20 @@ describe('adp', () => {
 
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
 
+        jest.spyOn(CommunicationService, 'sendAction');
+
         await init(rtaMock as unknown as RuntimeAuthoring);
         // Simulate the 'update' event
         const updateHandler = attachEventSpy.mock.calls[0][1];
         await updateHandler();
 
-        expect(sendInfoCenterMessage).toHaveBeenCalledWith({
-            title: { key: 'ADP_SYNC_VIEWS_TITLE' },
-            description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
-            type: MessageBarType.warning
-        });
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'Synchronous Views Detected',
+                description: 'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
+                type: MessageBarType.warning
+            })
+        );
     });
 
     test('init - use AddXMLPlugin and ExtendControllerPlugin for UI5 version higher than 1.136.1', async () => {
