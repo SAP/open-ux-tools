@@ -1,12 +1,13 @@
 /* global QUnit */
 QUnit.config.autostart = false;
 
-sap.ui.getCore().attachInit(function () {
-	"use strict";
+sap.ui.require([
+    "sap/ui/core/Core",
+    "unit/AllTests" 
+], function (Core) {
+    "use strict";
 
-	sap.ui.require([
-		"<%= appIdWithSlash %>/test/unit/AllTests"
-	], function () {
-		QUnit.start();
-	});
+    Core.ready().then(function () {
+        QUnit.start();
+    });
 });
