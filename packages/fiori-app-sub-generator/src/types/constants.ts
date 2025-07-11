@@ -85,7 +85,7 @@ export const FIORI_STEPS: FioriStep[] = [
     {
         key: STEP_FLP_CONFIG,
         name: t('steps.flpConfig.title'),
-        description: t('steps.flpConfig.decription'),
+        description: t('steps.flpConfig.description'),
         dependency: t('steps.projectAttributesConfig.title'),
         order: 5
     }

@@ -1,5 +1,37 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.59
+
+### Patch Changes
+
+-   Updated dependencies [d75db00]
+    -   @sap-ux/fiori-generator-shared@0.13.2
+    -   @sap-ux/fiori-elements-writer@2.5.13
+    -   @sap-ux/inquirer-common@0.7.24
+    -   @sap-ux/odata-service-inquirer@2.5.16
+
+## 0.3.58
+
+### Patch Changes
+
+-   5a465db: Add useVirtualPreviewEndpoints defaulted to true to App Configuration of repo app import sub generator
+
+## 0.3.57
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/abap-deploy-config-writer@0.1.17
+    -   @sap-ux/axios-extension@1.22.3
+    -   @sap-ux/fiori-generator-shared@0.13.1
+    -   @sap-ux/launch-config@0.10.13
+    -   @sap-ux/odata-service-inquirer@2.5.15
+    -   @sap-ux/project-input-validator@0.6.11
+    -   @sap-ux/system-access@0.6.10
+    -   @sap-ux/fiori-elements-writer@2.5.12
+    -   @sap-ux/inquirer-common@0.7.23
+
 ## 0.3.56
 
 ### Patch Changes
