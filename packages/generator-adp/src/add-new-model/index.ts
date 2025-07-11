@@ -69,7 +69,7 @@ class AddNewModelGenerator extends SubGeneratorBase {
         await generateChange<ChangeType.ADD_NEW_MODEL>(
             this.projectPath,
             ChangeType.ADD_NEW_MODEL,
-            this.createNewModelData(),
+            this._createNewModelData(),
             this.fs
         );
         this.logger.log('Change written to changes folder');
@@ -84,7 +84,7 @@ class AddNewModelGenerator extends SubGeneratorBase {
      *
      * @returns {NewModelData} The new model data.
      */
-    private createNewModelData(): NewModelData {
+    private _createNewModelData(): NewModelData {
         const { name, uri, modelName, version, modelSettings, addAnnotationMode } = this.answers;
         return {
             variant: this.variant,

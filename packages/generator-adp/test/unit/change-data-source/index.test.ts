@@ -8,14 +8,14 @@ import {
     getAdpConfig,
     getVariant,
     ManifestService,
-    SystemLookup,
-    AnnotationFileSelectType
+    SystemLookup
 } from '@sap-ux/adp-tooling';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapTarget } from '@sap-ux/system-access';
-import type { DescriptorVariant } from '@sap-ux/adp-tooling';
+import type { ChangeDataSourceAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
 
-import annotationGen from '../../../src/add-annotations-to-odata';
+import type { Credentials } from '../../../src/types';
+import changeDataSourceGen from '../../../src/change-data-source';
 
 jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
@@ -23,10 +23,6 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getVariant: jest.fn(),
     getAdpConfig: jest.fn(),
     getAdpProjectData: jest.fn()
-}));
-
-jest.mock('@sap-ux/odata-service-writer', () => ({
-    getAnnotationNamespaces: jest.fn(() => [{ namespace: 'ns', alias: 'ALIAS' }])
 }));
 
 jest.mock('@sap-ux/system-access', () => ({
@@ -58,10 +54,11 @@ const target: AbapTarget = {
     destination: 'SYS_010'
 };
 
-const answers = {
+const answers: ChangeDataSourceAnswers & Credentials & { errorMessagePrompt: string } = {
     id: 'Z_SRV',
-    fileSelectOption: AnnotationFileSelectType.NewEmptyFile,
-    filePath: '/file.xml',
+    uri: '/sap/opu/odata/new',
+    maxAge: 120,
+    annotationUri: '/sap/opu/odata/new/annotation',
     errorMessagePrompt: 'failed',
     username: 'user',
     password: 'pass'
@@ -69,11 +66,11 @@ const answers = {
 
 jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(true);
 
-const generatorPath = join(__dirname, '../../src/add-annotations-to-odata/index.ts');
+const generatorPath = join(__dirname, '../../src/change-data-source/index.ts');
 const tmpDir = resolve(__dirname, 'test-output');
 const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
 
-describe('AddAnnotationsToDataGenerator', () => {
+describe('ChangeDataSourceGenerator', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -94,7 +91,7 @@ describe('AddAnnotationsToDataGenerator', () => {
         getAdpConfigMock.mockResolvedValue({ target, ignoreCertErrors: false } as any);
 
         const runContext = yeomanTest
-            .create(annotationGen, { resolved: generatorPath }, { cwd: tmpDir })
+            .create(changeDataSourceGen, { resolved: generatorPath }, { cwd: tmpDir })
             .withOptions({ data: { path: tmpDir } })
             .withPrompts(answers);
 
@@ -102,21 +99,21 @@ describe('AddAnnotationsToDataGenerator', () => {
 
         expect(generateChangeMock).toHaveBeenCalledWith(
             tmpDir,
-            ChangeType.ADD_ANNOTATIONS_TO_ODATA,
+            ChangeType.CHANGE_DATA_SOURCE,
             expect.objectContaining({
-                annotation: {
-                    dataSource: answers.id,
-                    filePath: undefined,
-                    namespaces: [{ alias: 'ALIAS', namespace: 'ns' }],
-                    serviceUrl: '/sap/opu/odata'
+                service: {
+                    id: answers.id,
+                    uri: answers.uri,
+                    maxAge: answers.maxAge,
+                    annotationUri: answers.annotationUri
                 },
-                isCommand: true,
                 variant: {
                     id: variant.id,
                     layer: variant.layer,
                     namespace: variant.namespace,
                     reference: variant.reference
-                }
+                },
+                dataSources: manifest['sap.app']?.dataSources
             }),
             expect.anything()
         );
@@ -129,15 +126,15 @@ describe('AddAnnotationsToDataGenerator', () => {
         jest.spyOn(ManifestService, 'initMergedManifest').mockRejectedValueOnce(new Error('merge fail'));
 
         const handleCrashSpy = jest
-            .spyOn((annotationGen as any).prototype, 'handleRuntimeCrash')
+            .spyOn((changeDataSourceGen as any).prototype, 'handleRuntimeCrash')
             .mockResolvedValueOnce(undefined);
 
         const writingSpy = jest
-            .spyOn((annotationGen as any).prototype, 'writing')
+            .spyOn((changeDataSourceGen as any).prototype, 'writing')
             .mockImplementationOnce(async () => undefined);
 
         const runContext = yeomanTest
-            .create(annotationGen, { resolved: generatorPath }, { cwd: tmpDir })
+            .create(changeDataSourceGen, { resolved: generatorPath }, { cwd: tmpDir })
             .withOptions({ data: { path: tmpDir } })
             .withPrompts(answers);
 
@@ -158,15 +155,15 @@ describe('AddAnnotationsToDataGenerator', () => {
         );
 
         const handleCrashSpy = jest
-            .spyOn((annotationGen as any).prototype, 'handleRuntimeCrash')
+            .spyOn((changeDataSourceGen as any).prototype, 'handleRuntimeCrash')
             .mockResolvedValueOnce(undefined);
 
         const writingSpy = jest
-            .spyOn((annotationGen as any).prototype, 'writing')
+            .spyOn((changeDataSourceGen as any).prototype, 'writing')
             .mockImplementationOnce(async () => undefined);
 
         const runContext = yeomanTest
-            .create(annotationGen, { resolved: generatorPath }, { cwd: tmpDir })
+            .create(changeDataSourceGen, { resolved: generatorPath }, { cwd: tmpDir })
             .withOptions({ data: { path: tmpDir } })
             .withPrompts({ ...answers });
 

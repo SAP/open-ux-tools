@@ -3,9 +3,9 @@ import { join, resolve } from 'path';
 import yeomanTest from 'yeoman-test';
 
 import { ChangeType, generateChange, getVariant } from '@sap-ux/adp-tooling';
-import type { AddComponentUsageAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
+import type { NewModelAnswers, DescriptorVariant } from '@sap-ux/adp-tooling';
 
-import componentUsagesGen from '../../../src/add-component-usages';
+import newModelGen from '../../../src/add-new-model';
 
 jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
@@ -23,21 +23,21 @@ const variant = {
     namespace: 'apps/fin.test.appvar.av1/appVariants/customer.adp.variant/'
 } as DescriptorVariant;
 
-const answers: AddComponentUsageAnswers & { errorMessagePrompt: string } = {
-    usageId: 'customer.myUsage',
-    name: 'my.Component',
-    isLazy: 'false',
-    settings: '{}',
-    data: '{}',
-    shouldAddLibrary: false,
+const answers: NewModelAnswers & { errorMessagePrompt: string } = {
+    name: 'OData_ServiceName',
+    uri: '/sap/opu/odata/some-name',
+    modelName: 'OData_ServiceModelName',
+    version: '4.0',
+    modelSettings: '{}',
+    addAnnotationMode: false,
     errorMessagePrompt: 'failed'
 };
 
-const generatorPath = join(__dirname, '../../src/add-component-usages/index.ts');
+const generatorPath = join(__dirname, '../../src/add-new-model/index.ts');
 const tmpDir = resolve(__dirname, 'test-output');
 const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
 
-describe('AddComponentUsagesGenerator', () => {
+describe('AddNewModelGenerator', () => {
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -51,7 +51,7 @@ describe('AddComponentUsagesGenerator', () => {
         getVariantMock.mockResolvedValue(variant);
 
         const runContext = yeomanTest
-            .create(componentUsagesGen, { resolved: generatorPath }, { cwd: tmpDir })
+            .create(newModelGen, { resolved: generatorPath }, { cwd: tmpDir })
             .withOptions({ data: { path: tmpDir } })
             .withPrompts(answers);
 
@@ -59,14 +59,14 @@ describe('AddComponentUsagesGenerator', () => {
 
         expect(generateChangeMock).toHaveBeenCalledWith(
             tmpDir,
-            ChangeType.ADD_COMPONENT_USAGES,
+            ChangeType.ADD_NEW_MODEL,
             expect.objectContaining({
-                component: {
-                    usageId: answers.usageId,
+                service: {
                     name: answers.name,
-                    isLazy: answers.isLazy,
-                    settings: answers.settings,
-                    data: answers.data
+                    uri: answers.uri,
+                    modelName: answers.modelName,
+                    version: answers.version,
+                    modelSettings: answers.modelSettings
                 }
             }),
             expect.anything()
@@ -77,15 +77,15 @@ describe('AddComponentUsagesGenerator', () => {
         getVariantMock.mockRejectedValueOnce(new Error('variant fail'));
 
         const handleCrashSpy = jest
-            .spyOn((componentUsagesGen as any).prototype, 'handleRuntimeCrash')
+            .spyOn((newModelGen as any).prototype, 'handleRuntimeCrash')
             .mockResolvedValueOnce(undefined);
 
         const writingSpy = jest
-            .spyOn((componentUsagesGen as any).prototype, 'writing')
+            .spyOn((newModelGen as any).prototype, 'writing')
             .mockImplementation(async () => undefined);
 
         const runContext = yeomanTest
-            .create(componentUsagesGen, { resolved: generatorPath }, { cwd: tmpDir })
+            .create(newModelGen, { resolved: generatorPath }, { cwd: tmpDir })
             .withOptions({ data: { path: tmpDir } })
             .withPrompts(answers);
 
