@@ -68,7 +68,7 @@ export interface TemplateConfig {
         resources: Record<string, string>;
     };
     init?: string;
-    flex?: {
+    flexSettings?: {
         [key: string]: unknown;
         layer: UI5FlexLayer;
         developerMode: boolean;

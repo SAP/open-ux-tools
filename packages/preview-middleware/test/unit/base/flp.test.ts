@@ -1217,6 +1217,27 @@ describe('FlpSandbox', () => {
             response = await server.get('/my/editor.html.inner.html').expect(302);
             expect(response.text).toMatchSnapshot();
         });
+
+        test('rta w/o layer', async () => {
+            const mockConfigAdjusted = { ...mockConfig };
+            //@ts-expect-error: we use undefined here on purpose to simulate a missing value from ui5 yaml
+            mockConfigAdjusted.editors.rta.layer = undefined;
+            const flp = new FlpSandbox(
+                mockConfigAdjusted as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+
+            server = await supertest(app);
+            const response = await server.get('/my/rta.html?fiori-tools-rta-mode=true').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
     });
 
     describe('cds-plugin-ui5', () => {

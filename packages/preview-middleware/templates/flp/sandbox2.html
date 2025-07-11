@@ -60,13 +60,13 @@
         data-open-ux-preview-enable-card-generator="<%- enableCardGenerator %>"
         <% } %>
         data-sap-ui-on-init="module:open/ux/preview/client/flp/init"<% if (locals.init) { %>
-        data-open-ux-preview-customInit='<%- init %>'<% } if (locals.flex) { %>
+        data-open-ux-preview-customInit='<%- init %>'<% } if (locals.flexSettings) { %>
         data-open-ux-preview-features='<%- JSON.stringify(features) %>'
-        data-open-ux-preview-flex-settings='<%- JSON.stringify(flex) %>'<% } if (locals.locateReuseLibsScript) { %>
+        data-open-ux-preview-flex-settings='<%- JSON.stringify(flexSettings) %>'<% } if (locals.locateReuseLibsScript) { %>
         data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>>
     </script>
 
-<% if (locals.flex && flex?.developerMode) { %>
+<% if (locals.flexSettings && flexSettings?.developerMode) { %>
         <!-- Hides Rta native toolbar  -->
     <style>
         #shell-header, .sapUiRtaToolbar {
