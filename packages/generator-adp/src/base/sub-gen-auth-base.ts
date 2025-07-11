@@ -20,9 +20,6 @@ import { getSubGenAuthPages, getSubGenErrorPage } from '../utils/steps';
  * Adds functionality on top of {@link SubGeneratorBase}.
  */
 export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
-    public setPromptsCallback: (fn: any) => void;
-    public prompts: Prompts;
-
     /**
      * The ABAP target.
      */
@@ -79,13 +76,6 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         } catch (e) {
             this.validationError = e as Error;
         }
-
-        this.prompts = new Prompts([]);
-        this.setPromptsCallback = (fn): void => {
-            if (this.prompts) {
-                this.prompts.setCallback(fn);
-            }
-        };
     }
 
     /**
@@ -96,9 +86,9 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         await initI18n();
 
         if (this.validationError) {
-            this.prompts = new Prompts(getSubGenErrorPage(this.generatorType));
+            this._registerPrompts(new Prompts(getSubGenErrorPage(this.generatorType)));
         } else {
-            this.prompts = new Prompts(getSubGenAuthPages(this.generatorType, this.system));
+            this._registerPrompts(new Prompts(getSubGenAuthPages(this.generatorType, this.system)));
         }
 
         this.systemLookup = new SystemLookup(this.logger);
@@ -119,7 +109,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
 
             if (!this.requiresAuth) {
                 // Remove the credential page when authentication is not required
-                this.prompts.splice(0, 1, [] as unknown as any);
+                this.prompts.splice(0, 1, []);
             }
         } catch (error) {
             await this.handleRuntimeCrash(error.message);
@@ -158,12 +148,12 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         this.logger.log(`OData sources from manifest\n${JSON.stringify(oDataSources, null, 2)}`);
 
         const oDataTargetSources = Object.entries(oDataSources ?? {})
-            .filter((dS) => dS[1]?.type === 'OData')
-            .map((dS) => {
+            .filter((source) => source[1]?.type === 'OData')
+            .map((source) => {
                 return {
-                    dataSourceName: dS[0],
-                    uri: dS[1]?.uri,
-                    annotations: dS[1]?.settings?.annotations ?? []
+                    dataSourceName: source[0],
+                    uri: source[1]?.uri,
+                    annotations: source[1]?.settings?.annotations ?? []
                 };
             });
         this.logger.log(`OData target sources\n${JSON.stringify(oDataTargetSources, null, 2)}`);

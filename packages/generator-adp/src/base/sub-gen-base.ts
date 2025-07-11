@@ -1,4 +1,5 @@
 import Generator = require('yeoman-generator');
+import type { Prompts } from '@sap-devx/yeoman-ui-types';
 import { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -14,6 +15,9 @@ import type { GeneratorOpts } from '../utils/opts';
  * Shared base class for all ADP generators.
  */
 export default class SubGeneratorBase extends Generator {
+    public setPromptsCallback: (fn: any) => void;
+    public prompts: Prompts;
+
     /**
      * Instance of the logger.
      */
@@ -30,6 +34,13 @@ export default class SubGeneratorBase extends Generator {
      * Captures validation errors occurring during construction so they can be surfaced later.
      */
     protected validationError: Error | undefined;
+
+    /**
+     * Stores a callback provided by Yeoman-UI when the <Prompts> instance is not
+     * yet created. This ensures the callback is attached once the prompts are
+     * available (e.g. after async i18n or system look-ups).
+     */
+    private pendingPromptsCallback?: (fn: any) => void;
 
     /**
      * Creates an instance of the generator.
@@ -53,6 +64,29 @@ export default class SubGeneratorBase extends Generator {
         );
         this.logger = AdpGeneratorLogger.logger as unknown as ToolsLogger;
         setHeaderTitle(opts, this.logger);
+
+        this.setPromptsCallback = (fn): void => {
+            // Persist callback so we can attach it once prompts are created
+            this.pendingPromptsCallback = fn;
+
+            if (this.prompts) {
+                this.prompts.setCallback(fn);
+            }
+        };
+    }
+
+    /**
+     * Helper to create/update the prompts instance. Any pending Yeoman-UI
+     * callback that arrived before prompts existed will automatically be
+     * attached.
+     *
+     * @param {Prompts} prompts The newly created Prompts instance.
+     */
+    protected _registerPrompts(prompts: Prompts): void {
+        this.prompts = prompts;
+        if (this.pendingPromptsCallback) {
+            this.prompts.setCallback(this.pendingPromptsCallback);
+        }
     }
 
     /**

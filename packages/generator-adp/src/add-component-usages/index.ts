@@ -11,10 +11,10 @@ import SubGeneratorBase from '../base/sub-gen-base';
  * Generator for adding component usages to a project.
  */
 class AddComponentUsagesGenerator extends SubGeneratorBase {
-    public setPromptsCallback: (fn: any) => void;
+    /**
+     * The answers from the prompts.
+     */
     private answers: AddComponentUsageAnswers;
-    public prompts: Prompts;
-
     /**
      * The variant.
      */
@@ -22,7 +22,7 @@ class AddComponentUsagesGenerator extends SubGeneratorBase {
     /**
      * The project path.
      */
-    protected readonly projectPath: string;
+    private readonly projectPath: string;
 
     /**
      * Creates an instance of the generator.
@@ -35,21 +35,20 @@ class AddComponentUsagesGenerator extends SubGeneratorBase {
         if (opts.data) {
             this.projectPath = opts.data.path;
         }
-        this.prompts = new Prompts([]);
-        this.setPromptsCallback = (fn): void => {
-            if (this.prompts) {
-                this.prompts.setCallback(fn);
-            }
-        };
     }
 
     async initializing(): Promise<void> {
         await initI18n();
 
         try {
-            this.prompts = new Prompts([
-                { name: t('yuiNavSteps.addComponentUsagesName'), description: t('yuiNavSteps.addComponentUsagesDescr') }
-            ]);
+            this._registerPrompts(
+                new Prompts([
+                    {
+                        name: t('yuiNavSteps.addComponentUsagesName'),
+                        description: t('yuiNavSteps.addComponentUsagesDescr')
+                    }
+                ])
+            );
 
             this.variant = await getVariant(this.projectPath);
         } catch (e) {
