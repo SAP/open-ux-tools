@@ -55,7 +55,8 @@ export async function getQuestions(
             ? promptOptions[promptNames.targetFolder].default // Default functions will be applied later, these replace the existing defaults
             : promptOptions?.[promptNames.targetFolder]?.defaultValue ?? process.cwd();
 
-    if (promptOptions?.[promptNames.targetFolder]?.validateFioriAppFolder) {
+    const shouldValidateFioriAppFolder = promptOptions?.[promptNames.targetFolder]?.validateFioriAppFolder;
+    if (shouldValidateFioriAppFolder) {
         const isValidFolder = await validateFioriAppProjectFolder(targetDir);
         if (isValidFolder !== true) {
             targetDir = join(os.homedir(), 'projects');
@@ -69,7 +70,7 @@ export async function getQuestions(
         [promptNames.title]: getTitlePrompt(),
         [promptNames.namespace]: getNamespacePrompt(appName),
         [promptNames.description]: getDescriptionPrompt(),
-        [promptNames.targetFolder]: getTargetFolderPrompt(targetDir),
+        [promptNames.targetFolder]: getTargetFolderPrompt(targetDir, shouldValidateFioriAppFolder),
         [promptNames.ui5Version]: getUI5VersionPrompt(ui5Versions, promptOptions?.ui5Version),
         [promptNames.enableTypeScript]: getEnableTypeScriptPrompt(capCdsInfo),
         [promptNames.addDeployConfig]: getAddDeployConfigPrompt(

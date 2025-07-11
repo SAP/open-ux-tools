@@ -116,9 +116,10 @@ export function getDescriptionPrompt(): UI5ApplicationQuestion {
  * Gets the `targetFolder` prompt.
  *
  * @param targetDir provides a default value for the target folder path
+ * @param validateFioriAppFolder validates the target folder path as a Fiori app project
  * @returns the `targetFolder` prompt
  */
-export function getTargetFolderPrompt(targetDir: string): UI5ApplicationQuestion {
+export function getTargetFolderPrompt(targetDir: string, validateFioriAppFolder?: boolean): UI5ApplicationQuestion {
     return {
         type: 'input',
         name: promptNames.targetFolder,
@@ -132,7 +133,7 @@ export function getTargetFolderPrompt(targetDir: string): UI5ApplicationQuestion
         default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
         validate: async (target, { name = '' }: UI5ApplicationAnswers): Promise<boolean | string> => {
             if (name.length > 2) {
-                return await validateFioriAppTargetFolder(target, name);
+                return await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
             }
             return false;
         }
