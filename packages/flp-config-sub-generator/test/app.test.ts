@@ -24,6 +24,8 @@ jest.mock('fs', () => {
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
+    _fs.realpath = fsLib.realpath;
+    _fs.realpathSync = fsLib.realpathSync;
     return _fs.use(vol as unknown as typeof fs);
 });
 
