@@ -1,17 +1,25 @@
-import type { IChildLogger } from '@vscode-logging/logger';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { getPackageInfo } from './deps';
-import type { AdpGeneratorOptions } from '../app/types';
+
+export interface GeneratorOpts {
+    appWizard?: AppWizard;
+    vscode?: any;
+    data?: {
+        path: string;
+    };
+}
 
 /**
  * Sets the header title in the AppWizard UI, if the `setHeaderTitle` method is available.
  * This helps users identify the generator and its version in the Yeoman UI interface.
  *
- * @param {AdpGeneratorOptions} opts - The generator options, potentially including the AppWizard instance.
- * @param {IChildLogger} logger - Logger instance used for logging any errors that occur during execution.
+ * @param {GeneratorOpts} opts - The generator options, potentially including the AppWizard instance.
+ * @param {ToolsLogger} logger - Logger instance used for logging any errors that occur during execution.
  */
-export function setHeaderTitle(opts: AdpGeneratorOptions, logger: ToolsLogger): void {
+export function setHeaderTitle(opts: GeneratorOpts, logger: ToolsLogger): void {
     try {
         if (typeof opts?.appWizard?.setHeaderTitle === 'function') {
             const { name = '', version = '', displayName = '' } = getPackageInfo();
