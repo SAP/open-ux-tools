@@ -44,7 +44,7 @@ archive.zip
 
 specVersion: \\"3.1\\"
 metadata:
-  name: testAppId
+  name: testappid
 type: application
 framework:
   name: OpenUI5
@@ -75,7 +75,7 @@ server:
 
 specVersion: \\"3.1\\"
 metadata:
-  name: testAppId
+  name: testappid
 type: application
 server:
   customMiddleware:
@@ -109,7 +109,7 @@ server:
     function (UIComponent) {
         \\"use strict\\";
 
-        return UIComponent.extend(\\"testAppId.Component\\", {
+        return UIComponent.extend(\\"testappid.Component\\", {
             metadata: {
                 manifest: \\"json\\"
             },
@@ -132,7 +132,7 @@ server:
     "state": "modified",
   },
   "webapp/i18n/i18n.properties": Object {
-    "contents": "# This is the resource bundle for testAppId
+    "contents": "# This is the resource bundle for testappid
 
 #Texts for manifest.json
 
@@ -161,7 +161,7 @@ appDescription=Test App Description",
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-resourceroots='{
-            \\"testAppId\\": \\"./\\"
+            \\"testappid\\": \\"./\\"
         }'
         data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
         data-sap-ui-compatVersion=\\"edge\\"
@@ -172,9 +172,9 @@ appDescription=Test App Description",
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
     <div
         data-sap-ui-component
-        data-name=\\"testAppId\\"
+        data-name=\\"testappid\\"
         data-id=\\"container\\"
-        data-settings='{\\"id\\" : \\"testAppId\\"}'
+        data-settings='{\\"id\\" : \\"testappid\\"}'
         data-handle-validation=\\"true\\"
     ></div>
 </body>
@@ -185,7 +185,7 @@ appDescription=Test App Description",
     "contents": "{
     \\"_version\\": \\"1.12.0\\",
     \\"sap.app\\": {
-        \\"id\\": \\"testAppId\\",
+        \\"id\\": \\"testappid\\",
       \\"type\\": \\"application\\",
       \\"i18n\\": \\"i18n/i18n.properties\\",
       \\"applicationVersion\\": {
@@ -232,7 +232,7 @@ appDescription=Test App Description",
         \\"i18n\\": {
           \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
           \\"settings\\": {
-            \\"bundleName\\": \\"testAppId.i18n.i18n\\"
+            \\"bundleName\\": \\"testappid.i18n.i18n\\"
           }
         }
       },
