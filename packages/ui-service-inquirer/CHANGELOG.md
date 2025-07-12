@@ -1,5 +1,43 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.1.44
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.5.17
+
+## 0.1.43
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.34
+-   @sap-ux/inquirer-common@0.7.24
+-   @sap-ux/odata-service-inquirer@2.5.16
+
+## 0.1.42
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/odata-service-inquirer@2.5.15
+-   @sap-ux/telemetry@0.6.10
+-   @sap-ux/abap-deploy-config-inquirer@1.4.33
+-   @sap-ux/inquirer-common@0.7.23
+
+## 0.1.41
+
+### Patch Changes
+
+-   4459a7f: add filter for abap destinations
+
+## 0.1.40
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.32
+-   @sap-ux/inquirer-common@0.7.22
+-   @sap-ux/odata-service-inquirer@2.5.14
+
 ## 0.1.39
 
 ### Patch Changes
