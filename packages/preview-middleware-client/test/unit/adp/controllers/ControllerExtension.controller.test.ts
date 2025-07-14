@@ -618,6 +618,72 @@ describe('ControllerExtension', () => {
             expect(getControlByIdMock).toHaveBeenCalledWith('::Toolbar');
         });
 
+        test('display info message in the info center when the controller extension is supported during creation of a new controller', async () => {
+            jest.spyOn(coreUtils, 'getControlById').mockReturnValueOnce(undefined);
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+            jest.spyOn(utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 136, patch: 0 });
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+            const mockData = {
+                deferred: {
+                    resolve: jest.fn()
+                }
+            } as unknown as ExtendControllerData;
+            const controllerExt = new ControllerExtension(
+                'adp.extension.controllers.ControllerExtension',
+                overlays as unknown as UI5Element,
+                {
+                    getService: jest.fn(),
+                    getFlexSettings: jest.fn()
+                } as unknown as RuntimeAuthoring,
+                mockData
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            controllerExt.model = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce(false)
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('::Toolbar'),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({ controllers: [], id: 'adp.app' }),
+                text: jest.fn().mockReturnValueOnce('Controller was created!').mockReturnValueOnce('Change created'),
+                ok: true
+            });
+
+            controllerExt.handleDialogClose = jest.fn();
+
+            jest.spyOn(CommunicationService, 'sendAction');
+
+            await controllerExt.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await controllerExt.onCreateBtnPress(event as unknown as Event);
+
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'Create XML Fragment',
+                    description: 'Note: The `Share` controller extension will be created once you save the change.',
+                    type: MessageBarType.info
+                })
+            );
+        });
+
         test('resolve deffered data promise when passed', async () => {
             jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const addSpy = jest.fn().mockResolvedValue({ fileName: 'something.change' });

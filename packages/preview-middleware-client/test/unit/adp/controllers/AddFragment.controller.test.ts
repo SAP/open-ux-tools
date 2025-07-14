@@ -176,6 +176,37 @@ describe('AddFragment', () => {
             expect(lastCall[0]).toBe('/selectedIndex');
             expect(lastCall[1]).toBe(1);
         });
+
+        test('should call showInfoCenterMessage with error when getFragments throws', async () => {
+            // Arrange
+            const error = new Error('Fragments fetch failed');
+            // Mock getFragments to throw
+            jest.spyOn(require('../../../../src/adp/api-handler'), 'getFragments').mockRejectedValue(error);
+            jest.spyOn(CommunicationService, 'sendAction');
+
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            const addFragment = new AddFragment(
+                'test',
+                overlays as unknown as UI5Element,
+                {} as any,
+                { title: 'Test Title' }
+            );
+
+            // Act
+            await expect(addFragment.buildDialogData()).rejects.toThrow(error);
+
+            // Assert
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'Add Fragment Failed',
+                    description: error.message,
+                    type: MessageBarType.error
+                })
+            );
+        })
     });
 
     describe('onAggregationChanged', () => {

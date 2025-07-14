@@ -2,7 +2,6 @@
 import Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import Input from 'sap/m/Input';
-import MessageToast from 'sap/m/MessageToast';
 
 /** sap.ui.core */
 import type UI5Element from 'sap/ui/core/Element';
@@ -351,7 +350,14 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             change.creation = new Date().toISOString();
 
             await writeChange(change);
-            MessageToast.show(`Controller extension with name '${controllerName}' was created.`);
+            await sendInfoCenterMessage({
+                title: { key: 'ADP_CREATE_CONTROLLER_EXTENSION_TITLE' },
+                description: {
+                    key: 'ADP_CREATE_CONTROLLER_EXTENSION_DESCRIPTION',
+                    params: [controllerName]
+                },
+                type: MessageBarType.info
+            });
         } catch (e) {
             const error = getError(e);
             await sendInfoCenterMessage({
