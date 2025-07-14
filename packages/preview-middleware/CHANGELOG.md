@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.20.59
+
+### Patch Changes
+
+-   e5de360: fix: adjust test runner default pattern to avoid picking up wrong files
+
 ## 0.20.58
 
 ### Patch Changes
