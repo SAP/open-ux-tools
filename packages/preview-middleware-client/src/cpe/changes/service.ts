@@ -209,11 +209,6 @@ export class ChangeService extends EventTarget {
                                     title: textBundle.getText(changeTitle)
                                 };
                             }
-                            await sendInfoCenterMessage({
-                                title: { key: 'UNKNOWN_CHANGE_TYPE_TITLE' },
-                                description: { key: 'UNKNOWN_CHANGE_TYPE_DESCRIPTION', params: [key] },
-                                type: MessageBarType.info
-                            });
                             throw new Error('Unknown change type');
                         } catch (error) {
                             // Gracefully handle change files with invalid content
