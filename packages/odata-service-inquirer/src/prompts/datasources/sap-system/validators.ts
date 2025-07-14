@@ -11,7 +11,7 @@ import { readFileSync } from 'fs';
  * @returns true if the system name is already in use, otherwise false
  */
 async function isSystemNameInUse(systemName: string): Promise<boolean> {
-    const backendSystems = await new SystemService(LoggerHelper.logger).getAll();
+    const backendSystems = await new SystemService(LoggerHelper.logger).getAll({ includeSensitiveData: false });
     return !!backendSystems.find((system) => system.name === systemName);
 }
 

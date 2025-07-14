@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/project-input-validator",
-    "version": "0.6.5",
+    "version": "0.6.12",
     "description": "Library to validate Fiori project input formats",
     "repository": {
         "type": "git",
@@ -26,13 +26,12 @@
         "unlink": "pnpm unlink --global"
     },
     "dependencies": {
-        "i18next": "23.5.1",
+        "i18next": "25.3.0",
         "validate-npm-package-name": "5.0.0",
         "@sap-ux/project-access": "workspace:*"
     },
     "devDependencies": {
         "@types/validate-npm-package-name": "4.0.1",
-        "@types/i18next": "13.0.0",
         "jest-extended": "4.0.2"
     },
     "files": [

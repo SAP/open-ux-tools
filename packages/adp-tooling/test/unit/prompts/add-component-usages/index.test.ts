@@ -149,7 +149,7 @@ describe('getPrompts', () => {
             const validator = prompts.find((prompt) => prompt.name === 'usageId')?.validate;
 
             expect(typeof validator).toBe('function');
-            expect(validator?.('@id')).toBe("Component Usage ID should start with 'customer.'");
+            expect(validator?.('@id')).toBe("Component Usage ID must start with 'customer.'.");
         });
 
         test('should fail validation of usageId for empty value except customer prefix', () => {
@@ -159,7 +159,7 @@ describe('getPrompts', () => {
 
             expect(typeof validator).toBe('function');
             expect(validator?.('customer.')).toBe(
-                "Component Usage ID should contain at least one character in addition to 'customer.'"
+                "Component Usage ID must contain at least one character in addition to 'customer.'."
             );
         });
 
@@ -172,7 +172,7 @@ describe('getPrompts', () => {
 
             expect(typeof validator).toBe('function');
             expect(validator?.('customer.id')).toBe(
-                'Component usage with the same name was already added to the project'
+                'A component usage with the same name was already added to the project. Rename and try again.'
             );
         });
 
@@ -263,7 +263,9 @@ describe('getPrompts', () => {
             const validator = prompts.find((prompt) => prompt.name === 'library')?.validate;
 
             expect(typeof validator).toBe('function');
-            expect(validator?.('library')).toBe('Library with the same name was already added to the project');
+            expect(validator?.('library')).toBe(
+                'A library with the same name was already added to the project. Rename and try again.'
+            );
         });
     });
 

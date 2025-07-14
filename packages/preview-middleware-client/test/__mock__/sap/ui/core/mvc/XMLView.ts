@@ -15,4 +15,5 @@ export default class extends ComponentContainer {
     getViewData = jest.fn();
     getDomRef = jest.fn();
     getId = jest.fn();
+    getLocalId = jest.fn();
 }

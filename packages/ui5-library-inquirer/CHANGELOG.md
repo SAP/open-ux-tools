@@ -1,5 +1,76 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.4.27
+
+### Patch Changes
+
+-   Updated dependencies [a1f282f]
+    -   @sap-ux/project-input-validator@0.6.12
+
+## 0.4.26
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.24
+
+## 0.4.25
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.11
+-   @sap-ux/inquirer-common@0.7.23
+
+## 0.4.24
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.22
+
+## 0.4.23
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/project-input-validator@0.6.10
+    -   @sap-ux/inquirer-common@0.7.21
+
+## 0.4.22
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.9
+-   @sap-ux/inquirer-common@0.7.20
+
+## 0.4.21
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.8
+-   @sap-ux/inquirer-common@0.7.19
+
+## 0.4.20
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/project-input-validator@0.6.7
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.4.19
+
+### Patch Changes
+
+-   @sap-ux/project-input-validator@0.6.6
+-   @sap-ux/inquirer-common@0.7.17
+
+## 0.4.18
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.16
+
 ## 0.4.17
 
 ### Patch Changes

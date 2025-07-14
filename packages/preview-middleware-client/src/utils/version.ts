@@ -48,7 +48,7 @@ function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
 export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui5VersionInfo> {
     let version = ((await VersionInfo.load({ library })) as SingleVersionInfo)?.version;
     if (!version) {
-        Log.error('Could not get UI5 version of application. Using 1.130.0 as fallback.');
+        Log.error('Could not get UI5 version of application. Using version: 1.130.0 as fallback.');
         version = '1.130.0';
     }
     const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));

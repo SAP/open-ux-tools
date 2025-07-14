@@ -44,6 +44,8 @@ jest.mock('fs', () => {
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
+    _fs.realpath = fsLib.realpath;
+    _fs.realpathSync = fsLib.realpathSync;
     return _fs.use(vol as unknown as typeof fs);
 });
 
@@ -1074,7 +1076,7 @@ describe('Cloud foundry generator tests', () => {
                 })
                 .withPrompts({})
                 .run()
-        ).rejects.toThrowError(`Error: could not read webapp/manifest.json`);
+        ).rejects.toThrowError('Error: could not read the file: `webapp/manifest.json`.');
     });
 
     it('Should throw error when not app name is found in manifest', async () => {
@@ -1113,7 +1115,7 @@ describe('Cloud foundry generator tests', () => {
                 })
                 .withPrompts({})
                 .run()
-        ).rejects.toThrowError(`Could not determine app name from manifest`);
+        ).rejects.toThrowError('Cannot determine the application name from the `manifest.json` file.');
     });
 
     it('Should throw error if config writing fails', async () => {

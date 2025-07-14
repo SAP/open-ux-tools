@@ -114,7 +114,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         this.model.setProperty('/selectedAggregation/value', selectedItemText);
 
         let newSelectedControlChildren: string[] | number[] = Object.keys(
-            ControlUtils.getControlAggregationByName(this.runtimeControl, selectedItemText)
+            ControlUtils.getControlAggregationByName(this.getRuntimeControl(), selectedItemText)
         );
 
         newSelectedControlChildren = newSelectedControlChildren.map((key) => {
@@ -157,7 +157,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             await this.createFragmentChange(modifiedValue);
         }
 
-        const templateName = getFragmentTemplateName(this.runtimeControl.getId(), targetAggregation);
+        const templateName = getFragmentTemplateName(this.getRuntimeControl().getId(), targetAggregation);
         if (templateName) {
             CommunicationService.sendAction(setApplicationRequiresReload(true));
         }
@@ -177,7 +177,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         const selectedControlName = controlMetadata.getName();
 
         let selectedControlChildren: string[] | number[] = Object.keys(
-            ControlUtils.getControlAggregationByName(this.runtimeControl, defaultAggregation)
+            ControlUtils.getControlAggregationByName(this.getRuntimeControl(), defaultAggregation)
         );
 
         selectedControlChildren = selectedControlChildren.map((key) => {
@@ -236,11 +236,11 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
     private async createFragmentChange(modifiedValue: DeferredXmlFragmentData): Promise<void> {
         const flexSettings = this.rta.getFlexSettings();
 
-        const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
+        const overlay = OverlayRegistry.getOverlay(this.getRuntimeControl() as UI5Element);
         const designMetadata = overlay.getDesignTimeMetadata();
 
         const command = await this.commandExecutor.getCommand<AddFragmentChangeContentType>(
-            this.runtimeControl,
+            this.getRuntimeControl(),
             'addXML',
             modifiedValue,
             flexSettings,

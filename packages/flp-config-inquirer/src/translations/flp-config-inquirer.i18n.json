@@ -1,6 +1,6 @@
 {
     "prompts": {
-        "inboundIds": "Inbound ID",
+        "inboundIds": "Inbound ID",  
         "semanticObject": "Semantic Object",
         "action": "Action",
         "title": "Title",
@@ -13,14 +13,17 @@
         "copyFromExisting": "Copy Configurations from an Existing Inbound?"
     },
     "tooltips": {
-        "inboundId": "Choose the inbound ID that will be used to set the FLP tile configuration",
-        "additionalParameters": "Enter the value for the parameters in the Target Mappings section from the URL mentioned above",
-        "semObjectActionDuplication": "When generating a new tile, you must modify the Semantic Object value, the Action value, or both. You can use the default suggestions, which include a '_New' suffix for each value or use your own designations."
+        "inboundId": "Choose the inbound ID to be used to set the SAP Fiori launchpad tile configuration.",
+        "additionalParameters": "Enter the value for the parameters in JSON format."
     },
     "validators": {
-        "inboundConfigKeyExists": "An inbound configuration with the key: '{{inboundKey}}' is already defined.",
-        "invalidParameterString": "The parameter string is not valid JSON.",
+        "inboundConfigKeyExists": "An inbound configuration with the key: {{inboundKey}} is already defined. Choose another key.",
         "flpConfigOverwrite": "Overwrite existing configuration?",
+        "noInboundKeysAreFound": "The original application target mapping and the default parameters are found in the SAP Fiori reference library under Implementation Information -> Configuration -> Target Mappings.",
+        "inboundId": "Choose the inbound ID that will be used to set the FLP tile configuration",
+        "additionalParameters": "Enter the value for the parameters in JSON format.",
+        "semObjectActionDuplication": "When generating a new tile, you must modify the Semantic Object value, the Action value, or both. You can use the default suggestions, which include a '_New' suffix for each value or use your own designations.",
+        "invalidParameterString": "The parameter string is not valid JSON.",
         "duplicateInbound": "The base application has an existing inbound that matches the values for Semantic Object and Action. To create a new tile you must modify the Semantic Object value, the Action value, or both."
     },
     "choices": {

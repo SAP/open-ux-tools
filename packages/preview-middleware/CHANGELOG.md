@@ -1,5 +1,119 @@
 # @sap-ux/preview-middleware
 
+## 0.20.59
+
+### Patch Changes
+
+-   e5de360: fix: adjust test runner default pattern to avoid picking up wrong files
+
+## 0.20.58
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.43
+
+## 0.20.57
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.42
+
+## 0.20.56
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/adp-tooling@0.14.41
+    -   @sap-ux/system-access@0.6.10
+
+## 0.20.55
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.40
+
+## 0.20.54
+
+### Patch Changes
+
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/adp-tooling@0.14.39
+    -   @sap-ux/system-access@0.6.10
+
+## 0.20.53
+
+### Patch Changes
+
+-   Updated dependencies [e9beeb4]
+    -   @sap-ux/adp-tooling@0.14.38
+
+## 0.20.52
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.37
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/system-access@0.6.9
+
+## 0.20.51
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/adp-tooling@0.14.36
+    -   @sap-ux/system-access@0.6.9
+
+## 0.20.50
+
+### Patch Changes
+
+-   fc8cc4a: fix: detect all sync views
+
+## 0.20.49
+
+### Patch Changes
+
+-   67cf59e: make connector handling more robust and adjust min UI5 version for workspace connector usage to 1.76
+
+## 0.20.48
+
+### Patch Changes
+
+-   6c2d08a: Create app descriptor changes for v4 add custom section quick action
+-   Updated dependencies [6c2d08a]
+    -   @sap-ux/adp-tooling@0.14.35
+
+## 0.20.47
+
+### Patch Changes
+
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/adp-tooling@0.14.34
+
+## 0.20.46
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/adp-tooling@0.14.33
+    -   @sap-ux/system-access@0.6.9
+
+## 0.20.45
+
+### Patch Changes
+
+-   0db69d6: fix: wrong property path used for Show Counts configuration change
+
+## 0.20.44
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.32
+-   @sap-ux/system-access@0.6.9
+
 ## 0.20.43
 
 ### Patch Changes

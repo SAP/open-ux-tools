@@ -1,5 +1,134 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.34
+
+### Patch Changes
+
+-   Updated dependencies [d75db00]
+    -   @sap-ux/fiori-generator-shared@0.13.2
+    -   @sap-ux/deploy-config-generator-shared@0.1.20
+    -   @sap-ux/inquirer-common@0.7.24
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.27
+
+## 0.2.33
+
+### Patch Changes
+
+-   Updated dependencies [97a61f2]
+    -   @sap-ux/cf-deploy-config-writer@0.3.15
+
+## 0.2.32
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/cf-deploy-config-writer@0.3.14
+    -   @sap-ux/fiori-generator-shared@0.13.1
+    -   @sap-ux/deploy-config-generator-shared@0.1.19
+    -   @sap-ux/inquirer-common@0.7.23
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.26
+
+## 0.2.31
+
+### Patch Changes
+
+-   Updated dependencies [58abe82]
+    -   @sap-ux/fiori-generator-shared@0.13.0
+    -   @sap-ux/deploy-config-generator-shared@0.1.18
+    -   @sap-ux/inquirer-common@0.7.22
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.25
+
+## 0.2.30
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/deploy-config-generator-shared@0.1.17
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.24
+    -   @sap-ux/cf-deploy-config-writer@0.3.13
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/inquirer-common@0.7.21
+
+## 0.2.29
+
+### Patch Changes
+
+-   @sap-ux/cf-deploy-config-writer@0.3.12
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/fiori-generator-shared@0.12.15
+-   @sap-ux/inquirer-common@0.7.20
+-   @sap-ux/deploy-config-generator-shared@0.1.16
+-   @sap-ux/cf-deploy-config-inquirer@0.3.23
+
+## 0.2.28
+
+### Patch Changes
+
+-   Updated dependencies [58df005]
+    -   @sap-ux/cf-deploy-config-writer@0.3.11
+
+## 0.2.27
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/cf-deploy-config-writer@0.3.10
+    -   @sap-ux/fiori-generator-shared@0.12.14
+    -   @sap-ux/deploy-config-generator-shared@0.1.15
+    -   @sap-ux/inquirer-common@0.7.19
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.22
+
+## 0.2.26
+
+### Patch Changes
+
+-   Updated dependencies [1998ebb]
+    -   @sap-ux/cf-deploy-config-writer@0.3.9
+
+## 0.2.25
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/deploy-config-generator-shared@0.1.14
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.21
+    -   @sap-ux/cf-deploy-config-writer@0.3.8
+    -   @sap-ux/fiori-generator-shared@0.12.13
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.2.24
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/cf-deploy-config-writer@0.3.7
+    -   @sap-ux/fiori-generator-shared@0.12.12
+    -   @sap-ux/deploy-config-generator-shared@0.1.13
+    -   @sap-ux/inquirer-common@0.7.17
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.20
+
+## 0.2.23
+
+### Patch Changes
+
+-   Updated dependencies [48af01a]
+    -   @sap-ux/cf-deploy-config-inquirer@0.3.19
+
+## 0.2.22
+
+### Patch Changes
+
+-   @sap-ux/deploy-config-generator-shared@0.1.12
+-   @sap-ux/fiori-generator-shared@0.12.11
+-   @sap-ux/inquirer-common@0.7.16
+-   @sap-ux/cf-deploy-config-inquirer@0.3.18
+
 ## 0.2.21
 
 ### Patch Changes

@@ -162,7 +162,7 @@ describe('ConfigPrompter Integration Tests', () => {
 
             const result = await systemPrompt?.validate?.(undefined, dummyAnswers);
 
-            expect(result).toEqual('Input cannot be empty.');
+            expect(result).toEqual('The input cannot be empty.');
         });
 
         it('system prompt validate should throw error', async () => {
@@ -290,7 +290,7 @@ describe('ConfigPrompter Integration Tests', () => {
 
             const result = await passwordPrompt?.validate?.(undefined, dummyAnswers);
 
-            expect(result).toBe('Input cannot be empty.');
+            expect(result).toBe('The input cannot be empty.');
         });
 
         it('password prompt validate should call return error message when error occurs', async () => {

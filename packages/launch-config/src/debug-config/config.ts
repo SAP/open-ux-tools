@@ -15,7 +15,7 @@ const testFlpSandboxMockServerHtml = 'test/flpSandboxMockServer.html';
  * @param {string} [migratorMockIntent] - The optional mock intent string to be used in the migrator.
  * @returns {string | undefined} - The migrator mock intent prefixed with `#` or undefined.
  */
-export function getMigratorMockIntentWithHash(migratorMockIntent?: string): string | undefined {
+function getMigratorMockIntentWithHash(migratorMockIntent?: string): string | undefined {
     if (!migratorMockIntent) {
         return undefined;
     }
@@ -29,20 +29,22 @@ export function getMigratorMockIntentWithHash(migratorMockIntent?: string): stri
  *
  * @param {boolean} isMigrator - Indicates whether the application is being migrated.
  * @param {string} odataVersion - The version of OData being used (`2.0` or `4.0`).
- * @param {string | undefined} targetMockHtmlFile - The target mock HTML file, can be `undefined`.
+ * @param {string} targetMockHtmlFile - The target mock HTML file, can be `undefined`.
+ * @param {string} startHtmlFile - The starting HTML file to be used.
  * @param {string} params - The parameters to append to the mock HTML file.
  * @returns {string[]} - The command arguments used for starting flp sandbox html.
  */
-export function getMockCmdArgs(
+function getMockCmdArgs(
     isMigrator: boolean,
     odataVersion: string,
-    targetMockHtmlFile: string | undefined,
-    params: string
+    targetMockHtmlFile?: string,
+    startHtmlFile?: string,
+    params?: string
 ): string[] {
     if (isMigrator && odataVersion === '2.0') {
-        return ['--open', `${targetMockHtmlFile ?? testFlpSandboxHtml}${params}`];
+        return ['--open', `${targetMockHtmlFile ?? startHtmlFile}${params}`];
     }
-    return ['--config', './ui5-mock.yaml', '--open', `${testFlpSandboxHtml}${params}`];
+    return ['--config', './ui5-mock.yaml', '--open', `${startHtmlFile}${params}`];
 }
 
 /**
@@ -147,7 +149,7 @@ export function configureLaunchJsonFile(
     if (odataVersion && ['2.0', '4.0'].includes(odataVersion)) {
         const migratorMockIntentWithHash = getMigratorMockIntentWithHash(migratorMockIntent);
         const params = migratorMockIntentWithHash ?? flpAppIdWithHash;
-        const mockCmdArgs = getMockCmdArgs(isMigrator, odataVersion, targetMockHtmlFile, params);
+        const mockCmdArgs = getMockCmdArgs(isMigrator, odataVersion, targetMockHtmlFile, startHtmlFile, params);
         const mockConfig = configureLaunchConfig(
             `Start ${projectName} Mock`,
             cwd,

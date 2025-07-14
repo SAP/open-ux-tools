@@ -1,5 +1,111 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.1.44
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.5.17
+
+## 0.1.43
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.34
+-   @sap-ux/inquirer-common@0.7.24
+-   @sap-ux/odata-service-inquirer@2.5.16
+
+## 0.1.42
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/odata-service-inquirer@2.5.15
+-   @sap-ux/telemetry@0.6.10
+-   @sap-ux/abap-deploy-config-inquirer@1.4.33
+-   @sap-ux/inquirer-common@0.7.23
+
+## 0.1.41
+
+### Patch Changes
+
+-   4459a7f: add filter for abap destinations
+
+## 0.1.40
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.32
+-   @sap-ux/inquirer-common@0.7.22
+-   @sap-ux/odata-service-inquirer@2.5.14
+
+## 0.1.39
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.31
+    -   @sap-ux/odata-service-inquirer@2.5.13
+    -   @sap-ux/inquirer-common@0.7.21
+    -   @sap-ux/telemetry@0.6.9
+
+## 0.1.38
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.4.30
+-   @sap-ux/telemetry@0.6.8
+-   @sap-ux/odata-service-inquirer@2.5.12
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/inquirer-common@0.7.20
+
+## 0.1.37
+
+### Patch Changes
+
+-   Updated dependencies [a41030c]
+    -   @sap-ux/odata-service-inquirer@2.5.11
+
+## 0.1.36
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/odata-service-inquirer@2.5.10
+-   @sap-ux/telemetry@0.6.7
+-   @sap-ux/abap-deploy-config-inquirer@1.4.29
+-   @sap-ux/inquirer-common@0.7.19
+
+## 0.1.35
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.28
+    -   @sap-ux/odata-service-inquirer@2.5.9
+    -   @sap-ux/inquirer-common@0.7.18
+
+## 0.1.34
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.3
+-   @sap-ux/odata-service-inquirer@2.5.8
+-   @sap-ux/telemetry@0.6.6
+-   @sap-ux/abap-deploy-config-inquirer@1.4.27
+-   @sap-ux/inquirer-common@0.7.17
+
+## 0.1.33
+
+### Patch Changes
+
+-   Updated dependencies [77b3b22]
+    -   @sap-ux/odata-service-inquirer@2.5.7
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.26
+    -   @sap-ux/telemetry@0.6.5
+    -   @sap-ux/inquirer-common@0.7.16
+
 ## 0.1.32
 
 ### Patch Changes

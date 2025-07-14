@@ -1,5 +1,66 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.15
+
+### Patch Changes
+
+-   97a61f2: Align destination instance with srv-api if already appended
+
+## 0.3.14
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+
+## 0.3.13
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/ui5-config@0.29.0
+
+## 0.3.12
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/project-access@1.30.6
+
+## 0.3.11
+
+### Patch Changes
+
+-   58df005: Handle service segement when no datasource is selected
+
+## 0.3.10
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+
+## 0.3.9
+
+### Patch Changes
+
+-   1998ebb: Update approuter configuration
+
+## 0.3.8
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.3.7
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+
 ## 0.3.6
 
 ### Patch Changes

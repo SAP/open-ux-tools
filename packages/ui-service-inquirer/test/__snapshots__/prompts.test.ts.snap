@@ -8,7 +8,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "guiOptions": {
       "applyDefaultWhenDirty": true,
     },
-    "message": "How do you want to enter the package?",
+    "message": "Select How You Want to Enter the Package",
     "name": "packageInputChoice",
     "type": "list",
     "validate": [Function],
@@ -52,7 +52,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "guiOptions": {
       "applyDefaultWhenDirty": true,
     },
-    "message": "How do you want to enter the transport request?",
+    "message": "Select How You Want to Enter the Transport Request",
     "name": "transportInputChoice",
     "type": "list",
     "validate": [Function],
@@ -65,7 +65,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
   },
   {
     "default": [Function],
-    "message": "Created new Transport Request",
+    "message": "Created New Transport Request",
     "name": "transportCreated",
     "type": "input",
     "when": [Function],
@@ -75,7 +75,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "default": [Function],
     "guiOptions": {
       "breadcrumb": "Transport Request",
-      "hint": "Provide a transport request for your application",
+      "hint": "Provide a transport request for your application.",
     },
     "message": "Transport Request",
     "name": "transportFromList",
@@ -87,7 +87,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "filter": [Function],
     "guiOptions": {
       "breadcrumb": "Transport Request",
-      "hint": "Provide a transport request for your application",
+      "hint": "Provide a transport request for your application.",
     },
     "message": [Function],
     "name": "transportManual",
@@ -125,7 +125,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "guiOptions": {
       "breadcrumb": "Create SAP Fiori Application?",
     },
-    "message": "Do you want to create an SAP Fiori application with the newly generated service?",
+    "message": "Create an SAP Fiori Application with the Newly Generated Service?",
     "name": "launchAppGen",
     "type": "confirm",
   },
@@ -135,15 +135,15 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
 exports[`getSystemQuestions getServiceConfigQuestions 2`] = `
 [
   {
-    "name": "Enter manually",
+    "name": "Enter Manually",
     "value": "EnterManualChoice",
   },
   {
-    "name": "Choose from existing",
+    "name": "Choose from Existing",
     "value": "ListExistingChoice",
   },
   {
-    "name": "Create new",
+    "name": "Create New",
     "value": "CreateNewChoice",
   },
 ]
