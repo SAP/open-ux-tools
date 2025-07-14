@@ -342,7 +342,7 @@ export class FlpSandbox {
         if (scenario === 'ADAPTATION_PROJECT') {
             templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
         }
-        const template = readFileSync(join(__dirname, '../../templates/flp/editor.html'), 'utf-8');
+        const template = readFileSync(join(__dirname, '../../templates/flp/editor.ejs'), 'utf-8');
         const features = FeatureToggleAccess.getAllFeatureToggles();
         const envPort = process.env.FIORI_TOOLS_LIVERELOAD_PORT;
         let livereloadPort: number = envPort ? parseInt(envPort, 10) : DEFAULT_LIVERELOAD_PORT;
@@ -585,7 +585,7 @@ export class FlpSandbox {
         );
         const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
         const template = this.flpConfig.enhancedHomePage ? 'cdm' : 'sandbox';
-        return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.html`), 'utf-8');
+        return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.ejs`), 'utf-8');
     }
 
     /**
@@ -810,7 +810,7 @@ export class FlpSandbox {
             this.logger.warn('Skip testsuite generation. No test frameworks configured.');
             return;
         }
-        const testsuite = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.html'), 'utf-8');
+        const testsuite = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.ejs'), 'utf-8');
         const config = mergeTestConfigDefaults(testsuiteConfig);
         this.logger.debug(`Add route for ${config.path}`);
         this.router.get(
@@ -936,7 +936,7 @@ export class FlpSandbox {
      */
     private addTestRoutes(configs: TestConfig[], id: string): void {
         const ns = id.replace(/\./g, '/');
-        const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.html'), 'utf-8');
+        const htmlTemplate = readFileSync(join(__dirname, '../../templates/test/qunit.ejs'), 'utf-8');
         for (const testConfig of configs) {
             const config = mergeTestConfigDefaults(testConfig);
             this.logger.debug(`Add route for ${config.path}`);
