@@ -9,7 +9,7 @@ describe('test', () => {
                 framework: 'QUnit',
                 path: '/test/unitTests.qunit.html',
                 init: '/test/unitTests.qunit.js',
-                pattern: '/test/**/*Test.*'
+                pattern: '/test/**/*Test.{js,ts}'
             });
         });
 
@@ -19,7 +19,7 @@ describe('test', () => {
                 framework: 'OPA5',
                 path: '/test/opaTests.qunit.html',
                 init: '/test/opaTests.qunit.js',
-                pattern: '/test/**/*Journey.*'
+                pattern: '/test/**/*Journey.{js,ts}'
             });
         });
 
