@@ -63,7 +63,7 @@ export default class SubGeneratorBase extends Generator {
             this.options.logWrapper
         );
         this.logger = AdpGeneratorLogger.logger as unknown as ToolsLogger;
-        setHeaderTitle(opts, this.logger);
+        setHeaderTitle(opts, this.logger, this.type);
 
         this.setPromptsCallback = (fn): void => {
             // Persist callback so we can attach it once prompts are created
