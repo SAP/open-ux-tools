@@ -109,7 +109,7 @@ describe('client/command-executor', () => {
             expect(CommunicationService.sendAction).toHaveBeenCalledWith(
                 showInfoCenterMessage({
                     title: 'Get Command Failed',
-                    description: `Could not get the command for '${commandName}'. ${errorMessage}.`,
+                    description: `Could not get the command for ''${commandName}''. ${errorMessage}.`,
                     type: MessageBarType.error
                 })
             );
