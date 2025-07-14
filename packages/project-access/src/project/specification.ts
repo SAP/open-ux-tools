@@ -191,7 +191,7 @@ function extractSpecificationBasePath(modulePath: string): string {
             modulePath.lastIndexOf(specificationNodeModuleFolder) + specificationNodeModuleFolder.length
         );
     } else {
-        let moduleFolderPath = dirname(modulePath);
+        const moduleFolderPath = dirname(modulePath);
         if (moduleFolderPath.endsWith(`${sep}dist`)) {
             // remove 'dist' folder
             return dirname(moduleFolderPath);
