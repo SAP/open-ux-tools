@@ -19,9 +19,12 @@ jest.mock('fs', () => {
 
 describe('Test getSpecification', () => {
     type Specification = { exec: () => string };
+    let getModulePathSpy: jest.SpyInstance;
 
     beforeEach(() => {
         jest.clearAllMocks();
+        getModulePathSpy?.mockRestore();
+        getModulePathSpy = jest.spyOn(moduleMock, 'getModulePath');
     });
 
     test('Get specification from project', async () => {
@@ -95,6 +98,28 @@ describe('Test getSpecification', () => {
         expect(path).toBe(moduleRoot);
         expect(logger.debug).toHaveBeenCalledWith(
             `Specification not found in project '${root}', using path from cache with version '0.1.2'`
+        );
+    });
+
+    test('Get specification path from project - linked specification', async () => {
+        const specificationLocalFolder = join('SAPDevelop', 'specification', 'packages', 'specification');
+        const specificationJsFile = join(specificationLocalFolder, 'dist', 'index-min.js');
+        getModulePathSpy.mockResolvedValue(specificationJsFile);
+        const logger = getMockLogger();
+        const root = join(__dirname, '../test-data/module-loader/@sap/ux-specification/0.1.2');
+        const path = await getSpecificationPath(root, { logger });
+        expect(path).toBe(specificationLocalFolder);
+    });
+
+    test('Get specification path from project - unsupported path', async () => {
+        const specificationLocalFolder = join('SAPDevelop', 'dummy');
+        const dummyModuleJsFile = join(specificationLocalFolder, 'dist', 'index-min.js');
+        getModulePathSpy.mockResolvedValue(dummyModuleJsFile);
+        const logger = getMockLogger();
+        const root = join(__dirname, '../test-data/module-loader/@sap/ux-specification/0.1.2');
+        // Call 'getSpecificationPath' with path to non specification dependency
+        await expect(getSpecificationPath(root, { logger })).rejects.toThrow(
+            `Unsupported specification module path: ${dummyModuleJsFile}`
         );
     });
 });

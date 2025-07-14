@@ -176,6 +176,31 @@ async function getSpecificationVersion(root: string, options?: { logger?: Logger
 }
 
 /**
+ * Extracts the base path to the `@sap/ux-specification` module or local `specification` package
+ * from a given module path. This is useful for determining the root directory of the specification
+ * package regardless of whether it's coming from a node_modules installation or from local module('npm link' approach).
+ *
+ * @param modulePath The full path to a module js file.
+ * @returns The extracted base path to the specification package.
+ */
+function extractSpecificationBasePath(modulePath: string): string {
+    const specificationNodeModuleFolder = join('@sap/ux-specification');
+    if (modulePath.includes(specificationNodeModuleFolder)) {
+        return modulePath.slice(
+            0,
+            modulePath.lastIndexOf(specificationNodeModuleFolder) + specificationNodeModuleFolder.length
+        );
+    } else {
+        const specificationFolder = join('packages', 'specification');
+        const specificationDistFolder = join(specificationFolder, 'dist');
+        if (modulePath.includes(specificationDistFolder)) {
+            return modulePath.slice(0, modulePath.lastIndexOf(specificationDistFolder) + specificationFolder.length);
+        }
+    }
+    throw new Error(`Unsupported specification module path: ${modulePath}`);
+}
+
+/**
  * Returns the path to the specification used.
  * Can be path to node_modules in project, or cache.
  *
@@ -190,12 +215,12 @@ export async function getSpecificationPath(root: string, options?: { logger?: Lo
     if (await hasSpecificationDevDependency(root)) {
         const modulePath = await getModulePath(root, moduleName);
         logger?.debug(`Specification root found in project '${root}'`);
-        return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
+        return extractSpecificationBasePath(modulePath);
     }
     await getSpecificationModule(root, { logger });
     const version = await getSpecificationVersion(root, { logger });
     logger?.debug(`Specification not found in project '${root}', using path from cache with version '${version}'`);
     const moduleRoot = join(moduleCacheRoot, moduleName, version);
     const modulePath = await getModulePath(moduleRoot, moduleName);
-    return modulePath.slice(0, modulePath.lastIndexOf(join(moduleName)) + join(moduleName).length);
+    return extractSpecificationBasePath(modulePath);
 }
