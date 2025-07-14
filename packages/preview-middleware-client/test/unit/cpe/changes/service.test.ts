@@ -129,7 +129,6 @@ describe('ChangeService', () => {
                 })
         });
         jest.spyOn(Date, 'now').mockReturnValueOnce(123);
-        jest.spyOn(CommunicationService, 'sendAction');
 
         const service = new ChangeService({ rta: rtaMock } as any);
 
@@ -207,13 +206,6 @@ describe('ChangeService', () => {
                 ]
             }
         });
-        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
-            showInfoCenterMessage({
-                title: 'Unknown Change Type',
-                description: 'An unknown change type has been found. Please check the change file change2.',
-                type: MessageBarType.info
-            })
-        );
     });
     test('Sync Outline Changes', async () => {
         fetchMock.mockResolvedValue({

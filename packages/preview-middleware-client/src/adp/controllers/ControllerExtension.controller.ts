@@ -195,7 +195,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
             if (this.data && await this.isControllerExtensionSupported()) {
                 await sendInfoCenterMessage({
-                    title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+                    title: { key: 'ADP_CREATE_CONTROLLER_EXTENSION_TITLE' },
                     description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION', params: [controllerName] },
                     type: MessageBarType.info
                 });
@@ -395,7 +395,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         await commandExecutor.pushAndExecuteCommand(command);
 
         await sendInfoCenterMessage({
-            title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+            title: { key: 'ADP_CREATE_CONTROLLER_EXTENSION_TITLE' },
             description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION', params: [controllerName] },
             type: MessageBarType.info
         });

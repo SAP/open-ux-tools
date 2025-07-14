@@ -677,7 +677,7 @@ describe('ControllerExtension', () => {
 
             expect(CommunicationService.sendAction).toHaveBeenCalledWith(
                 showInfoCenterMessage({
-                    title: 'Create XML Fragment',
+                    title: 'Create Controller Extension',
                     description: 'Note: The `Share` controller extension will be created once you save the change.',
                     type: MessageBarType.info
                 })
