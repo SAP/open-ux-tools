@@ -113,7 +113,7 @@ describe('Test getSpecification', () => {
 
     test('Get specification path from project - unsupported path', async () => {
         const specificationLocalFolder = join('SAPDevelop', 'dummy');
-        const dummyModuleJsFile = join(specificationLocalFolder, 'dist', 'index-min.js');
+        const dummyModuleJsFile = join(specificationLocalFolder, 'index-min.js');
         getModulePathSpy.mockResolvedValue(dummyModuleJsFile);
         const logger = getMockLogger();
         const root = join(__dirname, '../test-data/module-loader/@sap/ux-specification/0.1.2');

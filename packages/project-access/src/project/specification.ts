@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 import { readdir } from 'fs/promises';
-import { join } from 'path';
+import { join, dirname, sep } from 'path';
 import { valid } from 'semver';
 import type { Logger } from '@sap-ux/logger';
 import { deleteModule, getModule, getModulePath, loadModuleFromProject } from './module-loader';
@@ -191,10 +191,10 @@ function extractSpecificationBasePath(modulePath: string): string {
             modulePath.lastIndexOf(specificationNodeModuleFolder) + specificationNodeModuleFolder.length
         );
     } else {
-        const specificationFolder = join('packages', 'specification');
-        const specificationDistFolder = join(specificationFolder, 'dist');
-        if (modulePath.includes(specificationDistFolder)) {
-            return modulePath.slice(0, modulePath.lastIndexOf(specificationDistFolder) + specificationFolder.length);
+        let moduleFolderPath = dirname(modulePath);
+        if (moduleFolderPath.endsWith(`${sep}dist`)) {
+            // remove 'dist' folder
+            return dirname(moduleFolderPath);
         }
     }
     throw new Error(`Unsupported specification module path: ${modulePath}`);
