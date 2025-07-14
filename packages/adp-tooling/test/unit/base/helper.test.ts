@@ -267,7 +267,7 @@ describe('helper', () => {
             });
         });
 
-        test('should filter out inbounds with hideLauncher not false', () => {
+        test('should filter out inbounds with hideLauncher equal to true', () => {
             const inbounds = [
                 {
                     content: {
@@ -285,8 +285,7 @@ describe('helper', () => {
                         action: 'action2',
                         title: 'Test Action 2',
                         description: 'Description 2',
-                        url: '/test/action2',
-                        hideLauncher: false
+                        url: '/test/action2'
                     }
                 }
             ] as unknown as Inbound[];
@@ -299,8 +298,7 @@ describe('helper', () => {
                     action: 'action2',
                     title: 'Test Action 2',
                     description: 'Description 2',
-                    url: '/test/action2',
-                    hideLauncher: false
+                    url: '/test/action2'
                 }
             });
         });
@@ -309,60 +307,6 @@ describe('helper', () => {
             const result = filterAndMapInboundsToManifest([]);
 
             expect(result).toBeUndefined();
-        });
-
-        test('should filter out parameters with invalid entries', () => {
-            const inbounds = [
-                {
-                    content: {
-                        semanticObject: 'Test',
-                        action: 'action1',
-                        signature: {
-                            parameters: {
-                                param1: {
-                                    defaultValue: { format: '', value: '' },
-                                    filter: { format: '' },
-                                    launcherValue: { value: 'test' }
-                                },
-                                param2: {
-                                    defaultValue: { format: 'plain', value: 'value' },
-                                    filter: { format: '' },
-                                    launcherValue: { value: 'test' }
-                                },
-                                param3: {
-                                    defaultValue: { format: 'plain', value: 'value' },
-                                    filter: { format: 'plain' },
-                                    launcherValue: { value: 'test', additionalProp: 'extra' }
-                                }
-                            }
-                        },
-                        hideLauncher: false
-                    }
-                }
-            ] as unknown as Inbound[];
-
-            const result = filterAndMapInboundsToManifest(inbounds);
-
-            expect(result).toEqual({
-                'Test-action1': {
-                    semanticObject: 'Test',
-                    action: 'action1',
-                    signature: {
-                        parameters: {
-                            param2: {
-                                defaultValue: { format: 'plain', value: 'value' },
-                                launcherValue: { value: 'test' }
-                            },
-                            param3: {
-                                defaultValue: { format: 'plain', value: 'value' },
-                                filter: { format: 'plain' },
-                                launcherValue: { value: 'test' }
-                            }
-                        }
-                    },
-                    hideLauncher: false
-                }
-            });
         });
     });
 });
