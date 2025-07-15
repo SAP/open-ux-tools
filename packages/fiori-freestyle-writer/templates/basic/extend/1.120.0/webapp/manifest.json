@@ -3,8 +3,7 @@
         "rootView": {
             "viewName": "<%- app.id %>.view.App",
             "type": "XML",
-            "id": "App",
-            "async": true
+            "id": "App"
         },
         "resources": {
             "css": [
@@ -22,7 +21,6 @@
                 "type": "View",
                 "viewType": "XML",
                 "path": "<%- app.id %>.view",
-                "async": true,
                 "viewPath": "<%- app.id %>.view"
             },
             "routes": [

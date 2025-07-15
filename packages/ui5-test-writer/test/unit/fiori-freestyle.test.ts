@@ -565,7 +565,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
                 <script
                         id="sap-ui-bootstrap"
                         src="../../resources/sap-ui-core.js"
-                        data-sap-ui-resourceroots='{
+                        data-sap-ui-resource-roots='{
                                 "test-app-typescript": "../../",
                                 "unit": "."
                         }'
@@ -613,12 +613,12 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
                         id="sap-ui-bootstrap"
                         src="../../resources/sap-ui-core.js"
                         data-sap-ui-theme=""
-                        data-sap-ui-resourceroots='{
+                        data-sap-ui-resource-roots='{
                                 "test-app-typescript": "../../",
                                 "integration": "./"
                         }'
-                        data-sap-ui-animation-mode="false"
-                        data-sap-ui-compatVersion="edge"
+                        data-sap-ui-animation-mode="none"
+                        data-sap-ui-compat-version="edge"
                         data-sap-ui-async="true"
                         data-sap-ui-preload="async"
                         >
@@ -664,20 +664,18 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         // check unit/unitTests.qunit.js
         const unitTestQUnit = fs?.read(join(testOutputPath, 'unit/unitTests.qunit.js'));
+
         expect(removeSpaces(unitTestQUnit)).toBe(
             removeSpaces(`
                 /* global QUnit */
                 QUnit.config.autostart = false;
-
+    
                 sap.ui.require([
-                    "sap/ui/core/Core",
-                    "unit/AllTests" 
-                ], function (Core) {
+                    "unit/AllTests"
+                ], function () {
                     "use strict";
-
-                    Core.ready().then(function () {
-                        QUnit.start();
-                    });
+                
+                    QUnit.start();
                 });`)
         );
 

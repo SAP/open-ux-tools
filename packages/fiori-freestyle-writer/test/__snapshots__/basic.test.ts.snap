@@ -158,13 +158,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"https://ui5.sap.com/1.78.11/resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -886,13 +886,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"https://ui5.sap.com/1.78.11/resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -1625,13 +1625,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -2522,13 +2522,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -3404,13 +3404,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_horizon\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -4271,13 +4271,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_horizon\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -4913,13 +4913,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_horizon\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -5025,7 +5025,6 @@ title=App Title",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
         \\"path\\": \\"nods1.view\\",
-        \\"async\\": true,
         \\"viewPath\\": \\"nods1.view\\"
       },
       \\"routes\\": [
@@ -5047,8 +5046,7 @@ title=App Title",
     \\"rootView\\": {
       \\"viewName\\": \\"nods1.view.App\\",
       \\"type\\": \\"XML\\",
-      \\"id\\": \\"App\\",
-      \\"async\\": true
+      \\"id\\": \\"App\\"
     }
   }
 }
@@ -5452,13 +5450,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_horizon\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -5564,7 +5562,6 @@ title=App Title",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
         \\"path\\": \\"nods1.view\\",
-        \\"async\\": true,
         \\"viewPath\\": \\"nods1.view\\"
       },
       \\"routes\\": [
@@ -5586,8 +5583,7 @@ title=App Title",
     \\"rootView\\": {
       \\"viewName\\": \\"nods1.view.App\\",
       \\"type\\": \\"XML\\",
-      \\"id\\": \\"App\\",
-      \\"async\\": true
+      \\"id\\": \\"App\\"
     }
   }
 }
@@ -6016,13 +6012,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_horizon\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -6128,7 +6124,6 @@ title=App Title",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
         \\"path\\": \\"nods1.view\\",
-        \\"async\\": true,
         \\"viewPath\\": \\"nods1.view\\"
       },
       \\"routes\\": [
@@ -6150,8 +6145,7 @@ title=App Title",
     \\"rootView\\": {
       \\"viewName\\": \\"nods1.view.App\\",
       \\"type\\": \\"XML\\",
-      \\"id\\": \\"App\\",
-      \\"async\\": true
+      \\"id\\": \\"App\\"
     }
   }
 }
@@ -6856,13 +6850,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -7679,13 +7673,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -8502,13 +8496,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -9314,13 +9308,13 @@ title=App Title",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
-        data-sap-ui-resourceroots='{
+        data-sap-ui-resource-roots='{
             \\"nods1\\": \\"./\\"
         }'
-        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compatVersion=\\"edge\\"
+        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compat-version=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frameOptions=\\"trusted\\"
+        data-sap-ui-frame-options=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
