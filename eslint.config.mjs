@@ -214,12 +214,16 @@ export default defineConfig([
         },
         rules: {
             ...typescriptEslint.configs.recommended.rules,
+            'no-undef': 'off', // https://typescript-eslint.io/troubleshooting/faqs/eslint/#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
             '@typescript-eslint/ban-types': 'off',
             '@typescript-eslint/explicit-function-return-type': 'warn',
             '@typescript-eslint/no-unsafe-assignment': 'warn',
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-inferrable-types': 'off',
-            '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^_', argsIgnorePattern: '^_' }],
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                { varsIgnorePattern: '^_', argsIgnorePattern: '^_', caughtErrors: 'none' }
+            ],
             '@typescript-eslint/no-floating-promises': ['error'],
             '@typescript-eslint/consistent-type-imports': [
                 'error',
