@@ -443,7 +443,8 @@ describe('FE V2 quick actions', () => {
                                     id: 'listReport0-add-controller-to-page',
                                     title: 'Add Controller to Page',
                                     enabled: false,
-                                    tooltip: 'This action is disabled because a pending change for a controller extension has been found. '
+                                    tooltip:
+                                        'This action is disabled because a pending change for a controller extension has been found. '
                                 }
                             ]
                         }
@@ -2960,7 +2961,8 @@ describe('FE V2 quick actions', () => {
                 expect(CommunicationService.sendAction).toHaveBeenCalledWith(
                     showInfoCenterMessage({
                         title: 'Create XML Fragment',
-                        description: 'At least one table row is required to create a new custom column. Make sure the table data is loaded and try again.',
+                        description:
+                            'At least one table row is required to create a new custom column. Make sure the table data is loaded and try again.',
                         type: MessageBarType.error
                     })
                 );

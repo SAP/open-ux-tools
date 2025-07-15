@@ -23,24 +23,26 @@ interface InfoCenterMessage {
 
 /**
  * Shows a localized/plain string message in the Info center.
- * 
+ *
  * @param {InfoCenterMessage} message - The message object containing title, description,
  * details and type for the message. Each text in the message can be localized or
  * left as a plain string.
  */
 export async function sendInfoCenterMessage({ title, description, details, type }: InfoCenterMessage): Promise<void> {
-    CommunicationService.sendAction(showInfoCenterMessage({
-        title: (await getTranslation(title))!,
-        description: (await getTranslation(description))!,
-        details: await getTranslation(details),
-        type
-    }));
+    CommunicationService.sendAction(
+        showInfoCenterMessage({
+            title: (await getTranslation(title))!,
+            description: (await getTranslation(description))!,
+            details: await getTranslation(details),
+            type
+        })
+    );
 }
 
 /**
  * Util function which returns translation for a localization key or a plain string.
  * If the value is undefined, it returns undefined.
- * 
+ *
  * @param {LocalizationKey | string | undefined} value - The localization key, plain string or undefined.
  * @returns {Promise<string>} A promise that resolves to the translated string.
  */

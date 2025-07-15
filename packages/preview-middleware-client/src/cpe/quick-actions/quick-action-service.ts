@@ -26,12 +26,11 @@ import { DialogFactory } from '../../adp/dialog-factory';
 import { getApplicationType } from '../../utils/application';
 import { getUi5Version } from '../../utils/version';
 
-
 /**
  * Service providing Quick Actions.
  */
 export class QuickActionService implements Service {
-    private sendAction: ActionSenderFunction = () => { };
+    private sendAction: ActionSenderFunction = () => {};
     private actions: QuickActionDefinition[] = [];
     private controlTreeIndex: ControlTreeIndex;
 

@@ -193,7 +193,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
                 await this.createNewController(controllerName, controllerRef);
             }
 
-            if (this.data && await this.isControllerExtensionSupported()) {
+            if (this.data && (await this.isControllerExtensionSupported())) {
                 await sendInfoCenterMessage({
                     title: { key: 'ADP_CREATE_CONTROLLER_EXTENSION_TITLE' },
                     description: { key: 'ADP_CREATE_CONTROLLER_EXTENSION', params: [controllerName] },

@@ -50,7 +50,7 @@ export function loadDefaultLibraries(): void {
             return sendInfoCenterMessage({
                 title: { key: 'LIBRARY_ERROR_TITLE' },
                 description: getError(reason).message,
-                type: MessageBarType.error 
+                type: MessageBarType.error
             });
         });
 }

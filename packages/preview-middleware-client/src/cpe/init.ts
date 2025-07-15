@@ -1,7 +1,12 @@
 import Log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { iconsLoaded, enableTelemetry, appLoaded, MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import {
+    iconsLoaded,
+    enableTelemetry,
+    appLoaded,
+    MessageBarType
+} from '@sap-ux-private/control-property-editor-common';
 
 import type { ActionHandler, Service } from './types';
 import { OutlineService } from './outline/service';

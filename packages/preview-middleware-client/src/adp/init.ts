@@ -2,9 +2,18 @@ import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 
-import { enableTelemetry, MessageBarType, toggleAppPreviewVisibility } from '@sap-ux-private/control-property-editor-common';
+import {
+    enableTelemetry,
+    MessageBarType,
+    toggleAppPreviewVisibility
+} from '@sap-ux-private/control-property-editor-common';
 
-import { getFullyQualifiedUi5Version, getUi5Version, isLowerThanMinimalUi5Version, minVersionInfo } from '../utils/version';
+import {
+    getFullyQualifiedUi5Version,
+    getUi5Version,
+    isLowerThanMinimalUi5Version,
+    minVersionInfo
+} from '../utils/version';
 
 import init from '../cpe/init';
 import { updateSyncViewsIds, showSyncViewsWarning } from './sync-views-utils';
@@ -48,22 +57,23 @@ export default async function (rta: RuntimeAuthoring) {
 
     // Register synchronious views detection and warning
     // This is not awaited to prevent deadlock in the initialization
-    rta.getService<RTAOutlineService>('outline').then((outlineService) => {
-        outlineService.attachEvent('update', async () => {
-            await updateSyncViewsIds(ui5VersionInfo);
-            await showSyncViewsWarning();
+    rta.getService<RTAOutlineService>('outline')
+        .then((outlineService) => {
+            outlineService.attachEvent('update', async () => {
+                await updateSyncViewsIds(ui5VersionInfo);
+                await showSyncViewsWarning();
+            });
+        })
+        .catch((error) => {
+            log.error('Failed to attach update event to outline service', error);
         });
-    }).catch((error) => {
-        log.error('Failed to attach update event to outline service', error);
-    });
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
         await sendInfoCenterMessage({
             title: { key: 'FLP_UI5_VERSION_WARNING_TITLE' },
             description: {
-                key: 'FLP_UI5_VERSION_WARNING_DESCRIPTION', params: [
-                    getFullyQualifiedUi5Version(ui5VersionInfo),
-                    getFullyQualifiedUi5Version(minVersionInfo)]
+                key: 'FLP_UI5_VERSION_WARNING_DESCRIPTION',
+                params: [getFullyQualifiedUi5Version(ui5VersionInfo), getFullyQualifiedUi5Version(minVersionInfo)]
             },
             type: MessageBarType.error
         });

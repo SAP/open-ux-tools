@@ -160,7 +160,8 @@ describe('main', () => {
         // assert
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
         expect(Log.error).toBeCalledWith('Service Initialization Failed: ', error);
-        expect(CommunicationService.sendAction).toHaveBeenNthCalledWith(3,
+        expect(CommunicationService.sendAction).toHaveBeenNthCalledWith(
+            3,
             showInfoCenterMessage({
                 title: 'Control Property Editor Initialization Failed',
                 description: error.message,

@@ -1816,7 +1816,7 @@ describe('ChangeService', () => {
                 errorMessage: 'Error: "RTA Error: Not acceptable value"'
             } as any)
         );
-        
+
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
                 title: 'CPE: Change Creation Failed',

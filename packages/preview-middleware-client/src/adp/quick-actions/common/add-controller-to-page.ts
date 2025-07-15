@@ -33,7 +33,9 @@ export class AddControllerToPageQuickAction
                 run: async (): Promise<EnablementValidatorResult> => {
                     const controllerName = getControllerInfoForControl(this.context.view).controllerName;
                     const i18n = await getTextBundle();
-                    if (checkForExistingChange(this.context.rta, 'codeExt', 'selector.controllerName', controllerName)) {
+                    if (
+                        checkForExistingChange(this.context.rta, 'codeExt', 'selector.controllerName', controllerName)
+                    ) {
                         return {
                             type: 'error',
                             message: i18n.getText('ADP_QUICK_ACTION_CONTROLLER_PENDING_CHANGE_EXISTS')
