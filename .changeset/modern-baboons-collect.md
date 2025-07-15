@@ -1,6 +1,4 @@
 ---
-'@sap-ux/abap-deploy-config-sub-generator': minor
-'@sap-ux/deploy-config-sub-generator': minor
 '@sap-ux/abap-deploy-config-writer': minor
 '@sap-ux/adp-tooling': minor
 ---
