@@ -37,7 +37,6 @@ export default defineConfig([
             }
         },
         rules: {
-            ...typescriptEslint.configs.recommended.rules,
             'comma-dangle': ['error', 'never'],
             'jsdoc/require-param': 'error',
             'jsdoc/require-param-description': 'warn',
@@ -149,8 +148,7 @@ export default defineConfig([
             'no-shadow-restricted-names': 'error',
             'no-undef-init': 'error',
             'no-undef': 'error',
-            // Rule overriden by @typescript-eslint/recommended in original .eslintrc
-            // "no-unused-vars": ["error", { vars: "all", args: "none" }],
+            'no-unused-vars': ['error', { vars: 'all', args: 'none' }],
             'no-use-before-define': 'off',
             camelcase: 'warn',
             'consistent-this': ['warn', 'that'],
@@ -181,9 +179,7 @@ export default defineConfig([
                     bundledDependencies: false
                 }
             ],
-            'prettier/prettier': ['error', { endOfLine: 'auto', quoteProps: 'preserve' }],
-            // Rule did not exist without @typescript-eslint/recommended in original .eslintrc
-            '@typescript-eslint/no-require-imports': 'warn'
+            'prettier/prettier': ['error', { endOfLine: 'auto', quoteProps: 'preserve' }]
         },
         ignores: ['dist'],
         languageOptions: {
@@ -217,6 +213,7 @@ export default defineConfig([
             }
         },
         rules: {
+            ...typescriptEslint.configs.recommended.rules,
             '@typescript-eslint/ban-types': 'off',
             '@typescript-eslint/explicit-function-return-type': 'warn',
             '@typescript-eslint/no-unsafe-assignment': 'warn',
@@ -235,7 +232,10 @@ export default defineConfig([
             'jsdoc/require-param-type': 'off',
             'jsdoc/require-returns-type': 'off',
             'prefer-const': ['error', { destructuring: 'all' }],
-            'jsdoc/tag-lines': ['error', 'never', { startLines: 1 }]
+            'jsdoc/tag-lines': ['error', 'never', { startLines: 1 }],
+            // Rules that were added to @typescript-eslint/eslint-plugin recommended v8
+            '@typescript-eslint/no-unsafe-function-type': 'warn',
+            '@typescript-eslint/no-require-imports': 'warn'
         }
     },
     {
@@ -299,7 +299,8 @@ export default defineConfig([
             'jsdoc/require-param-description': 'off',
             'max-nested-callbacks': ['warn', 5],
             'sonarjs/cognitive-complexity': 'off',
-            '@typescript-eslint/no-unsafe-function-type': 'warn' // This rule is not applicable in test files, as it is related to type safety in production code.
+            // Rules that were added to @typescript-eslint/eslint-plugin recommended v8
+            '@typescript-eslint/no-empty-object-type': 'warn'
         }
     }
 ]);
