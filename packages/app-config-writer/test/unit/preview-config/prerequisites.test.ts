@@ -50,6 +50,18 @@ describe('prerequisites', () => {
         expect(await checkPrerequisites(basePath, fs, false, logger)).toBeTruthy();
     });
 
+    test('check prerequisites with UI5 cli ^4 dependency', async () => {
+        fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '^4' } }));
+
+        expect(await checkPrerequisites(basePath, fs, false, logger)).toBeTruthy();
+    });
+
+    test('check prerequisites with invalid UI5 cli dependency', async () => {
+        fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': 'foo' } }));
+
+        expect(await checkPrerequisites(basePath, fs, false, logger)).toBeFalsy();
+    });
+
     test('check prerequisites with UI5 cli ^2 dependency', async () => {
         fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '^2' } }));
 

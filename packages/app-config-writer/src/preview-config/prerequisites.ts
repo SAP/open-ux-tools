@@ -8,7 +8,7 @@ import {
     hasDependency
 } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { satisfies, valid } from 'semver';
+import { valid, validRange, lt, Range } from 'semver';
 
 const packageName = {
     WDIO_QUNIT_SERVICE: 'wdio-qunit-service',
@@ -34,7 +34,7 @@ function isLowerThanMinimalVersion(
     minVersionInfo: string,
     mandatory: boolean = true
 ): boolean {
-    let versionInfo = packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName];
+    const versionInfo = packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName];
     if (!versionInfo) {
         // In case no dependency is found we assume the minimal version is not met depending on the mandatory flag
         return mandatory;
@@ -44,10 +44,30 @@ function isLowerThanMinimalVersion(
         return false;
     }
     if (valid(versionInfo)) {
-        // In case of a valid version we add a prefix to make it a range
-        versionInfo = `<=${versionInfo}`;
+        // In case of a specific version we can directly compare it
+        return lt(versionInfo, minVersionInfo);
     }
-    return !satisfies(minVersionInfo, versionInfo);
+    const rangeStr = validRange(versionInfo);
+    if (!rangeStr) {
+        // In case versionInfo is neither a specific version nor a valid range we assume the minimal version is not met depending on the mandatory flag
+        return mandatory;
+    }
+    const range = new Range(rangeStr);
+    // Find the highest exclusive upper bound (e.g., <2.0.0)
+    let upperBound: string | undefined;
+    for (const comparators of range.set) {
+        for (const comparator of comparators) {
+            if (comparator.operator === '<' && (!upperBound || lt(upperBound, comparator.semver.version))) {
+                upperBound = comparator.semver.version;
+            }
+        }
+    }
+    if (upperBound) {
+        // If minVersionInfo is greater or equal to the upper bound, the range is too low
+        return lt(upperBound, minVersionInfo) || upperBound === minVersionInfo;
+    }
+    // If no upper bound, assume the range is open-ended (e.g., "*", ">=1.0.0")
+    return false;
 }
 
 /**
