@@ -29,7 +29,8 @@ const ADD_NEW_ANNOTATION_FILE_TITLE = 'QUICK_ACTION_ADD_NEW_ANNOTATION_FILE';
  */
 export class AddNewAnnotationFile
     extends QuickActionDefinitionBase<typeof NESTED_QUICK_ACTION_KIND>
-    implements NestedQuickActionDefinition {
+    implements NestedQuickActionDefinition
+{
     public children: NestedQuickActionChild[] = [];
     public get quickActionSteps(): number {
         return 1;

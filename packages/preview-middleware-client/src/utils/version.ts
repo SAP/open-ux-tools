@@ -5,9 +5,9 @@ import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 type SingleVersionInfo =
     | {
-        name: string;
-        version: string;
-    }
+          name: string;
+          version: string;
+      }
     | undefined;
 
 export type Ui5VersionInfo = {
@@ -31,9 +31,7 @@ export const minVersionInfo = {
  * @throws Error if the version info is invalid
  */
 function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
-    if (isNaN(versionInfo.major) ||
-        isNaN(versionInfo.minor) ||
-        isNaN(versionInfo.patch ?? 0)) {
+    if (isNaN(versionInfo.major) || isNaN(versionInfo.minor) || isNaN(versionInfo.patch ?? 0)) {
         void sendInfoCenterMessage({
             title: { key: 'FLP_UI_VERSION_RETRIEVAL_FAILURE_TITLE' },
             description: { key: 'FLP_UI_INVALID_UI5_VERSION_DESCRIPTION' },
@@ -95,8 +93,8 @@ export function isLowerThanMinimalUi5Version(
         ui5VersionInfo.major < minUi5VersionInfo.major ||
         (ui5VersionInfo.major === minUi5VersionInfo.major && ui5VersionInfo.minor < minUi5VersionInfo.minor) ||
         (ui5VersionInfo.major === minUi5VersionInfo.major &&
-        ui5VersionInfo.minor === minUi5VersionInfo.minor &&
-        (ui5VersionInfo?.patch ?? 0) < (minUi5VersionInfo?.patch ?? 0))
+            ui5VersionInfo.minor === minUi5VersionInfo.minor &&
+            (ui5VersionInfo?.patch ?? 0) < (minUi5VersionInfo?.patch ?? 0))
     );
 }
 
@@ -126,7 +124,7 @@ export function isVersionEqualOrHasNewerPatch(
 
 /**
  * Returns the fully qualified UI5 version string - major and minor version concatenated.
- * 
+ *
  * @param {Ui5VersionInfo} ui5VersionInfo - The ui5 version info object containing major and minor version.
  * @returns {string} The fully qualified UI5 version string.
  */

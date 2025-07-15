@@ -62,21 +62,11 @@ describe('utils/version', () => {
         //returns false for higher major versions using default
         expect(isLowerThanMinimalUi5Version({ major: 2, minor: 0 })).toBeFalsy();
         //returns false for higher major versions
-        expect(
-            isLowerThanMinimalUi5Version(
-                { major: 2, minor: 70 },
-                { major: 2, minor: 69 }
-            )
-        ).toBeFalsy();
+        expect(isLowerThanMinimalUi5Version({ major: 2, minor: 70 }, { major: 2, minor: 69 })).toBeFalsy();
         //returns false for higher minor versions using default
         expect(isLowerThanMinimalUi5Version({ major: 1, minor: 71 })).toBeFalsy();
         //returns false for higher minor versions
-        expect(
-            isLowerThanMinimalUi5Version(
-                { major: 1, minor: 71 },
-                { major: 1, minor: 70 }
-            )
-        ).toBeFalsy();
+        expect(isLowerThanMinimalUi5Version({ major: 1, minor: 71 }, { major: 1, minor: 70 })).toBeFalsy();
         //returns false for minimum versions using default
         expect(isLowerThanMinimalUi5Version({ major: 1, minor: 71 })).toBeFalsy();
         //throw error in case on NaN
@@ -94,24 +84,15 @@ describe('utils/version', () => {
         expect(isVersionEqualOrHasNewerPatch({ major: 1, minor: 71, patch: 3 })).toBeTruthy();
         //returns true for higher patch version
         expect(
-            isVersionEqualOrHasNewerPatch(
-                { major: 1, minor: 124, patch: 4 },
-                { major: 1, minor: 124, patch: 3 }
-            )
+            isVersionEqualOrHasNewerPatch({ major: 1, minor: 124, patch: 4 }, { major: 1, minor: 124, patch: 3 })
         ).toBeTruthy();
         //returns true for same patch version
         expect(
-            isVersionEqualOrHasNewerPatch(
-                { major: 1, minor: 124, patch: 3 },
-                { major: 1, minor: 124, patch: 3 }
-            )
+            isVersionEqualOrHasNewerPatch({ major: 1, minor: 124, patch: 3 }, { major: 1, minor: 124, patch: 3 })
         ).toBeTruthy();
         //returns false for lower patch version
         expect(
-            isVersionEqualOrHasNewerPatch(
-                { major: 1, minor: 124, patch: 3 },
-                { major: 1, minor: 124, patch: 4 }
-            )
+            isVersionEqualOrHasNewerPatch({ major: 1, minor: 124, patch: 3 }, { major: 1, minor: 124, patch: 4 })
         ).toBeFalsy();
         //throw error in case on NaN
         expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrowError();

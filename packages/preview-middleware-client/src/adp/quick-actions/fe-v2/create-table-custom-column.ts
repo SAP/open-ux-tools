@@ -12,10 +12,7 @@ import IconTabBar from 'sap/m/IconTabBar';
 
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 
-import {
-    QuickActionContext,
-    NestedQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
+import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
 import { DialogNames, DialogFactory } from '../../dialog-factory';
 import {

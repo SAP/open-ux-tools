@@ -85,7 +85,8 @@ describe('sync-views-utils', () => {
             expect(CommunicationService.sendAction).toHaveBeenCalledWith(
                 showInfoCenterMessage({
                     title: 'Synchronous Views Detected',
-                    description: 'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
+                    description:
+                        'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
                     type: MessageBarType.warning
                 })
             );

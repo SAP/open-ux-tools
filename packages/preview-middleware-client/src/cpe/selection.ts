@@ -61,11 +61,11 @@ function getPropertyDocument(
     return document?.[property.name]
         ? document[property.name]
         : ({
-            defaultValue: (property.defaultValue as string) ?? '-',
-            description: '',
-            propertyName: property.name,
-            type: ui5Type ?? '-',
-            propertyType: ui5Type ?? '-'
+              defaultValue: (property.defaultValue as string) ?? '-',
+              description: '',
+              propertyName: property.name,
+              type: ui5Type ?? '-',
+              propertyType: ui5Type ?? '-'
           } as PropertiesInfo);
 }
 
@@ -102,7 +102,7 @@ export class SelectionService implements Service {
      * @param rta - rta object.
      * @param ui5 - facade for ui5 framework methods
      */
-    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) { }
+    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {}
 
     /**
      * Initialize selection service.

@@ -245,7 +245,8 @@ describe('flp/init', () => {
             expect(CommunicationService.sendAction).toHaveBeenCalledWith(
                 showInfoCenterMessage({
                     title: 'Card Generator Not Supported',
-                    description: 'The card generator is not supported for the current UI5 version. Install a supported version.',
+                    description:
+                        'The card generator is not supported for the current UI5 version. Install a supported version.',
                     type: MessageBarType.warning
                 })
             );
@@ -363,7 +364,7 @@ describe('flp/init', () => {
                     callback({}); // WorkspaceConnector
                     return;
                 }
-                await callback(() => Promise.reject('Reload triggered'))
+                await callback(() => Promise.reject('Reload triggered'));
                 reloadComplete.resolve(undefined);
             });
             CommunicationService.sendAction = jest.fn();
@@ -382,7 +383,7 @@ describe('flp/init', () => {
 
             // Wait for the reload to complete before continue with the test cases.
             await reloadComplete.promise;
-         
+
             expect(CommunicationService.sendAction).toHaveBeenCalledWith(
                 showInfoCenterMessage({
                     title: 'Adaptation Initialization Failed',

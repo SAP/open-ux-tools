@@ -119,8 +119,8 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             const changeToolbarContentAction = actions.find((action) => action.id === changeToolbarContentActionId);
             this.tableMap[tableMapKey].changeToolbarContentAction = changeToolbarContentAction
                 ? {
-                    id: changeToolbarContentAction.id,
-                    enabled: changeToolbarContentAction.enabled
+                      id: changeToolbarContentAction.id,
+                      enabled: changeToolbarContentAction.enabled
                   }
                 : undefined;
         }

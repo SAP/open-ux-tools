@@ -3,11 +3,14 @@ import { CommunicationService } from 'open/ux/preview/client/cpe/communication-s
 import { sendInfoCenterMessage } from 'open/ux/preview/client/utils/info-center-message';
 
 jest.mock('../../../src/i18n', () => ({
-    getTextBundle: () => Promise.resolve({
-        getText: jest.fn().mockImplementation(
-            (key: string, params: string[] | undefined) =>
-                Array.isArray(params) ? `${key} - ${params.join(', ')}` : key)
-    })
+    getTextBundle: () =>
+        Promise.resolve({
+            getText: jest
+                .fn()
+                .mockImplementation((key: string, params: string[] | undefined) =>
+                    Array.isArray(params) ? `${key} - ${params.join(', ')}` : key
+                )
+        })
 }));
 
 describe('utils/info-center-message', () => {
@@ -28,11 +31,13 @@ describe('utils/info-center-message', () => {
 
     it('should send the message to the info center with translated key strings', async () => {
         await sendInfoCenterMessage(message);
-        expect(CommunicationService.sendAction).toHaveBeenCalledWith(showInfoCenterMessage({
-            title: 'titleKey - a, b',
-            description: 'descriptionKey',
-            details: 'details',
-            type: MessageBarType.warning
-        }));
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'titleKey - a, b',
+                description: 'descriptionKey',
+                details: 'details',
+                type: MessageBarType.warning
+            })
+        );
     });
 });

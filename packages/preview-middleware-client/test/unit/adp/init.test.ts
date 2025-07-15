@@ -38,7 +38,7 @@ describe('adp', () => {
 
     const executeSpy = jest.fn();
     const attachEventSpy = jest.fn();
-    rtaMock.getService = jest.fn().mockResolvedValue({ execute: executeSpy, attachEvent: attachEventSpy});
+    rtaMock.getService = jest.fn().mockResolvedValue({ execute: executeSpy, attachEvent: attachEventSpy });
     const setPluginsSpy = jest.fn();
     rtaMock.setPlugins = setPluginsSpy;
 
@@ -136,7 +136,8 @@ describe('adp', () => {
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
                 title: 'SAPUI5 Version Warning',
-                description: 'The current SAPUI5 version set for this adaptation project is 1.70. The minimum version for SAPUI5 Adaptation Project and its SAPUI5 Adaptation Editor is 1.71. Install version 1.71 or higher.',
+                description:
+                    'The current SAPUI5 version set for this adaptation project is 1.70. The minimum version for SAPUI5 Adaptation Project and its SAPUI5 Adaptation Editor is 1.71. Install version 1.71 or higher.',
                 type: MessageBarType.error
             })
         );
@@ -173,7 +174,8 @@ describe('adp', () => {
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
                 title: 'Synchronous Views Detected',
-                description: 'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
+                description:
+                    'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
                 type: MessageBarType.warning
             })
         );
@@ -202,7 +204,8 @@ describe('adp', () => {
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
                 title: 'Synchronous Views Detected',
-                description: 'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
+                description:
+                    'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
                 type: MessageBarType.warning
             })
         );

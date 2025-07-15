@@ -260,14 +260,12 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
 
 /**
  * This function dynamically adds a "Generate Card" action to the SAP Fiori Launchpad for the given component instance.
- * 
+ *
  * @param componentInstance - The instance of the component for which the card generation action is being added.
  * @param container - The SAP Fiori Launchpad container instance used to access services.
  */
-function addCardGenerationUserAction(componentInstance : Component, container : typeof sap.ushell.Container) {
-    sap.ui.require([
-        'sap/cards/ap/generator/CardGenerator'
-    ], async (CardGenerator : CardGeneratorType) => {
+function addCardGenerationUserAction(componentInstance: Component, container: typeof sap.ushell.Container) {
+    sap.ui.require(['sap/cards/ap/generator/CardGenerator'], async (CardGenerator: CardGeneratorType) => {
         const extensionService = await container.getServiceAsync<Extension>('Extension');
         const controlProperties = {
             icon: 'sap-icon://add',
@@ -307,7 +305,7 @@ export async function init({
     flex?: string | null;
     customInit?: string | null;
     enhancedHomePage?: boolean | null;
-    enableCardGenerator?: boolean
+    enableCardGenerator?: boolean;
 }): Promise<void> {
     // Set CDM configuration before importing ushell container
     // to ensure proper configuration pickup during bootstrap
@@ -316,8 +314,9 @@ export async function init({
     }
 
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ??
-        (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
+    const container =
+        sap?.ushell?.Container ??
+        ((await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container);
     let scenario: string = '';
     const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
@@ -358,7 +357,7 @@ export async function init({
                         } catch (error) {
                             await sendInfoCenterMessage({
                                 title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
-                                description: getError(error).message, 
+                                description: getError(error).message,
                                 type: MessageBarType.error
                             });
                             await handleHigherLayerChanges(error, ui5VersionInfo);
@@ -376,14 +375,14 @@ export async function init({
                 addCardGenerationUserAction(componentInstance as unknown as Component, container);
             });
         });
-    } else {  
+    } else {
         Log.warning('Card generator is not supported for the current UI5 version.');
         await sendInfoCenterMessage({
             title: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_TITLE' },
             description: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_DESCRIPTION' },
             type: MessageBarType.warning
         });
-    } 
+    }
 
     // reset app state if requested
     if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() !== 'true') {
@@ -413,7 +412,7 @@ export async function init({
     }
 
     const renderer =
-        (ui5VersionInfo.major < 2 && !ui5VersionInfo.label?.includes('legacy-free'))
+        ui5VersionInfo.major < 2 && !ui5VersionInfo.label?.includes('legacy-free')
             ? await container.createRenderer(undefined, true)
             : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
@@ -434,7 +433,7 @@ if (bootstrapConfig) {
         return sendInfoCenterMessage({
             title: { key: 'FLP_SANDBOX_INIT_FAILED_TITLE' },
             description: error.message,
-            type: MessageBarType.error    
+            type: MessageBarType.error
         });
     });
 }

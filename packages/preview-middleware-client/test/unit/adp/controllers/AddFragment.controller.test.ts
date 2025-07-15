@@ -188,12 +188,9 @@ describe('AddFragment', () => {
                 getId: jest.fn().mockReturnValue('some-id')
             };
 
-            const addFragment = new AddFragment(
-                'test',
-                overlays as unknown as UI5Element,
-                {} as any,
-                { title: 'Test Title' }
-            );
+            const addFragment = new AddFragment('test', overlays as unknown as UI5Element, {} as any, {
+                title: 'Test Title'
+            });
 
             // Act
             await expect(addFragment.buildDialogData()).rejects.toThrow(error);
@@ -206,7 +203,7 @@ describe('AddFragment', () => {
                     type: MessageBarType.error
                 })
             );
-        })
+        });
     });
 
     describe('onAggregationChanged', () => {
