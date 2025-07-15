@@ -7,7 +7,7 @@ import _import from 'eslint-plugin-import';
 import sonarjs from 'eslint-plugin-sonarjs';
 import tsParser from '@typescript-eslint/parser';
 import globalsPkg from 'globals';
-const { jest: jestGlobals } = globalsPkg;
+const { jest: jestGlobals, node: nodeGlobals } = globalsPkg;
 
 export default defineConfig([
     {
@@ -184,6 +184,7 @@ export default defineConfig([
         ignores: ['dist'],
         languageOptions: {
             globals: {
+                ...nodeGlobals,
                 fail: 'readonly',
                 exp: 'readonly',
                 require: 'readonly',
