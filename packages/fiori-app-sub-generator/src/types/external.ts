@@ -5,10 +5,8 @@ import { TemplateType as FFTemplateType } from '@sap-ux/fiori-freestyle-writer';
 import type { DeployConfig, FLPConfig } from '@sap-ux/fiori-generator-shared';
 import type { CapRuntime, EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
-import {
-    promptNames as ui5AppInquirerPromptNames,
-    type UI5ApplicationPromptOptions
-} from '@sap-ux/ui5-application-inquirer';
+import { promptNames as ui5AppInquirerPromptNames } from '@sap-ux/ui5-application-inquirer';
+import { FioriAppGeneratorPromptSettings } from './common';
 import type { Answers } from 'inquirer';
 import { LEGACY_CAP_TYPE_JAVA, LEGACY_CAP_TYPE_NODE } from './constants';
 import { type ALPOptions, type Project, type Service, type Floorplan, FloorplanFE, FloorplanFF } from './state';
@@ -198,7 +196,7 @@ export interface FioriGeneratorSettings {
 }
 
 export interface FioriGeneratorPromptExtension {
-    [generatorName: string]: UI5ApplicationPromptOptions;
+    [generatorName: string]: FioriAppGeneratorPromptSettings;
 }
 
 export interface ConditionalStep extends Step {
