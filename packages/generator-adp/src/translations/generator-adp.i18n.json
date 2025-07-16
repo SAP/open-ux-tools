@@ -9,13 +9,13 @@
         "deployConfigName": "Deployment Configuration",
         "deployConfigDescr": "Configure deployment settings.",
         "addComponentUsagesName": "Add SAPUI5 Component Usages",
-        "addComponentUsagesDescr": "Select SAPUI5 Component Usages",
+        "addComponentUsagesDescr": "Select SAPUI5 component usages.",
         "addNewModelName": "Add OData Service and SAPUI5 Model",
-        "addNewModelDescr": "Select OData Service and SAPUI5 Model",
+        "addNewModelDescr": "Select an OData service and SAPUI5 model.",
         "addLocalAnnotationFileName": "Add Local Annotation File",
-        "addLocalAnnotationFileDescr": "Select OData Service and Annotation XML",
+        "addLocalAnnotationFileDescr": "Select an OData service and annotation XML file.",
         "replaceODataServiceName": "Replace OData Service",
-        "replaceODataServiceDescr": "Select OData Service and new OData URI"
+        "replaceODataServiceDescr": "Select an OData service and new OData URI."
     },
     "prompts": {
         "systemLabel": "System",
@@ -56,7 +56,7 @@
         "projectNameLengthErrorInt": "The name cannot start with the word 'customer', contain more than 61 characters, or end with the word 'component'.",
         "projectNameValidationErrorInt": "The name must only contain Latin alphanumeric characters and it must have at least two parts. Every part must start with a letter and the different parts must be separated by a period.",
         "projectNotInWorkspace": "The project: '{{- path}}' is not in the workspace. Some adaptation project tools may not work. What do you want to do?",
-        "emptyAnnotationFile": "Empty annotation file will be created in webapp/changes/annotations folder of your project."
+        "emptyAnnotationFile": "An empty annotation file will be created in the webapp/changes/annotations folder of your project."
     },
     "error": {
         "selectCannotBeEmptyError": "The {{value}} has to be selected.",
@@ -74,9 +74,9 @@
         "creatingExtensionProjectError": "Creating the extension project failed. To see the error, view the logs.",
         "appParameterMissing": "Could not create an extension project because the application parameters are missing. Please select a different application.",
         "destinationInfoMissing": "Could not create an extension project because the destination info is missing. Please select a different system.",
-        "systemNotFound": "System not found or not supported: {{system}}. Please check the system exists.",
-        "applicationNotFound": "Application not found or not supported: {{appName}}. Please check the application exists.",
-        "backendCommunicationError": "There is problem with communication with the backend. Please try again later.",
-        "pleaseProvideAllRequiredData": "Please provide all required data and try again."
+        "systemNotFound": "System could not be found or is not supported: {{system}}. Please check the system exists.",
+        "applicationNotFound": "The application could not be found or is not supported: {{appName}}. Please check the application exists.",
+        "backendCommunicationError": "An error occurred when communicating with the back end. Please try again later.",
+        "pleaseProvideAllRequiredData": "Please provide the required data and try again."
     }
 }
