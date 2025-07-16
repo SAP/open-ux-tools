@@ -11,7 +11,12 @@ import memFsEditor from 'mem-fs-editor';
 import { join } from 'path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types';
 import { ApiHubType, SapSystemSourceType } from '../../../src/types/constants';
-import { convertCapRuntimeToCapProjectType, getCdsUi5PluginInfo, t } from '../../../src/utils';
+import {
+    convertCapRuntimeToCapProjectType,
+    getCdsUi5PluginInfo,
+    initI18nFioriAppSubGenerator,
+    t
+} from '../../../src/utils';
 import {
     buildSapClientParam,
     generateLaunchConfig,
@@ -86,6 +91,9 @@ const vscodeMock = {
     }
 };
 describe('Test utils', () => {
+    beforeAll(async () => {
+        await initI18nFioriAppSubGenerator();
+    });
     test('getODataVersion ', async () => {
         const validMetadataV2 =
             '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">' +

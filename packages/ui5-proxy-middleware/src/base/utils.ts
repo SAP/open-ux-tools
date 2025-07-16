@@ -1,11 +1,9 @@
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
-import { UI5Config } from '@sap-ux/ui5-config';
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
 import type http from 'http';
 import type { ProxyConfig } from './types';
-import { existsSync, readFileSync } from 'fs';
 import {
     BOOTSTRAP_LINK,
     BOOTSTRAP_REPLACE_REGEX,
@@ -165,21 +163,6 @@ export const getYamlFile = (args: string[]): string => {
     }
 
     return yaml;
-};
-
-/**
- * Gets the path to the webapp folder from the YAML file.
- *
- * @param ui5YamlPath - path to the yaml file
- * @returns Path to the webapp folder
- */
-export const getWebAppFolderFromYaml = async (ui5YamlPath: string): Promise<string> => {
-    if (existsSync(ui5YamlPath)) {
-        const ui5Config = await UI5Config.newInstance(readFileSync(ui5YamlPath, { encoding: 'utf8' }));
-        return ui5Config.getConfiguration().paths?.webapp ?? 'webapp';
-    } else {
-        return 'webapp';
-    }
 };
 
 /**

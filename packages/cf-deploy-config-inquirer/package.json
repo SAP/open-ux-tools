@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/cf-deploy-config-inquirer",
     "description": "Prompts module that can provide prompts for cf deployment config writer",
-    "version": "0.3.21",
+    "version": "0.3.28",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -33,7 +33,7 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "i18next": "23.5.1",
+        "i18next": "25.3.0",
         "inquirer-autocomplete-prompt": "2.0.1"
     },
     "devDependencies": {

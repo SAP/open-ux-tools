@@ -19,6 +19,7 @@ import Control from 'sap/ui/core/Control';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import { getAdditionalChangeInfo } from '../../../../src/utils/additional-change-info';
 import { FlexChange } from 'open/ux/preview/client/flp/common';
+import * as core from '../../../../src/utils/core';
 
 const mocks = {
     setValueStateMock: jest.fn(),
@@ -198,6 +199,7 @@ describe('AddTableColumnsFragments controller', () => {
                     } as unknown as SimpleForm<Control[]>
                 ])
             } as unknown as Dialog;
+            return addFragment;
         };
 
         beforeEach(() => {
@@ -234,11 +236,17 @@ describe('AddTableColumnsFragments controller', () => {
             test('sets error when column and cell fragments have the same name', () => {
                 jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const event = mockInputEvent('Name1');
-
-                createDialog([
-                    mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error]),
-                    mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error])
-                ] as unknown as Control[]);
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+                rtaMock.getFlexSettings.mockReturnValue({
+                    projectId: 'adp.app'
+                });
+                createDialog(
+                    [
+                        mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error]),
+                        mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error])
+                    ] as unknown as Control[],
+                    rtaMock
+                );
 
                 addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -271,13 +279,21 @@ describe('AddTableColumnsFragments controller', () => {
             });
 
             test('clears errors on value change', () => {
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+
+                rtaMock.getFlexSettings.mockReturnValue({
+                    projectId: 'adp.app'
+                });
                 jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const event = mockInputEvent('Name2');
 
-                createDialog([
-                    mockFormInput(true, 'Name2', [ValueState.Error, ValueState.Success], ['Duplicate name', '']),
-                    mockFormInput(true, 'Delete', [ValueState.Error, ValueState.Success], ['Duplicate name', ''])
-                ] as unknown as Control[]);
+                createDialog(
+                    [
+                        mockFormInput(true, 'Name2', [ValueState.Error, ValueState.Success], ['Duplicate name', '']),
+                        mockFormInput(true, 'Delete', [ValueState.Error, ValueState.Success], ['Duplicate name', ''])
+                    ] as unknown as Control[],
+                    rtaMock
+                );
 
                 addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -464,7 +480,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('throws exception if control does not have valid aggregations', async () => {
-            createDialog([
+            const dialogController = createDialog([
                 mockFormInput(true, 'New', ValueState.Success),
                 mockFormInput(true, 'Name2', ValueState.Success)
             ] as unknown as Control[]);
@@ -478,6 +494,9 @@ describe('AddTableColumnsFragments controller', () => {
                 }),
                 getAggregation: getAggregationMock
             } as unknown as ManagedObject);
+            jest.spyOn(core, 'getControlById').mockReturnValue({
+                sId: 'some-id'
+            } as any);
 
             let thrown: string | undefined;
             try {
@@ -492,7 +511,7 @@ describe('AddTableColumnsFragments controller', () => {
                 thrown = (e as Error).message;
             }
             expect(thrown).toBe(`Selected control does not have "columns" aggregation`);
-
+            (dialogController as any)['_runtimeControl'] = undefined;
             jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
                 getMetadata: jest.fn().mockReturnValue({
                     getAllAggregations: jest.fn().mockReturnValue({ 'columns': {} }),

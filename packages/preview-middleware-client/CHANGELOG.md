@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.14.11
+
+### Patch Changes
+
+-   fc8cc4a: fix: detect all sync views
+
+## 0.14.10
+
+### Patch Changes
+
+-   6c2d08a: Create app descriptor changes for v4 add custom section quick action
+
 ## 0.14.9
 
 ### Patch Changes

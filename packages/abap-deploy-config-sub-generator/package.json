@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-sub-generator"
     },
-    "version": "0.1.31",
+    "version": "0.1.39",
     "license": "Apache-2.0",
     "main": "generators/app/index.js",
     "scripts": {
@@ -40,7 +40,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "i18next": "23.5.1",
+        "i18next": "25.3.0",
         "@sap-devx/yeoman-ui-types": "1.14.4"
     },
     "devDependencies": {

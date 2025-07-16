@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.6.4
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+
 ## 0.6.3
 
 ### Patch Changes

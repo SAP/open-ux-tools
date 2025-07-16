@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.29.0
+
+### Minor Changes
+
+-   c0fa1d1: enhance support for adding and updating preview configuration
+
 ## 0.28.3
 
 ### Patch Changes

@@ -1,5 +1,72 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.14.29
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.25
+
+## 0.14.28
+
+### Patch Changes
+
+-   a1f282f: moves validate fiori app folder to before default is determined
+-   Updated dependencies [a1f282f]
+    -   @sap-ux/project-input-validator@0.6.12
+
+## 0.14.27
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.24
+
+## 0.14.26
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/project-input-validator@0.6.11
+    -   @sap-ux/inquirer-common@0.7.23
+
+## 0.14.25
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.22
+
+## 0.14.24
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/project-input-validator@0.6.10
+    -   @sap-ux/inquirer-common@0.7.21
+
+## 0.14.23
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/project-input-validator@0.6.9
+-   @sap-ux/inquirer-common@0.7.20
+
+## 0.14.22
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/project-input-validator@0.6.8
+    -   @sap-ux/inquirer-common@0.7.19
+
+## 0.14.21
+
+### Patch Changes
+
+-   d152617: Align text on mta message and non mta deploy config
+
 ## 0.14.20
 
 ### Patch Changes

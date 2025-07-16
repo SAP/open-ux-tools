@@ -2,7 +2,6 @@ import {
     filterCompressedHtmlFiles,
     getCorporateProxyServer,
     getHtmlFile,
-    getWebAppFolderFromYaml,
     getYamlFile,
     hideProxyCredentials,
     injectUI5Url,
@@ -13,14 +12,12 @@ import {
     updateProxyEnv
 } from '../../src/base/utils';
 import type { Response } from 'express';
-import YAML from 'yaml';
-import fs, { readdirSync, readFileSync } from 'fs';
+import fs from 'fs';
 import * as baseUtils from '../../src/base/utils';
 import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import { join } from 'path';
 import type { ReaderCollection } from '@ui5/fs';
 
 describe('utils', () => {
@@ -231,73 +228,6 @@ describe('utils', () => {
         test('return yaml file from -c arg', () => {
             const result = getYamlFile(['-c', 'test.yaml']);
             expect(result).toEqual('test.yaml');
-        });
-    });
-
-    describe('getWebAppFolderFromYaml', () => {
-        const readFileMock = jest.spyOn(fs, 'readFileSync');
-        const existsMock = jest.spyOn(fs, 'existsSync').mockReturnValue(true);
-
-        const baseYamlConfig = {
-            specVersion: '1.0',
-            metadata: { name: 'testapp' },
-            type: 'application'
-        };
-
-        test('return webapp as default if no yaml is found', async () => {
-            existsMock.mockReturnValueOnce(false);
-            const result = await getWebAppFolderFromYaml('no-ui5.yaml');
-            expect(result).toBe('webapp');
-        });
-
-        test('return webapp as default if yaml file has no resources section', async () => {
-            readFileMock.mockReturnValueOnce(YAML.stringify(baseYamlConfig));
-            const result = await getWebAppFolderFromYaml('ui5.yaml');
-            expect(result).toBe('webapp');
-        });
-
-        test('return webapp as default if yaml file with empty resources section', async () => {
-            readFileMock.mockReturnValueOnce(
-                YAML.stringify({
-                    ...baseYamlConfig,
-                    resources: {}
-                })
-            );
-            const result = await getWebAppFolderFromYaml('ui5.yaml');
-            expect(result).toBe('webapp');
-        });
-
-        test('return webapp as default if yaml file with empty configuration section', async () => {
-            readFileMock.mockReturnValueOnce(
-                YAML.stringify({
-                    ...baseYamlConfig,
-                    resources: { configuration: {} }
-                })
-            );
-            const result = await getWebAppFolderFromYaml('ui5.yaml');
-            expect(result).toBe('webapp');
-        });
-
-        test('return webapp as default if yaml file with empty paths', async () => {
-            readFileMock.mockReturnValueOnce(
-                YAML.stringify({
-                    ...baseYamlConfig,
-                    resources: { configuration: { paths: {} } }
-                })
-            );
-            const result = await getWebAppFolderFromYaml('ui5.yaml');
-            expect(result).toBe('webapp');
-        });
-
-        test('return path from the yaml file', async () => {
-            readFileMock.mockReturnValueOnce(
-                YAML.stringify({
-                    ...baseYamlConfig,
-                    resources: { configuration: { paths: { webapp: 'dist' } } }
-                })
-            );
-            const result = await getWebAppFolderFromYaml('ui5.yaml');
-            expect(result).toBe('dist');
         });
     });
 

@@ -1,5 +1,24 @@
 # @sap-ux/project-access
 
+## 1.30.7
+
+### Patch Changes
+
+-   58cdce6: fix: Windows path issue for CAP CDS projects
+
+## 1.30.6
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+
+## 1.30.5
+
+### Patch Changes
+
+-   7a4543e: fix: remove usage of static webapp folder
+
 ## 1.30.4
 
 ### Patch Changes

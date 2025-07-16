@@ -1,5 +1,37 @@
 # @sap-ux/project-input-validator
 
+## 0.6.12
+
+### Patch Changes
+
+-   a1f282f: moves validate fiori app folder to before default is determined
+
+## 0.6.11
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+
+## 0.6.10
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+
+## 0.6.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+
 ## 0.6.7
 
 ### Patch Changes

@@ -16,8 +16,8 @@ Yarn
 Pnpm
 `pnpm add @sap-ux/cf-deploy-config-writer`
 
-## Example: Reading and writing MTA Configurations
-Generate an `MtaConfig` instance to read an `mta.yaml` configuration to allow you append different resources and modules. For example HTML5 resources, routing modules or append mta extension configurations. 
+## Example: Reading and Writing MTA Configurations
+Generate an `MtaConfig` instance to read an `mta.yaml` configuration to allow you to append different resources and modules. For example HTML5 resources, routing modules or append mta extension configurations.
 
 Dependent on the [MTA Tool](https://www.npmjs.com/package/mta) being installed globally on your dev space.
 - For VSCode, run the command `npm i -g mta`
@@ -43,7 +43,7 @@ await mtaConfig.addMtaExtensionConfig('mynewdestination', 'https://my-service-ur
 await mtaConfig.save();
 ```
 
-## Example: Appending a Managed Approuter Configuration to an SAP Fiori UI5 Application
+## Example: Appending a `Managed` Approuter Configuration to an SAP Fiori UI5 Application
 
 Calling the `generateAppConfig` function to append Cloud Foundry configuration to a HTML5 application, assumes `manifest.json` and `ui5.yaml` configurations are present otherwise the process will exit with an error;
 ```Typescript
@@ -86,9 +86,9 @@ const exampleWriter = async () => {
 await exampleWriter();
 ```
 
-## Example: Generate a Base `Managed` | `Standalone` Approuter Configuration
+## Example: Generate a Base `Managed` | `Standard` Approuter Configuration
 
-Calling the `generateBaseConfig` function to generate a `new` Cloud Foundry configuration, supporting `managed` | `standalone` configurations;
+Calling the `generateBaseConfig` function to generate a `new` Cloud Foundry configuration, supporting `Managed` | `Standard` configurations;
 - Creates a new `mta.yaml` into the specified `mtaPath`, it will fail if an existing `mta.yaml` is found
 - Optional parameters include adding a `connectivity` service if the SAP BTP destination is using an `OnPremise` configuration
 - New configuration will include a destination instance to expose a `UI5` endpoint, consumed by SAP Fiori applications when deployed to Cloud Foundry
@@ -99,8 +99,8 @@ import { join } from 'path';
 const exampleWriter = async () => {
   const mtaPath = join(__dirname, 'testproject');
   // If your SAPUI5 application will be consuming an SAB BTP OnPremise destination, Connectivity serivce is required; Refer to https://discovery-center.cloud.sap/serviceCatalog/connectivity-service?region=all
-  const addConnectivityService = true;  
-  // Generate a managed approuter configuration, toggle the routerType to RouterModuleType.Standard for a standalone configuration
+  const addConnectivityService = true;
+  // Generate an approuter configuration, with the default being a Managed Approuter, toggle the routerType to genereate RouterModuleType.AppFront or RouterModuleType.Standard configurations
   const fs = await generateBaseConfig({ mtaId: 'mymtaproject', routerType: RouterModuleType.Managed, mtaPath, addConnectivityService });
   return new Promise((resolve) => {
       fs.commit(resolve); // When using with Yeoman it handle the fs commit.
@@ -110,8 +110,8 @@ const exampleWriter = async () => {
 await exampleWriter();
 ```
 
-## Example: Generate a CAP `Managed` | `Standalone` Approuter Configuration
-Calling the `generateCAPConfig` function to generate a `new` Cloud Foundry configuration, supporting `managed` | `standalone` configurations;
+## Example: Generate a CAP `Managed` | `AppFront` | `Standard` Approuter Configuration
+Calling the `generateCAPConfig` function to generate a `new` Cloud Foundry configuration, supporting `Managed` | `AppFront` | `Standard` configurations;
 - Generate a CAP `mta.yaml` with `destination`, `HTML5-Repo` and `XSUAA` services added by default
 - To align the `package.json` and `package-lock.json` to support the mta prebuild script `npm ci`, you need to execute the `npm install`
 - New configuration will include destination instances to expose `UI5` and `CAP` endpoints, consumed by SAP Fiori applications when deployed to Cloud Foundry
@@ -122,7 +122,7 @@ import { join } from 'path';
 
 const exampleWriter = async () => {
   const mtaPath = join(__dirname, 'testcapproject');
-  // Generate a managed approuter configuration, toggle the routerType to RouterModuleType.Standard or RouterModuleType.Managed
+  // Generate an approuter configuration, with the default being a Managed Approuter, toggle the routerType to genereate RouterModuleType.AppFront or RouterModuleType.Standard configurations 
   const fs = await generateCAPConfig({ mtaId: 'mymtaproject', routerType: RouterModuleType.Managed, mtaPath });
   return new Promise((resolve) => {
       fs.commit(resolve); // When using with Yeoman it handle the fs commit.
@@ -131,6 +131,25 @@ const exampleWriter = async () => {
 // Calling the function
 await exampleWriter();
 ```
+
+## Additional Information
+
+* When appending Cloud Foundry deployment configuration to a HTML5 application that is missing a backend `path` in`ui5.yaml`, or there is no `dataSources` defined in `manifest.json`, the `xs-app.json` routing is appended with `'<apply-service-segment-path>'`. This is to allow you to append a custom service path if you introduce custom AJAX calls or add a new OData service.
+
+For example, the following configuration will be appended to the `xs-app.json` routing list:
+
+```json
+{
+  "source": "^<apply-service-segment-path>/(.*)$",
+  "target": "<apply-service-segment-path>/$1",
+  "destination": "mydestination",
+  "authenticationType": "xsuaa",
+  "csrfProtection": false
+}
+```
+
+Replace `<apply-service-segment-path>` with the actual service path you want to use, for example `/sap` or `/myservice`;
+
 
 ## Keywords
 SAP Fiori elements

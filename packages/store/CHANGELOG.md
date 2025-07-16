@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.1.2
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+
 ## 1.1.1
 
 ### Patch Changes

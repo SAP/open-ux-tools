@@ -16,7 +16,7 @@ describe('Test headless', () => {
     test('Test headless validation exceptions', () => {
         expect(() => {
             transformExtState(appConfigNotSupportedVersion as FFAppConfig);
-        }).toThrow(t('error.appConfigVersion', { version: '0.2' }));
+        }).toThrow(t('error.appConfigVersion', { versions: '0.2' }));
 
         expect(() => {
             transformExtState(appConfigInvalidEdmx as FFAppConfig);
