@@ -316,7 +316,7 @@ describe('getSubGenAuthPages', () => {
             },
             {
                 name: 'Add Local Annotation File',
-                description: 'Select OData Service and Annotation XML'
+                description: t('yuiNavSteps.addLocalAnnotationFileDescr')
             }
         ]);
     });
@@ -331,7 +331,7 @@ describe('getSubGenAuthPages', () => {
             },
             {
                 name: 'Replace OData Service',
-                description: 'Select OData Service and new OData URI'
+                description: t('yuiNavSteps.replaceODataServiceDescr')
             }
         ]);
     });
