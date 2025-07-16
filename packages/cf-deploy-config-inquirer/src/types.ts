@@ -1,4 +1,4 @@
-import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 /**
@@ -10,7 +10,7 @@ export enum promptNames {
     /** The prompt to specify if a managed app router should be added to the deployment. */
     addManagedAppRouter = 'addManagedAppRouter',
     /** The prompt for confirming destination overwrite. */
-    overwrite = 'overwriteDestinationName',
+    overwrite = 'overwrite',
     /** The prompt for confirming the router type. */
     routerType = 'routerType'
 }
@@ -75,13 +75,23 @@ export type DestinationRouterPromptOptions = {
     routerType?: RouterModuleType[];
 };
 
+type cfDeployConfigPromptOptions = {
+    [promptNames.destinationName]: DestinationNamePromptOptions & CommonPromptOptions;
+    [promptNames.addManagedAppRouter]: CommonPromptOptions;
+    [promptNames.overwrite]: CommonPromptOptions;
+    [promptNames.routerType]: CommonPromptOptions;
+};
+
 /**
- * Defines options for boolean-type prompts in CF deployment configuration.
+ * Configuration options for CF deployment prompts.
  */
-export type booleanPromptOptions = Partial<
+export type CfDeployConfigPromptOptions = Partial<cfDeployConfigPromptOptions>;
+
+/**
+ * Used to determine if a prompt should be shown for the CF App Router generator.
+ */
+type appRouterPromptsHide = Partial<
     Record<
-        | promptNames.overwrite
-        | promptNames.addManagedAppRouter
         | appRouterPromptNames.mtaId
         | appRouterPromptNames.mtaDescription
         | appRouterPromptNames.mtaVersion
@@ -93,20 +103,10 @@ export type booleanPromptOptions = Partial<
 >;
 
 /**
- * Defines options for string-type prompts in CF deployment configuration.
- */
-type destinationNamePromptOptions = Partial<Record<promptNames.destinationName, DestinationNamePromptOptions>>;
-
-/**
- * Configuration options for CF deployment prompts.
- */
-export type CfDeployConfigPromptOptions = Partial<destinationNamePromptOptions & booleanPromptOptions>;
-
-/**
  * Configuration options for CF App Router deployment prompts.
  */
-export type CfAppRouterDeployConfigPromptOptions = Partial<destinationNamePromptOptions & booleanPromptOptions> &
-    Record<appRouterPromptNames.mtaPath, string>;
+export type CfAppRouterDeployConfigPromptOptions = Record<appRouterPromptNames.mtaPath, string> &
+    Partial<appRouterPromptsHide>;
 
 /**
  * Represents a question in the CF deployment configuration.

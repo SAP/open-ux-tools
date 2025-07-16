@@ -17,15 +17,16 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { extendWithOptions } from '@sap-ux/inquirer-common';
 import { generatorTitle, i18nKeySubTitle, i18nKeyTitle } from '../utils/constants';
-import { t } from '../utils';
-import { getYUIDetails } from '../utils/prompts';
+import { t, getPromptOptions, getYUIDetails } from '../utils';
 import { EventName } from '../telemetryEvents';
 import type { FLPConfigAnswers, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
 import type { YeomanEnvironment, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
-import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { CommonPromptOptions, PromptDefaultValue, YUIQuestion } from '@sap-ux/inquirer-common';
+
+const flpConfigSubGenNamespace = '@sap-ux/flp-config-sub-generator';
 
 /**
  * FLP config generator adds an inbound navigation config to an existing manifest.json.
@@ -90,13 +91,13 @@ export default class extends Generator {
 
         this.extensionPromptOpts = await getExtensionGenPromptOpts(
             this.env.create.bind(this.env),
-            this.rootGeneratorName(),
+            flpConfigSubGenNamespace,
             this.vscode
         );
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
-                name: '@sap-ux/flp-config-sub-generator',
+                name: flpConfigSubGenNamespace,
                 version: this.rootGeneratorVersion()
             },
             internalFeature: isInternalFeaturesSettingEnabled(),
@@ -145,14 +146,17 @@ export default class extends Generator {
         const silentOverwrite = this.options.overwrite;
         let questions: Question[] = (await getPrompts(inbounds, {
             silentOverwrite,
-            inboundId: { hide: true },
-            existingFlpConfigInfo: { hide: true },
-            icon: { hide: true },
-            additionalParameters: { hide: true }
+            ...getPromptOptions(this.options.inquirerPromptOptions)
         })) as Question[];
 
         if (this.extensionPromptOpts && !this.launchFlpConfigAsSubGenerator) {
-            questions = extendWithOptions(questions as YUIQuestion[], this.extensionPromptOpts);
+            questions = extendWithOptions(questions as YUIQuestion[], {
+                ...this.extensionPromptOpts,
+                ...(this.options.inquirerPromptOptions as Record<
+                    string,
+                    Omit<CommonPromptOptions, 'hide'> & PromptDefaultValue<string | boolean>
+                >)
+            });
         }
 
         this.answers = {} as FLPConfigAnswers;

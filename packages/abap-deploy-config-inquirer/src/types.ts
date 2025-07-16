@@ -1,6 +1,6 @@
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { ServiceProvider, SystemInfo } from '@sap-ux/axios-extension';
-import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -56,7 +56,6 @@ export enum promptNames {
     destination = 'destination',
     destinationCliSetter = 'destinationCliSetter',
     targetSystem = 'targetSystem',
-    targetSystemLabel = 'targetSystemLabel',
     targetSystemCliSetter = 'targetSystemCliSetter',
     url = 'url',
     scp = 'scp',
@@ -189,16 +188,27 @@ export type TargetSystemPromptOptions = {
     };
 };
 
-type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepoPromptOptions> &
-    Record<promptNames.description, DescriptionPromptOptions> &
-    Record<promptNames.packageManual, PackageManualPromptOptions> &
-    Record<promptNames.transportManual, TransportManualPromptOptions> &
-    Record<promptNames.transportCreated, TransportCreatedPromptOptions> &
-    Record<promptNames.overwrite, OverwritePromptOptions> &
-    Record<promptNames.index, IndexPromptOptions> &
-    Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions> &
-    Record<promptNames.transportInputChoice, TransportInputChoicePromptOptions> &
-    Record<promptNames.targetSystem, TargetSystemPromptOptions>;
+type abapPromptOptions = {
+    [promptNames.destination]: CommonPromptOptions;
+    [promptNames.url]: CommonPromptOptions;
+    [promptNames.scp]: CommonPromptOptions;
+    [promptNames.clientChoice]: CommonPromptOptions;
+    [promptNames.client]: CommonPromptOptions;
+    [promptNames.username]: CommonPromptOptions;
+    [promptNames.password]: CommonPromptOptions;
+    [promptNames.packageInputChoice]: CommonPromptOptions;
+    [promptNames.transportFromList]: CommonPromptOptions;
+    [promptNames.targetSystem]: TargetSystemPromptOptions & CommonPromptOptions;
+    [promptNames.ui5AbapRepo]: UI5AbapRepoPromptOptions & CommonPromptOptions;
+    [promptNames.description]: DescriptionPromptOptions & CommonPromptOptions;
+    [promptNames.packageManual]: PackageManualPromptOptions & CommonPromptOptions;
+    [promptNames.transportManual]: TransportManualPromptOptions & CommonPromptOptions;
+    [promptNames.transportCreated]: TransportCreatedPromptOptions & CommonPromptOptions;
+    [promptNames.overwrite]: OverwritePromptOptions & CommonPromptOptions;
+    [promptNames.index]: IndexPromptOptions & CommonPromptOptions;
+    [promptNames.packageAutocomplete]: PackageAutocompletePromptOptions & CommonPromptOptions;
+    [promptNames.transportInputChoice]: TransportInputChoicePromptOptions & CommonPromptOptions;
+};
 
 /**
  * The options which are common for the abap deploy config inquirer.
@@ -210,8 +220,7 @@ type AbapDeployConfigCommonInquirerOptions = {
 /**
  * The options for the abap deploy config inquirer & the prompts.
  */
-export type AbapDeployConfigPromptOptions = Partial<abapDeployConfigPromptOptions> &
-    AbapDeployConfigCommonInquirerOptions;
+export type AbapDeployConfigPromptOptions = Partial<abapPromptOptions> & AbapDeployConfigCommonInquirerOptions;
 
 export interface TransportAnswers {
     transportRequired?: boolean;

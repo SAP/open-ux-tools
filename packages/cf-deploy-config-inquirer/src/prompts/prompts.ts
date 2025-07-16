@@ -162,15 +162,15 @@ export async function getQuestions(
     log?: Logger
 ): Promise<CfDeployConfigQuestions[]> {
     const destinationOptions = promptOptions[promptNames.destinationName] as DestinationNamePromptOptions;
-    const addOverwriteQuestion = promptOptions[promptNames.overwrite] ?? false;
-    const addManagedAppRouter = promptOptions[promptNames.addManagedAppRouter] ?? false;
-    const routerType = promptOptions[promptNames.routerType] ?? false;
+    const addOverwriteQuestion = !promptOptions.overwrite?.hide;
+    const addManagedAppRouterQuestions = !promptOptions.addManagedAppRouter?.hide;
+    const addRouterTypeQuestion = !promptOptions.routerType?.hide;
 
     const questions: CfDeployConfigQuestions[] = [];
     // Collect questions into an array
     questions.push(await getDestinationNamePrompt(destinationOptions));
 
-    if (addManagedAppRouter) {
+    if (addManagedAppRouterQuestions) {
         log?.info(t('info.addManagedAppRouter'));
         questions.push(getAddManagedAppRouterPrompt());
     }
@@ -180,7 +180,7 @@ export async function getQuestions(
         questions.push(getOverwritePrompt());
     }
 
-    if (routerType) {
+    if (addRouterTypeQuestion) {
         log?.info(t('info.routerOptions'));
         questions.push(getRouterOptionsPrompt());
     }
