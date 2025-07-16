@@ -188,16 +188,20 @@ export type TargetSystemPromptOptions = {
     };
 };
 
+type AbapPromptsCommonOptions =
+    | promptNames.destination
+    | promptNames.url
+    | promptNames.scp
+    | promptNames.clientChoice
+    | promptNames.client
+    | promptNames.username
+    | promptNames.password
+    | promptNames.packageInputChoice
+    | promptNames.transportFromList;
+
 type abapPromptOptions = {
-    [promptNames.destination]: CommonPromptOptions;
-    [promptNames.url]: CommonPromptOptions;
-    [promptNames.scp]: CommonPromptOptions;
-    [promptNames.clientChoice]: CommonPromptOptions;
-    [promptNames.client]: CommonPromptOptions;
-    [promptNames.username]: CommonPromptOptions;
-    [promptNames.password]: CommonPromptOptions;
-    [promptNames.packageInputChoice]: CommonPromptOptions;
-    [promptNames.transportFromList]: CommonPromptOptions;
+    [K in AbapPromptsCommonOptions]: CommonPromptOptions;
+} & {
     [promptNames.targetSystem]: TargetSystemPromptOptions & CommonPromptOptions;
     [promptNames.ui5AbapRepo]: UI5AbapRepoPromptOptions & CommonPromptOptions;
     [promptNames.description]: DescriptionPromptOptions & CommonPromptOptions;
