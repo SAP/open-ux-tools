@@ -20,7 +20,7 @@ import { generatorTitle, i18nKeySubTitle, i18nKeyTitle } from '../utils/constant
 import { t } from '../utils';
 import { getYUIDetails } from '../utils/prompts';
 import { EventName } from '../telemetryEvents';
-import type { FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
+import type { FLPConfigAnswers, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
 import type { YeomanEnvironment, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { FlpConfigOptions } from './types';
@@ -283,4 +283,4 @@ export default class extends Generator {
 }
 
 export { promptNames };
-export type { FlpConfigOptions };
+export type { FlpConfigOptions, FLPConfigPromptOptions };
