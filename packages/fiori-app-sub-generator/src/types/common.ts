@@ -26,7 +26,7 @@ export interface SubGeneratorPromptSettings {
 }
 
 export interface FioriGeneratorPromptSettings {
-    '@sap/generator-fiori': UI5ApplicationPromptOptions & OdataServicePromptOptions;
+    '@sap/generator-fiori': OdataServicePromptOptions & UI5ApplicationPromptOptions;
 }
 
 export type FioriAppGeneratorPromptSettings = FioriGeneratorPromptSettings['@sap/generator-fiori'] &
