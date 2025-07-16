@@ -1,22 +1,21 @@
+import { MessageBarType, showInfoCenterMessage, type Scenario } from '@sap-ux-private/control-property-editor-common';
+import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
+import IconPoolMock from 'mock/sap/ui/core/IconPool';
+import VersionInfo from 'mock/sap/ui/VersionInfo';
+import { fetchMock, sapMock } from 'mock/window';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
+import type Component from 'sap/ui/core/Component';
+import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
+import { Window } from 'types/global';
+import * as apiHandler from '../../../src/adp/api-handler';
 import {
     init,
+    loadI18nResourceBundle,
     registerComponentDependencyPaths,
     registerSAPFonts,
-    setI18nTitle,
     resetAppState,
-    loadI18nResourceBundle
+    setI18nTitle
 } from '../../../src/flp/init';
-import IconPoolMock from 'mock/sap/ui/core/IconPool';
-import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
-import * as apiHandler from '../../../src/adp/api-handler';
-import { fetchMock, sapMock } from 'mock/window';
-import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
-import { MessageBarType, showInfoCenterMessage, type Scenario } from '@sap-ux-private/control-property-editor-common';
-import VersionInfo from 'mock/sap/ui/VersionInfo';
-import type Component from 'sap/ui/core/Component';
-import { Window } from 'types/global';
-import { createDeferred } from 'open/ux/preview/client/adp/utils';
-import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 Object.defineProperty(window, 'location', {
     value: {
@@ -357,16 +356,18 @@ describe('flp/init', () => {
 
             VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.84.50' });
 
-            const reloadComplete = createDeferred();
-            // Mocking `sap.ui.require` to throw the correct error structure
-            sapMock.ui.require.mockImplementation(async (libs, callback) => {
-                if (libs[0] === 'open/ux/preview/client/flp/WorkspaceConnector') {
-                    callback({}); // WorkspaceConnector
-                    return;
-                }
-                await callback(() => Promise.reject('Reload triggered'));
-                reloadComplete.resolve(undefined);
+            const reloadComplete = new Promise((resolve) => {
+                // Mocking `sap.ui.require` to throw the correct error structure
+                sapMock.ui.require.mockImplementation(async (libs, callback) => {
+                    if (libs[0] === 'open/ux/preview/client/flp/WorkspaceConnector') {
+                        callback({}); // WorkspaceConnector
+                        return;
+                    }
+                    await callback(() => Promise.reject('Reload triggered'));
+                    resolve(undefined);
+                });
             });
+
             CommunicationService.sendAction = jest.fn();
 
             await init({ flex: JSON.stringify(flexSettings) });
@@ -382,7 +383,7 @@ describe('flp/init', () => {
             await rendererCb();
 
             // Wait for the reload to complete before continue with the test cases.
-            await reloadComplete.promise;
+            await reloadComplete;
 
             expect(CommunicationService.sendAction).toHaveBeenCalledWith(
                 showInfoCenterMessage({

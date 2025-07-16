@@ -1819,7 +1819,7 @@ describe('ChangeService', () => {
 
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
-                title: 'CPE: Change Creation Failed',
+                title: 'Change Creation Failed',
                 description: `Error: ${JSON.stringify(errorMessage)}`,
                 type: MessageBarType.error
             })
