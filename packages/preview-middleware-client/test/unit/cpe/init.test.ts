@@ -2,34 +2,33 @@ import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
 import * as common from '@sap-ux-private/control-property-editor-common';
 
+import Log from 'mock/sap/base/Log';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
-import Log from 'mock/sap/base/Log';
 import { fetchMock, sapCoreMock } from 'mock/window';
 
-import init from '../../../src/cpe/init';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
+import { ChangeService } from '../../../src/cpe/changes';
 import * as flexChange from '../../../src/cpe/changes/flex-change';
+import { CommunicationService } from '../../../src/cpe/communication-service';
+import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
+import { ContextMenuService } from '../../../src/cpe/context-menu-service';
+import init from '../../../src/cpe/init';
 import { OutlineService } from '../../../src/cpe/outline/service';
+import { QuickActionService } from '../../../src/cpe/quick-actions/quick-action-service';
+import { RtaService } from '../../../src/cpe/rta-service';
+import { SelectionService } from '../../../src/cpe/selection';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import connector from '../../../src/flp/WorkspaceConnector';
-import { CommunicationService } from '../../../src/cpe/communication-service';
-import { RtaService } from '../../../src/cpe/rta-service';
-import { ChangeService } from '../../../src/cpe/changes';
-import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
-import { QuickActionService } from '../../../src/cpe/quick-actions/quick-action-service';
-import { SelectionService } from '../../../src/cpe/selection';
-import { ContextMenuService } from '../../../src/cpe/context-menu-service';
-import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
-import { createDeferred } from 'open/ux/preview/client/adp/utils';
 
 function getAppLoadedWaitPromise(): Promise<boolean> {
-    const appLoaded = createDeferred<boolean>();
-    CommunicationService.sendAction = jest.fn().mockImplementation(({ type }) => {
-        if (type === common.appLoaded().type) {
-            appLoaded.resolve(true);
-        }
+    return new Promise((resolve) => {
+        CommunicationService.sendAction = jest.fn().mockImplementation((change) => {
+            if (common.appLoaded.match(change)) {
+                resolve(true);
+            }
+        });
     });
-    return appLoaded.promise;
 }
 
 async function waitForCpeInit(rta: RuntimeAuthoring): Promise<void> {
@@ -151,6 +150,7 @@ describe('main', () => {
     });
     test('init - rta exception', async () => {
         const error = new Error('Cannot init outline');
+        changesServiceSpy.mockResolvedValue();
         initOutlineSpy.mockRejectedValue(error);
         rtaSpy.mockResolvedValue();
 
@@ -161,7 +161,7 @@ describe('main', () => {
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
         expect(Log.error).toBeCalledWith('Service Initialization Failed: ', error);
         expect(CommunicationService.sendAction).toHaveBeenNthCalledWith(
-            3,
+            2,
             showInfoCenterMessage({
                 title: 'Control Property Editor Initialization Failed',
                 description: error.message,

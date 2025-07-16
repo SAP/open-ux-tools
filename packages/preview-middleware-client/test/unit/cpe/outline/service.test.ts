@@ -100,7 +100,7 @@ describe('index', () => {
         expect(mockSendAction).not.toHaveBeenCalled();
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
-                title: 'CPE: Outline Sync Failed',
+                title: 'Outline Update Failed',
                 description: 'error',
                 type: MessageBarType.error
             })
