@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import { render, screen, fireEvent } from '@testing-library/react';
 import type { DialogProps, DialogState } from '../../../src/components/UIDialog';
 import { UIDialog, UIDialogScrollArea, DIALOG_MAX_HEIGHT_OFFSET } from '../../../src/components/UIDialog';
 import { UIDefaultButton } from '../../../src/components/UIButton';
@@ -12,7 +12,6 @@ describe('<UIDialog />', () => {
     const windowHeight = 300;
     const onAcceptSpy = jest.fn();
     const onRejectSpy = jest.fn();
-    let wrapper: Enzyme.ReactWrapper<DialogProps, DialogState>;
     let windowEventMock: DOMEventListenerMock;
     const changeSize = (property: 'innerHeight', value: number): void => {
         Object.defineProperty(window, property, { writable: true, configurable: true, value: value });
@@ -28,7 +27,16 @@ describe('<UIDialog />', () => {
 
     beforeEach(() => {
         windowEventMock = mockDomEventListener(window);
-        wrapper = Enzyme.mount(
+        onAcceptSpy.mockClear();
+        onRejectSpy.mockClear();
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('Should render dialog content', () => {
+        render(
             <UIDialog
                 acceptButtonText="Yes"
                 cancelButtonText="No"
@@ -38,72 +46,111 @@ describe('<UIDialog />', () => {
                 <div className="dummy"></div>
             </UIDialog>
         );
-    });
-
-    afterEach(() => {
-        jest.clearAllMocks();
-        wrapper.unmount();
-    });
-
-    it('Should render dialog content', () => {
-        expect(wrapper.find('.dummy').length).toEqual(1);
+        expect(document.querySelector('.dummy')).toBeInTheDocument();
     });
 
     it('On Accept', () => {
-        const buttons = wrapper.find(UIDefaultButton);
-        expect(buttons.length).toEqual(2);
-        buttons.first().simulate('click');
+        render(
+            <UIDialog
+                acceptButtonText="Yes"
+                cancelButtonText="No"
+                onAccept={onAcceptSpy}
+                onCancel={onRejectSpy}
+                isOpen={true}>
+                <div className="dummy"></div>
+            </UIDialog>
+        );
+        const acceptButton = screen.getByText('Yes');
+        fireEvent.click(acceptButton);
         expect(onAcceptSpy).toBeCalledTimes(1);
     });
 
     it('On Cancel', () => {
-        const buttons = wrapper.find(UIDefaultButton);
-        expect(buttons.length).toEqual(2);
-        buttons.last().simulate('click');
+        render(
+            <UIDialog
+                acceptButtonText="Yes"
+                cancelButtonText="No"
+                onAccept={onAcceptSpy}
+                onCancel={onRejectSpy}
+                isOpen={true}>
+                <div className="dummy"></div>
+            </UIDialog>
+        );
+        const cancelButton = screen.getByText('No');
+        fireEvent.click(cancelButton);
         expect(onRejectSpy).toBeCalledTimes(1);
     });
 
     describe('Footer', () => {
         it('Accept and reject buttons', () => {
-            const buttons = wrapper.find(UIDefaultButton);
-            expect(wrapper.find(DialogFooter).length).toEqual(1);
-            expect(buttons.length).toEqual(2);
+            render(
+                <UIDialog
+                    acceptButtonText="Yes"
+                    cancelButtonText="No"
+                    onAccept={onAcceptSpy}
+                    onCancel={onRejectSpy}
+                    isOpen={true}>
+                    <div className="dummy"></div>
+                </UIDialog>
+            );
+            expect(screen.getByText('Yes')).toBeInTheDocument();
+            expect(screen.getByText('No')).toBeInTheDocument();
         });
 
         it('Accept button', () => {
-            wrapper.setProps({
-                onCancel: undefined
-            });
-            const buttons = wrapper.find(UIDefaultButton);
-            expect(wrapper.find(DialogFooter).length).toEqual(1);
-            expect(buttons.length).toEqual(1);
+            render(
+                <UIDialog
+                    acceptButtonText="Yes"
+                    cancelButtonText="No"
+                    onAccept={onAcceptSpy}
+                    isOpen={true}>
+                    <div className="dummy"></div>
+                </UIDialog>
+            );
+            expect(screen.getByText('Yes')).toBeInTheDocument();
+            expect(screen.queryByText('No')).not.toBeInTheDocument();
         });
 
         it('Reject button', () => {
-            wrapper.setProps({
-                onAccept: undefined
-            });
-            const buttons = wrapper.find(UIDefaultButton);
-            expect(wrapper.find(DialogFooter).length).toEqual(1);
-            expect(buttons.length).toEqual(1);
+            render(
+                <UIDialog
+                    acceptButtonText="Yes"
+                    cancelButtonText="No"
+                    onCancel={onRejectSpy}
+                    isOpen={true}>
+                    <div className="dummy"></div>
+                </UIDialog>
+            );
+            expect(screen.queryByText('Yes')).not.toBeInTheDocument();
+            expect(screen.getByText('No')).toBeInTheDocument();
         });
 
         it('Empty footer', () => {
-            wrapper.setProps({
-                onAccept: undefined,
-                onCancel: undefined
-            });
-            const buttons = wrapper.find(UIDefaultButton);
-            expect(wrapper.find(DialogFooter).length).toEqual(0);
-            expect(buttons.length).toEqual(0);
+            render(
+                <UIDialog
+                    acceptButtonText="Yes"
+                    cancelButtonText="No"
+                    isOpen={true}>
+                    <div className="dummy"></div>
+                </UIDialog>
+            );
+            expect(screen.queryByText('Yes')).not.toBeInTheDocument();
+            expect(screen.queryByText('No')).not.toBeInTheDocument();
         });
 
         it('Custom footer', () => {
-            wrapper.setProps({
-                footer: <div className="dummyFooter"></div>
-            });
-            expect(wrapper.find(DialogFooter).length).toEqual(1);
-            expect(wrapper.find('.dummyFooter').length).toEqual(1);
+            render(
+                <UIDialog
+                    acceptButtonText="Yes"
+                    cancelButtonText="No"
+                    onAccept={onAcceptSpy}
+                    onCancel={onRejectSpy}
+                    footer={<div className="dummyFooter"></div>}
+                    isOpen={true}>
+                    <div className="dummy"></div>
+                </UIDialog>
+            );
+            expect(document.querySelector('.dummyFooter')).toBeInTheDocument();
         });
     });
 

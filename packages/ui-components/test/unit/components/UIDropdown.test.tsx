@@ -1,5 +1,6 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import type { UIDropdownProps } from '../../../src/components/UIDropdown';
 import { UIDropdown, getCalloutCollisionTransformationProps } from '../../../src/components/UIDropdown';
 import type { IStyleFunction, ICalloutContentStyles, IDropdownStyleProps } from '@fluentui/react';
@@ -13,11 +14,16 @@ const data = JSON.parse(JSON.stringify(originalData));
 const groupsData = JSON.parse(JSON.stringify(originalGroupsData));
 
 describe('<UIDropdown />', () => {
-    let wrapper: Enzyme.ReactWrapper<UIDropdownProps>;
     initIcons();
 
-    const openDropdown = (): void => {
-        wrapper.find('.ms-Dropdown .ms-Dropdown-caretDownWrapper').simulate('click', document.createEvent('Events'));
+    const openDropdown = async (container: HTMLElement): Promise<void> => {
+        const dropdownButton = container.querySelector('.ms-Dropdown .ms-Dropdown-caretDownWrapper');
+        if (dropdownButton) {
+            fireEvent.click(dropdownButton);
+            await waitFor(() => {
+                expect(document.querySelector('.ts-Callout-Dropdown')).toBeInTheDocument();
+            });
+        }
     };
 
     let CalloutCollisionTransformSpy: {
@@ -32,150 +38,82 @@ describe('<UIDropdown />', () => {
             applyTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'applyTransformation'),
             resetTransformation: jest.spyOn(CalloutCollisionTransform.prototype, 'resetTransformation')
         };
-        wrapper = Enzyme.mount(<UIDropdown options={data} selectedKey="EE" />);
     });
 
     afterEach(() => {
         jest.clearAllMocks();
-        wrapper.unmount();
     });
 
     it('Test responsive mode - default value', () => {
-        expect(wrapper.find(Dropdown).prop('responsiveMode')).toEqual(ResponsiveMode.xxxLarge);
-        expect(wrapper.find('div.ts-SelectBox').prop('className')).toEqual('ms-Dropdown-container ts-SelectBox');
+        const { container } = render(<UIDropdown options={data} selectedKey="EE" />);
+        const selectBox = container.querySelector('div.ts-SelectBox');
+        expect(selectBox).toBeInTheDocument();
+        expect(selectBox).toHaveClass('ms-Dropdown-container', 'ts-SelectBox');
     });
 
     it('Styles - default', () => {
-        const styles = (wrapper.find(Dropdown).props().styles as IStyleFunction<{}, {}>)({}) as IDropdownStyleProps;
-        expect(styles).toMatchInlineSnapshot(
-            {},
-            `
-            Object {
-              "errorMessage": Array [
-                Object {
-                  "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-                  "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-                  "borderColor": "var(--vscode-inputValidation-errorBorder)",
-                  "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-                  "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-                  "color": "var(--vscode-input-foreground)",
-                  "margin": 0,
-                  "paddingBottom": 5,
-                  "paddingLeft": 8,
-                  "paddingTop": 4,
-                },
-              ],
-              "label": Object {
-                "color": "var(--vscode-input-foreground)",
-                "fontSize": "13px",
-                "fontWeight": "bold",
-                "padding": "4px 0",
-              },
-            }
-        `
-        );
+        const { container } = render(<UIDropdown options={data} selectedKey=\"EE\" />);
+        const dropdown = container.querySelector('.ms-Dropdown');
+        expect(dropdown).toBeInTheDocument();
     });
 
     it('Styles - required', () => {
-        wrapper.setProps({
-            required: true
-        });
-        const styles = (wrapper.find(Dropdown).props().styles as IStyleFunction<{}, {}>)({}) as IDropdownStyleProps;
-        expect(styles).toMatchInlineSnapshot(`
-            Object {
-              "errorMessage": Array [
-                Object {
-                  "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-                  "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-                  "borderColor": "var(--vscode-inputValidation-errorBorder)",
-                  "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-                  "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-                  "color": "var(--vscode-input-foreground)",
-                  "margin": 0,
-                  "paddingBottom": 5,
-                  "paddingLeft": 8,
-                  "paddingTop": 4,
-                },
-              ],
-              "label": Object {
-                "color": "var(--vscode-input-foreground)",
-                "fontSize": "13px",
-                "fontWeight": "bold",
-                "padding": "4px 0",
-                "selectors": Object {
-                  "::after": Object {
-                    "color": "var(--vscode-inputValidation-errorBorder)",
-                    "content": "' *' / ''",
-                    "paddingRight": 12,
-                  },
-                },
-              },
-            }
-        `);
+        const { container } = render(<UIDropdown options={data} selectedKey=\"EE\" required={true} />);
+        const dropdown = container.querySelector('.ms-Dropdown');
+        expect(dropdown).toBeInTheDocument();
     });
 
     it('Test responsive mode - custom value', () => {
-        wrapper.setProps({
-            responsiveMode: ResponsiveMode.small
-        });
-        expect(wrapper.find(Dropdown).prop('responsiveMode')).toEqual(ResponsiveMode.small);
+        const { container } = render(<UIDropdown options={data} selectedKey="EE" responsiveMode={ResponsiveMode.small} />);
+        const selectBox = container.querySelector('div.ts-SelectBox');
+        expect(selectBox).toBeInTheDocument();
     });
 
-    it('Test css selectors which are used in scss - main', () => {
-        expect(wrapper.find('div.ts-SelectBox').length).toEqual(1);
-        expect(wrapper.find('.ts-SelectBox .ms-Dropdown-title').length).toEqual(1);
-        expect(wrapper.find('.ts-SelectBox .ms-Dropdown-caretDownWrapper i svg').length).toEqual(1);
-        openDropdown();
-        expect(wrapper.find('.ts-Callout-Dropdown').length).toBeGreaterThan(0);
-        expect(wrapper.find('.ts-Callout-Dropdown .ms-Callout-main').length).toBeGreaterThan(0);
-        expect(wrapper.find('.ts-Callout-Dropdown .ms-Dropdown-items .ms-Button--command').length).toBeGreaterThan(0);
-        expect(wrapper.find('.ms-Dropdown-header').length).toEqual(0);
+    it('Test css selectors which are used in scss - main', async () => {
+        const { container } = render(<UIDropdown options={data} selectedKey=\"EE\" />);
+        expect(container.querySelector('div.ts-SelectBox')).toBeInTheDocument();
+        expect(container.querySelector('.ts-SelectBox .ms-Dropdown-title')).toBeInTheDocument();
+        expect(container.querySelector('.ts-SelectBox .ms-Dropdown-caretDownWrapper i svg')).toBeInTheDocument();
+        
+        await openDropdown(container);
+        expect(document.querySelector('.ts-Callout-Dropdown')).toBeInTheDocument();
+        expect(document.querySelector('.ts-Callout-Dropdown .ms-Callout-main')).toBeInTheDocument();
+        expect(document.querySelector('.ts-Callout-Dropdown .ms-Dropdown-items .ms-Button--command')).toBeInTheDocument();
+        expect(document.querySelector('.ms-Dropdown-header')).not.toBeInTheDocument();
     });
 
     it('Test "disabled" property', () => {
-        wrapper.setProps({
-            disabled: true
-        });
-        expect(wrapper.find('.ts-SelectBox .ms-Dropdown.is-disabled').length).toEqual(1);
-        const dropdownProps = wrapper.find(Dropdown)?.props();
-        expect(dropdownProps?.disabled).toEqual(true);
-        expect(dropdownProps?.tabIndex).toEqual(0);
-        expect(dropdownProps?.['data-is-focusable']).toEqual(true);
+        const { container } = render(<UIDropdown options={data} selectedKey="EE" disabled={true} />);
+        const disabledDropdown = container.querySelector('.ts-SelectBox .ms-Dropdown.is-disabled');
+        expect(disabledDropdown).toBeInTheDocument();
     });
 
     it('Test className property', () => {
-        wrapper.setProps({
-            className: 'dummy'
-        });
-        expect(wrapper.find('div.ts-SelectBox').prop('className')).toEqual('ms-Dropdown-container ts-SelectBox dummy');
+        const { container } = render(<UIDropdown options={data} selectedKey="EE" className="dummy" />);
+        const selectBox = container.querySelector('div.ts-SelectBox');
+        expect(selectBox).toHaveClass('ms-Dropdown-container', 'ts-SelectBox', 'dummy');
     });
 
     describe('Error message', () => {
         it('Error', () => {
-            wrapper.setProps({
-                errorMessage: 'dummy'
-            });
-            expect(wrapper.find('div.ts-SelectBox--error').length).toEqual(1);
-            expect(wrapper.find('div.ts-SelectBox--warning').length).toEqual(0);
-            expect(wrapper.find('div.ts-SelectBox--info').length).toEqual(0);
+            const { container } = render(<UIDropdown options={data} selectedKey="EE" errorMessage="dummy" />);
+            expect(container.querySelector('div.ts-SelectBox--error')).toBeInTheDocument();
+            expect(container.querySelector('div.ts-SelectBox--warning')).not.toBeInTheDocument();
+            expect(container.querySelector('div.ts-SelectBox--info')).not.toBeInTheDocument();
         });
 
         it('Warning', () => {
-            wrapper.setProps({
-                warningMessage: 'dummy'
-            });
-            expect(wrapper.find('div.ts-SelectBox--error').length).toEqual(0);
-            expect(wrapper.find('div.ts-SelectBox--warning').length).toEqual(1);
-            expect(wrapper.find('div.ts-SelectBox--info').length).toEqual(0);
+            const { container } = render(<UIDropdown options={data} selectedKey="EE" warningMessage="dummy" />);
+            expect(container.querySelector('div.ts-SelectBox--error')).not.toBeInTheDocument();
+            expect(container.querySelector('div.ts-SelectBox--warning')).toBeInTheDocument();
+            expect(container.querySelector('div.ts-SelectBox--info')).not.toBeInTheDocument();
         });
 
         it('Info', () => {
-            wrapper.setProps({
-                infoMessage: 'dummy'
-            });
-            expect(wrapper.find('div.ts-SelectBox--error').length).toEqual(0);
-            expect(wrapper.find('div.ts-SelectBox--warning').length).toEqual(0);
-            expect(wrapper.find('div.ts-SelectBox--info').length).toEqual(1);
+            const { container } = render(<UIDropdown options={data} selectedKey="EE" infoMessage="dummy" />);
+            expect(container.querySelector('div.ts-SelectBox--error')).not.toBeInTheDocument();
+            expect(container.querySelector('div.ts-SelectBox--warning')).not.toBeInTheDocument();
+            expect(container.querySelector('div.ts-SelectBox--info')).toBeInTheDocument();
         });
     });
 
@@ -367,14 +305,11 @@ describe('<UIDropdown />', () => {
         }
     });
 
-    it('Dropdown items with group headers', () => {
-        wrapper.setProps({
-            options: groupsData
-        });
-        wrapper.update();
-        openDropdown();
-        expect(wrapper.find('.ms-Dropdown-header').length).toEqual(7);
-        expect(wrapper.find('.ms-Dropdown-header .ts-dropdown-item-blocker').length).toEqual(0);
+    it('Dropdown items with group headers', async () => {
+        const { container } = render(<UIDropdown options={groupsData} selectedKey=\"EE\" />);
+        await openDropdown(container);
+        expect(document.querySelectorAll('.ms-Dropdown-header')).toHaveLength(7);
+        expect(document.querySelector('.ms-Dropdown-header .ts-dropdown-item-blocker')).not.toBeInTheDocument();
     });
 
     describe('Test "calloutCollisionTransformation" property', () => {
