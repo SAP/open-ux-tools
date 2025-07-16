@@ -1,11 +1,13 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { UIVirtualList } from '../../../src/components/UIVirtualList';
 import type { ListProps, ListRowProps } from 'react-virtualized';
 import { List } from 'react-virtualized';
 
 describe('<UIVirtualList />', () => {
-    let wrapper: Enzyme.ReactWrapper<ListProps>;
+    let renderResult: ReturnType<typeof render>;
+    let componentRef: React.RefObject<UIVirtualList>;
 
     const renderRow = (params: ListRowProps) => {
         const { index } = params;
@@ -13,24 +15,33 @@ describe('<UIVirtualList />', () => {
     };
 
     beforeEach(() => {
-        wrapper = Enzyme.mount(
-            <UIVirtualList width={100} height={100} rowHeight={25} rowCount={10} rowRenderer={renderRow} />
+        componentRef = React.createRef<UIVirtualList>();
+        renderResult = render(
+            <UIVirtualList 
+                ref={componentRef}
+                width={100} 
+                height={100} 
+                rowHeight={25} 
+                rowCount={10} 
+                rowRenderer={renderRow} 
+            />
         );
     });
 
     afterEach(() => {
         jest.clearAllMocks();
-        wrapper.unmount();
+        renderResult.unmount();
     });
 
     it('Should render a UIVirtualList component', () => {
-        expect(wrapper.find('div.ReactVirtualized__List').length).toEqual(1);
+        const { container } = renderResult;
+        expect(container.querySelectorAll('div.ReactVirtualized__List').length).toEqual(1);
     });
 
     it('Public method "recomputeRowHeights"', () => {
         const row = 3;
         const recomputeRowHeightsSpy = jest.spyOn(List.prototype, 'recomputeRowHeights');
-        (wrapper.instance() as UIVirtualList).recomputeRowHeights(row);
+        componentRef.current!.recomputeRowHeights(row);
         expect(recomputeRowHeightsSpy).toBeCalledTimes(1);
         expect(recomputeRowHeightsSpy).toHaveBeenCalledWith(row);
     });
@@ -38,14 +49,14 @@ describe('<UIVirtualList />', () => {
     it('Public method "scrollToRow"', () => {
         const row = 3;
         const scrollToRowSpy = jest.spyOn(List.prototype, 'scrollToRow');
-        (wrapper.instance() as UIVirtualList).scrollToRow(row);
+        componentRef.current!.scrollToRow(row);
         expect(scrollToRowSpy).toBeCalledTimes(1);
         expect(scrollToRowSpy).toHaveBeenCalledWith(row);
     });
 
     it('Public method "forceListUpdate"', () => {
         const forceUpdateSpy = jest.spyOn(List.prototype, 'forceUpdate');
-        (wrapper.instance() as UIVirtualList).forceListUpdate();
+        componentRef.current!.forceListUpdate();
         expect(forceUpdateSpy).toBeCalledTimes(1);
     });
 });
