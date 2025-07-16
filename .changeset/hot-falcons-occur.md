@@ -3,4 +3,4 @@
 '@sap-ux/adp-tooling': patch
 ---
 
-feat: Add ADP "Add Local Annotation File" manifest change wizard sub-generator
+feat: Add ADP manifest change wizard sub-generators

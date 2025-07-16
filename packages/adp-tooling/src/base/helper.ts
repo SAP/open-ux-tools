@@ -92,7 +92,7 @@ export function extractAdpConfig(ui5Conf: UI5Config): AdpPreviewConfig | undefin
  *
  * @param basePath  Adaptation project root
  * @param yamlPath  Relative or absolute path to the ui5.yaml file
- * @returns The `AdpPreviewConfig` object if found, otherwise `undefined`.
+ * @returns The `AdpPreviewConfig` object if found, otherwise throws an error.
  */
 export async function getAdpConfig(basePath: string, yamlPath: string): Promise<AdpPreviewConfig> {
     try {
