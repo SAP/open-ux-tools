@@ -18,7 +18,7 @@ export const render = (props: { active?: boolean }): React.ReactElement => {
             setAnswers(getCurrentAnswers());
         });
         const channel = addons.getChannel();
-        channel.on('storyChanged', (storyId) => {
+        channel.on('storyChanged', (_storyId) => {
             const resetAnswers = '{}';
             window.localStorage.setItem(storageKey, resetAnswers);
             setAnswers(resetAnswers);
