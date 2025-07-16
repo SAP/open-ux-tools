@@ -48,6 +48,7 @@ import {
     createFlpTemplateConfig,
     PREVIEW_URL,
     type TemplateConfig,
+    isFlexConnector,
     createTestTemplateConfig,
     addApp,
     getAppName,
@@ -245,8 +246,10 @@ export class FlpSandbox {
      * @private
      */
     private checkDeleteConnectors(ui5VersionMajor: number, ui5VersionMinor: number): void {
-        if (ui5VersionMajor === 1 && ui5VersionMinor < 78) {
-            this.templateConfig.ui5.flex?.splice(1, 1);
+        if (ui5VersionMajor === 1 && ui5VersionMinor < 76) {
+            this.templateConfig.ui5.flex = this.templateConfig.ui5.flex.filter((connector) =>
+                isFlexConnector(connector)
+            );
             this.logger.debug(
                 `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it. The Fiori Tools fake connector (FakeLrepConnector) will be used instead.`
             );
@@ -254,7 +257,11 @@ export class FlpSandbox {
             this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
         }
         if (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs') {
-            this.templateConfig.ui5.flex?.splice(0, 1);
+            this.templateConfig.ui5.flex = this.templateConfig.ui5.flex.filter(
+                (connector) =>
+                    !isFlexConnector(connector) ||
+                    (isFlexConnector(connector) && !connector.url?.startsWith('/sap/bc/lrep'))
+            );
             this.logger.debug(
                 `The ABAP connector is not being used because the current project type is '${this.projectType}'.`
             );
@@ -284,8 +291,8 @@ export class FlpSandbox {
             libs.push('sap.ui.rta');
             config.ui5.libs = libs.join(',');
         }
-        config.flex = {
-            layer: rta.layer,
+        config.flexSettings = {
+            layer: rta.layer ?? 'CUSTOMER_BASE',
             ...rta.options,
             generator: editor.generator ?? defaultGenerator,
             developerMode: editor.developerMode === true,

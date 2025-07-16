@@ -1,5 +1,67 @@
 # @sap-ux/ui5-library-sub-generator
 
+## 0.1.28
+
+### Patch Changes
+
+-   @sap-ux/ui5-library-inquirer@0.4.28
+
+## 0.1.27
+
+### Patch Changes
+
+-   @sap-ux/ui5-library-inquirer@0.4.27
+
+## 0.1.26
+
+### Patch Changes
+
+-   Updated dependencies [d75db00]
+    -   @sap-ux/fiori-generator-shared@0.13.2
+    -   @sap-ux/ui5-library-inquirer@0.4.26
+
+## 0.1.25
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.1
+-   @sap-ux/ui5-library-writer@0.6.9
+-   @sap-ux/ui5-library-inquirer@0.4.25
+
+## 0.1.24
+
+### Patch Changes
+
+-   Updated dependencies [58abe82]
+    -   @sap-ux/fiori-generator-shared@0.13.0
+    -   @sap-ux/ui5-library-inquirer@0.4.24
+
+## 0.1.23
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/fiori-generator-shared@0.12.16
+    -   @sap-ux/ui5-library-inquirer@0.4.23
+    -   @sap-ux/ui5-library-writer@0.6.8
+
+## 0.1.22
+
+### Patch Changes
+
+-   @sap-ux/ui5-library-writer@0.6.7
+-   @sap-ux/fiori-generator-shared@0.12.15
+-   @sap-ux/ui5-library-inquirer@0.4.22
+
+## 0.1.21
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.14
+-   @sap-ux/ui5-library-writer@0.6.6
+-   @sap-ux/ui5-library-inquirer@0.4.21
+
 ## 0.1.20
 
 ### Patch Changes

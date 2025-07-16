@@ -1,5 +1,43 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.2.0
+
+### Minor Changes
+
+-   e53c1f8: Remove archive.zip from deploy script to allow passing any of the additional CLI params.
+
+## 0.1.17
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/system-access@0.6.10
+
+## 0.1.16
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.10
+-   @sap-ux/ui5-config@0.29.0
+
+## 0.1.15
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/project-access@1.30.6
+    -   @sap-ux/system-access@0.6.9
+
+## 0.1.14
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/system-access@0.6.9
+
 ## 0.1.13
 
 ### Patch Changes

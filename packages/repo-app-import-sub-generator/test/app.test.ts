@@ -114,7 +114,8 @@ function createAppConfig(appId: string, metadata: string): FioriElementsApp<LROP
         },
         appOptions: {
             addAnnotations: true,
-            addTests: true
+            addTests: true,
+            useVirtualPreviewEndpoints: true
         },
         ui5: {
             version: '1.100.0'
@@ -239,6 +240,16 @@ function verifyGeneratedFiles(testOutputDir: string, appId: string, testFixtureD
     );
     expect(fs.readFileSync(join(projectPath, DirName.Webapp, 'index.html'), 'utf-8')).toBe(
         fs.readFileSync(join(testFixtureDir, 'index.html'), 'utf-8')
+    );
+
+    // ensure preview endpoints are added to preview scripts
+    const packageJson = JSON.parse(fs.readFileSync(join(projectPath, FileName.Package), 'utf-8'));
+    expect(packageJson?.scripts?.start).toBe(`fiori run --open \"test/flp.html#app-preview\"`);
+    expect(packageJson?.scripts?.['start-local']).toBe(
+        `fiori run --config ./ui5-local.yaml --open \"test/flp.html#app-preview\"`
+    );
+    expect(packageJson?.scripts?.['start-mock']).toBe(
+        `fiori run --config ./ui5-mock.yaml --open \"test/flp.html#app-preview\"`
     );
 }
 

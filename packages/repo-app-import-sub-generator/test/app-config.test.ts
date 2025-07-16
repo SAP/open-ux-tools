@@ -124,7 +124,8 @@ describe('getAppConfig', () => {
         },
         appOptions: {
             addAnnotations: true,
-            addTests: true
+            addTests: true,
+            useVirtualPreviewEndpoints: true
         },
         ui5: {
             localVersion: '1.88.0'

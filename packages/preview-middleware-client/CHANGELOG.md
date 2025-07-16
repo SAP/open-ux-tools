@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.14.11
+
+### Patch Changes
+
+-   fc8cc4a: fix: detect all sync views
+
 ## 0.14.10
 
 ### Patch Changes

@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-freestyle-writer",
     "description": "SAP Fiori freestyle application writer",
-    "version": "2.4.18",
+    "version": "2.4.24",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -40,7 +40,7 @@
         "@sap-ux/ui5-test-writer": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "ejs": "3.1.10",
-        "i18next": "20.6.1",
+        "i18next": "25.3.0",
         "lodash": "4.17.21",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",

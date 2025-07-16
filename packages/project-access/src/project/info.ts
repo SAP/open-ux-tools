@@ -18,6 +18,7 @@ import { findAllApps, findFioriArtifacts } from './search';
 import { getMainService, getServicesAndAnnotations } from './service';
 import { getWebappPath } from './ui5-config';
 import { gte, valid } from 'semver';
+import { normalizePath } from '../path';
 
 /**
  * Returns the project structure for a given Fiori project.
@@ -35,7 +36,7 @@ export async function getProject(root: string, memFs?: Editor): Promise<Project>
     const appFolders = await getAppFolders(root, memFs);
     const apps = await getApps(root, appFolders, memFs);
     return {
-        root,
+        root: normalizePath(root),
         projectType,
         apps
     };

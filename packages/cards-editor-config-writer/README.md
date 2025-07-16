@@ -1,22 +1,13 @@
-# @sap-ux/cards-editor-config-writer
+# ⚠️ DEPRECATED ⚠️
 
-Adds or removes configuration for the experimental middleware module `@sap-ux/cards-editor-middleware` to an SAP UX project.
+**This package is officially deprecated and will no longer be maintained.**
 
-## Installation
-Npm
-`npm install --save @sap-ux/cards-editor-config-writer`
+---
 
-Yarn
-`yarn add @sap-ux/cards-editor-config-writer`
+## **🛑 IMPORTANT: This Package is Deprecated!**
 
-Pnpm
-`pnpm add @sap-ux/cards-editor-config-writer`
+**Please discontinue use of this package immediately.**
 
-## Usage
-npx @sap-ux/cards-editor-config-writer@latest
+### **Reason for Deprecation:**
 
-See more complex example in [`/test/unit`](./test/unit)
-
-## Keywords
-SAP Fiori elements
-EXPERIMENTAL
+* The functionality provided by this package has been integrated into the `@sap-ux/app-config-writer` package, which is now the recommended way to manage card configurations in SAP UX projects.

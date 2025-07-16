@@ -200,10 +200,11 @@ export default class extends Generator {
             this.baseAppInbounds = await getBaseAppInbounds(this.configAnswers.application.id, this.prompter.provider);
         }
         const options: AttributePromptOptions = {
-            targetFolder: { default: defaultFolder },
+            targetFolder: { default: defaultFolder, hide: this.shouldCreateExtProject },
             ui5ValidationCli: { hide: !this.isCli },
             enableTypeScript: { hide: this.shouldCreateExtProject },
-            addFlpConfig: { hasBaseAppInbounds: !!this.baseAppInbounds }
+            addFlpConfig: { hasBaseAppInbounds: !!this.baseAppInbounds, hide: this.shouldCreateExtProject },
+            addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase }
         };
         const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
 
@@ -214,19 +215,6 @@ export default class extends Generator {
 
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
-        if (this.attributeAnswers?.addFlpConfig) {
-            addFlpGen(
-                {
-                    vscode: this.vscode,
-                    projectRootPath: this._getProjectPath(),
-                    inbounds: this.baseAppInbounds
-                },
-                this.composeWith.bind(this),
-                this.logger,
-                this.appWizard
-            );
-        }
-
         if (this.attributeAnswers.addDeployConfig) {
             const client = (await this.systemLookup.getSystemByName(this.configAnswers.system))?.Client;
             addDeployGen(
@@ -235,6 +223,20 @@ export default class extends Generator {
                     targetFolder: this.attributeAnswers.targetFolder,
                     connectedSystem: this.configAnswers.system,
                     client
+                },
+                this.composeWith.bind(this),
+                this.logger,
+                this.appWizard
+            );
+        }
+
+        if (this.attributeAnswers?.addFlpConfig) {
+            addFlpGen(
+                {
+                    vscode: this.vscode,
+                    projectRootPath: this._getProjectPath(),
+                    inbounds: this.baseAppInbounds,
+                    layer: this.layer
                 },
                 this.composeWith.bind(this),
                 this.logger,
@@ -302,6 +304,10 @@ export default class extends Generator {
     }
 
     async end(): Promise<void> {
+        if (this.shouldCreateExtProject) {
+            return;
+        }
+
         const telemetryData =
             TelemetryHelper.createTelemetryData({
                 appType: 'generator-adp',
@@ -460,7 +466,7 @@ export default class extends Generator {
                 !!this.baseAppInbounds,
                 this.prompts,
                 this.attributeAnswers.projectName,
-                this.attributeAnswers.addFlpConfig
+                !!this.attributeAnswers.addFlpConfig
             );
         }
     }

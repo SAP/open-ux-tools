@@ -60,7 +60,7 @@ async function generate(
 
     // package.json
     // deploy script
-    const deployScript = `${BUILD_SCRIPT} && ${DEPLOY_SCRIPT} --config ${deployConfigFile} && ${RIMRAF} archive.zip`;
+    const deployScript = `${BUILD_SCRIPT} && ${DEPLOY_SCRIPT} --config ${deployConfigFile}`;
     await updatePackageScript(basePath, 'deploy', deployScript, fs);
     // undeploy script
     const undeployScript = `${BUILD_SCRIPT} && ${UNDEPLOY_SCRIPT} --config ${deployConfigFile}`;

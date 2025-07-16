@@ -68,7 +68,7 @@ export interface TemplateConfig {
         resources: Record<string, string>;
     };
     init?: string;
-    flex?: {
+    flexSettings?: {
         [key: string]: unknown;
         layer: UI5FlexLayer;
         developerMode: boolean;
@@ -144,6 +144,16 @@ const UI5_LIBS = [
     'sap.webanalytics',
     'sap.zen'
 ] as const;
+
+/**
+ * Type guard for FlexConnector.
+ *
+ * @param connector - the connector to check
+ * @returns true if the connector is a FlexConnector, false otherwise
+ */
+export function isFlexConnector(connector: FlexConnector | CustomConnector): connector is FlexConnector {
+    return 'connector' in connector;
+}
 
 /**
  * Gets the UI5 libs dependencies from manifest.json.

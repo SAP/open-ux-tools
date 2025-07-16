@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.6.7
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+
 ## 0.6.6
 
 ### Patch Changes

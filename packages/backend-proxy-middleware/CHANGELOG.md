@@ -1,5 +1,13 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.9.10
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/store@1.1.2
+
 ## 0.9.9
 
 ### Patch Changes

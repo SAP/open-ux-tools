@@ -9,7 +9,6 @@ import { FileName, getMtaPath, hasDependency, type Package } from '@sap-ux/proje
 import {
     CloudFoundry,
     RouterModule,
-    ResourceMTADestination,
     DefaultMTADestination,
     SRV_API,
     ManagedXSUAA,
@@ -934,11 +933,7 @@ export class MtaConfig {
         const module = this.modules.get('com.sap.application.content:appfront');
         if (module) {
             // If the destination provided is `fiori-default-srv-api` then use the default destination name
-            const destName =
-                cfDestination === DefaultMTADestination
-                    ? this.getFormattedPrefix(ResourceMTADestination)
-                    : cfDestination;
-
+            const destName = cfDestination === DefaultMTADestination ? SRV_API : cfDestination;
             // Ensure the destination does not exist already!
             if (
                 !module.parameters?.config?.destinations?.some(
@@ -965,6 +960,7 @@ export class MtaConfig {
     private async appendInstanceBasedDestination(cfDestination: string | undefined): Promise<void> {
         // Part 1. Update the destination service with the new instance based destination
         const destinationResource = this.resources.get('destination');
+        const capDestName = cfDestination === DefaultMTADestination ? SRV_API : cfDestination;
         if (destinationResource) {
             if (!destinationResource.requires?.some((ele) => ele.name === SRV_API)) {
                 destinationResource.requires = [
@@ -976,21 +972,25 @@ export class MtaConfig {
                     ]
                 ];
             }
-            // If the destination provided is `fiori-default-srv-api` then use the default destination name
-            const capDestName =
-                cfDestination === DefaultMTADestination
-                    ? this.getFormattedPrefix(ResourceMTADestination)
-                    : cfDestination;
-            // Ensure the destination does not exist already!
-            if (
-                !destinationResource.parameters?.config?.init_data?.instance?.destinations?.some(
-                    (destination: MTADestinationType) => destination.Name === capDestName
-                )
-            ) {
-                destinationResource.parameters?.config?.init_data?.instance?.destinations?.push({
-                    ...MTAAPIDestination,
-                    Name: capDestName
-                });
+            // Part 2. Only append the default destination if it does not exist already
+            const isSrvApiExisting =
+                cfDestination === SRV_API &&
+                destinationResource.parameters?.config?.init_data?.instance?.destinations?.some(
+                    (destination: MTADestinationType) => destination.Name === SRV_API
+                );
+
+            // Part 3. If the destination is not already existing, append it
+            if (!isSrvApiExisting) {
+                if (
+                    !destinationResource.parameters?.config?.init_data?.instance?.destinations?.some(
+                        (destination: MTADestinationType) => destination.Name === capDestName
+                    )
+                ) {
+                    destinationResource.parameters?.config?.init_data?.instance?.destinations?.push({
+                        ...MTAAPIDestination,
+                        Name: capDestName
+                    });
+                }
             }
             await this.mta.updateResource(destinationResource);
             this.resources.set('destination', destinationResource);
