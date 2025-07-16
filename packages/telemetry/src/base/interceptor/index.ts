@@ -42,7 +42,6 @@ export const duration = (
     evtName: EventName,
     sampleRate: SampleRate
 ): Function => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (...args: any[]): Function => {
         const markName = performance.startMark('mark');
         const result = originalFn.apply(target, args);
@@ -62,7 +61,6 @@ export const durationAsync = (
     evtName: EventName,
     sampleRate: SampleRate
 ): Function => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return async (...args: any[]): Promise<Function> => {
         const markName = performance.startMark('mark');
         const result = await originalFn.apply(target, args);
@@ -83,7 +81,6 @@ export const captureParam = (
     sampleRate: SampleRate,
     instructions: ParamRecordConfig | ParamRecordConfig[]
 ): Function => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (...args: any[]): Function => {
         const result = originalFn.apply(target, args);
         const [customDimensions, customMeasurements] = getParamsData(args, instructions);
@@ -101,7 +98,6 @@ export const captureParamAsync = (
     sampleRate: SampleRate,
     instructions: ParamRecordConfig | ParamRecordConfig[]
 ): Function => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return async (...args: any[]): Promise<Function> => {
         const result = await originalFn.apply(target, args);
         const [customDimensions, customMeasurements] = getParamsData(args, instructions);
