@@ -1074,6 +1074,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@types/prettier':
+        specifier: 2.7.3
+        version: 2.7.3
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0

@@ -4,9 +4,7 @@ const { platform } = require('os');
 
 const fiveMinutes = 5 * 60000;
 const TEST_DATA_ROOT = join(__dirname, 'test', 'data');
-const CDS_PROJECTS = [
-    join(TEST_DATA_ROOT, 'bookshop')
-];
+const CDS_PROJECTS = [join(TEST_DATA_ROOT, 'bookshop')];
 
 function npmInstall(projectPath) {
     console.log(`Installing packages in ${projectPath}. Max time allocated is 5 min.`);
