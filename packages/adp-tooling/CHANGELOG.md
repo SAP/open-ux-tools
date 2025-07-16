@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.15.0
+
+### Minor Changes
+
+-   e53c1f8: Remove archive.zip from deploy script to allow passing any of the additional CLI params.
+
 ## 0.14.44
 
 ### Patch Changes
