@@ -185,6 +185,7 @@ export default defineConfig([
         languageOptions: {
             globals: {
                 ...nodeGlobals,
+                ...jestGlobals,
                 fail: 'readonly',
                 exp: 'readonly',
                 require: 'readonly',
@@ -257,9 +258,6 @@ export default defineConfig([
         },
         languageOptions: {
             parser: tsParser,
-            globals: {
-                ...jestGlobals
-            }
         },
         rules: {
             '@typescript-eslint/explicit-function-return-type': 'off',

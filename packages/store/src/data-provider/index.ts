@@ -14,7 +14,8 @@ export interface DataProvider<E, K extends EntityKey> {
     /**
      * Returns the data as an array related to the entity.
      *
-     * @param includeSensitiveData If true and relevant for the entity, sensitive data will be returned - defaults to true.
+     * @param options Optional settings for the query.
+     * @param options.includeSensitiveData If true and relevant for the entity, sensitive data will be returned - defaults to true.
      */
     getAll(options?: { includeSensitiveData?: boolean }): Promise<E[] | []>;
 }
