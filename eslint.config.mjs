@@ -240,7 +240,9 @@ export default defineConfig([
             'jsdoc/tag-lines': ['error', 'never', { startLines: 1 }],
             // Rules that were added to @typescript-eslint/eslint-plugin recommended v8
             '@typescript-eslint/no-unsafe-function-type': 'warn',
-            '@typescript-eslint/no-require-imports': 'warn'
+            '@typescript-eslint/no-require-imports': 'warn',
+            '@typescript-eslint/no-empty-object-type': 'warn',
+            '@typescript-eslint/no-unused-expressions': 'warn'
         }
     },
     {
