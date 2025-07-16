@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.20.60
+
+### Patch Changes
+
+-   eafb486: fix: default layer for rta
+
 ## 0.20.59
 
 ### Patch Changes
