@@ -1,45 +1,49 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import '@testing-library/jest-dom';
 import { UISearchBox } from '../../../src/components/UISearchBox/UISearchBox';
-import type { ISearchBoxProps } from '@fluentui/react';
 
 describe('<UISearchBox />', () => {
-    let wrapper: Enzyme.ReactWrapper<ISearchBoxProps>;
+    let renderResult: ReturnType<typeof render>;
 
     beforeEach(() => {
-        wrapper = Enzyme.mount(<UISearchBox />);
+        renderResult = render(<UISearchBox />);
     });
 
     afterEach(() => {
-        wrapper.unmount();
+        renderResult.unmount();
     });
 
     it('Existence', () => {
-        expect(wrapper.find(UISearchBox).length).toEqual(1);
+        const { container } = renderResult;
+        // Check for any input element or search box specific class
+        const input = container.querySelector('input') || container.querySelector('[role=\"searchbox\"]');
+        expect(input).toBeTruthy();
     });
 
-    it('Test callbacks - onChange and onClear', () => {
+    it('Test callbacks - onChange and onClear', async () => {
         const expectQuery = 'dummy';
         const onChange = jest.fn();
         const onClear = jest.fn();
-        wrapper.setProps({
-            onChange,
-            onClear
-        });
-        wrapper.find('UISearchBox input').simulate('change', {
-            target: {
-                value: expectQuery
-            }
-        });
-        expect(onChange).toBeCalledTimes(1);
-        expect(onChange.mock.calls[0][1]).toEqual(expectQuery);
+        
+        renderResult.rerender(<UISearchBox onChange={onChange} onClear={onClear} />);
+        
+        const { container } = renderResult;
+        const input = container.querySelector('input') || container.querySelector('[role=\"searchbox\"]');
+        expect(input).toBeTruthy();
+        
+        // Test onChange
+        await userEvent.type(input as HTMLElement, expectQuery);
+        expect(onChange).toHaveBeenCalled();
+        expect(onChange.mock.calls[onChange.mock.calls.length - 1][1]).toEqual(expectQuery);
 
         // Check reset
         onChange.mockClear();
-        const resetButton = wrapper.find('UISearchBox button.ms-Button');
-        expect(resetButton.length).toEqual(1);
+        const resetButton = container.querySelector('button.ms-Button');
+        expect(resetButton).toBeTruthy();
 
-        resetButton.simulate('click', {});
+        await userEvent.click(resetButton as HTMLElement);
         expect(onChange).toBeCalledTimes(1);
         expect(onChange.mock.calls[0][1]).toEqual('');
         expect(onClear).toBeCalledTimes(1);
