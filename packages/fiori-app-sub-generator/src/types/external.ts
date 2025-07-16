@@ -6,7 +6,7 @@ import type { DeployConfig, FLPConfig } from '@sap-ux/fiori-generator-shared';
 import type { CapRuntime, EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { promptNames as ui5AppInquirerPromptNames } from '@sap-ux/ui5-application-inquirer';
-import type { FioriGeneratorPromptSettings, SubGeneratorPromptSettingsMap } from './common';
+import type { FioriGeneratorPromptSettings, SubGeneratorPromptSettings } from './common';
 import type { Answers } from 'inquirer';
 import { LEGACY_CAP_TYPE_JAVA, LEGACY_CAP_TYPE_NODE } from './constants';
 import { type ALPOptions, type Project, type Service, type Floorplan, FloorplanFE, FloorplanFF } from './state';
@@ -195,7 +195,7 @@ export interface FioriGeneratorSettings {
     showLayoutPrompts?: boolean;
 }
 
-export type FioriGeneratorPromptExtension = FioriGeneratorPromptSettings & SubGeneratorPromptSettingsMap;
+export type FioriGeneratorPromptExtension = FioriGeneratorPromptSettings & SubGeneratorPromptSettings;
 
 export interface ConditionalStep extends Step {
     /**

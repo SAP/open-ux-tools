@@ -20,7 +20,7 @@ export type WorkspaceFolder = {
     path: string;
 };
 
-export interface SubGeneratorPromptSettingsMap {
+export interface SubGeneratorPromptSettings {
     '@sap-ux/deploy-config-sub-generator'?: AbapDeployConfigPromptOptions | CfDeployConfigPromptOptions;
     '@sap-ux/flp-config-sub-generator'?: FLPConfigPromptOptions;
 }
@@ -30,7 +30,7 @@ export interface FioriGeneratorPromptSettings {
 }
 
 export type FioriAppGeneratorPromptSettings = FioriGeneratorPromptSettings['@sap/generator-fiori'] &
-    SubGeneratorPromptSettingsMap;
+    SubGeneratorPromptSettings;
 
 /**
  * Custom environment type until yeoman-environment provides one
