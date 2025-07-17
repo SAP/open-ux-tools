@@ -81,7 +81,7 @@ describe('CommandRunner', () => {
         let childProcessOutput = 'npm install\n\n\n';
         spawnMock.setDefault(spawnMock.simple(0, childProcessOutput));
 
-        await commandRunner.run(cmd, args, {}, logger as any as Logger);
+        await commandRunner.run(cmd, args, {}, logger as unknown as Logger);
 
         expect(logger.debug).toHaveBeenCalledWith(`Running command: ${cmd} ${args.join(' ')}`);
         expect(logger.info).toHaveBeenCalledWith('npm install');
@@ -89,9 +89,17 @@ describe('CommandRunner', () => {
         childProcessOutput = 'npm install\r\r\r\r\r\r';
         spawnMock.setDefault(spawnMock.simple(0, childProcessOutput));
 
-        await commandRunner.run(cmd, args, {}, logger as any as Logger);
+        await commandRunner.run(cmd, args, {}, logger as unknown as Logger);
 
         expect(logger.debug).toHaveBeenCalledWith(`Running command: ${cmd} ${args.join(' ')}`);
         expect(logger.info).toHaveBeenCalledWith('npm install');
+
+        const expectedError = '"npm install" failed to run';
+
+        spawnMock.sequence.add(function (this: any) {
+            this.emit('error', new Error(expectedError));
+        });
+        await expect(commandRunner.run(cmd, args, {}, logger as unknown as Logger)).rejects.toThrowError(expectedError);
+        expect(logger.error).toHaveBeenCalledWith(`Command failed with error: ${expectedError}`);
     });
 });

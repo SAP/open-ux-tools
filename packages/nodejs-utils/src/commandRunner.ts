@@ -42,7 +42,7 @@ export class CommandRunner {
             spawnedCmd.on('error', (error) => {
                 const cmdFailedMsg = `Command failed with error: ${error.message}`;
                 logger?.error(cmdFailedMsg);
-                reject(cmdFailedMsg);
+                reject(error);
             });
             spawnedCmd.on('close', (errorCode) => {
                 if (errorCode !== 0) {
