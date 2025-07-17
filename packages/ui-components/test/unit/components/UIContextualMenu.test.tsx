@@ -38,12 +38,14 @@ describe('<UIContextualMenu />', () => {
     });
 
     it('Existence', () => {
-        expect(container.querySelectorAll('div.ts-ContextualMenu').length).toEqual(1);
+        // Use document.body for portal-rendered menu
+        expect(document.body.querySelectorAll('div.ts-ContextualMenu').length).toEqual(1);
     });
 
     it('Test className property', () => {
-        const contextualMenu = container.querySelector('.ts-ContextualMenu');
-        expect(contextualMenu).toHaveClass('ts-ContextualMenu', 'ts-ContextualMenu--dropdown');
+        // Use document.body for portal-rendered menu
+        const contextualMenu = document.body.querySelector('.ts-ContextualMenu');
+        expect(contextualMenu).toHaveClass('ts-ContextualMenu ts-ContextualMenu--dropdown');
 
         rerender(
             <UIContextualMenu
@@ -61,8 +63,8 @@ describe('<UIContextualMenu />', () => {
             />
         );
 
-        const contextualMenuWithClass = container.querySelector('.ts-ContextualMenu');
-        expect(contextualMenuWithClass).toHaveClass('ts-ContextualMenu', 'ts-ContextualMenu--dropdown', 'dummy');
+        const contextualMenuWithClass = document.body.querySelector('.ts-ContextualMenu');
+        expect(contextualMenuWithClass).toHaveClass('ts-ContextualMenu ts-ContextualMenu--dropdown dummy');
     });
 
     for (const testMaxWidth of [350, undefined]) {
@@ -82,8 +84,8 @@ describe('<UIContextualMenu />', () => {
                     maxWidth={testMaxWidth}
                 />
             );
-            // Test that the component renders with the expected structure
-            expect(container.querySelector('.ts-ContextualMenu')).toBeInTheDocument();
+            // Use document.body for portal-rendered menu
+            expect(document.body.querySelector('.ts-ContextualMenu')).toBeInTheDocument();
         });
     }
 
@@ -141,13 +143,13 @@ describe('<UIContextualMenu />', () => {
             />
         );
 
-        // Check if icon is rendered
-        expect(container.querySelectorAll(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
+        // Use document.body for portal-rendered icon
+        expect(document.body.querySelectorAll(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
 
         // Check if icon is on right side
-        const containerElement = container.querySelector('.ms-ContextualMenu-linkContent');
-        const textElement = container.querySelector('.ms-ContextualMenu-itemText');
-        const iconElement = container.querySelector('i.ms-ContextualMenu-icon');
+        const containerElement = document.body.querySelector('.ms-ContextualMenu-linkContent');
+        const textElement = document.body.querySelector('.ms-ContextualMenu-itemText');
+        const iconElement = document.body.querySelector('i.ms-ContextualMenu-icon');
 
         if (containerElement && textElement && iconElement) {
             expect(containerElement.childNodes[0]).toBe(textElement);
@@ -174,11 +176,11 @@ describe('<UIContextualMenu />', () => {
             />
         );
 
-        // Check if only one icon is rendered
-        expect(container.querySelectorAll(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
+        // Use document.body for portal-rendered icon
+        expect(document.body.querySelectorAll(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
 
         // Check if two menu items are rendered
-        expect(container.querySelectorAll('.ms-ContextualMenu-linkContent').length).toEqual(2);
+        expect(document.body.querySelectorAll('.ms-ContextualMenu-linkContent').length).toEqual(2);
     });
 
     it('getUIContextualMenuItemStyles - call without params', () => {
