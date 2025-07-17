@@ -22,8 +22,8 @@
                 "type": "View",
                 "viewType": "XML",
                 "path": "<%- app.id %>.view",
-                "viewPath": "<%- app.id %>.view",
-                "async": true
+                "async": true,
+                "viewPath": "<%- app.id %>.view"
             },
             "routes": [
                 {

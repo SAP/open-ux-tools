@@ -5025,8 +5025,8 @@ title=App Title",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
         \\"path\\": \\"nods1.view\\",
-        \\"viewPath\\": \\"nods1.view\\",
-        \\"async\\": true
+        \\"async\\": true,
+        \\"viewPath\\": \\"nods1.view\\"
       },
       \\"routes\\": [
         {
@@ -5564,8 +5564,8 @@ title=App Title",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
         \\"path\\": \\"nods1.view\\",
-        \\"viewPath\\": \\"nods1.view\\",
-        \\"async\\": true
+        \\"async\\": true,
+        \\"viewPath\\": \\"nods1.view\\"
       },
       \\"routes\\": [
         {
@@ -6128,8 +6128,8 @@ title=App Title",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
         \\"path\\": \\"nods1.view\\",
-        \\"viewPath\\": \\"nods1.view\\",
-        \\"async\\": true
+        \\"async\\": true,
+        \\"viewPath\\": \\"nods1.view\\"
       },
       \\"routes\\": [
         {
