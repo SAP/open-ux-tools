@@ -453,20 +453,20 @@ function generateTestRunners(
     for (const test of configs ?? []) {
         const testConfig = mergeTestConfigDefaults(test);
         if (['QUnit', 'OPA5'].includes(test.framework)) {
-            const testTemlpate = readFileSync(join(TEMPLATE_PATH, 'test/qunit.html'), 'utf-8');
+            const testTemplate = readFileSync(join(TEMPLATE_PATH, 'test/qunit.ejs'), 'utf-8');
             const testTemplateConfig = createTestTemplateConfig(
                 testConfig,
                 manifest['sap.app'].id,
                 flpTemplConfig.ui5.theme
             );
-            fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
+            fs.write(join(webappPath, testConfig.path), render(testTemplate, testTemplateConfig));
         } else if (test.framework === 'Testsuite') {
-            const testTemlpate = readFileSync(join(TEMPLATE_PATH, 'test/testsuite.qunit.html'), 'utf-8');
+            const testTemplate = readFileSync(join(TEMPLATE_PATH, 'test/testsuite.qunit.ejs'), 'utf-8');
             const testTemplateConfig = {
                 basePath: flpTemplConfig.basePath,
                 initPath: testConfig.init
             };
-            fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
+            fs.write(join(webappPath, testConfig.path), render(testTemplate, testTemplateConfig));
         }
     }
 }
@@ -495,7 +495,7 @@ export async function generatePreviewFiles(
     }
 
     // generate FLP configuration
-    const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.html'), 'utf-8');
+    const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.ejs'), 'utf-8');
     const flpConfig = getFlpConfigWithDefaults(config.flp);
 
     const webappPath = await getWebappPath(basePath, fs);
