@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.15.1
+
+### Patch Changes
+
+-   52ac1b0: feat: Add ADP manifest change wizard sub-generators
+
 ## 0.15.0
 
 ### Minor Changes
