@@ -5025,7 +5025,8 @@ title=App Title",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
         \\"path\\": \\"nods1.view\\",
-        \\"viewPath\\": \\"nods1.view\\"
+        \\"viewPath\\": \\"nods1.view\\",
+        \\"async\\": true
       },
       \\"routes\\": [
         {
@@ -5046,7 +5047,8 @@ title=App Title",
     \\"rootView\\": {
       \\"viewName\\": \\"nods1.view.App\\",
       \\"type\\": \\"XML\\",
-      \\"id\\": \\"App\\"
+      \\"id\\": \\"App\\",
+      \\"async\\": true
     }
   }
 }
@@ -5562,7 +5564,8 @@ title=App Title",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
         \\"path\\": \\"nods1.view\\",
-        \\"viewPath\\": \\"nods1.view\\"
+        \\"viewPath\\": \\"nods1.view\\",
+        \\"async\\": true
       },
       \\"routes\\": [
         {
@@ -5583,7 +5586,8 @@ title=App Title",
     \\"rootView\\": {
       \\"viewName\\": \\"nods1.view.App\\",
       \\"type\\": \\"XML\\",
-      \\"id\\": \\"App\\"
+      \\"id\\": \\"App\\",
+      \\"async\\": true
     }
   }
 }
@@ -6124,7 +6128,8 @@ title=App Title",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
         \\"path\\": \\"nods1.view\\",
-        \\"viewPath\\": \\"nods1.view\\"
+        \\"viewPath\\": \\"nods1.view\\",
+        \\"async\\": true
       },
       \\"routes\\": [
         {
@@ -6145,7 +6150,8 @@ title=App Title",
     \\"rootView\\": {
       \\"viewName\\": \\"nods1.view.App\\",
       \\"type\\": \\"XML\\",
-      \\"id\\": \\"App\\"
+      \\"id\\": \\"App\\",
+      \\"async\\": true
     }
   }
 }
