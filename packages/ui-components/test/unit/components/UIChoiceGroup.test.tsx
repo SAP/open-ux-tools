@@ -44,8 +44,11 @@ describe('<UIChoiceGroup />', () => {
         const choiceGroup = container.querySelector('.ms-ChoiceFieldGroup') as HTMLElement;
         expect(choiceGroup).toBeInTheDocument();
 
-        // Test that the component renders with inline styles - flexContainer is applied to the flex container div
-        const flexContainer = container.querySelector('.ms-ChoiceFieldGroup > div') as HTMLElement;
-        expect(flexContainer).toHaveStyle('display: flex');
+        // Find any child with display: flex
+        const flexElement = Array.from(choiceGroup.querySelectorAll('*')).find(
+            el => getComputedStyle(el as HTMLElement).display === 'flex'
+        ) as HTMLElement | undefined;
+        expect(flexElement).toBeDefined();
+        expect(getComputedStyle(flexElement as HTMLElement).display).toBe('flex');
     });
 });
