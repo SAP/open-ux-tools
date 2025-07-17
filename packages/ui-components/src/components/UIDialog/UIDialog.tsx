@@ -1,6 +1,6 @@
 import React from 'react';
 import type { IDialogProps, IDialogFooterProps } from '@fluentui/react';
-import { Dialog as BaseDialog, DialogFooter } from '@fluentui/react';
+import { Dialog as BaseDialog, DialogFooter, keyframes } from '@fluentui/react';
 import { UIDefaultButton } from '../UIButton';
 import { deepMerge } from '../../utilities/DeepMerge';
 
@@ -66,6 +66,26 @@ export enum UIDialogScrollArea {
     // Whole dialog is scrollable - default FluentUI behaviour, but it is buggy with large content
     Dialog = 'Dialog'
 }
+
+const ANIMATION_DURATION = '0.4s';
+
+const SCALE_ANIMATION = keyframes({
+    from: {
+        transform: 'scale(0.9)'
+    },
+    to: {
+        transform: 'scale(1)'
+    }
+});
+
+const SCALE_ANIMATION_REVERSE = keyframes({
+    from: {
+        transform: 'scale(1)'
+    },
+    to: {
+        transform: 'scale(0.9)'
+    }
+});
 
 /**
  * UIDialog component.
@@ -264,6 +284,21 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
         const dialogProps: IDialogProps = {
             minWidth: '460px',
             modalProps: {
+                styles: (props) => {
+                    const { isVisible } = props;
+                    console.log(props);
+                    return {
+                        root: {
+                            transition: `opacity ${ANIMATION_DURATION} ease-in-out`,
+                            backdropFilter: 'blur(5px)'
+                        },
+                        main: {
+                            animation: `${
+                                isVisible ? SCALE_ANIMATION : SCALE_ANIMATION_REVERSE
+                            } ${ANIMATION_DURATION} ease-in-out`
+                        }
+                    };
+                },
                 layerProps: {
                     onLayerDidMount: this.onModalLayerMount,
                     onLayerWillUnmount: this.onModalLayerUnmount
@@ -271,8 +306,10 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 overlay: {
                     styles: {
                         root: {
-                            background: DIALOG_STYLES.modalOverlay.background,
-                            opacity: DIALOG_STYLES.modalOverlay.opacity
+                            // ToDo - switch based on blur property
+                            background: 'none',
+                            // ToDo - switch based on blur property
+                            opacity: undefined
                         }
                     }
                 }
