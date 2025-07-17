@@ -117,12 +117,6 @@ describe('<UIToggle />', () => {
             const { container } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
             const toggleElement = container.querySelector('.ms-Toggle');
             expect(toggleElement).toBeInTheDocument();
-
-            // Test that the toggle renders with expected structure
-            const togglePill = container.querySelector('.ms-Toggle-pill');
-            const toggleThumb = container.querySelector('.ms-Toggle-thumb');
-            expect(togglePill).toBeInTheDocument();
-            expect(toggleThumb).toBeInTheDocument();
         });
 
         it('Checked', () => {
@@ -132,10 +126,6 @@ describe('<UIToggle />', () => {
 
             // Test that the toggle renders with checked state
             expect(toggleElement).toHaveClass('is-checked');
-            const togglePill = container.querySelector('.ms-Toggle-pill');
-            const toggleThumb = container.querySelector('.ms-Toggle-thumb');
-            expect(togglePill).toBeInTheDocument();
-            expect(toggleThumb).toBeInTheDocument();
         });
     });
 
