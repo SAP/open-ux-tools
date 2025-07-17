@@ -1,5 +1,12 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.1.21
+
+### Patch Changes
+
+-   Updated dependencies [84a8d56]
+    -   @sap-ux/nodejs-utils@0.2.2
+
 ## 0.1.20
 
 ### Patch Changes
