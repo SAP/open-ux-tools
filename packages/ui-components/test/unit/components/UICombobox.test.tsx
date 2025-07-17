@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import type { UIComboBoxOption, UIComboBoxProps, UIComboBoxState } from '../../../src/components/UIComboBox';
 import { UIComboBox, UIComboBoxLoaderType, UISelectableOptionMenuItemType } from '../../../src/components/UIComboBox';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
@@ -67,7 +68,8 @@ describe('<UIComboBox />', () => {
         expect(container.querySelectorAll(menuDropdownSelector).length).toEqual(1);
         expect(container.querySelectorAll(`${menuDropdownSelector} .ms-Callout-main`).length).toBeGreaterThan(0);
         expect(
-            container.querySelectorAll(`${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command`).length
+            container.querySelectorAll(`${menuDropdownSelector} .ms-ComboBox-optionsContainer .ms-Button--command`)
+                .length
         ).toBeGreaterThan(0);
         expect(container.querySelectorAll(nonHighlighttItemSelector).length).toBeGreaterThan(0);
         expect(container.querySelectorAll(highlightItemSelector).length).toEqual(0);
@@ -81,7 +83,9 @@ describe('<UIComboBox />', () => {
     });
 
     it('Styles - required', () => {
-        rerender(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" required={true} />);
+        rerender(
+            <UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" required={true} />
+        );
         const comboBox = container.querySelector('.ms-ComboBox');
         expect(comboBox).toBeInTheDocument();
         // Test that the component renders with expected structure for required field
@@ -103,7 +107,15 @@ describe('<UIComboBox />', () => {
             const openMenuOnClickOptions = [true, false, undefined];
             for (const openMenuOnClick of openMenuOnClickOptions) {
                 it(`Test on "Keydown" - open callout, "openMenuOnClick=${openMenuOnClick}"`, () => {
-                    rerender(<UIComboBox options={data} highlight={true} allowFreeform={true} autoComplete="on" openMenuOnClick={openMenuOnClick} />);
+                    rerender(
+                        <UIComboBox
+                            options={data}
+                            highlight={true}
+                            allowFreeform={true}
+                            autoComplete="on"
+                            openMenuOnClick={openMenuOnClick}
+                        />
+                    );
                     expect(container.querySelectorAll(menuDropdownSelector).length).toEqual(0);
                     const input = container.querySelector('input');
                     if (input) {
@@ -189,7 +201,9 @@ describe('<UIComboBox />', () => {
         });
 
         it('Test onClick value selection', async () => {
-            rerender(<UIComboBox options={data} highlight={true} allowFreeform={true} autoComplete="on" selectedKey="AU" />);
+            rerender(
+                <UIComboBox options={data} highlight={true} allowFreeform={true} autoComplete="on" selectedKey="AU" />
+            );
             const input = container.querySelector('input') as HTMLInputElement;
             if (input) {
                 input.selectionEnd = input.selectionStart = 2;
@@ -306,7 +320,7 @@ describe('<UIComboBox />', () => {
             // select some options
             const options = container.querySelectorAll('.ms-Checkbox.is-enabled.ms-ComboBox-option');
             expect(options.length).toBeGreaterThan(0);
-            
+
             const firstOptionInput = options[1]?.querySelector('input');
             if (firstOptionInput) {
                 fireEvent.change(firstOptionInput, {
@@ -316,7 +330,7 @@ describe('<UIComboBox />', () => {
                     }
                 });
             }
-            
+
             const secondOptionInput = options[2]?.querySelector('input');
             if (secondOptionInput) {
                 fireEvent.change(secondOptionInput, {
@@ -391,7 +405,7 @@ describe('<UIComboBox />', () => {
                 // select some options
                 const options = container.querySelectorAll('.ms-Checkbox.is-enabled.ms-ComboBox-option');
                 expect(options.length).toBeGreaterThan(0);
-                
+
                 const firstOptionInput = options[0]?.querySelector('input');
                 if (firstOptionInput) {
                     fireEvent.change(firstOptionInput, {
@@ -415,7 +429,7 @@ describe('<UIComboBox />', () => {
                         onChange={onChange}
                     />
                 );
-                
+
                 expect(onChange).toHaveBeenCalledTimes(1);
                 expect(onChange.mock.calls.map((parms) => parms[1].key)).toMatchInlineSnapshot(`
                     Array [
@@ -494,7 +508,7 @@ describe('<UIComboBox />', () => {
                     />
                 );
                 container = result.container;
-                
+
                 // Test basic functionality without accessing internal components
                 if (testCase.singleSelect) {
                     // Single select should work normally
@@ -509,8 +523,12 @@ describe('<UIComboBox />', () => {
                     // Mock element
                     const element = container.querySelector('.ts-ComboBox--selected');
                     if (element) {
-                        jest.spyOn(element as HTMLElement, 'offsetTop', 'get').mockReturnValue(testCase.element.offsetTop);
-                        jest.spyOn(element as HTMLElement, 'clientHeight', 'get').mockReturnValue(testCase.element.clientHeight);
+                        jest.spyOn(element as HTMLElement, 'offsetTop', 'get').mockReturnValue(
+                            testCase.element.offsetTop
+                        );
+                        jest.spyOn(element as HTMLElement, 'clientHeight', 'get').mockReturnValue(
+                            testCase.element.clientHeight
+                        );
                         // Test that scrolling behavior is handled correctly
                         expect(scrollTopSetter).toBeCalledTimes(testCase.expect ? 1 : 0);
                         if (testCase.expect !== undefined) {
@@ -524,21 +542,45 @@ describe('<UIComboBox />', () => {
 
     describe('Error message', () => {
         it('Error', () => {
-            rerender(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" errorMessage="dummy" />);
+            rerender(
+                <UIComboBox
+                    options={data}
+                    highlight={false}
+                    allowFreeform={true}
+                    autoComplete="on"
+                    errorMessage="dummy"
+                />
+            );
             expect(container.querySelectorAll('.ts-ComboBox--error').length).toEqual(1);
             expect(container.querySelectorAll('.ts-ComboBox--warning').length).toEqual(0);
             expect(container.querySelectorAll('.ts-ComboBox--info').length).toEqual(0);
         });
 
         it('Warning', () => {
-            rerender(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" warningMessage="dummy" />);
+            rerender(
+                <UIComboBox
+                    options={data}
+                    highlight={false}
+                    allowFreeform={true}
+                    autoComplete="on"
+                    warningMessage="dummy"
+                />
+            );
             expect(container.querySelectorAll('.ts-ComboBox--error').length).toEqual(0);
             expect(container.querySelectorAll('.ts-ComboBox--warning').length).toEqual(1);
             expect(container.querySelectorAll('.ts-ComboBox--info').length).toEqual(0);
         });
 
         it('Info', () => {
-            rerender(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" infoMessage="dummy" />);
+            rerender(
+                <UIComboBox
+                    options={data}
+                    highlight={false}
+                    allowFreeform={true}
+                    autoComplete="on"
+                    infoMessage="dummy"
+                />
+            );
             expect(container.querySelectorAll('.ts-ComboBox--error').length).toEqual(0);
             expect(container.querySelectorAll('.ts-ComboBox--warning').length).toEqual(0);
             expect(container.querySelectorAll('.ts-ComboBox--info').length).toEqual(1);
@@ -594,12 +636,22 @@ describe('<UIComboBox />', () => {
         ];
         for (const testCase of testCases) {
             it(`Click on input, "openMenuOnClick=${testCase.value}"`, () => {
-                rerender(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" openMenuOnClick={testCase.value} />);
+                rerender(
+                    <UIComboBox
+                        options={data}
+                        highlight={false}
+                        allowFreeform={true}
+                        autoComplete="on"
+                        openMenuOnClick={testCase.value}
+                    />
+                );
                 expect(container.querySelectorAll(menuDropdownSelector).length).toEqual(0);
                 const input = container.querySelector('input');
                 if (input) {
                     fireEvent.click(input);
-                    expect(container.querySelectorAll(menuDropdownSelector).length).toEqual(testCase.expectOpen ? 1 : 0);
+                    expect(container.querySelectorAll(menuDropdownSelector).length).toEqual(
+                        testCase.expectOpen ? 1 : 0
+                    );
                 }
             });
         }
@@ -609,7 +661,15 @@ describe('<UIComboBox />', () => {
         const testCases = [true, false];
         for (const testCase of testCases) {
             it(`isForceEnabled=${testCase}`, () => {
-                rerender(<UIComboBox options={[]} highlight={false} allowFreeform={true} autoComplete="on" isForceEnabled={testCase} />);
+                rerender(
+                    <UIComboBox
+                        options={[]}
+                        highlight={false}
+                        allowFreeform={true}
+                        autoComplete="on"
+                        isForceEnabled={testCase}
+                    />
+                );
                 const comboBox = container.querySelector('.ms-ComboBox');
                 if (testCase) {
                     expect(comboBox).not.toHaveAttribute('disabled');
@@ -622,7 +682,9 @@ describe('<UIComboBox />', () => {
     });
 
     it('Test "disabled" property', () => {
-        rerender(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" disabled={true} />);
+        rerender(
+            <UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" disabled={true} />
+        );
         const input = container.querySelector(inputSelector);
         expect(input).toHaveAttribute('readonly');
         expect(input).toHaveAttribute('aria-disabled', 'true');
@@ -635,7 +697,15 @@ describe('<UIComboBox />', () => {
         });
 
         it('Error case', () => {
-            rerender(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" errorMessage="dummy" />);
+            rerender(
+                <UIComboBox
+                    options={data}
+                    highlight={false}
+                    allowFreeform={true}
+                    autoComplete="on"
+                    errorMessage="dummy"
+                />
+            );
             const input = container.querySelector('input');
             expect(input).toHaveAttribute('aria-invalid', 'true');
         });
@@ -694,7 +764,7 @@ describe('<UIComboBox />', () => {
                     ...(testCase.disabled && { disabled: testCase.disabled })
                 };
                 rerender(<UIComboBox {...props} />);
-                
+
                 const input = container.querySelector('input');
                 if (input) {
                     expect(input.readOnly).toEqual(expected.readOnly);
@@ -702,7 +772,7 @@ describe('<UIComboBox />', () => {
                         expect(input.tabIndex).toEqual(expected.tabIndex);
                     }
                 }
-                
+
                 const comboBox = container.querySelector('.ts-ComboBox');
                 if (comboBox) {
                     const className = comboBox.className;
@@ -711,7 +781,7 @@ describe('<UIComboBox />', () => {
                     );
                     expect(className.includes('ts-ComboBox--disabled')).toEqual(!!testCase.disabled);
                 }
-                
+
                 // Additional properties
                 if (!testCase.disabled && expected.readOnly) {
                     expect(input).toHaveAttribute('aria-readonly', 'true');
@@ -754,7 +824,16 @@ describe('<UIComboBox />', () => {
             it(`"text=${testCase.text}", "selectedKey=${
                 Array.isArray(testCase.selectedKey) ? JSON.stringify(testCase.selectedKey) : testCase.selectedKey
             }"`, () => {
-                rerender(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" text={testCase.text} selectedKey={testCase.selectedKey} />);
+                rerender(
+                    <UIComboBox
+                        options={data}
+                        highlight={false}
+                        allowFreeform={true}
+                        autoComplete="on"
+                        text={testCase.text}
+                        selectedKey={testCase.selectedKey}
+                    />
+                );
                 expect(container.querySelectorAll('div.ts-ComboBox--empty').length).toEqual(testCase.expected ? 1 : 0);
             });
         }
@@ -801,7 +880,15 @@ describe('<UIComboBox />', () => {
 
     it('Handle "onPendingValueChanged"', () => {
         const onPendingValueChanged = jest.fn();
-        rerender(<UIComboBox options={data} highlight={true} allowFreeform={true} autoComplete="on" onPendingValueChanged={onPendingValueChanged} />);
+        rerender(
+            <UIComboBox
+                options={data}
+                highlight={true}
+                allowFreeform={true}
+                autoComplete="on"
+                onPendingValueChanged={onPendingValueChanged}
+            />
+        );
         expect(container.querySelectorAll(menuDropdownSelector).length).toEqual(0);
         // Open callout
         expect(onPendingValueChanged).not.toBeCalled();
@@ -836,10 +923,19 @@ describe('<UIComboBox />', () => {
         for (const testCase of testCases) {
             const { multiSelect, enabled, expected } = testCase;
             it(`calloutCollisionTransformation=${enabled}, multiSelect=${multiSelect}`, () => {
-                rerender(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" multiSelect={multiSelect} calloutCollisionTransformation={enabled} />);
+                rerender(
+                    <UIComboBox
+                        options={data}
+                        highlight={false}
+                        allowFreeform={true}
+                        autoComplete="on"
+                        multiSelect={multiSelect}
+                        calloutCollisionTransformation={enabled}
+                    />
+                );
                 const comboBox = container.querySelector('.ms-ComboBox');
                 expect(comboBox).toBeInTheDocument();
-                
+
                 // Test that collision transformation is applied when expected
                 if (expected) {
                     expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toHaveBeenCalled();
@@ -862,10 +958,20 @@ describe('<UIComboBox />', () => {
                     }
                 }
             };
-            rerender(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" multiSelect={true} calloutCollisionTransformation={true} {...externalListeners} />);
+            rerender(
+                <UIComboBox
+                    options={data}
+                    highlight={false}
+                    allowFreeform={true}
+                    autoComplete="on"
+                    multiSelect={true}
+                    calloutCollisionTransformation={true}
+                    {...externalListeners}
+                />
+            );
             const comboBox = container.querySelector('.ms-ComboBox');
             expect(comboBox).toBeInTheDocument();
-            
+
             // Test that external listeners are called
             expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toHaveBeenCalled();
             expect(CalloutCollisionTransformSpy.applyTransformation).toHaveBeenCalled();
@@ -905,7 +1011,15 @@ describe('<UIComboBox />', () => {
             }
         ];
         test.each(testCases)('isLoading = $isLoading', ({ isLoading, expectLoaderInInput, expectLoaderInMenu }) => {
-            rerender(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" isLoading={isLoading} />);
+            rerender(
+                <UIComboBox
+                    options={data}
+                    highlight={false}
+                    allowFreeform={true}
+                    autoComplete="on"
+                    isLoading={isLoading}
+                />
+            );
             openDropdown();
             expect(container.querySelectorAll('.ms-Callout UILoader').length).toEqual(expectLoaderInMenu ? 1 : 0);
             expect(container.querySelectorAll('.ms-ComboBox UILoader').length).toEqual(expectLoaderInInput ? 1 : 0);
@@ -913,31 +1027,56 @@ describe('<UIComboBox />', () => {
     });
 
     it('Custom renderers for "onRenderOption"', () => {
-        rerender(<UIComboBox options={data} highlight={true} allowFreeform={true} autoComplete="on" onRenderOption={(
-            props?: UIComboBoxOption,
-            defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
-        ) => {
-            return <div className="custom-render-option">{defaultRender?.(props)}</div>;
-        }} />);
+        rerender(
+            <UIComboBox
+                options={data}
+                highlight={true}
+                allowFreeform={true}
+                autoComplete="on"
+                onRenderOption={(
+                    props?: UIComboBoxOption,
+                    defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
+                ) => {
+                    return <div className="custom-render-option">{defaultRender?.(props)}</div>;
+                }}
+            />
+        );
         openDropdown();
         expect(container.querySelectorAll('.custom-render-option').length).toBeGreaterThan(0);
         expect(container.querySelectorAll(highlightItemSelector).length).toBeGreaterThan(0);
     });
 
     it('Custom renderers for "onRenderItem"', () => {
-        rerender(<UIComboBox options={JSON.parse(JSON.stringify(originalData))} highlight={true} allowFreeform={true} autoComplete="on" selectedKey="AR" onRenderItem={(
-            props?: UIComboBoxOption,
-            defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
-        ) => {
-            return <div className="custom-render-item">{defaultRender?.(props)}</div>;
-        }} />);
+        rerender(
+            <UIComboBox
+                options={JSON.parse(JSON.stringify(originalData))}
+                highlight={true}
+                allowFreeform={true}
+                autoComplete="on"
+                selectedKey="AR"
+                onRenderItem={(
+                    props?: UIComboBoxOption,
+                    defaultRender?: (props?: UIComboBoxOption) => JSX.Element | null
+                ) => {
+                    return <div className="custom-render-item">{defaultRender?.(props)}</div>;
+                }}
+            />
+        );
         openDropdown();
         expect(container.querySelectorAll('.custom-render-item').length).toBeGreaterThan(0);
         expect(container.querySelectorAll('.ts-ComboBox--selected').length).toBeGreaterThan(0);
     });
 
     it('Test "calloutProps"', () => {
-        rerender(<UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" calloutProps={{ className: 'dummy' }} />);
+        rerender(
+            <UIComboBox
+                options={data}
+                highlight={false}
+                allowFreeform={true}
+                autoComplete="on"
+                calloutProps={{ className: 'dummy' }}
+            />
+        );
         openDropdown();
         expect(container.querySelectorAll('div.dummy').length).toEqual(1);
     });
@@ -988,7 +1127,15 @@ describe('<UIComboBox />', () => {
             const { name, searchByKeyEnabled, expectedCount } = testCase;
             it(name, () => {
                 const query = 'bookings';
-                rerender(<UIComboBox options={searchKeysData} highlight={true} allowFreeform={true} autoComplete="on" searchByKeyEnabled={searchByKeyEnabled} />);
+                rerender(
+                    <UIComboBox
+                        options={searchKeysData}
+                        highlight={true}
+                        allowFreeform={true}
+                        autoComplete="on"
+                        searchByKeyEnabled={searchByKeyEnabled}
+                    />
+                );
                 openDropdown();
                 const input = container.querySelector('input');
                 if (input) {
@@ -1049,16 +1196,24 @@ describe('<UIComboBox />', () => {
                     triggerSearch(query);
                     expect(container.querySelectorAll('.ms-Button--action').length).toEqual(expectedCountBefore);
                     // Apply custom filter and check result for same query
-                    rerender(<UIComboBox options={options} highlight={true} allowFreeform={true} autoComplete="on" customSearchFilter={(searchTerm: string, option: UIComboBoxOption) => {
-                        if ('customMark' in option && option.customMark) {
-                            return true;
-                        }
-                        if (option.key === 'BC') {
-                            // Hide 'Lorem ipsum dolor sit amet' when searching
-                            return false;
-                        }
-                        return undefined;
-                    }} />);
+                    rerender(
+                        <UIComboBox
+                            options={options}
+                            highlight={true}
+                            allowFreeform={true}
+                            autoComplete="on"
+                            customSearchFilter={(searchTerm: string, option: UIComboBoxOption) => {
+                                if ('customMark' in option && option.customMark) {
+                                    return true;
+                                }
+                                if (option.key === 'BC') {
+                                    // Hide 'Lorem ipsum dolor sit amet' when searching
+                                    return false;
+                                }
+                                return undefined;
+                            }}
+                        />
+                    );
                     openDropdown();
                     fireEvent.keyDown(input, {});
                     triggerSearch(query);
@@ -1073,15 +1228,32 @@ describe('<UIComboBox />', () => {
             noDataText: '.option-no-data'
         };
         beforeEach(() => {
-            rerender(<UIComboBox options={[]} highlight={false} allowFreeform={true} autoComplete="on" isForceEnabled={true} />);
+            rerender(
+                <UIComboBox
+                    options={[]}
+                    highlight={false}
+                    allowFreeform={true}
+                    autoComplete="on"
+                    isForceEnabled={true}
+                />
+            );
         });
 
         it('Check "noDataLabel"', () => {
             const noDataLabel = 'Dummy text';
-            rerender(<UIComboBox options={[]} highlight={false} allowFreeform={true} autoComplete="on" isForceEnabled={true} externalSearchProps={{
-                noDataLabel,
-                onExternalSearch: jest.fn()
-            }} />);
+            rerender(
+                <UIComboBox
+                    options={[]}
+                    highlight={false}
+                    allowFreeform={true}
+                    autoComplete="on"
+                    isForceEnabled={true}
+                    externalSearchProps={{
+                        noDataLabel,
+                        onExternalSearch: jest.fn()
+                    }}
+                />
+            );
             openDropdown();
             expect(container.querySelectorAll(selectors.noDataText).length).toEqual(1);
             const noDataElement = container.querySelector(selectors.noDataText);
@@ -1109,7 +1281,7 @@ describe('<UIComboBox />', () => {
                 />
             );
             container = result.container;
-            
+
             const input = container.querySelector('input');
             if (input) {
                 fireEvent.input(input, { target: { value: 'My' } });

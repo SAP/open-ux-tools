@@ -6,7 +6,6 @@ import type { UIDefaultButtonProps } from '../../../src/components/UIButton/UIDe
 import { UiIcons } from '../../../src/components/Icons';
 
 describe('<UIDefaultButton />', () => {
-
     it('Should render a UIDefaultButton component', () => {
         const { container } = render(<UIDefaultButton>Dummy</UIDefaultButton>);
         expect(container.querySelector('.ms-Button')).toBeInTheDocument();
@@ -21,7 +20,11 @@ describe('<UIDefaultButton />', () => {
     });
 
     it('Styles - primary and checked', () => {
-        const { container } = render(<UIDefaultButton primary={true} checked={true}>Dummy</UIDefaultButton>);
+        const { container } = render(
+            <UIDefaultButton primary={true} checked={true}>
+                Dummy
+            </UIDefaultButton>
+        );
         const button = container.querySelector('.ms-Button');
         expect(button).toBeInTheDocument();
         expect(button).toHaveClass('ms-Button--primary');
@@ -36,7 +39,11 @@ describe('<UIDefaultButton />', () => {
     });
 
     it('Styles - secondary and checked', () => {
-        const { container } = render(<UIDefaultButton primary={false} checked={true}>Dummy</UIDefaultButton>);
+        const { container } = render(
+            <UIDefaultButton primary={false} checked={true}>
+                Dummy
+            </UIDefaultButton>
+        );
         const button = container.querySelector('.ms-Button');
         expect(button).toBeInTheDocument();
         expect(button).not.toHaveClass('ms-Button--primary');
@@ -51,7 +58,11 @@ describe('<UIDefaultButton />', () => {
     });
 
     it('Styles - transparent and checked', () => {
-        const { container } = render(<UIDefaultButton transparent={true} checked={true}>Dummy</UIDefaultButton>);
+        const { container } = render(
+            <UIDefaultButton transparent={true} checked={true}>
+                Dummy
+            </UIDefaultButton>
+        );
         const button = container.querySelector('.ms-Button');
         expect(button).toBeInTheDocument();
         expect(button).toHaveClass('is-checked');

@@ -5,7 +5,6 @@ import { DefaultButton } from '@fluentui/react';
 import { UISmallButton } from '../../../src/components/UIButton/UISmallButton';
 
 describe('<UISmallButton />', () => {
-
     it('Should render a UISmallButton component', () => {
         const { container } = render(<UISmallButton>Dummy</UISmallButton>);
         expect(container.querySelector('.ms-Button')).toBeInTheDocument();

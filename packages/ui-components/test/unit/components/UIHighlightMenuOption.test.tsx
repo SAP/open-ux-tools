@@ -19,31 +19,31 @@ describe('<UIHighlightMenuOption />', () => {
         let { container } = render(<UIHighlightMenuOption text={text} query={query} />);
         expect(container.querySelectorAll(hidlightSelector)).toHaveLength(1);
         expect(container.querySelector(hidlightSelector)).toHaveTextContent(query);
-        
+
         // Multiple occureance
         ({ container } = render(<UIHighlightMenuOption text={text} query="e" />));
         expect(container.querySelectorAll(hidlightSelector)).toHaveLength(2);
-        
+
         // One larger query
         query = 'er';
         ({ container } = render(<UIHighlightMenuOption text={text} query={query} />));
         expect(container.querySelectorAll(hidlightSelector)).toHaveLength(1);
         expect(container.querySelector(hidlightSelector)).toHaveTextContent(query);
-        
+
         // Case insensitive
         ({ container } = render(<UIHighlightMenuOption text={text} query="EST" />));
         expect(container.querySelectorAll(hidlightSelector)).toHaveLength(1);
         expect(container.querySelector(hidlightSelector)).toHaveTextContent('est');
-        
+
         // Beginning
         ({ container } = render(<UIHighlightMenuOption text={text} query="te" />));
         expect(container.querySelectorAll(hidlightSelector)).toHaveLength(1);
         expect(container.querySelector(hidlightSelector)).toHaveTextContent('Te');
-        
+
         // Ending
         ({ container } = render(<UIHighlightMenuOption text={text} query="21" />));
         expect(container.querySelectorAll(hidlightSelector)).toHaveLength(1);
-        
+
         // No occureance
         ({ container } = render(<UIHighlightMenuOption text={text} query="404" />));
         expect(container.querySelectorAll(hidlightSelector)).toHaveLength(0);
@@ -61,17 +61,17 @@ describe('<UIHighlightMenuOption />', () => {
         let query = 'du';
         let { container } = render(<UIHighlightMenuOption text={text} query={query} />);
         expect(container.querySelectorAll(hidlightSelector)).toHaveLength(4);
-        
+
         // Append more
         query = 'dud';
         ({ container } = render(<UIHighlightMenuOption text={text} query={query} />));
         expect(container.querySelectorAll(hidlightSelector)).toHaveLength(2);
-        
+
         // Append one more
         query = 'dudu';
         ({ container } = render(<UIHighlightMenuOption text={text} query={query} />));
         expect(container.querySelectorAll(hidlightSelector)).toHaveLength(2);
-        
+
         // And one more
         query = 'dudud';
         ({ container } = render(<UIHighlightMenuOption text={text} query={query} />));

@@ -18,7 +18,7 @@ describe('<UISearchBox />', () => {
     it('Existence', () => {
         const { container } = renderResult;
         // Check for any input element or search box specific class
-        const input = container.querySelector('input') || container.querySelector('[role=\"searchbox\"]');
+        const input = container.querySelector('input') || container.querySelector('[role="searchbox"]');
         expect(input).toBeTruthy();
     });
 
@@ -26,13 +26,13 @@ describe('<UISearchBox />', () => {
         const expectQuery = 'dummy';
         const onChange = jest.fn();
         const onClear = jest.fn();
-        
+
         renderResult.rerender(<UISearchBox onChange={onChange} onClear={onClear} />);
-        
+
         const { container } = renderResult;
-        const input = container.querySelector('input') || container.querySelector('[role=\"searchbox\"]');
+        const input = container.querySelector('input') || container.querySelector('[role="searchbox"]');
         expect(input).toBeTruthy();
-        
+
         // Test onChange
         await userEvent.type(input as HTMLElement, expectQuery);
         expect(onChange).toHaveBeenCalled();

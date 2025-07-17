@@ -5,7 +5,6 @@ import { UILoader } from '../../../src/components/UILoader/UILoader';
 import { Overlay } from '@fluentui/react';
 
 describe('<UILoader />', () => {
-
     it('Should render a UILoader component', () => {
         const { container } = render(<UILoader />);
         expect(container.querySelector('.ms-Spinner-circle')).toBeInTheDocument();

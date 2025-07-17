@@ -17,13 +17,13 @@ describe('<UIVirtualList />', () => {
     beforeEach(() => {
         componentRef = React.createRef<UIVirtualList>();
         renderResult = render(
-            <UIVirtualList 
+            <UIVirtualList
                 ref={componentRef}
-                width={100} 
-                height={100} 
-                rowHeight={25} 
-                rowCount={10} 
-                rowRenderer={renderRow} 
+                width={100}
+                height={100}
+                rowHeight={25}
+                rowCount={10}
+                rowRenderer={renderRow}
             />
         );
     });

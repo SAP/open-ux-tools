@@ -1,5 +1,6 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import { render, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import type { UISplitterProps } from '../../../src/components/UISection/UISplitter';
 import { UISplitter, UISplitterType, UISplitterLayoutType } from '../../../src/components/UISection/UISplitter';
 import { initIcons, UiIcons } from '../../../src/components/Icons';
@@ -7,11 +8,13 @@ import { initIcons, UiIcons } from '../../../src/components/Icons';
 initIcons();
 
 describe('<Splitter />', () => {
-    let wrapper: Enzyme.ReactWrapper<UISplitterProps>;
+    let renderResult: ReturnType<typeof render>;
+    let container: HTMLElement;
     const onResize = jest.fn();
 
     beforeEach(() => {
-        wrapper = Enzyme.mount(<UISplitter type={UISplitterType.Resize} onResize={onResize} />);
+        renderResult = render(<UISplitter type={UISplitterType.Resize} onResize={onResize} />);
+        container = renderResult.container;
         jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb: any) => {
             cb(1);
             return 1;
@@ -20,7 +23,9 @@ describe('<Splitter />', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
-        wrapper.unmount();
+        if (renderResult) {
+            renderResult.unmount();
+        }
     });
 
     const simulateMouseEvent = (type: string, x = 0, y = 0): void => {
@@ -30,18 +35,15 @@ describe('<Splitter />', () => {
     };
 
     it('Should render a PropertiesPanel component', () => {
-        expect(wrapper.exists()).toEqual(true);
-        expect(wrapper.find('.splitter').length).toEqual(1);
-        expect(wrapper.find('.splitter--horizontal').length).toEqual(1);
-        expect(wrapper.find('.splitter--vertical').length).toEqual(0);
+        expect(container.querySelectorAll('.splitter').length).toEqual(1);
+        expect(container.querySelectorAll('.splitter--horizontal').length).toEqual(1);
+        expect(container.querySelectorAll('.splitter--vertical').length).toEqual(0);
     });
 
     it('Should render as vertical splitter', () => {
-        wrapper.setProps({
-            vertical: true
-        });
-        expect(wrapper.find('.splitter--horizontal').length).toEqual(0);
-        expect(wrapper.find('.splitter--vertical').length).toEqual(1);
+        renderResult.rerender(<UISplitter type={UISplitterType.Resize} onResize={onResize} vertical={true} />);
+        expect(container.querySelectorAll('.splitter--horizontal').length).toEqual(0);
+        expect(container.querySelectorAll('.splitter--vertical').length).toEqual(1);
     });
 
     const orientations = [true, false];
@@ -53,7 +55,7 @@ describe('<Splitter />', () => {
             const onResizeStart = jest.fn();
             const onResizeEnd = jest.fn();
             onResize.mockReturnValue(true);
-            const resizeWrapper = Enzyme.mount(
+            const { container: resizeContainer } = render(
                 <UISplitter
                     type={UISplitterType.Resize}
                     onResizeStart={onResizeStart}
@@ -62,9 +64,8 @@ describe('<Splitter />', () => {
                     vertical={orientation}
                 />
             );
-            resizeWrapper
-                .find('.splitter')
-                .simulate('mousedown', { clientX: mouseStartCoordinate, button: 0, clientY: mouseStartCoordinate });
+            const splitter = resizeContainer.querySelector('.splitter') as HTMLElement;
+            fireEvent.mouseDown(splitter, { clientX: mouseStartCoordinate, button: 0, clientY: mouseStartCoordinate });
             simulateMouseEvent('mousemove', mouseMoveCoordinate1, mouseMoveCoordinate1);
             simulateMouseEvent('mousemove', mouseMoveCoordinate2, mouseMoveCoordinate2);
             simulateMouseEvent('mouseup', mouseMoveCoordinate2, mouseMoveCoordinate2);
@@ -84,40 +85,45 @@ describe('<Splitter />', () => {
             const onResizeEnd = jest.fn();
             const onToggle = jest.fn();
             onResize.mockReturnValue(true);
-            wrapper.setProps({
-                onResizeStart,
-                onResizeEnd,
-                onToggle
-            });
+            renderResult.rerender(
+                <UISplitter
+                    type={UISplitterType.Resize}
+                    onResize={onResize}
+                    onResizeStart={onResizeStart}
+                    onResizeEnd={onResizeEnd}
+                    onToggle={onToggle}
+                />
+            );
             // Pass some dummy keys, which should not trigger resize
-            wrapper.simulate('keyDown', { key: 'w' });
-            wrapper.simulate('keyDown', { key: 'a' });
-            wrapper.simulate('keyDown', { key: 'S' });
-            wrapper.simulate('keyDown', { key: 'D' });
+            const splitter = container.querySelector('.splitter') as HTMLElement;
+            fireEvent.keyDown(splitter, { key: 'w' });
+            fireEvent.keyDown(splitter, { key: 'a' });
+            fireEvent.keyDown(splitter, { key: 'S' });
+            fireEvent.keyDown(splitter, { key: 'D' });
             // Resize Left
-            wrapper.simulate('keyDown', { key: 'ArrowLeft' });
+            fireEvent.keyDown(splitter, { key: 'ArrowLeft' });
             expect(onResizeStart).toBeCalledTimes(1);
             expect(onResize).toBeCalledTimes(1);
             expect(onResize.mock.calls[0][0]).toEqual(-10);
             expect(onResizeEnd).toBeCalledTimes(1);
             // Resize Top - should be same as Left
-            wrapper.simulate('keyDown', { key: 'ArrowUp' });
+            fireEvent.keyDown(splitter, { key: 'ArrowUp' });
             expect(onResize.mock.calls[1][0]).toEqual(-10);
             // One more Left
-            wrapper.simulate('keyDown', { key: 'ArrowLeft' });
+            fireEvent.keyDown(splitter, { key: 'ArrowLeft' });
             expect(onResize.mock.calls[2][0]).toEqual(-10);
             // Go Right
-            wrapper.simulate('keyDown', { key: 'ArrowRight' });
+            fireEvent.keyDown(splitter, { key: 'ArrowRight' });
             expect(onResize.mock.calls[3][0]).toEqual(10);
             // One more Left
-            wrapper.simulate('keyDown', { key: 'ArrowDown' });
+            fireEvent.keyDown(splitter, { key: 'ArrowDown' });
             expect(onResize.mock.calls[4][0]).toEqual(10);
             // Another unaccaptable dummy keys
-            wrapper.simulate('keyDown', { key: '4' });
-            wrapper.simulate('keyDown', { key: '8' });
-            wrapper.simulate('keyDown', { key: '1' });
-            wrapper.simulate('keyDown', { key: '5' });
-            wrapper.simulate('keyDown', { key: 'Enter' });
+            fireEvent.keyDown(splitter, { key: '4' });
+            fireEvent.keyDown(splitter, { key: '8' });
+            fireEvent.keyDown(splitter, { key: '1' });
+            fireEvent.keyDown(splitter, { key: '5' });
+            fireEvent.keyDown(splitter, { key: 'Enter' });
             // Total call;
             expect(onResizeEnd).toBeCalledTimes(5);
             // Toggle should not be called
@@ -129,60 +135,58 @@ describe('<Splitter />', () => {
             const onResizeEnd = jest.fn();
             const onToggle = jest.fn();
             onResize.mockReturnValue(true);
-            wrapper.setProps({
-                onResizeStart,
-                onResizeEnd,
-                onToggle,
-                type: UISplitterType.Toggle
-            });
+            renderResult.rerender(
+                <UISplitter
+                    type={UISplitterType.Toggle}
+                    onResize={onResize}
+                    onResizeStart={onResizeStart}
+                    onResizeEnd={onResizeEnd}
+                    onToggle={onToggle}
+                />
+            );
             // Some unacceptable variants for toggle
-            wrapper.simulate('keyDown', { key: 'w' });
-            wrapper.simulate('keyDown', { key: 'a' });
-            wrapper.simulate('keyDown', { key: 'S' });
-            wrapper.simulate('keyDown', { key: 'D' });
-            wrapper.simulate('keyDown', { key: 'ArrowUp' });
-            wrapper.simulate('keyDown', { key: 'ArrowLeft' });
-            wrapper.simulate('keyDown', { key: 'ArrowRight' });
-            wrapper.simulate('keyDown', { key: 'ArrowDown' });
-            wrapper.simulate('keyDown', { key: '4' });
+            const splitterToggle = container.querySelector('.splitter') as HTMLElement;
+            fireEvent.keyDown(splitterToggle, { key: 'w' });
+            fireEvent.keyDown(splitterToggle, { key: 'a' });
+            fireEvent.keyDown(splitterToggle, { key: 'S' });
+            fireEvent.keyDown(splitterToggle, { key: 'D' });
+            fireEvent.keyDown(splitterToggle, { key: 'ArrowUp' });
+            fireEvent.keyDown(splitterToggle, { key: 'ArrowLeft' });
+            fireEvent.keyDown(splitterToggle, { key: 'ArrowRight' });
+            fireEvent.keyDown(splitterToggle, { key: 'ArrowDown' });
+            fireEvent.keyDown(splitterToggle, { key: '4' });
             // Expect resize
             expect(onResizeStart).toBeCalledTimes(0);
             expect(onResize).toBeCalledTimes(0);
             expect(onResizeEnd).toBeCalledTimes(0);
             expect(onToggle).toBeCalledTimes(0);
             // Trigger toggle
-            wrapper.simulate('keyDown', { key: 'Enter' });
+            fireEvent.keyDown(splitterToggle, { key: 'Enter' });
             expect(onToggle).toBeCalledTimes(1);
         });
 
         it('Test spliter toggle - aria', () => {
-            wrapper.setProps({
-                type: UISplitterType.Toggle
-            });
-            expect(wrapper.find('.splitter--toggle').prop('role')).toEqual('button');
-            expect(wrapper.find('.splitter--toggle').prop('aria-pressed')).toEqual(true);
-            wrapper.setProps({
-                hidden: true
-            });
-            expect(wrapper.find('.splitter--toggle').prop('aria-pressed')).toEqual(false);
+            renderResult.rerender(<UISplitter type={UISplitterType.Toggle} onResize={onResize} />);
+            const toggleSplitter = container.querySelector('.splitter--toggle') as HTMLElement;
+            expect(toggleSplitter.getAttribute('role')).toEqual('button');
+            expect(toggleSplitter.getAttribute('aria-pressed')).toEqual('true');
+            renderResult.rerender(<UISplitter type={UISplitterType.Toggle} onResize={onResize} hidden={true} />);
+            expect(toggleSplitter.getAttribute('aria-pressed')).toEqual('false');
         });
     });
 
     it('Test "splitterTabIndex" property', () => {
         // default value
-        expect(wrapper.find('.splitter--horizontal').prop('tabIndex')).toEqual(0);
-        wrapper.setProps({
-            splitterTabIndex: -1
-        });
-        expect(wrapper.find('.splitter--horizontal').prop('tabIndex')).toEqual(-1);
+        const splitterHorizontal = container.querySelector('.splitter--horizontal') as HTMLElement;
+        expect(splitterHorizontal.tabIndex).toEqual(0);
+        renderResult.rerender(<UISplitter type={UISplitterType.Resize} onResize={onResize} splitterTabIndex={-1} />);
+        expect(splitterHorizontal.tabIndex).toEqual(-1);
     });
 
     it('Test "hidden" property', () => {
-        expect(wrapper.find('.splitter--hidden').length).toEqual(0);
-        wrapper.setProps({
-            hidden: true
-        });
-        expect(wrapper.find('.splitter--hidden').length).toEqual(1);
+        expect(container.querySelectorAll('.splitter--hidden').length).toEqual(0);
+        renderResult.rerender(<UISplitter type={UISplitterType.Resize} onResize={onResize} hidden={true} />);
+        expect(container.querySelectorAll('.splitter--hidden').length).toEqual(1);
     });
 
     describe('Splitter icon', () => {
@@ -241,20 +245,31 @@ describe('<Splitter />', () => {
 
         for (const testCase of testCases) {
             it(`Splitter types - vertical=${testCase.vertical} splitterLayoutType=${testCase.splitterLayoutType} type=${testCase.type} `, () => {
-                expect(wrapper.find('.splitter--hidden').length).toEqual(0);
-                wrapper.setProps({
-                    vertical: testCase.vertical,
-                    splitterLayoutType: testCase.splitterLayoutType,
-                    type: testCase.type
-                });
-                expect(wrapper.find('.splitter--standard').length).toEqual(testCase.expect.standard ? 1 : 0);
-                expect(wrapper.find('.splitter--compact').length).toEqual(testCase.expect.compact ? 1 : 0);
-                expect(wrapper.find('.splitter--vertical').length).toEqual(testCase.expect.vertical ? 1 : 0);
-                expect(wrapper.find('.splitter--horizontal').length).toEqual(testCase.expect.horizontal ? 1 : 0);
+                expect(container.querySelectorAll('.splitter--hidden').length).toEqual(0);
+                renderResult.rerender(
+                    <UISplitter
+                        type={testCase.type}
+                        onResize={onResize}
+                        vertical={testCase.vertical}
+                        splitterLayoutType={testCase.splitterLayoutType}
+                    />
+                );
+                expect(container.querySelectorAll('.splitter--standard').length).toEqual(
+                    testCase.expect.standard ? 1 : 0
+                );
+                expect(container.querySelectorAll('.splitter--compact').length).toEqual(
+                    testCase.expect.compact ? 1 : 0
+                );
+                expect(container.querySelectorAll('.splitter--vertical').length).toEqual(
+                    testCase.expect.vertical ? 1 : 0
+                );
+                expect(container.querySelectorAll('.splitter--horizontal').length).toEqual(
+                    testCase.expect.horizontal ? 1 : 0
+                );
 
-                const icon = wrapper.find('UIIcon');
-                expect(wrapper.find('.splitter__grip').length).toEqual(1);
-                expect(icon.prop('iconName')).toEqual(testCase.expect.icon);
+                const icon = container.querySelector('[data-icon-name]') as HTMLElement;
+                expect(container.querySelectorAll('.splitter__grip').length).toEqual(1);
+                expect(icon.getAttribute('data-icon-name')).toEqual(testCase.expect.icon);
             });
         }
     });

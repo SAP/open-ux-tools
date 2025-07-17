@@ -52,33 +52,37 @@ describe('<UIDropdown />', () => {
     });
 
     it('Styles - default', () => {
-        const { container } = render(<UIDropdown options={data} selectedKey=\"EE\" />);
+        const { container } = render(<UIDropdown options={data} selectedKey="EE" />);
         const dropdown = container.querySelector('.ms-Dropdown');
         expect(dropdown).toBeInTheDocument();
     });
 
     it('Styles - required', () => {
-        const { container } = render(<UIDropdown options={data} selectedKey=\"EE\" required={true} />);
+        const { container } = render(<UIDropdown options={data} selectedKey="EE" required={true} />);
         const dropdown = container.querySelector('.ms-Dropdown');
         expect(dropdown).toBeInTheDocument();
     });
 
     it('Test responsive mode - custom value', () => {
-        const { container } = render(<UIDropdown options={data} selectedKey="EE" responsiveMode={ResponsiveMode.small} />);
+        const { container } = render(
+            <UIDropdown options={data} selectedKey="EE" responsiveMode={ResponsiveMode.small} />
+        );
         const selectBox = container.querySelector('div.ts-SelectBox');
         expect(selectBox).toBeInTheDocument();
     });
 
     it('Test css selectors which are used in scss - main', async () => {
-        const { container } = render(<UIDropdown options={data} selectedKey=\"EE\" />);
+        const { container } = render(<UIDropdown options={data} selectedKey="EE" />);
         expect(container.querySelector('div.ts-SelectBox')).toBeInTheDocument();
         expect(container.querySelector('.ts-SelectBox .ms-Dropdown-title')).toBeInTheDocument();
         expect(container.querySelector('.ts-SelectBox .ms-Dropdown-caretDownWrapper i svg')).toBeInTheDocument();
-        
+
         await openDropdown(container);
         expect(document.querySelector('.ts-Callout-Dropdown')).toBeInTheDocument();
         expect(document.querySelector('.ts-Callout-Dropdown .ms-Callout-main')).toBeInTheDocument();
-        expect(document.querySelector('.ts-Callout-Dropdown .ms-Dropdown-items .ms-Button--command')).toBeInTheDocument();
+        expect(
+            document.querySelector('.ts-Callout-Dropdown .ms-Dropdown-items .ms-Button--command')
+        ).toBeInTheDocument();
         expect(document.querySelector('.ms-Dropdown-header')).not.toBeInTheDocument();
     });
 
@@ -165,32 +169,32 @@ describe('<UIDropdown />', () => {
 
     describe('Behavior of title/tooltip for options', () => {
         const buttonSelector = '.ts-Callout-Dropdown .ms-Button--command';
-        it('Default - inherit from text', () => {
+        it('Default - inherit from text', async () => {
             wrapper.setProps({
                 options: originalData
             });
-            openDropdown();
+            await openDropdown();
             expect(wrapper.find(buttonSelector).last().getDOMNode().getAttribute('title')).toEqual('Yemen');
         });
 
-        it('Custom title', () => {
+        it('Custom title', async () => {
             const expectTitle = 'dummy';
             const dataTemp = JSON.parse(JSON.stringify(originalData));
             dataTemp[dataTemp.length - 1].title = expectTitle;
             wrapper.setProps({
                 options: dataTemp
             });
-            openDropdown();
+            await openDropdown();
             expect(wrapper.find(buttonSelector).last().getDOMNode().getAttribute('title')).toEqual(expectTitle);
         });
 
-        it('No title', () => {
+        it('No title', async () => {
             const dataTemp = JSON.parse(JSON.stringify(originalData));
             dataTemp[dataTemp.length - 1].title = null;
             wrapper.setProps({
                 options: dataTemp
             });
-            openDropdown();
+            await openDropdown();
             expect(wrapper.find(buttonSelector).last().getDOMNode().getAttribute('title')).toEqual(null);
         });
     });
@@ -306,7 +310,7 @@ describe('<UIDropdown />', () => {
     });
 
     it('Dropdown items with group headers', async () => {
-        const { container } = render(<UIDropdown options={groupsData} selectedKey=\"EE\" />);
+        const { container } = render(<UIDropdown options={groupsData} selectedKey="EE" />);
         await openDropdown(container);
         expect(document.querySelectorAll('.ms-Dropdown-header')).toHaveLength(7);
         expect(document.querySelector('.ms-Dropdown-header .ts-dropdown-item-blocker')).not.toBeInTheDocument();
@@ -394,7 +398,7 @@ describe('<UIDropdown />', () => {
         });
     });
 
-    it('Custom renderers for "onRenderOption"', () => {
+    it('Custom renderers for "onRenderOption"', async () => {
         wrapper.setProps({
             onRenderOption: (
                 props?: UISelectableOption,
@@ -403,12 +407,12 @@ describe('<UIDropdown />', () => {
                 return <div className="custom-render-option">{defaultRender?.(props)}</div>;
             }
         });
-        openDropdown();
+        await openDropdown();
         expect(wrapper.find('.custom-render-option').length).toBeGreaterThan(0);
         expect(wrapper.find('.ts-dropdown-item-blocker').length).toBeGreaterThan(0);
     });
 
-    it('Custom renderers for "onRenderItem"', () => {
+    it('Custom renderers for "onRenderItem"', async () => {
         wrapper.setProps({
             onRenderItem: (
                 props?: UISelectableOption,
@@ -417,17 +421,17 @@ describe('<UIDropdown />', () => {
                 return <div className="custom-render-item">{defaultRender?.(props)}</div>;
             }
         });
-        openDropdown();
+        await openDropdown();
         expect(wrapper.find('.custom-render-item').length).toBeGreaterThan(0);
     });
 
-    it('Test "calloutProps"', () => {
+    it('Test "calloutProps"', async () => {
         wrapper.setProps({
             calloutProps: {
                 className: 'dummy'
             }
         });
-        openDropdown();
+        await openDropdown();
         expect(wrapper.find('div.dummy').length).toEqual(1);
     });
 });

@@ -99,11 +99,7 @@ describe('<UIDialog />', () => {
 
         it('Accept button', () => {
             render(
-                <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    onAccept={onAcceptSpy}
-                    isOpen={true}>
+                <UIDialog acceptButtonText="Yes" cancelButtonText="No" onAccept={onAcceptSpy} isOpen={true}>
                     <div className="dummy"></div>
                 </UIDialog>
             );
@@ -113,11 +109,7 @@ describe('<UIDialog />', () => {
 
         it('Reject button', () => {
             render(
-                <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    onCancel={onRejectSpy}
-                    isOpen={true}>
+                <UIDialog acceptButtonText="Yes" cancelButtonText="No" onCancel={onRejectSpy} isOpen={true}>
                     <div className="dummy"></div>
                 </UIDialog>
             );
@@ -127,10 +119,7 @@ describe('<UIDialog />', () => {
 
         it('Empty footer', () => {
             render(
-                <UIDialog
-                    acceptButtonText="Yes"
-                    cancelButtonText="No"
-                    isOpen={true}>
+                <UIDialog acceptButtonText="Yes" cancelButtonText="No" isOpen={true}>
                     <div className="dummy"></div>
                 </UIDialog>
             );

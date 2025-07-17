@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import type { ICalloutContentStyles } from '@fluentui/react';
 import { Callout } from '@fluentui/react';
 import type { UICalloutProps } from '../../../src/components/UICallout';
@@ -37,7 +38,7 @@ describe('<UICallout />', () => {
     it('Property "contentPadding"', () => {
         // Default - None
         expect(container.querySelector('.ms-Callout')).toBeInTheDocument();
-        
+
         // Standard
         rerender(
             <UICallout contentPadding={UICalloutContentPadding.Standard}>
@@ -67,13 +68,13 @@ describe('<UICallout />', () => {
                 [property]: 'green'
             }
         };
-        
+
         rerender(
             <UICallout styles={expectStyles}>
                 <div className="dummy"></div>
             </UICallout>
         );
-        
+
         // Test that the component renders with custom styles
         expect(container.querySelector('.ms-Callout')).toBeInTheDocument();
         expect(container.querySelector('.dummy')).toBeInTheDocument();
@@ -136,7 +137,7 @@ describe('<UICallout />', () => {
                         <div className="dummy"></div>
                     </UICallout>
                 );
-                
+
                 const dummyElement = container.querySelector('.dummy');
                 if (dummyElement) {
                     fireEvent.keyDown(dummyElement, { key, shiftKey });

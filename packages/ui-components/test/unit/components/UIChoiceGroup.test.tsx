@@ -15,7 +15,7 @@ describe('<UIChoiceGroup />', () => {
         const { container } = render(<UIChoiceGroup />);
         const choiceGroup = container.querySelector('.ms-ChoiceFieldGroup') as HTMLElement;
         expect(choiceGroup).toBeInTheDocument();
-        
+
         // Test that the component renders with default styles
         expect(choiceGroup.parentElement).toHaveStyle('color: var(--vscode-input-foreground)');
     });
@@ -24,7 +24,7 @@ describe('<UIChoiceGroup />', () => {
         const { container } = render(<UIChoiceGroup disabled={true} />);
         const choiceGroup = container.querySelector('.ms-ChoiceFieldGroup') as HTMLElement;
         expect(choiceGroup).toBeInTheDocument();
-        
+
         // Test that the component renders with disabled styles
         expect(choiceGroup.parentElement).toHaveStyle('opacity: 0.4');
     });
@@ -33,7 +33,7 @@ describe('<UIChoiceGroup />', () => {
         const { container } = render(<UIChoiceGroup required={true} />);
         const choiceGroup = container.querySelector('.ms-ChoiceFieldGroup') as HTMLElement;
         expect(choiceGroup).toBeInTheDocument();
-        
+
         // Test that the component renders with required styles
         expect(choiceGroup.parentElement).toHaveStyle('color: var(--vscode-input-foreground)');
     });
@@ -42,9 +42,8 @@ describe('<UIChoiceGroup />', () => {
         const { container } = render(<UIChoiceGroup inline={true} />);
         const choiceGroup = container.querySelector('.ms-ChoiceFieldGroup') as HTMLElement;
         expect(choiceGroup).toBeInTheDocument();
-        
+
         // Test that the component renders with inline styles
         expect(choiceGroup.parentElement).toHaveStyle('display: flex');
     });
-
 });

@@ -136,7 +136,7 @@ describe('<UIFlexibleTable />', () => {
                     onRenderReorderActions={() => {
                         return {};
                     }}
-                    noDataText='No data.'
+                    noDataText="No data."
                 />
             );
             const { container } = renderResult;
@@ -318,9 +318,7 @@ describe('<UIFlexibleTable />', () => {
             const indexTitleFound = container.querySelector(selectors.indexColumnTitleCustom);
             expect(indexTitleFound).toBeTruthy();
             expect(indexTitleFound?.textContent).toBe('id');
-            expect(indexTitleFound?.className).toBe(
-                'flexible-table-content-table-title-row-item-index custom-id'
-            );
+            expect(indexTitleFound?.className).toBe('flexible-table-content-table-title-row-item-index custom-id');
 
             const actionsTitleFound = container.querySelector(selectors.titleRowActions);
             expect(actionsTitleFound).toBeTruthy();
@@ -459,9 +457,7 @@ describe('<UIFlexibleTable />', () => {
 
             // check warning class added
             rowObjects.forEach((row, rowIndex) => {
-                expect(
-                    row.className.includes('highlight-drop-warning') === (rowIndex === 2)
-                ).toBeTruthy();
+                expect(row.className.includes('highlight-drop-warning') === (rowIndex === 2)).toBeTruthy();
             });
         });
 
@@ -484,7 +480,7 @@ describe('<UIFlexibleTable />', () => {
             );
             const { container } = renderResult;
             expect(container.querySelectorAll(selectors.reverseBackground).length).toEqual(3);
-            
+
             renderResult.rerender(
                 <UIFlexibleTable
                     layout={UIFlexibleTableLayout.InlineFlex}
@@ -506,11 +502,11 @@ describe('<UIFlexibleTable />', () => {
 
         describe('Add button', () => {
             const onAddClick = jest.fn().mockImplementation(() => ({ scrollToRow: 1 }));
-            
+
             beforeEach(() => {
                 onAddClick.mockClear();
             });
-            
+
             it('enabled', async () => {
                 Element.prototype.scrollIntoView = jest.fn();
                 const scrollSpy = jest.spyOn(Element.prototype, 'scrollIntoView');
@@ -534,10 +530,10 @@ describe('<UIFlexibleTable />', () => {
                 const addButton = container.querySelector(selectors.addButton);
                 expect(addButton).toBeTruthy();
                 expect(addButton?.getAttribute('aria-label')).toBe('Add New Item');
-                
+
                 await userEvent.click(addButton!);
                 expect(onAddClick).toHaveBeenCalledTimes(1);
-                
+
                 renderResult.rerender(
                     <UIFlexibleTable
                         layout={UIFlexibleTableLayout.InlineFlex}
@@ -560,7 +556,7 @@ describe('<UIFlexibleTable />', () => {
                     'row-1'
                 );
             });
-            
+
             it('readonly - off', () => {
                 renderResult.rerender(
                     <UIFlexibleTable
@@ -585,7 +581,7 @@ describe('<UIFlexibleTable />', () => {
                 expect(foundButton?.getAttribute('disabled')).toBeDefined();
                 expect(foundButton?.getAttribute('title')).toBe('Read only reason');
             });
-            
+
             it('disabled', () => {
                 renderResult.rerender(
                     <UIFlexibleTable
@@ -609,7 +605,7 @@ describe('<UIFlexibleTable />', () => {
                 expect(foundButton).toBeTruthy();
                 expect(foundButton?.getAttribute('disabled')).toBeDefined();
             });
-            
+
             it('omitted', () => {
                 renderResult.rerender(
                     <UIFlexibleTable
@@ -721,12 +717,12 @@ describe('<UIFlexibleTable />', () => {
         describe('Delete row buttons', () => {
             const onAddClick = jest.fn();
             const onDeleteClick = jest.fn();
-            
+
             beforeEach(() => {
                 onAddClick.mockClear();
                 onDeleteClick.mockClear();
             });
-            
+
             it('enabled', async () => {
                 renderResult.rerender(
                     <UIFlexibleTable
@@ -752,7 +748,7 @@ describe('<UIFlexibleTable />', () => {
                 expect(onDeleteClick).toHaveBeenCalledTimes(1);
                 expect(onDeleteClick.mock.calls[0][0].rowIndex).toEqual(2);
             });
-            
+
             it('tooltip', () => {
                 renderResult.rerender(
                     <UIFlexibleTable
@@ -781,12 +777,10 @@ describe('<UIFlexibleTable />', () => {
                 const foundButtons = container.querySelectorAll(selectors.deleteButton);
                 expect(foundButtons.length).toEqual(3);
                 foundButtons.forEach((button, idx) => {
-                    expect(button.getAttribute('title')).toBe(
-                        idx > 0 ? 'Tooltip for disabled' : 'Tooltip for enabled'
-                    );
+                    expect(button.getAttribute('title')).toBe(idx > 0 ? 'Tooltip for disabled' : 'Tooltip for enabled');
                 });
             });
-            
+
             it('readonly - off', () => {
                 renderResult.rerender(
                     <UIFlexibleTable
@@ -809,7 +803,7 @@ describe('<UIFlexibleTable />', () => {
                 const { container } = renderResult;
                 expect(container.querySelectorAll(selectors.deleteButton).length).toEqual(0);
             });
-            
+
             it('disabled', () => {
                 renderResult.rerender(
                     <UIFlexibleTable
@@ -928,15 +922,11 @@ describe('<UIFlexibleTable />', () => {
                 expect(upButtonsFound.length).toBe(3);
                 expect(downButtonsFound.length).toBe(3);
                 upButtonsFound.forEach((button, idx) => {
-                    expect(
-                        button.className.includes('is-disabled') === [0, 1].includes(idx)
-                    ).toBeTruthy();
+                    expect(button.className.includes('is-disabled') === [0, 1].includes(idx)).toBeTruthy();
                     expect(button.getAttribute('title')).toBe(idx === 1 ? 'Testing move up disabled' : '');
                 });
                 downButtonsFound.forEach((button, idx) => {
-                    expect(
-                        button.className.includes('is-disabled') === [1, 2].includes(idx)
-                    ).toBeTruthy();
+                    expect(button.className.includes('is-disabled') === [1, 2].includes(idx)).toBeTruthy();
                     expect(button.getAttribute('title')).toBe(idx === 1 ? 'Testing move down disabled' : '');
                 });
             });
@@ -1206,7 +1196,7 @@ describe('<UIFlexibleTable />', () => {
             expect(enabledRow.style.touchAction).toBe('none');
             expect(enabledRow.style.userSelect).toBe('none');
             expect(enabledRow.style.pointerEvents).toBe('all');
-            
+
             // Check disabled row
             const disabledRow = listItems[disablerRowIndex] as HTMLElement;
             expect(disabledRow.style.cursor).toBe('default');
@@ -1258,21 +1248,17 @@ describe('<UIFlexibleTable />', () => {
                     const row = listItems[rowIndex] as HTMLElement;
                     expect(row.style.touchAction).toBe(isTouchDragDisabled ? 'auto' : 'none');
                     expect(row.style.pointerEvents).toBe('all');
-                    
+
                     // Check touch event handling
                     const touchStartMock = jest.fn();
                     const touchEndMock = jest.fn();
                     const touchStartEvent = { nativeEvent: { stopImmediatePropagation: touchStartMock } };
                     const touchEndEvent = { nativeEvent: { stopImmediatePropagation: touchEndMock } };
-                    
+
                     fireEvent.touchStart(row, touchStartEvent);
-                    expect(touchStartMock).toBeCalledTimes(
-                        stopImmediatePropagation ? 1 : 0
-                    );
+                    expect(touchStartMock).toBeCalledTimes(stopImmediatePropagation ? 1 : 0);
                     fireEvent.touchEnd(row, touchEndEvent);
-                    expect(touchEndMock).toBeCalledTimes(
-                        stopImmediatePropagation ? 1 : 0
-                    );
+                    expect(touchEndMock).toBeCalledTimes(stopImmediatePropagation ? 1 : 0);
                 });
             }
         });

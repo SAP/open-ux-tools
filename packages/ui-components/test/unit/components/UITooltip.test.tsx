@@ -10,11 +10,11 @@ import { UIDefaultButton } from '../../../src/components/UIButton';
 describe('<UITooltip />', () => {
     let renderResult: ReturnType<typeof render>;
     let container: HTMLElement;
-    
+
     const getTooltipStyles = (customProps?: Partial<UITooltipProps>): ICalloutContentStyles => {
         const testRender = render(<UITooltip {...customProps} />);
         const tooltipHost = testRender.container.querySelector('.ms-TooltipHost') as HTMLElement;
-        
+
         // We'll need to access the styles differently since we can't directly access React props
         // For now, we'll create a mock implementation to test the styles indirectly
         const maxWidth = customProps?.maxWidth ?? 200;

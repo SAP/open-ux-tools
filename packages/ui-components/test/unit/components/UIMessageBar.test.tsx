@@ -23,7 +23,7 @@ describe('<UIMessageBar />', () => {
         expect(container.querySelectorAll('.ms-MessageBar').length).toEqual(1);
         const messageBar = container.querySelector('.ms-MessageBar');
         expect(messageBar).toBeInTheDocument();
-        
+
         // Check for success icon in default state
         const successIcon = container.querySelector(`i[data-icon-name="${UiIcons.Success}"]`);
         expect(successIcon).toBeInTheDocument();
@@ -33,7 +33,7 @@ describe('<UIMessageBar />', () => {
         rerender(<UIMessageBar messageBarType={MessageBarType.error} />);
         const messageBar = container.querySelector('.ms-MessageBar');
         expect(messageBar).toBeInTheDocument();
-        
+
         // Check for error icon
         const errorIcon = container.querySelector(`i[data-icon-name="${UiIcons.Error}"]`);
         expect(errorIcon).toBeInTheDocument();
@@ -43,7 +43,7 @@ describe('<UIMessageBar />', () => {
         rerender(<UIMessageBar messageBarType={MessageBarType.success} />);
         const messageBar = container.querySelector('.ms-MessageBar');
         expect(messageBar).toBeInTheDocument();
-        
+
         // Check for success icon
         const successIcon = container.querySelector(`i[data-icon-name="${UiIcons.Success}"]`);
         expect(successIcon).toBeInTheDocument();
@@ -53,7 +53,7 @@ describe('<UIMessageBar />', () => {
         rerender(<UIMessageBar messageBarType={MessageBarType.info} />);
         const messageBar = container.querySelector('.ms-MessageBar');
         expect(messageBar).toBeInTheDocument();
-        
+
         // Check for info icon
         const infoIcon = container.querySelector(`i[data-icon-name="${UiIcons.Info}"]`);
         expect(infoIcon).toBeInTheDocument();
@@ -63,7 +63,7 @@ describe('<UIMessageBar />', () => {
         rerender(<UIMessageBar messageBarType={MessageBarType.warning} />);
         const messageBar = container.querySelector('.ms-MessageBar');
         expect(messageBar).toBeInTheDocument();
-        
+
         // Check for warning icon
         const warningIcon = container.querySelector(`i[data-icon-name="${UiIcons.Warning}"]`);
         expect(warningIcon).toBeInTheDocument();

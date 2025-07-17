@@ -44,7 +44,7 @@ describe('<UIContextualMenu />', () => {
     it('Test className property', () => {
         const contextualMenu = container.querySelector('.ts-ContextualMenu');
         expect(contextualMenu).toHaveClass('ts-ContextualMenu', 'ts-ContextualMenu--dropdown');
-        
+
         rerender(
             <UIContextualMenu
                 items={[
@@ -60,7 +60,7 @@ describe('<UIContextualMenu />', () => {
                 className="dummy"
             />
         );
-        
+
         const contextualMenuWithClass = container.querySelector('.ts-ContextualMenu');
         expect(contextualMenuWithClass).toHaveClass('ts-ContextualMenu', 'ts-ContextualMenu--dropdown', 'dummy');
     });
@@ -111,7 +111,7 @@ describe('<UIContextualMenu />', () => {
                 iconToLeft={true}
             />
         );
-        
+
         // Check if submenu icon is rendered
         const containerElements = container.querySelectorAll('.ms-ContextualMenu-linkContent');
         containerElements.forEach((containerElement, index) => {
@@ -140,15 +140,15 @@ describe('<UIContextualMenu />', () => {
                 ]}
             />
         );
-        
+
         // Check if icon is rendered
         expect(container.querySelectorAll(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
-        
+
         // Check if icon is on right side
         const containerElement = container.querySelector('.ms-ContextualMenu-linkContent');
         const textElement = container.querySelector('.ms-ContextualMenu-itemText');
         const iconElement = container.querySelector('i.ms-ContextualMenu-icon');
-        
+
         if (containerElement && textElement && iconElement) {
             expect(containerElement.childNodes[0]).toBe(textElement);
             expect(containerElement.childNodes[1]).toBe(iconElement);
@@ -173,10 +173,10 @@ describe('<UIContextualMenu />', () => {
                 ]}
             />
         );
-        
+
         // Check if only one icon is rendered
         expect(container.querySelectorAll(`i[data-icon-name="${UiIcons.GuidedDevelopment}"]`).length).toEqual(1);
-        
+
         // Check if two menu items are rendered
         expect(container.querySelectorAll('.ms-ContextualMenu-linkContent').length).toEqual(2);
     });

@@ -10,11 +10,14 @@ describe('<UITextInput />', () => {
     let renderResult: ReturnType<typeof render>;
     let container: HTMLElement;
 
-    const getStyles = (customProps?: Partial<UITextInputProps>, additionalStyleProps?: Partial<ITextFieldStyleProps>): ITextFieldStyles => {
+    const getStyles = (
+        customProps?: Partial<UITextInputProps>,
+        additionalStyleProps?: Partial<ITextFieldStyleProps>
+    ): ITextFieldStyles => {
         // For RTL, we'll need to mock the styles since we can't directly access React component props
         // We'll create a test instance to get the styles
         const testRender = render(<UITextInput {...customProps} />);
-        
+
         // Since we can't access the internal styles function directly in RTL,
         // we'll create a mock that returns consistent style objects for snapshot testing
         const mockStyles: ITextFieldStyles = {
@@ -53,7 +56,7 @@ describe('<UITextInput />', () => {
                 label: {}
             }
         };
-        
+
         testRender.unmount();
         return mockStyles;
     };
@@ -117,19 +120,23 @@ describe('<UITextInput />', () => {
     ];
     for (const testCase of testCases) {
         it(`Styles - multiline=${testCase.multiline}, disabled=${testCase.disabled}, readOnly=${testCase.readOnly}`, () => {
-            expect(getStyles({
-                multiline: testCase.multiline,
-                disabled: testCase.disabled,
-                readOnly: testCase.readOnly
-            })).toMatchSnapshot();
+            expect(
+                getStyles({
+                    multiline: testCase.multiline,
+                    disabled: testCase.disabled,
+                    readOnly: testCase.readOnly
+                })
+            ).toMatchSnapshot();
         });
     }
 
     it('Readonly input field with value', () => {
-        expect(getStyles({
-            readOnly: true,
-            value: 'test'
-        })).toMatchSnapshot();
+        expect(
+            getStyles({
+                readOnly: true,
+                value: 'test'
+            })
+        ).toMatchSnapshot();
     });
 
     it('Disabled textfield, but input should be readonly', () => {
@@ -150,35 +157,41 @@ describe('<UITextInput />', () => {
     ];
     for (const errorMessage of focusTestCases) {
         it(`Focus styles, "errorMessage=${errorMessage.errorMessage}"`, () => {
-            expect(getStyles({
-                errorMessage: errorMessage.errorMessage ? 'dummy' : undefined
-            })).toMatchSnapshot();
+            expect(
+                getStyles({
+                    errorMessage: errorMessage.errorMessage ? 'dummy' : undefined
+                })
+            ).toMatchSnapshot();
         });
     }
 
     describe('Styles - error message', () => {
         it('Error', () => {
-            expect(getStyles({
-                errorMessage: 'dummy'
-            })).toMatchSnapshot();
+            expect(
+                getStyles({
+                    errorMessage: 'dummy'
+                })
+            ).toMatchSnapshot();
         });
 
         it('Warning', () => {
-            expect(getStyles({
-                warningMessage: 'dummy'
-            })).toMatchSnapshot();
+            expect(
+                getStyles({
+                    warningMessage: 'dummy'
+                })
+            ).toMatchSnapshot();
         });
 
         it('Info', () => {
-            expect(getStyles({
-                infoMessage: 'dummy'
-            })).toMatchSnapshot();
+            expect(
+                getStyles({
+                    infoMessage: 'dummy'
+                })
+            ).toMatchSnapshot();
         });
 
         it('Error - custom component', async () => {
-            const localRenderResult = render(
-                <UITextInput errorMessage={<div className="dummyError">TEST</div>} />
-            );
+            const localRenderResult = render(<UITextInput errorMessage={<div className="dummyError">TEST</div>} />);
             await new Promise((resolve) => setTimeout(resolve, 100));
             expect(localRenderResult.container.querySelectorAll('.dummyError').length).toEqual(1);
             localRenderResult.unmount();

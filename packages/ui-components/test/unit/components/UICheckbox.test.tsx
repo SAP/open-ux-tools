@@ -30,11 +30,11 @@ describe('<UICheckbox />', () => {
     describe('Styles - validation message', () => {
         it('No message', () => {
             const { container } = render(<UICheckbox />);
-            
+
             // Create a test instance to access the styles method
             const testInstance = new UICheckboxTestHelper({});
-            const messageInfo: InputValidationMessageInfo = { 
-                message: undefined, 
+            const messageInfo: InputValidationMessageInfo = {
+                message: undefined,
                 type: ErrorMessageType.Info,
                 style: {}
             };
@@ -46,11 +46,11 @@ describe('<UICheckbox />', () => {
 
         it('Error', () => {
             const { container } = render(<UICheckbox errorMessage="dummy" />);
-            
+
             // Create a test instance to access the styles method
             const testInstance = new UICheckboxTestHelper({ errorMessage: 'dummy' });
-            const messageInfo: InputValidationMessageInfo = { 
-                message: 'dummy', 
+            const messageInfo: InputValidationMessageInfo = {
+                message: 'dummy',
                 type: ErrorMessageType.Error,
                 style: {}
             };
@@ -64,11 +64,11 @@ describe('<UICheckbox />', () => {
     describe('Styles', () => {
         it('Unchecked', () => {
             render(<UICheckbox />);
-            
+
             // Create a test instance to access the styles method
             const testInstance = new UICheckboxTestHelper({});
-            const messageInfo: InputValidationMessageInfo = { 
-                message: undefined, 
+            const messageInfo: InputValidationMessageInfo = {
+                message: undefined,
                 type: ErrorMessageType.Info,
                 style: {}
             };
@@ -80,11 +80,11 @@ describe('<UICheckbox />', () => {
 
         it('Checked', () => {
             render(<UICheckbox checked />);
-            
+
             // Create a test instance to access the styles method
             const testInstance = new UICheckboxTestHelper({ checked: true });
-            const messageInfo: InputValidationMessageInfo = { 
-                message: undefined, 
+            const messageInfo: InputValidationMessageInfo = {
+                message: undefined,
                 type: ErrorMessageType.Info,
                 style: {}
             };
@@ -96,11 +96,11 @@ describe('<UICheckbox />', () => {
 
         it('Disabled', () => {
             render(<UICheckbox disabled />);
-            
+
             // Create a test instance to access the styles method
             const testInstance = new UICheckboxTestHelper({ disabled: true });
-            const messageInfo: InputValidationMessageInfo = { 
-                message: undefined, 
+            const messageInfo: InputValidationMessageInfo = {
+                message: undefined,
                 type: ErrorMessageType.Info,
                 style: {}
             };
@@ -115,11 +115,11 @@ describe('<UICheckbox />', () => {
 
         it('Disabled and Checked', () => {
             render(<UICheckbox disabled checked />);
-            
+
             // Create a test instance to access the styles method
             const testInstance = new UICheckboxTestHelper({ disabled: true, checked: true });
-            const messageInfo: InputValidationMessageInfo = { 
-                message: undefined, 
+            const messageInfo: InputValidationMessageInfo = {
+                message: undefined,
                 type: ErrorMessageType.Info,
                 style: {}
             };

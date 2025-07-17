@@ -91,19 +91,23 @@ describe('<UIToggle />', () => {
                             const toggle = toggleRef.current.querySelector('.ms-Toggle');
                             if (toggle) {
                                 const instance = toggle._owner || toggle._reactInternalInstance;
-                                if (instance && instance.props && instance.props.styles) {
+                                if (instance?.props?.styles) {
                                     capturedStyles = instance.props.styles({});
                                 }
                             }
                         }
                     });
-                    return <div ref={toggleRef}><UIToggle onChange={handleChangeMock} checked={false} size={testCase.size} /></div>;
+                    return (
+                        <div ref={toggleRef}>
+                            <UIToggle onChange={handleChangeMock} checked={false} size={testCase.size} />
+                        </div>
+                    );
                 };
-                
+
                 const { container } = render(<TestToggle />);
                 const toggleComponent = container.querySelector('.ms-Toggle') as HTMLElement;
                 expect(toggleComponent).toBeInTheDocument();
-                
+
                 // Test that the component renders with the correct size
                 expect(toggleComponent).toHaveClass('ms-Toggle');
             });
@@ -113,7 +117,7 @@ describe('<UIToggle />', () => {
             const { container } = render(<UIToggle onChange={handleChangeMock} checked={false} />);
             const toggleElement = container.querySelector('.ms-Toggle');
             expect(toggleElement).toBeInTheDocument();
-            
+
             // Test that the toggle renders with expected structure
             const togglePill = container.querySelector('.ms-Toggle-pill');
             const toggleThumb = container.querySelector('.ms-Toggle-thumb');
@@ -125,7 +129,7 @@ describe('<UIToggle />', () => {
             const { container } = render(<UIToggle onChange={handleChangeMock} checked={true} />);
             const toggleElement = container.querySelector('.ms-Toggle');
             expect(toggleElement).toBeInTheDocument();
-            
+
             // Test that the toggle renders with checked state
             expect(toggleElement).toHaveClass('is-checked');
             const togglePill = container.querySelector('.ms-Toggle-pill');
@@ -138,47 +142,27 @@ describe('<UIToggle />', () => {
     describe('Validation message', () => {
         it('Error - standard', () => {
             const { container } = render(
-                <UIToggle 
-                    onChange={handleChangeMock} 
-                    checked={false} 
-                    errorMessage="dummy" 
-                    inlineLabel={false} 
-                />
+                <UIToggle onChange={handleChangeMock} checked={false} errorMessage="dummy" inlineLabel={false} />
             );
             expect(container.querySelector('.ts-message-wrapper--error')).toBeInTheDocument();
         });
 
         it('Error - inline', () => {
             const { container } = render(
-                <UIToggle 
-                    onChange={handleChangeMock} 
-                    checked={false} 
-                    errorMessage="dummy" 
-                    inlineLabel={true} 
-                />
+                <UIToggle onChange={handleChangeMock} checked={false} errorMessage="dummy" inlineLabel={true} />
             );
             expect(container.querySelector('.ts-message-wrapper--error')).toBeInTheDocument();
         });
 
         it('Warning', () => {
             const { container } = render(
-                <UIToggle 
-                    onChange={handleChangeMock} 
-                    checked={false} 
-                    warningMessage="dummy" 
-                />
+                <UIToggle onChange={handleChangeMock} checked={false} warningMessage="dummy" />
             );
             expect(container.querySelector('.ts-message-wrapper--warning')).toBeInTheDocument();
         });
 
         it('Info', () => {
-            const { container } = render(
-                <UIToggle 
-                    onChange={handleChangeMock} 
-                    checked={false} 
-                    infoMessage="dummy" 
-                />
-            );
+            const { container } = render(<UIToggle onChange={handleChangeMock} checked={false} infoMessage="dummy" />);
             expect(container.querySelector('.ts-message-wrapper--info')).toBeInTheDocument();
         });
     });

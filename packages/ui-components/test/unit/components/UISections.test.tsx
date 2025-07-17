@@ -21,12 +21,7 @@ describe('<Sections />', () => {
         document.body.dispatchEvent(event);
     };
 
-    const simulateSplitterResize = (
-        container: HTMLElement,
-        start: number,
-        end: number,
-        splitterIndex = 0
-    ): void => {
+    const simulateSplitterResize = (container: HTMLElement, start: number, end: number, splitterIndex = 0): void => {
         const splitters = container.querySelectorAll('.splitter');
         const splitter = splitters[splitterIndex] as HTMLElement;
         fireEvent.mouseDown(splitter, { clientX: start, button: 0, clientY: start });
@@ -259,9 +254,7 @@ describe('<Sections />', () => {
         });
 
         describe('Test 3 columns splitter resize', () => {
-            const renderSections = (
-                visible = [true, true, true]
-            ): ReturnType<typeof render> => {
+            const renderSections = (visible = [true, true, true]): ReturnType<typeof render> => {
                 return render(
                     <UISections
                         vertical={false}
@@ -515,22 +508,13 @@ describe('<Sections />', () => {
                             splitter={true}
                             sizes={[1000, 1000, 1000]}
                             minSectionSize={[200, 1000, 1000]}>
-                            <UISections.Section
-                                className="dummy-left-section"
-                                title="Left Title"
-                                height="100%">
+                            <UISections.Section className="dummy-left-section" title="Left Title" height="100%">
                                 <div>Left</div>
                             </UISections.Section>
-                            <UISections.Section
-                                className="dummy-middle-section"
-                                title="Middle Title"
-                                height="100%">
+                            <UISections.Section className="dummy-middle-section" title="Middle Title" height="100%">
                                 <div>Middle</div>
                             </UISections.Section>
-                            <UISections.Section
-                                className="dummy-right-section"
-                                title="Right Title"
-                                height="100%">
+                            <UISections.Section className="dummy-right-section" title="Right Title" height="100%">
                                 <div>Right</div>
                             </UISections.Section>
                         </UISections>
@@ -650,22 +634,13 @@ describe('<Sections />', () => {
                         splitter={true}
                         sizes={[1000, 1000, 1000]}
                         minSectionSize={[200, 1000, 1000]}>
-                        <UISections.Section
-                            className="dummy-left-section"
-                            title="Left Title"
-                            height="100%">
+                        <UISections.Section className="dummy-left-section" title="Left Title" height="100%">
                             <div>Left</div>
                         </UISections.Section>
-                        <UISections.Section
-                            className="dummy-middle-section"
-                            title="Middle Title"
-                            height="100%">
+                        <UISections.Section className="dummy-middle-section" title="Middle Title" height="100%">
                             <div>Middle</div>
                         </UISections.Section>
-                        <UISections.Section
-                            className="dummy-right-section"
-                            title="Right Title"
-                            height="100%">
+                        <UISections.Section className="dummy-right-section" title="Right Title" height="100%">
                             <div>Right</div>
                         </UISections.Section>
                     </UISections>
@@ -695,22 +670,13 @@ describe('<Sections />', () => {
                         splitter={true}
                         sizes={resetSizes}
                         minSectionSize={[200, 1000, 1000]}>
-                        <UISections.Section
-                            className="dummy-left-section"
-                            title="Left Title"
-                            height="100%">
+                        <UISections.Section className="dummy-left-section" title="Left Title" height="100%">
                             <div>Left</div>
                         </UISections.Section>
-                        <UISections.Section
-                            className="dummy-middle-section"
-                            title="Middle Title"
-                            height="100%">
+                        <UISections.Section className="dummy-middle-section" title="Middle Title" height="100%">
                             <div>Middle</div>
                         </UISections.Section>
-                        <UISections.Section
-                            className="dummy-right-section"
-                            title="Right Title"
-                            height="100%">
+                        <UISections.Section className="dummy-right-section" title="Right Title" height="100%">
                             <div>Right</div>
                         </UISections.Section>
                     </UISections>
@@ -1213,7 +1179,7 @@ describe('<Sections />', () => {
     });
 
     it('Test "hidden" section - restore visibility', () => {
-        let hiddenRender = render(
+        const hiddenRender = render(
             <UISections vertical={false} splitter={true} minSectionSize={6}>
                 <UISections.Section>
                     <div>Left</div>
