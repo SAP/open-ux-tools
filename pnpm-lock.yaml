@@ -2782,6 +2782,9 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
+      '@sap-ux/logger':
+        specifier: 0.7.0
+        version: link:../logger
       '@types/semver':
         specifier: 7.5.2
         version: 7.5.2

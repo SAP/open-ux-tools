@@ -1,5 +1,6 @@
 import childProcess, { type SpawnOptionsWithoutStdio } from 'child_process';
 import { CommandRunner } from '../../src/commandRunner';
+import { type Logger } from '@sap-ux/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const mockSpawn = require('mock-spawn');
@@ -67,5 +68,30 @@ describe('CommandRunner', () => {
 
         await expect(commandRunner.run(cmd, args)).rejects.toContain(expectedError);
         expect(spawnSpy).toHaveBeenCalledWith(cmd, args, expectedSpawnOpts);
+    });
+
+    it('should log with provided logger, removing trailing newline or carriage returns', async () => {
+        const cmd = 'npm';
+        const args = ['install'];
+        const logger = {
+            debug: jest.fn(),
+            info: jest.fn(),
+            error: jest.fn()
+        };
+        let childProcessOutput = 'npm install\n\n\n';
+        spawnMock.setDefault(spawnMock.simple(0, childProcessOutput));
+
+        await commandRunner.run(cmd, args, {}, logger as any as Logger);
+
+        expect(logger.debug).toHaveBeenCalledWith(`Running command: ${cmd} ${args.join(' ')}`);
+        expect(logger.info).toHaveBeenCalledWith('npm install');
+
+        childProcessOutput = 'npm install\r\r\r\r\r\r';
+        spawnMock.setDefault(spawnMock.simple(0, childProcessOutput));
+
+        await commandRunner.run(cmd, args, {}, logger as any as Logger);
+
+        expect(logger.debug).toHaveBeenCalledWith(`Running command: ${cmd} ${args.join(' ')}`);
+        expect(logger.info).toHaveBeenCalledWith('npm install');
     });
 });
