@@ -1,5 +1,19 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.14.29
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.25
+
+## 0.14.28
+
+### Patch Changes
+
+-   a1f282f: moves validate fiori app folder to before default is determined
+-   Updated dependencies [a1f282f]
+    -   @sap-ux/project-input-validator@0.6.12
+
 ## 0.14.27
 
 ### Patch Changes

@@ -1,5 +1,30 @@
 # @sap-ux/adp-tooling
 
+## 0.15.1
+
+### Patch Changes
+
+-   52ac1b0: feat: Add ADP manifest change wizard sub-generators
+
+## 0.15.0
+
+### Minor Changes
+
+-   e53c1f8: Remove archive.zip from deploy script to allow passing any of the additional CLI params.
+
+## 0.14.44
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.25
+
+## 0.14.43
+
+### Patch Changes
+
+-   Updated dependencies [a1f282f]
+    -   @sap-ux/project-input-validator@0.6.12
+
 ## 0.14.42
 
 ### Patch Changes

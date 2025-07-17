@@ -1,5 +1,43 @@
 # @sap-ux/preview-middleware
 
+## 0.20.63
+
+### Patch Changes
+
+-   Updated dependencies [52ac1b0]
+    -   @sap-ux/adp-tooling@0.15.1
+
+## 0.20.62
+
+### Patch Changes
+
+-   Updated dependencies [e53c1f8]
+    -   @sap-ux/adp-tooling@0.15.0
+
+## 0.20.61
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.44
+
+## 0.20.60
+
+### Patch Changes
+
+-   eafb486: fix: default layer for rta
+
+## 0.20.59
+
+### Patch Changes
+
+-   e5de360: fix: adjust test runner default pattern to avoid picking up wrong files
+
+## 0.20.58
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.43
+
 ## 0.20.57
 
 ### Patch Changes
