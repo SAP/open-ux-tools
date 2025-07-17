@@ -37,17 +37,17 @@ describe('<UICallout />', () => {
     });
 
     it('Should render a UICallout component', () => {
-        expect(container.querySelectorAll('.ms-Callout').length).toEqual(1);
-        const callout = container.querySelector('.ms-Callout');
+        expect(document.body.querySelectorAll('.ms-Callout').length).toEqual(1);
+        const callout = document.body.querySelector('.ms-Callout');
         expect(callout).toBeInTheDocument();
         // Test that the component renders with expected structure
-        const dummyElement = container.querySelector('.dummy');
+        const dummyElement = document.body.querySelector('.dummy');
         expect(dummyElement).toBeInTheDocument();
     });
 
     it('Property "contentPadding"', () => {
         // Default - None
-        expect(container.querySelector('.ms-Callout')).toBeInTheDocument();
+        expect(document.body.querySelector('.ms-Callout')).toBeInTheDocument();
 
         // Standard
         rerender(
@@ -55,8 +55,8 @@ describe('<UICallout />', () => {
                 <div className="dummy"></div>
             </UICallout>
         );
-        expect(container.querySelector('.ms-Callout')).toBeInTheDocument();
-        expect(container.querySelector('.dummy')).toBeInTheDocument();
+        expect(document.body.querySelector('.ms-Callout')).toBeInTheDocument();
+        expect(document.body.querySelector('.dummy')).toBeInTheDocument();
     });
 
     it('Overwrite styles', () => {
@@ -86,8 +86,8 @@ describe('<UICallout />', () => {
         );
 
         // Test that the component renders with custom styles
-        expect(container.querySelector('.ms-Callout')).toBeInTheDocument();
-        expect(container.querySelector('.dummy')).toBeInTheDocument();
+        expect(document.body.querySelector('.ms-Callout')).toBeInTheDocument();
+        expect(document.body.querySelector('.dummy')).toBeInTheDocument();
     });
 
     describe('Property "focusTargetSiblingOnTabPress"', () => {
