@@ -257,7 +257,7 @@ describe('<UITreeDropdown />', () => {
             // Test passed if the menu responds to input (highlighting might work differently in RTL)
         });
 
-        it.skip('Test on "Keydown" - open context menu', async () => {
+        it('Test on "Keydown" - open context menu', async () => {
             expect(document.querySelectorAll(selectors.treeContextMenu).length).toEqual(0);
             await triggerWindowKeydownWithFocus('Title');
             expect(document.querySelectorAll(selectors.treeContextMenu).length).toBeGreaterThan(0);
@@ -281,7 +281,7 @@ describe('<UITreeDropdown />', () => {
             // Test passes if the component responds to input by opening the menu
         });
 
-        it.skip('Test input change when submenu closed with arrow left', async () => {
+        it('Test input change when submenu closed with arrow left', async () => {
             await triggerWindowKeydownWithFocus('Title');
             await triggerWindowKeydownWithFocus('Title.Draft', 'ArrowRight');
             await triggerWindowKeydownWithFocus('Title', 'ArrowLeft');
