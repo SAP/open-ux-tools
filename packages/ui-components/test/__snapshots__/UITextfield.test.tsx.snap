@@ -1,21 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<UIToggle /> Focus styles, "errorMessage=[object Object]" 1`] = `
+exports[`<UITextInput /> Focus styles, "errorMessage=false" 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderColor": "var(--vscode-inputValidation-errorBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -24,20 +12,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    Object {
-      "lineHeight": "normal",
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -49,75 +24,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
-    undefined,
-    undefined,
-    Object {
-      "selectors": Object {
-        ":after": Object {
-          "border": "1px solid var(var(--vscode-inputValidation-errorBorder))",
-          "borderRadius": 2,
-        },
-      },
-    },
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        undefined,
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Focus styles, "errorMessage=[object Object]" 2`] = `
+exports[`<UITextInput /> Focus styles, "errorMessage=true" 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderColor": "var(--vscode-inputValidation-errorBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -126,20 +53,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    Object {
-      "lineHeight": "normal",
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -151,75 +65,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
-    undefined,
-    undefined,
-    Object {
-      "selectors": Object {
-        ":after": Object {
-          "border": "1px solid var(--vscode-focusBorder)",
-          "borderRadius": 2,
-        },
-      },
-    },
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        undefined,
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Readonly input field with value 1`] = `
+exports[`<UITextInput /> Readonly input field with value 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderColor": "var(--vscode-inputValidation-errorBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -228,23 +94,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    Object {
-      "lineHeight": "normal",
-    },
-    undefined,
-    undefined,
-    Object {
-      "backgroundColor": "var(--vscode-editor-background)",
-      "fontStyle": "italic",
-    },
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -256,72 +106,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
-    Object {
-      "backgroundColor": "var(--vscode-editor-background)",
-      "borderStyle": "dashed",
-      "selectors": undefined,
-    },
-    undefined,
-    undefined,
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        undefined,
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Styles - default 1`] = `
+exports[`<UITextInput /> Styles - default 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderColor": "var(--vscode-inputValidation-errorBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -330,20 +135,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    Object {
-      "lineHeight": "normal",
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -355,68 +147,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        undefined,
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Styles - error message Error 1`] = `
+exports[`<UITextInput /> Styles - error message Error 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderColor": "var(--vscode-inputValidation-errorBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -425,20 +176,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    Object {
-      "lineHeight": "normal",
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -450,68 +188,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        undefined,
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Styles - error message Info 1`] = `
+exports[`<UITextInput /> Styles - error message Info 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-infoBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-infoBorder)",
-      "borderColor": "var(--vscode-inputValidation-infoBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-infoBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-infoBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -520,20 +217,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    Object {
-      "lineHeight": "normal",
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -545,68 +229,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        undefined,
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Styles - error message Warning 1`] = `
+exports[`<UITextInput /> Styles - error message Warning 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-warningBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-warningBorder)",
-      "borderColor": "var(--vscode-inputValidation-warningBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-warningBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-warningBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -615,20 +258,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    Object {
-      "lineHeight": "normal",
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -640,68 +270,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        undefined,
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Styles - multiline=false, disabled=true, readOnly=undefined 1`] = `
+exports[`<UITextInput /> Styles - multiline=false, disabled=true, readOnly=undefined 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderColor": "var(--vscode-inputValidation-errorBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -710,22 +299,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    Object {
-      "lineHeight": "normal",
-    },
-    false,
-    Object {
-      "backgroundColor": "transparent",
-    },
-    undefined,
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -737,68 +311,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
-    false,
-    Object {
-      "backgroundColor": "var(--vscode-editor-inactiveSelectionBackground)",
-      "borderRadius": 2,
-      "opacity": 0.5,
-    },
-    undefined,
-    undefined,
-    undefined,
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        Object {
-          "opacity": 0.5,
-        },
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Styles - multiline=false, disabled=undefined, readOnly=true 1`] = `
+exports[`<UITextInput /> Styles - multiline=false, disabled=undefined, readOnly=true 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderColor": "var(--vscode-inputValidation-errorBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -807,23 +340,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    Object {
-      "lineHeight": "normal",
-    },
-    false,
-    undefined,
-    Object {
-      "backgroundColor": "var(--vscode-editor-background)",
-      "fontStyle": "italic",
-    },
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -835,76 +352,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
-    Object {
-      "backgroundColor": "var(--vscode-editor-background)",
-      "borderStyle": "dashed",
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-editorWidget-border)",
-        },
-      },
-    },
-    undefined,
-    undefined,
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        undefined,
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Styles - multiline=false, disabled=undefined, readOnly=undefined 1`] = `
+exports[`<UITextInput /> Styles - multiline=false, disabled=undefined, readOnly=undefined 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderColor": "var(--vscode-inputValidation-errorBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -913,20 +381,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    Object {
-      "lineHeight": "normal",
-    },
-    false,
-    undefined,
-    undefined,
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -938,68 +393,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        undefined,
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Styles - multiline=true, disabled=true, readOnly=undefined 1`] = `
+exports[`<UITextInput /> Styles - multiline=true, disabled=true, readOnly=undefined 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderColor": "var(--vscode-inputValidation-errorBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -1008,24 +422,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    false,
-    Object {
-      "display": "flex",
-      "height": "auto",
-      "minHeight": "60px",
-    },
-    Object {
-      "backgroundColor": "transparent",
-    },
-    undefined,
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -1037,64 +434,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    false,
-    false,
-    Object {
-      "backgroundColor": "var(--vscode-editor-inactiveSelectionBackground)",
-      "borderRadius": 2,
-      "opacity": 0.5,
-    },
-    undefined,
-    undefined,
-    undefined,
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        Object {
-          "opacity": 0.5,
-        },
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Styles - multiline=true, disabled=undefined, readOnly=true 1`] = `
+exports[`<UITextInput /> Styles - multiline=true, disabled=undefined, readOnly=true 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderColor": "var(--vscode-inputValidation-errorBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -1103,25 +463,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    false,
-    Object {
-      "display": "flex",
-      "height": "auto",
-      "minHeight": "60px",
-    },
-    undefined,
-    Object {
-      "backgroundColor": "var(--vscode-editor-background)",
-      "fontStyle": "italic",
-    },
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -1133,72 +475,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    false,
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
-    Object {
-      "backgroundColor": "var(--vscode-editor-background)",
-      "borderStyle": "dashed",
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-editorWidget-border)",
-        },
-      },
-    },
-    undefined,
-    undefined,
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        undefined,
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Styles - multiline=true, disabled=undefined, readOnly=undefined 1`] = `
+exports[`<UITextInput /> Styles - multiline=true, disabled=undefined, readOnly=undefined 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderColor": "var(--vscode-inputValidation-errorBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -1207,22 +504,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    false,
-    Object {
-      "display": "flex",
-      "height": "auto",
-      "minHeight": "60px",
-    },
-    undefined,
-    undefined,
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -1234,64 +516,27 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    false,
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        undefined,
-        undefined,
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
 
-exports[`<UIToggle /> Styles - required 1`] = `
+exports[`<UITextInput /> Styles - required 1`] = `
 Object {
-  "errorMessage": Array [
-    Object {
-      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
-      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderColor": "var(--vscode-inputValidation-errorBorder)",
-      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
-      "color": "var(--vscode-input-foreground)",
-      "margin": 0,
-      "paddingBottom": 5,
-      "paddingLeft": 8,
-      "paddingTop": 4,
-    },
-  ],
+  "description": Object {},
+  "errorMessage": Object {},
   "field": Array [
     Object {
       "backgroundColor": "var(--vscode-input-background)",
@@ -1300,20 +545,7 @@ Object {
       "color": "var(--vscode-input-foreground)",
       "fontSize": "13px",
       "fontWeight": "normal",
-      "selectors": Object {
-        "::placeholder": Object {
-          "color": "var(--vscode-input-placeholderForeground)",
-          "fontSize": 13,
-        },
-      },
     },
-    Object {
-      "lineHeight": "normal",
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
   "fieldGroup": Array [
     Object {
@@ -1325,56 +557,19 @@ Object {
       "boxSizing": "initial",
       "color": "var(--vscode-input-foreground)",
     },
-    Object {
-      "height": 24,
-      "maxHeight": 24,
-      "minHeight": 24,
-    },
-    Object {
-      "selectors": Object {
-        "&:hover": Object {
-          "borderColor": "var(--vscode-focusBorder)",
-        },
-      },
-    },
-    undefined,
-    undefined,
-    undefined,
-    undefined,
   ],
-  "icon": Array [
-    Object {
-      "bottom": 2,
-    },
-  ],
+  "icon": Object {},
+  "prefix": Object {},
+  "revealButton": Object {},
+  "revealIcon": Object {},
+  "revealSpan": Object {},
   "root": Object {
     "height": "auto",
   },
   "subComponentStyles": Object {
-    "label": Object {
-      "root": Array [
-        Object {
-          "color": "var(--vscode-input-foreground)",
-          "fontSize": "13px",
-          "fontWeight": "bold",
-          "marginTop": 25,
-          "padding": "4px 0",
-        },
-        undefined,
-        Object {
-          "selectors": Object {
-            "::after": Object {
-              "color": "var(--vscode-inputValidation-errorBorder)",
-              "content": "' *' / ''",
-              "paddingRight": 12,
-            },
-          },
-        },
-      ],
-    },
+    "label": Object {},
   },
-  "suffix": Object {
-    "backgroundColor": "var(--vscode-input-background)",
-  },
+  "suffix": Object {},
+  "wrapper": Object {},
 }
 `;
