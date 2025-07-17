@@ -257,7 +257,7 @@ export default defineConfig([
             sonarjs
         },
         languageOptions: {
-            parser: tsParser,
+            parser: tsParser
         },
         rules: {
             '@typescript-eslint/explicit-function-return-type': 'off',
@@ -303,9 +303,7 @@ export default defineConfig([
             'jsdoc/require-returns-description': 'off',
             'jsdoc/require-param-description': 'off',
             'max-nested-callbacks': ['warn', 5],
-            'sonarjs/cognitive-complexity': 'off',
-            // Rules that were added to @typescript-eslint/eslint-plugin recommended v8
-            '@typescript-eslint/no-empty-object-type': 'warn'
+            'sonarjs/cognitive-complexity': 'off'
         }
     }
 ]);
