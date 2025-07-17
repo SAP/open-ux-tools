@@ -40,13 +40,21 @@ describe('<UIChoiceGroup />', () => {
     });
 
     it('Styles - inline', () => {
-        const { container } = render(<UIChoiceGroup inline={true} options={[{key: 'a', text: 'Option A'}, {key: 'b', text: 'Option B'}]} />);
+        const { container } = render(
+            <UIChoiceGroup
+                inline={true}
+                options={[
+                    { key: 'a', text: 'Option A' },
+                    { key: 'b', text: 'Option B' }
+                ]}
+            />
+        );
         const choiceGroup = container.querySelector('.ms-ChoiceFieldGroup') as HTMLElement;
         expect(choiceGroup).toBeInTheDocument();
 
         // Find any child with display: flex
         const flexElement = Array.from(choiceGroup.querySelectorAll('*')).find(
-            el => getComputedStyle(el as HTMLElement).display === 'flex'
+            (el) => getComputedStyle(el as HTMLElement).display === 'flex'
         ) as HTMLElement | undefined;
         expect(flexElement).toBeDefined();
         expect(getComputedStyle(flexElement as HTMLElement).display).toBe('flex');

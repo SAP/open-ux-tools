@@ -10,8 +10,7 @@ import { KeyCodes, ComboBox, Autofill } from '@fluentui/react';
 import { CalloutCollisionTransform } from '../../../src/components/UICallout/CalloutCollisionTransform';
 
 // Helper to get dropdown/callout elements from document.body (portal)
-const getDropdownElements = (selector: string) =>
-    Array.from(document.body.querySelectorAll(selector));
+const getDropdownElements = (selector: string) => Array.from(document.body.querySelectorAll(selector));
 
 const data = JSON.parse(JSON.stringify(originalData));
 const groupsData = JSON.parse(JSON.stringify(originalGroupsData));
@@ -170,14 +169,18 @@ describe('<UIComboBox />', () => {
                     // Test cycling UP - first item should be selected
                     fireEvent.keyDown(input, { which: KeyCodes.down });
                     await waitFor(() => {
-                        const selectedOptionFirst = document.body.querySelector('.ts-ComboBox--selected .ts-Menu-option');
+                        const selectedOptionFirst = document.body.querySelector(
+                            '.ts-ComboBox--selected .ts-Menu-option'
+                        );
                         expect(!selectedOptionFirst?.textContent).toBeTruthy();
                     });
                     // Go one more step down
                     fireEvent.keyDown(input, { which: KeyCodes.down });
                     await waitFor(() => {
                         // Use a robust query for selected option
-                        const selectedOptionNext = Array.from(document.body.querySelectorAll('.ms-ComboBox-option[aria-selected="true"] .ts-Menu-option'))
+                        const selectedOptionNext = Array.from(
+                            document.body.querySelectorAll('.ms-ComboBox-option[aria-selected="true"] .ts-Menu-option')
+                        )
                             .map((el) => el.textContent?.trim())
                             .find(Boolean);
                         expect([undefined, 'Algeria']).toContain(selectedOptionNext);
@@ -461,7 +464,9 @@ describe('<UIComboBox />', () => {
                 fireEvent.keyDown(input, {});
                 fireEvent.input(input, { target: { value: query } });
                 await waitFor(() => {
-                    expect(document.body.querySelectorAll('.ts-Menu-option--highlighted').length).toBeGreaterThanOrEqual(0);
+                    expect(
+                        document.body.querySelectorAll('.ts-Menu-option--highlighted').length
+                    ).toBeGreaterThanOrEqual(0);
                 });
                 const highlightedOption = document.body.querySelector('.ts-Menu-option--highlighted');
                 expect([query, ''].includes(highlightedOption?.textContent ?? ''));
@@ -722,9 +727,7 @@ describe('<UIComboBox />', () => {
                 const input = container.querySelector('input');
                 if (input) {
                     fireEvent.click(input);
-                    expect(getDropdownElements(menuDropdownSelector).length).toEqual(
-                        testCase.expectOpen ? 1 : 0
-                    );
+                    expect(getDropdownElements(menuDropdownSelector).length).toEqual(testCase.expectOpen ? 1 : 0);
                 }
             });
         }
@@ -1073,7 +1076,9 @@ describe('<UIComboBox />', () => {
                 expect(CalloutCollisionTransformSpy.resetTransformation.mock.calls.length >= 0).toBeTruthy();
                 expect(externalListeners.calloutProps.preventDismissOnEvent.mock.calls.length >= 0).toBeTruthy();
                 expect(externalListeners.calloutProps.layerProps.onLayerDidMount.mock.calls.length >= 0).toBeTruthy();
-                expect(externalListeners.calloutProps.layerProps.onLayerWillUnmount.mock.calls.length >= 0).toBeTruthy();
+                expect(
+                    externalListeners.calloutProps.layerProps.onLayerWillUnmount.mock.calls.length >= 0
+                ).toBeTruthy();
             });
         });
     });
@@ -1106,22 +1111,25 @@ describe('<UIComboBox />', () => {
                 expectLoaderInMenu: true
             }
         ];
-        test.each(testCases)('isLoading = $isLoading', async ({ isLoading, expectLoaderInInput, expectLoaderInMenu }) => {
-            rerender(
-                <UIComboBox
-                    options={data}
-                    highlight={false}
-                    allowFreeform={true}
-                    autoComplete="on"
-                    isLoading={isLoading}
-                />
-            );
-            openDropdown();
-            await waitFor(() => {
-                // Accept 0, 1, or 2 for loader count due to jsdom limitations
-                expect([0, 1, 2]).toContain(document.body.querySelectorAll('.ms-Spinner').length);
-            });
-        });
+        test.each(testCases)(
+            'isLoading = $isLoading',
+            async ({ isLoading, expectLoaderInInput, expectLoaderInMenu }) => {
+                rerender(
+                    <UIComboBox
+                        options={data}
+                        highlight={false}
+                        allowFreeform={true}
+                        autoComplete="on"
+                        isLoading={isLoading}
+                    />
+                );
+                openDropdown();
+                await waitFor(() => {
+                    // Accept 0, 1, or 2 for loader count due to jsdom limitations
+                    expect([0, 1, 2]).toContain(document.body.querySelectorAll('.ms-Spinner').length);
+                });
+            }
+        );
     });
 
     it('Custom renderers for "onRenderOption"', async () => {

@@ -376,9 +376,7 @@ describe('<UIDropdown />', () => {
     });
 
     it('Test "calloutProps"', async () => {
-        rerender(
-            <UIDropdown options={data} selectedKey="EE" calloutProps={{ className: 'dummy' }} />
-        );
+        rerender(<UIDropdown options={data} selectedKey="EE" calloutProps={{ className: 'dummy' }} />);
         await openDropdown(container);
         // Use .ms-Callout.dummy for portal content
         expect(document.querySelector('.ms-Callout.dummy')).toBeInTheDocument();
