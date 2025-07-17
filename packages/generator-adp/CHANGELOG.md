@@ -1,5 +1,22 @@
 # @sap-ux/generator-adp
 
+## 0.3.47
+
+### Patch Changes
+
+-   52ac1b0: feat: Add ADP manifest change wizard sub-generators
+-   Updated dependencies [52ac1b0]
+    -   @sap-ux/adp-tooling@0.15.1
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.46
+
+## 0.3.46
+
+### Patch Changes
+
+-   Updated dependencies [e53c1f8]
+    -   @sap-ux/adp-tooling@0.15.0
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.45
+
 ## 0.3.45
 
 ### Patch Changes

@@ -135,7 +135,7 @@ describe('Test abap deploy configuration generator', () => {
         );
 
         expect(pkgJson.scripts).toStrictEqual({
-            'deploy': 'npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip',
+            'deploy': 'npm run build && fiori deploy --config ui5-deploy.yaml',
             'deploy-test': 'npm run build && fiori deploy --config ui5-deploy.yaml --testMode true',
             'undeploy': 'npm run build && fiori undeploy --config ui5-deploy.yaml'
         });
@@ -208,7 +208,7 @@ describe('Test abap deploy configuration generator', () => {
         );
 
         expect(pkgJson.scripts).toStrictEqual({
-            'deploy': 'npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip',
+            'deploy': 'npm run build && fiori deploy --config ui5-deploy.yaml',
             'deploy-test': 'npm run build && fiori deploy --config ui5-deploy.yaml --testMode true',
             'undeploy': 'npm run build && fiori undeploy --config ui5-deploy.yaml'
         });
