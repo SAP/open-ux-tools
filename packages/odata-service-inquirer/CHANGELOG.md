@@ -1,5 +1,12 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.19
+
+### Patch Changes
+
+-   Updated dependencies [84a8d56]
+    -   @sap-ux/nodejs-utils@0.2.2
+
 ## 2.5.18
 
 ### Patch Changes

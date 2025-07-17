@@ -1,5 +1,12 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.3.16
+
+### Patch Changes
+
+-   Updated dependencies [84a8d56]
+    -   @sap-ux/nodejs-utils@0.2.2
+
 ## 0.3.15
 
 ### Patch Changes

@@ -1,5 +1,24 @@
 # @sap-ux/preview-middleware
 
+## 0.20.65
+
+### Patch Changes
+
+-   22fc2bf: feat: change file type of templates to ejs
+
+## 0.20.64
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.2
+
+## 0.20.63
+
+### Patch Changes
+
+-   Updated dependencies [52ac1b0]
+    -   @sap-ux/adp-tooling@0.15.1
+
 ## 0.20.62
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.4.36
+
+### Patch Changes
+
+-   Updated dependencies [84a8d56]
+    -   @sap-ux/nodejs-utils@0.2.2
+
 ## 1.4.35
 
 ### Patch Changes
