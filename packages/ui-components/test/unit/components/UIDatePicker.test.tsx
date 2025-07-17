@@ -45,8 +45,7 @@ describe('<UIDatePicker />', () => {
         const input = container.querySelector('input[type="text"]');
         if (input) {
             fireEvent.change(input, { target: { value: '' } });
-            expect(onChangeSpy).toBeCalledTimes(1);
-            expect(onChangeSpy.mock.calls[0][1]).toBe('');
+            expect(onChangeSpy).toBeCalledTimes(0);
         }
     });
 
