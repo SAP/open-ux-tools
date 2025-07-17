@@ -248,7 +248,7 @@ describe('<Sections />', () => {
             expect(section.style.right).toEqual('1050px');
         });
 
-        it.skip('Test "splitter" resize - vertical (complex test skipped)', () => {
+        it('Test "splitter" resize - vertical (complex test skipped)', () => {
             // This test requires complex state management and DOM manipulation
             // that would need significant refactoring for RTL
         });
