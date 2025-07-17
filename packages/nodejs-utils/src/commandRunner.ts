@@ -32,11 +32,11 @@ export class CommandRunner {
             spawnedCmd.stdout.setEncoding('utf8');
             let response: string;
             spawnedCmd.stdout.on('data', (data: Buffer) => {
-                logger?.info(data.toString().replace(/[\r\n]{1,100}$/, '')); // remove trailing newline as another is added by the logger
+                logger?.info(data.toString().replace(/[\r\n]$/, '')); // remove trailing newline as another is added by the logger
                 response = data.toString();
             });
             spawnedCmd.stderr.on('data', (data) => {
-                logger?.info(data.toString().replace(/[\r\n]{1,100}$/, '')); // remove trailing newline as another is added by the logger
+                logger?.info(data.toString().replace(/[\r\n]$/, '')); // remove trailing newline as another is added by the logger
                 stack.push(data.toString());
             });
             spawnedCmd.on('error', (error) => {

@@ -78,7 +78,7 @@ describe('CommandRunner', () => {
             info: jest.fn(),
             error: jest.fn()
         };
-        let childProcessOutput = 'npm install\n\n\n';
+        let childProcessOutput = 'npm install\n';
         spawnMock.setDefault(spawnMock.simple(0, childProcessOutput));
 
         await commandRunner.run(cmd, args, {}, logger as unknown as Logger);
@@ -86,13 +86,13 @@ describe('CommandRunner', () => {
         expect(logger.debug).toHaveBeenCalledWith(`Running command: ${cmd} ${args.join(' ')}`);
         expect(logger.info).toHaveBeenCalledWith('npm install');
 
-        childProcessOutput = 'npm install\r\r\r\r\r\r';
+        childProcessOutput = 'npm install\r\r';
         spawnMock.setDefault(spawnMock.simple(0, childProcessOutput));
 
         await commandRunner.run(cmd, args, {}, logger as unknown as Logger);
 
         expect(logger.debug).toHaveBeenCalledWith(`Running command: ${cmd} ${args.join(' ')}`);
-        expect(logger.info).toHaveBeenCalledWith('npm install');
+        expect(logger.info).toHaveBeenCalledWith('npm install\r');
 
         const expectedError = '"npm install" failed to run';
 
