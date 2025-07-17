@@ -10,10 +10,17 @@ import * as FluentUI from '@fluentui/react';
 describe('<UICallout />', () => {
     let container: HTMLElement;
     let rerender: (ui: React.ReactElement) => void;
+    let targetElement: HTMLElement;
 
     beforeEach(() => {
+        // Create a target element for the callout
+        targetElement = document.createElement('button');
+        targetElement.id = 'callout-target';
+        targetElement.textContent = 'Target Button';
+        document.body.appendChild(targetElement);
+
         const result = render(
-            <UICallout>
+            <UICallout target={targetElement}>
                 <div className="dummy"></div>
             </UICallout>
         );
@@ -23,6 +30,9 @@ describe('<UICallout />', () => {
 
     afterEach(() => {
         cleanup();
+        if (targetElement && targetElement.parentNode) {
+            targetElement.parentNode.removeChild(targetElement);
+        }
         jest.clearAllMocks();
     });
 
@@ -41,7 +51,7 @@ describe('<UICallout />', () => {
 
         // Standard
         rerender(
-            <UICallout contentPadding={UICalloutContentPadding.Standard}>
+            <UICallout target={targetElement} contentPadding={UICalloutContentPadding.Standard}>
                 <div className="dummy"></div>
             </UICallout>
         );

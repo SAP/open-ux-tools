@@ -21,12 +21,13 @@ describe('<UIChoiceGroup />', () => {
     });
 
     it('Styles - disabled', () => {
-        const { container } = render(<UIChoiceGroup disabled={true} />);
+        const { container } = render(<UIChoiceGroup disabled={true} label="Test Label" />);
         const choiceGroup = container.querySelector('.ms-ChoiceFieldGroup') as HTMLElement;
         expect(choiceGroup).toBeInTheDocument();
 
-        // Test that the component renders with disabled styles
-        expect(choiceGroup.parentElement).toHaveStyle('opacity: 0.4');
+        // Test that the component renders with disabled styles on label
+        const label = container.querySelector('.ms-Label') as HTMLElement;
+        expect(label).toHaveStyle('opacity: 0.4');
     });
 
     it('Styles - required', () => {
@@ -39,11 +40,12 @@ describe('<UIChoiceGroup />', () => {
     });
 
     it('Styles - inline', () => {
-        const { container } = render(<UIChoiceGroup inline={true} />);
+        const { container } = render(<UIChoiceGroup inline={true} options={[{key: 'a', text: 'Option A'}, {key: 'b', text: 'Option B'}]} />);
         const choiceGroup = container.querySelector('.ms-ChoiceFieldGroup') as HTMLElement;
         expect(choiceGroup).toBeInTheDocument();
 
-        // Test that the component renders with inline styles
-        expect(choiceGroup.parentElement).toHaveStyle('display: flex');
+        // Test that the component renders with inline styles - flexContainer is applied to the flex container div
+        const flexContainer = container.querySelector('.ms-ChoiceFieldGroup > div') as HTMLElement;
+        expect(flexContainer).toHaveStyle('display: flex');
     });
 });
