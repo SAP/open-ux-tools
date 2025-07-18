@@ -4,13 +4,20 @@ import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { t } from '../../src/i18n';
+import { toMatchFolder } from '@sap-ux/jest-file-matchers';
+import * as fileSystem from 'fs';
+
+expect.extend({ toMatchFolder });
 
 describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
     let fs: Editor | undefined;
+    const testOutputDir = join(__dirname, '../test-output');
+    const expectedOutputPath = join(__dirname, './expected-output');
 
     beforeEach(() => {
         // remove specific generated app folder
         fs = create(createStorage());
+        fileSystem.mkdirSync(testOutputDir, { recursive: true });
     });
 
     /** Helper function to remove whitespaces */
@@ -637,204 +644,21 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
     });
 
     test('Generate OPA test files correctly when typescript is not enabled when version is > 1.120.0', async () => {
+        const projectName = 'test_ff_1.120';
         const opaConfig = {
-            appId: 'test-app-js',
+            appId: projectName,
             applicationTitle: 'App test',
             applicationDescription: 'App description',
-            viewName: 'view-test',
+            viewName: 'View1',
             ui5Version: '1.120.0'
         };
-        const basePath = join('some/path');
-        const testOutputPath = join(basePath, 'webapp/test');
-        fs = await generateFreestyleOPAFiles(basePath, opaConfig, fs);
+        fs = await generateFreestyleOPAFiles(testOutputDir, opaConfig, fs);
+        fs.commit(() => {});
 
-        const expectedFiles = [
-            'integration/NavigationJourney.js',
-            'integration/opaTests.qunit.html',
-            'integration/pages/App.js',
-            'integration/pages/view-test.js',
-            'testsuite.qunit.js',
-            'unit/controller/view-test.controller.js',
-            'unit/unitTests.qunit.html',
-            'unit/unitTests.qunit.js'
-        ];
-        expectedFiles.map((file: string) => {
-            expect(fs?.exists(join(testOutputPath, file))).toBe(true);
-        });
+        const testOutPutPath = join(testOutputDir, 'webapp', 'test');
 
-        // check unit/unitTests.qunit.js
-        const unitTestQUnit = fs?.read(join(testOutputPath, 'unit/unitTests.qunit.js'));
-
-        expect(removeSpaces(unitTestQUnit)).toBe(
-            removeSpaces(`
-                /* global QUnit */
-                QUnit.config.autostart = false;
-    
-                sap.ui.require([
-                    "unit/AllTests"
-                ], function () {
-                    "use strict";
-                
-                    QUnit.start();
-                });`)
-        );
-
-        // check unit/controller/view-test.controller.js
-        const viewTestController = fs?.read(join(testOutputPath, 'unit/controller/view-test.controller.js'));
-        expect(removeSpaces(viewTestController)).toBe(
-            removeSpaces(`
-            /*global QUnit*/
-
-            sap.ui.define([
-                "test-app-js/controller/view-test.controller"
-            ], function (Controller) {
-                "use strict";
-
-                QUnit.module("view-test Controller");
-
-                QUnit.test("I should test the view-test controller", function (assert) {
-                        var oAppController = new Controller();
-                        oAppController.onInit();
-                        assert.ok(oAppController);
-                });
-
-            });
-        `)
-        );
-
-        // check test/testsuite.qunit.js
-        const testSuiteQUnit = fs?.read(join(testOutputPath, 'testsuite.qunit.js'));
-        expect(removeSpaces(testSuiteQUnit)).toBe(
-            removeSpaces(`
-            /* global window, parent, location */
-
-            // eslint-disable-next-line fiori-custom/sap-no-global-define
-            window.suite = function() {
-                "use strict";
-
-                // eslint-disable-next-line
-                var oSuite = new parent.jsUnitTestSuite(),
-
-                sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-                oSuite.addTestPage(sContextPath + 'unit/unitTests.qunit.html');
-                oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-                return oSuite;
-            };
-        `)
-        );
-
-        // check integration/pages/view-test.js
-        const viewTest = fs?.read(join(testOutputPath, 'integration/pages/view-test.js'));
-        expect(removeSpaces(viewTest)).toBe(
-            removeSpaces(`
-            sap.ui.define([
-                "sap/ui/test/Opa5"
-            ], function (Opa5) {
-                "use strict";
-                var sViewName = "view-test";
-
-                Opa5.createPageObjects({
-                        onTheViewPage: {
-
-                                actions: {},
-
-                                assertions: {
-
-                                        iShouldSeeThePageView: function () {
-                                                return this.waitFor({
-                                                        id: "page",
-                                                        viewName: sViewName,
-                                                        success: function () {
-                                                                Opa5.assert.ok(true, "The " + sViewName + " view is displayed");
-                                                        },
-                                                        errorMessage: "Did not find the " + sViewName + " view"
-                                                });
-                                        }
-                                }
-                        }
-                });
-
-            });`)
-        );
-
-        // check integration/pages/App.js
-        const app = fs?.read(join(testOutputPath, 'integration/pages/App.js'));
-        expect(removeSpaces(app)).toBe(
-            removeSpaces(`
-            sap.ui.define([
-                "sap/ui/test/Opa5"
-            ], function (Opa5) {
-                "use strict";
-                var sViewName = "App";
-
-                Opa5.createPageObjects({
-                        onTheAppPage: {
-
-                                actions: {},
-
-                                assertions: {
-
-                                        iShouldSeeTheApp: function () {
-                                                return this.waitFor({
-                                                        id: "app",
-                                                        viewName: sViewName,
-                                                        success: function () {
-                                                                Opa5.assert.ok(true, "The " + sViewName + " view is displayed");
-                                                        },
-                                                        errorMessage: "Did not find the " + sViewName + " view"
-                                                });
-                                        }
-                                }
-                        }
-                });
-
-            });
-        `)
-        );
-
-        // check integration/opaTests.qunit.js
-        const opaTests = fs?.read(join(testOutputPath, 'integration/opaTests.qunit.js'));
-        expect(removeSpaces(opaTests)).toBe(
-            removeSpaces(`
-            /* global QUnit */
-
-            sap.ui.require(["test-app-js/test/integration/AllJourneys"
-            ], function () {
-                QUnit.config.autostart = false;
-                QUnit.start();
-            });`)
-        );
-
-        // check integration/NavigationJourney.js
-        const navigationJourney = fs?.read(join(testOutputPath, 'integration/NavigationJourney.js'));
-        expect(removeSpaces(navigationJourney)).toBe(
-            removeSpaces(`
-            /*global QUnit*/
-
-            sap.ui.define([
-                "sap/ui/test/opaQunit",
-                "./pages/App",
-                "./pages/view-test"
-            ], function (opaTest) {
-                "use strict";
-
-                QUnit.module("Navigation Journey");
-
-                opaTest("Should see the initial page of the app", function (Given, When, Then) {
-                        // Arrangements
-                        Given.iStartMyApp();
-
-                        // Assertions
-                        Then.onTheAppPage.iShouldSeeTheApp();
-                        Then.onTheViewPage.iShouldSeeThePageView();
-
-                        //Cleanup
-                        Then.iTeardownMyApp();
-                });
-            });
-        `)
-        );
+        const expectedTestOutputPath = join(expectedOutputPath, 'freestyle', projectName, 'webapp', 'test');
+        expect(testOutPutPath).toMatchFolder(expectedTestOutputPath);
     });
 });
 
@@ -850,7 +674,6 @@ describe('writeOPATsconfigJsonUpdates', () => {
         viewName: 'view-test',
         ui5Version: '1.71.0'
     };
-
     beforeEach(() => {
         fs = {
             readJSON: jest.fn(),
