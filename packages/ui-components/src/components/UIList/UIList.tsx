@@ -24,7 +24,7 @@ export {
 export type ListProps = Omit<IGroupedListProps, 'onRenderCell'> & {
     groups: IGroup[];
     groupProps?: IGroupRenderProps;
-    items: never[];
+    items: any[];
     onSelect: (value: IGroup) => void;
     onRenderCell: (nestingDepth?: number, item?: never, index?: number) => React.ReactNode;
     useVirtualization?: boolean;

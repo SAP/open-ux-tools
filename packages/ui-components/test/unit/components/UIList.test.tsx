@@ -9,11 +9,17 @@ const groups: IGroup[] = [
     { key: 'group2', name: 'Group 2', startIndex: 2, count: 1, isCollapsed: false }
 ];
 
-const items: never[] = [null as never, null as never, null as never];
+const items: any[]= [
+    { id: 1, name: 'Item 1', description: 'First item' },
+    { id: 2, name: 'Item 2', description: 'Second item' },
+    { id: 3, name: 'Item 3', description: 'Third item' }
+];
 
-const onRenderCell = (nestingDepth?: number, item?: never, index?: number): React.ReactNode => (
-    <div data-testid={`cell-${index}`}>Cell {index}</div>
-);
+const onRenderCell = (
+    nestingDepth?: number,
+    item?: { id: number; name: string; description: string },
+    index?: number
+): React.ReactNode => <div data-testid={`cell-${index}`}>Cell {index}</div>;
 
 describe('UIList', () => {
     it('renders all group headers', () => {
