@@ -60,7 +60,7 @@
         };
         return new Promise(function (resolve, reject) {
 
-            sap.ui.require(["sap/ui/thirdparty/jquery"], function (localJQuery) {  
+            sap.ui.require(["sap/ui/thirdparty/jquery"], function (localJQuery) {
                 localJQuery.ajax(url)
                     .done(function (manifest) {
                         if (manifest) {
@@ -136,7 +136,7 @@
                         }
                         resolve(url);
                     }).then(function (url2) {
-                        sap.ui.require(["sap/ui/thirdparty/jquery"], function (localJQuery) {  
+                        sap.ui.require(["sap/ui/thirdparty/jquery"], function (localJQuery) {
                             return localJQuery.ajax(url2)
                                 .done(function (data) {
                                     if (data) {
@@ -151,8 +151,8 @@
         });
     };
 
-    var registerSAPFonts = function () {  
-        sap.ui.require(["sap/ui/core/IconPool"], function (IconPool) {  
+    var registerSAPFonts = function () {
+        sap.ui.require(["sap/ui/core/IconPool"], function (IconPool) {
         //Fiori Theme font family and URI
         var fioriTheme = {
             fontFamily: "SAP-icons-TNT",
@@ -169,7 +169,7 @@
         IconPool.registerFont(bSuiteTheme);
         });
     };
-    
+
     /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
     var currentScript = document.getElementById("locate-reuse-libs");
     if (!currentScript) {
@@ -178,11 +178,11 @@
     var manifestUri = currentScript.getAttribute("data-sap-ui-manifest-uri");
     var componentName = currentScript.getAttribute("data-sap-ui-componentName");
     var useMockserver = currentScript.getAttribute("data-sap-ui-use-mockserver");
-    
+
     // Patch (KW): resourceRoot is needed to load the correct ResourceBundles
     var resourceRoot = manifestUri.substring(0, manifestUri.lastIndexOf('/')+1);
-    
-    
+
+
     return registerComponentDependencyPaths(manifestUri)
         .catch(function (error) {
             sap.ui.require(["sap/base/Log"], function (Log) {
@@ -190,8 +190,8 @@
             });
         })
         .finally(function () {
-    
-            // setting the app title with internationalization 
+
+            // setting the app title with internationalization
             sap.ui.require(["sap/ui/core/Core"], async function(Core) {
                 Core.ready(() => {
                    sap.ui.require(["sap/base/i18n/Localization"], function (Localization) {
@@ -205,8 +205,8 @@
                         });
                     });
                 });
-            });        
-    
+            });
+
            if (componentName && componentName.length > 0) {
                 if (useMockserver && useMockserver === "true") {
                     sap.ui.require(["sap/ui/core/Core"], async function(Core) {
@@ -217,18 +217,24 @@
                                 server.init();
                                 // initialize the ushell sandbox component
                                 sap.ui.require(["sap/ushell/Container"], async function (Container) {
-                                    Container.createRenderer(true).then(function (component) {
-                                        component.placeAt("content");
-                                    });
+                                    if (typeof Container.createRendererInternal === 'function') {
+                                        Container.createRendererInternal(true).then(function (component) {
+                                            component.placeAt("content");
+                                        });
+                                    } else {
+                                        Container.createRenderer(true).then(function (component) {
+                                            component.placeAt("content");
+                                        });
+                                    }
                                 });
                             });
-                        });        
+                        });
                     });
                 } else {
                     // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                     sap.ui.require(["sap/ui/core/ComponentSupport"]);
-    
-                    // setting the app title with the i18n text 
+
+                    // setting the app title with the i18n text
                     sap.ui.require(["sap/ui/core/Core"], async function(Core) {
                         Core.ready(() => {
                             registerSAPFonts();
@@ -243,7 +249,7 @@
                                 });
                             });
                         });
-                    });        
+                    });
                 }
             } else {
                 sap.ui.require(["sap/ui/core/Core"], async function(Core) {
@@ -256,7 +262,7 @@
                                 component.placeAt("content");
                             });
                             } catch (error) {
-                                // support older versions of ui5 
+                                // support older versions of ui5
                                 Container.createRenderer().placeAt("content");
                             }
                         });
