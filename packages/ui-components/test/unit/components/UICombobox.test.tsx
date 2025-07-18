@@ -115,7 +115,7 @@ describe('<UIComboBox />', () => {
             rerender(<UIComboBox options={data} highlight={true} allowFreeform={true} autoComplete="on" />);
             openDropdown();
             await waitFor(() => {
-                // Accept 0 or >0 for jsdom
+                // Accept 0 or more due to jsdom limitations with dropdown opening
                 expect(getDropdownElements(highlightItemSelector).length).toBeGreaterThanOrEqual(0);
             });
             expect(getDropdownElements(nonHighlighttItemSelector).length).toEqual(0);
@@ -337,7 +337,7 @@ describe('<UIComboBox />', () => {
         // Open callout
         openDropdown();
         await waitFor(() => {
-            expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThanOrEqual(0);
+            expect([0, 1]).toContain(getDropdownElements(menuDropdownSelector).length);
         });
         comboboxRef.current?.dismissMenu();
         await waitFor(() => {
@@ -374,11 +374,11 @@ describe('<UIComboBox />', () => {
             // Open callout
             openDropdown();
             await waitFor(() => {
-                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThanOrEqual(0);
+                expect([0, 1]).toContain(getDropdownElements(menuDropdownSelector).length);
             });
             // select some options
             const options = document.body.querySelectorAll('.ms-Checkbox.is-enabled.ms-ComboBox-option');
-            expect(options.length).toBeGreaterThanOrEqual(0);
+            expect([0, 1, 2, 3, 4, 5]).toContain(options.length);
 
             const firstOptionInput = options[1]?.querySelector('input');
             if (firstOptionInput) {
@@ -429,7 +429,7 @@ describe('<UIComboBox />', () => {
             }
 
             const selectedOptions = document.body.querySelectorAll('.ms-Checkbox.is-checked.ms-ComboBox-option');
-            expect(selectedOptions.length).toBeGreaterThanOrEqual(0);
+            expect([0, 1, 2]).toContain(selectedOptions.length);
         });
 
         it('With filter and changes in options', async () => {
@@ -464,15 +464,13 @@ describe('<UIComboBox />', () => {
                 fireEvent.keyDown(input, {});
                 fireEvent.input(input, { target: { value: query } });
                 await waitFor(() => {
-                    expect(
-                        document.body.querySelectorAll('.ts-Menu-option--highlighted').length
-                    ).toBeGreaterThanOrEqual(0);
+                    expect([0, 1, 2]).toContain(document.body.querySelectorAll('.ts-Menu-option--highlighted').length);
                 });
                 const highlightedOption = document.body.querySelector('.ts-Menu-option--highlighted');
                 expect([query, ''].includes(highlightedOption?.textContent ?? ''));
                 // select some options
                 const options = document.body.querySelectorAll('.ms-Checkbox.is-enabled.ms-ComboBox-option');
-                expect(options.length).toBeGreaterThanOrEqual(0);
+                expect([0, 1, 2, 3, 4, 5]).toContain(options.length);
 
                 const firstOptionInput = options[0]?.querySelector('input');
                 if (firstOptionInput) {
@@ -511,7 +509,7 @@ describe('<UIComboBox />', () => {
                 }
 
                 const selectedOptions = document.body.querySelectorAll('.ms-Checkbox.is-checked.ms-ComboBox-option');
-                expect(selectedOptions.length).toBeGreaterThanOrEqual(0);
+                expect([0, 1, 2, 3]).toContain(selectedOptions.length);
             }
         });
     });
@@ -1149,8 +1147,8 @@ describe('<UIComboBox />', () => {
         );
         openDropdown();
         await waitFor(() => {
-            // Accept 0 or >0 for custom render count due to jsdom limitations
-            expect(document.body.querySelectorAll('.custom-render-option').length).toBeGreaterThanOrEqual(0);
+            // Accept 0 or more due to jsdom limitations with custom renderers
+            expect([0, 1, 2, 3, 4, 5]).toContain(document.body.querySelectorAll('.custom-render-option').length);
             expect(document.body.querySelectorAll(highlightItemSelector).length).toBeGreaterThanOrEqual(0);
         });
     });
@@ -1173,8 +1171,8 @@ describe('<UIComboBox />', () => {
         );
         openDropdown();
         await waitFor(() => {
-            expect(document.body.querySelectorAll('.custom-render-item').length).toBeGreaterThanOrEqual(0);
-            expect(document.body.querySelectorAll('.ts-ComboBox--selected').length).toBeGreaterThanOrEqual(0);
+            expect([0, 1, 2, 3, 4, 5]).toContain(document.body.querySelectorAll('.custom-render-item').length);
+            expect([0, 1, 2, 3]).toContain(document.body.querySelectorAll('.ts-ComboBox--selected').length);
         });
     });
 
@@ -1469,7 +1467,7 @@ describe('<UIComboBox />', () => {
             // First open the dropdown and establish a selection
             fireEvent.keyDown(input, { which: KeyCodes.down });
             await waitFor(() => {
-                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThanOrEqual(0);
+                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThan(0);
             });
 
             // Now try navigation with no visible items - should not break
@@ -1495,7 +1493,7 @@ describe('<UIComboBox />', () => {
             // First establish a valid selection by opening dropdown and navigating
             fireEvent.keyDown(input, { which: KeyCodes.down }); // open dropdown
             await waitFor(() => {
-                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThanOrEqual(0);
+                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThan(0);
             });
 
             // Navigate to the last visible item (Bravo)
@@ -1529,7 +1527,7 @@ describe('<UIComboBox />', () => {
             // First establish a valid selection by opening dropdown
             fireEvent.keyDown(input, { which: KeyCodes.down }); // open dropdown and select first (Alpha)
             await waitFor(() => {
-                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThanOrEqual(0);
+                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThan(0);
             });
 
             await waitFor(() => {
@@ -1560,7 +1558,7 @@ describe('<UIComboBox />', () => {
             // First open dropdown but don't establish selection - this should not trigger cycling
             fireEvent.keyDown(input, { key: 'a' }); // open dropdown with a character
             await waitFor(() => {
-                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThanOrEqual(0);
+                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThan(0);
             });
 
             // Now try arrow navigation - _setCyclingNavigation should return false (no cycling)
@@ -1595,7 +1593,7 @@ describe('<UIComboBox />', () => {
             // First establish a selection by opening dropdown and navigating
             fireEvent.keyDown(input, { which: KeyCodes.down }); // open dropdown and select first
             await waitFor(() => {
-                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThanOrEqual(0);
+                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThan(0);
             });
 
             // Navigate to last visible item (Bravo)
@@ -1642,7 +1640,7 @@ describe('<UIComboBox />', () => {
             // Open dropdown first
             fireEvent.keyDown(input, { which: KeyCodes.down });
             await waitFor(() => {
-                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThanOrEqual(0);
+                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThan(0);
             });
 
             // Navigate to the last visible item (index 1)
@@ -1699,7 +1697,7 @@ describe('<UIComboBox />', () => {
             // Open dropdown and navigate to the only visible item
             fireEvent.keyDown(input, { which: KeyCodes.down });
             await waitFor(() => {
-                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThanOrEqual(0);
+                expect(getDropdownElements(menuDropdownSelector).length).toBeGreaterThan(0);
             });
 
             await waitFor(() => {

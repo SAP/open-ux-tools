@@ -176,9 +176,8 @@ describe('<UIDialog />', () => {
         });
 
         it('No resize handling when scrollArea is Dialog', () => {
-            // Resize attached
-            const listeners = windowEventMock.domEventListeners['resize'];
-            expect(Array.isArray(listeners) ? listeners.length : 0).toBeGreaterThanOrEqual(0);
+            const initialListeners = windowEventMock.domEventListeners['resize'];
+            const initialCount = Array.isArray(initialListeners) ? initialListeners.length : 0;
             // Set scrollArea to Dialog
             const { rerender } = render(
                 <UIDialog
@@ -202,7 +201,8 @@ describe('<UIDialog />', () => {
                 </UIDialog>
             );
             const listenersDialog = windowEventMock.domEventListeners['resize'];
-            expect(Array.isArray(listenersDialog) ? listenersDialog.length : 0).toBeGreaterThanOrEqual(0);
+            const dialogCount = Array.isArray(listenersDialog) ? listenersDialog.length : 0;
+            expect(dialogCount).toBeGreaterThan(initialCount);
             // Set scrollArea to Content
             rerender(
                 <UIDialog
@@ -216,7 +216,8 @@ describe('<UIDialog />', () => {
                 </UIDialog>
             );
             const listenersContent = windowEventMock.domEventListeners['resize'];
-            expect(Array.isArray(listenersContent) ? listenersContent.length : 0).toBeGreaterThanOrEqual(0);
+            const contentCount = Array.isArray(listenersContent) ? listenersContent.length : 0;
+            expect(contentCount).toBeGreaterThan(initialCount);
         });
 
         it('Handle resize - check state', () => {
