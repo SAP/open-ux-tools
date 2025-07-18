@@ -352,6 +352,11 @@ export async function getUI5Versions(filterOptions?: UI5VersionFilterOptions): P
         const maintainedVersion = filteredUI5Versions.find(isMaintained);
         finalDefaultUI5Version = maintainedVersion ?? defaultUI5Version;
     }
+
+    if (!filterOptions?.includeLegacyFree) {
+        filteredUI5Versions = filteredUI5Versions.filter((version) => !version.includes('-legacy-free'));
+    }
+
     // Map the UI5 versions to the UI5Version type, respecting the filter options
     return filteredUI5Versions.map((ui5): UI5Version => {
         const ui5Version: UI5Version = {
