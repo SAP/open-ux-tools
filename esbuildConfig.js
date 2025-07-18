@@ -80,7 +80,6 @@ const handleCliParams = (options, args = []) => {
 const build = async (options, args) => {
     const finalConfig = handleCliParams(options, args);
     const esbuild = require('esbuild');
-    // Always remove watch from config before calling esbuild.build()
     const isWatch = finalConfig.watch;
     delete finalConfig.watch;
     if (isWatch) {
