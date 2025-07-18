@@ -103,7 +103,7 @@ const DIALOG_ANIMATION = {
 export class UIDialog extends React.Component<DialogProps, DialogState> {
     // Default values for public component properties
     static readonly defaultProps = { isOpenAnimated: true, withBlurOverlay: true };
-    private popupRef: React.RefObject<HTMLDivElement>;
+    private readonly popupRef: React.RefObject<HTMLDivElement>;
 
     /**
      * Initializes component properties.
@@ -131,7 +131,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
      * @param {Readonly<DialogProps>} prevProps
      */
     componentDidUpdate(prevProps: Readonly<DialogProps>): void {
-        const { scrollArea, isOpen = true } = this.props;
+        const { scrollArea, isOpen = true, hidden } = this.props;
         if (prevProps.scrollArea !== scrollArea) {
             if (scrollArea === UIDialogScrollArea.Content) {
                 this.attachResize();
@@ -139,24 +139,8 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 this.detachResize();
             }
         }
-        // const isVisible = isOpen;
-        // const isVisiblePrev = prevProps.isOpen;
-        if (isOpen !== prevProps.isOpen && isOpen === false) {
+        if ((isOpen !== prevProps.isOpen && isOpen === false) || (hidden !== prevProps.hidden && hidden === true)) {
             this.applyCloseTransition();
-        }
-    }
-
-    private applyCloseTransition(): void {
-        console.log('applyCloseTransition');
-        const popupRef = this.popupRef.current;
-        if (popupRef) {
-            const dialogDragZone = popupRef.querySelector('.ms-Dialog-main') as HTMLElement;
-            if (dialogDragZone) {
-                const transform = dialogDragZone.style.transform;
-                const newTransform = addScaleToTransform(transform, 0.9);
-                dialogDragZone.style.transform = newTransform;
-                dialogDragZone.style.transition = `transform ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`;
-            }
         }
     }
 
@@ -291,6 +275,24 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
     }
 
     /**
+     * Applies a closing transition animation to the dialog element.
+     */
+    private applyCloseTransition(): void {
+        const { isOpenAnimated } = this.props;
+        const popupRef = this.popupRef.current;
+        if (!isOpenAnimated || !popupRef) {
+            return;
+        }
+        const dialogDragZone = popupRef.querySelector('.ms-Dialog-main') as HTMLElement;
+        if (dialogDragZone) {
+            const transform = dialogDragZone.style.transform;
+            const newTransform = addScaleToTransform(transform, 0.9);
+            dialogDragZone.style.transform = newTransform;
+            dialogDragZone.style.transition = `transform ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`;
+        }
+    }
+
+    /**
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
@@ -307,6 +309,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
             scrollArea = UIDialogScrollArea.Content,
             children,
             withBlurOverlay,
+            isOpenAnimated,
             ...rest
         } = this.props;
         const dialogProps: IDialogProps = {
@@ -314,11 +317,15 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
             modalProps: {
                 styles: {
                     root: {
-                        transition: `opacity ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`,
+                        transition: isOpenAnimated
+                            ? `opacity ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`
+                            : undefined,
                         backdropFilter: withBlurOverlay ? 'blur(5px)' : undefined
                     },
                     main: {
-                        animation: `${DIALOG_ANIMATION.keyframe} ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`
+                        animation: isOpenAnimated
+                            ? `${DIALOG_ANIMATION.keyframe} ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`
+                            : undefined
                     }
                 },
                 layerProps: {
