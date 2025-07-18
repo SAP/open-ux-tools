@@ -542,6 +542,19 @@ describe('Test FioriAppGenerator', () => {
             },
             floorplan: FloorplanFF.FF_SIMPLE
         };
+        options.promptSettings = {
+            '@sap-ux/deploy-config-sub-generator': {
+                'ui5AbapRepo': {
+                    hide: true,
+                    default: 'ZAPP'
+                }
+            },
+            '@sap-ux/flp-config-sub-generator': {
+                'semanticObject': {
+                    hide: true
+                }
+            }
+        };
         // Answers to add deploy config and flp config
         ui5ApplicationAnswers.addDeployConfig = true;
         ui5ApplicationAnswers.addFlpConfig = true;
@@ -581,7 +594,13 @@ describe('Test FioriAppGenerator', () => {
             },
             expect.any(Function), // composeWith
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
-            { '$fiori-cache': {}, showError: expect.any(Function) } // AppWizard
+            { '$fiori-cache': {}, showError: expect.any(Function) }, // AppWizard
+            {
+                'ui5AbapRepo': {
+                    hide: true,
+                    default: 'ZAPP'
+                }
+            }
         );
 
         expect(addFlpGen).toHaveBeenCalledWith(
@@ -594,7 +613,12 @@ describe('Test FioriAppGenerator', () => {
             expect.any(Function), // composeWith
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
             undefined, // VSCode
-            { '$fiori-cache': {}, showError: expect.any(Function) } // AppWizard
+            { '$fiori-cache': {}, showError: expect.any(Function) }, // AppWizard
+            {
+                'semanticObject': {
+                    hide: true
+                }
+            }
         );
 
         // If the FLP config step is skipped, the addFlpGen should be called with skipPrompt: true, if `addFlpConfig` is true (can be set from adaptors, for example)
@@ -610,6 +634,7 @@ describe('Test FioriAppGenerator', () => {
             },
             floorplan: FloorplanFF.FF_SIMPLE
         };
+        options.promptSettings = undefined; // No prompt settings for this test
         // Skipping the FLP config step should still call the addFlpGen but with the skipPrompt option true
         ui5ApplicationAnswers.addFlpConfig = true;
         (addFlpGen as jest.Mock).mockClear();
@@ -628,7 +653,8 @@ describe('Test FioriAppGenerator', () => {
             expect.any(Function), // composeWith
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
             undefined, // VSCode
-            { '$fiori-cache': {}, showError: expect.any(Function) } // AppWizard
+            { '$fiori-cache': {}, showError: expect.any(Function) }, // AppWizard
+            undefined
         );
         // Should only be called for deploy config step, not flp config step since its skipped
         expect(updateDependentStep).toHaveBeenCalledTimes(1);

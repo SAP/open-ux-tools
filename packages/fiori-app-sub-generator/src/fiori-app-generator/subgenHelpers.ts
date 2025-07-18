@@ -1,9 +1,11 @@
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { type ILogWrapper, getSemanticObject } from '@sap-ux/fiori-generator-shared';
-import type { FlpConfigOptions } from '@sap-ux/flp-config-sub-generator';
+import type { FlpConfigOptions, FLPConfigPromptOptions } from '@sap-ux/flp-config-sub-generator';
 import { join } from 'path';
 import type Generator from 'yeoman-generator';
-import { defaultNavActionDisplay, type FioriAppGeneratorPromptSettings, type Service } from '../types';
+import { defaultNavActionDisplay, type Service } from '../types';
+import type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-inquirer';
+import type { CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-inquirer';
 
 /**
  * Add the '@sap/fiori:fiori-deployment' generator as a subgenerator.
@@ -11,30 +13,29 @@ import { defaultNavActionDisplay, type FioriAppGeneratorPromptSettings, type Ser
  * @param deployGenOpts
  * @param deployGenOpts.service - service object
  * @param deployGenOpts.projectName - project name
- * @param deployGenOpts.promptSettings - prompt settings for the deployment generator
  * @param deployGenOpts.targetFolder - target folder for the deployment configuration
  * @param deployGenOpts.applicationType - application type, used for telemetry (FF | FE)
  * @param composeWith - the composeWith function from the Yeoman generator
  * @param logger - logger instance
  * @param appWizard - instance of the AppWizard
+ * @param promptSettings - prompt settings for the deployment generator
  */
 export function addDeployGen(
     {
         service,
         projectName,
-        promptSettings,
         targetFolder,
         applicationType
     }: {
         service: Partial<Service>;
         projectName: string;
-        promptSettings?: FioriAppGeneratorPromptSettings;
         targetFolder: string;
         applicationType: string;
     },
     composeWith: Generator['composeWith'],
     logger: ILogWrapper,
-    appWizard?: AppWizard
+    appWizard?: AppWizard,
+    promptSettings?: AbapDeployConfigPromptOptions | CfDeployConfigPromptOptions
 ): void {
     composeWith('@sap/fiori:deploy-config', {
         launchDeployConfigAsSubGenerator: true,
@@ -49,7 +50,7 @@ export function addDeployGen(
         appWizard: appWizard,
         telemetryData: { appType: applicationType },
         logWrapper: logger,
-        subGenPromptOptions: promptSettings?.['@sap-ux/deploy-config-sub-generator']
+        subGenPromptOptions: promptSettings
     });
 }
 
@@ -66,6 +67,7 @@ export function addDeployGen(
  * @param logger
  * @param appWizard
  * @param vscode
+ * @param promptSettings - prompt settings for the flp generator used in the inquirer
  */
 export function addFlpGen(
     {
@@ -82,14 +84,16 @@ export function addFlpGen(
     composeWith: Generator['composeWith'],
     logger: ILogWrapper,
     appWizard?: AppWizard,
-    vscode?: any
+    vscode?: any,
+    promptSettings?: FLPConfigPromptOptions
 ): void {
     let flpConfigOptions = {
         launchFlpConfigAsSubGenerator: true,
         appWizard,
         vscode,
         appRootPath: join(targetFolder, projectName),
-        logWrapper: logger
+        logWrapper: logger,
+        inquirerPromptOptions: promptSettings
     } as FlpConfigOptions;
 
     if (skipPrompt) {

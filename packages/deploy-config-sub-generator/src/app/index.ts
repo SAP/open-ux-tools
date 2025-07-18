@@ -33,6 +33,7 @@ import type {
     ApiHubConfig
 } from '@sap-ux/cf-deploy-config-sub-generator';
 
+const deployConfigSubGenNamespace = '@sap-ux/deploy-config-sub-generator';
 /**
  * The main deployment configuration generator.
  */
@@ -116,11 +117,14 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
      */
     public async initializing(): Promise<void> {
         await super.initializing();
-        this.extensionPromptOpts = await getExtensionGenPromptOpts(
-            this.env.create.bind(this.env),
-            this.rootGeneratorName(),
-            this.vscode
-        );
+        this.extensionPromptOpts = {
+            ...(await getExtensionGenPromptOpts(
+                this.env.create.bind(this.env),
+                deployConfigSubGenNamespace,
+                this.vscode
+            )),
+            ...this.options.subGenPromptOptions
+        };
         const capRoot = await findCapProjectRoot(this.options.appRootPath);
         this.isCap = !!capRoot;
         this.mtaPath = (await getMtaPath(this.options.appRootPath))?.mtaPath;

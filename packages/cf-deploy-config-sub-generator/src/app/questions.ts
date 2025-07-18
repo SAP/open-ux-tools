@@ -60,16 +60,17 @@ export async function getCFQuestions({
     });
 
     const options: CfDeployConfigPromptOptions = {
-        ...promptOptions,
         [promptNames.destinationName]: {
             defaultValue: destinationQuestionDefaultOption(isAbapDirectServiceBinding, isBAS, cfDestination),
             hint: !!isAbapDirectServiceBinding,
             useAutocomplete: getHostEnvironment() === hostEnvironment.cli,
             addBTPDestinationList: isBAS ? !isAbapDirectServiceBinding : false,
-            additionalChoiceList: cfChoices
+            additionalChoiceList: cfChoices,
+            ...promptOptions?.destinationName
         },
-        [promptNames.routerType]: !mtaYamlExists && !isCap,
-        [promptNames.overwrite]: addOverwrite
+        [promptNames.addManagedAppRouter]: { hide: true, ...promptOptions?.addManagedAppRouter },
+        [promptNames.routerType]: { hide: mtaYamlExists || isCap, ...promptOptions?.routerType },
+        [promptNames.overwrite]: { hide: !addOverwrite, ...promptOptions?.overwrite }
     };
 
     DeploymentGenerator.logger?.debug(t('cfGen.debug.promptOptions', { options: JSON.stringify(options) }));

@@ -34,6 +34,8 @@ export interface FioriAppGeneratorOptions extends Generator.GeneratorOptions, Fi
     data?: Object; // todo: Is this used anywhere? Adaptors set state directly
     /**
      * Customer provided extensions used to customize existing questions
+     *
+     * @deprecated Use `promptSettings` instead.
      */
     extensions?: UI5ApplicationPromptOptions;
     /**
@@ -41,7 +43,7 @@ export interface FioriAppGeneratorOptions extends Generator.GeneratorOptions, Fi
      */
     floorplan?: Floorplan;
     /**
-     * Prompt settings to control visibility and default values of prompts
+     * Prompt settings to control visibility, default values and other prompt related settings.
      */
     promptSettings?: FioriAppGeneratorPromptSettings;
     /**
