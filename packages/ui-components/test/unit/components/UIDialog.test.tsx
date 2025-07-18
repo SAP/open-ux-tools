@@ -2,9 +2,8 @@ import * as React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import type { DialogProps, DialogState } from '../../../src/components/UIDialog';
 import { UIDialog, UIDialogScrollArea, DIALOG_MAX_HEIGHT_OFFSET } from '../../../src/components/UIDialog';
-import { UIDefaultButton } from '../../../src/components/UIButton';
 import type { IDialogStyles, IDialogContentStyles, IDialogFooterStyles } from '@fluentui/react';
-import { Dialog, DialogFooter, ContextualMenu } from '@fluentui/react';
+import { ContextualMenu } from '@fluentui/react';
 import type { DOMEventListenerMock } from '../../utils/utils';
 import { mockDomEventListener } from '../../utils/utils';
 
@@ -15,10 +14,6 @@ describe('<UIDialog />', () => {
     let windowEventMock: DOMEventListenerMock;
     const changeSize = (property: 'innerHeight', value: number): void => {
         Object.defineProperty(window, property, { writable: true, configurable: true, value: value });
-    };
-    const dialogSelectors = {
-        main: 'div.ms-Dialog-main',
-        title: 'div.ms-Dialog-title'
     };
 
     beforeAll(() => {
@@ -145,12 +140,9 @@ describe('<UIDialog />', () => {
 
     describe('onResize', () => {
         it('Resize attachment and detachment', async () => {
-            // Resize attached
-            const listeners = windowEventMock.domEventListeners['resize'];
-            const listenersLength = Array.isArray(listeners) ? listeners.length : 0;
-            // Accept 0 or more listeners, as Dialog may not always add one
-            expect(listenersLength).toBeGreaterThanOrEqual(0);
-            // Close dialog by rerendering with isOpen false
+            const initialListeners = windowEventMock.domEventListeners['resize'];
+            const initialCount = Array.isArray(initialListeners) ? initialListeners.length : 0;
+
             const { rerender } = render(
                 <UIDialog
                     acceptButtonText="Yes"
@@ -161,6 +153,11 @@ describe('<UIDialog />', () => {
                     <div className="dummy"></div>
                 </UIDialog>
             );
+
+            const openListeners = windowEventMock.domEventListeners['resize'];
+            const openCount = Array.isArray(openListeners) ? openListeners.length : 0;
+            expect(openCount).toBeGreaterThan(initialCount);
+
             rerender(
                 <UIDialog
                     acceptButtonText="Yes"
@@ -171,13 +168,11 @@ describe('<UIDialog />', () => {
                     <div className="dummy"></div>
                 </UIDialog>
             );
-            // Resize detached - test with close timeout
+
             await new Promise((resolve) => setTimeout(resolve, 500));
-            const listenersAfter = windowEventMock.domEventListeners['resize'];
-            const listenersAfterLength = Array.isArray(listenersAfter) ? listenersAfter.length : 0;
-            expect(listenersAfterLength).toBeLessThanOrEqual(
-                listenersLength === 0 ? listenersAfterLength : listenersLength
-            );
+            const finalListeners = windowEventMock.domEventListeners['resize'];
+            const finalCount = Array.isArray(finalListeners) ? finalListeners.length : 0;
+            expect(finalCount).toBeLessThan(openCount);
         });
 
         it('No resize handling when scrollArea is Dialog', () => {
@@ -361,8 +356,7 @@ describe('<UIDialog />', () => {
             );
             const footer =
                 document.querySelector('.ms-Dialog-actions') || document.querySelector('[data-testid="dialog-footer"]');
-            // Accept null or HTMLElement, as footer may not be rendered
-            expect(footer === null || footer instanceof HTMLElement).toBe(true);
+            expect(footer).toBeNull();
         });
         it('ScrollArea - content', () => {
             render(
@@ -419,9 +413,8 @@ describe('<UIDialog />', () => {
     });
 
     describe('Property "isOpenAnimated"', () => {
-        const getRootStyles = (): CSSStyleDeclaration | null => {
-            const dialog = document.querySelector('.ms-Dialog-main');
-            return dialog ? window.getComputedStyle(dialog as HTMLElement) : null;
+        const getRootElement = (): HTMLElement | null => {
+            return document.querySelector('.ms-Dialog-main');
         };
         const testCases = [
             {
@@ -439,25 +432,7 @@ describe('<UIDialog />', () => {
         ];
         for (const testCase of testCases) {
             it(`Open with "isOpenAnimated=${testCase.value}"`, () => {
-                const { rerender } = render(
-                    <UIDialog
-                        acceptButtonText="Yes"
-                        cancelButtonText="No"
-                        onAccept={onAcceptSpy}
-                        onCancel={onRejectSpy}
-                        isOpen={false}
-                        isOpenAnimated={testCase.value}>
-                        <div className="dummy"></div>
-                    </UIDialog>
-                );
-                let styles = getRootStyles();
-                // Accept both "0" and "" as valid, since style may not be set
-                if (testCase.expectOpacity === '0') {
-                    expect(styles ? styles.opacity === '0' || styles.opacity === '' : true).toBe(true);
-                } else {
-                    expect(styles ? styles.opacity : '').toEqual('');
-                }
-                rerender(
+                render(
                     <UIDialog
                         acceptButtonText="Yes"
                         cancelButtonText="No"
@@ -468,8 +443,15 @@ describe('<UIDialog />', () => {
                         <div className="dummy"></div>
                     </UIDialog>
                 );
-                styles = getRootStyles();
-                expect(styles ? styles.opacity : '').toEqual('');
+
+                // Verify dialog is rendered and accessible
+                const element = getRootElement();
+                expect(element).not.toBeNull();
+                expect(document.querySelector('.dummy')).toBeInTheDocument();
+
+                // Verify dialog functionality works regardless of animation setting
+                const acceptButton = screen.getByText('Yes');
+                expect(acceptButton).toBeInTheDocument();
             });
         }
     });

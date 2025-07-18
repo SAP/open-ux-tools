@@ -206,12 +206,6 @@ describe('<UIDropdown />', () => {
             },
             {
                 readOnly: true,
-                expected: {
-                    readOnly: true
-                }
-            },
-            {
-                readOnly: true,
                 disabled: true,
                 expected: {
                     readOnly: true

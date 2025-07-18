@@ -2,7 +2,6 @@ import * as React from 'react';
 import { render } from '@testing-library/react';
 import type { ICheckboxStyles, IRawStyle } from '@fluentui/react';
 import { UICheckbox } from '../../../src/components/UICheckbox';
-import type { UICheckboxProps } from '../../../src/components/UICheckbox';
 import { ErrorMessageType } from '../../../src/helper/ValidationMessage/utils';
 import type { InputValidationMessageInfo } from '../../../src/helper/ValidationMessage/utils';
 
@@ -62,10 +61,11 @@ describe('<UICheckbox />', () => {
     });
 
     describe('Styles', () => {
-        it('Unchecked', () => {
-            render(<UICheckbox />);
+        it('Unchecked checkbox shows checkmark on hover', () => {
+            const { container } = render(<UICheckbox />);
+            const checkbox = container.querySelector(`.${globalClassNames.root}`);
+            expect(checkbox).toBeInTheDocument();
 
-            // Create a test instance to access the styles method
             const testInstance = new UICheckboxTestHelper({});
             const messageInfo: InputValidationMessageInfo = {
                 message: undefined,
@@ -74,14 +74,15 @@ describe('<UICheckbox />', () => {
             };
             const styles = testInstance.testSetStyle(messageInfo, {}) as ICheckboxStyles;
             const rootStyles = styles.root as IRawStyle;
-            // Check hover opacity
-            expect(rootStyles[0][0][`:hover .${globalClassNames.checkmark}`].opacity).toEqual(0);
+            expect(rootStyles[0][0][`:hover .${globalClassNames.checkmark}`]).toBeDefined();
+            expect(rootStyles[0][0][`:hover .${globalClassNames.checkmark}`].opacity).toBe(0);
         });
 
-        it('Checked', () => {
-            render(<UICheckbox checked />);
+        it('Checked checkbox removes hover style', () => {
+            const { container } = render(<UICheckbox checked />);
+            const checkbox = container.querySelector(`.${globalClassNames.root}`);
+            expect(checkbox).toBeInTheDocument();
 
-            // Create a test instance to access the styles method
             const testInstance = new UICheckboxTestHelper({ checked: true });
             const messageInfo: InputValidationMessageInfo = {
                 message: undefined,
@@ -90,8 +91,7 @@ describe('<UICheckbox />', () => {
             };
             const styles = testInstance.testSetStyle(messageInfo, { checked: true }) as ICheckboxStyles;
             const rootStyles = styles.root as IRawStyle;
-            // Check hover opacity
-            expect(rootStyles[0][0][`:hover .${globalClassNames.checkmark}`]).toEqual(undefined);
+            expect(rootStyles[0][0][`:hover .${globalClassNames.checkmark}`]).toBeUndefined();
         });
 
         it('Disabled', () => {
@@ -113,10 +113,11 @@ describe('<UICheckbox />', () => {
             expect(checkBoxStyles.opacity).toEqual(0.4);
         });
 
-        it('Disabled and Checked', () => {
-            render(<UICheckbox disabled checked />);
+        it('Disabled and checked checkbox clears hover styles', () => {
+            const { container } = render(<UICheckbox disabled checked />);
+            const checkbox = container.querySelector(`.${globalClassNames.root}`);
+            expect(checkbox).toBeInTheDocument();
 
-            // Create a test instance to access the styles method
             const testInstance = new UICheckboxTestHelper({ disabled: true, checked: true });
             const messageInfo: InputValidationMessageInfo = {
                 message: undefined,
@@ -125,10 +126,9 @@ describe('<UICheckbox />', () => {
             };
             const styles = testInstance.testSetStyle(messageInfo, { disabled: true, checked: true }) as ICheckboxStyles;
             const rootStyles = styles.root as IRawStyle;
-            // Check checkbox background
-            expect(rootStyles[1][`:hover .${globalClassNames.checkbox}`].background).toEqual('');
-            // Check checkbox borderColor
-            expect(rootStyles[1][`:hover .${globalClassNames.checkbox}`].borderColor).toEqual('');
+            const hoverStyles = rootStyles[1][`:hover .${globalClassNames.checkbox}`];
+            expect(hoverStyles.background).toBe('');
+            expect(hoverStyles.borderColor).toBe('');
         });
     });
 });
