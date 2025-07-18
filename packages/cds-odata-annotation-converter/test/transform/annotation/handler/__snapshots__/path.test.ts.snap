@@ -16,7 +16,7 @@ Array [
       "proposedValue": "@UI.DataPoint#E/Value]",
       "value": "@UI.DataPoint#E/Value",
     },
-    "message": "Path escaping brackets ![] should be used",
+    "message": "Path escaping brackets \`![]\` must be used.",
     "range": Object {
       "end": Object {
         "character": 45,
@@ -59,7 +59,7 @@ Array [
       "proposedValue": "@UI.DataPoint#B/Value]",
       "value": "@UI.DataPoint#B/Value",
     },
-    "message": "Path escaping brackets ![] should be used",
+    "message": "Path escaping brackets \`![]\` must be used.",
     "range": Object {
       "end": Object {
         "character": 45,
@@ -92,7 +92,7 @@ Array [
       "proposedValue": "![@UI.DataPoint#C/Value]",
       "value": "@UI.DataPoint#C/Value",
     },
-    "message": "Path escaping brackets ![] should be used",
+    "message": "Path escaping brackets \`![]\` must be used.",
     "range": Object {
       "end": Object {
         "character": 45,
@@ -125,7 +125,7 @@ Array [
       "proposedValue": "![@UI.DataPoint#D/Value/]",
       "value": "@UI.DataPoint#D/Value/",
     },
-    "message": "Path escaping brackets ![] should be used",
+    "message": "Path escaping brackets \`![]\` must be used.",
     "range": Object {
       "end": Object {
         "character": 43,
@@ -158,7 +158,7 @@ Array [
       "proposedValue": "![@UI.DataPoint/Value]",
       "value": "@UI.DataPoint/Value",
     },
-    "message": "Path escaping brackets ![] should be used",
+    "message": "Path escaping brackets \`![]\` must be used.",
     "range": Object {
       "end": Object {
         "character": 40,
@@ -204,7 +204,7 @@ Array [
         "value": "/",
       },
     },
-    "message": "Wrong path separator '/'. Did you mean '.'?",
+    "message": "\`/\` is the wrong path separator. Did you mean \`.\`?",
     "range": Object {
       "end": Object {
         "character": 21,
@@ -238,7 +238,7 @@ Array [
         "value": "/",
       },
     },
-    "message": "Wrong path separator '/'. Did you mean '.'?",
+    "message": "\`/\` is the wrong path separator. Did you mean \`.\`?",
     "range": Object {
       "end": Object {
         "character": 13,
@@ -273,7 +273,7 @@ Array [
         "value": "/",
       },
     },
-    "message": "Wrong path separator '/'. Did you mean '.'?",
+    "message": "\`/\` is the wrong path separator. Did you mean \`.\`?",
     "range": Object {
       "end": Object {
         "character": 13,
@@ -295,7 +295,7 @@ Array [
         "value": "/",
       },
     },
-    "message": "Wrong path separator '/'. Did you mean '.'?",
+    "message": "\`/\` is the wrong path separator. Did you mean \`.\`?",
     "range": Object {
       "end": Object {
         "character": 21,

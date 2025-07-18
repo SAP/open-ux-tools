@@ -1,9 +1,9 @@
 import { screen, fireEvent } from '@testing-library/react';
 import { render } from '../../utils';
 import React from 'react';
-import { initI18n } from '../../../../src/i18n';
 import type { IconValueHelpProps } from '../../../../src/panels/properties/IconValueHelp';
 import { IconValueHelp } from '../../../../src/panels/properties/IconValueHelp';
+import { PropertyType } from '@sap-ux-private/control-property-editor-common';
 
 describe('IconValueHelp', () => {
     const iconValueHelpProps: IconValueHelpProps = {
@@ -25,14 +25,12 @@ describe('IconValueHelp', () => {
                 name: 'testName3'
             }
         ],
-        isIcon: true,
+        controlName: 'controlName',
         propertyName: 'testProperty',
         value: 'testValue',
-        disabled: false
+        disabled: false,
+        propertyType: PropertyType.ControlProperty
     };
-    beforeAll(() => {
-        initI18n();
-    });
     test('initial load', () => {
         render(<IconValueHelp {...iconValueHelpProps} />);
         const button = screen.getByRole('button');

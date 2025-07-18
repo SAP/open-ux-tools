@@ -4,25 +4,52 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
-import type { UI5FlexLayer } from '@sap-ux/project-access';
+import { type UI5FlexLayer } from '@sap-ux/project-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, LayeredRepositoryService, MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
-import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
+import type {
+    AdpPreviewConfig,
+    CommonChangeProperties,
+    DescriptorVariant,
+    OperationType,
+    CommonAdditionalChangeInfoProperties
+} from '../types';
 import type { Editor } from 'mem-fs-editor';
-import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
+import {
+    addAnnotationFile,
+    addXmlFragment,
+    isAddAnnotationChange,
+    isAddXMLChange,
+    isCodeExtChange,
+    addControllerExtension,
+    moduleNameContentMap,
+    tryFixChange,
+    isV4DescriptorChange
+} from './change-handler';
+import { addCustomSectionFragment } from './descriptor-change-handler';
+declare global {
+    // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
+    // eslint-disable-next-line no-var
+    var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
+}
 
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
-    CODE_EXT = '/adp/api/code_ext/:controllerName'
+    CODE_EXT = '/adp/api/code_ext',
+    ANNOTATION = '/adp/api/annotation'
 }
 
 /**
  * Instance of an adaptation project handling requests and data transformation.
  */
 export class AdpPreview {
+    /**
+     * Instance of the ABAP provider
+     */
+    private provider: AbapServiceProvider;
     /**
      * Merged descriptor variant with reference app manifest
      */
@@ -32,10 +59,14 @@ export class AdpPreview {
      */
     private routesHandler: RoutesHandler;
 
+    private lrep: LayeredRepositoryService | undefined;
+    private descriptorVariantId: string | undefined;
+    private isCloud: boolean | undefined;
+
     /**
      * @returns merged manifest.
      */
-    get descriptor() {
+    get descriptor(): MergedAppDescriptor {
         if (this.mergedDescriptor) {
             return this.mergedDescriptor;
         } else {
@@ -46,17 +77,35 @@ export class AdpPreview {
     /**
      * @returns a list of resources required to the adaptation project as well as the original app.
      */
-    get resources() {
+    get resources(): {
+        [name: string]: string;
+    } {
         if (this.mergedDescriptor) {
             const resources = {
                 [this.mergedDescriptor.name]: this.mergedDescriptor.url
             };
-            this.mergedDescriptor.asyncHints.libs.forEach((lib) => {
+            this.mergedDescriptor.asyncHints.libs?.forEach((lib) => {
                 if (lib.url?.url) {
                     resources[lib.name] = lib.url.url;
                 }
             });
+            this.mergedDescriptor.asyncHints.components?.forEach((comp) => {
+                if (comp.url?.url) {
+                    resources[comp.name] = comp.url.url;
+                }
+            });
             return resources;
+        } else {
+            throw new Error('Not initialized');
+        }
+    }
+
+    /**
+     * @returns {boolean} true if the project is an ABAP cloud project, false otherwise.
+     */
+    get isCloudProject(): boolean {
+        if (this.isCloud !== undefined) {
+            return this.isCloud;
         } else {
             throw new Error('Not initialized');
         }
@@ -75,9 +124,7 @@ export class AdpPreview {
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
-    ) {
-        this.routesHandler = new RoutesHandler(project, util, logger);
-    }
+    ) {}
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
@@ -86,14 +133,36 @@ export class AdpPreview {
      * @returns the UI5 flex layer for which editing is enabled
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
-        const provider = await createAbapServiceProvider(
+        this.descriptorVariantId = descriptorVariant.id;
+        this.provider = await createAbapServiceProvider(
             this.config.target,
             { ignoreCertErrors: this.config.ignoreCertErrors },
             true,
             this.logger
         );
-        const lrep = provider.getLayeredRepository();
+        this.routesHandler = new RoutesHandler(this.project, this.util, this.provider, this.logger);
 
+        this.lrep = this.provider.getLayeredRepository();
+        // fetch a merged descriptor from the backend
+        await this.lrep.getCsrfToken();
+        // check if the project is an ABAP cloud project
+        this.isCloud = await this.provider.isAbapCloud();
+
+        await this.sync();
+        return descriptorVariant.layer;
+    }
+
+    /**
+     * Synchronize local changes with the backend.
+     * The descriptor is refreshed only if the global flag is set to true.
+     */
+    async sync(): Promise<void> {
+        if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
+            return;
+        }
+        if (!this.lrep || !this.descriptorVariantId) {
+            throw new Error('Not initialized');
+        }
         const zip = new ZipFile();
         const files = await this.project.byGlob('**/*.*');
         for (const file of files) {
@@ -101,11 +170,8 @@ export class AdpPreview {
         }
         const buffer = zip.toBuffer();
 
-        // fetch a merged descriptor from the backend
-        await lrep.getCsrfToken();
-        this.mergedDescriptor = (await lrep.mergeAppDescriptorVariant(buffer))[descriptorVariant.id];
-
-        return descriptorVariant.layer;
+        this.mergedDescriptor = (await this.lrep.mergeAppDescriptorVariant(buffer, '//'))[this.descriptorVariantId];
+        global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
     }
 
     /**
@@ -115,8 +181,9 @@ export class AdpPreview {
      * @param res outgoing response object
      * @param next next middleware that is to be called if the request cannot be handled
      */
-    async proxy(req: Request, res: Response, next: NextFunction) {
+    async proxy(req: Request, res: Response, next: NextFunction): Promise<void> {
         if (req.path === '/manifest.json') {
+            await this.sync();
             res.status(200);
             res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
         } else if (req.path === '/Component-preload.js') {
@@ -167,6 +234,10 @@ export class AdpPreview {
         router.post(ApiRoutes.CONTROLLER, this.routesHandler.handleWriteControllerExt as RequestHandler);
 
         router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
+        router.get(
+            ApiRoutes.ANNOTATION,
+            this.routesHandler.handleGetAllAnnotationFilesMappedByDataSource as RequestHandler
+        );
     }
 
     /**
@@ -176,13 +247,15 @@ export class AdpPreview {
      * @param {CommonChangeProperties} change - An object containing properties common to all change types.
      * @param {Editor} fs - An instance of an editor interface for file system operations.
      * @param {Logger} logger - An instance of a logging interface for message logging.
+     * @param {CommonAdditionalChangeInfoProperties} [additionalChangeInfo] - An optional object containing extended change properties.
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     async onChangeRequest(
         type: OperationType,
         change: CommonChangeProperties,
         fs: Editor,
-        logger: Logger
+        logger: Logger,
+        additionalChangeInfo?: CommonAdditionalChangeInfoProperties
     ): Promise<void> {
         switch (type) {
             case 'read':
@@ -192,7 +265,29 @@ export class AdpPreview {
                 break;
             case 'write':
                 if (isAddXMLChange(change)) {
-                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger);
+                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger, additionalChangeInfo);
+                }
+                if (isCodeExtChange(change)) {
+                    await addControllerExtension(
+                        this.util.getProject().getRootPath(),
+                        this.util.getProject().getSourcePath(),
+                        change,
+                        fs,
+                        logger
+                    );
+                }
+                if (isAddAnnotationChange(change)) {
+                    await addAnnotationFile(
+                        this.util.getProject().getSourcePath(),
+                        this.util.getProject().getRootPath(),
+                        change,
+                        fs,
+                        logger,
+                        this.provider
+                    );
+                }
+                if (isV4DescriptorChange(change)) {
+                    addCustomSectionFragment(this.util.getProject().getSourcePath(), change, fs, logger);
                 }
                 break;
             default:

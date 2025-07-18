@@ -1,0 +1,14 @@
+{
+  "version": "0.2",
+  "floorplan": "FE_LROP",
+  "project": {
+    "targetFolder": "<abs-path-required>",
+    "name": "app4"
+  },
+  "deployConfig": {
+    "deployTarget": "CF",
+    "destinationName": "SOME_DEST_NAME",
+    "addToManagedAppRouter": true,
+    "addMTADestination": true
+  }
+}

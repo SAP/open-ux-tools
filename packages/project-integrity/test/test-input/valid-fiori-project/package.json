@@ -1,0 +1,19 @@
+{
+  "name": "fiori-tools-ai",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-travelmanagement": "cds watch --open travelmanagement/webapp/index.html?sap-ui-xx-viewCache=false"
+  },
+  "sapux": [
+    "app/travelmanagement"
+  ]
+}

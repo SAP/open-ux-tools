@@ -8,6 +8,7 @@ const v2 = join(feProjects, 'fiori-elements-v2');
 const cap = join(feProjects, 'cap');
 const freestyleProjects = join(__dirname, 'test-workspace', 'freestyle-project');
 const invalidJson = join(__dirname, 'invalid-json');
+const emptyJson = join(__dirname, 'empty-json');
 
 export const TestPaths = {
     feProjects,
@@ -19,5 +20,6 @@ export const TestPaths = {
     v4,
     v2,
     cap,
-    invalidJson
+    invalidJson,
+    emptyJson
 };

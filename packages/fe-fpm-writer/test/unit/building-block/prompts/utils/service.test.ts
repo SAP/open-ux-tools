@@ -6,7 +6,7 @@ import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import {
     getAnnotationPathQualifiers,
     getAnnotationTermAlias,
-    getEntityTypes,
+    getEntitySets,
     getMappedServiceName
 } from '../../../../../src/building-block/prompts/utils/service';
 
@@ -14,7 +14,7 @@ const projectFolder = join(__dirname, '../../../sample/building-block/webapp-pro
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');
 const capAppFolder = join('app/incidents');
 
-const ENTITY_TYPE = 'C_CUSTOMER_OP_SRV.C_CustomerOPType';
+const ENTITY_SET = 'C_CustomerOP';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
@@ -37,9 +37,9 @@ describe('utils - service', () => {
         capProject = await getProject(capProjectFolder);
     });
 
-    describe('getEntityTypes', () => {
+    describe('getEntitySets', () => {
         test('EDMX project', async () => {
-            const entityTypes = await getEntityTypes(project, '');
+            const entityTypes = await getEntitySets(project, '');
             expect(entityTypes.length).toBe(30);
         });
 
@@ -51,32 +51,29 @@ describe('utils - service', () => {
                     version: '',
                     references: [],
                     schema: {
-                        entityTypes: [
+                        entitySets: [
                             {
-                                name: 'IncidentService.Incidents',
-                                fullyQualifiedName: 'IncidentService.Incidents',
-                                keys: []
+                                name: 'Incidents',
+                                fullyQualifiedName: 'IncidentService.EntityContainer/Incidents'
                             },
                             {
-                                name: 'IncidentService.IncidentFlow',
-                                fullyQualifiedName: 'IncidentService.IncidentFlow',
-                                keys: []
+                                name: 'IncidentFlow',
+                                fullyQualifiedName: 'IncidentService.EntityContainer/IncidentFlow'
                             },
                             {
-                                name: 'IncidentService.IncidentProcessTimeline',
-                                fullyQualifiedName: 'IncidentService.IncidentProcessTimeline',
-                                keys: []
+                                name: 'IncidentProcessTimeline',
+                                fullyQualifiedName: 'IncidentService.EntityContainer/IncidentProcessTimeline'
                             }
                         ]
                     }
                 })
             } as unknown as FioriAnnotationService);
-            const entityTypes = await getEntityTypes(capProject, capAppFolder);
-            expect(entityTypes.length).toEqual(3);
-            expect(entityTypes.map((entityType) => entityType.fullyQualifiedName)).toEqual([
-                'IncidentService.Incidents',
-                'IncidentService.IncidentFlow',
-                'IncidentService.IncidentProcessTimeline'
+            const entitySets = await getEntitySets(capProject, capAppFolder);
+            expect(entitySets.length).toEqual(3);
+            expect(entitySets.map((entitySet) => entitySet.fullyQualifiedName)).toEqual([
+                'IncidentService.EntityContainer/Incidents',
+                'IncidentService.EntityContainer/IncidentFlow',
+                'IncidentService.EntityContainer/IncidentProcessTimeline'
             ]);
         });
     });
@@ -102,7 +99,7 @@ describe('utils - service', () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
                 project,
                 '',
-                ENTITY_TYPE,
+                ENTITY_SET,
                 [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
                 { type: 'absolute' }
             );
@@ -124,7 +121,7 @@ describe('utils - service', () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
                 project,
                 '',
-                ENTITY_TYPE,
+                ENTITY_SET,
                 [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
                 { type: 'absolute' },
                 true
@@ -147,7 +144,7 @@ describe('utils - service', () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
                 project,
                 '',
-                ENTITY_TYPE,
+                ENTITY_SET,
                 [UIAnnotationTerms.Chart, UIAnnotationTerms.LineItem, UIAnnotationTerms.SelectionFields],
                 { type: 'relative' }
             );
@@ -169,7 +166,7 @@ describe('utils - service', () => {
             const annotationPathQualifiers = await getAnnotationPathQualifiers(
                 project,
                 '',
-                ENTITY_TYPE,
+                ENTITY_SET,
                 [UIAnnotationTerms.LineItem],
                 { type: 'relative', isCollection: true }
             );

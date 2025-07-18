@@ -10,6 +10,8 @@ import { getSmartLinksTargetFromPrompt } from '../../../src';
 import * as utils from '../../../src/smartlinks-config/utils';
 import { promptUserPass } from '../../../src/prompt';
 import { yellow } from 'chalk';
+import i18next from 'i18next';
+import { initI18n } from '../../../src/i18n';
 
 jest.mock('prompts', () => ({
     ...jest.requireActual('prompts'),
@@ -45,6 +47,9 @@ const getProject = (basePath: string) => join(__dirname, `../../fixtures/${baseP
 const mockTarget = { url: 'https://abc.example', client: '100' };
 const mockAuth = { username: 'mockUser', password: 'mockPW' };
 
+beforeAll(async () => {
+    await initI18n();
+});
 describe('Test function getSmartLinksTargetFromPrompt', () => {
     // Mock setup
     const debugMock = loggerMock.debug as unknown as jest.SpyInstance;
@@ -57,6 +62,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
         getSystemCredentialsSpy = jest.spyOn(utils, 'getLocalStoredCredentials');
         listDestinationsMock = jest.spyOn(btp, 'listDestinations');
         getServiceMock.mockImplementation(() => serviceMock);
+        jest.spyOn(i18next, 't').mockImplementation((...args: any[]) => args[0]);
     });
 
     describe('Check prompt steps: ', () => {
@@ -88,7 +94,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             // First select destination or url
             expect(destinationOrUrlPrompt.name).toEqual('select');
             expect(destinationOrUrlPrompt.type()).toEqual('select');
-            expect(destinationOrUrlPrompt.message).toContain('SmartLinks configuration source');
+            expect(destinationOrUrlPrompt.message).toContain('SmartLinks configuration source {{-type}} {{-file}}');
             expect(destinationOrUrlPrompt.choices).toMatchObject([
                 { title: 'Enter destination', value: 'destination' },
                 { title: 'Enter url', value: 'url' }
@@ -98,13 +104,13 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             expect(destinationPrompt.type()).toEqual(null);
             expect(destinationPrompt.initial).not.toBeDefined();
             expect(destinationPrompt.validate).toBeDefined();
-            expect(destinationPrompt.message).toContain('SmartLinks configuration source destination');
+            expect(destinationPrompt.message).toContain('SmartLinks configuration source destination ');
             // Conditional url prompt
             expect(urlPrompt.name).toEqual('url');
             expect(urlPrompt.type()).toEqual('text');
             expect(urlPrompt.initial).not.toBeDefined();
             expect(urlPrompt.validate).toBeDefined();
-            expect(urlPrompt.message).toContain('SmartLinks configuration source url');
+            expect(urlPrompt.message).toContain('SmartLinks configuration source url ');
             // Conditional client prompt
             expect(clientPrompt.name).toEqual('client');
             expect(clientPrompt.type()).toEqual(null);
@@ -141,9 +147,9 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             expect(getSystemCredentialsSpy).toBeCalledWith(mockTarget.url, mockTarget.client, loggerMock);
             const [urlPrompt, clientPrompt] = promptMock.mock.calls[0][0];
             expect(urlPrompt.initial).toBeDefined();
-            expect(urlPrompt.message).toContain('(ui5-deploy.yaml)');
+            expect(urlPrompt.message).toContain('SmartLinks configuration source url (ui5-deploy.yaml)');
             expect(clientPrompt.initial).toBeDefined();
-            expect(clientPrompt.message).toContain('(ui5-deploy.yaml)');
+            expect(clientPrompt.message).toContain('SAP client (ui5-deploy.yaml)');
         });
         test('Existing ui5-deploy-config - picked initial', async () => {
             basePath = 'ui5-deploy-config';
@@ -167,6 +173,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             promptMock = jest
                 .spyOn(prompts, 'prompt')
                 .mockImplementation((questions) => jest.requireActual('prompts').prompt(questions));
+            jest.spyOn(i18next, 't').mockImplementation((...args: any[]) => args[0]);
         });
 
         test('Use destination (no deploy config)', async () => {
@@ -200,7 +207,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             const [initialPrompt, destinationOrUrlPrompt, destinationPrompt, urlPrompt, clientPrompt] =
                 promptMock.mock.calls[0][0];
             expect(initialPrompt).toMatchObject({ name: 'destination', type: 'confirm', initial: true });
-            expect(initialPrompt.message).toContain('Do you want to use');
+            expect(initialPrompt.message).toContain('Do you want to use ABC123');
             expect(initialPrompt.format).toBeDefined();
             expect(destinationOrUrlPrompt.type).toEqual(null);
             expect(destinationPrompt.type).toEqual(null);
@@ -242,7 +249,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             expect(promptForCredentials.choices.length).toBe(2);
             expect(promptForCredentials.choices[0].title).toContain('Use');
             expect(promptForCredentials.choices[0].value).toMatchObject({ username: 'mockUser', password: 'mockPW' });
-            expect(promptForCredentials.choices[1].title).toContain('Provide');
+            expect(promptForCredentials.choices[1].title).toContain('Provide username and password');
             expect(promptForCredentials.choices[1].value).toBeFalsy();
             expect(promptForCredentials.initial).toBe(0);
         });
@@ -344,7 +351,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
                     (choice) => choice.name === 'destination' && choice.initial === 'ABC123'
                 );
                 expect(destination?.name).toEqual('destination');
-                expect((destination?.validate as any)()).toEqual('Please provide a target for configuration');
+                expect((destination?.validate as any)()).toEqual('Please provide a target for the configuration.');
                 expect((destination?.validate as any)('abc')).toBeTruthy();
                 return { destination: destination?.initial };
             });
@@ -355,7 +362,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             promptMock.mockImplementationOnce((choices: PromptObject[]) => {
                 const url = choices[0];
                 expect(url.name).toBe('url');
-                expect((url.validate as any)()).toEqual('Please provide a target for configuration');
+                expect((url.validate as any)()).toEqual('Please provide a target for the configuration.');
                 expect((url.validate as any)('abc')).toBeTruthy();
                 const client = choices[1];
                 expect(client.name).toBe('client');
@@ -379,12 +386,14 @@ describe('Test promptUserPass', () => {
         promptMock.mockImplementation((choices: PromptObject[]) => {
             const username = choices[0];
             expect(username.name).toBe('username');
-            expect((username.validate as any)()).toEqual('Username can not be empty.');
+            expect((username.validate as any)()).toEqual('Username cannot be empty. Provide a value for the username.');
             expect((username.validate as any)('abc')).toBeTruthy();
             const password = choices[1];
             expect(password.name).toBe('password');
-            expect((password.validate as any)()).toEqual('Password can not be empty.');
-            expect((password.validate as any)(' ')).toEqual('Password can not be empty.');
+            expect((password.validate as any)()).toEqual('Password cannot be empty. Provide a value for the password.');
+            expect((password.validate as any)(' ')).toEqual(
+                'Password cannot be empty. Provide a value for the password.'
+            );
             expect((password.validate as any)('123')).toBeTruthy();
             return userPrompt;
         });

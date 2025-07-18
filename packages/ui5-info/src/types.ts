@@ -24,7 +24,10 @@ export interface UI5VersionFilterOptions {
      */
     minSupportedUI5Version?: string;
     /**
-     * Will use the cached versions from previous network calls if available otherwise will make network calls and populate cache
+     * Will use the cached versions from previous network calls if available otherwise will make network calls and populate cache.
+     * If false, always make a network call to return the very latest UI5 versions, also populating the cache.
+     *
+     * @default true
      */
     useCache?: boolean;
     /**
@@ -50,16 +53,15 @@ export interface UI5Version {
     maintained?: boolean;
 }
 
-export interface UI5VersionOverview {
-    version: string;
-    support: string;
+export interface UI5VersionSupport extends UI5Version {
+    support?: string;
     lts?: string;
 }
 
 export interface UI5VersionsResponse {
     [key: string]: {
         patches?: string[];
-    } & UI5VersionOverview;
+    } & UI5VersionSupport;
 }
 
 export interface UI5Theme {
@@ -72,7 +74,18 @@ export interface UI5Theme {
      */
     label: string;
     /**
-     * The UI5 minimum UI5 version that supports this theme
+     * The minimum UI5 version that starts supporting this theme.
+     * The theme will only be included for UI5 versions greater than or equal to this.
      */
-    sinceVersion?: string;
+    supportSince?: string;
+    /**
+     * The maximum UI5 version for which this theme is supported.
+     * The theme will not be included for UI5 versions greater than or equal to this.
+     */
+    supportUntil?: string;
+    /**
+     * The UI5 version from which the theme is considered deprecated.
+     * If the current version is between `deprecateSince` and `supportUntil`, the theme label is updated to include (deprecated).
+     */
+    deprecateSince?: string;
 }

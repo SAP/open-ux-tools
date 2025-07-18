@@ -33,6 +33,8 @@ describe('SelectionService', () => {
             }
         ]
     } as Control;
+    const onStackChangeMock = jest.fn();
+    const changeService = { onStackChange: onStackChangeMock } as any;
     beforeEach(() => {
         buildControlDataSpy = jest.spyOn(controlData, 'buildControlData').mockImplementation((): any => {
             return mockControlData;
@@ -114,7 +116,7 @@ describe('SelectionService', () => {
             attachSelectionChange,
             getService: jest.fn().mockReturnValue({ get: jest.fn(), attachEvent: jest.fn() })
         } as any;
-        const service = new SelectionService(rta);
+        const service = new SelectionService(rta, changeService);
         await service.init(jest.fn(), jest.fn());
         expect(handler).not.toBeUndefined();
         if (handler !== undefined) {
@@ -297,7 +299,7 @@ describe('SelectionService', () => {
             attachSelectionChange,
             getService: jest.fn().mockReturnValue({ get: jest.fn(), attachEvent: jest.fn() })
         } as any;
-        const service = new SelectionService(rta);
+        const service = new SelectionService(rta, changeService);
         const sendActionSpy = jest.fn();
         await service.init(sendActionSpy, jest.fn());
         expect(handler).not.toBeUndefined();
@@ -513,7 +515,7 @@ describe('SelectionService', () => {
             attachSelectionChange,
             getService: jest.fn().mockReturnValue({ get: jest.fn(), attachEvent: jest.fn() })
         } as any;
-        const service = new SelectionService(rta);
+        const service = new SelectionService(rta, changeService);
         const sendActionSpy = jest.fn();
         await service.init(sendActionSpy, jest.fn());
         expect(handler).not.toBeUndefined();
@@ -684,7 +686,7 @@ describe('SelectionService', () => {
             getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
             getService: jest.fn().mockReturnValue({ get: jest.fn(), attachEvent: jest.fn() })
         } as any;
-        const service = new SelectionService(rta);
+        const service = new SelectionService(rta, changeService);
         await service.init(sendActionMock, subscribe);
 
         for (const handler2 of actionHandlers) {
@@ -709,8 +711,17 @@ describe('SelectionService', () => {
         }
         expect(sendActionMock).toHaveBeenNthCalledWith(1, { type: '[ext] control-selected', payload: mockControlData });
         expect(sendActionMock).toHaveBeenNthCalledWith(2, { type: '[ext] control-selected', payload: mockControlData });
-        expect(buildControlDataSpy).toHaveBeenNthCalledWith(1, {});
-        expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'));
+        expect(buildControlDataSpy).toHaveBeenNthCalledWith(1, {}, changeService, undefined);
+        expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), changeService, undefined);
+
+
+        // call buildControlData when stack changed
+        changeService.onStackChange.mock.calls[0][0]({
+            detail: {
+                controls: [cache.get('testIdfinal')]
+            }
+        });
+        expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), changeService, undefined);
     });
 
     test('attaches to selected control change - test getBindingInfo object bindingString', async () => {
@@ -763,7 +774,7 @@ describe('SelectionService', () => {
             attachSelectionChange,
             getService: jest.fn().mockReturnValue({ get: jest.fn(), attachEvent: jest.fn() })
         } as any;
-        const service = new SelectionService(rta);
+        const service = new SelectionService(rta, changeService);
         const sendActionSpy = jest.fn();
         await service.init(sendActionSpy, jest.fn());
 
@@ -790,7 +801,7 @@ describe('SelectionService', () => {
             } as any);
         }
         expect(mockGetBindingInfo).toBeCalledWith('random');
-        
+
         if (handler !== undefined) {
             await handler({
                 getParameter: selectionChangeGetParameterSpy

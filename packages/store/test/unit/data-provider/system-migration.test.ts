@@ -12,7 +12,8 @@ describe('System migration data provider', () => {
         read: jest.fn(),
         del: jest.fn(),
         getAll: jest.fn(),
-        readAll: jest.fn()
+        readAll: jest.fn(),
+        partialUpdate: jest.fn()
     };
     beforeEach(() => {
         mockGetFilesystemStore.mockReturnValue(mockFsStore);

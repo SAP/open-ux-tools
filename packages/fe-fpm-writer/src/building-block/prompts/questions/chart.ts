@@ -1,5 +1,4 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { TFunction } from 'i18next';
 import type { Answers } from 'inquirer';
 import { i18nNamespaces, translate } from '../../../i18n';
 import {
@@ -13,15 +12,24 @@ import {
     getViewOrFragmentPathPrompt,
     isCapProject
 } from '../utils';
-import type { PromptContext, Prompts } from '../../../prompts/types';
+import type { PromptContext, Prompts, PromptsGroup } from '../../../prompts/types';
 import { BuildingBlockType } from '../../types';
 import type { BuildingBlockConfig, Chart } from '../../types';
+import { getManifestPromptsGroup } from './building-blocks';
+
+const MANIFEST_LIBRARIES_GROUP = getManifestPromptsGroup();
 
 export type ChartPromptsAnswer = BuildingBlockConfig<Chart> & Answers;
 
 const defaultAnswers = {
     id: 'Chart',
     bindingContextType: 'absolute'
+};
+
+const groupIds = {
+    commonChartBuildingBlockProperties: 'chartBuildingBlockProperties',
+    chartVisualizationProperties: 'chartVisualizationProperties',
+    chartConfigureEvents: 'chartConfigureEvents'
 };
 
 /**
@@ -32,27 +40,46 @@ const defaultAnswers = {
  */
 export async function getChartBuildingBlockPrompts(context: PromptContext): Promise<Prompts<ChartPromptsAnswer>> {
     const { project } = context;
-    const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
+    const t = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
+    const groups: PromptsGroup[] = [
+        {
+            id: groupIds.commonChartBuildingBlockProperties,
+            title: t('chartBuildingBlockPropertiesTitle') as string,
+            description: t('chartBuildingBlockPropertiesDescription', { returnObjects: true }) as string[]
+        },
+        {
+            id: groupIds.chartVisualizationProperties,
+            title: t('chartVisualizationPropertiesTitle') as string,
+            description: t('chartVisualizationPropertiesDescription', { returnObjects: true }) as string[]
+        },
+        {
+            id: groupIds.chartConfigureEvents,
+            title: t('chartConfigureEventsTitle') as string,
+            description: t('chartConfigureEventsDescription', { returnObjects: true }) as string[]
+        },
+        MANIFEST_LIBRARIES_GROUP
+    ];
     return {
+        groups,
         questions: [
-            getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate'), {
-                message: t('viewOrFragmentPath.message'),
+            getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate') as string, {
+                message: t('viewOrFragmentPath.message') as string,
                 guiOptions: {
+                    groupId: groupIds.commonChartBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['aggregationPath', 'buildingBlockData.filterBar']
                 }
             }),
-            getBuildingBlockIdPrompt(context, t('id.validation'), {
-                message: t('id.message'),
+            getBuildingBlockIdPrompt(context, t('id.validation') as string, {
+                message: t('id.message') as string,
                 default: defaultAnswers.id,
-                guiOptions: {
-                    mandatory: true
-                }
+                guiOptions: { groupId: groupIds.commonChartBuildingBlockProperties, mandatory: true }
             }),
             getBindingContextTypePrompt({
-                message: t('bindingContextType'),
+                message: t('bindingContextType') as string,
                 default: defaultAnswers.bindingContextType,
                 guiOptions: {
+                    groupId: groupIds.commonChartBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
                 }
@@ -60,8 +87,9 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
             ...(project && isCapProject(project)
                 ? [
                       await getCAPServicePrompt(context, {
-                          message: t('service'),
+                          message: t('service') as string,
                           guiOptions: {
+                              groupId: groupIds.commonChartBuildingBlockProperties,
                               mandatory: true,
                               dependantPromptNames: []
                           }
@@ -69,8 +97,9 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
                   ]
                 : []),
             getEntityPrompt(context, {
-                message: t('entity'),
+                message: t('entity') as string,
                 guiOptions: {
+                    groupId: groupIds.commonChartBuildingBlockProperties,
                     mandatory: true,
                     dependantPromptNames: ['buildingBlockData.metaPath.qualifier']
                 }
@@ -78,61 +107,61 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
             getAnnotationPathQualifierPrompt(
                 context,
                 {
-                    message: t('qualifier'),
+                    message: t('qualifier') as string,
                     guiOptions: {
+                        groupId: groupIds.commonChartBuildingBlockProperties,
                         mandatory: true,
-                        placeholder: t('qualifierPlaceholder'),
-                        hint: t('valuesDependentOnEntityTypeInfo')
+                        placeholder: t('qualifierPlaceholder') as string,
+                        hint: t('valuesDependentOnEntityTypeInfo') as string
                     }
                 },
                 [UIAnnotationTerms.Chart]
             ),
             getAggregationPathPrompt(context, {
-                message: t('aggregation'),
-                guiOptions: {
-                    mandatory: true
-                }
+                message: t('aggregation') as string,
+                guiOptions: { groupId: groupIds.commonChartBuildingBlockProperties, mandatory: true }
             }),
             getFilterBarIdPrompt(context, {
-                message: t('filterBar.message'),
+                message: t('filterBar.message') as string,
                 type: 'list',
                 guiOptions: {
-                    placeholder: t('filterBar.placeholder'),
-                    creation: { placeholder: t('filterBar.inputPlaceholder') }
+                    groupId: groupIds.commonChartBuildingBlockProperties,
+                    placeholder: t('filterBar.placeholder') as string,
+                    creation: { placeholder: t('filterBar.inputPlaceholder') as string }
                 }
             }),
             {
                 type: 'checkbox',
                 name: 'buildingBlockData.personalization',
-                message: t('personalization.message'),
+                message: t('personalization.message') as string,
                 choices: [
-                    { name: t('personalization.choices.type'), value: 'Type' },
-                    { name: t('personalization.choices.item'), value: 'Item' },
-                    { name: t('personalization.choices.sort'), value: 'Sort' }
+                    { name: t('personalization.choices.type') as string, value: 'Type' },
+                    { name: t('personalization.choices.item') as string, value: 'Item' },
+                    { name: t('personalization.choices.sort') as string, value: 'Sort' }
                 ],
                 guiOptions: {
-                    placeholder: t('personalization.placeholder'),
+                    groupId: groupIds.chartVisualizationProperties,
+                    placeholder: t('personalization.placeholder') as string,
                     selectType: 'static'
                 }
             },
             {
                 type: 'list',
                 name: 'buildingBlockData.selectionMode',
-                message: t('selectionMode.message'),
+                message: t('selectionMode.message') as string,
                 choices: [
-                    { name: t('selectionMode.choices.single'), value: 'Single' },
-                    { name: t('selectionMode.choices.multiple'), value: 'Multiple' }
+                    { name: t('selectionMode.choices.single') as string, value: 'Single' },
+                    { name: t('selectionMode.choices.multiple') as string, value: 'Multiple' }
                 ],
-                guiOptions: {
-                    selectType: 'static'
-                }
+                guiOptions: { groupId: groupIds.chartConfigureEvents, selectType: 'static' }
             },
             {
                 type: 'input',
                 name: 'buildingBlockData.selectionChange',
-                message: t('selectionChange'),
+                message: t('selectionChange') as string,
                 guiOptions: {
-                    placeholder: t('selectionChangePlaceholder')
+                    groupId: groupIds.chartConfigureEvents,
+                    placeholder: t('selectionChangePlaceholder') as string
                 }
             }
         ],

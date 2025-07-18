@@ -2,7 +2,7 @@ import type { Command } from 'commander';
 import chalk from 'chalk';
 import { getLogger, traceChanges } from '../../tracing';
 import type { AdpWriterConfig, PromptDefaults } from '@sap-ux/adp-tooling';
-import { promptGeneratorInput, generate } from '@sap-ux/adp-tooling';
+import { promptGeneratorInput, generate, FlexLayer } from '@sap-ux/adp-tooling';
 import { runNpmInstallCommand } from '../../common';
 import { join } from 'path';
 
@@ -21,6 +21,7 @@ export function addGenerateAdaptationProjectCommand(cmd: Command): void {
         .option('--url [url]', 'url pointing to the target system containing the original app')
         .option('--ignoreCertErrors', 'ignore certificate errors when connecting to the target system')
         .option('--ft', 'enable the Fiori tools for the generated project')
+        .option('--ts', 'enable the TypeScript support for the generated project')
         .option('--package [package]', 'ABAP package to be used for deployments')
         .option('--transport [transport]', 'ABAP transport to be used for deployments')
         .action(async (path, options) => {
@@ -100,7 +101,7 @@ function createConfigFromDefaults(defaults: PromptDefaults): AdpWriterConfig {
             app: {
                 id: defaults.id,
                 reference: defaults.reference,
-                layer: 'CUSTOMER_BASE'
+                layer: FlexLayer.CUSTOMER_BASE
             },
             target: {
                 url: defaults.url,
@@ -111,7 +112,8 @@ function createConfigFromDefaults(defaults: PromptDefaults): AdpWriterConfig {
                 transport: defaults.transport ? defaults.transport.toUpperCase() : undefined
             },
             options: {
-                fioriTools: defaults.ft
+                fioriTools: defaults.ft,
+                enableTypeScript: defaults.ts
             }
         };
     } else {

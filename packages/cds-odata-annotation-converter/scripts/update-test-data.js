@@ -2,7 +2,7 @@ const { readdirSync, readFileSync, writeFileSync } = require('fs');
 const { format, resolveConfig } = require('prettier');
 const { join } = require('path');
 const { VocabularyService } = require('@sap-ux/odata-vocabularies');
-const { parse } = require('@sap/ux-cds-annotation-parser');
+const { parse } = require('@sap-ux/cds-annotation-parser');
 const { initI18n } = require('../dist');
 const { convertAnnotation } = require('../dist/transforms/annotation');
 

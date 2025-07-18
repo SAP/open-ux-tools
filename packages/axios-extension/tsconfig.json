@@ -7,11 +7,15 @@
     "rootDir": "src",
     "outDir": "dist",
     "baseUrl": "./src",
-    "strict": false
+    "strict": false,
+    "strictNullChecks": false
   },
   "references": [
     {
       "path": "../btp-utils"
+    },
+    {
+      "path": "../feature-toggle"
     },
     {
       "path": "../logger"

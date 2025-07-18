@@ -8,10 +8,13 @@ import {
 } from '@sap-ux/project-access';
 import { basename, isAbsolute, relative } from 'path';
 import { t } from '../../../i18n';
-import type { CapService, CapServiceChoice } from '../../../types';
+import type { CapServiceChoice } from '../../../types';
+import type { CapService } from '@sap-ux/cap-config-writer';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
 import type { CapProjectChoice, CapProjectPaths, CapProjectRootPath } from './types';
+import { ERROR_TYPE } from '@sap-ux/inquirer-common';
+import { realpath } from 'fs/promises';
 
 export const enterCapPathChoiceValue = 'enterCapPath';
 
@@ -31,7 +34,9 @@ async function getCapProjectPaths(
 
     for (const root of capProjectRoots) {
         const folderName = basename(root);
-        capRootPaths.push({ folderName, path: root });
+        // On Windows the path may have been returned with a different casing.
+        // Use `realPath` to generate the same casing as used by cds compiler facade.
+        capRootPaths.push({ folderName, path: process.platform === 'win32' ? await realpath(root) : root });
         folderNameCount.set(folderName, (folderNameCount.get(folderName) ?? 0) + 1);
     }
     capRootPaths.sort((a, b) => a.folderName.localeCompare(b.folderName));
@@ -163,8 +168,9 @@ export async function getCapServiceChoices(capProjectPaths: CapProjectPaths): Pr
             capModel = model;
             capCdsVersionInfo = cdsVersionInfo;
         } catch (error) {
-            errorHandler.logErrorMsgs(error);
-            LoggerHelper.logger.error(t('errors.capModelAndServicesLoadError', { error: error?.message }));
+            const capLoadErrorMsg = t('errors.capModelAndServicesLoadError', { error: error?.message });
+            errorHandler.logErrorMsgs(ERROR_TYPE.UNKNOWN, capLoadErrorMsg);
+            LoggerHelper.logger.error(capLoadErrorMsg);
             return [];
         }
         // We need the relative service definitions file paths (.cds) for the generated annotation file

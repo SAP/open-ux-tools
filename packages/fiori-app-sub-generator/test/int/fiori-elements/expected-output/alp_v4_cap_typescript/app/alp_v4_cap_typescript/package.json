@@ -1,0 +1,25 @@
+{
+  "name": "alp_v4_cap_typescript",
+  "version": "0.0.1",
+  "description": "Test &#39;Project&#39; &#34;Description&#34;",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "@ui5/cli": "^4.0.16",
+    "@sap/ux-ui5-tooling": "1",
+    "@sapui5/ts-types-esm": "~1.94.0",
+    "ui5-tooling-transpile": "^3.3.7",
+    "typescript": "^5.1.6",
+    "@typescript-eslint/eslint-plugin": "^7.1.1",
+    "@typescript-eslint/parser": "^7.1.1",
+    "@sap-ux/eslint-plugin-fiori-tools": "^0.4.0"
+  },
+  "scripts": {
+    "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
+  }
+}

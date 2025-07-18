@@ -1,0 +1,20 @@
+{
+    "_version": "1.49.0",
+    "sap.app": {
+      "id": "ui5-mock-config",
+      "type": "application",
+      "dataSources": {
+        "mainService": {
+          "uri": "/sap/opu/odata/sap/SEPMRA_PROD_MAN/",
+          "type": "OData",
+          "settings": {}
+        },
+        "STTA_SALES_ORDER_ND_SRV_01": {
+          "uri": "/sap/opu/odata/sap/STTA_SALES_ORDER_ND_SRV_01/",
+          "type": "OData",
+          "settings": {}
+        }
+      }
+    }
+  }
+  

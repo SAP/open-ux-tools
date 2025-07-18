@@ -40,31 +40,33 @@ export class UILink extends React.Component<UILinkProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const { secondary } = this.props;
+        const { secondary, underline, disabled } = this.props;
         const styles = secondary ? linkStyle.secondary : linkStyle.primary;
         const linkStyles = (): Partial<ILinkStyles> => {
             return {
                 root: {
                     color: styles.color,
-                    fontFamily: 'var(--vscode-font-family)',
-                    textDecoration: 'underline',
-                    selectors: {
-                        '&:hover, &:hover:focus, &:hover:active': {
-                            color: styles.hoverColor,
-                            textDecoration: 'none'
-                        },
-                        '&:active, &:focus': {
-                            color: styles.hoverColor,
-                            textDecoration: 'none',
-                            outline: 'none'
-                        },
-                        // Focus through tab navigation
-                        '.ms-Fabric--isFocusVisible &:focus': {
-                            boxShadow: 'none',
-                            outline: '1px solid var(--vscode-focusBorder)',
-                            outlineOffset: '-1px'
-                        }
-                    }
+                    textDecoration: underline === false ? undefined : 'underline',
+                    selectors: !disabled
+                        ? {
+                              '&:hover, &:hover:focus, &:hover:active': {
+                                  color: styles.hoverColor,
+                                  textDecoration: underline === false ? 'underline' : 'none'
+                              },
+                              '&:active, &:focus': {
+                                  color: styles.hoverColor,
+                                  textDecoration: underline === false ? 'underline' : 'none',
+                                  outline: 'none'
+                              },
+                              // Focus through tab navigation
+                              '.ms-Fabric--isFocusVisible &:focus': {
+                                  boxShadow: 'none',
+                                  outline: '1px solid var(--vscode-focusBorder)',
+                                  outlineOffset: '-1px'
+                              }
+                          }
+                        : undefined,
+                    opacity: disabled ? 0.4 : undefined
                 }
             };
         };

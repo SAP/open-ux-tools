@@ -17,7 +17,7 @@ describe('write', () => {
     const memFs = create(createStorage());
     beforeEach(() => jest.restoreAllMocks());
     const root = 'root';
-    const manifestPath = join('absolute', 'path', 'to', 'manifest', 'file');
+    const manifestPath = join(root, 'app', 'path', 'manifestParent', 'manifest.json');
     const newI18nEntries: uxI18n.NewI18nEntry[] = [
         {
             key: 'key',
@@ -126,7 +126,7 @@ describe('write', () => {
 
             expect(result).toBeTruthy();
             expect(readJSONSpy).toHaveBeenNthCalledWith(1, manifestPath);
-            const absolutePathI18n = join(root, 'i18n/i18n.properties');
+            const absolutePathI18n = join(dirname(manifestPath), 'i18n/i18n.properties');
             const manifest = {
                 'sap.ui5': {
                     models: {
@@ -175,7 +175,7 @@ describe('write', () => {
 
             expect(result).toBeTruthy();
             expect(readJSONSpy).toHaveBeenNthCalledWith(1, manifestPath);
-            const absolutePathI18n = join(root, 'i18n/i18n.properties');
+            const absolutePathI18n = join(dirname(manifestPath), 'i18n/i18n.properties');
             const manifest = {
                 'sap.ui5': {
                     models: {
@@ -275,7 +275,7 @@ describe('write', () => {
             const result = await createAnnotationI18nEntries(root, manifestPath, i18nPropertiesPaths, newI18nEntries);
             expect(result).toBeTruthy();
             expect(readJSONSpy).toHaveBeenNthCalledWith(1, manifestPath);
-            const absolutePathI18n = join(root, 'i18n/i18n.properties');
+            const absolutePathI18n = join(dirname(manifestPath), 'i18n/i18n.properties');
             const manifest = {
                 'sap.ui5': {
                     models: {
@@ -323,7 +323,7 @@ describe('write', () => {
 
             expect(result).toBeTruthy();
             expect(readJSONSpy).toHaveBeenNthCalledWith(1, manifestPath);
-            const absolutePathI18n = join(root, 'i18n/i18n.properties');
+            const absolutePathI18n = join(dirname(manifestPath), 'i18n/i18n.properties');
             const manifest = {
                 'sap.ui5': {
                     models: {

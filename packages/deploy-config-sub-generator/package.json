@@ -1,0 +1,73 @@
+{
+    "name": "@sap-ux/deploy-config-sub-generator",
+    "description": "Main generator for configuring ABAP or Cloud Foundry deployment configuration",
+    "version": "0.3.43",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/deploy-config-sub-generator"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
+    },
+    "license": "Apache-2.0",
+    "main": "generators/app/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
+        "watch": "tsc --watch",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "generators",
+        "!generators/*.map",
+        "!generators/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-devx/yeoman-ui-types": "1.16.9",
+        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/cf-deploy-config-sub-generator": "workspace:*",
+        "@sap-ux/abap-deploy-config-sub-generator": "workspace:*",
+        "@sap-ux/deploy-config-generator-shared": "workspace:*",
+        "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/odata-service-inquirer": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/store": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
+        "dotenv": "16.3.1",
+        "hasbin": "1.2.3",
+        "i18next": "25.3.0",
+        "yeoman-generator": "5.10.0"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "9.0.13",
+        "@types/hasbin": "1.2.2",
+        "@types/inquirer": "8.2.6",
+        "@types/js-yaml": "4.0.9",
+        "@types/mem-fs-editor": "7.0.1",
+        "@types/yeoman-generator": "5.2.11",
+        "@types/yeoman-test": "4.0.6",
+        "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
+        "@sap-ux/cf-deploy-config-inquirer": "workspace:*",
+        "@sap-ux/cf-deploy-config-writer": "workspace:*",
+        "@sap-ux/fiori-app-sub-generator": "workspace:*",
+        "@sap-ux/jest-file-matchers": "workspace:*",
+        "@sap/mta-lib": "1.7.4",
+        "fs-extra": "10.0.0",
+        "js-yaml": "4.1.0",
+        "memfs": "3.4.13",
+        "rimraf": "5.0.5",
+        "unionfs": "4.4.0",
+        "yeoman-test": "6.3.0"
+    },
+    "engines": {
+        "node": ">=20.x"
+    }
+}

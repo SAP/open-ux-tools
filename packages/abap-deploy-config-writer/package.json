@@ -6,7 +6,7 @@
         "url": "https://github.com/SAP/open-ux-tools.git",
         "directory": "packages/abap-deploy-config-writer"
     },
-    "version": "0.0.26",
+    "version": "0.2.0",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -28,10 +28,9 @@
         "!dist/**/*.map"
     ],
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     },
     "dependencies": {
-        "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",

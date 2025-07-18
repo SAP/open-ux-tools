@@ -1,7 +1,7 @@
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
 import type { MiddlewareParameters } from '@ui5/server';
-import { FlpSandbox, initAdp } from '../base/flp';
+import { type EnhancedRouter, FlpSandbox, initAdp } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
 import { getPreviewPaths, sanitizeConfig } from '../base/config';
 
@@ -18,9 +18,9 @@ import { getPreviewPaths, sanitizeConfig } from '../base/config';
 async function createRouter(
     { resources, options, middlewareUtil }: MiddlewareParameters<MiddlewareConfig>,
     logger: ToolsLogger
-) {
+): Promise<EnhancedRouter> {
     // setting defaults
-    const config = options.configuration ?? {};
+    const config = (options.configuration as MiddlewareConfig) ?? {};
     config.flp ??= {};
     sanitizeConfig(config, logger);
 
@@ -30,6 +30,7 @@ async function createRouter(
     if (config.adp) {
         await initAdp(resources.rootProject, config.adp, flp, middlewareUtil, logger);
     } else {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const manifest = await resources.rootProject.byPath('/manifest.json');
         if (manifest) {
             await flp.init(JSON.parse(await manifest.getString()));
@@ -38,7 +39,7 @@ async function createRouter(
         }
     }
     // add exposed endpoints for cds-plugin-ui5
-    flp.router.getAppPages = () => getPreviewPaths(config).map(({ path }) => path);
+    flp.router.getAppPages = (): string[] => getPreviewPaths(config).map(({ path }) => path);
     return flp.router;
 }
 

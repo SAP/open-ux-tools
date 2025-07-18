@@ -1,0 +1,15 @@
+{
+    "project": {
+        "targetFolder": "./test-output"
+    },
+    "service": {},
+    "deployConfig": {
+        "deployTarget": "ABAP",
+        "url": "https://example.abap.backend:44300",
+        "client": "100",
+        "ui5AbapRepo": "ZTESTREPO",
+        "description": "Testing headless ABAP deployment",
+        "package": "ZPKG12",
+        "transport": "TR123"
+    }
+}

@@ -1,0 +1,8 @@
+<core:FragmentDefinition xmlns:core="sap.ui.core" xmlns="sap.m" xmlns:table="sap.ui.mdc.table">
+    <table:Column
+        id="<%- ids.column %>"
+        width="10%"
+        header="New Column">
+        <Text id="<%- ids.text %>" text="Sample data"/>
+    </table:Column>
+</core:FragmentDefinition>

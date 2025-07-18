@@ -1,13 +1,20 @@
-import * as mockI18next from 'i18next';
-import { initI18n, t } from '../../src/i18n';
+import { initI18n, t, i18n } from '../../src/i18n';
 
-jest.mock('i18next');
+jest.mock('i18next', () => {
+    const instance = {
+        init: jest.fn(),
+        t: jest.fn(),
+        addResourceBundle: jest.fn()
+    };
+    return {
+        createInstance: () => instance
+    };
+});
 
 describe('i18n', () => {
     test('initI18n', async () => {
-        const initSpy = jest.spyOn(mockI18next, 'init');
         await initI18n();
-        expect(initSpy).toHaveBeenCalledWith({
+        expect(i18n.init).toHaveBeenCalledWith({
             resources: {
                 en: expect.anything()
             },
@@ -19,8 +26,7 @@ describe('i18n', () => {
     });
 
     test('t', async () => {
-        const tSpy = jest.spyOn(mockI18next, 't');
         t('test');
-        expect(tSpy).toHaveBeenCalledWith('test', { ns: 'adp-tooling' });
+        expect(i18n.t).toHaveBeenCalledWith('test', { ns: 'adp-tooling' });
     });
 });

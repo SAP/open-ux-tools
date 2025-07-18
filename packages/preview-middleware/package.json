@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Apreview-middleware"
     },
-    "version": "0.16.34",
+    "version": "0.20.65",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -17,7 +17,7 @@
         "start:fixture": "ui5 serve --config test/fixtures/simple-app/ui5.yaml",
         "build": "npm-run-all -l -p build:middleware build:client",
         "build:middleware": "tsc --build",
-        "build:client": "pnpm -C ../preview-middleware-client run build && copyfiles --exclude **/*-dbg.js --up 4 \"./node_modules/@private/preview-middleware-client/dist/**/*\" \"./dist/client\"",
+        "build:client": "pnpm -C ../preview-middleware-client run build:component && copyfiles --exclude **/*-dbg.js --up 4 \"./node_modules/@private/preview-middleware-client/dist/**/*\" \"./dist/client\"",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo playwright-report",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
@@ -40,39 +40,43 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/logger": "workspace:*",
-        "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/adp-tooling": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/control-property-editor-sources": "workspace:@sap-ux/control-property-editor@*",
+        "@sap-ux/feature-toggle": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/system-access": "workspace:*",
         "ejs": "3.1.10",
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
-        "@sap-ux/project-access": "workspace:*"
+        "mem-fs-editor": "9.4.0"
     },
     "devDependencies": {
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",
+        "@sap-ux-private/playwright": "0.2.0",
         "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/i18n": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
+        "@types/connect": "^3.4.38",
         "@types/ejs": "3.1.2",
         "@types/express": "4.17.21",
-        "@types/prompts": "2.4.4",
-        "@types/supertest": "2.0.12",
-        "copyfiles": "2.4.1",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "express": "4.19.2",
-        "npm-run-all2": "6.2.0",
-        "nock": "13.4.0",
-        "supertest": "6.3.3",
-        "@sap-ux-private/playwright": "0.1.0",
+        "@types/prompts": "2.4.4",
+        "@types/supertest": "2.0.12",
+        "connect": "^3.7.0",
+        "copyfiles": "2.4.1",
         "dotenv": "16.3.1",
-        "@sap-ux/i18n": "workspace:*"
+        "express": "4.21.2",
+        "nock": "13.4.0",
+        "npm-run-all2": "6.2.0",
+        "supertest": "6.3.3"
     },
     "peerDependencies": {
         "express": "4"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }

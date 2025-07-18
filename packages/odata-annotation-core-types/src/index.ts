@@ -12,6 +12,7 @@ export {
     Path,
     ODataVersionType,
     MetadataServiceOptions,
+    EnumValue,
     MetadataElementVisitor,
     MetadataElement,
     MetadataElementProperties

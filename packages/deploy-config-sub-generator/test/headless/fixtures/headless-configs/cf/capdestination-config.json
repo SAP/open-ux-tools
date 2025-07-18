@@ -1,0 +1,13 @@
+{
+  "version": "0.2",
+  "project": {
+    "targetFolder": "./test-output",
+    "name": "feproject-ui"
+  },
+  "deployConfig": {
+    "deployTarget": "CF",
+    "destinationName": "fiori-default-srv-api",
+    "addToManagedAppRouter": true,
+    "addMTADestination": true
+  }
+}

@@ -24,7 +24,7 @@ export async function readUi5DeployConfigTarget(basePath: string): Promise<Targe
     const ui5DeployYaml = await readUi5Yaml(basePath, FileName.UI5DeployYaml);
     const customTask = ui5DeployYaml.findCustomTask<AbapDeployConfig>(DeployConfig.DeployToAbap);
     if (!customTask?.configuration?.target) {
-        throw Error(t('error.noTarget', { file: `(${FileName.UI5DeployYaml})` }));
+        throw Error(t('error.noTarget', { file: `${FileName.UI5DeployYaml}` }));
     }
     const { target, ignoreCertError } = customTask?.configuration || {};
     return { target, ignoreCertErrors: ignoreCertError };

@@ -1,0 +1,83 @@
+{
+    "name": "@sap-ux/generator-adp",
+    "displayName": "SAPUI5 Adaptation Project",
+    "homepage": "https://help.sap.com/viewer/584e0bcbfd4a4aff91c815cefa0bce2d/Cloud/en-US/ada9567b767941aba8d49fdb4fdedea7.html",
+    "description": "Adaptation project allows you to create an app variant for an existing SAP Fiori elements-based or SAPUI5 freestyle application, without changing the original application.",
+    "version": "0.3.48",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/generator-adp"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
+    },
+    "license": "Apache-2.0",
+    "main": "generators/app/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
+        "watch": "tsc --watch",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "generators",
+        "yeoman.png",
+        "!generators/*.map",
+        "!generators/**/*.map"
+    ],
+    "keywords": [
+        "yeoman-generator"
+    ],
+    "dependencies": {
+        "@sap-devx/yeoman-ui-types": "1.16.9",
+        "@sap-devx/feature-toggle-node": "2.0.3",
+        "@sap-ux/adp-tooling": "workspace:*",
+        "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/feature-toggle": "workspace:*",
+        "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/store": "workspace:*",
+        "@sap-ux/system-access": "workspace:*",
+        "@sap-ux/project-input-validator": "workspace:*",
+        "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-ux/adp-flp-config-sub-generator": "workspace:*",
+        "@sap-ux/odata-service-writer": "workspace:*",
+        "i18next": "25.3.0",
+        "yeoman-generator": "5.10.0",
+        "uuid": "10.0.0"
+    },
+    "devDependencies": {
+        "@jest/types": "29.6.3",
+        "@types/fs-extra": "9.0.13",
+        "@types/inquirer": "8.2.6",
+        "@types/vscode": "1.73.1",
+        "@sap-ux/deploy-config-sub-generator": "workspace:*",
+        "@types/yeoman-environment": "2.10.11",
+        "@types/yeoman-generator": "5.2.11",
+        "@types/yeoman-test": "4.0.6",
+        "@types/uuid": "10.0.0",
+        "@vscode-logging/logger": "2.0.0",
+        "fs-extra": "10.0.0",
+        "rimraf": "5.0.5",
+        "yeoman-test": "6.3.0"
+    },
+    "engines": {
+        "node": ">=20.x"
+    },
+    "generator-filter": {
+        "types": [
+            "adaptation-project",
+            "project",
+            "tools-suite"
+        ]
+    }
+}

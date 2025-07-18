@@ -17,7 +17,7 @@ export const convertCamelCaseToPascalCase = (text: string): string => {
     const words = [];
     let word = '';
     let lookForUpperCase = true;
-    for (let i = 0; i < text.length; i++) {
+    for (let i = 0; i < (text ?? '').length; i++) {
         const character = text[i];
         if (lookForUpperCase) {
             // make sure that the first letter is capitalized

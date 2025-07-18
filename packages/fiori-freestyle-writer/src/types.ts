@@ -1,11 +1,14 @@
-import type { Ui5App, App } from '@sap-ux/ui5-application-writer';
+import type { Ui5App, App, AppOptions } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
+import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 
-export enum TemplateType {
-    Basic = 'basic',
-    Worklist = 'worklist',
-    ListDetail = 'listdetail'
-}
+export const TemplateType = {
+    Basic: 'basic',
+    Worklist: 'worklist',
+    ListDetail: 'listdetail'
+} as const;
+
+export type TemplateType = (typeof TemplateType)[keyof typeof TemplateType];
 
 interface Entity {
     name: string;
@@ -36,19 +39,18 @@ export interface FioriApp extends App {
 }
 export interface FreestyleApp<T> extends Ui5App {
     template: Template<T>;
-    service?: OdataService;
+    service?: OdataService & {
+        capService?: CapServiceCdsInfo;
+    };
     app: FioriApp;
+    appOptions?: Partial<AppOptions> & {
+        /**
+         * Generate OPA based tests, for Simple template.
+         * This will eventually move up to {@link Ui5App.appOptions}
+         */
+        addTests?: boolean;
+    };
 }
 
 // We need this for the service version
 export { OdataVersion } from '@sap-ux/odata-service-writer';
-
-/**
-Represents a set of scripts defined in a package.json file.
- */
-export interface PackageJsonScripts {
-    start: string;
-    'start-local': string;
-    'start-noflp'?: string;
-    'start-mock'?: string;
-}

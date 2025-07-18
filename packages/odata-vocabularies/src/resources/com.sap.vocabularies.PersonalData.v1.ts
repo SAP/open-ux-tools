@@ -1,4 +1,4 @@
-// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
+// Last content update: Sat Jun 14 2025 13:41:16 GMT+0200 (Mitteleuropäische Sommerzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -135,9 +135,10 @@ export default {
                 {
                     '@com.sap.vocabularies.Common.v1.Experimental': true,
                     'Value': 'PurposeID',
-                    '@Org.OData.Core.V1.Description': 'The unique identifier for the purpose of a consent',
+                    '@Org.OData.Core.V1.Description':
+                        'The unique identifier for the purpose of a processing of personal data',
                     '@Org.OData.Core.V1.LongDescription':
-                        'The purpose of a consent is the information that specifies the reason and the goal for\n                the processing of a specific set of personal data. As a rule, the purpose\n                references the relevant legal basis for the processing of personal data.'
+                        'Any processing of personal data is based on specified, explicit, and legitimate purposes, and data are not further processed in a manner that is incompatible with those purposes. The purposes are defined by the data controller or joint data controllers.\n                '
                 },
                 {
                     'Value': 'ContractRelatedID',
@@ -147,11 +148,16 @@ export default {
                         'Examples:\n\n                - Sales Contract ID\n\n                - Purchase Contract ID\n\n                - Service Contract ID\n                '
                 },
                 {
-                    '@com.sap.vocabularies.Common.v1.Experimental': true,
                     'Value': 'LegalEntityID',
                     '@Org.OData.Core.V1.Description': 'The unique identifier of a legal entity',
                     '@Org.OData.Core.V1.LongDescription':
-                        'A legal entity is a corporation, an association, or any other organization of legal capacity, which has statutory rights and responsibilities.'
+                        'A legal entity is a corporation, an association, or any other organization of legal capacity, which has statutory rights and responsibilities.',
+                    '@Org.OData.Core.V1.Revisions': [
+                        {
+                            'Kind': 'Deprecated',
+                            'Description': 'Deprecated in favor of [`DataControllerID`](#DataControllerID)'
+                        }
+                    ]
                 },
                 {
                     '@com.sap.vocabularies.Common.v1.Experimental': true,
@@ -167,6 +173,28 @@ export default {
                         'Defines the end of active business and the start of residence time and retention period',
                     '@Org.OData.Core.V1.LongDescription':
                         'End of business is the point in time when the processing of a set of personal data is no longer required for the active business,\n                for example, when a contract is fulfilled. After this has been reached and a customer-defined residence period has passed, the data is blocked and can only be accessed\n                by users with special authorizations (for example, tax auditors).\n                All fields of type `Edm.Date` or `Edm.DateTimeOffset` on which the end of business determination depends should be annotated.'
+                },
+                {
+                    '@com.sap.vocabularies.Common.v1.Experimental': true,
+                    'Value': 'DataControllerID',
+                    '@Org.OData.Core.V1.Description': 'The unique identifier of a data controller',
+                    '@Org.OData.Core.V1.LongDescription':
+                        'The unique identifier of a legal entity which alone or jointly with others determines the purposes and means of the processing of personal data. \n                The Data Controller is fully responsible (and accountable) that data protection and privacy principles (such as purpose limitation or data minimization), defined in the European General Data Protection Regulation (GDPR) or any other data protection legislation, are adhered to when processing personal data. The DataControllerID succeeds the LegalEntityID.'
+                },
+                {
+                    '@com.sap.vocabularies.Common.v1.Experimental': true,
+                    'Value': 'BlockingDate',
+                    '@Org.OData.Core.V1.Description':
+                        'Defines a date that marks when the provider of the data will block these',
+                    '@Org.OData.Core.V1.LongDescription':
+                        'Defines a date that marks when the provider of the data will block these. This is the point in time when the processing of a set of personal data is no longer required for the active business, for example, when a contract is fulfilled. After it has been reached, the data is blocked in the source and can only be displayed by users with special authorizations (for example, tax auditors); however, it is not allowed to create/change/copy/follow-up blocked data. Consumers of the data should consider if there is an additional purpose to process the data beyond the defined blocking date.'
+                },
+                {
+                    '@com.sap.vocabularies.Common.v1.Experimental': true,
+                    'Value': 'EndOfRetentionDate',
+                    '@Org.OData.Core.V1.Description': 'Defines the date when the provider destroys the data',
+                    '@Org.OData.Core.V1.LongDescription':
+                        'Defines a date that marks when the provider of the data can destroy these. Consumers of the data should consider if there is an additional purpose (or a legal hold) to process the data beyond the defined destruction date.'
                 }
             ]
         },
@@ -177,7 +205,7 @@ export default {
             '$AppliesTo': ['Property'],
             '@Org.OData.Core.V1.Description': 'Property contains potentially personal data',
             '@Org.OData.Core.V1.LongDescription':
-                'Personal data is information relating to an identified or identifiable natural person (data subject).\n\nNote: properties annotated with [`FieldSemantics`](#FieldSemantics) need not be additionally annotated with this term.\n\nSee also: [What is personal data?](https://ec.europa.eu/info/law/law-topic/data-protection/reform/what-personal-data_en)'
+                'Personal data describes any information which is related to an identified or identifiable natural person (data subject). An identifiable person is one who can be identified, directly or indirectly, in particular by a reference to an identifier such as a name, an identification number, location data, an online identifier, or to one or more factors specific to the physical, physiological, genetic, mental, economic, cultural, or social identity of that natural person. Note: properties annotated with [`FieldSemantics`](#FieldSemantics) need not be additionally annotated with this term.\n          '
         },
         'IsPotentiallySensitive': {
             '$Kind': 'Term',
@@ -186,7 +214,7 @@ export default {
             '$AppliesTo': ['Property'],
             '@Org.OData.Core.V1.Description': 'Property contains potentially sensitive personal data',
             '@Org.OData.Core.V1.LongDescription':
-                'Sensitive data is a colloquial term usually including the following data:\n-  Special categories of personal data such as data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, or trade union membership, and the processing of genetic data, biometric data, data concerning health or sex life or sexual orientation\n-  Personal data subject to professional secrecy\n-  Personal data relating to criminal or administrative offences\n-  Personal data concerning bank or credit card accounts\n\nSee also: [What personal data is considered sensitive?](https://ec.europa.eu/info/law/law-topic/data-protection/reform/rules-business-and-organisations/legal-grounds-processing-data/sensitive-data/what-personal-data-considered-sensitive_en)'
+                'Sensitive personal data is a category of personal data that needs special handling. The determination which personal data is sensitive may differ for different legal areas or industries. Examples of sensitive personal data:\n                      - Special categories of personal data, such as data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, genetic data, biometric data, data concerning health or sex life or sexual orientation.\n                      - Personal data subject to professional secrecy. \n                      - Personal data relating to criminal or administrative offences.\n                      - Personal data concerning insurances and bank or credit card accounts.\n          '
         }
     }
 } as CSDL;

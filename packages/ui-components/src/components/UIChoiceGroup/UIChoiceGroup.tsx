@@ -3,13 +3,17 @@ import type {
     IChoiceGroupOption,
     IChoiceGroupProps,
     IChoiceGroupStyles,
-    IChoiceGroupOptionProps
+    IChoiceGroupOptionProps,
+    IChoiceGroup
 } from '@fluentui/react';
 import { ChoiceGroup } from '@fluentui/react';
 import { labelGlobalStyle } from '../UILabel';
+import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 export type ChoiceGroupOption = IChoiceGroupOption;
 export type ChoiceGroupOptionProps = IChoiceGroupOptionProps;
+
+export { IChoiceGroup };
 
 export interface ChoiceGroupProps extends IChoiceGroupProps {
     // Render each radio option
@@ -19,7 +23,6 @@ export interface ChoiceGroupProps extends IChoiceGroupProps {
 // Reusable styles
 const UI_CHOICE_GROUP_LABEL_STYLE = {
     fontSize: 13,
-    family: 'var(--vscode-font-family)',
     disableOpacity: 0.4
 };
 const UI_CHOICE_GROUP_STYLES = {
@@ -162,7 +165,7 @@ export class UIChoiceGroup extends React.Component<ChoiceGroupProps, {}> {
                 ...(this.props.required && {
                     selectors: {
                         '::after': {
-                            content: `' *'`,
+                            content: REQUIRED_LABEL_INDICATOR,
                             color: 'var(--vscode-inputValidation-errorBorder)',
                             paddingRight: 12
                         }

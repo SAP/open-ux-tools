@@ -30,7 +30,6 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
             ...{
                 root: [
                     {
-                        fontFamily: 'var(--vscode-font-family)',
                         fontSize: 13,
                         backgroundColor: 'var(--vscode-input-background)',
                         border: '1px solid var(--vscode-editorWidget-border)',
@@ -55,7 +54,7 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
                     },
                     props.disabled && {
                         color: 'var(--vscode-input-foreground)',
-                        opacity: 0.2,
+                        opacity: 0.4,
                         backgroundColor: 'var(--vscode-input-background)',
                         borderColor: 'var(--vscode-input-background)',
                         borderRadius: COMMON_INPUT_STYLES.borderRadius,

@@ -23,6 +23,7 @@
         }
     }
     .ui-toolbar__content {
+        border-bottom: 1px solid var(--vscode-widget-border);
         justify-content: space-between;
         background-color: inherit;
         flex-wrap: nowrap;

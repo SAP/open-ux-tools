@@ -6,6 +6,7 @@ import AutocompletePrompt from 'inquirer-autocomplete-prompt';
 import type { InquirerAdapter, UI5ApplicationAnswers, UI5ApplicationPromptOptions } from '../../src';
 import { getPrompts, prompt, promptNames } from '../../src';
 import * as ui5AppPrompts from '../../src/prompts';
+import { gte, lt } from 'semver';
 
 /**
  * Workaround to allow spyOn
@@ -163,15 +164,7 @@ describe('ui5-application-inquirer API', () => {
                 hide: true
             },
             [promptNames.enableTypeScript]: {
-                default: (answers) => {
-                    if (answers.capCdsInfo?.hasCdsUi5Plugin) {
-                        return true;
-                    }
-                    return false;
-                }
-            },
-            [promptNames.enableNPMWorkspaces]: {
-                advancedOption: true
+                default: true
             },
             [promptNames.enableCodeAssist]: {
                 advancedOption: true,
@@ -189,7 +182,6 @@ describe('ui5-application-inquirer API', () => {
         expect(answers).toEqual({
             description: 'No annotations',
             enableCodeAssist: true,
-            enableNPMWorkspaces: false,
             enableTypeScript: true,
             name: 'a prompt answer',
             skipAnnotations: true,
@@ -207,8 +199,7 @@ describe('ui5-application-inquirer API', () => {
         expect(answers).toEqual({
             description: 'Annotations inc.',
             enableCodeAssist: false,
-            enableNPMWorkspaces: false,
-            enableTypeScript: false,
+            enableTypeScript: true,
             skipAnnotations: false,
             ui5Theme: 'sap_fiori_3',
             ui5Version: '1.64.0'
@@ -237,5 +228,62 @@ describe('ui5-application-inquirer API', () => {
         await prompt(mockInquirerAdapter, promptOpts, mockCdsInfo, true);
 
         expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, promptOpts, mockCdsInfo, true);
+    });
+});
+
+describe('Filtering UI5 themes based on UI5 version', () => {
+    const versionsToTest = ['1.146.0', '1.136.0', '1.135.0', '1.133.0', '1.120.0', '1.119.0', '1.118.0'];
+
+    // Helper function to return the expected choices for each version
+    function getExpectedChoices(version: string) {
+        const commonChoices = [
+            { name: 'Quartz Light', value: 'sap_fiori_3' },
+            { name: 'Quartz Dark', value: 'sap_fiori_3_dark' },
+            { name: 'Morning Horizon', value: 'sap_horizon' },
+            { name: 'Evening Horizon', value: 'sap_horizon_dark' }
+        ];
+
+        if (gte(version, '1.136.0')) {
+            return commonChoices;
+        } else if (gte(version, '1.120.0') && lt(version, '1.136.0')) {
+            return [{ name: 'Belize (deprecated)', value: 'sap_belize' }, ...commonChoices];
+        } else if (lt(version, '1.120.0')) {
+            return [{ name: 'Belize', value: 'sap_belize' }, ...commonChoices];
+        }
+        return [];
+    }
+
+    test.each(versionsToTest)('should call getUi5Themes with correct ui5Version: %s', async (version) => {
+        jest.restoreAllMocks();
+        const getUi5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes');
+        const getUI5VersionsSpy = jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue([{ version }]);
+        const promptOpts: UI5ApplicationPromptOptions = {
+            [promptNames.ui5Version]: {
+                validate: (answers: UI5ApplicationAnswers) => answers.name === version,
+                default: version
+            },
+            [promptNames.skipAnnotations]: {
+                advancedOption: true
+            },
+            [promptNames.description]: {
+                hide: true
+            },
+            [promptNames.ui5Theme]: {
+                additionalMessages: () => ({
+                    message: 'You must enter something',
+                    severity: Severity.warning
+                })
+            }
+        };
+
+        const questions = await getPrompts(promptOpts);
+        const ui5ThemeQuestion = questions.find((q) => q.name === promptNames.ui5Theme);
+        const choices = await (ui5ThemeQuestion as any)?.choices({ ui5Version: version });
+
+        const expectedChoices = getExpectedChoices(version);
+
+        expect(getUi5ThemesSpy).toHaveBeenCalledWith(version);
+        expect(choices.length).toBeGreaterThan(0);
+        expect(choices).toEqual(expectedChoices);
     });
 });

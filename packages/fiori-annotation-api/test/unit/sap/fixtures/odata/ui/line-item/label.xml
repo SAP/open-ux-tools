@@ -1,0 +1,9 @@
+<Annotation Term="UI.LineItem">
+    <Collection>
+        <Record Type="UI.DataField">
+            <PropertyValue Property="Value" Path="path" />
+            <PropertyValue Property="Label" String="label" />
+        </Record>
+    </Collection>
+</Annotation>
+<!-- To get the correct annotation line in test add 7 to the line number of this file -->

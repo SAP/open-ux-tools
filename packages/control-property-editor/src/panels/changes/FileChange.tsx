@@ -12,16 +12,20 @@ interface FileChangeProps {
 /**
  * React element for Other change.
  *
- * @param FileChangeProps FileChangeProps
- * @param FileChangeProps.hasUnsavedChanges
+ * @param FileChangeProps - FileChangeProps.
+ * @param FileChangeProps.hasUnsavedChanges - Flag if there are unsaved changes.
  * @returns ReactElement
  */
 export function FileChange({ hasUnsavedChanges }: Readonly<FileChangeProps>): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
-    function handleSaveAndReload() {
-        dispatch(reloadApplication()); // dispatch your action here
+    function handleSaveAndReload(): void {
+        dispatch(
+            reloadApplication({
+                save: hasUnsavedChanges
+            })
+        );
     }
 
     return (

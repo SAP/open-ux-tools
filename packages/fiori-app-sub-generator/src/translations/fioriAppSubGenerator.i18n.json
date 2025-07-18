@@ -1,0 +1,119 @@
+{
+    "floorplans": {
+        "label": {
+            "basic": "Basic{{odataVersion, odataVersionFormatter}}",
+            "fpm": "Custom Page{{odataVersion, odataVersionFormatter}}",
+            "lrop": "List Report Page{{odataVersion, odataVersionFormatter}}",
+            "worklist": "Worklist Page{{odataVersion, odataVersionFormatter}}",
+            "alp": "Analytical List Page{{odataVersion, odataVersionFormatter}}",
+            "ovp": "Overview Page{{odataVersion, odataVersionFormatter}}",
+            "feop": "Form Entry Object Page{{odataVersion, odataVersionFormatter}}"
+        },
+        "description": {
+            "basic": "Create a freestyle application, starting with an empty page.",
+            "fpm": "Create an SAP Fiori elements application containing a custom page based on the flexible programming model.",
+            "lrop": "Create an SAP Fiori elements application containing a list report and an object page.",
+            "worklist": "Create an SAP Fiori elements application containing a worklist and an object page.",
+            "alp": "Create an SAP Fiori elements application containing an analytical list and an object page.",
+            "ovp": "Create an SAP Fiori elements application containing an overview page.",
+            "feop": "Create an SAP Fiori elements application containing an object page optimized for data entry."
+        }
+    },
+    "defaults": {
+        "projectName": "project{{defaultProjectNumber}}",
+        "projectTitle": "Application Title",
+        "projectDescription": "An SAP Fiori application."
+    },
+    "readme": {
+        "label": {
+            "mainEntity": "Main Entity",
+            "filterEntityType": "Filter Entity Type",
+            "navigationEntity": "Navigation Entity",
+            "sapSystemType": {
+                "abapOnBtp": "ABAP Environment on SAP Business Technology Platform",
+                "s4hc": "SAP S/4HANA Cloud Environment",
+                "onPrem": "ABAP On-Premise"
+            },
+            "datasourceType": {
+                "sapSystem": "SAP System",
+                "buinessHub": "SAP Business Accelerator Hub",
+                "apiBusinessHubEnterprise": "SAP API Business Hub Enterprise",
+                "capProject": "Local CAP",
+                "odataServiceUrl": "OData URL",
+                "none": "None",
+                "metadataFile": "File",
+                "projectSpecificDestination": "MTA File"
+            }
+        },
+        "texts": {
+            "runInstruction": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+        }
+    },
+    "texts": {
+        "notApplicable": "N/A"
+    },
+    "steps": {
+        "templateSelection": {
+            "description": "Choose your application template.",
+            "title": "Template Selection"
+        },
+        "datasourceAndServiceSelection": {
+            "description": "Configure the data source and select a service.",
+            "title": "Data Source and Service Selection"
+        },
+        "entityOrViewConfig": {
+            "description": "Configure the selected service.",
+            "title": "Entity Selection"
+        },
+        "projectAttributesConfig": {
+            "description": "Configure the main project attributes.",
+            "title": "Project Attributes"
+        },
+        "deployConfig": {
+            "description": "Configure deployment settings.",
+            "title": "Deployment Configuration"
+        },
+        "flpConfig": {
+            "description": "Configure SAP Fiori launchpad settings {{appFolderName}}.",
+            "title": "SAP Fiori Launchpad Configuration"
+        }
+    },
+    "logMessages": {
+        "installingDependencies": "Installing dependencies to package path: {{- path}}...",
+        "dependenciesInstalled": "Project dependencies installed in {{installTime}} seconds.",
+        "errorInstallingDependencies": "An unknown error occurred when installing the project dependencies.",
+        "commandFailedWithError": "{{command}} failed with error code: {{errorCode}}.",
+        "commandErrorCodeWithStack": "Error code: {{errorCode}} returned from {{command}}. {{stack}}",
+        "applicationGenerationSuccess": "The application has been generated and is available at {{- targetFolder}}",
+        "copyingTemplateFiles": "Copying {{templateName}} template files...",
+        "generatingAppWithVersion": "Generating application with {{- generatorName}} {{generatorVersion}}",
+        "warningCachingNotSupported": "Warning: caching is not supported.",
+        "attemptingToExecutePostGenerationCommand": "Attempting to execute command after app generation: {{- command}}",
+        "installSkippedOptionSpecified": "Option `--skipInstall` was specified. Installation of dependencies will be skipped.",
+        "generatorExiting": "Application generation exiting due to error: {{error}}"
+    },
+    "error": {
+        "fatalError": "An error has occurred, please restart the generator.",
+        "errorWritingApplicationFiles": "An error occurred writing application files.",
+        "appConfigVersion": "The application config version must match a supported version: {{versions}}.",
+        "appConfigUnparseableEdmx": "Application config property: edmx cannot be parsed.",
+        "appConfigMissingRequiredProperty": "The application config is missing a required property: {{propertyName}}.",
+        "edmxNotFound": "Edmx metadata is required to continue with generation. Application generation exiting.",
+        "unsupportedPostGenerationEvent": "Unsupported post generation event: {{event}}.",
+        "commandFailed": "Command failed with error.",
+        "invalidYUIStepConfig": "Invalid Yeoman UI step config: First step cannot have a dependency property."
+    },
+    "wizardMessages": {
+        "filesGenerated": "The files have been generated."
+    },
+    "prompts": {
+        "viewName": {
+            "message": "View Name",
+            "validationMessages": {
+                "viewNameRequired": "You must provide a view name to continue.",
+                "viewNameTooLong": "The view name cannot contain more than 120 characters.",
+                "viewNameInvalid": "The view name must start with a letter and may contain letters, digits, dashes, and underscores."
+            }
+        }
+    }
+}

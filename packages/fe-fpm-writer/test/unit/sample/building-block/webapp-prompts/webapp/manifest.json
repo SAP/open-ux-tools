@@ -35,8 +35,9 @@
     },
     "sap.ui5": {
         "dependencies": {
+            "minUI5Version": "1.127.0",
             "libs": {
-                "sap.fe.templates": {}
+                "sap.fe.core": {}
             }
         }
     }

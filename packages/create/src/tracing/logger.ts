@@ -35,8 +35,8 @@ function setCustomFormatter(logger: ToolsLogger): void {
     }
     const consoleTransport = transports.find((t) => t?.name === 'console');
     if (consoleTransport?.format) {
-        consoleTransport.format.transform = (info: any) => {
-            const colorFn = levelColor[info.level] ? chalk.keyword(levelColor[info.level]) : (m: string) => m;
+        consoleTransport.format.transform = (info: any): any => {
+            const colorFn = levelColor[info.level] ? chalk.keyword(levelColor[info.level]) : (m: string): string => m;
             const formattedMessage = colorFn ? colorFn(info.message) : info.message;
             const symbol = Object.getOwnPropertySymbols(info).find((s: any) => s?.description === 'message');
             if (symbol) {
@@ -59,6 +59,6 @@ function updateLogLevel(logLevel: LogLevel): void {
 /**
  * Set the log level to verbose (debug).
  */
-export function setLogLevelVerbose() {
+export function setLogLevelVerbose(): void {
     updateLogLevel(LogLevel.Debug);
 }

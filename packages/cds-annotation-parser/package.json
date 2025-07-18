@@ -1,7 +1,12 @@
 {
     "name": "@sap-ux/cds-annotation-parser",
-    "version": "0.2.0",
+    "version": "0.2.13",
     "description": "Annotation Parser for CDS",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/cds-annotation-parser"
+    },
     "publisher": "SAPSE",
     "author": "SAP SE",
     "license": "Apache-2.0",
@@ -25,10 +30,9 @@
         "@sap-ux/odata-vocabularies": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
         "chevrotain": "7.1.1",
-        "vscode-languageserver-types": "3.17.2"
+        "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
-        "typescript": "5.3.3",
         "npm-run-all2": "6.2.0"
     },
     "files": [

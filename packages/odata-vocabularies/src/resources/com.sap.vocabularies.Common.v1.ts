@@ -1,4 +1,4 @@
-// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
+// Last content update: Sat Jun 14 2025 13:41:16 GMT+0200 (Mitteleuropäische Sommerzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -99,6 +99,19 @@ export default {
             '$Kind': 'Term',
             '@Org.OData.Core.V1.Description': 'A short, human-readable text suitable for tool tips in UIs',
             '@Org.OData.Core.V1.IsLanguageDependent': true
+        },
+        'DocumentationRef': {
+            '$Kind': 'Term',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'A URI referencing language-dependent documentation for the annotated model element',
+            '@Org.OData.Core.V1.Example': {
+                '@odata.type':
+                    'https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml#Core.PrimitiveExampleValue',
+                'Description':
+                    'URN scheme to look up the documentation for an object with given type and id in a given system.\n              This example looks up the documentation for data element /iwbep/account in system G1Y_000.',
+                'Value': 'urn:sap-com:documentation:key?=type=DTEL&id=%2fiwbep%2faccount&origin=G1Y_000'
+            }
         },
         'Text': {
             '$Kind': 'Term',
@@ -226,14 +239,9 @@ export default {
             '$Collection': true,
             '$Type': 'Edm.PropertyPath',
             '$AppliesTo': ['EntityType'],
-            '@Org.OData.Core.V1.Revisions': [
-                {
-                    'Kind': 'Deprecated',
-                    'Description': 'Use term `AlternateKeys` from the OASIS Core vocabulary instead'
-                }
-            ],
-            '@Org.OData.Core.V1.Description':
-                'The listed properties form a secondary key. Multiple secondary keys are possible using different qualifiers.'
+            '@Org.OData.Core.V1.Description': 'The listed properties form a secondary key',
+            '@Org.OData.Core.V1.LongDescription':
+                'Multiple secondary keys are possible using different qualifiers.\n          Unlike [`Core.AlternateKeys`](https://github.com/oasis-tcs/odata-vocabularies/blob/main/vocabularies/Org.OData.Core.V1.md#AlternateKeys),\n          secondary keys need not support addressing an entity in a resource path.'
         },
         'MinOccurs': {
             '$Kind': 'Term',
@@ -267,15 +275,10 @@ export default {
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
             '$AppliesTo': ['Property'],
-            '@Org.OData.Core.V1.Revisions@com.sap.vocabularies.Common.v1.Experimental': true,
-            '@Org.OData.Core.V1.Revisions': [
-                {
-                    'Kind': 'Deprecated',
-                    'Description': 'Use terms `MaskedValue` instead'
-                }
-            ],
             '@Org.OData.Core.V1.Description':
-                'Property contains sensitive data that should by default be masked on a UI and clear-text visible only upon user interaction'
+                'Property contains sensitive data that should by default be masked on a UI and clear-text visible only upon user interaction',
+            '@Org.OData.Core.V1.LongDescription':
+                'This tag affects only the presentation to the user.\n          The data are still transmitted in the response and can hence be observed using browser tools.'
         },
         'MaskedValue': {
             '$Kind': 'Term',
@@ -306,7 +309,7 @@ export default {
         'SemanticObjectMapping': {
             '$Kind': 'Term',
             '$Collection': true,
-            '$Type': 'com.sap.vocabularies.Common.v1.SemanticObjectMappingType',
+            '$Type': 'com.sap.vocabularies.Common.v1.SemanticObjectMappingAbstract',
             '$AppliesTo': ['EntitySet', 'EntityType', 'Property'],
             '$BaseTerm': 'com.sap.vocabularies.Common.v1.SemanticObject',
             '@Org.OData.Core.V1.Description':
@@ -314,17 +317,31 @@ export default {
             '@Org.OData.Core.V1.LongDescription':
                 'This allows "renaming" of properties in the current context to match property names of the Semantic Object, e.g. `SenderPartyID` to `PartyID`. Only properties explicitly listed in the mapping are renamed, all other properties are available for intent-based navigation with their "local" name.'
         },
+        'SemanticObjectMappingAbstract': {
+            '$Kind': 'ComplexType',
+            '$Abstract': true,
+            '@Org.OData.Core.V1.Description':
+                'Maps a property of the Semantic Object to a property of the annotated entity type or a sibling property of the annotated property or a constant value',
+            'SemanticObjectProperty': {
+                '@Org.OData.Core.V1.Description': 'Name of the Semantic Object property'
+            }
+        },
         'SemanticObjectMappingType': {
             '$Kind': 'ComplexType',
-            '@Org.OData.Core.V1.Description':
-                'Maps a property of the annotated entity type or a sibling property of the annotated property to a property of the Semantic Object',
+            '$BaseType': 'com.sap.vocabularies.Common.v1.SemanticObjectMappingAbstract',
             'LocalProperty': {
                 '$Type': 'Edm.PropertyPath',
                 '@Org.OData.Core.V1.Description':
                     'Path to a local property that provides the value for the Semantic Object property'
-            },
-            'SemanticObjectProperty': {
-                '@Org.OData.Core.V1.Description': 'Name of the Semantic Object property'
+            }
+        },
+        'SemanticObjectMappingConstant': {
+            '$Kind': 'ComplexType',
+            '$BaseType': 'com.sap.vocabularies.Common.v1.SemanticObjectMappingAbstract',
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            'Constant': {
+                '$Type': 'Edm.PrimitiveType',
+                '@Org.OData.Core.V1.Description': 'Constant value for the Semantic Object property'
             }
         },
         'SemanticObjectUnavailableActions': {
@@ -1169,6 +1186,15 @@ export default {
             '@Org.OData.Core.V1.Description':
                 'Only one term of the group identified with the Qualifier attribute can be applied'
         },
+        'OperationTemplate': {
+            '$Kind': 'Term',
+            '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
+            '$AppliesTo': ['Term', 'Property'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'Qualified name of an operation that serves as template for the operation described by the annotated term or term property',
+            '@Org.OData.Core.V1.LongDescription': 'Operations named in this annotation cannot themselves be invoked.'
+        },
         'DraftRoot': {
             '$Kind': 'Term',
             '$Type': 'com.sap.vocabularies.Common.v1.DraftRootType',
@@ -1178,56 +1204,105 @@ export default {
         'DraftRootType': {
             '$Kind': 'ComplexType',
             '$BaseType': 'com.sap.vocabularies.Common.v1.DraftNodeType',
+            'PreparationAction': {
+                '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Action that prepares a draft document for later activation',
+                '@Org.OData.Core.V1.LongDescription':
+                    'The action is bound to the draft document root and has no parameters.'
+            },
             'ActivationAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
-                '@Org.OData.Core.V1.Description': 'Action that activates a draft document'
+                '@Org.OData.Core.V1.Description': 'Action that activates a draft document',
+                '@Org.OData.Core.V1.LongDescription':
+                    'The action is bound to the draft document root and has no parameters.'
             },
             'DiscardAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
                 '$Nullable': true,
-                '@com.sap.vocabularies.Common.v1.Experimental': true,
-                '@Org.OData.Core.V1.Description': 'Action that discards a draft document'
+                '@Org.OData.Core.V1.Description': 'Action that discards a draft document',
+                '@Org.OData.Core.V1.LongDescription':
+                    'The action is bound to the draft document root and has no parameters.'
             },
             'EditAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
                 '$Nullable': true,
-                '@Org.OData.Core.V1.Description': 'Action that creates an edit draft'
+                '@com.sap.vocabularies.Common.v1.OperationTemplate':
+                    'com.sap.vocabularies.Common.v1.Template_EditAction',
+                '@Org.OData.Core.V1.Description': 'Action that creates an edit draft',
+                '@Org.OData.Core.V1.LongDescription':
+                    'The action is bound to the active document root node and has the signature of [`Template_EditAction`](#Template_EditAction).'
+            },
+            'ResumeAction': {
+                '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
+                '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description':
+                    'Action that resumes a draft document. The action re-acquires the exclusive lock if needed and checks if the related active document was not changed concurrently',
+                '@Org.OData.Core.V1.LongDescription':
+                    'The action is bound to the draft document root and has no parameters.'
             },
             'NewAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
                 '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.OperationTemplate':
+                    'com.sap.vocabularies.Common.v1.Template_NewAction',
                 '@Org.OData.Core.V1.Description': 'Action that creates a new draft',
                 '@Org.OData.Core.V1.LongDescription':
-                    'New drafts may also be created by POSTing an empty entity without any properties to the entity set.'
+                    'The action is bound to the draft document root entity set and has the signature of [`Template_NewAction`](#Template_NewAction).\n\nNew drafts may also be created by POSTing an entity with property `IsActiveEntity` = `false` (default) to the entity set.'
             },
             'AdditionalNewActions': {
                 '$Collection': true,
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
-                '@com.sap.vocabularies.Common.v1.Experimental': true,
-                '@Org.OData.Core.V1.Description': 'Additional actions that create a new draft',
+                '@com.sap.vocabularies.Common.v1.OperationTemplate':
+                    'com.sap.vocabularies.Common.v1.Template_NewAction',
+                '@Org.OData.Core.V1.Description':
+                    'Additional actions beside the default POST or standard `NewAction`that create a new draft',
                 '@Org.OData.Core.V1.LongDescription':
-                    'Additional actions beside the default POST or standard `NewAction` that create a new draft.'
+                    'The actions are bound to the draft document root entity set and have the signature of [`Template_NewAction`](#Template_NewAction).'
             },
             'ShareAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
                 '$Nullable': true,
-                '@Org.OData.Core.V1.Description': 'Action that shares a draft document with other users',
+                '@com.sap.vocabularies.Common.v1.OperationTemplate':
+                    'com.sap.vocabularies.Common.v1.Template_ShareAction',
+                '@Org.OData.Core.V1.Description':
+                    'Action that shares a draft document with other users and restricts access to the listed users in their specified roles',
                 '@Org.OData.Core.V1.LongDescription':
-                    'The action is bound to the draft document root node and has the following signature:\n\n            - `Users`: collection of structure with properties\n\n              - `UserID` of type `String` and\n\n              - `UserAccessRole` of type `String` with possible values `O` (owner, can perform all draft actions), and `E` (editor, can change the draft)\n\n            It restricts access to the listed users in their specified roles.'
+                    'The action is bound to the draft document root node and has the signature of [`Template_ShareAction`](#Template_ShareAction).\nIt restricts access to the listed users in their specified roles.\n\nIf this action is present, the client can receive notifications about changes to the\ncollaborative draft by opening a web socket connection at the [`WebSocketBaseURL`](#WebSocketBaseURL)\nfollowed by URL parameters\n- `relatedService` = base URL (relative to server root) of the OData service of the app\n- `draft` = draft UUID.'
             }
         },
         'DraftNode': {
             '$Kind': 'Term',
             '$Type': 'com.sap.vocabularies.Common.v1.DraftNodeType',
             '$AppliesTo': ['EntitySet'],
+            '@Org.OData.Core.V1.Revisions': [
+                {
+                    'Kind': 'Deprecated',
+                    'Description': 'Draft nodes are marked with [`DraftActivationVia`](#DraftActivationVia)'
+                }
+            ],
             '@Org.OData.Core.V1.Description':
                 'Entities in this set are parts of business documents that support the draft pattern'
         },
         'DraftNodeType': {
             '$Kind': 'ComplexType',
+            '@Org.OData.Core.V1.Revisions': [
+                {
+                    'Kind': 'Deprecated',
+                    'Description':
+                        'The deprecated term [`DraftNode`](#DraftNode) effectively only tags the entity set, its value is an empty record'
+                }
+            ],
             'PreparationAction': {
                 '$Type': 'com.sap.vocabularies.Common.v1.QualifiedName',
                 '$Nullable': true,
+                '@Org.OData.Core.V1.Revisions': [
+                    {
+                        'Kind': 'Deprecated',
+                        'Description': 'Preparation is always called on the draft root node'
+                    }
+                ],
                 '@Org.OData.Core.V1.Description': 'Action that prepares a draft document for later activation'
             },
             'ValidationFunction': {
@@ -1245,11 +1320,10 @@ export default {
         },
         'DraftActivationVia': {
             '$Kind': 'Term',
-            '$Collection': true,
             '$Type': 'Org.OData.Core.V1.SimpleIdentifier',
             '$AppliesTo': ['EntitySet'],
             '@Org.OData.Core.V1.Description':
-                'Draft entities in this set are indirectly activated via draft entities in the referenced entity sets'
+                'Draft entities in this set are indirectly activated via draft entities in the referenced entity set'
         },
         'EditableFieldFor': {
             '$Kind': 'Term',
@@ -1315,6 +1389,12 @@ export default {
                 '$Type': 'Edm.NavigationPropertyPath',
                 '@Org.OData.Core.V1.Description':
                     'Changes to one or more of these entities may affect the targets. An empty path means the annotation target.'
+            },
+            'SourceEvents': {
+                '$Collection': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description':
+                    'When the service raises one or more of these "events for side effects", the targets may be affected'
             },
             'TargetProperties': {
                 '$Collection': true,
@@ -1388,7 +1468,7 @@ export default {
             '@Org.OData.Core.V1.Description':
                 'Function to calculate default values based on user input that is only known to the client and "context information" that is already available to the service',
             '@Org.OData.Core.V1.LongDescription':
-                '\n            The default values function must have a bound overload whose binding parameter type matches the annotation target\n\n            - for an entity set: collection of entity type of entity set\n\n            - for a navigation property: identical to the type of the navigation property (single- or collection-valued)\n\n            - for a bound action/function: identical to the binding parameter type of the annotated action/function\n\n            In addition the overload can have non-binding parameters for values that the user has already entered:\n\n            - for an entity set or navigation property: each non-binding parameter name and type must match the name and type of a property of the entity to be created\n\n            - for an action or function: each non-binding parameter name and type must match the name and type of a non-binding parameter of the action or function to be called\n\n            The result type of the default values function is a complex type whose properties correspond in name and type to a subset of\n\n            - the properties of the entity to create, or\n\n            - the parameters of the action or function to call\n                      '
+                'The default values function must have a bound overload whose binding parameter type matches the annotation target\n- for an entity set: collection of entity type of entity set\n- for a navigation property: identical to the type of the navigation property (single- or collection-valued)\n- for a bound action/function: identical to the binding parameter type of the annotated action/function\n\nIn addition the overload can have non-binding parameters for values that the user has already entered:\n- for an entity set or navigation property: each non-binding parameter name and type must match the name and type of a property of the entity to be created\n- for an action or function: each non-binding parameter name and type must match the name and type of a non-binding parameter of the action or function to be called\n\nThe result type of the default values function is a complex type whose properties correspond in name and type to a subset of\n- the properties of the entity to create, or\n- the parameters of the action or function to call'
         },
         'DerivedDefaultValue': {
             '$Kind': 'Term',
@@ -1398,7 +1478,7 @@ export default {
             '@Org.OData.Core.V1.Description':
                 'Function import to derive a default value for the property from a given context.',
             '@Org.OData.Core.V1.LongDescription':
-                '\n            Function import has two parameters of complex types:\n\n            - `parameters`, a structure resembling the entity type the parameter entity set related to the entity set of the annotated property\n\n            - `properties`, a structure resembling the type of the entity set of the annotated property\n\n            The return type must be of the same type as the annotated property.\n\n            Arguments passed to the function import are used as context for deriving the default value.\n            The function import returns this default value, or null in case such a value could not be determined.\n          '
+                'Function import has two parameters of complex types:\n- `parameters`, a structure resembling the entity type the parameter entity set related to the entity set of the annotated property\n- `properties`, a structure resembling the type of the entity set of the annotated property\n\nThe return type must be of the same type as the annotated property.\n\nArguments passed to the function import are used as context for deriving the default value.\nThe function import returns this default value, or null in case such a value could not be determined.'
         },
         'FilterDefaultValue': {
             '$Kind': 'Term',
@@ -1425,7 +1505,7 @@ export default {
             '@Org.OData.Core.V1.Description':
                 'Function import to derive a default value for the property from a given context in order to use it in filter expressions.',
             '@Org.OData.Core.V1.LongDescription':
-                '\n            Function import has two parameters of complex types:\n\n            - `parameters`, a structure resembling the entity type the parameter\n            entity set related to the entity set of the annotated property\n\n            - `properties`, a structure resembling the\n            type of the entity set of the annotated property\n\n            The return type must be of the same type as the annotated\n            property.\n\n            Arguments passed to the function import are used as context for deriving the default value.\n            The function import returns this default value, or null in case such a value could not be determined.\n          '
+                'Function import has two parameters of complex types:\n- `parameters`, a structure resembling the entity type the parameter\n  entity set related to the entity set of the annotated property\n- `properties`, a structure resembling the\n  type of the entity set of the annotated property\n\nThe return type must be of the same type as the annotated\nproperty.\n\nArguments passed to the function import are used as context for deriving the default value.\nThe function import returns this default value, or null in case such a value could not be determined.'
         },
         'SortOrder': {
             '$Kind': 'Term',
@@ -1438,7 +1518,8 @@ export default {
         },
         'SortOrderType': {
             '$Kind': 'ComplexType',
-            '@Org.OData.Core.V1.Description': 'Exactly one of `Property` and `DynamicProperty` must be present',
+            '@Org.OData.Core.V1.Description':
+                'Exactly one of `Property`, `DynamicProperty` and `Expression` must be present',
             'Property': {
                 '$Type': 'Edm.PropertyPath',
                 '$Nullable': true,
@@ -1462,6 +1543,13 @@ export default {
                     'com.sap.vocabularies.Analytics.v1.AggregatedProperty',
                     'Org.OData.Aggregation.V1.CustomAggregate'
                 ]
+            },
+            'Expression': {
+                '$Type': 'Edm.PrimitiveType',
+                '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description':
+                    'Dynamic expression whose primitive result value is used to sort the instances'
             },
             'Descending': {
                 '$Type': 'Edm.Boolean',
@@ -1561,7 +1649,6 @@ export default {
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
             '$AppliesTo': ['EntityContainer'],
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 'Sorting and filtering of amounts in multiple currencies needs special consideration',
             '@Org.OData.Core.V1.LongDescription':
@@ -1592,7 +1679,27 @@ export default {
             '$AppliesTo': ['EntityContainer'],
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.IsURL': true,
-            '@Org.OData.Core.V1.Description': 'Base URL for WebSocket connections'
+            '@Org.OData.Core.V1.Description': 'Base URL for WebSocket connections',
+            '@Org.OData.Core.V1.LongDescription': 'This annotation MUST be unqualified.'
+        },
+        'WebSocketChannel': {
+            '$Kind': 'Term',
+            '$Nullable': true,
+            '$AppliesTo': ['EntityContainer'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description': 'Channel for WebSocket connections',
+            '@Org.OData.Core.V1.LongDescription':
+                'Messages sent over the channel follow the [ABAP Push Channel Protocol](https://community.sap.com/t5/application-development-blog-posts/specification-of-the-push-channel-protocol-pcp/ba-p/13137541).\nTo consume a channel, the client opens a web socket connection at the [`WebSocketBaseURL`](#WebSocketBaseURL)\nfollowed by URL parameters\n- parameter name = annotation qualifier, parameter value = channel ID (see below)\n- parameter name = `relatedService`, parameter value = base URL (relative to server root) of the OData service of the app\n\nSupported qualifiers and channel IDs:\n<dl>\n<dt>`sideEffects` <dd>Notifications about side effects to be triggered by the client (channel ID = non-null annotation value)\n</dl>'
+        },
+        'AddressViaNavigationPath': {
+            '$Kind': 'Term',
+            '$Type': 'Org.OData.Core.V1.Tag',
+            '$DefaultValue': true,
+            '$AppliesTo': ['EntityContainer'],
+            '@Org.OData.Core.V1.Description':
+                'Service prefers requests to use a resource path with navigation properties',
+            '@Org.OData.Core.V1.LongDescription':
+                'Use this tag on services that do not restrict requests to certain resource paths\nvia [`Capabilities`](https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Capabilities.V1.html)\nor [`Core.RequiresExplicitBinding`](https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.html#RequiresExplicitBinding)\nannotations, but that prefer requests with a resource path that\ncontains the navigation properties reflecting the UI structure.\n\nFor example, entering a cancellation fee into an order item field bound to `CancellationItem/Fee`\nleads to a\n`PATCH Orders(23)/Items(5)/CancellationItem` request with `{"Fee": ...}` payload.'
         }
     }
 } as CSDL;

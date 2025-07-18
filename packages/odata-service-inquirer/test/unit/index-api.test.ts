@@ -1,14 +1,38 @@
-import { ErrorHandler } from '../../src/error-handler/error-handler';
-import { getPrompts } from '../../src/index';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
+import { getPrompts, getSystemSelectionQuestions } from '../../src/index';
 import * as prompts from '../../src/prompts';
-import * as utils from '../../src/utils';
+import * as systemSelection from '../../src/prompts/datasources/sap-system/system-selection';
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
-import { hostEnvironment } from '../../src/types';
+import { type BackendSystem } from '@sap-ux/store';
 
 jest.mock('../../src/prompts', () => ({
-    __esModule: true, // Workaround to for spyOn TypeError: Jest cannot redefine property
+    __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('../../src/prompts')
+}));
+
+jest.mock('../../src/prompts/datasources/sap-system/system-selection', () => ({
+    __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
+    ...jest.requireActual('../../src/prompts/datasources/sap-system/system-selection')
+}));
+
+jest.mock('@sap-ux/store', () => ({
+    __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
+    ...jest.requireActual('@sap-ux/store'),
+    SystemService: jest.fn().mockImplementation(() => ({
+        getAll: jest.fn().mockResolvedValue([
+            {
+                name: 'storedSystem1',
+                url: 'http://url1',
+                systemType: 'OnPrem'
+            },
+            {
+                name: 'storedSystem2',
+                url: 'http://url2',
+                systemType: 'BTP'
+            }
+        ] as BackendSystem[])
+    }))
 }));
 
 describe('API tests', () => {
@@ -38,217 +62,28 @@ describe('API tests', () => {
         expect(ErrorHandler.logger).toBeDefined();
     });
 
+    test('getSystemSelectionQuestions', async () => {
+        PromptState.isYUI = false;
+        jest.spyOn(systemSelection, 'getSystemSelectionQuestions').mockResolvedValue([
+            {
+                name: 'prompt1',
+                validate: () => (PromptState.odataService.servicePath = '/path/to/service')
+            }
+        ]);
+
+        const { prompts: questions, answers } = await getSystemSelectionQuestions();
+        expect(PromptState.isYUI).toBe(false);
+        expect(questions).toHaveLength(1);
+        (questions[0].validate as Function)();
+        expect(answers.servicePath).toBe('/path/to/service');
+
+        await getSystemSelectionQuestions(undefined, true);
+        expect(PromptState.isYUI).toBe(true);
+    });
+
     test('getPrompts, i18n is loaded', async () => {
-        jest.spyOn(utils, 'getHostEnvironment').mockReturnValueOnce(hostEnvironment.cli);
         const { prompts: questions } = await getPrompts(undefined, undefined, true, undefined, true);
 
-        expect(questions).toMatchInlineSnapshot(`
-            [
-              {
-                "additionalMessages": [Function],
-                "choices": [
-                  {
-                    "name": "Connect to a SAP System",
-                    "value": "sapSystem",
-                  },
-                  {
-                    "name": "Connect to an OData Service Url",
-                    "value": "odataServiceUrl",
-                  },
-                  {
-                    "name": "Connect to SAP Business Accelerator Hub",
-                    "value": "businessHub",
-                  },
-                  {
-                    "name": "Use a Local CAP Project",
-                    "value": "capProject",
-                  },
-                  {
-                    "name": "Upload a Metadata File",
-                    "value": "metadataFile",
-                  },
-                ],
-                "default": -1,
-                "guiOptions": {
-                  "breadcrumb": true,
-                },
-                "message": "Data source",
-                "name": "datasourceType",
-                "type": "list",
-              },
-              {
-                "guiOptions": {
-                  "breadcrumb": true,
-                  "mandatory": true,
-                },
-                "guiType": "file-browser",
-                "message": "Metadata file path",
-                "name": "metadataFilePath",
-                "type": "input",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "choices": [Function],
-                "default": [Function],
-                "guiOptions": {
-                  "applyDefaultWhenDirty": true,
-                  "breadcrumb": "CAP Project",
-                  "mandatory": true,
-                },
-                "message": "Choose your CAP project",
-                "name": "capProject",
-                "type": "list",
-                "when": [Function],
-              },
-              {
-                "default": [Function],
-                "guiOptions": {
-                  "breadcrumb": "CAP Project",
-                  "mandatory": true,
-                },
-                "guiType": "folder-browser",
-                "message": "CAP project folder path",
-                "name": "capProjectPath",
-                "type": "input",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "choices": [Function],
-                "default": [Function],
-                "guiOptions": {
-                  "applyDefaultWhenDirty": true,
-                  "breadcrumb": true,
-                  "mandatory": true,
-                },
-                "message": "OData service",
-                "name": "capService",
-                "type": "list",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "name": "capCliStateSetter",
-                "when": [Function],
-              },
-              {
-                "guiOptions": {
-                  "breadcrumb": true,
-                  "hint": "https://<hostname>:<port>/path/to/odata/service/",
-                  "mandatory": true,
-                },
-                "message": "OData service URL",
-                "name": "serviceUrl",
-                "type": "input",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "default": false,
-                "message": "Do you want to continue generation with the untrusted certificate?",
-                "name": "ignoreCertError",
-                "type": "confirm",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "guiOptions": {
-                  "mandatory": true,
-                },
-                "message": "Service username",
-                "name": "username",
-                "type": "input",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "guiOptions": {
-                  "applyDefaultWhenDirty": true,
-                  "mandatory": true,
-                },
-                "guiType": "login",
-                "mask": "*",
-                "message": "Service password",
-                "name": "serviceUrlPassword",
-                "type": "password",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "guiOptions": {
-                  "breadcrumb": true,
-                  "hint": "Enter the URL of the SAP System",
-                  "mandatory": true,
-                },
-                "message": "System URL",
-                "name": "systemUrl",
-                "type": "input",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "guiOptions": {
-                  "breadcrumb": "SAP Client",
-                },
-                "message": "SAP client (leave empty for default)",
-                "name": "sapClient",
-                "type": "input",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "guiOptions": {
-                  "mandatory": true,
-                },
-                "message": "Username",
-                "name": "abapSystemUsername",
-                "type": "input",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "guiOptions": {
-                  "mandatory": true,
-                },
-                "guiType": "login",
-                "mask": "*",
-                "message": "Password",
-                "name": "abapSystemPassword",
-                "type": "password",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "default": [Function],
-                "guiOptions": {
-                  "applyDefaultWhenDirty": true,
-                  "breadcrumb": true,
-                  "hint": "Entering a system name will save the connection for re-use.",
-                },
-                "message": "System name",
-                "name": "userSystemName",
-                "type": "input",
-                "validate": [Function],
-                "when": [Function],
-              },
-              {
-                "additionalMessages": [Function],
-                "choices": [Function],
-                "default": [Function],
-                "guiOptions": {
-                  "applyDefaultWhenDirty": true,
-                  "breadcrumb": "Service",
-                  "mandatory": true,
-                },
-                "message": "Service name",
-                "name": "serviceSelection",
-                "source": [Function],
-                "type": "list",
-                "validate": [Function],
-                "when": [Function],
-              },
-            ]
-        `);
+        expect(questions).toMatchSnapshot();
     });
 });

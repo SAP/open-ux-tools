@@ -1,4 +1,4 @@
-import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import type { ExternalAction, OutlineNode } from '@sap-ux-private/control-property-editor-common';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 export interface UI5AdaptationOptions {
@@ -10,7 +10,7 @@ export type PropertyValue = boolean | object | number | string;
 
 export interface UI5ControlProperty {
     defaultValue: unknown;
-    enumValues: { [key: string]: string } | null;
+    enumValues: Record<string,string> | undefined;
     isArray: boolean;
     isDeprecated: boolean;
     isEnabled: boolean;
@@ -32,11 +32,16 @@ export interface UI5ControlData {
     type: string;
 }
 
-export type ActionHandler = (action: ExternalAction) => Promise<void>;
+export type ActionHandler = (action: ExternalAction) => void | Promise<void>;
 export type ActionSenderFunction = (action: ExternalAction) => void;
 export type SubscribeFunction = (handler: ActionHandler) => void;
+export type UnSubscribeFunction = (handler: ActionHandler) => void;
+export type IsReuseComponentApi = (controlId: string) => boolean;
 
 export interface Service {
-    init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void;
+    init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void | Promise<void>;
 }
 
+export interface ControlTreeIndex {
+    [controlType: string]: OutlineNode[]
+}

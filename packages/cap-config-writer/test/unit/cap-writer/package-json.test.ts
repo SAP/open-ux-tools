@@ -1,22 +1,17 @@
-import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
-import { satisfiesMinCdsVersion } from '../../../src/cap-config/package-json';
+import type { CapRuntime, CapServiceCdsInfo } from '../../../src';
 import memFs from 'mem-fs';
 import { ToolsLogger } from '@sap-ux/logger';
 import editor, { type Editor } from 'mem-fs-editor';
-import { join } from 'path';
-import { minCdsVersion } from '../../../src/cap-config';
+import { dirname, join } from 'path';
 import { updateRootPackageJson, updateAppPackageJson } from '../../../src/cap-writer/package-json';
 import type { Package } from '@sap-ux/project-access';
-import type { CapServiceCdsInfo } from '../../../src/index';
-
-jest.mock('../../../src/cap-config/package-json', () => ({
-    ...jest.requireActual('../../../src/cap-config/package-json'),
-    satisfiesMinCdsVersion: jest.fn()
-}));
+import * as ProjectAccessMock from '@sap-ux/project-access';
 
 jest.mock('@sap-ux/project-access', () => ({
     ...jest.requireActual('@sap-ux/project-access'),
-    getCdsVersionInfo: jest.fn()
+    getCdsVersionInfo: jest.fn(),
+    satisfiesMinCdsVersion: jest.fn().mockReturnValue(true),
+    checkCdsUi5PluginEnabled: jest.fn().mockReturnValue(false)
 }));
 
 describe('Writing/package json files', () => {
@@ -59,7 +54,6 @@ describe('Writing/package json files', () => {
         const packageJsonPath = join(testInputPath, testProjectNameWithSapUx, 'package.json');
         const isSapUxEnabled = true;
         capService.projectPath = join(testInputPath, testProjectNameWithSapUx);
-        (satisfiesMinCdsVersion as jest.Mock).mockReturnValue(true);
         await updateRootPackageJson(fs, testProjectNameNoSapUx, isSapUxEnabled, capService, 'test.app.project');
         const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
         const scripts = packageJson.scripts;
@@ -67,29 +61,6 @@ describe('Writing/package json files', () => {
             'watch-test-cap-package-no-sapux':
                 'cds watch --open test-cap-package-no-sapux/webapp/index.html?sap-ui-xx-viewCache=false'
         });
-    });
-
-    test('should log warning if no minimum cds version is being satisfied', async () => {
-        const testProjectMinCds = 'test-cap-package-no-min-cds-version';
-        const isSapUxEnabled = false;
-        const logger = new ToolsLogger();
-        const loggerMock = jest.fn();
-        logger.warn = loggerMock;
-        (satisfiesMinCdsVersion as jest.Mock).mockReturnValue(false);
-        const capServiceWithNoMinCds = capService;
-        capServiceWithNoMinCds.cdsUi5PluginInfo.hasMinCdsVersion = false;
-        await updateRootPackageJson(
-            fs,
-            testProjectMinCds,
-            isSapUxEnabled,
-            capServiceWithNoMinCds,
-            'test.app.project',
-            logger
-        );
-        expect(logger.warn).toHaveBeenCalledTimes(1);
-        expect(logger.warn).toHaveBeenCalledWith(
-            expect.stringContaining(`minimum cds-dk ${minCdsVersion} version is required to add cds watch scripts`)
-        );
     });
 
     test('should enable CdsUi5Plugin when workspace is enabled', async () => {
@@ -107,9 +78,45 @@ describe('Writing/package json files', () => {
         );
         const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
         const devDependencies = packageJson.devDependencies;
+        const scripts = packageJson.scripts;
         expect(devDependencies).toEqual({
-            'cds-plugin-ui5': '^0.9.3'
+            'cds-plugin-ui5': '^0.13.0'
         });
+        expect(scripts?.['watch-test-cap-package-sapux']).toBeDefined();
+        expect(scripts?.['watch-test-cap-package-sapux']).toEqual(
+            'cds watch --open test.app.project/index.html?sap-ui-xx-viewCache=false --livereload false'
+        );
+    });
+    test('should add watch script when workspace is NOT enabled', async () => {
+        jest.spyOn(ProjectAccessMock, 'checkCdsUi5PluginEnabled').mockResolvedValue(true);
+        const isSapUxEnabled = true;
+        const isNpmWorkspacesEnabled = false;
+        const testProjectWSAlreadyEnabled = 'testprojectwsalreadyenabled';
+        const packageJsonPath = join(testInputPath, testProjectWSAlreadyEnabled, 'package.json');
+        const capServiceWS = { ...capService };
+        capServiceWS.projectPath = dirname(packageJsonPath);
+        fs.writeJSON(packageJsonPath, {
+            name: 'test-project-ws-already-enabled',
+            workspaces: ['app/*'],
+            devDependencies: {
+                'cds-plugin-ui5': '^0.13.0'
+            }
+        });
+        await updateRootPackageJson(
+            fs,
+            testProjectWSAlreadyEnabled,
+            isSapUxEnabled,
+            capServiceWS,
+            'test.app.project.ws.already.enabled',
+            logger,
+            isNpmWorkspacesEnabled
+        );
+        const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
+        const scripts = packageJson.scripts;
+        expect(scripts?.['watch-testprojectwsalreadyenabled']).toBeDefined();
+        expect(scripts?.['watch-testprojectwsalreadyenabled']).toEqual(
+            'cds watch --open test.app.project.ws.already.enabled/index.html?sap-ui-xx-viewCache=false --livereload false'
+        );
     });
 
     test('should remove int-test script and start scripts, and also keep other scripts', async () => {

@@ -42,9 +42,10 @@ For detailed example usage check unit test of [`getCapI18nBundle`](./test/unit/r
 ```typescript
 import { getPropertiesI18nBundle } from '@sap-ux/i18n';
 import { join } from 'path';
+import { getWebappPath } from '@sap-ux/project-access';
 
 const PROJECT_ROOT = 'absolute/path/to/project';
-const i18nFilePath = join(PROJECT_ROOT, 'webapp', 'i18n', 'i18n.properties');
+const i18nFilePath = join(await getWebappPath(PROJECT_ROOT), 'i18n', 'i18n.properties');
 const bundle = await getPropertiesI18nBundle(i18nFilePath);
 
 ```
@@ -82,6 +83,7 @@ For detailed example usage check unit test of [`createCapI18nEntries`](./test/un
 ```typescript
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { join } from 'path';
+import { getWebappPath } from '@sap-ux/project-access';
 
 const newEntries = [
     {
@@ -90,7 +92,7 @@ const newEntries = [
     }
 ];
 const PROJECT_ROOT = 'absolute/path/to/project';
-const i18nFilePath = join(PROJECT_ROOT, 'webapp', 'i18n', 'i18n.properties');
+const i18nFilePath = join(getWebappPath(PROJECT_ROOT), 'i18n', 'i18n.properties');
 
 const result = await createPropertiesI18nEntries(i18nFilePath, newEntries, PROJECT_ROOT);
 ```

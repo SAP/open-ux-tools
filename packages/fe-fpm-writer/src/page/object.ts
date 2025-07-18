@@ -1,5 +1,11 @@
 import type { Editor } from 'mem-fs-editor';
-import { getFclConfig, extendPageJSON, initializeTargetSettings, getLibraryDependencies } from './common';
+import {
+    getFclConfig,
+    extendPageJSON,
+    initializeTargetSettings,
+    getLibraryDependencies,
+    getTemplateNamePrefix
+} from './common';
 import type { Manifest } from '../common/types';
 import type { ObjectPage, InternalObjectPage } from './types';
 import { PageType } from './types';
@@ -16,8 +22,13 @@ function enhanceData(data: ObjectPage, manifest: Manifest): InternalObjectPage {
         ...data,
         settings: initializeTargetSettings(data, data.settings),
         name: PageType.ObjectPage,
-        ...getFclConfig(manifest)
+        template: `${getTemplateNamePrefix(manifest)}.ObjectPage`
     };
+
+    // set FCL configuration
+    const fclConfig = getFclConfig(manifest, config.navigation);
+    config.fcl = fclConfig.fcl;
+    config.controlAggregation = fclConfig.controlAggregation;
 
     // set library dependencies
     config.libraries = getLibraryDependencies(PageType.ObjectPage);
@@ -37,6 +48,6 @@ function enhanceData(data: ObjectPage, manifest: Manifest): InternalObjectPage {
  * @param fs - the memfs editor instance
  * @returns the updated memfs editor instance
  */
-export function generate(basePath: string, data: ObjectPage, fs?: Editor): Editor {
+export async function generate(basePath: string, data: ObjectPage, fs?: Editor): Promise<Editor> {
     return extendPageJSON(basePath, data, enhanceData, '/page/object/manifest.json', fs);
 }

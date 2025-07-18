@@ -1,0 +1,55 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "generators"
+  },
+  "references": [
+    {
+      "path": "../adp-flp-config-sub-generator"
+    },
+    {
+      "path": "../adp-tooling"
+    },
+    {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../deploy-config-sub-generator"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../odata-service-writer"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../project-input-validator"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../system-access"
+    }
+  ]
+}

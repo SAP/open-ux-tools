@@ -1,0 +1,18 @@
+specVersion: "2.6"
+metadata:
+  name: ui-mock-config
+type: application
+server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mountPath: /
+        services:
+          - urlPath: /first/path
+            mockdataPath: ./webapp/localService/mainService/data
+            generateMockData: true
+          - urlPath: /second/path
+            mockdataPath: ./webapp/localService/STTA_SALES_ORDER_ND_SRV_01/data
+            generateMockData: true
+        annotations: []

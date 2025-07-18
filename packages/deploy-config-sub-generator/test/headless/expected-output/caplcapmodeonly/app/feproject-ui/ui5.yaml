@@ -1,0 +1,25 @@
+specVersion: '2.4'
+metadata:
+  name: 'feproject-ui'
+type: application
+server:
+  customMiddleware:
+  - name: fiori-tools-proxy
+    afterMiddleware: compression
+    configuration:
+      ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+      backend:
+      - path: /catalog
+        url: http://localhost:4004
+      ui5:
+        path: 
+        - /resources
+        - /test-resources
+        url: https://ui5.sap.com
+        version: 1.98.0 # The UI5 version, for instance, 1.78.1. Empty means latest version
+  - name: fiori-tools-appreload
+    afterMiddleware: compression
+    configuration:
+     port: 35729
+     path: webapp
+     delay: 300

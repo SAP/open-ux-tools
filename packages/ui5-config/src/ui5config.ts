@@ -12,7 +12,9 @@ import type {
     Ui5Document,
     Adp,
     MockserverConfig,
-    ServeStaticPath
+    ServeStaticPath,
+    DataSourceConfig,
+    AbapDeployConfig
 } from './types';
 import type { NodeComment, YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import { YamlDocument } from '@sap-ux/yaml';
@@ -23,6 +25,11 @@ import {
     getMockServerMiddlewareConfig
 } from './middlewares';
 import { fioriToolsProxy, serveStatic } from './constants';
+import Ajv, { type ValidateFunction } from 'ajv';
+import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
+import { join, posix, relative, sep } from 'path';
+import { readFile } from 'fs/promises';
+import yaml from 'js-yaml';
 
 /**
  * Represents a UI5 config file in yaml format (ui5(-*).yaml) with utility functions to manipulate the yaml document.
@@ -31,18 +38,58 @@ import { fioriToolsProxy, serveStatic } from './constants';
  */
 export class UI5Config {
     private document: YamlDocument;
+    private static validate: ValidateFunction<SomeJSONSchema>;
+
+    /**
+     * Validates the schema of the given yaml document.
+     *
+     * @returns true if the document is valid, false otherwise
+     */
+    async validateSchema(): Promise<boolean> {
+        if (!UI5Config.validate) {
+            const path = join(__dirname, '..', 'dist', 'schema', 'ui5.yaml.json');
+            const schema = JSON.parse(await readFile(path, 'utf8')) as SomeJSONSchema | null;
+            if (!schema) {
+                throw Error('The schema file was not found. Validation is not possible.');
+            }
+            UI5Config.validate = new Ajv({ strict: false }).compile<SomeJSONSchema>(schema);
+        }
+
+        let isValid = false;
+        try {
+            isValid = yaml.loadAll(this.document.toString()).every((document) => UI5Config.validate(document));
+        } catch (error) {
+            throw Error(`No validation possible. Error: ${error}`);
+        }
+        return isValid;
+    }
 
     /**
      * Returns a new instance of UI5Config.
      *
      * @static
      * @param {string} serializedYaml - the serialized yaml string
+     * @param options - options
+     * @param [options.validateSchema] - whether to validate the schema of the yaml file
      * @returns {UI5Config} the UI5Config instance
+     * @throws {Error} if the schema validation fails
      * @memberof UI5Config
      */
-    static async newInstance(serializedYaml: string): Promise<UI5Config> {
+    static async newInstance(
+        serializedYaml: string,
+        options?: {
+            validateSchema?: boolean;
+        }
+    ): Promise<UI5Config> {
         const instance = new UI5Config();
         instance.document = await YamlDocument.newInstance(serializedYaml);
+        const validateSchema = options?.validateSchema ?? false;
+        if (validateSchema) {
+            const isValid = await instance.validateSchema();
+            if (!isValid) {
+                throw new Error('This file does not comply with the schema.');
+            }
+        }
         return instance;
     }
 
@@ -238,7 +285,8 @@ export class UI5Config {
         const { config, comments } = getFioriToolsProxyMiddlewareConfig(
             proxyConfig.backend,
             proxyConfig.ui5,
-            afterMiddleware
+            afterMiddleware,
+            proxyConfig.ignoreCertError
         );
         this.document.appendTo({
             path: 'server.customMiddleware',
@@ -249,26 +297,131 @@ export class UI5Config {
     }
 
     /**
-     * Adds a backend configuration to an existing fiori-tools-proxy middleware. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     * Returns a fiori-tools-proxy middleware YAML configuration.
      *
-     * @param backend config of backend that is to be proxied
-     * @returns {UI5Config} the UI5Config instance
+     * @returns {unknown} The fiori-tools-proxy middleware configuration
      * @memberof UI5Config
      */
-    public addBackendToFioriToolsProxydMiddleware(backend: FioriToolsProxyConfigBackend): UI5Config {
+    private getFioriToolsProxyMiddlewareConfiguration(): YAMLMap<unknown, unknown> {
         const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
         const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
         if (!proxyMiddleware) {
             throw new Error('Could not find fiori-tools-proxy');
         }
+        return this.document.getMap({
+            start: proxyMiddleware as YAMLMap,
+            path: 'configuration'
+        });
+    }
+
+    /**
+     * Adds a backend configuration to an existing fiori-tools-proxy middleware keeping any existing 'fiori-tools-proxy' backend configurations. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     *
+     * @param backend config of backend that is to be proxied
+     * @param ignoreCertError if true some certificate errors are ignored
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public addBackendToFioriToolsProxydMiddleware(
+        backend: FioriToolsProxyConfigBackend,
+        ignoreCertError: boolean = false
+    ): this {
+        const configuration = this.getFioriToolsProxyMiddlewareConfiguration();
+        const proxyMiddlewareConfig = configuration.toJSON() as FioriToolsProxyConfig;
         const comments = getBackendComments(backend);
-        const backendNode = this.document.createNode({ value: backend, comments });
-
-        this.document
-            .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
-            .set('backend', [backendNode]);
-
+        const backendNode = this.document.createNode({
+            value: backend,
+            comments
+        });
+        if (ignoreCertError !== undefined && proxyMiddlewareConfig?.ignoreCertError !== ignoreCertError) {
+            configuration.set('ignoreCertError', ignoreCertError);
+        }
+        // Add new entry to existing backend configurations in yaml, avoid duplicates
+        if (proxyMiddlewareConfig?.backend) {
+            if (!proxyMiddlewareConfig?.backend.find((existingBackend) => existingBackend.path === backend.path)) {
+                const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
+                if (backendConfigs.items.length === 0) {
+                    configuration.set('backend', [backendNode]);
+                } else {
+                    backendConfigs.add(backendNode);
+                }
+            }
+        } else {
+            // Create a new 'backend' node in yaml for middleware config
+            configuration.set('backend', [backendNode]);
+        }
         return this;
+    }
+
+    /**
+     * Updates backend configuration to an existing fiori-tools-proxy middleware that matches path. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     *
+     * @param backend config of backend that is to be proxied
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public updateBackendToFioriToolsProxydMiddleware(backend: FioriToolsProxyConfigBackend): this {
+        const configuration = this.getFioriToolsProxyMiddlewareConfiguration();
+        const proxyMiddlewareConfig = configuration.toJSON() as FioriToolsProxyConfig;
+        const comments = getBackendComments(backend);
+        const backendNode = this.document.createNode({
+            value: backend,
+            comments
+        });
+        // Update existing backend entry with matching path
+        if (proxyMiddlewareConfig?.backend) {
+            const matchingBackendIndex = proxyMiddlewareConfig?.backend.findIndex(
+                (existingBackend) => existingBackend.path && existingBackend.path === backend.path
+            );
+            if (matchingBackendIndex !== -1) {
+                const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
+                backendConfigs.set(matchingBackendIndex, backendNode);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Removes a backend configuration from an existing fiori-tools-proxy middleware backend configurations. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     *
+     * @param path Path of the backend to delete.
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public removeBackendFromFioriToolsProxydMiddleware(path: string): this {
+        const fioriToolsProxyMiddleware = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
+        if (!fioriToolsProxyMiddleware) {
+            throw new Error('Could not find fiori-tools-proxy');
+        } else {
+            const proxyMiddlewareConfig = fioriToolsProxyMiddleware?.configuration;
+            // Remove backend from middleware configurations in yaml
+            if (proxyMiddlewareConfig?.backend) {
+                const reservedBackendPath = '/sap';
+                // Make sure entry with "/sap" path is not getting deleted
+                const backendIndexToKeep = proxyMiddlewareConfig.backend.findIndex(
+                    (existingBackend) => existingBackend.path === reservedBackendPath
+                );
+                proxyMiddlewareConfig.backend = proxyMiddlewareConfig.backend.filter((existingBackend, index) => {
+                    if (index === backendIndexToKeep) {
+                        return true;
+                    }
+                    return existingBackend.path !== path;
+                });
+                this.updateCustomMiddleware(fioriToolsProxyMiddleware);
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Returns the backend configuration from the fiori-tools-proxy middleware.
+     *
+     * @param path Path of the backend.
+     * @returns {FioriToolsProxyConfigBackend} the backend configuration
+     */
+    public getBackendConfigFromFioriToolsProxydMiddleware(path: string): FioriToolsProxyConfigBackend | undefined {
+        const backendConfigs: FioriToolsProxyConfigBackend[] = this.getBackendConfigsFromFioriToolsProxydMiddleware();
+        return backendConfigs.find((backendConfig) => backendConfig.path === path);
     }
 
     /**
@@ -316,16 +469,117 @@ export class UI5Config {
     /**
      * Adds a instance of the mockserver middleware to the config.
      *
-     * @param path option path that is to be mocked
-     * @param annotationsConfig optional annotations config that is to be mocked
+     * @param basePath - path to project root, where package.json and ui5.yaml is
+     * @param webappPath - path to webapp folder, where manifest.json is
+     * @param dataSourcesConfig - annotations config that is to be mocked
+     * @param annotationsConfig - annotations config that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addMockServerMiddleware(path?: string, annotationsConfig?: MockserverConfig['annotations']): this {
+    public addMockServerMiddleware(
+        basePath: string,
+        webappPath: string,
+        dataSourcesConfig: DataSourceConfig[],
+        annotationsConfig: MockserverConfig['annotations']
+    ): this {
         this.document.appendTo({
             path: 'server.customMiddleware',
-            value: getMockServerMiddlewareConfig(path, annotationsConfig)
+            value: getMockServerMiddlewareConfig(basePath, webappPath, dataSourcesConfig, annotationsConfig)
         });
+        return this;
+    }
+
+    /**
+     * Adds a service configuration to an existing sap-fe-mockserver middleware keeping any existing service configurations. If the config does not contain a sap-fe-mockserver middleware, an error is thrown.
+     *
+     * @param basePath - path to project root, where package.json and ui5.yaml is
+     * @param webappPath - path to webapp folder, where manifest.json is
+     * @param dataSourceConfig - dataSource config from manifest to add to mockserver middleware services list
+     * @param annotationsConfig - optional, annotations config that is to be mocked
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public addServiceToMockserverMiddleware(
+        basePath: string,
+        webappPath: string,
+        dataSourceConfig: DataSourceConfig,
+        annotationsConfig: MockserverConfig['annotations'] = []
+    ): this {
+        const mockserverMiddleware = this.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
+        if (!mockserverMiddleware) {
+            throw new Error('Could not find sap-fe-mockserver');
+        } else {
+            // Else append new data to current middleware config and then run middleware update
+            const serviceRoot = `.${posix.sep}${relative(
+                basePath,
+                join(webappPath, 'localService', dataSourceConfig.serviceName)
+            ).replaceAll(sep, posix.sep)}`;
+
+            const mockserverMiddlewareConfig = mockserverMiddleware?.configuration;
+            if (mockserverMiddlewareConfig?.services) {
+                const urlPath = dataSourceConfig.servicePath.replace(/\/$/, ''); // Mockserver is sensitive to trailing '/'
+                const newServiceData = {
+                    urlPath,
+                    metadataPath: dataSourceConfig.metadataPath ?? `${serviceRoot}/metadata.xml`,
+                    mockdataPath: `${serviceRoot}/data`,
+                    generateMockData: true
+                };
+                const serviceIndex = mockserverMiddlewareConfig.services.findIndex(
+                    (existingService) => existingService.urlPath === urlPath
+                );
+                if (serviceIndex === -1) {
+                    mockserverMiddlewareConfig.services = [...mockserverMiddlewareConfig.services, newServiceData];
+                }
+            }
+            if (mockserverMiddlewareConfig?.annotations) {
+                const existingAnnotations = mockserverMiddlewareConfig.annotations;
+                annotationsConfig.forEach((annotationConfig) => {
+                    if (
+                        !existingAnnotations.find(
+                            (existingAnnotation) => existingAnnotation.urlPath === annotationConfig.urlPath
+                        )
+                    ) {
+                        existingAnnotations.push(annotationConfig);
+                    }
+                });
+            }
+            this.updateCustomMiddleware(mockserverMiddleware);
+        }
+        return this;
+    }
+
+    /**
+     * Removes a service from the mockserver middleware.
+     *
+     * @param servicePath - path of the service that is to be deleted
+     * @param annotationPaths - paths of the service related annotations
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public removeServiceFromMockServerMiddleware(servicePath: string, annotationPaths: string[]): this {
+        const mockserverMiddleware = this.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
+        if (!mockserverMiddleware) {
+            throw new Error('Could not find sap-fe-mockserver');
+        } else {
+            const mockserverMiddlewareConfig = mockserverMiddleware?.configuration;
+            // Remove service from middleware configurations in yaml
+            if (mockserverMiddlewareConfig?.services) {
+                mockserverMiddlewareConfig.services = mockserverMiddlewareConfig?.services.filter(
+                    (existingService) => existingService.urlPath !== servicePath.replace(/\/$/, '')
+                );
+            }
+            // Remove service related annotations
+            if (mockserverMiddlewareConfig?.annotations) {
+                const mockserverMiddlewareConfigAnnotations = mockserverMiddlewareConfig.annotations;
+                annotationPaths.forEach((annotationPath: string) => {
+                    // Search for annotations that needs to be deleted
+                    mockserverMiddlewareConfig.annotations = mockserverMiddlewareConfigAnnotations.filter(
+                        (existingAnnotation) => existingAnnotation.urlPath !== annotationPath
+                    );
+                });
+            }
+            this.updateCustomMiddleware(mockserverMiddleware);
+        }
         return this;
     }
 
@@ -337,6 +591,7 @@ export class UI5Config {
      * @param fioriTools if true use the middleware included in the @sap/ux-ui5-tooling module
      * @param exclude optional list of files that are to be excluded from the deployment configuration
      * @param index if true a standalone index.html is generated during deployment
+     * @param comments optional comments that are added to the task
      * @returns this UI5Config instance
      * @memberof UI5Config
      */
@@ -345,7 +600,8 @@ export class UI5Config {
         app: BspApp | Adp,
         fioriTools = true,
         exclude?: string[],
-        index = false
+        index = false,
+        comments: NodeComment<CustomTask<AbapDeployConfig>>[] = []
     ): this {
         this.document.appendTo({
             path: 'builder.resources.excludes',
@@ -369,8 +625,70 @@ export class UI5Config {
                 name: fioriTools ? 'deploy-to-abap' : 'abap-deploy-task',
                 afterTask: 'generateCachebusterInfo',
                 configuration
+            },
+            comments
+        });
+        return this;
+    }
+
+    /**
+     * Adds the Cloud Foundry deployment task to the config.
+     *
+     * @param archiveName the name of the archive that is to be generated as part of the CF bundling
+     * @param addModulesTask if true the modules task is added to the deployment configuration
+     * @param addTranspileTask if true the transpile task is added to the deployment configuration
+     * @returns this UI5Config instance
+     * @memberof UI5Config
+     */
+    public addCloudFoundryDeployTask(archiveName: string, addModulesTask = false, addTranspileTask = false): this {
+        this.document.appendTo({
+            path: 'builder.resources.excludes',
+            value: '/test/**'
+        });
+        this.document.appendTo({
+            path: 'builder.resources.excludes',
+            value: '/localService/**'
+        });
+
+        this.document.appendTo({
+            path: 'builder.customTasks',
+            value: {
+                name: 'ui5-task-zipper',
+                afterTask: 'generateCachebusterInfo',
+                configuration: {
+                    archiveName,
+                    relativePaths: true,
+                    additionalFiles: ['xs-app.json']
+                }
             }
         });
+
+        if (addModulesTask) {
+            this.document.appendTo({
+                path: 'builder.customTasks',
+                value: {
+                    name: 'ui5-tooling-modules-task',
+                    afterTask: 'replaceVersion',
+                    configuration: {}
+                }
+            });
+        }
+
+        if (addTranspileTask) {
+            this.document.appendTo({
+                path: 'builder.customTasks',
+                value: {
+                    name: 'ui5-tooling-transpile-task',
+                    afterTask: 'replaceVersion',
+                    configuration: {
+                        debug: true,
+                        removeConsoleStatements: true,
+                        transpileAsync: true,
+                        transpileTypeScript: true
+                    }
+                }
+            });
+        }
         return this;
     }
 

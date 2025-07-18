@@ -28,9 +28,9 @@ describe('<UICallout />', () => {
     it('Should render a UITooltip component', () => {
         expect(wrapper.find('.ms-Callout').length).toEqual(1);
         const style = getCalloutStyles();
-        expect(style.root?.['borderRadius']).toEqual(4);
-        expect(style.beakCurtain?.['borderRadius']).toEqual(4);
-        expect(style.calloutMain?.['borderRadius']).toEqual(4);
+        expect(style.root?.['borderRadius']).toEqual(2);
+        expect(style.beakCurtain?.['borderRadius']).toEqual(2);
+        expect(style.calloutMain?.['borderRadius']).toEqual(2);
         expect(style.root?.['boxShadow']).toEqual('var(--ui-box-shadow-small)');
     });
 

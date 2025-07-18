@@ -1,5 +1,255 @@
 # @sap-ux/axios-extension
 
+## 1.22.3
+
+### Patch Changes
+
+-   f9ea9e3: feat: Enhance ADP FLP configuration generator
+
+## 1.22.2
+
+### Patch Changes
+
+-   14214a3: Cleanup documentation
+
+## 1.22.1
+
+### Patch Changes
+
+-   a9f1808: Disable proxy for BAS
+
+## 1.22.0
+
+### Minor Changes
+
+-   aaf0c14: support rap service generation
+
+## 1.21.4
+
+### Patch Changes
+
+-   b45093b: Revert toggle, required to support BAS CLI flows
+
+## 1.21.3
+
+### Patch Changes
+
+-   4303f99: fix(axios): Disable System info params encoding
+
+## 1.21.2
+
+### Patch Changes
+
+-   61d4060: use accept header for service generator content request from config
+
+## 1.21.1
+
+### Patch Changes
+
+-   2224d63: Remove feature toggle, required to enable HTTPS proxy configurations
+
+## 1.21.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/feature-toggle@0.3.0
+    -   @sap-ux/btp-utils@1.1.0
+    -   @sap-ux/logger@0.7.0
+
+## 1.20.3
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+
+## 1.20.2
+
+### Patch Changes
+
+-   1a01c5e: Update README.adoc showing how to use proxy credentials
+
+## 1.20.1
+
+### Patch Changes
+
+-   a3a43b2: Append warning message if the BSP properties do not match the deployed BSP properties
+
+## 1.20.0
+
+### Minor Changes
+
+-   28c6594: Added a new sub-generator: `@sap-ux/repo-app-download-sub-generator` to support downloading ABAP deployed Fiori apps from the repository. Enhanced `@sap-ux/axios-extension` to support Base64 download data.
+
+## 1.19.3
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+
+## 1.19.2
+
+### Patch Changes
+
+-   ced5edf: feat(generator-adp): Create a yeoman package for Adaptation Project generator
+
+## 1.19.1
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+
+## 1.19.0
+
+### Minor Changes
+
+-   aaa432a: Export patchTls from `sap-ux/axios-extension`
+
+## 1.18.6
+
+### Patch Changes
+
+-   4fd3029: Allow using an alias for the reentrance url
+
+## 1.18.5
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+
+## 1.18.4
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+
+## 1.18.3
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+
+## 1.18.2
+
+### Patch Changes
+
+-   e516306: Handle partial deployment timeout by updating repo on second retry when timeout occurs.
+
+## 1.18.1
+
+### Patch Changes
+
+-   1559aee: add entry for s4 hana cloud urls with .lab
+
+## 1.18.0
+
+### Minor Changes
+
+-   2e3c15e: Proper check for cloud ABAP systems
+
+## 1.17.8
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+
+## 1.17.7
+
+### Patch Changes
+
+-   727fd86: Fix v4 odata services not paged
+
+## 1.17.6
+
+### Patch Changes
+
+-   Updated dependencies [2359524]
+    -   @sap-ux/btp-utils@0.17.1
+
+## 1.17.5
+
+### Patch Changes
+
+-   Updated dependencies [d04a40e]
+    -   @sap-ux/feature-toggle@0.2.3
+
+## 1.17.4
+
+### Patch Changes
+
+-   Updated dependencies [a62ff25]
+    -   @sap-ux/btp-utils@0.17.0
+
+## 1.17.3
+
+### Patch Changes
+
+-   8237f83: feat: add namespaces to annotation template
+
+## 1.17.2
+
+### Patch Changes
+
+-   Updated dependencies [3734fe8]
+    -   @sap-ux/btp-utils@0.16.0
+
+## 1.17.1
+
+### Patch Changes
+
+-   7551316: Small text cleanups
+
+## 1.17.0
+
+### Minor Changes
+
+-   0120dda: Handle HTTP(S) proxy configurations
+
+## 1.16.7
+
+### Patch Changes
+
+-   9bda640: CPE loading changes from backend and not from workspace
+
+## 1.16.6
+
+### Patch Changes
+
+-   aa72f3c: Fix preview adp project with component dependencies
+
+## 1.16.5
+
+### Patch Changes
+
+-   Updated dependencies [d3dafeb]
+    -   @sap-ux/btp-utils@0.15.2
+
+## 1.16.4
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/btp-utils@0.15.1
+
+## 1.16.3
+
+### Patch Changes
+
+-   0084205: linting: use optional chaining operator ?
+
 ## 1.16.2
 
 ### Patch Changes

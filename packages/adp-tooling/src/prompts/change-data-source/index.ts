@@ -3,7 +3,45 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { ChangeDataSourceAnswers } from '../../types';
 import { t } from '../../i18n';
 import { filterDataSourcesByType } from '@sap-ux/project-access';
-import { validateEmptyString } from '@sap-ux/project-input-validator';
+import { validateEmptyString, isDataSourceURI } from '@sap-ux/project-input-validator';
+
+/**
+ * Validates the OData Source URI prompt.
+ *
+ * @param value The value to validate.
+ * @returns {boolean | string} True if the value is a valid URI, or an error message if not a valid URI or empty.
+ */
+function validatePromptOdataURI(value: string): boolean | string {
+    const validationResult = validateEmptyString(value);
+    if (typeof validationResult === 'string') {
+        return validationResult;
+    }
+
+    if (!isDataSourceURI(value)) {
+        return t('validators.errorInvalidDataSourceURI');
+    }
+
+    return true;
+}
+
+/**
+ * Validates the Annotation URI prompt.
+ *
+ * @param value The value to validate.
+ * @returns {boolean | string} True if the value is a valid URI or empty, or an error message if not a valid URI.
+ */
+function validatePromptAnnotationURI(value: string): boolean | string {
+    const validationResult = validateEmptyString(value);
+    if (typeof validationResult === 'string') {
+        return true;
+    }
+
+    if (!isDataSourceURI(value)) {
+        return t('validators.errorInvalidDataSourceURI');
+    }
+
+    return true;
+}
 
 /**
  * Gets the prompts for changing the data source.
@@ -36,7 +74,7 @@ export function getPrompts(
                 mandatory: true,
                 hint: t('prompts.oDataSourceURITooltip')
             },
-            validate: validateEmptyString,
+            validate: validatePromptOdataURI,
             when: !!dataSourceIds.length,
             store: false
         } as InputQuestion<ChangeDataSourceAnswers>,
@@ -55,7 +93,8 @@ export function getPrompts(
             message: t('prompts.oDataAnnotationSourceURILabel'),
             guiOptions: {
                 hint: t('prompts.oDataAnnotationSourceURITooltip')
-            }
+            },
+            validate: validatePromptAnnotationURI
         } as InputQuestion<ChangeDataSourceAnswers>
     ];
 }

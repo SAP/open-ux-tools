@@ -10,6 +10,7 @@ export interface InsertTarget {
      */
     pointer: JsonPointer;
     target: AnnotationFileTarget;
+    complexTypePathSegments?: string[];
     /**
      * Before which child element the new element should be inserted. If omitted will be added at the end.
      */
@@ -21,17 +22,20 @@ export interface InsertTarget {
  * @param pointer - Pointer to an element.
  * @param target - Internal representation of the target.
  * @param index - Before which child element the new element should be inserted. If omitted will be added at the end.
+ * @param complexTypePathSegments
  * @returns Insert target change.
  */
 export function createInsertTargetChange(
     pointer: JsonPointer,
     target: AnnotationFileTarget,
-    index?: number
+    index?: number,
+    complexTypePathSegments?: string[]
 ): InsertTarget {
     return {
         type: INSERT_TARGET_CHANGE_TYPE,
         pointer,
         target,
+        complexTypePathSegments,
         index
     };
 }

@@ -1,7 +1,7 @@
 import * as projectValidators from '@sap-ux/project-input-validator';
 import * as promptHelpers from '../../../src/prompts/prompt-helpers';
 import { join } from 'path';
-import { initI18nUi5AppInquirer } from '../../../src/i18n';
+import { initI18nUi5AppInquirer, t } from '../../../src/i18n';
 import { validateAppName } from '../../../src/prompts/validators';
 
 /**
@@ -13,6 +13,12 @@ jest.mock('@sap-ux/project-input-validator', () => {
         ...jest.requireActual('@sap-ux/project-input-validator')
     };
 });
+
+jest.mock('@sap-ux/project-access', () => ({
+    findRootsForPath: jest.fn(),
+    findCapProjectRoot: jest.fn(),
+    getCapProjectType: jest.fn()
+}));
 
 describe('validators', () => {
     beforeAll(async () => {
@@ -39,7 +45,7 @@ describe('validators', () => {
         validateModuleNameSpy = jest.spyOn(projectValidators, 'validateModuleName').mockReturnValue(true);
         appPathExistsSpy = jest.spyOn(promptHelpers, 'appPathExists').mockReturnValue(true);
         expect(validateAppName(appName, targetPath)).toBe(
-            `A module with this name already exists in the folder: ${targetPath}`
+            `A module with this name already exists in the folder: ${targetPath}. Choose a different module name.`
         );
     });
 });

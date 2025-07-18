@@ -202,13 +202,6 @@ function pushMissingPathEscapingDiagnostic(
         return;
     }
 
-    const pathSeparatorDiagnostic: ODataPathSeparatorDiagnostic = {
-        rule: ODATA_PATH_SEPARATOR_RULE,
-        message: i18n.t('Path_escaping_brackets_should_be_used'),
-        range: Range.create(copyPosition(start.range.start), copyPosition(end.range.end)),
-        severity: DiagnosticSeverity.Warning
-    };
-
     const valueToBeEscaped = '@' + node.value.split('@').slice(1).join('@');
 
     const prefix = start.type === IDENTIFIER_TYPE && start.quoted ? '' : '![';
@@ -216,9 +209,15 @@ function pushMissingPathEscapingDiagnostic(
     // If there are existing escape sequences, we need to remove them
     const body = valueToBeEscaped.replace(/[![\]]/g, '');
 
-    pathSeparatorDiagnostic.data = {
-        value: valueToBeEscaped,
-        proposedValue: prefix + body + suffix
+    const pathSeparatorDiagnostic: ODataPathSeparatorDiagnostic = {
+        rule: ODATA_PATH_SEPARATOR_RULE,
+        message: i18n.t('Path_escaping_brackets_should_be_used'),
+        range: Range.create(copyPosition(start.range.start), copyPosition(end.range.end)),
+        data: {
+            value: valueToBeEscaped,
+            proposedValue: prefix + body + suffix
+        },
+        severity: DiagnosticSeverity.Warning
     };
 
     state.addDiagnostic(pathSeparatorDiagnostic);

@@ -1,5 +1,5 @@
 import { existsSync } from 'fs';
-import { mkdir, rm, writeFile } from 'fs/promises';
+import { mkdir, rm } from 'fs/promises';
 import { join } from 'path';
 import type { Logger } from '@sap-ux/logger';
 import { getNodeModulesPath } from './dependencies';
@@ -57,15 +57,34 @@ export async function getModule<T>(module: string, version: string, options?: { 
     const logger = options?.logger;
     const moduleDirectory = join(moduleCacheRoot, module, version);
     const modulePackagePath = join(moduleDirectory, FileName.Package);
+    const installCommand = ['install', '--prefix', moduleDirectory, `${module}@${version}`];
     if (!existsSync(modulePackagePath)) {
         if (existsSync(moduleDirectory)) {
             await rm(moduleDirectory, { recursive: true });
         }
         await mkdir(moduleDirectory, { recursive: true });
-        await writeFile(modulePackagePath, '{}');
-        await execNpmCommand(['install', `${module}@${version}`], { cwd: moduleDirectory, logger });
+        await execNpmCommand(installCommand, {
+            cwd: moduleDirectory,
+            logger
+        });
     }
-    return loadModuleFromProject<T>(moduleDirectory, module);
+    let resolvedModule: T;
+    try {
+        resolvedModule = await loadModuleFromProject<T>(moduleDirectory, module);
+    } catch (e) {
+        logger?.error(`Failed to load module: ${module}. Attempting to fix installation.`);
+        const modulePackageLockPath = join(moduleDirectory, FileName.PackageLock);
+        // If 'package-lock.json' file exists then use 'npm ci', otherwise try reinstall
+        const command = existsSync(modulePackageLockPath) ? ['ci'] : installCommand;
+        // Run reinstall only if the first attempt fails
+        await execNpmCommand(command, {
+            cwd: moduleDirectory,
+            logger
+        });
+        // Retry loading the module
+        resolvedModule = await loadModuleFromProject<T>(moduleDirectory, module);
+    }
+    return resolvedModule;
 }
 
 /**

@@ -1,0 +1,11 @@
+{
+    "name": "cds",
+    "version": "1.0.0",
+    "description": "Test CDS latest version",
+    "dependencies": {
+        "@sap/cds": "8.9.2"
+    },
+    "resolutions": {
+        "@sap/cds-compiler": "5.9.2"
+    }
+}

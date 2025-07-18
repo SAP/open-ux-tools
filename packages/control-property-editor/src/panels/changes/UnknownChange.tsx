@@ -11,8 +11,10 @@ import { getFormattedDateAndTime } from './utils';
 
 export interface UnknownChangeProps {
     fileName: string;
+    title?: string;
     timestamp?: number;
     controlId?: string;
+    isActive: boolean;
     header?: boolean;
 }
 
@@ -23,7 +25,7 @@ export interface UnknownChangeProps {
  * @returns ReactElement
  */
 export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElement {
-    const { fileName, timestamp, header, controlId } = unknownChangeProps;
+    const { fileName, timestamp, header, controlId, isActive, title } = unknownChangeProps;
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [dialogState, setDialogState] = useState<PropertyChangeDeletionDetails | undefined>(undefined);
@@ -42,25 +44,22 @@ export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElem
     const parts = fileName.split('_');
     const changeName = parts[parts.length - 1];
     const name = convertCamelCaseToPascalCase(changeName);
+    const headerText = title ?? `${name} ${t('CHANGE')}`;
     return (
         <>
             <Stack className={styles.item}>
                 <Stack.Item className={styles.property}>
                     <Stack horizontal>
                         <Stack.Item>
-                            {header && (
-                                <Text className={styles.textHeader}>
-                                    {name} {t('CHANGE')}
-                                </Text>
-                            )}
-                            <Stack horizontal>
+                            {header && <Text className={styles.textHeader}>{headerText}</Text>}
+                            <Stack horizontal style={{ opacity: isActive ? 1 : 0.4 }}>
                                 <Stack.Item className={styles.fileLabel}>{t('FILE')}</Stack.Item>
                                 <Stack.Item className={styles.fileText} title={fileName}>
                                     {fileName}
                                 </Stack.Item>
                             </Stack>
                             {controlId && (
-                                <Stack horizontal>
+                                <Stack horizontal style={{ opacity: isActive ? 1 : 0.4 }}>
                                     <Stack.Item className={styles.controlLabel}>{t('CONTROL')}</Stack.Item>
                                     <Stack.Item className={styles.controlText} title={controlId}>
                                         {controlId}

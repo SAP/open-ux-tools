@@ -11,7 +11,7 @@ import { TARGET_TYPE } from '@sap-ux/cds-odata-annotation-converter';
 
 import { ApiError, ApiErrorCode } from '../error';
 import type { AstNode } from './document';
-import type { CompilerToken } from './cds-compiler-tokens';
+import { matchTokenByStart, tokenColumn, tokenLine, type CompilerToken } from './cds-compiler-tokens';
 
 /**
  *  Normalizes URI.
@@ -33,17 +33,15 @@ export function toUnifiedUri(fileUri: string | undefined, removeGhostFilePrefix 
  * @returns Start and end token indices for the range.
  */
 export function getTokenRange(tokens: CompilerToken[], range: Range): { start: number; end: number } {
-    const start = tokens.findIndex(
-        (token) => token.line === range.start.line + 1 && token.column === range.start.character
-    );
+    const start = tokens.findIndex(matchTokenByStart(range.start));
     let end = -1;
     if (start > -1) {
         end = tokens
             .slice(start)
             .findIndex(
                 (token) =>
-                    token.line > range.end.line + 1 ||
-                    (token.line === range.end.line + 1 && token.column >= range.end.character)
+                    tokenLine(token) > range.end.line ||
+                    (tokenLine(token) === range.end.line && tokenColumn(token) >= range.end.character)
             );
         end = start + end - 1;
     }

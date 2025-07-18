@@ -10,7 +10,8 @@ import type { AbapCDSView, AtoSettings, BusinessObject } from './types';
 import { TenantType } from './types';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { AdtService, AtoService, GeneratorService } from './adt-catalog/services';
+import { AdtService, AtoService, GeneratorService, RapGeneratorService } from './adt-catalog/services';
+import { ODataServiceGenerator } from './adt-catalog/generators/odata-service-generator';
 import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
 import type { GeneratorEntry } from './adt-catalog/generators/types';
 
@@ -90,16 +91,11 @@ export class AbapServiceProvider extends ServiceProvider {
      *
      * @returns true if it an S/4HANA cloud system
      */
-    public async isS4Cloud(): Promise<boolean> {
+    public async isAbapCloud(): Promise<boolean> {
         if (this.atoSettings === undefined) {
             await this.getAtoInfo();
         }
-        return (
-            this.atoSettings.tenantType === TenantType.Customer &&
-            this.atoSettings.operationsType === 'C' &&
-            this.atoSettings.developmentPrefix !== '' &&
-            this.atoSettings.developmentPackage !== ''
-        );
+        return this.atoSettings.tenantType === TenantType.Customer && this.atoSettings.operationsType === 'C';
     }
 
     /**
@@ -138,8 +134,8 @@ export class AbapServiceProvider extends ServiceProvider {
         } else {
             throw new Error('not implemented yet');
         }
-        Object.defineProperty(service, 'isS4Cloud', {
-            get: this.isS4Cloud.bind(this)
+        Object.defineProperty(service, 'isAbapCloud', {
+            get: this.isAbapCloud.bind(this)
         });
         return service;
     }
@@ -229,8 +225,29 @@ export class AbapServiceProvider extends ServiceProvider {
         }
         const config = await generatorService.getUIServiceGeneratorConfig(referencedObject.uri);
         const gen = this.createService<UiServiceGenerator>(this.getServiceUrlFromConfig(config), UiServiceGenerator);
-        gen.configure(config, referencedObject);
+        gen.configure(config, referencedObject, this.getContentType(config));
         return gen;
+    }
+
+    /**
+     * Gets an OData Service generator.
+     *
+     * @param packageName - Name of package to be used for generated artifacts in ABAP system
+     * @returns An OData Service generator
+     */
+    public async getODataServiceGenerator(packageName: string): Promise<ODataServiceGenerator> {
+        const generatorService = await this.getAdtService<RapGeneratorService>(RapGeneratorService);
+        if (!generatorService) {
+            throw new Error('RAP Generator are not support on this system');
+        }
+        const config = await generatorService.getRAPGeneratorConfig();
+        const generator = this.createService<ODataServiceGenerator>(
+            this.getServiceUrlFromConfig(config),
+            ODataServiceGenerator
+        );
+        generator.setContentType(this.getContentType(config));
+        generator.configure(config, packageName || '$TMP');
+        return generator;
     }
 
     /**
@@ -246,6 +263,17 @@ export class AbapServiceProvider extends ServiceProvider {
         }
         const endIndex = config.link[0].href.indexOf(config.id) + config.id.length;
         return config.link[0].href.substring(0, endIndex);
+    }
+
+    /**
+     * @param config - generator config
+     * @returns the type of the content link from service generator config
+     */
+    private getContentType(config: GeneratorEntry): string {
+        const contentEndpoint = config.link?.find(
+            (link) => typeof link.href === 'string' && link.href.includes('/content')
+        );
+        return contentEndpoint.type;
     }
 
     /**

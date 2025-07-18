@@ -1,5 +1,5 @@
 import type { Dispatch } from 'redux';
-import type { Middleware, MiddlewareAPI } from '@reduxjs/toolkit';
+import type { AnyAction, Middleware, MiddlewareAPI } from '@reduxjs/toolkit';
 
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import {
@@ -12,9 +12,15 @@ import {
     undo,
     redo,
     save,
-    setAppMode
+    setAppMode,
+    executeQuickAction,
+    appLoaded,
+    externalFileChange,
+    requestControlContextMenu,
+    executeContextMenuAction
 } from '@sap-ux-private/control-property-editor-common';
 
+import type reducer from './slice';
 import { changeProperty } from './slice';
 
 type Action = ReturnType<typeof changeProperty>;
@@ -25,7 +31,9 @@ type Action = ReturnType<typeof changeProperty>;
  * @param store - redux store
  * @returns Function
  */
-export const communicationMiddleware: Middleware<Dispatch<ExternalAction>> = (store: MiddlewareAPI) => {
+export const communicationMiddleware: Middleware<Dispatch<ExternalAction>, ReturnType<typeof reducer>> = (
+    store: MiddlewareAPI<Dispatch<AnyAction>, ReturnType<typeof reducer>>
+) => {
     const { sendAction } = startPostMessageCommunication<ExternalAction>(
         function getTarget(): Window | undefined {
             let result;
@@ -36,6 +44,12 @@ export const communicationMiddleware: Middleware<Dispatch<ExternalAction>> = (st
             return result;
         },
         function onAction(action) {
+            if (appLoaded.match(action)) {
+                const control = store.getState().selectedControl;
+                if (control) {
+                    sendAction(selectControl(control.id));
+                }
+            }
             store.dispatch(action);
             return Promise.resolve();
         }
@@ -49,6 +63,7 @@ export const communicationMiddleware: Middleware<Dispatch<ExternalAction>> = (st
                     sendAction(externalChangeProperty(action.payload));
                     break;
                 }
+                case executeQuickAction.type:
                 case reloadApplication.type:
                 case deletePropertyChanges.type:
                 case setAppMode.type:
@@ -56,7 +71,10 @@ export const communicationMiddleware: Middleware<Dispatch<ExternalAction>> = (st
                 case redo.type:
                 case save.type:
                 case selectControl.type:
-                case addExtensionPoint.type: {
+                case addExtensionPoint.type:
+                case externalFileChange.type:
+                case executeContextMenuAction.type:
+                case requestControlContextMenu.pending.type: {
                     sendAction(action);
                     break;
                 }

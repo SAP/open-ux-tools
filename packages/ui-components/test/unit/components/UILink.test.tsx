@@ -29,7 +29,7 @@ describe('<UILink />', () => {
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
               "color": "var(--vscode-textLink-foreground)",
-              "fontFamily": "var(--vscode-font-family)",
+              "opacity": undefined,
               "selectors": Object {
                 "&:active, &:focus": Object {
                   "color": "var(--vscode-textLink-activeForeground)",
@@ -59,7 +59,7 @@ describe('<UILink />', () => {
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
               "color": "var(--vscode-foreground)",
-              "fontFamily": "var(--vscode-font-family)",
+              "opacity": undefined,
               "selectors": Object {
                 "&:active, &:focus": Object {
                   "color": "var(--vscode-foreground)",
@@ -76,6 +76,51 @@ describe('<UILink />', () => {
                   "outlineOffset": "-1px",
                 },
               },
+              "textDecoration": "underline",
+            }
+        `);
+    });
+
+    it('Styles - primary with no underline', () => {
+        wrapper.setProps({
+            underline: false
+        });
+        const styles = getStyles();
+        expect(styles.root).toMatchInlineSnapshot(`
+            Object {
+              "color": "var(--vscode-textLink-foreground)",
+              "opacity": undefined,
+              "selectors": Object {
+                "&:active, &:focus": Object {
+                  "color": "var(--vscode-textLink-activeForeground)",
+                  "outline": "none",
+                  "textDecoration": "underline",
+                },
+                "&:hover, &:hover:focus, &:hover:active": Object {
+                  "color": "var(--vscode-textLink-activeForeground)",
+                  "textDecoration": "underline",
+                },
+                ".ms-Fabric--isFocusVisible &:focus": Object {
+                  "boxShadow": "none",
+                  "outline": "1px solid var(--vscode-focusBorder)",
+                  "outlineOffset": "-1px",
+                },
+              },
+              "textDecoration": undefined,
+            }
+        `);
+    });
+
+    it('Styles - disabled', () => {
+        wrapper.setProps({
+            disabled: true
+        });
+        const styles = getStyles();
+        expect(styles.root).toMatchInlineSnapshot(`
+            Object {
+              "color": "var(--vscode-textLink-foreground)",
+              "opacity": 0.4,
+              "selectors": undefined,
               "textDecoration": "underline",
             }
         `);

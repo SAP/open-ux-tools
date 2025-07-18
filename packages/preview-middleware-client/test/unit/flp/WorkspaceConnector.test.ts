@@ -1,10 +1,12 @@
 import ObjectStorageConnector from 'mock/sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import connector from '../../../src/flp/WorkspaceConnector';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
+import * as additionalChangeInfo from '../../../src/utils/additional-change-info';
 
 import { documentMock, fetchMock } from 'mock/window';
 
 describe('flp/WorkspaceConnector', () => {
+    jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValue(undefined);
     test('layers', () => {
         expect(connector.layers).toEqual(['VENDOR', 'CUSTOMER_BASE']);
     });
@@ -15,15 +17,25 @@ describe('flp/WorkspaceConnector', () => {
         });
 
         test('setItem', async () => {
+            jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValueOnce({
+                templateName: 'templateName'
+            });
             connector.storage.fileChangeRequestNotifier = jest.fn();
             const change = { data: '~Data' };
             await connector.storage.setItem('~notUsed', change);
+
+            const body = {
+                change: {
+                    ...change
+                },
+                additionalChangeInfo: { templateName: 'templateName' }
+            };
 
             expect(fetch).toHaveBeenCalledWith(
                 expect.anything(),
                 expect.objectContaining({
                     method: 'POST',
-                    body: JSON.stringify(change, null, 2)
+                    body: JSON.stringify(body, null, 2)
                 })
             );
             expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledTimes(0);
@@ -38,10 +50,15 @@ describe('flp/WorkspaceConnector', () => {
                 expect.anything(),
                 expect.objectContaining({
                     method: 'POST',
-                    body: JSON.stringify(change, null, 2)
+                    body: JSON.stringify({ change: { ...change } }, null, 2)
                 })
             );
-            expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith('dummyFile', 'create', 'property');
+            expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith(
+                'dummyFile',
+                'create',
+                change,
+                undefined
+            );
         });
 
         test('setItem, generator - tool-variant', async () => {
@@ -97,19 +114,19 @@ describe('flp/WorkspaceConnector', () => {
         });
 
         test('version >= 1.90, no developerMode', async () => {
-            VersionInfo.load.mockResolvedValueOnce({name: 'sap.ui.core', version: '1.118.1' });
+            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.118.1' });
             const features = await connector.loadFeatures();
             expect(features.isVariantAdaptationEnabled).toBe(true);
         });
 
         test('version < 1.90', async () => {
-            VersionInfo.load.mockResolvedValueOnce({name: 'sap.ui.core', version: '1.89.3' });
+            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.89.3' });
             const features = await connector.loadFeatures();
             expect(features.isVariantAdaptationEnabled).toBe(false);
         });
 
         test('version >= 1.90, developerMode=true', async () => {
-            VersionInfo.load.mockResolvedValueOnce({name: 'sap.ui.core', version: '1.118.1' });
+            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.118.1' });
             documentMock.getElementById.mockReturnValueOnce({
                 getAttribute: () => JSON.stringify({ developerMode: true })
             });
@@ -118,7 +135,7 @@ describe('flp/WorkspaceConnector', () => {
         });
 
         test('scenario=ADAPTATION_PROJECT', async () => {
-            VersionInfo.load.mockResolvedValueOnce({name: 'sap.ui.core', version: '1.118.1' });
+            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.118.1' });
             documentMock.getElementById.mockReturnValueOnce({
                 getAttribute: () => JSON.stringify({ scenario: 'ADAPTATION_PROJECT' })
             });

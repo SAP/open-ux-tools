@@ -1,5 +1,153 @@
 # @sap-ux/project-input-validator
 
+## 0.6.12
+
+### Patch Changes
+
+-   a1f282f: moves validate fiori app folder to before default is determined
+
+## 0.6.11
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+
+## 0.6.10
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+
+## 0.6.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+
+## 0.6.7
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.6.6
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+
+## 0.6.5
+
+### Patch Changes
+
+-   83109eb: feat(generator-adp): Various bug fixes and improvements for ADP generator
+
+## 0.6.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+
+## 0.6.3
+
+### Patch Changes
+
+-   c9f79c1: Check long Windows paths during project generation and deployment config generation.
+
+## 0.6.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+
+## 0.6.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+
+## 0.6.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/project-access@1.30.0
+
+## 0.5.6
+
+### Patch Changes
+
+-   6cb23c8: feat: Add the Extension Project functionality and internal support information
+
+## 0.5.5
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+
+## 0.5.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+
+## 0.5.3
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+
+## 0.5.1
+
+### Patch Changes
+
+-   2db2c33: feat(generator-adp): Add Project Attributes page
+
+## 0.5.0
+
+### Minor Changes
+
+-   ab81490: Rename validateTargetFolderForFioriApp to validateFioriAppTargetFolder for clarity and improve ts docs
+
+## 0.4.0
+
+### Minor Changes
+
+-   c69752b: Move validate target project path logic from ui5-application-inquirer to project-input-validator for improved reuse
+
+## 0.3.4
+
+### Patch Changes
+
+-   cfdd442: feat: FLP Configuration inquirer
+
+## 0.3.3
+
+### Patch Changes
+
+-   593ad0f: Adp-tooling prompting validations
+
 ## 0.3.2
 
 ### Patch Changes

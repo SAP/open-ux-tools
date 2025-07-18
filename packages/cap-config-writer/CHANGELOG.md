@@ -1,5 +1,820 @@
 # @sap-ux/cap-config-writer
 
+## 0.10.20
+
+### Patch Changes
+
+-   Updated dependencies [d75db00]
+    -   @sap-ux/fiori-generator-shared@0.13.2
+
+## 0.10.19
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/fiori-generator-shared@0.13.1
+
+## 0.10.18
+
+### Patch Changes
+
+-   Updated dependencies [58abe82]
+    -   @sap-ux/fiori-generator-shared@0.13.0
+
+## 0.10.17
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/fiori-generator-shared@0.12.16
+
+## 0.10.16
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.6
+-   @sap-ux/fiori-generator-shared@0.12.15
+
+## 0.10.15
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/fiori-generator-shared@0.12.14
+
+## 0.10.14
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/fiori-generator-shared@0.12.13
+
+## 0.10.13
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/fiori-generator-shared@0.12.12
+
+## 0.10.12
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.12.11
+
+## 0.10.11
+
+### Patch Changes
+
+-   Updated dependencies [4fef16a]
+    -   @sap-ux/fiori-generator-shared@0.12.10
+
+## 0.10.10
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/fiori-generator-shared@0.12.9
+
+## 0.10.9
+
+### Patch Changes
+
+-   3ea811a: Bump @ui5/cli version
+
+## 0.10.8
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/fiori-generator-shared@0.12.8
+
+## 0.10.7
+
+### Patch Changes
+
+-   Updated dependencies [4e6c22e]
+    -   @sap-ux/fiori-generator-shared@0.12.7
+
+## 0.10.6
+
+### Patch Changes
+
+-   Updated dependencies [95a816d]
+    -   @sap-ux/fiori-generator-shared@0.12.6
+
+## 0.10.5
+
+### Patch Changes
+
+-   Updated dependencies [15ec5c4]
+    -   @sap-ux/fiori-generator-shared@0.12.5
+
+## 0.10.4
+
+### Patch Changes
+
+-   Updated dependencies [91726b0]
+    -   @sap-ux/fiori-generator-shared@0.12.4
+
+## 0.10.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.2
+-   @sap-ux/fiori-generator-shared@0.12.3
+
+## 0.10.2
+
+### Patch Changes
+
+-   Updated dependencies [ac55cca]
+    -   @sap-ux/fiori-generator-shared@0.12.2
+
+## 0.10.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.1
+-   @sap-ux/fiori-generator-shared@0.12.1
+
+## 0.10.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/fiori-generator-shared@0.12.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/logger@0.7.0
+    -   @sap-ux/yaml@0.17.0
+
+## 0.9.29
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/fiori-generator-shared@0.11.3
+
+## 0.9.28
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/fiori-generator-shared@0.11.2
+
+## 0.9.27
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/fiori-generator-shared@0.11.1
+
+## 0.9.26
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/project-access@1.29.19
+
+## 0.9.25
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.10.2
+
+## 0.9.24
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.10.1
+
+## 0.9.23
+
+### Patch Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+
+## 0.9.22
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/fiori-generator-shared@0.9.11
+
+## 0.9.21
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/fiori-generator-shared@0.9.10
+
+## 0.9.20
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.9
+-   @sap-ux/project-access@1.29.16
+
+## 0.9.19
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/fiori-generator-shared@0.9.8
+
+## 0.9.18
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/fiori-generator-shared@0.9.7
+
+## 0.9.17
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.13
+-   @sap-ux/fiori-generator-shared@0.9.6
+
+## 0.9.16
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+-   @sap-ux/fiori-generator-shared@0.9.5
+
+## 0.9.15
+
+### Patch Changes
+
+-   Updated dependencies [d47a1b1]
+    -   @sap-ux/fiori-generator-shared@0.9.4
+
+## 0.9.14
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/fiori-generator-shared@0.9.3
+
+## 0.9.13
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.2
+-   @sap-ux/project-access@1.29.10
+
+## 0.9.12
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/fiori-generator-shared@0.9.1
+
+## 0.9.11
+
+### Patch Changes
+
+-   Updated dependencies [fffc3a7]
+    -   @sap-ux/fiori-generator-shared@0.9.0
+
+## 0.9.10
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/fiori-generator-shared@0.8.1
+
+## 0.9.9
+
+### Patch Changes
+
+-   Updated dependencies [fb4e328]
+    -   @sap-ux/fiori-generator-shared@0.8.0
+
+## 0.9.8
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/fiori-generator-shared@0.7.29
+
+## 0.9.7
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.6
+-   @sap-ux/fiori-generator-shared@0.7.28
+
+## 0.9.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/fiori-generator-shared@0.7.27
+
+## 0.9.5
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.26
+
+## 0.9.4
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/fiori-generator-shared@0.7.25
+
+## 0.9.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.24
+
+## 0.9.2
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/fiori-generator-shared@0.7.23
+
+## 0.9.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.22
+
+## 0.9.0
+
+### Minor Changes
+
+-   d6b7440: Move `CapService` and `CapRuntime` types from `@sap-ux/odata-service-inquirer` to `@sap-ux/cap-config-writer` for better relevance; add CAP updates to generate functions of Fiori Elements and Freestyle writers
+
+## 0.8.4
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/fiori-generator-shared@0.7.21
+
+## 0.8.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.1
+-   @sap-ux/fiori-generator-shared@0.7.20
+
+## 0.8.2
+
+### Patch Changes
+
+-   1309fec: Fix writing watch script for CAP project where npm workspaces is already enabled
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/fiori-generator-shared@0.7.19
+
+## 0.8.0
+
+### Minor Changes
+
+-   45c01b0: Remove cds version check when adding a cds watch script to root package.json
+
+## 0.7.68
+
+### Patch Changes
+
+-   Updated dependencies [fe0878d]
+    -   @sap-ux/fiori-generator-shared@0.7.18
+
+## 0.7.67
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/fiori-generator-shared@0.7.17
+
+## 0.7.66
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.16
+
+## 0.7.65
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.15
+
+## 0.7.64
+
+### Patch Changes
+
+-   Updated dependencies [1bb4d48]
+    -   @sap-ux/fiori-generator-shared@0.7.14
+
+## 0.7.63
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/fiori-generator-shared@0.7.13
+
+## 0.7.62
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.12
+
+## 0.7.61
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.8
+-   @sap-ux/fiori-generator-shared@0.7.11
+
+## 0.7.60
+
+### Patch Changes
+
+-   Updated dependencies [575ff89]
+    -   @sap-ux/fiori-generator-shared@0.7.10
+
+## 0.7.59
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.9
+
+## 0.7.58
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.7
+-   @sap-ux/fiori-generator-shared@0.7.8
+
+## 0.7.57
+
+### Patch Changes
+
+-   Updated dependencies [2886db3]
+    -   @sap-ux/fiori-generator-shared@0.7.7
+
+## 0.7.56
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.6
+
+## 0.7.55
+
+### Patch Changes
+
+-   Updated dependencies [fb26f92]
+    -   @sap-ux/project-access@1.28.6
+    -   @sap-ux/fiori-generator-shared@0.7.5
+
+## 0.7.54
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.5
+-   @sap-ux/fiori-generator-shared@0.7.4
+
+## 0.7.53
+
+### Patch Changes
+
+-   Updated dependencies [5a68903]
+    -   @sap-ux/fiori-generator-shared@0.7.3
+    -   @sap-ux/project-access@1.28.4
+
+## 0.7.52
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.2
+
+## 0.7.51
+
+### Patch Changes
+
+-   Updated dependencies [42f13eb]
+    -   @sap-ux/project-access@1.28.3
+    -   @sap-ux/fiori-generator-shared@0.7.1
+
+## 0.7.50
+
+### Patch Changes
+
+-   Updated dependencies [231e713]
+    -   @sap-ux/fiori-generator-shared@0.7.0
+
+## 0.7.49
+
+### Patch Changes
+
+-   Updated dependencies [eb38e5b]
+    -   @sap-ux/project-access@1.28.2
+    -   @sap-ux/fiori-generator-shared@0.6.4
+
+## 0.7.48
+
+### Patch Changes
+
+-   Updated dependencies [64e037d]
+    -   @sap-ux/project-access@1.28.1
+    -   @sap-ux/fiori-generator-shared@0.6.3
+
+## 0.7.47
+
+### Patch Changes
+
+-   Updated dependencies [15e6959]
+    -   @sap-ux/project-access@1.28.0
+    -   @sap-ux/fiori-generator-shared@0.6.2
+
+## 0.7.46
+
+### Patch Changes
+
+-   Updated dependencies [eb74890]
+    -   @sap-ux/project-access@1.27.6
+    -   @sap-ux/fiori-generator-shared@0.6.1
+
+## 0.7.45
+
+### Patch Changes
+
+-   Updated dependencies [d40af34]
+    -   @sap-ux/fiori-generator-shared@0.6.0
+
+## 0.7.44
+
+### Patch Changes
+
+-   Updated dependencies [a64a3a5]
+    -   @sap-ux/project-access@1.27.5
+    -   @sap-ux/fiori-generator-shared@0.5.1
+
+## 0.7.43
+
+### Patch Changes
+
+-   Updated dependencies [04988f1]
+    -   @sap-ux/fiori-generator-shared@0.5.0
+
+## 0.7.42
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/fiori-generator-shared@0.4.0
+    -   @sap-ux/project-access@1.27.4
+
+## 0.7.41
+
+### Patch Changes
+
+-   Updated dependencies [070182d]
+    -   @sap-ux/project-access@1.27.3
+    -   @sap-ux/fiori-generator-shared@0.3.21
+
+## 0.7.40
+
+### Patch Changes
+
+-   614045c: Moves type only dep as dev dep to odata-service-inquirer
+
+## 0.7.39
+
+### Patch Changes
+
+-   Updated dependencies [09522df]
+    -   @sap-ux/project-access@1.27.2
+    -   @sap-ux/fiori-generator-shared@0.3.20
+    -   @sap-ux/odata-service-inquirer@0.5.39
+
+## 0.7.38
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.38
+
+## 0.7.37
+
+### Patch Changes
+
+-   Updated dependencies [97f1d2a]
+    -   @sap-ux/odata-service-inquirer@0.5.37
+
+## 0.7.36
+
+### Patch Changes
+
+-   Updated dependencies [d962ce1]
+    -   @sap-ux/project-access@1.27.1
+    -   @sap-ux/odata-service-inquirer@0.5.36
+    -   @sap-ux/fiori-generator-shared@0.3.19
+
+## 0.7.35
+
+### Patch Changes
+
+-   Updated dependencies [eb958a1]
+    -   @sap-ux/odata-service-inquirer@0.5.35
+
+## 0.7.34
+
+### Patch Changes
+
+-   Updated dependencies [8a84adf]
+    -   @sap-ux/odata-service-inquirer@0.5.34
+
+## 0.7.33
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/project-access@1.27.0
+    -   @sap-ux/fiori-generator-shared@0.3.18
+    -   @sap-ux/odata-service-inquirer@0.5.33
+
+## 0.7.32
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.32
+
+## 0.7.31
+
+### Patch Changes
+
+-   Updated dependencies [e2f644a]
+    -   @sap-ux/odata-service-inquirer@0.5.31
+    -   @sap-ux/project-access@1.26.9
+    -   @sap-ux/fiori-generator-shared@0.3.17
+
+## 0.7.30
+
+### Patch Changes
+
+-   Updated dependencies [f7d2895]
+    -   @sap-ux/odata-service-inquirer@0.5.30
+
+## 0.7.29
+
+### Patch Changes
+
+-   Updated dependencies [34b2606]
+    -   @sap-ux/odata-service-inquirer@0.5.29
+
+## 0.7.28
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.3.16
+-   @sap-ux/odata-service-inquirer@0.5.28
+
+## 0.7.27
+
+### Patch Changes
+
+-   Updated dependencies [3e1a83a]
+    -   @sap-ux/fiori-generator-shared@0.3.15
+    -   @sap-ux/odata-service-inquirer@0.5.27
+
+## 0.7.26
+
+### Patch Changes
+
+-   Updated dependencies [12504d5]
+    -   @sap-ux/fiori-generator-shared@0.3.14
+    -   @sap-ux/odata-service-inquirer@0.5.26
+
+## 0.7.25
+
+### Patch Changes
+
+-   Updated dependencies [df6262e]
+    -   @sap-ux/project-access@1.26.8
+    -   @sap-ux/fiori-generator-shared@0.3.13
+    -   @sap-ux/odata-service-inquirer@0.5.25
+
+## 0.7.24
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.7
+-   @sap-ux/odata-service-inquirer@0.5.24
+-   @sap-ux/fiori-generator-shared@0.3.12
+
+## 0.7.23
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/odata-service-inquirer@0.5.23
+
+## 0.7.22
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.22
+
+## 0.7.21
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.21
+
+## 0.7.20
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.20
+
+## 0.7.19
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.19
+
+## 0.7.18
+
+### Patch Changes
+
+-   Updated dependencies [82aaea3]
+    -   @sap-ux/project-access@1.26.6
+    -   @sap-ux/fiori-generator-shared@0.3.11
+    -   @sap-ux/odata-service-inquirer@0.5.18
+
+## 0.7.17
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.17
+
+## 0.7.16
+
+### Patch Changes
+
+-   Updated dependencies [cc16cbb]
+    -   @sap-ux/project-access@1.26.5
+    -   @sap-ux/fiori-generator-shared@0.3.10
+    -   @sap-ux/odata-service-inquirer@0.5.16
+
+## 0.7.15
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.15
+
+## 0.7.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.26.4
+-   @sap-ux/fiori-generator-shared@0.3.9
+-   @sap-ux/odata-service-inquirer@0.5.14
+
+## 0.7.13
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@0.5.13
+
 ## 0.7.12
 
 ### Patch Changes

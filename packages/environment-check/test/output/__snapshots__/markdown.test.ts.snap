@@ -7,22 +7,22 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 <br>
 
 ## Destination Details (0)
-No destination details<br>
+No destination details.<br>
 
 <br>
 
 ## Messages (0)
-No messages<br>
+No messages.<br>
 
 <br>
 
 ## All Destinations (0)
-No destinations<br>
+No destinations.<br>
 
 <br>
 
 ## Environment
-Environment not checked<br>
+Environment not checked.<br>
 
 "
 `;
@@ -36,49 +36,54 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 ## Destination Details (5)
 
 ### Details for \`ABC system https://abc-api.org\`
-✅ &nbsp; V2 catalog call returned 0 services<br>
-🚫 &nbsp; V4 catalog service not available<br>
-✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
-✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Full Service URL<br>
-|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
-|--|--|--|--|--|--|--|--|--|--|--|
-|ABC system https://abc-api.org|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
+✅ &nbsp; OData V2 catalog call returned 0 services<br>
+🚫 &nbsp; OData V4 catalog service not available.<br>
+✅ &nbsp; The destination property: \`HTML5.DynamicDestination\` is set to \`true\`.<br>
+✅ &nbsp; The destination property \`HTML5.Timeout\` is set and must include a minimum value of \`60000\`.<br>
+✅ &nbsp; SAP Fiori tools usage: Configured to be used by SAP Fiori Generator as a full service URL.<br>
+|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|HTML5.Timeout|
+|--|--|--|--|--|--|--|--|--|--|--|--|
+|ABC system https://abc-api.org|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|60000|
 
 ### Details for \`DEF\`
-✅ &nbsp; V2 catalog call returned 0 services<br>
-🚫 &nbsp; V4 catalog service not available<br>
-✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
-✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Catalog Service<br>
-|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
-|--|--|--|--|--|--|--|--|--|--|--|
-|DEF|def|https://def.service||Catalog Service|odata_abap||HTTP|BasicAuthentication|Internet|true|
+✅ &nbsp; OData V2 catalog call returned 0 services<br>
+🚫 &nbsp; OData V4 catalog service not available.<br>
+✅ &nbsp; The destination property: \`HTML5.DynamicDestination\` is set to \`true\`.<br>
+🟡 &nbsp; Please ensure the property: \`HTML5.Timeout\` is set to a minimum value of \`60000\` in SAP Business Technology Platform Cockpit > 'Additional Properties'.<br>
+✅ &nbsp; SAP Fiori tools usage: Configured to be used by SAP Fiori Generator as a catalog service.<br>
+|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|HTML5.Timeout|
+|--|--|--|--|--|--|--|--|--|--|--|--|
+|DEF|def|https://def.service||Catalog Service|odata_abap||HTTP|BasicAuthentication|Internet|true|60000|
 
 ### Details for \`JUST_WRONG\`
-✅ &nbsp; V2 catalog call returned 0 services<br>
-🚫 &nbsp; V4 catalog service not available<br>
-✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
-🚫 &nbsp; SAP Fiori tools usage: Wrong configuration, Fiori Generator cannot use this destination. Please check properties<br>
-|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
-|--|--|--|--|--|--|--|--|--|--|--|
-|JUST_WRONG|s4|||Invalid URL|odata_gen,odata_abap|full_url|HTTP||Internet||
+✅ &nbsp; OData V2 catalog call returned 0 services<br>
+🚫 &nbsp; OData V4 catalog service not available.<br>
+✅ &nbsp; The destination property: \`HTML5.DynamicDestination\` is set to \`true\`.<br>
+🟡 &nbsp; Please ensure the property: \`HTML5.Timeout\` is set to a minimum value of \`60000\` in SAP Business Technology Platform Cockpit > 'Additional Properties'.<br>
+🚫 &nbsp; SAP Fiori tools usage: Incorrect configuration. SAP Fiori Generator cannot use this destination. Please check the configuration properties.<br>
+|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|HTML5.Timeout|
+|--|--|--|--|--|--|--|--|--|--|--|--|
+|JUST_WRONG|s4|||Invalid URL|odata_gen,odata_abap|full_url|HTTP||Internet|||
 
 ### Details for \`SYS\`
-✅ &nbsp; V2 catalog call returned 2 services<br>
-🚫 &nbsp; V4 catalog service not available<br>
-🚫 &nbsp; Please ensure property \`HTML5.DynamicDestination\` is set to \`true\` in SAP BTP Cockpit -> 'Additional Properties'<br>
-✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Catalog Service<br>
-|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
-|--|--|--|--|--|--|--|--|--|--|--|
-|SYS|sys|https://sys-api.s4hana.ondemand.com/sap/opu/odata/sap/API_BUSINESS_PARTNER||Catalog Service|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
+✅ &nbsp; OData V2 catalog call returned 2 services<br>
+🚫 &nbsp; OData V4 catalog service not available.<br>
+🚫 &nbsp; Please ensure the property: \`HTML5.DynamicDestination\` is set to \`true\` in SAP Business Technology Platform Cockpit > 'Additional Properties'.<br>
+🟡 &nbsp; Please ensure the property: \`HTML5.Timeout\` is set to a minimum value of \`60000\` in SAP Business Technology Platform Cockpit > 'Additional Properties'.<br>
+✅ &nbsp; SAP Fiori tools usage: Configured to be used by SAP Fiori Generator as a catalog service.<br>
+|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|HTML5.Timeout|
+|--|--|--|--|--|--|--|--|--|--|--|--|
+|SYS|sys|https://sys-api.s4hana.ondemand.com/sap/opu/odata/sap/API_BUSINESS_PARTNER||Catalog Service|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|60000|
 
 ### Details for \`XYZ\`
-✅ &nbsp; V2 catalog call returned 0 services<br>
-🚫 &nbsp; V4 catalog service not available<br>
-✅ &nbsp; Destination property \`HTML5.DynamicDestination\` set to \`true\`<br>
-✅ &nbsp; SAP Fiori tools usage: Configured to be used by Fiori Generator as Partial URL<br>
-|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
-|--|--|--|--|--|--|--|--|--|--|--|
-|XYZ|xyz|https://service||Partial URL|odata_gen||HTTP|BasicAuthentication|Internet|true|
+✅ &nbsp; OData V2 catalog call returned 0 services<br>
+🚫 &nbsp; OData V4 catalog service not available.<br>
+✅ &nbsp; The destination property: \`HTML5.DynamicDestination\` is set to \`true\`.<br>
+🟡 &nbsp; Please ensure the property: \`HTML5.Timeout\` is set to a minimum value of \`60000\` in SAP Business Technology Platform Cockpit > 'Additional Properties'.<br>
+✅ &nbsp; SAP Fiori tools usage: Configured to be used by SAP Fiori Generator as a partial URL.<br>
+|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|HTML5.Timeout|
+|--|--|--|--|--|--|--|--|--|--|--|--|
+|XYZ|xyz|https://service||Partial URL|odata_gen||HTTP|BasicAuthentication|Internet|true||
 
 <br>
 
@@ -129,17 +134,17 @@ Request to URL: 'http://SYS.dest/sap/opu/odata4/iwfnd/config/default/iwfnd/catal
 
 ## All Destinations (7)
 <details>
-<summary>Show all destinations</summary>
+<summary>Show all destinations.</summary>
 
-|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|
-|--|--|--|--|--|--|--|--|--|--|--|
-|ABC system https://abc-api.org|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
-|DEF|def|https://def.service||Catalog Service|odata_abap||HTTP|BasicAuthentication|Internet|true|
-|DUPLICATE|||||||||||
-|DUPLICATE|||||||||||
-|JUST_WRONG|s4|||Invalid URL|odata_gen,odata_abap|full_url|HTTP||Internet||
-|SYS|sys|https://sys-api.s4hana.ondemand.com/sap/opu/odata/sap/API_BUSINESS_PARTNER||Catalog Service|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|
-|XYZ|xyz|https://service||Partial URL|odata_gen||HTTP|BasicAuthentication|Internet|true|
+|Name|Description|Host|sap-client|Fiori tools usage|WebIDEUsage|WebIDEAdditionalData|Type|Authentication|ProxyType|HTML5.DynamicDestination|HTML5.Timeout|
+|--|--|--|--|--|--|--|--|--|--|--|--|
+|ABC system https://abc-api.org|Destination description|https://abc-api.org||Full Service URL|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|60000|
+|DEF|def|https://def.service||Catalog Service|odata_abap||HTTP|BasicAuthentication|Internet|true|60000|
+|DUPLICATE||||||||||||
+|DUPLICATE||||||||||||
+|JUST_WRONG|s4|||Invalid URL|odata_gen,odata_abap|full_url|HTTP||Internet|||
+|SYS|sys|https://sys-api.s4hana.ondemand.com/sap/opu/odata/sap/API_BUSINESS_PARTNER||Catalog Service|odata_gen|full_url|HTTP|BasicAuthentication|Internet|true|60000|
+|XYZ|xyz|https://service||Partial URL|odata_gen||HTTP|BasicAuthentication|Internet|true||
 
 </details>
 
@@ -185,7 +190,7 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 <br>
 
 ## Messages (0)
-No messages<br>
+No messages.<br>
 
 "
 `;
@@ -197,7 +202,7 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 <br>
 
 ## Messages (0)
-No messages<br>
+No messages.<br>
 
 <br>
 
@@ -241,7 +246,7 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Check 
 <br>
 
 ## Messages (0)
-No messages<br>
+No messages.<br>
 
 <br>
 
@@ -251,7 +256,7 @@ Development environment: \`Business Application Studio\`<br>
 Dev Space Type: \`SAP Fiori\`<br>
 |Tools/Extensions|Version|
 |--|--|
-|Node.js|Not installed or not found|
+|Node.js|Not installed or not found.|
 |SAP Fiori tools - Fiori generator|1|
 |Cloud CLI tools|2|
 |Application Wizard|2|
@@ -277,7 +282,7 @@ exports[`Test to check conversion to markdown, convertResultsToMarkdown() Transp
 <br>
 
 ## Destination Details (0)
-No destination details<br>
+No destination details.<br>
 
 <br>
 
@@ -286,18 +291,18 @@ No destination details<br>
 <br>
 <details><summary>ℹ Debug</summary>
 <pre>
-Guided Answers troubleshooting guide available at https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/45995:45996:50742:46000:57266
+Guided Answers troubleshooting guide available at https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/45995:45996:50742:46000:57266.
 </pre></details>
 
 <br>
 
 ## All Destinations (0)
-No destinations<br>
+No destinations.<br>
 
 <br>
 
 ## Environment
-Environment not checked<br>
+Environment not checked.<br>
 
 "
 `;

@@ -194,3 +194,17 @@ export interface FragmentContentData {
     content: string;
     requireAttribute?: string;
 }
+
+/**
+ * Interface contain information about application manifest.
+ */
+export interface ManifestData {
+    /**
+     * Path to manifest.json file.
+     */
+    path: string;
+    /**
+     * Parsed content of manifest.json file.
+     */
+    content: Manifest;
+}

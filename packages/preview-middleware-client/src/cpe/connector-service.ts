@@ -1,36 +1,68 @@
-import { ExternalAction, storageFileChanged } from '@sap-ux-private/control-property-editor-common';
-import { ActionSenderFunction } from './types';
-import VersionInfo from 'sap/ui/VersionInfo';
-import type {SingleVersionInfo} from '../../types/global';
-
+import { ExternalAction, reloadApplication, storageFileChanged } from '@sap-ux-private/control-property-editor-common';
+import { ActionSenderFunction, SubscribeFunction } from './types';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
+import { AdditionalChangeInfo } from '../utils/additional-change-info';
 /**
  * A Class of WorkspaceConnectorService
  */
 export class WorkspaceConnectorService {
     /**
+     * When save and reload is triggered, we do not need special handling for changes that are not directly visible in preview.
+     */
+    private isReloadPending = false;
+    private sendAction: (action: ExternalAction) => void;
+    /**
      * Initializes connector service.
      *
      * @param sendAction action sender function
+     * @param subscribe subscriber function
      */
-    public async init(sendAction: ActionSenderFunction): Promise<void> {
-        const version = (await VersionInfo.load({library:'sap.ui.core'}) as SingleVersionInfo)?.version;
-        const versionParts = version.split('.');
-        const minor = parseInt(versionParts[1], 10);
-        if (minor > 72) {
+    public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
+        this.sendAction = sendAction;
+        subscribe((action): void => {
+            if (reloadApplication.match(action)) {
+                this.isReloadPending = true;
+            }
+        });
+
+        if (isLowerThanMinimalUi5Version(await getUi5Version(), { major: 1, minor: 73 })) {
+            const FakeLrepConnector = (await import('sap/ui/fl/FakeLrepConnector')).default;
+            FakeLrepConnector.fileChangeRequestNotifier = this.onChangeSaved.bind(this);
+        } else {
             const connector = (await import('open/ux/preview/client/flp/WorkspaceConnector')).default;
             // hook the file deletion listener to the UI5 workspace connector
-            connector.storage.fileChangeRequestNotifier = notifier(sendAction);
-        } else {
-            const FakeLrepConnector = (await import('sap/ui/fl/FakeLrepConnector')).default;
-            FakeLrepConnector.fileChangeRequestNotifier = notifier(sendAction);
+            connector.storage.fileChangeRequestNotifier = this.onChangeSaved.bind(this);
         }
     }
-}
 
-function notifier(sendAction: (action: ExternalAction) => void) {
-    return (fileName: string, kind: 'delete' | 'create', changeType?: string) => {
-        if ((changeType && changeType !== 'appdescr_fe_changePageConfiguration') || kind === 'delete') {
-            sendAction(storageFileChanged(fileName?.replace('sap.ui.fl.', '')));
+    private onChangeSaved(
+        fileName: string,
+        kind: 'delete' | 'create',
+        change: unknown = {},
+        additionalChangeInfo: unknown = {}
+    ): void {
+        const { changeType, content } = change as {
+            changeType?: string;
+            content?: {
+                fragmentPath?: string;
+                codeRef?: string;
+            };
+        };
+        if (
+            (changeType &&
+                !['appdescr_fe_changePageConfiguration', 'appdescr_ui_generic_app_changePageConfiguration'].includes(
+                    changeType
+                )) ||
+            kind === 'delete' ||
+            this.isReloadPending
+        ) {
+            this.sendAction(storageFileChanged(fileName?.replace('sap.ui.fl.', '')));
         }
-    };
+        if (changeType === 'addXML' && (additionalChangeInfo as AdditionalChangeInfo )?.templateName && content?.fragmentPath) {
+            // If there is template available, then we save and reload right away,
+            // so we should ignore the first file change event that comes for the fragment.
+            // (We don't want to show "Reload" button)
+            this.sendAction(storageFileChanged(content.fragmentPath));
+        }
+    }
 }

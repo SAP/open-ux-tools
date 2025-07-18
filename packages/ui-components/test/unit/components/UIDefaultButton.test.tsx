@@ -3,6 +3,7 @@ import * as Enzyme from 'enzyme';
 import { DefaultButton } from '@fluentui/react';
 import { UIDefaultButton } from '../../../src/components/UIButton/UIDefaultButton';
 import type { UIDefaultButtonProps } from '../../../src/components/UIButton/UIDefaultButton';
+import { UiIcons } from '../../../src/components/Icons';
 
 describe('<UIDefaultButton />', () => {
     let wrapper: Enzyme.ReactWrapper<UIDefaultButtonProps>;
@@ -32,7 +33,6 @@ describe('<UIDefaultButton />', () => {
               "borderColor": "var(--vscode-button-border, transparent)",
               "borderRadius": 2,
               "color": "var(--vscode-button-foreground)",
-              "fontFamily": "var(--vscode-font-family)",
               "fontSize": "13px",
               "fontWeight": 400,
               "height": 22,
@@ -114,7 +114,6 @@ describe('<UIDefaultButton />', () => {
               "borderColor": "var(--vscode-button-border, transparent)",
               "borderRadius": 2,
               "color": "var(--vscode-button-foreground)",
-              "fontFamily": "var(--vscode-font-family)",
               "fontSize": "13px",
               "fontWeight": 400,
               "height": 22,
@@ -196,7 +195,6 @@ describe('<UIDefaultButton />', () => {
               "borderColor": "var(--vscode-button-border, transparent)",
               "borderRadius": 2,
               "color": "var(--vscode-button-secondaryForeground)",
-              "fontFamily": "var(--vscode-font-family)",
               "fontSize": "13px",
               "fontWeight": 400,
               "height": 22,
@@ -278,7 +276,6 @@ describe('<UIDefaultButton />', () => {
               "borderColor": "var(--vscode-button-border, transparent)",
               "borderRadius": 2,
               "color": "var(--vscode-button-foreground)",
-              "fontFamily": "var(--vscode-font-family)",
               "fontSize": "13px",
               "fontWeight": 400,
               "height": 22,
@@ -358,7 +355,6 @@ describe('<UIDefaultButton />', () => {
               "borderColor": "transparent",
               "borderRadius": 2,
               "color": "var(--vscode-foreground)",
-              "fontFamily": "var(--vscode-font-family)",
               "fontSize": "13px",
               "fontWeight": 400,
               "height": 22,
@@ -441,7 +437,6 @@ describe('<UIDefaultButton />', () => {
               "borderColor": "transparent",
               "borderRadius": 2,
               "color": "var(--vscode-foreground)",
-              "fontFamily": "var(--vscode-font-family)",
               "fontSize": "13px",
               "fontWeight": 400,
               "height": 22,
@@ -510,5 +505,37 @@ describe('<UIDefaultButton />', () => {
               },
             }
         `);
+    });
+
+    describe('Menu', () => {
+        it('Default render without icon', () => {
+            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(0);
+        });
+
+        it('Render without icon', () => {
+            wrapper.setProps({
+                menuProps: undefined
+            });
+            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(0);
+        });
+
+        it('Render with default icon', () => {
+            wrapper.setProps({
+                menuProps: {
+                    items: []
+                }
+            });
+            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(1);
+        });
+
+        it('Render with custom icon', () => {
+            wrapper.setProps({
+                menuIconProps: {
+                    iconName: UiIcons.ArrowUp
+                }
+            });
+            expect(wrapper.find('[data-icon-name="ArrowDown"]').length).toEqual(0);
+            expect(wrapper.find('[data-icon-name="ArrowUp"]').length).toEqual(1);
+        });
     });
 });

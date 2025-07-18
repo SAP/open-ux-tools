@@ -1,16 +1,21 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import { SCENARIO, type Scenario } from '@sap-ux-private/control-property-editor-common';
+import { SCENARIO, showMessage, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
-import VersionInfo from 'sap/ui/VersionInfo';
-import { getError } from '../cpe/error-utils';
+import { getError } from '../utils/error';
+import initCdm from './initCdm';
 import initConnectors from './initConnectors';
-import type {SingleVersionInfo} from '../../types/global';
+import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import { CommunicationService } from '../cpe/communication-service';
+import { getTextBundle } from '../i18n';
+import type Component from 'sap/ui/core/Component';
+import type Extension from 'sap/ushell/services/Extension';
+import type { CardGeneratorType } from 'sap/cards/ap/generator';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -142,7 +147,7 @@ async function getManifestLibs(appUrls: string[]): Promise<string> {
 function registerModules(dataFromAppIndex: AppIndexData) {
     Object.keys(dataFromAppIndex).forEach(function (moduleDefinitionKey) {
         const moduleDefinition = dataFromAppIndex[moduleDefinitionKey];
-        if (moduleDefinition && moduleDefinition.dependencies) {
+        if (moduleDefinition?.dependencies) {
             moduleDefinition.dependencies.forEach(function (dependency) {
                 if (dependency.url && dependency.url.length > 0 && dependency.type === 'UI5LIB') {
                     Log.info('Registering Library ' + dependency.componentId + ' from server ' + dependency.url);
@@ -164,10 +169,10 @@ function registerModules(dataFromAppIndex: AppIndexData) {
  * @param container the UShell container
  */
 export async function resetAppState(container: typeof sap.ushell.Container): Promise<void> {
-    const appStateService = await container.getServiceAsync<AppState>('AppState');
     const urlParams = new URLSearchParams(window.location.hash);
     const appStateValue = urlParams.get('sap-iapp-state') ?? urlParams.get('/?sap-iapp-state');
     if (appStateValue) {
+        const appStateService = await container.getServiceAsync<AppState>('AppState');
         appStateService.deleteAppState(appStateValue);
     }
 }
@@ -250,27 +255,67 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
 }
 
 /**
+ * This function dynamically adds a "Generate Card" action to the SAP Fiori Launchpad for the given component instance.
+ * 
+ * @param componentInstance - The instance of the component for which the card generation action is being added.
+ * @param container - The SAP Fiori Launchpad container instance used to access services.
+ */
+function addCardGenerationUserAction(componentInstance : Component, container : typeof sap.ushell.Container) {
+    sap.ui.require([
+        'sap/cards/ap/generator/CardGenerator'
+    ], async (CardGenerator : CardGeneratorType) => {
+        const extensionService = await container.getServiceAsync<Extension>('Extension');
+        const controlProperties = {
+            icon: 'sap-icon://add',
+            id: 'generate_card',
+            text: 'Generate Card',
+            tooltip: 'Generate Card',
+            press: () => {
+                CardGenerator.initializeAsync(componentInstance);
+            }
+        };
+        const parameters = {
+            controlType: 'sap.ushell.ui.launchpad.ActionItem'
+        };
+        const generateCardAction = await extensionService.createUserAction(controlProperties, parameters);
+        generateCardAction.showForCurrentApp();
+    });
+}
+
+/**
  * Apply additional configuration and initialize sandbox.
  *
  * @param params init parameters read from the script tag
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
  * @param params.customInit path to the custom init module to be called
+ * @param params.enhancedHomePage boolean indicating if enhanced homepage is enabled
  * @returns promise
  */
 export async function init({
     appUrls,
     flex,
-    customInit
+    customInit,
+    enhancedHomePage,
+    enableCardGenerator
 }: {
     appUrls?: string | null;
     flex?: string | null;
     customInit?: string | null;
+    enhancedHomePage?: boolean | null;
+    enableCardGenerator?: boolean
 }): Promise<void> {
+    // Set CDM configuration before importing ushell container
+    // to ensure proper configuration pickup during bootstrap
+    if (enhancedHomePage) {
+        initCdm();
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ?? sap.ui.require('sap/ushell/Container');
+    const container = sap?.ushell?.Container ??
+        (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
     let scenario: string = '';
-    const version = (await VersionInfo.load({library:'sap.ui.core'}) as SingleVersionInfo)?.version;
+    const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
@@ -278,16 +323,15 @@ export async function init({
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
-                const minor = parseInt(version.split('.')[1], 10);
                 const view = event.getParameter('componentInstance');
-                const flexSettings = JSON.parse(flex) as FlexSettings;
                 const pluginScript = flexSettings.pluginScript ?? '';
 
                 let libs: string[] = [];
-                if (minor > 71) {
-                    libs.push('sap/ui/rta/api/startAdaptation');
-                } else {
+
+                if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
                     libs.push('open/ux/preview/client/flp/initRta');
+                } else {
+                    libs.push('sap/ui/rta/api/startAdaptation');
                 }
 
                 if (flexSettings.pluginScript) {
@@ -303,13 +347,29 @@ export async function init({
 
                 sap.ui.require(
                     libs,
+                    // eslint-disable-next-line no-shadow
                     async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
-                        await startAdaptation(options, pluginScript);
+                        try {
+                            await startAdaptation(options, pluginScript);
+                        } catch (error) {
+                            await handleHigherLayerChanges(error, ui5VersionInfo);
+                        }
                     }
                 );
             });
         });
     }
+    if (enableCardGenerator && !isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 121 })) {
+        container.attachRendererCreatedEvent(async function () {
+            const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
+            lifecycleService.attachAppLoaded((event) => {
+                const componentInstance = event.getParameter('componentInstance');
+                addCardGenerationUserAction(componentInstance as unknown as Component, container);
+            });
+        });
+    } else {  
+        Log.warning('Card generator is not supported for the current UI5 version.');
+    } 
 
     // reset app state if requested
     if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() !== 'true') {
@@ -318,7 +378,7 @@ export async function init({
 
     // Load custom library paths if configured
     if (appUrls) {
-        await registerComponentDependencyPaths(JSON.parse(appUrls), urlParams);
+        await registerComponentDependencyPaths((JSON.parse(appUrls) as string[]) ?? [], urlParams);
     }
 
     // Load rta connector
@@ -333,22 +393,54 @@ export async function init({
     const resourceBundle = await loadI18nResourceBundle(scenario as Scenario);
     setI18nTitle(resourceBundle);
     registerSAPFonts();
-    const major = version ? parseInt(version.split('.')[0], 10) : 2;
+
+    if (enhancedHomePage) {
+        await container.init('cdm');
+    }
 
     const renderer =
-        major < 2
+        (ui5VersionInfo.major < 2 && !ui5VersionInfo.label?.includes('legacy-free'))
             ? await container.createRenderer(undefined, true)
             : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
 }
+
+// eslint-disable-next-line fiori-custom/sap-no-dom-access,fiori-custom/sap-browser-api-warning
 const bootstrapConfig = document.getElementById('sap-ui-bootstrap');
 if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
-        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
+        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
+        enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage'),
+        enableCardGenerator: !!bootstrapConfig.getAttribute('data-open-ux-preview-enable-card-generator')
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);
     });
+}
+
+/**
+ * Handle higher layer changes when starting UI Adaptation.
+ * When RTA detects higher layer changes an error with Reload triggered text is thrown, the RTA instance is destroyed and the application is reloaded.
+ * For UI5 version lower than 1.84.0 RTA is showing a popup with notification text about the detection of higher layer changes.
+ *
+ * @param error the error thrown when there are higher layer changes when starting UI Adaptation.
+ * @param ui5VersionInfo ui5 version info
+ */
+export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: Ui5VersionInfo): Promise<void> {
+    const err = getError(error);
+    if (err.message.includes('Reload triggered')) {
+        if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 84 })) {
+            const bundle = await getTextBundle();
+            const action = showMessage({
+                message: bundle.getText('HIGHER_LAYER_CHANGES_INFO_MESSAGE'),
+                shouldHideIframe: false
+            });
+            CommunicationService.sendAction(action);
+        }
+
+        // eslint-disable-next-line fiori-custom/sap-no-location-reload
+        window.location.reload();
+    }
 }

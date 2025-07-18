@@ -27,6 +27,11 @@ const V4_CAP_START: ProjectInfo = {
     name: 'cap-start',
     type: 'CAPNodejs'
 };
+const V4_CAP_NO_APPS: ProjectInfo = {
+    version: 'v4',
+    name: 'cap-no-apps',
+    type: 'CAPNodejs'
+};
 export interface ProjectTestModel<T extends Record<string, string>> {
     info: ProjectInfo;
     root: string;
@@ -38,6 +43,7 @@ const DATA_ROOT = join(__dirname, '..', 'data');
 const V4_XML_START_ROOT = join(DATA_ROOT, 'v4-xml-start');
 const V2_XML_START_ROOT = join(DATA_ROOT, 'v2-xml-start');
 const V4_CAP_START_ROOT = join(DATA_ROOT, 'cds', 'cap-start');
+const V4_CAP_NO_APPS_ROOT = join(DATA_ROOT, 'cds', 'cap-no-apps');
 const CDS_LAYERING_ROOT = join(DATA_ROOT, 'cds', 'layering');
 
 export const PROJECTS = {
@@ -66,7 +72,19 @@ export const PROJECTS = {
         files: {
             annotations: pathToFileURL(join(V4_CAP_START_ROOT, 'app', 'incidents', 'annotations.cds')).toString(),
             metadata: pathToFileURL(join(V4_CAP_START_ROOT, 'srv', 'common.cds')).toString(),
+            services: pathToFileURL(join(V4_CAP_START_ROOT, 'app', 'services.cds')).toString(),
             schema: pathToFileURL(join(V4_CAP_START_ROOT, 'db', 'schema.cds')).toString()
+        }
+    },
+    V4_CAP_NO_APPS: {
+        info: V4_CAP_NO_APPS,
+        root: V4_CAP_NO_APPS_ROOT,
+        serviceName: 'IncidentService',
+        files: {
+            annotations: pathToFileURL(join(V4_CAP_NO_APPS_ROOT, 'app', 'incidents', 'annotations.cds')).toString(),
+            metadata: pathToFileURL(join(V4_CAP_NO_APPS_ROOT, 'srv', 'common.cds')).toString(),
+            services: pathToFileURL(join(V4_CAP_NO_APPS_ROOT, 'app', 'services.cds')).toString(),
+            schema: pathToFileURL(join(V4_CAP_NO_APPS_ROOT, 'db', 'schema.cds')).toString()
         }
     },
     CDS_LAYERING: {

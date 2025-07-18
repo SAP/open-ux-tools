@@ -6,6 +6,11 @@ import { appPathExists, defaultAppName, hidePrompts, isVersionIncluded } from '.
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../../../src/types';
 import { promptNames } from '../../../src/types';
 
+jest.mock('@sap-ux/project-input-validator', () => ({
+    ...jest.requireActual('@sap-ux/project-input-validator'),
+    validateProjectFolder: jest.fn()
+}));
+
 describe('prompt-helpers', () => {
     const testTempDir = join(__dirname, './test-tmp');
 
@@ -90,9 +95,6 @@ describe('prompt-helpers', () => {
             [promptNames.enableEslint]: {
                 name: promptNames.enableEslint
             },
-            [promptNames.enableNPMWorkspaces]: {
-                name: promptNames.enableNPMWorkspaces
-            },
             [promptNames.enableCodeAssist]: {
                 name: promptNames.enableCodeAssist
             },
@@ -101,6 +103,9 @@ describe('prompt-helpers', () => {
             },
             [promptNames.enableTypeScript]: {
                 name: promptNames.enableTypeScript
+            },
+            [promptNames.enableVirtualEndpoints]: {
+                name: promptNames.enableVirtualEndpoints
             },
             [promptNames.showAdvanced]: {
                 name: promptNames.showAdvanced
@@ -114,8 +119,8 @@ describe('prompt-helpers', () => {
         expect(filteredPrompts).not.toContainEqual({ name: promptNames.targetFolder });
         expect(filteredPrompts).not.toContainEqual({ name: promptNames.enableEslint });
 
-        // Hide prompts based on propmt options
-        const promptOpts: UI5ApplicationPromptOptions = {
+        // Hide prompts based on prompt options
+        let promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.addDeployConfig]: {
                 hide: true
             },
@@ -128,8 +133,32 @@ describe('prompt-helpers', () => {
         };
         filteredPrompts = hidePrompts(prompts, promptOpts);
         expect(filteredPrompts.length).toEqual(12);
-        expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.addDeployConfig }]));
+        expect(filteredPrompts).toEqual(
+            expect.not.arrayContaining([{ name: promptNames.addDeployConfig, when: expect.any(Function) }])
+        );
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.skipAnnotations }]));
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.ui5Version }]));
+
+        // More testing of prompt options (hide fn)
+        promptOpts = {
+            [promptNames.addDeployConfig]: {
+                hide: (isCap: boolean) => {
+                    return !isCap;
+                }
+            }
+        };
+        // show `addDeployConfig` prompt when isCap is true
+        filteredPrompts = hidePrompts(prompts, promptOpts, true);
+        expect(filteredPrompts.length).toEqual(13);
+        expect(filteredPrompts).toEqual(
+            expect.arrayContaining([{ name: promptNames.addDeployConfig, when: expect.any(Function) }])
+        );
+
+        // hide `addDeployConfig` prompt when isCap is false
+        filteredPrompts = hidePrompts(prompts, promptOpts, false);
+        expect(filteredPrompts.length).toEqual(14);
+        expect(filteredPrompts).toEqual(
+            expect.not.arrayContaining([{ name: promptNames.addDeployConfig, when: expect.any(Function) }])
+        );
     });
 });

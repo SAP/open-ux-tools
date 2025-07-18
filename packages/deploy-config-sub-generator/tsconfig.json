@@ -1,0 +1,58 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "generators"
+  },
+  "references": [
+    {
+      "path": "../abap-deploy-config-inquirer"
+    },
+    {
+      "path": "../abap-deploy-config-sub-generator"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../cf-deploy-config-inquirer"
+    },
+    {
+      "path": "../cf-deploy-config-sub-generator"
+    },
+    {
+      "path": "../cf-deploy-config-writer"
+    },
+    {
+      "path": "../deploy-config-generator-shared"
+    },
+    {
+      "path": "../fiori-app-sub-generator"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../jest-file-matchers"
+    },
+    {
+      "path": "../odata-service-inquirer"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../ui5-config"
+    }
+  ]
+}

@@ -32,17 +32,17 @@ async function changeInbound(basePath: string, simulate: boolean): Promise<void>
         }
 
         await validateAdpProject(basePath);
-        validateCloudAdpProject(basePath);
-        const variant = getVariant(basePath);
+        await validateCloudAdpProject(basePath);
+        const variant = await getVariant(basePath);
         const change = variant.content.find(
             (change: DescriptorVariantContent) => change.changeType === 'appdescr_app_removeAllInboundsExceptOne'
         );
         const inboundId = change?.content?.inboundId as string;
         const answers = await promptYUIQuestions(getPromptsForChangeInbound(), false);
         const fs = await generateChange<ChangeType.CHANGE_INBOUND>(basePath, ChangeType.CHANGE_INBOUND, {
-            answers,
             inboundId,
-            variant
+            variant,
+            flp: answers
         });
 
         if (!simulate) {

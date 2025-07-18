@@ -1,0 +1,2160 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap java project 1`] = `
+"_schema-version: '3.1'
+ID: managedAppCAPProjectJava
+version: 1.0.0-SNAPSHOT
+description: managedAppCAPProjectJava application
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx -p @sap/cds-dk cds build --production
+modules:
+  - name: managedAppCAPProjectJava-srv
+    type: java
+    path: srv
+    parameters:
+      buildpack: java_buildpack
+    properties:
+      SPRING_PROFILES_ACTIVE: cloud
+    build-parameters:
+      builder: custom
+      commands:
+        - mvn clean package
+      build-result: target/*-exec.[wj]ar
+    requires:
+      - name: managedAppCAPProjectJava-db
+      - name: managedAppCAPProjectJava-uaa
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: \${default-url}
+  - name: managedAppCAPProjectJava-db-deployer
+    type: hdb
+    path: db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: managedAppCAPProjectJava-db
+  - name: managedAppCAPProjectJava-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: managedAppCAPProjectJava-destination-service
+        parameters:
+          content-target: true
+      - name: managedAppCAPProjectJava-repo-host
+        parameters:
+          service-key:
+            name: managedAppCAPProjectJava-repo-host-key
+      - name: managedAppCAPProjectJava-uaa
+        parameters:
+          service-key:
+            name: managedAppCAPProjectJava-uaa-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: managedAppCAPProjectJava_html_repo_host
+              ServiceInstanceName: managedAppCAPProjectJava-html5-service
+              ServiceKeyName: managedAppCAPProjectJava-repo-host-key
+              sap.cloud.service: managedAppCAPProjectJava
+            - Authentication: OAuth2UserTokenExchange
+              Name: managedAppCAPProjectJava_uaa
+              ServiceInstanceName: managedAppCAPProjectJava-xsuaa-service
+              ServiceKeyName: managedAppCAPProjectJava-uaa-key
+              sap.cloud.service: managedAppCAPProjectJava
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+  - name: managedAppCAPProjectJava-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: managedAppCAPProjectJava-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: headlesstestfeprojectui
+          artifacts:
+            - headlesstestfeprojectui.zip
+          target-path: resources/
+  - name: headlesstestfeprojectui
+    type: html5
+    path: app/feproject-ui
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: managedAppCAPProjectJava-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: \${service-name}
+  - name: managedAppCAPProjectJava-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: managedAppCAPProjectJava-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
+              - Name: srv-api
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+              - Name: SOME_DEST_NAME
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+    requires:
+      - name: srv-api
+  - name: managedAppCAPProjectJava-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: managedAppCAPProjectJava-xsuaa-service
+      service-plan: application
+  - name: managedAppCAPProjectJava-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: managedAppCAPProjectJava-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap java project 2`] = `
+"{
+  "xsappname": "managedAppCAPProjectJava",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "role-templates": []
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap java project 3`] = `
+"{
+  "name": "managedAppCAPProjectJava-cds",
+  "version": "1.0.0",
+  "description": "Generated by cds-services-archetype",
+  "license": "ISC",
+  "repository": "<Add your repository here>",
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "mbt": "^1.2.29"
+  },
+  "scripts": {
+    "undeploy": "cf undeploy managedAppCAPProjectJava --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+  }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap java project 4`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.4'
+metadata:
+  name: 'feproject-ui'
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: headlesstestfeprojectui
+        relativePaths: true
+        additionalFiles:
+          - xs-app.json
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap java project 5`] = `
+"{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/catalog/(.*)$",
+      "target": "/catalog/$1",
+      "destination": "SOME_DEST_NAME",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap java project 6`] = `
+"{
+    "name": "feproject-ui",
+    "version": "0.0.1",
+    "description": "An SAP Fiori application.",
+    "keywords": [
+        "ui5",
+        "openui5",
+        "sapui5"
+    ],
+    "main": "webapp/index.html",
+    "scripts": {
+        "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf",
+        "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
+        "build": "npm run build:cf"
+    },
+    "devDependencies": {
+        "ui5-task-zipper": "^3.4.x",
+        "@ui5/cli": "^4.0.16"
+    }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap project 1`] = `
+"_schema-version: '3.1'
+ID: cappapp
+version: 1.0.0
+description: A simple CAP project.
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx -p @sap/cds-dk cds build --production
+modules:
+  - name: cappapp-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: \${default-url}
+    requires:
+      - name: cappapp-uaa
+  - name: cappapp-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: cappapp-db
+  - name: cappapp-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: cappapp-destination-service
+        parameters:
+          content-target: true
+      - name: cappapp-repo-host
+        parameters:
+          service-key:
+            name: cappapp-repo-host-key
+      - name: cappapp-uaa
+        parameters:
+          service-key:
+            name: cappapp-uaa-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: cappapp_html_repo_host
+              ServiceInstanceName: cappapp-html5-service
+              ServiceKeyName: cappapp-repo-host-key
+              sap.cloud.service: cappapp
+            - Authentication: OAuth2UserTokenExchange
+              Name: cappapp_uaa
+              ServiceInstanceName: cappapp-xsuaa-service
+              ServiceKeyName: cappapp-uaa-key
+              sap.cloud.service: cappapp
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+  - name: cappapp-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: cappapp-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: headlesstestfeprojectui
+          artifacts:
+            - headlesstestfeprojectui.zip
+          target-path: resources/
+  - name: headlesstestfeprojectui
+    type: html5
+    path: app/feproject-ui
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: cappapp-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: \${service-name}
+  - name: cappapp-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: cappapp-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
+              - Name: srv-api
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+    requires:
+      - name: srv-api
+  - name: cappapp-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: cappapp-xsuaa-service
+      service-plan: application
+  - name: cappapp-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: cappapp-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap project 2`] = `
+"{
+  "xsappname": "cappapp",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "role-templates": []
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap project 3`] = `
+"{
+  "name": "cappapp",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^5",
+    "express": "^4",
+    "hdb": "^0.18.3"
+  },
+  "devDependencies": {
+    "sqlite3": "^5.0.2",
+    "@sap/cds-dk": "^5",
+    "rimraf": "^5.0.5",
+    "mbt": "^1.2.29"
+  },
+  "scripts": {
+    "start": "cds run",
+    "undeploy": "cf undeploy cappapp --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "env": {
+      "es2020": true,
+      "node": true,
+      "jest": true,
+      "mocha": true
+    },
+    "globals": {
+      "SELECT": true,
+      "INSERT": true,
+      "UPDATE": true,
+      "DELETE": true,
+      "CREATE": true,
+      "DROP": true,
+      "CDL": true,
+      "CQL": true,
+      "CXL": true,
+      "cds": true
+    },
+    "rules": {
+      "no-console": "off",
+      "require-atomic-updates": "off"
+    }
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sql"
+      }
+    },
+    "hana": {
+      "deploy-format": "hdbtable"
+    }
+  }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap project 4`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.4'
+metadata:
+  name: 'feproject-ui'
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: headlesstestfeprojectui
+        relativePaths: true
+        additionalFiles:
+          - xs-app.json
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap project 5`] = `
+"{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/catalog/(.*)$",
+      "target": "/catalog/$1",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap project 6`] = `
+"{
+    "name": "feproject-ui",
+    "version": "0.0.1",
+    "description": "An SAP Fiori application.",
+    "keywords": [
+        "ui5",
+        "openui5",
+        "sapui5"
+    ],
+    "main": "webapp/index.html",
+    "scripts": {
+        "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf",
+        "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
+        "build": "npm run build:cf"
+    },
+    "devDependencies": {
+        "ui5-task-zipper": "^3.4.x",
+        "@ui5/cli": "^4.0.16"
+    }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter  1`] = `
+"_schema-version: '3.1'
+ID: existing-id-deploy
+description: Fiori elements app
+version: 0.0.1
+modules:
+  - name: existing-id-deploy-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: existing-id-deploy-destination-service
+        parameters:
+          content-target: true
+      - name: existing-id-deploy-repo-host
+        parameters:
+          service-key:
+            name: existing-id-deploy-repo-host-key
+      - name: existing-id-deploy-uaa
+        parameters:
+          service-key:
+            name: existing-id-deploy-uaa-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: existing-id-deploy_html_repo_host
+              ServiceInstanceName: existing-id-deploy-html5-service
+              ServiceKeyName: existing-id-deploy-repo-host-key
+              sap.cloud.service: existing-id-deploy
+            - Authentication: OAuth2UserTokenExchange
+              Name: existing-id-deploy_uaa
+              ServiceInstanceName: existing-id-deploy-xsuaa-service
+              ServiceKeyName: existing-id-deploy-uaa-key
+              sap.cloud.service: existing-id-deploy
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+  - name: existing-id-deploy-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: existing-id-deploy-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: comfioritoolstravel
+          artifacts:
+            - comfioritoolstravel.zip
+          target-path: resources/
+  - name: comfioritoolstravel
+    type: html5
+    path: .
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: existing-id-deploy-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: existing-id-deploy-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
+  - name: existing-id-deploy-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: existing-id-deploy-xsuaa-service
+      service-plan: application
+  - name: existing-id-deploy-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: existing-id-deploy-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter  2`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.4'
+metadata:
+  name: 'travel'
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: comfioritoolstravel
+        relativePaths: true
+        additionalFiles:
+          - xs-app.json
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter  3`] = `
+"{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/sap/(.*)$",
+      "target": "/sap/$1",
+      "destination": "SOME_DEST_NAME",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter  4`] = `
+"{
+  "scripts": {
+    "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
+    "build:mta": "rimraf resources mta_archives && mbt build",
+    "deploy": "fiori cfDeploy",
+    "undeploy": "cf undeploy existing-id-deploy --delete-services --delete-service-keys --delete-service-brokers"
+  },
+  "devDependencies": {
+    "ui5-task-zipper": "^3.4.x",
+    "@ui5/cli": "^4.0.16",
+    "rimraf": "^5.0.5",
+    "mbt": "^1.2.29"
+  }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter  5`] = `
+"node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter  6`] = `
+"{
+  "xsappname": "existing-id-deploy",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "role-templates": []
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter inside a cap project 1`] = `
+"_schema-version: '3.1'
+ID: cappapp
+version: 1.0.0
+description: A simple CAP project.
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx -p @sap/cds-dk cds build --production
+modules:
+  - name: cappapp-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    requires:
+      - name: cappapp-db
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: \${default-url}
+  - name: cappapp-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: cappapp-db
+  - name: cappapp-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: cappapp-destination-service
+        parameters:
+          content-target: true
+      - name: cappapp-repo-host
+        parameters:
+          service-key:
+            name: cappapp-repo-host-key
+      - name: cappapp-uaa
+        parameters:
+          service-key:
+            name: cappapp-uaa-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: cappapp_html_repo_host
+              ServiceInstanceName: cappapp-html5-service
+              ServiceKeyName: cappapp-repo-host-key
+              sap.cloud.service: cappapp
+            - Authentication: OAuth2UserTokenExchange
+              Name: cappapp_uaa
+              ServiceInstanceName: cappapp-xsuaa-service
+              ServiceKeyName: cappapp-uaa-key
+              sap.cloud.service: cappapp
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+  - name: cappapp-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: cappapp-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: headlesstestfeprojectui
+          artifacts:
+            - headlesstestfeprojectui.zip
+          target-path: resources/
+  - name: headlesstestfeprojectui
+    type: html5
+    path: app/feproject-ui
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: cappapp-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: \${service-name}
+  - name: cappapp-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: cappapp-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
+  - name: cappapp-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: cappapp-xsuaa-service
+      service-plan: application
+  - name: cappapp-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: cappapp-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter inside a cap project 2`] = `
+"# CAP cappapp
+_out
+*.db
+connection.properties
+default-*.json
+.cdsrc-private.json
+gen/
+node_modules/
+target/
+
+# Web IDE, App Studio
+.che/
+.gen/
+
+# MTA
+*_mta_build_tmp
+*.mtar
+mta_archives/
+
+# Other
+.DS_Store
+*.orig
+*.log
+
+*.iml
+*.flattened-pom.xml
+
+# IDEs
+# .vscode
+# .idea
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter inside a cap project 3`] = `
+"{
+  "xsappname": "cappapp",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "role-templates": []
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter inside a cap project 4`] = `
+"{
+  "name": "cappapp",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^5",
+    "express": "^4",
+    "hdb": "^0.18.3"
+  },
+  "devDependencies": {
+    "sqlite3": "^5.0.2",
+    "@sap/cds-dk": "^5",
+    "rimraf": "^5.0.5",
+    "mbt": "^1.2.29"
+  },
+  "scripts": {
+    "start": "cds run",
+    "undeploy": "cf undeploy cappapp --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "env": {
+      "es2020": true,
+      "node": true,
+      "jest": true,
+      "mocha": true
+    },
+    "globals": {
+      "SELECT": true,
+      "INSERT": true,
+      "UPDATE": true,
+      "DELETE": true,
+      "CREATE": true,
+      "DROP": true,
+      "CDL": true,
+      "CQL": true,
+      "CXL": true,
+      "cds": true
+    },
+    "rules": {
+      "no-console": "off",
+      "require-atomic-updates": "off"
+    }
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sql"
+      }
+    },
+    "hana": {
+      "deploy-format": "hdbtable"
+    }
+  }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter inside a cap project 5`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.4'
+metadata:
+  name: 'feproject-ui'
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: headlesstestfeprojectui
+        relativePaths: true
+        additionalFiles:
+          - xs-app.json
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter inside a cap project 6`] = `
+"{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/catalog/(.*)$",
+      "target": "/catalog/$1",
+      "destination": "SOME_DEST_NAME",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter inside a cap project 7`] = `
+"{
+    "name": "feproject-ui",
+    "version": "0.0.1",
+    "description": "An SAP Fiori application.",
+    "keywords": [
+        "ui5",
+        "openui5",
+        "sapui5"
+    ],
+    "main": "webapp/index.html",
+    "scripts": {
+        "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf",
+        "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
+        "build": "npm run build:cf"
+    },
+    "devDependencies": {
+        "ui5-task-zipper": "^3.4.x",
+        "@ui5/cli": "^4.0.16"
+    }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - localAppChanges flag is ignored if set to true when parent is non-CAP 1`] = `
+"_schema-version: '3.1'
+ID: existing-id-deploy
+description: Fiori elements app
+version: 0.0.1
+modules:
+  - name: existing-id-deploy-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: existing-id-deploy-destination-service
+        parameters:
+          content-target: true
+      - name: existing-id-deploy-repo-host
+        parameters:
+          service-key:
+            name: existing-id-deploy-repo-host-key
+      - name: existing-id-deploy-uaa
+        parameters:
+          service-key:
+            name: existing-id-deploy-uaa-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: existing-id-deploy_html_repo_host
+              ServiceInstanceName: existing-id-deploy-html5-service
+              ServiceKeyName: existing-id-deploy-repo-host-key
+              sap.cloud.service: existing-id-deploy
+            - Authentication: OAuth2UserTokenExchange
+              Name: existing-id-deploy_uaa
+              ServiceInstanceName: existing-id-deploy-xsuaa-service
+              ServiceKeyName: existing-id-deploy-uaa-key
+              sap.cloud.service: existing-id-deploy
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+  - name: existing-id-deploy-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: existing-id-deploy-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: headlesstestfeprojectui
+          artifacts:
+            - headlesstestfeprojectui.zip
+          target-path: resources/
+  - name: headlesstestfeprojectui
+    type: html5
+    path: feproject-ui
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: existing-id-deploy-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: existing-id-deploy-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
+              - Name: srv-api
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+              - Name: SOME_DEST_NAME
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+  - name: existing-id-deploy-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: existing-id-deploy-xsuaa-service
+      service-plan: application
+  - name: existing-id-deploy-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: existing-id-deploy-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - localAppChanges flag is ignored if set to true when parent is non-CAP 2`] = `
+"{
+  "scripts": {
+    "undeploy": "cf undeploy existing-id-deploy --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "mbt": "^1.2.29"
+  }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - localAppChanges flag is ignored if set to true when parent is non-CAP 3`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.4'
+metadata:
+  name: 'feproject-ui'
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: headlesstestfeprojectui
+        relativePaths: true
+        additionalFiles:
+          - xs-app.json
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - localAppChanges flag is ignored if set to true when parent is non-CAP 4`] = `
+"{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/catalog/(.*)$",
+      "target": "/catalog/$1",
+      "destination": "SOME_DEST_NAME",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - localAppChanges flag is ignored if set to true when parent is non-CAP 5`] = `
+"{
+    "name": "feproject-ui",
+    "version": "0.0.1",
+    "description": "An SAP Fiori application.",
+    "keywords": [
+        "ui5",
+        "openui5",
+        "sapui5"
+    ],
+    "main": "webapp/index.html",
+    "scripts": {
+        "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf",
+        "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo"
+    },
+    "devDependencies": {
+        "ui5-task-zipper": "^3.4.x",
+        "@ui5/cli": "^4.0.16"
+    }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config - localAppChanges flag is ignored if set to true when parent is non-CAP 6`] = `
+"{
+  "_version": "1.32.0",
+  "sap.app": {
+    "id": "headless.test.feprojectui",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "dataSources": {
+      "mainService": {
+        "uri": "/catalog/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "offline": false,
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "ui5template.fiorielements.v4.lrop",
+      "version": "1.0.0"
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "resources": {
+      "js": [],
+      "css": []
+    },
+    "dependencies": {
+      "minUI5Version": "1.98.0",
+      "libs": {
+        "sap.ui.core": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "models": {
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      },
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      }
+    },
+    "routing": {
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "BooksList",
+          "target": "BooksList"
+        },
+        {
+          "pattern": "Books({key}):?query:",
+          "name": "BooksObjectPage",
+          "target": "BooksObjectPage"
+        }
+      ],
+      "targets": {
+        "BooksList": {
+          "type": "Component",
+          "id": "BooksList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "entitySet": "Books",
+              "variantManagement": "Page",
+              "navigation": {
+                "Books": {
+                  "detail": {
+                    "route": "BooksObjectPage"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "BooksObjectPage": {
+          "type": "Component",
+          "id": "BooksObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "entitySet": "Books"
+            }
+          }
+        }
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    }
+  },
+  "sap.platform.abap": {
+    "_version": "1.1.0",
+    "uri": ""
+  },
+  "sap.platform.hcp": {
+    "_version": "1.1.0",
+    "uri": ""
+  },
+  "sap.fiori": {
+    "_version": "1.1.0",
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "existing-id-deploy"
+  }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config 1`] = `
+"{
+  "xsappname": "existing-id-deploy",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "role-templates": []
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config 2`] = `
+"_schema-version: '3.1'
+ID: existing-id-deploy
+description: Fiori elements app
+version: 0.0.1
+modules:
+  - name: existing-id-deploy-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: existing-id-deploy-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: comfioritoolstravel
+          artifacts:
+            - comfioritoolstravel.zip
+          target-path: resources/
+  - name: comfioritoolstravel
+    type: html5
+    path: .
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: existing-id-deploy-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: existing-id-deploy-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+  - name: existing-id-deploy-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: existing-id-deploy-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: false
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config 3`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.4'
+metadata:
+  name: 'travel'
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: comfioritoolstravel
+        relativePaths: true
+        additionalFiles:
+          - xs-app.json
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config 4`] = `
+"{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/sap/(.*)$",
+      "target": "/sap/$1",
+      "destination": "SOME_DEST_NAME",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config 5`] = `
+"{
+  "scripts": {
+    "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
+    "build:mta": "rimraf resources mta_archives && mbt build",
+    "deploy": "fiori cfDeploy",
+    "undeploy": "cf undeploy existing-id-deploy --delete-services --delete-service-keys --delete-service-brokers"
+  },
+  "devDependencies": {
+    "ui5-task-zipper": "^3.4.x",
+    "@ui5/cli": "^4.0.16",
+    "rimraf": "^5.0.5",
+    "mbt": "^1.2.29"
+  }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config 6`] = `
+"node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config 7`] = `
+"{
+  "_version": "1.8.0",
+  "sap.app": {
+    "id": "com.fiori.tools.travel",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "tags": {
+      "keywords": []
+    },
+    "ach": "",
+    "resources": "resources.json",
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZUI_RAP_TRAVEL_M_U025/",
+        "type": "OData",
+        "settings": {
+          "annotations": ["ZUI_RAP_TRAVEL_M_U025_VAN", "annotation"],
+          "localUri": "localService/metadata.xml"
+        }
+      },
+      "ZUI_RAP_TRAVEL_M_U025_VAN": {
+        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZUI_RAP_TRAVEL_M_U025_VAN',Version='0001')/$value/",
+        "type": "ODataAnnotation",
+        "settings": {
+          "localUri": "localService/ZUI_RAP_TRAVEL_M_U025_VAN.xml"
+        }
+      },
+      "annotation": {
+        "type": "ODataAnnotation",
+        "uri": "annotations/annotation.xml",
+        "settings": {
+          "localUri": "annotations/annotation.xml"
+        }
+      }
+    },
+    "offline": false,
+    "sourceTemplate": {
+      "id": "ui5template.smartTemplate",
+      "version": "1.40.12"
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "com-fiori-tools-travel-inbound": {
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          },
+          "semanticObject": "Travel",
+          "action": "display",
+          "title": "Travel",
+          "subTitle": "",
+          "icon": ""
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    },
+    "supportedThemes": ["sap_hcb", "sap_belize"]
+  },
+  "sap.ui5": {
+    "resources": {
+      "js": [],
+      "css": []
+    },
+    "dependencies": {
+      "minUI5Version": "1.65.0",
+      "libs": {},
+      "components": {}
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      },
+      "i18n|sap.suite.ui.generic.template.ListReport|Travel": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/ListReport/Travel/i18n.properties"
+      },
+      "i18n|sap.suite.ui.generic.template.ObjectPage|Travel": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/ObjectPage/Travel/i18n.properties"
+      },
+      "i18n|sap.suite.ui.generic.template.ObjectPage|Booking": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/ObjectPage/Booking/i18n.properties"
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "defaultBindingMode": "TwoWay",
+          "defaultCountMode": "Inline",
+          "refreshAfterChange": false,
+          "metadataUrlParams": {
+            "sap-value-list": "none"
+          }
+        }
+      }
+    },
+    "extends": {
+      "extensions": {}
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    }
+  },
+  "sap.ui.generic.app": {
+    "_version": "1.3.0",
+    "settings": {
+      "forceGlobalRefresh": false,
+      "objectPageHeaderType": "Dynamic",
+      "showDraftToggle": false
+    },
+    "pages": {
+      "ListReport|Travel": {
+        "entitySet": "Travel",
+        "component": {
+          "name": "sap.suite.ui.generic.template.ListReport",
+          "list": true,
+          "settings": {
+            "condensedTableLayout": true,
+            "smartVariantManagement": true,
+            "enableTableFilterInPageVariant": true
+          }
+        },
+        "pages": {
+          "ObjectPage|Travel": {
+            "entitySet": "Travel",
+            "component": {
+              "name": "sap.suite.ui.generic.template.ObjectPage"
+            },
+            "pages": {
+              "ObjectPage|to_Booking": {
+                "navigationProperty": "to_Booking",
+                "entitySet": "Booking",
+                "component": {
+                  "name": "sap.suite.ui.generic.template.ObjectPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.platform.abap": {
+    "uri": ""
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.platform.hcp": {
+    "uri": ""
+  }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 1`] = `
+"{
+  "xsappname": "existing-id-deploy_ts",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "role-templates": []
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 2`] = `
+"_schema-version: '3.1'
+ID: existing-id-deploy_ts
+description: Fiori elements app
+version: 0.0.1
+modules:
+  - name: existing-id-deploy_ts-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: existing-id-deploy_ts-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: comfioritoolstravelts
+          artifacts:
+            - comfioritoolstravelts.zip
+          target-path: resources/
+  - name: comfioritoolstravelts
+    type: html5
+    path: .
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: existing-id-deploy_ts-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: existing-id-deploy_ts-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+  - name: existing-id-deploy_ts-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: existing-id-deploy_ts-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: false
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 3`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.4'
+metadata:
+  name: 'travel_ts'
+type: application
+builder:
+  customTasks:
+    - name: ui5-tooling-modules-task
+      afterTask: replaceVersion
+      configuration: {}
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+        removeConsoleStatements: true
+        transpileAsync: true
+        transpileTypeScript: true
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: comfioritoolstravelts
+        relativePaths: true
+        additionalFiles:
+          - xs-app.json
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 4`] = `
+"{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/sap/(.*)$",
+      "target": "/sap/$1",
+      "destination": "SOME_DEST_NAME",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 5`] = `
+"{
+  "scripts": {
+    "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
+    "build:mta": "rimraf resources mta_archives && mbt build",
+    "deploy": "fiori cfDeploy",
+    "undeploy": "cf undeploy existing-id-deploy_ts --delete-services --delete-service-keys --delete-service-brokers"
+  },
+  "devDependencies": {
+    "ui5-task-zipper": "^3.4.x",
+    "@ui5/cli": "^4.0.16",
+    "rimraf": "^5.0.5",
+    "mbt": "^1.2.29"
+  }
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 6`] = `
+"node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 7`] = `
+"{
+  "_version": "1.8.0",
+  "sap.app": {
+    "id": "com.fiori.tools.travel.ts",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "1.0.0"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "tags": {
+      "keywords": []
+    },
+    "ach": "",
+    "resources": "resources.json",
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZUI_RAP_TRAVEL_M_U025/",
+        "type": "OData",
+        "settings": {
+          "annotations": ["ZUI_RAP_TRAVEL_M_U025_VAN", "annotation"],
+          "localUri": "localService/metadata.xml"
+        }
+      },
+      "ZUI_RAP_TRAVEL_M_U025_VAN": {
+        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZUI_RAP_TRAVEL_M_U025_VAN',Version='0001')/$value/",
+        "type": "ODataAnnotation",
+        "settings": {
+          "localUri": "localService/ZUI_RAP_TRAVEL_M_U025_VAN.xml"
+        }
+      },
+      "annotation": {
+        "type": "ODataAnnotation",
+        "uri": "annotations/annotation.xml",
+        "settings": {
+          "localUri": "annotations/annotation.xml"
+        }
+      }
+    },
+    "offline": false,
+    "sourceTemplate": {
+      "id": "ui5template.smartTemplate",
+      "version": "1.40.12"
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "com-fiori-tools-travel-inbound": {
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          },
+          "semanticObject": "Travel",
+          "action": "display",
+          "title": "Travel",
+          "subTitle": "",
+          "icon": ""
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    },
+    "supportedThemes": ["sap_hcb", "sap_belize"]
+  },
+  "sap.ui5": {
+    "resources": {
+      "js": [],
+      "css": []
+    },
+    "dependencies": {
+      "minUI5Version": "1.65.0",
+      "libs": {},
+      "components": {}
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      },
+      "i18n|sap.suite.ui.generic.template.ListReport|Travel": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/ListReport/Travel/i18n.properties"
+      },
+      "i18n|sap.suite.ui.generic.template.ObjectPage|Travel": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/ObjectPage/Travel/i18n.properties"
+      },
+      "i18n|sap.suite.ui.generic.template.ObjectPage|Booking": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/ObjectPage/Booking/i18n.properties"
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "defaultBindingMode": "TwoWay",
+          "defaultCountMode": "Inline",
+          "refreshAfterChange": false,
+          "metadataUrlParams": {
+            "sap-value-list": "none"
+          }
+        }
+      }
+    },
+    "extends": {
+      "extensions": {}
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    }
+  },
+  "sap.ui.generic.app": {
+    "_version": "1.3.0",
+    "settings": {
+      "forceGlobalRefresh": false,
+      "objectPageHeaderType": "Dynamic",
+      "showDraftToggle": false
+    },
+    "pages": {
+      "ListReport|Travel": {
+        "entitySet": "Travel",
+        "component": {
+          "name": "sap.suite.ui.generic.template.ListReport",
+          "list": true,
+          "settings": {
+            "condensedTableLayout": true,
+            "smartVariantManagement": true,
+            "enableTableFilterInPageVariant": true
+          }
+        },
+        "pages": {
+          "ObjectPage|Travel": {
+            "entitySet": "Travel",
+            "component": {
+              "name": "sap.suite.ui.generic.template.ObjectPage"
+            },
+            "pages": {
+              "ObjectPage|to_Booking": {
+                "navigationProperty": "to_Booking",
+                "entitySet": "Booking",
+                "component": {
+                  "name": "sap.suite.ui.generic.template.ObjectPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.platform.abap": {
+    "uri": ""
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  },
+  "sap.platform.hcp": {
+    "uri": ""
+  }
+}
+"
+`;

@@ -23,6 +23,7 @@ import type {
 } from '@sap-ux/vocabularies-types';
 import { CommonAnnotationTerms, CommonAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/Common';
 import type { EntityTypeAnnotations, PropertyAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
+import type { Hidden } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { UIAnnotationTerms, UIAnnotationTypes } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { join } from 'path';
 import { pathToFileURL } from 'url';
@@ -57,6 +58,18 @@ export type AnnotationServiceParameters = {
      * Name of the app.
      */
     appName?: string;
+    /**
+     * Only applicable for CAP CDS projects.
+     * When set to true SAP annotations will be created instead of OData annotations.
+     * File provided via "annotationPath" is assumed to be empty and it's content is not evaluated by the generator.
+     * Currently only supports insert changes for the following annotations:
+     * - UI.LineItem
+     * - UI.Facets
+     * - UI.FieldGroup
+     *
+     * @experimental
+     */
+    writeSapAnnotations?: boolean;
 };
 /**
  * Generate annotations options.
@@ -112,6 +125,9 @@ export async function generateAnnotations(
         const generated = await generateValueHelps(context);
         annotationsGenerated = annotationsGenerated || generated;
     }
+    if (annotationsGenerated && annotationServiceParams.writeSapAnnotations) {
+        await context.annotationService.save();
+    }
     return annotationsGenerated;
 }
 interface Context {
@@ -122,14 +138,15 @@ interface Context {
     convertedSchema: ConvertedMetadata;
     entityTypeName: string;
     entityType: EntityType;
+    ignoreChangedFileInitialContent: boolean;
 }
 
-async function adaptProject(projectOrRoot: string | Project): Promise<Project> {
+async function adaptProject(projectOrRoot: string | Project, fs?: Editor): Promise<Project> {
     if (typeof projectOrRoot === 'string') {
         // On Windows platform when called from the Application Wizard the root path may contain lowercase drive letter
         // This causes annotation generation error in Fiori annotation API, thus needs adaptation
         const root = adaptFilePath(projectOrRoot);
-        return await getProject(root);
+        return await getProject(root, fs);
     } else {
         return projectOrRoot;
     }
@@ -141,8 +158,8 @@ async function getContext(
     annotationFilePath: string,
     annotationServiceParams: AnnotationServiceParameters
 ): Promise<Context> {
-    const { project, serviceName, appName } = annotationServiceParams;
-    const projectInstance = await adaptProject(project);
+    const { project, serviceName, appName, writeSapAnnotations = false } = annotationServiceParams;
+    const projectInstance = await adaptProject(project, fs);
     const annotationService = await FioriAnnotationService.createService(
         projectInstance,
         serviceName,
@@ -150,7 +167,9 @@ async function getContext(
         fs,
         {
             commitOnSave: false,
-            clearFileResolutionCache: true
+            clearFileResolutionCache: true,
+            writeSapAnnotations,
+            ignoreChangedFileInitialContent: writeSapAnnotations
         }
     );
 
@@ -166,7 +185,8 @@ async function getContext(
         metadataService,
         convertedSchema,
         entityTypeName,
-        entityType
+        entityType,
+        ignoreChangedFileInitialContent: writeSapAnnotations
     };
 }
 
@@ -235,7 +255,9 @@ async function generateDefaultFacets(context: Context): Promise<boolean> {
             }
         ];
         annotationService.edit(changes);
-        await annotationService.save();
+        if (!context.ignoreChangedFileInitialContent) {
+            await annotationService.save();
+        }
         return true;
     } catch (e) {
         exception = e instanceof ApiError ? e : new ApiError(`Generating sections failed. ${e}`);
@@ -250,7 +272,10 @@ function findEntitySet(convertedSchema: ConvertedMetadata, entityTypeName: strin
     return entitySet?.name ?? '';
 }
 
-function findEntityType(convertedSchema: ConvertedMetadata, entitySetName: string) {
+function findEntityType(
+    convertedSchema: ConvertedMetadata,
+    entitySetName: string
+): { entityType: EntityType; entityTypeName: string } {
     const entityTypeName = convertedSchema.entitySets.by_name(entitySetName)?.entityTypeName ?? '';
     if (!entityTypeName) {
         throw new ApiError(`Entity set not found: ${entitySetName}`, ApiErrorCode.General);
@@ -397,11 +422,11 @@ function isPropertyFromCommonNodeModule(propName: string, locationUri?: string):
     return managedProperties.includes(propName) && locationUri.endsWith(commonNodeModulePath);
 }
 
-function isHidden(hiddenAnno?: Omit<RawAnnotation, 'annotations'>): boolean {
+function isHidden(hiddenAnno: Hidden | undefined): boolean {
     if (!hiddenAnno || hiddenAnno.qualifier) {
         return false;
     }
-    return !hiddenAnno.value || (hiddenAnno.value.type === 'Bool' && hiddenAnno.value.Bool !== false);
+    return hiddenAnno.valueOf() as boolean;
 }
 
 /**
@@ -436,7 +461,9 @@ async function generateDefaultLineItem(context: Context): Promise<boolean> {
             }
         };
         annotationService.edit(change);
-        await annotationService.save();
+        if (!context.ignoreChangedFileInitialContent) {
+            await annotationService.save();
+        }
         return true;
     } catch (e) {
         exception = e instanceof ApiError ? e : new ApiError(`Generating LineItem failed. ${e}`);
@@ -526,7 +553,10 @@ async function generateValueList(context: Context, navProperties: NavigationProp
         ];
         annotationService.edit(changes);
     });
-    await annotationService.save();
+
+    if (!context.ignoreChangedFileInitialContent) {
+        await annotationService.save();
+    }
 }
 
 function getValueListParameterInOut(

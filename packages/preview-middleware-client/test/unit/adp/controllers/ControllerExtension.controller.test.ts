@@ -7,10 +7,22 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { ValueState } from 'mock/sap/ui/core/library';
 import { fetchMock, openMock, sapCoreMock } from 'mock/window';
+import MessageToast from 'mock/sap/m/MessageToast';
 
 import * as apiHandler from '../../../../src/adp/api-handler';
 
 import ControllerExtension from '../../../../src/adp/controllers/ControllerExtension.controller';
+import { ExtendControllerData } from 'open/ux/preview/client/adp/extend-controller';
+import * as adpUtils from 'open/ux/preview/client/adp/utils';
+import * as utils from '../../../../src/utils/version';
+import * as coreUtils from '../../../../src/utils/core';
+
+jest.mock('../../../../src/adp/command-executor', () => {
+    return jest.fn().mockImplementation(() => ({
+        getCommand: jest.fn().mockResolvedValue({}),
+        pushAndExecuteCommand: jest.fn()
+    }));
+});
 
 describe('ControllerExtension', () => {
     beforeAll(() => {
@@ -48,6 +60,7 @@ describe('ControllerExtension', () => {
         });
 
         test('fills json model with data (controller exists: false)', async () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
@@ -77,6 +90,7 @@ describe('ControllerExtension', () => {
         });
 
         test('fills json model with data (controller exists: true | env: VS Code)', async () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
@@ -99,7 +113,8 @@ describe('ControllerExtension', () => {
                     controllerExists: true,
                     controllerPath: 'C:/users/projects/adp.app/webapp/changes/coding/share.js',
                     controllerPathFromRoot: 'adp.app/webapp/changes/coding/share.js',
-                    isRunningInBAS: false
+                    isRunningInBAS: false,
+                    isTsSupported: false
                 }),
                 text: jest.fn(),
                 ok: true
@@ -130,6 +145,7 @@ describe('ControllerExtension', () => {
         });
 
         test('fills json model with data (controller exists: true | env: BAS)', async () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
             const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
@@ -150,9 +166,10 @@ describe('ControllerExtension', () => {
             fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue({
                     controllerExists: true,
-                    controllerPath: 'C:/users/projects/adp.app/webapp/changes/coding/share.js',
-                    controllerPathFromRoot: 'adp.app/webapp/changes/coding/share.js',
-                    isRunningInBAS: true
+                    controllerPath: 'C:/users/projects/adp.app/webapp/changes/coding/share.ts',
+                    controllerPathFromRoot: 'adp.app/webapp/changes/coding/share.ts',
+                    isRunningInBAS: true,
+                    isTsSupported: true
                 }),
                 text: jest.fn(),
                 ok: true
@@ -220,6 +237,7 @@ describe('ControllerExtension', () => {
         });
 
         test('throws error when trying to get controllers from the project workspace', async () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const errorMsg = 'Could not retrieve controllers!';
             const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
@@ -283,7 +301,7 @@ describe('ControllerExtension', () => {
     describe('onControllerNameInputChange', () => {
         const testModel = {
             setProperty: jest.fn(),
-            getProperty: jest.fn().mockReturnValue([{ controllerName: 'Delete.js' }])
+            getProperty: jest.fn().mockReturnValue([{ controllerName: 'Delete' }])
         } as unknown as JSONModel;
 
         afterEach(() => {
@@ -291,6 +309,7 @@ describe('ControllerExtension', () => {
         });
 
         test('sets error when controller with the same named already exists', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 {} as unknown as UI5Element,
@@ -301,6 +320,33 @@ describe('ControllerExtension', () => {
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     getValue: jest.fn().mockReturnValue('Delete'),
+                    setValueState: valueStateSpy
+                })
+            };
+
+            controllerExt.model = testModel;
+
+            controllerExt.dialog = {
+                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+            } as unknown as Dialog;
+
+            controllerExt.onControllerNameInputChange(event as unknown as Event);
+
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
+        });
+
+        test('sets error when controller with the same named already exists as pending change', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
+            const controllerExt = new ControllerExtension(
+                'adp.extension.controllers.ControllerExtension',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
+
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    getValue: jest.fn().mockReturnValue('Test'),
                     setValueState: valueStateSpy
                 })
             };
@@ -343,6 +389,7 @@ describe('ControllerExtension', () => {
         });
 
         test('sets error when the controller name has special characters', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 {} as unknown as UI5Element,
@@ -369,6 +416,7 @@ describe('ControllerExtension', () => {
         });
 
         test('sets error when the controller name contains a whitespace at the end', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 {} as unknown as UI5Element,
@@ -395,6 +443,7 @@ describe('ControllerExtension', () => {
         });
 
         test('sets error when the controller name exceeds 64 characters', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 {} as unknown as UI5Element,
@@ -423,6 +472,7 @@ describe('ControllerExtension', () => {
         });
 
         test('sets create button to true when the controller name is valid', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 {} as unknown as UI5Element,
@@ -462,6 +512,10 @@ describe('ControllerExtension', () => {
             jest.spyOn(apiHandler, 'writeChange').mockImplementation(async (data) => {
                 return Promise.resolve(data);
             });
+        });
+
+        beforeEach(() => {
+            jest.clearAllMocks();
         });
 
         afterAll(() => {
@@ -508,6 +562,115 @@ describe('ControllerExtension', () => {
                 creation: '2020-01-01T00:00:00.000Z',
                 fileName: 'something.change'
             });
+        });
+
+        test('creates new controller and a change for version >1.136', async () => {
+            const getControlByIdMock = jest.spyOn(coreUtils, 'getControlById').mockReturnValueOnce(undefined);
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+            jest.spyOn(utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 136, patch: 0 });
+            jest.spyOn(utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(false);
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+            const controllerExt = new ControllerExtension(
+                'adp.extension.controllers.ControllerExtension',
+                overlays as unknown as UI5Element,
+                {
+                    getService: jest.fn(),
+                    getFlexSettings: jest.fn()
+                } as unknown as RuntimeAuthoring
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            controllerExt.model = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce(false)
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('::Toolbar'),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({ controllers: [], id: 'adp.app' }),
+                text: jest.fn().mockReturnValueOnce('Controller was created!').mockReturnValueOnce('Change created'),
+                ok: true
+            });
+
+            controllerExt.handleDialogClose = jest.fn();
+
+            await controllerExt.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await controllerExt.onCreateBtnPress(event as unknown as Event);
+
+            expect(getControlByIdMock).toHaveBeenCalledWith('::Toolbar');
+        });
+
+        test('resolve deffered data promise when passed', async () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+            const addSpy = jest.fn().mockResolvedValue({ fileName: 'something.change' });
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+            const resolveSpy = jest.fn();
+            const mockData = {
+                deferred: {
+                    resolve: resolveSpy
+                }
+            } as unknown as ExtendControllerData;
+            const controllerExt = new ControllerExtension(
+                'adp.extension.controllers.ControllerExtension',
+                overlays as unknown as UI5Element,
+                {
+                    getService: jest.fn().mockResolvedValue({ add: addSpy })
+                } as unknown as RuntimeAuthoring,
+                mockData
+            );
+            controllerExt.model = {
+                setProperty: jest.fn(),
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce(undefined)
+                    .mockReturnValueOnce('testController')
+                    .mockReturnValueOnce('viewId')
+            } as unknown as JSONModel;
+
+            controllerExt.handleDialogClose = jest.fn();
+
+            await controllerExt.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await controllerExt.onCreateBtnPress(event as unknown as Event);
+
+            expect(mockData.deferred.resolve).toHaveBeenCalledWith({
+                codeRef: 'coding/testController.js',
+                viewId: 'viewId'
+            });
+            expect(MessageToast.show).toHaveBeenCalledWith(
+                'Note: The `testController` controller extension will be created once you save the change.',
+                { 'duration': 8000 }
+            );
         });
 
         test('opens link to existing controller', async () => {

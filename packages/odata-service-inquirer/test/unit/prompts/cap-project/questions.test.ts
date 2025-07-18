@@ -1,29 +1,31 @@
+import type { CapService } from '@sap-ux/cap-config-writer';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import type { CapCustomPaths } from '@sap-ux/project-access';
+import { getCapCustomPaths, type CdsVersionInfo } from '@sap-ux/project-access';
+import type { PathLike } from 'fs';
+import * as fsPromises from 'fs/promises';
 import type { ListQuestion } from 'inquirer';
+import os from 'os';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
-import { getLocalCapProjectPrompts } from '../../../../src/prompts/datasources/cap-project/questions';
-import type { CapService } from '../../../../src/types';
-import { promptNames, hostEnvironment, type CapServiceChoice } from '../../../../src/types';
-import { type CapProjectChoice, capInternalPromptNames } from '../../../../src/prompts/datasources/cap-project/types';
-import { PromptState, getHostEnvironment } from '../../../../src/utils';
 import {
     enterCapPathChoiceValue,
     getCapServiceChoices as getCapServiceChoicesMock
 } from '../../../../src/prompts/datasources/cap-project/cap-helpers';
+import { getLocalCapProjectPrompts } from '../../../../src/prompts/datasources/cap-project/questions';
+import { capInternalPromptNames, type CapProjectChoice } from '../../../../src/prompts/datasources/cap-project/types';
 import * as capValidators from '../../../../src/prompts/datasources/cap-project/validators';
-import type { CapCustomPaths } from '@sap-ux/project-access';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
-import { type CdsVersionInfo } from '@sap-ux/project-access';
+import { promptNames, type CapServiceChoice } from '../../../../src/types';
+import { PromptState, getPromptHostEnvironment } from '../../../../src/utils';
+
+jest.mock('fs/promises', () => ({
+    __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
+    ...jest.requireActual('fs/promises')
+}));
 
 jest.mock('../../../../src/utils', () => ({
     ...jest.requireActual('../../../../src/utils'),
-    getHostEnvironment: jest.fn()
-}));
-
-jest.mock('../../../../src/error-handler/error-handler', () => ({
-    ...jest.requireActual('../../../../src/error-handler/error-handler'),
-    getErrorMsg: jest.fn().mockImplementation(() => {
-        return 'Any error message';
-    })
+    getPromptHostEnvironment: jest.fn()
 }));
 
 const mockCapCustomPaths: CapCustomPaths = {
@@ -83,7 +85,7 @@ jest.mock('../../../../src/prompts/datasources/cap-project/cap-helpers', () => (
 
 describe('getLocalCapProjectPrompts', () => {
     beforeAll(async () => {
-        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         // Wait for i18n to bootstrap so we can test localised strings
         await initI18nOdataServiceInquirer();
     });
@@ -94,6 +96,7 @@ describe('getLocalCapProjectPrompts', () => {
         mockCapProjectChoices = [];
         mockCapWorkspaceFolders = [];
         mockEdmx = initialMockEdmx;
+        jest.restoreAllMocks();
     });
 
     test('getLocalCapProjectPrompts, returns expected prompts', async () => {
@@ -161,6 +164,14 @@ describe('getLocalCapProjectPrompts', () => {
     });
 
     test('prompt: capProjectPath', async () => {
+        let realpathSpy: jest.SpyInstance | undefined;
+        if (os.platform() === 'win32') {
+            realpathSpy = jest
+                .spyOn(fsPromises, 'realpath')
+                .mockImplementation(
+                    async (path: PathLike) => (path as string)[0].toUpperCase() + (path as string).slice(1)
+                );
+        }
         let capPrompts = await getLocalCapProjectPrompts();
         let capProjectPathPrompt = capPrompts.find((prompt) => prompt.name === capInternalPromptNames.capProjectPath);
 
@@ -195,9 +206,28 @@ describe('getLocalCapProjectPrompts', () => {
         const validateCapPathSpy = jest.spyOn(capValidators, 'validateCapPath').mockResolvedValue(true);
         expect(await (capProjectPathPrompt!.validate as Function)('/any/valid/cap/path')).toEqual(true);
         expect(validateCapPathSpy).toHaveBeenCalledWith('/any/valid/cap/path');
+        validateCapPathSpy.mockClear();
 
         jest.spyOn(capValidators, 'validateCapPath').mockResolvedValue('not valid');
         expect(await (capProjectPathPrompt!.validate as Function)('/not/valid/cap/path')).toEqual('not valid');
+
+        realpathSpy?.mockClear();
+        // Test use of `realpath` to align drive letter casing with cds compiler facade
+        if (os.platform() === 'win32') {
+            validateCapPathSpy.mockResolvedValue(true);
+            await (capProjectPathPrompt!.validate as Function)('c:\\any\\windows\\path');
+            expect(validateCapPathSpy).toHaveBeenCalledWith('c:\\any\\windows\\path');
+            expect(realpathSpy).toHaveBeenCalledWith('c:\\any\\windows\\path');
+            // Check that the custom paths are set correctly using the result of a call to `realpath`
+            expect(getCapCustomPaths).toHaveBeenCalledWith('C:\\any\\windows\\path');
+        } else {
+            // Validate should not call `realpath` on non-Windows platforms
+            // Validate internal functions are already tested above
+            validateCapPathSpy.mockResolvedValue(true);
+            realpathSpy = jest.spyOn(fsPromises, 'realpath');
+            await (capProjectPathPrompt!.validate as Function)('/any/cap/path');
+            expect(realpathSpy).not.toHaveBeenCalled();
+        }
     });
 
     test('prompt: capService', async () => {

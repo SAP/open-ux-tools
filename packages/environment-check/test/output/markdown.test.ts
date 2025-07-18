@@ -18,7 +18,8 @@ const data = {
                 v2: { results: [] },
                 v4: {}
             },
-            HTML5DynamicDestination: true
+            HTML5DynamicDestination: true,
+            HTML5TimeoutDestination: true
         },
         DEF: {
             catalogService: {
@@ -330,14 +331,7 @@ describe('Test to check conversion to markdown, convertResultsToMarkdown()', () 
         expect(result).toMatch('V4 catalog call returned');
         expect(result).toMatch('ATO catalog available');
         expect(result).toMatch('ATO catalog is not available');
-        expect(result).toMatch(
-            'SAPUI5 repository service (sap/opu/odata/UI5/ABAP_REPOSITORY_SRV) for deployment available'
-        );
-        expect(result).toMatch(
-            ' SAPUI5 repository service (sap/opu/odata/UI5/ABAP_REPOSITORY_SRV) for deployment cannot be determined'
-        );
-        expect(result).toMatch('Ability to retrieve available Transport Requests');
-        expect(result).toMatch('Unable to retrieve available Transport Requests');
+        expect(result).toMatch('Able to retrieve available transport requests.');
     });
 
     test('Check markdown with no destinations checked', () => {

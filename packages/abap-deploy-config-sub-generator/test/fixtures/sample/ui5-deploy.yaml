@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '3.1'
+metadata:
+    name: project13
+type: application
+builder:
+    resources:
+        excludes:
+            - /test/**
+            - /localService/**
+    customTasks:
+        - name: deploy-to-abap
+          afterTask: generateCachebusterInfo
+          configuration:
+              target:
+                  url: https://mock.url.target2.com
+                  authenticationType: reentranceTicket
+              app:
+                  name: ZUI5_APP
+                  description: Deployment description
+                  package: Z123456
+                  transport: ZTESTK900000
+              exclude:
+                  - /test/

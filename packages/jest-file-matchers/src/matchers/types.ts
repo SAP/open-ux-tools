@@ -41,3 +41,7 @@ export const README_GENERATOR_REGEX = /(?<=Generation Date and Time\*\*<br>|App 
 export const README_GENERATION_PLATFORM_REGEX = /(?<=Generation Platform\*\*<br>)(.*)(?=\|\s)/;
 export const DEPLOY_YAML_APPNAME_REGEX = /(?<=app:\s.*\s*name: )(.*)(\d*)(?=)/; // Match the app name in the ui5-deploy.yaml file
 export const PACKAGE_JSON_UI5_TYPES_VERSION = /(?<=@sapui5\/types: )(\d{1,3}.\d{1,3}.\d{1,3})/; // Match the UI5 types version in the package.json
+export const APPGEN_INFO_DATE_REGEX = /"generationDate":\s*"([^"]*)"/;
+export const APPGEN_INFO_GEN_VERSION = /"generatorVersion":\s*"([^"]*)"/;
+export const APPGEN_INFO_PLATFORM_REGEX = /"generatorPlatform":\s*"([^"]*)"/;
+export const APPGEN_INFO_UI5_VERSION = /"ui5Version":\s*"([^"]*)"/;

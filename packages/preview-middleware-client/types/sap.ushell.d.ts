@@ -8,6 +8,7 @@ declare namespace sap.ushell {
         static createRenderer(async: true): Promise<ComponentContainer>;
         static createRenderer(renderer?: string, async?: true): Promise<ComponentContainer>;
         static createRendererInternal(renderer?: string, async: true): Promise<ComponentContainer>;
+        static init(platform: string): Promise<void>;
     }
 }
 

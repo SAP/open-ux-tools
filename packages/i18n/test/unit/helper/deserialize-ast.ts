@@ -1,4 +1,4 @@
-import { Range, Position } from '../../../src/parser/utils';
+import { Range, Position } from '@sap-ux/text-document-utils';
 
 /**
  * Parses short hand position expression and creates an object from it.

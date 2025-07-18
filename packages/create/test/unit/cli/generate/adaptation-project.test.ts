@@ -26,7 +26,7 @@ describe('generate/adaptation-project', () => {
     const appRoot = join(__dirname, '../../../fixtures');
     const id = 'test.id';
     const reference = 'test.reference';
-    const layer = 'CUSTOMER_BASE';
+    const layer = adp.FlexLayer.CUSTOMER_BASE;
     const url = 'http://sap.example';
     const content = [
         {
@@ -129,12 +129,10 @@ describe('generate/adaptation-project', () => {
 
     test('<appRoot> --url', async () => {
         // mock prompting
-        promptSpy.mockImplementation(() =>
-            Promise.resolve({
-                app: { id, reference, layer },
-                target: { url }
-            })
-        );
+        promptSpy.mockResolvedValue({
+            app: { id, reference, layer },
+            target: { url }
+        });
 
         // Test execution
         const command = new Command('generate');

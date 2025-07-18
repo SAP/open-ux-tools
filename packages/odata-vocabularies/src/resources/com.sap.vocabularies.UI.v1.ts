@@ -1,4 +1,4 @@
-// Last content update: Thu Jun 20 2024 13:06:42 GMT+0530 (India Standard Time)
+// Last content update: Sat Jun 14 2025 13:41:16 GMT+0200 (Mitteleuropäische Sommerzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -212,7 +212,7 @@ export default {
         'FieldGroup': {
             '$Kind': 'Term',
             '$Type': 'com.sap.vocabularies.UI.v1.FieldGroupType',
-            '$AppliesTo': ['EntityType', 'Action', 'Function', 'FunctionImport'],
+            '$AppliesTo': ['EntityType', 'Action', 'Function', 'ActionImport', 'FunctionImport'],
             '@Org.OData.Core.V1.Description': 'Group of fields with an optional label',
             '@com.sap.vocabularies.UI.v1.ThingPerspective': true
         },
@@ -871,8 +871,12 @@ export default {
             },
             'Actions': {
                 '$Collection': true,
-                '$Type': 'com.sap.vocabularies.UI.v1.DataFieldForActionAbstract',
-                '@Org.OData.Core.V1.Description': 'Available actions'
+                '$Type': 'com.sap.vocabularies.UI.v1.DataFieldAbstract',
+                '@Org.OData.Core.V1.Description': 'Available actions and action groups',
+                '@Org.OData.Validation.V1.DerivedTypeConstraint': [
+                    'com.sap.vocabularies.UI.v1.DataFieldForActionAbstract',
+                    'com.sap.vocabularies.UI.v1.DataFieldForActionGroup'
+                ]
             }
         },
         'ChartType': {
@@ -1103,7 +1107,7 @@ export default {
             '$Kind': 'Term',
             '$Collection': true,
             '$Type': 'com.sap.vocabularies.UI.v1.CriticalityLabelType',
-            '$AppliesTo': ['Property', 'EntityType'],
+            '$AppliesTo': ['Property', 'EntityType', 'TypeDefinition'],
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 '\n              Assign labels to criticalities. This information can be used for semantic coloring.\n              When applied to a property, a label for a criticality must be provided, if more than one value of the annotated property has been assigned to the same criticality.\n              There must be no more than one label per criticality.\n          '
@@ -1165,6 +1169,14 @@ export default {
             '$AppliesTo': ['EntityType'],
             '@Org.OData.Core.V1.Description':
                 'Facets that reference UI.FieldGroup annotations to group filterable fields'
+        },
+        'OperationParameterFacets': {
+            '$Kind': 'Term',
+            '$Collection': true,
+            '$Type': 'com.sap.vocabularies.UI.v1.ReferenceFacet',
+            '$AppliesTo': ['Action', 'Function', 'ActionImport', 'FunctionImport'],
+            '@Org.OData.Core.V1.Description':
+                'Facets that reference UI.FieldGroup annotations to group action or function parameters'
         },
         'Facet': {
             '$Kind': 'ComplexType',
@@ -1357,6 +1369,13 @@ export default {
                     'com.sap.vocabularies.UI.v1.DataPoint',
                     'com.sap.vocabularies.UI.v1.LineItem'
                 ]
+            },
+            'RecursiveHierarchyQualifier': {
+                '$Type': 'Org.OData.Aggregation.V1.HierarchyQualifier',
+                '$Nullable': true,
+                '@com.sap.vocabularies.Common.v1.Experimental': true,
+                '@Org.OData.Core.V1.Description':
+                    'Qualifier of the recursive hierarchy that should be applied to the Visualization'
             },
             'RequestAtLeast': {
                 '$Collection': true,
@@ -1581,7 +1600,7 @@ export default {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
-            '$AppliesTo': ['Property', 'Term'],
+            '$AppliesTo': ['Property', 'Term', 'TypeDefinition'],
             '@Org.OData.Core.V1.Description':
                 'Properties and terms annotated with this term MUST contain a valid URL referencing an resource with a MIME type image',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String',
@@ -1591,7 +1610,7 @@ export default {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
-            '$AppliesTo': ['Property', 'EntityType'],
+            '$AppliesTo': ['Property', 'EntityType', 'TypeDefinition'],
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 'Properties annotated with this term MUST be a stream property annotated with a MIME type image. Entity types annotated with this term MUST be a media entity type annotated with a MIME type image.',
@@ -1602,7 +1621,7 @@ export default {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
-            '$AppliesTo': ['Property', 'PropertyValue', 'Parameter'],
+            '$AppliesTo': ['Property', 'PropertyValue', 'Parameter', 'TypeDefinition'],
             '@Org.OData.Core.V1.Description':
                 'Properties and parameters annotated with this annotation should be rendered as multi-line text (e.g. text area)',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String'
@@ -1630,7 +1649,7 @@ export default {
             'Mask': {
                 '@Org.OData.Core.V1.Description': 'The mask to be applied to the property or the parameter'
             },
-            'Placeholder': {
+            'PlaceholderSymbol': {
                 '$MaxLength': 1,
                 '$DefaultValue': '_',
                 '@Org.OData.Core.V1.Description':
@@ -1676,6 +1695,35 @@ export default {
                 'Code/ID and text are represented separately (code/ID will be shown and text can be visualized in a separate place)',
             'TextOnly': 3,
             'TextOnly@Org.OData.Core.V1.Description': 'Only text is represented, code/ID is hidden (e.g. for UUIDs)'
+        },
+        'DateTimeStyle': {
+            '$Kind': 'Term',
+            '$Nullable': true,
+            '$AppliesTo': ['Property', 'Parameter'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'The temporal value represented by the annotated property or parameter shall be shown on the UI in the given style',
+            '@Org.OData.Core.V1.LongDescription':
+                'Requires type `Edm.Date`, `Edm.TimeOfDay`, or `Edm.DateTimeOffset`.\n          If this annotation is absent or null or an empty string, temporal values are shown in a default style.',
+            '@Org.OData.Validation.V1.AllowedValues': [
+                {
+                    'Value': 'short',
+                    '@Org.OData.Core.V1.Description': '7/25/24, 1:11 PM'
+                },
+                {
+                    'Value': 'medium',
+                    '@Org.OData.Core.V1.Description': 'Jul 25, 2024, 1:11:51 PM'
+                },
+                {
+                    'Value': 'long',
+                    '@Org.OData.Core.V1.Description': 'July 25, 2024 at 1:11:51 PM GMT+2'
+                },
+                {
+                    'Value': 'full',
+                    '@Org.OData.Core.V1.Description':
+                        'Thursday, July 25, 2024 at 1:11:51 PM Central European Summer Time'
+                }
+            ]
         },
         'Note': {
             '$Kind': 'Term',
@@ -1757,6 +1805,16 @@ export default {
             '@Org.OData.Core.V1.LongDescription':
                 'The referenced action MUST be bound to the annotated entity type and MUST create a new instance of the same entity type as a deep copy of the bound instance.\nUpon successful completion, the response MUST contain a `Location` header that contains the edit URL or read URL of the created entity,\nand the response MUST be either `201 Created` and a representation of the created entity,\nor `204 No Content` if the request included a `Prefer` header with a value of `return=minimal` and did not include the system query options `$select` and `$expand`.'
         },
+        'IsAIOperation': {
+            '$Kind': 'Term',
+            '$Type': 'Org.OData.Core.V1.Tag',
+            '$DefaultValue': true,
+            '$AppliesTo': ['Action', 'Function', 'ActionImport', 'FunctionImport'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description': 'The annotated operation is powered by AI',
+            '@Org.OData.Core.V1.LongDescription':
+                'This term allows making end-users aware that the annotated operation uses AI functionality to process the selected application data.'
+        },
         'CreateHidden': {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Core.V1.Tag',
@@ -1826,6 +1884,7 @@ export default {
                 'com.sap.vocabularies.UI.v1.Importance',
                 'com.sap.vocabularies.UI.v1.PartOfPreview',
                 'com.sap.vocabularies.HTML5.v1.CssDefaults',
+                'com.sap.vocabularies.HTML5.v1.RowSpanForDuplicateValues',
                 'com.sap.vocabularies.Common.v1.FieldControl'
             ],
             'Label': {
@@ -1875,7 +1934,9 @@ export default {
                     'com.sap.vocabularies.UI.v1.Chart',
                     'com.sap.vocabularies.UI.v1.ConnectedFields',
                     'com.sap.vocabularies.UI.v1.DataPoint',
-                    'com.sap.vocabularies.UI.v1.FieldGroup'
+                    'com.sap.vocabularies.UI.v1.FieldGroup',
+                    'com.sap.vocabularies.UI.v1.PresentationVariant',
+                    'com.sap.vocabularies.UI.v1.SelectionPresentationVariant'
                 ]
             }
         },
@@ -1960,6 +2021,13 @@ export default {
             '$BaseType': 'com.sap.vocabularies.UI.v1.DataFieldAbstract',
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description': 'Collection of OData actions and intent based navigations',
+            'ID': {
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description':
+                    'Identifier of an action group. ID should be stable, as long as the perceived semantics of the action group is unchanged.',
+                '@Org.OData.Core.V1.LongDescription':
+                    'The ID should be unique among all action groups used in all data fields of one entity type / set.'
+            },
             'Actions': {
                 '$Collection': true,
                 '$Type': 'com.sap.vocabularies.UI.v1.DataFieldForActionAbstract',
@@ -2155,7 +2223,7 @@ export default {
         'RecommendationList': {
             '$Kind': 'Term',
             '$Type': 'com.sap.vocabularies.UI.v1.RecommendationListType',
-            '$AppliesTo': ['Property', 'Parameter'],
+            '$AppliesTo': ['Property', 'Parameter', 'TypeDefinition'],
             '@Org.OData.Core.V1.Description':
                 'Specifies how to get a list of recommended values for a property or parameter',
             '@Org.OData.Core.V1.LongDescription':
@@ -2190,6 +2258,48 @@ export default {
                     'Path to property in the collection of recommended values. Format is identical to PropertyPath annotations.'
             }
         },
+        'Recommendations': {
+            '$Kind': 'Term',
+            '$Type': 'Edm.ComplexType',
+            '$AppliesTo': ['EntityType'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description': 'Recommendations for an entity',
+            '@Org.OData.Core.V1.LongDescription':
+                'This complex-typed annotation contains structural properties corresponding via name equality\nto non-key structural primitive properties of the entity type for which recommendations are available.\nThe type of such a property is a collection of a informal specialization of [`PropertyRecommendationType`](#PropertyRecommendationType).\n(The specializiations are called "informal" because they may omit the property `RecommendedFieldDescription`.)\n\nClients retrieve the recommendations with a GET request that includes this annotation in a `$select` clause.\nThe recommendations MAY be computed asynchronously, see [this diagram](../docs/recommendations.md).'
+        },
+        'PropertyRecommendationType': {
+            '$Kind': 'ComplexType',
+            '$Abstract': true,
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description': 'Base type containing recommendations for an entity type property',
+            'RecommendedFieldValue': {
+                '$Type': 'Edm.PrimitiveType',
+                '@Org.OData.Core.V1.Description': 'Recommended value',
+                '@Org.OData.Core.V1.LongDescription':
+                    'In informal specializations of this base type, this property is specialized to the primitive type of the entity type property.\n            If the recommendation has a description, this property has a [`Common.Text`](Common.md#Text) annotation\n            that evaluates to the `RecommendedFieldDescription` property.',
+                '@com.sap.vocabularies.Common.v1.Text': {
+                    '$Path': 'RecommendedFieldDescription'
+                }
+            },
+            'RecommendedFieldDescription': {
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Description of the recommended value',
+                '@Org.OData.Core.V1.LongDescription':
+                    'In informal specializations of this base type, this property is specialized to the string type of the text property corresponding to the entity type property.\n            It is omitted from informal specializations for recommendations without description.'
+            },
+            'RecommendedFieldScoreValue': {
+                '$Type': 'Edm.Decimal',
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description': 'Confidence score of the recommended value'
+            },
+            'RecommendedFieldIsSuggestion': {
+                '$Type': 'Edm.Boolean',
+                '$DefaultValue': false,
+                '@Org.OData.Core.V1.Description': 'Whether the recommended value shall be suggested in the input field',
+                '@Org.OData.Core.V1.LongDescription':
+                    'For any collection of a specialization of `PropertyRecommendationType`\n            in a property containing [`Recommendations`](#Recommendations),\n            this flag can be true in at most one instance of the collection,\n            and only if the `RecommendedFieldScoreValue` exceeds a certain threshold.'
+            }
+        },
         'ExcludeFromNavigationContext': {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Core.V1.Tag',
@@ -2201,7 +2311,7 @@ export default {
         'DoNotCheckScaleOfMeasuredQuantity': {
             '$Kind': 'Term',
             '$Type': 'Edm.Boolean',
-            '$AppliesTo': ['Property'],
+            '$AppliesTo': ['Property', 'TypeDefinition'],
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 'Do not check the number of fractional digits of the annotated measured quantity',

@@ -50,8 +50,7 @@ export class UITooltip extends React.Component<UITooltipProps, {}> {
                 },
                 content: {
                     backgroundColor: CALLOUT_STYLES.background,
-                    color: CALLOUT_STYLES.text,
-                    fontFamily: CALLOUT_STYLES.font
+                    color: CALLOUT_STYLES.text
                 }
             },
             ...this.props.styles

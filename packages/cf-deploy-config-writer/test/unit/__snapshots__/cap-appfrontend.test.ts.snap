@@ -1,0 +1,275 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 app to CAP App Frontend Project 1`] = `
+"{
+  \\"welcomeFile\\": \\"/index.html\\",
+  \\"authenticationMethod\\": \\"route\\",
+  \\"routes\\": [
+    {
+      \\"source\\": \\"^/sap/(.*)$\\",
+      \\"target\\": \\"/sap/$1\\",
+      \\"destination\\": \\"srv-api\\",
+      \\"authenticationType\\": \\"ias\\",
+      \\"csrfProtection\\": false
+    },
+    {
+      \\"source\\": \\"^/resources/(.*)$\\",
+      \\"target\\": \\"/resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^/test-resources/(.*)$\\",
+      \\"target\\": \\"/test-resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^/logout-page.html$\\",
+      \\"service\\": \\"app-front\\",
+      \\"authenticationType\\": \\"none\\"
+    },
+    {
+      \\"source\\": \\"^/index.html$\\",
+      \\"service\\": \\"app-front\\",
+      \\"cacheControl\\": \\"no-cache, no-store, must-revalidate\\"
+    },
+    {
+      \\"source\\": \\"^(.*)$\\",
+      \\"target\\": \\"$1\\",
+      \\"service\\": \\"app-front\\",
+      \\"authenticationType\\": \\"ias\\"
+    }
+  ]
+}
+"
+`;
+
+exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 app to CAP App Frontend Project 2`] = `
+"{
+  \\"xsappname\\": \\"cappapp\\",
+  \\"tenant-mode\\": \\"dedicated\\",
+  \\"description\\": \\"Security profile of called application\\",
+  \\"scopes\\": [],
+  \\"role-templates\\": []
+}
+"
+`;
+
+exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 app to CAP App Frontend Project 3`] = `
+"{
+    \\"dependencies\\": {
+        \\"@sap/cds\\": \\"^8\\",
+        \\"express\\": \\"^4\\",
+        \\"@sap/xssec\\": \\"^4\\"
+    },
+    \\"devDependencies\\": {
+        \\"@cap-js/cds-types\\": \\"^0.9.0\\",
+        \\"@cap-js/sqlite\\": \\"^1\\",
+        \\"@sap/cds-dk\\": \\"^8\\",
+        \\"rimraf\\": \\"^5.0.5\\",
+        \\"mbt\\": \\"^1.2.29\\"
+    },
+    \\"cds\\": {},
+    \\"scripts\\": {
+        \\"undeploy\\": \\"cf undeploy cappapp --delete-services --delete-service-keys --delete-service-brokers\\",
+        \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+        \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
+    }
+}
+"
+`;
+
+exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 app to CAP App Frontend Project 4`] = `
+"_schema-version: '3.1'
+ID: cappapp
+version: 1.0.0
+description: A simple CAP project.
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx -p @sap/cds-dk cds build --production
+modules:
+  - name: cappapp-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: '\${default-url}'
+    requires:
+      - name: cappapp-auth
+  - name: cappapp-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: cappapp-auth
+      - name: cappapp-app-front
+        parameters:
+          content-target: true
+    parameters:
+      config:
+        destinations:
+          - name: ui5
+            url: 'https://ui5.sap.com'
+          - name: srv-api
+            url: '~{srv-api/srv-url}'
+            forwardAuthToken: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: comfioritoolslrop
+          artifacts:
+            - comfioritoolslrop.zip
+          target-path: resources/
+  - name: comfioritoolslrop
+    type: html5
+    path: app/lrop
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - 'npm run build:cf'
+      supported-platforms: []
+resources:
+  - name: cappapp-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: 'cappapp-\${org}-\${space}'
+        tenant-mode: dedicated
+      service-name: cappapp-xsuaa-service
+  - name: cappapp-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-name: cappapp-app-front-service
+      service-plan: developer
+"
+`;
+
+exports[`CF Writer with CAP App Frontend Generate deployment config Generate CAP project with App Frontend Service 1`] = `
+"{
+  \\"name\\": \\"captestproject\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"description\\": \\"A simple CAP project.\\",
+  \\"repository\\": \\"<Add your repository here>\\",
+  \\"license\\": \\"UNLICENSED\\",
+  \\"private\\": true,
+  \\"dependencies\\": {
+    \\"@sap/cds\\": \\"^8\\",
+    \\"express\\": \\"^4\\",
+    \\"@sap/xssec\\": \\"^4\\"
+  },
+  \\"devDependencies\\": {
+    \\"@cap-js/cds-types\\": \\"^0.8.0\\",
+    \\"@cap-js/sqlite\\": \\"^1\\",
+    \\"@sap/cds-dk\\": \\"^8\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"cds-serve\\",
+    \\"undeploy\\": \\"cf undeploy base --delete-services --delete-service-keys --delete-service-brokers\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
+  },
+  \\"cds\\": {
+    \\"requires\\": {
+      \\"auth\\": \\"xsuaa\\",
+      \\"connectivity\\": true,
+      \\"destinations\\": true,
+      \\"html5-repo\\": true
+    }
+  }
+}
+"
+`;
+
+exports[`CF Writer with CAP App Frontend Generate deployment config Generate CAP project with App Frontend Service 2`] = `
+"_schema-version: '3.2'
+ID: base
+description: Generated by Fiori Tools
+version: 0.0.1
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install
+        - npx cds build --production
+        - cp -R db/data gen/srv/srv/
+modules:
+  - name: base-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: base-app-front
+        parameters:
+          content-target: true
+      - name: base-uaa
+    parameters:
+      config:
+        destinations:
+          - name: ui5
+            url: 'https://ui5.sap.com'
+  - name: base-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-type: http
+      readiness-health-check-http-endpoint: /health
+    build-parameters:
+      builder: npm
+      ignore:
+        - node_modules/
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: '\${default-url}'
+    requires:
+      - name: base-uaa
+resources:
+  - name: base-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-name: base-app-front-service
+      service-plan: developer
+  - name: base-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: base-xsuaa-service
+      service-plan: application
+      config:
+        xsappname: 'base-\${org}-\${space}'
+        tenant-mode: dedicated
+"
+`;
+
+exports[`CF Writer with CAP App Frontend Generate deployment config Generate CAP project with App Frontend Service 3`] = `
+"{
+  \\"description\\": \\"Security profile of called application\\",
+  \\"scopes\\": [],
+  \\"role-templates\\": []
+}
+"
+`;

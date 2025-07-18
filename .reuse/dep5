@@ -27,3 +27,9 @@ Disclaimer: The code in this project may include calls to APIs (“API Calls”)
 Files: *
 Copyright: 2021 SAP SE
 License: Apache-2.0
+
+# Module: @sap-ux/jest-environment-ui5
+File: src/shim/ui5loader.js
+Copyright: SAP
+License: Apache-2.0
+Comment: This file belongs to the [OpenUI5](https://github.com/SAP/openui5) module sap.ui.core

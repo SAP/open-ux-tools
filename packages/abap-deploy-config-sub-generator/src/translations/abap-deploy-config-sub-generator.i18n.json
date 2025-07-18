@@ -1,0 +1,17 @@
+{
+    "error": {
+        "telemetry": "Failed to send telemetry data after deployment configuration has been added: {{- error}}"
+    },
+    "info": {
+        "filesGenerated": "The files have been generated.",
+        "skippedInstallation": "Option: `--skipInstall` was specified. Installation of dependencies will be skipped."
+    },
+    "debug": {
+        "configExists": "Existing deployment configuration file found at {{- configPath}}.",
+        "configNotFound": "No existing deployment configuration file found. Create a deployment configuration file.",
+        "indexExists": "The `webapp/index.html` file already exists and will not be overwritten.",
+        "initFailed": "Initializing failed. Unable to process the project configuration: {{- error}}",
+        "initTelemetry": "Initializing telemetry in ABAP deployment configuration generator...",
+        "appRootPath": "Application loaded from: {{- appRootPath}}."
+    }
+}

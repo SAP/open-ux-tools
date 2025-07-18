@@ -58,3 +58,16 @@ export class ValidationError extends Error {
         this.name = this.constructor.name;
     }
 }
+
+/**
+ * Configuration interface for generating freestyle OPA test files
+ */
+export interface FFOPAConfig {
+    appId: string;
+    applicationTitle?: string;
+    applicationDescription?: string;
+    enableTypeScript?: boolean;
+    viewName?: string;
+    ui5Version?: string;
+    ui5Theme?: string;
+}

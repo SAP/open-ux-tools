@@ -8,7 +8,7 @@
                 "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ListReport<% } %>": {
                     "type": "Component",
                     "id": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %>ListReport<% } %>",
-                    "name": "sap.fe.templates.ListReport",<%if (locals.controlAggregation) {%>
+                    "name": "<%- template %>",<%if (locals.controlAggregation) {%>
                     "controlAggregation": "<%- locals.controlAggregation %>",<% } %>
                     "options": {
                         "settings": <%- JSON.stringify(settings) %>

@@ -1,4 +1,4 @@
-import { Position, Range } from 'vscode-languageserver-types';
+import { Position, Range } from '@sap-ux/text-document-utils';
 
 /**
  * Checks if given positions are equal.

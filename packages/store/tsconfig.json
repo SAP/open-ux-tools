@@ -1,9 +1,10 @@
 {
     "extends": "../../tsconfig.json",
-    "include": ["src"],
+    "include": ["src", "src/translations/ux-store.i18n.json"],
     "compilerOptions": {
         "rootDir": "src",
-        "outDir": "dist"
+        "outDir": "dist",
+        "strictNullChecks": false
     },
     "references": [{ "path": "../logger" }]
 }

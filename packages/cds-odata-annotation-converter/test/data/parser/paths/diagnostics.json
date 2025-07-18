@@ -1,7 +1,7 @@
 [
     {
         "range": "[(52,39)..(52,40)]",
-        "message": "Wrong path separator '/'. Did you mean '.'?",
+        "message": "`/` is the wrong path separator. Did you mean `.`?",
         "severity": 2,
         "data": {
             "caseCheck": {
@@ -14,7 +14,7 @@
     },
     {
         "rule": "no-odata-path-separator",
-        "message": "Path escaping brackets ![] should be used",
+        "message": "Path escaping brackets `![]` must be used.",
         "range": "[(61,32)..(61,61)]",
         "severity": 2,
         "data": {
@@ -24,7 +24,7 @@
     },
     {
         "rule": "no-odata-path-separator",
-        "message": "Path escaping brackets ![] should be used",
+        "message": "Path escaping brackets `![]` must be used.",
         "range": "[(65,32)..(65,86)]",
         "severity": 2,
         "data": {
@@ -34,7 +34,7 @@
     },
     {
         "rule": "no-odata-path-separator",
-        "message": "Path escaping brackets ![] should be used",
+        "message": "Path escaping brackets `![]` must be used.",
         "range": "[(69,34)..(69,89)]",
         "severity": 2,
         "data": {
@@ -44,7 +44,7 @@
     },
     {
         "rule": "no-odata-path-separator",
-        "message": "Path escaping brackets ![] should be used",
+        "message": "Path escaping brackets `![]` must be used.",
         "range": "[(73,32)..(73,92)]",
         "severity": 2,
         "data": {
@@ -54,7 +54,7 @@
     },
     {
         "rule": "no-odata-path-separator",
-        "message": "Path escaping brackets ![] should be used",
+        "message": "Path escaping brackets `![]` must be used.",
         "range": "[(81,16)..(81,48)]",
         "severity": 2,
         "data": {

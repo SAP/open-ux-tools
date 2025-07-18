@@ -1,5 +1,34 @@
 # @sap-ux/serve-static-middleware
 
+## 0.3.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/logger@0.7.0
+
+## 0.2.3
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
+## 0.2.2
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+
+## 0.2.1
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
 ## 0.2.0
 
 ### Minor Changes

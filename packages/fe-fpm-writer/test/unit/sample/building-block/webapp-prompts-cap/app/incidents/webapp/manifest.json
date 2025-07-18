@@ -41,7 +41,7 @@
                 "sap.m": {},
                 "sap.ui.core": {},
                 "sap.ushell": {},
-                "sap.fe.templates": {}
+                "sap.fe.core": {}
             }
         },
         "contentDensities": {

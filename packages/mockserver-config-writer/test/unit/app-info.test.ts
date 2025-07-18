@@ -1,5 +1,5 @@
 import type { Manifest } from '@sap-ux/project-access';
-import { getMainServiceDataSource, getODataSources } from '../../src/app-info';
+import { getODataSources, getMainServiceDataSource } from '../../src/app-info';
 
 describe('Tests for getMainServiceDataSource()', () => {
     test('Empty manifest.json, should return undefined', () => {

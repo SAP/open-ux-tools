@@ -1,4 +1,4 @@
-import type { Position, Range } from '../../../src/parser/utils';
+import type { Position, Range } from '@sap-ux/text-document-utils';
 
 const rangePropertyPattern = /ranges?/i;
 const compactPosition = (position: Position) => `(${position.line},${position.character})`;

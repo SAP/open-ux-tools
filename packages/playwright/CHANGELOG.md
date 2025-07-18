@@ -1,5 +1,16 @@
 # @sap-ux-private/playwright
 
+## 0.2.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/logger@0.7.0
+
 ## 0.1.0
 
 ### Minor Changes

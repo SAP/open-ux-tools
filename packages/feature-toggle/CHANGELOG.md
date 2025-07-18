@@ -1,5 +1,35 @@
 # @sap-ux/feature-toggle
 
+## 0.3.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+## 0.2.4
+
+### Patch Changes
+
+-   5585f0d: feat: add fiori-ai rap generation toggle
+
+## 0.2.3
+
+### Patch Changes
+
+-   d04a40e: Add new toggles for ai module
+
+## 0.2.2
+
+### Patch Changes
+
+-   93ffe8d: Include feature toggles form environment variable in `getAllFeatureToggles`
+
+## 0.2.1
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+
 ## 0.2.0
 
 ### Minor Changes

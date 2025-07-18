@@ -29,9 +29,21 @@ describe('Input', () => {
         expect(screen.getByDisplayValue('testValue')).toBeDefined();
     });
 
+    it('Render without guiOptions', () => {
+        render(<Input {...props} value="testValue" guiOptions={undefined} />);
+        expect(screen.getByDisplayValue('testValue')).toBeDefined();
+    });
+
     it('Test property "id"', async () => {
         render(<Input {...props} id="test-id" />);
         expect(document.getElementById('test-id')).not.toBeNull();
+    });
+
+    it('Test property "message" as label', async () => {
+        const label = 'Dummy label';
+        render(<Input {...props} message={label} />);
+        const element = screen.getByLabelText(label);
+        expect(element).toBeDefined();
     });
 
     it('Test property "onChange"', () => {

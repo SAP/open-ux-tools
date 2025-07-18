@@ -1,0 +1,32 @@
+{
+  "version": "0.2",
+  "floorplan": "FE_LROP",
+  "project": {
+    "title": "Project's \"Title\"",
+    "description": "Test 'Project' \"Description\"",
+    "namespace": "testNameSpace",
+    "ui5Version": "1.82.2",
+    "localUI5Version": "1.82.2",
+    "targetFolder": "./test-output",
+    "name": "app5-telem",
+    "sapux": true
+  },
+  "service": {},
+  "entityConfig": {
+    "mainEntity": {
+      "entityName": "Artists"
+    },
+    "navigationEntity": {
+      "EntitySet": "Publications",
+      "Name": "_Publication"
+    }
+  },
+  "deployConfig": {
+    "deployTarget": "CF",
+    "destinationName": "SOME_DEST_NAME"
+  },
+  "telemetryData": {
+    "generationSourceName": "Test Headless",
+    "generationSourceVersion": "1.1.1"
+}
+}

@@ -1,0 +1,38 @@
+{
+    "cfGen": {
+        "prompts": {
+            "abapBinding": {
+                "name": "Direct Service Binding"
+            },
+            "capInstanceBasedDest": {
+                "name": "Local CAP Project API (Instance Based Destination)"
+            },
+            "instanceBasedDest": {
+                "name": "{{- destination}} (Instance Based Destination)"
+            },
+            "none": {
+                "name": "None"
+            }
+        },
+        "info": {
+            "filesGenerated": "The files have been generated.",
+            "skippedInstallation": "Option: `--skipInstall` was specified. Installation of dependencies will be skipped."
+        },
+        "error": {
+            "mtaDestinations": "No destinations loaded from the `mta.yaml` file. {{- error}}",
+            "writing": "An error occurred in the writing phase: {{- error}}",
+            "install": "An error occurred in the install phase: {{- error}}",
+            "end": "An error occurred in the end phase: {{- error}}"
+        },
+        "debug": {
+            "promptOptions": "Retrieving CF prompts using: \n {{- options}}",
+            "initTelemetry": "Initializing telemetry in CF deployment configuration generator...",
+            "capMissingMTA": "CAP project detected with no MTA configuration. Add an MTA configuration."
+        }
+    },
+    "appRouterGen": {
+        "debug": {
+            "projectPath": "Project loaded from {{- destinationPath}}."
+        }
+    }
+}

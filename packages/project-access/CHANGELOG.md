@@ -1,5 +1,371 @@
 # @sap-ux/project-access
 
+## 1.30.7
+
+### Patch Changes
+
+-   58cdce6: fix: Windows path issue for CAP CDS projects
+
+## 1.30.6
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+
+## 1.30.5
+
+### Patch Changes
+
+-   7a4543e: fix: remove usage of static webapp folder
+
+## 1.30.4
+
+### Patch Changes
+
+-   f75b89d: Get mock data server config from ui5 yaml file
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/ui5-config@0.28.3
+
+## 1.30.3
+
+### Patch Changes
+
+-   Updated dependencies [f9ea9e3]
+    -   @sap-ux/i18n@0.3.1
+
+## 1.30.2
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+
+## 1.30.1
+
+### Patch Changes
+
+-   Updated dependencies [5e0020b]
+    -   @sap-ux/ui5-config@0.28.1
+
+## 1.30.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/i18n@0.3.0
+
+## 1.29.22
+
+### Patch Changes
+
+-   ea0e2c0: Use memFs if passed while application access creation
+
+## 1.29.21
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+
+## 1.29.20
+
+### Patch Changes
+
+-   294bbe3: code cleanup with help from copilot
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/ui5-config@0.27.1
+
+## 1.29.19
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+
+## 1.29.18
+
+### Patch Changes
+
+-   c3ebc82: fix: wrong convert preview-config prerequisites check for usage of cds-plugin-ui5
+
+## 1.29.17
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+
+## 1.29.16
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/ui5-config@0.26.4
+
+## 1.29.15
+
+### Patch Changes
+
+-   1ce7fe9: Improve `getModule` to attempt module reinstallation if loading fails.
+
+## 1.29.14
+
+### Patch Changes
+
+-   3cc8f8a: fix: check files in srv folder of CAP project when srv folder contains subfolders
+
+## 1.29.13
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+
+## 1.29.12
+
+### Patch Changes
+
+-   Updated dependencies [cf05ceb]
+    -   @sap-ux/i18n@0.2.3
+
+## 1.29.11
+
+### Patch Changes
+
+-   0f35b4b: ignore error thrown when no .library file found
+
+## 1.29.10
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/i18n@0.2.2
+
+## 1.29.9
+
+### Patch Changes
+
+-   c8c292c: Fix: method 'getCapModelAndServices' not returning 'odata-v4' services
+
+## 1.29.8
+
+### Patch Changes
+
+-   c50e09f: Improve performance and fix code smells
+
+## 1.29.7
+
+### Patch Changes
+
+-   2c0d657: Export `getI18nBundles` function
+
+## 1.29.6
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+
+## 1.29.5
+
+### Patch Changes
+
+-   Updated dependencies [78bc772]
+    -   @sap-ux/i18n@0.2.1
+
+## 1.29.4
+
+### Patch Changes
+
+-   29abc73: feat: support component type
+
+## 1.29.3
+
+### Patch Changes
+
+-   096b021: filter CAP services to include odata only
+
+## 1.29.2
+
+### Patch Changes
+
+-   93ef8c1: Improved `getWebappPath` for projects that has relative webapp path defined in ui5.yaml.
+
+## 1.29.1
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+
+## 1.29.0
+
+### Minor Changes
+
+-   88bf030: Add optional mem-fs editor to function in project-access
+
+## 1.28.10
+
+### Patch Changes
+
+-   e1edcd7: Make module caching more robust in case of failed installations
+
+## 1.28.9
+
+### Patch Changes
+
+-   e93797a: Added the `convert` command to convert local preview files of a project to virtual files.
+
+## 1.28.8
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/ui5-config@0.26.0
+
+## 1.28.7
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+
+## 1.28.6
+
+### Patch Changes
+
+-   fb26f92: Enhance RTA handling for variants-config command
+
+## 1.28.5
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+
+## 1.28.4
+
+### Patch Changes
+
+-   5a68903: adds new reference library sub generator
+
+## 1.28.3
+
+### Patch Changes
+
+-   42f13eb: **Fix**: Resolved an issue where running `npm install` after executing a create command would fail on Windows. This fix ensures that the installation process completes successfully across all platforms.
+
+## 1.28.2
+
+### Patch Changes
+
+-   eb38e5b: refactor: Update variable declarations in getCapModelAndServices function
+
+## 1.28.1
+
+### Patch Changes
+
+-   64e037d: TBI - Optionally allow filtering CAP folder(s) to compile CAP model from
+
+## 1.28.0
+
+### Minor Changes
+
+-   15e6959: TBI - refactor validation on target folder in app inquirer
+
+## 1.27.6
+
+### Patch Changes
+
+-   eb74890: Fix the bug for the app folder within CAP as the target folder for the new project.
+
+## 1.27.5
+
+### Patch Changes
+
+-   a64a3a5: Alert and prevent from generating a Fiori application into a CAP project folder
+
+## 1.27.4
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/ui5-config@0.25.0
+
+## 1.27.3
+
+### Patch Changes
+
+-   070182d: New public API method 'deleteCapApp', which allow delete application from CAP project
+
+## 1.27.2
+
+### Patch Changes
+
+-   09522df: Validates provided path does not contain a Fiori project, appropriate validation message displayed.
+
+## 1.27.1
+
+### Patch Changes
+
+-   d962ce1: Move hasUI5CliV3 to project-access for common re-use
+
+## 1.27.0
+
+### Minor Changes
+
+-   df29368: Method `createCapI18nEntries` - handle absolute path to cds file instead of relative path
+
+### Patch Changes
+
+-   Updated dependencies [df29368]
+    -   @sap-ux/i18n@0.2.0
+
+## 1.26.9
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+
+## 1.26.8
+
+### Patch Changes
+
+-   df6262e: fix: use manifest.json path as root for `i18n` folder
+
+## 1.26.7
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+
+## 1.26.6
+
+### Patch Changes
+
+-   82aaea3: Parallelize filtering of applications by manifest path
+
+## 1.26.5
+
+### Patch Changes
+
+-   cc16cbb: fix CAP CDS evironment e.g. loading cds jar dependencies
+
+## 1.26.4
+
+### Patch Changes
+
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/i18n@0.1.1
+
 ## 1.26.3
 
 ### Patch Changes

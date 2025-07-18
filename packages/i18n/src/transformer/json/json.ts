@@ -1,7 +1,7 @@
 import { parseTree } from 'jsonc-parser';
 import type { Node } from 'jsonc-parser';
 import type { I18nBundle, I18nEntry, TextNode } from '../../types';
-import { Position, Range, getLineOffsets, positionAt } from '../../parser/utils';
+import { Position, Range, getLineOffsets, positionAt } from '@sap-ux/text-document-utils';
 
 /**
  * Create text node value with its range.

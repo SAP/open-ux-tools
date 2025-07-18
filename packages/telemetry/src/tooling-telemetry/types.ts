@@ -1,4 +1,4 @@
-import type { ProjectInfo } from '../base/types';
+import type { ProjectInfo, TelemetryMeasurements, TelemetryProperties } from '../base/types';
 import type { AppType } from '@sap-ux/project-access/dist/types';
 
 export type TelemetryHelperProperties = {
@@ -80,14 +80,6 @@ export interface CommonFioriProjectProperties extends TelemetryProperties {
     [CommonProperties.TemplateId]: string;
     [CommonProperties.TemplateVersion]: string;
     [CommonProperties.ApplicationType]: AppType;
-}
-
-export interface TelemetryProperties {
-    [key: string]: string | boolean;
-}
-
-export interface TelemetryMeasurements {
-    [key: string]: number;
 }
 
 export type TelemetryEvent = {

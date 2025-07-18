@@ -1,5 +1,216 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.5.7
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+    -   @sap-ux/ui5-config@0.29.0
+
+## 1.5.6
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+
+## 1.5.5
+
+### Patch Changes
+
+-   7a4543e: fix: remove usage of static webapp folder
+
+## 1.5.4
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 1.5.3
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/ui5-config@0.28.3
+
+## 1.5.2
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+
+## 1.5.1
+
+### Patch Changes
+
+-   Updated dependencies [5e0020b]
+    -   @sap-ux/ui5-config@0.28.1
+
+## 1.5.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/ui5-config@0.28.0
+    -   @sap-ux/logger@0.7.0
+
+## 1.4.26
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+
+## 1.4.25
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/ui5-config@0.27.1
+
+## 1.4.24
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+
+## 1.4.23
+
+### Patch Changes
+
+-   a4cb2f6: chore(deps): update dependency http-proxy-middleware to v2.0.9
+
+## 1.4.22
+
+### Patch Changes
+
+-   a3da9a3: fix: adjust response type
+
+## 1.4.21
+
+### Patch Changes
+
+-   2260ad5: export directLoadProxy for reuse
+
+## 1.4.20
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+
+## 1.4.19
+
+### Patch Changes
+
+-   66be708: fix: UI5 2 directLoad
+
+## 1.4.18
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/ui5-config@0.26.4
+
+## 1.4.17
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+
+## 1.4.16
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+
+## 1.4.15
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
+## 1.4.14
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+
+## 1.4.13
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/ui5-config@0.26.0
+
+## 1.4.12
+
+### Patch Changes
+
+-   09a58bb: chore: upgrade vocabularies-types + pnpm updates
+
+## 1.4.11
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
+## 1.4.10
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+
+## 1.4.9
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+
+## 1.4.8
+
+### Patch Changes
+
+-   bc75111: Upgrade http-proxy-middleware
+
+## 1.4.7
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/ui5-config@0.25.0
+
+## 1.4.6
+
+### Patch Changes
+
+-   8aa367a: Fix: directLoad: true does not work and fails with Error: EISDIR: illegal operation on a directory, read
+
+## 1.4.5
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+
+## 1.4.4
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+
 ## 1.4.3
 
 ### Patch Changes

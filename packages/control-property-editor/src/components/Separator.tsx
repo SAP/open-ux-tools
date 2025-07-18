@@ -19,7 +19,7 @@ export function Separator(
     const borderProp = isVertical ? 'borderLeft' : 'borderBottom';
     const inlineStyles: CSSProperties = {
         ...{
-            [borderProp]: '1px solid var(--vscode-contrastBorder, var(--vscode-editorIndentGuide-background))'
+            [borderProp]: '1px solid var(--vscode-menu-separatorBackground)'
         },
         ...style
     };

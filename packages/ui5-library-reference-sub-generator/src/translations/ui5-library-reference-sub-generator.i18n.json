@@ -1,0 +1,10 @@
+{
+    "info": {
+        "filesGenerated": "The files have been generated."
+    },
+    "error": {
+        "endPhase": "An error occurred in the end phase of the reference library generator: {{- error}}",
+        "telemetry": "An error occurred when sending telemetry data: {{- error}}",
+        "updatingApp": "An error occurred when updating the application with the library reference. For more information, view the logs."
+    }
+}

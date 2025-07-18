@@ -1,0 +1,21 @@
+{
+  "generationParameters": {
+    "generationDate": "Tue Jun 24 2025 22:44:32 GMT+0100 (Irish Standard Time)",
+    "generatorPlatform": "CLI",
+    "serviceType": "File",
+    "metadataFilename": "",
+    "serviceUrl": "http://localhost",
+    "appName": "simple_v4",
+    "appTitle": "App Title",
+    "appDescription": "An SAP Fiori application.",
+    "appNamespace": "",
+    "ui5Theme": "sap_horizon",
+    "ui5Version": "1.82.2",
+    "showMockDataInfo": true,
+    "generatorVersion": "0.0.0",
+    "template": "Basic V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}

@@ -1,15 +1,21 @@
-import type { TOptions } from 'i18next';
+import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/ui5-library-inquirer.i18n.json';
+import { addi18nResourceBundle as addInquirerCommoni18nResourceBundle } from '@sap-ux/inquirer-common';
 
 const ui5LibI18nNamespace = 'ui5-library-inquirer';
+export const i18n: i18nNext = i18next.createInstance();
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
-    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', ui5LibI18nNamespace, translations)
-    );
+    await i18n.init({
+        lng: 'en',
+        fallbackLng: 'en'
+    });
+    i18n.addResourceBundle('en', ui5LibI18nNamespace, translations);
+    // add the inquirer common i18n resource bundle to ensure all translations are available
+    addInquirerCommoni18nResourceBundle();
 }
 
 /**
@@ -23,7 +29,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: ui5LibI18nNamespace });
     }
-    return i18next.t(key, options);
+    return i18n.t(key, options);
 }
 
 initI18n().catch(() => {

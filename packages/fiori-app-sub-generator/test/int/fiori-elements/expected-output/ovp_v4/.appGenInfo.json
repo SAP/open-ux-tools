@@ -1,0 +1,26 @@
+{
+  "generationParameters": {
+    "generationDate": "Tue Jun 24 2025 22:44:45 GMT+0100 (Irish Standard Time)",
+    "generatorPlatform": "CLI",
+    "serviceType": "OData URL",
+    "metadataFilename": "",
+    "serviceUrl": "https://sap-ux-mock-services-v4-feop.cfapps.us10.hana.ondemand.com/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/",
+    "appName": "ovp_v4",
+    "appTitle": "Project's \"Title\"",
+    "appDescription": "Test 'Project' \"Description\"",
+    "appNamespace": "testNameSpace",
+    "ui5Theme": "sap_fiori_3",
+    "ui5Version": "1.98.0",
+    "showMockDataInfo": true,
+    "generatorVersion": "0.0.0",
+    "template": "Overview Page V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Filter Entity Type",
+        "value": "Travel"
+      }
+    ],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}

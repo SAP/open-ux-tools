@@ -22,13 +22,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -81,7 +79,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -89,7 +86,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -128,13 +124,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -187,7 +181,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -195,7 +188,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -234,13 +226,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -293,7 +283,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -301,7 +290,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -340,13 +328,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -392,7 +378,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -400,7 +385,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -439,13 +423,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -491,7 +473,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -499,7 +480,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -538,13 +518,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -590,7 +568,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -598,7 +575,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -637,13 +613,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -689,7 +663,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -697,7 +670,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -736,13 +708,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -788,7 +758,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -796,7 +765,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -837,13 +805,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -900,7 +866,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -908,7 +873,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -947,13 +911,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -999,7 +961,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -1007,7 +968,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -1046,13 +1006,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -1096,7 +1054,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -1104,7 +1061,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -1145,13 +1101,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -1206,7 +1160,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -1214,7 +1167,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -1253,13 +1205,11 @@ Object {
       "borderRadius": 2,
       "boxSizing": "border-box",
       "color": "var(--vscode-input-foreground)",
-      "fontFamily": "var(--vscode-font-family)",
       "fontSize": "13px",
       "fontWeight": "normal",
       "selectors": Object {
         "::placeholder": Object {
           "color": "var(--vscode-input-placeholderForeground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": 13,
         },
       },
@@ -1303,7 +1253,6 @@ Object {
     },
   ],
   "root": Object {
-    "fontFamily": "var(--vscode-font-family)",
     "height": "auto",
   },
   "subComponentStyles": Object {
@@ -1311,7 +1260,6 @@ Object {
       "root": Array [
         Object {
           "color": "var(--vscode-input-foreground)",
-          "fontFamily": "var(--vscode-font-family)",
           "fontSize": "13px",
           "fontWeight": "bold",
           "marginTop": 25,
@@ -1319,6 +1267,109 @@ Object {
         },
         undefined,
         undefined,
+      ],
+    },
+  },
+  "suffix": Object {
+    "backgroundColor": "var(--vscode-input-background)",
+  },
+}
+`;
+
+exports[`<UIToggle /> Styles - required 1`] = `
+Object {
+  "errorMessage": Array [
+    Object {
+      "backgroundColor": "var(--vscode-inputValidation-errorBackground)",
+      "borderBottom": "1px solid var(--vscode-inputValidation-errorBorder)",
+      "borderColor": "var(--vscode-inputValidation-errorBorder)",
+      "borderLeft": "1px solid var(--vscode-inputValidation-errorBorder)",
+      "borderRight": "1px solid var(--vscode-inputValidation-errorBorder)",
+      "color": "var(--vscode-input-foreground)",
+      "margin": 0,
+      "paddingBottom": 5,
+      "paddingLeft": 8,
+      "paddingTop": 4,
+    },
+  ],
+  "field": Array [
+    Object {
+      "backgroundColor": "var(--vscode-input-background)",
+      "borderRadius": 2,
+      "boxSizing": "border-box",
+      "color": "var(--vscode-input-foreground)",
+      "fontSize": "13px",
+      "fontWeight": "normal",
+      "selectors": Object {
+        "::placeholder": Object {
+          "color": "var(--vscode-input-placeholderForeground)",
+          "fontSize": 13,
+        },
+      },
+    },
+    Object {
+      "lineHeight": "normal",
+    },
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  "fieldGroup": Array [
+    Object {
+      "backgroundColor": "var(--vscode-input-background)",
+      "borderColor": "var(--vscode-editorWidget-border)",
+      "borderRadius": 2,
+      "borderStyle": "solid",
+      "borderWidth": 1,
+      "boxSizing": "initial",
+      "color": "var(--vscode-input-foreground)",
+    },
+    Object {
+      "height": 24,
+      "maxHeight": 24,
+      "minHeight": 24,
+    },
+    Object {
+      "selectors": Object {
+        "&:hover": Object {
+          "borderColor": "var(--vscode-focusBorder)",
+        },
+      },
+    },
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+  ],
+  "icon": Array [
+    Object {
+      "bottom": 2,
+    },
+  ],
+  "root": Object {
+    "height": "auto",
+  },
+  "subComponentStyles": Object {
+    "label": Object {
+      "root": Array [
+        Object {
+          "color": "var(--vscode-input-foreground)",
+          "fontSize": "13px",
+          "fontWeight": "bold",
+          "marginTop": 25,
+          "padding": "4px 0",
+        },
+        undefined,
+        Object {
+          "selectors": Object {
+            "::after": Object {
+              "color": "var(--vscode-inputValidation-errorBorder)",
+              "content": "' *' / ''",
+              "paddingRight": 12,
+            },
+          },
+        },
       ],
     },
   },

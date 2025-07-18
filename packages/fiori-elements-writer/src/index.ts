@@ -1,17 +1,25 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import { generateCustomPage } from '@sap-ux/fe-fpm-writer';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
-import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
+import {
+    generate as addOdataService,
+    OdataVersion,
+    ServiceType,
+    type OdataService
+} from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
-import { getPackageJsonTasks } from './packageConfig';
 import cloneDeep from 'lodash/cloneDeep';
-import type { FioriElementsApp, FPMSettings } from './types';
+import type { FioriElementsApp } from './types';
 import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
-import { setAppDefaults, setDefaultTemplateSettings, getTemplateOptions } from './data/defaults';
+import {
+    setAppDefaults,
+    setDefaultTemplateSettings,
+    getTemplateOptions,
+    setVirtualEndpointDefaults
+} from './data/defaults';
 import {
     TemplateTypeAttributes,
     minSupportedUI5Version,
@@ -21,7 +29,11 @@ import {
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
-import { getBootstrapResourceUrls } from '@sap-ux/fiori-generator-shared';
+import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
+import { generateFpmConfig } from './fpmConfig';
+import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
+import type { Logger } from '@sap-ux/logger';
+import { writeAnnotations } from './writeAnnotations';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -50,15 +62,56 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
     }
     return ignore;
 }
+
+/**
+ * Returns the OPA config.
+ *
+ * @param appOpts - relevant app options for retrieving the opa config
+ * @param appOpts.generateIndex - if an index.html file will be generated
+ * @param appOpts.useVirtualPreviewEndpoints - if virtual endpoints will be used for preview
+ * @param flpAppId - the flp app id
+ * @returns - the opa config { htmlTarget }
+ */
+function getOpaConfig(
+    { generateIndex, useVirtualPreviewEndpoints }: { generateIndex?: boolean; useVirtualPreviewEndpoints?: boolean },
+    flpAppId?: string
+): { htmlTarget: string } {
+    const flpTarget = useVirtualPreviewEndpoints ? 'flp' : 'flpSandbox';
+    const htmlTarget = generateIndex ? 'index.html' : `test/${flpTarget}.html?sap-ui-xx-viewCache=false#${flpAppId}`;
+    return {
+        htmlTarget
+    };
+}
+
+/**
+ * Determines if tests should be added.
+ * For now, only if v4 and we have metadata (and therefore a mock server config) or has a cds service.
+ *
+ * @param service - the service data
+ * @param addTests - app option to add tests
+ * @returns - boolean indicating if tests are to be added
+ */
+function shouldAddTest(service: Partial<OdataService>, addTests?: boolean): boolean {
+    return (
+        !!addTests && service?.version === OdataVersion.v4 && (!!service?.metadata || service?.type === ServiceType.CDS)
+    );
+}
+
 /**
  * Generate a UI5 application based on the specified Fiori Elements floorplan template.
  *
  * @param basePath - the absolute target path where the application will be generated
  * @param data - configuration to generate the Fiori elements application
  * @param fs - an optional reference to a mem-fs editor
+ * @param log - optional logger instance
  * @returns Reference to a mem-fs-editor
  */
-async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T>, fs?: Editor): Promise<Editor> {
+async function generate<T extends {}>(
+    basePath: string,
+    data: FioriElementsApp<T>,
+    fs?: Editor,
+    log?: Logger
+): Promise<Editor> {
     // Load i18n translations asynchronously to ensure proper initialization.
     // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
     await initI18n();
@@ -83,12 +136,18 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     // Add new files from templates e.g.
     const rootTemplatesPath = join(__dirname, '..', 'templates');
     // Add templates common to all template types
-    const jsIgnoreGlob = ['**/*.ts'];
+    const isTypeScriptEnabled = feApp.appOptions?.typescript === true;
 
-    let ignore = jsIgnoreGlob;
-    if (feApp.appOptions?.typescript === true) {
-        ignore = getTypeScriptIgnoreGlob(feApp, coercedUI5Version);
+    const ignore = [
+        ...(isTypeScriptEnabled ? getTypeScriptIgnoreGlob(feApp, coercedUI5Version) : ['**/*.ts']),
+        // if using virtual endpoints for preview, ignore the files within webapp/test (flpSandbox.html, changes_loader (v2), changes_preview (v2))
+        ...(feApp.appOptions?.useVirtualPreviewEndpoints ? ['**/webapp/test/**'] : [])
+    ];
+
+    if (feApp.appOptions?.useVirtualPreviewEndpoints) {
+        setVirtualEndpointDefaults(feApp);
     }
+
     // Determine if the project type is 'EDMXBackend'.
     const isEdmxProjectType = feApp.app.projectType === 'EDMXBackend';
     // Get resource bootstrap URLs based on the project type
@@ -100,7 +159,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     const ui5Libs = isEdmxProjectType ? feApp.ui5?.ui5Libs : undefined;
     // Define template options with changes preview and loader settings based on project type
     const templateOptions = getTemplateOptions(isEdmxProjectType, feApp.service.version, feApp.ui5?.version);
-
     const appConfig = {
         ...feApp,
         templateOptions,
@@ -148,17 +206,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     // Special handling for FPM because it is not based on template files but used the fpm writer
     if (feApp.template.type === TemplateType.FlexibleProgrammingModel) {
-        const config: FPMSettings = feApp.template.settings as unknown as FPMSettings;
-        generateCustomPage(
-            basePath,
-            {
-                entity: config.entityConfig.mainEntityName,
-                name: config.pageName,
-                minUI5Version: feApp.ui5?.minUI5Version,
-                typescript: feApp.appOptions?.typescript
-            },
-            fs
-        );
+        await generateFpmConfig(feApp, basePath, fs);
     } else {
         // Copy odata version specific common templates and version specific, floorplan specific templates
         const templateVersionPath = join(rootTemplatesPath, `v${feApp.service?.version}`);
@@ -179,24 +227,20 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     extendManifestJson(fs, basePath, rootTemplatesPath, feApp);
 
     const packageJson: Package = JSON.parse(fs.read(packagePath));
-    // Add tests only if v4, for now, and we have metadata (and therefore a mock server config) or has a cds service
-    const addTest =
-        !!feApp.appOptions.addTests &&
-        feApp.service?.version === OdataVersion.v4 &&
-        (!!feApp.service?.metadata || feApp.service.type === ServiceType.CDS);
+    const addTest = shouldAddTest(feApp.service, feApp.appOptions?.addTests);
 
     if (isEdmxProjectType) {
         // Add scripts to package.json only for non-CAP projects
         packageJson.scripts = Object.assign(packageJson.scripts ?? {}, {
-            ...getPackageJsonTasks({
+            ...getPackageScripts({
                 localOnly: !feApp.service?.url,
                 addMock: !!feApp.service?.metadata,
                 addTest,
-                sapClient: feApp.service?.client,
                 flpAppId: feApp.app.flpAppId,
-                startFile: data?.app?.startFile,
-                localStartFile: data?.app?.localStartFile,
-                generateIndex: feApp.appOptions?.generateIndex
+                startFile: feApp.app?.startFile,
+                localStartFile: feApp.app?.localStartFile,
+                generateIndex: feApp.appOptions?.generateIndex,
+                supportVirtualEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints // no need for search params if virtual endpoints are used
             })
         });
     } else {
@@ -208,17 +252,36 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     fs.writeJSON(packagePath, packageJson);
 
     if (addTest) {
-        generateOPAFiles(
-            basePath,
+        const opaConfig = getOpaConfig(
             {
-                htmlTarget: feApp.appOptions?.generateIndex
-                    ? 'index.html'
-                    : `test/flpSandbox.html?sap-ui-xx-viewCache=false#${feApp.app.flpAppId}`
+                generateIndex: feApp.appOptions?.generateIndex,
+                useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
             },
-            fs
+            feApp.app.flpAppId
         );
+        generateOPAFiles(basePath, opaConfig, fs);
     }
 
+    if (feApp.service.capService) {
+        const enableCdsUi5Plugin =
+            !!feApp?.appOptions?.typescript || !!feApp?.service.capService?.cdsUi5PluginInfo?.isCdsUi5PluginEnabled;
+        const settings: CapProjectSettings = {
+            appRoot: basePath,
+            packageName: feApp.package.name ?? '',
+            appId: feApp.app.id,
+            sapux: feApp.appOptions?.sapux,
+            enableTypescript: feApp.appOptions?.typescript,
+            // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
+            enableCdsUi5Plugin: enableCdsUi5Plugin,
+            enableNPMWorkspaces: enableCdsUi5Plugin
+        };
+        // apply cap updates when service is cap
+        await applyCAPUpdates(fs, feApp.service.capService, settings);
+    }
+
+    if (feApp.appOptions?.addAnnotations) {
+        await writeAnnotations(basePath, feApp, fs, log);
+    }
     return fs;
 }
 

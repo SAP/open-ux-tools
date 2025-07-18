@@ -59,6 +59,37 @@ async function testWriter(
  */
 describe('cds writer', () => {
     describe('insert target', () => {
+        test('annotate structured type', async () => {
+            const fixture = 'Service S { entity E { a: { x: String;} }; };';
+            await testWriter(
+                fixture,
+                [
+                    {
+                        type: 'insert-target',
+                        pointer: '',
+                        complexTypePathSegments: ['a', 'x'],
+                        target: {
+                            type: 'target',
+                            name: 'S.E/a_x',
+                            terms: [
+                                createElementNode({
+                                    name: Edm.Annotation,
+                                    attributes: {
+                                        [Edm.Term]: createAttributeNode(Edm.Term, 'Common.Text'),
+                                        [Edm.String]: createAttributeNode(Edm.String, 'test')
+                                    }
+                                })
+                            ]
+                        }
+                    }
+                ],
+                fixture +
+                    `
+annotate S.E : a.x with @Common.Text : 'test';
+
+`
+            );
+        });
         test('annotate service entity', async () => {
             const fixture = 'Service S { entity E {}; };';
             await testWriter(
@@ -645,6 +676,45 @@ annotate S.E with {
                 );
             });
 
+            test('delete existing annotation in group and insert multiple annotation on the same element', async () => {
+                function createTestNode(qualifier: string) {
+                    return createElementNode({
+                        name: Edm.Annotation,
+                        attributes: {
+                            [Edm.Term]: createAttributeNode(Edm.Term, 'Hidden'),
+                            [Edm.Qualifier]: createAttributeNode(Edm.Qualifier, qualifier),
+                            [Edm.Bool]: createAttributeNode(Edm.Bool, 'true')
+                        },
+                        content: []
+                    });
+                }
+                const fixture = `Service S { entity E { name: String; }; };
+annotate S.E with {
+    name @UI : {
+        Label : 'label',
+        Label #two : 'label2',
+    };
+};`;
+                await testWriter(
+                    fixture,
+                    [
+                        createInsertAnnotationChange('/targets/0/assignments/0/items/items', createTestNode('one')),
+                        createInsertAnnotationChange('/targets/0/assignments/0/items/items', createTestNode('two')),
+                        createInsertAnnotationChange('/targets/0/assignments/0/items/items', createTestNode('three')),
+                        createDeleteAnnotationChange('/targets/0/assignments/0/items/items/1')
+                    ],
+                    `Service S { entity E { name: String; }; };
+annotate S.E with {
+    name @UI : {
+        Label : 'label',
+        Hidden #one : true,
+        Hidden #two : true,
+        Hidden #three : true,
+    };
+};`
+                );
+            });
+
             test('delete multiple annotations and insert multiple annotations on the same element', async () => {
                 const fixture = `Service S { entity E { name: String; }; };
 annotate S.E with {
@@ -905,6 +975,38 @@ annotate S.E with @UI.LineItem : [
         $Type : 'UI.DataField',
     },
 ];`
+            );
+        });
+        test('record in array with additional mismatching indentation', async () => {
+            const fixture = `
+      Service S { entity E {}; };
+      annotate S.E with @(UI : {
+        LineItem : []
+      });`;
+            await testWriter(
+                fixture,
+                [
+                    {
+                        type: 'insert-record',
+                        pointer: '/targets/0/assignments/0/items/items/0/value',
+                        element: createElementNode({
+                            name: Edm.Record,
+                            attributes: {
+                                [Edm.Type]: createAttributeNode(Edm.Term, 'UI.DataField')
+                            },
+                            content: []
+                        })
+                    }
+                ],
+                `
+      Service S { entity E {}; };
+      annotate S.E with @(UI : {
+        LineItem : [
+            {
+                $Type : 'UI.DataField',
+            },
+        ]
+      });`
             );
         });
         test('after entry with comment', async () => {
@@ -2317,12 +2419,83 @@ annotate S.E with @UI.LineItem: [
                     `
                     Service S { entity E {}; };
                     annotate S.E with @(
-                        Common.Text : {
-                            $value : 'abc',
-                            ![@UI.TextArrangement] : #TextFirst
-                        }
+                        Common.Text : 'abc',
+                        Common.Text.@UI.TextArrangement : #TextFirst,
                     );
                     `
+                );
+            });
+
+            test('first embedded annotation', async () => {
+                const fixture = `
+                    Service S { entity E {}; };
+                    annotate S.E with @(
+                        Common.Text : 'abc'
+                    );
+                    `;
+                await testWriter(
+                    fixture,
+                    [
+                        {
+                            type: 'insert-embedded-annotation',
+                            pointer: '/targets/0/assignments/0',
+                            element: createElementNode({
+                                name: Edm.Annotation,
+                                attributes: {
+                                    [Edm.Term]: createAttributeNode(Edm.Term, 'UI.TextArrangement'),
+                                    [Edm.EnumMember]: createAttributeNode(Edm.EnumMember, 'TextFirst')
+                                }
+                            })
+                        }
+                    ],
+                    `
+                    Service S { entity E {}; };
+                    annotate S.E with @(
+                        Common.Text : 'abc',
+                        Common.Text.@UI.TextArrangement : #TextFirst,
+                    );
+                    `
+                );
+            });
+
+            test('replace Common.TextArrangement', async () => {
+                const fixture = `
+Service S { entity E { prop: String;}; };
+annotate S.E with {
+    prop @Common: {
+        Text : 'abc',
+        TextArrangement : #TextLast,
+    }
+};
+`;
+                await testWriter(
+                    fixture,
+                    [
+                        {
+                            type: 'insert-embedded-annotation',
+                            pointer: '/targets/0/assignments/0/items/items/0',
+                            element: createElementNode({
+                                name: Edm.Annotation,
+                                attributes: {
+                                    [Edm.Term]: createAttributeNode(Edm.Term, 'UI.TextArrangement'),
+                                    [Edm.EnumMember]: createAttributeNode(Edm.EnumMember, 'TextFirst')
+                                }
+                            })
+                        },
+                        {
+                            type: 'delete-annotation',
+                            pointer: '/targets/0/assignments/0/items/items/1'
+                        }
+                    ],
+                    `
+Service S { entity E { prop: String;}; };
+annotate S.E with {
+    prop @Common: {
+        Text : 'abc',
+        Text.@UI.TextArrangement : #TextFirst,
+    }
+};
+`
                 );
             });
 
@@ -2358,17 +2531,15 @@ annotate S.E with @UI.LineItem: [
                     `
                     Service S { entity E {}; };
                     annotate S.E with @(
-                        UI.LineItem : {
-                            $value : [
-                                {
-                                    Value: a
-                                },
-                                {
-                                    Value: b
-                                },
-                            ],
-                            ![@UI.TextArrangement] : #TextFirst
-                        }
+                        UI.LineItem : [
+                            {
+                                Value: a
+                            },
+                            {
+                                Value: b
+                            },
+                        ],
+                        UI.LineItem.@UI.TextArrangement : #TextFirst,
                     );
                     `
                 );
@@ -2421,14 +2592,12 @@ annotate S.E with @UI.LineItem: [
                     `
                     Service S { entity E {}; };
                     annotate S.E with @(
-                        UI.LineItem : {
-                            $value : [
-                                {
-                                    $Type : 'UI.DataFieldForAnnotation',
-                                },
-                            ],
-                            ![@UI.Criticality] : true
-                        }
+                        UI.LineItem : [
+                            {
+                                $Type : 'UI.DataFieldForAnnotation',
+                            },
+                        ],
+                        UI.LineItem.@UI.Criticality : true,
                     );`
                 );
             });
@@ -2461,9 +2630,9 @@ annotate S.E with @UI.LineItem: [
                     Service S { entity E {}; };
                     annotate S.E with @(
                         Common.Text : {
-                            $value : 'abc',
-                            ![@UI.TextArrangement] : #TextFirst,
-                        }
+                            $value : 'abc'
+                        },
+                        Common.Text.@UI.TextArrangement : #TextFirst,
                     );
                     `
                 );
@@ -2499,8 +2668,8 @@ annotate S.E with @UI.LineItem: [
                         UI.LineItem : {
                             $value : [],
                             ![@UI.Importance] : #Low,
-                            ![@UI.Criticality] : criticality,
-                        }
+                        },
+                        UI.LineItem.@UI.Criticality : criticality,
                     );`
                 );
             });
@@ -2537,7 +2706,7 @@ annotate S.E with @UI.LineItem: [
                             Criticality : #Critical,
                             ![@UI.Hidden] : true,
                             Value : 'test',
-                            ![@UI.Criticality] : criticality,
+                            @UI.Criticality : criticality,
                         }
                     );`
                 );
@@ -2549,8 +2718,8 @@ annotate S.E with @UI.LineItem: [
                     annotate S.E with @(
                         Common.Text : {
                             $value : 'abc',
-                            ![@UI.Hidden],
-                        }
+                        },
+                        Common.Text.@UI.Hidden,
                     );`;
                 await testWriter(
                     fixture,
@@ -2573,9 +2742,9 @@ annotate S.E with @UI.LineItem: [
                     annotate S.E with @(
                         Common.Text : {
                             $value : 'abc',
-                            ![@UI.TextArrangement] : #TextFirst,
-                            ![@UI.Hidden],
-                        }
+                        },
+                        Common.Text.@UI.TextArrangement : #TextFirst,
+                        Common.Text.@UI.Hidden,
                     );`
                 );
             });
@@ -2620,10 +2789,10 @@ annotate S.E with @UI.LineItem: [
                     `
                     Service S { entity E { name: String; }; };
                     annotate S.E with {
-                        name @Common.Text : {
-                            $value : updated,
-                            ![@UI.TextArrangement] : #TextFirst
-                        }
+                        name @(
+                            Common.Text : updated,
+                            Common.Text.@UI.TextArrangement : #TextFirst,
+                        )
                     };`
                 );
             });
@@ -2634,7 +2803,8 @@ annotate S.E with @UI.LineItem: [
                         Common.Text : {
                             $value : 'abc',
                             ![@UI.Hidden],
-                        }
+                        },
+                        Common.Text.@UI.Hidden,
                     );`;
                 await testWriter(
                     fixture,
@@ -2657,9 +2827,10 @@ annotate S.E with @UI.LineItem: [
                     annotate S.E with @(
                         Common.Text : {
                             $value : 'abc',
-                            ![@UI.TextArrangement] : #TextFirst,
                             ![@UI.Hidden],
-                        }
+                        },
+                        Common.Text.@UI.TextArrangement : #TextFirst,
+                        Common.Text.@UI.Hidden,
                     );`
                 );
             });
@@ -2779,16 +2950,43 @@ annotate S.E with @UI.LineItem: [];`;
                     ],
                     `Service S { entity E {}; };
 annotate S.E with @(
-    UI.LineItem: {
-        $value : [
-            {
-                Value : some_path,
-            },
-        ],
-        ![@UI.Hidden] : true
-    },
+    UI.LineItem: [
+        {
+            Value : some_path,
+        },
+    ],
+    UI.LineItem.@UI.Hidden : true,
     UI.Hidden : true,
 );`
+                );
+            });
+            test('single line annotate statement', async () => {
+                const fixture = `Service S { entity E { description String; }; };
+annotate S.E with { description @Common.Text: title };`;
+                await testWriter(
+                    fixture,
+                    [
+                        {
+                            type: 'insert-embedded-annotation',
+                            pointer: '/targets/0/assignments/0',
+                            element: createElementNode({
+                                name: Edm.Annotation,
+                                attributes: {
+                                    [Edm.Term]: createAttributeNode(Edm.Term, 'UI.TextArrangement'),
+                                    [Edm.EnumMember]: createAttributeNode(
+                                        Edm.EnumMember,
+                                        'UI.TextArrangementType/TextFirst'
+                                    )
+                                },
+                                content: []
+                            })
+                        }
+                    ],
+                    `Service S { entity E { description String; }; };
+annotate S.E with { description @(
+    Common.Text: title,
+    Common.Text.@UI.TextArrangement : #TextFirst,
+)};`
                 );
             });
             test('annotation and embedded annotation', async () => {
@@ -2824,10 +3022,8 @@ annotate S.E with @UI.LineItem: [];`;
                     ],
                     `Service S { entity E {}; };
 annotate S.E with @(
-    UI.LineItem: {
-        $value : [],
-        ![@UI.Hidden] : true
-    },
+    UI.LineItem: [],
+    UI.LineItem.@UI.Hidden : true,
     UI.Hidden : true,
 );`
                 );
@@ -2835,8 +3031,34 @@ annotate S.E with @(
         });
 
         describe('delete', () => {
+            describe('annotation', () => {
+                test('last value in compound annotation', async () => {
+                    const fixture = `
+                        Service S { entity E {}; };
+                        annotate S.E with @(
+                            Common.Text : 'abc',
+                            UI.LineItem: [],
+                        );
+                        `;
+                    await testWriter(
+                        fixture,
+                        [
+                            {
+                                type: 'delete-annotation',
+                                pointer: '/targets/0/assignments/1'
+                            }
+                        ],
+                        `
+                        Service S { entity E {}; };
+                        annotate S.E with @(
+                            Common.Text : 'abc',
+                            );
+                        `
+                    );
+                });
+            });
             describe('embedded annotation', () => {
-                test('delete single embedded annotation', async () => {
+                test('delete single embedded annotation ($value)', async () => {
                     const fixture = `
                         Service S { entity E {}; };
                         annotate S.E with @(
@@ -2859,6 +3081,31 @@ annotate S.E with @(
                         annotate S.E with @(
                             Common.Text : 'abc'
                         );
+                        `
+                    );
+                });
+                test('delete single embedded annotation', async () => {
+                    // TODO: add similar test in fiori-service
+                    const fixture = `
+                        Service S { entity E {}; };
+                        annotate S.E with @(
+                            Common.Text : 'abc',
+                            Common.Text.@UI.Hidden,
+                        );
+                        `;
+                    await testWriter(
+                        fixture,
+                        [
+                            {
+                                type: 'delete-embedded-annotation',
+                                pointer: '/targets/0/assignments/1'
+                            }
+                        ],
+                        `
+                        Service S { entity E {}; };
+                        annotate S.E with @(
+                            Common.Text : 'abc',
+                            );
                         `
                     );
                 });
@@ -3088,6 +3335,52 @@ annotate S.E with @Aggregation: { ApplySupported: {$value : {AggregatablePropert
                     `Service S { entity E {}; };
 annotate S.E with @Aggregation: { ApplySupported, };
 `
+                );
+            });
+            test('when there are two annotations in compound annotation', async () => {
+                const fixture = `Service S { entity E { description: String; }; };
+annotate S.E with {
+    description @(
+        Common.Text : modifiedBy,
+        Common.Text.@UI.TextArrangement : #TextFirst,
+)};`;
+                await testWriter(
+                    fixture,
+                    [
+                        {
+                            type: 'delete-annotation',
+                            pointer: '/targets/0/assignments/1'
+                        }
+                    ],
+                    `Service S { entity E { description: String; }; };
+annotate S.E with {
+    description @(
+        Common.Text : modifiedBy,
+        )};`
+                );
+            });
+            test('when there are three annotations in compound annotation', async () => {
+                const fixture = `Service S { entity E { description: String; }; };
+annotate S.E with {
+    description @(
+        Common.Text : modifiedBy,
+        UI.Hidden : true,
+        Common.Text.@UI.TextArrangement : #TextFirst,
+)};`;
+                await testWriter(
+                    fixture,
+                    [
+                        {
+                            type: 'delete-annotation',
+                            pointer: '/targets/0/assignments/2'
+                        }
+                    ],
+                    `Service S { entity E { description: String; }; };
+annotate S.E with {
+    description @(
+        Common.Text : modifiedBy,
+        UI.Hidden : true,
+        )};`
                 );
             });
         });

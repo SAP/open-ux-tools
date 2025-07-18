@@ -1,5 +1,11 @@
 import { print, printTarget } from '../../src/printer/csdl-to-cds';
-import { printOptions as defaultPrintOptions, Edm } from '@sap-ux/odata-annotation-core';
+import {
+    createAttributeNode,
+    createElementNode,
+    createTextNode,
+    printOptions as defaultPrintOptions,
+    Edm
+} from '@sap-ux/odata-annotation-core';
 import type { Element, Target, TextNode, Attribute } from '@sap-ux/odata-annotation-core';
 
 describe('csdlToCds', () => {
@@ -448,7 +454,7 @@ describe('csdlToCds', () => {
             // arrange
             const target: Target = {
                 type: 'target',
-                name: 'AdminService.Books/Autor',
+                name: 'AdminService.Books/Author',
                 terms: [
                     {
                         type: 'element',
@@ -539,7 +545,7 @@ describe('csdlToCds', () => {
             // assert
             expect(result).toMatchSnapshot();
             /* "annotate AdminService.Books with {
-                Autor @UI.Facets: [
+                Author @UI.Facets: [
                         {
                             $Type:'UI.ReferenceFacet',
                             Label : 'Sales',
@@ -555,7 +561,7 @@ describe('csdlToCds', () => {
             // arrange
             const target: Target = {
                 type: 'target',
-                name: 'AdminService.Books/Autor',
+                name: 'AdminService.Books/Author',
                 terms: [
                     {
                         type: 'element',
@@ -731,7 +737,7 @@ describe('csdlToCds', () => {
             // assert
             expect(result).toMatchSnapshot();
             /* "annotate AdminService.Books with {
-                Autor @(UI.Facets : [
+                Author @(UI.Facets : [
                     {
                       $Type : 'UI.ReferenceFacet',
                       Label : 'Sales',
@@ -949,7 +955,7 @@ describe('csdlToCds', () => {
             test('collection', () => {
                 const target: Target = {
                     type: 'target',
-                    name: 'AdminService.Books/Autor',
+                    name: 'AdminService.Books/Author',
                     terms: [
                         {
                             type: 'element',
@@ -1026,7 +1032,7 @@ describe('csdlToCds', () => {
             test('record', () => {
                 const target: Target = {
                     type: 'target',
-                    name: 'AdminService.Books/Autor',
+                    name: 'AdminService.Books/Author',
                     terms: [
                         {
                             type: 'element',
@@ -1079,7 +1085,21 @@ describe('csdlToCds', () => {
                                                             value: 'PropertyValue annotation'
                                                         }
                                                     },
-                                                    content: []
+                                                    content: [
+                                                        createElementNode({
+                                                            name: Edm.Annotation,
+                                                            attributes: {
+                                                                [Edm.Term]: createAttributeNode(
+                                                                    Edm.Term,
+                                                                    'Core.Description'
+                                                                ),
+                                                                [Edm.String]: createAttributeNode(
+                                                                    Edm.String,
+                                                                    'of Description'
+                                                                )
+                                                            }
+                                                        })
+                                                    ]
                                                 }
                                             ]
                                         },
@@ -1129,7 +1149,6 @@ describe('csdlToCds', () => {
 
                 // act
                 const result = printTarget(target);
-
                 // assert
                 expect(result).toMatchSnapshot();
             });
@@ -1168,27 +1187,6 @@ describe('csdlToCds', () => {
                 // assert
                 expect(result).toMatchSnapshot();
             });
-
-            /*test("attributes['String']", () => {
-        // arrange
-        const element: Element = {};
-
-        // act
-        const result = print(element );
-
-        // assert
-        expect(result).toMatchSnapshot();
-    });*/
-            /*test("attributes['EnumMember']", () => {
-        // arrange
-        const element: Element = 
-
-        // act
-        const result = print(element );
-
-        // assert
-        expect(result).toMatchSnapshot();
-    });*/
 
             test('content.length', () => {
                 // arrange
@@ -1735,6 +1733,128 @@ describe('csdlToCds', () => {
                 // assert
                 expect(result).toMatchSnapshot();
             });
+
+            test('no placeholders', () => {
+                const node: Element = createElementNode({
+                    name: Edm.Annotation,
+                    attributes: {
+                        [Edm.Term]: createAttributeNode(Edm.Term, 'UI.TextArrangement'),
+                        [Edm.EnumMember]: createAttributeNode(Edm.EnumMember, 'UI.TextArrangement/TextLast')
+                    }
+                });
+
+                const result = print(node);
+
+                expect(result).toMatchSnapshot();
+            });
+
+            test('with prefix', () => {
+                const node: Element = createElementNode({
+                    name: Edm.Annotation,
+                    attributes: {
+                        [Edm.Term]: createAttributeNode(Edm.Term, 'UI.TextArrangement'),
+                        [Edm.EnumMember]: createAttributeNode(Edm.EnumMember, 'UI.TextArrangement/TextLast')
+                    }
+                });
+
+                const result = print(node, defaultPrintOptions, {
+                    annotationContext: [
+                        createElementNode({
+                            name: Edm.Annotation,
+                            attributes: {
+                                [Edm.Term]: createAttributeNode(Edm.Term, 'Common.Text')
+                            }
+                        })
+                    ]
+                });
+
+                expect(result).toMatchSnapshot();
+            });
+
+            test('multiple levels of primitive annotation values', () => {
+                const node: Element = createElementNode({
+                    name: Edm.Annotation,
+                    attributes: {
+                        [Edm.Term]: createAttributeNode(Edm.Term, 'Annotation1'),
+                        [Edm.String]: createAttributeNode(Edm.String, 'Value1')
+                    },
+                    content: [
+                        createElementNode({
+                            name: Edm.Annotation,
+                            attributes: {
+                                [Edm.Term]: createAttributeNode(Edm.Term, 'Annotation2')
+                            },
+                            content: [
+                                createElementNode({
+                                    name: Edm.Record,
+                                    content: [
+                                        createElementNode({
+                                            name: Edm.PropertyValue,
+                                            attributes: {
+                                                [Edm.Property]: createAttributeNode(Edm.Property, 'Property1')
+                                            },
+                                            content: [
+                                                createElementNode({
+                                                    name: Edm.Record,
+                                                    content: [
+                                                        createElementNode({
+                                                            name: Edm.PropertyValue,
+                                                            attributes: {
+                                                                [Edm.Property]: createAttributeNode(
+                                                                    Edm.Property,
+                                                                    'Property'
+                                                                )
+                                                            },
+                                                            content: [
+                                                                createElementNode({
+                                                                    name: Edm.String,
+                                                                    content: [createTextNode('My Value')]
+                                                                }),
+                                                                createElementNode({
+                                                                    name: Edm.Annotation,
+                                                                    attributes: {
+                                                                        [Edm.Term]: createAttributeNode(
+                                                                            Edm.Term,
+                                                                            'Core.Description'
+                                                                        ),
+                                                                        [Edm.String]: createAttributeNode(
+                                                                            Edm.String,
+                                                                            'on property'
+                                                                        )
+                                                                    }
+                                                                })
+                                                            ]
+                                                        })
+                                                    ]
+                                                })
+                                            ]
+                                        }),
+                                        createElementNode({
+                                            name: Edm.Annotation,
+                                            attributes: {
+                                                [Edm.Term]: createAttributeNode(Edm.Term, 'Core.Description'),
+                                                [Edm.String]: createAttributeNode(Edm.String, 'on record')
+                                            }
+                                        })
+                                    ]
+                                }),
+                                createElementNode({
+                                    name: Edm.Annotation,
+                                    attributes: {
+                                        [Edm.Term]: createAttributeNode(Edm.Term, 'Annotation3'),
+                                        [Edm.String]: createAttributeNode(Edm.String, 'Value3')
+                                    },
+                                    content: []
+                                })
+                            ]
+                        })
+                    ]
+                });
+
+                const result = print(node, defaultPrintOptions);
+
+                expect(result).toMatchSnapshot();
+            });
         });
 
         test('Collection', () => {
@@ -2152,6 +2272,12 @@ describe('csdlToCds', () => {
             primitiveValueTest('Bool', 'true');
             primitiveValueTest('Bool', 'false');
             primitiveValueTest('EnumMember', 'Alias.Type/Value');
+            primitiveValueTest(Edm.Path, '');
+            primitiveValueTest(Edm.Path, '    ');
+            primitiveValueTest(Edm.PropertyPath, '');
+            primitiveValueTest(Edm.NavigationPropertyPath, '');
+            primitiveValueTest(Edm.AnnotationPath, '');
+            primitiveValueTest(Edm.ModelElementPath, '');
         });
 
         describe('Default boolean true value:', () => {
@@ -2389,7 +2515,7 @@ describe('csdlToCds', () => {
         expect(result).toMatchInlineSnapshot(`
             "UI.SelectionVariant #Expensive : {
                 Text : 'Expensive',
-                ![@UI.Importance],
+                @UI.Importance,
             }"
         `);
     });

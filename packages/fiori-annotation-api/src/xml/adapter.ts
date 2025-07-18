@@ -141,6 +141,7 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
                 usedNamespaces
             });
         }
+        this.addMissingMetadataReferences();
         this.metadata = convertMetadataDocument(this.service.metadataFile.uri, metadataDocument);
         this.metadataService = new MetadataService({
             ODataVersion: this.service.odataVersion,
@@ -604,6 +605,40 @@ export class XMLAnnotationServiceAdapter implements AnnotationServiceAdapter {
             });
         }
         return toAdd.size > 0;
+    }
+
+    private addMissingMetadataReferences(): void {
+        // UI5 uses manifest to link annotation files to metadata and does not use OData references
+        // We should relax the check and implicitly add this reference if it is missing
+        const metadata = this.documents.get(this.service.metadataFile.uri);
+        if (!metadata) {
+            return;
+        }
+
+        const metadataNamespace = metadata.annotationFile.namespace;
+        if (!metadataNamespace) {
+            return;
+        }
+
+        for (const file of this.service.annotationFiles) {
+            const document = this.documents.get(file.uri);
+            if (!document) {
+                continue;
+            }
+            const { annotationFile } = document;
+
+            const metadataReference = annotationFile.references.find(
+                (reference) => reference.name === metadataNamespace.name
+            );
+            if (!metadataReference) {
+                const reference = createReference(metadataNamespace.name, metadataNamespace.alias);
+                annotationFile.references.push(reference);
+                // TODO: report a warning (currently we do not have a mechanism for warnings)
+            } else if (metadataReference.alias === undefined && metadataNamespace.alias !== undefined) {
+                // TODO: report a warning (currently we do not have a mechanism for warnings)
+                metadataReference.alias = metadataNamespace.alias;
+            }
+        }
     }
 }
 

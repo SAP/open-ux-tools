@@ -2,19 +2,10 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { render } from '../utils';
-import { initI18n } from '../../../src/i18n';
 
 import { ModeSwitcher } from '../../../src/toolbar/ModeSwitcher';
-import { mockResizeObserver } from '../../utils/utils';
-import { initIcons } from '@sap-ux/ui-components';
 import { appLoaded, setAppMode } from '@sap-ux-private/control-property-editor-common';
 import { initialState, setProjectScenario } from '../../../src/slice';
-
-beforeAll(() => {
-    mockResizeObserver();
-    initI18n();
-    initIcons();
-});
 
 test('renders ModeSwitcher', () => {
     const { dispatch, store } = render(<ModeSwitcher />, { initialState });

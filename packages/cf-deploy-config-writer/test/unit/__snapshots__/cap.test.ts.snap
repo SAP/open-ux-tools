@@ -1,0 +1,1262 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CF Writer Generate deployment config for CAP project Add destination instance to a HTML5 app inside a CAP project 1`] = `
+Object {
+  ".gitignore": Object {
+    "contents": "node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp",
+    "state": "modified",
+  },
+  "app/lrop/package.json": Object {
+    "contents": "{
+    \\"name\\": \\"lrop\\",
+    \\"version\\": \\"0.0.1\\",
+    \\"private\\": true,
+    \\"description\\": \\"An SAP Fiori application.\\",
+    \\"keywords\\": [
+        \\"ui5\\",
+        \\"openui5\\",
+        \\"sapui5\\"
+    ],
+    \\"main\\": \\"webapp/index.html\\",
+    \\"dependencies\\": {},
+    \\"devDependencies\\": {
+        \\"@ui5/cli\\": \\"^3.0.0\\",
+        \\"@sap/ux-ui5-tooling\\": \\"1\\",
+        \\"ui5-task-zipper\\": \\"^3.4.x\\"
+    },
+    \\"scripts\\": {
+        \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\",
+        \\"build:cf\\": \\"ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo\\",
+        \\"build\\": \\"npm run build:cf\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "app/lrop/ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.4'
+metadata:
+  name: 'lrop'
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: comfioritoolslrop
+        relativePaths: true
+        additionalFiles:
+          - xs-app.json
+",
+    "state": "modified",
+  },
+  "app/lrop/webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.8.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"com.fiori.tools.lrop\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"1.0.0\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"tags\\": {
+      \\"keywords\\": []
+    },
+    \\"ach\\": \\"\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/ZUI_RAP_TRAVEL_M_U025/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"ZUI_RAP_TRAVEL_M_U025_VAN\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/metadata.xml\\"
+        }
+      },
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      }
+    },
+    \\"offline\\": false,
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"ui5template.smartTemplate\\",
+      \\"version\\": \\"1.40.12\\"
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    },
+    \\"supportedThemes\\": [
+      \\"sap_hcb\\",
+      \\"sap_belize\\"
+    ]
+  },
+  \\"sap.ui5\\": {
+    \\"resources\\": {
+      \\"js\\": [],
+      \\"css\\": []
+    },
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.65.0\\",
+      \\"libs\\": {},
+      \\"components\\": {}
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ListReport|Travel\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ListReport/Travel/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|Travel\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/Travel/i18n.properties\\"
+      },
+      \\"i18n|sap.suite.ui.generic.template.ObjectPage|Booking\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/ObjectPage/Booking/i18n.properties\\"
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"defaultBindingMode\\": \\"TwoWay\\",
+          \\"defaultCountMode\\": \\"Inline\\",
+          \\"refreshAfterChange\\": false,
+          \\"metadataUrlParams\\": {
+            \\"sap-value-list\\": \\"none\\"
+          }
+        }
+      }
+    },
+    \\"extends\\": {
+      \\"extensions\\": {}
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    }
+  },
+  \\"sap.ui.generic.app\\": {
+    \\"_version\\": \\"1.3.0\\",
+    \\"settings\\": {
+      \\"forceGlobalRefresh\\": false,
+      \\"objectPageHeaderType\\": \\"Dynamic\\",
+      \\"showDraftToggle\\": false
+    },
+    \\"pages\\": {
+      \\"ListReport|Travel\\": {
+        \\"entitySet\\": \\"Travel\\",
+        \\"component\\": {
+          \\"name\\": \\"sap.suite.ui.generic.template.ListReport\\",
+          \\"list\\": true,
+          \\"settings\\": {
+            \\"condensedTableLayout\\": true,
+            \\"smartVariantManagement\\": true,
+            \\"enableTableFilterInPageVariant\\": true
+          }
+        },
+        \\"pages\\": {
+          \\"ObjectPage|Travel\\": {
+            \\"entitySet\\": \\"Travel\\",
+            \\"component\\": {
+              \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
+            },
+            \\"pages\\": {
+              \\"ObjectPage|to_Booking\\": {
+                \\"navigationProperty\\": \\"to_Booking\\",
+                \\"entitySet\\": \\"Booking\\",
+                \\"component\\": {
+                  \\"name\\": \\"sap.suite.ui.generic.template.ObjectPage\\"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  \\"sap.platform.abap\\": {
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.fiori\\": {
+    \\"registrationIds\\": [],
+    \\"archeType\\": \\"transactional\\"
+  },
+  \\"sap.platform.hcp\\": {
+    \\"uri\\": \\"\\"
+  },
+  \\"sap.cloud\\": {
+    \\"public\\": true,
+    \\"service\\": \\"cappapp\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "app/lrop/xs-app.json": Object {
+    "contents": "{
+  \\"welcomeFile\\": \\"/index.html\\",
+  \\"authenticationMethod\\": \\"route\\",
+  \\"routes\\": [
+    {
+      \\"source\\": \\"^/sap/(.*)$\\",
+      \\"target\\": \\"/sap/$1\\",
+      \\"destination\\": \\"srv-api\\",
+      \\"authenticationType\\": \\"xsuaa\\",
+      \\"csrfProtection\\": false
+    },
+    {
+      \\"source\\": \\"^/resources/(.*)$\\",
+      \\"target\\": \\"/resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^/test-resources/(.*)$\\",
+      \\"target\\": \\"/test-resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^(.*)$\\",
+      \\"target\\": \\"$1\\",
+      \\"service\\": \\"html5-apps-repo-rt\\",
+      \\"authenticationType\\": \\"xsuaa\\"
+    }
+  ]
+}
+",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+    \\"cds\\": {},
+    \\"devDependencies\\": {
+        \\"rimraf\\": \\"^5.0.5\\",
+        \\"mbt\\": \\"^1.2.29\\"
+    },
+    \\"scripts\\": {
+        \\"undeploy\\": \\"cf undeploy cappapp --delete-services --delete-service-keys --delete-service-brokers\\",
+        \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+        \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
+    }
+}
+",
+    "state": "modified",
+  },
+  "xs-security.json": Object {
+    "contents": "{
+  \\"xsappname\\": \\"cappapp\\",
+  \\"tenant-mode\\": \\"dedicated\\",
+  \\"description\\": \\"Security profile of called application\\",
+  \\"scopes\\": [],
+  \\"role-templates\\": []
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`CF Writer Generate deployment config for CAP project Add destination instance to a HTML5 app inside a CAP project 2`] = `
+"_schema-version: '3.1'
+ID: cappapp
+version: 1.0.0
+description: A simple CAP project.
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx -p @sap/cds-dk cds build --production
+modules:
+  - name: cappapp-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: '\${default-url}'
+    requires:
+      - name: cappapp-uaa
+  - name: cappapp-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: cappapp-db
+  - name: cappapp-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: cappapp-destination-service
+        parameters:
+          content-target: true
+      - name: cappapp-repo-host
+        parameters:
+          service-key:
+            name: cappapp-repo-host-key
+      - name: cappapp-uaa
+        parameters:
+          service-key:
+            name: cappapp-uaa-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: cappapp_html_repo_host
+              ServiceInstanceName: cappapp-html5-service
+              ServiceKeyName: cappapp-repo-host-key
+              sap.cloud.service: cappapp
+            - Authentication: OAuth2UserTokenExchange
+              Name: cappapp_uaa
+              ServiceInstanceName: cappapp-xsuaa-service
+              ServiceKeyName: cappapp-uaa-key
+              sap.cloud.service: cappapp
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+  - name: cappapp-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: cappapp-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: comfioritoolslrop
+          artifacts:
+            - comfioritoolslrop.zip
+          target-path: resources/
+  - name: comfioritoolslrop
+    type: html5
+    path: app/lrop
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - 'npm run build:cf'
+      supported-platforms: []
+resources:
+  - name: cappapp-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: '\${service-name}'
+  - name: cappapp-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: cappapp-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: 'https://ui5.sap.com'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+              - Name: srv-api
+                Type: HTTP
+                URL: '~{srv-api/srv-url}'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+    requires:
+      - name: srv-api
+  - name: cappapp-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: cappapp-xsuaa-service
+      service-plan: application
+  - name: cappapp-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: cappapp-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+"
+`;
+
+exports[`CF Writer Validate HTML5 app is added with a managed approuter to an existing a CAP project 1`] = `
+Object {
+  "app/project1/package.json": Object {
+    "contents": "{
+  \\"name\\": \\"project1\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"description\\": \\"An SAP Fiori application.\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+    \\"ui5-task-zipper\\": \\"^3.1.3\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  },
+  \\"scripts\\": {
+    \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\",
+    \\"build:cf\\": \\"ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "app/project1/ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: project1
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: project1
+        relativePaths: true
+        additionalFiles:
+          - xs-app.json
+",
+    "state": "modified",
+  },
+  "app/project1/webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.65.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"project1\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"0.0.1\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"@sap/generator-fiori:basic\\",
+      \\"version\\": \\"1.16.5\\",
+      \\"toolsId\\": \\"3f0f4df7-2a6b-465d-a13f-f57618317a4f\\"
+    },
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/odata/v4/catalog/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [],
+          \\"odataVersion\\": \\"4.0\\"
+        }
+      }
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"flexEnabled\\": true,
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.133.0\\",
+      \\"libs\\": {
+        \\"sap.m\\": {},
+        \\"sap.ui.core\\": {}
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"bundleName\\": \\"project1.i18n.i18n\\"
+        }
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"operationMode\\": \\"Server\\",
+          \\"autoExpandSelect\\": true,
+          \\"earlyRequests\\": true
+        }
+      }
+    },
+    \\"resources\\": {
+      \\"css\\": [
+        {
+          \\"uri\\": \\"css/style.css\\"
+        }
+      ]
+    },
+    \\"routing\\": {
+      \\"config\\": {
+        \\"routerClass\\": \\"sap.m.routing.Router\\",
+        \\"controlAggregation\\": \\"pages\\",
+        \\"controlId\\": \\"app\\",
+        \\"transition\\": \\"slide\\",
+        \\"type\\": \\"View\\",
+        \\"viewType\\": \\"XML\\",
+        \\"path\\": \\"project1.view\\",
+        \\"async\\": true,
+        \\"viewPath\\": \\"project1.view\\"
+      },
+      \\"routes\\": [
+        {
+          \\"name\\": \\"RouteView1\\",
+          \\"pattern\\": \\":?query:\\",
+          \\"target\\": [
+            \\"TargetView1\\"
+          ]
+        }
+      ],
+      \\"targets\\": {
+        \\"TargetView1\\": {
+          \\"id\\": \\"View1\\",
+          \\"name\\": \\"View1\\"
+        }
+      }
+    },
+    \\"rootView\\": {
+      \\"viewName\\": \\"project1.view.App\\",
+      \\"type\\": \\"XML\\",
+      \\"id\\": \\"App\\",
+      \\"async\\": true
+    }
+  },
+  \\"sap.cloud\\": {
+    \\"public\\": true,
+    \\"service\\": \\"captestproject\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "app/project1/xs-app.json": Object {
+    "contents": "{
+  \\"welcomeFile\\": \\"/index.html\\",
+  \\"authenticationMethod\\": \\"route\\",
+  \\"routes\\": [
+    {
+      \\"source\\": \\"^/odata/(.*)$\\",
+      \\"target\\": \\"/odata/$1\\",
+      \\"destination\\": \\"srv-api\\",
+      \\"authenticationType\\": \\"xsuaa\\",
+      \\"csrfProtection\\": false
+    },
+    {
+      \\"source\\": \\"^/resources/(.*)$\\",
+      \\"target\\": \\"/resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^/test-resources/(.*)$\\",
+      \\"target\\": \\"/test-resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^(.*)$\\",
+      \\"target\\": \\"$1\\",
+      \\"service\\": \\"html5-apps-repo-rt\\",
+      \\"authenticationType\\": \\"xsuaa\\"
+    }
+  ]
+}
+",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"captestproject\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"description\\": \\"A simple CAP project.\\",
+  \\"repository\\": \\"<Add your repository here>\\",
+  \\"license\\": \\"UNLICENSED\\",
+  \\"private\\": true,
+  \\"dependencies\\": {
+    \\"@sap/cds\\": \\"^8\\",
+    \\"express\\": \\"^4\\",
+    \\"@sap/xssec\\": \\"^4\\"
+  },
+  \\"devDependencies\\": {
+    \\"@cap-js/cds-types\\": \\"^0.8.0\\",
+    \\"@cap-js/sqlite\\": \\"^1\\",
+    \\"@sap/cds-dk\\": \\"^8\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"cds-serve\\",
+    \\"undeploy\\": \\"cf undeploy captestproject --delete-services --delete-service-keys --delete-service-brokers\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
+  },
+  \\"cds\\": {
+    \\"requires\\": {
+      \\"auth\\": \\"xsuaa\\",
+      \\"connectivity\\": true,
+      \\"destinations\\": true,
+      \\"html5-repo\\": true
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`CF Writer Validate HTML5 is added without a managed approuter to a CAP project 1`] = `
+Object {
+  "app/project1/package.json": Object {
+    "contents": "{
+  \\"name\\": \\"project1\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"description\\": \\"An SAP Fiori application.\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+    \\"ui5-task-zipper\\": \\"^3.1.3\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  },
+  \\"scripts\\": {
+    \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\",
+    \\"build:cf\\": \\"ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "app/project1/ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: project1
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: project1
+        relativePaths: true
+        additionalFiles:
+          - xs-app.json
+",
+    "state": "modified",
+  },
+  "app/project1/xs-app.json": Object {
+    "contents": "{
+  \\"welcomeFile\\": \\"/index.html\\",
+  \\"authenticationMethod\\": \\"route\\",
+  \\"routes\\": [
+    {
+      \\"source\\": \\"^/odata/(.*)$\\",
+      \\"target\\": \\"/odata/$1\\",
+      \\"destination\\": \\"srv-api\\",
+      \\"authenticationType\\": \\"xsuaa\\",
+      \\"csrfProtection\\": false
+    },
+    {
+      \\"source\\": \\"^/resources/(.*)$\\",
+      \\"target\\": \\"/resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^/test-resources/(.*)$\\",
+      \\"target\\": \\"/test-resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^(.*)$\\",
+      \\"target\\": \\"$1\\",
+      \\"service\\": \\"html5-apps-repo-rt\\",
+      \\"authenticationType\\": \\"xsuaa\\"
+    }
+  ]
+}
+",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"captestproject\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"description\\": \\"A simple CAP project.\\",
+  \\"repository\\": \\"<Add your repository here>\\",
+  \\"license\\": \\"UNLICENSED\\",
+  \\"private\\": true,
+  \\"dependencies\\": {
+    \\"@sap/cds\\": \\"^8\\",
+    \\"express\\": \\"^4\\",
+    \\"@sap/xssec\\": \\"^4\\"
+  },
+  \\"devDependencies\\": {
+    \\"@cap-js/cds-types\\": \\"^0.8.0\\",
+    \\"@cap-js/sqlite\\": \\"^1\\",
+    \\"@sap/cds-dk\\": \\"^8\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"cds-serve\\",
+    \\"undeploy\\": \\"cf undeploy captestproject --delete-services --delete-service-keys --delete-service-brokers\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
+  },
+  \\"cds\\": {
+    \\"requires\\": {
+      \\"auth\\": \\"xsuaa\\",
+      \\"connectivity\\": true,
+      \\"destinations\\": true,
+      \\"html5-repo\\": true
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`CF Writer Validate a 2nd HTML5 app is added 1`] = `
+Object {
+  "app/project1/package.json": Object {
+    "contents": "{
+  \\"name\\": \\"project1\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"description\\": \\"An SAP Fiori application.\\",
+  \\"keywords\\": [
+    \\"ui5\\",
+    \\"openui5\\",
+    \\"sapui5\\"
+  ],
+  \\"main\\": \\"webapp/index.html\\",
+  \\"dependencies\\": {},
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"^3.0.0\\",
+    \\"@sap/ux-ui5-tooling\\": \\"1\\",
+    \\"@sap/ui5-builder-webide-extension\\": \\"^1.1.9\\",
+    \\"ui5-task-zipper\\": \\"^3.1.3\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  },
+  \\"scripts\\": {
+    \\"deploy-config\\": \\"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\\",
+    \\"build:cf\\": \\"ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo\\",
+    \\"build\\": \\"npm run build:cf\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "app/project1/ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: project1
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: ui5-task-zipper
+      afterTask: generateCachebusterInfo
+      configuration:
+        archiveName: project1
+        relativePaths: true
+        additionalFiles:
+          - xs-app.json
+",
+    "state": "modified",
+  },
+  "app/project1/webapp/manifest.json": Object {
+    "contents": "{
+  \\"_version\\": \\"1.65.0\\",
+  \\"sap.app\\": {
+    \\"id\\": \\"project1\\",
+    \\"type\\": \\"application\\",
+    \\"i18n\\": \\"i18n/i18n.properties\\",
+    \\"applicationVersion\\": {
+      \\"version\\": \\"0.0.1\\"
+    },
+    \\"title\\": \\"{{appTitle}}\\",
+    \\"description\\": \\"{{appDescription}}\\",
+    \\"resources\\": \\"resources.json\\",
+    \\"sourceTemplate\\": {
+      \\"id\\": \\"@sap/generator-fiori:basic\\",
+      \\"version\\": \\"1.16.5\\",
+      \\"toolsId\\": \\"3f0f4df7-2a6b-465d-a13f-f57618317a4f\\"
+    },
+    \\"dataSources\\": {
+      \\"mainService\\": {
+        \\"uri\\": \\"/odata/v4/catalog/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [],
+          \\"odataVersion\\": \\"4.0\\"
+        }
+      }
+    }
+  },
+  \\"sap.ui\\": {
+    \\"technology\\": \\"UI5\\",
+    \\"icons\\": {
+      \\"icon\\": \\"\\",
+      \\"favIcon\\": \\"\\",
+      \\"phone\\": \\"\\",
+      \\"phone@2\\": \\"\\",
+      \\"tablet\\": \\"\\",
+      \\"tablet@2\\": \\"\\"
+    },
+    \\"deviceTypes\\": {
+      \\"desktop\\": true,
+      \\"tablet\\": true,
+      \\"phone\\": true
+    }
+  },
+  \\"sap.ui5\\": {
+    \\"flexEnabled\\": true,
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.133.0\\",
+      \\"libs\\": {
+        \\"sap.m\\": {},
+        \\"sap.ui.core\\": {}
+      }
+    },
+    \\"contentDensities\\": {
+      \\"compact\\": true,
+      \\"cozy\\": true
+    },
+    \\"models\\": {
+      \\"i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"settings\\": {
+          \\"bundleName\\": \\"project1.i18n.i18n\\"
+        }
+      },
+      \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
+        \\"settings\\": {
+          \\"operationMode\\": \\"Server\\",
+          \\"autoExpandSelect\\": true,
+          \\"earlyRequests\\": true
+        }
+      }
+    },
+    \\"resources\\": {
+      \\"css\\": [
+        {
+          \\"uri\\": \\"css/style.css\\"
+        }
+      ]
+    },
+    \\"routing\\": {
+      \\"config\\": {
+        \\"routerClass\\": \\"sap.m.routing.Router\\",
+        \\"controlAggregation\\": \\"pages\\",
+        \\"controlId\\": \\"app\\",
+        \\"transition\\": \\"slide\\",
+        \\"type\\": \\"View\\",
+        \\"viewType\\": \\"XML\\",
+        \\"path\\": \\"project1.view\\",
+        \\"async\\": true,
+        \\"viewPath\\": \\"project1.view\\"
+      },
+      \\"routes\\": [
+        {
+          \\"name\\": \\"RouteView1\\",
+          \\"pattern\\": \\":?query:\\",
+          \\"target\\": [
+            \\"TargetView1\\"
+          ]
+        }
+      ],
+      \\"targets\\": {
+        \\"TargetView1\\": {
+          \\"id\\": \\"View1\\",
+          \\"name\\": \\"View1\\"
+        }
+      }
+    },
+    \\"rootView\\": {
+      \\"viewName\\": \\"project1.view.App\\",
+      \\"type\\": \\"XML\\",
+      \\"id\\": \\"App\\",
+      \\"async\\": true
+    }
+  },
+  \\"sap.cloud\\": {
+    \\"public\\": true,
+    \\"service\\": \\"captestproject\\"
+  }
+}
+",
+    "state": "modified",
+  },
+  "app/project1/xs-app.json": Object {
+    "contents": "{
+  \\"welcomeFile\\": \\"/index.html\\",
+  \\"authenticationMethod\\": \\"route\\",
+  \\"routes\\": [
+    {
+      \\"source\\": \\"^/odata/(.*)$\\",
+      \\"target\\": \\"/odata/$1\\",
+      \\"destination\\": \\"srv-api\\",
+      \\"authenticationType\\": \\"xsuaa\\",
+      \\"csrfProtection\\": false
+    },
+    {
+      \\"source\\": \\"^/resources/(.*)$\\",
+      \\"target\\": \\"/resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^/test-resources/(.*)$\\",
+      \\"target\\": \\"/test-resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^(.*)$\\",
+      \\"target\\": \\"$1\\",
+      \\"service\\": \\"html5-apps-repo-rt\\",
+      \\"authenticationType\\": \\"xsuaa\\"
+    }
+  ]
+}
+",
+    "state": "modified",
+  },
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"captestproject\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"description\\": \\"A simple CAP project.\\",
+  \\"repository\\": \\"<Add your repository here>\\",
+  \\"license\\": \\"UNLICENSED\\",
+  \\"private\\": true,
+  \\"dependencies\\": {
+    \\"@sap/cds\\": \\"^8\\",
+    \\"express\\": \\"^4\\",
+    \\"@sap/xssec\\": \\"^4\\"
+  },
+  \\"devDependencies\\": {
+    \\"@cap-js/cds-types\\": \\"^0.8.0\\",
+    \\"@cap-js/sqlite\\": \\"^1\\",
+    \\"@sap/cds-dk\\": \\"^8\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"cds-serve\\",
+    \\"undeploy\\": \\"cf undeploy captestproject --delete-services --delete-service-keys --delete-service-brokers\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
+  },
+  \\"cds\\": {
+    \\"requires\\": {
+      \\"auth\\": \\"xsuaa\\",
+      \\"connectivity\\": true,
+      \\"destinations\\": true,
+      \\"html5-repo\\": true
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`CF Writer Validate a 2nd HTML5 app is added 2`] = `
+"_schema-version: 3.3.0
+ID: captestproject
+version: 1.0.0
+description: A simple CAP project.
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: captestproject-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      instances: 1
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: '\${default-url}'
+    requires:
+      - name: captestproject-connectivity
+      - name: captestproject-destination
+      - name: captestproject-db
+      - name: captestproject-auth
+  - name: captestproject-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: captestproject-db
+  - name: captestproject-app-deployer
+    type: com.sap.application.content
+    path: gen
+    requires:
+      - name: captestproject-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: app/
+      requires:
+        - name: captestprojectproject1
+          artifacts:
+            - project1.zip
+          target-path: app/
+        - name: captestprojectproject2
+          artifacts:
+            - project2.zip
+          target-path: app/
+  - name: captestprojectproject1
+    type: html5
+    path: app/project1
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - 'npm run build:cf'
+      supported-platforms: []
+  - name: captestprojectproject2
+    type: html5
+    path: app/project2
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - 'npm run build:cf'
+      supported-platforms: []
+  - name: captestproject-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: captestproject-destination
+        parameters:
+          content-target: true
+      - name: captestproject-html5-repo-host
+        parameters:
+          service-key:
+            name: captestproject-html5-repo-host-key
+      - name: captestproject-auth
+        parameters:
+          service-key:
+            name: captestproject-auth-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: captestproject_html_repo_host
+              ServiceInstanceName: captestproject-html5-service
+              ServiceKeyName: captestproject-html5-repo-host-key
+              sap.cloud.service: captestproject
+            - Authentication: OAuth2UserTokenExchange
+              Name: captestproject_uaa
+              ServiceInstanceName: captestproject-xsuaa-service
+              ServiceKeyName: captestproject-auth-key
+              sap.cloud.service: captestproject
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+resources:
+  - name: captestproject-connectivity
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: connectivity
+      service-plan: lite
+  - name: captestproject-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: captestproject-srv-api
+                URL: '~{srv-api/srv-url}'
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+                HTML5.ForwardAuthToken: true
+                HTML5.DynamicDestination: true
+              - Name: ui5
+                URL: 'https://ui5.sap.com'
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+              - Name: srv-api
+                Type: HTTP
+                URL: '~{srv-api/srv-url}'
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+    requires:
+      - name: srv-api
+  - name: captestproject-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+  - name: captestproject-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+      service-name: captestproject-html5-service
+  - name: captestproject-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: 'captestproject-\${org}-\${space}'
+        tenant-mode: dedicated
+      service-name: captestproject-xsuaa-service
+"
+`;

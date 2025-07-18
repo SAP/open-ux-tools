@@ -6,6 +6,7 @@ html {
 }
 body {
     background-color: var(--vscode-editor-background);
+    scrollbar-color: var(--vscode-scrollbarSlider-background) var( --vscode-scrollbar-shadow)
 }
 
 .app-container {
@@ -58,9 +59,9 @@ body {
 }
 
 .app-panel-left {
-    border-right: 1px solid var(--vscode-contrastBorder);
+    border-right: 1px solid var(--vscode-widget-border);
 }
 
 .app-panel-right {
-    border-left: 1px solid var(--vscode-contrastBorder);
+    border-left: 1px solid var(--vscode-widget-border);
 }

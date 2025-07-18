@@ -1,8 +1,9 @@
-import type { UI5FlexLayer, ManifestNamespace } from '@sap-ux/project-access';
+import type { UI5FlexLayer, ManifestNamespace, Manifest } from '@sap-ux/project-access';
 import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
+import type { Destination } from '@sap-ux/btp-utils';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -15,7 +16,7 @@ export interface DescriptorVariant {
 export interface DescriptorVariantContent {
     changeType: string;
     content: Record<string, unknown>;
-    texts?: string;
+    texts?: string | { i18n?: string };
 }
 
 export interface ToolsSupport {
@@ -43,12 +44,20 @@ export interface OnpremApp {
     id: string;
     /** Reference associated with the ID of the base application. */
     reference: string;
-    layer?: UI5FlexLayer;
+    layer?: FlexLayer;
+    fioriId?: string;
+    ach?: string;
     title?: string;
     /** Optional: Application variant change content. */
     content?: Content[];
     /** Optional: Description about i18n.properties. */
     i18nDescription?: string;
+    /** Optional: I18n resource models derived from the manifest. */
+    i18nModels?: ResourceModel[];
+    /** Optional: Application type derived from the manifest. */
+    appType?: ApplicationType;
+    /** The manifest of the application */
+    manifest?: Manifest;
 }
 
 export interface CloudApp extends OnpremApp {
@@ -69,6 +78,7 @@ export interface AdpWriterConfig {
         minVersion?: string;
         version?: string;
         frameworkUrl?: string;
+        shouldSetMinVersion?: boolean;
     };
     package?: {
         name?: string;
@@ -85,7 +95,89 @@ export interface AdpWriterConfig {
          * Optional: if set to true then the generated project will be recognized by the SAP Fiori tools
          */
         fioriTools?: boolean;
+        /**
+         * Optional: if set to true then the generated project will support typescript
+         */
+        enableTypeScript?: boolean;
     };
+}
+
+/**
+ * Interface representing the answers collected from the configuration prompts of Adaptation Project generator.
+ */
+export interface ConfigAnswers {
+    system: string;
+    username: string;
+    password: string;
+    application: SourceApplication;
+    fioriId?: string;
+    ach?: string;
+    shouldCreateExtProject?: boolean;
+}
+
+export interface AttributesAnswers {
+    projectName: string;
+    title: string;
+    namespace: string;
+    targetFolder: string;
+    ui5Version: string;
+    enableTypeScript: boolean;
+    addDeployConfig?: boolean;
+    addFlpConfig?: boolean;
+}
+
+export interface SourceApplication {
+    id: string;
+    title: string;
+    ach: string;
+    registrationIds: string[];
+    fileType: string;
+    bspUrl: string;
+    bspName: string;
+}
+
+export interface FlexUISupportedSystem {
+    isUIFlex: boolean;
+    isOnPremise: boolean;
+}
+
+export interface UI5Version {
+    latest: VersionDetail;
+    [key: string]: VersionDetail;
+}
+
+export interface VersionDetail {
+    version: string;
+    support: string;
+    lts: boolean;
+}
+
+export interface TypesConfig {
+    typesPackage: string;
+    typesVersion: string;
+}
+
+export interface ResourceModel {
+    key: string;
+    path: string;
+    content?: string;
+}
+
+export interface SapModel {
+    type?: string;
+    uri?: string;
+    settings?: {
+        bundleName?: string;
+    };
+}
+
+export interface Endpoint extends Partial<Destination> {
+    Name: string;
+    Url?: string;
+    Client?: string;
+    Credentials?: { username?: string; password?: string };
+    UserDisplayName?: string;
+    Scp?: boolean;
 }
 
 export interface ChangeInboundNavigation {
@@ -102,19 +194,19 @@ export interface NewInboundNavigation {
     semanticObject: string;
     /** Operations which can be performed on a semantic object. */
     action: string;
-    //** Defined instance of the semantic object (e.g. by specifying the employee ID). */
-    additionalParameters?: object;
+    /** Defined instance of the semantic object (e.g. by specifying the employee ID). */
+    additionalParameters?: string;
     /** Title associated with the inbound navigation. */
     title: string;
     /** Optional: Subtitle associated with the inbound navigation. */
     subTitle?: string;
+    /** Icon associated with the inbound navigation. */
+    icon?: string;
 }
 
 export interface InternalInboundNavigation extends NewInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
-    /** Flag indicating if the new inbound navigation should be added. */
-    addInboundId: boolean;
 }
 
 export type FlpConfig = ChangeInboundNavigation | NewInboundNavigation;
@@ -159,6 +251,10 @@ export interface CommonChangeProperties {
     texts: Record<string, unknown>;
 }
 
+export interface CommonAdditionalChangeInfoProperties {
+    templateName?: string;
+}
+
 export interface ManifestChangeProperties {
     fileName: string;
     fileType: string;
@@ -180,6 +276,7 @@ export interface AddXMLChange extends CommonChangeProperties {
         targetAggregation: string;
         index: number;
         fragmentPath: string;
+        templateName?: string;
     };
     selector: {
         id: string;
@@ -188,7 +285,16 @@ export interface AddXMLChange extends CommonChangeProperties {
     dependentSelector: Record<string, unknown>;
     jsOnly: boolean;
 }
-
+export interface AppDescriptorV4Change<T = unknown> extends CommonChangeProperties {
+    changeType: 'appdescr_fe_changePageConfiguration';
+    content: {
+        entityPropertyChange: {
+            propertyPath: string;
+            operation: string;
+            propertyValue: string | boolean | number | T;
+        };
+    };
+}
 export interface CodeExtChange extends CommonChangeProperties {
     changeType: 'codeExt';
     content: {
@@ -199,9 +305,92 @@ export interface CodeExtChange extends CommonChangeProperties {
     };
 }
 
+export interface AnnotationFileChange extends CommonChangeProperties {
+    changeType: 'appdescr_app_addAnnotationsToOData';
+    creation: string;
+    content: {
+        dataSourceId: string;
+        annotations: string[];
+        annotationsInsertPosition: 'END';
+        dataSource: {
+            [fileName: string]: {
+                uri: string;
+                type: 'ODataAnnotation';
+            };
+        };
+    };
+}
+
+export interface ParamCheck {
+    shouldApply: boolean;
+    value: string | undefined;
+}
+
+export interface ParameterOptions {
+    required: boolean;
+    filter?: Value;
+    defaultValue?: Value;
+    renameTo?: string;
+}
+
+export interface Value {
+    value: string;
+    format: string;
+}
+
+export interface Parameter {
+    [key: string]: ParameterOptions;
+}
+
+export type ParameterRules = {
+    /**
+     * Function that checks whether param has empty value, e.g parameter defined in the following format has empty value: param1=
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    isEmptyParam(param: string): ParamCheck;
+    /**
+     * Function that define whether param is mandatory, param which is placed inside () is not mandatory
+     *
+     * @param {string} param - param string
+     * @returns {boolean} whether param string is mandatory or not
+     */
+    isMandatoryParam(param: string): boolean;
+    /**
+     * Function that checks whehter param has filter value, e.g parameter value placed inside <> indicates for filter value: param1=<value>
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    shouldHavеFilteredValue(param: string): ParamCheck;
+    /**
+     * Function that checks whether parameter has rename to value, e.g param1=>value
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    shouldRenameTo(param: string): ParamCheck;
+    /**
+     * Function thath checks whether parameter value should have reference as format value, e.g param1=%%value%%
+     *
+     * @param {string} param - param string
+     * @returns {ParamCheck} object which indicates if this rule should be applied and the parameter value
+     */
+    isReference(param: string): ParamCheck;
+};
+
+export enum ApplicationType {
+    FIORI_ELEMENTS = 'FioriElements',
+    FIORI_ELEMENTS_OVP = 'FioriElementsOVP',
+    FREE_STYLE = 'FreeStyle',
+    NONE = ''
+}
+
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
     Controller = 'controller.ejs',
+    TSController = 'ts-controller.ejs',
     Annotation = 'annotation.xml'
 }
 
@@ -276,6 +465,18 @@ export const enum ChangeType {
 }
 
 /**
+ * A mapping of ChangeType values to their respective change names.
+ */
+export const ChangeTypeMap: Record<ChangeType, string> = {
+    [ChangeType.ADD_NEW_MODEL]: 'addNewModel',
+    [ChangeType.ADD_ANNOTATIONS_TO_ODATA]: 'addAnnotationsToOData',
+    [ChangeType.CHANGE_DATA_SOURCE]: 'changeDataSource',
+    [ChangeType.ADD_COMPONENT_USAGES]: 'addComponentUsages',
+    [ChangeType.ADD_LIBRARY_REFERENCE]: 'addLibraries',
+    [ChangeType.CHANGE_INBOUND]: 'changeInbound'
+} as const;
+
+/**
  * Maps a ChangeType to the corresponding data structure needed for that type of change.
  * This conditional type ensures type safety by linking each change type with its relevant data model.
  *
@@ -296,9 +497,19 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
     : never;
 
 export interface AnnotationsData {
-    fileName?: string;
     variant: DescriptorVariant;
-    answers: AddAnnotationsAnswers;
+    /** Flag for differentiating the annotation creation call from CLI and from CPE */
+    isCommand: boolean;
+    annotation: {
+        /** Optional name of the annotation file. */
+        fileName?: string;
+        /** Data source associated with the annotation. */
+        dataSource: string;
+        /** Optional path to the annotation file. */
+        filePath?: string;
+        namespaces?: { namespace: string; alias: string }[];
+        serviceUrl?: string;
+    };
 }
 
 export const enum AnnotationFileSelectType {
@@ -306,9 +517,8 @@ export const enum AnnotationFileSelectType {
     NewEmptyFile = 2
 }
 
-export interface ComponentUsagesData {
-    projectData: AdpProjectData;
-    timestamp: number;
+export interface ComponentUsagesDataBase {
+    variant: DescriptorVariant;
     component: {
         /** Indicates whether the component is loaded lazily. */
         isLazy: string;
@@ -321,21 +531,79 @@ export interface ComponentUsagesData {
         /** Settings related to the component. */
         settings: string;
     };
+}
+
+export interface ComponentUsagesDataWithLibrary extends ComponentUsagesDataBase {
     library: {
         /** Reference to the component's library. */
         reference: string;
         /** Optional flag indicating if the library reference is lazy. */
-        referenceIsLazy?: string;
+        referenceIsLazy: string;
     };
 }
 
-export interface NewModelData {
+export type ComponentUsagesData = ComponentUsagesDataBase | ComponentUsagesDataWithLibrary;
+
+export type AddComponentUsageAnswersWithoutLibrary = {
+    /** Indicates whether a library reference should be added */
+    shouldAddLibrary: false;
+};
+
+export type addComponentUsageAnswersWithLibrary = {
+    /** Indicates whether a library reference should be added */
+    shouldAddLibrary: true;
+    /** Reference to the component's library. */
+    library: string;
+    /** Indicates whether the library reference is loaded lazily. */
+    libraryIsLazy: string;
+};
+
+export type AddComponentUsageAnswersBase = {
+    /** Indicates whether the component is loaded lazily. */
+    isLazy: string;
+    /** Unique ID for the component usage. */
+    usageId: string;
+    /** Name of the component. */
+    name: string;
+    /** Serialized data specific to the component. */
+    data: string;
+    /** Settings related to the component. */
+    settings: string;
+};
+
+export type AddComponentUsageAnswers = AddComponentUsageAnswersBase &
+    (AddComponentUsageAnswersWithoutLibrary | addComponentUsageAnswersWithLibrary);
+
+export interface NewModelDataBase {
     variant: DescriptorVariant;
-    answers: NewModelAnswers;
+    service: {
+        /** Name of the OData service. */
+        name: string;
+        /** URI of the OData service. */
+        uri: string;
+        /** Name of the OData service model. */
+        modelName: string;
+        /** Version of OData used. */
+        version: string;
+        /** Settings for the OData service model. */
+        modelSettings?: string;
+    };
 }
 
-export interface NewModelAnswers {
-    addAnnotationMode: boolean;
+export interface NewModelDataWithAnnotations extends NewModelDataBase {
+    annotation: {
+        /** Name of the OData annotation data source. */
+        dataSourceName: string;
+        /** Optional URI of the OData annotation data source. */
+        dataSourceURI?: string;
+        /** Optional settings for the OData annotation. */
+        settings?: string;
+    };
+}
+
+export type NewModelData = NewModelDataBase | NewModelDataWithAnnotations;
+
+export interface NewModelAnswersBase {
     /** Name of the OData service. */
     name: string;
     /** URI of the OData service. */
@@ -347,6 +615,11 @@ export interface NewModelAnswers {
     /** Settings for the OData service model. */
     modelSettings: string;
     /** Name of the OData annotation data source. */
+}
+
+export interface NewModelAnswersWithAnnotations extends NewModelAnswersBase {
+    addAnnotationMode: true;
+    /** Name of the OData annotation data source. */
     dataSourceName: string;
     /** Optional URI of the OData annotation data source. */
     dataSourceURI?: string;
@@ -354,26 +627,55 @@ export interface NewModelAnswers {
     annotationSettings?: string;
 }
 
+export interface NewModelAnswersWithoutAnnotations extends NewModelAnswersBase {
+    addAnnotationMode: false;
+}
+
+export type NewModelAnswers = NewModelAnswersBase &
+    (NewModelAnswersWithAnnotations | NewModelAnswersWithoutAnnotations);
+
 export interface DataSourceData {
     variant: DescriptorVariant;
     dataSources: Record<string, ManifestNamespace.DataSource>;
-    answers: ChangeDataSourceAnswers;
+    service: {
+        /** Data source identifier. */
+        id: string;
+        /** URI of the data source. */
+        uri: string;
+        /** Optional maximum age for the data source cache. */
+        maxAge?: number;
+        /** URI for the OData annotation source. */
+        annotationUri?: string;
+    };
 }
 
-export interface InboundChangeAnswers {
+export type RequireAtLeastOne<T> = {
+    [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>;
+}[keyof T];
+
+export interface InboundChangeAnswersBase {
     /** Title associated with the inbound navigation data. */
     title: string;
     /** Subtitle associated with the inbound navigation data. */
-    subTitle: string;
+    subtitle: string;
     /** Icon associated with the inbound navigation data. */
     icon: string;
 }
+
+export type InboundChangeAnswers = RequireAtLeastOne<InboundChangeAnswersBase>;
 
 export interface InboundData {
     /** Identifier for the inbound navigation data. */
     inboundId: string;
     variant: DescriptorVariant;
-    answers: InboundChangeAnswers;
+    flp: RequireAtLeastOne<{
+        /** Title associated with the inbound navigation data. */
+        title: string;
+        /** Subtitle associated with the inbound navigation data. */
+        subtitle: string;
+        /** Icon associated with the inbound navigation data. */
+        icon: string;
+    }>;
 }
 
 export interface InboundContent {
@@ -434,6 +736,17 @@ export interface CustomConfig {
     };
 }
 
+export type CloudCustomTaskConfigTarget =
+    | DestinationAbapTarget
+    | (Pick<UrlAbapTarget, 'url' | 'client' | 'scp' | 'authenticationType'> & { ignoreCertErrors?: boolean });
+
+export interface CloudCustomTaskConfig {
+    type: string;
+    appName: string | undefined;
+    languages: Language[];
+    target: AbapTarget;
+}
+
 export interface InboundChangeContentAddInboundId {
     inbound: {
         [inboundId: string]: AddInboundModel;
@@ -448,6 +761,8 @@ export interface AddInboundModel {
     title: string;
     /** Optional: Subtitle associated with the inbound navigation data. */
     subTitle?: string;
+    /** Optional: Icon associated with the inbound navigation data. */
+    icon?: string;
     signature: AddInboundSignitureModel;
 }
 export interface AddInboundSignitureModel {

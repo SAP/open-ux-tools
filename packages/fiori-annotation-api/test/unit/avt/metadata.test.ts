@@ -192,6 +192,11 @@ describe('avt metadata conversion (XML)', () => {
             <ReturnType Type="Edm.String"/>
         </Function>
 
+        <Function Name="SEPMRA_C_PD_ShortProductTexts" IsBound="true" IsComposable="false">
+            <Parameter Name="in" Type="SEPMRA_C_PD_ProductTextType"/>
+            <ReturnType Type="Collection(Edm.String)"/>
+        </Function>
+
         <Function Name="SEPMRA_C_PD_RefreshData" IsBound="false" IsComposable="false">
             <ReturnType Type="Edm.Boolean"/>
         </Function>

@@ -32,12 +32,13 @@ const commonUi5Libs: FrameworkLibs = {
         'sap.ui.generic.app',
         'sap.suite.ui.generic.template'
     ],
-    [OdataVersion.v4]: ['sap.m', 'sap.ushell', 'sap.fe.templates']
+    [OdataVersion.v4]: ['sap.m', 'sap.fe.templates']
 };
 
 type TemplateLibsEntry = {
     baseComponent: string; // Base component lib path
     ui5Libs: string[]; // Framework (OdataVersion) libraries
+    manifestLibs?: string[]; // Optional specific manifest libraries
 };
 
 type TemplateLibs = {
@@ -68,27 +69,33 @@ const templateLibs: TemplateLibs = {
     [OdataVersion.v4]: {
         [TemplateType.ListReportObjectPage]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: commonUi5Libs[OdataVersion.v4]
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ushell'],
+            manifestLibs: [...commonUi5Libs[OdataVersion.v4]]
         },
         [TemplateType.FormEntryObjectPage]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: commonUi5Libs[OdataVersion.v4]
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ushell'],
+            manifestLibs: [...commonUi5Libs[OdataVersion.v4]]
         },
         [TemplateType.AnalyticalListPage]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: commonUi5Libs[OdataVersion.v4]
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ushell'],
+            manifestLibs: [...commonUi5Libs[OdataVersion.v4]]
         },
         [TemplateType.Worklist]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: commonUi5Libs[OdataVersion.v4]
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ushell'],
+            manifestLibs: [...commonUi5Libs[OdataVersion.v4]]
         },
         [TemplateType.OverviewPage]: {
             baseComponent: appComponentLibOVP,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.ushell', 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout'],
+            manifestLibs: [...commonUi5Libs[OdataVersion.v4], 'sap.ovp', 'sap.ui.rta', 'sap.ui.layout']
         },
         [TemplateType.FlexibleProgrammingModel]: {
             baseComponent: appComponentLibFioriElements,
-            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.templates']
+            ui5Libs: [...commonUi5Libs[OdataVersion.v4], 'sap.fe.core', 'sap.ushell'],
+            manifestLibs: ['sap.m', 'sap.fe.core']
         }
     }
 };
@@ -114,6 +121,16 @@ export function getBaseComponent(type: TemplateType, version: OdataVersion): str
 export function getTemplateUi5Libs(type: TemplateType, version: OdataVersion): string[] {
     return templateLibs[version][type]?.ui5Libs ?? [];
 }
+/**
+ * Gets the required manifest libs for the specified template type and OData version.
+ *
+ * @param type - The template type of the required base component
+ * @param version - The odata service version determines the appropriate base component to use
+ * @returns The manifest libs required by the specified template type and OData version
+ */
+export function getTemplateManifestLibs(type: TemplateType, version: OdataVersion): string[] {
+    return templateLibs[version][type]?.manifestLibs ?? [];
+}
 
 // Additional attributes associated with TemplateType
 type TemplateAttributes = {
@@ -121,6 +138,14 @@ type TemplateAttributes = {
         supportedODataVersions: OdataVersion[]; // OdataVersions applicable to the specifc template type
         minimumUi5Version: {
             [V in OdataVersion]?: string; // Minimum UI5 Versions required for the specific OdataVersion
+        };
+        /**
+         * Checks whether annotations can be generated for a given template type and OData version.
+         * Annotation generation is supported for template types: lrop, worklist, or formEntryObject
+         * when using OData version 4.
+         */
+        annotationGenerationSupport?: {
+            [V in OdataVersion]?: boolean;
         };
     };
 };
@@ -131,6 +156,9 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         minimumUi5Version: {
             [OdataVersion.v2]: minSupportedUI5Version,
             [OdataVersion.v4]: '1.99.0'
+        },
+        annotationGenerationSupport: {
+            [OdataVersion.v4]: true
         }
     },
     [TemplateType.ListReportObjectPage]: {
@@ -138,6 +166,9 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         minimumUi5Version: {
             [OdataVersion.v2]: minSupportedUI5Version,
             [OdataVersion.v4]: '1.84.0'
+        },
+        annotationGenerationSupport: {
+            [OdataVersion.v4]: true
         }
     },
     [TemplateType.AnalyticalListPage]: {
@@ -158,6 +189,9 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         supportedODataVersions: [OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v4]: '1.90.0'
+        },
+        annotationGenerationSupport: {
+            [OdataVersion.v4]: true
         }
     },
     [TemplateType.FlexibleProgrammingModel]: {

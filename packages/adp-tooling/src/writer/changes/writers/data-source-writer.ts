@@ -1,7 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
-import { DirName } from '@sap-ux/project-access';
 import type { IWriter, DataSourceData } from '../../../types';
 import { getChange, writeChangeToFolder } from '../../../base/change-utils';
 
@@ -56,34 +55,22 @@ export class DataSourceWriter implements IWriter<DataSourceData> {
      * @returns {Promise<void>} A promise that resolves when the change writing process is completed.
      */
     async write(data: DataSourceData): Promise<void> {
-        const { variant, dataSources, answers } = data;
-        const { id, uri, maxAge, annotationUri } = answers;
+        const { variant, dataSources, service } = data;
+        const { id, uri, maxAge, annotationUri } = service;
         const annotationId = dataSources[id].settings?.annotations?.[0];
 
         const timestamp = Date.now();
         const content = this.constructContent(id, uri, maxAge);
         const change = getChange(variant, timestamp, content, ChangeType.CHANGE_DATA_SOURCE);
 
-        writeChangeToFolder(
-            this.projectPath,
-            change,
-            `id_${timestamp}_changeDataSource.change`,
-            this.fs,
-            DirName.Manifest
-        );
+        writeChangeToFolder(this.projectPath, change, this.fs);
 
         if (annotationId && annotationUri) {
             const annotationContent = this.constructContent(annotationId, annotationUri);
             const annotationTs = timestamp + 1;
             const annotationChange = getChange(variant, annotationTs, annotationContent, ChangeType.CHANGE_DATA_SOURCE);
 
-            writeChangeToFolder(
-                this.projectPath,
-                annotationChange,
-                `id_${annotationTs}_changeDataSource.change`,
-                this.fs,
-                DirName.Manifest
-            );
+            writeChangeToFolder(this.projectPath, annotationChange, this.fs);
         }
     }
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<settings developmentPackage="TEST_XYZ_DEFAULT" 
+    developmentPrefix="XYZ_" 
+    sandboxPackage="TEST_XYZ_DEFAULT" 
+    sandboxPrefix="XYZ_" 
+    isConfigured="true" 
+    isNotificationAllowed="true" 
+    isExtensibilityDevelopmentSystem="true" 
+    isTransportRequestRequired="false" 
+    transportationMode="COL" 
+    operationsType="C" 
+    tenantType="CUSTOMER" 
+    tenantRole="07" 
+    isPrefixNamespace="false" 
+    isManagedExtensibilityActive="false" 
+    xmlns:ato="http://www.sap.com/adt/ato" />

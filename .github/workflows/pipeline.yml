@@ -5,15 +5,14 @@ on:
         branches: [main]
     pull_request:
         branches: [main]
-
 jobs:
     build:
         strategy:
             matrix:
-                os: [ubuntu-latest, windows-latest]
-                node-version: [18.x, 20.x]
+                os: [ubuntu-latest, windows-2025, macos-latest]
+                node-version: [20.x, 22.x]
         runs-on: ${{ matrix.os }}
-        timeout-minutes: 15
+        timeout-minutes: 30
         steps:
             - name: Checkout code repository
               uses: actions/checkout@v4
@@ -40,8 +39,21 @@ jobs:
               run: pnpm install
             - name: Run build
               run: pnpm run build
+              env:
+                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Run unit tests
               run: pnpm run test
+              env:
+                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+            - name: Check for changeset files
+              id: check_changeset_files
+              uses: andstor/file-existence-action@v3
+              with:
+                files: '.changeset/[!README]*.md'
+                fail: false
+            - name: Validate changeset files if found
+              if: steps.check_changeset_files.outputs.files_exists == 'true'
+              run: pnpm changeset status
             - name: Cache playwright browsers
               id: cache-playwright-browsers
               uses: actions/cache@v4
@@ -52,23 +64,28 @@ jobs:
                   ${{ runner.os != 'Windows' }}:
                     ~/.cache/ms-playwright
                 key: playwright-browsers-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
-            - name: Install playwright browsers
+            - name: Install playwright chrome browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
-              run: npx playwright install --with-deps
+              run: npx playwright install chrome
             - name: Run integration tests
               run: pnpm run test:integration
+              env:
+                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
             - name: Upload playwright reports
               if: failure()
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                 name: playwright-reports-os-${{ matrix.os }}-node-version-${{ matrix.node-version }}
                 path: |
                   packages/*/playwright-report
                   !packages/*/node_modules
                 retention-days: 15
+            - name: Delete node_modules before sonar scan (better performance)
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+              run: find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && git restore .
             - name: Run SonarCloud scan
-              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
-              uses: sonarsource/sonarcloud-github-action@master
+              if: matrix.os == 'ubuntu-latest' && matrix.node-version == '20.x'
+              uses: sonarsource/sonarqube-scan-action@v4
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -98,10 +115,10 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 18.x
+            - name: Use Node.js 20.x
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.x
+                  node-version: 20.x
             - name: Install pnpm modules
               run: pnpm install
             - name: Apply changesets
@@ -143,10 +160,10 @@ jobs:
                   key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/pnpm-lock.yaml') }}
                   restore-keys: |
                       ${{ runner.os }}-build-${{ env.cache-name }}-
-            - name: Use Node.js 18.x
+            - name: Use Node.js 20.x
               uses: actions/setup-node@v4
               with:
-                  node-version: 18.x
+                  node-version: 20.x
             - name: Install pnpm modules
               run: pnpm install
             - name: Run build
@@ -155,7 +172,7 @@ jobs:
               run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
             - name: 'Publish to npmjs'
               id: changesetPublish
-              uses: changesets/action@v1.4.7
+              uses: changesets/action@v1.4.10
               with:
                   publish: pnpm ci:publish
               env:

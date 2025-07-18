@@ -11,6 +11,7 @@ import path from 'path';
 import os from 'os';
 
 jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
     promises: {
         ...jest.requireActual('fs').promises,
         writeFile: jest.fn(),
@@ -131,7 +132,7 @@ describe('sap-cards-generator', () => {
             const server = await getTestServer('lrop-v4');
             const response = await server.post(sapCardsGenerator.ApiRoutes.cardsStore).send(payload);
             expect(response.status).toBe(201);
-            expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(3);
+            expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(2);
         });
     });
 

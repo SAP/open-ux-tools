@@ -1,0 +1,118 @@
+.message-bar {
+    position: relative;
+    padding: 10px 15px;
+
+    &.info {
+        border-left: 2px solid var(--vscode-editorInfo-foreground);
+    }
+    &.warning {
+        border-left: 2px solid var(--vscode-editorWarning-foreground);
+
+        .message-title {
+            color: var(--vscode-editorWarning-foreground);
+        }
+    }
+    &.error {
+        border-left: 2px solid var(--vscode-editorError-foreground);
+
+        .message-title {
+            color: var(--vscode-editorError-foreground);
+        }
+    }
+    .ms-MessageBar-icon, .ms-MessageBar-text {
+        margin: 0;
+    }
+    :first-child {
+        min-height: 0;
+    }
+    &::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 15px;
+        right: 15px;
+        border-bottom: 1px solid var(--vscode-menu-separatorBackground);
+    }
+}
+
+.message-read {
+    border-left: 2px solid var(--vscode-activityBar-background) !important;
+}
+
+.remove-message {
+    display: none;
+    position: absolute;
+    right: 15px;
+    top: 8px;
+}
+
+.message-bar:hover .remove-message {
+    display: block;
+    background-color: var(--vscode-activityBar-background);
+}
+
+.remove-message:hover {
+    background-color: var(--vscode-actionBar-toggledBackground) !important;
+}
+
+.message-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: var(--vscode-editor-foreground);
+    padding-left: 5px;
+}
+
+.message-description {
+    // Using the -webkit-box display mode is necessary for applying CSS line-clamp, which truncates text after a specified number of lines and adds an ellipsis.
+    // This browser prefix is required because the standard properties for multi-line text truncation are not yet fully supported across all browsers.
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+    position: relative;
+    line-height: 1.5; 
+    overflow: hidden;
+    font-size: 12px;
+    color: var(--vscode-editor-foreground);
+}
+
+.message-description::after {
+    content: "";
+    display: inline-block;
+    width: 40px;
+    height: 0;
+}
+
+.message-description.expanded {
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+}
+
+.more-less, .message-details {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--vscode-textLink-foreground);
+    text-decoration: underline solid;
+
+    &:hover {
+        text-decoration: unset;
+        cursor: pointer;
+    }
+}
+
+.info-message-modal {
+    .ms-Dialog-main {
+        width:100%;
+        max-width: 700px;
+    }
+    .modal-text-area {
+        textarea {
+            background-color: var(--vscode-input-background);
+            height: 258px;
+        }
+    }
+    .ms-Button {
+        color: var(--vscode-button-secondaryForeground);
+        background-color: var(--vscode-button-secondaryBackground);
+    }
+}

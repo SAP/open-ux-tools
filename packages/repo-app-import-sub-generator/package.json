@@ -1,0 +1,85 @@
+{
+    "name": "@sap-ux/repo-app-import-sub-generator",
+    "description": "Generator to download LROP Fiori applications deployed from an ABAP repository.",
+    "version": "0.3.63",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/repo-app-import-sub-generator"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
+    },
+    "license": "Apache-2.0",
+    "main": "generators/app/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
+        "watch": "tsc --watch",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "generators",
+        "!generators/*.map",
+        "!generators/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@sap-ux/feature-toggle": "workspace:*",
+        "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/odata-service-inquirer": "workspace:*",
+        "@sap-ux/fiori-elements-writer": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/project-input-validator": "workspace:*",
+        "@sap-ux/launch-config": "workspace:*",
+        "@sap-ux/fiori-tools-settings": "workspace:*",
+        "@sap-ux/abap-deploy-config-writer": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/ui5-info": "workspace:*",
+        "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/store": "workspace:*",
+        "@sap-ux/system-access": "workspace:*",
+        "@sap-ux/guided-answers-helper": "workspace:*",
+        "adm-zip": "0.5.10",
+        "i18next": "25.3.0",
+        "inquirer": "8.2.6",
+        "yeoman-generator": "5.10.0"
+    },
+    "devDependencies": {
+        "@jest/types": "29.6.3",
+        "@types/inquirer": "8.2.6",
+        "@types/mem-fs": "1.1.2",
+        "@types/mem-fs-editor": "7.0.1",
+        "@types/yeoman-generator": "5.2.11",
+        "@types/yeoman-environment": "2.10.11",
+        "inquirer-autocomplete-prompt": "2.0.1",
+        "@types/inquirer-autocomplete-prompt": "2.0.1",
+        "@types/yeoman-test": "4.0.6",
+        "@sap-ux/nodejs-utils": "workspace:*",
+        "@types/fs-extra": "9.0.13",
+        "fs-extra": "10.0.0",
+        "@sap-ux/store": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
+        "@vscode-logging/logger": "2.0.0",
+        "@types/adm-zip": "0.5.5",
+        "memfs": "3.4.13",
+        "mem-fs-editor": "9.4.0",
+        "lodash": "4.17.21",
+        "@types/lodash": "4.14.202",
+        "rimraf": "5.0.5",
+        "unionfs": "4.4.0",
+        "yeoman-test": "6.3.0",
+        "yo": "4"
+    },
+    "engines": {
+        "node": ">=20.x"
+    }
+}

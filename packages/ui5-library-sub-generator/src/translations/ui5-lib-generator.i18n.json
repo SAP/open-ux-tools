@@ -1,0 +1,12 @@
+{
+    "info": {
+        "openingAppInfo": "Opening application info...",
+        "installingDependencies": "Installing dependencies...",
+        "dependenciesInstalled": "Library dependencies have been installed."
+    },
+    "error": {
+        "unknown": "Unknown error.",
+        "generatingUi5Lib": "An error occurred when generating the reusable SAPUI5 library.",
+        "postLibGenHook": "Failed to run hook after library generation: {{- error}}"
+    }
+}

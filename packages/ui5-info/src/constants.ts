@@ -1,26 +1,23 @@
-import type { UI5VersionOverview } from './types';
+import type { UI5Version } from './types';
 
 export const enum ui5VersionsType {
     official = 'officialVersions',
     snapshot = 'snapshotsVersions',
-    overview = 'overview'
+    support = 'support'
 }
 
 export const ui5VersionsCache: {
-    [key in ui5VersionsType.official | ui5VersionsType.snapshot | ui5VersionsType.overview]:
-        | string[]
-        | UI5VersionOverview[];
+    [key in ui5VersionsType.official | ui5VersionsType.snapshot | ui5VersionsType.support]: string[] | UI5Version[];
 } = {
     officialVersions: [],
     snapshotsVersions: [],
-    overview: []
+    support: []
 };
 
 export const ui5VersionRequestInfo = {
     OfficialUrl: 'https://ui5.sap.com',
     NeoAppFile: 'neo-app.json',
     VersionsFile: 'version.json?sap-ui-config-patches=true&sap-ui-config-showall=true',
-    VersionsOverview: 'versionoverview.json',
     VersionExternalFile: 'version.json'
 };
 

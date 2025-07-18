@@ -1,5 +1,426 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.12
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/mockserver-config-writer@0.9.8
+
+## 0.27.11
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/mockserver-config-writer@0.9.7
+    -   @sap-ux/ui5-config@0.29.0
+
+## 0.27.10
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-config@0.29.0
+    -   @sap-ux/mockserver-config-writer@0.9.6
+    -   @sap-ux/project-access@1.30.6
+
+## 0.27.9
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/mockserver-config-writer@0.9.5
+
+## 0.27.8
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+
+## 0.27.7
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-config@0.28.3
+    -   @sap-ux/mockserver-config-writer@0.9.4
+
+## 0.27.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/mockserver-config-writer@0.9.3
+
+## 0.27.5
+
+### Patch Changes
+
+-   Updated dependencies [61ea5c0]
+    -   @sap-ux/ui5-config@0.28.2
+    -   @sap-ux/mockserver-config-writer@0.9.2
+    -   @sap-ux/project-access@1.30.2
+
+## 0.27.4
+
+### Patch Changes
+
+-   f9e4913: Allow to only update annotation and metada files without YAML file changes.
+
+## 0.27.3
+
+### Patch Changes
+
+-   6e2ef66: Do not stop service from being added in case if existing services are without annotation dataSources.
+
+## 0.27.2
+
+### Patch Changes
+
+-   07eaebf: Generation of a unique service name (if such service exists) and error for existing service URI.
+
+## 0.27.1
+
+### Patch Changes
+
+-   5e0020b: Support backend changes.
+-   Updated dependencies [5e0020b]
+    -   @sap-ux/ui5-config@0.28.1
+    -   @sap-ux/mockserver-config-writer@0.9.1
+    -   @sap-ux/project-access@1.30.1
+
+## 0.27.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/mockserver-config-writer@0.9.0
+    -   @sap-ux/project-access@1.30.0
+    -   @sap-ux/ui5-config@0.28.0
+
+## 0.26.18
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/mockserver-config-writer@0.8.15
+
+## 0.26.17
+
+### Patch Changes
+
+-   8d4bca6: Write service annotations using `name` instead of `technicalName` to avoid sub folders
+
+## 0.26.16
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+    -   @sap-ux/mockserver-config-writer@0.8.14
+    -   @sap-ux/project-access@1.29.21
+
+## 0.26.15
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/ui5-config@0.27.1
+    -   @sap-ux/mockserver-config-writer@0.8.13
+
+## 0.26.14
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/mockserver-config-writer@0.8.12
+    -   @sap-ux/project-access@1.29.19
+
+## 0.26.13
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/mockserver-config-writer@0.8.11
+
+## 0.26.12
+
+### Patch Changes
+
+-   224494c: Improved add, delete and get methods for service backends.
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/mockserver-config-writer@0.8.10
+    -   @sap-ux/project-access@1.29.17
+
+## 0.26.11
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/mockserver-config-writer@0.8.9
+    -   @sap-ux/project-access@1.29.16
+
+## 0.26.10
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/mockserver-config-writer@0.8.8
+
+## 0.26.9
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/mockserver-config-writer@0.8.7
+
+## 0.26.8
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/mockserver-config-writer@0.8.6
+    -   @sap-ux/ui5-config@0.26.3
+    -   @sap-ux/project-access@1.29.13
+
+## 0.26.7
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+-   @sap-ux/mockserver-config-writer@0.8.5
+
+## 0.26.6
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/mockserver-config-writer@0.8.4
+
+## 0.26.5
+
+### Patch Changes
+
+-   4b8577f: fix: usage of static webapp path
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/mockserver-config-writer@0.8.3
+    -   @sap-ux/project-access@1.29.10
+
+## 0.26.4
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/mockserver-config-writer@0.8.2
+
+## 0.26.3
+
+### Patch Changes
+
+-   dbd725a: Write metadata.xml in update in odata-service-writer
+
+## 0.26.2
+
+### Patch Changes
+
+-   Updated dependencies [c244f60]
+    -   @sap-ux/mockserver-config-writer@0.8.1
+
+## 0.26.1
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/mockserver-config-writer@0.8.0
+
+## 0.26.0
+
+### Minor Changes
+
+-   f1f9cbe: Service update support.
+
+### Patch Changes
+
+-   Updated dependencies [f1f9cbe]
+    -   @sap-ux/mockserver-config-writer@0.8.0
+
+## 0.25.10
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/mockserver-config-writer@0.7.3
+
+## 0.25.9
+
+### Patch Changes
+
+-   ed8a9b9: Handling of `ignoreCertError` property from service in proxy middleware.
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/mockserver-config-writer@0.7.3
+    -   @sap-ux/project-access@1.29.6
+
+## 0.25.8
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/mockserver-config-writer@0.7.2
+
+## 0.25.7
+
+### Patch Changes
+
+-   4a90030: `@sap-ux/project-access` moved to dependencies.
+
+## 0.25.6
+
+### Patch Changes
+
+-   f349f56: Fixed default naming for model.
+
+## 0.25.5
+
+### Patch Changes
+
+-   9910e7f: Improved set function for the default service model.
+
+## 0.25.4
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/mockserver-config-writer@0.7.2
+
+## 0.25.3
+
+### Patch Changes
+
+-   625bca8: Removed local annotation definitions from mockserver middleware in ui5-local.yaml and ui5-mock.yaml files.
+-   Updated dependencies [625bca8]
+    -   @sap-ux/mockserver-config-writer@0.7.1
+
+## 0.25.2
+
+### Patch Changes
+
+-   326cd59: Uses "" model for mainService during generation if model for mainService already exists.
+
+## 0.25.1
+
+### Patch Changes
+
+-   0f1b457: Improved update function for manifest by reducing JSON write calls for manifest file.
+
+## 0.25.0
+
+### Minor Changes
+
+-   036b48b: Removed ejs for manifest enhancements.
+
+## 0.24.2
+
+### Patch Changes
+
+-   9f14de1: Improved manifest.json template to allow services with empty remote annotations array and added support for multiple local annotations.
+
+## 0.24.1
+
+### Patch Changes
+
+-   0c9e896: Update existing services in a way that is required for multiple services support - service files in their respective folders.
+
+## 0.24.0
+
+### Minor Changes
+
+-   73475e5: Support for multiple services and multiple annotations per service.
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/mockserver-config-writer@0.7.0
+    -   @sap-ux/ui5-config@0.26.0
+
+## 0.23.3
+
+### Patch Changes
+
+-   Updated dependencies [1beac7e]
+    -   @sap-ux/ui5-config@0.25.2
+    -   @sap-ux/mockserver-config-writer@0.6.7
+
+## 0.23.2
+
+### Patch Changes
+
+-   8237f83: feat: add namespaces to annotation template
+
+## 0.23.1
+
+### Patch Changes
+
+-   Updated dependencies [6275288]
+    -   @sap-ux/ui5-config@0.25.1
+    -   @sap-ux/mockserver-config-writer@0.6.6
+
+## 0.23.0
+
+### Minor Changes
+
+-   484195d: Enhancements to FE & FF Configurations: The updates include adding the `start-variants-management` script to `package.json` for FE and FF. The OdataService interface now has an `ignoreCertError` property. UI5 application writer introduces the `sapuxLayer` property to `package.json` templates and adds `fiori-tools-preview middleware` to ui5, ui5-mock, and ui5-local.yaml. Additionally, the `addFioriToolsPreviewMiddleware` function has been added for YAML config integration.
+
+### Patch Changes
+
+-   Updated dependencies [484195d]
+    -   @sap-ux/ui5-config@0.25.0
+    -   @sap-ux/mockserver-config-writer@0.6.5
+
+## 0.22.5
+
+### Patch Changes
+
+-   d962ce1: Move hasUI5CliV3 to project-access for common re-use
+    -   @sap-ux/mockserver-config-writer@0.6.4
+
+## 0.22.4
+
+### Patch Changes
+
+-   Updated dependencies [1a99abc]
+    -   @sap-ux/ui5-config@0.24.1
+    -   @sap-ux/mockserver-config-writer@0.6.4
+
+## 0.22.3
+
+### Patch Changes
+
+-   Updated dependencies [61721f2]
+    -   @sap-ux/ui5-config@0.24.0
+    -   @sap-ux/mockserver-config-writer@0.6.3
+
 ## 0.22.2
 
 ### Patch Changes

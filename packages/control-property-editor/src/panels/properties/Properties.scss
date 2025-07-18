@@ -83,9 +83,10 @@
 }
 .filter-properties {
     display: flex;
-    margin: 0px 15px 10px 15px;
+    padding: 0px 15px 15px 15px;
     flex-direction: row;
     align-items: center;
+    border-bottom: 1px solid var(--vscode-menu-separatorBackground);
 }
 
 .funnel-properties-icon {

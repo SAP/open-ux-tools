@@ -1,6 +1,6 @@
 [
     {
-        "message": "Wrong element '$Value'. Did you mean '$value'?",
+        "message": "`$Value` is incorrect. Did you mean `$value`?",
         "range": "[(4,12)..(4,18)]",
         "severity": 1,
         "data": {
@@ -14,21 +14,21 @@
     },
     {
         "range": "[(10,19)..(13,9)]",
-        "message": "Mandatory property not provided: $value",
+        "message": "The mandatory `$value` property was not provided.",
         "severity": 1
     },
     {
-        "message": "Property is not allowed here '$alue'",
+        "message": "The `$alue` property is not allowed here.",
         "range": "[(12,12)..(12,17)]",
         "severity": 2
     },
     {
         "range": "[(15,15)..(15,25)]",
-        "message": "Mandatory property not provided: $value",
+        "message": "The mandatory `$value` property was not provided.",
         "severity": 1
     },
     {
-        "message": "Property is not allowed here 'val'",
+        "message": "The `val` property is not allowed here.",
         "range": "[(15,17)..(15,20)]",
         "severity": 2
     }

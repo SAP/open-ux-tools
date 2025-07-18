@@ -4,12 +4,13 @@ import {
     ChangeType,
     getPromptsForChangeDataSource,
     getAdpConfig,
-    getManifestDataSources,
+    ManifestService,
     getVariant
 } from '@sap-ux/adp-tooling';
 import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
 import { validateAdpProject } from '../../validation/validation';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 let loginAttempts = 3;
 
@@ -41,15 +42,24 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
             basePath = process.cwd();
         }
         await validateAdpProject(basePath);
-        const variant = getVariant(basePath);
-        const adpConfig = await getAdpConfig(basePath, yamlPath);
-        const dataSources = await getManifestDataSources(variant.reference, adpConfig, logger);
+        const variant = await getVariant(basePath);
+        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
+        const provider = await createAbapServiceProvider(
+            target,
+            {
+                ignoreCertErrors
+            },
+            true,
+            logger
+        );
+        const manifestService = await ManifestService.initBaseManifest(provider, variant.reference, logger);
+        const dataSources = manifestService.getManifestDataSources();
         const answers = await promptYUIQuestions(getPromptsForChangeDataSource(dataSources), false);
 
         const fs = await generateChange<ChangeType.CHANGE_DATA_SOURCE>(basePath, ChangeType.CHANGE_DATA_SOURCE, {
             variant,
             dataSources,
-            answers
+            service: answers
         });
 
         if (!simulate) {
@@ -61,7 +71,9 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
         logger.error(error.message);
         if (error.response?.status === 401 && loginAttempts) {
             loginAttempts--;
-            logger.error(`Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts}`);
+            logger.error(
+                `Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts + 1}`
+            );
             await changeDataSource(basePath, simulate, yamlPath);
             return;
         }

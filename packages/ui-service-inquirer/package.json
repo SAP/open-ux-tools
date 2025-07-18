@@ -1,0 +1,64 @@
+{
+    "name": "@sap-ux/ui-service-inquirer",
+    "description": "Generator for creating UI Service",
+    "version": "0.1.46",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/ui-service-inquirer"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
+    },
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
+        "watch": "tsc --watch",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "files": [
+        "LICENSE",
+        "dist",
+        "templates",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-devx/yeoman-ui-types": "1.16.9",
+        "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
+        "@sap-ux/axios-extension": "workspace:*",
+        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/guided-answers-helper": "workspace:*",
+        "@sap-ux/inquirer-common": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/odata-service-inquirer": "workspace:*",
+        "@sap-ux/telemetry": "workspace:*",
+        "i18next": "25.3.0",
+        "yeoman-generator": "5.10.0"
+    },
+    "devDependencies": {
+        "@sap-ux/jest-file-matchers": "workspace:*",
+        "@sap-ux/store": "workspace:*",
+        "@sap-ux/system-access": "workspace:*",
+        "@types/inquirer-autocomplete-prompt": "2.0.1",
+        "@types/inquirer": "8.2.6",
+        "@types/yeoman-environment": "2.10.11",
+        "@types/yeoman-generator": "5.2.11",
+        "@types/yeoman-test": "4.0.6",
+        "jest-extended": "4.0.2",
+        "inquirer": "8.2.6",
+        "nock": "13.5.6",
+        "rimraf": "5.0.5",
+        "yeoman-test": "6.3.0"
+    },
+    "engines": {
+        "node": ">=20.x"
+    }
+}

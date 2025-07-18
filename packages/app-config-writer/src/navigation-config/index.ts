@@ -68,7 +68,7 @@ export async function generateInboundNavigationConfig(
  * @returns the manifest object and manifest path
  */
 export async function readManifest(appPath: string, fs: Editor): Promise<{ manifest: Manifest; manifestPath: string }> {
-    const manifestPath = join(await getWebappPath(appPath), FileName.Manifest);
+    const manifestPath = join(await getWebappPath(appPath, fs), FileName.Manifest);
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
 
     if (!manifest) {

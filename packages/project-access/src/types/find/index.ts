@@ -1,6 +1,6 @@
 import type { Manifest } from '../webapp';
 
-export type FioriArtifactTypes = 'applications' | 'adaptations' | 'extensions' | 'libraries';
+export type FioriArtifactTypes = 'applications' | 'adaptations' | 'extensions' | 'libraries' | 'components';
 
 /**
  * Search result when searching for apps. It is valid for all types of
@@ -88,9 +88,29 @@ export interface LibraryResults {
     libraryPath?: string;
 }
 
+/**
+ * Search result when searching for components.
+ */
+export interface ComponentResults {
+    /**
+     * Root of the component, where package.json and ui5.yaml resides.
+     */
+    projectRoot: string;
+    /**
+     * Path to the manifest.json of the component.
+     */
+    manifestPath?: string;
+    /**
+     * Parsed content of the manifest.json to avoid multiple reads when working with
+     * the search results.
+     */
+    manifest?: Manifest;
+}
+
 export interface FoundFioriArtifacts {
     applications?: AllAppResults[];
     adaptations?: AdaptationResults[];
     extensions?: ExtensionResults[];
     libraries?: LibraryResults[];
+    components?: ComponentResults[];
 }

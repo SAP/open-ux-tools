@@ -6,4 +6,4 @@ export {
     DiagnosticSeverity,
     TextEdit,
     WorkspaceEdit
-} from 'vscode-languageserver-types';
+} from '@sap-ux/text-document-utils';

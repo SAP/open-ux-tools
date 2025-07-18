@@ -6,7 +6,8 @@ import {
     createTextNode,
     Edm,
     createTarget,
-    TEXT_TYPE
+    TEXT_TYPE,
+    ANNOTATION_FILE_TYPE
 } from '@sap-ux/odata-annotation-core-types';
 
 import {
@@ -94,12 +95,14 @@ export class ChangeConverter {
      * @param vocabularyAPI Vocabulary API instance.
      * @param metadataService Metadata service.
      * @param splitAnnotationSupport Flag indicating if partial annotation definitions are supported.
+     * @param ignoreChangedFileInitialContent Flag indicating if to be changed files can be treated as empty.
      */
     constructor(
         private serviceName: string,
         private vocabularyAPI: VocabularyService,
         private metadataService: MetadataService,
-        private splitAnnotationSupport: boolean
+        private splitAnnotationSupport: boolean,
+        private ignoreChangedFileInitialContent: boolean
     ) {}
     /**
      * Converts changes to the internal change format.
@@ -121,10 +124,7 @@ export class ChangeConverter {
         const mergedChanges = mergeChanges(changes);
 
         for (const change of mergedChanges) {
-            const file = compiledService.annotationFiles.find((file) => file.uri === change.uri);
-            if (!file) {
-                throw new Error(`Invalid change. File ${change.uri} does not exist.`);
-            }
+            const file = this.getFile(compiledService, change.uri);
             const aliasInfoMod = this.getAliasInformation(file);
 
             if (change.kind === ChangeType.InsertAnnotation) {
@@ -147,6 +147,22 @@ export class ChangeConverter {
         return this.annotationFileChanges;
     }
 
+    private getFile(compiledService: CompiledService, uri: string): AnnotationFile {
+        const file = compiledService.annotationFiles.find((file) => file.uri === uri);
+        if (!file) {
+            if (this.ignoreChangedFileInitialContent) {
+                return {
+                    type: ANNOTATION_FILE_TYPE,
+                    uri,
+                    references: [],
+                    targets: []
+                };
+            }
+            throw new Error(`Invalid change. File ${uri} does not exist.`);
+        }
+        return file;
+    }
+
     private insertAnnotation(
         compiledService: CompiledService,
         aliasInfo: AliasInformation,
@@ -157,7 +173,7 @@ export class ChangeConverter {
         const targetIndex = annotationFile?.targets.findIndex(
             (target) => toAliasQualifiedName(target.name, aliasInfo) === targetName
         );
-        if (targetIndex === -1) {
+        if (targetIndex === -1 || targetIndex === undefined) {
             // no existing target found, we need to create one
             const changesForUri = this.newTargetChanges.get(change.uri);
             if (!changesForUri) {
@@ -771,10 +787,7 @@ export class ChangeConverter {
     private addTargetChanges(compiledService: CompiledService): void {
         const insertTargetChanges: InsertTarget[] = [];
         for (const [uri, changesForUri] of this.newTargetChanges) {
-            const file = compiledService.annotationFiles.find((file) => file.uri === uri);
-            if (!file) {
-                throw new Error(`Invalid change. File ${uri} does not exist.`);
-            }
+            const file = this.getFile(compiledService, uri);
             const aliasInfoMod = this.getAliasInformation(file);
             for (const [targetName, inserts] of changesForUri) {
                 const target = createTarget(targetName);

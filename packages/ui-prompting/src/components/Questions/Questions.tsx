@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import type { Answers } from 'inquirer';
 import { Question } from '../Question/Question';
 import {
+    formatDomId,
     getAnswer,
     getDependantQuestions,
     getDynamicQuestions,
@@ -12,12 +13,21 @@ import {
     useRequestedChoices
 } from '../../utilities';
 import { QuestionGroup } from '../QuestionGroup';
-import type { PromptQuestion, ValidationResults, PromptsGroup, AnswerValue, DynamicChoices } from '../../types';
+import type {
+    PromptQuestion,
+    ValidationResults,
+    PromptsGroup,
+    AnswerValue,
+    DynamicChoices,
+    TranslationProps
+} from '../../types';
 import { PromptsLayoutType } from '../../types';
+import { TranslationProvider } from '../../context/TranslationContext';
+import type { TranslationEntry } from '@sap-ux/ui-components';
 
 import './Questions.scss';
 
-export interface QuestionsProps {
+export interface QuestionsProps<T extends TranslationEntry = TranslationEntry> {
     id?: string;
     questions: PromptQuestion[];
     answers?: Answers;
@@ -28,6 +38,7 @@ export interface QuestionsProps {
     layoutType?: PromptsLayoutType;
     groups?: Array<PromptsGroup>;
     showDescriptions?: boolean;
+    translationProps?: TranslationProps<T>;
 }
 
 /**
@@ -55,7 +66,8 @@ export const Questions = (props: QuestionsProps) => {
         choices = {},
         layoutType,
         showDescriptions,
-        validation = {}
+        validation = {},
+        translationProps = { bundle: {} }
     } = props;
     const componentId = useId(id);
     const [localAnswers, setLocalAnswers] = useAnswers(questions, answers, (answers: Answers) => {
@@ -117,9 +129,10 @@ export const Questions = (props: QuestionsProps) => {
         questions.map((question: PromptQuestion, index: number) => {
             const name = question.name;
             const externalChoices = choices[name];
+            const id = formatDomId(`${componentId}--${question.name}`);
             return (
                 <Question
-                    id={`${componentId}--${question.name}`}
+                    id={id}
                     key={`${name}-${index}`}
                     question={question}
                     validation={validation}
@@ -127,28 +140,34 @@ export const Questions = (props: QuestionsProps) => {
                     onChange={onAnswerChange}
                     choices={externalChoices}
                     pending={pendingRequests[name]}
+                    isI18nInputSupported={!!props.translationProps}
                 />
             );
         });
 
     return (
         <div id={componentId} className={getComponentClasses(layoutType)}>
-            <div className="prompt-entries">
-                {layoutType === PromptsLayoutType.MultiColumn && groups?.length
-                    ? groupsWithQuestions.map((group) => {
-                          return (
-                              <QuestionGroup
-                                  id={`${componentId}--${group.id}`}
-                                  key={group.id}
-                                  title={group.title}
-                                  description={group.description}
-                                  showDescription={showDescriptions}>
-                                  {renderQuestions(group.questions)}
-                              </QuestionGroup>
-                          );
-                      })
-                    : renderQuestions(questions)}
-            </div>
+            <TranslationProvider
+                bundle={translationProps.bundle}
+                onEvent={translationProps.onEvent}
+                pendingQuestions={translationProps.pendingQuestions}>
+                <div className="prompt-entries">
+                    {layoutType === PromptsLayoutType.MultiColumn && groups?.length
+                        ? groupsWithQuestions.map((group) => {
+                              return (
+                                  <QuestionGroup
+                                      id={`${componentId}--${group.id}`}
+                                      key={group.id}
+                                      title={group.title}
+                                      description={group.description}
+                                      showDescription={showDescriptions}>
+                                      {renderQuestions(group.questions)}
+                                  </QuestionGroup>
+                              );
+                          })
+                        : renderQuestions(questions)}
+                </div>
+            </TranslationProvider>
         </div>
     );
 };

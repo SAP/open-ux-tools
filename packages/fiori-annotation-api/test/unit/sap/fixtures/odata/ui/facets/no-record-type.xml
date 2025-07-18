@@ -1,0 +1,7 @@
+<Annotation Term="UI.Facets">
+    <Collection>
+        <Record>
+        </Record>
+    </Collection>
+</Annotation>
+<!-- To get the correct annotation line in test add 7 to the line number of this file -->

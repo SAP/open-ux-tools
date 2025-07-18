@@ -62,12 +62,9 @@ jest.mock('@sap-ux/system-access', () => {
 describe('change/data-source', () => {
     let loggerMock: ToolsLogger;
     const memFsEditorMock = {
-        create: jest.fn().mockReturnValue({
-            commit: jest.fn().mockImplementation((cb) => cb())
-        })
+        commit: jest.fn().mockImplementation((cb) => cb())
     };
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
-    jest.spyOn(adp, 'getManifest').mockResolvedValue(JSON.parse(appManifest));
     const generateChangeSpy = jest
         .spyOn(adp, 'generateChange')
         .mockResolvedValue(memFsEditorMock as Partial<Editor> as Editor);
@@ -86,7 +83,14 @@ describe('change/data-source', () => {
         }
     });
     jest.spyOn(validations, 'validateAdpProject').mockResolvedValue(undefined);
-    jest.spyOn(adp, 'getManifestDataSources').mockResolvedValue(mockDataSources);
+    jest.spyOn(adp.ManifestService, 'initBaseManifest').mockResolvedValue({
+        fetchBaseManifest: jest.fn(),
+        fetchMergedManifest: jest.fn(),
+        getManifest: jest.fn(),
+        fetchAppInfo: jest.fn(),
+        getManifestDataSources: jest.fn().mockReturnValue(mockDataSources),
+        getDataSourceMetadata: jest.fn().mockResolvedValue('<>metadata</>')
+    } as unknown as adp.ManifestService);
     jest.spyOn(adp, 'getPromptsForChangeDataSource').mockImplementation(() => []);
     const appRoot = join(__dirname, '../../../fixtures');
     beforeEach(() => {
@@ -178,10 +182,23 @@ describe('change/data-source', () => {
     });
 
     test('change data-source - authentication error', async () => {
-        jest.spyOn(adp, 'getManifestDataSources').mockRejectedValueOnce({
-            message: '401:Unauthorized',
-            response: { status: 401 }
-        });
+        jest.spyOn(adp.ManifestService, 'initBaseManifest')
+            .mockRejectedValueOnce({
+                message: '401:Unauthorized',
+                response: { status: 401 }
+            } as unknown as adp.ManifestService)
+            .mockRejectedValueOnce({
+                message: '401:Unauthorized',
+                response: { status: 401 }
+            } as unknown as adp.ManifestService)
+            .mockRejectedValueOnce({
+                message: '401:Unauthorized',
+                response: { status: 401 }
+            } as unknown as adp.ManifestService)
+            .mockRejectedValueOnce({
+                message: '401:Unauthorized',
+                response: { status: 401 }
+            } as unknown as adp.ManifestService);
 
         const command = new Command('data-source');
         addChangeDataSourceCommand(command);
@@ -192,15 +209,16 @@ describe('change/data-source', () => {
             'Authentication failed. Please check your credentials. Login attempts left: 2'
         );
         expect(loggerMock.debug).not.toBeCalledWith();
-        expect(promptYUIQuestionsSpy).toBeCalled();
-        expect(generateChangeSpy).toBeCalled();
+        expect(promptYUIQuestionsSpy).not.toBeCalled();
+        expect(generateChangeSpy).not.toBeCalled();
     });
 
     test('change data-source - no data sources in manifest', async () => {
-        jest.spyOn(adp, 'getManifestDataSources').mockRejectedValueOnce(
-            new Error('No data sources found in the manifest')
-        );
-
+        jest.spyOn(adp.ManifestService, 'initBaseManifest').mockResolvedValueOnce({
+            getManifestDataSources: jest.fn().mockImplementation(() => {
+                throw new Error('No data sources found in the manifest');
+            })
+        } as unknown as adp.ManifestService);
         const command = new Command('data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));

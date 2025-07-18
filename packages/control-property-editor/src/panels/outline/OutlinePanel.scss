@@ -1,12 +1,14 @@
 .filter-outline {
     display: flex;
-    padding: 15px 14px 15px 14px;
+    padding: 15px 15px 15px 15px;
     flex-direction: row;
     align-items: center;
-    position: sticky;
-    top: 0px;
-    z-index: 1;
     background-color: var(--vscode-sideBar-background);
+    border-bottom: 1px solid var(--vscode-menu-separatorBackground);
+}
+
+.auto-element-scroller {
+    height: calc(100% - 55px);
 }
 
 .funnel-icon {
@@ -74,46 +76,6 @@
 
 .extension-icon {
     margin: 2px 4px 0px;
-}
-
-.tooltip-container {
-    position: relative;
-}
-
-.tooltip {
-    background: var(--vscode-badge-background);
-    color: #fff;
-    width: auto;
-    padding: 0px 2px;
-    margin-left: -40px; /* Center the tooltip */
-    bottom: 95%; /* Position the tooltip above the text */
-    left: 50%;
-    border-radius: 4px;
-    position: absolute;
-    text-align: center;
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s;
-
-    button {
-        background-color: var(--vscode-textLink-foreground);
-        border: none;
-        color: white;
-        padding: 4px 8px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 11px;
-        margin: 4px 2px;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: all 0.1s ease-in-out;
-
-        &:hover {
-            opacity: 0.88;
-        }
-    }
 }
 
 .tree-row-icon {

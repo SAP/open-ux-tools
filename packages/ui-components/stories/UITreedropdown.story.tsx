@@ -35,14 +35,18 @@ const data = [
 ];
 
 export const Basic = (): JSX.Element => {
+    const [changesCount, setChangesCount] = React.useState(0);
     const [value, setValue] = React.useState('');
-    const handleSelected = (value: any) => setValue(value);
+    const handleSelected = (value: any) => {
+        setChangesCount(changesCount + 1);
+        setValue(value);
+    };
 
     return (
         <div style={{ width: 300 }}>
             <UITreeDropdown
                 value={value}
-                label="Label"
+                label={`Label(value changed ${changesCount} times)`}
                 placeholderText="Select value"
                 items={data}
                 onParameterValueChange={handleSelected}

@@ -1,9 +1,9 @@
 import merge from 'sap/base/util/merge';
 import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import Layer from 'sap/ui/fl/Layer';
-import VersionInfo from 'sap/ui/VersionInfo';
-import type {SingleVersionInfo} from '../../types/global';
 import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
+import { getAdditionalChangeInfo } from '../utils/additional-change-info';
 
 const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
@@ -17,17 +17,24 @@ const connector = merge({}, ObjectStorageConnector, {
                 change.support.generator = settings.generator;
             }
 
+            const additionalChangeInfo = getAdditionalChangeInfo(change);
+
             if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
                 try {
-                    this.fileChangeRequestNotifier(change.fileName, 'create', change.changeType);
+                    this.fileChangeRequestNotifier(change.fileName, 'create', change, additionalChangeInfo);
                 } catch (e) {
                     // exceptions in the listener call are ignored
                 }
             }
 
+            const body = {
+                change,
+                additionalChangeInfo
+            };
+
             return fetch(CHANGES_API_PATH, {
                 method: 'POST',
-                body: JSON.stringify(change, null, 2),
+                body: JSON.stringify(body, null, 2),
                 headers: {
                     'content-type': 'application/json'
                 }
@@ -63,16 +70,15 @@ const connector = merge({}, ObjectStorageConnector, {
                     'content-type': 'application/json'
                 }
             });
-            const changes = await response.json() as unknown as FlexChange[];
-            return changes;
+            return (await response.json()) as unknown as FlexChange[];
         }
     } as typeof ObjectStorageConnector.storage,
     loadFeatures: async function () {
         const features = await ObjectStorageConnector.loadFeatures();
-
-        const version = (await VersionInfo.load({library:'sap.ui.core'}) as SingleVersionInfo)?.version;
-        const [majorVersion, minorVersion] = version.split('.').map((v: string) => parseInt(v, 10));
-        features.isVariantAdaptationEnabled = majorVersion >= 1 && minorVersion >= 90;
+        features.isVariantAdaptationEnabled = !isLowerThanMinimalUi5Version(await getUi5Version(), {
+            major: 1,
+            minor: 90
+        });
         const settings = getFlexSettings();
         if (settings?.developerMode) {
             features.isVariantAdaptationEnabled = false;

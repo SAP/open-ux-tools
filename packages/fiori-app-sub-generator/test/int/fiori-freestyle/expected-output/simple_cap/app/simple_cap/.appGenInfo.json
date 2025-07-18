@@ -1,0 +1,21 @@
+{
+  "generationParameters": {
+    "generationDate": "Tue Jun 24 2025 22:44:34 GMT+0100 (Irish Standard Time)",
+    "generatorPlatform": "CLI",
+    "serviceType": "Local CAP",
+    "metadataFilename": "",
+    "serviceUrl": "http://localhost:4004",
+    "appName": "simple_cap",
+    "appTitle": "App Title",
+    "appDescription": "An SAP Fiori application on CAP.",
+    "appNamespace": "",
+    "ui5Theme": "sap_fiori_3",
+    "ui5Version": "1.82.2",
+    "showMockDataInfo": false,
+    "generatorVersion": "0.0.0",
+    "template": "Basic V4",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [],
+    "launchText": "To launch the generated app, start your CAP project:  and navigate to the following location in your browser:\n\nhttp://localhost:4004/simple_cap/webapp/index.html"
+  }
+}

@@ -4,11 +4,14 @@ import {
     ChangeType,
     getPromptsForAddAnnotationsToOData,
     getAdpConfig,
-    getManifestDataSources,
+    ManifestService,
     getVariant
 } from '@sap-ux/adp-tooling';
-import { getLogger, traceChanges } from '../../tracing';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { getAnnotationNamespaces, type NamespaceAlias } from '@sap-ux/odata-service-writer';
+
 import { promptYUIQuestions } from '../../common';
+import { getLogger, traceChanges } from '../../tracing';
 import { validateAdpProject } from '../../validation/validation';
 
 let loginAttempts = 3;
@@ -41,17 +44,37 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
             basePath = process.cwd();
         }
         await validateAdpProject(basePath);
-        const variant = getVariant(basePath);
-        const adpConfig = await getAdpConfig(basePath, yamlPath);
-        const dataSources = await getManifestDataSources(variant.reference, adpConfig, logger);
+        const variant = await getVariant(basePath);
+        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
+        const provider = await createAbapServiceProvider(
+            target,
+            {
+                ignoreCertErrors
+            },
+            true,
+            logger
+        );
+        const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, logger);
+        const dataSources = manifestService.getManifestDataSources();
         const answers = await promptYUIQuestions(getPromptsForAddAnnotationsToOData(basePath, dataSources), false);
+        let namespaces: NamespaceAlias[] = [];
+        if (!answers.filePath) {
+            const metadata = await manifestService.getDataSourceMetadata(answers.id);
+            namespaces = getAnnotationNamespaces({ metadata });
+        }
 
         const fs = await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
             basePath,
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
             {
                 variant,
-                answers
+                annotation: {
+                    dataSource: answers.id,
+                    filePath: answers.filePath,
+                    namespaces,
+                    serviceUrl: dataSources[answers.id].uri
+                },
+                isCommand: true
             }
         );
 
@@ -64,7 +87,9 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         logger.error(error.message);
         if (error.response?.status === 401 && loginAttempts) {
             loginAttempts--;
-            logger.error(`Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts}`);
+            logger.error(
+                `Authentication failed. Please check your credentials. Login attempts left: ${loginAttempts + 1}`
+            );
             await addAnnotationsToOdata(basePath, simulate, yamlPath);
             return;
         }

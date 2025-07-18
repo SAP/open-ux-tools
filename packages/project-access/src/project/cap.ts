@@ -1,6 +1,8 @@
 import { spawn } from 'child_process';
-import { dirname, join, normalize, relative, sep } from 'path';
-import { FileName } from '../constants';
+import { basename, dirname, join, normalize, relative, sep } from 'path';
+import type { Logger } from '@sap-ux/logger';
+import type { Editor } from 'mem-fs-editor';
+import { FileName, MinCdsVersionUi5Plugin } from '../constants';
 import type {
     CapCustomPaths,
     CapProjectType,
@@ -10,11 +12,26 @@ import type {
     Package,
     ServiceDefinitions,
     ServiceInfo,
-    CdsVersionInfo
+    CdsVersionInfo,
+    CdsUi5PluginInfo
 } from '../types';
-import { fileExists, readFile, readJSON } from '../file';
+import {
+    deleteDirectory,
+    deleteFile,
+    fileExists,
+    findBy,
+    readDirectory,
+    readFile,
+    readJSON,
+    updatePackageJSON,
+    writeFile
+} from '../file';
 import { loadModuleFromProject } from './module-loader';
-import type { Logger } from '@sap-ux/logger';
+import { findCapProjectRoot } from './search';
+import { coerce, gte, satisfies } from 'semver';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+import { hasDependency } from './dependencies';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
@@ -52,30 +69,51 @@ export function isCapNodeJsProject(packageJson: Package): boolean {
  *
  * @param projectRoot - the root path of the project
  * @param [capCustomPaths] - optional, relative CAP paths like app, db, srv
+ * @param memFs - optional mem-fs-editor instance
  * @returns - true if the project is a CAP project
  */
-export async function isCapJavaProject(projectRoot: string, capCustomPaths?: CapCustomPaths): Promise<boolean> {
+export async function isCapJavaProject(
+    projectRoot: string,
+    capCustomPaths?: CapCustomPaths,
+    memFs?: Editor
+): Promise<boolean> {
     const srv = capCustomPaths?.srv ?? (await getCapCustomPaths(projectRoot)).srv;
-    return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', FileName.CapJavaApplicationYaml));
+    return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', FileName.CapJavaApplicationYaml), memFs);
+}
+
+/**
+ * Checks if there are files in the `srv` folder, using node fs or mem-fs.
+ *
+ * @param {string} srvFolderPath - The path to the `srv` folder to check for files.
+ * @param {Editor} [memFs] - An optional `mem-fs-editor` instance. If provided, the function checks files within the in-memory file system.
+ * @returns {Promise<boolean>} - Resolves to `true` if files are found in the `srv` folder; otherwise, `false`.
+ */
+async function checkFilesInSrvFolder(srvFolderPath: string, memFs?: Editor): Promise<boolean> {
+    try {
+        return (await findBy({ root: srvFolderPath, memFs })).length > 0;
+    } catch (error) {
+        return false;
+    }
 }
 
 /**
  * Returns the CAP project type, undefined if it is not a CAP project.
  *
  * @param projectRoot - root of the project, where the package.json resides.
+ * @param memFs - optional mem-fs-editor instance
  * @returns - CAPJava for Java based CAP projects; CAPNodejs for node.js based CAP projects; undefined if it is no CAP project
  */
-export async function getCapProjectType(projectRoot: string): Promise<CapProjectType | undefined> {
+export async function getCapProjectType(projectRoot: string, memFs?: Editor): Promise<CapProjectType | undefined> {
     const capCustomPaths = await getCapCustomPaths(projectRoot);
-    if (!(await fileExists(join(projectRoot, capCustomPaths.srv)))) {
+    if (!(await checkFilesInSrvFolder(join(projectRoot, capCustomPaths.srv), memFs))) {
         return undefined;
     }
-    if (await isCapJavaProject(projectRoot, capCustomPaths)) {
+    if (await isCapJavaProject(projectRoot, capCustomPaths, memFs)) {
         return 'CAPJava';
     }
     let packageJson;
     try {
-        packageJson = await readJSON<Package>(join(projectRoot, FileName.Package));
+        packageJson = await readJSON<Package>(join(projectRoot, FileName.Package), memFs);
     } catch {
         // Ignore errors while reading the package.json file
     }
@@ -121,41 +159,66 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
 }
 
 /**
+ * Filters service endpoints to include only OData endpoints.
+ *
+ * @param endpoint The endpoint object to check.
+ * @param endpoint.kind The type of the endpoint.
+ * @returns `true` if the endpoint is of kind 'odata' or 'odata-v4'.
+ */
+function filterCapServiceEndpoints(endpoint: { kind: string }) {
+    return endpoint.kind === 'odata' || endpoint.kind === 'odata-v4';
+}
+
+/**
  * Return the CAP model and all services. The cds.root will be set to the provided project root path.
  *
  * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additional info
  * @returns {Promise<{ model: csn; services: ServiceInfo[]; cdsVersionInfo: CdsVersionInfo }>} - CAP Model and Services
  */
 export async function getCapModelAndServices(
-    projectRoot: string | { projectRoot: string; logger?: Logger }
+    projectRoot: string | { projectRoot: string; logger?: Logger; pathSelection?: Set<'app' | 'srv' | 'db'> }
 ): Promise<{ model: csn; services: ServiceInfo[]; cdsVersionInfo: CdsVersionInfo }> {
-    let _projectRoot;
-    let _logger;
+    let _projectRoot: string;
+    let _logger: Logger | undefined;
+    let _pathSelection: Set<string> | undefined;
+    const defaultPathSelection = new Set(['app', 'srv', 'db']);
     if (typeof projectRoot === 'object') {
         _projectRoot = projectRoot.projectRoot;
         _logger = projectRoot.logger;
+        _pathSelection = projectRoot.pathSelection ? projectRoot.pathSelection : defaultPathSelection;
     } else {
+        _pathSelection = defaultPathSelection;
         _projectRoot = projectRoot;
     }
 
     const cds = await loadCdsModuleFromProject(_projectRoot, true);
     const capProjectPaths = await getCapCustomPaths(_projectRoot);
-    const modelPaths = [
-        join(_projectRoot, capProjectPaths.app),
-        join(_projectRoot, capProjectPaths.srv),
-        join(_projectRoot, capProjectPaths.db)
-    ];
+    const modelPaths: string[] = [];
+    _pathSelection?.forEach((path: string) => {
+        modelPaths.push(join(_projectRoot, capProjectPaths[path as keyof CapCustomPaths]));
+    });
+
     const model = await cds.load(modelPaths, { root: _projectRoot });
 
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.home': ${cds.home}`);
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.version': ${cds.version}`);
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'cds.root': ${cds.root}`);
+    _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'projectRoot': ${_projectRoot}`);
 
     let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
+    // filter services that have ( urlPath defined AND no endpoints) OR have endpoints with kind 'odata'
+    // i.e. ignore services for websockets and other unsupported protocols
+    if (services.filter) {
+        services = services.filter(
+            (service) =>
+                (service.urlPath && service.endpoints === undefined) ||
+                service.endpoints?.find(filterCapServiceEndpoints)
+        );
+    }
     if (services.map) {
         services = services.map((value) => {
             const { endpoints, urlPath } = value;
-            const odataEndpoint = endpoints?.find((endpoint) => endpoint.kind === 'odata');
+            const odataEndpoint = endpoints?.find(filterCapServiceEndpoints);
             const endpointPath = odataEndpoint?.path ?? urlPath;
             return {
                 name: value.name,
@@ -256,7 +319,7 @@ export async function getCdsServices(projectRoot: string, ignoreErrors = true): 
             model = await cds.load(roots, { root: projectRoot });
         } catch (e) {
             if (ignoreErrors && e.model) {
-                model = e.model;
+                model = e.model as csn;
             } else {
                 throw e;
             }
@@ -303,7 +366,7 @@ function extractCdsFilesFromMessage(sources: Record<string, { filename?: string 
  * @param url - url to uniform
  * @returns - uniform url
  */
-function uniformUrl(url: string) {
+function uniformUrl(url: string): string {
     return url
         .replace(/\\/g, '/')
         .replace(/\/\//g, '/')
@@ -389,14 +452,14 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
         // First approach, load @sap/cds from project
         module = await loadModuleFromProject<CdsFacade | { default: CdsFacade }>(capProjectPath, '@sap/cds');
     } catch (error) {
-        loadProjectError = error;
+        loadProjectError = error as Error;
     }
     if (!module) {
         try {
             // Second approach, load @sap/cds from @sap/cds-dk
             module = await loadGlobalCdsModule();
         } catch (error) {
-            loadError = error;
+            loadError = error as Error;
         }
     }
     if (!module) {
@@ -425,7 +488,8 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
     if (global) {
         global.cds = cds;
     }
-
+    // correct cds.env for current project root. Especially needed CAP Java projects loading cds dependency from jar file
+    cds.env = cds.env.for('cds', capProjectPath) as typeof cds.env;
     return cds;
 }
 
@@ -548,11 +612,10 @@ async function getPackageNameInFolder(
 async function readPackageNameForFolder(baseUri: string, relativeUri: string): Promise<string> {
     let packageName = '';
     try {
-        const path = normalize(baseUri + '/' + relativeUri + '/' + 'package.json');
-        const content = await readFile(path);
-        if (content) {
-            const parsed = JSON.parse(content);
-            packageName = parsed.name;
+        const path = normalize(baseUri + '/' + relativeUri + '/' + FileName.Package);
+        const content = await readJSON<Package>(path);
+        if (typeof content?.name === 'string') {
+            packageName = content.name;
         }
     } catch (e) {
         packageName = '';
@@ -590,7 +653,7 @@ async function loadGlobalCdsModule(): Promise<CdsFacade> {
 /**
  * Clear cache of request to load global cds module.
  */
-export function clearGlobalCdsModulePromiseCache() {
+export function clearGlobalCdsModulePromiseCache(): void {
     globalCdsModulePromise = undefined;
 }
 
@@ -671,4 +734,229 @@ export async function getCapServiceName(projectRoot: string, datasourceUri: stri
         throw Error(errorMessage);
     }
     return service.name;
+}
+
+/**
+ * Method cleans up cds files after deletion of passed appName.
+ *
+ * @param cdsFilePaths - cds files to cleanup
+ * @param appName - CAP application name
+ * @param memFs - optional mem-fs-editor instance
+ * @param logger - function to log messages (optional)
+ */
+async function cleanupCdsFiles(
+    cdsFilePaths: string[],
+    appName: string,
+    memFs?: Editor,
+    logger?: Logger
+): Promise<void> {
+    const usingEntry = `using from './${appName}/annotations';`;
+    for (const cdsFilePath of cdsFilePaths) {
+        if (await fileExists(cdsFilePath, memFs)) {
+            try {
+                let cdsFile = await readFile(cdsFilePath, memFs);
+                if (cdsFile.indexOf(usingEntry) !== -1) {
+                    logger?.info(`Removing using statement for './${appName}/annotations' from '${cdsFilePath}'.`);
+                    cdsFile = cdsFile.replace(usingEntry, '');
+                    if (cdsFile.replace(/\n/g, '').trim() === '') {
+                        logger?.info(`File '${cdsFilePath}' is now empty, removing it.`);
+                        await deleteFile(cdsFilePath, memFs);
+                    } else {
+                        await writeFile(cdsFilePath, cdsFile, memFs);
+                    }
+                }
+            } catch (error) {
+                logger?.error(`Could not modify file '${cdsFilePath}'. Skipping this file.`);
+            }
+        }
+    }
+}
+
+/**
+ * Delete application from CAP project.
+ *
+ * @param appPath - path to the application in a CAP project
+ * @param [memFs] - optional mem-fs-editor instance
+ * @param [logger] - function to log messages (optional)
+ */
+export async function deleteCapApp(appPath: string, memFs?: Editor, logger?: Logger): Promise<void> {
+    const appName = basename(appPath);
+    const projectRoot = await findCapProjectRoot(appPath);
+    if (!projectRoot) {
+        const message = `Project root was not found for CAP application with path '${appPath}'`;
+        logger?.error(message);
+        throw Error(message);
+    }
+    const packageJsonPath = join(projectRoot, FileName.Package);
+    const packageJson = await readJSON<Package>(packageJsonPath, memFs);
+    const cdsFilePaths = [join(dirname(appPath), FileName.ServiceCds), join(dirname(appPath), FileName.IndexCds)];
+
+    logger?.info(`Deleting app '${appName}' from CAP project '${projectRoot}'.`);
+    // Update `sapux` array if presented in package.json
+    if (Array.isArray(packageJson.sapux)) {
+        const posixAppPath = appPath.replace(/\\/g, '/');
+        packageJson.sapux = packageJson.sapux.filter((a) => !posixAppPath.endsWith(a.replace(/\\/g, '/')));
+        if (packageJson.sapux.length === 0) {
+            logger?.info(
+                `This was the last app in this CAP project. Deleting property 'sapux' from '${packageJsonPath}'.`
+            );
+            delete packageJson.sapux;
+        }
+    }
+    if (packageJson.scripts?.[`watch-${appName}`]) {
+        delete packageJson.scripts[`watch-${appName}`];
+    }
+    await updatePackageJSON(packageJsonPath, packageJson, memFs);
+    logger?.info(`File '${packageJsonPath}' updated.`);
+    await deleteDirectory(appPath, memFs);
+    logger?.info(`Directory '${appPath}' deleted.`);
+
+    // Cleanup app/service.cds and app/index.cds files
+    await cleanupCdsFiles(cdsFilePaths, appName, memFs, logger);
+    // Check if app folder is now empty
+    if ((await readDirectory(dirname(appPath))).length === 0) {
+        logger?.info(`Directory '${dirname(appPath)}' is now empty. Deleting it.`);
+        await deleteDirectory(dirname(appPath), memFs);
+    }
+}
+
+/**
+ * Check if cds-plugin-ui5 is enabled on a CAP project. Checks also all prerequisites, like minimum @sap/cds version.
+ * Overloaded function that returns detailed CAP plugin info.
+ *
+ * @param basePath - root path of the CAP project, where package.json is located
+ * @param [fs] - optional: the memfs editor instance
+ * @returns true: cds-plugin-ui5 and all prerequisites are fulfilled; false: cds-plugin-ui5 is not enabled or not all prerequisites are fulfilled
+ */
+export async function checkCdsUi5PluginEnabled(basePath: string, fs?: Editor): Promise<boolean>;
+
+/**
+ * Check if cds-plugin-ui5 is enabled on a CAP project. Checks also all prerequisites, like minimum @sap/cds version.
+ *
+ * @param basePath - root path of the CAP project, where package.json is located
+ * @param [fs] - optional: the memfs editor instance
+ * @param [moreInfo] if true return an object specifying detailed info about the cds and workspace state
+ * @returns false if package.json is not found at specified path or {@link CdsUi5PluginInfo} with additional info
+ */
+export async function checkCdsUi5PluginEnabled(
+    basePath: string,
+    fs?: Editor,
+    moreInfo?: boolean
+): Promise<boolean | CdsUi5PluginInfo>;
+
+/**
+ * Check if cds-plugin-ui5 is enabled on a CAP project. Checks also all prerequisites, like minimum @sap/cds version.
+ *
+ * @param basePath - root path of the CAP project, where package.json is located
+ * @param [fs] - optional: the memfs editor instance
+ * @param [moreInfo] if true return an object specifying detailed info about the cds and workspace state
+ * @param {CdsVersionInfo} [cdsVersionInfo] - If provided will be used instead of parsing the package.json file to determine the cds version.
+ * @returns false if package.json is not found at specified path or {@link CdsUi5PluginInfo} with additional info
+ */
+export async function checkCdsUi5PluginEnabled(
+    basePath: string,
+    fs?: Editor,
+    moreInfo?: boolean,
+    cdsVersionInfo?: CdsVersionInfo
+): Promise<boolean | CdsUi5PluginInfo>;
+
+/**
+ * Implementation of the overloaded function.
+ * Check if cds-plugin-ui5 is enabled on a CAP project. Checks also all prerequisites, like minimum @sap/cds version.
+ *
+ * @param basePath - root path of the CAP project, where package.json is located
+ * @param [fs] - optional: the memfs editor instance
+ * @param [moreInfo] if true return an object specifying detailed info about the cds and workspace state
+ * @param {CdsVersionInfo} [cdsVersionInfo] - If provided will be used instead of parsing the package.json file to determine the cds version.
+ * @returns false if package.json is not found at specified path or {@link CdsUi5PluginInfo} with additional info or true if
+ * cds-plugin-ui5 and all prerequisites are fulfilled
+ */
+export async function checkCdsUi5PluginEnabled(
+    basePath: string,
+    fs?: Editor,
+    moreInfo?: boolean,
+    cdsVersionInfo?: CdsVersionInfo
+): Promise<boolean | CdsUi5PluginInfo> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    const packageJsonPath = join(basePath, 'package.json');
+    if (!fs.exists(packageJsonPath)) {
+        return false;
+    }
+    const packageJson = fs.readJSON(packageJsonPath) as Package;
+    const { workspaceEnabled } = await getWorkspaceInfo(basePath, packageJson);
+    const cdsInfo: CdsUi5PluginInfo = {
+        // Below line checks if 'cdsVersionInfo' is available and contains version information.
+        // If it does, it uses that version information to determine if it satisfies the minimum CDS version required.
+        // If 'cdsVersionInfo' is not available or does not contain version information,it falls back to check the version specified in the package.json file.
+        hasMinCdsVersion: cdsVersionInfo?.version
+            ? satisfies(cdsVersionInfo?.version, `>=${MinCdsVersionUi5Plugin}`)
+            : satisfiesMinCdsVersion(packageJson),
+        isWorkspaceEnabled: workspaceEnabled,
+        hasCdsUi5Plugin: hasDependency(packageJson, 'cds-plugin-ui5'),
+        isCdsUi5PluginEnabled: false
+    };
+    cdsInfo.isCdsUi5PluginEnabled = cdsInfo.hasMinCdsVersion && cdsInfo.isWorkspaceEnabled && cdsInfo.hasCdsUi5Plugin;
+    return moreInfo ? cdsInfo : cdsInfo.isCdsUi5PluginEnabled;
+}
+
+/**
+ * Get information about the workspaces in the CAP project.
+ *
+ * @param basePath - root path of the CAP project, where package.json is located
+ * @param packageJson - the parsed package.json
+ * @returns - appWorkspace containing the path to the appWorkspace including wildcard; workspaceEnabled: boolean that states whether workspace for apps are enabled
+ */
+export async function getWorkspaceInfo(
+    basePath: string,
+    packageJson: Package
+): Promise<{ appWorkspace: string; workspaceEnabled: boolean; workspacePackages: string[] }> {
+    const capPaths = await getCapCustomPaths(basePath);
+    const appWorkspace = capPaths.app.endsWith('/') ? `${capPaths.app}*` : `${capPaths.app}/*`;
+    const workspacePackages = getWorkspacePackages(packageJson) ?? [];
+    const workspaceEnabled = workspacePackages.includes(appWorkspace);
+    return { appWorkspace, workspaceEnabled, workspacePackages };
+}
+
+/**
+ * Return the reference to the array of workspace packages or undefined if not defined.
+ * The workspace packages can either be defined directly as workspaces in package.json
+ * or in workspaces.packages, e.g. in yarn workspaces.
+ *
+ * @param packageJson - the parsed package.json
+ * @returns ref to the packages in workspaces or undefined
+ */
+function getWorkspacePackages(packageJson: Package): string[] | undefined {
+    let workspacePackages: string[] | undefined;
+    if (Array.isArray(packageJson.workspaces)) {
+        workspacePackages = packageJson.workspaces;
+    } else if (Array.isArray(packageJson.workspaces?.packages)) {
+        workspacePackages = packageJson.workspaces?.packages;
+    }
+    return workspacePackages;
+}
+
+/**
+ * Check if package.json has version or version range that satisfies the minimum version of @sap/cds.
+ *
+ * @param packageJson  - the parsed package.json
+ * @returns - true: cds version satisfies the min cds version; false: cds version does not satisfy min cds version
+ */
+export function satisfiesMinCdsVersion(packageJson: Package): boolean {
+    return (
+        hasMinCdsVersion(packageJson) ||
+        satisfies(MinCdsVersionUi5Plugin, packageJson.dependencies?.['@sap/cds'] ?? '0.0.0')
+    );
+}
+
+/**
+ * Check if package.json has dependency to the minimum min version of @sap/cds,
+ * that is required to enable cds-plugin-ui.
+ *
+ * @param packageJson - the parsed package.json
+ * @returns - true: min cds version is present; false: cds version needs update
+ */
+export function hasMinCdsVersion(packageJson: Package): boolean {
+    return gte(coerce(packageJson.dependencies?.['@sap/cds']) ?? '0.0.0', MinCdsVersionUi5Plugin);
 }

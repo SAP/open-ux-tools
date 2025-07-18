@@ -1,0 +1,31 @@
+{
+  "generationParameters": {
+    "generationDate": "Tue Jun 24 2025 22:45:19 GMT+0100 (Irish Standard Time)",
+    "generatorPlatform": "CLI",
+    "serviceType": "OData URL",
+    "metadataFilename": "",
+    "serviceUrl": "https://sap-ux-mock-services-v2-lrop.cfapps.us10.hana.ondemand.com/sap/opu/odata/sap/SEPMRA_PROD_MAN",
+    "appName": "lrop_v2_code_assist",
+    "appTitle": "Project's \"Title\"",
+    "appDescription": "Test 'Project' \"Description\"",
+    "appNamespace": "testNameSpace",
+    "ui5Theme": "sap_belize",
+    "ui5Version": "1.68.0",
+    "enableCodeAssist": true,
+    "showMockDataInfo": true,
+    "generatorVersion": "0.0.0",
+    "template": "List Report Page V2",
+    "generatorName": "SAP Fiori Application Generator",
+    "entityRelatedConfig": [
+      {
+        "type": "Main Entity",
+        "value": "SEPMRA_C_PD_Product"
+      },
+      {
+        "type": "Navigation Entity",
+        "value": "to_ProductSalesData"
+      }
+    ],
+    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+  }
+}

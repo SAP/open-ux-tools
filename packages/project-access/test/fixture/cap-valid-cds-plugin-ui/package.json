@@ -1,0 +1,11 @@
+{
+    "dependencies": {
+        "@sap/cds": "^6.8.2"
+    },
+    "devDependencies": {
+        "cds-plugin-ui5": "0.9.3"
+    },
+    "workspaces": [
+        "app/*"
+    ]
+}

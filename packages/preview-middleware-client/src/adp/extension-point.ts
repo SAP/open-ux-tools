@@ -7,9 +7,9 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { ExternalAction, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
 
 import { Deferred, createDeferred } from './utils';
+import { DialogFactory, DialogNames } from './dialog-factory';
 
-import { SubscribeFunction } from '../cpe/types';
-import { DialogNames, handler } from './init-dialogs';
+import { CommunicationService } from '../cpe/communication-service';
 
 type ActionService = {
     execute: (controlId: string, actionId: string) => void;
@@ -50,18 +50,19 @@ export default class ExtensionPointService {
     /**
      * Initializes communication with CPE, and the extension point plugin.
      *
-     * @param subscribe Handles actions from CPE
      */
-    public init(subscribe: SubscribeFunction) {
+    public init() {
         this.initPlugin();
-        subscribe(async (action: ExternalAction): Promise<void> => {
+        CommunicationService.subscribe(async (action: ExternalAction): Promise<void> => {
             if (addExtensionPoint.match(action)) {
                 try {
                     const { controlId, name } = action.payload;
 
+                    const suffix = `--${name}`;
+                    const baseControlId = controlId.endsWith(suffix) ? controlId.slice(0, -suffix.length) : controlId;
                     const service = await this.rta.getService<ActionService>('action');
 
-                    service.execute(controlId, this.actionId);
+                    service.execute(baseControlId, this.actionId);
                     this.selectedExtensionPointName = name;
                 } catch (e) {
                     throw new Error(`Failed to execute service with actionId: ${this.actionId}`);
@@ -85,9 +86,9 @@ export default class ExtensionPointService {
                 await this.fragmentHandler(overlay, info)
         });
 
-        const defaultPlugins = this.rta.getDefaultPlugins();
-        defaultPlugins.addXMLAtExtensionPoint = plugin;
-        this.rta.setPlugins(defaultPlugins);
+        const plugins = this.rta.getPlugins();
+        plugins.addXMLAtExtensionPoint = plugin;
+        this.rta.setPlugins(plugins);
     }
 
     /**
@@ -101,7 +102,7 @@ export default class ExtensionPointService {
         let deferred = createDeferred<DeferredExtPointData>();
         const name = this.selectedExtensionPointName;
 
-        await handler(overlay, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {
+        await DialogFactory.createDialog(overlay, this.rta, DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT, {
             name,
             info,
             deferred

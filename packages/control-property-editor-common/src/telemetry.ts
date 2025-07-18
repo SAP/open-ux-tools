@@ -1,7 +1,13 @@
 interface TelemetryData {
     category: string;
+    actionName?: string;
     propertyName?: string;
     controlName?: string;
+    telemetryEventIdentifier?: string;
+    dialogName?: string;
+    quickActionSteps?: number;
+    ui5Version?: string;
+    appType?: string;
 }
 
 let enabled = false;
