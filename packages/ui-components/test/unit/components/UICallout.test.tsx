@@ -1,3 +1,11 @@
+jest.mock('../../../src/utilities', () => {
+    const actual = jest.requireActual('../../../src/utilities');
+    return {
+        ...actual,
+        focusToSibling: jest.fn()
+    };
+});
+
 import * as React from 'react';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -6,6 +14,7 @@ import { Callout } from '@fluentui/react';
 import type { UICalloutProps } from '../../../src/components/UICallout';
 import { UICallout, UICalloutContentPadding } from '../../../src/components/UICallout';
 import * as FluentUI from '@fluentui/react';
+import * as Utilities from '../../../src/utilities';
 
 describe('<UICallout />', () => {
     let container: HTMLElement;
@@ -30,9 +39,7 @@ describe('<UICallout />', () => {
 
     afterEach(() => {
         cleanup();
-        if (targetElement && targetElement.parentNode) {
-            targetElement.parentNode.removeChild(targetElement);
-        }
+        targetElement?.parentNode?.removeChild(targetElement);
         jest.clearAllMocks();
     });
 
@@ -155,6 +162,106 @@ describe('<UICallout />', () => {
                     expect(getPreviousElementSpy).toBeCalledTimes(focusPrevious ? 1 : 0);
                 }
             });
+        }
+    });
+
+    it('applies calloutMinWidth prop', () => {
+        rerender(
+            <UICallout target={targetElement} calloutMinWidth={555}>
+                <div className="dummy"></div>
+            </UICallout>
+        );
+        const callout = document.body.querySelector('.ms-Callout');
+        // Find the calloutMain element
+        const calloutMain = callout?.querySelector('.ms-Callout-main');
+        expect(calloutMain).toBeTruthy();
+        if (calloutMain) {
+            expect(window.getComputedStyle(calloutMain).minWidth).toBe('555px');
+        }
+    });
+
+    it('applies contentPadding None and Standard correctly', () => {
+        rerender(
+            <UICallout target={targetElement} contentPadding={UICalloutContentPadding.None}>
+                <div className="dummy"></div>
+            </UICallout>
+        );
+        let callout = document.body.querySelector('.ms-Callout');
+        let calloutMain = callout?.querySelector('.ms-Callout-main');
+        expect(calloutMain).toBeTruthy();
+        if (calloutMain) {
+            expect(window.getComputedStyle(calloutMain).padding).toBe('');
+        }
+
+        rerender(
+            <UICallout target={targetElement} contentPadding={UICalloutContentPadding.Standard}>
+                <div className="dummy"></div>
+            </UICallout>
+        );
+        callout = document.body.querySelector('.ms-Callout');
+        calloutMain = callout?.querySelector('.ms-Callout-main');
+        expect(calloutMain).toBeTruthy();
+        if (calloutMain) {
+            expect(window.getComputedStyle(calloutMain).padding).toMatch(/8px/);
+        }
+    });
+
+    it('calls onKeyDown prop if provided', () => {
+        const onKeyDown = jest.fn();
+        rerender(
+            <UICallout target={targetElement} onKeyDown={onKeyDown}>
+                <div className="dummy"></div>
+            </UICallout>
+        );
+        const callout = document.body.querySelector('.ms-Callout');
+        if (callout) {
+            fireEvent.keyDown(callout, { key: 'a' });
+        }
+        expect(onKeyDown).toHaveBeenCalled();
+    });
+
+    it('handles target as string selector', () => {
+        (Utilities.focusToSibling as jest.Mock).mockReturnValue(document.createElement('div'));
+        rerender(
+            <UICallout focusTargetSiblingOnTabPress target={'.dummy'}>
+                <div className="dummy"></div>
+            </UICallout>
+        );
+        const callout = document.body.querySelector('.ms-Callout');
+        fireEvent.keyDown(callout, { key: 'Tab' });
+        expect(Utilities.focusToSibling).toHaveBeenCalled();
+    });
+
+    it('handles target as HTMLElement', () => {
+        (Utilities.focusToSibling as jest.Mock).mockReturnValue(document.createElement('div'));
+        const div = document.createElement('div');
+        div.className = 'dummy';
+        document.body.appendChild(div);
+        rerender(
+            <UICallout focusTargetSiblingOnTabPress target={div}>
+                <div className="dummy"></div>
+            </UICallout>
+        );
+        const callout = document.body.querySelector('.ms-Callout');
+        fireEvent.keyDown(callout, { key: 'Tab' });
+        expect(Utilities.focusToSibling).toHaveBeenCalled();
+    });
+
+    it('merges custom styles with default styles', () => {
+        const customStyles = {
+            root: { backgroundColor: 'pink' },
+            calloutMain: { minWidth: 123 }
+        };
+        rerender(
+            <UICallout target={targetElement} styles={customStyles}>
+                <div className="dummy"></div>
+            </UICallout>
+        );
+        const callout = document.body.querySelector('.ms-Callout');
+        const calloutMain = callout?.querySelector('.ms-Callout-main');
+        expect(calloutMain).toBeTruthy();
+        if (calloutMain) {
+            expect(window.getComputedStyle(calloutMain).minWidth).toBe('123px');
         }
     });
 });
