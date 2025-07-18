@@ -79,7 +79,7 @@ const handleCliParams = (options, args = []) => {
 };
 const build = (options, args) => {
     const finalConfig = handleCliParams(options, args);
-      if (finalConfig.watch) {
+    if (finalConfig.watch) {
         // needed by https://github.com/connor4312/esbuild-problem-matchers if installed in vscode
         finalConfig.watch = {
             onRebuild(error, result) {
