@@ -80,11 +80,10 @@ const handleCliParams = (options, args = []) => {
 const build = async (options, args) => {
     const finalConfig = handleCliParams(options, args);
     const esbuild = require('esbuild');
-    const isWatch = finalConfig.watch;
     delete finalConfig.watch;
-    if (isWatch) {
-        const ctx = await esbuild.context(finalConfig);
-        await ctx.watch();
+    if (finalConfig.watch) {
+        const contextObj = await esbuild.context(finalConfig);
+        await contextObj.watch();
         console.log('[watch] build started');
     } else {
         esbuild.build(finalConfig)
