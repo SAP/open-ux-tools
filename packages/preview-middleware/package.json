@@ -53,7 +53,6 @@
     },
     "devDependencies": {
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",
-        "@sap-ux-private/playwright": "0.2.0",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/store": "workspace:*",

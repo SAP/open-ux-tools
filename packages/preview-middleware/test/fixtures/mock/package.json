@@ -1,0 +1,10 @@
+{
+    "name": "test-project",
+    "version": "0.0.1",
+    "private": true,
+    "devDependencies": {
+        "@sap-ux/ui5-middleware-fe-mockserver": "2.1.112",
+        "@sap-ux/fe-mockserver-plugin-cds": "1.2.6",
+        "@ui5/cli": "3"
+    }
+}

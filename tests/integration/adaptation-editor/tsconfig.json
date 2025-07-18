@@ -1,0 +1,26 @@
+{
+  "extends": "../../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "erasableSyntaxOnly": true
+  },
+  "references": [
+    {
+      "path": "../../../packages/playwright"
+    },
+    {
+      "path": "../../../packages/project-access"
+    },
+    {
+      "path": "../../../packages/ui5-info"
+    },
+    {
+      "path": "../../../packages/yaml"
+    }
+  ]
+}
