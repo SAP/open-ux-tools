@@ -45,6 +45,7 @@
         "@types/fs-extra": "9.0.13",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
+        "rimraf": "5.0.5",
         "fs-extra": "10.0.0",
         "@sap-ux/jest-file-matchers": "workspace:*"
     },
