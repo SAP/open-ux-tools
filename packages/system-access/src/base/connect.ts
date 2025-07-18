@@ -20,14 +20,13 @@ import {
     getCredentialsWithPrompts,
     isBasicAuth,
     isServiceAuth,
-    storeCredentials,
     storeSystem
 } from './credentials';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import { questions } from './prompts';
 import prompts from 'prompts';
 import { readFileSync } from 'fs';
-import { AuthenticationType, BackendSystem } from '@sap-ux/store';
+import { AuthenticationType } from '@sap-ux/store';
 
 /**
  * Check if it is a url target.
