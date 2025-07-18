@@ -27,6 +27,7 @@ export type ListProps = Omit<IGroupedListProps, 'onRenderCell'> & {
     items: never[];
     onSelect: (value: IGroup) => void;
     onRenderCell: (nestingDepth?: number, item?: never, index?: number) => React.ReactNode;
+    useVirtualization?: boolean;
 };
 
 /**
@@ -136,7 +137,7 @@ export class UIList extends React.Component<ListProps, {}> {
 
         const GroupProps: IGroupRenderProps = {
             headerProps: HeaderProps,
-            isAllGroupsCollapsed: true,
+            isAllGroupsCollapsed: false,
             ...this.props.groupProps
         };
 
