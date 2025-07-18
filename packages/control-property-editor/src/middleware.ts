@@ -37,7 +37,7 @@ export const communicationMiddleware: Middleware<Dispatch<ExternalAction>, Retur
     const { sendAction } = startPostMessageCommunication<ExternalAction>(
         function getTarget(): Window | undefined {
             let result;
-            const target = (document.getElementById('preview') as HTMLIFrameElement).contentWindow;
+            const target = (document.getElementById('preview') as HTMLIFrameElement)?.contentWindow;
             if (target) {
                 result = target;
             }

@@ -2,17 +2,27 @@ import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 
-import { showMessage, enableTelemetry } from '@sap-ux-private/control-property-editor-common';
+import {
+    enableTelemetry,
+    MessageBarType,
+    toggleAppPreviewVisibility
+} from '@sap-ux-private/control-property-editor-common';
 
-import { getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version } from '../utils/version';
+import {
+    getFullyQualifiedUi5Version,
+    getUi5Version,
+    isLowerThanMinimalUi5Version,
+    minVersionInfo
+} from '../utils/version';
 
-import { CommunicationService } from '../cpe/communication-service';
 import init from '../cpe/init';
 import { updateSyncViewsIds, showSyncViewsWarning } from './sync-views-utils';
 import { getApplicationType } from '../utils/application';
 
 import { loadDefinitions } from './quick-actions/load';
 import { initDialogs } from './init-dialogs';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
+import { CommunicationService } from '../cpe/communication-service';
 
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
@@ -47,19 +57,27 @@ export default async function (rta: RuntimeAuthoring) {
 
     // Register synchronious views detection and warning
     // This is not awaited to prevent deadlock in the initialization
-    rta.getService<RTAOutlineService>('outline').then((outlineService) => {
-        outlineService.attachEvent('update', async () => {
-            await updateSyncViewsIds(ui5VersionInfo);
-            await showSyncViewsWarning();
+    rta.getService<RTAOutlineService>('outline')
+        .then((outlineService) => {
+            outlineService.attachEvent('update', async () => {
+                await updateSyncViewsIds(ui5VersionInfo);
+                await showSyncViewsWarning();
+            });
+        })
+        .catch((error) => {
+            log.error('Failed to attach update event to outline service', error);
         });
-    }).catch((error) => {
-        log.error('Failed to attach update event to outline service', error);
-    });
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
-        CommunicationService.sendAction(
-            showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), shouldHideIframe: true })
-        );
+        await sendInfoCenterMessage({
+            title: { key: 'FLP_UI5_VERSION_WARNING_TITLE' },
+            description: {
+                key: 'FLP_UI5_VERSION_WARNING_DESCRIPTION',
+                params: [getFullyQualifiedUi5Version(ui5VersionInfo), getFullyQualifiedUi5Version(minVersionInfo)]
+            },
+            type: MessageBarType.error
+        });
+        CommunicationService.sendAction(toggleAppPreviewVisibility(false));
         return;
     }
 

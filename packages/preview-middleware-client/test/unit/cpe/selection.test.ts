@@ -1,7 +1,7 @@
 import * as controlData from '../../../src/cpe/control-data';
 import { SelectionService } from '../../../src/cpe/selection';
 import * as Documentation from '../../../src/cpe/documentation';
-import type { ExternalAction, Control } from '@sap-ux-private/control-property-editor-common';
+import { type ExternalAction, type Control } from '@sap-ux-private/control-property-editor-common';
 import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';
 import { fetchMock, sapCoreMock } from 'mock/window';
@@ -713,7 +713,6 @@ describe('SelectionService', () => {
         expect(sendActionMock).toHaveBeenNthCalledWith(2, { type: '[ext] control-selected', payload: mockControlData });
         expect(buildControlDataSpy).toHaveBeenNthCalledWith(1, {}, changeService, undefined);
         expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), changeService, undefined);
-
 
         // call buildControlData when stack changed
         changeService.onStackChange.mock.calls[0][0]({
