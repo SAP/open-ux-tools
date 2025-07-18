@@ -23,13 +23,14 @@ describe('<UIActionButton />', () => {
 
         const buttons = container.querySelectorAll(selectors.button);
         expect(buttons.length).toEqual(1);
-        let style = getStyle(buttons[0]);
+        const style = getStyle(buttons[0]);
         expect(style.height).toEqual('22px');
 
         const icons = container.querySelectorAll(selectors.icon);
         expect(icons.length).toEqual(1);
-        // First child should take 'path' element - color should not be overwritten
-        style = getStyle(icons[0]?.firstChild as Element);
-        expect(style.fill).toEqual('');
+        // First child should be a 'path' element with proper CSS variable fill
+        const pathElement = icons[0]?.firstChild as Element;
+        expect(pathElement.tagName.toLowerCase()).toBe('path');
+        expect(pathElement.getAttribute('fill')).toBe('var(--vscode-icon-foreground, var(--vscode-foreground))');
     });
 });

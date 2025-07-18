@@ -9,15 +9,15 @@ const groups: IGroup[] = [
     { key: 'group2', name: 'Group 2', startIndex: 2, count: 1, isCollapsed: false }
 ];
 
-const items: any[]= [
+const items: any[] = [
     { id: 1, name: 'Item 1', description: 'First item' },
     { id: 2, name: 'Item 2', description: 'Second item' },
     { id: 3, name: 'Item 3', description: 'Third item' }
 ];
 
 const onRenderCell = (
-    nestingDepth?: number,
-    item?: { id: number; name: string; description: string },
+    _nestingDepth?: number,
+    _item?: { id: number; name: string; description: string },
     index?: number
 ): React.ReactNode => <div data-testid={`cell-${index}`}>Cell {index}</div>;
 
