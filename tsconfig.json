@@ -58,12 +58,6 @@
       "path": "packages/cap-config-writer"
     },
     {
-      "path": "packages/cards-editor-config-writer"
-    },
-    {
-      "path": "packages/cards-editor-middleware"
-    },
-    {
       "path": "packages/cds-annotation-parser"
     },
     {
