@@ -74,7 +74,7 @@ async function createAbapCloudServiceProvider(
         if (isServiceAuth(storedOpts)) {
             providerConfig.service = storedOpts.serviceKeys as ServiceInfo;
             providerConfig.refreshToken = storedOpts.refreshToken;
-            providerConfig.refreshTokenChangedCb = async (refreshToken?: string) => {
+            providerConfig.refreshTokenChangedCb = async (refreshToken?: string): Promise<void> => {
                 if (refreshToken) {
                     logger.info('Updating refresh token for: ' + storedOpts.url);
                     await storeSystem({ ...storedOpts, refreshToken }, logger);
