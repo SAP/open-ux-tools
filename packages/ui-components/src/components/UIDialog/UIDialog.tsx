@@ -31,7 +31,14 @@ export interface DialogProps extends IDialogProps {
     // Is dialog open should be animated with fade in animation
     // Default value for "isOpenAnimated" is "true"
     isOpenAnimated?: boolean;
-    // ToDo - new property for blur overlay
+    /**
+     * Enables a blurry overlay behind the dialog.
+     * When `true`, a backdrop blur effect is applied (e.g., using `backdrop-filter: blur(...)`).
+     * Set to `false` to disable the blur.
+     *
+     * @default true
+     */
+    withBlurOverlay?: boolean;
 }
 
 export const DIALOG_MAX_HEIGHT_OFFSET = 32;
@@ -95,7 +102,7 @@ const DIALOG_ANIMATION = {
  */
 export class UIDialog extends React.Component<DialogProps, DialogState> {
     // Default values for public component properties
-    static readonly defaultProps = { isOpenAnimated: true };
+    static readonly defaultProps = { isOpenAnimated: true, withBlurOverlay: true };
     private popupRef: React.RefObject<HTMLDivElement>;
 
     /**
@@ -299,6 +306,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
             multiLineTitle,
             scrollArea = UIDialogScrollArea.Content,
             children,
+            withBlurOverlay,
             ...rest
         } = this.props;
         const dialogProps: IDialogProps = {
@@ -307,7 +315,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 styles: {
                     root: {
                         transition: `opacity ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`,
-                        backdropFilter: 'blur(5px)'
+                        backdropFilter: withBlurOverlay ? 'blur(5px)' : undefined
                     },
                     main: {
                         animation: `${DIALOG_ANIMATION.keyframe} ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`
@@ -320,10 +328,8 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 overlay: {
                     styles: {
                         root: {
-                            // ToDo - switch based on blur property
-                            background: 'none',
-                            // ToDo - switch based on blur property
-                            opacity: undefined
+                            background: withBlurOverlay ? 'none' : DIALOG_STYLES.modalOverlay.background,
+                            opacity: withBlurOverlay ? undefined : DIALOG_STYLES.modalOverlay.opacity
                         }
                     }
                 },

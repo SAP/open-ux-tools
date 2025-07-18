@@ -205,7 +205,10 @@ describe('<UIDialog />', () => {
     });
 
     describe('Styles', () => {
-        it('Basic style', () => {
+        it('Basic style without withBlurOverlay', () => {
+            wrapper.setProps({
+                withBlurOverlay: false
+            });
             const dialog = wrapper.find(Dialog);
             const props = dialog.props();
             expect(props.modalProps?.overlay?.styles).toEqual({
@@ -215,6 +218,18 @@ describe('<UIDialog />', () => {
                 }
             });
         });
+
+        it('Overlay "withBlurOverlay" is enabled', () => {
+            const dialog = wrapper.find(Dialog);
+            const props = dialog.props();
+            expect(props.modalProps?.overlay?.styles).toEqual({
+                root: {
+                    'background': 'none',
+                    'opacity': undefined
+                }
+            });
+        });
+
         it('Title - single line', () => {
             const dialog = wrapper.find(Dialog);
             const props = dialog.props();
