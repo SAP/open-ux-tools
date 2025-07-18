@@ -284,6 +284,9 @@
     },
     {
       "path": "examples/ui-prompting-examples"
+    },
+    {
+      "path": "tests/integration/adaptation-editor"
     }
   ]
 }

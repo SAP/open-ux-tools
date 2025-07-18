@@ -46,7 +46,7 @@
         "lint:fix": "nx run-many --target=lint:fix --all",
         "lint:dependency-versions": "check-dependency-version-consistency .",
         "test": "nx run-many --target=test --all",
-        "test:integration": "nx run-many --target=test:integration --all",
+        "test:integration": "nx run-many --target=test:integration --all --exclude @sap-ux-private/adaptation-editor-tests",
         "link": "pnpm recursive run link",
         "unlink": "pnpm recursive run unlink",
         "prepare": "husky install",
@@ -68,6 +68,7 @@
     "pnpm": {
         "overrides": {
             "router>path-to-regexp": "0.1.12",
+            "router@2.0.0>path-to-regexp": "8.2.0",
             "@storybook/manager-api>store2": "2.14.4"
         }
     }
