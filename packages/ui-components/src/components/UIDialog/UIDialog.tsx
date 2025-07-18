@@ -5,6 +5,7 @@ import { UIDefaultButton } from '../UIButton';
 import { deepMerge } from '../../utilities/DeepMerge';
 
 import '../../styles/_shadows.scss';
+import { addScaleToTransform } from './UIDialog-helper';
 
 export interface DialogProps extends IDialogProps {
     // Accept and cancel buttons options
@@ -99,6 +100,8 @@ const SCALE_ANIMATION_REVERSE = keyframes({
 export class UIDialog extends React.Component<DialogProps, DialogState> {
     // Default values for public component properties
     static readonly defaultProps = { isOpenAnimated: true };
+    private popupRef: React.RefObject<HTMLDivElement>;
+
     /**
      * Initializes component properties.
      *
@@ -116,6 +119,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
             resizeMaxHeight: this.getResizeMaxHeight(),
             isMounted: false
         };
+        this.popupRef = React.createRef<HTMLDivElement>();
     }
 
     /**
@@ -124,12 +128,31 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
      * @param {Readonly<DialogProps>} prevProps
      */
     componentDidUpdate(prevProps: Readonly<DialogProps>): void {
-        const { scrollArea } = this.props;
+        const { scrollArea, isOpen = true } = this.props;
         if (prevProps.scrollArea !== scrollArea) {
             if (scrollArea === UIDialogScrollArea.Content) {
                 this.attachResize();
             } else {
                 this.detachResize();
+            }
+        }
+        // const isVisible = isOpen;
+        // const isVisiblePrev = prevProps.isOpen;
+        if (isOpen !== prevProps.isOpen && isOpen === false) {
+            this.applyCloseTransition();
+        }
+    }
+
+    private applyCloseTransition(): void {
+        console.log('applyCloseTransition');
+        const popupRef = this.popupRef.current;
+        if (popupRef) {
+            const dialogDragZone = popupRef.querySelector('.ms-Dialog-main') as HTMLElement;
+            if (dialogDragZone) {
+                const transform = dialogDragZone.style.transform;
+                const newTransform = addScaleToTransform(transform, 0.9);
+                dialogDragZone.style.transform = newTransform;
+                dialogDragZone.style.transition = `transform ${ANIMATION_DURATION} ease`;
             }
         }
     }
@@ -252,6 +275,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
      * @param {React.MouseEvent} event Mousedown event
      */
     onHeaderMouseDown(event: React.MouseEvent): void {
+        console.log('onHeaderMouseDown!!!');
         if (!this.props.modalProps?.dragOptions) {
             // No need to handle non draggable
             return;
@@ -286,16 +310,20 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
             modalProps: {
                 styles: (props) => {
                     const { isVisible } = props;
-                    console.log(props);
+                    // console.log(props);
                     return {
                         root: {
                             transition: `opacity ${ANIMATION_DURATION} ease-in-out`,
                             backdropFilter: 'blur(5px)'
                         },
                         main: {
-                            animation: `${
-                                isVisible ? SCALE_ANIMATION : SCALE_ANIMATION_REVERSE
-                            } ${ANIMATION_DURATION} ease-in-out`
+                            // animation: `${
+                            //     isVisible ? SCALE_ANIMATION : SCALE_ANIMATION_REVERSE
+                            // } ${ANIMATION_DURATION} ease-in-out`
+                            animation: `${SCALE_ANIMATION} ${ANIMATION_DURATION} ease-in-out`,
+                            // ToDo ???
+                            // transition: `transform ${ANIMATION_DURATION} ease`,
+                            // transform: `translate(0px, 0px) scale(${isVisible ? 1 : 0.9}) !important` // isVisible ? 'scale(1)' : 'scale(0.9)'
                         }
                     };
                 },
@@ -312,6 +340,9 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                             opacity: undefined
                         }
                     }
+                },
+                popupProps: {
+                    ref: this.popupRef
                 }
             },
             styles: {
@@ -391,7 +422,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
             }
         };
 
-        const props = deepMerge(dialogProps, rest);
+        const props = deepMerge(dialogProps, rest, ['ref']);
 
         return (
             <BaseDialog {...props}>
