@@ -31,6 +31,7 @@ export interface DialogProps extends IDialogProps {
     // Is dialog open should be animated with fade in animation
     // Default value for "isOpenAnimated" is "true"
     isOpenAnimated?: boolean;
+    // ToDo - new property for blur overlay
 }
 
 export const DIALOG_MAX_HEIGHT_OFFSET = 32;
@@ -68,25 +69,20 @@ export enum UIDialogScrollArea {
     Dialog = 'Dialog'
 }
 
-const ANIMATION_DURATION = '0.4s';
-
-const SCALE_ANIMATION = keyframes({
-    from: {
-        transform: 'scale(0.9)'
-    },
-    to: {
-        transform: 'scale(1)'
-    }
-});
-
-const SCALE_ANIMATION_REVERSE = keyframes({
-    from: {
-        transform: 'scale(1)'
-    },
-    to: {
-        transform: 'scale(0.9)'
-    }
-});
+const DIALOG_ANIMATION_SCALE = 0.9;
+const DIALOG_ANIMATION = {
+    duration: '0.4s',
+    scale: DIALOG_ANIMATION_SCALE,
+    timingMethod: 'ease-in-out',
+    keyframe: keyframes({
+        from: {
+            transform: `scale(${DIALOG_ANIMATION_SCALE})`
+        },
+        to: {
+            transform: 'scale(1)'
+        }
+    })
+};
 
 /**
  * UIDialog component.
@@ -152,7 +148,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 const transform = dialogDragZone.style.transform;
                 const newTransform = addScaleToTransform(transform, 0.9);
                 dialogDragZone.style.transform = newTransform;
-                dialogDragZone.style.transition = `transform ${ANIMATION_DURATION} ease`;
+                dialogDragZone.style.transition = `transform ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`;
             }
         }
     }
@@ -308,24 +304,14 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
         const dialogProps: IDialogProps = {
             minWidth: '460px',
             modalProps: {
-                styles: (props) => {
-                    const { isVisible } = props;
-                    // console.log(props);
-                    return {
-                        root: {
-                            transition: `opacity ${ANIMATION_DURATION} ease-in-out`,
-                            backdropFilter: 'blur(5px)'
-                        },
-                        main: {
-                            // animation: `${
-                            //     isVisible ? SCALE_ANIMATION : SCALE_ANIMATION_REVERSE
-                            // } ${ANIMATION_DURATION} ease-in-out`
-                            animation: `${SCALE_ANIMATION} ${ANIMATION_DURATION} ease-in-out`,
-                            // ToDo ???
-                            // transition: `transform ${ANIMATION_DURATION} ease`,
-                            // transform: `translate(0px, 0px) scale(${isVisible ? 1 : 0.9}) !important` // isVisible ? 'scale(1)' : 'scale(0.9)'
-                        }
-                    };
+                styles: {
+                    root: {
+                        transition: `opacity ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`,
+                        backdropFilter: 'blur(5px)'
+                    },
+                    main: {
+                        animation: `${DIALOG_ANIMATION.keyframe} ${DIALOG_ANIMATION.duration} ${DIALOG_ANIMATION.timingMethod}`
+                    }
                 },
                 layerProps: {
                     onLayerDidMount: this.onModalLayerMount,

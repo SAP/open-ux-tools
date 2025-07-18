@@ -5,9 +5,9 @@ import React from 'react';
  * Parameters are not mutated.
  * Arrays are copied as references and are not merged.
  *
- * @param a
- * @param b
- * @param ignore Ignore names of properties
+ * @param a The base object.
+ * @param b The object to merge into the base object.
+ * @param ignore Array of property names to skip deep merge for (shallow overwrite instead).
  * @returns  Record<string, unknown>
  */
 export function deepMerge(a: any, b: any, ignore: string[] = []): Record<string, unknown> {
