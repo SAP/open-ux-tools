@@ -77,33 +77,39 @@ const handleCliParams = (options, args = []) => {
 
     return outOptions;
 };
-const build = async (options, args) => {
+const build = (options, args) => {
     const finalConfig = handleCliParams(options, args);
-    const esbuild = require('esbuild');
-    // Always remove watch from config before calling esbuild.build()
-    const isWatch = finalConfig.watch;
-    delete finalConfig.watch;
-    if (isWatch) {
-        const ctx = await esbuild.context(finalConfig);
-        await ctx.watch();
-        console.log('[watch] build started');
-    } else {
-        esbuild.build(finalConfig)
-            .then((result) => {
-                if (finalConfig.metafile) {
-                    const statsFile = 'esbuild-stats.json';
-                    writeFileSync(statsFile, JSON.stringify(result.metafile));
-                    console.log(`Wrote esbuild stats file ${statsFile}. Analyse at https://bundle-buddy.com/esbuild/`);
-                }
-            })
-            .then(() => {
-                console.log('[build] build finished');
-            })
-            .catch((error) => {
-                console.log(error.message);
-                process.exit(1);
-            });
+      if (finalConfig.watch) {
+        // needed by https://github.com/connor4312/esbuild-problem-matchers if installed in vscode
+        finalConfig.watch = {
+            onRebuild(error, result) {
+                console.log('[watch] build started');
+                if (error) {
+                    error.errors.forEach((error) =>
+                        console.error(
+                            `> ${error.location.file}:${error.location.line}:${error.location.column}: error: ${error.text}`
+                        )
+                    );
+                } else console.log('[watch] build finished');
+            }
+        };
     }
+    require('esbuild')
+        .build(finalConfig)
+        .then((result) => {
+            if (finalConfig.metafile) {
+                const statsFile = 'esbuild-stats.json';
+                writeFileSync(statsFile, JSON.stringify(result.metafile));
+                console.log(`Wrote esbuild stats file ${statsFile}. Analyse at https://bundle-buddy.com/esbuild/`);
+            }
+        })
+        .then(() => {
+            console.log('[watch] build finished');
+        })
+        .catch((error) => {
+            console.log(error.message);
+            process.exit(1);
+        });
 };
 module.exports = {
     esbuildOptionsBrowser: { ...commonConfig, ...browserConfig },
