@@ -4,5 +4,4 @@
 '@sap-ux/control-property-editor': major
 ---
 
-Integrate Info center in the preview middleware client. Toaster notifications and modal
-warnings with optional `OK` button all go through the Info center.
+feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
