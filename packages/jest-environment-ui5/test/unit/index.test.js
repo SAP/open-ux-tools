@@ -1,4 +1,4 @@
-const jestCLI = require('jest');
+const jestCLI = require('jest'); // eslint-disable-line import/no-extraneous-dependencies
 const UI5DOMEnvironment = require('../../src');
 describe('Custom environment', () => {
     it('Can be created', async () => {

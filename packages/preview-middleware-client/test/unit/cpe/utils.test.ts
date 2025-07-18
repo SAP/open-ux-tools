@@ -23,7 +23,7 @@ describe('getRuntimeControl', () => {
         const result = getRuntimeControl(overlayControl);
 
         //assert
-        expect(getElementInstanceMock).toBeCalledTimes(1);
+        expect(getElementInstanceMock).toHaveBeenCalledTimes(1);
         expect(result).toBe('mockManagedObject');
     });
 
@@ -37,7 +37,7 @@ describe('getRuntimeControl', () => {
         const result = getRuntimeControl(overlayControl);
 
         //assert
-        expect(getElementMock).toBeCalledTimes(1);
+        expect(getElementMock).toHaveBeenCalledTimes(1);
         expect(result).toBe('mockManagedObject');
     });
 });

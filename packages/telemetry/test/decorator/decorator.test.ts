@@ -52,7 +52,7 @@ describe('Decorator Tests', () => {
             interceptFn(null, 'mockOriginalFn', mockDescriptor);
             const output = mockDescriptor.value(mockInput);
 
-            expect(spy).toBeCalledTimes(1);
+            expect(spy).toHaveBeenCalledTimes(1);
             expect(reportSpy).toHaveBeenCalledWith(
                 EventName.Test,
                 { action: 'applied', guideName: mockInput },
@@ -80,7 +80,7 @@ describe('Decorator Tests', () => {
             interceptFn(null, 'mockOriginalFn', mockDescriptor);
 
             const output = await mockDescriptor.value(mockInput);
-            expect(spy).toBeCalledTimes(1);
+            expect(spy).toHaveBeenCalledTimes(1);
             expect(reportSpy).toHaveBeenCalledWith(
                 EventName.Test,
                 { action: 'applied', guideName: mockInput },
@@ -109,7 +109,7 @@ describe('Decorator Tests', () => {
             interceptFn(null, 'mockOriginalFn', mockDescriptor);
             const output = mockDescriptor.value(mockInput);
 
-            expect(spy).toBeCalledTimes(1);
+            expect(spy).toHaveBeenCalledTimes(1);
             expect(reportSpy).toHaveBeenCalledWith(
                 EventName.Test,
                 {},
@@ -137,7 +137,7 @@ describe('Decorator Tests', () => {
             interceptFn(null, 'mockOriginalFn', mockDescriptor);
 
             const output = await mockDescriptor.value(mockInput);
-            expect(spy).toBeCalledTimes(1);
+            expect(spy).toHaveBeenCalledTimes(1);
             expect(reportSpy).toHaveBeenCalledWith(
                 EventName.Test,
                 {},
@@ -166,7 +166,7 @@ describe('Decorator Tests', () => {
             interceptFn(null, 'mockOriginalFn', mockDescriptor);
             const output = mockDescriptor.value(mockInput);
 
-            expect(spy).toBeCalledTimes(1);
+            expect(spy).toHaveBeenCalledTimes(1);
             expect(reportSpy).toHaveBeenCalledWith(EventName.Test, {}, {}, SampleRate.NoSampling);
             expect(output).toEqual(mockInput);
         });
@@ -189,7 +189,7 @@ describe('Decorator Tests', () => {
             interceptFn(null, 'mockOriginalFn', mockDescriptor);
 
             const output = await mockDescriptor.value(mockInput);
-            expect(spy).toBeCalledTimes(1);
+            expect(spy).toHaveBeenCalledTimes(1);
             expect(reportSpy).toHaveBeenCalledWith(EventName.Test, {}, {}, SampleRate.NoSampling);
             expect(output).toEqual(mockInput);
         });

@@ -71,8 +71,8 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
             ]
         `); // Sorted
         expect(retrievedUI5Versions.length).toEqual(4);
-        expect(mockedCp.spawn).toBeCalled();
-        expect(mockedCp.spawn).nthCalledWith(
+        expect(mockedCp.spawn).toHaveBeenCalled();
+        expect(mockedCp.spawn).toHaveBeenNthCalledWith(
             1,
             'npm',
             ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'],
@@ -134,8 +134,8 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
               },
             ]
         `);
-        expect(mockedCp.spawn).toBeCalled();
-        expect(mockedCp.spawn).nthCalledWith(
+        expect(mockedCp.spawn).toHaveBeenCalled();
+        expect(mockedCp.spawn).toHaveBeenNthCalledWith(
             1,
             'npm',
             ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'],
@@ -160,7 +160,7 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
                 error: new Error('spawn ENOENT')
             };
         });
-        await expect(() => executeNpmUI5VersionsCmd()).rejects.toThrowError('Command failed with error: spawn ENOENT');
+        await expect(() => executeNpmUI5VersionsCmd()).rejects.toThrow('Command failed with error: spawn ENOENT');
     });
 
     it('Validate spawn flow on windows', async () => {
@@ -204,8 +204,8 @@ describe('Retrieve NPM UI5 mocking spawn process', () => {
             ]
         `); // Sorted
         expect(retrievedUI5Versions.length).toEqual(4);
-        expect(mockedCp.spawn).toBeCalled();
-        expect(mockedCp.spawn).nthCalledWith(
+        expect(mockedCp.spawn).toHaveBeenCalled();
+        expect(mockedCp.spawn).toHaveBeenNthCalledWith(
             1,
             'npm.cmd',
             ['show', '@sapui5/distribution-metadata', 'versions', '--no-color'],
@@ -230,7 +230,7 @@ describe('Test commands internals', () => {
     it('Fails to spawn with error', async () => {
         mockedSpawn.setDefault(mockedSpawn.simple(1, 'Some log', 'stderr buffer'));
         mockedSpawn.sequence.add({ throws: new Error('spawn ENOENT') });
-        await expect(executeNpmUI5VersionsCmd()).rejects.toThrowError('spawn ENOENT');
+        await expect(executeNpmUI5VersionsCmd()).rejects.toThrow('spawn ENOENT');
     });
 
     it('Execute with success', async () => {

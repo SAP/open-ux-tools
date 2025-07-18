@@ -67,7 +67,7 @@ describe('OData annotation collector', () => {
         test('data field with path value', async () => {
             const { uri, targets } = await getTestData(join('ui', 'line-item', 'path.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toBeCalledTimes(0);
+            expect(logger.warn).toHaveBeenCalledTimes(0);
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.LineItem',
@@ -125,7 +125,7 @@ describe('OData annotation collector', () => {
         test('data field with label', async () => {
             const { uri, targets } = await getTestData(join('ui', 'line-item', 'label.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toBeCalledTimes(0);
+            expect(logger.warn).toHaveBeenCalledTimes(0);
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.LineItem',
@@ -184,7 +184,7 @@ describe('OData annotation collector', () => {
         test('basic', async () => {
             const { uri, targets } = await getTestData(join('ui', 'field-group', 'basic.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toBeCalledTimes(0);
+            expect(logger.warn).toHaveBeenCalledTimes(0);
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.FieldGroup',
@@ -207,7 +207,7 @@ describe('OData annotation collector', () => {
         test('data field with label', async () => {
             const { uri, targets } = await getTestData(join('ui', 'field-group', 'field-with-label.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toBeCalledTimes(0);
+            expect(logger.warn).toHaveBeenCalledTimes(0);
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.FieldGroup',
@@ -258,7 +258,7 @@ describe('OData annotation collector', () => {
         test('basic', async () => {
             const { uri, targets } = await getTestData(join('ui', 'facets', 'basic.xml'));
             const annotations = collectODataAnnotations(uri, targets);
-            expect(logger.warn).toBeCalledTimes(0);
+            expect(logger.warn).toHaveBeenCalledTimes(0);
             expect(annotations).toStrictEqual([
                 {
                     term: 'UI.Facets',

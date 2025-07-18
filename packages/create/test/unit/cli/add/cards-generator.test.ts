@@ -49,8 +49,8 @@ describe('add/cards-generator', () => {
         await command.parseAsync(testArgv([]));
 
         // Flow check
-        expect(enableCardGeneratorConfigMock).toBeCalled();
-        expect(traceSpy).not.toBeCalled();
+        expect(enableCardGeneratorConfigMock).toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
     });
 
     test('add cards-generator CAP', async () => {
@@ -61,8 +61,8 @@ describe('add/cards-generator', () => {
         await command.parseAsync(testArgv([]));
 
         // Flow check
-        expect(enableCardGeneratorConfigMock).not.toBeCalled();
-        expect(traceSpy).not.toBeCalled();
+        expect(enableCardGeneratorConfigMock).not.toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
     });
 
     test('add cards-generator --simulate', async () => {
@@ -72,7 +72,7 @@ describe('add/cards-generator', () => {
         await command.parseAsync(testArgv(['--simulate']));
 
         // Flow check
-        expect(enableCardGeneratorConfigMock).toBeCalled();
-        expect(traceSpy).toBeCalled();
+        expect(enableCardGeneratorConfigMock).toHaveBeenCalled();
+        expect(traceSpy).toHaveBeenCalled();
     });
 });

@@ -47,7 +47,7 @@ describe('cf-helper', () => {
         // Pass instances
         process.env.ABAPEnvServiceTypes = 'TestInternal, internal';
         expect(await getCFAbapInstanceChoices(new ErrorHandler())).toEqual([]);
-        expect(apiGetServicesInstancesFilteredByType).toBeCalledWith(
+        expect(apiGetServicesInstancesFilteredByType).toHaveBeenCalledWith(
             expect.arrayContaining(['TestInternal', 'internal'])
         );
         delete process.env.ABAPEnvServiceTypes;

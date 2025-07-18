@@ -138,9 +138,9 @@ describe('Test command add navigation-config with ADP scenario', () => {
         await command.parseAsync(getArgv(['inbound-navigation', appRoot]));
 
         // Result check
-        expect(commitMock).toBeCalled();
-        expect(traceSpy).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
+        expect(commitMock).toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
     });
 
     test('Test add inbound-navigation <appRoot> --simulate', async () => {
@@ -150,14 +150,14 @@ describe('Test command add navigation-config with ADP scenario', () => {
         await command.parseAsync(getArgv(['inbound-navigation', appRoot, '--simulate']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).not.toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).not.toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
 
-        expect(commitMock).not.toBeCalled();
-        expect(traceSpy).toBeCalled();
+        expect(commitMock).not.toHaveBeenCalled();
+        expect(traceSpy).toHaveBeenCalled();
     });
 
     test('Test add inbound-navigation reports error', async () => {
@@ -169,19 +169,19 @@ describe('Test command add navigation-config with ADP scenario', () => {
         await command.parseAsync(getArgv(['inbound-navigation', join(__dirname, '../../../fixtures/'), '--verbose']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.info).not.toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).toBeCalledWith(
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.info).not.toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith(
             expect.stringMatching(/^Error while executing add inbound navigation configuration/)
         );
-        expect(loggerMock.debug).nthCalledWith(
+        expect(loggerMock.debug).toHaveBeenNthCalledWith(
             1,
             expect.stringMatching(/^Called add inbound navigation-config for path/)
         );
-        expect(loggerMock.debug).nthCalledWith(2, expect.any(Error));
-        expect(commitMock).not.toBeCalled();
-        expect(traceSpy).not.toBeCalled();
+        expect(loggerMock.debug).toHaveBeenNthCalledWith(2, expect.any(Error));
+        expect(commitMock).not.toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
     });
 
     test('Test add inbound-navigation calls generate when valid config is returned by prompting', async () => {
@@ -193,15 +193,15 @@ describe('Test command add navigation-config with ADP scenario', () => {
         await command.parseAsync(getArgv(['inbound-navigation', appRoot]));
 
         // Result check
-        expect(genNavSpy).toBeCalledWith(
+        expect(genNavSpy).toHaveBeenCalledWith(
             expect.stringContaining('bare-minimum'),
             flpConfigAnswers,
             true,
             expect.any(Object)
         );
-        expect(commitMock).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
+        expect(commitMock).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
     });
 
     test('Test add inbound-navigation returns and logs when config is undefined', async () => {
@@ -217,10 +217,10 @@ describe('Test command add navigation-config with ADP scenario', () => {
         expect(loggerMock.info).toHaveBeenCalledWith(
             'User chose not to overwrite existing inbound navigation configuration.'
         );
-        expect(genNavSpy).not.toBeCalled();
-        expect(commitMock).not.toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
+        expect(genNavSpy).not.toHaveBeenCalled();
+        expect(commitMock).not.toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
     });
 
     test('Test add inbound-navigation with ADP project where FLP configuration does not exist', async () => {
@@ -252,14 +252,14 @@ describe('Test command add navigation-config with ADP scenario', () => {
         await command.parseAsync(getArgv(['inbound-navigation', appRoot]));
 
         // Result check
-        expect(commitMock).toBeCalled();
-        expect(genAdpNavSpy).toBeCalledWith(
+        expect(commitMock).toHaveBeenCalled();
+        expect(genAdpNavSpy).toHaveBeenCalledWith(
             expect.stringContaining('bare-minimum'),
             expect.objectContaining(flpConfigAnswers),
             expect.any(Object)
         );
-        expect(genNavSpy).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
+        expect(genNavSpy).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
     });
 
     test('Test add inbound-navigation with ADP project where FLP configuration does not exist with custom yaml config file', async () => {
@@ -291,15 +291,15 @@ describe('Test command add navigation-config with ADP scenario', () => {
         await command.parseAsync(getArgv(['inbound-navigation', appRoot, '--config=/test/custom.yaml']));
 
         // Result check
-        expect(getAdpConfigMock).toBeCalledWith(appRoot, '/test/custom.yaml');
-        expect(commitMock).toBeCalled();
-        expect(genAdpNavSpy).toBeCalledWith(
+        expect(getAdpConfigMock).toHaveBeenCalledWith(appRoot, '/test/custom.yaml');
+        expect(commitMock).toHaveBeenCalled();
+        expect(genAdpNavSpy).toHaveBeenCalledWith(
             expect.stringContaining('bare-minimum'),
             expect.objectContaining(flpConfigAnswers),
             expect.any(Object)
         );
-        expect(genNavSpy).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
+        expect(genNavSpy).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
     });
 
     test('Test add inbound-navigation with ADP project where getAdpConfig throws an error', async () => {
@@ -313,10 +313,10 @@ describe('Test command add navigation-config with ADP scenario', () => {
         await command.parseAsync(getArgv(['inbound-navigation', appRoot]));
 
         // Result check
-        expect(commitMock).not.toBeCalled();
-        expect(genAdpNavSpy).not.toBeCalled();
-        expect(genNavSpy).not.toBeCalled();
-        expect(loggerMock.error).toBeCalledWith(
+        expect(commitMock).not.toHaveBeenCalled();
+        expect(genAdpNavSpy).not.toHaveBeenCalled();
+        expect(genNavSpy).not.toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith(
             expect.stringMatching(
                 /^Error while executing add inbound navigation configuration 'Failed to get ADP config'/
             )

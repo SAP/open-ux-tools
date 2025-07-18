@@ -37,7 +37,7 @@ describe('backend-proxy-middleware', () => {
 
         test('minimal configuration', async () => {
             await getTestServer({ backend });
-            expect(generateProxyOptionsSpy).toBeCalledWith(
+            expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
                 expect.objectContaining(backend),
                 expect.objectContaining({ secure: true }),
                 expect.objectContaining({})
@@ -51,7 +51,7 @@ describe('backend-proxy-middleware', () => {
                 destination: '~destination'
             };
             await getTestServer({ backend: addtionalConfig });
-            expect(generateProxyOptionsSpy).toBeCalledWith(
+            expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
                 expect.objectContaining(addtionalConfig),
                 expect.objectContaining({ secure: true }),
                 expect.objectContaining({})
@@ -65,7 +65,7 @@ describe('backend-proxy-middleware', () => {
                 logLevel: 'debug'
             };
             await getTestServer({ backend, options });
-            expect(generateProxyOptionsSpy).toBeCalledWith(
+            expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
                 expect.objectContaining(backend),
                 expect.objectContaining({ ...options, secure: true }),
                 expect.objectContaining({})

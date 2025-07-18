@@ -245,7 +245,7 @@ describe('Test resize', () => {
                 windowEventListenerMock.simulateEvent('resize', {});
                 // Debounce timeout within resize + within use effect
                 jest.advanceTimersByTime(3000);
-                expect(dispatch).toBeCalledWith(changePreviewScale(testCase.expectedScale));
+                expect(dispatch).toHaveBeenCalledWith(changePreviewScale(testCase.expectedScale));
             });
         });
     }

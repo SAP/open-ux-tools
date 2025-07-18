@@ -84,14 +84,14 @@ describe('utils', () => {
         test('Store throws error', async () => {
             storeRead.mockRejectedValueOnce('Throw Error');
             await getLocalStoredCredentials('targetUrl', '000', loggerMock);
-            expect(warnMock).toBeCalledWith('Retrieving stored credentials failed.');
-            expect(debugMock).toBeCalledWith('Throw Error');
+            expect(warnMock).toHaveBeenCalledWith('Retrieving stored credentials failed.');
+            expect(debugMock).toHaveBeenCalledWith('Throw Error');
         });
         test('Store throws error (no logger)', async () => {
             storeRead.mockRejectedValueOnce('Throw Error');
             await getLocalStoredCredentials('targetUrl');
-            expect(warnMock).not.toBeCalled();
-            expect(debugMock).not.toBeCalled();
+            expect(warnMock).not.toHaveBeenCalled();
+            expect(debugMock).not.toHaveBeenCalled();
         });
     });
 
@@ -148,7 +148,7 @@ describe('utils', () => {
                 fail('Error should have been thrown');
             } catch (error) {
                 expect(debugMock.mock.calls.length).toBe(1);
-                expect(debugMock).toBeCalledWith(Error(errorMsg));
+                expect(debugMock).toHaveBeenCalledWith(Error(errorMsg));
                 expect(infoMock.mock.calls[0][0]).toContain('Connecting to');
             }
         });
@@ -161,7 +161,7 @@ describe('utils', () => {
                 await sendRequest(config);
                 fail('Error should have been thrown');
             } catch (error) {
-                expect(debugMock).not.toBeCalled();
+                expect(debugMock).not.toHaveBeenCalled();
                 expect(error.message).toEqual(errorMsg);
             }
         });
@@ -202,14 +202,14 @@ describe('utils', () => {
         test('target available (no logger)', async () => {
             const basePath = join(__dirname, '../../fixtures/ui5-deploy-config');
             await getTargetDefinition(basePath);
-            expect(infoMock).not.toBeCalled();
-            expect(warnMock).not.toBeCalled();
+            expect(infoMock).not.toHaveBeenCalled();
+            expect(warnMock).not.toHaveBeenCalled();
         });
         test('no target available (no logger)', async () => {
             const basePath = join(__dirname, '../../fixtures/no-ui5-deploy-config');
             await getTargetDefinition(basePath);
-            expect(infoMock).not.toBeCalled();
-            expect(warnMock).not.toBeCalled();
+            expect(infoMock).not.toHaveBeenCalled();
+            expect(warnMock).not.toHaveBeenCalled();
         });
     });
 
@@ -255,7 +255,7 @@ describe('utils', () => {
             nock(url).get(service).query(params).reply(200, targetResults);
             sandboxExistsSpy.mockReturnValueOnce(false);
             await writeSmartLinksConfig('mockBasePath', config, fs, loggerMock);
-            expect(copyTemplateSpy).toBeCalled();
+            expect(copyTemplateSpy).toHaveBeenCalled();
         });
         test('Update fioriSandboxConfig.json - existing target', async () => {
             const existingTarget = {
@@ -270,7 +270,7 @@ describe('utils', () => {
             nock(url).get(service).query(params).reply(200, targetResults);
 
             await writeSmartLinksConfig('mockBasePath', config, fs, loggerMock);
-            expect(extendSandboxSpy).toBeCalled();
+            expect(extendSandboxSpy).toHaveBeenCalled();
         });
         test('Update fioriSandboxConfig.json - existing file, no targets', async () => {
             const sandboxJSON = getSandboxJSON();
@@ -279,7 +279,7 @@ describe('utils', () => {
             nock(url).get(service).query(params).reply(200, targetResults);
 
             await writeSmartLinksConfig('mockBasePath', config, fs, loggerMock);
-            expect(extendSandboxSpy).toBeCalled();
+            expect(extendSandboxSpy).toHaveBeenCalled();
         });
         test('Overwrite fioriSandboxConfig.json - existing target with same key', async () => {
             const ResponseMapping = {
@@ -293,7 +293,7 @@ describe('utils', () => {
             nock(url).get(service).query(params).reply(200, targetResults);
 
             await writeSmartLinksConfig('mockBasePath', config, fs, loggerMock);
-            expect(extendSandboxSpy).toBeCalled();
+            expect(extendSandboxSpy).toHaveBeenCalled();
         });
         test('No target mappings', async () => {
             const errorMsg = 'No target definition found ';

@@ -33,7 +33,7 @@ describe('Test get is Abap Cloud', () => {
         });
         const result = await isAbapCloud();
         expect(result).toBe(undefined);
-        expect(loggerSpy).toBeCalledWith(
+        expect(loggerSpy).toHaveBeenCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'isAbapCloud', error: 'Service unavailable' })
         );
     });

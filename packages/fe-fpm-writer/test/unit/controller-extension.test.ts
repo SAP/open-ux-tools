@@ -335,7 +335,7 @@ describe('ControllerExtension', () => {
                 expect(fs.exists(expectedDeclarationFilePath)).toBeTruthy();
                 expect(fs.read(expectedDeclarationFilePath)).toMatchSnapshot();
                 // Check how fs.copy method called - copy for 'Controller.ts' and first create of 'ControllerExtension.d.ts'
-                expect(copySpy).toBeCalledTimes(2);
+                expect(copySpy).toHaveBeenCalledTimes(2);
                 expect(isCopyCalledWithOrigin(copySpy, 0, 'Controller.ts')).toBeTruthy();
                 expect(isCopyCalledWithTarget(copySpy, 0, expectedTestControllerPath)).toBeTruthy();
                 expect(isCopyCalledWithOrigin(copySpy, 1, 'ControllerExtension.d.ts')).toBeTruthy();
@@ -354,7 +354,7 @@ describe('ControllerExtension', () => {
                 await generateControllerExtension(testDir, secondExtension as ControllerExtension, fs);
                 expect(fs.exists(expectedDeclarationFilePath)).toBeTruthy();
                 // Check how fs.copy method called - copy for 'Controller.ts' only, 'ControllerExtension.d.ts' was created on very first creation
-                expect(copySpy).toBeCalledTimes(1);
+                expect(copySpy).toHaveBeenCalledTimes(1);
                 expect(isCopyCalledWithOrigin(copySpy, 0, 'Controller.ts')).toBeTruthy();
                 expect(isCopyCalledWithTarget(copySpy, 0, getControllerPath(secondExtension, true))).toBeTruthy();
                 manifest = JSON.parse(fs.read(join(testDir, 'webapp/manifest.json')));

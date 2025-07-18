@@ -25,6 +25,7 @@ import { t } from '../src/utils/i18n';
 import env from 'yeoman-environment';
 import { handleWorkspaceConfig } from '@sap-ux/launch-config';
 import { EventName } from '../src/telemetryEvents';
+import { getUI5Versions } from '@sap-ux/ui5-info';
 
 jest.mock('../src/prompts/prompt-helpers', () => ({
     ...jest.requireActual('../src/prompts/prompt-helpers'),
@@ -76,6 +77,11 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
     };
 });
 const mockSendTelemetry = sendTelemetry as jest.Mock;
+
+jest.mock('@sap-ux/ui5-info', () => ({
+    ...jest.requireActual('@sap-ux/ui5-info'),
+    getUI5Versions: jest.fn()
+}));
 
 function createAppConfig(appId: string, metadata: string): FioriElementsApp<LROPSettings> {
     return {
@@ -287,6 +293,7 @@ describe('Repo App Download', () => {
                 file: jest.fn((path) => ({ fsPath: path }))
             }
         };
+        (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.134.1' }]);
     });
 
     it('Should successfully run app download from repository', async () => {

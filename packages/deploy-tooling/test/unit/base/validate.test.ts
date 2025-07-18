@@ -385,8 +385,8 @@ describe('deploy-test validation', () => {
                 nullLogger
             );
             expect(output.result).toBe(true);
-            expect(mockedAdtService.listPackages).toBeCalledWith({ 'phrase': '$TMP' });
-            expect(mockedAdtService.getTransportRequests).toBeCalledWith('$TMP', 'ZAPP1');
+            expect(mockedAdtService.listPackages).toHaveBeenCalledWith({ 'phrase': '$TMP' });
+            expect(mockedAdtService.getTransportRequests).toHaveBeenCalledWith('$TMP', 'ZAPP1');
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(`${green('√')} ${summaryMessage.transportNotRequired}`);
             expect(summaryStr).toContain(
@@ -417,8 +417,8 @@ describe('deploy-test validation', () => {
                 nullLogger
             );
             expect(output.result).toBe(true);
-            expect(mockedAdtService.listPackages).toBeCalledWith({ 'phrase': 'TEST' });
-            expect(mockedAdtService.getTransportRequests).toBeCalledWith('TEST', 'ZAPP1');
+            expect(mockedAdtService.listPackages).toHaveBeenCalledWith({ 'phrase': 'TEST' });
+            expect(mockedAdtService.getTransportRequests).toHaveBeenCalledWith('TEST', 'ZAPP1');
             const summaryStr = formatSummary(output.summary);
             expect(summaryStr).toContain(
                 `${yellow('?')} Package name contains lower case letter(s). TEST is used for ADT validation.`

@@ -9,14 +9,14 @@ describe('utils', () => {
 
     describe('getPreviewMiddleware', () => {
         test('exception handling - parameters not provided', async () => {
-            await expect(utils.getPreviewMiddleware()).rejects.toThrowError(
+            await expect(utils.getPreviewMiddleware()).rejects.toThrow(
                 'Either base path or yaml config must be provided'
             );
         });
 
         test('exception handling - file not found', async () => {
             const basePath = join(__dirname, '../../fixtures/a-folder-that-does-not-exist');
-            await expect(utils.getPreviewMiddleware(undefined, basePath, 'chicken.html')).rejects.toThrowError(
+            await expect(utils.getPreviewMiddleware(undefined, basePath, 'chicken.html')).rejects.toThrow(
                 `File 'chicken.html' not found in project '${basePath}'`
             );
         });

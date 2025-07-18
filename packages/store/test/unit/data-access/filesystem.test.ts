@@ -585,7 +585,7 @@ describe('getFilesystemWatcherFor', () => {
         });
 
         expect(getFilesystemWatcherFor('DummyEntity' as Entity, () => jest.fn())).toBeTruthy();
-        expect(mockWatcher).toBeCalledTimes(1);
+        expect(mockWatcher).toHaveBeenCalledTimes(1);
     });
 
     it('will return undefined if a file for an entity does not exist', () => {
@@ -596,6 +596,6 @@ describe('getFilesystemWatcherFor', () => {
         });
 
         expect(getFilesystemWatcherFor('DummyEntity' as Entity, () => jest.fn())).toBeUndefined();
-        expect(mockWatcher).toBeCalledTimes(0);
+        expect(mockWatcher).toHaveBeenCalledTimes(0);
     });
 });

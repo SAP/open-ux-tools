@@ -203,7 +203,7 @@ describe('<UITable />', () => {
         input.simulate('change', { target: { value: 'orange' } });
         input.simulate('keyDown', { key: 'Enter' });
         jest.runOnlyPendingTimers();
-        expect(onSaveSpy).toBeCalledTimes(1);
+        expect(onSaveSpy).toHaveBeenCalledTimes(1);
         expect(onSaveSpy.mock.calls[0][1]).toBe('orange');
     });
 
@@ -216,7 +216,7 @@ describe('<UITable />', () => {
         input.simulate('change', { target: { value: 'orange' } });
         input.simulate('keyDown', { key: 'Escape' });
         jest.runOnlyPendingTimers();
-        expect(onSaveSpy).toBeCalledTimes(0);
+        expect(onSaveSpy).toHaveBeenCalledTimes(0);
     });
 
     it('Date picker', () => {
@@ -230,7 +230,7 @@ describe('<UITable />', () => {
         input.simulate('change', { target: { value: '2020-08-07' } });
         input.simulate('keyDown', { key: 'Enter' });
         jest.runOnlyPendingTimers();
-        expect(onSaveSpy).toBeCalledTimes(1);
+        expect(onSaveSpy).toHaveBeenCalledTimes(1);
         expect(onSaveSpy.mock.calls[0][1]).toBe('2020-08-07');
     });
 
@@ -242,7 +242,7 @@ describe('<UITable />', () => {
         input.simulate('keyDown', { key: 'ArrowDown', which: KeyCodes.down });
         input.simulate('keyDown', { key: 'Enter' });
         jest.runOnlyPendingTimers();
-        expect(onSaveSpy).toBeCalledTimes(1);
+        expect(onSaveSpy).toHaveBeenCalledTimes(1);
         expect(onSaveSpy.mock.calls[0][1]).toBe('false');
     });
 
@@ -254,7 +254,7 @@ describe('<UITable />', () => {
         (input.instance() as any).value = 'false';
         input.simulate('keyDown', { key: 'Enter' });
         jest.runOnlyPendingTimers();
-        expect(onSaveSpy).toBeCalledTimes(1);
+        expect(onSaveSpy).toHaveBeenCalledTimes(1);
         expect(onSaveSpy.mock.calls[0][1]).toBe('false');
     });
 
@@ -308,6 +308,6 @@ describe('<UITable />', () => {
         );
         input.simulate('change', { target: { value: 'stillinvalid' } });
         jest.runOnlyPendingTimers();
-        expect(mockCell.setSelectionRange).toBeCalledWith(100, 100);
+        expect(mockCell.setSelectionRange).toHaveBeenCalledWith(100, 100);
     });
 });

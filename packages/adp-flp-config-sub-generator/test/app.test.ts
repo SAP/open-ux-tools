@@ -214,7 +214,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await expect(runContext.run()).resolves.not.toThrow();
-        expect(sendTelemetrySpy).toBeCalledWith(
+        expect(sendTelemetrySpy).toHaveBeenCalledWith(
             EventName.ADP_FLP_CONFIG_ADDED,
             expect.objectContaining({
                 OperatingSystem: 'testOS',
@@ -223,7 +223,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             testProjectPath
         );
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
-        expect(generateInboundConfigSpy).toBeCalledWith(
+        expect(generateInboundConfigSpy).toHaveBeenCalledWith(
             testProjectPath,
             expect.objectContaining({
                 inboundId: 'customer.baseAppSo-baseAppAction',
@@ -275,7 +275,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await expect(runContext.run()).resolves.not.toThrow();
-        expect(sendTelemetrySpy).toBeCalledWith(
+        expect(sendTelemetrySpy).toHaveBeenCalledWith(
             EventName.ADP_FLP_CONFIG_ADDED,
             expect.objectContaining({
                 OperatingSystem: 'testOS',
@@ -284,7 +284,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             testProjectPath
         );
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
-        expect(generateInboundConfigSpy).toBeCalledWith(
+        expect(generateInboundConfigSpy).toHaveBeenCalledWith(
             testProjectPath,
             expect.objectContaining({
                 inboundId: 'customer.testSo_New-testAct_New',
@@ -340,7 +340,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await expect(runContext.run()).resolves.not.toThrow();
-        expect(sendTelemetrySpy).toBeCalledWith(
+        expect(sendTelemetrySpy).toHaveBeenCalledWith(
             EventName.ADP_FLP_CONFIG_ADDED,
             expect.objectContaining({
                 OperatingSystem: 'testOS',
@@ -349,7 +349,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             testProjectPath
         );
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.flpConfigAdded'), MessageType.notification);
-        expect(generateInboundConfigSpy).toBeCalledWith(
+        expect(generateInboundConfigSpy).toHaveBeenCalledWith(
             testProjectPath,
             expect.objectContaining({
                 inboundId: 'customer.testSo_New-testAct_New',
@@ -404,7 +404,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         });
         expect(variant).toMatchSnapshot();
         expect(i18n).toMatchSnapshot();
-        expect(sendTelemetrySpy).toBeCalledWith(
+        expect(sendTelemetrySpy).toHaveBeenCalledWith(
             EventName.ADP_FLP_CONFIG_ADDED,
             expect.objectContaining({
                 OperatingSystem: 'testOS',
@@ -455,7 +455,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             })
             .withPrompts(answers);
         await expect(runContext.run()).resolves.not.toThrow();
-        expect(sendTelemetrySpy).toBeCalledWith(
+        expect(sendTelemetrySpy).toHaveBeenCalledWith(
             EventName.ADP_FLP_CONFIG_ADDED,
             expect.objectContaining({
                 OperatingSystem: 'testOS',
@@ -464,7 +464,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             testProjectPath
         );
         expect(createAbapServiceProviderSpy).not.toHaveBeenCalled();
-        expect(generateInboundConfigSpy).toBeCalledWith(
+        expect(generateInboundConfigSpy).toHaveBeenCalledWith(
             testProjectPath,
             expect.objectContaining({
                 inboundId: 'customer.baseAppSo-baseAppAction',
@@ -519,7 +519,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         });
         expect(variant).toMatchSnapshot();
         expect(i18n).toMatchSnapshot();
-        expect(sendTelemetrySpy).toBeCalledWith(
+        expect(sendTelemetrySpy).toHaveBeenCalledWith(
             EventName.ADP_FLP_CONFIG_ADDED,
             expect.objectContaining({
                 OperatingSystem: 'testOS',
@@ -527,7 +527,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             }),
             testProjectPath
         );
-        expect(showInformationSpy).not.toBeCalled();
+        expect(showInformationSpy).not.toHaveBeenCalled();
     });
 
     it('Should throw an error if writing phase fails', async () => {
@@ -589,7 +589,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         await initI18n();
         await runContext.run();
-        expect(vsCodeMessageSpy).toBeCalledWith(t('error.projectNotSupported'));
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.projectNotSupported'));
     });
 
     it('Should result in an error message if the project is a CF project and use the logger in case of CLI', async () => {
@@ -622,7 +622,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         await initI18n();
         await runContext.run();
-        expect(toolsLoggerErrorSpy).toBeCalledWith(t('error.projectNotSupported'));
+        expect(toolsLoggerErrorSpy).toHaveBeenCalledWith(t('error.projectNotSupported'));
     });
 
     it('Should result in an error message if the project is not a CloudReady project', async () => {
@@ -656,7 +656,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         await initI18n();
         await runContext.run();
-        expect(vsCodeMessageSpy).toBeCalledWith(t('error.projectNotCloudReady'));
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.projectNotCloudReady'));
     });
 
     it('Should throw an error when no destination is configured in Application Studio', async () => {
@@ -690,7 +690,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await runContext.run();
-        expect(vsCodeMessageSpy).toBeCalledWith(t('error.destinationNotFound'));
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.destinationNotFound'));
     });
 
     it('Should throw an error when url is not configured configured in system store', async () => {
@@ -726,7 +726,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await runContext.run();
-        expect(vsCodeMessageSpy).toBeCalledWith(t('error.systemNotFoundInStore'));
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith(t('error.systemNotFoundInStore'));
     });
 
     it('Should throw an error when fetching inbounds', async () => {
@@ -811,7 +811,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
         // getBaseAppInboundsMock.mockClear();
         await expect(runContext.run()).rejects.toThrow(t('error.baseAppInboundsFetching'));
-        expect(getBaseAppInboundsMock).toBeCalledTimes(2);
+        expect(getBaseAppInboundsMock).toHaveBeenCalledTimes(2);
     });
 
     it('Should require authentication again if credentials are wrong', async () => {
@@ -1033,6 +1033,6 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await runContext.run();
-        expect(vsCodeMessageSpy).toBeCalledWith('Network Error');
+        expect(vsCodeMessageSpy).toHaveBeenCalledWith('Network Error');
     });
 });

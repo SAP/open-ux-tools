@@ -100,10 +100,10 @@ describe('UI5 templates', () => {
         const projectDir = join(outputDir, 'testapp-invalid');
         await generate(projectDir, ui5AppConfig, fs);
         fs.delete(join(projectDir, 'ui5.yaml'));
-        await expect(enableTypescript(projectDir, fs)).rejects.toThrowError();
+        await expect(enableTypescript(projectDir, fs)).rejects.toThrow();
         fs.write(join(projectDir, 'ui5.yaml'), '');
         fs.delete(join(projectDir, 'webapp/manifest.json'));
-        await expect(enableTypescript(projectDir, fs)).rejects.toThrowError();
+        await expect(enableTypescript(projectDir, fs)).rejects.toThrow();
     });
 
     it('Check webapp/index.html templates are generated correctly for CAP application with ui5 version ', async () => {

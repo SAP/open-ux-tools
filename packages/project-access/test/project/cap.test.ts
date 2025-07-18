@@ -237,11 +237,11 @@ describe('Test getCapModelAndServices()', () => {
                 root: '/path/to/cds/root'
             }
         });
-        expect(cdsMock.load).toBeCalledWith(
+        expect(cdsMock.load).toHaveBeenCalledWith(
             [join('PROJECT_ROOT', 'MY_APP'), join('PROJECT_ROOT', 'MY_SRV'), join('PROJECT_ROOT', 'MY_DB')],
             { root: 'PROJECT_ROOT' }
         );
-        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
+        expect(cdsMock.compile.to.serviceinfo).toHaveBeenCalledWith('MODEL', { root: 'PROJECT_ROOT' });
     });
 
     test('Get valid model and services, mock cds with local cds from devDependencies Updated API available in @sap/cds: 7.8.0, no odata kind in endpoints', async () => {
@@ -311,11 +311,11 @@ describe('Test getCapModelAndServices()', () => {
                 root: '/path/to/cds/root'
             }
         });
-        expect(cdsMock.load).toBeCalledWith(
+        expect(cdsMock.load).toHaveBeenCalledWith(
             [join('PROJECT_ROOT', 'MY_APP'), join('PROJECT_ROOT', 'MY_SRV'), join('PROJECT_ROOT', 'MY_DB')],
             { root: 'PROJECT_ROOT' }
         );
-        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
+        expect(cdsMock.compile.to.serviceinfo).toHaveBeenCalledWith('MODEL', { root: 'PROJECT_ROOT' });
     });
 
     test('Get valid model and services, mock cds with local cds from devDependencies Before @sap/cds: 7.8.0', async () => {
@@ -375,11 +375,11 @@ describe('Test getCapModelAndServices()', () => {
                 root: '/path/to/cds/root'
             }
         });
-        expect(cdsMock.load).toBeCalledWith(
+        expect(cdsMock.load).toHaveBeenCalledWith(
             [join('PROJECT_ROOT', 'MY_APP'), join('PROJECT_ROOT', 'MY_SRV'), join('PROJECT_ROOT', 'MY_DB')],
             { root: 'PROJECT_ROOT' }
         );
-        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'PROJECT_ROOT' });
+        expect(cdsMock.compile.to.serviceinfo).toHaveBeenCalledWith('MODEL', { root: 'PROJECT_ROOT' });
     });
 
     test('Get model and services, but services are empty', async () => {
@@ -413,7 +413,7 @@ describe('Test getCapModelAndServices()', () => {
             version: undefined,
             root: undefined
         });
-        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
+        expect(cdsMock.compile.to.serviceinfo).toHaveBeenCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
     });
 
     test('Get model and services filtered by db, but services are empty', async () => {
@@ -448,7 +448,7 @@ describe('Test getCapModelAndServices()', () => {
             version: undefined,
             root: undefined
         });
-        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
+        expect(cdsMock.compile.to.serviceinfo).toHaveBeenCalledWith('MODEL_NO_SERVICES', { root: 'ROOT_PATH' });
     });
 
     test('Get model and service', async () => {
@@ -483,7 +483,7 @@ describe('Test getCapModelAndServices()', () => {
         const capMS = await getCapModelAndServices({ projectRoot, logger: mockLogger });
 
         expect(capMS.services).toEqual([]);
-        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL_NO_SERVICES', { root: projectRoot });
+        expect(cdsMock.compile.to.serviceinfo).toHaveBeenCalledWith('MODEL_NO_SERVICES', { root: projectRoot });
         expect(loggerSpy).toHaveBeenNthCalledWith(1, expect.stringContaining("'cds.home': /cds/home/path"));
         expect(loggerSpy).toHaveBeenNthCalledWith(2, expect.stringContaining("'cds.version': 7.4.2"));
         expect(loggerSpy).toHaveBeenNthCalledWith(3, expect.stringContaining("'cds.root':"));
@@ -577,8 +577,8 @@ describe('Test readCapServiceMetadataEdmx()', () => {
 
         // Check results
         expect(result).toBe('EDMX');
-        expect(cdsMock.compile.to.edmx).toBeCalledWith('MODEL', { service: 'ServiceTwo', version: 'v4' });
-        expect(cdsMock.compile.to.serviceinfo).toBeCalledWith('MODEL', { root: 'root' });
+        expect(cdsMock.compile.to.edmx).toHaveBeenCalledWith('MODEL', { service: 'ServiceTwo', version: 'v4' });
+        expect(cdsMock.compile.to.serviceinfo).toHaveBeenCalledWith('MODEL', { root: 'root' });
     });
 
     test('Convert v2 service with backslash to EDMX', async () => {
@@ -591,7 +591,7 @@ describe('Test readCapServiceMetadataEdmx()', () => {
 
         // Check results
         expect(result).toBe('EDMX');
-        expect(cdsMock.compile.to.edmx).toBeCalledWith('MODEL', { service: 'ServiceOne', version: 'v2' });
+        expect(cdsMock.compile.to.edmx).toHaveBeenCalledWith('MODEL', { service: 'ServiceOne', version: 'v2' });
     });
 
     test('Convert service with leading double backslashes', async () => {
@@ -604,7 +604,7 @@ describe('Test readCapServiceMetadataEdmx()', () => {
 
         // Check results
         expect(result).toBe('EDMX');
-        expect(cdsMock.compile.to.edmx).toBeCalledWith('MODEL', { service: 'Service', version: 'v4' });
+        expect(cdsMock.compile.to.edmx).toHaveBeenCalledWith('MODEL', { service: 'Service', version: 'v4' });
     });
 
     test('Convert service with leading windows backslashes', async () => {
@@ -617,7 +617,7 @@ describe('Test readCapServiceMetadataEdmx()', () => {
 
         // Check results
         expect(result).toBe('EDMX');
-        expect(cdsMock.compile.to.edmx).toBeCalledWith('MODEL', { service: 'serviceCatalog', version: 'v4' });
+        expect(cdsMock.compile.to.edmx).toHaveBeenCalledWith('MODEL', { service: 'serviceCatalog', version: 'v4' });
     });
     test('Convert none existing service to EDMX, should throw error', async () => {
         // Mock setup
@@ -672,7 +672,7 @@ describe('Test getCapCustomPaths()', () => {
             db: 'MY_DB',
             srv: 'MY_SRV'
         });
-        expect(cdsMock.env.for).toBeCalledWith('cds', 'PROJECT_ROOT');
+        expect(cdsMock.env.for).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
     });
 
     test('Test fallback to default folders', async () => {
@@ -812,10 +812,10 @@ describe('Test getCapEnvironment()', () => {
         await getCapEnvironment('PROJECT_ROOT');
 
         // Result check
-        expect(spawnSpy).toBeCalledWith('cds', ['--version'], { cwd: undefined, shell: true });
+        expect(spawnSpy).toHaveBeenCalledWith('cds', ['--version'], { cwd: undefined, shell: true });
         expect(loadSpy).toHaveBeenNthCalledWith(1, 'PROJECT_ROOT', '@sap/cds');
         expect(loadSpy).toHaveBeenNthCalledWith(2, 'GLOBAL_ROOT', '@sap/cds');
-        expect(forSpy).toBeCalledWith('cds', 'PROJECT_ROOT');
+        expect(forSpy).toHaveBeenCalledWith('cds', 'PROJECT_ROOT');
     });
 });
 
@@ -878,7 +878,7 @@ describe('Test getCdsFiles()', () => {
 
         // Check results
         expect(cdsFiles).toEqual(['file1', 'file2']);
-        expect(cdsMock.load).toBeCalledWith(
+        expect(cdsMock.load).toHaveBeenCalledWith(
             [join('MY_DB'), join('MY_SRV'), join('MY_APP'), 'schema', 'services'],
             expect.any(Object)
         );
@@ -956,7 +956,7 @@ describe('Test getCdsFiles()', () => {
 
         // Check results
         expect(cdsFiles).toEqual([`${sep}file1`]);
-        expect(cdsMock.load).toBeCalledWith('envroot', expect.any(Object));
+        expect(cdsMock.load).toHaveBeenCalledWith('envroot', expect.any(Object));
     });
 
     test('Get CDS files from project with envRoot and ignoreErrors true and model data in exception', async () => {
@@ -976,7 +976,7 @@ describe('Test getCdsFiles()', () => {
 
         // Check results
         expect(cdsFiles).toEqual([`${sep}file1`, `${sep}file2`]);
-        expect(cdsMock.load).toBeCalledWith('envroot', expect.any(Object));
+        expect(cdsMock.load).toHaveBeenCalledWith('envroot', expect.any(Object));
     });
 });
 
@@ -1227,8 +1227,8 @@ describe('deleteCapApp', () => {
         expect(memFs.exists(join(capProject, 'apps', 'one', 'package.json'))).toEqual(false);
         expect(memFs.exists(join(capProject, 'apps', 'two', 'package.json'))).toEqual(true);
         // Check deleted and not deleted folders
-        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'one'));
-        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'two'));
+        expect(deleteSpy).toHaveBeenCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).not.toHaveBeenCalledWith(join(capProject, 'apps', 'two'));
         expect(getDeletedFiles()).toEqual([
             join(capProject, 'apps', FileName.IndexCds),
             join(capProject, 'apps', 'one', 'annotations.cds'),
@@ -1255,8 +1255,8 @@ describe('deleteCapApp', () => {
         expect(memFs.exists(join(capProject, 'apps', 'one', 'package.json'))).toEqual(true);
         expect(memFs.exists(join(capProject, 'apps', 'two', 'package.json'))).toEqual(false);
         // Check deleted and not deleted folders
-        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'two'));
-        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).toHaveBeenCalledWith(join(capProject, 'apps', 'two'));
+        expect(deleteSpy).not.toHaveBeenCalledWith(join(capProject, 'apps', 'one'));
         expect(getDeletedFiles()).toEqual([
             join(capProject, 'apps', 'two', 'annotations.cds'),
             join(capProject, 'apps', 'two', FileName.Package),
@@ -1279,9 +1279,9 @@ describe('deleteCapApp', () => {
         expect(memFs.exists(join(capProject, 'apps', 'two', 'package.json'))).toEqual(true);
         expect(memFs.exists(join(capProject, 'apps', 'freestyle', 'package.json'))).toEqual(false);
         // Check deleted and not deleted folders
-        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'freestyle'));
-        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'one'));
-        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'two'));
+        expect(deleteSpy).toHaveBeenCalledWith(join(capProject, 'apps', 'freestyle'));
+        expect(deleteSpy).not.toHaveBeenCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).not.toHaveBeenCalledWith(join(capProject, 'apps', 'two'));
     });
 
     test('Delete all CAP apps,', async () => {
@@ -1302,10 +1302,10 @@ describe('deleteCapApp', () => {
         await deleteCapApp(join(capProject, 'apps', 'freestyle'), memFs, logggerMock);
 
         // Check result
-        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps'));
-        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'one'));
-        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'two'));
-        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'freestyle'));
+        expect(deleteSpy).toHaveBeenCalledWith(join(capProject, 'apps'));
+        expect(deleteSpy).toHaveBeenCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).toHaveBeenCalledWith(join(capProject, 'apps', 'two'));
+        expect(deleteSpy).toHaveBeenCalledWith(join(capProject, 'apps', 'freestyle'));
         const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
         expect(modifiedPackage?.scripts?.['watch-one']).toBeUndefined();
         expect(modifiedPackage?.scripts?.['watch-two']).toBeUndefined();
@@ -1321,8 +1321,8 @@ describe('deleteCapApp', () => {
         await deleteCapApp(join(capProject, 'apps', 'one'), memFs);
 
         // Check result
-        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'one'));
-        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'two'));
+        expect(deleteSpy).toHaveBeenCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).not.toHaveBeenCalledWith(join(capProject, 'apps', 'two'));
         const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
         expect(modifiedPackage?.scripts?.['watch-one']).toBeUndefined();
         expect(modifiedPackage?.scripts?.['watch-two']).toBeDefined();
@@ -1345,8 +1345,8 @@ describe('deleteCapApp', () => {
         // Execute test
         await expect(
             async () => await deleteCapApp(join(capProject, 'apps', 'one'), memFs, logggerMock)
-        ).rejects.toThrowError(/Project root was not found for CAP application/);
-        expect(logggerMock.error).toBeCalled();
+        ).rejects.toThrow(/Project root was not found for CAP application/);
+        expect(logggerMock.error).toHaveBeenCalled();
     });
 
     test('Delete app "one" from CAP, no services.cds, no index.cds', async () => {
@@ -1364,10 +1364,10 @@ describe('deleteCapApp', () => {
         await deleteCapApp(join(capProject, 'apps', 'one'), memFs, logggerMock);
 
         // Check result
-        expect(logggerMock.info).toBeCalled();
-        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'one'));
-        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'two'));
-        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'freestyle'));
+        expect(logggerMock.info).toHaveBeenCalled();
+        expect(deleteSpy).toHaveBeenCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).not.toHaveBeenCalledWith(join(capProject, 'apps', 'two'));
+        expect(deleteSpy).not.toHaveBeenCalledWith(join(capProject, 'apps', 'freestyle'));
         const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
         expect(modifiedPackage?.scripts?.['watch-one']).toBeUndefined();
         expect(modifiedPackage?.scripts?.['watch-two']).toBeDefined();
@@ -1393,9 +1393,9 @@ describe('deleteCapApp', () => {
         await deleteCapApp(join(capProject, 'apps', 'one'), memFs, logggerMock);
 
         // Check result
-        expect(deleteSpy).toBeCalledWith(join(capProject, 'apps', 'one'));
-        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'two'));
-        expect(deleteSpy).not.toBeCalledWith(join(capProject, 'apps', 'freestyle'));
+        expect(deleteSpy).toHaveBeenCalledWith(join(capProject, 'apps', 'one'));
+        expect(deleteSpy).not.toHaveBeenCalledWith(join(capProject, 'apps', 'two'));
+        expect(deleteSpy).not.toHaveBeenCalledWith(join(capProject, 'apps', 'freestyle'));
         const modifiedPackage = await readJSON<Package>(join(capProject, FileName.Package), memFs);
         expect(modifiedPackage?.scripts?.['watch-one']).toBeUndefined();
         expect(modifiedPackage?.scripts?.['watch-two']).toBeDefined();
@@ -1406,7 +1406,7 @@ describe('deleteCapApp', () => {
         // Deletion failed because of mock
         expect(memFs.exists(join(capProject, 'apps', FileName.IndexCds))).toBeTruthy();
         // Check error log
-        expect(logggerMock.error).toBeCalledWith(
+        expect(logggerMock.error).toHaveBeenCalledWith(
             `Could not modify file '${join(capProject, 'apps', FileName.IndexCds)}'. Skipping this file.`
         );
     });
