@@ -1,3 +1,4 @@
+import { exit } from 'process';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import { defineConfig, devices } from '@sap-ux-private/playwright';
@@ -10,8 +11,18 @@ import 'dotenv/config';
 
 import type { TestOptions } from './src/fixture';
 
-const versions = JSON.parse(readFileSync(join(__dirname, 'versions.json').toString()) as unknown as string) as string[];
-
+let versions;
+try {
+    versions = JSON.parse(readFileSync(join(__dirname, 'versions.json').toString()) as unknown as string) as string[];
+} catch (error) {
+    if (error.code === 'ENOENT') {
+        console.error(
+            'The versions.json file is missing. Please run "node version.js" in the tests/integration/adaptation-editor directory to generate it.'
+        );
+        exit(1);
+    }
+    throw error;
+}
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
