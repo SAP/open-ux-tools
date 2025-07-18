@@ -71,6 +71,14 @@ describe('getUI5Versions', () => {
         expect(versions).toMatchSnapshot();
     });
 
+    test('filterOptions: `includeLegacyFree`', async () => {
+        const versions = await getUI5Versions({
+            includeLegacyFree: true
+        });
+        expect(versions.length).toEqual(146);
+        expect(versions).toMatchSnapshot();
+    });
+
     test('filterOptions: should not be duplicates present', async () => {
         const versions = await getUI5Versions();
         const hasDups = new Set(versions.map((v) => v.version)).size !== versions.length;
