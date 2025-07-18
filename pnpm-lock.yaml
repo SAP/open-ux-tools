@@ -2437,6 +2437,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -2783,6 +2786,9 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@types/semver':
         specifier: 7.5.2
         version: 7.5.2

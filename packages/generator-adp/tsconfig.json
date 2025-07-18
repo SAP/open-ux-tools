@@ -37,6 +37,9 @@
       "path": "../logger"
     },
     {
+      "path": "../odata-service-writer"
+    },
+    {
       "path": "../project-access"
     },
     {

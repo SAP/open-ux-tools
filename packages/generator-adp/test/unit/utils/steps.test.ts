@@ -1,12 +1,15 @@
 import { Prompts } from '@sap-devx/yeoman-ui-types';
 import type { IPrompt } from '@sap-devx/yeoman-ui-types';
+import { GeneratorTypes } from '../../../src/types';
 
 import {
     getWizardPages,
     getFlpPages,
     getDeployPage,
     updateWizardSteps,
-    updateFlpWizardSteps
+    updateFlpWizardSteps,
+    getSubGenErrorPage,
+    getSubGenAuthPages
 } from '../../../src/utils/steps';
 import { initI18n, t } from '../../../src/utils/i18n';
 
@@ -271,5 +274,71 @@ describe('updateFlpWizardSteps', () => {
             expect(tileSettingsIdx).toBeGreaterThan(attributesIdx);
             expect(flpConfigIdx).toBeGreaterThan(tileSettingsIdx);
         });
+    });
+});
+
+describe('getSubGenErrorPage', () => {
+    it('should return error page for ADD_ANNOTATIONS_TO_DATA', () => {
+        const result = getSubGenErrorPage(GeneratorTypes.ADD_ANNOTATIONS_TO_DATA);
+
+        expect(result).toEqual([{ name: 'Add Local Annotation File', description: '' }]);
+    });
+
+    it('should return error page for CHANGE_DATA_SOURCE', () => {
+        const result = getSubGenErrorPage(GeneratorTypes.CHANGE_DATA_SOURCE);
+
+        expect(result).toEqual([{ name: 'Replace OData Service', description: '' }]);
+    });
+
+    it('should return empty array for ADD_COMPONENT_USAGES', () => {
+        const result = getSubGenErrorPage(GeneratorTypes.ADD_COMPONENT_USAGES);
+
+        expect(result).toEqual([]);
+    });
+
+    it('should return empty array for unknown generator type', () => {
+        const result = getSubGenErrorPage('UNKNOWN_TYPE' as GeneratorTypes);
+
+        expect(result).toEqual([]);
+    });
+});
+
+describe('getSubGenAuthPages', () => {
+    const system = 'SYS_010';
+
+    it('should return auth pages for ADD_ANNOTATIONS_TO_DATA', () => {
+        const result = getSubGenAuthPages(GeneratorTypes.ADD_ANNOTATIONS_TO_DATA, system);
+
+        expect(result).toEqual([
+            {
+                name: 'Add Local Annotation File - Credentials',
+                description: `Enter credentials for your adaptation project's system (${system})`
+            },
+            {
+                name: 'Add Local Annotation File',
+                description: t('yuiNavSteps.addLocalAnnotationFileDescr')
+            }
+        ]);
+    });
+
+    it('should return auth pages for CHANGE_DATA_SOURCE', () => {
+        const result = getSubGenAuthPages(GeneratorTypes.CHANGE_DATA_SOURCE, system);
+
+        expect(result).toEqual([
+            {
+                name: 'Replace OData Service - Credentials',
+                description: `Enter credentials for your adaptation project's system (${system})`
+            },
+            {
+                name: 'Replace OData Service',
+                description: t('yuiNavSteps.replaceODataServiceDescr')
+            }
+        ]);
+    });
+
+    it('should return empty array for ADD_COMPONENT_USAGES', () => {
+        const result = getSubGenAuthPages(GeneratorTypes.ADD_COMPONENT_USAGES, system);
+
+        expect(result).toEqual([]);
     });
 });
