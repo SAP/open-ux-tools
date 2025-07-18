@@ -17,17 +17,15 @@ describe('<UILoader />', () => {
         expect(container.querySelector('.ms-Overlay')).toBeInTheDocument();
     });
 
-    describe('<UILoader />', () => {
-        it('Property "delayed" with block', () => {
-            const { container } = render(<UILoader blockDOM={true} delayed={true} />);
-            expect(container.querySelector('div.ui-loader--delayed')).toBeInTheDocument();
-            expect(container.querySelector('.ms-Overlay')).toBeInTheDocument();
-        });
+    it('Property "delayed" with block', () => {
+        const { container } = render(<UILoader blockDOM={true} delayed={true} />);
+        expect(container.querySelector('div.ui-loader--delayed')).toBeInTheDocument();
+        expect(container.querySelector('.ms-Overlay')).toBeInTheDocument();
+    });
 
-        it('Property "delayed" without block', () => {
-            const { container } = render(<UILoader blockDOM={false} delayed={true} />);
-            expect(container.querySelector('div.ui-loader--delayed')).not.toBeInTheDocument();
-            expect(container.querySelector('.ms-Overlay')).not.toBeInTheDocument();
-        });
+    it('Property "delayed" without block', () => {
+        const { container } = render(<UILoader blockDOM={false} delayed={true} />);
+        expect(container.querySelector('div.ui-loader--delayed')).not.toBeInTheDocument();
+        expect(container.querySelector('.ms-Overlay')).not.toBeInTheDocument();
     });
 });
