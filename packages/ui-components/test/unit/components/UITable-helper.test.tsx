@@ -320,9 +320,15 @@ describe('scrollToColumn', () => {
         };
 
         document.querySelector = jest.fn((selector) => {
-            if (selector === '.data-editor__sidebar') return mockSidebar;
-            if (selector === '.ms-ScrollablePane--contentContainer') return mockScrollContainer;
-            if (selector.includes('.ms-DetailsRow[data-item-index=')) return mockRow;
+            if (selector === '.data-editor__sidebar') {
+                return mockSidebar;
+            }
+            if (selector === '.ms-ScrollablePane--contentContainer') {
+                return mockScrollContainer;
+            }
+            if (selector.includes('.ms-DetailsRow[data-item-index=')) {
+                return mockRow;
+            }
             return null;
         });
 
@@ -347,12 +353,15 @@ describe('scrollToColumn', () => {
 
     it('should handle missing sidebar', () => {
         document.querySelector = jest.fn((selector) => {
-            if (selector === '.data-editor__sidebar') return null;
-            if (selector === '.ms-ScrollablePane--contentContainer')
+            if (selector === '.data-editor__sidebar') {
+                return null;
+            }
+            if (selector === '.ms-ScrollablePane--contentContainer') {
                 return {
                     scrollLeft: 100,
                     scrollTo: jest.fn()
                 };
+            }
             return null;
         });
 
@@ -363,10 +372,11 @@ describe('scrollToColumn', () => {
 
     it('should handle missing scroll container', () => {
         document.querySelector = jest.fn((selector) => {
-            if (selector === '.data-editor__sidebar')
+            if (selector === '.data-editor__sidebar') {
                 return {
                     getBoundingClientRect: jest.fn().mockReturnValue({ width: 200 })
                 };
+            }
             return null;
         });
 

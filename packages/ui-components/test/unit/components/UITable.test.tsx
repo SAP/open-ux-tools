@@ -116,24 +116,24 @@ describe('<UITable />', () => {
             cb(1);
             return 1;
         });
-        
+
         // Mock HTMLElement.focus to avoid focus errors in tests
         const mockFocus = jest.fn();
-        
+
         // Create a safer focus mock that handles null/undefined elements
-        const safeFocus = function(this: HTMLElement) {
+        const safeFocus = function (this: HTMLElement) {
             if (this && typeof this === 'object') {
                 return mockFocus.call(this);
             }
             return mockFocus();
         };
-        
+
         Object.defineProperty(HTMLElement.prototype, 'focus', {
             value: safeFocus,
             writable: true,
             configurable: true
         });
-        
+
         // Mock select method as well for text inputs
         Object.defineProperty(HTMLElement.prototype, 'select', {
             value: jest.fn(),
@@ -502,7 +502,7 @@ describe('<UITable />', () => {
 
         const dropdown = container.querySelector('.ms-Dropdown') as HTMLElement;
         expect(dropdown).toBeTruthy();
-        
+
         // Verify that the dropdown shows the correct selected value
         const dropdownTitle = container.querySelector('.ms-Dropdown-title');
         expect(dropdownTitle?.textContent).toEqual('Ireland');
@@ -510,11 +510,7 @@ describe('<UITable />', () => {
 
     it('Should handle dropdown cell display', () => {
         const { container } = render(
-            <UITable
-                {...defaultProps}
-                columns={[columnDropdown]}
-                items={[{ dropdowncolumn: 'IE' }]}
-            />
+            <UITable {...defaultProps} columns={[columnDropdown]} items={[{ dropdowncolumn: 'IE' }]} />
         );
 
         // Verify the cell displays the dropdown value correctly
@@ -525,23 +521,19 @@ describe('<UITable />', () => {
 
     it('Should handle dropdown column configuration', () => {
         const { container } = render(
-            <UITable
-                {...defaultProps}
-                columns={[columnDropdown]}
-                items={[{ dropdowncolumn: 'IE' }]}
-            />
+            <UITable {...defaultProps} columns={[columnDropdown]} items={[{ dropdowncolumn: 'IE' }]} />
         );
 
         // Test that the dropdown column displays the correct value
         const span = container.querySelector('.ms-DetailsRow-cell span') as HTMLElement;
         expect(span).toBeTruthy();
         expect(span.textContent).toBe('IE');
-        
+
         // Test that the column is configured correctly
         expect(columnDropdown.columnControlType).toBe(ColumnControlType.UIDropdown);
         expect(columnDropdown.data.dropdownOptions).toBeDefined();
         expect(columnDropdown.data.dropdownOptions.length).toBeGreaterThan(0);
-        
+
         // Test that the dropdown options include the expected values
         const expectedOptions = [
             { key: 'IE', text: 'Ireland' },
@@ -637,10 +629,11 @@ describe('<UITable />', () => {
         );
 
         // Try different selectors for the column header
-        const columnHeader = container.querySelector('.ms-DetailsHeader-cellTitle') || 
-                            container.querySelector('.ms-DetailsHeader-cell') ||
-                            container.querySelector('[role="columnheader"]');
-        
+        const columnHeader =
+            container.querySelector('.ms-DetailsHeader-cellTitle') ||
+            container.querySelector('.ms-DetailsHeader-cell') ||
+            container.querySelector('[role="columnheader"]');
+
         if (columnHeader) {
             fireEvent.click(columnHeader);
         }

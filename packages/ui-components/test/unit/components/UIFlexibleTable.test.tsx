@@ -1537,9 +1537,7 @@ describe('<UIFlexibleTable />', () => {
         });
 
         it('calls onBeforeTableRender and uses modified rows', () => {
-            const modifiedRows = [
-                { key: '1', cells: { col1: 99, col2: 98, col3: 97 }, title: 'Modified Row 1' }
-            ];
+            const modifiedRows = [{ key: '1', cells: { col1: 99, col2: 98, col3: 97 }, title: 'Modified Row 1' }];
             onBeforeTableRender.mockReturnValue({ rows: modifiedRows });
 
             renderResult = render(
@@ -1556,13 +1554,15 @@ describe('<UIFlexibleTable />', () => {
             );
 
             expect(onBeforeTableRender).toHaveBeenCalledWith({ rows });
-            
+
             const { container } = renderResult;
             const rowObjects = container.querySelectorAll(selectors.row);
             expect(rowObjects.length).toEqual(1); // Only one row from modified result
 
             // Check that modified content is rendered
-            const cell = container.querySelector('.cell-value-1-col1 .flexible-table-content-table-row-item-data-cells-value');
+            const cell = container.querySelector(
+                '.cell-value-1-col1 .flexible-table-content-table-row-item-data-cells-value'
+            );
             expect(cell?.textContent).toBe('99');
         });
 
@@ -1581,7 +1581,7 @@ describe('<UIFlexibleTable />', () => {
             );
 
             expect(onBeforeTableRender).toHaveBeenCalledWith({ rows });
-            
+
             const { container } = renderResult;
             const rowObjects = container.querySelectorAll(selectors.row);
             // Note: In the non-drag-and-drop path, the component uses props.rows directly
@@ -1786,7 +1786,7 @@ describe('<UIFlexibleTable />', () => {
             // Click first down button (should call onTableReorder but not actually reorder due to isDropDisabled)
             await userEvent.click(downButtons[0]);
             expect(onTableReorder).toHaveBeenCalledWith({ oldIndex: 0, newIndex: 1 });
-            
+
             // The focus should not be updated when drop is disabled
             // We can verify the component still works correctly
             expect(container.querySelector(selectors.content)).toBeTruthy();
