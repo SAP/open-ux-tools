@@ -1,5 +1,5 @@
 import type { CstNode, IToken, CstNodeLocation } from 'chevrotain';
-import { Range, Position } from 'vscode-languageserver-types';
+import { Range, Position } from '@sap-ux/text-document-utils';
 
 import type {
     Annotation,
@@ -692,7 +692,7 @@ class CstToAstVisitor extends Visitor {
      * @param location CST location
      * @returns Expression value ast node
      */
-    expression(context: ExpressionChildren, location: CstNodeLocation): Expression {
+    expression(context: ExpressionChildren, location: CstNodeLocation): Expression | Path {
         /**
          * Builds operator.
          *
@@ -707,6 +707,12 @@ class CstToAstVisitor extends Visitor {
         const openToken = existsAndNotRecovered(context.LParen) ? this.createToken(context.LParen[0]) : undefined;
         const closeToken = existsAndNotRecovered(context.RParen) ? this.createToken(context.RParen[0]) : undefined;
         const range = this.locationToRange(location);
+        if (context.Operator === undefined && context.value?.length === 1) {
+            const node = this.visit(context.value[0]);
+            if (node?.type === PATH_TYPE) {
+                return node;
+            }
+        }
         const operators = (context.Operator ?? []).map((token) => buildOperator(token, this.tokenToRange(token)));
         const operands = (context.value ?? []).map((token) => this.visit(token) as AnnotationValue);
         const expression = { operators, operands, openToken, closeToken, range };

@@ -1,6 +1,12 @@
 import readPkgUp from 'read-pkg-up';
-import type { BasicAppSettings, FioriApp, FreestyleApp } from './types';
 import { TemplateType } from './types';
+import { compareUI5VersionGte, ui5LtsVersion_1_120 } from './utils';
+import { getFlpId } from '@sap-ux/fiori-generator-shared';
+import type { BasicAppSettings, FioriApp, FreestyleApp } from './types';
+
+const defaultVirtualPreviewFile = 'test/flp.html'; // Default virtual preview file name
+const defaultIntent = 'app-preview';
+const defaultNavActionDisplay = 'display';
 
 /**
  * Set defaults for missing parameters on the given Fiori/UI5 app instance.
@@ -9,7 +15,8 @@ import { TemplateType } from './types';
  */
 function setAppDefaults(app: FioriApp): void {
     app.baseComponent = app.baseComponent || 'sap/ui/core/UIComponent';
-    app.flpAppId = app.flpAppId || `${app.id.replace(/[-_.]/g, '')}-tile`;
+    app.flpAction = app.flpAction || defaultNavActionDisplay;
+    app.flpAppId = app.flpAppId || getFlpId(app.id, app.flpAction);
 }
 
 /**
@@ -22,7 +29,18 @@ function setBasicTemplateDefaults(settings: BasicAppSettings): void {
 }
 
 /**
- * Set defaults for missing parameters on the given instance of the overal config.
+ * Sets defaults for relevant parameters (`flpAppId`, `startFile`, `localStartFile`,  ) when virtual endpoints are used.
+ *
+ * @param ffApp - Fiori freestyle application config
+ */
+export function setVirtualEndpointDefaults(ffApp: FreestyleApp<unknown>): void {
+    ffApp.app.flpAppId = defaultIntent;
+    ffApp.app.localStartFile = defaultVirtualPreviewFile;
+    ffApp.app.startFile = defaultVirtualPreviewFile;
+}
+
+/**
+ * Set defaults for missing parameters on the given instance of the overall config.
  * Adds source template info.
  *
  * @param ffApp full config object used by the generate method
@@ -43,8 +61,31 @@ export function setDefaults(ffApp: FreestyleApp<unknown>): void {
     if (ffApp.template.type === TemplateType.Basic) {
         setBasicTemplateDefaults(ffApp.template.settings as BasicAppSettings);
     }
-    // All fiori-freestyle apps should use load reuse libs, unless explicitly overridden
-    ffApp.appOptions = Object.assign({ loadReuseLibs: true }, ffApp.appOptions);
+    // All fiori-freestyle apps should use load reuse libs for ui5 below 1.120.0 , unless explicitly overridden
+    let loadReuseLibs = true;
+    if (
+        compareUI5VersionGte(ffApp.ui5?.minUI5Version ?? ffApp.ui5?.version ?? '', ui5LtsVersion_1_120) &&
+        ffApp.template.type === TemplateType.Basic
+    ) {
+        loadReuseLibs = false;
+    }
+    ffApp.appOptions = Object.assign(
+        {
+            loadReuseLibs: loadReuseLibs
+        },
+        ffApp.appOptions
+    );
+    if (ffApp.ui5) {
+        const ushell = 'sap.ushell';
+        ffApp.ui5.manifestLibs = ffApp.ui5?.manifestLibs ?? ffApp.ui5?.ui5Libs;
+        if (Array.isArray(ffApp.ui5?.ui5Libs)) {
+            ffApp.ui5.ui5Libs = ffApp.ui5?.ui5Libs?.concat(ushell);
+        } else if (typeof ffApp.ui5?.ui5Libs === 'string') {
+            ffApp.ui5.ui5Libs = ffApp.ui5?.ui5Libs.includes(ushell)
+                ? ffApp.ui5?.ui5Libs
+                : ffApp.ui5?.ui5Libs.concat(ushell);
+        }
+    }
 }
 
 // Specific escaping is required for FLP texts in flpSandbox.html template file

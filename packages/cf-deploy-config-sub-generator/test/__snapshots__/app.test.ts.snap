@@ -1,0 +1,411 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Cloud foundry generator tests Generate CF deployment to an app within a managed app router 4`] = `
+[
+  {
+    "name": "managedApp-destination-service",
+    "parameters": {
+      "config": {
+        "HTML5Runtime_enabled": true,
+        "init_data": {
+          "instance": {
+            "destinations": [
+              {
+                "Authentication": "NoAuthentication",
+                "Name": "ui5",
+                "ProxyType": "Internet",
+                "Type": "HTTP",
+                "URL": "https://ui5.sap.com",
+              },
+            ],
+            "existing_destinations_policy": "update",
+          },
+        },
+        "version": "1.0.0",
+      },
+      "service": "destination",
+      "service-name": "managedApp-destination-service",
+      "service-plan": "lite",
+    },
+    "type": "org.cloudfoundry.managed-service",
+  },
+  {
+    "name": "managedApp_repo_host",
+    "parameters": {
+      "service": "html5-apps-repo",
+      "service-name": "managedApp-html5-srv",
+      "service-plan": "app-host",
+    },
+    "type": "org.cloudfoundry.managed-service",
+  },
+  {
+    "name": "uaa_managedApp",
+    "parameters": {
+      "path": "./xs-security.json",
+      "service": "xsuaa",
+      "service-name": "managedApp-xsuaa-srv",
+      "service-plan": "application",
+    },
+    "type": "org.cloudfoundry.managed-service",
+  },
+]
+`;
+
+exports[`Cloud foundry generator tests Generate CF deployment to an app within a managed app router 6`] = `
+"{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
+"
+`;
+
+exports[`Cloud foundry generator tests Validate app is added and configured for standalone approuter 5`] = `
+{
+  "devDependencies": {
+    "@ui5/cli": "^4.0.16",
+    "mbt": "^1.2.29",
+    "rimraf": "^5.0.5",
+    "ui5-task-zipper": "^3.4.x",
+  },
+  "scripts": {
+    "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
+    "build:mta": "rimraf resources mta_archives && mbt build",
+    "deploy": "fiori cfDeploy",
+    "undeploy": "cf undeploy standaloneApp --delete-services --delete-service-keys --delete-service-brokers",
+  },
+}
+`;
+
+exports[`Cloud foundry generator tests Validate app is added and configured for standalone approuter 6`] = `
+{
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "authenticationType": "xsuaa",
+      "csrfProtection": false,
+      "destination": "TestDestination",
+      "source": "^/sap/(.*)$",
+      "target": "/sap/$1",
+    },
+    {
+      "authenticationType": "none",
+      "destination": "ui5",
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+    },
+    {
+      "authenticationType": "none",
+      "destination": "ui5",
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+    },
+    {
+      "authenticationType": "xsuaa",
+      "service": "html5-apps-repo-rt",
+      "source": "^(.*)$",
+      "target": "$1",
+    },
+  ],
+  "welcomeFile": "/index.html",
+}
+`;
+
+exports[`Cloud foundry generator tests Validate app is added to an existing managed approuter project with an existing FE app 6`] = `
+"{
+  "welcomeFile": "/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/sap/(.*)$",
+      "target": "/sap/$1",
+      "destination": "testDestination",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+      "authenticationType": "none",
+      "destination": "ui5"
+    },
+    {
+      "source": "^(.*)$",
+      "target": "$1",
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
+"
+`;
+
+exports[`Cloud foundry generator tests Validate new managed approuter is added when there is no existing mta.yaml 2`] = `
+{
+  "build-parameters": {
+    "no-source": true,
+  },
+  "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-destination-content",
+  "parameters": {
+    "content": {
+      "instance": {
+        "destinations": [
+          {
+            "Name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa_html_repo_host",
+            "ServiceInstanceName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-html5-service",
+            "ServiceKeyName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-repo-host-key",
+            "sap.cloud.service": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          },
+          {
+            "Authentication": "OAuth2UserTokenExchange",
+            "Name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa_uaa",
+            "ServiceInstanceName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-xsuaa-service",
+            "ServiceKeyName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-uaa-key",
+            "sap.cloud.service": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          },
+        ],
+        "existing_destinations_policy": "update",
+      },
+    },
+  },
+  "requires": [
+    {
+      "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-destination-service",
+      "parameters": {
+        "content-target": true,
+      },
+    },
+    {
+      "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-repo-host",
+      "parameters": {
+        "service-key": {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-repo-host-key",
+        },
+      },
+    },
+    {
+      "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-uaa",
+      "parameters": {
+        "service-key": {
+          "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-uaa-key",
+        },
+      },
+    },
+  ],
+  "type": "com.sap.application.content",
+}
+`;
+
+exports[`Cloud foundry generator tests Validate new managed approuter is added when there is no existing mta.yaml 3`] = `
+{
+  "build-parameters": {
+    "build-result": "resources",
+    "requires": [
+      {
+        "artifacts": [
+          "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.zip",
+        ],
+        "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "target-path": "resources/",
+      },
+    ],
+  },
+  "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-app-content",
+  "path": ".",
+  "requires": [
+    {
+      "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-repo-host",
+      "parameters": {
+        "content-target": true,
+      },
+    },
+  ],
+  "type": "com.sap.application.content",
+}
+`;
+
+exports[`Cloud foundry generator tests Validate new managed approuter is added when there is no existing mta.yaml 4`] = `
+{
+  "build-parameters": {
+    "build-result": "dist",
+    "builder": "custom",
+    "commands": [
+      "npm install",
+      "npm run build:cf",
+    ],
+    "supported-platforms": [],
+  },
+  "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "path": ".",
+  "type": "html5",
+}
+`;
+
+exports[`Cloud foundry generator tests Validate new managed approuter is added when there is no existing mta.yaml 5`] = `
+[
+  {
+    "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-destination-service",
+    "parameters": {
+      "config": {
+        "HTML5Runtime_enabled": true,
+        "init_data": {
+          "instance": {
+            "destinations": [
+              {
+                "Authentication": "NoAuthentication",
+                "Name": "ui5",
+                "ProxyType": "Internet",
+                "Type": "HTTP",
+                "URL": "https://ui5.sap.com",
+              },
+            ],
+            "existing_destinations_policy": "update",
+          },
+        },
+        "version": "1.0.0",
+      },
+      "service": "destination",
+      "service-name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-destination-service",
+      "service-plan": "lite",
+    },
+    "type": "org.cloudfoundry.managed-service",
+  },
+  {
+    "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-uaa",
+    "parameters": {
+      "path": "./xs-security.json",
+      "service": "xsuaa",
+      "service-name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-xsuaa-service",
+      "service-plan": "application",
+    },
+    "type": "org.cloudfoundry.managed-service",
+  },
+  {
+    "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-repo-host",
+    "parameters": {
+      "service": "html5-apps-repo",
+      "service-name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-html5-service",
+      "service-plan": "app-host",
+    },
+    "type": "org.cloudfoundry.managed-service",
+  },
+]
+`;
+
+exports[`Cloud foundry generator tests Validate new managed approuter is added when there is no existing mta.yaml 6`] = `
+{
+  "description": "Security profile of called application",
+  "role-templates": [],
+  "scopes": [],
+  "tenant-mode": "dedicated",
+  "xsappname": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+}
+`;
+
+exports[`Cloud foundry generator tests Validate new managed approuter is added when there is no existing mta.yaml 7`] = `
+"node_modules/
+dist/
+.scp/
+.env
+Makefile*.mta
+mta_archives
+mta-*
+resources
+archive.zip
+.*_mta_build_tmp"
+`;
+
+exports[`Cloud foundry generator tests Validate new managed approuter is added when there is no existing mta.yaml 9`] = `
+{
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "authenticationType": "none",
+      "csrfProtection": false,
+      "destination": "testDestination",
+      "source": "^/sap/(.*)$",
+      "target": "/sap/$1",
+    },
+    {
+      "authenticationType": "none",
+      "destination": "ui5",
+      "source": "^/resources/(.*)$",
+      "target": "/resources/$1",
+    },
+    {
+      "authenticationType": "none",
+      "destination": "ui5",
+      "source": "^/test-resources/(.*)$",
+      "target": "/test-resources/$1",
+    },
+    {
+      "authenticationType": "xsuaa",
+      "service": "html5-apps-repo-rt",
+      "source": "^(.*)$",
+      "target": "$1",
+    },
+  ],
+  "welcomeFile": "/index.html",
+}
+`;
+
+exports[`Cloud foundry generator tests Validate new managed approuter is added when there is no existing mta.yaml 10`] = `
+{
+  "builder": {
+    "customTasks": [
+      {
+        "afterTask": "generateCachebusterInfo",
+        "configuration": {
+          "additionalFiles": [
+            "xs-app.json",
+          ],
+          "archiveName": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "relativePaths": true,
+        },
+        "name": "ui5-task-zipper",
+      },
+    ],
+    "resources": {
+      "excludes": [
+        "/test/**",
+        "/localService/**",
+      ],
+    },
+  },
+  "metadata": {
+    "name": "travel",
+  },
+  "resources": {
+    "configuration": {
+      "propertiesFileSourceEncoding": "UTF-8",
+    },
+  },
+  "specVersion": "2.4",
+  "type": "application",
+}
+`;

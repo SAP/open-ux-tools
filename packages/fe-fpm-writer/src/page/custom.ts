@@ -17,7 +17,7 @@ import type { Manifest } from '../common/types';
 import { validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
-import { addExtensionTypes } from '../common/utils';
+import { addExtensionTypes, getManifestPath } from '../common/utils';
 import { extendJSON } from '../common/file';
 
 /**
@@ -33,6 +33,8 @@ export function enhanceData(data: CustomPage, manifestPath: string, fs: Editor):
 
     // set common defaults
     const config = setCommonDefaults(data, manifestPath, manifest) as InternalCustomPage;
+    // currently the custom page template is always the same
+    config.template = 'sap.fe.core.fpm';
     config.settings = initializeTargetSettings(data);
 
     // set library dependencies
@@ -74,14 +76,14 @@ export function getTemplateRoot(ui5Version?: string): string {
  * @param {Editor} [fs] - the memfs editor instance
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-export function generate(basePath: string, data: CustomPage, fs?: Editor): Editor {
+export async function generate(basePath: string, data: CustomPage, fs?: Editor): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
     validateVersion(data.minUI5Version);
-    validatePageConfig(basePath, data, fs, []);
+    await validatePageConfig(basePath, data, fs, []);
 
-    const manifestPath = join(basePath, 'webapp/manifest.json');
+    const manifestPath = await getManifestPath(basePath, fs);
 
     const config = enhanceData(data, manifestPath, fs);
 

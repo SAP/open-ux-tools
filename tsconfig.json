@@ -17,6 +17,7 @@
     "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": false,
+    "strictNullChecks": true,
     "target": "ES2022",
     "skipLibCheck": true,
     "resolveJsonModule": true,
@@ -24,7 +25,16 @@
   },
   "references": [
     {
+      "path": "packages/abap-deploy-config-inquirer"
+    },
+    {
+      "path": "packages/abap-deploy-config-sub-generator"
+    },
+    {
       "path": "packages/abap-deploy-config-writer"
+    },
+    {
+      "path": "packages/adp-flp-config-sub-generator"
     },
     {
       "path": "packages/adp-tooling"
@@ -60,6 +70,15 @@
       "path": "packages/cds-odata-annotation-converter"
     },
     {
+      "path": "packages/cf-deploy-config-inquirer"
+    },
+    {
+      "path": "packages/cf-deploy-config-sub-generator"
+    },
+    {
+      "path": "packages/cf-deploy-config-writer"
+    },
+    {
       "path": "packages/control-property-editor-common"
     },
     {
@@ -67,6 +86,12 @@
     },
     {
       "path": "packages/create"
+    },
+    {
+      "path": "packages/deploy-config-generator-shared"
+    },
+    {
+      "path": "packages/deploy-config-sub-generator"
     },
     {
       "path": "packages/deploy-tooling"
@@ -87,6 +112,9 @@
       "path": "packages/fiori-annotation-api"
     },
     {
+      "path": "packages/fiori-app-sub-generator"
+    },
+    {
       "path": "packages/fiori-elements-writer"
     },
     {
@@ -94,6 +122,21 @@
     },
     {
       "path": "packages/fiori-generator-shared"
+    },
+    {
+      "path": "packages/fiori-tools-settings"
+    },
+    {
+      "path": "packages/flp-config-inquirer"
+    },
+    {
+      "path": "packages/flp-config-sub-generator"
+    },
+    {
+      "path": "packages/generator-adp"
+    },
+    {
+      "path": "packages/guided-answers-helper"
     },
     {
       "path": "packages/i18n"
@@ -115,6 +158,9 @@
     },
     {
       "path": "packages/mockserver-config-writer"
+    },
+    {
+      "path": "packages/nodejs-utils"
     },
     {
       "path": "packages/odata-annotation-core-types"
@@ -150,7 +196,13 @@
       "path": "packages/project-input-validator"
     },
     {
+      "path": "packages/project-integrity"
+    },
+    {
       "path": "packages/reload-middleware"
+    },
+    {
+      "path": "packages/repo-app-import-sub-generator"
     },
     {
       "path": "packages/serve-static-middleware"
@@ -165,10 +217,19 @@
       "path": "packages/telemetry"
     },
     {
+      "path": "packages/text-document-utils"
+    },
+    {
       "path": "packages/ui-components"
     },
     {
       "path": "packages/ui-prompting"
+    },
+    {
+      "path": "packages/ui-service-inquirer"
+    },
+    {
+      "path": "packages/ui-service-sub-generator"
     },
     {
       "path": "packages/ui5-application-inquirer"
@@ -189,7 +250,13 @@
       "path": "packages/ui5-library-reference-inquirer"
     },
     {
+      "path": "packages/ui5-library-reference-sub-generator"
+    },
+    {
       "path": "packages/ui5-library-reference-writer"
+    },
+    {
+      "path": "packages/ui5-library-sub-generator"
     },
     {
       "path": "packages/ui5-library-writer"
@@ -213,10 +280,10 @@
       "path": "examples/odata-cli"
     },
     {
-      "path": "examples/prompting-ui"
+      "path": "examples/simple-generator"
     },
     {
-      "path": "examples/simple-generator"
+      "path": "examples/ui-prompting-examples"
     }
   ]
 }

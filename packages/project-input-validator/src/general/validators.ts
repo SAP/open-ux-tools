@@ -1,5 +1,7 @@
 import { t } from '../i18n';
 
+export type AllowedCharacters = '_';
+
 /**
  * SAP client number is either empty or 3 digit string.
  *
@@ -64,6 +66,41 @@ export function validateEmptySpaces(value: string): boolean | string {
 }
 
 /**
+ * Validates that the given string does not exceed the specified maximum length.
+ *
+ * @param {string} value - The string value to validate.
+ * @param {number} [maxLength] - The maximum allowed length of the string. If 0 or not provided, no length validation is performed.
+ * @returns {boolean | string} Returns `true` if the validation passes, or an error message string if it fails.
+ */
+export function validateMaxLength(value: string, maxLength: number = 0): boolean | string {
+    if (maxLength > 0 && value.length > maxLength) {
+        return t('general.maxLength', { maxLength });
+    }
+    return true;
+}
+
+/**
+ * Validates whether the input contains only alphanumeric characters and allowed special characters.
+ *
+ * @param {string} value - The input string to validate.
+ * @param {string[]} allowedCharacters - An array of allowed special characters.
+ * @returns {boolean | string} Returns `true` if validation passes, or an error message string if validation fails.
+ */
+export function validateAllowedCharacters(value: string, allowedCharacters?: AllowedCharacters[]): boolean | string {
+    // Asterisks is supported for the semantic object and action field but not the inbound title
+    if (allowedCharacters && allowedCharacters.length > 0) {
+        const escapedChars = allowedCharacters.map((char) => `\\${char}`).join('');
+        const regex = new RegExp(`^[a-zA-Z0-9${escapedChars}]+$`);
+        if (!regex.test(value)) {
+            return t('general.supportedFormats', {
+                allowedCharacters: allowedCharacters.join('')
+            });
+        }
+    }
+    return true;
+}
+
+/**
  * Validate input is valid JSON.
  *
  * @param value The string to test.
@@ -92,4 +129,21 @@ export function validateSpecialChars(value: string, regexp = '^[a-zA-Z0-9_$.\\-]
     }
 
     return t('general.invalidValueForSpecialChars');
+}
+
+/**
+ * Checks if the combined Windows path length exceeds the default limit (256 characters).
+ *
+ * @param basePath The base path (e.g., target folder or mtaPath) + the name, ID, or additional segment to be appended
+ * @param errorMessage The error message to be returned if the path is too long. Use `{length}` as a placeholder for the actual length.
+ * @returns true if valid, or the error message if too long
+ */
+export function validateWindowsPathLength(basePath: string, errorMessage: string): true | string {
+    if (process.platform === 'win32') {
+        const combinedLength = `${basePath}`.length;
+        if (combinedLength >= 256) {
+            return errorMessage.replace('{{length}}', combinedLength.toString());
+        }
+    }
+    return true;
 }

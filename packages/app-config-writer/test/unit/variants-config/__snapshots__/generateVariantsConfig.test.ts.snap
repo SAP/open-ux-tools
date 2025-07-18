@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`generateVariantsConfig add variants configuration to a project 1`] = `
+Object {
+  "name": "test-app",
+  "sapux": true,
+  "sapuxLayer": "VENDOR",
+  "scripts": Object {
+    "start-variants-management": "ui5 serve --open \\"/my-variants.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-xx-viewCache=false#hello-world\\"",
+  },
+}
+`;
+
+exports[`generateVariantsConfig add variants configuration to a project 2`] = `
+"specVersion: \\"3.0\\"
+metadata:
+  name: fe_lrop_v2
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          intent:
+            object: hello
+            action: world
+        editors:
+          rta:
+            layer: VENDOR
+            endpoints:
+              - path: /editor.html
+                developerMode: true
+              - path: /my-variants.html
+"
+`;
+
+exports[`generateVariantsConfig add variants configuration to a project with deprecated preview middleware config 1`] = `
+Object {
+  "description": "An SAP Fiori application.",
+  "name": "v2-lrop-0909",
+  "sapux": true,
+  "sapuxLayer": "VENDOR",
+  "scripts": Object {
+    "start-variants-management": "fiori run --open \\"/preview.html?fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-xx-viewCache=false#app-preview\\"",
+  },
+}
+`;
+
+exports[`generateVariantsConfig add variants configuration to a project with deprecated preview middleware config 2`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          theme: sap_horizon
+"
+`;

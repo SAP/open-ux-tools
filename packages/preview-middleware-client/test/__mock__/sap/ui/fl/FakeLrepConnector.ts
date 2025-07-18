@@ -1,4 +1,4 @@
 export default class FakeLrepConnector {
-    static fileChangeRequestNotifier = undefined;
+    static fileChangeRequestNotifier = jest.fn();
     static enableFakeConnector = jest.fn();
 }

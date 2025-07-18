@@ -205,6 +205,16 @@ describe('<UIDialog />', () => {
     });
 
     describe('Styles', () => {
+        it('Basic style', () => {
+            const dialog = wrapper.find(Dialog);
+            const props = dialog.props();
+            expect(props.modalProps?.overlay?.styles).toEqual({
+                root: {
+                    background: 'var(--vscode-editor-background)',
+                    opacity: 0.8
+                }
+            });
+        });
         it('Title - single line', () => {
             const dialog = wrapper.find(Dialog);
             const props = dialog.props();
@@ -259,6 +269,7 @@ describe('<UIDialog />', () => {
                     "margin": "10px 0 20px",
                   },
                   "actionsRight": Object {
+                    "justifyContent": "center",
                     "margin": "0px",
                     "textAlign": "center",
                     "width": "100%",
@@ -311,7 +322,6 @@ describe('<UIDialog />', () => {
             expect(dialogContentStyles.subText).toMatchInlineSnapshot(`
                 Object {
                   "color": "var(--vscode-foreground)",
-                  "fontFamily": "var(--vscode-font-family)",
                   "fontSize": 13,
                   "lineHeight": 18,
                   "margin": "0",
@@ -322,7 +332,6 @@ describe('<UIDialog />', () => {
                   "color": "var(--vscode-foreground)",
                   "display": "flex",
                   "flexDirection": "column",
-                  "fontFamily": "var(--vscode-font-family)",
                   "fontSize": 13,
                   "height": "100%",
                   "maxHeight": 268,
@@ -372,7 +381,6 @@ describe('<UIDialog />', () => {
             expect(dialogContentStyles.subText).toMatchInlineSnapshot(`
                 Object {
                   "color": "var(--vscode-foreground)",
-                  "fontFamily": "var(--vscode-font-family)",
                   "fontSize": 13,
                   "lineHeight": 18,
                   "margin": "0",
@@ -383,7 +391,6 @@ describe('<UIDialog />', () => {
                 `
                 Object {
                   "color": "var(--vscode-foreground)",
-                  "fontFamily": "var(--vscode-font-family)",
                   "fontSize": 13,
                 }
             `

@@ -1,8 +1,7 @@
 import IconPool from 'mock/sap/ui/core/IconPool';
-import Component from 'sap/ui/core/Component';
 import { sapCoreMock } from 'mock/window';
 import type Element from 'sap/ui/core/Element';
-import { getComponent, getIcons } from '../../../src/cpe/ui5-utils';
+import { getIcons } from '../../../src/cpe/ui5-utils';
 
 describe('ui5Utils', () => {
     const testElement = {} as Element;
@@ -12,21 +11,6 @@ describe('ui5Utils', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
-    });
-
-    test('getComponent - deprecated', () => {
-        (Component as any).get = undefined;
-        const component = getComponent(testComponent.id);
-        expect(sapCoreMock.getComponent).toBeCalledWith(testComponent.id);
-        expect(component).toStrictEqual(testComponent);
-    });
-
-    test('getComponent', () => {
-        Component.get = jest.fn().mockReturnValue(testComponent);
-        const component = getComponent(testComponent.id);
-        expect(Component.get).toBeCalledWith(testComponent.id);
-        expect(sapCoreMock.getComponent).not.toBeCalled();
-        expect(component).toStrictEqual(testComponent);
     });
 
     describe('getIcons', () => {

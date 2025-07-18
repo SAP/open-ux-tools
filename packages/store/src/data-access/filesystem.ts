@@ -119,6 +119,34 @@ class FilesystemStore<E extends object> implements DataAccess<E> {
         return Promise.resolve(entity);
     }
 
+    public async partialUpdate({
+        entityName,
+        id,
+        entity
+    }: {
+        entityName: string;
+        id: string;
+        entity: E;
+    }): Promise<undefined | E> {
+        if (!entity || !Object.keys(entity).length) {
+            this.logger.debug('partialUpdate: No properties specified for update');
+            return undefined;
+        }
+        const existingSystem = await this.read({ entityName, id });
+        if (!existingSystem) {
+            this.logger.debug(`partialUpdate: Entity with id ${id} does not exist in ${entityName}. Cannot update.`);
+            return undefined;
+        }
+
+        const updatedEntity = this.mergeProperties(entity, existingSystem);
+        return this.write({ entityName, id, entity: updatedEntity });
+    }
+
+    private mergeProperties(update: Partial<E>, existingSystem: E): E {
+        const updatedEntity = { ...existingSystem, ...update };
+        return { ...updatedEntity };
+    }
+
     async del({ entityName, id }: { entityName: string; id: string }): Promise<boolean> {
         const name = toPersistenceName(entityName);
         if (!name) {

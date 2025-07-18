@@ -11,6 +11,7 @@ import type { Page } from '@sap-ux-private/playwright';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
 import type { UI5Version } from '@sap-ux/ui5-info';
+import { SERVER_TIMEOUT, TIMEOUT } from '../utils/constant';
 
 const buildUrl =
     (port = 3000) =>
@@ -75,7 +76,6 @@ middleware:
   path: ../../../dist/ui5/middleware.js
 `;
 };
-const timeout = 50 * 1000;
 
 const getYamlPath = (cwd: string): string => {
     return join(cwd, 'ui5.yaml');
@@ -97,7 +97,7 @@ const prepare = async (ui5Version: string) => {
     getUrl = buildUrl(port);
     await startServer({
         command: `cd ${testCwd} && npx ui5 serve --port ${port}`,
-        launchTimeout: timeout,
+        launchTimeout: SERVER_TIMEOUT,
         port: port,
         host: 'localhost',
         protocol: 'http',
@@ -117,11 +117,15 @@ const UI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
 
 for (const { version } of UI5Versions) {
     test.describe(`UI5 version: ${version}`, () => {
+        test.beforeAll(async () => {
+            test.setTimeout(TIMEOUT);
+            await prepare(version);
+        });
+
         test.afterEach(async () => {
             await teardownServer();
         });
         test('Click on Go button and check an element ', async ({ page }) => {
-            await prepare(version);
             await check({ page });
         });
     });

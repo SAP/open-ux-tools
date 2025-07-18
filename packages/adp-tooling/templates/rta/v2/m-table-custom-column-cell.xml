@@ -1,0 +1,4 @@
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!--  add your xml here -->
+    <Text id="<%- ids.text %>" text="Sample data" />
+</core:FragmentDefinition>

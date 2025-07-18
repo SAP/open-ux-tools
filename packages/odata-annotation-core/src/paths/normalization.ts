@@ -4,11 +4,12 @@ import type { ParsedPath, ParsedPathSegment } from './parse';
 import { PATH_SEPARATOR } from './parse';
 
 /**
+ * Converts path to fully qualified representation.
  *
- * @param namespaceMap
- * @param currentNamespace
- * @param path
- * @returns
+ * @param namespaceMap namespace map
+ * @param currentNamespace namespace
+ * @param path path
+ * @returns fully qualified path string
  */
 export function toFullyQualifiedPath(
     namespaceMap: { [aliasOrNamespace: string]: string },
@@ -42,13 +43,13 @@ function toFullyQualifiedPathSegment(
                 .filter((parameter): parameter is string => !!parameter)
                 .join(',');
 
-            return `${namespace}.${segment.name}(${parameters})`;
+            return `${namespace ?? segment.namespaceOrAlias}.${segment.name}(${parameters})`;
         }
         case 'identifier':
             if (segment.namespaceOrAlias === undefined) {
                 return segment.name;
             }
-            return `${namespace}.${segment.name}`;
+            return `${namespace ?? segment.namespaceOrAlias}.${segment.name}`;
         case 'term-cast':
             return `@${toFullyQualifiedName(namespaceMap, currentNamespace, { ...segment, type: 'identifier' }) ?? ''}${
                 segment.qualifier ? '#' + segment.qualifier : ''

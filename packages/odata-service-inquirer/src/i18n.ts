@@ -1,27 +1,39 @@
-import type { TOptions } from 'i18next';
+import { addi18nResourceBundle as addInquirerCommonTexts } from '@sap-ux/inquirer-common';
+import { addi18nResourceBundle as addProjectInputValidatorTexts } from '@sap-ux/project-input-validator';
+import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/odata-service-inquirer.i18n.json';
-import type { OdataVersion } from '@sap-ux/odata-service-writer';
 
 const odataServiceInquirerNamespace = 'odata-service-inquirer';
 export const defaultProjectNumber = 1;
+export const i18n: i18nNext = i18next.createInstance();
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18nOdataServiceInquirer(): Promise<void> {
-    await i18next.init(
-        {
-            lng: 'en',
-            fallbackLng: 'en',
-            missingInterpolationHandler: () => '',
-            interpolation: {
-                format: function odataVersionFormatter(odataVersion: OdataVersion) {
-                    return odataVersion ? ` V${odataVersion}` : '';
+    await i18n.init({
+        lng: 'en',
+        fallbackLng: 'en',
+        missingInterpolationHandler: () => '',
+        interpolation: {
+            format: function (value, format?: string) {
+                // OData version formatter
+                if (format === 'odataVersionFormatter') {
+                    return value ? ` V${value}` : '';
                 }
+
+                // If we have a value add a colon before outputting
+                if (format === 'addMsgWithColonFormatter') {
+                    return value ? `: ${value}` : '';
+                }
+                return value;
             }
-        },
-        () => i18next.addResourceBundle('en', odataServiceInquirerNamespace, translations)
-    );
+        }
+    });
+    i18n.addResourceBundle('en', odataServiceInquirerNamespace, translations);
+    // add other bundles that are used in consumed modules
+    addInquirerCommonTexts();
+    addProjectInputValidatorTexts();
 }
 
 /**
@@ -35,7 +47,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: odataServiceInquirerNamespace });
     }
-    return i18next.t(key, options);
+    return i18n.t(key, options);
 }
 
 initI18nOdataServiceInquirer().catch(() => {

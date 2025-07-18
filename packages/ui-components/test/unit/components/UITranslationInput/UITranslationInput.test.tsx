@@ -18,7 +18,8 @@ describe('<UITranslationInput />', () => {
         input: '.ms-TextField',
         button: '.ms-Button',
         callout: '.ms-Callout',
-        loader: '.ms-Spinner'
+        loader: '.ms-Spinner',
+        inputField: '.ui-translatable__field'
     };
 
     const getButtonIdSelector = (id: string, goToCode = false): string => {
@@ -264,7 +265,10 @@ describe('<UITranslationInput />', () => {
                 'value': { 'value': result.entry.value }
             });
             // Check title
-            expect(container.querySelector(`${selectors.input} input`)?.getAttribute('title')).toEqual(result.title);
+            expect(container.querySelector(`${selectors.input} input`)?.getAttribute('title')).toEqual(null);
+            expect(
+                container.querySelector(`${selectors.input} ${selectors.inputField}`)?.getAttribute('title')
+            ).toEqual(result.title);
         }
     );
 
@@ -430,6 +434,8 @@ describe('<UITranslationInput />', () => {
             />
         );
         // Check title
-        expect(container.querySelector(`${selectors.input} input`)?.getAttribute('title')).toEqual(externalTitle);
+        expect(container.querySelector(`${selectors.input} ${selectors.inputField}`)?.getAttribute('title')).toEqual(
+            externalTitle
+        );
     });
 });

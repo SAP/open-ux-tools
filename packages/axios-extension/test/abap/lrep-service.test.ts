@@ -6,7 +6,6 @@ import { LayeredRepositoryService, createForAbap } from '../../src';
 import type { AxiosError } from '../../src';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
-import { describe } from 'node:test';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -264,11 +263,21 @@ describe('LayeredRepositoryService', () => {
     });
 
     describe('mergeAppDescriptorVariant', () => {
-        const mockResult = { hello: 'world' };
         test('merge valid app variant', async () => {
+            const mockResult = { hello: 'world', components: [{ url: '/webapp' }] };
             nock(server).put(`${LayeredRepositoryService.PATH}/appdescr_variant_preview/`).reply(200, mockResult);
 
             const mergedDescriptor = await service.mergeAppDescriptorVariant(Buffer.from('~test'));
+            expect(mergedDescriptor).toEqual(mockResult);
+        });
+
+        test('merge valid app variant with adjusted workspace path', async () => {
+            const mockResult = { hello: 'world', components: [{ url: '/' }] };
+            nock(server)
+                .put(`${LayeredRepositoryService.PATH}/appdescr_variant_preview/?workspacePath=//`)
+                .reply(200, mockResult);
+
+            const mergedDescriptor = await service.mergeAppDescriptorVariant(Buffer.from('~test'), '//');
             expect(mergedDescriptor).toEqual(mockResult);
         });
 
@@ -289,6 +298,23 @@ describe('LayeredRepositoryService', () => {
             activeLanguages: [{ sap: 'EN', description: 'EN Language', i18n: 'EN-en' }]
         };
 
+        const mockInboundsResult = {
+            adaptationProjectTypes: ['onPremise', 'cloudReady'],
+            activeLanguages: [{ sap: 'EN', description: 'EN Language', i18n: 'EN-en' }],
+            inbounds: [
+                {
+                    content: {
+                        semanticObject: 'semanticObject',
+                        action: 'action',
+                        title: 'Title',
+                        subtitle: 'Subtitle',
+                        icon: 'sap-icon://test-icon',
+                        hideLauncher: false
+                    }
+                }
+            ]
+        };
+
         test('successful call with provided package and without provided language', async () => {
             nock(server)
                 .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))
@@ -297,6 +323,30 @@ describe('LayeredRepositoryService', () => {
                 });
             const systemInfo = await service.getSystemInfo('Z_TEST_PACKAGE');
             expect(systemInfo).toEqual(mockResult);
+        });
+
+        test('does NOT encode language and cloudPackage request params', async () => {
+            const language = 'EN';
+            const cloudPackage = 'path/to/cloud-package0';
+            nock(server)
+                .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))
+                .reply(200, (path) => {
+                    expect(path).toContain(`package=${cloudPackage}`);
+                    return mockResult;
+                });
+            const systemInfo = await service.getSystemInfo(language, cloudPackage);
+            expect(systemInfo).toEqual(mockResult);
+        });
+
+        test('successfull call with provided application id', async () => {
+            const appId = 'my.app.id';
+            nock(server)
+                .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))
+                .reply(200, (_path) => {
+                    return mockInboundsResult;
+                });
+            const systemInfo = await service.getSystemInfo(undefined, undefined, appId);
+            expect(systemInfo).toEqual(mockInboundsResult);
         });
 
         test('throws error when request fails', async () => {

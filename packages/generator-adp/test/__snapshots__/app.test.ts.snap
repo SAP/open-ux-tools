@@ -1,0 +1,165 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Adaptation Project Generator Integration Test should create adaptation project from json correctly 1`] = `
+"{
+  "fileName": "manifest",
+  "layer": "CUSTOMER_BASE",
+  "fileType": "appdescr_variant",
+  "reference": "sap.ui.demoapps.f1",
+  "id": "customer.my.app",
+  "namespace": "apps/sap.ui.demoapps.f1/appVariants/customer.my.app/",
+  "version": "0.1.0",
+  "content": [
+    {
+      "changeType": "appdescr_app_setTitle",
+      "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    }
+  ]
+}
+"
+`;
+
+exports[`Adaptation Project Generator Integration Test should create adaptation project from json correctly 2`] = `
+"#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
+
+#XTIT: Application name
+customer.my.app_sap.app.title=My app title
+"
+`;
+
+exports[`Adaptation Project Generator Integration Test should create adaptation project from json correctly 3`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: customer-my-app
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@sap-ux/generator-adp'
+      version: mocked-version
+      toolsId: mocked-uuid
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        adp:
+          target:
+            client: '010'
+            url: urlA
+          ignoreCertErrors: false
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - client: '010'
+            url: urlA
+            path: /sap
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: 1.134.1
+"
+`;
+
+exports[`Adaptation Project Generator Integration Test should generate an onPremise adaptation project successfully 1`] = `
+"{
+  "fileName": "manifest",
+  "layer": "CUSTOMER_BASE",
+  "fileType": "appdescr_variant",
+  "reference": "sap.ui.demoapps.f1",
+  "id": "customer.app.variant",
+  "namespace": "apps/sap.ui.demoapps.f1/appVariants/customer.app.variant/",
+  "version": "0.1.0",
+  "content": [
+    {
+      "changeType": "appdescr_ui5_setMinUI5Version",
+      "content": {
+        "minUI5Version": "1.136.0"
+      }
+    },
+    {
+      "changeType": "appdescr_app_setTitle",
+      "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    }
+  ]
+}
+"
+`;
+
+exports[`Adaptation Project Generator Integration Test should generate an onPremise adaptation project successfully 2`] = `
+"#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
+
+#XTIT: Application name
+customer.app.variant_sap.app.title=App Title
+"
+`;
+
+exports[`Adaptation Project Generator Integration Test should generate an onPremise adaptation project successfully 3`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: customer-app-variant
+type: application
+resources:
+  configuration:
+    propertiesFileSourceEncoding: UTF-8
+customConfiguration:
+  adp:
+    support:
+      id: '@sap-ux/generator-adp'
+      version: mocked-version
+      toolsId: mocked-uuid
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        adp:
+          target:
+            client: '010'
+            url: urlA
+          ignoreCertErrors: false
+    - name: fiori-tools-proxy
+      afterMiddleware: fiori-tools-preview
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - client: '010'
+            url: urlA
+            path: /sap
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+          version: 1.134.1
+"
+`;

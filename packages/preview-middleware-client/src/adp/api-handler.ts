@@ -1,11 +1,12 @@
 import type { Layer } from 'sap/ui/fl';
-import { getError } from '../cpe/error-utils';
+import { getError } from '../utils/error';
 
 export const enum ApiEndpoints {
     CHANGES = '/preview/api/changes',
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
     CODE_EXT = '/adp/api/code_ext',
+    ANNOTATION_FILE = '/adp/api/annotation',
     MANIFEST_APP_DESCRIPTOR = '/manifest.appdescr_variant'
 }
 
@@ -31,8 +32,23 @@ export interface CodeExtResponse {
     controllerPath: string;
     controllerPathFromRoot: string;
     isRunningInBAS: boolean;
+    isTsSupported: boolean;
 }
 
+export interface AnnotationFileDetails {
+    annotationExistsInWS: boolean;
+    annotationPath: string;
+    annotationPathFromRoot: string | undefined;
+}
+
+export interface AnnotationDataSourceMap {
+    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileDetails; metadataReadErrorMsg: string };
+}
+
+export interface AnnotationDataSourceResponse {
+    isRunningInBAS: boolean;
+    annotationDataSourceMap: AnnotationDataSourceMap;
+}
 export interface ControllersResponse {
     controllers: Controllers;
     message: string;
@@ -140,13 +156,24 @@ export async function writeController<T>(data: T): Promise<T> {
 }
 
 /**
+ * Writes a new annotation file to the project's workspace
+ *
+ * @returns Generic Promise<DataSourceAnnotationMap>
+ */
+export async function getDataSourceAnnotationFileMap(): Promise<AnnotationDataSourceResponse> {
+    return request<AnnotationDataSourceResponse>(ApiEndpoints.ANNOTATION_FILE, RequestMethod.GET);
+}
+
+/**
  * Checks for existing controller in the project's workspace
  *
  * @param controllerName Name of the controller
  * @returns {CodeExtResponse} Returns path to existing controller if found
  */
 export async function getExistingController(controllerName: string): Promise<CodeExtResponse> {
-    return request<CodeExtResponse>(`${ApiEndpoints.CODE_EXT}/${controllerName}` as ApiEndpoints, RequestMethod.GET);
+    const params = new URLSearchParams({ name: controllerName });
+    const url = `${ApiEndpoints.CODE_EXT}?${params.toString()}` as ApiEndpoints;
+    return request<CodeExtResponse>(url, RequestMethod.GET);
 }
 
 /**
@@ -156,5 +183,5 @@ export async function getExistingController(controllerName: string): Promise<Cod
  * @returns Generic Promise<T>
  */
 export async function writeChange<T>(data: T): Promise<T> {
-    return request<T>(ApiEndpoints.CHANGES, RequestMethod.POST, data);
+    return request<T>(ApiEndpoints.CHANGES, RequestMethod.POST, { change: data });
 }

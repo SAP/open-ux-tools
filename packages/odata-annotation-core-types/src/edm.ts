@@ -117,5 +117,13 @@ export enum EdmType {
     AnyPropertyPath = 'Edm.AnyPropertyPath', // abstract type, not really supported as tag
     ModelElementPath = 'Edm.ModelElementPath',
     NavigationPropertyPath = 'Edm.NavigationPropertyPath',
-    PropertyPath = 'Edm.PropertyPath'
+    PropertyPath = 'Edm.PropertyPath',
+    // not in OData Specification! introduced to find 'virtualProperties' defined by terms like "Analytics.AggregatedProperties"
+    VirtualProperty = 'Edm.VirtualProperty',
+    // not in OData Specification! introduced to indicate that 1:n associations are allowed when looking up pathCache
+    PrimitiveCollection = 'Edm.PrimitiveCollection',
+    /**
+     * Not in OData Specification! introduced to indicate that enum members are allowed (CAP CDS only)
+     */
+    DataModelEnum = 'Edm.DataModelEnum'
 }

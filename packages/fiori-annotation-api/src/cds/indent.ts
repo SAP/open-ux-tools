@@ -4,7 +4,7 @@ import { TARGET_TYPE } from '@sap-ux/cds-odata-annotation-converter';
 import type { AstNode, CDSDocument } from './document';
 import { getAstNodesFromPointer } from './pointer';
 import type { CompilerToken } from './cds-compiler-tokens';
-import { findLastTokenBeforePosition } from './cds-compiler-tokens';
+import { createTokenRange, findLastTokenBeforePosition, tokenColumn, tokenLine } from './cds-compiler-tokens';
 
 const printOptions: typeof defaultPrintOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
 const ANNOTATE_PATTERN = /annotate/i;
@@ -46,16 +46,21 @@ function getLineStartCharacter(node: AstNode, tokens: CompilerToken[]): number {
         return 0;
     }
     if (node.type === TARGET_TYPE && node.range) {
+        const token = findLastTokenBeforePosition(ANNOTATE_PATTERN, tokens, node.range.end);
         if (node.kind === 'element' && node.nameRange) {
+            const range = token ? createTokenRange(token) : undefined;
+            if (token && range?.start?.line === node.nameRange.start.line) {
+                // element is in the same line as the annotate statement, so we should use the indent level of the annotate statement
+                return tokenColumn(token);
+            }
             return node.nameRange.start.character;
         }
-        const token = findLastTokenBeforePosition(ANNOTATE_PATTERN, tokens, node.range.end);
         if (token) {
-            return token.column;
+            return tokenColumn(token);
         }
     }
     const token = findFirstTokenOfLine(tokens, node.range.start.line);
-    return token?.column ?? 0;
+    return token ? tokenColumn(token) : 0;
 }
 
 function findFirstTokenOfLine(tokens: CompilerToken[], nodeLine: number): CompilerToken | undefined {
@@ -65,16 +70,16 @@ function findFirstTokenOfLine(tokens: CompilerToken[], nodeLine: number): Compil
     while (left <= right) {
         const middle = Math.floor((left + right) / 2);
         let token = tokens[middle];
-        const tokenLine = token.line - 1;
-        if (tokenLine < nodeLine) {
+        const line = tokenLine(token);
+        if (line < nodeLine) {
             left = middle + 1;
-        } else if (tokenLine > nodeLine) {
+        } else if (line > nodeLine) {
             right = middle - 1;
         } else {
             // we found a token in correct line, search for first token of the line
             let index = middle - 1;
             let previousToken = tokens[index];
-            while (previousToken && token.line === previousToken.line) {
+            while (previousToken && line === tokenLine(previousToken)) {
                 token = previousToken;
                 previousToken = tokens[index];
                 index--;

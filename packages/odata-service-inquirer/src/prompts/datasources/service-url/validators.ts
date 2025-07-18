@@ -1,13 +1,20 @@
 import { createForAbap, type AxiosRequestConfig, type ODataService, type ODataVersion } from '@sap-ux/axios-extension';
-import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import { ERROR_TYPE, ErrorHandler } from '../../../error-handler/error-handler';
+import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import { setGlobalRejectUnauthorized } from '@sap-ux/nodejs-utils';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { t } from '../../../i18n';
 import { SAP_CLIENT_KEY } from '../../../types';
-import { PromptState, originToRelative, parseOdataVersion } from '../../../utils';
+import { PromptState, originToRelative } from '../../../utils';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
-import { ConnectionValidator } from '../../connectionValidator';
+import { validateODataVersion } from '../../validators';
 
+type ValidateServiceUrlResult = {
+    validationResult: boolean | string;
+    showAnnotationWarning?: boolean;
+    convertedMetadata?: ConvertedMetadata;
+};
 /**
  * Validates that a service specified by the service url is accessible, has the required version and returns valid metadata.
  * Retrieves annotations (from Abap backends) if available and stores them in the PromptState.
@@ -25,24 +32,24 @@ export async function validateService(
     { odataService, axiosConfig }: { odataService: ODataService; axiosConfig: AxiosRequestConfig },
     requiredVersion: OdataVersion | undefined = undefined,
     ignoreCertError = false
-): Promise<boolean | string> {
+): Promise<ValidateServiceUrlResult> {
     try {
         if (ignoreCertError === true) {
-            ConnectionValidator.setGlobalRejectUnauthorized(!ignoreCertError);
+            setGlobalRejectUnauthorized(!ignoreCertError);
         }
         const metadata = await odataService.metadata();
-        const serviceOdataVersion = parseOdataVersion(metadata);
-
-        if (requiredVersion && requiredVersion !== serviceOdataVersion) {
-            return `${t('errors.odataServiceVersionMismatch', {
-                serviceVersion: serviceOdataVersion,
-                requiredVersion
-            })}`;
+        const odataVersionValResult = validateODataVersion(metadata, requiredVersion);
+        if (odataVersionValResult.validationMsg) {
+            return {
+                validationResult: odataVersionValResult.validationMsg
+            };
         }
+        const serviceOdataVersion = odataVersionValResult.version;
 
         // Remove all occurrences of the origin from the metadata to make backend uris relative
         PromptState.odataService.metadata = originToRelative(metadata);
         PromptState.odataService.odataVersion = serviceOdataVersion;
+        PromptState.odataService.ignoreCertError = ignoreCertError;
 
         // Extract sap-client and keep the rest of the query params as part of the url
         const fullUrl = new URL(url);
@@ -52,6 +59,8 @@ export async function validateService(
         PromptState.odataService.servicePath = `${fullUrl.pathname}${fullUrl.search}`;
         PromptState.odataService.origin = fullUrl.origin;
         PromptState.odataService.sapClient = sapClient;
+
+        let showAnnotationWarning = false;
 
         // Best effort attempt to get annotations but dont throw an error if it fails as this may not even be an Abap system
         try {
@@ -65,21 +74,33 @@ export async function validateService(
 
             if (annotations?.length === 0 || !annotations) {
                 LoggerHelper.logger.info(t('prompts.validationMessages.annotationsNotFound'));
+                // Only show the warning if the service is v2, since these are backend annotations
+                showAnnotationWarning = odataVersionValResult.version === OdataVersion.v2;
             }
             PromptState.odataService.annotations = annotations;
         } catch (err) {
             LoggerHelper.logger.info(t('prompts.validationMessages.annotationsNotFound'));
+            // Only show the warning if the service is v2, since these are backend annotations
+            showAnnotationWarning = odataVersionValResult.version === OdataVersion.v2;
         }
-        return true;
+        return {
+            validationResult: true,
+            showAnnotationWarning,
+            convertedMetadata: odataVersionValResult.convertedMetadata
+        };
     } catch (error) {
         delete PromptState.odataService.metadata;
         // Provide a more specific error message if the metadata service URL is not found
         if (ErrorHandler.getErrorType(error) === ERROR_TYPE.NOT_FOUND) {
             // No metadata implies not a valid odata service
-            return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ODATA_URL_NOT_FOUND) ?? false;
+            return {
+                validationResult: ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ODATA_URL_NOT_FOUND) ?? false
+            };
         }
-        return errorHandler.logErrorMsgs(error);
+        return {
+            validationResult: errorHandler.logErrorMsgs(error)
+        };
     } finally {
-        ConnectionValidator.setGlobalRejectUnauthorized(true);
+        setGlobalRejectUnauthorized(true);
     }
 }

@@ -9,6 +9,9 @@
     ],
     "main": "webapp/index.html",
     "dependencies": {},
-    "devDependencies": <%- JSON.stringify(package.devDependencies, null, 8) -%>,
-    "scripts": <%- JSON.stringify(package.scripts, null, 4) -%>
+    "devDependencies": <%- JSON.stringify(package.devDependencies, null, 8).trim() -%>,
+    "scripts": <%- JSON.stringify(package.scripts, null, 4).trim() -%>
+    <% if (package.sapuxLayer) { %>
+    ,"sapuxLayer": "<%= package.sapuxLayer %>"
+    <% } %>
 }

@@ -1,0 +1,15 @@
+<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!--  add your xml here -->
+     <Column id="<%- ids.column %>"
+        width="12em"
+        hAlign="Left"
+        vAlign="Middle">
+        <Text id="<%- ids.columnTitle %>" text="New column" />
+
+        <customData>
+            <core:CustomData key="p13nData" id="<%- ids.customData %>"
+                value='\{"columnKey": "<%- ids.column %>", "columnIndex": "<%- ids.index %>"}' />
+        </customData>
+    </Column>
+</core:FragmentDefinition>

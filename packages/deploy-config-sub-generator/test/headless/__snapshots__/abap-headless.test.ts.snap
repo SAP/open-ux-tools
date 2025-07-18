@@ -1,0 +1,258 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test ABAP headless generator should generate ABAP deploy config for an on-prem destination (BAS) 1`] = `
+"{
+  "name": "baseapp",
+  "version": "0.0.1",
+  "description": "An SAP Fiori application.",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "@ui5/cli": "^3.0.0",
+    "@sap/ux-ui5-tooling": "1",
+    "rimraf": "^5.0.5"
+  },
+  "scripts": {
+    "start": "fiori run --open \\"test/flp.html#app-preview\\"",
+    "start-local": "fiori run --config ./ui5-local.yaml --open \\"test/flp.html#app-preview\\"",
+    "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
+    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml",
+    "deploy-config": "fiori add deploy-config",
+    "start-noflp": "fiori run --open \\"index.html?sap-ui-xx-viewCache=false\\"",
+    "int-test": "fiori run --open 'test/integration/opaTests.qunit.html'",
+    "start-variants-management": "fiori run --open \\"preview.html#app-preview\\"",
+    "unit-test": "fiori run --open 'test/unit/unitTests.qunit.html'",
+    "undeploy": "npm run build && fiori undeploy --config ui5-deploy.yaml",
+    "deploy-test": "npm run build && fiori deploy --config ui5-deploy.yaml --testMode true"
+  },
+  "sapuxLayer": "CUSTOMER_BASE"
+}
+"
+`;
+
+exports[`Test ABAP headless generator should generate ABAP deploy config for an on-prem destination (BAS) 2`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: baseapp
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: Dest1
+          url: https://mock.url.dest1.com
+        app:
+          name: MY_UI5_ABAP_REPO
+          description: Testing headless ABAP deployment on BAS
+          package: ZPKG123
+          transport: $TMP
+        exclude:
+          - /test/
+"
+`;
+
+exports[`Test ABAP headless generator should generate ABAP deploy config for an s4hc destination (BAS) 1`] = `
+"{
+  "name": "baseapp",
+  "version": "0.0.1",
+  "description": "An SAP Fiori application.",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "@ui5/cli": "^3.0.0",
+    "@sap/ux-ui5-tooling": "1",
+    "rimraf": "^5.0.5"
+  },
+  "scripts": {
+    "start": "fiori run --open \\"test/flp.html#app-preview\\"",
+    "start-local": "fiori run --config ./ui5-local.yaml --open \\"test/flp.html#app-preview\\"",
+    "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
+    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml",
+    "deploy-config": "fiori add deploy-config",
+    "start-noflp": "fiori run --open \\"index.html?sap-ui-xx-viewCache=false\\"",
+    "int-test": "fiori run --open 'test/integration/opaTests.qunit.html'",
+    "start-variants-management": "fiori run --open \\"preview.html#app-preview\\"",
+    "unit-test": "fiori run --open 'test/unit/unitTests.qunit.html'",
+    "undeploy": "npm run build && fiori undeploy --config ui5-deploy.yaml",
+    "deploy-test": "npm run build && fiori deploy --config ui5-deploy.yaml --testMode true"
+  },
+  "sapuxLayer": "CUSTOMER_BASE"
+}
+"
+`;
+
+exports[`Test ABAP headless generator should generate ABAP deploy config for an s4hc destination (BAS) 2`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: baseapp
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          destination: Dest2
+          url: https://mock.url.dest2.com
+          authenticationType: reentranceTicket # SAML support for vscode
+        app:
+          name: MY_UI5_ABAP_REPO
+          description: Headless ABAP deployment for S4HC
+          package: ZPKG123
+          transport: TEST_TR
+        exclude:
+          - /test/
+"
+`;
+
+exports[`Test ABAP headless generator should generate ABAP deploy config for btp system (VSCode) 1`] = `
+"{
+  "name": "baseapp",
+  "version": "0.0.1",
+  "description": "An SAP Fiori application.",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "@ui5/cli": "^3.0.0",
+    "@sap/ux-ui5-tooling": "1",
+    "rimraf": "^5.0.5"
+  },
+  "scripts": {
+    "start": "fiori run --open \\"test/flp.html#app-preview\\"",
+    "start-local": "fiori run --config ./ui5-local.yaml --open \\"test/flp.html#app-preview\\"",
+    "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
+    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml",
+    "deploy-config": "fiori add deploy-config",
+    "start-noflp": "fiori run --open \\"index.html?sap-ui-xx-viewCache=false\\"",
+    "int-test": "fiori run --open 'test/integration/opaTests.qunit.html'",
+    "start-variants-management": "fiori run --open \\"preview.html#app-preview\\"",
+    "unit-test": "fiori run --open 'test/unit/unitTests.qunit.html'",
+    "undeploy": "npm run build && fiori undeploy --config ui5-deploy.yaml",
+    "deploy-test": "npm run build && fiori deploy --config ui5-deploy.yaml --testMode true"
+  },
+  "sapuxLayer": "CUSTOMER_BASE"
+}
+"
+`;
+
+exports[`Test ABAP headless generator should generate ABAP deploy config for btp system (VSCode) 2`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: baseapp
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: https://example.abap.backend:44300
+          client: '100'
+        app:
+          name: ZTESTREPO
+          description: Testing headless ABAP deployment
+          package: ZPKG12
+          transport: TR123
+        exclude:
+          - /test/
+"
+`;
+
+exports[`Test ABAP headless generator should generate ABAP deploy config for on-prem system (VSCode) 1`] = `
+"{
+  "name": "baseapp",
+  "version": "0.0.1",
+  "description": "An SAP Fiori application.",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "@ui5/cli": "^3.0.0",
+    "@sap/ux-ui5-tooling": "1",
+    "rimraf": "^5.0.5"
+  },
+  "scripts": {
+    "start": "fiori run --open \\"test/flp.html#app-preview\\"",
+    "start-local": "fiori run --config ./ui5-local.yaml --open \\"test/flp.html#app-preview\\"",
+    "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
+    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml",
+    "deploy-config": "fiori add deploy-config",
+    "start-noflp": "fiori run --open \\"index.html?sap-ui-xx-viewCache=false\\"",
+    "int-test": "fiori run --open 'test/integration/opaTests.qunit.html'",
+    "start-variants-management": "fiori run --open \\"preview.html#app-preview\\"",
+    "unit-test": "fiori run --open 'test/unit/unitTests.qunit.html'",
+    "undeploy": "npm run build && fiori undeploy --config ui5-deploy.yaml",
+    "deploy-test": "npm run build && fiori deploy --config ui5-deploy.yaml --testMode true"
+  },
+  "sapuxLayer": "CUSTOMER_BASE"
+}
+"
+`;
+
+exports[`Test ABAP headless generator should generate ABAP deploy config for on-prem system (VSCode) 2`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: baseapp
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: https://example.abap.backend:44300
+          client: '100'
+        app:
+          name: ZTESTREPO
+          description: Testing headless ABAP deployment
+          package: ZPKG12
+          transport: TR123
+        exclude:
+          - /test/
+"
+`;

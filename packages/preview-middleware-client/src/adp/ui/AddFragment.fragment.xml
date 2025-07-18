@@ -1,9 +1,11 @@
 <Dialog id="addNewFragmentDialog"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
     xmlns:f="sap.ui.layout.form"  
-    title="Add XML Fragment" 
+    title="{/title}" 
     contentWidth="500px" 
+    initialFocus="aggregationName"
     class="sapUiRTABorder">
     <content>
         <f:SimpleForm id="addNewFragmentDialog_Form"
@@ -12,10 +14,16 @@
             labelSpanS="4"
             singleContainerFullSize="false">
             <f:content>
-                <Label text="Control Type" />
-                <Text text="{/selectedControlName}" />
-                <Label text="Target Aggregation" />
+                <Label visible="{/completeView}"  text="{i18n>ADP_ADD_FRAGMENT_DIALOG_CONTROL_TYPE_LABEL}" />
+                <Input
+                    id="controlType"
+                    visible="{/completeView}"
+                    value="{/selectedControlName}"
+                    editable="false" />
+                <Label visible="{/completeView}" text="{i18n>ADP_ADD_FRAGMENT_DIALOG_AGGREGATION_LABEL}" />
                 <Select
+                    id="aggregationName"
+                    visible="{/completeView}"
                     change="onAggregationChanged"
                     selectedKey="{/selectedAggregation/key}"
                     items="{
@@ -24,11 +32,11 @@
                     }">
                     <core:Item key="{key}" text="{value}" />
                 </Select>
-                <Label text="Index" />
-                <HBox alignItems="Center">
+                <Label text="{i18n>ADP_ADD_FRAGMENT_DIALOG_INDEX_LABEL}" />
                     <Select
+                        id="aggregationIndex"
                         enabled="{/indexHandlingFlag}"
-                        selectedKey='{/selectedIndex}'
+                        selectedKey="{path: '/selectedIndex', type: 'sap.ui.model.type.Integer'}"
                         items="{
                             path: '/index',
                             sorter: { path: 'text' }
@@ -36,14 +44,20 @@
                         <core:Item key="{key}" text="{value}" />
                     </Select>
                     <core:Icon
+                        id="aggregationIndexInfoIcon"
                         useIconTooltip="false"
                         visible="{/specialIndexHandlingIcon}" 
                         src="sap-icon://message-information" 
-                        class= "sapUiTinyMarginBegin" 
-                        tooltip="{/iconTooltip}" />
-                </HBox>
-                <Label text="Fragment Name" />
+                        width="1rem"
+                        height="2rem"
+                        tooltip="{/iconTooltip}">
+                        <core:layoutData>
+                            <l:GridData span="S6" />
+                        </core:layoutData>
+                    </core:Icon>
+                <Label text="{i18n>ADP_ADD_FRAGMENT_DIALOG_FRAGMENT_NAME_LABEL}" required="true" />
                 <Input 
+                    id="fragmentName"
                     description=".fragment.xml" 
                     value="{/newFragmentName}" 
                     liveChange="onFragmentNameInputChange">

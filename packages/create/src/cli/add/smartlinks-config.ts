@@ -24,7 +24,7 @@ export function addAddSmartLinksConfigCommand(cmd: Command): void {
  * Adds a smartLinks config to an app or project.
  *
  * @param basePath - path to application root
- * @param simulate - if true, do not write but just show what would be change; otherwise write
+ * @param simulate - if true, do not write but just show what would be changed; otherwise write
  */
 async function addSmartLinksConfig(basePath: string, simulate: boolean): Promise<void> {
     const logger = getLogger();

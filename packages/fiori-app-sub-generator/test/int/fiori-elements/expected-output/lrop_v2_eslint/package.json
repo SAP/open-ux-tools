@@ -1,0 +1,34 @@
+{
+  "name": "lrop_v2_eslint",
+  "version": "0.0.1",
+  "description": "Test &#39;Project&#39; &#34;Description&#34;",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "@ui5/cli": "^4.0.16",
+    "@sap/ux-ui5-tooling": "1",
+    "@sap-ux/eslint-plugin-fiori-tools": "^0.4.0",
+    "eslint": "8.57.0",
+    "eslint-plugin-fiori-custom": "2.6.7",
+    "@babel/eslint-parser": "7.14.7",
+    "@sap-ux/ui5-middleware-fe-mockserver": "2"
+  },
+  "scripts": {
+    "start": "fiori run --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv2eslint-tile\"",
+    "start-local": "fiori run --config ./ui5-local.yaml --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv2eslint-tile\"",
+    "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
+    "lint": "eslint ./",
+    "start-mock": "fiori run --config ./ui5-mock.yaml --open \"/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv2eslint-tile\"",
+    "deploy": "fiori verify",
+    "deploy-config": "fiori add deploy-config",
+    "start-noflp": "fiori run --open \"/index.html?sap-ui-xx-viewCache=false\"",
+    "start-variants-management": "fiori run --open \"/preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\""
+  },
+  "sapuxLayer": "CUSTOMER_BASE",
+  "sapux": true
+}

@@ -1,22 +1,26 @@
 export {
+    clearCdsModuleCache,
+    deleteCapApp,
     getCapCustomPaths,
+    getCapEnvironment,
     getCapModelAndServices,
     getCapProjectType,
+    getCapServiceName,
     getCdsFiles,
     getCdsRoots,
     getCdsServices,
     isCapProject,
     isCapJavaProject,
     isCapNodeJsProject,
-    getCapEnvironment,
     readCapServiceMetadataEdmx,
-    getCapServiceName,
     toReferenceUri,
-    clearCdsModuleCache
+    getWorkspaceInfo,
+    hasMinCdsVersion,
+    checkCdsUi5PluginEnabled
 } from './cap';
 export { filterDataSourcesByType } from './service';
-export { addPackageDevDependency, getNodeModulesPath } from './dependencies';
-export { getCapI18nFolderNames, getI18nPropertiesPaths } from './i18n';
+export { addPackageDevDependency, getNodeModulesPath, hasDependency } from './dependencies';
+export { getCapI18nFolderNames, getI18nPropertiesPaths, getI18nBundles } from './i18n';
 export {
     getAppProgrammingLanguage,
     getAppType,
@@ -33,10 +37,11 @@ export {
     findFioriArtifacts,
     findProjectRoot,
     getAppRootFromWebappPath,
-    findCapProjectRoot
+    findCapProjectRoot,
+    findRootsForPath
 } from './search';
-export { getWebappPath, readUi5Yaml } from './ui5-config';
+export { getWebappPath, readUi5Yaml, getAllUi5YamlFileNames, getMockServerConfig, getMockDataPath } from './ui5-config';
 export { getMtaPath } from './mta';
 export { createApplicationAccess, createProjectAccess } from './access';
-export { updatePackageScript } from './script';
+export { updatePackageScript, hasUI5CliV3 } from './script';
 export { getSpecification, getSpecificationPath, refreshSpecificationDistTags } from './specification';

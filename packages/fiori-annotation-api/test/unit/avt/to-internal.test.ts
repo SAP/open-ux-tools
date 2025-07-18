@@ -1,4 +1,4 @@
-import type { Expression } from '@sap-ux/vocabularies-types';
+import type { Expression, StringExpression } from '@sap-ux/vocabularies-types';
 import { createElementNode, type AliasInformation } from '@sap-ux/odata-annotation-core-types';
 
 import { convertExpressionToInternal } from '../../../src/avt/to-internal';
@@ -22,33 +22,35 @@ describe('avt to internal', () => {
         test('Collection', () => {
             testConversion({ type: 'Collection', Collection: [] });
         });
+        test('Collection with string values', () => {
+            testConversion({ type: 'Collection', Collection: ['test'] as unknown as StringExpression[] });
+        });
         test('Record', () => {
             testConversion({
                 type: 'Record',
                 Record: { propertyValues: [], type: 'com.sap.vocabularies.UI.v1.DataField' }
             });
         });
+        // Currently not supported
         test('If', () => {
-            testConversion({ type: 'If', If: {} });
+            testConversion({ type: 'If', $If: [{ type: 'Null' }, { type: 'Null' }, { type: 'Null' }] });
         });
         // Currently not supported
-        test.skip('Apply', () => {
+        test('Apply', () => {
             testConversion({
                 type: 'Apply',
-                Apply: {
-                    _attributes: {
-                        Function: 'odata.fillUriTemplate'
-                    },
-                    String: {
-                        _text: '#Supplier-displayFactSheet?Supplier={SUP}'
-                    },
-                    LabeledElement: {
-                        _attributes: {
-                            Name: 'RSP',
-                            Path: 'SupplierEvalResponse'
+                $Apply: [
+                    '#Supplier-displayFactSheet?Supplier={SUP}',
+                    {
+                        type: 'LabeledElement',
+                        $Name: 'RSP',
+                        $LabeledElement: {
+                            type: 'Path',
+                            $Path: 'SupplierEvalResponse'
                         }
                     }
-                }
+                ],
+                $Function: 'odata.fillUriTemplate'
             });
         });
         test('Null', () => {

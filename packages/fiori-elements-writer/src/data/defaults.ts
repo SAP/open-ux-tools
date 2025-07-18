@@ -5,6 +5,7 @@ import type {
     ALPSettings,
     ALPSettingsV2,
     ALPSettingsV4,
+    FioriApp,
     FioriElementsApp,
     LROPSettings,
     Template,
@@ -15,13 +16,29 @@ import {
     getBaseComponent,
     getTemplateUi5Libs,
     TemplateTypeAttributes,
-    changesPreviewToVersion
+    changesPreviewToVersion,
+    getTemplateManifestLibs
 } from './templateAttributes';
 import { getAnnotationV4Libs } from './annotationCustomUi5Libs';
 import { type TemplateOptions } from './templateAttributes';
 import semVer from 'semver';
+import { getFlpId } from '@sap-ux/fiori-generator-shared';
 
 const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
+const defaultVirtualPreviewFile = 'test/flp.html'; // Default virtual preview file name
+const defaultIntent = 'app-preview';
+const defaultNavActionTile = 'tile';
+
+/**
+ * Sets defaults for relevant parameters (`flpAppId`, `startFile`, `localStartFile`,  ) when virtual endpoints are used.
+ *
+ * @param feApp - Fiori elements application config
+ */
+export function setVirtualEndpointDefaults(feApp: FioriElementsApp<unknown>): void {
+    feApp.app.flpAppId = defaultIntent;
+    feApp.app.startFile = defaultVirtualPreviewFile;
+    feApp.app.localStartFile = defaultVirtualPreviewFile;
+}
 
 /**
  * Updates the template settings to defaults if not provided.
@@ -86,6 +103,35 @@ export function getUi5Libs(type: TemplateType, version: OdataVersion, ui5Libs?: 
 }
 
 /**
+ * Gets the required manifest libs for the specified template type and OData version.
+ *
+ * @param type - The template type of the required base component
+ * @param version - The odata service version determines the appropriate base component to use
+ * @param libs - manifest libs
+ * @returns The manifest libs required by the specified template type and OData version and UI5 annotation libs
+ */
+export function getManifestLibs(type: TemplateType, version: OdataVersion, libs?: string | string[]): string[] {
+    const templateLibs = getTemplateManifestLibs(type, version);
+    return [...templateLibs].concat(libs ?? []);
+}
+
+/**
+ *  Set defaults for missing parameters on the given Fiori/UI5 app instance.
+ *
+ * @param app - fiori app config
+ * @param templateType - template type
+ * @param serviceVersion - odata version for the service
+ */
+function setFioriAppDefaults(app: FioriApp, templateType: TemplateType, serviceVersion: OdataVersion) {
+    // Generate base UI5 project
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    app.baseComponent = app.baseComponent || getBaseComponent(templateType, serviceVersion);
+    app.flpAction = app.flpAction || defaultNavActionTile;
+    // create `flpAppId` if not already added
+    app.flpAppId = app.flpAppId || getFlpId(app.id, app.flpAction);
+}
+
+/**
  * Sets defaults for the specified Fiori elements application.
  *
  * @param feApp - Fiori elements application config
@@ -102,9 +148,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
         };
     }
 
-    // Generate base UI5 project
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    feApp.app.baseComponent = feApp.app.baseComponent || getBaseComponent(feApp.template.type, feApp.service.version);
+    setFioriAppDefaults(feApp.app, feApp.template.type, feApp.service.version);
 
     const customUi5Libs =
         feApp.service.version === OdataVersion.v4 && feApp.service.metadata
@@ -116,6 +160,7 @@ export function setAppDefaults<T>(feApp: FioriElementsApp<T>): FioriElementsApp<
     feApp.ui5 = {
         ...feApp.ui5,
         ui5Libs: getUi5Libs(feApp.template.type, feApp.service.version, feApp.ui5?.ui5Libs),
+        manifestLibs: getManifestLibs(feApp.template.type, feApp.service.version, feApp.ui5?.manifestLibs),
         customUi5Libs: customUi5Libs
     };
 

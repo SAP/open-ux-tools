@@ -1,5 +1,77 @@
 # @sap-ux/btp-utils
 
+## 1.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+## 1.0.3
+
+### Patch Changes
+
+-   d638daa: Update @sap/bas-sdk dependency
+
+## 1.0.2
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+
+## 1.0.1
+
+### Patch Changes
+
+-   65f15d9: Fix for btp-utils create dest api mapping. Adds feature CF Abap prompts for BAS.
+
+## 1.0.0
+
+### Major Changes
+
+-   9980073: Updates generateOAuth2UserTokenExchangeDestination API to accomodate multiple use-cases
+
+## 0.18.0
+
+### Minor Changes
+
+-   df2d965: new functionality to generate OAuth2TokenExchange BTP destination using cf-tools
+
+## 0.17.2
+
+### Patch Changes
+
+-   cb54b44: add CF instance types
+
+## 0.17.1
+
+### Patch Changes
+
+-   2359524: align versions of cf-tools
+
+## 0.17.0
+
+### Minor Changes
+
+-   a62ff25: adds new options for listing destinations api
+
+## 0.16.0
+
+### Minor Changes
+
+-   3734fe8: Adds system prompting to `@sap-ux/odata-service-inquirer`
+
+## 0.15.2
+
+### Patch Changes
+
+-   d3dafeb: FEAT - Add @sap-ux/nodejs-utils module
+
+## 0.15.1
+
+### Patch Changes
+
+-   9c8dc5c: fix: update `axios` to `1.7.4`
+
 ## 0.15.0
 
 ### Minor Changes

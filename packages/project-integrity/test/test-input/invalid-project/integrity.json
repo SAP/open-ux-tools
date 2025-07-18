@@ -1,0 +1,37 @@
+{
+    "enabled": true,
+    "fileIntegrity": [
+        {
+            "filePath": "good.txt",
+            "hash": "1a8a45c145cca8cb08b03e0eb1f6fcd4",
+            "content": "FIVwzgLgBAhlEFNJQGYEsA2CB0Q="
+        },
+        {
+            "filePath": "bad.xml",
+            "hash": "1f1cfb2f4e58c4e5c8870252f5d522a6",
+            "content": "DwDwtgNgfAUABAuwAuBTEyoBVUGdlwAaAsgDJwBmAlhKsAPRoawPjRA="
+        },
+        {
+            "filePath": "non-existing.file",
+            "hash": "0123456789",
+            "content": "HIewdgBApgHglgZwC5zAcyA="
+        } 
+    ],
+    "contentIntegrity": [
+        {
+            "contentKey": "one",
+            "hash": "e567579e9506605c8acf5e817d4dc9d8",
+            "content": "G4QwNgrgpgBA9gOykA=="
+        },
+        {
+            "contentKey": "two",
+            "hash": "e4254bf5deaa77586c0012fd21858279",
+            "content": "G4QwNgrgpgBALgdwPZA="
+        },
+        {
+            "contentKey": "three",
+            "hash": "e883ac885a1b2a06043ba166a5f00c30",
+            "content": "G4QwNgrgpgBALgCwE5SkA==="
+        }
+    ]
+}

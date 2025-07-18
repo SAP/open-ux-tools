@@ -2,6 +2,13 @@ declare module 'sap/ui/fl' {
     export type Layer = 'USER' | 'PUBLIC' | 'CUSTOMER' | 'CUSTOMER_BASE' | 'PARTNER' | 'VENDOR' | 'BASE';
 }
 
+declare module 'sap/ui/fl/Selector' {
+    export default interface Selector {
+        id: string;
+        idIsLocal: boolean;
+        type?: string;
+    }
+}
 declare module 'sap/ui/fl/Layer' {
     const Layer = {
         CUSTOMER_BASE: 'CUSTOMER_BASE',
@@ -11,9 +18,21 @@ declare module 'sap/ui/fl/Layer' {
     export default Layer;
 }
 
+declare module 'sap/ui/layout/form' {
+    export interface SimpleForm<ContentType> {
+        getContent: () => ContentType;
+    }
+
+    export default SimpleForm;
+}
+
 declare module 'sap/ui/fl/Change' {
+    import type { Layer } from 'sap/ui/fl';
+    import type Selector from 'sap/ui/fl/Selector';
     export interface ChangeDefinition {
         service: string;
+        selector: Selector;
+        layer: Layer;
         changeType: string;
         packageName: string;
         support: {
@@ -21,15 +40,34 @@ declare module 'sap/ui/fl/Change' {
         };
         fileName: string;
     }
-    interface Change {
-        getDefinition: () => ChangeDefinition;
+    export interface AddFragmentChangeContentType {
+        fragmentPath: string;
+        index: number;
+        targetAggregation: string;
+        templateName?: string;
     }
 
+    export interface AddTableCellFragmentChangeContentType extends AddFragmentChangeContentType {
+        boundAggregation?: string;
+    }
+
+    class Change<ContentType> {
+        constructor(file: object): void;
+        getDefinition: () => ChangeDefinition;
+        getJson: () => unknown;
+        getSelector: () => Selector;
+        getChangeType: () => string;
+        getLayer: () => Layer;
+        getContent: () => ContentType;
+        setContent: (newContent: ContentType) => void;
+        getProperty: (propertyName: string) => string;
+    }
+    const Change: Change;
     export default Change;
 }
 /**
- * Available since version `1.102` of SAPUI5 
-**/
+ * Available since version `1.102` of SAPUI5
+ **/
 declare module 'sap/ui/fl/Scenario' {
     const scenario = {
         AppVariant: 'APP_VARIANT',
@@ -46,17 +84,19 @@ declare module 'sap/ui/fl/Scenario' {
 declare module 'sap/ui/fl/Utils' {
     import type ManagedObject from 'sap/ui/base/ManagedObject';
     import type Controller from 'sap/ui/core/mvc/Controller';
-    import type Control from 'sap/ui/core/Control';
+    import type Component from 'sap/ui/core/Component';
 
     interface Utils {
         checkControlId(control: ManagedObject): boolean;
         getViewForControl(control: ManagedObject): ControlView;
-        getAppComponentForControl(control: Control): Control;
+        getAppComponentForControl(control: ManagedObject): Component;
+        getComponentForControl(control: ManagedObject): Component;
     }
 
     interface ControlView {
         getId(): string;
         getController(): Controller;
+        getControllerModuleName?: () => string;
     }
 
     const Utils: Utils;
@@ -80,7 +120,14 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
         clear(): void;
         getItem(key: string): unknown;
         getItems(): Promise<unknown[]>;
-        fileChangeRequestNotifier: ((fileName: string, kind: 'create' | 'delete', changeType?: string) => void) | undefined;
+        fileChangeRequestNotifier:
+            | (<T extends object, U extends object>(
+                  fileName: string,
+                  kind: 'create' | 'delete',
+                  change?: T,
+                  additionalChangeInfo?: U
+              ) => void)
+            | undefined;
     }
 
     class ObjectStorageConnector {
@@ -90,4 +137,35 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
     }
 
     export default ObjectStorageConnector;
+}
+
+declare module 'sap/ui/fl/apply/api/FlexRuntimeInfoAPI' {
+    import type UI5Element from 'sap/ui/core/Element';
+
+    class FlexRuntimeInfoAPI {
+        static hasVariantManagement(parameters: { element: UI5Element }): boolean;
+    }
+
+    export default FlexRuntimeInfoAPI;
+}
+
+declare module 'sap/ui/fl/write/api/ChangesWriteAPI' {
+    interface ChangeHander {
+        getChangeVisualizationInfo(change, appComponent): Promise<object>;
+    }
+    interface ChangesWriteAPI {
+        getChangeHandler(propertyBag: object): Promise<ChangeHander>;
+    }
+
+    const ChangesWriteAPI: ChangesWriteAPI;
+    export default ChangesWriteAPI;
+}
+
+declare module 'sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory' {
+    interface FlexObjectFactory {
+        createFromFileContent(fileContent: object, ObjectClass?: class, isPersisted?: boolean): object;
+    }
+
+    const FlexObjectFactory: FlexObjectFactory;
+    export default FlexObjectFactory;
 }

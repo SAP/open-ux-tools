@@ -2,6 +2,7 @@ import type { FioriElementsApp, LROPSettings } from '../src';
 import { generate, TableType, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import {
     testOutputDir,
     debug,
@@ -13,10 +14,17 @@ import {
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath,
     v4TemplateSettingsTreeTable,
-    getTestData
+    getTestData,
+    applyBaseConfigToFEApp,
+    sampleCapService
 } from './common';
 import { ServiceType } from '@sap-ux/odata-service-writer';
 import { type OdataService } from '@sap-ux/odata-service-writer';
+import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+import { generateAnnotations } from '@sap-ux/annotation-generator';
+import { initI18n } from '../src/i18n';
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
@@ -30,6 +38,16 @@ jest.mock('read-pkg-up', () => ({
             version: '9.9.9-mocked'
         }
     })
+}));
+
+jest.mock('@sap-ux/cap-config-writer', () => ({
+    ...jest.requireActual('@sap-ux/cap-config-writer'),
+    applyCAPUpdates: jest.fn()
+}));
+
+jest.mock('@sap-ux/annotation-generator', () => ({
+    ...jest.requireActual('@sap-ux/annotation-generator'),
+    generateAnnotations: jest.fn()
 }));
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
@@ -196,7 +214,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
-            name: 'lropV2_omit_reuse_libs',
+            name: 'lropV2_omit_reuse_libs_use_virtual_endpoints',
             config: {
                 ...Object.assign(feBaseConfig('felrop4'), {
                     template: {
@@ -208,7 +226,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         version: '1.77.2' // flex changes preview should be included with this version
                     },
                     appOptions: {
-                        loadReuseLibs: false
+                        loadReuseLibs: false,
+                        useVirtualPreviewEndpoints: true
                     }
                 }),
                 service: v2Service
@@ -379,10 +398,33 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     type: ServiceType.EDMX
                 }
             } as FioriElementsApp<LROPSettings>
+        },
+        {
+            name: 'lrop_v4_add_test_virtual_endpoints',
+            config: {
+                ...Object.assign(feBaseConfig('lrop_v4_add_test_virtual_endpoints'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    },
+                    appOptions: {
+                        ...feBaseConfig('lrop_v4_add_test_virtual_endpoints').appOptions,
+                        generateIndex: false,
+                        addTests: true,
+                        useVirtualPreviewEndpoints: true
+                    }
+                }),
+                service: {
+                    ...v4Service,
+                    metadata: getTestData('annotation_v4', 'metadata'),
+                    type: ServiceType.EDMX
+                }
+            } as FioriElementsApp<LROPSettings>
         }
     ];
 
-    beforeAll(() => {
+    beforeAll(async () => {
+        await initI18n();
         removeSync(curTestOutPath); // even for in memory
     });
 
@@ -401,6 +443,380 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             }
         }).then(async () => {
             await projectChecks(testPath, config, debug?.debugFull);
+        });
+    });
+
+    test('should generate manifest with correct routing and context paths when parameterised main entity is selected', async () => {
+        const projectName = 'projectWithParametrisedMainEntity';
+        const config = {
+            ...Object.assign(feBaseConfig(projectName), {
+                template: {
+                    type: TemplateType.ListReportObjectPage,
+                    settings: {
+                        entityConfig: {
+                            mainEntityName: 'ZC_STOCKAGEING',
+                            mainEntityParameterName: 'Set'
+                        },
+                        tableType: 'ResponsiveTable'
+                    }
+                },
+                appOptions: {
+                    ...feBaseConfig(projectName).appOptions,
+                    generateIndex: false,
+                    addTests: true,
+                    useVirtualPreviewEndpoints: true
+                }
+            }),
+            service: {
+                ...v4Service,
+                type: ServiceType.EDMX
+            },
+            ui5: {
+                ...feBaseConfig(projectName).ui5,
+                minUI5Version: '1.94.0'
+            }
+        } as FioriElementsApp<LROPSettings>;
+
+        const testPath = join(curTestOutPath, projectName);
+        const fs = await generate(testPath, config);
+        const manifestPath = join(testPath, 'webapp', 'manifest.json');
+        const manifest = fs.readJSON(manifestPath);
+
+        const routing = (manifest as any)['sap.ui5'].routing;
+        const routingRoutes = routing.routes;
+
+        // check routing routes
+        expect(routingRoutes).toEqual([
+            {
+                pattern: ':?query:',
+                name: 'ZC_STOCKAGEINGList',
+                target: 'ZC_STOCKAGEINGList'
+            },
+            {
+                pattern: 'ZC_STOCKAGEING({key})/Set({key2}):?query:',
+                name: 'ZC_STOCKAGEINGObjectPage',
+                target: 'ZC_STOCKAGEINGObjectPage'
+            }
+        ]);
+
+        // check context paths
+        const contextPathForListPage = routing.targets.ZC_STOCKAGEINGList.options.settings.contextPath;
+        expect(contextPathForListPage).toBe('/ZC_STOCKAGEING/Set');
+
+        const contextPathForObjectPage = routing.targets.ZC_STOCKAGEINGObjectPage.options.settings.contextPath;
+        expect(contextPathForObjectPage).toBe('/ZC_STOCKAGEING/Set');
+    });
+
+    test('should omit navigation entity target when both `mainEntityParameterName` and `navigationEntity` are specified', async () => {
+        const projectName = 'parameterisedMainEntityWithNavigation';
+        const config = {
+            ...Object.assign(feBaseConfig(projectName), {
+                template: {
+                    type: TemplateType.ListReportObjectPage,
+                    settings: {
+                        entityConfig: {
+                            mainEntityName: 'Travel',
+                            mainEntityParameterName: 'Set',
+                            navigationEntity: {
+                                EntitySet: 'Booking',
+                                Name: '_Booking'
+                            }
+                        },
+                        tableType: 'ResponsiveTable'
+                    }
+                },
+                appOptions: {
+                    ...feBaseConfig(projectName).appOptions,
+                    generateIndex: false,
+                    addTests: true,
+                    useVirtualPreviewEndpoints: true
+                }
+            }),
+            service: {
+                ...v4Service,
+                type: ServiceType.EDMX
+            },
+            ui5: {
+                ...feBaseConfig(projectName).ui5,
+                minUI5Version: '1.94.0'
+            }
+        } as FioriElementsApp<LROPSettings>;
+
+        const testPath = join(curTestOutPath, projectName);
+        const fs = await generate(testPath, config);
+        const manifestPath = join(testPath, 'webapp', 'manifest.json');
+        const manifest = fs.readJSON(manifestPath);
+
+        const routing = (manifest as any)['sap.ui5'].routing;
+        const routingRoutes = routing.routes;
+
+        // Verify routing routes & targets to ensure that navigation entity routing is excluded
+        // when the mainEntityParameterName is set, as navigation entities are not supported in this scenario.
+        expect(routingRoutes).toEqual([
+            {
+                pattern: ':?query:',
+                name: 'TravelList',
+                target: 'TravelList'
+            },
+            {
+                name: 'TravelObjectPage',
+                pattern: 'Travel({key})/Set({key2}):?query:',
+                target: 'TravelObjectPage'
+            }
+        ]);
+
+        const targets = routing.targets;
+        expect(targets).toEqual({
+            TravelList: {
+                type: 'Component',
+                id: 'TravelList',
+                name: 'sap.fe.templates.ListReport',
+                options: {
+                    settings: {
+                        contextPath: '/Travel/Set',
+                        variantManagement: 'Page',
+                        navigation: {
+                            Travel: {
+                                detail: {
+                                    route: 'TravelObjectPage'
+                                }
+                            }
+                        },
+                        controlConfiguration: {
+                            '@com.sap.vocabularies.UI.v1.LineItem': {
+                                tableSettings: {
+                                    type: 'ResponsiveTable'
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            TravelObjectPage: {
+                type: 'Component',
+                id: 'TravelObjectPage',
+                name: 'sap.fe.templates.ObjectPage',
+                options: {
+                    settings: {
+                        editableHeaderContent: false,
+                        contextPath: '/Travel/Set'
+                    }
+                }
+            }
+        });
+    });
+
+    test('sapuxLayer is added to package json for edmx projects when provided', async () => {
+        const fioriElementsApp: FioriElementsApp<LROPSettings> = {
+            ...Object.assign(feBaseConfig('felrop1'), {
+                template: {
+                    type: TemplateType.ListReportObjectPage,
+                    settings: v4TemplateSettings
+                }
+            }),
+            service: v4Service,
+            package: {
+                ...feBaseConfig('felrop1').package,
+                sapuxLayer: 'CUSTOMER_BASE'
+            }
+        } as FioriElementsApp<LROPSettings>;
+
+        const fs = await generate(curTestOutPath, fioriElementsApp);
+        const packageJsonPath = join(curTestOutPath, 'package.json');
+        const packageJson = fs.readJSON(packageJsonPath);
+        expect((packageJson as any)?.sapuxLayer).toBe('CUSTOMER_BASE');
+    });
+
+    describe('CAP updates', () => {
+        const capProjectSettings = {
+            appRoot: curTestOutPath,
+            packageName: 'felrop1',
+            appId: 'felrop1',
+            sapux: true,
+            enableTypescript: undefined
+        };
+
+        afterEach(() => {
+            jest.clearAllMocks();
+            jest.resetAllMocks();
+        });
+
+        test('should perform CAP updates when CAP service is available and cds ui5 plugin is enabled', async () => {
+            const fs = create(createStorage());
+
+            const fioriElementsApp = applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage);
+            await generate(curTestOutPath, fioriElementsApp, fs);
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+
+            expect(applyCAPUpdates).toBeCalledWith(fs, sampleCapService, {
+                ...capProjectSettings,
+                enableNPMWorkspaces: true,
+                enableCdsUi5Plugin: true
+            });
+        });
+
+        test('should perform CAP updates when CAP service is available and cds ui5 plugin is disabled', async () => {
+            const fs = create(createStorage());
+            const capServiceWithoutCdsUi5PluginInfo = {
+                projectPath: 'test/path',
+                serviceName: 'test-service',
+                capType: 'Node.js'
+            };
+            const appInfo = applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage);
+            const fioriElementsApp = {
+                ...appInfo,
+                service: {
+                    ...appInfo.service,
+                    capService: capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+                ...capProjectSettings,
+                enableNPMWorkspaces: false,
+                enableCdsUi5Plugin: false
+            });
+        });
+
+        test('should perform CAP updates when CAP service is available and cds ui5 plugin is enabled', async () => {
+            const fs = create(createStorage());
+            const capServiceWithoutCdsUi5PluginInfo = {
+                projectPath: 'test/path',
+                serviceName: 'test-service',
+                capType: 'Node.js',
+                cdsUi5PluginInfo: { hasCdsUi5Plugin: false, isCdsUi5PluginEnabled: true, isWorkspaceEnabled: false }
+            };
+            const appInfo = applyBaseConfigToFEApp('felrop2', TemplateType.ListReportObjectPage);
+            const fioriElementsApp = {
+                ...appInfo,
+                service: {
+                    ...appInfo.service,
+                    capService: capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+                ...capProjectSettings,
+                appId: 'felrop2',
+                packageName: 'felrop2',
+                enableNPMWorkspaces: true,
+                enableCdsUi5Plugin: true
+            });
+        });
+
+        test('should NOT perform CAP updates when CAP service is available and cds ui5 plugin is disabled', async () => {
+            const fs = create(createStorage());
+            const capServiceWithoutCdsUi5PluginInfo = {
+                projectPath: 'test/path',
+                serviceName: 'test-service',
+                capType: 'Node.js',
+                cdsUi5PluginInfo: { hasCdsUi5Plugin: false, isCdsUi5PluginEnabled: false, isWorkspaceEnabled: false }
+            };
+            const appInfo = applyBaseConfigToFEApp('felrop2', TemplateType.ListReportObjectPage);
+            const fioriElementsApp = {
+                ...appInfo,
+                service: {
+                    ...appInfo.service,
+                    capService: capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+                ...capProjectSettings,
+                appId: 'felrop2',
+                packageName: 'felrop2',
+                enableNPMWorkspaces: false,
+                enableCdsUi5Plugin: false
+            });
+        });
+
+        test('should not perform CAP updates, when no cap service provided', async () => {
+            const fs = create(createStorage());
+            const fioriElementsApp = applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage);
+            delete fioriElementsApp.service.capService;
+            await generate(curTestOutPath, fioriElementsApp, fs);
+            expect(applyCAPUpdates).toBeCalledTimes(0);
+        });
+    });
+
+    describe('Should generate annotations correctly for LROP projects', () => {
+        const fs = create(createStorage());
+
+        afterEach(() => {
+            jest.clearAllMocks();
+            jest.resetAllMocks();
+        });
+
+        test('Should generate annotations for LROP projects when service is OData V4 and addAnnotations is enabled', async () => {
+            const fioriElementsApp = {
+                ...applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage),
+                appOptions: {
+                    addAnnotations: true
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+            expect(generateAnnotations).toBeCalledTimes(1);
+
+            expect(generateAnnotations).toBeCalledWith(
+                fs,
+                {
+                    serviceName: sampleCapService.serviceName,
+                    appName: fioriElementsApp.package.name,
+                    project: sampleCapService.projectPath
+                },
+                {
+                    entitySetName: v4TemplateSettings?.entityConfig?.mainEntityName,
+                    annotationFilePath: join('test', 'path', 'felrop1', 'annotations.cds'),
+                    addFacets: true,
+                    addLineItems: true,
+                    addValueHelps: true
+                }
+            );
+        });
+
+        test('Should not generate annotations for LROP projects when service is OData V4 and addAnnotations is disabled', async () => {
+            const fioriElementsApp = {
+                ...applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage),
+                appOptions: {
+                    addAnnotations: false
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+            expect(generateAnnotations).not.toBeCalled();
+        });
+
+        test('Should not generate annotations for LROP projects when service is OData V2 and addAnnotations is enabled', async () => {
+            const appInfo = applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage);
+            const fioriElementsApp = {
+                ...appInfo,
+                appOptions: {
+                    addAnnotations: true
+                },
+                service: {
+                    ...appInfo.service,
+                    version: OdataVersion.v2
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+            expect(generateAnnotations).not.toBeCalled();
+        });
+
+        test('Should not generate annotations for projects unless they are LROP or Worklist with OData V4 service, or an FEOP project', async () => {
+            const appInfo = applyBaseConfigToFEApp('alpV4', TemplateType.AnalyticalListPage);
+            const fioriElementsApp = {
+                ...appInfo,
+                appOptions: {
+                    addAnnotations: true
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+            expect(generateAnnotations).not.toBeCalled();
         });
     });
 });

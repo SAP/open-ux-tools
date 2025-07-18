@@ -223,7 +223,7 @@ describe('Test function createApplicationAccess()', () => {
         const createCapI18nEntriesMock = jest.spyOn(i18nMock, 'createCapI18nEntries').mockResolvedValue(true);
         const createUI5I18nEntriesMock = jest.spyOn(i18nMock, 'createUI5I18nEntries').mockResolvedValue(true);
         const projectRoot = join(sampleRoot, 'cap-project');
-        const appRoot = join(projectRoot, 'apps/one');
+        const appRoot = join(projectRoot, 'apps', 'one');
         const appAccess = await createApplicationAccess(appRoot, memFs);
 
         // Test execution
@@ -298,6 +298,21 @@ describe('Test function createApplicationAccess()', () => {
         expect(result).toBe('{\n    "name": "two"\n}\n');
     });
 
+    test('Update package.json of app in CAP project - mem-fs-editor (mocked)', async () => {
+        // Mock setup
+        const projectRoot = join(sampleRoot, 'cap-project');
+        const appRoot = join(projectRoot, 'apps/one');
+        const updateFileContent = { name: 'two' } as unknown as Package;
+        const pckgPath = join(appRoot, 'package.json');
+        memFs.writeJSON(pckgPath, { name: 'one' }, undefined, 4);
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot, memFs);
+        await appAccess.updatePackageJSON(updateFileContent);
+        // Result check
+        const result = memFs.read(pckgPath);
+        expect(result).toBe('{\n    "name": "two"\n}\n');
+    });
+
     test('Update manifest.json of standalone app (mocked)', async () => {
         // Mock setup
         const appRoot = join(sampleRoot, 'fiori_elements');
@@ -320,6 +335,20 @@ describe('Test function createApplicationAccess()', () => {
         // Test execution
         const appAccess = await createApplicationAccess(appRoot);
         await appAccess.updateManifestJSON(updateFileContent, memFs);
+        // Result check
+        const result = memFs.read(manifestPath);
+        expect(result).toBe('{\n    "sap.app": {}\n}\n');
+    });
+
+    test('Update manifest.json of standalone app - mem-fs-editor passed when created', async () => {
+        // Mock setup
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const updateFileContent = { 'sap.app': {} } as unknown as Manifest;
+        const manifestPath = join(appRoot, 'webapp', 'manifest.json');
+        memFs.writeJSON(manifestPath, { 'sap.app': { id: 'single_apps-fiori_elements' } }, undefined, 4);
+        // Test execution
+        const appAccess = await createApplicationAccess(appRoot, memFs);
+        await appAccess.updateManifestJSON(updateFileContent);
         // Result check
         const result = memFs.read(manifestPath);
         expect(result).toBe('{\n    "sap.app": {}\n}\n');

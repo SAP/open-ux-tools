@@ -1,17 +1,8 @@
 import React from 'react';
 
 import { render } from '../utils';
-import { initI18n } from '../../../src/i18n';
 
 import { ChangeIndicator } from '../../../src/components/ChangeIndicator';
-import { mockResizeObserver } from '../../utils/utils';
-import { initIcons } from '@sap-ux/ui-components';
-
-beforeAll(() => {
-    mockResizeObserver();
-    initI18n();
-    initIcons();
-});
 
 describe('ChangeIndicator', () => {
     test('saved changes', () => {

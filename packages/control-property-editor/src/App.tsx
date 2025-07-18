@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
 import type { Scenario, ShowMessage } from '@sap-ux-private/control-property-editor-common';
-import { LeftPanel, PropertiesList } from './panels';
+import { LeftPanel, RightPanel } from './panels';
 import { Toolbar } from './toolbar';
 import { useLocalStorage } from './use-local-storage';
 import type { RootState } from './store';
@@ -59,6 +59,7 @@ export default function App(appProps: AppProps): ReactElement {
     const windowSize = useWindowSize();
     const dialogMessage = useSelector<RootState, ShowMessage | undefined>((state) => state.dialogMessage);
     const [dialogQueue, setDialogQueue] = useState<ShowMessage[]>([]);
+    const [suppressDialog, setSuppressDialog] = useState<boolean>(false);
     const containerRef = useCallback(
         (node) => {
             if (node === null) {
@@ -97,6 +98,7 @@ export default function App(appProps: AppProps): ReactElement {
     const closeAdpWarningDialog = (): void => {
         setDialogQueue((prevQueue) => prevQueue.slice(1));
         setShouldShowDialogMessage(dialogQueue.length !== 0);
+        setSuppressDialog(true);
     };
 
     useEffect(() => {
@@ -131,7 +133,7 @@ export default function App(appProps: AppProps): ReactElement {
                     </div>
                 </section>
                 <section className="app-panel app-panel-right">
-                    <PropertiesList />
+                    <RightPanel />
                 </section>
                 {isAdpProject && shouldHideIframe && dialogQueue.length > 0 && (
                     <UIDialog
@@ -142,7 +144,7 @@ export default function App(appProps: AppProps): ReactElement {
                         }}
                     />
                 )}
-                {isAdpProject && !shouldHideIframe && dialogQueue.length > 0 && (
+                {isAdpProject && !shouldHideIframe && dialogQueue.length > 0 && !suppressDialog && (
                     <UIDialog
                         hidden={!shouldShowDialogMessage}
                         dialogContentProps={{

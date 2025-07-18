@@ -1,0 +1,14 @@
+{
+    "project": {
+        "targetFolder": "./test-output"
+    },
+    "service": {},
+    "deployConfig": {
+        "deployTarget": "ABAP",
+        "destination": "Dest1",
+        "ui5AbapRepo": "MY_UI5_ABAP_REPO",
+        "description": "Testing headless ABAP deployment on BAS",
+        "package": "ZPKG123",
+        "transport": "$TMP"
+    }
+}

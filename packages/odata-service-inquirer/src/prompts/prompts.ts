@@ -1,10 +1,10 @@
-import { Severity } from '@sap-devx/yeoman-ui-types';
 import { withCondition, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Answers, Question } from 'inquirer';
 import { t } from '../i18n';
 import {
     DatasourceType,
     promptNames,
+    type ConnectedSystem,
     type DatasourceTypePromptOptions,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
@@ -12,24 +12,25 @@ import {
 } from '../types';
 import { getLocalCapProjectPrompts } from './datasources/cap-project/questions';
 import { getMetadataFileQuestion } from './datasources/metadata-file';
-import { getAbapOnPremQuestions } from './datasources/sap-system/abap-on-prem/questions';
-import type { NewSystemAnswers, SystemSelectionAnswer } from './datasources/sap-system/new-system/questions';
-import { newSystemChoiceValue } from './datasources/sap-system/new-system/questions';
+import { getSystemSelectionQuestions } from './datasources/sap-system/system-selection';
 import { getServiceUrlQuestions } from './datasources/service-url/questions';
-import LoggerHelper from './logger-helper';
 import { getDatasourceTypeChoices } from './prompt-helpers';
 
 /**
  * Get the prompts for the OData service inquirer.
  *
  * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
+ * @param connectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns the prompts used to provide input for OData service generation
  */
-export async function getQuestions(promptOptions?: OdataServicePromptOptions): Promise<OdataServiceQuestion[]> {
+export async function getQuestions(
+    promptOptions?: OdataServicePromptOptions,
+    connectedSystem?: ConnectedSystem
+): Promise<OdataServiceQuestion[]> {
     const questions: OdataServiceQuestion[] = [getDatasourceTypeQuestion(promptOptions?.datasourceType)];
 
     // Add conditional questions depending on the selected source
-    questions.push(...(await getDatasourceTypeConditionalQuestions(promptOptions)));
+    questions.push(...(await getDatasourceTypeConditionalQuestions(promptOptions, connectedSystem)));
 
     return questions;
 }
@@ -50,33 +51,7 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
         },
         default: options?.default ?? -1,
         message: t('prompts.datasourceType.message'),
-        choices,
-        additionalMessages: (source: DatasourceType) => {
-            if (
-                [
-                    DatasourceType.businessHub,
-                    DatasourceType.none,
-                    DatasourceType.projectSpecificDestination,
-                    DatasourceType.sapSystem
-                ].includes(source)
-            ) {
-                LoggerHelper.logger?.warn(
-                    t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType: source })
-                );
-                return {
-                    message: t('prompts.datasourceType.notYetImplementedWarningMessage', { datasourceType: source }),
-                    severity: Severity.warning
-                };
-            }
-            if (source === DatasourceType.businessHub) {
-                return {
-                    message: t('prompts.nonUIServiceTypeWarningMessage', {
-                        serviceTypeDesc: t('prompts.datasourceType.businessHubName')
-                    }),
-                    severity: Severity.warning
-                };
-            }
-        }
+        choices
     } as YUIQuestion;
 }
 
@@ -84,12 +59,21 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
  * Apply addiitonal when conditions based on the datasource type answer.
  *
  * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
+ * @param connectedSystem
  * @returns the conditional questions based on the datasource type answer
  */
 async function getDatasourceTypeConditionalQuestions(
-    promptOptions?: OdataServicePromptOptions
+    promptOptions?: OdataServicePromptOptions,
+    connectedSystem?: ConnectedSystem
 ): Promise<OdataServiceQuestion[]> {
     const conditionalQuestions: OdataServiceQuestion[] = [];
+
+    conditionalQuestions.push(
+        ...(withCondition(
+            (await getSystemSelectionQuestions(promptOptions, connectedSystem)) as Question[],
+            (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem
+        ) as OdataServiceQuestion[])
+    );
 
     conditionalQuestions.push(
         ...(withCondition(
@@ -107,23 +91,10 @@ async function getDatasourceTypeConditionalQuestions(
 
     conditionalQuestions.push(
         ...(withCondition(
-            getServiceUrlQuestions(promptOptions) as Question[],
+            getServiceUrlQuestions(promptOptions?.serviceUrl) as Question[],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.odataServiceUrl
         ) as OdataServiceQuestion[])
     );
-
-    // Temp integration into Service Inquirer new system questions
-    conditionalQuestions.push(
-        ...(withCondition(
-            getAbapOnPremQuestions(promptOptions) as Question[],
-            (answers: Answers) =>
-                (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem &&
-                (answers as SystemSelectionAnswer).system === newSystemChoiceValue &&
-                (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
-        ) as OdataServiceQuestion[])
-    );
-
-    //...further data sources to be added here
 
     return conditionalQuestions;
 }

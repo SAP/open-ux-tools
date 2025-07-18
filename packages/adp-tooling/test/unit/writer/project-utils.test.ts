@@ -1,13 +1,16 @@
-import path from 'path';
+import path, { join } from 'path';
 import { readFileSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
+
+import { getTypesPackage, getTypesVersion, getEsmTypesVersion, UI5_DEFAULT } from '@sap-ux/ui5-config';
 
 import type { AdpWriterConfig } from '../../../src';
 import {
     writeTemplateToFolder,
     writeUI5Yaml,
     writeUI5DeployYaml,
-    getPackageJSONInfo
+    getPackageJSONInfo,
+    getTypes
 } from '../../../src/writer/project-utils';
 
 jest.mock('fs', () => ({
@@ -18,7 +21,17 @@ jest.mock('fs', () => ({
     readFileSync: jest.fn()
 }));
 
+jest.mock('@sap-ux/ui5-config', () => ({
+    ...jest.requireActual('@sap-ux/ui5-config'),
+    getTypesPackage: jest.fn(),
+    getEsmTypesVersion: jest.fn(),
+    getTypesVersion: jest.fn()
+}));
+
 const readFileSyncMock = readFileSync as jest.Mock;
+const mockedGetTypesPackage = getTypesPackage as jest.Mock;
+const mockedGetTypesVersion = getTypesVersion as jest.Mock;
+const mockedGetEsmTypesVersion = getEsmTypesVersion as jest.Mock;
 
 describe('Project Utils', () => {
     const data: AdpWriterConfig = {
@@ -28,6 +41,12 @@ describe('Project Utils', () => {
         },
         target: {
             url: 'http://sap.example'
+        },
+        options: {
+            enableTypeScript: false
+        },
+        ui5: {
+            version: '1.133.1'
         }
     };
 
@@ -62,12 +81,70 @@ describe('Project Utils', () => {
         });
     });
 
-    describe('writeTemplateToFolder', () => {
+    describe('getTypes', () => {
         beforeEach(() => {
             jest.clearAllMocks();
         });
 
-        const templatePath = '../../../templates/project';
+        it('should return default types for snapshot version', () => {
+            const result = getTypes('1.137.0-snapshot');
+
+            expect(result).toEqual({
+                typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
+                typesVersion: `~${UI5_DEFAULT.TYPES_VERSION_BEST}`
+            });
+        });
+
+        it('should return classic types package and version when applicable', () => {
+            mockedGetTypesPackage.mockReturnValue(UI5_DEFAULT.TYPES_PACKAGE_NAME);
+            mockedGetTypesVersion.mockReturnValue('1.108.0');
+
+            const result = getTypes('1.108.0');
+
+            expect(mockedGetTypesPackage).toHaveBeenCalledWith('1.108.0');
+            expect(mockedGetTypesVersion).toHaveBeenCalledWith('1.108.0');
+            expect(result).toEqual({
+                typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
+                typesVersion: '1.108.0'
+            });
+        });
+
+        it('should return esm types package and version if not default', () => {
+            mockedGetTypesPackage.mockReturnValue('@sapui5/esm-types');
+            mockedGetEsmTypesVersion.mockReturnValue('1.112.1');
+
+            const result = getTypes('1.112.1');
+
+            expect(mockedGetTypesPackage).toHaveBeenCalledWith('1.112.1');
+            expect(mockedGetEsmTypesVersion).toHaveBeenCalledWith('1.112.1');
+            expect(result).toEqual({
+                typesPackage: '@sapui5/esm-types',
+                typesVersion: '1.112.1'
+            });
+        });
+
+        it('should handle undefined version gracefully', () => {
+            mockedGetTypesPackage.mockReturnValue(UI5_DEFAULT.TYPES_PACKAGE_NAME);
+            mockedGetTypesVersion.mockReturnValue('1.136.0');
+
+            const result = getTypes(undefined);
+
+            expect(result).toEqual({
+                typesPackage: UI5_DEFAULT.TYPES_PACKAGE_NAME,
+                typesVersion: '1.136.0'
+            });
+        });
+    });
+
+    describe('writeTemplateToFolder', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+
+            mockedGetTypesPackage.mockReturnValue(UI5_DEFAULT.TYPES_PACKAGE_NAME);
+            mockedGetTypesVersion.mockReturnValue('~1.136.0');
+        });
+
+        const templatePath = '../../../templates';
         const projectPath = 'project';
 
         const writeFilesSpy = jest.fn();
@@ -76,9 +153,26 @@ describe('Project Utils', () => {
         it('should write template to the specified folder', () => {
             writeTemplateToFolder(templatePath, projectPath, data, mockFs as unknown as Editor);
 
-            expect(writeFilesSpy.mock.calls[0][0]).toEqual(templatePath);
+            expect(writeFilesSpy.mock.calls[0][0]).toEqual(join(templatePath, 'project', '**', '*.*'));
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
-            expect(writeFilesSpy.mock.calls[0][2]).toEqual(data);
+            expect(writeFilesSpy.mock.calls[0][2]).toEqual({
+                ...data,
+                typesPackage: '@sapui5/types',
+                typesVersion: '~1.136.0'
+            });
+        });
+
+        it('should write TS template to the specified folder when project supports typescript', () => {
+            const newData = { ...data, options: { enableTypeScript: true } };
+            writeTemplateToFolder(templatePath, projectPath, newData, mockFs as unknown as Editor);
+
+            expect(writeFilesSpy.mock.calls[0][0]).toEqual(join(templatePath, 'project', '**', '*.*'));
+            expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
+            expect(writeFilesSpy.mock.calls[0][2]).toEqual({
+                ...newData,
+                typesPackage: '@sapui5/types',
+                typesVersion: '~1.136.0'
+            });
         });
 
         it('should throw error when writing file fails', () => {

@@ -1,6 +1,6 @@
-import { validateCapPath } from '../../../../src/prompts/datasources/cap-project/validators';
 import path from 'path';
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
+import { validateCapPath } from '../../../../src/prompts/datasources/cap-project/validators';
 
 describe('Test validators', () => {
     beforeAll(async () => {
@@ -13,7 +13,7 @@ describe('Test validators', () => {
 
         expect(await validateCapPath('')).toBe(false);
         expect(await validateCapPath(invalidBookshopPath)).toBe(
-            'The folder you have selected does not seem to contain a valid CAP project. Please check and try again.'
+            'The folder you have selected does not contain a valid CAP project. Please check and try again.'
         );
         expect(await validateCapPath(bookshopPath)).toBe(true);
     });

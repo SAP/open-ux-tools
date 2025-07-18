@@ -3,6 +3,7 @@ import Button from 'sap/m/Button';
 import merge from 'sap/base/util/merge';
 
 import Control from 'sap/ui/core/Control';
+import Component from 'sap/ui/core/Component';
 import UIComponent from 'sap/ui/core/UIComponent';
 
 import Utils from 'sap/ui/fl/Utils';
@@ -53,10 +54,10 @@ export function checkLayer(layer: string): void {
 /**
  * Checks if the given root control is an instance of Control or UIComponent.
  *
- * @param {Control | UIComponent} rootControl - The root control to be checked.
+ * @param {Component} rootControl - The root control to be checked.
  * @throws {Error} Throws an error if the root control is not an instance of Control or UIComponent.
  */
-export function checkRootControl(rootControl: Control | UIComponent): void {
+export function checkRootControl(rootControl: Component): void {
     if (!(rootControl instanceof Control) && !(rootControl instanceof UIComponent)) {
         throw new Error('An invalid root control was passed');
     }
@@ -66,14 +67,14 @@ export function checkRootControl(rootControl: Control | UIComponent): void {
  * Checks if key user adaptation is enabled for the specified component.
  * Fiori tools mode is considered a developer scenario where the `flexEnabled` flag should not be evaluated.
  *
- * @param {Control} component - The UI5 control component to check for flex (key user adaptation) enabled status.
+ * @param {Component} component - The UI5 control component to check for flex (key user adaptation) enabled status.
  * @throws {Error} Throws an error if key user adaptation is explicitly disabled in the component's manifest.
  */
-export function checkFlexEnabled(component: Control): void {
+export function checkFlexEnabled(component: Component): void {
     // fiori tools is always a developer scenario where the flexEnabled flag should not be evaluated
     const fioriToolsMode = new URLSearchParams(window.location.search).get('fiori-tools-rta-mode');
     if (!fioriToolsMode || fioriToolsMode === 'false') {
-        const manifest = (component as Control & { getManifest: () => Manifest }).getManifest() || {};
+        const manifest = ((component as Component& { getManifest: () => Manifest }).getManifest() || {}) as Manifest;
         const flexEnabled = manifest['sap.ui5']?.flexEnabled;
 
         if (flexEnabled === false) {
@@ -114,7 +115,7 @@ export async function checkKeyUser(layer: string): Promise<void> {
  * @returns {Promise<void>} A promise that resolves when all checks pass without errors.
  * @throws {Error} Throws an error if any of the checks fail.
  */
-async function checkLayerAndControl(rootControl: Control, layer: string): Promise<void> {
+async function checkLayerAndControl(rootControl: Component, layer: string): Promise<void> {
     checkLayer(layer);
 
     checkRootControl(rootControl);
@@ -164,7 +165,7 @@ function removeExtraBtnsFromToolbar(): void {
  * Initializes custom RuntimeAuthoring for UI5 Versions < 1.72 and start UI Adaptation.
  * Ensures that the passed options are valid.
  *
- * @param {RTAOptions} options - Options Options that are passed to RuntimeAuthoring upon initialization.
+ * @param {RTAOptions} options - Options that are passed to RuntimeAuthoring upon initialization.
  * @param {RTAPlugin} loadPlugins - Script that needs to be executed after rta is initialized.
  * @returns {Promise<void>} A promise that resolves when all the checks have passed and RuntimeAuthoring is started.
  */

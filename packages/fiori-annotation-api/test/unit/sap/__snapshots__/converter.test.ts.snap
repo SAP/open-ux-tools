@@ -1,0 +1,898 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SAP Annotation Converter UI Facets empty 1`] = `
+Array [
+  Object {
+    "name": "Service.Entity/name",
+    "nameRange": undefined,
+    "range": undefined,
+    "terms": Array [
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.fieldGroup",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "10",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "qualifier",
+                      },
+                      "String": Object {
+                        "name": "String",
+                        "type": "attribute",
+                        "value": "general",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+            ],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.facet",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+    ],
+    "termsRange": undefined,
+    "type": "target",
+  },
+]
+`;
+
+exports[`SAP Annotation Converter UI Facets no field group 1`] = `Array []`;
+
+exports[`SAP Annotation Converter UI Facets reference facet to field group 1`] = `
+Array [
+  Object {
+    "name": "Service.Entity/name",
+    "nameRange": undefined,
+    "range": undefined,
+    "terms": Array [
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.fieldGroup",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "10",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "qualifier",
+                      },
+                      "String": Object {
+                        "name": "String",
+                        "type": "attribute",
+                        "value": "general",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+            ],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.facet",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "id",
+                      },
+                      "String": Object {
+                        "name": "String",
+                        "type": "attribute",
+                        "value": "FacetID",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "EnumMember": Object {
+                        "name": "EnumMember",
+                        "type": "attribute",
+                        "value": "STANDARD",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "purpose",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "EnumMember": Object {
+                        "name": "EnumMember",
+                        "type": "attribute",
+                        "value": "FIELDGROUP_REFERENCE",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "type",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "targetQualifier",
+                      },
+                      "String": Object {
+                        "name": "String",
+                        "type": "attribute",
+                        "value": "general",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "10",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "id",
+                      },
+                      "String": Object {
+                        "name": "String",
+                        "type": "attribute",
+                        "value": "FacetID2",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "EnumMember": Object {
+                        "name": "EnumMember",
+                        "type": "attribute",
+                        "value": "STANDARD",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "purpose",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "EnumMember": Object {
+                        "name": "EnumMember",
+                        "type": "attribute",
+                        "value": "FIELDGROUP_REFERENCE",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "type",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "targetQualifier",
+                      },
+                      "String": Object {
+                        "name": "String",
+                        "type": "attribute",
+                        "value": "general2",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "20",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "label",
+                      },
+                      "String": Object {
+                        "name": "String",
+                        "type": "attribute",
+                        "value": "General 2",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+            ],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+    ],
+    "termsRange": undefined,
+    "type": "target",
+  },
+]
+`;
+
+exports[`SAP Annotation Converter UI FieldGroup empty 1`] = `Array []`;
+
+exports[`SAP Annotation Converter UI FieldGroup with multiple data fields 1`] = `
+Array [
+  Object {
+    "name": "Service.Entity/name",
+    "nameRange": undefined,
+    "range": undefined,
+    "terms": Array [
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.fieldGroup",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "10",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+            ],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+    ],
+    "termsRange": undefined,
+    "type": "target",
+  },
+  Object {
+    "name": "Service.Entity/category",
+    "nameRange": undefined,
+    "range": undefined,
+    "terms": Array [
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.fieldGroup",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "20",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+            ],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+    ],
+    "termsRange": undefined,
+    "type": "target",
+  },
+]
+`;
+
+exports[`SAP Annotation Converter UI LineItem empty 1`] = `Array []`;
+
+exports[`SAP Annotation Converter UI LineItem multiple items with label 1`] = `
+Array [
+  Object {
+    "name": "Service.Entity/name",
+    "nameRange": undefined,
+    "range": undefined,
+    "terms": Array [
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.lineItem",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "10",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "EnumMember": Object {
+                        "name": "EnumMember",
+                        "type": "attribute",
+                        "value": "HIGH",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "importance",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+            ],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+    ],
+    "termsRange": undefined,
+    "type": "target",
+  },
+  Object {
+    "name": "Service.Entity/category",
+    "nameRange": undefined,
+    "range": undefined,
+    "terms": Array [
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.lineItem",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "20",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "EnumMember": Object {
+                        "name": "EnumMember",
+                        "type": "attribute",
+                        "value": "HIGH",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "importance",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+            ],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+      Object {
+        "attributes": Object {
+          "String": Object {
+            "name": "String",
+            "type": "attribute",
+            "value": "Category",
+          },
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "EndUserText.label",
+          },
+        },
+        "content": Array [],
+        "name": "Annotation",
+        "type": "element",
+      },
+    ],
+    "termsRange": undefined,
+    "type": "target",
+  },
+]
+`;
+
+exports[`SAP Annotation Converter UI LineItem with a data field 1`] = `
+Array [
+  Object {
+    "name": "Service.Entity/name",
+    "nameRange": undefined,
+    "range": undefined,
+    "terms": Array [
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.lineItem",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "10",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "EnumMember": Object {
+                        "name": "EnumMember",
+                        "type": "attribute",
+                        "value": "HIGH",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "importance",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+            ],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+    ],
+    "termsRange": undefined,
+    "type": "target",
+  },
+]
+`;
+
+exports[`SAP Annotation Converter combinations multiple labels for the same property 1`] = `
+Array [
+  Object {
+    "name": "Service.Entity/category",
+    "nameRange": undefined,
+    "range": undefined,
+    "terms": Array [
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.lineItem",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "10",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "EnumMember": Object {
+                        "name": "EnumMember",
+                        "type": "attribute",
+                        "value": "HIGH",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "importance",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+            ],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+      Object {
+        "attributes": Object {
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "UI.fieldGroup",
+          },
+        },
+        "content": Array [
+          Object {
+            "attributes": Object {},
+            "content": Array [
+              Object {
+                "attributes": Object {},
+                "content": Array [
+                  Object {
+                    "attributes": Object {
+                      "Int": Object {
+                        "name": "Int",
+                        "type": "attribute",
+                        "value": "10",
+                      },
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "position",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                  Object {
+                    "attributes": Object {
+                      "Property": Object {
+                        "name": "Property",
+                        "type": "attribute",
+                        "value": "qualifier",
+                      },
+                      "String": Object {
+                        "name": "String",
+                        "type": "attribute",
+                        "value": "general",
+                      },
+                    },
+                    "content": Array [],
+                    "name": "PropertyValue",
+                    "type": "element",
+                  },
+                ],
+                "name": "Record",
+                "type": "element",
+              },
+            ],
+            "name": "Collection",
+            "type": "element",
+          },
+        ],
+        "name": "Annotation",
+        "type": "element",
+      },
+      Object {
+        "attributes": Object {
+          "String": Object {
+            "name": "String",
+            "type": "attribute",
+            "value": "Category From LineItem",
+          },
+          "Term": Object {
+            "name": "Term",
+            "type": "attribute",
+            "value": "EndUserText.label",
+          },
+        },
+        "content": Array [],
+        "name": "Annotation",
+        "type": "element",
+      },
+    ],
+    "termsRange": undefined,
+    "type": "target",
+  },
+]
+`;

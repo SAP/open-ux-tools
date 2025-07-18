@@ -1,5 +1,64 @@
 # @sap-ux/store
 
+## 1.1.2
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+
+## 1.1.1
+
+### Patch Changes
+
+-   77b3b22: update fiori gen to fetch credentials only upon system selection
+
+## 1.1.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/logger@0.7.0
+
+## 1.0.0
+
+### Major Changes
+
+-   3ebd767: Replace keytar with @zowe/secrets-for-zowe-sdk
+
+## 0.9.3
+
+### Patch Changes
+
+-   ff75382: No error message for systems with denied keychain access
+
+## 0.9.2
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+
+## 0.9.1
+
+### Patch Changes
+
+-   08b788c: export getFioriToolsDirectory, FioriToolsSettings
+
+## 0.9.0
+
+### Minor Changes
+
+-   e7a6c68: Load keytar from application modeler extension
+
+## 0.8.0
+
+### Minor Changes
+
+-   dced368: Load keytar from application modeler extension
+
 ## 0.7.0
 
 ### Minor Changes

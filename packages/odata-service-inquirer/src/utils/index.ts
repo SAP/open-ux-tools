@@ -1,22 +1,23 @@
+import type { ServiceProvider } from '@sap-ux/axios-extension';
+import { ODataVersion } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { TelemetryEvent, TelemetryProperties, ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
-import { SampleRate } from '@sap-ux/telemetry';
-import osName from 'os-name';
-import { hostEnvironment } from '../types';
-import { PromptState } from './prompt-state';
-import { XMLParser } from 'fast-xml-parser';
+import { hostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import LoggerHelper from '../prompts/logger-helper';
+import { XMLParser } from 'fast-xml-parser';
+import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
-
-const osVersionName = osName();
+import LoggerHelper from '../prompts/logger-helper';
+import { PromptState } from './prompt-state';
+import { convert } from '@sap-ux/annotation-converter';
+import { parse } from '@sap-ux/edmx-parser';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
  *
  * @returns the platform name and technical name
  */
-export function getHostEnvironment(): { name: string; technical: string } {
+export function getPromptHostEnvironment(): { name: string; technical: HostEnvironmentId } {
     if (!PromptState.isYUI) {
         return hostEnvironment.cli;
     } else {
@@ -24,57 +25,44 @@ export function getHostEnvironment(): { name: string; technical: string } {
     }
 }
 
-let telemetryClient: ToolsSuiteTelemetryClient | undefined;
-
-/**
- * Set the telemetry client.
- *
- * @param toolsSuiteTelemetryClient the telemetry client instance to use when sending telemetry events
- */
-export function setTelemetryClient(toolsSuiteTelemetryClient: ToolsSuiteTelemetryClient | undefined): void {
-    telemetryClient = toolsSuiteTelemetryClient;
-}
-
-/**
- * Send telemetry event.
- *
- * @param eventName the name of the telemetry event
- * @param telemetryData the telemetry values to report
- */
-export function sendTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): void {
-    const telemetryEvent = createTelemetryEvent(eventName, telemetryData);
-    if (telemetryClient) {
-        /* eslint-disable @typescript-eslint/no-floating-promises */
-        telemetryClient.reportEvent(telemetryEvent, SampleRate.NoSampling);
-    }
-}
-
-/**
- * Create telemetry event.
- *
- * @param eventName the name of the telemetry event
- * @param telemetryData the telemetry values to add to he returned telemetry event
- * @returns the telemetry event
- */
-function createTelemetryEvent(eventName: string, telemetryData: TelemetryProperties): TelemetryEvent {
-    const telemProps: TelemetryProperties = Object.assign(telemetryData, {
-        Platform: getHostEnvironment().technical,
-        OperatingSystem: osVersionName
-    });
-    return {
-        eventName,
-        properties: telemProps,
-        measurements: {}
-    };
-}
-
 /**
  * Validate xml and parse the odata version from the metadata xml.
  *
  * @param metadata a metadata string
- * @returns the odata version of the specified metadata, throws an error if the metadata is invalid
+ * @returns the odata version of the specified metadata, along with the converted metadata in case further processing may be required to avoid re-parsing.
+ *  Throws an error if the metadata or odata version is invalid.
  */
-export function parseOdataVersion(metadata: string): OdataVersion {
+export function parseOdataVersion(metadata: string): {
+    odataVersion: OdataVersion;
+    convertedMetadata: ConvertedMetadata;
+} {
+    try {
+        const convertedMetadata = convert(parse(metadata));
+        const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
+
+        if (Number.isNaN(parsedOdataVersion)) {
+            LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
+            throw new Error(t('errors.unparseableOdataVersion'));
+        }
+        // Note that odata version > `4` e.g. `4.1`, is not currently supported by `@sap-ux/edmx-converter`
+        const odataVersion = parsedOdataVersion === 4 ? OdataVersion.v4 : OdataVersion.v2;
+        return {
+            odataVersion,
+            convertedMetadata
+        };
+    } catch (error) {
+        LoggerHelper.logger.error(error);
+        throw new Error(t('prompts.validationMessages.metadataInvalid'));
+    }
+}
+
+/**
+ * Convert specified xml string to JSON.
+ *
+ * @param xml - the schema to parse
+ * @returns parsed object representation of passed XML
+ */
+export function xmlToJson(xml: string): any {
     const options = {
         attributeNamePrefix: '',
         ignoreAttributes: false,
@@ -82,14 +70,12 @@ export function parseOdataVersion(metadata: string): OdataVersion {
         parseAttributeValue: true,
         removeNSPrefix: true
     };
-    const parser: XMLParser = new XMLParser(options);
+
     try {
-        const parsed = parser.parse(metadata, true);
-        const odataVersion: OdataVersion = parsed['Edmx']['Version'] === 1 ? OdataVersion.v2 : OdataVersion.v4;
-        return odataVersion;
+        const parser = new XMLParser(options);
+        return parser.parse(xml, true);
     } catch (error) {
-        LoggerHelper.logger.error(error);
-        throw new Error(t('prompts.validationMessages.metadataInvalid'));
+        throw new Error(t('error.unparseableXML', { error }));
     }
 }
 
@@ -114,6 +100,49 @@ export function originToRelative(metadata: string): string {
         // Retain the original path segment after the origin, matched with capture group 5 (index 4)
         (match: string, ...patterns: string[]) => `${patterns[0]}./${patterns[4]}`
     );
+}
+
+/**
+ * Convert the odata version type from the prompt (odata-service-writer) type to the axios-extension type.
+ *
+ * @param odataVersion The odata version to convert
+ * @returns The converted odata version
+ */
+export function convertODataVersionType(odataVersion?: OdataVersion): ODataVersion | undefined {
+    if (!odataVersion) {
+        return undefined;
+    }
+    return odataVersion === OdataVersion.v2 ? ODataVersion.v2 : ODataVersion.v4;
+}
+
+/**
+ * Gets the default index for a list of items, used to default list prompts to the first item if only one item is available.
+ * If list is undefined or has more than one, returns undefined which will default to the 'please select' message.
+ *
+ * @param list the list of choices
+ * @returns the default index if only one item is available, otherwise undefined
+ */
+export function getDefaultChoiceIndex(list: ListChoiceOptions[]): number | undefined {
+    if (list?.length === 1) {
+        return 0;
+    }
+
+    return undefined;
+}
+
+/**
+ * Temp fix for circular dependency issue within the service provider winston logger, causing issues with serialization in Yeoman generators.
+ * More investigation is needed to determine what properties are required from the service provider for subsequent flows.
+ *
+ * @param serviceProvider - instance of the service provider
+ * @returns the service provider with the circular dependencies removed
+ */
+export function removeCircularFromServiceProvider(serviceProvider: ServiceProvider): ServiceProvider {
+    for (const service in (serviceProvider as any).services) {
+        delete (serviceProvider as any).services?.[service]?.log;
+    }
+    delete (serviceProvider as any).log;
+    return serviceProvider;
 }
 
 export { PromptState };

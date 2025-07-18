@@ -56,8 +56,8 @@ export async function getLaunchJSONFilePaths(rootFolders: string | string[], mem
  */
 export async function getLaunchConfigs(rootFolder: string, memFs?: Editor): Promise<LaunchConfig[] | undefined> {
     const launchJsonPath = await getLaunchJSONFilePath(rootFolder, memFs);
-    let launchJsonString;
-    let launchJson;
+    let launchJsonString: string;
+    let launchJson: LaunchJSON | undefined;
     try {
         if (launchJsonPath) {
             if (memFs) {
@@ -67,7 +67,7 @@ export async function getLaunchConfigs(rootFolder: string, memFs?: Editor): Prom
                 launchJsonString = await fs.readFile(launchJsonPath, { encoding: 'utf8' });
                 launchJson = parse(launchJsonString);
             }
-            return launchJson.configurations;
+            return launchJson?.configurations;
         }
         return undefined;
     } catch (err) {

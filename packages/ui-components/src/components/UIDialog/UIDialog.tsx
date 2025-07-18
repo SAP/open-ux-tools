@@ -47,8 +47,11 @@ export const DIALOG_STYLES = {
     },
     contentText: {
         fontSize: 13,
-        color: 'var(--vscode-foreground)',
-        fontFamily: 'var(--vscode-font-family)'
+        color: 'var(--vscode-foreground)'
+    },
+    modalOverlay: {
+        background: 'var(--vscode-editor-background)',
+        opacity: 0.8
     }
 };
 
@@ -183,6 +186,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 actionsRight: {
                     width: '100%',
                     textAlign: 'center',
+                    justifyContent: 'center',
                     margin: '0px'
                 },
                 actions: {
@@ -263,6 +267,14 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 layerProps: {
                     onLayerDidMount: this.onModalLayerMount,
                     onLayerWillUnmount: this.onModalLayerUnmount
+                },
+                overlay: {
+                    styles: {
+                        root: {
+                            background: DIALOG_STYLES.modalOverlay.background,
+                            opacity: DIALOG_STYLES.modalOverlay.opacity
+                        }
+                    }
                 }
             },
             styles: {

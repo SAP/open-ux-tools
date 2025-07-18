@@ -1,10 +1,24 @@
 import { i18nNamespaces, translate } from '../../../i18n';
 import { BuildingBlockType } from '../../types';
-import type { Answers, Prompts, PromptsType } from '../../../prompts/types';
+import type { Answers, Prompts, PromptsGroup, PromptsType } from '../../../prompts/types';
 
 export interface BuildingBlockTypePromptsAnswer extends Answers {
     buildingBlockType: PromptsType;
 }
+
+/**
+ * Returns the manifest prompts group, the same for all available building blocks.
+ *
+ * @returns The manifest prompts group.
+ */
+export const getManifestPromptsGroup = (): PromptsGroup => {
+    const t = translate(i18nNamespaces.buildingBlock, 'prompts.super.manifestGroup.');
+    return {
+        id: 'manifestLibraries',
+        title: t('manifestLibrariesTitle') as string,
+        description: t('manifestLibrariesDescription', { returnObjects: true }) as string[]
+    };
+};
 
 /**
  * Returns a list of prompts required to generate building blocks.
@@ -18,11 +32,11 @@ export async function getBuildingBlockTypePrompts(): Promise<Prompts<BuildingBlo
             {
                 type: 'list',
                 name: 'buildingBlockType',
-                message: t('buildingBlockType.message'),
+                message: t('buildingBlockType.message') as string,
                 choices: [
-                    { name: t('buildingBlockType.choices.chart'), value: BuildingBlockType.Chart },
-                    { name: t('buildingBlockType.choices.filterBar'), value: BuildingBlockType.FilterBar },
-                    { name: t('buildingBlockType.choices.table'), value: BuildingBlockType.Table }
+                    { name: t('buildingBlockType.choices.chart') as string, value: BuildingBlockType.Chart },
+                    { name: t('buildingBlockType.choices.filterBar') as string, value: BuildingBlockType.FilterBar },
+                    { name: t('buildingBlockType.choices.table') as string, value: BuildingBlockType.Table }
                 ]
             }
         ]

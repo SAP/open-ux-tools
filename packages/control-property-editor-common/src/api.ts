@@ -15,12 +15,14 @@ export interface Control {
     properties: ControlProperty[];
 }
 export type PropertyValue = string | boolean | number;
+export type ConfigurationValue = PropertyValue | Record<string, unknown>;
 export type PropertyChangeType = 'propertyChange' | 'propertyBindingChange';
 export interface PropertyChange<T extends PropertyValue = PropertyValue> {
     controlId: string;
     controlName: string;
     propertyName: string;
     value: T;
+    propertyType: PropertyType;
     changeType: PropertyChangeType;
 }
 export interface PropertyChanged<T extends PropertyValue = PropertyValue> {
@@ -51,11 +53,17 @@ export const SCENARIO = {
     UiAdaptation: 'UI_ADAPTATION'
 } as const;
 
+export enum PropertyType {
+    Configuration = 'configuration',
+    ControlProperty = 'controlProperty'
+}
+
 export type Scenario = (typeof SCENARIO)[keyof typeof SCENARIO];
 
 interface ControlPropertyBase<T, V, E> {
     type: T;
     editor: E;
+    propertyType: PropertyType;
     name: string;
     readableName: string;
     value: V | string; // string: expression binding
@@ -95,6 +103,7 @@ export type ControlProperty =
     | IntegerControlProperty
     | FloatControlProperty
     | StringControlProperty
+    | ControlPropertyBase<typeof STRING_VALUE_TYPE, string, 'unknown'>
     | StringControlPropertyWithOptions;
 
 export interface OutlineNode {
@@ -114,57 +123,171 @@ export interface IconDetails {
     fontFamily: string;
 }
 
-export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
-    type: 'pending';
-    /**
-     * Indicates if change is before or after current position in undo redo stack
-     */
+export const PENDING_CHANGE_TYPE = 'pending';
+export const SAVED_CHANGE_TYPE = 'saved';
+export const UNKNOWN_CHANGE_KIND = 'unknown';
+export const GENERIC_CHANGE_KIND = 'generic';
+export const CONTROL_CHANGE_KIND = 'control';
+export interface PendingOtherChange {
+    type: typeof PENDING_CHANGE_TYPE;
+    kind: typeof UNKNOWN_CHANGE_KIND;
     isActive: boolean;
+    title?: string;
+    changeType: string;
     fileName: string;
 }
 
-export interface PendingOtherChange {
-    type: 'pending';
+export interface PendingControlChange {
+    type: typeof PENDING_CHANGE_TYPE;
+    kind: typeof CONTROL_CHANGE_KIND;
     isActive: boolean;
     changeType: string;
     controlId: string;
-    controlName: string;
     fileName: string;
+    title?: string;
 }
 
-export type PendingChange = PendingPropertyChange | PendingOtherChange;
+export type PendingChange = PendingOtherChange | PendingControlChange | PendingGenericChange;
+export type SavedChange = SavedControlChange | UnknownSavedChange | SavedGenericChange;
 
-export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
-    type: 'saved';
-    kind: 'valid';
+export interface UnknownSavedChange {
+    type: typeof SAVED_CHANGE_TYPE;
+    kind: typeof UNKNOWN_CHANGE_KIND;
     fileName: string;
+    changeType: string;
+    title?: string;
+    controlId?: string;
     timestamp: number;
 }
 
-export interface UnknownSavedChange {
-    type: 'saved';
-    kind: 'unknown';
+export interface PendingGenericChange {
+    type: typeof PENDING_CHANGE_TYPE;
+    kind: typeof GENERIC_CHANGE_KIND;
+    title: string;
+    isActive: boolean;
     fileName: string;
-    controlId?: string;
-    timestamp?: number;
+    changeType: string;
+    controlId?: string | string[];
+    subtitle?: string;
+    controlName?: string;
+    properties: {
+        label: string;
+        value?: PropertyValue;
+        displayValueWithIcon?: boolean;
+    }[];
 }
-export type ValidChange = PendingPropertyChange | SavedPropertyChange;
-export type Change = ValidChange | UnknownSavedChange;
+
+export interface SavedGenericChange {
+    type: typeof SAVED_CHANGE_TYPE;
+    kind: typeof GENERIC_CHANGE_KIND;
+    timestamp: number;
+    fileName: string;
+    title: string;
+    controlId?: string | string[];
+    subtitle?: string;
+    controlName?: string;
+    changeType: string;
+    properties: {
+        label: string;
+        value?: PropertyValue;
+        displayValueWithIcon?: boolean;
+    }[];
+}
+
+export interface SavedControlChange {
+    type: typeof SAVED_CHANGE_TYPE;
+    kind: typeof CONTROL_CHANGE_KIND;
+    controlId: string;
+    fileName: string;
+    changeType: string;
+    title?: string;
+    timestamp: number;
+}
+
+export type Change = PendingChange | SavedChange;
 
 export interface ChangeStackModified {
     pending: PendingChange[];
-    saved: SavedPropertyChange[];
+    saved: SavedChange[];
 }
-
-export interface PropertyChangeDeletionDetails {
+export interface ChangeDeletionDetails {
+    fileName?: string;
+}
+export interface PropertyChangeDeletionDetails extends ChangeDeletionDetails {
     controlId: string;
     propertyName: string;
-    fileName?: string;
 }
 
 export interface ShowMessage {
     message: string;
     shouldHideIframe: boolean;
+}
+
+export const SIMPLE_QUICK_ACTION_KIND = 'simple';
+export interface SimpleQuickAction {
+    kind: typeof SIMPLE_QUICK_ACTION_KIND;
+    id: string;
+    title: string;
+    tooltip?: string;
+    enabled: boolean;
+}
+
+export const NESTED_QUICK_ACTION_KIND = 'nested';
+export interface NestedQuickAction {
+    kind: typeof NESTED_QUICK_ACTION_KIND;
+    id: string;
+    title: string;
+    tooltip?: string;
+    enabled: boolean;
+    children: NestedQuickActionChild[];
+}
+
+export interface NestedQuickActionChild {
+    path: string;
+    label: string;
+    tooltip?: string;
+    enabled: boolean;
+    children: NestedQuickActionChild[];
+}
+
+export type QuickAction = SimpleQuickAction | NestedQuickAction;
+
+export interface QuickActionGroup {
+    title: string;
+    actions: QuickAction[];
+}
+export interface SimpleQuickActionExecutionPayload {
+    kind: typeof SIMPLE_QUICK_ACTION_KIND;
+    id: string;
+}
+
+export interface NestedQuickActionExecutionPayload {
+    kind: typeof NESTED_QUICK_ACTION_KIND;
+    id: string;
+    path: string;
+}
+
+export type QuickActionExecutionPayload = SimpleQuickActionExecutionPayload | NestedQuickActionExecutionPayload;
+
+export interface InfoCenterMessage {
+    type: MessageBarType;
+    title: string;
+    description: string;
+    details?: string;
+}
+
+export enum MessageBarType {
+    /** Info styled MessageBar */
+    info = 0,
+    /** Error styled MessageBar */
+    error = 1,
+    /** Warning styled MessageBar */
+    warning = 5
+}
+
+export interface ContextMenuActionExecutionPayload {
+    controlId: string;
+    actionName: string;
 }
 
 /**
@@ -197,7 +320,17 @@ function createMatcher<Y extends { type: string }>(
  * @returns Function
  */
 function createActionFactory(prefix: string) {
-    return function createAction<T>(name: string) {
+    return function createAction<T>(name: string): {
+        (payload: T): PayloadAction<string, T>;
+        type: string;
+        match: (
+            value:
+                | {
+                      type: unknown;
+                  }
+                | undefined
+        ) => value is PayloadAction<string, T>;
+    } {
         const actionType = [prefix, name].join(' ');
         /**
          *
@@ -217,6 +350,87 @@ function createActionFactory(prefix: string) {
     };
 }
 
+export interface ErrorAction<T extends string, U> extends PayloadAction<T, U> {
+    error: { message: string };
+    showMessage: boolean;
+}
+export const PENDING_SUFFIX = '<pending>';
+export const FULFILLED_SUFFIX = '<fulfilled>';
+export const REJECTED_SUFFIX = '<rejected>';
+
+/**
+ * Factory for creating  request response actions.
+ *
+ * @param prefix action prefix
+ * @returns Function
+ */
+export function createAsyncActionFactory(prefix: string) {
+    return function createAction<T, F = T, R = T>(
+        name: string
+    ): { pending: typeof pending; fulfilled: typeof fulfilled; rejected: typeof rejected } {
+        const pendingType = [prefix, name, PENDING_SUFFIX].join(' ');
+
+        /**
+         * Pending action.
+         *
+         * @param payload action payload
+         * @returns PayloadAction<typeof pendingType, T>
+         */
+        function pending(payload: T): PayloadAction<typeof pendingType, T> {
+            return {
+                type: pendingType,
+                payload
+            };
+        }
+
+        pending.type = pendingType;
+        pending.match = createMatcher<PayloadAction<typeof pendingType, T>>(pendingType);
+        const fulfilledType = [prefix, name, FULFILLED_SUFFIX].join(' ');
+
+        /**
+         * Fulfill action.
+         *
+         * @param payload action payload
+         * @returns PayloadAction<typeof fulfilledType, F>
+         */
+        function fulfilled(payload: F): PayloadAction<typeof fulfilledType, F> {
+            return {
+                type: fulfilledType,
+                payload
+            };
+        }
+
+        fulfilled.type = fulfilledType;
+        fulfilled.match = createMatcher<PayloadAction<typeof fulfilledType, F>>(fulfilledType);
+        const rejectedType = [prefix, name, REJECTED_SUFFIX].join(' ');
+        /**
+         * Reject action.
+         *
+         * @param message error message
+         * @param payload R
+         * @returns ErrorAction<typeof rejectedType, F>
+         */
+        function rejected(message: string, payload: R): ErrorAction<typeof rejectedType, R> {
+            return {
+                type: rejectedType,
+                payload,
+                error: {
+                    message
+                },
+                showMessage: true
+            };
+        }
+        rejected.type = rejectedType;
+        rejected.match = createMatcher<PayloadAction<typeof rejectedType, T>>(rejectedType);
+
+        return {
+            pending,
+            fulfilled,
+            rejected
+        };
+    };
+}
+
 export const EXTERNAL_ACTION_PREFIX = '[ext]';
 
 const createExternalAction = createActionFactory(EXTERNAL_ACTION_PREFIX);
@@ -232,9 +446,12 @@ export const propertyChanged = createExternalAction<PropertyChanged>('property-c
 export const propertyChangeFailed = createExternalAction<PropertyChangeFailed>('change-property-failed');
 export const changeStackModified = createExternalAction<ChangeStackModified>('change-stack-modified');
 export const showMessage = createExternalAction<ShowMessage>('show-dialog-message');
-export const reloadApplication = createExternalAction<void>('reload-application');
+export const reloadApplication = createExternalAction<{
+    save?: boolean;
+}>('reload-application');
 export const storageFileChanged = createExternalAction<string>('storage-file-changed');
 export const setAppMode = createExternalAction<'navigation' | 'adaptation'>('set-app-mode');
+export const applicationModeChanged = createExternalAction<'navigation' | 'adaptation'>('application-mode-changed');
 export const setUndoRedoEnablement = createExternalAction<{ canRedo: boolean; canUndo: boolean }>(
     'set-undo-redo-enablement'
 );
@@ -243,6 +460,30 @@ export const appLoaded = createExternalAction<void>('app-loaded');
 export const undo = createExternalAction<void>('undo');
 export const redo = createExternalAction<void>('redo');
 export const save = createExternalAction<void>('save');
+export const quickActionListChanged = createExternalAction<QuickActionGroup[]>('quick-action-list-changed');
+export const updateQuickAction = createExternalAction<QuickAction>('update-quick-action');
+export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
+export const executeContextMenuAction =
+    createExternalAction<ContextMenuActionExecutionPayload>('execute-context-menu-action');
+export const setApplicationRequiresReload = createExternalAction<boolean>('set-application-requires-reload');
+export const externalFileChange = createExternalAction<string>('external-file-change');
+export const showInfoCenterMessage = createExternalAction<InfoCenterMessage>('show-info-center-message');
+
+const createAsyncExternalAction = createAsyncActionFactory(EXTERNAL_ACTION_PREFIX);
+
+interface ContextMenuItem {
+    id: string;
+    enabled: boolean;
+    title: string;
+    tooltip?: string;
+}
+
+export interface ContextMenu {
+    controlId: string;
+    contextMenuItems: ContextMenuItem[];
+}
+
+export const requestControlContextMenu = createAsyncExternalAction<string, ContextMenu>('request-control-context-menu');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -259,9 +500,18 @@ export type ExternalAction =
     | ReturnType<typeof reloadApplication>
     | ReturnType<typeof storageFileChanged>
     | ReturnType<typeof setAppMode>
+    | ReturnType<typeof applicationModeChanged>
     | ReturnType<typeof setUndoRedoEnablement>
     | ReturnType<typeof setSaveEnablement>
     | ReturnType<typeof undo>
     | ReturnType<typeof redo>
     | ReturnType<typeof save>
-    | ReturnType<typeof appLoaded>;
+    | ReturnType<typeof appLoaded>
+    | ReturnType<typeof quickActionListChanged>
+    | ReturnType<typeof setApplicationRequiresReload>
+    | ReturnType<typeof updateQuickAction>
+    | ReturnType<typeof executeQuickAction>
+    | ReturnType<typeof showInfoCenterMessage>
+    | ReturnType<typeof externalFileChange>
+    | ReturnType<typeof executeContextMenuAction>
+    | ReturnType<typeof requestControlContextMenu.fulfilled>;

@@ -10,6 +10,12 @@
   },
   "references": [
     {
+      "path": "../abap-deploy-config-inquirer"
+    },
+    {
+      "path": "../abap-deploy-config-writer"
+    },
+    {
       "path": "../adp-tooling"
     },
     {
@@ -19,7 +25,7 @@
       "path": "../cap-config-writer"
     },
     {
-      "path": "../cards-editor-config-writer"
+      "path": "../flp-config-inquirer"
     },
     {
       "path": "../inquirer-common"
@@ -29,6 +35,9 @@
     },
     {
       "path": "../mockserver-config-writer"
+    },
+    {
+      "path": "../odata-service-writer"
     },
     {
       "path": "../preview-middleware"

@@ -1,16 +1,7 @@
 [
-    {
-        "range": {
-            "end": {
-                "character": 6,
-                "line": 0
-            },
-            "start": {
-                "character": 0,
-                "line": 0
-            }
-        },
-        "type": "comment-line",
-        "value": "#hello"
-    }
+  {
+    "type": "comment-line",
+    "value": "#hello",
+    "range": "[(0,0)..(0,6)]"
+  }
 ]

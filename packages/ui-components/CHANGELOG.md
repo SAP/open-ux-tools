@@ -1,5 +1,367 @@
 # @sap-ux/ui-components
 
+## 1.26.8
+
+### Patch Changes
+
+-   282f30e: feat(ui-components) add icon check
+
+## 1.26.7
+
+### Patch Changes
+
+-   a4e81fc: UIDialog: Override FluentUI overlay background with VSCode theme variable
+
+## 1.26.6
+
+### Patch Changes
+
+-   12faf8b: feat(ui-components) add icon pdf and word
+
+## 1.26.5
+
+### Patch Changes
+
+-   5b4af69: UIComboBox: Add support for external (backend) search with example in Storybook
+
+## 1.26.4
+
+### Patch Changes
+
+-   739045a: feat(ui-components) export pivot
+
+## 1.26.3
+
+### Patch Changes
+
+-   46c775f: Icons update. Update icons "SwitchOff" and "SwitchOn"
+
+## 1.26.2
+
+### Patch Changes
+
+-   077eae5: feat(ui-components): UIIcons. Add new icon "Shift"
+
+## 1.26.1
+
+### Patch Changes
+
+-   698b7e3: Fixes space between empty table and Add button.
+
+## 1.26.0
+
+### Minor Changes
+
+-   e21805c: The icons <i>SwitchOff</i> and <i>SwitchOn</i> were standardized to 16×16 size. The UIToggle component was adjusted to use these icons.
+
+## 1.25.0
+
+### Minor Changes
+
+-   1c276ac: Remove font-family definitions from individual components and apply it globally.
+
+## 1.24.12
+
+### Patch Changes
+
+-   3a01535: UISections. Issue with window resize hiding section on fullscreen toggle event
+
+## 1.24.11
+
+### Patch Changes
+
+-   21292ad: Feat(UI components): issue #32314 - UITranslationInput inverted theme
+
+## 1.24.10
+
+### Patch Changes
+
+-   17847f9: UISections. Error `Cannot read properties of undefined (reading 'size')` is throws for section on initial rendering
+
+## 1.24.9
+
+### Patch Changes
+
+-   3190a55: UISections. Fixed incorrect position calculations when hiding sections with three or more sections present.
+
+## 1.24.8
+
+### Patch Changes
+
+-   8568e6b: feat: Info Center for different type of messages
+
+## 1.24.7
+
+### Patch Changes
+
+-   8b27155: UIToggle: Avoid triggering change when click happens on whitespace between label and toggle switch button
+
+## 1.24.6
+
+### Patch Changes
+
+-   689f1b8: UIIcons. Add new icon "DataSparkle"
+
+## 1.24.5
+
+### Patch Changes
+
+-   b410041: fix(ui-components): UIButtonAction set margin left icon to zero
+
+## 1.24.4
+
+### Patch Changes
+
+-   1215e5b: fix(ui-components): UIButtonAction underline in normal mode
+
+## 1.24.3
+
+### Patch Changes
+
+-   ec30d25: Update Icons.tsx
+
+    Shrunken down info icon
+
+## 1.24.2
+
+### Patch Changes
+
+-   dd34d62: UI accessability improvements for disabled elements and in quick action list
+
+## 1.24.1
+
+### Patch Changes
+
+-   7b5e3b9: UISections: Recalculate section sizes when external prop sizes change.
+
+## 1.24.0
+
+### Minor Changes
+
+-   f48bfa0: This update introduces hover styles for the UIToggle component's thumb when in a checked state. It improves the visual feedback for users interacting with the toggle.
+
+## 1.23.0
+
+### Minor Changes
+
+-   c570683: Unified the size-property in the UIToggle component. Fixed padding issues throughout the component. Fixed icon display issues during component mounting.
+
+## 1.22.3
+
+### Patch Changes
+
+-   81a5351: Add export for `setIconOptions` method from `@fluentui/react`
+
+## 1.22.2
+
+### Patch Changes
+
+-   318477a: Add missing exports:
+    -   `UIChoiceGroup` - export interface `IChoiceGroup`
+    -   `UIList` - export interfaces `UIGroup`, `UIGroupedListProps`, `UIGroupHeaderProps`, `UIGroupRenderProps`
+    -   `UILoader` - export enum `UISpinnerSize `
+    -   `UIStack` - export component `UIStack`
+    -   focus utility functions - export method `isElementTabbable`
+
+## 1.22.1
+
+### Patch Changes
+
+-   0fd924b: Adding a workaround for FluentUI not setting aria-invalid correctly for ComboBoxes
+
+## 1.22.0
+
+### Minor Changes
+
+-   0f9d186: Added new SVG icons: SwitchOff and SwitchOn.
+    Enhanced the UIToggle component by adding visual indicators to display the switch status.
+
+## 1.21.4
+
+### Patch Changes
+
+-   d167a73: Enhancements to UISections: Supports resizing with three or more sections.
+
+## 1.21.3
+
+### Patch Changes
+
+-   bb0531d: Introduce a new 'Manage' icon to the UIIcons component. This enhancement expands the icon library, allowing for more diversified icon usage in UI components.
+
+## 1.21.2
+
+### Patch Changes
+
+-   2a72ad2: chore - Fix audit issues
+
+## 1.21.1
+
+### Patch Changes
+
+-   32191dd: UITranslationInput. Screen readers read the resolved translation tooltip/title of UITranslationInput as part of the screen reader speech, displaying it as 'Value: ... Translation: ...'.
+
+## 1.21.0
+
+### Minor Changes
+
+-   25b90b5: UIComboBox: New property "customSearchFilter" allows passing a custom filter function to apply additional filtering logic on top of the default search.
+
+## 1.20.4
+
+### Patch Changes
+
+-   1c8b59f: Fix UITreeDropdown change callback being triggered twice on first selection:
+    1. First call with empty value
+    2. Second call with selected value
+
+## 1.20.3
+
+### Patch Changes
+
+-   e9e1e4d: Add aria-label for UIFlexibleTable Add Row Button
+
+## 1.20.2
+
+### Patch Changes
+
+-   9d06579: UITextInput, UIComboBox, UIDropdown, and UIChoiceGroup: Do not announce 'asterisk' on screen readers for required labels
+
+## 1.20.1
+
+### Patch Changes
+
+-   f7c606c: UIComboBox/UIDropdown:
+    Fixed an issue where `calloutCollisionTransformation` gets overwritten when external listeners are passed for the following props:
+    -   calloutProps.preventDismissOnEvent
+    -   calloutProps.layerProps.onLayerDidMount
+    -   calloutProps.layerProps.onLayerWillUnmount
+
+## 1.20.0
+
+### Minor Changes
+
+-   ae2a993: UICombobox: Added new property 'searchByKeyEnabled' to allow searching by the option's "key" in addition to "text".
+
+## 1.19.0
+
+### Minor Changes
+
+-   ea18bcb: Added new API method `initTheme` to override default Fluent UI styles, removing `-webkit-font-smoothing: antialiased`.
+
+## 1.18.11
+
+### Patch Changes
+
+-   b403459: fix(ui-components): #2140 - fix dropdown vertical align input field
+
+## 1.18.10
+
+### Patch Changes
+
+-   9e9daa4: UIComboBox, UIDropdown: Allow extending 'calloutProps' instead of overwriting.
+
+## 1.18.9
+
+### Patch Changes
+
+-   4c6f92c: feat(ui-c): add UIsetIconOptions and UIunregisterIcons
+
+## 1.18.8
+
+### Patch Changes
+
+-   b669796: UIComboBox and UIDropdown support custom renderers for dropdown items via the `onRenderOption` and `onRenderItem` properties
+
+## 1.18.7
+
+### Patch Changes
+
+-   e65bb7f: Update style for UICallout
+
+## 1.18.6
+
+### Patch Changes
+
+-   64aacf2: Sass warning about deprecate usage of '/' for division outside of calc
+
+## 1.18.5
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+
+## 1.18.4
+
+### Patch Changes
+
+-   195d758: Applied missing styles for the disabled state of UILink.
+
+## 1.18.3
+
+### Patch Changes
+
+-   89ec1c3: Uitable a11y fix: The `:focus` style should have been added to the column header cells (not to the header row).
+
+## 1.18.2
+
+### Patch Changes
+
+-   1fdac94: UITable. Fix for react warning 'Each child in a list should have a unique "key" prop'
+
+## 1.18.1
+
+### Patch Changes
+
+-   15c57bc: fix(ui-c): accessibility updates for uitable
+
+## 1.18.0
+
+### Minor Changes
+
+-   a492b41: Provide the ability to pass any props to UITreeDropdown input.
+
+## 1.17.9
+
+### Patch Changes
+
+-   ea0674c: UIContextualMenu.getUIcontextualMenuCalloutStyles - change parameter from `props?: IContextualMenuProps` to `styles?: IStyleFunctionOrObject<IContextualMenuStyleProps, IContextualMenuStyles>` and make parameter as optional
+
+## 1.17.8
+
+### Patch Changes
+
+-   b124873: UIContextualMenu.getUIContextualMenuItemStyles - make `props` param optional
+
+## 1.17.7
+
+### Patch Changes
+
+-   73f905f: Added optional `tabIndex` property for UISplitter component.
+
+## 1.17.6
+
+### Patch Changes
+
+-   7710aa5: chore upgrade @fluentui/react@8.120.5
+
+## 1.17.5
+
+### Patch Changes
+
+-   128a3dc: UIDefaultButton. Regression after context menu enhancements - ArrowDown icon always rendered for button
+
+## 1.17.4
+
+### Patch Changes
+
+-   ee7aeb8: Layout types for UIContextualMenu and consider underline prop for UILink
+
+## 1.17.3
+
+### Patch Changes
+
+-   0084205: chore: update sanitize-html and transitive dependencies
+
 ## 1.17.2
 
 ### Patch Changes

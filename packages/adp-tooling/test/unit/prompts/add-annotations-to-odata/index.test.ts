@@ -29,7 +29,7 @@ describe('getPrompts', () => {
     } as Record<string, ManifestNamespace.DataSource>;
     const annotationFileSelectOptions = [
         { name: i18n.t('choices.annotationFile.selectFromWorkspace'), value: 1 },
-        { name: i18n.t('choices.annotationFile.createEmptyFile'), value: 2 }
+        { name: i18n.t('choices.annotationFile.createTemplateFile'), value: 2 }
     ];
 
     beforeAll(async () => {
@@ -142,39 +142,39 @@ describe('getPrompts', () => {
     });
 
     describe('file path validations', () => {
-        test('should fail with input cannot be empty message', () => {
+        test('should fail with input cannot be empty message', async () => {
             jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce('Input cannot be empty');
 
-            const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
+            const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate as Function;
 
-            expect(filePathValidator('')).toBe('Input cannot be empty');
+            expect(await filePathValidator('')).toBe('Input cannot be empty');
         });
 
-        test('should fail with file doesn not exist message', () => {
+        test('should fail with file doesn not exist message', async () => {
             jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce(true);
             jest.spyOn(fs, 'existsSync').mockReturnValueOnce(false);
 
-            const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
+            const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate as Function;
 
-            expect(filePathValidator('non-existing-file.xml')).toBe(i18n.t('validators.fileDoesNotExist'));
+            expect(await filePathValidator('non-existing-file.xml')).toBe(i18n.t('validators.fileDoesNotExist'));
         });
 
-        test('should fail with file already exists in change directory message', () => {
+        test('should fail with file already exists in change directory message', async () => {
             jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce(true);
             jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true).mockReturnValueOnce(true);
 
-            const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
+            const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate as Function;
 
-            expect(filePathValidator('existing-file.xml')).toBe(i18n.t('validators.annotationFileAlreadyExists'));
+            expect(await filePathValidator('existing-file.xml')).toBe(i18n.t('validators.annotationFileAlreadyExists'));
         });
 
-        test('should pass with relative file path input', () => {
+        test('should pass with relative file path input', async () => {
             jest.spyOn(validators, 'validateEmptyString').mockReturnValueOnce(true);
             jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true).mockReturnValueOnce(false);
 
-            const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate;
+            const filePathValidator = (getPrompts(mockBasePath, dataSources)[2] as any).validate as Function;
 
-            expect(filePathValidator('existing-file.xml')).toBeTruthy();
+            expect(await filePathValidator('existing-file.xml')).toBeTruthy();
         });
 
         test('should pass with absolute file path input', () => {

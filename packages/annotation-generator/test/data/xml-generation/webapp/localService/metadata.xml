@@ -239,6 +239,18 @@
             <Action Name="findComment" IsBound="true">
                 <Parameter Name="in" Type="IncidentService.Incidents"/>
             </Action>
+            <Annotations Target="IncidentService.IncidentFlow/modifiedBy">
+                <Annotation Term="UI.Hidden" Bool="false" />
+            </Annotations>
+            <Annotations Target="IncidentService.IncidentFlow/createdBy">
+                <Annotation Term="UI.Hidden"  >
+                    <If>
+                    <Bool>true</Bool>
+                    <Bool>false</Bool>
+                    <Bool>false</Bool>
+                    </If>
+                </Annotation>
+            </Annotations>
             <Annotations Target="IncidentService.Incidents">
                 <Annotation Term="UI.FieldGroup" Qualifier="GeneratedGroup1">
                     <Record Type="UI.FieldGroupType">

@@ -1,5 +1,9 @@
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { initI18nOdataServiceInquirer } from '../../../../src/i18n';
 import { getNewSystemQuestions } from '../../../../src/prompts/datasources/sap-system/new-system/questions';
+import type { ConnectedSystem } from '../../../../src/types';
+import type { BackendSystem } from '@sap-ux/store';
+import * as abapOnBtpQuestions from '../../../../src/prompts/datasources/sap-system/abap-on-btp/questions';
 
 describe('questions', () => {
     beforeAll(async () => {
@@ -12,29 +16,29 @@ describe('questions', () => {
         expect(newSystemQuestions).toMatchInlineSnapshot(`
             [
               {
-                "additionalMessages": [Function],
                 "choices": [
                   {
-                    "name": "prompts.newSystemType.choiceAbapOnBtp",
+                    "name": "ABAP Environment on SAP Business Technology Platform",
                     "value": "abapOnBtp",
                   },
                   {
-                    "name": "prompts.newSystemType.choiceAbapOnPrem",
+                    "name": "ABAP On Premise",
                     "value": "abapOnPrem",
                   },
                 ],
-                "message": "prompts.newSystemType.message",
+                "message": "System Type",
                 "name": "newSystemType",
                 "type": "list",
               },
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "breadcrumb": true,
                   "hint": "Enter the URL of the SAP System",
                   "mandatory": true,
                 },
                 "message": "System URL",
-                "name": "systemUrl",
+                "name": "abapOnPrem:newSystemUrl",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],
@@ -50,23 +54,27 @@ describe('questions', () => {
                 "when": [Function],
               },
               {
+                "default": "",
                 "guiOptions": {
                   "mandatory": true,
                 },
                 "message": "Username",
-                "name": "abapSystemUsername",
+                "name": "abapOnPrem:systemUsername",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],
               },
               {
+                "additionalMessages": [Function],
+                "default": "",
                 "guiOptions": {
+                  "applyDefaultWhenDirty": true,
                   "mandatory": true,
                 },
                 "guiType": "login",
                 "mask": "*",
                 "message": "Password",
-                "name": "abapSystemPassword",
+                "name": "abapOnPrem:systemPassword",
                 "type": "password",
                 "validate": [Function],
                 "when": [Function],
@@ -77,9 +85,10 @@ describe('questions', () => {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": true,
                   "hint": "Entering a system name will save the connection for re-use.",
+                  "mandatory": true,
                 },
                 "message": "System name",
-                "name": "userSystemName",
+                "name": "abapOnPrem:userSystemName",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],
@@ -93,18 +102,132 @@ describe('questions', () => {
                   "breadcrumb": "Service",
                   "mandatory": true,
                 },
-                "message": "Service name",
-                "name": "serviceSelection",
+                "message": [Function],
+                "name": "abapOnPrem:serviceSelection",
                 "source": [Function],
                 "type": "list",
                 "validate": [Function],
                 "when": [Function],
               },
               {
-                "name": "cliServicePromptName",
+                "name": "abapOnPrem:cliServiceSelection",
+                "when": [Function],
+              },
+              {
+                "choices": [
+                  {
+                    "name": "Discover a Cloud Foundry Service",
+                    "value": "cloudFoundry",
+                  },
+                  {
+                    "name": "Upload a Service Key File",
+                    "value": "serviceKey",
+                  },
+                  {
+                    "name": "Use Reentrance Ticket",
+                    "value": "reentranceTicket",
+                  },
+                ],
+                "message": "ABAP environment definition source",
+                "name": "abapOnBtpAuthType",
+                "type": "list",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "additionalMessages": [Function],
+                "guiOptions": {
+                  "breadcrumb": true,
+                  "hint": "Enter the URL of the SAP System",
+                  "mandatory": true,
+                },
+                "message": "System URL",
+                "name": "abapOnBtp:newSystemUrl",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
+                  "mandatory": true,
+                },
+                "guiType": "file-browser",
+                "message": "Service Key File Path",
+                "name": "serviceKey",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "choices": [Function],
+                "default": [Function],
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "breadcrumb": true,
+                },
+                "message": "ABAP environment",
+                "name": "cloudFoundryAbapSystem",
+                "type": "list",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "name": "cliCfAbapService",
+                "when": [Function],
+              },
+              {
+                "default": [Function],
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "breadcrumb": true,
+                  "hint": "Entering a system name will save the connection for re-use.",
+                  "mandatory": true,
+                },
+                "message": "System name",
+                "name": "abapOnBtp:userSystemName",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "additionalMessages": [Function],
+                "choices": [Function],
+                "default": [Function],
+                "guiOptions": {
+                  "applyDefaultWhenDirty": true,
+                  "breadcrumb": "Service",
+                  "mandatory": true,
+                },
+                "message": [Function],
+                "name": "abapOnBtp:serviceSelection",
+                "source": [Function],
+                "type": "list",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "name": "abapOnBtp:cliServiceSelection",
                 "when": [Function],
               },
             ]
         `);
+    });
+
+    test('Should use cached connected systems for new Abap on BTP connections if provided', () => {
+        const backendSystemReentrance: BackendSystem = {
+            name: 'http://s4hc:1234',
+            url: 'http:/s4hc:1234',
+            authenticationType: 'reentranceTicket'
+        };
+        const cachedConnectedSystem: ConnectedSystem = {
+            serviceProvider: {
+                catalog: {}
+            } as unknown as AbapServiceProvider,
+            backendSystem: backendSystemReentrance
+        };
+        const getAbapOnBTPSystemQuestionsSpy = jest.spyOn(abapOnBtpQuestions, 'getAbapOnBTPSystemQuestions');
+        getNewSystemQuestions(undefined, cachedConnectedSystem);
+        expect(getAbapOnBTPSystemQuestionsSpy).toHaveBeenCalledWith(undefined, cachedConnectedSystem);
     });
 });

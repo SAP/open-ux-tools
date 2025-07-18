@@ -1,0 +1,21 @@
+{
+    "prompts": {
+        "confirmCAPMtaContinue": {
+            "message": "There is no `mta.yaml` file defined for this project. To add a deployment configuration for this application, this file must be present. Do you want to create an `mta.yaml` file to continue?"
+        }
+    },
+    "errors": {
+        "abortSignal": "Generator aborted.",
+        "fileDoesNotExist": "This file does not exist: {{- filePath}}. Check the file permissions are correct.",
+        "folderDoesNotExist": "This folder path does not exist: {{- filePath}}. Check the folder permissions are correct.",
+        "noAppName": "Cannot determine the application name from the `manifest.json` file.",
+        "noBaseConfig": "Error: could not read {{- baseConfig}}.",
+        "noBinary": "Cannot find the \"{{bin}}\" executable. Please add it to the path or use \"npm i -g {{- pkg}}\" to install it.",
+        "noManifest": "Error: could not read the file: `webapp/manifest.json`.",
+        "unrecognizedTarget": "Unrecognized target: {{target}}.",
+        "unknownError": "An unknown error occurred. Please try again."
+    },
+    "debug": {
+        "loggerInitialised": "`LogWrapper` initialized for `DeploymentGenerator`."
+    }
+}

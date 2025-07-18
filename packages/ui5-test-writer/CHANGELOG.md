@@ -1,5 +1,173 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.12
+
+### Patch Changes
+
+-   Updated dependencies [58cdce6]
+    -   @sap-ux/project-access@1.30.7
+    -   @sap-ux/ui5-application-writer@1.5.8
+
+## 0.7.11
+
+### Patch Changes
+
+-   69f62ec: i18next upgrade to 25.3.0
+-   Updated dependencies [69f62ec]
+    -   @sap-ux/ui5-application-writer@1.5.8
+
+## 0.7.10
+
+### Patch Changes
+
+-   Updated dependencies [c0fa1d1]
+    -   @sap-ux/ui5-application-writer@1.5.7
+    -   @sap-ux/project-access@1.30.6
+
+## 0.7.9
+
+### Patch Changes
+
+-   Updated dependencies [7a4543e]
+    -   @sap-ux/project-access@1.30.5
+    -   @sap-ux/ui5-application-writer@1.5.6
+
+## 0.7.8
+
+### Patch Changes
+
+-   b9675bb: Improve Fiori Tools UI Texts
+-   Updated dependencies [b9675bb]
+    -   @sap-ux/ui5-application-writer@1.5.6
+
+## 0.7.7
+
+### Patch Changes
+
+-   Updated dependencies [f75b89d]
+    -   @sap-ux/project-access@1.30.4
+    -   @sap-ux/ui5-application-writer@1.5.5
+
+## 0.7.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.3
+-   @sap-ux/ui5-application-writer@1.5.4
+
+## 0.7.5
+
+### Patch Changes
+
+-   7fd2583: Fix wrong dependency type
+
+## 0.7.4
+
+### Patch Changes
+
+-   Updated dependencies [3ea811a]
+    -   @sap-ux/ui5-application-writer@1.5.4
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [163522f]
+    -   @sap-ux/ui5-application-writer@1.5.3
+
+## 0.7.2
+
+### Patch Changes
+
+-   @sap-ux/ui5-application-writer@1.5.2
+
+## 0.7.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-application-writer@1.5.1
+
+## 0.7.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/ui5-application-writer@1.5.0
+    -   @sap-ux/logger@0.7.0
+
+## 0.6.7
+
+### Patch Changes
+
+-   Updated dependencies [0d8918a]
+    -   @sap-ux/ui5-application-writer@1.4.3
+
+## 0.6.6
+
+### Patch Changes
+
+-   @sap-ux/ui5-application-writer@1.4.2
+
+## 0.6.5
+
+### Patch Changes
+
+-   @sap-ux/ui5-application-writer@1.4.1
+
+## 0.6.4
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-application-writer@1.4.0
+
+## 0.6.3
+
+### Patch Changes
+
+-   @sap-ux/ui5-application-writer@1.3.3
+
+## 0.6.2
+
+### Patch Changes
+
+-   @sap-ux/ui5-application-writer@1.3.2
+
+## 0.6.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-application-writer@1.3.1
+
+## 0.6.0
+
+### Minor Changes
+
+-   db575f3: Update unit test template for Freestyle version 1.120.0
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [88520b4]
+    -   @sap-ux/ui5-application-writer@1.3.0
+
+## 0.5.1
+
+### Patch Changes
+
+-   f4867e5: Fix: Path Compatibility for Windows in FF Test Template Generation
+
+## 0.5.0
+
+### Minor Changes
+
+-   fffc3a7: Add Freestyle OPA templates to ui5-test-writer
+
 ## 0.4.1
 
 ### Patch Changes

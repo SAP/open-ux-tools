@@ -83,7 +83,7 @@ describe('utility.ts', () => {
         expect(ui5VersionsGrouped([])).toEqual([]);
 
         const defaultChoice = { name: '9.999.9-snapshot', value: '9.999.9-snapshot' };
-        const ui5VersWithAdditonalChoice = ui5VersionsGrouped(ui5Vers, false, defaultChoice);
+        let ui5VersWithAdditonalChoice = ui5VersionsGrouped(ui5Vers, false, defaultChoice);
         expect(ui5VersWithAdditonalChoice[0]).toEqual(defaultChoice);
         expect(ui5VersWithAdditonalChoice).toMatchInlineSnapshot(`
             [
@@ -101,6 +101,78 @@ describe('utility.ts', () => {
               },
               {
                 "name": "1.116.0 - (Out of maintenance version)",
+                "value": "1.116.0",
+              },
+            ]
+        `);
+
+        const defaultChoiceSourceSystem = { name: '1.118.0 (Source system version)', value: '1.118.0' };
+        ui5VersWithAdditonalChoice = ui5VersionsGrouped(ui5Vers, false, defaultChoiceSourceSystem, true);
+        expect(ui5VersWithAdditonalChoice[0]).toEqual(defaultChoiceSourceSystem);
+        expect(ui5VersWithAdditonalChoice).toMatchInlineSnapshot(`
+            [
+              {
+                "name": "1.118.0 (Source system version)",
+                "value": "1.118.0",
+              },
+              {
+                "name": "1.117.0 - (Maintained version)",
+                "value": "1.117.0",
+              },
+              {
+                "name": "1.116.0 - (Out of maintenance version)",
+                "value": "1.116.0",
+              },
+            ]
+        `);
+        // check name label when its not a snapshot and its not in the list
+        const defaultChoiceSourceSystem2 = { name: '9.999.9 (Source system version)', value: '9.999.9' };
+        ui5VersWithAdditonalChoice = ui5VersionsGrouped(ui5Vers, false, defaultChoiceSourceSystem2, true);
+        expect(ui5VersWithAdditonalChoice[0]).toEqual(defaultChoiceSourceSystem2);
+        expect(ui5VersWithAdditonalChoice).toMatchInlineSnapshot(`
+            [
+              {
+                "name": "9.999.9 (Source system version)",
+                "value": "9.999.9",
+              },
+              {
+                "name": "1.118.0 - (Maintained version)",
+                "value": "1.118.0",
+              },
+              {
+                "name": "1.117.0 - (Maintained version)",
+                "value": "1.117.0",
+              },
+              {
+                "name": "1.116.0 - (Out of maintenance version)",
+                "value": "1.116.0",
+              },
+            ]
+        `);
+
+        // If version already exists in the list, it should be remain in place
+        const defaultExistingChoice = { name: ui5Vers[1].version, value: ui5Vers[1].version };
+        const ui5VersWithExistingChoice = ui5VersionsGrouped(ui5Vers, true, defaultExistingChoice);
+        expect(ui5VersWithExistingChoice).toMatchInlineSnapshot(`
+            [
+              Separator {
+                "line": "[2mMaintained versions[22m",
+                "type": "separator",
+              },
+              {
+                "name": "1.118.0",
+                "value": "1.118.0",
+              },
+              {
+                "name": "1.117.0",
+                "value": "1.117.0",
+              },
+              Separator {
+                "line": "[2mOut of maintenance versions[22m",
+                "type": "separator",
+              },
+              {
+                "name": "1.116.0",
                 "value": "1.116.0",
               },
             ]
@@ -207,7 +279,7 @@ describe('utility.ts', () => {
         `);
     });
 
-    it('getUI5ThemeChoices', () => {
+    it('getUI5ThemeChoices', async () => {
         const mockThemes = [
             {
                 id: ui5ThemeIds.SAP_HORIZON,
@@ -219,8 +291,8 @@ describe('utility.ts', () => {
             }
         ];
         const testUI5Version = '1.1.1';
-        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockReturnValue(mockThemes);
-        expect(getUI5ThemesChoices(testUI5Version)).toEqual([
+        const getUI5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes').mockResolvedValue(mockThemes);
+        expect(await getUI5ThemesChoices(testUI5Version)).toEqual([
             {
                 'name': 'Morning Horizon',
                 'value': 'sap_horizon'
@@ -261,11 +333,11 @@ describe('utility.ts', () => {
             'value': '1.117.1'
         });
 
-        // Closest maintained version
+        // Version not in the the list
         testUI5Version = '1.119.1';
         expect(getDefaultUI5VersionChoice(mockUI5Versions, { name: testUI5Version, value: testUI5Version })).toEqual({
-            'name': '1.118.0',
-            'value': '1.118.0'
+            'name': '1.119.1',
+            'value': '1.119.1'
         });
 
         // Not valid semver

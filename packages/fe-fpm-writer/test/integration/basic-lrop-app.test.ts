@@ -55,16 +55,16 @@ describe('use FPM with existing apps', () => {
             fs.copy(join(testInput, 'ts'), tsConfig.path, { globOptions: { dot: true } });
         });
 
-        test.each(configs)('enableFpm', (config) => {
-            enableFPM(config.path, config.settings, fs);
+        test.each(configs)('enableFpm', async (config) => {
+            await enableFPM(config.path, config.settings, fs);
         });
 
-        test.each(configs)('generateListReport', (config) => {
-            generateListReport(config.path, { entity: mainEntity, ...config.settings }, fs);
+        test.each(configs)('generateListReport', async (config) => {
+            await generateListReport(config.path, { entity: mainEntity, ...config.settings }, fs);
         });
 
-        test.each(configs)('generateObjectPage with navigation from ListReport', (config) => {
-            generateObjectPage(
+        test.each(configs)('generateObjectPage with navigation from ListReport', async (config) => {
+            await generateObjectPage(
                 config.path,
                 {
                     entity: mainEntity,
@@ -79,8 +79,8 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test.each(configs)('generateCustomPage with navigation from ObjectPage', (config) => {
-            generateCustomPage(
+        test.each(configs)('generateCustomPage with navigation from ObjectPage', async (config) => {
+            await generateCustomPage(
                 config.path,
                 {
                     name: 'MyCustomPage',
@@ -95,8 +95,8 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test.each(configs)('generateCustomColumn in ListReport', (config) => {
-            generateCustomColumn(
+        test.each(configs)('generateCustomColumn in ListReport', async (config) => {
+            await generateCustomColumn(
                 config.path,
                 {
                     target: 'TravelListReport',
@@ -115,7 +115,7 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test.each(configs)('generateCustomView in ListReport', (config) => {
+        test.each(configs)('generateCustomView in ListReport', async (config) => {
             //pre-requisite is at least one view based on annotations
             fs.extendJSON(join(config.path, 'webapp/manifest.json'), {
                 'sap.ui5': {
@@ -139,7 +139,7 @@ describe('use FPM with existing apps', () => {
                     }
                 }
             });
-            generateCustomView(
+            await generateCustomView(
                 config.path,
                 {
                     target: 'TravelListReport',
@@ -153,8 +153,8 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test.each(configs)('generateCustomView in ListReport, custom view to be overwritten', (config) => {
-            generateCustomView(
+        test.each(configs)('generateCustomView in ListReport, custom view to be overwritten', async (config) => {
+            await generateCustomView(
                 config.path,
                 {
                     target: 'TravelListReport',
@@ -169,8 +169,8 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test.each(configs)('generateCustomView in ListReport, second custom view', (config) => {
-            generateCustomView(
+        test.each(configs)('generateCustomView in ListReport, second custom view', async (config) => {
+            await generateCustomView(
                 config.path,
                 {
                     target: 'TravelListReport',
@@ -184,8 +184,8 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test.each(configs)('generateCustomAction in ListReport and ObjectPage', (config) => {
-            generateCustomAction(
+        test.each(configs)('generateCustomAction in ListReport and ObjectPage', async (config) => {
+            await generateCustomAction(
                 config.path,
                 {
                     name: 'MyCustomAction',
@@ -201,7 +201,7 @@ describe('use FPM with existing apps', () => {
                 },
                 fs
             );
-            generateCustomAction(
+            await generateCustomAction(
                 config.path,
                 {
                     name: 'AnotherCustomAction',
@@ -222,7 +222,7 @@ describe('use FPM with existing apps', () => {
                 ? `\nexport function onAppended() {\n\twindow.location.href += '/_Booking';\n}`
                 : `,\n        onAppended: function() {\n            window.location.href += '/_Booking';\n        }`;
             const position = config.settings.typescript ? { line: 13, character: 9 } : { line: 8, character: 9 };
-            generateCustomAction(
+            await generateCustomAction(
                 config.path,
                 {
                     name: 'AppendedAction',
@@ -248,8 +248,8 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test.each(configs)('generateCustomSection in ObjectPage', (config) => {
-            generateCustomSection(
+        test.each(configs)('generateCustomSection in ObjectPage', async (config) => {
+            await generateCustomSection(
                 config.path,
                 {
                     name: 'MyCustomSection',
@@ -266,8 +266,8 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test.each(configs)('generateCustomFilter in ListReportPage', (config) => {
-            generateCustomFilter(
+        test.each(configs)('generateCustomFilter in ListReportPage', async (config) => {
+            await generateCustomFilter(
                 config.path,
                 {
                     name: 'NewCustomFilter',
@@ -285,8 +285,8 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test.each(configs)('generateControllerExtension in ObjectPage', (config) => {
-            generateControllerExtension(
+        test.each(configs)('generateControllerExtension in ObjectPage', async (config) => {
+            await generateControllerExtension(
                 config.path,
                 {
                     name: 'MyControllerExtension',
@@ -299,8 +299,8 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test.each(configs)('generateCustomSubSection in ObjectPage', (config) => {
-            generateCustomSubSection(
+        test.each(configs)('generateCustomSubSection in ObjectPage', async (config) => {
+            await generateCustomSubSection(
                 config.path,
                 {
                     name: 'MyCustomSubSection',
@@ -318,8 +318,8 @@ describe('use FPM with existing apps', () => {
             );
         });
 
-        test.each(configs)('generateCustomHeaderSection in ObjectPage', (config) => {
-            generateCustomHeaderSection(
+        test.each(configs)('generateCustomHeaderSection in ObjectPage', async (config) => {
+            await generateCustomHeaderSection(
                 config.path,
                 {
                     name: 'MyCustomHeaderSection',

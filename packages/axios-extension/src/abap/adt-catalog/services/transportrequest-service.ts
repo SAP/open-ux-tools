@@ -81,7 +81,7 @@ export class TransportRequestService extends AdtService {
      */
     private getTransportNumberFromResponse(text: string): string | null {
         const responseStringPrefix = '/com.sap.cts/object_record/';
-        if (!text || !text.startsWith(responseStringPrefix)) {
+        if (!text?.startsWith(responseStringPrefix)) {
             return null;
         } else {
             const newTransportNumber = text.replace(responseStringPrefix, '');

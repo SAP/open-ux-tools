@@ -42,7 +42,6 @@ describe('getRuntimeControl', () => {
     });
 });
 describe('getLibrary', () => {
-    
     afterEach(() => {
         sapMock.ui.require.mockReset();
     });

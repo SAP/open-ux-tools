@@ -1,0 +1,23 @@
+{
+    "prompts": {
+        "deployTarget": {
+            "breadcrumb": "Target Type",
+            "message": "Please choose the target."
+        }
+    },
+    "debug": {
+        "exit": "Exiting the deployment generator",
+        "loadingPrompts": "Loading deploy prompts..."
+    },
+    "headless": {
+        "info": {
+            "generatorArgAppConfig": "Path to the application config file or application config as a string.",
+            "generatorNameVersion": "Generating application with: {{- generatorName}} {{generatorVersion}}",
+            "deletingApplicationConfigFile": "Deleting application config file: {{- filepath}}."
+        },
+        "error": {
+            "headlessGenOptions": "Please provide one of the following: 1) The first argument of the file path to the application config file, 2) The first argument of the application config file as a JSON string, or 3) The option `appconfig` as a JSON object.",
+            "generationExiting": "Application generation exiting due to error: {{- error}}"
+        }
+    }
+}

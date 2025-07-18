@@ -1,6 +1,6 @@
 {
     "sap.app": {
         "id": "single_apps-invalid_manifest_type",
-        "type": "component"
+        "type": "invalid_type"
     }
 }

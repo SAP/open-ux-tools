@@ -1,17 +1,18 @@
+import type { ServiceProvider } from '@sap-ux/axios-extension';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
-import { originToRelative, parseOdataVersion } from '../../../src/utils';
+import { originToRelative, parseOdataVersion, removeCircularFromServiceProvider } from '../../../src/utils';
 
 describe('Utils', () => {
     test('parseOdataVersion - should return the odata version of metadata', async () => {
         let metadata: string = await readFile(join(__dirname, 'fixtures/metadata_v2.xml'), 'utf8');
         let odataVersion = parseOdataVersion(metadata);
-        expect(odataVersion).toBe(OdataVersion.v2);
+        expect(odataVersion.odataVersion).toBe(OdataVersion.v2);
 
         metadata = await readFile(join(__dirname, 'fixtures/metadata_v4.xml'), 'utf8');
         odataVersion = parseOdataVersion(metadata);
-        expect(odataVersion).toBe(OdataVersion.v4);
+        expect(odataVersion.odataVersion).toBe(OdataVersion.v4);
 
         metadata = await readFile(join(__dirname, 'fixtures/invalid_metadata.xml'), 'utf8');
         expect(() => parseOdataVersion(metadata)).toThrowError('The service metadata is invalid.');
@@ -52,5 +53,61 @@ describe('Utils', () => {
                 </edmx:Reference>
             </edmx:Edmx>"
         `);
+    });
+
+    test('removeCircularFromServiceProvider - should remove specific properties from serviceProvider', async () => {
+        let serviceProvider = {} as ServiceProvider;
+        let cleanedServiceProvider = removeCircularFromServiceProvider(serviceProvider);
+        expect(cleanedServiceProvider).toEqual(serviceProvider);
+
+        serviceProvider = {
+            services: {
+                service1: {
+                    log: 'log1'
+                },
+                service2: {
+                    log: 'log2'
+                }
+            }
+        } as unknown as ServiceProvider;
+
+        cleanedServiceProvider = removeCircularFromServiceProvider(serviceProvider);
+        expect(cleanedServiceProvider).toEqual({
+            services: {
+                service1: {},
+                service2: {}
+            }
+        });
+
+        serviceProvider = {
+            log: 'log',
+            services: {
+                service1: {
+                    log: 'log1'
+                },
+                service2: {
+                    log: 'log2'
+                }
+            }
+        } as unknown as ServiceProvider;
+        cleanedServiceProvider = removeCircularFromServiceProvider(serviceProvider);
+        expect(cleanedServiceProvider).toEqual({
+            services: {
+                service1: {},
+                service2: {}
+            }
+        });
+
+        serviceProvider = {
+            services: {
+                service1: undefined
+            }
+        } as unknown as ServiceProvider;
+        cleanedServiceProvider = removeCircularFromServiceProvider(serviceProvider);
+        expect(cleanedServiceProvider).toEqual({
+            services: {
+                service1: undefined
+            }
+        });
     });
 });

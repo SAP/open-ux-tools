@@ -1,7 +1,7 @@
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 import type { TestCaseName } from '../setup';
 import { getAst, getDiagnostics, getPaths, getTerm } from '../setup';
-import { Position, Range } from 'vscode-languageserver-types';
+import { Position, Range } from '@sap-ux/text-document-utils';
 import { initI18n } from '../../src/i18n';
 import type { Assignment } from '@sap-ux/cds-annotation-parser';
 import { parse } from '@sap-ux/cds-annotation-parser';
@@ -261,6 +261,33 @@ describe('ast to generic format', () => {
                     });
                     expect(pointer).toStrictEqual('/0/content/0/content/0/content/0');
                     expect(nodeRange).toEqual(Range.create(0, 34, 0, 43));
+                });
+            });
+        });
+    });
+
+    describe('flatten nested record', () => {
+        testConversion('flattened-nested-record');
+
+        describe('pointer', () => {
+            describe('HeaderInfo Title $Type', () => {
+                test('Add HeaderInfo Title property', async () => {
+                    const ast = await getAst('flattened-nested-record');
+                    const { pointer, nodeRange } = toTerms(ast as Assignment, {
+                        vocabularyService,
+                        position: Position.create(1, 21)
+                    });
+                    expect(pointer).toStrictEqual('/0/content/0/content/0/content/0/attributes/Type/name');
+                    expect(nodeRange).toEqual(Range.create(1, 21, 1, 26));
+                });
+                test('Assigning $Type value', async () => {
+                    const ast = await getAst('flattened-nested-record');
+                    const { pointer, nodeRange } = toTerms(ast as Assignment, {
+                        vocabularyService,
+                        position: Position.create(1, 30)
+                    });
+                    expect(pointer).toStrictEqual('/0/content/0/content/0/content/0/attributes/Type/value');
+                    expect(nodeRange).toEqual(Range.create(1, 30, 1, 55));
                 });
             });
         });

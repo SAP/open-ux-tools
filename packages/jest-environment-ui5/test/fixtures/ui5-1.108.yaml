@@ -1,0 +1,18 @@
+specVersion: '3.1'
+metadata:
+    name: jest-environment-ui5-sample-app
+type: application
+resources:
+    configuration:
+        paths:
+            webapp: test/fixtures/webapp
+framework:
+    name: OpenUI5
+    version: '1.108.0'
+    libraries:
+        - name: sap.ui.core
+        - name: sap.m
+builder:
+    resources:
+        excludes:
+            - '/test/**'

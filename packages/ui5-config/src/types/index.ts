@@ -43,8 +43,43 @@ export interface FioriAppReloadConfig {
     delay: number;
 }
 
+/**
+ * Interface representing the configuration for Fiori Preview.
+ */
+export interface FioriPreviewConfig {
+    /**
+     * The name of the component to be previewed.
+     *
+     * @deprecated This property is deprecated and will be removed in future versions.
+     */
+    component?: string;
+    /**
+     * The theme to be used for the SAP Fiori preview.
+     * This defines the UI5 theme, such as "sap_fiori_3" or other available themes.
+     *
+     * @deprecated This property is deprecated and is now part of the `flp` configuration.
+     */
+    ui5Theme?: string;
+    /**
+     * Configuration object for the local Fiori launchpad
+     */
+    flp: {
+        theme?: string; // Name of the UI5 Theme to be used
+        path?: string; // The mount point of the local Fiori launchpad
+        /**
+         * Intent to be used for the application
+         */
+        intent?: {
+            object?: string; // Intent object
+            action?: string; // Intent action
+        };
+    };
+}
+
 export interface ServeStaticPath {
     path: string;
     src: string;
     fallthrough: boolean;
 }
+
+export type DataSourceConfig = { serviceName: string; servicePath: string; metadataPath?: string };

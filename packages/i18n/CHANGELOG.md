@@ -1,5 +1,54 @@
 # @sap-ux/i18n
 
+## 0.3.1
+
+### Patch Changes
+
+-   f9ea9e3: feat: Enhance ADP FLP configuration generator
+
+## 0.3.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/text-document-utils@0.3.0
+
+## 0.2.3
+
+### Patch Changes
+
+-   cf05ceb: Update `vscode-languageserver-textdocument` dependency
+
+## 0.2.2
+
+### Patch Changes
+
+-   4b8577f: fix: usage of static webapp path
+
+## 0.2.1
+
+### Patch Changes
+
+-   78bc772: Introduce ADP FLP config generator
+
+## 0.2.0
+
+### Minor Changes
+
+-   df29368: Methods `createCapI18nEntries`, `getCapI18nFolder` - handle absolute path to cds file instead of relative path
+
+## 0.1.1
+
+### Patch Changes
+
+-   ac22b7e: feat: new package for text document utility functions and types
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/text-document-utils@0.2.0
+
 ## 0.1.0
 
 ### Minor Changes

@@ -1,3 +1,4 @@
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 
 export enum OdataVersion {
@@ -71,7 +72,24 @@ export interface OdataService {
     /**
      * Annotations can either be EDMX annotations or CDS annotations.
      */
-    annotations?: EdmxAnnotationsInfo | CdsAnnotationsInfo;
-    localAnnotationsName?: string; // The name used in the manifest.json and as the filename for local annotations
+    annotations?: EdmxAnnotationsInfo | EdmxAnnotationsInfo[] | CdsAnnotationsInfo | CdsAnnotationsInfo[];
+    localAnnotationsName?: string | string[]; // The name or names used in the manifest.json and as the filenames for local annotations
     previewSettings?: Partial<ProxyBackend>;
+    /**
+     * Indicates whether certificate errors should be ignored.
+     */
+    ignoreCertError?: boolean;
 }
+
+export type EdmxOdataService = Omit<OdataService, 'annotations'> & {
+    annotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[];
+};
+
+export interface ProjectPaths {
+    packageJson?: string;
+    ui5Yaml?: string;
+    ui5LocalYaml?: string;
+    ui5MockYaml?: string;
+}
+
+export type DataSources = { [k: string]: ManifestNamespace.DataSource };

@@ -1,0 +1,9 @@
+<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition
+    xmlns:core='sap.ui.core'
+    xmlns='sap.m'
+>
+    <HBox id="<%- ids.hBox %>">
+        <!--  add your xml here -->
+    </HBox>
+</core:FragmentDefinition>

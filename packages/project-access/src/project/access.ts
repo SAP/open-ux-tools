@@ -129,7 +129,7 @@ class ApplicationAccessImp implements ApplicationAccess {
     /**
      * Maintains new translation entries in CAP i18n files.
      *
-     * @param filePath file in which the translation entry will be used.
+     * @param filePath absolute path to file in which the translation entry will be used.
      * @param newI18nEntries translation entries to write in the i18n file.
      * @returns boolean or exception
      */
@@ -189,7 +189,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param memFs - optional mem-fs-editor instance
      */
     async updatePackageJSON(packageJson: Package, memFs?: Editor): Promise<void> {
-        await updatePackageJSON(join(this.app.appRoot, FileName.Package), packageJson, memFs);
+        await updatePackageJSON(join(this.app.appRoot, FileName.Package), packageJson, memFs ?? this.options?.fs);
     }
 
     /**
@@ -199,7 +199,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param memFs - optional mem-fs-editor instance
      */
     async updateManifestJSON(manifest: Manifest, memFs?: Editor): Promise<void> {
-        await updateManifestJSON(this.app.manifest, manifest, memFs);
+        await updateManifestJSON(this.app.manifest, manifest, memFs ?? this.options?.fs);
     }
 
     /**
@@ -322,12 +322,12 @@ export async function createApplicationAccess(
         if (!app) {
             throw new Error(`Could not find app with root ${appRoot}`);
         }
-        const project = await getProject(app.projectRoot);
-        const appId = relative(project.root, appRoot);
         let options: ApplicationAccessOptions | undefined;
         if (fs) {
             options = isEditor(fs) ? { fs } : fs;
         }
+        const project = await getProject(app.projectRoot, options?.fs);
+        const appId = relative(project.root, appRoot);
         return new ApplicationAccessImp(project, appId, options);
     } catch (error) {
         throw Error(`Error when creating application access for ${appRoot}: ${error}`);
@@ -343,7 +343,7 @@ export async function createApplicationAccess(
  */
 export async function createProjectAccess(root: string, options?: ProjectAccessOptions): Promise<ProjectAccess> {
     try {
-        const project = await getProject(root);
+        const project = await getProject(root, options?.memFs);
         const projectAccess = new ProjectAccessImp(project, options);
         return projectAccess;
     } catch (error) {

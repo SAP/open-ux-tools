@@ -1,7 +1,7 @@
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers } from 'inquirer';
 import { join, relative } from 'path';
-import { getAnnotationPathQualifiers, getEntityTypes } from './service';
+import { getAnnotationPathQualifiers, getEntitySets } from './service';
 import { getCapServiceName } from '@sap-ux/project-access';
 import { findFilesByExtension } from '@sap-ux/project-access/dist/file';
 import type { Project } from '@sap-ux/project-access';
@@ -133,7 +133,7 @@ export function getViewOrFragmentPathPrompt(
         guiOptions: {
             ...guiOptions,
             selectType: 'dynamic',
-            placeholder: guiOptions?.placeholder ?? t('viewOrFragmentPath.defaultPlaceholder')
+            placeholder: guiOptions?.placeholder ?? (t('viewOrFragmentPath.defaultPlaceholder') as string)
         }
     };
 }
@@ -163,7 +163,7 @@ export async function getCAPServicePrompt(
         guiOptions: {
             ...guiOptions,
             selectType: 'dynamic',
-            placeholder: guiOptions?.placeholder ?? t('service.defaultPlaceholder')
+            placeholder: guiOptions?.placeholder ?? (t('service.defaultPlaceholder') as string)
         }
     };
 }
@@ -187,20 +187,14 @@ export function getEntityPrompt(
         name: 'buildingBlockData.metaPath.entitySet',
         choices: project
             ? async () => {
-                  const entityTypes = await getEntityTypes(project, appId);
-                  const entityTypeMap: { [key: string]: string } = {};
-                  for (const entityType of entityTypes) {
-                      const value = entityType.fullyQualifiedName;
-                      const qualifierParts = value.split('.');
-                      entityTypeMap[qualifierParts[qualifierParts.length - 1]] = value;
-                  }
-                  return transformChoices(entityTypeMap);
+                  const entitySets = (await getEntitySets(project, appId)).map((entitySet) => entitySet.name);
+                  return transformChoices(entitySets);
               }
             : [],
         guiOptions: {
             ...guiOptions,
             selectType: 'dynamic',
-            placeholder: guiOptions?.placeholder ?? t('entity.defaultPlaceholder')
+            placeholder: guiOptions?.placeholder ?? (t('entity.defaultPlaceholder') as string)
         }
     };
 }
@@ -261,7 +255,7 @@ export function getAggregationPathPrompt(
         guiOptions: {
             ...guiOptions,
             selectType: 'dynamic',
-            placeholder: guiOptions?.placeholder ?? t('aggregationPath.defaultPlaceholder')
+            placeholder: guiOptions?.placeholder ?? (t('aggregationPath.defaultPlaceholder') as string)
         }
     };
 }
@@ -306,7 +300,7 @@ export function getFilterBarIdPrompt(
         name: 'buildingBlockData.filterBar',
         guiOptions: {
             ...guiOptions,
-            placeholder: guiOptions?.placeholder ?? t('filterBar.defaultPlaceholder')
+            placeholder: guiOptions?.placeholder ?? (t('filterBar.defaultPlaceholder') as string)
         }
     };
     if (properties.type === 'input') {
@@ -343,8 +337,8 @@ export function getBindingContextTypePrompt(properties: Partial<ListPromptQuesti
         type: 'list',
         name: 'buildingBlockData.metaPath.bindingContextType',
         choices: [
-            { name: t('bindingContextType.option.relative'), value: 'relative' },
-            { name: t('bindingContextType.option.absolute'), value: 'absolute' }
+            { name: t('bindingContextType.option.relative') as string, value: 'relative' },
+            { name: t('bindingContextType.option.absolute') as string, value: 'absolute' }
         ],
         guiOptions: {
             ...guiOptions,
@@ -381,13 +375,13 @@ export function getBuildingBlockIdPrompt(
             } else {
                 return answers?.viewOrFragmentPath &&
                     !isElementIdAvailable(fs, join(appPath, answers.viewOrFragmentPath), value)
-                    ? t('id.existingIdValidation')
+                    ? (t('id.existingIdValidation') as string)
                     : true;
             }
         },
         guiOptions: {
             ...guiOptions,
-            placeholder: guiOptions?.placeholder ?? t('id.defaultPlaceholder')
+            placeholder: guiOptions?.placeholder ?? (t('id.defaultPlaceholder') as string)
         }
     };
 }

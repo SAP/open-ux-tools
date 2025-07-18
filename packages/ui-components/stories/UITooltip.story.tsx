@@ -2,11 +2,8 @@ import React from 'react';
 
 import { UITooltip, UITooltipUtils } from '../src/components/UITooltip';
 import { UIDefaultButton } from '../src/components/UIButton';
-import { initIcons } from '../src/components/Icons';
 
 export default { title: 'Dropdowns/Tooltip' };
-
-initIcons();
 
 const value = {
     name: 'Hello, world!',

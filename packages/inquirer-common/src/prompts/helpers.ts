@@ -125,7 +125,7 @@ export function withCondition(questions: Question[], condition: (answers: Answer
  */
 export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
     questions: T[],
-    promptOptions: Record<string, CommonPromptOptions & PromptDefaultValue<string | boolean>>,
+    promptOptions: Record<string, Omit<CommonPromptOptions, 'hide'> & PromptDefaultValue<string | boolean>>,
     promptState?: Answers
 ): YUIQuestion[] {
     questions.forEach((question: YUIQuestion) => {

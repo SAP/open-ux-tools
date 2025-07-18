@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { ILabelProps, ILabelStyleProps, ILabelStyles } from '@fluentui/react';
 import { Label } from '@fluentui/react';
+import { REQUIRED_LABEL_INDICATOR } from '../types';
 
 export type UILabelProps = ILabelProps;
 
@@ -9,7 +10,6 @@ export const labelGlobalStyle = {
     fontWeight: 'bold',
     fontSize: '13px',
     color: 'var(--vscode-input-foreground)',
-    fontFamily: 'var(--vscode-font-family)',
     padding: '4px 0'
 };
 
@@ -49,7 +49,7 @@ export class UILabel extends React.Component<UILabelProps> {
                         props.required && {
                             selectors: {
                                 '::after': {
-                                    content: `' *'`,
+                                    content: REQUIRED_LABEL_INDICATOR,
                                     color: 'var(--vscode-inputValidation-errorBorder)',
                                     paddingRight: 12
                                 }

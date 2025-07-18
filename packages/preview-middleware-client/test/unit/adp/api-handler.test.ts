@@ -1,6 +1,7 @@
 import {
     ApiEndpoints,
     RequestMethod,
+    getDataSourceAnnotationFileMap,
     getFragments,
     getManifestAppdescr,
     request,
@@ -120,6 +121,47 @@ describe('API Handler', () => {
             const data = await getManifestAppdescr();
 
             expect(data.layer).toBe('VENDOR');
+        });
+    });
+
+    describe('getDataSourceAnnotationFileMap', () => {
+        afterEach(() => {
+            fetchMock.mockRestore();
+        });
+
+        test('request is called and correct data is returned', async () => {
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue(
+                    JSON.stringify({
+                        mainService: {
+                            serviceUrl: 'main/service/url',
+                            annotationDetails: {
+                                annotationExistsInWS: false,
+                                annotationPath: 'c/drive/main/service/url',
+                                annotationPathFromRoot: '/main/service/url',
+                                isRunningInBAS: false
+                            }
+                        }
+                    })
+                ),
+                ok: true
+            });
+
+            const data = await getDataSourceAnnotationFileMap();
+
+            expect(data).toEqual(
+                JSON.stringify({
+                    mainService: {
+                        serviceUrl: 'main/service/url',
+                        annotationDetails: {
+                            annotationExistsInWS: false,
+                            annotationPath: 'c/drive/main/service/url',
+                            annotationPathFromRoot: '/main/service/url',
+                            isRunningInBAS: false
+                        }
+                    }
+                })
+            );
         });
     });
 });

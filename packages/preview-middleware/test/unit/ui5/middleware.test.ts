@@ -6,6 +6,8 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import nock from 'nock';
 import type { EnhancedRouter } from '../../../src/base/flp';
+import { ToolsLogger } from '@sap-ux/logger';
+import * as projectAccess from '@sap-ux/project-access';
 
 jest.mock('@sap-ux/store', () => {
     return {
@@ -17,6 +19,9 @@ jest.mock('@sap-ux/store', () => {
         )
     };
 });
+
+jest.spyOn(projectAccess, 'findProjectRoot').mockImplementation(() => Promise.resolve(''));
+jest.spyOn(projectAccess, 'getProjectType').mockImplementation(() => Promise.resolve('EDMXBackend'));
 
 async function getRouter(fixture?: string, configuration: Partial<MiddlewareConfig> = {}): Promise<EnhancedRouter> {
     return await (previewMiddleware as any).default({
@@ -86,19 +91,21 @@ describe('ui5/middleware', () => {
 
     test('no config', async () => {
         const server = await getTestServer('simple-app');
-        await server.get('/test/flp.html').expect(200);
+        await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
         await server.get('/preview/client/flp/init.js').expect(200);
-    });
+    }, 10000);
 
     test('simple config', async () => {
         const path = '/my/preview/is/here.html';
         const server = await getTestServer('simple-app', { flp: { path, libs: true } });
-        await server.get(path).expect(200);
+        await server.get(path).expect(302);
         await server.get('/preview/client/flp/init.js').expect(200);
         await server.get('/test/flp.html').expect(404);
-    });
+    }, 10000);
 
     test('unsupported editor config', async () => {
+        const consoleSpyError = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
+        const consoleSpyWarning = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
         const path = '/test/editor.html';
         const server = await getTestServer('simple-app', {
             rta: {
@@ -111,7 +118,13 @@ describe('ui5/middleware', () => {
                 ]
             }
         });
-        await server.get(path).expect(404);
+        await server.get(path).expect(302);
+        expect(consoleSpyError).toHaveBeenCalledWith(
+            'developerMode is ONLY supported for SAP UI5 adaptation projects.'
+        );
+        expect(consoleSpyWarning).toHaveBeenCalledWith('developerMode for /test/editor.html disabled');
+        consoleSpyError.mockRestore();
+        consoleSpyWarning.mockRestore();
     });
 
     test('adp config', async () => {
@@ -122,9 +135,9 @@ describe('ui5/middleware', () => {
                 editors: [{ path: '/adp/editor.html', developerMode: true }]
             }
         });
-        await server.get('/test/flp.html').expect(200);
+        await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
         await server.get('/adp/editor.html').expect(200);
-    });
+    }, 10000);
 
     test('invalid adp config', async () => {
         const url = 'http://sap.example';

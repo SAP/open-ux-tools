@@ -1,5 +1,6 @@
 import { UI5_DEFAULT, getEsmTypesVersion, getTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
-import type { App, AppOptions, Package, UI5, UI5Framework } from '../types';
+import type { App, AppOptions, UI5, UI5Framework } from '../types';
+import type { Package } from '@sap-ux/project-access';
 import versionToManifestDescMapping from '@ui5/manifest/mapping.json'; // from https://github.com/SAP/ui5-manifest/blob/master/mapping.json
 import { getUI5Libs } from './ui5Libs';
 import semVer from 'semver';
@@ -20,7 +21,7 @@ export function packageDefaults(version?: string, description?: string, isEdmxPr
         version: version || '0.0.1',
         description: description || '',
         devDependencies: {
-            '@ui5/cli': '^3.0.0',
+            '@ui5/cli': '^4.0.16',
             '@sap/ux-ui5-tooling': '1'
         }
     };
@@ -92,6 +93,9 @@ export function mergeUi5(ui5: Partial<UI5>, options?: Partial<AppOptions>): UI5 
         ui5.typesVersion ?? (options?.typescript ? getEsmTypesVersion : getTypesVersion)(merged.minUI5Version);
     merged.typesPackage = getTypesPackage(merged.typesVersion);
     merged.ui5Theme = ui5.ui5Theme ?? 'sap_fiori_3';
+    if (ui5.manifestLibs && ui5.manifestLibs.length > 0) {
+        merged.manifestLibs = getUI5Libs(ui5.manifestLibs);
+    }
     merged.ui5Libs = getUI5Libs(ui5.ui5Libs);
 
     return Object.assign({}, ui5, merged) as UI5;
@@ -117,7 +121,7 @@ function getMinUI5Version(ui5Version: string, minUI5Version?: string) {
  * @param manifestVersion - optional manifest descriptor version to be used if provided
  * @returns - the manifest descriptor version
  */
-function getManifestVersion(ui5Version: string, manifestVersion?: string): string {
+export function getManifestVersion(ui5Version: string, manifestVersion?: string): string {
     const ui5SemVer = semVer.coerce(ui5Version) as SemVer;
 
     /**
@@ -202,22 +206,4 @@ function getLocalVersion({
     } else {
         return minVersion;
     }
-}
-
-/**
- * Retrieve the tag version of the @sap/ux-specification based on the given version.
- *
- * @param ui5Version UI5 version used in the project
- * @returns version tag
- */
-export function getSpecTagVersion(ui5Version: string | undefined): string {
-    if (ui5Version) {
-        if (semVer.valid(ui5Version)) {
-            return `UI5-${semVer.major(ui5Version)}.${semVer.minor(ui5Version)}`;
-        } else if (ui5Version.includes('snapshot') && ui5Version.includes('.')) {
-            const snaphotVersion = ui5Version.split('snapshot-')[1];
-            return `UI5-${snaphotVersion}`;
-        }
-    }
-    return 'latest';
 }

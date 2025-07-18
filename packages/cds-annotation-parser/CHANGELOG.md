@@ -1,5 +1,105 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.2.13
+
+### Patch Changes
+
+-   Updated dependencies [070dcb2]
+    -   @sap-ux/odata-vocabularies@0.4.10
+
+## 0.2.12
+
+### Patch Changes
+
+-   be6febe: fix: parsing of single path in expression
+
+## 0.2.11
+
+### Patch Changes
+
+-   @sap-ux/odata-annotation-core@0.2.5
+-   @sap-ux/odata-entity-model@0.3.1
+-   @sap-ux/odata-vocabularies@0.4.9
+
+## 0.2.10
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/text-document-utils@0.3.0
+    -   @sap-ux/odata-annotation-core@0.2.4
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/odata-vocabularies@0.4.8
+
+## 0.2.9
+
+### Patch Changes
+
+-   Updated dependencies [2a16531]
+    -   @sap-ux/odata-annotation-core@0.2.3
+
+## 0.2.8
+
+### Patch Changes
+
+-   d873cbd: chore - Add repository metadata in package.json
+
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/odata-vocabularies@0.4.7
+
+## 0.2.6
+
+### Patch Changes
+
+-   Updated dependencies [3f273c9]
+    -   @sap-ux/odata-vocabularies@0.4.6
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [54b6d61]
+    -   @sap-ux/odata-vocabularies@0.4.5
+
+## 0.2.4
+
+### Patch Changes
+
+-   Updated dependencies [8af1ba2]
+    -   @sap-ux/odata-vocabularies@0.4.4
+
+## 0.2.3
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/odata-annotation-core@0.2.2
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/odata-vocabularies@0.4.3
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [9c8dc5c]
+    -   @sap-ux/odata-vocabularies@0.4.2
+
+## 0.2.1
+
+### Patch Changes
+
+-   ac22b7e: feat: new package for text document utility functions and types
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/text-document-utils@0.2.0
+    -   @sap-ux/odata-annotation-core@0.2.1
+    -   @sap-ux/odata-entity-model@0.3.0
+    -   @sap-ux/odata-vocabularies@0.4.1
+
 ## 0.2.0
 
 ### Minor Changes

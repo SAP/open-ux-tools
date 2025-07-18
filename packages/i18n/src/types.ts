@@ -1,4 +1,4 @@
-import type { Range } from './parser/utils';
+import type { Range } from '@sap-ux/text-document-utils';
 
 /**
  * Value node

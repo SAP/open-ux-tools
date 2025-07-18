@@ -1,9 +1,14 @@
 import React from 'react';
 
-import type { IPivotProps, IPivotStyles } from '@fluentui/react';
+import type { IPivotProps, IPivotStyles, IPivotItemProps } from '@fluentui/react';
 import { Pivot, PivotItem } from '@fluentui/react';
 
 export { PivotItem as UITabsItem };
+export { IPivotItemProps as UITabsItemProps };
+
+export { Pivot as UIPivot };
+export { IPivotProps as UIPivotProps };
+export { IPivotStyles as UIPivotStyle };
 
 export interface UITabsProps extends IPivotProps {
     items: string[];
@@ -55,7 +60,6 @@ export class UITabs extends React.Component<UITabsProps, {}> {
             },
             linkContent: {},
             text: {
-                fontFamily: 'var(--vscode-font-family)',
                 fontSize: 13
             }
         };

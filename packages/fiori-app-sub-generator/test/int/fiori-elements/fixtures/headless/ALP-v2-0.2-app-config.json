@@ -1,0 +1,42 @@
+{
+  "version": "0.2",
+  "floorplan": "FE_ALP",
+  "project": {
+    "title": "Project's \"Title\"",
+    "description": "Test 'Project' \"Description\"",
+    "namespace": "testNameSpace",
+    "ui5Version": "1.98.0",
+    "localUI5Version": "1.82.2",
+    "targetFolder": "./test-output",
+    "name": "alp_v2",
+    "sapux": true
+  },
+  "service": {
+    "servicePath": "/sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV",
+    "host": "https://sap-ux-mock-services-v2-alp.cfapps.us10.hana.ondemand.com",
+    "annotations": [
+      {
+        "TechnicalName": "SEPMRA_ALP_SO_ANA_SRV",
+        "Version": "0001",
+        "Definitions": "<Set in tests to avoid replication: add from ../sepmra_so_ana_alp_v2/annotations.xml>",
+        "Uri": ""
+      }
+    ],
+    "edmx": "<Set in tests to avoid replication: add from ../sepmra_so_ana_alp_v2/metadata.xml>"
+  },
+  "entityConfig": {
+    "mainEntity": { "entityName": "SEPMRA_C_ALP_SlsOrdItemCubeALPResults" },
+    "navigationEntity": {
+      "EntitySet": "SEPMRA_C_ALP_SalesOrderItem",
+      "Name": "to_SalesOrderItem"
+    },
+    "tableType": "GridTable"
+  },
+  "alpOptions": {
+    "qualifier": "DefaultVariant",
+    "multiSelect": true,
+    "autoHide": true,
+    "smartVariantManagement": true,
+    "selectionMode": "None"
+  }
+}

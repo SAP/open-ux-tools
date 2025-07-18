@@ -18,10 +18,19 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../i18n"
+    },
+    {
       "path": "../inquirer-common"
     },
     {
       "path": "../logger"
+    },
+    {
+      "path": "../nodejs-utils"
+    },
+    {
+      "path": "../odata-service-writer"
     },
     {
       "path": "../project-access"
@@ -37,6 +46,9 @@
     },
     {
       "path": "../ui5-config"
+    },
+    {
+      "path": "../ui5-info"
     }
   ]
 }

@@ -98,6 +98,7 @@ describe('<UITreeDropdown />', () => {
                         ]
                     }
                 ]}
+                aria-label="testAriaLabel"
             />
         );
     });
@@ -156,6 +157,12 @@ describe('<UITreeDropdown />', () => {
         getElementsByClassNameSpy.mockClear();
     });
 
+    it('Additional properties are set', () => {
+        expect(wrapper.find(selectors.wrapper.readonly).length).toEqual(0);
+        const textfield = wrapper.find(UITextInput);
+        expect(textfield.prop('aria-label')).toEqual('testAriaLabel');
+    });
+
     describe('Value change', () => {
         beforeEach(() => {
             windowEventMock = mockDomEventListener(window);
@@ -180,6 +187,8 @@ describe('<UITreeDropdown />', () => {
             // In focuszone click callback handled also when ewnter key pressed on focused item
             wrapper.find('button.ms-ContextualMenu-link').first().simulate('click');
             expect(wrapper.state().value).toEqual('Title2');
+            expect(onChange).toBeCalledTimes(1);
+            expect(onChange).toBeCalledWith('Title2');
             // Try another select
             onChange.mockClear();
             openDropdown();
@@ -194,6 +203,8 @@ describe('<UITreeDropdown />', () => {
             // In focuszone click callback handled also when ewnter key pressed on focused item
             wrapper.find('button.ms-ContextualMenu-link').first().simulate('click');
             expect(wrapper.state().value).toEqual('Title2');
+            expect(onChange).toBeCalledTimes(1);
+            expect(onChange).toBeCalledWith('Title2');
             // Try another select
             onChange.mockClear();
             openDropdown();

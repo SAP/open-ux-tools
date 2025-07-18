@@ -70,7 +70,7 @@ export interface ApplicationAccess extends BaseAccess {
     /**
      * Maintains new translation entries in CAP i18n files.
      *
-     * @param filePath file in which the translation entry will be used.
+     * @param filePath absolute path to file in which the translation entry will be used.
      * @param newI18nEntries translation entries to write in the i18n file.
      * @returns boolean or exception
      */
@@ -122,6 +122,7 @@ export interface ApplicationAccess extends BaseAccess {
 
 export interface ProjectAccessOptions {
     logger?: Logger;
+    memFs?: Editor;
 }
 
 export interface ProjectAccess extends BaseAccess {

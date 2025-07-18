@@ -10,5 +10,5 @@ A simplified example illustrating how to create a yeoman generator using the `fi
 ## fe-fpm-cli
 A simple CLI to prompt required information to create a building block using the `fe-fpm-writer` module's prompt and generate functions.
 
-## prompting-ui
+## ui-prompting-examples
 A storybook project containing playground for consuming/testing `Prompts API` from `fe-fpm-writer` and `UI` from `@sap-ux/ui-prompting`

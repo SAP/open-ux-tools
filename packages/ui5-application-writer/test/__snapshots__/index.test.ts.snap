@@ -28,15 +28,15 @@ archive.zip
     \\"main\\": \\"webapp/index.html\\",
     \\"dependencies\\": {},
     \\"devDependencies\\": {
-        \\"@ui5/cli\\": \\"^3.0.0\\",
+        \\"@ui5/cli\\": \\"^4.0.16\\",
         \\"@sap/ux-ui5-tooling\\": \\"1\\"
 },
     \\"scripts\\": {
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
-}}
-",
+}    
+}",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
@@ -61,6 +61,12 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },
@@ -88,6 +94,12 @@ server:
         port: 35729
         path: webapp
         delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_fiori_3
+          path: test/flpSandbox.html
 ",
     "state": "modified",
   },

@@ -34,7 +34,7 @@ export async function readJSON<T>(path: string, memFs?: Editor): Promise<T> {
 }
 
 /**
- * Read file asynchronously. Throws error if file does not exist.
+ * Write file asynchronously. Throws error if file does not exist.
  *
  * @param path - path to file
  * @param content - content to write to a file
@@ -106,4 +106,42 @@ async function updateJSON(path: string, content: object, memFs?: Editor): Promis
     // prepare new JSON file content with previous indentation
     const result = JSON.stringify(content, null, oldContentJson[indent]) + '\n';
     await writeFile(path, result, memFs);
+}
+
+/**
+ * Deletes file asynchronously.
+ *
+ * @param path - path to file
+ * @param memFs - optional mem-fs-editor instance
+ * @returns Promise to void.
+ */
+export async function deleteFile(path: string, memFs?: Editor): Promise<void> {
+    if (memFs) {
+        return memFs.delete(path);
+    }
+    return fs.unlink(path);
+}
+
+/**
+ * Read array of files from folder asynchronously.
+ *
+ * @param path - path to folder
+ * @returns Array of the names of the files in the directory.
+ */
+export async function readDirectory(path: string): Promise<string[]> {
+    return fs.readdir(path, { encoding: 'utf8' });
+}
+
+/**
+ * Deletes folder asynchronously.
+ *
+ * @param path - path to folder
+ * @param memFs - optional mem-fs-editor instance
+ * @returns Promise to void.
+ */
+export async function deleteDirectory(path: string, memFs?: Editor): Promise<void> {
+    if (memFs) {
+        return memFs.delete(path);
+    }
+    return fs.rm(path, { recursive: true, force: true });
 }

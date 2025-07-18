@@ -25,6 +25,12 @@ export interface BuildingBlockMetaPath {
     entitySet: string;
     qualifier: string;
     bindingContextType?: BindingContextType;
+    /**
+     * Always generate absolute paths.
+     *
+     * @default true
+     */
+    alwaysAbsolutePath?: boolean;
 }
 
 /**
@@ -131,6 +137,24 @@ export interface FilterBar extends BuildingBlock {
      * This event is fired when the Go button is pressed or after a condition change.
      */
     search?: string;
+    /**
+     * If true, the search is triggered automatically when a filter value is changed.
+     *
+     * @default false
+     */
+    liveMode?: boolean;
+    /**
+     * Handles the visibility of the 'Clear' button on the FilterBar.
+     *
+     * @default false
+     */
+    showClearButton?: boolean;
+    /**
+     * Displays possible errors during the search in a message box.
+     *
+     * @default true
+     */
+    showMessages?: boolean;
 }
 
 /**
@@ -379,4 +403,12 @@ export interface BuildingBlockConfig<T extends BuildingBlock> {
      * The building block parameters.
      */
     buildingBlockData: T;
+
+    /**
+     * Allows updating the 'manifest.json' file with missing dependency libraries.
+     * Dependency libraries are listed under '"sap.ui5"/"dependencies"/"libs"', and 'sap.fe.macros' is required for Building Blocks.
+     *
+     * @default true
+     */
+    allowAutoAddDependencyLib?: boolean;
 }

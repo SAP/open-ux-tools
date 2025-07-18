@@ -18,7 +18,10 @@ describe('communication middleware', () => {
             dispose: jest.fn()
         });
         dispatch = jest.fn();
-        middleWare = communicationMiddleware({ dispatch } as any);
+        middleWare = communicationMiddleware({
+            dispatch,
+            getState: jest.fn().mockReturnValue({ selectedControl: { id: 'filterBar' } })
+        } as any);
         jest.spyOn(document, 'getElementById').mockReturnValue({
             contentWindow: 'Target'
         } as any);
@@ -37,6 +40,14 @@ describe('communication middleware', () => {
             newValue: 'new value'
         });
         messageProcessor.mock.calls[0][1](action);
+        expect(dispatch).toHaveBeenCalledTimes(1);
+        expect(dispatch).toHaveBeenNthCalledWith(1, action);
+    });
+
+    test('select control in UI5 application on apploaded', () => {
+        const action = common.appLoaded();
+        messageProcessor.mock.calls[0][1](action);
+        expect(sendActionfn).toHaveBeenCalledWith(common.selectControl('filterBar'));
         expect(dispatch).toHaveBeenCalledTimes(1);
         expect(dispatch).toHaveBeenNthCalledWith(1, action);
     });
@@ -218,6 +229,23 @@ describe('communication middleware', () => {
             Object {
               "payload": "navigation",
               "type": "[ext] set-app-mode",
+            }
+        `);
+        expect(sendActionfn).toHaveBeenCalledTimes(1);
+    });
+    test('externalFileChange - send action', () => {
+        const action = common.externalFileChange('file-path');
+        const next = jest.fn().mockReturnValue(action);
+        jest.mock('@sap-ux-private/control-property-editor-common', () => {
+            return {
+                externalFileChange: { type: '[ext] external-file-change' }
+            };
+        });
+        const result = middleWare(next)(action);
+        expect(result).toMatchInlineSnapshot(`
+            Object {
+              "payload": "file-path",
+              "type": "[ext] external-file-change",
             }
         `);
         expect(sendActionfn).toHaveBeenCalledTimes(1);

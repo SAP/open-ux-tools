@@ -1,5 +1,42 @@
 # @sap-ux/odata-annotation-core
 
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [08ed948]
+    -   @sap-ux/odata-annotation-core-types@0.4.4
+
+## 0.2.4
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/text-document-utils@0.3.0
+    -   @sap-ux/odata-annotation-core-types@0.4.3
+
+## 0.2.3
+
+### Patch Changes
+
+-   2a16531: fix: `toFullyQualifiedPath` replaces unknown namespace or alias with `undefined`.
+
+## 0.2.2
+
+### Patch Changes
+
+-   93f8a83: chore - upgrade typescript 5.6.2
+-   Updated dependencies [93f8a83]
+    -   @sap-ux/odata-annotation-core-types@0.4.2
+
+## 0.2.1
+
+### Patch Changes
+
+-   Updated dependencies [ac22b7e]
+    -   @sap-ux/text-document-utils@0.2.0
+    -   @sap-ux/odata-annotation-core-types@0.4.1
+
 ## 0.2.0
 
 ### Minor Changes

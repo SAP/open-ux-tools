@@ -1,7 +1,6 @@
 import type { Editor } from 'mem-fs-editor';
 
 import { ChangeType } from '../../../types';
-import { DirName } from '@sap-ux/project-access';
 import {
     getParsedPropertyValue,
     findChangeWithInboundId,
@@ -46,7 +45,7 @@ export class InboundWriter implements IWriter<InboundData> {
      * @returns {void}
      */
     private getEnhancedContent(data: InboundData, content: InboundContent): void {
-        const { icon, title, subTitle } = data.answers;
+        const { icon, title, subtitle } = data.flp;
         if (title) {
             content.entityPropertyChange.push({
                 propertyPath: 'title',
@@ -55,11 +54,11 @@ export class InboundWriter implements IWriter<InboundData> {
             });
         }
 
-        if (subTitle) {
+        if (subtitle) {
             content.entityPropertyChange.push({
                 propertyPath: 'subTitle',
                 operation: 'UPSERT',
-                propertyValue: getParsedPropertyValue(subTitle)
+                propertyValue: getParsedPropertyValue(subtitle)
             });
         }
 
@@ -85,13 +84,7 @@ export class InboundWriter implements IWriter<InboundData> {
             const content = this.constructContent(data);
             const change = getChange(data.variant, timestamp, content, ChangeType.CHANGE_INBOUND);
 
-            writeChangeToFolder(
-                this.projectPath,
-                change,
-                `id_${timestamp}_changeInbound.change`,
-                this.fs,
-                DirName.Manifest
-            );
+            writeChangeToFolder(this.projectPath, change, this.fs);
         } else {
             if (changeWithInboundId.content) {
                 this.getEnhancedContent(data, changeWithInboundId.content);

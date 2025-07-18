@@ -3,12 +3,8 @@ import { render } from '../../utils';
 import React from 'react';
 import type { HeaderFieldProps } from '../../../../src/panels/properties/HeaderField';
 import { HeaderField } from '../../../../src/panels/properties/HeaderField';
-import { initI18n } from '../../../../src/i18n';
 
 describe('HeaderField', () => {
-    beforeAll(() => {
-        initI18n();
-    });
     const headerFieldProps: HeaderFieldProps = {
         label: 'testLabel',
         documentation: {} as any,
@@ -32,5 +28,22 @@ describe('HeaderField', () => {
 
         expect(screen.getByText('Copied to clipboard')).toBeInTheDocument();
         expect(writeTextMock).toBeCalled();
+    });
+
+    test('clipboard is updated after prop change', () => {
+        const { rerender, debug } = render(<HeaderField {...headerFieldProps} />);
+
+        const newHeaderFieldProps: HeaderFieldProps = {
+            label: 'otherLabel',
+            value: 'otherValue',
+            hidden: false
+        };
+        rerender(<HeaderField {...newHeaderFieldProps} />);
+
+        const copyButton = screen.getByRole('button');
+        fireEvent.click(copyButton);
+
+        expect(screen.getByText('Copied to clipboard')).toBeInTheDocument();
+        expect(writeTextMock).toBeCalledWith('otherValue');
     });
 });

@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/types",
-    "version": "1.2.0",
+    "version": "1.3.0",
     "private": true,
     "description": "Type augmentations for imported modules",
     "repository": {
@@ -9,7 +9,7 @@
         "directory": "types"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     },
     "scripts": {
         "lint": "eslint . --ext .ts",

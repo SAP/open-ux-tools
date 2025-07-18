@@ -12,7 +12,7 @@ sap.ui.define(
              * @memberOf <%- ns %>.<%- name %>
              */
             //  onInit: function () {
-            //
+            //      PageController.prototype.onInit.apply(this, arguments); // needs to be called to properly initialize the page controller
             //  },
 
             /**

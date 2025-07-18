@@ -1,5 +1,125 @@
 # @sap-ux/ui5-config
 
+## 0.29.0
+
+### Minor Changes
+
+-   c0fa1d1: enhance support for adding and updating preview configuration
+
+## 0.28.3
+
+### Patch Changes
+
+-   f75b89d: Get mock data server config from ui5 yaml file
+
+## 0.28.2
+
+### Patch Changes
+
+-   61ea5c0: fix: Incorrect types package put during adaptation project generation
+
+## 0.28.1
+
+### Patch Changes
+
+-   5e0020b: Support backend changes.
+
+## 0.28.0
+
+### Minor Changes
+
+-   a28357d: chore - drop node18 support as it is out of maintenance
+
+### Patch Changes
+
+-   Updated dependencies [a28357d]
+    -   @sap-ux/yaml@0.17.0
+
+## 0.27.2
+
+### Patch Changes
+
+-   7590bc3: Remove legacy CF deploy task
+
+## 0.27.1
+
+### Patch Changes
+
+-   294bbe3: code cleanup with help from copilot
+
+## 0.27.0
+
+### Minor Changes
+
+-   1ca4004: updates for use for fiori tools preview middleware and use of virtual endpoints
+
+## 0.26.5
+
+### Patch Changes
+
+-   224494c: Improved add, delete and get methods for service backends.
+
+## 0.26.4
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+
+## 0.26.3
+
+### Patch Changes
+
+-   5817923: Adds `webappPath` and `basePath` parameters to resolve service paths during mockserver generation/update.
+
+## 0.26.2
+
+### Patch Changes
+
+-   ed8a9b9: Handling of `ignoreCertError` property from service in proxy middleware.
+
+## 0.26.1
+
+### Patch Changes
+
+-   19aad96: Delete only one backend entry per service.
+
+## 0.26.0
+
+### Minor Changes
+
+-   73475e5: Support for multiple services and multiple annotations per service.
+
+## 0.25.2
+
+### Patch Changes
+
+-   1beac7e: adds reentrance ticket auth type to deploy config
+
+## 0.25.1
+
+### Patch Changes
+
+-   6275288: add new cf deploy writer and dependencies that it requires
+
+## 0.25.0
+
+### Minor Changes
+
+-   484195d: Enhancements to FE & FF Configurations: The updates include adding the `start-variants-management` script to `package.json` for FE and FF. The OdataService interface now has an `ignoreCertError` property. UI5 application writer introduces the `sapuxLayer` property to `package.json` templates and adds `fiori-tools-preview middleware` to ui5, ui5-mock, and ui5-local.yaml. Additionally, the `addFioriToolsPreviewMiddleware` function has been added for YAML config integration.
+
+## 0.24.1
+
+### Patch Changes
+
+-   1a99abc: separation between ui5libs and manifestlibs, to allow for different ui5 libraries set in manifest and other files
+
+## 0.24.0
+
+### Minor Changes
+
+-   61721f2: fpm v4 removed sap.fe.templates in manifest.json, now has dependency on sap.fe.core
+    removed dependency on sap.ushell for v4 manifest.json
+
 ## 0.23.1
 
 ### Patch Changes

@@ -9,8 +9,9 @@ import {
     getPreviewPaths
 } from '../../../src/base/config';
 import { mergeTestConfigDefaults } from '../../../src/base/test';
-import type { MiddlewareConfig } from '../../../src/types';
+import type { MiddlewareConfig } from '../../../src';
 import { join } from 'path';
+import { ToolsLogger } from '@sap-ux/logger';
 
 describe('config', () => {
     const manifest = {
@@ -43,7 +44,7 @@ describe('config', () => {
 
         test('minimum settings with one reuse lib', () => {
             const flpConfig = getFlpConfigWithDefaults({});
-            const resources = { 'my.resuse.lib': '/custom/path/my.reuse.lib' };
+            const resources = { 'my.reuse.lib': '/custom/path/my.reuse.lib' };
             const templateConfig = createFlpTemplateConfig(flpConfig, manifest, resources);
             expect(templateConfig).toMatchSnapshot();
         });
@@ -74,6 +75,8 @@ describe('config', () => {
         });
 
         test('tests included and a custom path', async () => {
+            const consoleSpyError = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
+            const consoleSpyWarning = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
             const config = {
                 flp: {
                     path: '/test/flpSandbox.html',
@@ -81,19 +84,30 @@ describe('config', () => {
                 },
                 rta: {
                     layer: 'CUSTOMER_BASE',
-                    editors: [{ path: '/local/editor.html', developerMode: false }]
+                    editors: [
+                        { path: '/local/editor.html', developerMode: false },
+                        { path: '/local/developerEditor.html', developerMode: true }
+                    ]
                 },
                 test: [{ framework: 'OPA5' }]
-            } satisfies MiddlewareConfig;
+            } as MiddlewareConfig;
             const previews = getPreviewPaths(config);
-            expect(previews).toHaveLength(3);
+            expect(previews).toHaveLength(4);
             expect(
                 previews.find(
-                    ({ path }) => path === `${config.flp.path}#${config.flp.intent.object}-${config.flp.intent.action}`
+                    ({ path }) =>
+                        path === `${config?.flp?.path}#${config?.flp?.intent?.object}-${config?.flp?.intent?.action}`
                 )
             ).toBeDefined();
-            expect(previews.find(({ path }) => path === config.rta.editors[0].path)).toBeDefined();
+            expect(previews.find(({ path }) => path === config?.editors?.rta?.endpoints[0]?.path)).toBeDefined();
+            expect(previews.find(({ path }) => path === config?.editors?.rta?.endpoints[1]?.path)).toBeDefined();
+            expect(consoleSpyError).toHaveBeenCalledWith(
+                'developerMode is ONLY supported for SAP UI5 adaptation projects.'
+            );
+            expect(consoleSpyWarning).toHaveBeenCalledWith('developerMode for /local/developerEditor.html disabled');
             expect(previews.find(({ path }) => path === '/test/opaTests.qunit.html')).toBeDefined();
+            consoleSpyError.mockRestore();
+            consoleSpyWarning.mockRestore();
         });
     });
 

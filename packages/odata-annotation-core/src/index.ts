@@ -22,7 +22,15 @@ export {
 
 export { findPathToPosition, FindPathResult, getPositionData } from './search';
 
-export * from './position';
+export {
+    indent,
+    getIndentLevel,
+    positionAt,
+    positionContained,
+    positionContainedStrict,
+    isBefore,
+    rangeContained
+} from '@sap-ux/text-document-utils';
 
 export {
     elements,

@@ -1,0 +1,22 @@
+<!-- Use stable and unique id's!-->
+<core:FragmentDefinition xmlns="sap.m" xmlns:table="sap.ui.table" xmlns:smartfield="sap.ui.comp.smartfield"	xmlns:core="sap.ui.core">
+	<table:AnalyticalColumn
+        grouped="false"
+		autoResizable="true"
+        width="150px" 
+        hAlign="Left"
+        summed="false"
+		id="<%- ids.column %>" >
+
+		<Label id="<%- ids.label %>" text="New Column"></Label>
+
+		<table:template>
+			<Text id="<%- ids.text %>" text="Sample data"/>
+		</table:template>
+
+		<table:customData>
+			<core:CustomData key="p13nData" id="<%- ids.customData %>"
+				value='\{"columnKey": "<%- ids.column %>", "columnIndex": "<%- ids.index %>"}' />
+		</table:customData>
+	</table:AnalyticalColumn>
+</core:FragmentDefinition>

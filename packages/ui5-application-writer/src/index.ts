@@ -1,14 +1,14 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { App, AppOptions, Package, UI5 } from './types';
-import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
-import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
+import { UI5Config, getEsmTypesVersion, getPreviewMiddlewareConfig, getTypesPackage } from '@sap-ux/ui5-config';
+import { getMinimumUI5Version, type Manifest, type Package } from '@sap-ux/project-access';
 import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options';
 import { Ui5App } from './types';
+import type { Editor } from 'mem-fs-editor';
+import type { App, AppOptions, UI5 } from './types';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -58,7 +58,19 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         }
     });
     ui5Config.addFioriToolsAppReloadMiddleware();
-    // ui5-local.yaml
+
+    const previewMiddleWareOpts = getPreviewMiddlewareOpts(
+        ui5App.app,
+        ui5App.ui5?.ui5Theme,
+        ui5AppConfig.appOptions?.useVirtualPreviewEndpoints
+    );
+    const fioriToolsPreviewConfigMiddlware = getPreviewMiddlewareConfig(previewMiddleWareOpts);
+
+    // add preview middleware to ui5Config for edmx projects and cap apps using virtual endpoints
+    if (isEdmxProjectType || ui5AppConfig.appOptions?.useVirtualPreviewEndpoints) {
+        ui5Config.updateCustomMiddleware(fioriToolsPreviewConfigMiddlware);
+    }
+
     if (isEdmxProjectType) {
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         // write ui5-local.yaml only for non-CAP applications
@@ -72,6 +84,8 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ui5LocalConfig.addFioriToolsAppReloadMiddleware();
         // Add optional features
         await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
+        // add preview middleware to ui5LocalConfig
+        ui5LocalConfig.updateCustomMiddleware(fioriToolsPreviewConfigMiddlware);
         // write ui5 local yaml
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     } else {
@@ -82,6 +96,29 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     fs.write(ui5ConfigPath, ui5Config.toString());
 
     return fs;
+}
+
+/**
+ * Get the preview middleware options.
+ *
+ * @param app - the app config
+ * @param ui5Theme - the UI5 theme
+ * @param useVirtualPreviewEndpoints - boolean to determine if virtual endpoints are used
+ * @returns preview middleware options
+ */
+function getPreviewMiddlewareOpts(app: App, ui5Theme?: string, useVirtualPreviewEndpoints = false) {
+    return {
+        ui5Theme,
+        ...(useVirtualPreviewEndpoints && {
+            localStartFile: app.localStartFile
+        }),
+        // only add flp intent if not using virtual endpoints (default `app-preview` will be used by middleware)
+        ...(!useVirtualPreviewEndpoints && {
+            localStartFile: app.localStartFile ?? 'test/flpSandbox.html',
+            flpAction: app.flpAction,
+            appId: app.id
+        })
+    };
 }
 
 /**
@@ -150,3 +187,11 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
 
 export { Ui5App, generate, enableTypescript, isTypescriptEnabled };
 export { App, Package, UI5, AppOptions };
+export {
+    compareUI5VersionGte,
+    ui5LtsVersion_1_120,
+    ui5LtsVersion_1_71,
+    processDestinationPath,
+    getTemplateVersionPath
+} from './utils';
+export { getManifestVersion } from './data/defaults';

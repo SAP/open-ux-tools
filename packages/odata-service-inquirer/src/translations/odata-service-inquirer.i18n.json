@@ -1,14 +1,14 @@
 {
     "prompts": {
         "datasourceType": {
-            "message": "Data source",
+            "message": "Data Source",
             "projectSpecificDestName": "Project Specific Destination",
             "businessHubName": "SAP Business Accelerator Hub",
-            "sapSystemName": "SAP System",
-            "odataServiceUrlName": "OData Service Url",
+            "sapSystemName": "System",
+            "odataServiceUrlName": "OData Service",
             "capProjectName": "Local CAP Project",
-            "metadataFileName": "Metadata File",
-            "noneName": "None",
+            "metadataFileName": "Metadata Document",
+            "choiceNone": "$t(texts.choiceNameNone)",
             "projectSpecificDestChoiceText": "Connect to a $t(prompts.datasourceType.projectSpecificDestName)",
             "businessHubChoiceText": "Connect to $t(prompts.datasourceType.businessHubName)",
             "sapSystemChoiceText": "Connect to a $t(prompts.datasourceType.sapSystemName)",
@@ -18,24 +18,24 @@
             "notYetImplementedWarningMessage": "The selected data source type: {{ datasourceType }} is not yet implemented."
         },
         "metadataFile": {
-            "message": "Metadata file path",
+            "message": "Metadata File Path",
             "description": "Upload a metadata file",
             "placeholder_odata_service_url": "/here/goes/your/serviceurl/"
         },
         "capProject": {
-            "message": "Choose your CAP project",
+            "message": "Choose a CAP Project",
             "description": "Select a local CAP project",
             "breadcrumb": "CAP Project",
             "enterCapPathChoiceName": "Manually select CAP project folder path"
         },
         "capProjectPath": {
-            "message": "CAP project folder path",
+            "message": "CAP Project Folder Path",
             "description": "Select a local CAP project",
             "breadcrumb": "CAP Project",
             "enterCapPathChoiceName": "Manually select CAP project folder path"
         },
         "capService": {
-            "message": "OData service",
+            "message": "OData Service",
             "description": "Select a local CAP service",
             "breadcrumb": "CAP Service",
             "enterCapPathChoiceName": "Manually select CAP service folder path"
@@ -55,22 +55,23 @@
         "validationMessages": {
             "odataVersionMismatch": "The template you have chosen supports V{{requiredOdataVersion}} OData services only. The provided version is V{{providedOdataVersion}}.",
             "metadataInvalid": "The service metadata is invalid.",
-            "metadataFilePathNotValid": "Metadata file does not exist or is not accessible. Please specify a valid file path.",
-            "capProjectNotFound": "The folder you have selected does not seem to contain a valid CAP project. Please check and try again.",
-            "warningCertificateValidationDisabled": "User has disabled certificate validation",
-            "annotationsNotFound": "Annotations not found for specified service"
+            "metadataFilePathNotValid": "The metadata file does not exist or is not accessible. Please specify a valid file path.",
+            "capProjectNotFound": "The folder you have selected does not contain a valid CAP project. Please check and try again.",
+            "warningCertificateValidationDisabled": "Certificate validation has been disabled by the user.",
+            "annotationsNotFound": "Annotations not found for the specified service."
         },
         "warnings": {
-            "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services are not intended to be used for the generation of SAP Fiori UI applications",
-            "noServicesAvailable": "No services available for the selected system, see logs for further details.",
-            "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only"
-
+            "nonUIServiceTypeWarningMessage": "Services of service type: {{serviceType}} or without a service type are not intended to be used for generating SAP Fiori UI applications.",
+            "noServicesAvailable": "There are no services available for the selected system. For more information, see the logs.",
+            "noServicesAvailableForOdataVersion": "There are no OData V{{odataVersion}} services available from the selected system and the template you have chosen only supports OData V{{odataVersion}} services.",
+            "noAnnotations": "No back-end annotations associated with this service were retrieved. This can result in an invalid application.",
+            "collaborativeDraftMessage": "The selected service is draft-enabled but does not support collaborative draft."
         },
-        "systemUrl" : {
+        "systemUrl": {
             "message": "System URL",
             "description": "Enter the URL of the SAP System",
             "placeholder": "https://<host>:<port>"
-        }, 
+        },
         "sapClient": {
             "message": "SAP client (leave empty for default)",
             "breadcrumb": "SAP Client"
@@ -82,14 +83,15 @@
             "message": "Password"
         },
         "systemService": {
-            "message": "Service name",
+            "message": "Service",
             "breadcrumb": "Service",
-            "noServicesWarning": "No services available for the selected system, see logs for further details."
+            "noServicesWarning": "No services available for the selected system. For more information, see the logs."
         },
-        "systemType": {
+        "newSystemType": {
             "choiceAbapOnPrem": "ABAP On Premise",
             "choiceAbapOnBtp": "ABAP Environment on SAP Business Technology Platform",
-            "message": "System type",
+            "choiceCFAbapEnvServiceOnBtp": "Cloud Foundry ABAP environment on SAP Business Technology Platform",
+            "message": "System Type",
             "notYetImplementedWarningMessage": "The selected system type: {{ systemType }} is not yet implemented."
         },
         "systemName": {
@@ -100,57 +102,153 @@
             "emptySystemNameWarning": "System name cannot be empty."
         },
         "systemSelection": {
-            "newSystemChoiceLabel": "New system"
+            "newSystemChoiceLabel": "New System",
+            "hint": "Select a system configuration.",
+            "message": "System",
+            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
+        },
+        "abapOnBTPType": {
+            "message": "ABAP environment definition source",
+            "choiceReentranceTicket": "Use Reentrance Ticket",
+            "choiceServiceKey": "Upload a Service Key File",
+            "choiceCloudFoundry": "Discover a Cloud Foundry Service"
+        },
+        "serviceKey": {
+            "message": "Service Key File Path",
+            "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
+            "incompleteServiceKeyInfo": "The service keys file does not contain the required information. Check the file is valid and try again.",
+            "unparseableServiceKey": "The service keys file does not contain a valid JSON format. Check the formatting and try again."
+        },
+        "cloudFoundryAbapSystem": {
+            "message": "ABAP environment",
+            "hint": "Enter the name of the Cloud Foundry service that contains the ABAP Environment instance."
+        },
+        "destinationServicePath": {
+            "message": "Service Path",
+            "hint": "Enter the path to the OData service relative to the selected destination URL.",
+            "invalidServicePathWarning": "Please enter a valid service path"
+        },
+        "mainEntitySelection": {
+            "message": "Main Entity",
+            "defaultEntityNameNotFoundWarning": "The supplied entity cannot be found in the service. Please choose from the list above.",
+            "noDraftEnabledEntitiesError": "The CAP service you have chosen does not have any entities that are draft enabled. To generate an OData V4 SAP Fiori application using this floorplan for a CAP project, the entity selected must be draft enabled.",
+            "mainEntityParameterFoundInfo": "The selected entity '{{entityName}}' requires a parameter which is set by the application filters. Navigation entities are not supported.",
+            "noEntitiesError": "$t(errors.noRelevantEntities)",
+            "noEntitiesAlpV4Error": "The OData V4 service you have provided is not suitable for use in an analytical list page application. The service must contain aggregate-based entities for this template."
+        },
+        "navigationEntitySelection": {
+            "message": "Navigation Entity",
+            "choiceNone": "$t(texts.choiceNameNone)"
+        },
+        "filterEntitySet": {
+            "message": "Filter Entity",
+            "noEntitiesError": "$t(errors.noRelevantEntities)"
+        },
+        "tableType": {
+            "message": "Table Type",
+            "hint": "Defines the table type for the list report page.",
+            "choiceNone": "$t(texts.choiceNameNone)",
+            "choiceGrid": "Grid",
+            "choiceAnalytical": "Analytical",
+            "choiceResponsive": "Responsive",
+            "choiceTree": "Tree"
+        },
+        "hierarchyQualifier": {
+            "message": "Hierarchy Qualifier",
+            "hint": "Leading property that decides between either a recursive hierarchy or data aggregation.",
+            "qualifierRequiredForV4Warning": "Hierarchy qualifier is required for OData V4 services."
+        },
+        "addFEOPAnnotations": {
+            "message": "Automatically add a form to the generated application if none already exists?",
+            "hint": "Choose the annotation generation method.",
+            "breadcrumb": "Generate Annotations"
+        },
+        "addLineItemAnnotations": {
+            "message": "Automatically add table columns to the list page and a section to the object page if none already exists?",
+            "hint": "Choose the annotation generation method.",
+            "breadcrumb": "Generate Annotations",
+            "valueHelpsAnnotationsInfoMessage": "Basic value helps will also be created."
+        },
+        "presentationQualifier": {
+            "message": "Qualifier",
+            "hint": "Represents the qualifier of the `SelectionPresentationVariant`. The analytical list page looks for a `SelectionPresentationVariant` with this qualifier and if not found, it looks for a `PresentationVariant` with this qualifier."
+        },
+        "tableSelectionMode": {
+            "message": "Selection Mode",
+            "hint": "Defines different selection modes for the `SmartTable` in the analytical list page.",
+            "choiceNone": "$t(texts.choiceNameNone)",
+            "choiceSingle": "Single",
+            "choiceAuto": "Auto",
+            "choiceMulti": "Multi"
+        },
+        "tableMultiSelect": {
+            "message": "Allow Multi Select",
+            "hint": "Allows you to show a checkbox for selecting multiple items in a table. This setting comes into effect only if there are actions defined either by using an annotation or a setting in the `manifest.json` file."
+        },
+        "tableAutoHide": {
+            "message": "Auto Hide",
+            "hint": "Determines the chart or table interaction. If set to `true`, the chart acts as a filter for the table. If set to `false`, the matching table rows are highlighted but the table is not filtered."
+        },
+        "smartVariantManagement": {
+            "message": "Enable Smart Variant Management",
+            "hint": "Enables page level variant."
         }
     },
     "errors": {
-        "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. See log for more details.",
-        "capModelAndServicesLoadError": "An error occurred loading the CAP model and services. {{- error}}",
-        "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. CAP service property `urlPath` is not defined but is required.",
-        "unknownError": "An error occurred: {{- error}}",
-        "servicesUnavailable": "An error occurred retrieving service(s) for SAP System.",
-        "certificateError": "A certificate error has occurred: {{- error}}",
-        "urlCertValidationError": "The system URL is using {{certErrorReason}} security certificate.",
-        "authenticationFailed": "Authentication incorrect {{error}}",
-        "authenticationTimeout": "Authorization was not verified within the allowed time. Please ensure you have authenticated using the associated browser window.",
-        "invalidUrl": "Not a valid URL",
-        "connectionError": "A connection error occurred, please ensure the target host is available on the network: {{- error}}",
-        "serviceUnavailable": "Selected service is returning an error.",
-        "catalogServiceNotActive": "Catalog service is not active",
-        "internalServerError": "The URL you have provided cannot be accessed and is returning: '{{- error}}'. Please ensure that the URL is accessible externally.",
-        "urlNotFound": "URL not found",
-        "odataServiceUrlNotFound": "The service URL you have provided is not a valid OData Service. Fiori applications require an OData service as the data source.",
-        "badGateway": "The server returned an error: bad gateway, please check the URL and try again.",
-        "destinationUnavailable": "The selected destination references an instance that is not available. Please check your destination configuration and try again.",
-        "destinationNotFound": "The destination is mis-configured, HTTP Error 404 returned, the requested resource could not be found.",
-        "destinationMisconfigured": "The destination is mis-configured, HTML5.DynamicDestination property is missing.",
-        "noServicesAvailable": "There are no V{{version}} OData services available from the selected system and the template you have chosen supports V{{version}} OData services only",
-        "redirectError": "A redirect response was received from the server",
-        "abapEnvsUnavailable": "ABAP environments unavailable",
-        "noSuchHostError": "No such host is known",
-        "odataServiceVersionMismatch": "The template you have chosen supports V{{requiredVersion}} OData services only. The provided version is V{{serviceVersion}}.",
-        "destinationAuthError": "The selected system is returning an authentication error. Please verify the destination configuration",
-        "systemOrserviceUrlNotFound": "Please verify the url: {{- url}}, target system configuration and network connectivity",
-        "urlRedirect": "The service URL is redirecting",
+        "destination": {
+            "authError": "The selected system: {{systemName}} returned an authentication error: {{- error}}.",
+            "listDestinations": "An error occurred when retrieving the list of destinations: {{- error}}."
+        },
+        "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. $t(texts.seeLogForDetails).",
+        "capModelAndServicesLoadError": "An error occurred loading the CAP model and services: {{- error, addMsgWithColonFormatter}}.",
+        "capServiceUrlPathNotDefined": "An error occurred reading CAP service metadata: {{serviceName}}. The CAP service property: `urlPath` is not defined but it is required.",
+        "unknownError": "An error occurred: {{- error, addMsgWithColonFormatter}}.",
+        "authenticationFailed": "Authentication incorrect: {{error}}.",
+        "invalidUrl": "Invalid URL: {{-input, addMsgWithColonFormatter}}.",
+        "connectionError": "A connection error occurred. Ensure the target host is available on the network: {{- error}}",
+        "urlNotFound": "URL not found.",
+        "noServicesAvailable": "There are no OData V{{version}} services available from the selected system and the template you have chosen only supports OData V{{version}} services.",
+        "abapEnvsUnavailable": "ABAP environments unavailable.",
+        "systemOrServiceUrlNotFound": "Please verify the URL: {{- url}}, target system configuration and network connectivity.",
+        "urlRedirect": "The service URL is redirecting.",
         "certValidationRequired": "Certificate validation is required to continue.",
-        "exitingGeneration": "Exiting generation. {{exitReason}}",
-        "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}",
-        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). $t(texts.seeLogForDetails)",
-        "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}",
-        "serviceTypeRequestError": "Error retrieving service type: {{- error}}"
+        "exitingGeneration": "Exiting generation. Exit: {{exitReason}}.",
+        "serviceMetadataError": "An error occurred reading service metadata for service: {{- servicePath}}.",
+        "serviceMetadataErrorUI": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). $t(texts.seeLogForDetails).",
+        "serviceMetadataErrorLog": "$t(errors.serviceMetadataError, {\"servicePath\": \"{{- servicePath}}\" }). {{error}}.",
+        "serviceTypeRequestError": "An error occurred when retrieving the service type: {{- error}}.",
+        "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed.",
+        "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}: {{error}}.",
+        "storedSystemConnectionError": "An error occurred when validating the stored system connection info. System Name: {{-systemName}}. Error: {{- error}}.",
+        "noCatalogOrServiceAvailable": "No active system or OData service endpoint connection available to retrieve the server.",
+        "allCatalogServiceRequestsFailed": "All catalog service requests failed for the selected system. OData version: V{{version}}.",
+        "unparseableMetadata": "Unable to parse entities from the metadata document: {{-error}}.",
+        "unparseableOdataVersion": "Unable to parse the OData version from the metadata.",
+        "unparseableXML": "Unparseable XML was specified: {{-error}}.",
+        "noRelevantEntities": "The template and service selected have no relevant entities that you can use.",
+        "cfInstanceCredentialsNotReturned": "Cannot not retrieve credentials to access: {{serviceInstanceName}}.",
+        "v2CatalogServiceNoAnnotations": "An error occurred when creating an OData V2 catalog service object. Annotations will not be available: {{-error}}"
+    },
+    "warnings": {
+        "largeMetadataDocument": "The metadata for this OData service is very large. It may take some time before this operation completes.",
+        "warningCertificateValidationDisabled": "User has disabled certificate validation",
+        "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services, or not classified services, are not intended to be used for the generation of SAP Fiori UI applications",
+        "noServicesAvailable": "No services available for the selected system, see logs for further details.",
+        "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only",
+        "noAnnotations": "No backend annotations associated with this service were retrieved and may result in an invalid application being created",
+        "collaborativeDraftMessage": "The selected service is draft enabled but does not support collaborative draft.",
+        "certificateErrors": "A certificate error occurred when connecting to the host: {{-url}}. Certificate error: {{error}}.",
+        "allowingUnauthorizedCertsNode": "Setting the `NODE_TLS_REJECT_UNAUTHORIZED` environment variable to `0` makes TLS connections and HTTPS requests insecure by disabling certificate verification. It is important to understand the security risks when using this setting.",
+        "certErrorIgnoredByNodeSetting": "An SSL certificate error is being ignored by the 'NODE_TLS_REJECT_UNAUTHORIZED=0' Node.js setting. This makes TLS connections and HTTPS requests insecure by disabling certificate verification. For details of the certification error, see the logs."
     },
     "texts": {
-        "anExpiredCert": "an expired",
-        "aSelfSignedCert": "a self-signed",
-        "anUnknownOrInvalidCert": "an unknown or invalid",
-        "anUntrustedRootCert": "an untrusted root",
         "suggestedSystemNameClient": ", client {{client}}",
-        "seeLogForDetails": "See log for more details."
-    },
-    "guidedAnswers": {
-        "validationErrorHelpText": "Need help with this error?"
-    },
-    "telemetry": {
-        "unknownOsText": "Unknown"
+        "seeLogForDetails": "For more information, view the logs.",
+        "forUserName": "(for user [{{username}}])",
+        "systemTypeBTP": "BTP",
+        "systemTypeS4HC": "S4HC",
+        "httpStatus": "HTTP Status {{httpStatus}}",
+        "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
+        "choiceNameNone": "None"
     }
 }

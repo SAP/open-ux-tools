@@ -1,3 +1,4 @@
+export { Stack as UIStack } from '@fluentui/react';
 export * from './Icons';
 export * from './UIButton';
 export * from './UIBreadcrumb';

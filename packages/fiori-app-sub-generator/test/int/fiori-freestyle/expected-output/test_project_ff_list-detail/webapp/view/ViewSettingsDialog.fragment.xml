@@ -1,0 +1,17 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+
+    <ViewSettingsDialog
+        id="viewSettingsDialog"
+        confirm=".onConfirmViewSettingsDialog">
+        <sortItems>
+            <ViewSettingsItem
+                text="{i18n>listSort1}"
+                key="UnitOfMeasureISOCode"
+                selected="true"/>
+
+        </sortItems>
+
+    </ViewSettingsDialog>
+</core:FragmentDefinition>

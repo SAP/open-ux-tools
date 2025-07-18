@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Stack } from '@fluentui/react';
 import type { IStackTokens } from '@fluentui/react';
-import { initIcons, UICallout } from '../src/components';
-
-initIcons();
+import { UICallout } from '../src/components';
 
 export default { title: 'Utilities/Misc' };
 
@@ -15,11 +13,12 @@ const getContent = (name: string): JSX.Element => {
             style={{
                 padding: 10
             }}>
-            {name}<br />
-            lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-            commodo consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-            nulla pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt
+            {name}
+            <br />
+            lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore
+            magna aliqua ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+            consequat duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+            pariatur excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt
         </div>
     );
 };

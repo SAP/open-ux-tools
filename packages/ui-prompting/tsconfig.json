@@ -22,6 +22,9 @@
   },
   "references": [
     {
+      "path": "../i18n"
+    },
+    {
       "path": "../inquirer-common"
     },
     {

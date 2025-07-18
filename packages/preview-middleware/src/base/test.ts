@@ -1,17 +1,17 @@
 import type { Resource } from '@ui5/fs';
-import type { InternalTestConfig, TestConfig } from '../types';
+import type { CompleteTestConfig, TestConfig, TestConfigDefaults } from '../types';
 
-const DEFAULTS: Record<string, InternalTestConfig> = {
+const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
     qunit: {
         path: '/test/unitTests.qunit.html',
         init: '/test/unitTests.qunit.js',
-        pattern: '/test/**/*Test.*',
+        pattern: '/test/**/*Test.{js,ts}',
         framework: 'QUnit'
     },
     opa5: {
         path: '/test/opaTests.qunit.html',
         init: '/test/opaTests.qunit.js',
-        pattern: '/test/**/*Journey.*',
+        pattern: '/test/**/*Journey.{js,ts}',
         framework: 'OPA5'
     },
     testsuite: {
@@ -20,7 +20,7 @@ const DEFAULTS: Record<string, InternalTestConfig> = {
         pattern: '',
         framework: 'Testsuite'
     }
-};
+} satisfies TestConfigDefaults;
 
 /**
  * Merge the given test configuration with the default values.
@@ -28,9 +28,9 @@ const DEFAULTS: Record<string, InternalTestConfig> = {
  * @param config test configuration
  * @returns merged test configuration
  */
-export function mergeTestConfigDefaults(config: TestConfig) {
+export function mergeTestConfigDefaults(config: TestConfig): CompleteTestConfig {
     const defaults = DEFAULTS[config.framework.toLowerCase()] ?? {};
-    const merged: InternalTestConfig = { ...defaults, ...config };
+    const merged: CompleteTestConfig = { ...defaults, ...config };
     if (!merged.path.startsWith('/')) {
         merged.path = `/${merged.path}`;
     }

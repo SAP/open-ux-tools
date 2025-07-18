@@ -1,0 +1,10 @@
+<Annotation Term="UI.Facets">
+    <Collection>
+        <Record Type="UI.ReferenceFacet">
+            <PropertyValue Property="ID" String="GeneratedFacet1"/>
+            <PropertyValue Property="Label" String="General Information"/>
+            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#GeneratedGroup1"/>
+        </Record>
+    </Collection>
+</Annotation>
+<!-- To get the correct annotation line in test add 7 to the line number of this file -->

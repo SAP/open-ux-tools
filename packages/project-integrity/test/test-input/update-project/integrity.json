@@ -1,0 +1,17 @@
+{
+    "enabled": true,
+    "fileIntegrity": [
+        {
+            "filePath": "file-to-update.txt",
+            "hash": "96c15c2bb2921193bf290df8cd85e2ba",
+            "content": "HYUw7gBAxg9sAuIFA==="
+        }
+    ],
+    "contentIntegrity": [
+        {
+            "contentKey": "key",
+            "hash": "b200a3adbe85fe848b920dc35d5a69b2",
+            "content": "HYUw7gBAzgLgTgS2AcyA"
+        }
+    ]
+}

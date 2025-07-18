@@ -6,6 +6,9 @@ import { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath } from 
 import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import type { BasicAppSettings } from '../src/types';
 import { projectChecks } from './common';
+import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 const TEST_NAME = 'basicTemplate';
 jest.setTimeout(240000); // Needed when debug.enabled
@@ -19,6 +22,11 @@ jest.mock('read-pkg-up', () => ({
     })
 }));
 
+jest.mock('@sap-ux/cap-config-writer', () => ({
+    ...jest.requireActual('@sap-ux/cap-config-writer'),
+    applyCAPUpdates: jest.fn()
+}));
+
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
 
@@ -27,7 +35,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             id: 'nods1',
             title: 'App Title',
             description: 'A Fiori application.',
-            flpAppId: 'nods1-tile',
+            flpAction: 'display',
             sourceTemplate: {
                 version: '1.2.3-test',
                 id: 'test-template'
@@ -81,10 +89,10 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             }
         },
         {
-            name: 'basic_without_reuse_libs',
+            name: 'basic_without_reuse_libs_use_virtual_endpoints',
             config: {
                 ...commonConfig,
-                appOptions: { loadReuseLibs: false }
+                appOptions: { loadReuseLibs: false, useVirtualPreviewEndpoints: true }
             },
             settings: {}
         },
@@ -107,7 +115,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 ...commonConfig,
                 appOptions: {
                     loadReuseLibs: false,
-                    typescript: true
+                    typescript: true,
+                    addTests: true
                 }
             },
             settings: {}
@@ -118,7 +127,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 ...commonConfig,
                 appOptions: {
                     loadReuseLibs: false,
-                    typescript: true
+                    typescript: true,
+                    addTests: true
                 },
                 ui5: {
                     version: '1.108.1',
@@ -202,6 +212,56 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 }
             },
             settings: {}
+        },
+        {
+            name: 'basic_typescript_ui5_1_120_0',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    typescript: true
+                },
+                ui5: {
+                    version: '1.120.0',
+                    ui5Libs: ['sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.120.0'
+                }
+            },
+            settings: {}
+        },
+        {
+            name: 'basic_ui5_1_120_0',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    typescript: false
+                },
+                ui5: {
+                    version: '1.120.0',
+                    ui5Libs: ['sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.120.0'
+                }
+            },
+            settings: {}
+        },
+        {
+            name: 'basic_ui5_1_120_0_with_reuse_libs_and_eslint',
+            config: {
+                ...commonConfig,
+                appOptions: {
+                    typescript: false,
+                    loadReuseLibs: true,
+                    eslint: true
+                },
+                ui5: {
+                    version: '1.120.0',
+                    ui5Libs: ['sap.m'],
+                    ui5Theme: 'sap_horizon',
+                    minUI5Version: '1.120.0'
+                }
+            },
+            settings: {}
         }
     ];
 
@@ -251,6 +311,28 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
         expect(await fs.read(Component.js).includes('my/demo/App')).toBeTruthy();
     });
 
+    test('sapuxLayer is added to package json for edmx projects when provided', async () => {
+        const freestyleApp: FreestyleApp<any> = {
+            app: {
+                id: 'my.demo.App',
+                projectType: 'EDMXBackend'
+            },
+            package: {
+                name: 'my.demo.App',
+                sapuxLayer: 'CUSTOMER_BASE'
+            },
+            template: {
+                type: TemplateType.Basic,
+                settings: {}
+            }
+        };
+
+        const fs = await generate(curTestOutPath, freestyleApp);
+        const packageJsonPath = join(curTestOutPath, 'package.json');
+        const packageJson = fs.readJSON(packageJsonPath);
+        expect((packageJson as any)?.sapuxLayer).toBe('CUSTOMER_BASE');
+    });
+
     describe('set view-name at scaffolding time', () => {
         const viewPrefix = 'MainView';
         const freestyleApp: FreestyleApp<BasicAppSettings> = {
@@ -290,6 +372,161 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     manifest.json['sap.ui5'].routing.targets[`Target${viewPrefix}`].viewName
                 ].every((entry) => entry.includes(viewPrefix))
             ).toBeTruthy();
+        });
+    });
+
+    describe('CAP updates', () => {
+        const capService: CapServiceCdsInfo = {
+            cdsUi5PluginInfo: {
+                isCdsUi5PluginEnabled: true,
+                hasMinCdsVersion: true,
+                isWorkspaceEnabled: true,
+                hasCdsUi5Plugin: true
+            },
+            projectPath: 'test/path',
+            serviceName: 'test-service',
+            capType: 'Node.js'
+        };
+
+        const getFreestyleApp = (options: { typescript: boolean; sapux: boolean; capService?: CapServiceCdsInfo }) => {
+            const { typescript, sapux, capService } = options;
+            return {
+                app: {
+                    id: 'ff-basic-id'
+                },
+                template: {
+                    type: TemplateType.Basic,
+                    settings: {}
+                },
+                service: {
+                    version: OdataVersion.v4,
+                    capService
+                },
+                package: {
+                    name: 'ff-basic-id'
+                },
+                appOptions: {
+                    sapux,
+                    typescript
+                }
+            } as FreestyleApp<BasicAppSettings>;
+        };
+
+        const capProjectSettings = {
+            appRoot: curTestOutPath,
+            packageName: 'ff-basic-id',
+            appId: 'ff-basic-id',
+            sapux: true,
+            enableTypescript: false
+        };
+
+        afterEach(() => {
+            jest.clearAllMocks();
+            jest.resetAllMocks();
+        });
+
+        test('should perform CAP updates when CAP service is available and cds ui5 plugin is enabled', async () => {
+            const fs = create(createStorage());
+
+            const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({
+                sapux: false,
+                typescript: false,
+                capService
+            });
+            await generate(curTestOutPath, freestyleApp, fs);
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capService, {
+                ...capProjectSettings,
+                enableNPMWorkspaces: true,
+                enableCdsUi5Plugin: true,
+                sapux: false
+            });
+        });
+
+        test('should perform CAP updates when CAP service is available, and cds ui5 plugin is disabled', async () => {
+            const fs = create(createStorage());
+
+            const capServiceWithoutCdsUi5PluginInfo = {
+                projectPath: 'test/path',
+                serviceName: 'test-service',
+                capType: 'Node.js'
+            };
+
+            const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({
+                sapux: false,
+                typescript: false,
+                capService: capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo
+            });
+            await generate(curTestOutPath, freestyleApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+                ...capProjectSettings,
+                sapux: false,
+                enableNPMWorkspaces: false,
+                enableCdsUi5Plugin: false
+            });
+        });
+        test('should perform CAP updates when CAP service is available, and isCdsUi5PluginEnabled is enabled', async () => {
+            const fs = create(createStorage());
+
+            const capServiceWithoutCdsUi5PluginInfo = {
+                projectPath: 'test/path',
+                serviceName: 'test-service',
+                capType: 'Node.js',
+                cdsUi5PluginInfo: { isCdsUi5PluginEnabled: true }
+            };
+
+            const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({
+                sapux: false,
+                typescript: false,
+                capService: capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo
+            });
+            await generate(curTestOutPath, freestyleApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+                ...capProjectSettings,
+                sapux: false,
+                enableNPMWorkspaces: true,
+                enableCdsUi5Plugin: true
+            });
+        });
+
+        test('should NOT perform CAP updates when CAP service is available, and cds ui5 plugin is disabled', async () => {
+            const fs = create(createStorage());
+
+            const capServiceWithoutCdsUi5PluginInfo = {
+                projectPath: 'test/path',
+                serviceName: 'test-service',
+                capType: 'Node.js',
+                cdsUi5PluginInfo: { hasCdsUi5Plugin: false, isCdsUi5PluginEnabled: false, isWorkspaceEnabled: false }
+            };
+
+            const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({
+                sapux: false,
+                typescript: false,
+                capService: capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo
+            });
+            await generate(curTestOutPath, freestyleApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+                ...capProjectSettings,
+                sapux: false,
+                enableNPMWorkspaces: false,
+                enableCdsUi5Plugin: false
+            });
+        });
+
+        test('should not perform CAP updates, when no cap service provided', async () => {
+            const fs = create(createStorage());
+            const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({
+                sapux: false,
+                typescript: false
+            });
+            await generate(curTestOutPath, freestyleApp, fs);
+            expect(applyCAPUpdates).toBeCalledTimes(0);
         });
     });
 });

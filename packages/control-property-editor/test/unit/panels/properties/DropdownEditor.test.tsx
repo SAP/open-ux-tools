@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import type { StringControlPropertyWithOptions } from '@sap-ux-private/control-property-editor-common';
-import { DROPDOWN_EDITOR_TYPE, STRING_VALUE_TYPE } from '@sap-ux-private/control-property-editor-common';
+import { DROPDOWN_EDITOR_TYPE, PropertyType, STRING_VALUE_TYPE } from '@sap-ux-private/control-property-editor-common';
 import { DropdownEditor, valueChanged } from '../../../../src/panels/properties/DropdownEditor';
 import * as slice from '../../../../src/slice';
 import '@testing-library/jest-dom';
@@ -24,7 +24,8 @@ describe('DropdownEditor', () => {
             options: [
                 { key: 'option1', text: 'option1' },
                 { key: 'option2', text: 'option2' }
-            ]
+            ],
+            propertyType: PropertyType.ControlProperty
         };
         const testId = `${propertyName}--DropdownEditor`;
         jest.spyOn(slice, 'changeProperty');
@@ -35,24 +36,40 @@ describe('DropdownEditor', () => {
         const { dispatch } = render(<DropdownEditor property={property} controlId={controlId} controlName="Button" />);
         const dropDownEditor = screen.getByTestId(testId);
         const dropDownEditorInput = dropDownEditor.querySelector('input');
-        jest.spyOn(window, 'setTimeout').mockImplementation((cb: any) => {
-            cb(undefined, undefined, 'option2');
-        });
+
         if (dropDownEditorInput) {
             fireEvent.focus(dropDownEditorInput);
             fireEvent.input(dropDownEditorInput, { target: { value: 'option2' } });
             fireEvent.blur(dropDownEditorInput);
         }
-        expect(dispatch).toBeCalledTimes(1);
+        expect(dispatch).toHaveBeenCalledWith({
+            'payload': {
+                'changeType': 'propertyChange',
+                'controlId': 'testControlId',
+                'controlName': 'Button',
+                'propertyName': 'testProperty',
+                'value': 'option2',
+                'propertyType': 'controlProperty'
+            },
+            'type': 'app/change-property'
+        });
     });
     test('valueChanged function', () => {
-        const result = valueChanged('testControlId', 'testPropertyName', 'newValue', 'Button');
+        const result = valueChanged(
+            'testControlId',
+            'testPropertyName',
+            'newValue',
+            'Button',
+            PropertyType.ControlProperty
+        );
         expect(result).toMatchInlineSnapshot(`
             Object {
               "payload": Object {
+                "changeType": "propertyChange",
                 "controlId": "testControlId",
                 "controlName": "Button",
                 "propertyName": "testPropertyName",
+                "propertyType": "controlProperty",
                 "value": "newValue",
               },
               "type": "app/change-property",

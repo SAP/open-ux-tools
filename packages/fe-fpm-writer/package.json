@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fe-fpm-writer",
     "description": "SAP Fiori elements flexible programming model writer",
-    "version": "0.26.0",
+    "version": "0.35.11",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -29,14 +29,13 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.8.0",
+        "@sap-ux/annotation-converter": "0.10.2",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.10.0",
+        "@sap-ux/vocabularies-types": "0.13.0",
         "@xmldom/xmldom": "0.8.10",
         "ejs": "3.1.10",
-        "i18next": "21.6.11",
-        "i18next-fs-backend": "1.1.1",
+        "i18next": "25.3.0",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "semver": "7.5.4",
@@ -44,16 +43,16 @@
         "xpath": "0.0.33"
     },
     "devDependencies": {
+        "@sap-ux/i18n": "workspace:*",
         "@types/inquirer": "8.2.6",
         "@sap-ux/ui-prompting": "workspace:*",
         "@types/ejs": "3.1.2",
-        "@types/i18next-fs-backend": "1.0.0",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/semver": "7.5.2",
         "@types/vinyl": "2.0.7"
     },
     "engines": {
-        "node": ">=18.x"
+        "node": ">=20.x"
     }
 }

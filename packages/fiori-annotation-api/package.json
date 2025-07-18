@@ -1,9 +1,14 @@
 {
     "name": "@sap-ux/fiori-annotation-api",
-    "version": "0.1.30",
+    "version": "0.6.9",
     "description": "Library that provides API for reading and writing annotations in SAP Fiori elements projects.",
     "publisher": "SAPSE",
     "author": "SAP SE",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/fiori-annotation-api"
+    },
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -18,22 +23,23 @@
         "watch": "tsc  --build ./ -watch"
     },
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.8.0",
+        "@sap-ux/annotation-converter": "0.10.2",
         "@sap-ux/cds-annotation-parser": "workspace:*",
         "@sap-ux/cds-odata-annotation-converter": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
+        "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.10.0",
+        "@sap-ux/vocabularies-types": "0.13.0",
         "@sap-ux/xml-odata-annotation-converter": "workspace:*",
-        "@sap/ux-cds-compiler-facade": "1.14.0",
+        "@sap/ux-cds-compiler-facade": "1.18.0",
         "@xml-tools/ast": "5.0.5",
         "@xml-tools/parser": "1.0.11",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "vscode-languageserver-textdocument": "1.0.8"
+        "vscode-languageserver-textdocument": "1.0.11"
     },
     "devDependencies": {
         "@sap/cds-compiler": "4.8.0",

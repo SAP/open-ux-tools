@@ -4,11 +4,8 @@ import { Text, Stack, Separator } from '@fluentui/react';
 
 import { UITextInput } from '../src/components/UIInput';
 import { UICheckbox } from '../src/components/UICheckbox';
-import { initIcons } from '../src/components/Icons';
 
 export default { title: 'Basic Inputs/Input' };
-
-initIcons();
 
 const stackTokens: IStackTokens = { childrenGap: 40 };
 const iconFolderProps = { iconName: 'FolderOpened' };
@@ -39,6 +36,10 @@ export const defaultUsage = () => {
                     UIInput disabled
                 </Text>
                 <UITextInput label="Enter your name" disabled></UITextInput>
+            </Stack>
+
+            <Stack tokens={{ childrenGap: 16 }}>
+                <UITextInput label="Required" required={true}></UITextInput>
             </Stack>
         </Stack>
     );

@@ -1,14 +1,21 @@
-import { t } from '../src/i18n';
 import {
     validateClient,
     validateUrl,
     validateEmptyString,
     validateEmptySpaces,
     validateJSON,
-    validateSpecialChars
+    validateSpecialChars,
+    validateMaxLength,
+    validateAllowedCharacters,
+    validateWindowsPathLength
 } from '../src/general/validators';
+import { initI18nProjectValidators, t } from '../src/i18n';
 
 describe('project input validators', () => {
+    beforeAll(async () => {
+        await initI18nProjectValidators();
+    });
+
     describe('validateClient', () => {
         test('validateClient - valid client', () => {
             const output = validateClient('001');
@@ -86,6 +93,45 @@ describe('project input validators', () => {
         });
     });
 
+    describe('validateMaxLength', () => {
+        it('should return true if the value does not exceed the maxLength', () => {
+            const result = validateMaxLength('Hello', 10);
+            expect(result).toBe(true);
+        });
+
+        it('should return true if maxLength is 0 (no length validation)', () => {
+            const result = validateMaxLength('Hello', 0);
+            expect(result).toBe(true);
+        });
+
+        it('should return an error message if the value exceeds the maxLength', () => {
+            const result = validateMaxLength('Hello, World!', 5);
+            expect(result).toBe(t('general.maxLength', { maxLength: 5 }));
+        });
+    });
+
+    describe('validateAllowedCharacters', () => {
+        it('should return true if the value contains only alphanumeric characters', () => {
+            const result = validateAllowedCharacters('Hello123');
+            expect(result).toBe(true);
+        });
+
+        it('should return true if the value contains allowed special characters', () => {
+            const result = validateAllowedCharacters('Hello_123', ['_']);
+            expect(result).toBe(true);
+        });
+
+        it('should return an error message if the value contains unsupported characters', () => {
+            const result = validateAllowedCharacters('Hello@123', ['_']);
+            expect(result).toBe(t('general.supportedFormats', { allowedCharacters: ['_'] }));
+        });
+
+        it('should return true if allowedCharacters is undefined', () => {
+            const result = validateAllowedCharacters('Hello123');
+            expect(result).toBe(true);
+        });
+    });
+
     describe('validateSpecialChars', () => {
         test('validateSpecialChars - valid input', () => {
             const output = validateSpecialChars('test');
@@ -95,6 +141,50 @@ describe('project input validators', () => {
         test('validateSpecialChars - invalid input with special chars', () => {
             const output = validateSpecialChars('test@');
             expect(output).toContain(t('general.invalidValueForSpecialChars'));
+        });
+    });
+
+    describe('validateWindowsPathLength', () => {
+        const errorMessage = 'Path too long: {{length}}';
+
+        afterEach(() => {
+            jest.resetModules();
+        });
+
+        it('returns true if not on win32', () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, 'platform', { value: 'darwin' });
+            expect(validateWindowsPathLength('C:/short/path', errorMessage)).toBe(true);
+            Object.defineProperty(process, 'platform', { value: originalPlatform });
+        });
+
+        it('returns true if path length < 256 on win32', () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, 'platform', { value: 'win32' });
+            expect(validateWindowsPathLength('a'.repeat(255), errorMessage)).toBe(true);
+            Object.defineProperty(process, 'platform', { value: originalPlatform });
+        });
+
+        it('returns error message with length if path length >= 256 on win32', () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, 'platform', { value: 'win32' });
+            const longPath = 'a'.repeat(256);
+            expect(validateWindowsPathLength(longPath, errorMessage)).toBe('Path too long: 256');
+            Object.defineProperty(process, 'platform', { value: originalPlatform });
+        });
+
+        it('returns true for empty path', () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, 'platform', { value: 'win32' });
+            expect(validateWindowsPathLength('', errorMessage)).toBe(true);
+            Object.defineProperty(process, 'platform', { value: originalPlatform });
+        });
+
+        it('returns true for undefined path', () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, 'platform', { value: 'win32' });
+            expect(validateWindowsPathLength(undefined as unknown as string, errorMessage)).toBe(true);
+            Object.defineProperty(process, 'platform', { value: originalPlatform });
         });
     });
 });

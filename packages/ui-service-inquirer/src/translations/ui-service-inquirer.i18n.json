@@ -1,0 +1,27 @@
+{
+    "prompts": {
+        "draftEnabled": "Draft Enabled",
+        "launchAppGen": "Create an SAP Fiori Application with the Newly Generated Service?",
+        "launchAppGenBreadcrumb": "Create SAP Fiori Application?",
+        "serviceNameBreadcrumb": "Service Name",
+        "serviceName": "Service Name (not editable)",
+        "objectTypeLabel": "Object Type",
+        "businessObjectInterfaceLabel": "Business Object Interface",
+        "abapCdsServiceLabel": "ABAP Core Data Service",
+        "options": {
+            "transportDescription": "Created by the UI Service Generator."
+        }
+    },
+    "error": {
+        "validatingContent": "There was a back-end validation error for the service content and package provided. Service generation cannot continue. Please try again or contact an admin for the back-end system.",
+        "fetchingContentForServiceBinding": "An error occurred when fetching content for the service binding of the business object. Please try again or contact an admin for the back-end system.",
+        "fetchingBusinessObjects": "An error occurred when fetching your business object interfaces from the back-end system. Please try again or contact an admin for the back-end system.",
+        "fetchingGenerator": "An error occurred fetching the generator: {{error}}",
+        "fetchingCdsViews": "An error occurred fetching the CDS views from the back-end system: {{error}}",
+        "noGeneratorFoundBo": "No generator was found for the selected business object interface.",
+        "noGeneratorFoundCdsService": "No generator was found for the selected ABAP CDS service."
+    },
+    "info": {
+        "appGenLaunch": "The SAP Fiori generator will launch after the UI service has been created."
+    }
+}

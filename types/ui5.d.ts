@@ -119,6 +119,11 @@ declare module '@ui5/server' {
              * Get the name of the project.
              */
             getName(): string;
+
+            /**
+             * Gets the app id.
+             */
+            getNamespace(): string;
         };
     }
 

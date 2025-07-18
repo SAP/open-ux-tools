@@ -1,4 +1,4 @@
-import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
+import type { ConvertedMetadata, EntitySet, EntityType } from '@sap-ux/vocabularies-types';
 import type { EntityTypeAnnotations } from '@sap-ux/vocabularies-types/vocabularies/Edm_Types';
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import { convert } from '@sap-ux/annotation-converter';
@@ -114,15 +114,15 @@ function getMainService(project: Project, appId: string): string {
 }
 
 /**
- * Method gets available entity types in project.
+ * Method gets available entity sets in project.
  *
  * @param project = project
  * @param appId = app id
- * @returns an array of entity types
+ * @returns an array of entity sets
  */
-export async function getEntityTypes(project: Project, appId: string): Promise<EntityType[]> {
+export async function getEntitySets(project: Project, appId: string): Promise<EntitySet[]> {
     const metadata = await getServiceMetadata(project, getMainService(project, appId), appId);
-    return Array.from(metadata.entityTypes);
+    return Array.from(metadata.entitySets);
 }
 
 /**
@@ -159,13 +159,8 @@ export async function getAnnotationPathQualifiers(
     try {
         const annotationService = await getAnnotationService(project, getMainService(project, appId), appId);
         const mergedMetadata = getMergedMetadata(annotationService);
-        let entityType = mergedMetadata.entityTypes.by_fullyQualifiedName(entity);
-        if (!entityType) {
-            const entitySet = mergedMetadata.entitySets.by_name(entity);
-            if (entitySet) {
-                entityType = entitySet.entityType;
-            }
-        }
+        const entitySet = mergedMetadata.entitySets.by_name(entity);
+        const entityType = entitySet?.entityType;
         if (entityType) {
             getAnnotationPathQualifiersForEntityType(entityType, annotationTerm, result, useNamespace, bindingContext);
         }

@@ -113,7 +113,8 @@ describe('base/prompts', () => {
                     transport: defaults.transport
                 },
                 options: {
-                    fioriTools: true
+                    fioriTools: true,
+                    enableTypeScript: true
                 }
             });
         });
@@ -156,7 +157,8 @@ describe('base/prompts', () => {
                     transport: defaults.transport
                 },
                 options: {
-                    fioriTools: false
+                    fioriTools: false,
+                    enableTypeScript: true
                 }
             });
         });

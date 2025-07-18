@@ -1,5 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Building Blocks Do not update "manifest.json" with missing dependency when "allowAutoAddDependencyLib=false" 1`] = `
+Object {
+  "default": Object {
+    "sap.app": Object {
+      "id": "my.test.App",
+    },
+    "sap.ui5": Object {
+      "dependencies": Object {
+        "libs": Object {
+          "sap.fe.core": Object {},
+        },
+        "minUI5Version": "1.127.0",
+      },
+    },
+  },
+  "sap.app": Object {
+    "id": "my.test.App",
+  },
+  "sap.ui5": Object {
+    "dependencies": Object {
+      "libs": Object {
+        "sap.fe.templates": Object {},
+      },
+    },
+  },
+}
+`;
+
+exports[`Building Blocks FilterBar properties: filterbar-properties 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"testFilterBar\\" search=\\"onSearch\\" filterChanged=\\"onFilterChanged\\" liveMode=\\"true\\" showClearButton=\\"false\\" showMessages=\\"true\\"/>
+        </content>
+    </Page>
+</mvc:View>"
+`;
+
 exports[`Building Blocks Generate with just ID and xml view without macros namespace generate chart building block: generate-chart-with-id-no-macros-ns 1`] = `
 Object {
   "generate-chart-with-id-no-macros-ns/webapp/ext/main/Main.view.xml": Object {
@@ -13,7 +51,34 @@ Object {
     "state": "modified",
   },
   "generate-chart-with-id-no-macros-ns/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -32,7 +97,34 @@ Object {
     "state": "modified",
   },
   "generate-field-with-id-no-macros-ns/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -51,7 +143,34 @@ Object {
     "state": "modified",
   },
   "generate-filter-bar-with-id-no-macros-ns/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -70,7 +189,34 @@ Object {
     "state": "modified",
   },
   "generate-table-with-id-no-macros-ns/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -89,7 +235,34 @@ Object {
     "state": "modified",
   },
   "generate-chart-with-id/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -108,7 +281,34 @@ Object {
     "state": "modified",
   },
   "generate-field-with-id/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -127,7 +327,34 @@ Object {
     "state": "modified",
   },
   "generate-filter-bar-with-id/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -146,7 +373,144 @@ Object {
     "state": "modified",
   },
   "generate-table-with-id/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Absolute path without entity 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"testQualifier\\"
+    contextPath=\\"/REPLACE_WITH_ENTITY\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Absolute path without qualifier 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"/testEntitySet\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Complex absolute path 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"@com.sap.vocabularies.UI.v1.Chart#chartMacro5\\"
+    contextPath=\\"/SessionMetrics\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Complex relative path 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"@com.sap.vocabularies.UI.v1.Chart#chartMacro4\\"
+    contextPath=\\"/Sessions/Speed\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Relative path without entity 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"testQualifier\\"
+    contextPath=\\"/REPLACE_WITH_ENTITY\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Relative path without qualifier 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"/testEntitySet\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Simple absolute path 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"testQualifier\\"
+    contextPath=\\"/testEntitySet\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters Generate Chart from object metaPath. Simple relative path 1`] = `
+"<macros:Chart
+    id=\\"REPLACE_WITH_BUILDING_BLOCK_ID\\"
+    metaPath=\\"testQualifier\\"
+    contextPath=\\"/testEntitySet\\"
+/>"
+`;
+
+exports[`Building Blocks Generate with optional parameters generate chart building block with metaPath as object. Relative: generate-chart-with-optional-params 1`] = `
+Object {
+  "generate-chart-with-optional-params/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:Chart id=\\"testChart\\" metaPath=\\"testQualifier\\" contextPath=\\"/testEntitySet\\" filterBar=\\"testFilterBar\\" personalization=\\"testPersonalization\\" selectionMode=\\"MULTIPLE\\" selectionChange=\\"testOnSelectionChange\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-chart-with-optional-params/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -158,14 +522,41 @@ Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Chart id=\\"testChart\\" metaPath=\\"testQualifier\\" contextPath=\\"testContextPath\\" filterBar=\\"testFilterBar\\" personalization=\\"testPersonalization\\" selectionMode=\\"MULTIPLE\\" selectionChange=\\"testOnSelectionChange\\"/>
+            <macros:Chart id=\\"testChart\\" metaPath=\\"testQualifier\\" contextPath=\\"/testEntitySet\\" filterBar=\\"testFilterBar\\" personalization=\\"testPersonalization\\" selectionMode=\\"MULTIPLE\\" selectionChange=\\"testOnSelectionChange\\"/>
         </content>
     </Page>
 </mvc:View>",
     "state": "modified",
   },
   "generate-chart-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -184,7 +575,34 @@ Object {
     "state": "modified",
   },
   "generate-chart-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -196,14 +614,41 @@ Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Field id=\\"testField\\" metaPath=\\"testQualifier\\" contextPath=\\"testContextPath\\" formatOptions=\\"{'displayMode':'Value'}\\" readOnly=\\"true\\" semanticObject=\\"testSemanticObject\\"/>
+            <macros:Field id=\\"testField\\" metaPath=\\"/testEntitySet/testQualifier\\" formatOptions=\\"{'displayMode':'Value'}\\" readOnly=\\"true\\" semanticObject=\\"testSemanticObject\\"/>
         </content>
     </Page>
 </mvc:View>",
     "state": "modified",
   },
   "generate-field-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -222,7 +667,80 @@ Object {
     "state": "modified",
   },
   "generate-field-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks Generate with optional parameters generate filter-bar building block with metaPath as object. Relative: generate-filter-bar-with-optional-params 1`] = `
+Object {
+  "generate-filter-bar-with-optional-params/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"testQualifier\\" search=\\"testOnSearch\\" filterChanged=\\"testOnFilterChanged\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "generate-filter-bar-with-optional-params/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -234,14 +752,41 @@ Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"testQualifier\\" contextPath=\\"testContextPath\\" search=\\"testOnSearch\\" filterChanged=\\"testOnFilterChanged\\"/>
+            <macros:FilterBar id=\\"testFilterBar\\" metaPath=\\"/testEntitySet/testQualifier\\" search=\\"testOnSearch\\" filterChanged=\\"testOnFilterChanged\\"/>
         </content>
     </Page>
 </mvc:View>",
     "state": "modified",
   },
   "generate-filter-bar-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -260,7 +805,34 @@ Object {
     "state": "modified",
   },
   "generate-filter-bar-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -272,14 +844,41 @@ Object {
     "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
     <Page title=\\"Main\\">
         <content>
-            <macros:Table id=\\"testTable\\" metaPath=\\"testQualifier\\" contextPath=\\"testContextPath\\" busy=\\"true\\" enableAutoColumnWidth=\\"true\\" enableExport=\\"true\\" enableFullScreen=\\"true\\" enablePaste=\\"true\\" filterBar=\\"testFilterBar\\" header=\\"Test Header\\" headerVisible=\\"true\\" isSearchable=\\"true\\" personalization=\\"Column\\" readOnly=\\"true\\" type=\\"ResponsiveTable\\" variantManagement=\\"None\\"/>
+            <macros:Table id=\\"testTable\\" metaPath=\\"/testEntitySet/testQualifier\\" busy=\\"true\\" enableAutoColumnWidth=\\"true\\" enableExport=\\"true\\" enableFullScreen=\\"true\\" enablePaste=\\"true\\" filterBar=\\"testFilterBar\\" header=\\"Test Header\\" headerVisible=\\"true\\" isSearchable=\\"true\\" personalization=\\"Column\\" readOnly=\\"true\\" type=\\"ResponsiveTable\\" variantManagement=\\"None\\"/>
         </content>
     </Page>
 </mvc:View>",
     "state": "modified",
   },
   "generate-table-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -298,7 +897,34 @@ Object {
     "state": "modified",
   },
   "generate-table-with-optional-params/webapp/manifest.json": Object {
-    "contents": "{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}},\\"default\\":{\\"sap.app\\":{\\"id\\":\\"my.test.App\\"},\\"sap.ui5\\":{\\"dependencies\\":{\\"libs\\":{\\"sap.fe.templates\\":{}}}}}}",
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"minUI5Version\\": \\"1.127.0\\",
+      \\"libs\\": {
+        \\"sap.fe.core\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
     "state": "modified",
   },
 }
@@ -317,9 +943,20 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 `;
 
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for chart building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for chart building block 3`] = `
 "<macros:Chart
     id=\\"testChart\\"
-    metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
+    metaPath=\\"/REPLACE_WITH_A_QUALIFIER\\"
+    contextPath=\\"REPLACE_WITH_ENTITY\\"
 />"
 `;
 
@@ -335,6 +972,16 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 `;
 
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for field building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for field building block 3`] = `
 "<macros:Field
     id=\\"testField\\"
     metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
@@ -352,6 +999,16 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 `;
 
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for filter-bar building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for filter-bar building block 3`] = `
 "<macros:FilterBar
     id=\\"testFilterBar\\"
     metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
@@ -380,10 +1037,109 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 `;
 
 exports[`Building Blocks Generate with optional parameters getSerializedFileContent for table building block 2`] = `
+"{
+    \\"sap.ui5\\": {
+        \\"dependencies\\": {
+            \\"libs\\": {\\"sap.fe.macros\\":{}}
+        }
+    }
+}"
+`;
+
+exports[`Building Blocks Generate with optional parameters getSerializedFileContent for table building block 3`] = `
 "<macros:Table
     id=\\"testTable\\"
     metaPath=\\"/REPLACE_WITH_ENTITY/REPLACE_WITH_A_QUALIFIER\\"
 />"
+`;
+
+exports[`Building Blocks generate building block with \`sap.fe.templates\` dependency: generate-filter-bar-templates-library-only 1`] = `
+Object {
+  "../../../../unit/sample/building-block/webapp-prompts/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"testFilterBar\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "../../../../unit/sample/building-block/webapp-prompts/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"libs\\": {
+        \\"sap.fe.templates\\": {},
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
+`;
+
+exports[`Building Blocks generate building block without dependencies: generate-filter-bar-templates-library-only 1`] = `
+Object {
+  "../../../../unit/sample/building-block/webapp-prompts/webapp/ext/main/Main.view.xml": Object {
+    "contents": "<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <Page title=\\"Main\\">
+        <content>
+            <macros:FilterBar id=\\"testFilterBar\\"/>
+        </content>
+    </Page>
+</mvc:View>",
+    "state": "modified",
+  },
+  "../../../../unit/sample/building-block/webapp-prompts/webapp/manifest.json": Object {
+    "contents": "{
+  \\"sap.app\\": {
+    \\"id\\": \\"my.test.App\\"
+  },
+  \\"sap.ui5\\": {
+    \\"dependencies\\": {
+      \\"libs\\": {
+        \\"sap.fe.macros\\": {}
+      }
+    }
+  },
+  \\"default\\": {
+    \\"sap.app\\": {
+      \\"id\\": \\"my.test.App\\"
+    },
+    \\"sap.ui5\\": {
+      \\"dependencies\\": {
+        \\"minUI5Version\\": \\"1.127.0\\",
+        \\"libs\\": {
+          \\"sap.fe.core\\": {}
+        }
+      }
+    }
+  }
+}
+",
+    "state": "modified",
+  },
+}
 `;
 
 exports[`Building Blocks generate building block, no fs 1`] = `

@@ -1,5 +1,15 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
-import type { App, FlpConfig, Intent, InternalTestConfig, MiddlewareConfig, TestConfig } from '../types';
+import type {
+    App,
+    DefaultFlpPath,
+    DefaultIntent,
+    FlpConfig,
+    Intent,
+    CompleteTestConfig,
+    MiddlewareConfig,
+    RtaConfig,
+    TestConfig
+} from '../types';
 import { render } from 'ejs';
 import { join, posix } from 'path';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
@@ -7,6 +17,7 @@ import { readFileSync } from 'fs';
 import { mergeTestConfigDefaults } from './test';
 import { type Editor, create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
+import type { MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 export interface CustomConnector {
     applyConnector: string;
@@ -19,6 +30,19 @@ export interface FlexConnector {
     layers: string[];
     url?: string;
 }
+
+type TestTemplateConfig = {
+    id: string;
+    framework: TestConfig['framework'];
+    basePath: string;
+    initPath: string;
+    theme: string;
+};
+
+export type PreviewUrls = {
+    path: string;
+    type: 'preview' | 'editor' | 'test';
+};
 
 /**
  * Internal structure used to fill the sandbox.html template
@@ -33,7 +57,7 @@ export interface TemplateConfig {
             additionalInformation: string;
             applicationType: 'URL';
             url: string;
-            applicationDependencies?: { manifest: boolean };
+            applicationDependencies?: MergedAppDescriptor;
         }
     >;
     ui5: {
@@ -44,13 +68,16 @@ export interface TemplateConfig {
         resources: Record<string, string>;
     };
     init?: string;
-    flex?: {
+    flexSettings?: {
         [key: string]: unknown;
         layer: UI5FlexLayer;
         developerMode: boolean;
         pluginScript?: string;
     };
+    features?: { feature: string; isEnabled: boolean }[];
     locateReuseLibsScript?: boolean;
+    enhancedHomePage?: boolean;
+    enableCardGenerator?: boolean;
 }
 
 /**
@@ -58,11 +85,18 @@ export interface TemplateConfig {
  */
 export const PREVIEW_URL = {
     client: {
-        url: '/preview/client',
+        path: '/preview/client',
+        getUrl: (basePath: string) => posix.join(basePath, 'preview', 'client'),
         local: join(__dirname, '../../dist/client'),
         ns: 'open.ux.preview.client'
     },
     api: '/preview/api'
+} as const;
+
+export const CARD_GENERATOR_DEFAULT = {
+    previewGeneratorSandbox: '/test/flpCardGeneratorSandbox.html',
+    cardsStore: '/cards/store',
+    i18nStore: '/editor/i18n'
 } as const;
 
 /**
@@ -73,7 +107,7 @@ export const DEFAULT_THEME = 'sap_horizon';
 /**
  * Default path for mounting the local FLP.
  */
-export const DEFAULT_PATH = '/test/flp.html';
+export const DEFAULT_PATH: DefaultFlpPath = '/test/flp.html';
 
 /**
  * Default intent
@@ -81,7 +115,7 @@ export const DEFAULT_PATH = '/test/flp.html';
 export const DEFAULT_INTENT = {
     object: 'app',
     action: 'preview'
-} as Readonly<Intent>;
+} as Readonly<DefaultIntent>;
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -112,6 +146,16 @@ const UI5_LIBS = [
 ] as const;
 
 /**
+ * Type guard for FlexConnector.
+ *
+ * @param connector - the connector to check
+ * @returns true if the connector is a FlexConnector, false otherwise
+ */
+export function isFlexConnector(connector: FlexConnector | CustomConnector): connector is FlexConnector {
+    return 'connector' in connector;
+}
+
+/**
  * Gets the UI5 libs dependencies from manifest.json.
  *
  * @param manifest application manifest
@@ -139,15 +183,16 @@ function getUI5Libs(manifest: Partial<Manifest>): string {
  * @param config partial configuration
  * @returns a full configuration with default values
  */
-export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}) {
+export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpConfig {
     const flpConfig = {
         path: config.path ?? DEFAULT_PATH,
         intent: config.intent ?? DEFAULT_INTENT,
         apps: config.apps ?? [],
         libs: config.libs,
         theme: config.theme,
-        init: config.init
-    };
+        init: config.init,
+        enhancedHomePage: config.enhancedHomePage === true
+    } satisfies FlpConfig;
     if (!flpConfig.path.startsWith('/')) {
         flpConfig.path = `/${flpConfig.path}`;
     }
@@ -161,15 +206,40 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}) {
  * @param logger logger instance
  */
 export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): void {
-    if (config.rta && config.adp === undefined) {
-        config.rta.editors = config.rta.editors.filter((editor) => {
+    //prettier-ignore
+    if (config.rta) { //NOSONAR
+        config.editors ??= {};
+        config.editors.rta = sanitizeRtaConfig(config.rta, logger); //NOSONAR
+        delete config.rta; //NOSONAR
+    }
+    if (config.editors?.rta && config.adp === undefined) {
+        config.editors.rta.endpoints = config.editors.rta.endpoints.map((editor) => {
             if (editor.developerMode) {
                 logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
                 logger.warn(`developerMode for ${editor.path} disabled`);
+                editor.developerMode = false;
             }
-            return !editor.developerMode;
+            return editor;
         });
     }
+}
+
+/**
+ * Sanitize the deprecated RTA configuration.
+ *
+ * @param deprecatedRtaConfig deprecated RTA configuration
+ * @param logger logger instance
+ * @returns sanitized RTA configuration
+ */
+//prettier-ignore
+export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], logger?: Logger): RtaConfig | undefined { //NOSONAR
+    let rtaConfig: RtaConfig | undefined;
+    if (deprecatedRtaConfig) {
+        const { editors, ...rta } = deprecatedRtaConfig;
+        rtaConfig = { ...rta, endpoints: [...editors] };
+        logger?.warn(`The configuration option 'rta' is deprecated. Please use 'editors.rta' instead.`);
+    }
+    return rtaConfig;
 }
 
 /**
@@ -179,7 +249,7 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
  *          and its options, such as the layers it applies to and its service URL, if applicable.
  */
 function getFlexSettings(): TemplateConfig['ui5']['flex'] {
-    const localConnectorPath = 'custom.connectors.WorkspaceConnector';
+    const localConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
 
     return [
         { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
@@ -203,21 +273,47 @@ function getFlexSettings(): TemplateConfig['ui5']['flex'] {
  * @param app configuration for the preview
  * @param logger logger instance
  */
-export async function addApp(templateConfig: TemplateConfig, manifest: Partial<Manifest>, app: App, logger: Logger) {
+export async function addApp(
+    templateConfig: TemplateConfig,
+    manifest: Partial<Manifest>,
+    app: App,
+    logger: Logger
+): Promise<void> {
     const id = manifest['sap.app']?.id ?? '';
-    app.intent ??= {
-        object: id.replace(/\./g, ''),
-        action: 'preview'
-    };
+
+    if (manifest['sap.app']?.type === 'component') {
+        logger.debug(`No application added for id '${id}' because its type is 'component'`);
+        templateConfig.apps = templateConfig.apps ?? {};
+        return;
+    }
+
+    const appName = getAppName(manifest, app.intent);
     templateConfig.ui5.resources[id] = app.target;
-    templateConfig.apps[`${app.intent?.object}-${app.intent?.action}`] = {
+    templateConfig.apps[appName] = {
         title: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.title, logger)) ?? id,
         description: (await getI18nTextFromProperty(app.local, manifest['sap.app']?.description, logger)) ?? '',
         additionalInformation: `SAPUI5.Component=${app.componentId ?? id}`,
         applicationType: 'URL',
-        url: app.target,
-        applicationDependencies: { manifest: true }
+        url: app.target
     };
+}
+
+/**
+ * Get the application name based on the manifest and app configuration.
+ *
+ * @param manifest - The application manifest.
+ * @param intent - The app configuration.
+ * @returns The application name.
+ */
+export function getAppName(manifest: Partial<Manifest>, intent?: Intent): string {
+    const id = manifest['sap.app']?.id ?? '';
+
+    intent ??= {
+        object: id.replace(/\./g, ''),
+        action: 'preview'
+    };
+
+    return `${intent?.object}-${intent?.action}`;
 }
 
 /**
@@ -232,15 +328,16 @@ async function getI18nTextFromProperty(
     projectRoot: string | undefined,
     propertyValue: string | undefined,
     logger: Logger
-) {
+): Promise<string | undefined> {
     //i18n model format could be {{key}} or {i18n>key}
     if (!projectRoot || !propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
         return propertyValue;
     }
     const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
     const projectAccess = await createProjectAccess(projectRoot);
+    const applicationIds = projectAccess.getApplicationIds();
     try {
-        const bundle = (await projectAccess.getApplication('').getI18nBundles())['sap.app'];
+        const bundle = (await projectAccess.getApplication(applicationIds[0]).getI18nBundles())['sap.app'];
         return bundle[propertyI18nKey]?.[0]?.value?.value ?? propertyI18nKey;
     } catch (e) {
         logger.warn('Failed to load i18n properties bundle');
@@ -266,8 +363,9 @@ export function createFlpTemplateConfig(
     const ui5Theme = config.theme ?? (supportedThemes.includes(DEFAULT_THEME) ? DEFAULT_THEME : supportedThemes[0]);
     const id = manifest['sap.app']?.id ?? '';
     const ns = id.replace(/\./g, '/');
+    const basePath = posix.relative(posix.dirname(config.path), '/') ?? '.';
     return {
-        basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
+        basePath: basePath,
         apps: {},
         init: config.init ? ns + config.init : undefined,
         ui5: {
@@ -276,12 +374,14 @@ export function createFlpTemplateConfig(
             flex,
             resources: {
                 ...resources,
-                [PREVIEW_URL.client.ns]: PREVIEW_URL.client.url
+                [PREVIEW_URL.client.ns]: PREVIEW_URL.client.getUrl(basePath)
             },
             bootstrapOptions: ''
         },
-        locateReuseLibsScript: config.libs
-    };
+        locateReuseLibsScript: config.libs,
+        enhancedHomePage: config.enhancedHomePage,
+        enableCardGenerator: false
+    } satisfies TemplateConfig;
 }
 
 /**
@@ -292,20 +392,15 @@ export function createFlpTemplateConfig(
  * @param theme theme to be used
  * @returns configuration object for the test template
  */
-export function createTestTemplateConfig(config: InternalTestConfig, id: string, theme: string) {
+export function createTestTemplateConfig(config: CompleteTestConfig, id: string, theme: string): TestTemplateConfig {
     return {
         id,
         framework: config.framework,
         basePath: posix.relative(posix.dirname(config.path), '/') ?? '.',
         initPath: posix.relative(posix.dirname(config.path), config.init),
         theme
-    };
+    } satisfies TestTemplateConfig;
 }
-
-export type PreviewUrls = {
-    path: string;
-    type: 'preview' | 'editor' | 'test';
-};
 
 /**
  * Returns the preview paths.
@@ -322,9 +417,9 @@ export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = 
     const flpConfig = getFlpConfigWithDefaults(config.flp);
     urls.push({ path: `${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`, type: 'preview' });
     // add editor urls
-    if (config.rta?.editors) {
-        config.rta.editors.forEach((editor) => {
-            urls.push({ path: editor.path, type: 'editor' });
+    if (config.editors?.rta) {
+        config.editors.rta.endpoints.forEach((endpoint) => {
+            urls.push({ path: endpoint.path, type: 'editor' });
         });
     }
     // add test urls if configured
@@ -354,24 +449,24 @@ function generateTestRunners(
     fs: Editor,
     webappPath: string,
     flpTemplConfig: TemplateConfig
-) {
+): void {
     for (const test of configs ?? []) {
         const testConfig = mergeTestConfigDefaults(test);
         if (['QUnit', 'OPA5'].includes(test.framework)) {
-            const testTemlpate = readFileSync(join(TEMPLATE_PATH, 'test/qunit.html'), 'utf-8');
+            const testTemplate = readFileSync(join(TEMPLATE_PATH, 'test/qunit.ejs'), 'utf-8');
             const testTemplateConfig = createTestTemplateConfig(
                 testConfig,
                 manifest['sap.app'].id,
                 flpTemplConfig.ui5.theme
             );
-            fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
+            fs.write(join(webappPath, testConfig.path), render(testTemplate, testTemplateConfig));
         } else if (test.framework === 'Testsuite') {
-            const testTemlpate = readFileSync(join(TEMPLATE_PATH, 'test/testsuite.qunit.html'), 'utf-8');
+            const testTemplate = readFileSync(join(TEMPLATE_PATH, 'test/testsuite.qunit.ejs'), 'utf-8');
             const testTemplateConfig = {
                 basePath: flpTemplConfig.basePath,
                 initPath: testConfig.init
             };
-            fs.write(join(webappPath, testConfig.path), render(testTemlpate, testTemplateConfig));
+            fs.write(join(webappPath, testConfig.path), render(testTemplate, testTemplateConfig));
         }
     }
 }
@@ -390,7 +485,7 @@ export async function generatePreviewFiles(
     config: MiddlewareConfig,
     fs?: Editor,
     logger: ToolsLogger = new ToolsLogger()
-) {
+): Promise<Editor> {
     // remove incorrect configurations
     sanitizeConfig(config, logger);
 
@@ -400,7 +495,7 @@ export async function generatePreviewFiles(
     }
 
     // generate FLP configuration
-    const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.html'), 'utf-8');
+    const flpTemplate = readFileSync(join(TEMPLATE_PATH, 'flp/sandbox.ejs'), 'utf-8');
     const flpConfig = getFlpConfigWithDefaults(config.flp);
 
     const webappPath = await getWebappPath(basePath, fs);

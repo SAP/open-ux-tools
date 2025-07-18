@@ -1,4 +1,4 @@
-import type { Position } from 'vscode-languageserver-types';
+import type { Position } from '@sap-ux/text-document-utils';
 import { parse as cdsAnnotationParser } from './parser';
 import { buildAst } from './transformer';
 

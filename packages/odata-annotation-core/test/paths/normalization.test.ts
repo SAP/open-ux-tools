@@ -15,30 +15,40 @@ describe('path normalization', () => {
 
     test('nav prop annotation', () => {
         const result = testPath('MySchema.MyEntityType/MyNavigationProperty@Common.Label');
-        expect(result).toMatchInlineSnapshot(
-            `"MyNamespace.MyEntityType/MyNamespace.MyNavigationProperty@com.sap.vocabularies.Common.v1.Label"`
+        expect(result).toStrictEqual(
+            'MyNamespace.MyEntityType/MyNamespace.MyNavigationProperty@com.sap.vocabularies.Common.v1.Label'
         );
     });
 
     test('nav prop annotation with qualifier', () => {
         const result = testPath('MySchema.MyEntityType/MyNavigationProperty@Common.Label#q1');
-        expect(result).toMatchInlineSnapshot(
-            `"MyNamespace.MyEntityType/MyNamespace.MyNavigationProperty@com.sap.vocabularies.Common.v1.Label#q1"`
+        expect(result).toStrictEqual(
+            'MyNamespace.MyEntityType/MyNamespace.MyNavigationProperty@com.sap.vocabularies.Common.v1.Label#q1'
         );
     });
 
     test('action', () => {
         const result = testPath('testAction(MySchema.MyEntityType)');
-        expect(result).toMatchInlineSnapshot(`"MyNamespace.testAction(MyNamespace.MyEntityType)"`);
+        expect(result).toStrictEqual('MyNamespace.testAction(MyNamespace.MyEntityType)');
+    });
+
+    test('action with unknown namespace', () => {
+        const result = testPath('unknown.testAction(MySchema.MyEntityType)');
+        expect(result).toStrictEqual('unknown.testAction(MyNamespace.MyEntityType)');
     });
 
     test('identifier alone', () => {
         const result = testPath('MyEntityType');
-        expect(result).toMatchInlineSnapshot(`"MyEntityType"`);
+        expect(result).toStrictEqual('MyEntityType');
+    });
+
+    test('unknown namespace in identifier', () => {
+        const result = testPath('unknown.MyEntityType');
+        expect(result).toStrictEqual('unknown.MyEntityType');
     });
 
     test('term-cast', () => {
         const result = testPath('@Common.Label#q1');
-        expect(result).toMatchInlineSnapshot(`"@com.sap.vocabularies.Common.v1.Label#q1"`);
+        expect(result).toStrictEqual('@com.sap.vocabularies.Common.v1.Label#q1');
     });
 });

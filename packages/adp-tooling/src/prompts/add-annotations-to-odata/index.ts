@@ -2,10 +2,10 @@ import type { ListQuestion, FileBrowserQuestion, YUIQuestion } from '@sap-ux/inq
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../types';
 import { t } from '../../i18n';
-import { filterDataSourcesByType } from '@sap-ux/project-access';
+import { filterDataSourcesByType, getWebappPath, DirName } from '@sap-ux/project-access';
 import { existsSync } from 'fs';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { join, isAbsolute, sep } from 'path';
+import { join, isAbsolute, basename } from 'path';
 
 /**
  * Gets the prompts for adding annotations to OData service.
@@ -21,7 +21,7 @@ export function getPrompts(
     const dataSourceIds = Object.keys(filterDataSourcesByType(dataSources, 'OData'));
     const annotationFileSelectOptions = [
         { name: t('choices.annotationFile.selectFromWorkspace'), value: AnnotationFileSelectType.ExistingFile },
-        { name: t('choices.annotationFile.createEmptyFile'), value: AnnotationFileSelectType.NewEmptyFile }
+        { name: t('choices.annotationFile.createTemplateFile'), value: AnnotationFileSelectType.NewEmptyFile }
     ];
     return [
         {
@@ -60,7 +60,7 @@ export function getPrompts(
             default: '',
             when: (answers: AddAnnotationsAnswers) =>
                 answers.id !== '' && answers.fileSelectOption === AnnotationFileSelectType.ExistingFile,
-            validate: (value) => {
+            validate: async (value: string) => {
                 const validationResult = validateEmptyString(value);
                 if (typeof validationResult === 'string') {
                     return validationResult;
@@ -71,8 +71,14 @@ export function getPrompts(
                     return t('validators.fileDoesNotExist');
                 }
 
-                const fileName = filePath.split(sep).pop();
-                if (existsSync(join(basePath, 'webapp', 'changes', 'annotations', fileName))) {
+                const annotationFilePath = join(
+                    await getWebappPath(basePath),
+                    DirName.Changes,
+                    DirName.Annotations,
+                    basename(filePath)
+                );
+
+                if (existsSync(annotationFilePath)) {
                     return t('validators.annotationFileAlreadyExists');
                 }
 

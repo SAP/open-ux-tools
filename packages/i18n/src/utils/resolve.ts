@@ -99,14 +99,14 @@ export function getCapI18nFiles(root: string, env: CdsEnvironment, filePaths: st
  * Get an i18n folder for an existing CDS file. A new folder is only created, if it does not exist and optional `mem-fs-editor` instance is not provided.
  *
  * @param root project root
- * @param path path to cds file
+ * @param path absolute path to cds file
  * @param env CDS environment configuration,
  * @param fs optional `mem-fs-editor` instance. If provided, a new folder is not created, even if it does not exist
  * @returns i18n folder path
  */
 export async function getCapI18nFolder(root: string, path: string, env: CdsEnvironment, fs?: Editor): Promise<string> {
     const { folders } = getI18nConfiguration(env);
-    let i18nFolderPath = resolveCapI18nFolderForFile(root, env, join(root, path));
+    let i18nFolderPath = resolveCapI18nFolderForFile(root, env, path);
     if (!i18nFolderPath) {
         const folder = folders[0];
         i18nFolderPath = join(root, folder);

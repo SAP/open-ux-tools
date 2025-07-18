@@ -76,8 +76,7 @@ describe('project input validators', () => {
         });
 
         test('validateAppName - app name undefined', () => {
-            const appName = undefined as any;
-            const output = validateAppName(appName);
+            const output = validateAppName(undefined as any);
             expect(output).toContain(t('deploy.abapAppNameRequired'));
         });
     });

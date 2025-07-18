@@ -11,12 +11,37 @@ import type { NextFunction, Request, Response } from 'express';
 
 import { TemplateFileName, HttpStatusCodes } from '../types';
 import { DirName } from '@sap-ux/project-access';
-import type { CodeExtChange } from '../types';
+import { type CodeExtChange } from '../types';
+import { ManifestService } from '../base/abap/manifest-service';
+import type { DataSources } from '../base/abap/manifest-service';
+import { getVariant, isTypescriptSupported } from '../base/helper';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 interface WriteControllerBody {
     controllerName: string;
     projectId: string;
 }
+
+interface AnnotationFileDetails {
+    fileName?: string;
+    annotationPath?: string;
+    annotationPathFromRoot?: string;
+    annotationExistsInWS: boolean;
+}
+
+interface AnnotationDataSourceMap {
+    [key: string]: {
+        serviceUrl: string;
+        annotationDetails: AnnotationFileDetails;
+        metadataReadErrorMsg: string | undefined;
+    };
+}
+export interface AnnotationDataSourceResponse {
+    isRunningInBAS: boolean;
+    annotationDataSourceMap: AnnotationDataSourceMap;
+}
+
+type ControllerInfo = { controllerName: string };
 
 /**
  * @description Handles API Routes
@@ -27,11 +52,13 @@ export default class RoutesHandler {
      *
      * @param project Reference to the root of the project
      * @param util middleware utilities provided by the UI5 CLI
+     * @param provider AbapServiceProvider instance
      * @param logger Logger instance
      */
     constructor(
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
+        private readonly provider: AbapServiceProvider,
         private readonly logger: ToolsLogger
     ) {}
 
@@ -52,7 +79,7 @@ export default class RoutesHandler {
      * @param data Data that is sent to the client
      * @param contentType Content type, defaults to json
      */
-    private sendFilesResponse(res: Response, data: object | string, contentType: string = 'application/json') {
+    private sendFilesResponse(res: Response, data: object | string, contentType: string = 'application/json'): void {
         res.status(HttpStatusCodes.OK).contentType(contentType).send(data);
     }
 
@@ -78,12 +105,12 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleReadAllFragments = async (_: Request, res: Response, next: NextFunction) => {
+    public handleReadAllFragments = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const files = await this.readAllFilesByGlob('/**/changes/fragments/*.fragment.xml');
 
-            const fileNames = files.map((f) => ({
-                fragmentName: f.getName()
+            const fileNames = files.map((file) => ({
+                fragmentName: file.getName()
             }));
 
             this.sendFilesResponse(res, {
@@ -103,13 +130,15 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleReadAllControllers = async (_: Request, res: Response, next: NextFunction) => {
+    public handleReadAllControllers = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const files = await this.readAllFilesByGlob('/**/changes/coding/*.js');
+            const files = await this.readAllFilesByGlob('/**/changes/coding/*.{js,ts}');
 
-            const fileNames = files.map((f) => ({
-                controllerName: f.getName()
-            }));
+            const fileNames = files.map((file) => {
+                const fullName = file.getName();
+                const name = fullName.replace(/\.(js|ts)$/, '');
+                return { controllerName: name } satisfies ControllerInfo;
+            });
 
             this.sendFilesResponse(res, {
                 controllers: fileNames,
@@ -128,10 +157,14 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleGetControllerExtensionData = async (req: Request, res: Response, next: NextFunction) => {
+    public handleGetControllerExtensionData = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
         try {
-            const params = req.params as { controllerName: string };
-            const controllerName = sanitize(params.controllerName);
+            const query = req.query as { name: string };
+            const controllerName = query.name;
             const codeExtFiles = await this.readAllFilesByGlob('/**/changes/*_codeExt.change');
 
             let controllerPathFromRoot = '';
@@ -141,7 +174,10 @@ export default class RoutesHandler {
 
             const project = this.util.getProject();
             const sourcePath = project.getSourcePath();
+            const rootPath = this.util.getProject().getRootPath();
             const projectName = project.getName();
+
+            const isTsSupported = isTypescriptSupported(rootPath);
 
             const getPath = (projectPath: string, fileName: string, folder: string = DirName.Coding) =>
                 path.join(projectPath, DirName.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
@@ -151,7 +187,8 @@ export default class RoutesHandler {
                 const change = JSON.parse(fileStr) as CodeExtChange;
 
                 if (change.selector.controllerName === controllerName) {
-                    const fileName = change.content.codeRef.replace('coding/', '');
+                    const baseFileName = change.content.codeRef.replace('coding/', '');
+                    const fileName = isTsSupported ? baseFileName.replace('.js', '.ts') : baseFileName;
                     controllerPath = getPath(sourcePath, fileName);
                     controllerPathFromRoot = getPath(projectName, fileName);
                     changeFilePath = getPath(projectName, file.getName(), '');
@@ -173,7 +210,8 @@ export default class RoutesHandler {
                 controllerExists,
                 controllerPath: os.platform() === 'win32' ? `/${controllerPath}` : controllerPath,
                 controllerPathFromRoot,
-                isRunningInBAS
+                isRunningInBAS,
+                isTsSupported
             });
             this.logger.debug(
                 controllerExists
@@ -192,51 +230,41 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleWriteControllerExt = async (req: Request, res: Response, next: NextFunction) => {
+    public handleWriteControllerExt = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const data = req.body as WriteControllerBody;
 
-            const controllerExtName = sanitize(data.controllerName);
-            const projectId = data.projectId;
+            const name = sanitize(data.controllerName);
 
             const sourcePath = this.util.getProject().getSourcePath();
+            const rootPath = this.util.getProject().getRootPath();
 
-            if (!controllerExtName) {
+            if (!name) {
                 res.status(HttpStatusCodes.BAD_REQUEST).send('Controller extension name was not provided!');
                 this.logger.debug('Bad request. Controller extension name was not provided!');
                 return;
             }
 
+            const isTsSupported = isTypescriptSupported(rootPath);
+
             const fullPath = path.join(sourcePath, DirName.Changes, DirName.Coding);
-            const filePath = path.join(fullPath, `${controllerExtName}.js`);
+            const filePath = path.join(fullPath, `${name}.${isTsSupported ? 'ts' : 'js'}`);
 
             if (!fs.existsSync(fullPath)) {
                 fs.mkdirSync(fullPath, { recursive: true });
             }
 
             if (fs.existsSync(filePath)) {
-                res.status(HttpStatusCodes.CONFLICT).send(
-                    `Controller extension with name "${controllerExtName}" already exists`
-                );
-                this.logger.debug(`Controller extension with name "${controllerExtName}" already exists`);
+                res.status(HttpStatusCodes.CONFLICT).send(`Controller extension with name "${name}" already exists`);
+                this.logger.debug(`Controller extension with name "${name}" already exists`);
                 return;
             }
 
-            const controllerExtPath = `${projectId}.${controllerExtName}`;
-
-            const controllerTemplateFilePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Controller);
-
-            renderFile(controllerTemplateFilePath, { controllerExtPath }, {}, (err, str) => {
-                if (err) {
-                    throw new Error('Error rendering template: ' + err.message);
-                }
-
-                fs.writeFileSync(filePath, str, { encoding: 'utf8' });
-            });
+            await generateControllerFile(rootPath, filePath, name);
 
             const message = 'Controller extension created!';
             res.status(HttpStatusCodes.CREATED).send(message);
-            this.logger.debug(`Controller extension with name "${controllerExtName}" was created`);
+            this.logger.debug(`Controller extension with name "${name}" was created`);
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);
             this.logger.error(sanitizedMsg);
@@ -244,4 +272,145 @@ export default class RoutesHandler {
             next(e);
         }
     };
+
+    /**
+     * Handler for mapping annotation files with datasoruce.
+     *
+     * @param _req Request
+     * @param res Response
+     * @param next Next Function
+     */
+    public handleGetAllAnnotationFilesMappedByDataSource = async (
+        _req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
+        try {
+            const isRunningInBAS = isAppStudio();
+
+            const manifestService = await this.getManifestService();
+            const dataSources = manifestService.getManifestDataSources();
+            const apiResponse: AnnotationDataSourceResponse = {
+                isRunningInBAS,
+                annotationDataSourceMap: {}
+            };
+
+            for (const dataSourceId in dataSources) {
+                if (dataSources[dataSourceId].type === 'OData') {
+                    const metadataReadErrorMsg = await this.getMetaDataReadErrorMsg(manifestService, dataSourceId);
+                    apiResponse.annotationDataSourceMap[dataSourceId] = {
+                        annotationDetails: {
+                            annotationExistsInWS: false
+                        },
+                        serviceUrl: dataSources[dataSourceId].uri,
+                        metadataReadErrorMsg
+                    };
+                }
+                this.fillAnnotationDataSourceMap(dataSources, dataSourceId, apiResponse.annotationDataSourceMap);
+            }
+            this.sendFilesResponse(res, apiResponse);
+        } catch (e) {
+            this.handleErrorMessage(res, next, e);
+        }
+    };
+
+    /**
+     *
+     * @param manifestService
+     * @param dataSrouceID
+     * @returns error message with reason
+     */
+    private async getMetaDataReadErrorMsg(
+        manifestService: ManifestService,
+        dataSrouceID: string
+    ): Promise<string | undefined> {
+        let errorMessage;
+        try {
+            await manifestService.getDataSourceMetadata(dataSrouceID);
+        } catch (error) {
+            errorMessage = `Metadata: ${error.message as string}`;
+        }
+        return errorMessage;
+    }
+
+    /**
+     * Add local annotation details to api response.
+     *
+     * @param dataSources DataSources
+     * @param dataSourceId string
+     * @param apiResponse AnnotationDataSourceMap
+     */
+    private fillAnnotationDataSourceMap(
+        dataSources: DataSources,
+        dataSourceId: string,
+        apiResponse: AnnotationDataSourceMap
+    ): void {
+        const project = this.util.getProject();
+        const getPath = (projectPath: string, relativePath: string): string =>
+            path.join(projectPath, relativePath).split(path.sep).join(path.posix.sep);
+        const annotations = [...(dataSources[dataSourceId].settings?.annotations ?? [])].reverse();
+        for (const annotation of annotations) {
+            const annotationSetting = dataSources[annotation];
+            if (annotationSetting.type === 'ODataAnnotation') {
+                const ui5NamespaceUri = `ui5://${project.getNamespace()}`;
+                if (annotationSetting.uri.startsWith(ui5NamespaceUri)) {
+                    const localAnnotationUri = annotationSetting.uri.replace(ui5NamespaceUri, '');
+                    const annotationPath = getPath(project.getSourcePath(), localAnnotationUri);
+                    const annotationPathFromRoot = getPath(project.getName(), localAnnotationUri);
+                    const annotationExists = fs.existsSync(annotationPath);
+                    apiResponse[dataSourceId].annotationDetails = {
+                        fileName: path.parse(localAnnotationUri).base,
+                        annotationPath: os.platform() === 'win32' ? `/${annotationPath}` : annotationPath,
+                        annotationPathFromRoot,
+                        annotationExistsInWS: annotationExists
+                    };
+                }
+                if (apiResponse[dataSourceId].annotationDetails.annotationExistsInWS) {
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns manifest service.
+     *
+     * @returns Promise<ManifestService>
+     */
+    private async getManifestService(): Promise<ManifestService> {
+        const project = this.util.getProject();
+        const basePath = project.getRootPath();
+        const variant = await getVariant(basePath);
+
+        return await ManifestService.initMergedManifest(this.provider, basePath, variant, this.logger);
+    }
+}
+
+/**
+ * Generates a controller file for the Adaptation Project based on the project's TypeScript support.
+ *
+ * This function creates a controller file in the specified `filePath` by rendering a template.
+ * It determines whether to use a TypeScript or JavaScript template based on the TypeScript support of the project.
+ *
+ * @param {string} rootPath - The root directory of the project.
+ * @param {string} filePath - The destination path where the generated controller file should be saved.
+ * @param {string} name - The name of the controller extension (used in TypeScript templates).
+ * @throws {Error} Throws an error if rendering the template fails.
+ */
+async function generateControllerFile(rootPath: string, filePath: string, name: string): Promise<void> {
+    const id = (await getVariant(rootPath))?.id;
+    const isTsSupported = isTypescriptSupported(rootPath);
+    const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
+    const tmplPath = path.join(__dirname, '../../templates/rta', tmplFileName);
+    const extensionPath = `${id}.${name}`;
+
+    const templateData = isTsSupported ? { name, ns: id } : { extensionPath };
+
+    renderFile(tmplPath, templateData, {}, (err, str) => {
+        if (err) {
+            throw new Error(`Error rendering ${isTsSupported ? 'TypeScript' : 'JavaScript'} template: ${err.message}`);
+        }
+
+        fs.writeFileSync(filePath, str, { encoding: 'utf8' });
+    });
 }

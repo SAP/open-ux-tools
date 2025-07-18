@@ -22,7 +22,7 @@ import {
     Position
 } from '@sap-ux/odata-annotation-core-types';
 
-import { positionContained, isBefore } from '../position';
+import { positionContained, isBefore } from '@sap-ux/text-document-utils';
 
 type Segment = string | number;
 

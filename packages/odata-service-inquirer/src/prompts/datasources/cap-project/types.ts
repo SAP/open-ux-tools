@@ -1,5 +1,6 @@
 import type { CapCustomPaths } from '@sap-ux/project-access';
-import type { CapService, CapServiceChoice, promptNames } from '../../../types';
+import type { CapServiceChoice, promptNames } from '../../../types';
+import type { CapService } from '@sap-ux/cap-config-writer';
 import type { ListChoiceOptions } from 'inquirer';
 
 /**

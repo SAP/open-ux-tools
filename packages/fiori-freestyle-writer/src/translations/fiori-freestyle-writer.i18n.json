@@ -1,5 +1,9 @@
 {
     "info": {
-        "mockOnlyWarning": "This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock"
+        "mockOnlyWarning": "This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: `npm run start-mock`.",
+        "unsupportedTestTemplateMessage": "The specified template: {{ templateType }} is not supported for test generation. Generation will continue but the test files will not be generated."
+    },
+    "text": {
+        "defaultAppDescription": "Description of test.me"
     }
 }

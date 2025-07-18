@@ -1,8 +1,20 @@
 import * as appStudioUtils from '../../../src/utils/app-studio';
 import { getSecureStore } from '../../../src/secure-store';
 import { DummyStore } from '../../../src/secure-store/dummy-store';
-import { KeytarStore } from '../../../src/secure-store/keytar-store';
+import { KeyStoreManager } from '../../../src/secure-store/key-store';
 import { ToolsLogger, NullTransport } from '@sap-ux/logger';
+import { readdirSync, existsSync } from 'fs';
+import { join } from 'path';
+jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
+    existsSync: jest.fn(),
+    readdirSync: jest.fn()
+}));
+
+jest.mock('os', () => ({
+    ...jest.requireActual('os'),
+    homedir: () => 'test_dir'
+}));
 
 describe('getSecureStore', () => {
     beforeEach(() => jest.resetAllMocks());
@@ -21,13 +33,36 @@ describe('getSecureStore', () => {
             jest.resetAllMocks();
             jest.spyOn(appStudioUtils, 'isAppStudio').mockReturnValue(false);
         });
-        it('returns KeytarStore if keytar can be required with no errors', () => {
-            jest.mock('keytar', jest.fn());
+        it('returns KeyStoreManager if zowe sdk is made available with no errors', () => {
+            jest.mock('@zowe/secrets-for-zowe-sdk', jest.fn());
             expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
         });
-        it('returns DummyStore if keytar & vscode cannot be required', () => {
+
+        it('returns zowe sdk from application modeler', () => {
+            jest.mock('@zowe/secrets-for-zowe-sdk', () => {
+                throw new Error();
+            });
+
+            const readdirSyncMock = readdirSync as jest.Mock;
+
+            readdirSyncMock.mockReturnValue(['sapse.sap-ux-application-modeler-extension-1.14.1']);
+            const existsSyncSyncMock = existsSync as jest.Mock;
+
+            existsSyncSyncMock.mockReturnValue(true);
+
             jest.mock(
-                'keytar',
+                join(
+                    `test_dir/.vscode/extensions/sapse.sap-ux-application-modeler-extension-1.14.1/node_modules/@zowe/secrets-for-zowe-sdk`
+                ),
+                () => '@zowe/secrets-for-zowe-sdk',
+                { virtual: true }
+            );
+
+            expect(getSecureStore(nullLogger)).toBeInstanceOf(KeyStoreManager);
+        });
+        it('returns DummyStore if @zowe/secrets-for-zowe-sdk & vscode cannot be required', () => {
+            jest.mock(
+                '@zowe/secrets-for-zowe-sdk',
                 () => {
                     throw new Error();
                 },
@@ -40,40 +75,16 @@ describe('getSecureStore', () => {
                 },
                 { virtual: true }
             );
-            jest.mock(`vscode_app_root/node_modules.asar/keytar`, () => 'keytar', { virtual: true });
-            expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
-        });
-        it('returns KeytarStore if `${vscode?.env?.appRoot}/node_modules.asar/keytar` can be required with no errors', () => {
-            jest.mock('keytar', () => {
-                throw new Error();
-            });
-            const vscode = {
-                env: { appRoot: 'vscode_app_root' }
-            };
-            jest.mock('vscode', () => vscode, { virtual: true });
-            jest.mock(`vscode_app_root/node_modules.asar/keytar`, () => 'keytar', { virtual: true });
-            expect(getSecureStore(nullLogger)).toBeInstanceOf(KeytarStore);
-        });
-        it('returns KeytarStore if `${vscode?.env?.appRoot}/node_modules/keytar` can be required with no errors', () => {
-            jest.mock('keytar', () => {
-                throw new Error();
-            });
-            const vscode = {
-                env: { appRoot: 'vscode_app_root' }
-            };
-            jest.mock('vscode', () => vscode, { virtual: true });
             jest.mock(
-                `vscode_app_root/node_modules.asar/keytar`,
-                () => {
-                    throw new Error();
-                },
+                `vscode_app_root/node_modules.asar/@zowe/secrets-for-zowe-sdk`,
+                () => '@zowe/secrets-for-zowe-sdk',
                 { virtual: true }
             );
-            jest.mock(`vscode_app_root/node_modules/keytar`, () => 'keytar', { virtual: true });
-            expect(getSecureStore(nullLogger)).toBeInstanceOf(KeytarStore);
+            expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
         });
+
         it('returns DummyStore if `${vscode?.env} is not set', () => {
-            jest.mock('keytar', () => {
+            jest.mock('@zowe/secrets-for-zowe-sdk', () => {
                 throw new Error();
             });
             const vscode = {
@@ -82,11 +93,20 @@ describe('getSecureStore', () => {
             jest.mock('vscode', () => vscode, { virtual: true });
             expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
         });
-        it('returns DummyStore if vscode is not undefined', () => {
-            jest.mock('keytar', () => {
+        it('returns DummyStore if @zowe/secrets-for-zowe-sdk is not undefined', () => {
+            jest.mock('@zowe/secrets-for-zowe-sdk', () => {
                 throw new Error();
             });
             jest.mock('vscode', () => undefined, { virtual: true });
+            const os = {
+                homeDir: 'test_dir'
+            };
+            jest.mock('os', () => os, { virtual: true });
+
+            const glob = {
+                globSync: ['test_dir/.vscode/extensions/no-app-modeler']
+            };
+            jest.mock('glob', () => glob, { virtual: true });
             expect(getSecureStore(nullLogger)).toBeInstanceOf(DummyStore);
         });
         it('returns DummyStore if environment variable FIORI_TOOLS_DISABLE_SECURE_STORE is set', () => {
@@ -95,22 +115,31 @@ describe('getSecureStore', () => {
             delete process.env.FIORI_TOOLS_DISABLE_SECURE_STORE;
         });
         it('returns DummyStore when all else fails', () => {
-            jest.mock('keytar', () => {
+            jest.mock('@zowe/secrets-for-zowe-sdk', () => {
                 throw new Error();
             });
             const vscode = {
                 env: { appRoot: 'vscode_app_root' }
             };
             jest.mock('vscode', () => vscode, { virtual: true });
+            const os = {
+                homeDir: 'test_dir'
+            };
+            jest.mock('os', () => os, { virtual: true });
+
+            const glob = {
+                globSync: ['test_dir/.vscode/extensions/no-app-modeler']
+            };
+            jest.mock('glob', () => glob, { virtual: true });
             jest.mock(
-                `vscode_app_root/node_modules.asar/keytar`,
+                `vscode_app_root/node_modules.asar/@zowe/secrets-for-zowe-sdk`,
                 () => {
                     throw new Error();
                 },
                 { virtual: true }
             );
             jest.mock(
-                `vscode_app_root/node_modules/keytar`,
+                `vscode_app_root/node_modules/@zowe/secrets-for-zowe-sdk`,
                 () => {
                     throw new Error();
                 },

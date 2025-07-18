@@ -1,6 +1,7 @@
 import { dirname, join } from 'path';
 import type { Manifest, ManifestNamespace, ServiceSpecification } from '../types';
 import { readJSON } from '../file';
+import type { Editor } from 'mem-fs-editor';
 
 /**
  * Get the main service name from the manifest.
@@ -23,13 +24,15 @@ export function getMainService(manifest: Manifest): string | undefined {
  *
  * @param manifestPath - path to manifest.json
  * @param manifest - optionally, parsed content of manifest.json, pass to avoid reading it again.
+ * @param memFs - optional mem-fs-editor instance
  * @returns - service and annotation specification
  */
 export async function getServicesAndAnnotations(
     manifestPath: string,
-    manifest: Manifest
+    manifest: Manifest,
+    memFs?: Editor
 ): Promise<{ [index: string]: ServiceSpecification }> {
-    const parsedManifest = manifest ?? (await readJSON<Manifest>(manifestPath));
+    const parsedManifest = manifest ?? (await readJSON<Manifest>(manifestPath, memFs));
     const manifestFolder = dirname(manifestPath);
 
     const services: { [index: string]: ServiceSpecification } = {};

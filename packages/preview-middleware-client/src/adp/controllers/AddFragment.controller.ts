@@ -8,7 +8,6 @@ import type UI5Element from 'sap/ui/core/Element';
 
 /** sap.ui.base */
 import type Event from 'sap/ui/base/Event';
-import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 
 /** sap.ui.model */
 import JSONModel from 'sap/ui/model/json/JSONModel';
@@ -18,39 +17,62 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 /** sap.ui.dt */
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
+
+/** sap.ui.fl */
+import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
+
+import { getResourceModel, getTextBundle } from '../../i18n';
 
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
-
-interface CreateFragmentProps {
-    fragmentName: string;
-    index: string | number;
-    targetAggregation: string;
-}
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { getFragmentTemplateName } from '../../cpe/additional-change-info/add-xml-additional-info';
+import type { AddFragmentData, DeferredXmlFragmentData } from '../add-fragment';
+import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+import { CommunicationService } from '../../cpe/communication-service';
 
 const radix = 10;
 
-type AddFragmentModel = JSONModel & {
+export type AddFragmentModel = JSONModel & {
+    getProperty(sPath: '/title'): string;
+    getProperty(sPath: '/completeView'): boolean;
     getProperty(sPath: '/newFragmentName'): string;
     getProperty(sPath: '/selectedIndex'): number;
     getProperty(sPath: '/selectedAggregation/value'): string;
 };
 
+export interface AddFragmentOptions {
+    title: string;
+    aggregation?: string;
+    defaultAggregationArrayIndex?: number;
+}
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
-        super(name);
+    private readonly data?: AddFragmentData;
+
+    constructor(
+        name: string,
+        overlays: UI5Element,
+        rta: RuntimeAuthoring,
+        readonly options: AddFragmentOptions,
+        data?: AddFragmentData,
+        telemetryData?: QuickActionTelemetryData
+    ) {
+        super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
-        this.model = new JSONModel();
-        this.ui5Version = sap.ui.version;
+        this.model = new JSONModel({
+            title: options.title,
+            completeView: options.aggregation === undefined
+        });
         this.commandExecutor = new CommandExecutor(this.rta);
+        this.data = data;
     }
 
     /**
@@ -64,37 +86,12 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         this.setEscapeHandler();
 
         await this.buildDialogData();
+        const resourceModel = await getResourceModel('open.ux.preview.client');
 
+        this.dialog.setModel(resourceModel, 'i18n');
         this.dialog.setModel(this.model);
 
         this.dialog.open();
-    }
-
-    /**
-     * Handles the index field whenever a specific aggregation is chosen
-     *
-     * @param specialIndexAggregation string | number
-     */
-    private specialIndexHandling(specialIndexAggregation: string | number): void {
-        const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
-        const aggregations = overlay.getDesignTimeMetadata().getData().aggregations;
-
-        if (
-            specialIndexAggregation in aggregations &&
-            'specialIndexHandling' in aggregations[specialIndexAggregation]
-        ) {
-            const controlType = this.runtimeControl.getMetadata().getName();
-            this.model.setProperty('/indexHandlingFlag', false);
-            this.model.setProperty('/specialIndexHandlingIcon', true);
-            this.model.setProperty(
-                '/iconTooltip',
-                `Index is defined by special logic of ${controlType} and can't be set here`
-            );
-        } else {
-            this.model.setProperty('/indexHandlingFlag', true);
-            this.model.setProperty('/specialIndexHandlingIcon', false);
-            this.model.setProperty('/specialIndexHandlingIconPressed', false);
-        }
     }
 
     /**
@@ -117,7 +114,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         this.model.setProperty('/selectedAggregation/value', selectedItemText);
 
         let newSelectedControlChildren: string[] | number[] = Object.keys(
-            ControlUtils.getControlAggregationByName(this.runtimeControl, selectedItemText)
+            ControlUtils.getControlAggregationByName(this.getRuntimeControl(), selectedItemText)
         );
 
         newSelectedControlChildren = newSelectedControlChildren.map((key) => {
@@ -141,18 +138,32 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
+        await super.onCreateBtnPressHandler();
+
         const fragmentName = this.model.getProperty('/newFragmentName');
         const index = this.model.getProperty('/selectedIndex');
-        const targetAggregation = this.model.getProperty('/selectedAggregation/value');
-        const fragmentData = {
-            index,
-            fragmentName,
-            targetAggregation
+        const targetAggregation = this.model.getProperty('/selectedAggregation/value') ?? 'content';
+
+        const modifiedValue = {
+            fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
+            fragmentPath: `fragments/${fragmentName}.fragment.xml`,
+            index: index ?? 0,
+            targetAggregation: targetAggregation ?? 'content'
         };
 
-        await this.createFragmentChange(fragmentData);
+        if (this.data) {
+            this.data.deferred.resolve(modifiedValue);
+        } else {
+            await this.createFragmentChange(modifiedValue);
+        }
 
-        notifyUser(`Note: The '${fragmentName}.fragment.xml' fragment will be created once you save the change.`, 8000);
+        const templateName = getFragmentTemplateName(this.getRuntimeControl().getId(), targetAggregation);
+        if (templateName) {
+            CommunicationService.sendAction(setApplicationRequiresReload(true));
+        }
+
+        const bundle = await getTextBundle();
+        notifyUser(bundle.getText('ADP_ADD_FRAGMENT_NOTIFICATION', [fragmentName]), 8000);
 
         this.handleDialogClose();
     }
@@ -161,31 +172,12 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
      * Builds data that is used in the dialog
      */
     async buildDialogData(): Promise<void> {
-        const selectorId = this.overlays.getId();
-
-        let controlMetadata: ManagedObjectMetadata;
-
-        const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
-        if (overlayControl) {
-            this.runtimeControl = ControlUtils.getRuntimeControl(overlayControl);
-            controlMetadata = this.runtimeControl.getMetadata();
-        } else {
-            throw new Error('Cannot get overlay control');
-        }
-
-        const allAggregations = Object.keys(controlMetadata.getAllAggregations());
-        const hiddenAggregations = ['customData', 'layoutData', 'dependents'];
-        const targetAggregation = allAggregations.filter((item) => {
-            if (hiddenAggregations.indexOf(item) === -1) {
-                return item;
-            }
-            return false;
-        });
-        const defaultAggregation = controlMetadata.getDefaultAggregationName();
+        const { controlMetadata, targetAggregation } = this.getControlMetadata();
+        const defaultAggregation = this.options.aggregation ?? controlMetadata.getDefaultAggregationName();
         const selectedControlName = controlMetadata.getName();
 
         let selectedControlChildren: string[] | number[] = Object.keys(
-            ControlUtils.getControlAggregationByName(this.runtimeControl, defaultAggregation)
+            ControlUtils.getControlAggregationByName(this.getRuntimeControl(), defaultAggregation)
         );
 
         selectedControlChildren = selectedControlChildren.map((key) => {
@@ -229,57 +221,30 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         this.model.setProperty('/selectedIndex', indexArray.length - 1);
         this.model.setProperty('/targetAggregation', controlAggregation);
         this.model.setProperty('/index', indexArray);
-    }
-
-    /**
-     * Fills indexArray from selected control children
-     *
-     * @param selectedControlChildren Array of numbers
-     * @returns Array of key value pairs
-     */
-    private fillIndexArray(selectedControlChildren: number[]) {
-        let indexArray: { key: number; value: number }[] = [];
-        if (selectedControlChildren.length === 0) {
-            indexArray.push({ key: 0, value: 0 });
-        } else {
-            indexArray = selectedControlChildren.map((elem, index) => {
-                return { key: index + 1, value: elem + 1 };
-            });
-            indexArray.unshift({ key: 0, value: 0 });
-            indexArray.push({
-                key: selectedControlChildren.length + 1,
-                value: selectedControlChildren.length + 1
-            });
+        const defaultIndex = Number(this.options.defaultAggregationArrayIndex);
+        if (defaultIndex >= 0) {
+            this.model.setProperty('/selectedIndex', indexArray.length - 1 > 0 ? defaultIndex : 0);
         }
-        return indexArray;
     }
 
     /**
      * Creates an addXML fragment command and pushes it to the command stack
      *
-     * @param fragmentData Fragment Data
+     * @param modifiedValue - modified value
+     * @param templateName - fragment template name
      */
-    private async createFragmentChange(fragmentData: CreateFragmentProps) {
-        const { fragmentName, index, targetAggregation } = fragmentData;
-
+    private async createFragmentChange(modifiedValue: DeferredXmlFragmentData): Promise<void> {
         const flexSettings = this.rta.getFlexSettings();
 
-        const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
+        const overlay = OverlayRegistry.getOverlay(this.getRuntimeControl() as UI5Element);
         const designMetadata = overlay.getDesignTimeMetadata();
 
-        const modifiedValue = {
-            fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
-            fragmentPath: `fragments/${fragmentName}.fragment.xml`,
-            index: index ?? 0,
-            targetAggregation: targetAggregation ?? 'content'
-        };
-
-        const command = await this.commandExecutor.getCommand(
-            this.runtimeControl,
+        const command = await this.commandExecutor.getCommand<AddFragmentChangeContentType>(
+            this.getRuntimeControl(),
             'addXML',
             modifiedValue,
-            designMetadata,
-            flexSettings
+            flexSettings,
+            designMetadata
         );
 
         await this.commandExecutor.pushAndExecuteCommand(command);

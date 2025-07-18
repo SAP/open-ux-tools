@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/jest-file-matchers",
-    "version": "0.2.0",
+    "version": "0.2.4",
     "description": "Jest matchers for files and folders",
     "repository": {
         "type": "git",
@@ -34,9 +34,6 @@
         "jest-diff": "29.7.0",
         "minimatch": "3.0.5",
         "mkdirp": "1.0.4"
-    },
-    "devDependencies": {
-        "typescript": "5.3.3"
     },
     "eslint-formatter-multiple": {
         "formatters": [
