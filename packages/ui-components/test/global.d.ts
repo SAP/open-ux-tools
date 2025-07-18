@@ -28,6 +28,8 @@ declare global {
             toContainElement(element: HTMLElement | SVGElement | null): R;
             toContainHTML(htmlText: string): R;
             toHaveErrorMessage(text?: string): R;
+            // Custom matcher for UIDropdown utils
+            isDropdownEmpty(props: Partial<any>): R;
         }
     }
 }

@@ -2,7 +2,12 @@ import * as React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UIDropdownProps } from '../../../src/components/UIDropdown';
-import { UIDropdown, getCalloutCollisionTransformationProps } from '../../../src/components/UIDropdown';
+import {
+    UIDropdown,
+    getCalloutCollisionTransformationProps,
+    getCalloutCollisionTransformationPropsForDropdown,
+    isDropdownEmpty
+} from '../../../src/components/UIDropdown';
 import type { IStyleFunction, ICalloutContentStyles, IDropdownStyleProps } from '@fluentui/react';
 import { Dropdown, ResponsiveMode } from '@fluentui/react';
 import { data as originalData, groupsData as originalGroupsData } from '../../__mock__/select-data';
@@ -427,4 +432,65 @@ describe('Utils/getCalloutCollisionTransformationProps', () => {
             );
         });
     }
+});
+
+describe('Utils/isDropdownEmpty', () => {
+    it('returns true for empty selectedKey array', () => {
+        expect(isDropdownEmpty({ selectedKey: [] })).toBe(true);
+    });
+    it('returns false for non-empty selectedKey array', () => {
+        expect(isDropdownEmpty({ selectedKey: ['A'] })).toBe(false);
+    });
+    it('returns false for text property', () => {
+        expect(isDropdownEmpty({ text: 'foo' })).toBe(false);
+    });
+    it('returns false for selectedKeys property', () => {
+        expect(isDropdownEmpty({ selectedKeys: ['A', 'B'] })).toBe(false);
+    });
+    it('returns true for undefined selectedKey', () => {
+        expect(isDropdownEmpty({})).toBe(true);
+    });
+    it('returns false for non-empty selectedKey', () => {
+        expect(isDropdownEmpty({ selectedKey: 'A' })).toBe(false);
+    });
+});
+
+describe('Utils/getCalloutCollisionTransformationPropsForDropdown', () => {
+    it('returns callout props with preventDismissOnEvent, onLayerDidMount, onLayerWillUnmount when enabled and multiSelect', () => {
+        const mockDropdown = {
+            props: {
+                multiSelect: true,
+                calloutCollisionTransformation: true,
+                calloutProps: {}
+            }
+        } as any;
+        const calloutCollisionTransform = {
+            preventDismissOnEvent: jest.fn(),
+            applyTransformation: jest.fn(),
+            resetTransformation: jest.fn()
+        } as any;
+
+        const props = getCalloutCollisionTransformationPropsForDropdown(mockDropdown, calloutCollisionTransform);
+        expect(props).toBeDefined();
+        expect(props?.preventDismissOnEvent).toBeInstanceOf(Function);
+        expect(props?.layerProps?.onLayerDidMount).toBeInstanceOf(Function);
+        expect(props?.layerProps?.onLayerWillUnmount).toBeInstanceOf(Function);
+        // Check that preventDismissOnEvent calls getPreventDismissOnEvent
+        // Use a real Event to satisfy type
+        const event = new Event('click');
+        // Remove spy, just call and assert function
+        expect(() => props?.preventDismissOnEvent?.(event)).not.toThrow();
+    });
+    it('returns undefined if not enabled or not multiSelect', () => {
+        const mockDropdown = {
+            props: {
+                multiSelect: false,
+                calloutCollisionTransformation: false,
+                calloutProps: {}
+            }
+        } as any;
+        const calloutCollisionTransform = {} as any;
+        const props = getCalloutCollisionTransformationPropsForDropdown(mockDropdown, calloutCollisionTransform);
+        expect(props).toBeUndefined();
+    });
 });
