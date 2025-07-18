@@ -135,9 +135,11 @@ export class UIList extends React.Component<ListProps, {}> {
             }
         });
 
+        const shouldCollapseAll = this.props.groupProps?.isAllGroupsCollapsed ?? true;
+
         const GroupProps: IGroupRenderProps = {
             headerProps: HeaderProps,
-            isAllGroupsCollapsed: false,
+            isAllGroupsCollapsed: shouldCollapseAll,
             ...this.props.groupProps
         };
 

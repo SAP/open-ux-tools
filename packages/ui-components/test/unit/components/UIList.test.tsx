@@ -9,6 +9,11 @@ const groups: IGroup[] = [
     { key: 'group2', name: 'Group 2', startIndex: 2, count: 1, isCollapsed: false }
 ];
 
+const expandedGroups: IGroup[] = [
+    { key: 'group1', name: 'Group 1', startIndex: 0, count: 2, isCollapsed: false },
+    { key: 'group2', name: 'Group 2', startIndex: 2, count: 1, isCollapsed: false }
+];
+
 const items: any[] = [
     { id: 1, name: 'Item 1', description: 'First item' },
     { id: 2, name: 'Item 2', description: 'Second item' },
@@ -39,11 +44,12 @@ describe('UIList', () => {
     it('renders all cells', () => {
         render(
             <UIList
-                groups={groups}
+                groups={expandedGroups}
                 items={items}
                 onSelect={jest.fn()}
                 onRenderCell={onRenderCell}
                 useVirtualization={false}
+                groupProps={{ isAllGroupsCollapsed: false }}
             />
         );
         expect(screen.getByTestId('cell-0')).toBeInTheDocument();
