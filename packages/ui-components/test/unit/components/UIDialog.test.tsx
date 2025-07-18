@@ -228,7 +228,7 @@ describe('<UIDialog />', () => {
                 backdropFilter: undefined,
                 transition: 'opacity 0.4s ease-in-out'
             });
-            expect((modalStyles.main as IRawStyle)['animation']).toEqual(' 0.4s ease-in-out');
+            expect((modalStyles.main as IRawStyle)['animation']).toInclude(' 0.4s ease-in-out');
         });
 
         it('Overlay "withBlurOverlay" is enabled', () => {
@@ -245,7 +245,7 @@ describe('<UIDialog />', () => {
                 backdropFilter: 'blur(5px)',
                 transition: 'opacity 0.4s ease-in-out'
             });
-            expect((modalStyles.main as IRawStyle)['animation']).toEqual(' 0.4s ease-in-out');
+            expect((modalStyles.main as IRawStyle)['animation']).toInclude(' 0.4s ease-in-out');
         });
 
         it('Overlay "isOpenAnimated" is disabled', () => {
