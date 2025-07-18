@@ -1,21 +1,26 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 
 import type { UISeparatorProps } from '../../../src/components/UISeparator';
 import { UISeparator } from '../../../src/components/UISeparator';
 
 describe('<UISeparator />', () => {
-    let wrapper: Enzyme.ReactWrapper<UISeparatorProps>;
+    let renderResult: ReturnType<typeof render>;
+    let container: HTMLElement;
 
     beforeEach(() => {
-        wrapper = Enzyme.mount(<UISeparator />);
+        renderResult = render(<UISeparator />);
+        container = renderResult.container;
     });
 
     afterEach(() => {
-        wrapper.unmount();
+        if (renderResult) {
+            renderResult.unmount();
+        }
     });
 
     it('Should render a UISeparator component', () => {
-        expect(wrapper.find({ role: 'separator' }).length).toEqual(1);
+        expect(container.querySelectorAll('[role="separator"]').length).toEqual(1);
     });
 });
