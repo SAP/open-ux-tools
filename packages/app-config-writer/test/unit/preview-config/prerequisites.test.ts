@@ -44,6 +44,18 @@ describe('prerequisites', () => {
         );
     });
 
+    test('check prerequisites with UI5 cli 3.0 dependency', async () => {
+        fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '3.0.0' } }));
+
+        expect(await checkPrerequisites(basePath, fs, false, logger)).toBeTruthy();
+    });
+
+    test('check prerequisites with UI5 cli 4.0 dependency', async () => {
+        fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '4.0.0' } }));
+
+        expect(await checkPrerequisites(basePath, fs, false, logger)).toBeTruthy();
+    });
+
     test('check prerequisites with UI5 cli ^3 dependency', async () => {
         fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '^3' } }));
 
@@ -57,6 +69,12 @@ describe('prerequisites', () => {
         expect(errorLogMock).toHaveBeenCalledWith(
             'UI5 CLI version 3.0.0 or higher is required to convert the preview to virtual files. For more information, see https://sap.github.io/ui5-tooling/v3/updates/migrate-v3.'
         );
+    });
+
+    test('check prerequisites with UI5 cli ^4 dependency', async () => {
+        fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '^4' } }));
+
+        expect(await checkPrerequisites(basePath, fs, false, logger)).toBeTruthy();
     });
 
     test('check prerequisites with UI5 ux-ui5-tooling 1.16.0 dependency', async () => {
