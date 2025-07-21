@@ -23,10 +23,9 @@ import { promptDeployConfigQuestions } from './prompting';
 import { promptNames } from '../prompts/deploy-target';
 import type { Answers } from 'inquirer';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
-import type { DeployConfigGenerator, DeployConfigOptions } from '../types';
+import type { DeployConfigGenerator, DeployConfigOptions, DeployConfigSubGenPromptOptions } from '../types';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
-import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 import type {
     CfDeployConfigAnswers,
     CfDeployConfigOptions,
@@ -44,7 +43,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
     readonly launchStandaloneFromYui: boolean;
     readonly apiHubConfig: ApiHubConfig;
     launchDeployConfigAsSubGenerator: boolean;
-    extensionPromptOpts?: Record<string, CommonPromptOptions>;
+    promptOptions?: DeployConfigSubGenPromptOptions;
     vscode: VSCodeInstance;
     cfDestination: string;
     mtaPath?: string;
@@ -68,6 +67,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.genNamespace = opts.namespace;
         this.launchDeployConfigAsSubGenerator = opts.launchDeployConfigAsSubGenerator ?? false;
+        this.promptOptions = opts?.subGenPromptOptions;
         this.target = parseTarget(args, opts);
         this.vscode = opts.vscode;
 
@@ -117,14 +117,18 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
      */
     public async initializing(): Promise<void> {
         await super.initializing();
-        this.extensionPromptOpts = {
-            ...(await getExtensionGenPromptOpts(
-                this.env.create.bind(this.env),
-                deployConfigSubGenNamespace,
-                this.vscode
-            )),
-            ...this.options.subGenPromptOptions
+
+        const promptOptions = await getExtensionGenPromptOpts(
+            this.env.create.bind(this.env),
+            deployConfigSubGenNamespace,
+            this.vscode
+        );
+
+        this.promptOptions = {
+            ...promptOptions,
+            ...this.promptOptions
         };
+
         const capRoot = await findCapProjectRoot(this.options.appRootPath);
         this.isCap = !!capRoot;
         this.mtaPath = (await getMtaPath(this.options.appRootPath))?.mtaPath;
@@ -181,7 +185,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
                 {
                     launchDeployConfigAsSubGenerator: this.launchDeployConfigAsSubGenerator,
                     launchStandaloneFromYui: this.launchStandaloneFromYui,
-                    extensionPromptOpts: this.extensionPromptOpts,
+                    promptOptions: this.promptOptions,
                     supportedTargets,
                     backendConfig: this.backendConfig,
                     cfDestination: this.cfDestination,

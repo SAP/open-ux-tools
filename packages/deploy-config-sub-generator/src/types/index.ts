@@ -5,9 +5,10 @@ import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { LogWrapper, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 import type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-sub-generator';
+
+export type DeployConfigSubGenPromptOptions = AbapDeployConfigPromptOptions | CfDeployConfigPromptOptions;
 
 export interface DeployConfigOptions extends Generator.GeneratorOptions {
     /**
@@ -71,7 +72,7 @@ export interface DeployConfigOptions extends Generator.GeneratorOptions {
     /**
      * Deployment configuration prompt options for sub generators
      */
-    subGenPromptOptions?: AbapDeployConfigPromptOptions | CfDeployConfigPromptOptions;
+    subGenPromptOptions?: DeployConfigSubGenPromptOptions;
 }
 
 /**
@@ -94,10 +95,6 @@ export interface DeployConfigGenerator {
      * Instance of vscode
      */
     vscode: VSCodeInstance;
-    /**
-     * Options loaded from extension generators
-     */
-    extensionPromptOpts?: Record<string, CommonPromptOptions>;
     /**
      * The generator namespace that will be used for calling subgens
      */
