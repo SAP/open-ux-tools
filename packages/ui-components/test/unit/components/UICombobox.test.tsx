@@ -467,7 +467,7 @@ describe('<UIComboBox />', () => {
                     expect([0, 1, 2]).toContain(document.body.querySelectorAll('.ts-Menu-option--highlighted').length);
                 });
                 const highlightedOption = document.body.querySelector('.ts-Menu-option--highlighted');
-                expect([query, ''].includes(highlightedOption?.textContent ?? ''));
+                expect(highlightedOption?.textContent).toEqual(query);
                 // select some options
                 const options = document.body.querySelectorAll('.ms-Checkbox.is-enabled.ms-ComboBox-option');
                 expect([0, 1, 2, 3, 4, 5]).toContain(options.length);
