@@ -111,6 +111,29 @@ describe('connect', () => {
                 expect(provider).toBeDefined();
             });
 
+            test('use refresh token callback to request a new access token', async () => {
+                jest.spyOn(logger, 'info');
+                mockReadFileSync.mockReturnValueOnce(JSON.stringify(credentials.serviceKeys));
+                prompts.inject(['/a/mocked/path/service-keys.json']);
+                mockedStoreService.read.mockResolvedValueOnce({ ...credentials, refreshToken: 'old-refresh-token' });
+                const provider = await createAbapServiceProvider({ ...target, scp: true }, undefined, true, logger);
+                expect(provider).toBeDefined();
+                nock(`${target.url}/oauth/token`)
+                    .post(/.*/)
+                    .reply(function () {
+                        return [200, { access_token: 'new-access-token', refresh_token: 'new-refresh-token' }];
+                    })
+                    .persist();
+                nock(`${target.url}/userinfo`)
+                    .get(/.*/)
+                    .reply(function () {
+                        return [200];
+                    })
+                    .persist();
+                await provider.user();
+                expect(logger.info).toHaveBeenCalledWith('Updating refresh token for: ' + target.url);
+            });
+
             test('handle missing service keys', async () => {
                 mockReadFileSync.mockReturnValueOnce(JSON.stringify(credentials.serviceKeys));
                 prompts.inject(['/a/mocked/path/service-keys.json']);
