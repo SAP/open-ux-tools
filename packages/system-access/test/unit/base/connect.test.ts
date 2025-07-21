@@ -114,7 +114,6 @@ describe('connect', () => {
             test('use refresh token callback to request a new access token', async () => {
                 jest.spyOn(logger, 'info');
                 mockReadFileSync.mockReturnValueOnce(JSON.stringify(credentials.serviceKeys));
-                prompts.inject(['/a/mocked/path/service-keys.json']);
                 mockedStoreService.read.mockResolvedValueOnce({ ...credentials, refreshToken: 'old-refresh-token' });
                 const provider = await createAbapServiceProvider({ ...target, scp: true }, undefined, true, logger);
                 expect(provider).toBeDefined();
