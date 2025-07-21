@@ -295,6 +295,27 @@ describe('proxy', () => {
             await enhanceConfigForSystem(proxyOptions, system, logger);
             expect(proxyOptions.headers['cookie']).toBe('auth=Basic');
         });
+
+        test('Authorization header is string', async () => {
+            jest.resetModules();
+            jest.doMock('@sap-ux/system-access', () => ({
+                createAbapServiceProvider: jest.fn().mockResolvedValue({
+                    getAtoInfo: jest.fn().mockResolvedValue(false),
+                    defaults: {
+                        headers: {
+                            common: {
+                                Authorization: 'Bearer testtoken'
+                            }
+                        }
+                    }
+                })
+            }));
+            const { enhanceConfigForSystem } = require('../../src/base/proxy');
+            const proxyOptions: OptionsWithHeaders = { headers: {} };
+            await enhanceConfigForSystem(proxyOptions, system, logger);
+            expect(typeof proxyOptions.headers.Authorization).toBe('string');
+            expect(proxyOptions.headers.Authorization).toBe('Bearer testtoken');
+        });
     });
 
     describe('generateProxyMiddlewareOptions', () => {
