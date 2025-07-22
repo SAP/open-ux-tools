@@ -12,8 +12,9 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
     /**
      * @param {Editor} fs - The filesystem editor instance.
      * @param {string} projectPath - The root path of the project.
+     * @param {string} templatesPath - The path to the templates used for generating changes.
      */
-    constructor(private fs: Editor, private projectPath: string) {}
+    constructor(private fs: Editor, private projectPath: string, private templatesPath?: string) {}
 
     /**
      * Constructs the content for an annotation change based on provided data.
@@ -75,6 +76,6 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
         if (data.isCommand) {
             change = getChange(variant, timestamp, content, ChangeType.ADD_ANNOTATIONS_TO_ODATA);
         }
-        writeAnnotationChange(this.projectPath, timestamp, data.annotation, change, this.fs);
+        writeAnnotationChange(this.projectPath, timestamp, data.annotation, change, this.fs, this.templatesPath);
     }
 }
