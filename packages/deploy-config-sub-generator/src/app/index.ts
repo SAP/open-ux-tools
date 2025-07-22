@@ -241,4 +241,4 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
 }
 
 export { promptNames };
-export type { DeployConfigOptions };
+export type { DeployConfigOptions, DeployConfigSubGenPromptOptions };

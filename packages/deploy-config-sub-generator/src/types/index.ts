@@ -1,3 +1,4 @@
+import { promptNames } from '../app';
 import type Generator from 'yeoman-generator';
 import type { Answers } from 'inquirer';
 import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
@@ -7,8 +8,14 @@ import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-sub-generator';
+import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 
-export type DeployConfigSubGenPromptOptions = AbapDeployConfigPromptOptions | CfDeployConfigPromptOptions;
+export type DeployConfigSubGenPromptOptions =
+    | {
+          [promptNames.targetName]: CommonPromptOptions;
+      }
+    | AbapDeployConfigPromptOptions
+    | CfDeployConfigPromptOptions;
 
 export interface DeployConfigOptions extends Generator.GeneratorOptions {
     /**

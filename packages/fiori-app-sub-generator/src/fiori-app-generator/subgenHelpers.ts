@@ -5,7 +5,8 @@ import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { FlpConfigOptions, FLPConfigPromptOptions } from '@sap-ux/flp-config-sub-generator';
-import type { Service, DeploySubGenPromptOptions } from '../types';
+import type { Service } from '../types';
+import type { DeployConfigSubGenPromptOptions } from '@sap-ux/deploy-config-sub-generator';
 
 /**
  * Add the '@sap/fiori:fiori-deployment' generator as a subgenerator.
@@ -35,7 +36,7 @@ export function addDeployGen(
     composeWith: Generator['composeWith'],
     logger: ILogWrapper,
     appWizard?: AppWizard,
-    promptSettings?: DeploySubGenPromptOptions
+    promptSettings?: DeployConfigSubGenPromptOptions
 ): void {
     composeWith('@sap/fiori:deploy-config', {
         launchDeployConfigAsSubGenerator: true,
