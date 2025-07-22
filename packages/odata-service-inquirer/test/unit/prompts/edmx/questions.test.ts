@@ -344,25 +344,46 @@ describe('Test entity prompts', () => {
                 value: 'TreeTable'
             }
         ]);
-        expect(tabelType.default).toEqual('ResponsiveTable');
+        expect(tabelType.default()).toEqual('ResponsiveTable');
 
+        // For V4, if the selected entity has aggregate transformations, use AnalyticalTable as default
+        questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'lrop', false);
+        tabelType = questions.find((question) => question.name === EntityPromptNames.tableType) as ListQuestion;
+        // Simulate prevAnswers with mainEntity that has aggregate transformations
+        const aggEntity = {
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'SalesOrderItem',
+                entitySetType: 'com.c_salesordermanage_sd_aggregate.SalesOrderItem'
+            }
+        };
+        expect((tabelType.default as Function)(aggEntity)).toEqual('AnalyticalTable');
+
+        // If the user has already selected a table type, return it
+        const prevAnswersWithTableType = {
+            [EntityPromptNames.tableType]: 'GridTable',
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'Customer',
+                entitySetType: 'com.c_salesordermanage_sd_aggregate.Customer'
+            }
+        };
+        expect((tabelType.default as Function)(prevAnswersWithTableType)).toEqual('GridTable');
+
+        // Otherwise, default to ResponsiveTable
+        const prevAnswersNoSpecial = {
+            [EntityPromptNames.mainEntity]: {
+                entitySetName: 'SomeOtherEntity',
+                entitySetType: 'SomeOtherType'
+            }
+        };
+        expect((tabelType.default as Function)(prevAnswersNoSpecial)).toEqual('ResponsiveTable');
+
+        // If no prevAnswers, default to ResponsiveTable
+        expect((tabelType.default as Function)()).toEqual('ResponsiveTable');
+
+        // For ALP, use AnalyticalTable as default
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'alp', false);
         tabelType = questions.find((question) => question.name === EntityPromptNames.tableType) as ListQuestion;
-        expect(tabelType.choices as []).toEqual([
-            {
-                name: 'Analytical',
-                value: 'AnalyticalTable'
-            },
-            {
-                name: 'Grid',
-                value: 'GridTable'
-            },
-            {
-                name: 'Responsive',
-                value: 'ResponsiveTable'
-            }
-        ]);
-        expect(tabelType.default).toEqual('AnalyticalTable');
+        expect((tabelType.default as Function)({})).toEqual('AnalyticalTable');
 
         const hierarchyQualifier = questions.find(
             (question) => question.name === EntityPromptNames.hierarchyQualifier

@@ -170,7 +170,7 @@ export function getEntitySelectionQuestions(
     entityQuestions.push(...getAddAnnotationQuestions(metadata, templateType, odataVersion, isCapService));
 
     if (!promptOptions?.hideTableLayoutPrompts) {
-        entityQuestions.push(...getTableLayoutQuestions(templateType, odataVersion, isCapService));
+        entityQuestions.push(...getTableLayoutQuestions(templateType, odataVersion, isCapService, metadata));
     }
 
     if (templateType === 'alp') {
@@ -187,12 +187,14 @@ export function getEntitySelectionQuestions(
  * @param templateType used to determine if the tree table option should be included
  * @param odataVersion used to determine if the hierarchy qualifier is required when the selected table type is TreeTable
  * @param isCapService used to determine if the tree table option should be included
+ * @param metadata the metadata (edmx) string of the service
  * @returns the table layout questions
  */
 function getTableLayoutQuestions(
     templateType: TemplateType,
     odataVersion: OdataVersion,
-    isCapService: boolean
+    isCapService: boolean,
+    metadata: string
 ): Question<TableConfigAnswers>[] {
     const tableTypeChoices: { name: string; value: TableType }[] = [
         { name: t('prompts.tableType.choiceAnalytical'), value: 'AnalyticalTable' },
@@ -206,7 +208,7 @@ function getTableLayoutQuestions(
     const tableLayoutQuestions: Question<TableConfigAnswers>[] = [];
 
     if (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') {
-        const tableTypeDefault: TableType = templateType === 'alp' ? 'AnalyticalTable' : 'ResponsiveTable';
+        let setAnalyticalTableDefault = false;
         tableLayoutQuestions.push({
             when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
             type: 'list',
@@ -214,10 +216,23 @@ function getTableLayoutQuestions(
             message: t('prompts.tableType.message'),
             guiOptions: {
                 hint: t('prompts.tableType.hint'),
-                breadcrumb: true
+                breadcrumb: true,
+                applyDefaultWhenDirty: true // set table type on entity selection change
             },
             choices: tableTypeChoices,
-            default: tableTypeDefault
+            default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
+                const tableTypeDefault = getDefaultTableType(templateType, prevAnswers, metadata, odataVersion);
+                setAnalyticalTableDefault = tableTypeDefault.setAnalyticalTableDefault;
+                return tableTypeDefault.tableType;
+            },
+            additionalMessages: (tableType: TableType) => {
+                if (tableType === 'AnalyticalTable' && setAnalyticalTableDefault) {
+                    return {
+                        message: t('prompts.tableType.analyticalTableDefault'),
+                        severity: Severity.information
+                    };
+                }
+            }
         } as ListQuestion<TableConfigAnswers>);
 
         tableLayoutQuestions.push({
@@ -255,6 +270,52 @@ function getEdmxSizeInKb(edmx: string): number {
         return sizeInBytes / 1024;
     }
     return 0;
+}
+
+/**
+ * Get the default table type based on the template type and previous answers.
+ *
+ * @param templateType the template type of the application to be generated from the prompt answers
+ * @param prevAnswers the previous answers from the prompt, used to determine the main entity
+ * @param metadata the metadata (edmx) string of the service, used to determine if there are aggregate transformations
+ * @param odataVersion the OData version of the service,
+ * @returns the default table type based on the template type and previous answers or undefined if no default is set
+ */
+function getDefaultTableType(
+    templateType: TemplateType,
+    prevAnswers: EntitySelectionAnswers & TableConfigAnswers,
+    metadata: string,
+    odataVersion: OdataVersion
+): { tableType: TableType; setAnalyticalTableDefault: boolean } {
+    let tableType: TableType;
+    let setAnalyticalTableDefault: boolean;
+    if (
+        (templateType === 'lrop' || templateType === 'worklist') &&
+        odataVersion === OdataVersion.v4 &&
+        getEntityChoices(metadata, {
+            entitySetFilter: 'filterAggregateTransformationsOnly'
+        }).choices.some((choice) => choice.value.entitySetName === prevAnswers?.mainEntity?.entitySetName)
+    ) {
+        // For V4, if the selected entity has aggregate transformations, use AnalyticalTable as default
+        tableType = 'AnalyticalTable';
+        setAnalyticalTableDefault = true;
+    } else if (templateType === 'alp') {
+        // For ALP, use AnalyticalTable as default
+        setAnalyticalTableDefault = false;
+        tableType = 'AnalyticalTable';
+    } else if (prevAnswers?.tableType) {
+        // If the user has already selected a table type, return it
+        setAnalyticalTableDefault = false;
+        tableType = prevAnswers.tableType;
+    } else {
+        // Default to ResponsiveTable for other cases
+        setAnalyticalTableDefault = false;
+        tableType = 'ResponsiveTable';
+    }
+    return {
+        tableType,
+        setAnalyticalTableDefault
+    };
 }
 
 /**
