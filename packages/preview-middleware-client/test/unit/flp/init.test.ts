@@ -245,7 +245,7 @@ describe('flp/init', () => {
                 showInfoCenterMessage({
                     title: 'Card Generator Not Supported',
                     description:
-                        'The card generator is not supported for the current UI5 version. Install a supported version.',
+                        'The card generator is not supported for the current SAPUI5 version. Install a supported version.',
                     type: MessageBarType.warning
                 })
             );
