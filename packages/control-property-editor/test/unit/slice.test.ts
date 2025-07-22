@@ -2,28 +2,29 @@ import {
     applicationModeChanged,
     changeStackModified,
     iconsLoaded,
-    setApplicationRequiresReload,
     propertyChanged,
     propertyChangeFailed,
+    PropertyType,
     quickActionListChanged,
     reloadApplication,
+    requestControlContextMenu,
     SCENARIO,
+    setApplicationRequiresReload,
     storageFileChanged,
-    updateQuickAction,
-    PropertyType,
-    requestControlContextMenu
+    toggleAppPreviewVisibility,
+    updateQuickAction
 } from '@sap-ux-private/control-property-editor-common';
 
+import { DeviceType } from '../../src/devices';
 import reducer, {
+    changeDeviceType,
+    changeProperty,
+    fileChanged,
     FilterName,
     filterNodes,
-    changeProperty,
-    changeDeviceType,
-    setProjectScenario,
-    fileChanged,
-    setFeatureToggles
+    setFeatureToggles,
+    setProjectScenario
 } from '../../src/slice';
-import { DeviceType } from '../../src/devices';
 
 describe('main redux slice', () => {
     describe('property changed', () => {
@@ -1001,5 +1002,21 @@ describe('main redux slice', () => {
                 }
             });
         });
+    });
+
+    describe('toggleAppPreviewVisibility ', () => {
+        test('show application preview', () => {
+            testToggleApplicationPreview(true);
+        });
+
+        test('hide application preview', () => {
+            testToggleApplicationPreview(false);
+        });
+
+        function testToggleApplicationPreview(isAppPreviewVisible: boolean): void {
+            expect(reducer({} as any, toggleAppPreviewVisibility(isAppPreviewVisible))).toStrictEqual({
+                isAppPreviewVisible
+            });
+        }
     });
 });

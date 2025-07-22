@@ -118,7 +118,7 @@ export default class AddCustomFragment extends BaseDialog<AddFragmentModel> {
             const error = getError(e);
             await sendInfoCenterMessage({
                 title: { key: 'ADP_ADD_FRAGMENT_DIALOG_TITLE' },
-                description: getError(e).message,
+                description: error.message,
                 type: MessageBarType.error
             });
             throw error;
