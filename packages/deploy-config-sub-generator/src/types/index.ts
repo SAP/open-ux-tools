@@ -1,4 +1,4 @@
-import { promptNames } from '../app';
+import type { promptNames } from '../app';
 import type Generator from 'yeoman-generator';
 import type { Answers } from 'inquirer';
 import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
