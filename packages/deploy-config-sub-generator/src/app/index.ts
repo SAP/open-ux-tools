@@ -16,11 +16,11 @@ import {
     generatorNamespace,
     getBackendConfig,
     getSupportedTargets,
-    generatorTitle
+    generatorTitle,
+    promptNames
 } from '../utils';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { promptDeployConfigQuestions } from './prompting';
-import { promptNames } from '../prompts/deploy-target';
 import type { Answers } from 'inquirer';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { DeployConfigGenerator, DeployConfigOptions, DeployConfigSubGenPromptOptions } from '../types';

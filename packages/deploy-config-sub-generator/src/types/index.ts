@@ -8,7 +8,7 @@ import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-sub-generator';
 import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
-import type { promptNames } from '../prompts/deploy-target';
+import type { promptNames } from '../utils';
 
 export type DeployConfigSubGenPromptOptions =
     | {

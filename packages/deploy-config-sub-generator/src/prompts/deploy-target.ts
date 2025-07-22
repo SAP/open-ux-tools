@@ -1,10 +1,6 @@
-import { isMTAInstalled, t } from '../utils';
+import { isMTAInstalled, promptNames, t } from '../utils';
 import type { Target } from '../types';
 import type { Question, ListQuestion } from 'inquirer';
-
-export enum promptNames {
-    targetName = 'targetName'
-}
 
 /**
  * Returns the deployment target question.
