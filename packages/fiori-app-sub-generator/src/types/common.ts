@@ -3,6 +3,7 @@ import type { UI5ApplicationPromptOptions } from '@sap-ux/ui5-application-inquir
 import type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-inquirer';
 import type { CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-inquirer';
 import type { FLPConfigPromptOptions } from '@sap-ux/flp-config-sub-generator';
+import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 
 /**
  * package.json script entries (commands and tasks)
@@ -20,8 +21,15 @@ export type WorkspaceFolder = {
     path: string;
 };
 
+type DeploySubGenPromptOptions = {
+    targetName: CommonPromptOptions;
+};
+
 export interface SubGeneratorPromptSettings {
-    '@sap-ux/deploy-config-sub-generator'?: AbapDeployConfigPromptOptions | CfDeployConfigPromptOptions;
+    '@sap-ux/deploy-config-sub-generator'?:
+        | DeploySubGenPromptOptions
+        | AbapDeployConfigPromptOptions
+        | CfDeployConfigPromptOptions;
     '@sap-ux/flp-config-sub-generator'?: FLPConfigPromptOptions;
 }
 
