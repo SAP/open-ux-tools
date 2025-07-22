@@ -1,6 +1,5 @@
+import type { CapRuntime } from '@sap-ux/fiori-generator-shared';
 import type { CdsVersionInfo, CdsUi5PluginInfo } from '@sap-ux/project-access';
-
-export type CapRuntime = 'Node.js' | 'Java';
 
 export interface CapService {
     /**
