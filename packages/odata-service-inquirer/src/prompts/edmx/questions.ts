@@ -21,10 +21,12 @@ import {
     type EntityAnswer,
     type EntityChoiceOptions,
     type EntitySetFilter,
+    filterAggregateTransformations,
     getEntityChoices,
     getNavigationEntityChoices,
     type NavigationEntityAnswer
 } from './entity-helper';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 /**
  * Validate the entity choice options. If the entity choice options are empty, a validation message will be returned.
@@ -170,7 +172,7 @@ export function getEntitySelectionQuestions(
     entityQuestions.push(...getAddAnnotationQuestions(metadata, templateType, odataVersion, isCapService));
 
     if (!promptOptions?.hideTableLayoutPrompts) {
-        entityQuestions.push(...getTableLayoutQuestions(templateType, odataVersion, isCapService, metadata));
+        entityQuestions.push(...getTableLayoutQuestions(templateType, odataVersion, isCapService, convertedMetadata));
     }
 
     if (templateType === 'alp') {
@@ -194,7 +196,7 @@ function getTableLayoutQuestions(
     templateType: TemplateType,
     odataVersion: OdataVersion,
     isCapService: boolean,
-    metadata: string
+    metadata: ConvertedMetadata
 ): Question<TableConfigAnswers>[] {
     const tableTypeChoices: { name: string; value: TableType }[] = [
         { name: t('prompts.tableType.choiceAnalytical'), value: 'AnalyticalTable' },
@@ -221,7 +223,13 @@ function getTableLayoutQuestions(
             },
             choices: tableTypeChoices,
             default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
-                const tableTypeDefault = getDefaultTableType(templateType, prevAnswers, metadata, odataVersion);
+                const tableTypeDefault = getDefaultTableType(
+                    templateType,
+                    metadata,
+                    odataVersion,
+                    prevAnswers?.mainEntity?.entitySetName,
+                    prevAnswers?.tableType
+                );
                 setAnalyticalTableDefault = tableTypeDefault.setAnalyticalTableDefault;
                 return tableTypeDefault.tableType;
             },
@@ -276,23 +284,25 @@ function getEdmxSizeInKb(edmx: string): number {
  * Get the default table type based on the template type and previous answers.
  *
  * @param templateType the template type of the application to be generated from the prompt answers
- * @param prevAnswers the previous answers from the prompt, used to determine the main entity
- * @param metadata the metadata (edmx) string of the service, used to determine if there are aggregate transformations
- * @param odataVersion the OData version of the service,
- * @returns the default table type based on the template type and previous answers or undefined if no default is set
+ * @param metadata the metadata (edmx) string of the service
+ * @param odataVersion the OData version of the service
+ * @param mainEntitySetName the name of the main entity set
+ * @param currentTableType the current table type selected by the user
+ * @returns the default table type and a boolean indicating if AnalyticalTable should be set as default
  */
 function getDefaultTableType(
     templateType: TemplateType,
-    prevAnswers: EntitySelectionAnswers & TableConfigAnswers,
-    metadata: string,
-    odataVersion: OdataVersion
+    metadata: ConvertedMetadata,
+    odataVersion: OdataVersion,
+    mainEntitySetName?: string,
+    currentTableType?: TableType
 ): { tableType: TableType; setAnalyticalTableDefault: boolean } {
     let tableType: TableType;
     let setAnalyticalTableDefault = false;
     if (
         (templateType === 'lrop' || templateType === 'worklist') &&
         odataVersion === OdataVersion.v4 &&
-        hasAggregateTransformationsForEntity(metadata, prevAnswers?.mainEntity?.entitySetName)
+        hasAggregateTransformationsForEntity(metadata, mainEntitySetName)
     ) {
         // For V4, if the selected entity has aggregate transformations, use AnalyticalTable as default
         tableType = 'AnalyticalTable';
@@ -300,9 +310,9 @@ function getDefaultTableType(
     } else if (templateType === 'alp') {
         // For ALP, use AnalyticalTable as default
         tableType = 'AnalyticalTable';
-    } else if (prevAnswers?.tableType) {
+    } else if (currentTableType) {
         // If the user has already selected a table type use it
-        tableType = prevAnswers.tableType;
+        tableType = currentTableType;
     } else {
         // Default to ResponsiveTable for other cases
         tableType = 'ResponsiveTable';
@@ -320,13 +330,11 @@ function getDefaultTableType(
  * @param entitySetName The entity set name to check for aggregate transformations.
  * @returns true if the entity set has aggregate transformations, false otherwise.
  */
-function hasAggregateTransformationsForEntity(metadata: string, entitySetName?: string): boolean {
+function hasAggregateTransformationsForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
     if (!entitySetName) {
         return false;
     }
-    return getEntityChoices(metadata, {
-        entitySetFilter: 'filterAggregateTransformationsOnly'
-    }).choices.some((choice) => choice.value.entitySetName === entitySetName);
+    return filterAggregateTransformations(metadata.entitySets).some((entitySet) => entitySet.name === entitySetName);
 }
 
 /**
