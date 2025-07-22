@@ -1,11 +1,11 @@
 import type { CapService } from '@sap-ux/cap-config-writer';
 import { OdataVersion } from '@sap-ux/fiori-elements-writer';
-import { getCapFolderPathsSync } from '@sap-ux/fiori-generator-shared';
+import { getCapFolderPathsSync, type AppConfig } from '@sap-ux/fiori-generator-shared';
 import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import { promptNames } from '@sap-ux/ui5-application-inquirer';
 import { getDefaultUI5Theme, supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
 import { join } from 'path';
-import type { AppConfig, FEAppConfig, FFAppConfig, Project, Service, State } from '../types';
+import type { FEAppConfig, FFAppConfig, Project, Service, State } from '../types';
 import { ApiHubType, FloorplanFE, FloorplanFF, capTypeConversion, defaultPromptValues } from '../types';
 import { getODataVersion, t } from '../utils';
 

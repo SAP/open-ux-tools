@@ -31,9 +31,6 @@
       "path": "../deploy-config-generator-shared"
     },
     {
-      "path": "../fiori-app-sub-generator"
-    },
-    {
       "path": "../fiori-generator-shared"
     },
     {
