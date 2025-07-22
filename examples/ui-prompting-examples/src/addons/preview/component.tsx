@@ -8,7 +8,7 @@ getWebSocket(false);
 
 type SupportedLanguages = 'html' | 'json';
 
-export const render = (props: { active?: boolean }): React.ReactElement => {
+export const CodePreview = (props: { active?: boolean }): React.ReactElement => {
     const { active = false } = props;
     const [preview, setPreview] = useState<{
         codeSnippets: { content: string; fileName: string; language: SupportedLanguages }[];
