@@ -183,7 +183,7 @@ export type TransportInputChoicePromptOptions = {
 };
 
 export type TargetSystemPromptOptions = {
-    additionalValidation: {
+    additionalValidation?: {
         shouldRestrictDifferentSystemType: boolean;
     };
 };
