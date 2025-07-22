@@ -21,15 +21,15 @@ export type WorkspaceFolder = {
     path: string;
 };
 
-type DeploySubGenPromptOptions = {
-    targetName: CommonPromptOptions;
-};
+export type DeploySubGenPromptOptions =
+    | {
+          targetName: CommonPromptOptions;
+      }
+    | AbapDeployConfigPromptOptions
+    | CfDeployConfigPromptOptions;
 
 export interface SubGeneratorPromptSettings {
-    '@sap-ux/deploy-config-sub-generator'?:
-        | DeploySubGenPromptOptions
-        | AbapDeployConfigPromptOptions
-        | CfDeployConfigPromptOptions;
+    '@sap-ux/deploy-config-sub-generator'?: DeploySubGenPromptOptions;
     '@sap-ux/flp-config-sub-generator'?: FLPConfigPromptOptions;
 }
 

@@ -3,9 +3,7 @@ import { type ILogWrapper, getSemanticObject } from '@sap-ux/fiori-generator-sha
 import type { FlpConfigOptions, FLPConfigPromptOptions } from '@sap-ux/flp-config-sub-generator';
 import { join } from 'path';
 import type Generator from 'yeoman-generator';
-import { defaultNavActionDisplay, type Service } from '../types';
-import type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-inquirer';
-import type { CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-inquirer';
+import { defaultNavActionDisplay, DeploySubGenPromptOptions, type Service } from '../types';
 
 /**
  * Add the '@sap/fiori:fiori-deployment' generator as a subgenerator.
@@ -35,7 +33,7 @@ export function addDeployGen(
     composeWith: Generator['composeWith'],
     logger: ILogWrapper,
     appWizard?: AppWizard,
-    promptSettings?: AbapDeployConfigPromptOptions | CfDeployConfigPromptOptions
+    promptSettings?: DeploySubGenPromptOptions
 ): void {
     composeWith('@sap/fiori:deploy-config', {
         launchDeployConfigAsSubGenerator: true,
