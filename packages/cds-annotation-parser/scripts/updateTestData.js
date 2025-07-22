@@ -57,7 +57,7 @@ const NODE_PROPERTIES = {
     [QUALIFIER_TYPE]: [...valueNodeProperties],
     [ANNOTATION_TYPE]: [...nodeProperties, 'term', 'qualifier', 'colon', 'value'],
     [ANNOTATION_GROUP_TYPE]: [...nodeProperties, 'name', 'colon', 'items'],
-    [ANNOTATION_GROUP_ITEMS_TYPE]: [...nodeProperties, ...delimiterTokens, 'items', 'commas'],
+    [ANNOTATION_GROUP_ITEMS_TYPE]: [...nodeProperties, ...delimiterTokens, 'items', 'commas']
 };
 
 const compactAst = (key, value) => {
@@ -105,17 +105,17 @@ const compactCst = (key, value) => {
         return compactRange(value);
     }
     if (typeof value === 'object' && !Array.isArray(value)) {
-        const sortedKeys = Object.keys(value).sort((a,b) => {
+        const sortedKeys = Object.keys(value).sort((a, b) => {
             const indexA = CST_NODE_PROPERTIES.indexOf(a);
             const indexB = CST_NODE_PROPERTIES.indexOf(b);
-            if (indexA === -1 && indexB === -1 ) {
+            if (indexA === -1 && indexB === -1) {
                 return a.localeCompare(b);
             }
             if (indexA === -1) {
                 return 1;
             }
             if (indexB === -1) {
-                return -1
+                return -1;
             }
             return indexA - indexB;
         });
@@ -220,7 +220,7 @@ const update = async () => {
             const text = readFileSync(test).toString();
             const { cst, tokens } = parse(text);
             const positionExits = await doesExits(join(ROOT, 'position.json'));
-            let startPosition = undefined;
+            let startPosition;
             if (positionExits) {
                 const position = readFileSync(join(ROOT, 'position.json')).toString();
                 if (position !== undefined) {

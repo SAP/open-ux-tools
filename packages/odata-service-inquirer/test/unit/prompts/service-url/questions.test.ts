@@ -572,7 +572,6 @@ describe('Service URL prompts', () => {
     test('Should show `NODE_TLS_REJECT_UNAUTHORIZED` warning if set when bypassing certificate errors', async () => {
         const questions = getServiceUrlQuestions();
         const serviceUrlQuestion = questions.find((q) => q.name === promptNames.serviceUrl) as InputQuestion;
-        const systemUrl = 'https://example.com';
         // @ts-expect-error ignore type error for mock
         connectionValidatorMock.ignoreCertError = true;
         expect(await (serviceUrlQuestion?.additionalMessages as Function)()).toEqual({
