@@ -6,7 +6,7 @@ import { generatorNamespace } from '../../src/utils';
 import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
 import ABAPGen from '@sap-ux/abap-deploy-config-sub-generator';
 import { DeployTarget } from '@sap-ux/fiori-generator-shared';
-import type { AppConfig } from '@sap-ux/fiori-app-sub-generator';
+import type { AppConfig } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Runs the headless generator for deployment sub generators.

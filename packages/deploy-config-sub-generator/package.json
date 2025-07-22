@@ -57,7 +57,6 @@
         "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
         "@sap-ux/cf-deploy-config-inquirer": "workspace:*",
         "@sap-ux/cf-deploy-config-writer": "workspace:*",
-        "@sap-ux/fiori-app-sub-generator": "workspace:*",
         "@sap-ux/jest-file-matchers": "workspace:*",
         "@sap/mta-lib": "1.7.4",
         "fs-extra": "10.0.0",
