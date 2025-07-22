@@ -14,7 +14,11 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      * @param {string} projectPath - The root path of the project.
      * @param {string} templatesPath - The path to the templates used for generating changes.
      */
-    constructor(private fs: Editor, private projectPath: string, private templatesPath?: string) {}
+    constructor(
+        private readonly fs: Editor,
+        private readonly projectPath: string,
+        private readonly templatesPath?: string
+    ) {}
 
     /**
      * Constructs the content for an annotation change based on provided data.
