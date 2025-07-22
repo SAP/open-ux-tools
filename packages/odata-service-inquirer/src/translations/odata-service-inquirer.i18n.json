@@ -152,7 +152,7 @@
             "choiceAnalytical": "Analytical",
             "choiceResponsive": "Responsive",
             "choiceTree": "Tree",
-            "analyticalTableDefault": "The Analytical table type is chosen by default, as the selected entity supports it."
+            "analyticalTableDefault": "The Analytical table type is chosen by default because the selected entity supports it."
         },
         "hierarchyQualifier": {
             "message": "Hierarchy Qualifier",
