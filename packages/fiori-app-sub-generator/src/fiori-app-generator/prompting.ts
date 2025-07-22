@@ -229,7 +229,9 @@ export async function createUI5ApplicationPromptOptions(
     // prompt settings may be additionally provided e.g. set by adaptors
     const ui5VersionPromptOptions: UI5ApplicationPromptOptions['ui5Version'] = {
         hide: promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.hide ?? false,
-        minUI5Version: getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan),
+        minUI5Version:
+            promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.minUI5Version ??
+            getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan),
         includeSeparators: getHostEnvironment() !== hostEnvironment.cli,
         useAutocomplete: getHostEnvironment() === hostEnvironment.cli
     };
