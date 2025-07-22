@@ -54,6 +54,10 @@ export const FloorplanAttributes: FloorplanAttributesType = {
     [FloorplanFF.FF_SIMPLE]: {
         supportedODataVersion: [OdataVersion.v2, OdataVersion.v4],
         templateType: FFTemplateType.Basic
+    },
+    [FloorplanFE.FE_ARIBA_LROP]: {
+        supportedODataVersion: [OdataVersion.v4],
+        templateType: FETemplateType.AribaListReportObjectPage
     }
 };
 
