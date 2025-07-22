@@ -12,7 +12,7 @@ import type { Answers } from 'inquirer';
 import { LEGACY_CAP_TYPE_JAVA, LEGACY_CAP_TYPE_NODE } from './constants';
 import { type ALPOptions, type Project, type Service } from './state';
 
-export { Floorplan, FloorplanFE, FloorplanFF };
+export { Floorplan, FloorplanFE, FloorplanFF, AppConfig };
 
 type FloorplanAttributesType = {
     [K in Floorplan]: {
