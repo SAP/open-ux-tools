@@ -1,5 +1,18 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.5.29
+
+### Patch Changes
+
+-   ca44076: move headless AppConfig type and associated types to fiori gen shared module
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/cap-config-writer@0.10.21
+    -   @sap-ux/fiori-elements-writer@2.5.14
+    -   @sap-ux/fiori-freestyle-writer@2.4.25
+    -   @sap-ux/odata-service-inquirer@2.5.21
+    -   @sap-ux/ui5-application-inquirer@0.14.31
+
 ## 0.5.28
 
 ### Patch Changes
