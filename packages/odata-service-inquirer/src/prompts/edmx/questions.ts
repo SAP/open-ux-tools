@@ -288,34 +288,45 @@ function getDefaultTableType(
     odataVersion: OdataVersion
 ): { tableType: TableType; setAnalyticalTableDefault: boolean } {
     let tableType: TableType;
-    let setAnalyticalTableDefault: boolean;
+    let setAnalyticalTableDefault = false;
     if (
         (templateType === 'lrop' || templateType === 'worklist') &&
         odataVersion === OdataVersion.v4 &&
-        getEntityChoices(metadata, {
-            entitySetFilter: 'filterAggregateTransformationsOnly'
-        }).choices.some((choice) => choice.value.entitySetName === prevAnswers?.mainEntity?.entitySetName)
+        hasAggregateTransformationsForEntity(metadata, prevAnswers?.mainEntity?.entitySetName)
     ) {
         // For V4, if the selected entity has aggregate transformations, use AnalyticalTable as default
         tableType = 'AnalyticalTable';
         setAnalyticalTableDefault = true;
     } else if (templateType === 'alp') {
         // For ALP, use AnalyticalTable as default
-        setAnalyticalTableDefault = false;
         tableType = 'AnalyticalTable';
     } else if (prevAnswers?.tableType) {
-        // If the user has already selected a table type, return it
-        setAnalyticalTableDefault = false;
+        // If the user has already selected a table type use it
         tableType = prevAnswers.tableType;
     } else {
         // Default to ResponsiveTable for other cases
-        setAnalyticalTableDefault = false;
         tableType = 'ResponsiveTable';
     }
     return {
         tableType,
         setAnalyticalTableDefault
     };
+}
+
+/**
+ * Checks if the given entity set name has aggregate transformations in the metadata.
+ *
+ * @param metadata The metadata (edmx) string of the service.
+ * @param entitySetName The entity set name to check for aggregate transformations.
+ * @returns true if the entity set has aggregate transformations, false otherwise.
+ */
+function hasAggregateTransformationsForEntity(metadata: string, entitySetName?: string): boolean {
+    if (!entitySetName) {
+        return false;
+    }
+    return getEntityChoices(metadata, {
+        entitySetFilter: 'filterAggregateTransformationsOnly'
+    }).choices.some((choice) => choice.value.entitySetName === entitySetName);
 }
 
 /**
