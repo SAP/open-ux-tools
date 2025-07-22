@@ -3,7 +3,8 @@ import { type ILogWrapper, getSemanticObject } from '@sap-ux/fiori-generator-sha
 import type { FlpConfigOptions, FLPConfigPromptOptions } from '@sap-ux/flp-config-sub-generator';
 import { join } from 'path';
 import type Generator from 'yeoman-generator';
-import { defaultNavActionDisplay, DeploySubGenPromptOptions, type Service } from '../types';
+import type { DeploySubGenPromptOptions } from '../types';
+import { defaultNavActionDisplay, type Service } from '../types';
 
 /**
  * Add the '@sap/fiori:fiori-deployment' generator as a subgenerator.
