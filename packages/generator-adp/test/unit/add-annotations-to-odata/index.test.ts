@@ -118,7 +118,8 @@ describe('AddAnnotationsToDataGenerator', () => {
                     reference: variant.reference
                 }
             }),
-            expect.anything()
+            expect.anything(),
+            expect.stringContaining(join(__dirname, '../../../src/add-annotations-to-odata', 'templates'))
         );
     });
 
