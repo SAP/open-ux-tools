@@ -264,13 +264,13 @@ appDescription=A Fiori application.",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
-        data-sap-ui-resource-roots='{
+        data-sap-ui-resourceroots='{
             \\"fewrk1\\": \\"./\\"
         }'
-        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compat-version=\\"edge\\"
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frame-options=\\"trusted\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -3907,13 +3907,13 @@ appDescription=A Fiori application.",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_belize\\"
-        data-sap-ui-resource-roots='{
+        data-sap-ui-resourceroots='{
             \\"fewrk1\\": \\"./\\"
         }'
-        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compat-version=\\"edge\\"
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frame-options=\\"trusted\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -7539,13 +7539,13 @@ appDescription=A Fiori application.",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
-        data-sap-ui-resource-roots='{
+        data-sap-ui-resourceroots='{
             \\"fewrk2\\": \\"./\\"
         }'
-        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compat-version=\\"edge\\"
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frame-options=\\"trusted\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
@@ -11233,13 +11233,13 @@ appDescription=A Fiori application.",
         id=\\"sap-ui-bootstrap\\"
         src=\\"resources/sap-ui-core.js\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
-        data-sap-ui-resource-roots='{
+        data-sap-ui-resourceroots='{
             \\"fewrk2\\": \\"./\\"
         }'
-        data-sap-ui-on-init=\\"module:sap/ui/core/ComponentSupport\\"
-        data-sap-ui-compat-version=\\"edge\\"
+        data-sap-ui-oninit=\\"module:sap/ui/core/ComponentSupport\\"
+        data-sap-ui-compatVersion=\\"edge\\"
         data-sap-ui-async=\\"true\\"
-        data-sap-ui-frame-options=\\"trusted\\"
+        data-sap-ui-frameOptions=\\"trusted\\"
     ></script>
 </head>
 <body class=\\"sapUiBody sapUiSizeCompact\\" id=\\"content\\">
