@@ -422,7 +422,7 @@ describe('Change Utils', () => {
             );
 
             expect(renderFileMock).toHaveBeenCalledWith(
-                expect.stringMatching(path.join('mock', 'templates', 'path', 'changes', 'annotation.xml')),
+                expect.stringContaining(path.join(mockTemplatesPath, 'changes', 'annotation.xml')),
                 expect.objectContaining({
                     namespaces: [
                         {
