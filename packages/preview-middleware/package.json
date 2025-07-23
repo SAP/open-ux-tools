@@ -71,7 +71,7 @@
         "express": "4.21.2",
         "nock": "13.4.0",
         "npm-run-all2": "6.2.0",
-        "supertest": "6.3.3"
+        "supertest": "7.1.4"
     },
     "peerDependencies": {
         "express": "4"
