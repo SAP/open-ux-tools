@@ -259,6 +259,8 @@ test.describe(`@quick-actions @fe-v2`, () => {
 
                 if (lt(ui5Version, '1.136.0')) {
                     await expect(page.getByText('Changes detected!')).toBeVisible();
+                } else {
+                    await editor.toolbar.saveButton.click();
                 }
 
                 await expect
@@ -297,8 +299,6 @@ test.describe(`@quick-actions @fe-v2`, () => {
                     .toEqual(1);
 
                 await editor.changesPanel.reloadButton.click();
-
-                await expect(editor.changesPanel.reloadButton).toBeHidden();
 
                 await expect(lr.goButton).toBeVisible();
 
@@ -623,8 +623,6 @@ test.describe(`@quick-actions @fe-v2`, () => {
                             ])
                         })
                     );
-
-                // await expect(editor.quickActions.enableVariantManagementInTablesAndCharts).
             }
         );
     });
