@@ -38,19 +38,31 @@ let j = 0;
 
 const RESET = '\x1b[0m';
 
-function colorize(color: number) {
-    return (text: string) => `\x1b[3${color + 1}m${text}${RESET}`;
+/**
+ * Colorize text for console output.
+ *
+ * @param colorCode - ANSI color code.
+ * @returns Function that takes a string and returns it wrapped in color codes for console output.
+ */
+function colorize(colorCode: number): (text: string) => string {
+    return (text: string) => `\x1b[3${colorCode + 1}m${text}${RESET}`;
 }
 
-function createLogger(index: number) {
+/**
+ *  Create a logger function that prefixes messages with a timestamp and index.
+ *
+ * @param colorCode - ANSI color code.
+ * @returns A function that takes a message and logs it with a timestamp and index.
+ */
+function createLogger(colorCode: number): (message: string) => void {
     const timestamp = new Date().toISOString();
-    return (message: string) => console.log('[' + colorize(index)(timestamp) + ']', colorize(index)(message));
+    return (message: string) => console.log('[' + colorize(colorCode)(timestamp) + ']', colorize(colorCode)(message));
 }
 
 export const test = base.extend<TestOptions, WorkerFixtures>({
     ui5Version: ['1.71.75', { option: true, scope: 'worker' }],
     testSkipper: [
-        async ({ ui5Version, log }, use, testInfo) => {
+        async ({ ui5Version, log }, use, testInfo): Promise<void> => {
             // test setup takes time, so we should check and skip the test before that
             const annotation = testInfo.annotations.find((annotation) => annotation.type === 'skipUI5Version');
             if (annotation?.description) {
@@ -70,14 +82,14 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
     ],
     projectConfig: [SIMPLE_APP, { option: true, scope: 'worker' }],
     log: [
-        async ({}, use, testInfo) => {
+        async ({}, use, testInfo): Promise<void> => {
             const logger = createLogger(testInfo.parallelIndex);
             await use(logger);
         },
         { scope: 'worker' }
     ],
     projectCopy: [
-        async ({ ui5Version, projectConfig, log }, use, workerInfo) => {
+        async ({ ui5Version, projectConfig, log }, use, workerInfo): Promise<void> => {
             log(
                 `Using UI5 version: ${ui5Version} workerIndex: ${workerInfo.workerIndex} parallel: ${workerInfo.parallelIndex}`
             );
@@ -117,7 +129,7 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
         { timeout: TIMEOUT, scope: 'worker' }
     ],
     projectServer: [
-        async ({ projectCopy, log }, use, workerInfo) => {
+        async ({ projectCopy, log }, use, workerInfo): Promise<void> => {
             log(`Starting ui5 tooling to ${projectCopy} time = ${++j}`);
 
             const start = 3000 + workerInfo.parallelIndex * 100;
@@ -157,7 +169,7 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
         await use(page);
     },
     previewFrame: [
-        async ({ page }, use) => {
+        async ({ page }, use): Promise<void> => {
             await use(page.locator('iframe[title="Application Preview"]').contentFrame());
         },
         { scope: 'test' }

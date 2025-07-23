@@ -3,5 +3,8 @@ module.exports = {
     parserOptions: {
         project: './tsconfig.eslint.json',
         tsconfigRootDir: __dirname
+    },
+    rules: {
+        'no-console': 'off'
     }
 };

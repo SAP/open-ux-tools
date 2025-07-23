@@ -15,6 +15,12 @@ export interface ProjectParameters {
 
 export const ADAPTATION_EDITOR_PATH = '/adaptation-editor.html';
 
+/**
+ * Returns project parameters with default values if not provided.
+ *
+ * @param parameters - The project parameters provided by the user.
+ * @returns Project parameters with defaults applied.
+ */
 function getProjectParametersWithDefaults(parameters: ProjectParameters): ProjectParameters {
     return {
         id: parameters.id,
@@ -23,6 +29,13 @@ function getProjectParametersWithDefaults(parameters: ProjectParameters): Projec
     };
 }
 
+/**
+ * Creates a manifest for an OData V2 project.
+ *
+ * @param userParameters - The project parameters provided by the user.
+ * @param workerId - The unique worker ID for the project.
+ * @returns A manifest object for the project.
+ */
 export function createV2Manifest(userParameters: ProjectParameters, workerId: string): Manifest {
     const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(userParameters);
     const result = structuredClone(template) as Manifest;
@@ -67,6 +80,14 @@ export function createV2Manifest(userParameters: ProjectParameters, workerId: st
     return result;
 }
 
+/**
+ * Creates a YAML file for the project.
+ *
+ * @param userParameters - The project parameters provided by the user.
+ * @param ui5Version - The UI5 version to be used.
+ * @param workerId - The unique worker ID for the project.
+ * @returns A string representation of the YAML file content.
+ */
 export async function createYamlFile(
     userParameters: ProjectParameters,
     ui5Version: string,
@@ -83,6 +104,13 @@ export async function createYamlFile(
     return document.toString();
 }
 
+/**
+ * Creates a UI5 component definition.
+ *
+ * @param userParameters - The project parameters provided by the user.
+ * @param workerId - The unique worker ID for the project.
+ * @returns A string representation of the UI5 component definition.
+ */
 export function createComponent(userParameters: ProjectParameters, workerId: string): string {
     const { id } = getProjectParametersWithDefaults(userParameters);
     return `sap.ui.define(
@@ -99,6 +127,12 @@ export function createComponent(userParameters: ProjectParameters, workerId: str
 );`;
 }
 
+/**
+ * Creates a package.json file for the project.
+ *
+ * @param id - The project ID.
+ * @returns A string representation of the package.json file content.
+ */
 export function createPackageJson(id: string): string {
     return `{
     "name": "${id}",
@@ -112,6 +146,14 @@ export function createPackageJson(id: string): string {
 `;
 }
 
+/**
+ * Generates a UI5 project with the given configuration.
+ *
+ * @param projectConfig - The project configuration.
+ * @param workerId - The unique worker ID for the project.
+ * @param ui5Version - The UI5 version to be used.
+ * @returns The root path of the generated project.
+ */
 export async function generateUi5Project(
     projectConfig: typeof FIORI_ELEMENTS_V2,
     workerId: string,
@@ -166,14 +208,28 @@ export interface AdpProjectParameters {
     id: string;
 }
 
+/**
+ * Returns ADP project parameters with default values if not provided.
+ *
+ * @param parameters - The ADP project parameters provided by the user.
+ * @returns ADP project parameters with defaults applied.
+ */
 function getAdpProjectParametersWithDefaults(parameters: AdpProjectParameters): AdpProjectParameters {
     return {
         id: parameters.id
-        // mainServiceUri: parameters.mainServiceUri ?? `/sap/opu/odata/sap/SERVICE/`,
-        // entitySet: parameters.entitySet ?? 'RootEntity'
     };
 }
 
+/**
+ * Creates a YAML file for an ADP project.
+ *
+ * @param userParameters - The ADP project parameters provided by the user.
+ * @param ui5Version - The UI5 version to be used.
+ * @param backendUrl - The backend URL for the ADP project.
+ * @param mainServiceUri - The main service URI for the ADP project.
+ * @param livereloadPort - The livereload port for the ADP project.
+ * @returns A string representation of the YAML file content.
+ */
 async function createAdpYamlFile(
     userParameters: AdpProjectParameters,
     ui5Version: string,
@@ -193,12 +249,18 @@ async function createAdpYamlFile(
         createIntermediateKeys: true
     });
     document.setIn({ path: 'server.customMiddleware.2.configuration.adp.target.url', value: backendUrl });
-    // document.setIn({ path: 'server.customMiddleware.2.configuration.adp.target.url', value: backendUrl });
     document.setIn({ path: 'server.customMiddleware.3.configuration.version', value: ui5Version });
 
     return document.toString();
 }
 
+/**
+ * Creates an app descriptor variant for an ADP project.
+ *
+ * @param userParameters - The ADP project parameters provided by the user.
+ * @param reference - The reference ID for the base app.
+ * @returns An object representing the app descriptor variant.
+ */
 export async function createAppDescriptorVariant(
     userParameters: AdpProjectParameters,
     reference: string
@@ -213,6 +275,16 @@ export async function createAppDescriptorVariant(
     return result;
 }
 
+/**
+ * Generates an ADP project with the given configuration.
+ *
+ * @param projectConfig - The ADP project configuration.
+ * @param workerId - The unique worker ID for the project.
+ * @param ui5Version - The UI5 version to be used.
+ * @param backendUrl - The backend URL for the ADP project.
+ * @param livereloadPort - The livereload port for the ADP project.
+ * @returns The root path of the generated ADP project.
+ */
 export async function generateAdpProject(
     projectConfig: typeof ADP_FIORI_ELEMENTS_V2,
     workerId: string,

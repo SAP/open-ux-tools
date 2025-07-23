@@ -5,6 +5,13 @@ import fs from 'fs';
 
 import express from 'express';
 import ZipFile from 'adm-zip';
+import type { ManifestNamespace } from '@sap-ux/project-access';
+
+interface Change {
+    changeType: string;
+    content: unknown;
+    layer: string;
+}
 
 /**
  * Global setup.
@@ -29,6 +36,7 @@ async function globalSetup(): Promise<void> {
             return res.json(manifest);
         }
         next();
+        return undefined;
     });
     app.use('/sap/bc/ui5_ui5/ui5/', express.static(staticPath));
     app.get('/sap/bc/lrep/actions/getcsrftoken', (req, res) => {
@@ -82,11 +90,7 @@ async function globalSetup(): Promise<void> {
                             entry.name.endsWith('appdescr_fe_addNewPage.change')
                     )
                     .map((entry) => {
-                        const change = JSON.parse(directory.readAsText(entry)) as unknown as {
-                            changeType: string;
-                            content: unknown;
-                            layer: string;
-                        };
+                        const change = JSON.parse(directory.readAsText(entry)) as unknown as Change;
                         return {
                             changeType: change.changeType,
                             content: change.content,
@@ -100,9 +104,15 @@ async function globalSetup(): Promise<void> {
                     'utf-8'
                 );
 
-                const manifest = JSON.parse(manifestText);
+                const manifest = JSON.parse(
+                    manifestText
+                ) as ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & {
+                    '$sap.ui.fl.changes'?: {
+                        descriptor: Change[];
+                    };
+                };
                 manifest['sap.app'].id = variant.id;
-                manifest['sap.ui5'].appVariantId = variant.id; // component name in version 1.84 and 1.96
+                manifest['sap.ui5']!.appVariantId = variant.id; // component name in version 1.84 and 1.96
                 if (changes.length > 0) {
                     manifest['$sap.ui.fl.changes'] = {
                         descriptor: changes
@@ -184,7 +194,11 @@ async function globalSetup(): Promise<void> {
     });
 
     app.get('/sap/bc/ui2/app_index/ui5_app_info_json', (req, res) => {
-        const baseAppDirectory = `${req.query.id}`;
+        const baseAppDirectory = req.query.id as string;
+        if (req.query.id === undefined || typeof req.query.id !== 'string') {
+            res.status(400).send('Invalid request: id query parameter is required');
+            return;
+        }
         const variants = mapping[req.query.id];
         if (!variants) {
             res.status(404).send('No variants found');
@@ -193,7 +207,7 @@ async function globalSetup(): Promise<void> {
         res.json(
             [...variants.values()].reduce((acc, key) => {
                 acc[key] = {
-                    name: req.query.id,
+                    name: baseAppDirectory,
                     manifest: `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/webapp/manifest.json`,
                     url: `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/webapp`,
                     components: [
@@ -213,7 +227,7 @@ async function globalSetup(): Promise<void> {
                             reference: key,
                             preview: {
                                 maxLayer: 'PARTNER',
-                                reference: req.query.id
+                                reference: baseAppDirectory
                             }
                         }
                     ]
@@ -227,12 +241,6 @@ async function globalSetup(): Promise<void> {
     app.listen(port, () => {
         console.log(`Mock ABAP backend is running on http://localhost:${port}`);
     });
-
-    // await use(`http://localhost:${port}`);
-
-    // server.close(() => {
-    //     console.log(`Mock ABAP backend server closed: http://localhost:${port}`);
-    // });
 }
 
 export default globalSetup;
