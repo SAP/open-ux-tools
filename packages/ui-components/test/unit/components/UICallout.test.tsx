@@ -15,11 +15,16 @@ import type { UICalloutProps } from '../../../src/components/UICallout';
 import { UICallout, UICalloutContentPadding } from '../../../src/components/UICallout';
 import * as FluentUI from '@fluentui/react';
 import * as Utilities from '../../../src/utilities';
+import { compareStylesBySelector } from '../../utils/styles';
 
 describe('<UICallout />', () => {
     let container: HTMLElement;
     let rerender: (ui: React.ReactElement) => void;
     let targetElement: HTMLElement;
+    const selectors = {
+        root: '.ms-Callout',
+        main: '.ms-Callout-main'
+    };
 
     beforeEach(() => {
         // Create a target element for the callout
@@ -50,11 +55,21 @@ describe('<UICallout />', () => {
         // Test that the component renders with expected structure
         const dummyElement = document.body.querySelector('.dummy');
         expect(dummyElement).toBeInTheDocument();
+        // Default overwritten styles
+        compareStylesBySelector(selectors.root, {
+            borderRadius: '2px',
+            boxShadow: 'var(--ui-box-shadow-small)'
+        });
+        compareStylesBySelector(selectors.main, {
+            borderRadius: '2px'
+        });
     });
 
     it('Property "contentPadding"', () => {
         // Default - None
-        expect(document.body.querySelector('.ms-Callout')).toBeInTheDocument();
+        compareStylesBySelector(selectors.main, {
+            padding: ''
+        });
 
         // Standard
         rerender(
@@ -62,8 +77,9 @@ describe('<UICallout />', () => {
                 <div className="dummy"></div>
             </UICallout>
         );
-        expect(document.body.querySelector('.ms-Callout')).toBeInTheDocument();
-        expect(document.body.querySelector('.dummy')).toBeInTheDocument();
+        compareStylesBySelector(selectors.main, {
+            padding: '8px 8px 8px 8px'
+        });
     });
 
     it('Overwrite styles', () => {
