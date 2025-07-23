@@ -205,6 +205,7 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "choices": [
       {
         "name": "Analytical",
@@ -223,8 +224,9 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
         "value": "TreeTable",
       },
     ],
-    "default": "ResponsiveTable",
+    "default": [Function],
     "guiOptions": {
+      "applyDefaultWhenDirty": true,
       "breadcrumb": true,
       "hint": "Defines the table type for the list report page.",
     },
