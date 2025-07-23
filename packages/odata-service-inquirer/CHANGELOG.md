@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.22
+
+### Patch Changes
+
+-   45bbe6c: set analytical table type when supported by entity
+
 ## 2.5.21
 
 ### Patch Changes
