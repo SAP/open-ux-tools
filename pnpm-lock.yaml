@@ -1543,9 +1543,6 @@ importers:
       '@sap-ux/cf-deploy-config-writer':
         specifier: workspace:*
         version: link:../cf-deploy-config-writer
-      '@sap-ux/fiori-app-sub-generator':
-        specifier: workspace:*
-        version: link:../fiori-app-sub-generator
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
         version: link:../jest-file-matchers
@@ -2194,6 +2191,9 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
