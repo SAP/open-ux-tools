@@ -2815,9 +2815,6 @@ importers:
       '@sap-ux/nodejs-utils':
         specifier: workspace:*
         version: link:../nodejs-utils
-      '@sap-ux/odata-service-writer':
-        specifier: workspace:*
-        version: link:../odata-service-writer
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -2867,6 +2864,9 @@ importers:
       '@sap-ux/fiori-freestyle-writer':
         specifier: workspace:*
         version: link:../fiori-freestyle-writer
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
       '@sap-ux/vocabularies-types':
         specifier: 0.13.0
         version: 0.13.0
