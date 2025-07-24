@@ -32,8 +32,8 @@ describe('index', () => {
         expect(initThemeSpy).toHaveBeenCalledTimes(1);
         expect(reactSpy).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).toHaveBeenCalledTimes(3);
-        expect(dispatchSpy).nthCalledWith(1, setFeatureToggles(features));
-        expect(dispatchSpy).nthCalledWith(2, setProjectScenario('APP_VARIANT'));
-        expect(dispatchSpy).nthCalledWith(3, initializeLivereload({ port: 8080, url: undefined }));
+        expect(dispatchSpy).toHaveBeenNthCalledWith(1, setFeatureToggles(features));
+        expect(dispatchSpy).toHaveBeenNthCalledWith(2, setProjectScenario('APP_VARIANT'));
+        expect(dispatchSpy).toHaveBeenNthCalledWith(3, initializeLivereload({ port: 8080, url: undefined }));
     });
 });

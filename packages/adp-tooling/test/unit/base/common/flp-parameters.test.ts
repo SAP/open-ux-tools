@@ -68,7 +68,7 @@ describe('parseParameters', () => {
 
     it('should throw an error for duplicate parameters', () => {
         const input = 'param1=value1&param1=value2';
-        expect(() => parseParameters(input)).toThrowError(/Duplicated parameter: 'param1'/);
+        expect(() => parseParameters(input)).toThrow(/Duplicated parameter: 'param1'/);
     });
 
     it('should parse parameter with defaultValue and renameTo when paramParts.length === 3', () => {
