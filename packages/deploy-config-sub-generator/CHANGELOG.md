@@ -1,5 +1,14 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.3.47
+
+### Patch Changes
+
+-   089b56f: updates extension types and extends prompt options in sub gens
+-   Updated dependencies [089b56f]
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.39
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.43
+
 ## 0.3.46
 
 ### Patch Changes

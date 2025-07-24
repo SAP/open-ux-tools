@@ -49,13 +49,13 @@ describe('CustomPage', () => {
         const target = join(testDir, 'validateBasePathRequired');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
 
-        await expect(validateBasePath(target, fs)).rejects.toThrowError('Dependency sap.fe.templates is missing');
+        await expect(validateBasePath(target, fs)).rejects.toThrow('Dependency sap.fe.templates is missing');
     });
 
     test('validateBasePath - required libs `sap.fe.templates` or `sap.fe.core` missing', async () => {
         const target = join(testDir, 'validateBasePathRequired');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-        await expect(validateBasePath(target, fs, ['sap.fe.templates', 'sap.fe.core'])).rejects.toThrowError(
+        await expect(validateBasePath(target, fs, ['sap.fe.templates', 'sap.fe.core'])).rejects.toThrow(
             'All of the dependencies sap.fe.templates, sap.fe.core are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.'
         );
     });
@@ -65,15 +65,15 @@ describe('CustomPage', () => {
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
         expect(validateBasePath(target, fs, [])).toBeTruthy();
 
-        await expect(validateBasePath(join(testDir, '' + Date.now()), fs, [])).rejects.toThrowError();
+        await expect(validateBasePath(join(testDir, '' + Date.now()), fs, [])).rejects.toThrow();
         await expect(
             async () => await generateCustomPage(join(testDir, '' + Date.now()), {} as CustomPage)
-        ).rejects.toThrowError();
+        ).rejects.toThrow();
 
         const invalidManifest = JSON.parse(testAppManifest);
         delete invalidManifest['sap.ui5'].dependencies?.libs['sap.fe.templates'];
         fs.writeJSON(join(target, 'webapp/manifest.json'), invalidManifest);
-        await expect(validateBasePath(target, fs, [])).resolves.not.toThrowError();
+        await expect(validateBasePath(target, fs, [])).resolves.not.toThrow();
     });
 
     describe('generateCustomPage: different versions or target folder', () => {
@@ -163,7 +163,7 @@ describe('CustomPage', () => {
             fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
             await expect(
                 async () => await generateCustomPage(target, { ...minimalInput, minUI5Version: '1.83' }, fs)
-            ).rejects.toThrowError();
+            ).rejects.toThrow();
         });
 
         test('latest version with minimal input but different target folder', async () => {

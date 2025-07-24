@@ -9,7 +9,7 @@ describe('Validators', () => {
         expect(validateUI5Version('1.0.0')).toEqual(true);
         expect(validateUI5Version('snapshot-1.0.0')).toEqual(true);
         // No parseable version
-        expect(() => validateUI5Version('snapshot-a.b.c')).toThrowError(
+        expect(() => validateUI5Version('snapshot-a.b.c')).toThrow(
             t('error.invalidUI5Version', { version: 'snapshot-a.b.c' })
         );
     });

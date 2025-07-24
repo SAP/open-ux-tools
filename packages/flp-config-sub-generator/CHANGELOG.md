@@ -1,5 +1,16 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.0
+
+### Minor Changes
+
+-   089b56f: updates extension types and extends prompt options in sub gens
+
+### Patch Changes
+
+-   Updated dependencies [089b56f]
+    -   @sap-ux/flp-config-inquirer@0.4.0
+
 ## 0.2.55
 
 ### Patch Changes
