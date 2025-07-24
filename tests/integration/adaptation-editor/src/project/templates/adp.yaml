@@ -1,0 +1,85 @@
+specVersion: "2.4"
+metadata:
+  name: project1
+type: application
+server:
+  customMiddleware:
+    - name: sap-fe-mockserver
+      mountPath: /
+      afterMiddleware: compression
+      configuration:
+        metadataProcessor: 
+          name: "@sap-ux/fe-mockserver-plugin-cds"
+          options: 
+            odataVersion: v2
+        services:
+          urlPath: /sap/opu/odata/sap/SERVICE/
+          metadataPath: ./service.cds
+          mockdataPath: ./data
+    - name: reload-middleware
+      afterMiddleware: sap-fe-mockserver
+    - name: preview-middleware
+      afterMiddleware: reload-middleware
+      configuration:
+        adp:
+          ignoreCertErrors: true
+          target:
+            url: http://localhost:3050
+            client: "000"
+        rta:
+          layer: CUSTOMER_BASE
+          editors:
+            - path: /adaptation-editor.html
+              developerMode: true
+        debug: true
+    - name: ui5-proxy-middleware
+      afterMiddleware: preview-middleware
+      configuration:
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: backend-proxy-middleware
+      afterMiddleware: preview-middleware
+      configuration:
+        backend:
+          path: /sap
+          url: http://localhost:3050
+          client: "000"
+          autoRewrite: true
+        options:
+          secure: false
+          xfwd: true
+---
+specVersion: "3.0"
+metadata:
+  name: preview-middleware
+kind: extension
+type: server-middleware
+middleware:
+  path: node_modules/@sap-ux/preview-middleware/dist/ui5/middleware.js
+---
+specVersion: "3.0"
+metadata:
+  name: ui5-proxy-middleware
+kind: extension
+type: server-middleware
+middleware:
+  path: node_modules/@sap-ux/ui5-proxy-middleware/dist/ui5/middleware.js
+---
+specVersion: "3.0"
+metadata:
+  name: backend-proxy-middleware
+kind: extension
+type: server-middleware
+middleware:
+  path: node_modules/@sap-ux/backend-proxy-middleware/dist/middleware.js
+---
+specVersion: "3.0"
+metadata:
+  name: reload-middleware
+kind: extension
+type: server-middleware
+middleware:
+  path: node_modules/@sap-ux/reload-middleware/dist/ui5/middleware.js
