@@ -199,6 +199,17 @@ describe('FlpSandbox', () => {
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
+        test('i18n key more that a word', async () => {
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            const manifest = JSON.parse(
+                readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8')
+            ) as Manifest;
+            manifest['sap.app'].description = '{{my.custom.key.Description}}';
+            await flp.init(manifest);
+            expect(flp.templateConfig).toMatchSnapshot();
+            expect(logger.warn).toHaveBeenCalledWith('Failed to load i18n properties bundle');
+        });
+
         test('ui5Theme', async () => {
             const flp = new FlpSandbox({ flp: { theme: 'sap_fiori_3' } }, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));

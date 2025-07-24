@@ -330,7 +330,7 @@ async function getI18nTextFromProperty(
     logger: Logger
 ): Promise<string | undefined> {
     //i18n model format could be {{key}} or {i18n>key}
-    if (!projectRoot || !propertyValue || propertyValue.search(/{{\w+}}|{i18n>\w+}/g) === -1) {
+    if (!projectRoot || !propertyValue || propertyValue.search(/{{([^}]+)}}|{i18n>([^}]+)}/g) === -1) {
         return propertyValue;
     }
     const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
