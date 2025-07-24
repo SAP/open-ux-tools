@@ -164,19 +164,19 @@ describe('Default (Winston) logger', () => {
             ]
         });
         logger.info('info message');
-        expect(consoleLog).toBeCalledWith(
+        expect(consoleLog).toHaveBeenCalledWith(
             expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );
-        expect(nullLog).toBeCalledWith(
+        expect(nullLog).toHaveBeenCalledWith(
             expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );
-        expect(vscodeLog).toBeCalledWith(
+        expect(vscodeLog).toHaveBeenCalledWith(
             expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );
-        expect(arrayLog).toBeCalledWith(
+        expect(arrayLog).toHaveBeenCalledWith(
             expect.objectContaining({ [Symbol.for('level')]: 'info', message: 'info message' }),
             expect.any(Function)
         );
@@ -195,7 +195,7 @@ describe('Default (Winston) logger', () => {
         logger.error('error1');
         logger.debug('debug1'); // This will be ignored, logger has level Info and above
 
-        expect(consoleLog).toBeCalledTimes(2);
+        expect(consoleLog).toHaveBeenCalledTimes(2);
         expect(consoleLog).toHaveBeenNthCalledWith(
             1,
             expect.objectContaining({ [Symbol.for('level')]: 'warn', message: 'warning1' }),
@@ -206,7 +206,7 @@ describe('Default (Winston) logger', () => {
             expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),
             expect.any(Function)
         );
-        expect(nullLog).toBeCalledTimes(1);
+        expect(nullLog).toHaveBeenCalledTimes(1);
         expect(nullLog).toHaveBeenNthCalledWith(
             1,
             expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),
@@ -230,7 +230,7 @@ describe('Default (Winston) logger', () => {
         }
         logger.debug('debug1');
 
-        expect(consoleLog).toBeCalledTimes(2);
+        expect(consoleLog).toHaveBeenCalledTimes(2);
         expect(consoleLog).toHaveBeenNthCalledWith(
             1,
             expect.objectContaining({ [Symbol.for('level')]: 'warn', message: 'warning1' }),
@@ -241,7 +241,7 @@ describe('Default (Winston) logger', () => {
             expect.objectContaining({ [Symbol.for('level')]: 'debug', message: 'debug1' }),
             expect.any(Function)
         );
-        expect(nullLog).toBeCalledTimes(1);
+        expect(nullLog).toHaveBeenCalledTimes(1);
         expect(nullLog).toHaveBeenNthCalledWith(
             1,
             expect.objectContaining({ [Symbol.for('level')]: 'warn', message: 'warning1' }),
@@ -260,7 +260,7 @@ describe('Default (Winston) logger', () => {
         logger.info('info1');
         logger.error('error1');
 
-        expect(nullLog).toBeCalledTimes(1);
+        expect(nullLog).toHaveBeenCalledTimes(1);
         expect(nullLog).toHaveBeenCalledWith(
             expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),
             expect.any(Function)
@@ -275,7 +275,7 @@ describe('Default (Winston) logger', () => {
             });
             logger.log('warning');
             logger.error('error');
-            expect(nullLog).toBeCalledTimes(2);
+            expect(nullLog).toHaveBeenCalledTimes(2);
             expect(nullLog).toHaveBeenNthCalledWith(
                 1,
                 expect.objectContaining({ [Symbol.for('level')]: 'warn', message: 'warning' }),
@@ -295,7 +295,7 @@ describe('Default (Winston) logger', () => {
             logger.log({ level: LogLevel.Error, message: 'error1' });
             logger.error('error2');
             logger.log({ level: LogLevel.Silly, message: 'not silly' });
-            expect(nullLog).toBeCalledTimes(2);
+            expect(nullLog).toHaveBeenCalledTimes(2);
             expect(nullLog).toHaveBeenNthCalledWith(
                 1,
                 expect.objectContaining({ [Symbol.for('level')]: 'error', message: 'error1' }),

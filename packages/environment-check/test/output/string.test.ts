@@ -23,6 +23,6 @@ describe('Test to check formatResultsForClipboard returns stringified results', 
     });
 
     test('Check empty results does not throw error', () => {
-        expect(() => convertResultsToString({})).not.toThrowError();
+        expect(() => convertResultsToString({})).not.toThrow();
     });
 });

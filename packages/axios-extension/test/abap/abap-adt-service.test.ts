@@ -253,9 +253,9 @@ describe('Transport checks', () => {
             .post(AdtServices.TRANSPORT_CHECKS)
             .replyWithFile(200, join(__dirname, 'mockResponses/transportChecks-3.xml'));
         const transportChecksService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
-        await expect(
-            transportChecksService?.getTransportRequests(testLocalPackage, testExistProject)
-        ).rejects.toThrowError(TransportChecksService.LocalPackageError);
+        await expect(transportChecksService?.getTransportRequests(testLocalPackage, testExistProject)).rejects.toThrow(
+            TransportChecksService.LocalPackageError
+        );
     });
 
     test('New package name: no transport number available', async () => {
@@ -327,7 +327,7 @@ describe('Transport checks', () => {
 
         await transportChecksService?.getTransportRequests(testPackage, testProjectNamespace);
 
-        expect(postSpy).toBeCalledWith(
+        expect(postSpy).toHaveBeenCalledWith(
             expect.any(String),
             expect.stringContaining(`<URI>/sap/bc/adt/filestore/ui5-bsp/objects/%2Ftest%2Fproject/$create</URI>`),
             expect.objectContaining({
@@ -360,7 +360,7 @@ describe('Transport checks', () => {
             testProjectNamespace
         )}/\\$create</URI>`;
         const combinedPattern = new RegExp(`${packageNamePattern}(\n|\r\n|\r|.)*${appNamePattern}`);
-        expect(postSpy).toBeCalledWith(
+        expect(postSpy).toHaveBeenCalledWith(
             expect.any(String),
             expect.stringMatching(combinedPattern),
             expect.objectContaining({
@@ -413,9 +413,9 @@ describe('Use existing connection session', () => {
         const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloudStandalone as any);
         expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_Y05_100=abc');
         expect(await provider.isAbapCloud()).toBe(false);
-        expect(attachUaaAuthInterceptorSpy).toBeCalledTimes(0);
-        expect(Uaa.prototype.getAccessToken).toBeCalledTimes(0);
-        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toBeCalledTimes(0);
+        expect(attachUaaAuthInterceptorSpy).toHaveBeenCalledTimes(0);
+        expect(Uaa.prototype.getAccessToken).toHaveBeenCalledTimes(0);
+        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toHaveBeenCalledTimes(0);
     });
 
     test('abap service provider for cloud (embedded steampunk)', async () => {
@@ -427,7 +427,7 @@ describe('Use existing connection session', () => {
 
         const provider = createForAbapOnCloud(existingCookieConfigForAbapOnCloudEmbeddedSteampunk as any);
         expect(provider.cookies.toString()).toBe('sap-usercontext=sap-client=100; SAP_SESSIONID_X01_100=abc');
-        expect(attachReentranceTicketAuthInterceptorSpy).toBeCalledTimes(0);
+        expect(attachReentranceTicketAuthInterceptorSpy).toHaveBeenCalledTimes(0);
     });
 
     test('abap service provider for cloud - require authentication', async () => {
@@ -444,8 +444,8 @@ describe('Use existing connection session', () => {
         const provider = createForAbapOnCloud(cloneObj as any);
         expect(await provider.isAbapCloud()).toBe(true);
         expect(await provider.user()).toBe('emailTest');
-        expect(Uaa.prototype.getAccessToken).toBeCalledTimes(3);
-        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toBeCalledTimes(0);
+        expect(Uaa.prototype.getAccessToken).toHaveBeenCalledTimes(3);
+        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toHaveBeenCalledTimes(0);
     });
 
     test('abap service provider for cloud - with authentication provided', async () => {
@@ -470,8 +470,8 @@ describe('Use existing connection session', () => {
         const provider = createForAbapOnCloud(configForAbapOnCloudWithAuthentication as any);
         expect(await provider.isAbapCloud()).toBe(false);
         expect(await provider.user()).toBe('email');
-        expect(Uaa.prototype.getAccessToken).toBeCalledTimes(0);
-        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toBeCalledTimes(2);
+        expect(Uaa.prototype.getAccessToken).toHaveBeenCalledTimes(0);
+        expect(Uaa.prototype.getAccessTokenWithClientCredentials).toHaveBeenCalledTimes(2);
     });
 
     it.each([
@@ -483,7 +483,7 @@ describe('Use existing connection session', () => {
         delete cloneObj.service.uaa[remove];
         expect(() => {
             createForAbapOnCloud(cloneObj as any);
-        }).toThrowError(errorStr);
+        }).toThrow(errorStr);
     });
 });
 
@@ -971,7 +971,7 @@ describe('Generator Service', () => {
                 description: 'test',
                 uri: `/sap/bc/adt/bo/behaviordefinitions/${businessObjectName.toLocaleLowerCase()}`
             })
-        ).rejects.toThrowError();
+        ).rejects.toThrow();
     });
 });
 

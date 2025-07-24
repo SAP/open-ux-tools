@@ -15,7 +15,7 @@ describe('Utils', () => {
         expect(odataVersion.odataVersion).toBe(OdataVersion.v4);
 
         metadata = await readFile(join(__dirname, 'fixtures/invalid_metadata.xml'), 'utf8');
-        expect(() => parseOdataVersion(metadata)).toThrowError('The service metadata is invalid.');
+        expect(() => parseOdataVersion(metadata)).toThrow('The service metadata is invalid.');
     });
 
     test('originToRelative - should replace origin URI with relative path segment in metadata', async () => {

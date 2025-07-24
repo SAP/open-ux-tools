@@ -33,7 +33,7 @@ describe('getReentranceTicket()', () => {
             backendUrl: 'http://some_url.example',
             logger: new ToolsLogger({ transports: [new NullTransport()] })
         });
-        expect(serverListenSpy).toBeCalledTimes(1);
+        expect(serverListenSpy).toHaveBeenCalledTimes(1);
     });
 
     it("attempts to open URL in user's default browser for SAML login", async () => {
