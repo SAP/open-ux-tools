@@ -329,8 +329,8 @@ async function getI18nTextFromProperty(
     propertyValue: string | undefined,
     logger: Logger
 ): Promise<string | undefined> {
-    //i18n model format could be {{key}} or {i18n>key}
-    if (!projectRoot || !propertyValue || propertyValue.search(/{{([^}]+)}}|{i18n>([^}]+)}/g) === -1) {
+    //i18n model format could be {{key}} or {i18n>key}; limit max length of key to 100 characters to avoid performance issues
+    if (!projectRoot || !propertyValue || propertyValue.search(/{{([^}]{1,100})}}|{i18n>([^}]{1,100})}/g) === -1) {
         return propertyValue;
     }
     const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
