@@ -159,7 +159,7 @@ describe('main', () => {
 
         // assert
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
-        expect(Log.error).toBeCalledWith('Service Initialization Failed: ', error);
+        expect(Log.error).toHaveBeenCalledWith('Service Initialization Failed: ', error);
         expect(CommunicationService.sendAction).toHaveBeenNthCalledWith(
             2,
             showInfoCenterMessage({
@@ -180,6 +180,6 @@ describe('main', () => {
         contextMenuServiceSpy.mockResolvedValue();
 
         await waitForCpeInit(rta);
-        expect(CommunicationService.sendAction).toBeCalledWith(common.appLoaded());
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(common.appLoaded());
     });
 });

@@ -95,10 +95,10 @@ describe('utils/version', () => {
             isVersionEqualOrHasNewerPatch({ major: 1, minor: 124, patch: 3 }, { major: 1, minor: 124, patch: 4 })
         ).toBeFalsy();
         //throw error in case on NaN
-        expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrowError();
+        expect(() => isLowerThanMinimalUi5Version({ major: NaN, minor: NaN })).toThrow();
         jest.spyOn(CommunicationService, 'sendAction');
         //throw error in case on NaN
-        expect(() => isLowerThanMinimalUi5Version({ major: 1, minor: 1, patch: NaN })).toThrowError();
+        expect(() => isLowerThanMinimalUi5Version({ major: 1, minor: 1, patch: NaN })).toThrow();
         expect(CommunicationService.sendAction).toHaveBeenCalledWith(
             showInfoCenterMessage({
                 title: 'SAPUI5 Version Retrieval Failed',

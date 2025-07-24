@@ -238,9 +238,9 @@ describe('flp/init', () => {
             VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.118.1' });
             CommunicationService.sendAction = jest.fn();
             await init({});
-            expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
-            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
-            expect(sapMock.ushell.Container.createRendererInternal).not.toBeCalled();
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toHaveBeenCalled();
+            expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRendererInternal).not.toHaveBeenCalled();
             expect(CommunicationService.sendAction).toHaveBeenCalledWith(
                 showInfoCenterMessage({
                     title: 'Card Generator Not Supported',
