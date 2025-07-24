@@ -1,12 +1,7 @@
-import type {
-    DatasourceType,
-    OdataServicePromptOptions,
-    OdataVersion,
-    promptNames
-} from '@sap-ux/odata-service-inquirer';
+import type { DatasourceType, OdataServicePromptOptions, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { UI5ApplicationPromptOptions } from '@sap-ux/ui5-application-inquirer';
-import type { AbapDeployConfigPromptOptions } from '@sap-ux/abap-deploy-config-inquirer';
-import type { CfDeployConfigPromptOptions } from '@sap-ux/cf-deploy-config-inquirer';
+import type { FLPConfigPromptOptions } from '@sap-ux/flp-config-sub-generator';
+import type { DeployConfigSubGenPromptOptions } from '@sap-ux/deploy-config-sub-generator';
 
 /**
  * package.json script entries (commands and tasks)
@@ -24,11 +19,17 @@ export type WorkspaceFolder = {
     path: string;
 };
 
-// Union type of all `@sap-ux/ui5-application-inquirer` and selected `@sap-ux/odata-service-inquirer` & `@sap-ux/abap-deploy-config-inquirer` prompt options
-export type FioriAppGeneratorPromptSettings = UI5ApplicationPromptOptions &
-    Pick<OdataServicePromptOptions, promptNames.systemSelection | promptNames.serviceSelection> & {
-        '@sap-ux/deploy-config-sub-generator'?: AbapDeployConfigPromptOptions | CfDeployConfigPromptOptions;
-    };
+export interface SubGeneratorPromptSettings {
+    '@sap-ux/deploy-config-sub-generator'?: DeployConfigSubGenPromptOptions;
+    '@sap-ux/flp-config-sub-generator'?: FLPConfigPromptOptions;
+}
+
+export interface FioriGeneratorPromptSettings {
+    '@sap/generator-fiori': OdataServicePromptOptions & UI5ApplicationPromptOptions;
+}
+
+export type FioriAppGeneratorPromptSettings = FioriGeneratorPromptSettings['@sap/generator-fiori'] &
+    SubGeneratorPromptSettings;
 
 /**
  * Custom environment type until yeoman-environment provides one

@@ -229,7 +229,9 @@ export async function createUI5ApplicationPromptOptions(
     // prompt settings may be additionally provided e.g. set by adaptors
     const ui5VersionPromptOptions: UI5ApplicationPromptOptions['ui5Version'] = {
         hide: promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.hide ?? false,
-        minUI5Version: getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan),
+        minUI5Version:
+            promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.minUI5Version ??
+            getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan),
         includeSeparators: getHostEnvironment() !== hostEnvironment.cli,
         useAutocomplete: getHostEnvironment() === hostEnvironment.cli
     };
@@ -363,7 +365,7 @@ export interface OdataServiceInquirerOptions {
  * @param options.requiredOdataVersion will trigger warnings in prompts if the OData version is not supported.
  * @param options.allowNoDatasource If true, the user will be able to select 'None' as the datasource type. Fiori Freestyle specific.
  * @param options.capService If provided, the user will not be prompted for the CAP project and the default datasource type will be set to CAP project.
- * @param options.promptOptions A limited set of prompt options that can be set by the caller.
+ * @param options.promptOptions Odata service inquirer prompt options that can be set by the caller.
  * @param options.showCollabDraftWarning If true, a warning will be shown in the prompt if the service is a collaborative draft service.
  * @returns
  */
@@ -380,28 +382,35 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
     return {
         [odataServiceInquirerPromptNames.datasourceType]: {
             default: defaultDatasourceSelection,
-            includeNone: !!options.allowNoDatasource
+            includeNone: !!options.allowNoDatasource,
+            ...options.promptOptions?.datasourceType
         },
         [odataServiceInquirerPromptNames.metadataFilePath]: {
-            requiredOdataVersion: options.requiredOdataVersion
+            requiredOdataVersion: options.requiredOdataVersion,
+            ...options.promptOptions?.metadataFilePath
         },
         [odataServiceInquirerPromptNames.capProject]: {
             capSearchPaths: options.workspaceFolders ?? [],
-            defaultChoice: options.capService?.projectPath
+            defaultChoice: options.capService?.projectPath,
+            ...options.promptOptions?.capProject
         },
         [odataServiceInquirerPromptNames.capService]: {
-            defaultChoice: options.capService
+            defaultChoice: options.capService,
+            ...options.promptOptions?.capService
         },
         [odataServiceInquirerPromptNames.serviceUrl]: {
             requiredOdataVersion: options.requiredOdataVersion,
-            showCollaborativeDraftWarning: options.showCollabDraftWarning && isYUI
+            showCollaborativeDraftWarning: options.showCollabDraftWarning && isYUI,
+            ...options.promptOptions?.serviceUrl
         },
         [odataServiceInquirerPromptNames.serviceSelection]: {
             useAutoComplete: getHostEnvironment() === hostEnvironment.cli,
-            requiredOdataVersion:
-                options.requiredOdataVersion ?? options.promptOptions?.serviceSelection?.requiredOdataVersion,
+            requiredOdataVersion: options.requiredOdataVersion,
             showCollaborativeDraftWarning: options.showCollabDraftWarning && isYUI,
-            serviceFilter: options.promptOptions?.serviceSelection?.serviceFilter
+            ...options.promptOptions?.serviceSelection
+        },
+        [odataServiceInquirerPromptNames.userSystemName]: {
+            ...options.promptOptions?.userSystemName
         },
         [odataServiceInquirerPromptNames.systemSelection]: {
             destinationFilters: {

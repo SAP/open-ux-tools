@@ -1954,12 +1954,9 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.16.9
         version: 1.16.9
-      '@sap-ux/abap-deploy-config-inquirer':
+      '@sap-ux/deploy-config-sub-generator':
         specifier: workspace:*
-        version: link:../abap-deploy-config-inquirer
-      '@sap-ux/cf-deploy-config-inquirer':
-        specifier: workspace:*
-        version: link:../cf-deploy-config-inquirer
+        version: link:../deploy-config-sub-generator
       '@sap-ux/flp-config-sub-generator':
         specifier: workspace:*
         version: link:../flp-config-sub-generator
