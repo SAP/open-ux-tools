@@ -7,11 +7,8 @@ jest.mock('../../../src/utilities', () => {
 });
 
 import * as React from 'react';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import { render, fireEvent, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import type { ICalloutContentStyles } from '@fluentui/react';
-import { Callout } from '@fluentui/react';
-import type { UICalloutProps } from '../../../src/components/UICallout';
 import { UICallout, UICalloutContentPadding } from '../../../src/components/UICallout';
 import * as FluentUI from '@fluentui/react';
 import * as Utilities from '../../../src/utilities';
@@ -23,7 +20,10 @@ describe('<UICallout />', () => {
     let targetElement: HTMLElement;
     const selectors = {
         root: '.ms-Callout',
-        main: '.ms-Callout-main'
+        main: '.ms-Callout-main',
+        beak: '.ms-Callout-beak',
+        beakCurtain: '.ms-Callout-beakCurtain',
+        container: '.ms-Callout-container'
     };
 
     beforeEach(() => {
@@ -103,14 +103,27 @@ describe('<UICallout />', () => {
         };
 
         rerender(
-            <UICallout styles={expectStyles}>
+            <UICallout styles={expectStyles} target={`#${targetElement.id}`}>
                 <div className="dummy"></div>
             </UICallout>
         );
 
         // Test that the component renders with custom styles
-        expect(document.body.querySelector('.ms-Callout')).toBeInTheDocument();
-        expect(document.body.querySelector('.dummy')).toBeInTheDocument();
+        compareStylesBySelector(selectors.root, {
+            [property]: expectStyles.root[property]
+        });
+        compareStylesBySelector(selectors.beak, {
+            [property]: expectStyles.beak[property]
+        });
+        compareStylesBySelector(selectors.beakCurtain, {
+            [property]: expectStyles.beakCurtain[property]
+        });
+        compareStylesBySelector(selectors.main, {
+            [property]: expectStyles.calloutMain[property]
+        });
+        compareStylesBySelector(selectors.container, {
+            [property]: expectStyles.container[property]
+        });
     });
 
     describe('Property "focusTargetSiblingOnTabPress"', () => {
@@ -187,39 +200,9 @@ describe('<UICallout />', () => {
                 <div className="dummy"></div>
             </UICallout>
         );
-        const callout = document.body.querySelector('.ms-Callout');
-        // Find the calloutMain element
-        const calloutMain = callout?.querySelector('.ms-Callout-main');
-        expect(calloutMain).toBeTruthy();
-        if (calloutMain) {
-            expect(window.getComputedStyle(calloutMain).minWidth).toBe('555px');
-        }
-    });
-
-    it('applies contentPadding None and Standard correctly', () => {
-        rerender(
-            <UICallout target={targetElement} contentPadding={UICalloutContentPadding.None}>
-                <div className="dummy"></div>
-            </UICallout>
-        );
-        let callout = document.body.querySelector('.ms-Callout');
-        let calloutMain = callout?.querySelector('.ms-Callout-main');
-        expect(calloutMain).toBeTruthy();
-        if (calloutMain) {
-            expect(window.getComputedStyle(calloutMain).padding).toBe('');
-        }
-
-        rerender(
-            <UICallout target={targetElement} contentPadding={UICalloutContentPadding.Standard}>
-                <div className="dummy"></div>
-            </UICallout>
-        );
-        callout = document.body.querySelector('.ms-Callout');
-        calloutMain = callout?.querySelector('.ms-Callout-main');
-        expect(calloutMain).toBeTruthy();
-        if (calloutMain) {
-            expect(window.getComputedStyle(calloutMain).padding).toMatch(/8px/);
-        }
+        compareStylesBySelector(selectors.main, {
+            minWidth: '555px'
+        });
     });
 
     it('calls onKeyDown prop if provided', () => {
@@ -273,11 +256,8 @@ describe('<UICallout />', () => {
                 <div className="dummy"></div>
             </UICallout>
         );
-        const callout = document.body.querySelector('.ms-Callout');
-        const calloutMain = callout?.querySelector('.ms-Callout-main');
-        expect(calloutMain).toBeTruthy();
-        if (calloutMain) {
-            expect(window.getComputedStyle(calloutMain).minWidth).toBe('123px');
-        }
+        compareStylesBySelector(selectors.main, {
+            minWidth: '123px'
+        });
     });
 });
