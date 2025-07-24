@@ -24,7 +24,7 @@ import type { Question } from 'inquirer';
 import merge from 'lodash/merge';
 import { join } from 'path';
 import type { Adapter } from 'yeoman-environment';
-import type { FioriAppGeneratorPromptSettings, Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
+import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
 import { Features, defaultPromptValues } from '../types';
 import { getMinSupportedUI5Version, t, validateNextStep } from '../utils';
 
@@ -80,7 +80,7 @@ type PromptUI5AppAnswersOptions = {
     projectName?: Project['name'];
     targetFolder?: Project['targetFolder'];
     service: Partial<Service>;
-    promptSettings?: FioriAppGeneratorPromptSettings;
+    promptSettings?: UI5ApplicationPromptOptions;
     floorplan: Floorplan;
     promptExtension?: UI5ApplicationPromptOptions;
 };
@@ -101,15 +101,7 @@ type PromptUI5AppAnswersOptions = {
  * @returns
  */
 export async function promptUI5ApplicationAnswers(
-    {
-        service,
-        projectName,
-        targetFolder,
-        promptSettings,
-
-        floorplan,
-        promptExtension
-    }: PromptUI5AppAnswersOptions,
+    { service, projectName, targetFolder, promptSettings, floorplan, promptExtension }: PromptUI5AppAnswersOptions,
     yeomanUiStepConfig: YeomanUiStepConfig[],
     adapter: Adapter
 ): Promise<{ ui5AppAnswers: UI5ApplicationAnswers; localUI5Version: string | undefined }> {
@@ -223,7 +215,7 @@ export async function createUI5ApplicationPromptOptions(
     floorplan: Floorplan,
     projectName?: Project['name'],
     targetFolder?: Project['targetFolder'],
-    promptSettings?: FioriAppGeneratorPromptSettings,
+    promptSettings?: UI5ApplicationPromptOptions,
     extensions?: UI5ApplicationPromptOptions
 ): Promise<UI5ApplicationPromptOptions> {
     // prompt settings may be additionally provided e.g. set by adaptors
@@ -352,7 +344,7 @@ export interface OdataServiceInquirerOptions {
      * Note: only some of the allowed prompt options are currently supported.
      * Eventually all should be supported by merging the options with the prompt specific options.
      */
-    promptOptions?: FioriAppGeneratorPromptSettings;
+    promptOptions?: OdataServicePromptOptions;
     showCollabDraftWarning?: boolean;
     workspaceFolders?: string[];
 }

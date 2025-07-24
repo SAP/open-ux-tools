@@ -269,8 +269,10 @@ describe('Test FioriAppGenerator', () => {
         options.showCollabDraftWarning = true;
         options.workspaceFolders = ['folder1', 'folder2'];
         options.promptSettings = {
-            systemSelection: {
-                defaultChoice: 'system1'
+            '@sap/generator-fiori': {
+                systemSelection: {
+                    defaultChoice: 'system1'
+                }
             }
         };
 
@@ -472,14 +474,16 @@ describe('Test FioriAppGenerator', () => {
             floorplan: FloorplanFE.FE_WORKLIST
         };
         options.promptSettings = {
-            name: {
-                hide: true
-            },
-            targetFolder: {
-                hide: true
-            },
-            ui5Version: {
-                hide: true
+            '@sap/generator-fiori': {
+                name: {
+                    hide: true
+                },
+                targetFolder: {
+                    hide: true
+                },
+                ui5Version: {
+                    hide: true
+                }
             }
         };
         options.extensions = {
@@ -497,14 +501,14 @@ describe('Test FioriAppGenerator', () => {
         // Should call to prompt for UI5 application answers with the expected parameters
         expect(promptUI5ApplicationAnswers).toHaveBeenCalledWith(
             {
-                projectName: undefined,
+                name: undefined,
                 targetFolder: undefined,
                 service: {
                     edmx: '<edmx></edmx>',
                     source: DatasourceType.sapSystem
                 },
                 floorplan: FloorplanFF.FF_SIMPLE,
-                promptSettings: options.promptSettings,
+                promptSettings: options.promptSettings['@sap/generator-fiori'],
                 promptExtension: options.extensions
             },
             expect.arrayContaining([
