@@ -86,6 +86,13 @@ export async function replaceWebappFiles(projectPath: string, extractedPath: str
                     if (generatedManifestJSON?.['sap.ui5']?.models && extractedManifestJSON?.['sap.ui5']) {
                         extractedManifestJSON['sap.ui5'].models = generatedManifestJSON['sap.ui5']?.models;
                     }
+                    // Set only css: [] to avoid deprecated 'sap.ui5/resources/js' linter errors.
+                    if (
+                        generatedManifestJSON?.['sap.ui5']?.resources &&
+                        extractedManifestJSON?.['sap.ui5']?.resources
+                    ) {
+                        extractedManifestJSON['sap.ui5'].resources = generatedManifestJSON?.['sap.ui5'].resources;
+                    }
                     fs.writeJSON(webappFilePath, extractedManifestJSON, undefined, 2);
                 } else {
                     fs.copy(extractedFilePath, webappFilePath);
