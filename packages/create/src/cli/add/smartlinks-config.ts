@@ -10,6 +10,7 @@ import { validateBasePath } from '../../validation';
  */
 export function addAddSmartLinksConfigCommand(cmd: Command): void {
     cmd.command('smartlinks-config [path]')
+        .description('Add a smartLinks configuration to a project for cross-app navigation.')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')
         .action(async (path, options) => {

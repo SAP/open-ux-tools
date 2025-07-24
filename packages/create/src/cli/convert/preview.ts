@@ -9,6 +9,8 @@ import { convertToVirtualPreview, simulatePrompt, includeTestRunnersPrompt } fro
  */
 export function addConvertPreviewCommand(cmd: Command): void {
     cmd.command('preview-config [path]')
+        .description('Convert an app to use virtual preview endpoints and update configuration files.')
+        .option('-i, --interactive <boolean>', 'ask for config options, otherwise use defaults')
         .option('-s, --simulate <boolean>', 'simulate only do not write')
         .option('-v, --verbose', 'show verbose information')
         .option('-t, --tests <boolean>', 'also convert test suite and test runners')
@@ -17,7 +19,7 @@ export function addConvertPreviewCommand(cmd: Command): void {
             const testsString = /(?:=)?(true|false)/i.exec(options.tests)?.[1];
             const simulate = simulateString ? simulateString.toLowerCase() === 'true' : undefined;
             const tests = testsString ? testsString.toLowerCase() === 'true' : undefined;
-            await convertPreview(path, simulate, tests, options.verbose);
+            await convertPreview(path, simulate, tests, options.verbose, !!options.interactive);
         });
 }
 
@@ -28,12 +30,14 @@ export function addConvertPreviewCommand(cmd: Command): void {
  * @param {boolean} simulate - If set to true, then no files will be written to the filesystem.
  * @param {boolean} convertTests - If set to true, then test suite and test runners fill be included in the conversion.
  * @param {boolean} verbose - If set to true, then verbose information will be logged.
+ * @param {boolean} interactive - if true, prompt user for config options, otherwise use defaults.
  */
 async function convertPreview(
     basePath: string,
     simulate: boolean | undefined,
     convertTests: boolean | undefined,
-    verbose = false
+    verbose = false,
+    interactive: boolean
 ): Promise<void> {
     let logger = getLogger();
 
@@ -43,10 +47,12 @@ async function convertPreview(
 
     simulate =
         simulate ??
-        (await simulatePrompt().catch((error: Error) => {
-            logger.error(error.message);
-            return process.exit(1);
-        }));
+        (interactive
+            ? await simulatePrompt().catch((error: Error) => {
+                  logger.error(error.message);
+                  return process.exit(1);
+              })
+            : false);
     if (simulate || verbose) {
         setLogLevelVerbose();
     }
@@ -55,10 +61,12 @@ async function convertPreview(
 
     convertTests =
         convertTests ??
-        (await includeTestRunnersPrompt().catch((error: Error) => {
-            logger.error(error.message);
-            return process.exit(1);
-        }));
+        (interactive
+            ? await includeTestRunnersPrompt().catch((error: Error) => {
+                  logger.error(error.message);
+                  return process.exit(1);
+              })
+            : false);
 
     logger.debug(
         `Called convert preview-config for path '${basePath}', simulate is '${simulate}', convert tests is '${convertTests}'.`
