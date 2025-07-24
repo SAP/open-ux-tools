@@ -35,6 +35,10 @@ export interface UI5VersionFilterOptions {
      */
     includeMaintained?: boolean;
     /**
+     * Includes the UI5 versions with pre-release identifier `-legacy-free`.
+     */
+    includeLegacyFree?: boolean;
+    /**
      * Adds the property `default` to the default ui5 version. With `includeMaintained`, finds next maintained version if default is out of maintenance
      */
     includeDefault?: boolean;

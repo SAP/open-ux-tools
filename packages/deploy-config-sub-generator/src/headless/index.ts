@@ -1,12 +1,12 @@
 import { join, resolve } from 'path';
 import { unlinkSync } from 'fs';
 import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
-import { DeployTarget } from '@sap-ux/fiori-generator-shared';
 import { t, generatorNamespace, abapChoice, cfChoice } from '../utils';
+import { DeployTarget } from '@sap-ux/fiori-generator-shared';
 import type { CfDeployConfigOptions } from '@sap-ux/cf-deploy-config-sub-generator';
 import type { AbapDeployConfigOptions } from '@sap-ux/abap-deploy-config-sub-generator';
-import type { AppConfig } from '@sap-ux/fiori-app-sub-generator';
 import type {
+    AppConfig,
     CFDeployConfig as CfHeadlessDeployConfig,
     AbapDeployConfigOptions as AbapHeadlessDeployConfigOptions
 } from '@sap-ux/fiori-generator-shared';
