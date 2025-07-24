@@ -17,7 +17,11 @@ export const findStyleFromStyleSheets = (styleProperty: string, element?: Elemen
             const sheet = document.styleSheets[i];
             for (let j = 0; j < sheet.cssRules.length; j++) {
                 const rule = sheet.cssRules[j];
-                if (rule instanceof CSSStyleRule && rule.selectorText?.includes(className)) {
+                if (
+                    rule instanceof CSSStyleRule &&
+                    rule.selectorText?.includes(className) &&
+                    styleProperty in rule.style
+                ) {
                     return rule.style[styleProperty];
                 }
             }

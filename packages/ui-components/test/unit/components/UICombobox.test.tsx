@@ -8,6 +8,7 @@ import { initIcons } from '../../../src/components/Icons';
 import type { IComboBox, IComboBoxOption } from '@fluentui/react';
 import { KeyCodes, ComboBox, Autofill } from '@fluentui/react';
 import { CalloutCollisionTransform } from '../../../src/components/UICallout/CalloutCollisionTransform';
+import { compareStylesBySelector, findStyleFromStyleSheets } from '../../utils/styles';
 
 // Helper to get dropdown/callout elements from document.body (portal)
 const getDropdownElements = (selector: string) => Array.from(document.body.querySelectorAll(selector));
@@ -89,20 +90,36 @@ describe('<UIComboBox />', () => {
     });
 
     it('Styles - default', () => {
-        const comboBox = container.querySelector('.ms-ComboBox');
-        expect(comboBox).toBeInTheDocument();
+        rerender(<UIComboBox options={data} label="dummy" />);
+        compareStylesBySelector('.ms-Label', {
+            color: 'var(--vscode-input-foreground)'
+        });
+    });
+
+    it('Styles - error message', () => {
+        rerender(<UIComboBox options={data} errorMessage="dummy" />);
         // Test that the component renders with expected structure
-        expect(comboBox).toHaveClass('ms-ComboBox');
+        compareStylesBySelector('[role="alert"]', {
+            backgroundColor: 'var(--vscode-inputValidation-errorBackground)'
+        });
     });
 
     it('Styles - required', () => {
         rerender(
-            <UIComboBox options={data} highlight={false} allowFreeform={true} autoComplete="on" required={true} />
+            <UIComboBox
+                options={data}
+                highlight={false}
+                allowFreeform={true}
+                autoComplete="on"
+                required={true}
+                label="dummy"
+            />
         );
-        const comboBox = container.querySelector('.ms-ComboBox');
-        expect(comboBox).toBeInTheDocument();
-        // Test that the component renders with expected structure for required field
-        expect(comboBox).toHaveClass('ms-ComboBox');
+        const label = container.querySelector('.ms-Label') as HTMLElement;
+        expect(findStyleFromStyleSheets('content', label, '::after')).toEqual(`' *' / ''`);
+        expect(findStyleFromStyleSheets('color', label, '::after')).toEqual(
+            'var(--vscode-inputValidation-errorBorder)'
+        );
     });
 
     describe('Test highlight', () => {
