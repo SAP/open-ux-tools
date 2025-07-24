@@ -1,5 +1,19 @@
 # @sap-ux/inquirer-common
 
+## 0.7.27
+
+### Patch Changes
+
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+
+## 0.7.26
+
+### Patch Changes
+
+-   Updated dependencies [07d4e25]
+    -   @sap-ux/ui5-info@0.12.1
+
 ## 0.7.25
 
 ### Patch Changes
