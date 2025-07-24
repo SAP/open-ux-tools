@@ -25,11 +25,10 @@ export interface SubGeneratorPromptSettings {
 }
 
 export interface FioriGeneratorPromptSettings {
-    '@sap/generator-fiori': OdataServicePromptOptions & UI5ApplicationPromptOptions;
+    '@sap/generator-fiori'?: OdataServicePromptOptions & UI5ApplicationPromptOptions;
 }
 
-export type FioriAppGeneratorPromptSettings = FioriGeneratorPromptSettings['@sap/generator-fiori'] &
-    SubGeneratorPromptSettings;
+export type FioriAppGeneratorPromptSettings = FioriGeneratorPromptSettings & SubGeneratorPromptSettings;
 
 /**
  * Custom environment type until yeoman-environment provides one
