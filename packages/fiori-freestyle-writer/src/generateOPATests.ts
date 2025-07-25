@@ -17,8 +17,8 @@ function addTestScripts(packageJson: Package, addMock: boolean): void {
     const ui5MockYamlScript = addMock ? '--config ./ui5-mock.yaml ' : '';
     packageJson.scripts = {
         ...packageJson.scripts,
-        'unit-test': `fiori run ${ui5MockYamlScript}--open 'test/unit/unitTests.qunit.html'`,
-        'int-test': `fiori run ${ui5MockYamlScript}--open 'test/integration/opaTests.qunit.html'`
+        'unit-test': `fiori run ${ui5MockYamlScript}--open test/unit/unitTests.qunit.html`,
+        'int-test': `fiori run ${ui5MockYamlScript}--open test/integration/opaTests.qunit.html`
     };
 }
 
