@@ -156,7 +156,6 @@ export async function getServiceChoices(
     if (serviceFilter) {
         flatServices = flatServices.filter((service) => serviceFilter.includes(service.id));
     }
-    // await writeFile(`/Users/i057546/dev/service-counts/${new URL(catalogs[1].getUri()).hostname}.json`, JSON.stringify(flatServices), 'utf8');
     return createServiceChoices(flatServices);
 }
 

@@ -38,7 +38,7 @@ interface ServiceGroupResponse {
  * OData V4 specific implmentation of SAP's catalog service
  */
 export class V4CatalogService extends CatalogService {
-    private logger: Logger = new ToolsLogger();
+    private readonly logger: Logger = new ToolsLogger();
     public static readonly PATH = '/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002';
 
     /**
