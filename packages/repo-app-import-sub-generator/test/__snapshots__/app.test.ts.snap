@@ -78,7 +78,6 @@ exports[`Repo App Download Should execute post app gen hook event when postGenCo
     },
     "resources": {
       "css": [],
-      "js": [],
     },
     "routing": {
       "config": {},
@@ -282,7 +281,6 @@ exports[`Repo App Download Should not throw error in end phase if telemetry fail
     },
     "resources": {
       "css": [],
-      "js": [],
     },
     "routing": {
       "config": {},
@@ -486,7 +484,6 @@ exports[`Repo App Download Should successfully run app download from repository 
     },
     "resources": {
       "css": [],
-      "js": [],
     },
     "routing": {
       "config": {},
@@ -690,7 +687,6 @@ exports[`Repo App Download Should successfully run app download from repository 
     },
     "resources": {
       "css": [],
-      "js": [],
     },
     "routing": {
       "config": {},

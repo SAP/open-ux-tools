@@ -285,7 +285,7 @@ describe('getAbapTargetPrompts', () => {
                     targetSystem: 'target1'
                 })
             ).toBe(false);
-            expect(validateTargetSystemUrlCliSpy).toBeCalledTimes(1);
+            expect(validateTargetSystemUrlCliSpy).toHaveBeenCalledTimes(1);
         } else {
             throw new Error('Target system setter prompt not found');
         }

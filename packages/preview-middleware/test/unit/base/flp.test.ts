@@ -180,7 +180,7 @@ describe('FlpSandbox', () => {
                 'sap.app': { id: 'my.id', title: '{i18n>myTitle}', description: '{{i18n>myDescription}}' }
             } as Manifest;
             await flp.init(manifest);
-            expect(projectAccessMock).toBeCalled();
+            expect(projectAccessMock).toHaveBeenCalled();
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
@@ -853,7 +853,7 @@ describe('FlpSandbox', () => {
                 ]
             };
             const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload);
-            expect(projectAccessMock).toBeCalled();
+            expect(projectAccessMock).toHaveBeenCalled();
             expect(response.status).toBe(201);
             expect(response.text).toBe('Files were updated/created');
         });
@@ -1053,7 +1053,7 @@ describe('FlpSandbox', () => {
             logger.info.mockReset();
             mockProject.byPath.mockResolvedValueOnce({});
             await server.get('/test/existingFlp.html?sap-ui-xx-viewCache=false');
-            expect(logger.info).toBeCalledWith(
+            expect(logger.info).toHaveBeenCalledWith(
                 'HTML file returned at /test/existingFlp.html is loaded from the file system.'
             );
             await server.get('/cdm.json').expect(404);
@@ -1218,6 +1218,27 @@ describe('FlpSandbox', () => {
             response = await server.get('/my/editor.html.inner.html').expect(302);
             expect(response.text).toMatchSnapshot();
         });
+
+        test('rta w/o layer', async () => {
+            const mockConfigAdjusted = { ...mockConfig };
+            //@ts-expect-error: we use undefined here on purpose to simulate a missing value from ui5 yaml
+            mockConfigAdjusted.editors.rta.layer = undefined;
+            const flp = new FlpSandbox(
+                mockConfigAdjusted as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+
+            server = await supertest(app);
+            const response = await server.get('/my/rta.html?fiori-tools-rta-mode=true').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
     });
 
     describe('cds-plugin-ui5', () => {
@@ -1377,8 +1398,8 @@ describe('initAdp', () => {
             jest.fn();
         });
         await initAdp(mockAdpProject, config.adp, flp, {} as MiddlewareUtils, logger);
-        expect(adpToolingMock).toBeCalled();
-        expect(flpInitMock).toBeCalled();
+        expect(adpToolingMock).toHaveBeenCalled();
+        expect(flpInitMock).toHaveBeenCalled();
     });
 
     test('initAdp - cloud scenario', async () => {
@@ -1412,8 +1433,8 @@ describe('initAdp', () => {
             jest.fn();
         });
         await initAdp(mockAdpProject, config.adp as AdpPreviewConfig, flp, {} as MiddlewareUtils, logger);
-        expect(adpToolingMock).toBeCalled();
-        expect(flpInitMock).toBeCalled();
+        expect(adpToolingMock).toHaveBeenCalled();
+        expect(flpInitMock).toHaveBeenCalled();
         expect(flp.rta?.options?.isCloud).toBe(true);
     });
 });

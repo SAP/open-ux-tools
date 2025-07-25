@@ -72,7 +72,7 @@ describe('Unit tests for navigation config generation', () => {
                 title: 'title1',
                 subTitle: 'subtitle1'
             })
-        ).rejects.toThrowError(/^The `manifest.json` file was not found at path: /);
+        ).rejects.toThrow(/^The `manifest.json` file was not found at path: /);
     });
 
     test('"sap.app" not defined', async () => {

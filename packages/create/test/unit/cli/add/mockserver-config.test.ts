@@ -50,16 +50,19 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot]));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
-        expect(execNpmCommandSpy).toBeCalledWith(['install', '--save-dev', '@sap-ux/ui5-middleware-fe-mockserver'], {
-            cwd: appRoot,
-            logger: undefined
-        });
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
+        expect(execNpmCommandSpy).toHaveBeenCalledWith(
+            ['install', '--save-dev', '@sap-ux/ui5-middleware-fe-mockserver'],
+            {
+                cwd: appRoot,
+                logger: undefined
+            }
+        );
     });
 
     test('Test create-fiori add mockserver-config <appRoot> --simulate', async () => {
@@ -69,11 +72,11 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot, '-s']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
-        expect(fsMock.commit).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori add mockserver-config <appRoot> --skip-install', async () => {
@@ -83,12 +86,12 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot, '--skip-install']));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.warn).toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.warn).toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori add mockserver-config <appRoot> --interactive', async () => {
@@ -102,12 +105,12 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot, '--interactive']));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(promptSpy).toBeCalledWith([{ webappPath: join(appRoot, 'webapp'), askForOverwrite: true }]);
-        expect(fsMock.commit).toBeCalled();
-        expect(execNpmCommandSpy).toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(promptSpy).toHaveBeenCalledWith([{ webappPath: join(appRoot, 'webapp'), askForOverwrite: true }]);
+        expect(fsMock.commit).toHaveBeenCalled();
+        expect(execNpmCommandSpy).toHaveBeenCalled();
     });
 
     test('Test create-fiori add mockserver-config <appRoot> --interactive with overwrite option', async () => {
@@ -132,10 +135,10 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', appRoot, '--interactive']));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(promptSpy).toBeCalledWith([
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(promptSpy).toHaveBeenCalledWith([
             {
                 name: 'path',
                 type: 'text',
@@ -147,8 +150,8 @@ describe('Test command add mockserver-config', () => {
                 type: 'confirm'
             }
         ]);
-        expect(fsMock.commit).toBeCalled();
-        expect(execNpmCommandSpy).toBeCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
+        expect(execNpmCommandSpy).toHaveBeenCalled();
     });
 
     test('Test create-fiori add mockserver-config --verbose', async () => {
@@ -158,10 +161,10 @@ describe('Test command add mockserver-config', () => {
         await command.parseAsync(getArgv(['mockserver-config', '--verbose']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalled();
-        expect(fsMock.commit).not.toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
     });
 });

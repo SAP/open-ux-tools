@@ -31,13 +31,17 @@ describe('runPostAppGenHook', () => {
     it('should log an error if vscodeInstance is missing', async () => {
         mockContext.vscodeInstance = undefined;
         await runPostAppGenHook(mockContext);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.eventHookErrors.vscodeInstanceMissing'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.eventHookErrors.vscodeInstanceMissing')
+        );
     });
 
     it('should log an error if postGenCommand is missing', async () => {
         mockContext.postGenCommand = '';
         await runPostAppGenHook(mockContext);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.eventHookErrors.postGenCommandMissing'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.eventHookErrors.postGenCommandMissing')
+        );
     });
 
     it('should execute the post-generation command successfully', async () => {
@@ -53,6 +57,8 @@ describe('runPostAppGenHook', () => {
             mockContext.vscodeInstance.commands.executeCommand = jest.fn().mockRejectedValue(mockError);
         }
         await runPostAppGenHook(mockContext);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.eventHookErrors.commandExecutionFailed'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.eventHookErrors.commandExecutionFailed')
+        );
     });
 });

@@ -164,7 +164,7 @@ describe('Test generator methods', () => {
                     ui5Version: '1.108.0',
                     enableTypescript: true
                 })
-        ).rejects.toThrowError('An error occurred when generating the reusable SAPUI5 library.');
+        ).rejects.toThrow('An error occurred when generating the reusable SAPUI5 library.');
         expect(getPromptsSpy).toHaveBeenCalled();
     });
 

@@ -17,15 +17,16 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { extendWithOptions } from '@sap-ux/inquirer-common';
 import { generatorTitle, i18nKeySubTitle, i18nKeyTitle } from '../utils/constants';
-import { t } from '../utils';
-import { getYUIDetails } from '../utils/prompts';
+import { t, getPromptOptions, getYUIDetails } from '../utils';
 import { EventName } from '../telemetryEvents';
-import type { FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
+import type { FLPConfigAnswers, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
 import type { YeomanEnvironment, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
+
+const flpConfigSubGenNamespace = '@sap-ux/flp-config-sub-generator';
 
 /**
  * FLP config generator adds an inbound navigation config to an existing manifest.json.
@@ -41,7 +42,7 @@ export default class extends Generator {
     private abort = false;
     private manifest: Partial<Manifest>;
     private manifestPath: string;
-    private extensionPromptOpts?: Record<string, CommonPromptOptions>;
+    private promptOptions?: FLPConfigPromptOptions;
     public options: FlpConfigOptions;
 
     setPromptsCallback: (fn: object) => void;
@@ -59,6 +60,7 @@ export default class extends Generator {
         this.vscode = opts.vscode;
         this.launchFlpConfigAsSubGenerator = opts.launchFlpConfigAsSubGenerator ?? false;
         this.appRootPath = opts.data?.appRootPath ?? opts?.appRootPath ?? this.destinationRoot();
+        this.promptOptions = this.options?.inquirerPromptOptions;
         this.options = opts;
 
         FlpGenLogger.configureLogging(
@@ -88,15 +90,20 @@ export default class extends Generator {
             (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
         }
 
-        this.extensionPromptOpts = await getExtensionGenPromptOpts(
+        const extensionPromptOpts = await getExtensionGenPromptOpts(
             this.env.create.bind(this.env),
-            this.rootGeneratorName(),
+            flpConfigSubGenNamespace,
             this.vscode
         );
 
+        this.promptOptions = {
+            ...extensionPromptOpts,
+            ...this.promptOptions
+        };
+
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
-                name: '@sap-ux/flp-config-sub-generator',
+                name: flpConfigSubGenNamespace,
                 version: this.rootGeneratorVersion()
             },
             internalFeature: isInternalFeaturesSettingEnabled(),
@@ -145,14 +152,14 @@ export default class extends Generator {
         const silentOverwrite = this.options.overwrite;
         let questions: Question[] = (await getPrompts(inbounds, {
             silentOverwrite,
-            inboundId: { hide: true },
-            existingFlpConfigInfo: { hide: true },
-            icon: { hide: true },
-            additionalParameters: { hide: true }
+            ...getPromptOptions(this.promptOptions)
         })) as Question[];
 
-        if (this.extensionPromptOpts && !this.launchFlpConfigAsSubGenerator) {
-            questions = extendWithOptions(questions as YUIQuestion[], this.extensionPromptOpts);
+        if (this.promptOptions) {
+            questions = extendWithOptions(
+                questions as YUIQuestion[],
+                this.promptOptions as Record<string, CommonPromptOptions>
+            );
         }
 
         this.answers = {} as FLPConfigAnswers;
@@ -283,4 +290,4 @@ export default class extends Generator {
 }
 
 export { promptNames };
-export type { FlpConfigOptions };
+export type { FlpConfigOptions, FLPConfigPromptOptions };

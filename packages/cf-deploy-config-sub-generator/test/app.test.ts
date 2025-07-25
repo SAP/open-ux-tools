@@ -889,7 +889,7 @@ describe('Cloud foundry generator tests', () => {
                 })
                 .withPrompts({})
                 .run()
-        ).rejects.toThrowError(
+        ).rejects.toThrow(
             `Cannot find the \"mta\" executable. Please add it to the path or use \"npm i -g mta\" to install it.`
         );
     });
@@ -966,7 +966,7 @@ describe('Cloud foundry generator tests', () => {
                 })
                 .withPrompts({})
                 .run()
-        ).rejects.toThrowError(
+        ).rejects.toThrow(
             `Cannot find the \"cds\" executable. Please add it to the path or use \"npm i -g @sap/cds-dk\" to install it.`
         );
     });
@@ -1039,7 +1039,7 @@ describe('Cloud foundry generator tests', () => {
                 })
                 .withPrompts({})
                 .run()
-        ).rejects.toThrowError(`Error: could not read missing-base.yaml`);
+        ).rejects.toThrow(`Error: could not read missing-base.yaml`);
     });
 
     it('Should throw error when manifest is not found', async () => {
@@ -1075,7 +1075,7 @@ describe('Cloud foundry generator tests', () => {
                 })
                 .withPrompts({})
                 .run()
-        ).rejects.toThrowError('Error: could not read the file: `webapp/manifest.json`.');
+        ).rejects.toThrow('Error: could not read the file: `webapp/manifest.json`.');
     });
 
     it('Should throw error when not app name is found in manifest', async () => {
@@ -1114,7 +1114,7 @@ describe('Cloud foundry generator tests', () => {
                 })
                 .withPrompts({})
                 .run()
-        ).rejects.toThrowError('Cannot determine the application name from the `manifest.json` file.');
+        ).rejects.toThrow('Cannot determine the application name from the `manifest.json` file.');
     });
 
     it('Should throw error if config writing fails', async () => {
@@ -1152,7 +1152,7 @@ describe('Cloud foundry generator tests', () => {
                 })
                 .withPrompts({})
                 .run()
-        ).rejects.toThrowError();
+        ).rejects.toThrow();
     });
 
     it('Should not throw error in end phase if telemetry fails', async () => {

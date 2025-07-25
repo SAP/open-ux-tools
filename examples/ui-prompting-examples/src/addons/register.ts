@@ -1,28 +1,28 @@
 import { addons, types } from '@storybook/addons';
-import { render as renderPreview } from './preview/component';
-import { render as renderProject } from './project/component';
+import { CodePreview } from './preview/component';
+import { ProjectSelector } from './project/component';
 
 const ADDONS = [
     {
         id: 'code-preview',
         title: 'Code preview',
-        render: renderPreview
+        component: CodePreview
     },
     {
         id: 'project-selector',
         title: 'Project path',
-        render: renderProject
+        component: ProjectSelector
     }
 ];
 
 for (const addon of ADDONS) {
-    const { id, render, title } = addon;
+    const { id, component, title } = addon;
     addons.register(id, () => {
         addons.add(id, {
             title: title,
             type: types.PANEL,
             match: ({ viewMode }) => !!viewMode?.match(/^(story|docs)$/),
-            render: render
+            render: component
         });
     });
 }

@@ -76,7 +76,7 @@ builder:
     \\"ui5-task-flatten-library\\": \\"^3.1.0\\"
   },
   \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && fiori deploy --config deploy-config.yaml && rimraf archive.zip\\",
+    \\"deploy\\": \\"npm run build && fiori deploy --config deploy-config.yaml\\",
     \\"undeploy\\": \\"npm run build && fiori undeploy --config deploy-config.yaml\\",
     \\"deploy-test\\": \\"npm run build && fiori deploy --config deploy-config.yaml --testMode true\\"
   },
@@ -105,7 +105,7 @@ Object {
     \\"ui5-task-flatten-library\\": \\"^3.1.0\\"
   },
   \\"scripts\\": {
-    \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+    \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
     \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
     \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
   },
@@ -219,7 +219,7 @@ Object {
         \\"start\\": \\"start script\\",
         \\"build\\": \\"build script\\",
         \\"test\\": \\"test script\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     },
@@ -285,7 +285,7 @@ Object {
         \\"start\\": \\"start script\\",
         \\"build\\": \\"build script\\",
         \\"test\\": \\"test script\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     },

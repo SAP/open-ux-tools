@@ -50,13 +50,13 @@ describe('Test command convert preview', () => {
         await command.parseAsync(getArgv(['preview-config', appRoot]));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori convert preview <appRoot> --simulate=true', async () => {
@@ -66,11 +66,11 @@ describe('Test command convert preview', () => {
         await command.parseAsync(getArgv(['preview-config', appRoot, '-s=true']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
-        expect(fsMock.commit).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori convert preview <appRoot> --simulate=false --test=FaLsE', async () => {
@@ -80,11 +80,11 @@ describe('Test command convert preview', () => {
         await command.parseAsync(getArgv(['preview-config', appRoot, '-s=false', '-t=FaLsE']));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
     });
 
     test('Test create-fiori convert preview --verbose', async () => {
@@ -96,11 +96,11 @@ describe('Test command convert preview', () => {
         await command.parseAsync(getArgv(['preview-config', '--verbose']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori convert preview with simulate from prompt', async () => {
@@ -112,11 +112,11 @@ describe('Test command convert preview', () => {
         await command.parseAsync(getArgv(['preview-config']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
-        expect(fsMock.commit).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori convert preview with simulate cancelled from prompt', async () => {
@@ -129,10 +129,10 @@ describe('Test command convert preview', () => {
 
         // Result check
         expect(mockExit).toHaveBeenCalledWith(1);
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
         //can't check for fs.commit here as we don't exit on process.exit(1)
     });
 
@@ -145,11 +145,11 @@ describe('Test command convert preview', () => {
         await command.parseAsync(getArgv(['preview-config']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
-        expect(fsMock.commit).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori convert preview with simulate and test cancelled from prompt', async () => {
@@ -163,10 +163,10 @@ describe('Test command convert preview', () => {
 
         // Result check
         expect(mockExit).toHaveBeenCalledWith(1);
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
-        expect(fsMock.commit).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled();
     });
 });

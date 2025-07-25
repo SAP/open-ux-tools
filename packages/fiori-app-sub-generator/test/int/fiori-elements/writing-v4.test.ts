@@ -108,7 +108,7 @@ describe('Generate v4 apps', () => {
             entityRelatedConfig: v4EntityConfig
         });
 
-        await expect(() => runWritingPhaseGen(testState)).rejects.toThrowError('ValidationError');
+        await expect(() => runWritingPhaseGen(testState)).rejects.toThrow('ValidationError');
         cleanTestDir(join(testDir, testProjectName));
     });
 

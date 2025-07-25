@@ -143,8 +143,8 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             inject([mockTarget.url, mockTarget.client]);
             const result = await getSmartLinksTargetFromPrompt(getProject(basePath), loggerMock);
             expect(result.target).toMatchObject({ url: mockTarget.url });
-            expect(debugMock).not.toBeCalled();
-            expect(getSystemCredentialsSpy).toBeCalledWith(mockTarget.url, mockTarget.client, loggerMock);
+            expect(debugMock).not.toHaveBeenCalled();
+            expect(getSystemCredentialsSpy).toHaveBeenCalledWith(mockTarget.url, mockTarget.client, loggerMock);
             const [urlPrompt, clientPrompt] = promptMock.mock.calls[0][0];
             expect(urlPrompt.initial).toBeDefined();
             expect(urlPrompt.message).toContain('SmartLinks configuration source url (ui5-deploy.yaml)');
@@ -161,8 +161,8 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             const result = await getSmartLinksTargetFromPrompt(getProject(basePath), loggerMock);
             expect(result.target).toMatchObject({ url: mockTarget.url, client: mockTarget.client });
             expect(result.auth).toMatchObject(mockAuth);
-            expect(debugMock).not.toBeCalled();
-            expect(getSystemCredentialsSpy).toBeCalled();
+            expect(debugMock).not.toHaveBeenCalled();
+            expect(getSystemCredentialsSpy).toHaveBeenCalled();
         });
     });
 
@@ -213,8 +213,8 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             expect(destinationPrompt.type).toEqual(null);
             expect(urlPrompt.type).toEqual(null);
             expect(clientPrompt.type).toEqual(null);
-            expect(listDestinationsMock).toBeCalled();
-            expect(getSystemCredentialsSpy).not.toBeCalled();
+            expect(listDestinationsMock).toHaveBeenCalled();
+            expect(getSystemCredentialsSpy).not.toHaveBeenCalled();
         });
     });
 
@@ -244,7 +244,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
         test('Stored credentials', async () => {
             serviceMock.read.mockResolvedValue(mockAuth);
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
-            expect(serviceMock.read).toBeCalledWith(mockTarget);
+            expect(serviceMock.read).toHaveBeenCalledWith(mockTarget);
             const promptForCredentials = promptMock.mock.calls[1][0][0];
             expect(promptForCredentials.choices.length).toBe(2);
             expect(promptForCredentials.choices[0].title).toContain('Use');
@@ -258,7 +258,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
             serviceMock.read.mockResolvedValue(mockAuth);
             promptMock.mockResolvedValueOnce({ credentials: false });
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
-            expect(serviceMock.read).toBeCalledWith(mockTarget);
+            expect(serviceMock.read).toHaveBeenCalledWith(mockTarget);
             const promptForCredentials = promptMock.mock.calls[1][0];
             const promptForUserPW = promptMock.mock.calls[2][0];
             expect(promptForCredentials[0].choices.length).toBe(2);
@@ -336,7 +336,7 @@ describe('Test function getSmartLinksTargetFromPrompt', () => {
                 processSpy.mockImplementation();
                 cancel.onCancel();
                 expect(loggerMock.info).toHaveBeenLastCalledWith(yellow('Operation aborted by the user.'));
-                expect(processSpy).toBeCalled();
+                expect(processSpy).toHaveBeenCalled();
             });
             await expect(getSmartLinksTargetFromPrompt(basePath, loggerMock)).rejects.toThrow();
         });
@@ -405,7 +405,7 @@ describe('Test promptUserPass', () => {
             processSpy.mockImplementation();
             cancel.onCancel();
             expect(loggerMock.info).toHaveBeenLastCalledWith(yellow('Operation aborted by the user.'));
-            expect(processSpy).toBeCalled();
+            expect(processSpy).toHaveBeenCalled();
         });
         await expect(promptUserPass(loggerMock)).rejects.toThrow();
         await expect(promptUserPass()).rejects.toThrow();

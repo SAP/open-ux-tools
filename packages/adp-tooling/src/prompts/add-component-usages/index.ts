@@ -138,7 +138,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
     return [
         {
             type: 'input',
-            name: `usageId`,
+            name: 'usageId',
             message: t('prompts.component.usageIdLabel'),
             validate: (value: string) => validatePromptId(value, componentUsageChangeFiles, isCustomerBase),
             default: isCustomerBase ? NamespacePrefix.CUSTOMER : NamespacePrefix.EMPTY,
@@ -173,7 +173,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
         } as ListQuestion<AddComponentUsageAnswers>,
         {
             type: 'editor',
-            name: `settings`,
+            name: 'settings',
             message: t('prompts.component.settingsLabel'),
             validate: validatePromptJSON,
             store: false,
@@ -214,7 +214,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
         } as InputQuestion<AddComponentUsageAnswers>,
         {
             type: 'list',
-            name: `libraryIsLazy`,
+            name: 'libraryIsLazy',
             message: t('prompts.component.libraryIsLazyLabel'),
             choices: isLazyDropDownOptions,
             default: isLazyDropDownOptions[1].value,

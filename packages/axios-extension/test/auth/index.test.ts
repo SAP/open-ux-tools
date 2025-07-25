@@ -45,7 +45,7 @@ describe('getReentranceTicketAuthInterceptor', () => {
         const interceptor = getReentranceTicketAuthInterceptor({ provider, ejectCallback });
         await interceptor({ headers: new AxiosHeaders() });
 
-        expect(ejectCallback).toBeCalledTimes(1);
+        expect(ejectCallback).toHaveBeenCalledTimes(1);
     });
 });
 

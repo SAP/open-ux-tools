@@ -27,7 +27,7 @@ describe('HeaderField', () => {
         fireEvent.click(copyButton);
 
         expect(screen.getByText('Copied to clipboard')).toBeInTheDocument();
-        expect(writeTextMock).toBeCalled();
+        expect(writeTextMock).toHaveBeenCalled();
     });
 
     test('clipboard is updated after prop change', () => {
@@ -44,6 +44,6 @@ describe('HeaderField', () => {
         fireEvent.click(copyButton);
 
         expect(screen.getByText('Copied to clipboard')).toBeInTheDocument();
-        expect(writeTextMock).toBeCalledWith('otherValue');
+        expect(writeTextMock).toHaveBeenCalledWith('otherValue');
     });
 });

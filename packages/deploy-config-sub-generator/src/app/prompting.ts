@@ -1,9 +1,8 @@
 import { getSubGenPrompts, getDeployTargetQuestion } from '../prompts';
-import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { ApiHubConfig, CfDeployConfigAnswers } from '@sap-ux/cf-deploy-config-sub-generator';
 import type { Answers } from 'inquirer';
-import type { Target, DeployConfigOptions } from '../types';
+import type { Target, DeployConfigOptions, DeployConfigSubGenPromptOptions } from '../types';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
 import type { GeneratorOptions } from 'yeoman-generator';
@@ -17,7 +16,7 @@ import type { GeneratorOptions } from 'yeoman-generator';
  * @param promptOpts - options for prompting
  * @param promptOpts.launchDeployConfigAsSubGenerator - whether the generator is launched as a sub generator
  * @param promptOpts.launchStandaloneFromYui - whether the generator is launched standalone from YUI
- * @param promptOpts.extensionPromptOpts - extension prompt options
+ * @param promptOpts.promptOptions - extension prompt options
  * @param promptOpts.supportedTargets - supported deployment targets
  * @param promptOpts.backendConfig - backend configuration
  * @param promptOpts.cfDestination - CF destination
@@ -34,7 +33,7 @@ export async function promptDeployConfigQuestions(
     {
         launchDeployConfigAsSubGenerator,
         launchStandaloneFromYui,
-        extensionPromptOpts,
+        promptOptions,
         supportedTargets,
         backendConfig,
         cfDestination,
@@ -44,7 +43,7 @@ export async function promptDeployConfigQuestions(
     }: {
         launchDeployConfigAsSubGenerator: boolean;
         launchStandaloneFromYui: boolean;
-        extensionPromptOpts?: Record<string, CommonPromptOptions>;
+        promptOptions?: DeployConfigSubGenPromptOptions;
         supportedTargets: Target[];
         backendConfig: FioriToolsProxyConfigBackend;
         cfDestination: string;
@@ -66,7 +65,7 @@ export async function promptDeployConfigQuestions(
             {
                 launchDeployConfigAsSubGenerator,
                 launchStandaloneFromYui,
-                extensionPromptOpts,
+                promptOptions,
                 supportedTargets,
                 backendConfig,
                 cfDestination,

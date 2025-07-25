@@ -10,7 +10,7 @@ import { validateWindowsPathLength } from './validators';
  * @param targetDir the target directory path.
  * @returns true, if not Fiori Project, or string message indicating that the path contains an SAP Fiori project.
  */
-async function validateFioriAppProjectFolder(targetDir: string): Promise<string | boolean> {
+export async function validateFioriAppProjectFolder(targetDir: string): Promise<string | boolean> {
     // Check if the target directory contains a CAP project
     if (!!(await findCapProjectRoot(targetDir, false)) || !!(await getCapProjectType(targetDir))) {
         return t('ui5.folderContainsCapApp');

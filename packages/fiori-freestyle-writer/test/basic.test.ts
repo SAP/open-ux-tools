@@ -433,8 +433,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 capService
             });
             await generate(curTestOutPath, freestyleApp, fs);
-            expect(applyCAPUpdates).toBeCalledTimes(1);
-            expect(applyCAPUpdates).toBeCalledWith(fs, capService, {
+            expect(applyCAPUpdates).toHaveBeenCalledTimes(1);
+            expect(applyCAPUpdates).toHaveBeenCalledWith(fs, capService, {
                 ...capProjectSettings,
                 enableNPMWorkspaces: true,
                 enableCdsUi5Plugin: true,
@@ -458,8 +458,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             });
             await generate(curTestOutPath, freestyleApp, fs);
 
-            expect(applyCAPUpdates).toBeCalledTimes(1);
-            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+            expect(applyCAPUpdates).toHaveBeenCalledTimes(1);
+            expect(applyCAPUpdates).toHaveBeenCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
                 ...capProjectSettings,
                 sapux: false,
                 enableNPMWorkspaces: false,
@@ -483,8 +483,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             });
             await generate(curTestOutPath, freestyleApp, fs);
 
-            expect(applyCAPUpdates).toBeCalledTimes(1);
-            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+            expect(applyCAPUpdates).toHaveBeenCalledTimes(1);
+            expect(applyCAPUpdates).toHaveBeenCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
                 ...capProjectSettings,
                 sapux: false,
                 enableNPMWorkspaces: true,
@@ -509,8 +509,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             });
             await generate(curTestOutPath, freestyleApp, fs);
 
-            expect(applyCAPUpdates).toBeCalledTimes(1);
-            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+            expect(applyCAPUpdates).toHaveBeenCalledTimes(1);
+            expect(applyCAPUpdates).toHaveBeenCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
                 ...capProjectSettings,
                 sapux: false,
                 enableNPMWorkspaces: false,
@@ -525,7 +525,7 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 typescript: false
             });
             await generate(curTestOutPath, freestyleApp, fs);
-            expect(applyCAPUpdates).toBeCalledTimes(0);
+            expect(applyCAPUpdates).toHaveBeenCalledTimes(0);
         });
     });
 });

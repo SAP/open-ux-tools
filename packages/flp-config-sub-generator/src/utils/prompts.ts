@@ -1,5 +1,5 @@
 import { basename } from 'path';
-
+import { type FLPConfigPromptOptions, promptNames } from '@sap-ux/flp-config-inquirer';
 /**
  * Returns the details for the YUI prompt.
  *
@@ -13,4 +13,20 @@ export function getYUIDetails(appRootPath: string): { name: string; description:
             description: `Configure Fiori Launchpad settings - ${basename(appRootPath)}`
         }
     ];
+}
+
+/**
+ * Adds the provided prompt options to the default FLP config prompt options.
+ *
+ * @param promptOptions - FLP configuration prompt options
+ * @returns - FLP configuration prompt options with defaults applied
+ */
+export function getPromptOptions(promptOptions?: FLPConfigPromptOptions): FLPConfigPromptOptions {
+    return {
+        ...promptOptions,
+        [promptNames.inboundId]: { hide: true, ...promptOptions?.inboundId },
+        [promptNames.existingFlpConfigInfo]: { hide: true, ...promptOptions?.existingFlpConfigInfo },
+        [promptNames.icon]: { hide: true, ...promptOptions?.icon },
+        [promptNames.additionalParameters]: { hide: true, ...promptOptions?.additionalParameters }
+    };
 }

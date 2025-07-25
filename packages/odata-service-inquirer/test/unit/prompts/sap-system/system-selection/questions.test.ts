@@ -633,7 +633,7 @@ describe('Test system selection prompts', () => {
         connectWithBackendSystemSpy.mockClear();
         // Should prompt for credentials if the system selection is a backend system and an auth error is returned
         validateAuthResultMock = { valResult: 'A connection error occurred.' };
-        await expect((validateSystemSelectionCliPrompt!.when as Function)(answers)).rejects.toThrowError(
+        await expect((validateSystemSelectionCliPrompt!.when as Function)(answers)).rejects.toThrow(
             'A connection error occurred.'
         );
         expect(connectWithBackendSystemSpy).toHaveBeenCalledWith(

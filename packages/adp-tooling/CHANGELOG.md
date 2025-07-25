@@ -1,5 +1,69 @@
 # @sap-ux/adp-tooling
 
+## 0.15.6
+
+### Patch Changes
+
+-   e25ee86: fix: remove filtering of parameters for inbounds
+
+## 0.15.5
+
+### Patch Changes
+
+-   d4a45ae: fix: provide templates path parameter to handle different runtime context
+
+## 0.15.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.27
+
+## 0.15.3
+
+### Patch Changes
+
+-   Updated dependencies [07d4e25]
+    -   @sap-ux/ui5-info@0.12.1
+    -   @sap-ux/inquirer-common@0.7.26
+
+## 0.15.2
+
+### Patch Changes
+
+-   Updated dependencies [84a8d56]
+    -   @sap-ux/nodejs-utils@0.2.2
+
+## 0.15.1
+
+### Patch Changes
+
+-   52ac1b0: feat: Add ADP manifest change wizard sub-generators
+
+## 0.15.0
+
+### Minor Changes
+
+-   e53c1f8: Remove archive.zip from deploy script to allow passing any of the additional CLI params.
+
+## 0.14.44
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.25
+
+## 0.14.43
+
+### Patch Changes
+
+-   Updated dependencies [a1f282f]
+    -   @sap-ux/project-input-validator@0.6.12
+
+## 0.14.42
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.24
+
 ## 0.14.41
 
 ### Patch Changes

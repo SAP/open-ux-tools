@@ -129,7 +129,8 @@ export async function getAppConfig(
             },
             appOptions: {
                 addAnnotations: odataVersion === OdataVersion.v4,
-                addTests: true
+                addTests: true,
+                useVirtualPreviewEndpoints: true
             },
             ui5: {
                 localVersion

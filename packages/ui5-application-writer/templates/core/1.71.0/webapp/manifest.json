@@ -1,0 +1,64 @@
+{
+    "_version": "<%- ui5.descriptorVersion %>",
+    "sap.app": {
+        "id": "<%- app.id %>",
+      "type": "application",
+      "i18n": "i18n/i18n.properties",
+      "applicationVersion": {
+        "version": "<%- app.version %>"
+      },
+      "title": "{{appTitle}}",
+      "description": "{{appDescription}}",
+      "resources": "resources.json",
+      "sourceTemplate": {
+          "id": "<%= app.sourceTemplate.id %>",
+          "version": "<%= app.sourceTemplate.version %>"<% if (app.sourceTemplate.toolsId) { %>,
+          "toolsId": "<%= app.sourceTemplate.toolsId %>"<% } %>
+      }
+    },
+    "sap.ui": {
+      "technology": "UI5",
+      "icons": {
+        "icon": "",
+        "favIcon": "",
+        "phone": "",
+        "phone@2": "",
+        "tablet": "",
+        "tablet@2": ""
+      },
+      "deviceTypes": {
+        "desktop": true,
+        "tablet": true,
+        "phone": true
+      }
+    },
+    "sap.ui5": {
+      "flexEnabled": true,
+      "dependencies": {
+        "minUI5Version": "<%- ui5.minUI5Version %>",
+        "libs": {<% (ui5.manifestLibs?.length ? ui5.manifestLibs : ui5.ui5Libs).concat(ui5.customUi5Libs ?? []).forEach((ui5Lib, idx, libs) => {%>
+          <%- `"${ui5Lib}": {}${idx+1 < libs.length ? ',' : ''}` %><% }); %>
+        }
+      },
+      "contentDensities": {
+        "compact": true,
+        "cozy": true
+      },
+      "models": {
+        "i18n": {
+          "type": "sap.ui.model.resource.ResourceModel",
+          "settings": {
+            "bundleName": "<%- app.id %>.i18n.i18n"
+          }
+        }
+      },
+      "resources": {
+        "css": []
+      },
+      "routing": {
+        "config": {},
+        "routes": [],
+        "targets": {}
+      }
+    }
+  }

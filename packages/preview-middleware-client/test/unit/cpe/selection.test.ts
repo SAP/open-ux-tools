@@ -799,7 +799,7 @@ describe('SelectionService', () => {
                 }
             } as any);
         }
-        expect(mockGetBindingInfo).toBeCalledWith('random');
+        expect(mockGetBindingInfo).toHaveBeenCalledWith('random');
 
         if (handler !== undefined) {
             await handler({
@@ -823,6 +823,6 @@ describe('SelectionService', () => {
                 }
             } as any);
         }
-        expect(mockGetBindingInfo).toBeCalledWith('test');
+        expect(mockGetBindingInfo).toHaveBeenCalledWith('test');
     });
 });

@@ -6,7 +6,7 @@ import type { FFOPAConfig } from './types';
 import type { Logger } from '@sap-ux/logger';
 import { getFilePaths, FileName } from '@sap-ux/project-access';
 import { t } from './i18n';
-import { compareUI5VersionGte, ui5LtsVersion_1_71 } from '@sap-ux/ui5-application-writer';
+import { compareUI5VersionGte, ui5LtsVersion_1_71, ui5LtsVersion_1_120 } from '@sap-ux/ui5-application-writer';
 
 /**
  * Updates tsconfig.json to include paths for unit and integration tests.
@@ -42,11 +42,10 @@ function writeOPATsconfigJsonUpdates(fs: Editor, destinationRoot: string, log?: 
  * @returns template UI5 version.
  */
 function getTemplateUi5Version(ui5Version?: string): string {
-    const templateLtsVersion_1_120 = '1.120.0';
     if (!ui5Version) {
-        return templateLtsVersion_1_120;
+        return ui5LtsVersion_1_120;
     }
-    return compareUI5VersionGte(ui5Version, templateLtsVersion_1_120) ? templateLtsVersion_1_120 : ui5LtsVersion_1_71;
+    return compareUI5VersionGte(ui5Version, ui5LtsVersion_1_120) ? ui5LtsVersion_1_120 : ui5LtsVersion_1_71;
 }
 
 /**

@@ -1,22 +1,32 @@
-import type { IChildLogger } from '@vscode-logging/logger';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { getPackageInfo } from './deps';
-import type { AdpGeneratorOptions } from '../app/types';
+
+export interface GeneratorOpts {
+    appWizard?: AppWizard;
+    vscode?: any;
+    data?: {
+        path: string;
+    };
+}
 
 /**
- * Sets the header title in the AppWizard UI, if the `setHeaderTitle` method is available.
- * This helps users identify the generator and its version in the Yeoman UI interface.
+ * Sets a custom header title in the AppWizard UI, if the `setHeaderTitle` method is available.
+ * This allows generators to specify their own display name while keeping the version information.
  *
- * @param {AdpGeneratorOptions} opts - The generator options, potentially including the AppWizard instance.
- * @param {IChildLogger} logger - Logger instance used for logging any errors that occur during execution.
+ * @param {GeneratorOpts} opts - The generator options, potentially including the AppWizard instance.
+ * @param {ToolsLogger} logger - Logger instance used for logging any errors that occur during execution.
+ * @param {string} customTitle - Optional custom title to display instead of the package name.
  */
-export function setHeaderTitle(opts: AdpGeneratorOptions, logger: ToolsLogger): void {
+export function setHeaderTitle(opts: GeneratorOpts, logger: ToolsLogger, customTitle?: string): void {
     try {
         if (typeof opts?.appWizard?.setHeaderTitle === 'function') {
             const { name = '', version = '', displayName = '' } = getPackageInfo();
             if (name && version) {
-                opts.appWizard.setHeaderTitle((displayName as string) || name, `${name}@${version}`);
+                const headerTitle = customTitle ?? ((displayName as string) || name);
+                opts.appWizard.setHeaderTitle(headerTitle, `${name}@${version}`);
             }
         }
     } catch (e) {

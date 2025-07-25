@@ -1,5 +1,97 @@
 # @sap-ux/generator-adp
 
+## 0.3.53
+
+### Patch Changes
+
+-   Updated dependencies [e25ee86]
+    -   @sap-ux/adp-tooling@0.15.6
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.52
+
+## 0.3.52
+
+### Patch Changes
+
+-   d4a45ae: fix: provide templates path parameter to handle different runtime context
+-   Updated dependencies [d4a45ae]
+    -   @sap-ux/adp-tooling@0.15.5
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.51
+
+## 0.3.51
+
+### Patch Changes
+
+-   @sap-ux/adp-flp-config-sub-generator@0.1.50
+
+## 0.3.50
+
+### Patch Changes
+
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.49
+    -   @sap-ux/inquirer-common@0.7.27
+    -   @sap-ux/adp-tooling@0.15.4
+
+## 0.3.49
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.3
+-   @sap-ux/inquirer-common@0.7.26
+-   @sap-ux/adp-flp-config-sub-generator@0.1.48
+
+## 0.3.48
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.2
+-   @sap-ux/adp-flp-config-sub-generator@0.1.47
+
+## 0.3.47
+
+### Patch Changes
+
+-   52ac1b0: feat: Add ADP manifest change wizard sub-generators
+-   Updated dependencies [52ac1b0]
+    -   @sap-ux/adp-tooling@0.15.1
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.46
+
+## 0.3.46
+
+### Patch Changes
+
+-   Updated dependencies [e53c1f8]
+    -   @sap-ux/adp-tooling@0.15.0
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.45
+
+## 0.3.45
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.25
+-   @sap-ux/adp-flp-config-sub-generator@0.1.44
+-   @sap-ux/adp-tooling@0.14.44
+
+## 0.3.44
+
+### Patch Changes
+
+-   Updated dependencies [a1f282f]
+    -   @sap-ux/project-input-validator@0.6.12
+    -   @sap-ux/adp-tooling@0.14.43
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.43
+
+## 0.3.43
+
+### Patch Changes
+
+-   Updated dependencies [d75db00]
+    -   @sap-ux/fiori-generator-shared@0.13.2
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.42
+    -   @sap-ux/inquirer-common@0.7.24
+    -   @sap-ux/adp-tooling@0.14.42
+
 ## 0.3.42
 
 ### Patch Changes

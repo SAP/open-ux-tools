@@ -27,8 +27,8 @@
         "src"
     ],
     "devDependencies": {
-        "@types/jest-when": "2.7.0",
-        "jest-when": "3.6.0",
+        "@types/jest-when": "3.5.5",
+        "jest-when": "3.7.0",
         "rimraf": "5.0.5",
         "@types/vscode": "1.73.1"
     },

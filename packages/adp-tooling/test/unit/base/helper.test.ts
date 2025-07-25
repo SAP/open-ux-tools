@@ -6,6 +6,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { Inbound } from '@sap-ux/axios-extension';
 import type { DescriptorVariant } from '../../../src/types';
 import type { CustomMiddleware } from '@sap-ux/ui5-config';
+import type { FioriToolsProxyConfig } from '@sap-ux/ui5-config';
 
 import {
     getVariant,
@@ -14,11 +15,10 @@ import {
     flpConfigurationExists,
     updateVariant,
     isTypescriptSupported,
-    filterAndMapInboundsToManifest
+    filterAndMapInboundsToManifest,
+    readUi5Config
 } from '../../../src/base/helper';
-
-const readFileSyncMock = readFileSync as jest.Mock;
-const existsSyncMock = existsSync as jest.Mock;
+import { readUi5Yaml } from '@sap-ux/project-access';
 
 jest.mock('fs', () => {
     return {
@@ -28,7 +28,18 @@ jest.mock('fs', () => {
     };
 });
 
+jest.mock('@sap-ux/project-access', () => ({
+    ...jest.requireActual('@sap-ux/project-access'),
+    readUi5Yaml: jest.fn()
+}));
+
+const existsSyncMock = existsSync as jest.Mock;
+const readFileSyncMock = readFileSync as jest.Mock;
+const readUi5YamlMock = readUi5Yaml as jest.MockedFunction<typeof readUi5Yaml>;
+
 describe('helper', () => {
+    const yamlRelative = 'ui5.yaml';
+
     const basePath = join(__dirname, '../../fixtures', 'adaptation-project');
     const mockPath = join(basePath, 'webapp', 'manifest.appdescr_variant');
     const mockVariant = jest.requireActual('fs').readFileSync(mockPath, 'utf-8');
@@ -38,6 +49,20 @@ describe('helper', () => {
             client: '100'
         }
     };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('readUi5Config delegates to readUi5Yaml with correct paths', async () => {
+        const dummyConfig = { some: 'config' } as unknown as UI5Config;
+        readUi5YamlMock.mockResolvedValueOnce(dummyConfig);
+
+        const result = await readUi5Config(basePath, yamlRelative);
+
+        expect(readUi5YamlMock).toHaveBeenCalledWith(basePath, yamlRelative);
+        expect(result).toBe(dummyConfig);
+    });
 
     describe('getVariant', () => {
         beforeEach(() => {
@@ -166,10 +191,9 @@ describe('helper', () => {
         });
 
         test('should throw error when no system configuration found', async () => {
-            readFileSyncMock.mockReturnValue('');
-            jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
+            readUi5YamlMock.mockResolvedValue({
                 findCustomMiddleware: jest.fn().mockReturnValue(undefined)
-            } as Partial<UI5Config> as UI5Config);
+            } as unknown as UI5Config);
 
             await expect(getAdpConfig(basePath, '/path/to/mock/ui5.yaml')).rejects.toThrow(
                 'No system configuration found in ui5.yaml'
@@ -177,13 +201,11 @@ describe('helper', () => {
         });
 
         test('should return adp configuration', async () => {
-            jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
+            readUi5YamlMock.mockResolvedValue({
                 findCustomMiddleware: jest.fn().mockReturnValue({
-                    configuration: {
-                        adp: mockAdp
-                    }
+                    configuration: { adp: mockAdp }
                 } as Partial<CustomMiddleware> as CustomMiddleware<object>)
-            } as Partial<UI5Config> as UI5Config);
+            } as unknown as UI5Config);
 
             expect(await getAdpConfig(basePath, 'ui5.yaml')).toStrictEqual(mockAdp);
         });
@@ -267,7 +289,7 @@ describe('helper', () => {
             });
         });
 
-        test('should filter out inbounds with hideLauncher not false', () => {
+        test('should filter out inbounds with hideLauncher equal to true', () => {
             const inbounds = [
                 {
                     content: {
@@ -285,8 +307,7 @@ describe('helper', () => {
                         action: 'action2',
                         title: 'Test Action 2',
                         description: 'Description 2',
-                        url: '/test/action2',
-                        hideLauncher: false
+                        url: '/test/action2'
                     }
                 }
             ] as unknown as Inbound[];
@@ -299,8 +320,7 @@ describe('helper', () => {
                     action: 'action2',
                     title: 'Test Action 2',
                     description: 'Description 2',
-                    url: '/test/action2',
-                    hideLauncher: false
+                    url: '/test/action2'
                 }
             });
         });
@@ -309,60 +329,6 @@ describe('helper', () => {
             const result = filterAndMapInboundsToManifest([]);
 
             expect(result).toBeUndefined();
-        });
-
-        test('should filter out parameters with invalid entries', () => {
-            const inbounds = [
-                {
-                    content: {
-                        semanticObject: 'Test',
-                        action: 'action1',
-                        signature: {
-                            parameters: {
-                                param1: {
-                                    defaultValue: { format: '', value: '' },
-                                    filter: { format: '' },
-                                    launcherValue: { value: 'test' }
-                                },
-                                param2: {
-                                    defaultValue: { format: 'plain', value: 'value' },
-                                    filter: { format: '' },
-                                    launcherValue: { value: 'test' }
-                                },
-                                param3: {
-                                    defaultValue: { format: 'plain', value: 'value' },
-                                    filter: { format: 'plain' },
-                                    launcherValue: { value: 'test', additionalProp: 'extra' }
-                                }
-                            }
-                        },
-                        hideLauncher: false
-                    }
-                }
-            ] as unknown as Inbound[];
-
-            const result = filterAndMapInboundsToManifest(inbounds);
-
-            expect(result).toEqual({
-                'Test-action1': {
-                    semanticObject: 'Test',
-                    action: 'action1',
-                    signature: {
-                        parameters: {
-                            param2: {
-                                defaultValue: { format: 'plain', value: 'value' },
-                                launcherValue: { value: 'test' }
-                            },
-                            param3: {
-                                defaultValue: { format: 'plain', value: 'value' },
-                                filter: { format: 'plain' },
-                                launcherValue: { value: 'test' }
-                            }
-                        }
-                    },
-                    hideLauncher: false
-                }
-            });
         });
     });
 });

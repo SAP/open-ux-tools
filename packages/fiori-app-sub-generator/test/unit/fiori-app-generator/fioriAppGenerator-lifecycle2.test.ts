@@ -303,7 +303,7 @@ describe('Test FioriAppGenerator', () => {
             } as Project
         };
         fioriAppGen['state'] = { ...mockState, floorplan: FloorplanFE.FE_LROP } as State;
-        await expect(fioriAppGen.writing()).rejects.toThrowError();
+        await expect(fioriAppGen.writing()).rejects.toThrow();
         expect(DefaultLogger.fatal).toHaveBeenCalledWith(
             expect.stringContaining(t('error.errorWritingApplicationFiles'))
         );

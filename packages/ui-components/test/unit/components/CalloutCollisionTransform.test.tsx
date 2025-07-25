@@ -253,8 +253,8 @@ describe('CalloutCollisionTransform', () => {
             await new Promise((resolve) => setTimeout(resolve, 1));
             const containerElement: HTMLElement | null = document.querySelector(`.${classNames.container}`);
             expect(containerElement?.style['position']).toEqual('');
-            expect(resetTransformationSpy).toBeCalledTimes(1);
-            expect(preventDismissOnEventSpy).toBeCalledTimes(1);
+            expect(resetTransformationSpy).toHaveBeenCalledTimes(1);
+            expect(preventDismissOnEventSpy).toHaveBeenCalledTimes(1);
         });
     }
 

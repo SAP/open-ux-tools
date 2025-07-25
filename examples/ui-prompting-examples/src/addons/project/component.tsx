@@ -173,7 +173,7 @@ export const ProjectPathForm = memo(() => {
 
 ProjectPathForm.displayName = 'ProjectPathForm';
 
-export const render = (props: { active?: boolean }): React.ReactElement => {
+export const ProjectSelector = (props: { active?: boolean }): React.ReactElement => {
     const { active = false } = props;
     return (
         <AddonPanel key="panel" active={active}>

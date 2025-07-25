@@ -226,7 +226,7 @@ export function getNavigationEntityChoices(
  * @param entitySets the entity sets to filter
  * @returns the filtered entity sets
  */
-function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
+export function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
     return entitySets.filter((entitySet) => {
         return (
             !!entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||

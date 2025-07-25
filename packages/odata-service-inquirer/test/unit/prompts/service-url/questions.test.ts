@@ -317,7 +317,7 @@ describe('Service URL prompts', () => {
                 [promptNames.serviceUrl]: serviceUrl,
                 [serviceUrlInternalPromptNames.ignoreCertError]: false
             })
-        ).rejects.toThrowError(t('errors.exitingGeneration', { exitReason: t('errors.certValidationRequired') }));
+        ).rejects.toThrow(t('errors.exitingGeneration', { exitReason: t('errors.certValidationRequired') }));
 
         const serviceValidatorSpy = jest
             .spyOn(serviceUrlValidators, 'validateService')
@@ -378,7 +378,7 @@ describe('Service URL prompts', () => {
                 [promptNames.serviceUrl]: serviceUrl,
                 [serviceUrlInternalPromptNames.ignoreCertError]: true
             })
-        ).rejects.toThrowError(t('errors.exitingGeneration', { exitReason: 'Invalid service' }));
+        ).rejects.toThrow(t('errors.exitingGeneration', { exitReason: 'Invalid service' }));
     });
 
     test('Test prompt: username', async () => {

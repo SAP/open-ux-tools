@@ -171,7 +171,7 @@ export class FioriAppGenerator extends Generator {
                     capService: cachedService?.capService ?? this.state.service?.capService,
                     requiredOdataVersion: getRequiredOdataVersion(this.state.floorplan),
                     allowNoDatasource: isFioriFreestyleTemplate,
-                    promptOptions: generatorOptions.promptSettings,
+                    promptOptions: generatorOptions.promptSettings?.['@sap/generator-fiori'],
                     showCollabDraftWarning: generatorOptions.showCollabDraftWarning,
                     workspaceFolders: generatorOptions.workspaceFolders
                 };
@@ -259,7 +259,7 @@ export class FioriAppGenerator extends Generator {
                             targetFolder: this.state.project?.targetFolder,
                             service: this.state.service,
                             floorplan: this.state.floorplan,
-                            promptSettings: generatorOptions.promptSettings,
+                            promptSettings: generatorOptions.promptSettings?.['@sap/generator-fiori'],
                             promptExtension: generatorOptions.extensions
                         },
                         [this.yeomanUiStepConfig],
@@ -294,13 +294,13 @@ export class FioriAppGenerator extends Generator {
                     {
                         service: this.state.service,
                         projectName: this.state.project.name,
-                        promptSettings: generatorOptions.promptSettings,
                         targetFolder: this.state.project.targetFolder,
                         applicationType: this.state.floorplan === FloorplanFF.FF_SIMPLE ? 'FF' : 'FE' // Telemetry data
                     },
                     this.composeWith.bind(this),
                     FioriAppGenerator.logger,
-                    this.appWizard
+                    this.appWizard,
+                    generatorOptions.promptSettings?.['@sap-ux/deploy-config-sub-generator']
                 );
             }
 
@@ -328,7 +328,8 @@ export class FioriAppGenerator extends Generator {
                     this.composeWith.bind(this),
                     FioriAppGenerator.logger,
                     generatorOptions.vscode,
-                    this.appWizard
+                    this.appWizard,
+                    generatorOptions.promptSettings?.['@sap-ux/flp-config-sub-generator']
                 );
             }
         } catch (error) {

@@ -36,7 +36,7 @@
         "@playwright/test": "1.50.1",
         "@sap-ux/logger": "0.7.0",
         "fs-extra": "11.1.1",
-        "jest-dev-server": "10.0.0",
+        "jest-dev-server": "11.0.0",
         "folder-hash": "4.0.4",
         "@types/fs-extra": "11.0.4",
         "@types/folder-hash": "4.0.4",

@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.6.8
+
+### Patch Changes
+
+-   2518c66: upgrade esbuild to 0.25.6
+
 ## 0.6.7
 
 ### Patch Changes

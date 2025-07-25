@@ -41,6 +41,7 @@ const findChangeWithInboundIdMock = findChangeWithInboundId as jest.Mock;
 const writeChangeToFileMock = writeChangeToFile as jest.Mock;
 
 const mockProjectPath = '/mock/project/path';
+const mockTemplatePath = '/mock/template/path';
 
 describe('AnnotationsWriter', () => {
     beforeEach(() => {
@@ -72,7 +73,8 @@ describe('AnnotationsWriter', () => {
             expect.any(Number),
             mockData.annotation,
             expect.any(Object),
-            {}
+            {},
+            undefined
         );
     });
 
@@ -92,7 +94,7 @@ describe('AnnotationsWriter', () => {
             isCommand: true
         };
 
-        const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
+        const writer = new AnnotationsWriter({} as Editor, mockProjectPath, mockTemplatePath);
 
         await writer.write(mockData);
 
@@ -101,7 +103,8 @@ describe('AnnotationsWriter', () => {
             expect.any(Number),
             mockData.annotation,
             expect.any(Object),
-            {}
+            {},
+            mockTemplatePath
         );
     });
 
@@ -130,7 +133,8 @@ describe('AnnotationsWriter', () => {
             expect.any(Number),
             mockData.annotation,
             expect.any(Object),
-            {}
+            {},
+            undefined
         );
     });
 });

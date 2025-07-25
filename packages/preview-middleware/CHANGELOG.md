@@ -1,5 +1,87 @@
 # @sap-ux/preview-middleware
 
+## 0.20.69
+
+### Patch Changes
+
+-   Updated dependencies [e25ee86]
+    -   @sap-ux/adp-tooling@0.15.6
+
+## 0.20.68
+
+### Patch Changes
+
+-   Updated dependencies [d4a45ae]
+    -   @sap-ux/adp-tooling@0.15.5
+
+## 0.20.67
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.4
+
+## 0.20.66
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.3
+
+## 0.20.65
+
+### Patch Changes
+
+-   22fc2bf: feat: change file type of templates to ejs
+
+## 0.20.64
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.2
+
+## 0.20.63
+
+### Patch Changes
+
+-   Updated dependencies [52ac1b0]
+    -   @sap-ux/adp-tooling@0.15.1
+
+## 0.20.62
+
+### Patch Changes
+
+-   Updated dependencies [e53c1f8]
+    -   @sap-ux/adp-tooling@0.15.0
+
+## 0.20.61
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.44
+
+## 0.20.60
+
+### Patch Changes
+
+-   eafb486: fix: default layer for rta
+
+## 0.20.59
+
+### Patch Changes
+
+-   e5de360: fix: adjust test runner default pattern to avoid picking up wrong files
+
+## 0.20.58
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.43
+
+## 0.20.57
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.14.42
+
 ## 0.20.56
 
 ### Patch Changes

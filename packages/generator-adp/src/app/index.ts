@@ -40,6 +40,8 @@ import { type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput }
 import { getWizardPages, updateFlpWizardSteps, updateWizardSteps, getDeployPage } from '../utils/steps';
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
 
+const generatorTitle = 'Adaptation Project';
+
 /**
  * Generator for creating an Adaptation Project.
  *
@@ -137,7 +139,7 @@ export default class extends Generator {
             this.env.lookup({
                 packagePatterns: ['@sap/generator-fiori', '@sap-ux/adp-flp-config-sub-generator']
             });
-            setHeaderTitle(opts, this.logger);
+            setHeaderTitle(opts, this.logger, generatorTitle);
 
             initCache(this.logger, this.appWizard);
             this.prompts = new YeomanUiSteps([]);

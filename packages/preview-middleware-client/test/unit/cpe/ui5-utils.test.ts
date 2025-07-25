@@ -37,8 +37,8 @@ describe('ui5Utils', () => {
         test('control not found by id, search by component', () => {
             const icons = getIcons();
 
-            expect(IconPool.getIconNames).toBeCalled();
-            expect(IconPool.getIconInfo).toBeCalledTimes(Object.keys(testIcons).length);
+            expect(IconPool.getIconNames).toHaveBeenCalled();
+            expect(IconPool.getIconInfo).toHaveBeenCalledTimes(Object.keys(testIcons).length);
             expect(icons).toMatchInlineSnapshot(`
                 Array [
                   Object {

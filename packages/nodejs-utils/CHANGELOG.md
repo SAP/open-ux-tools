@@ -1,5 +1,11 @@
 # @sap-ux/nodejs-utils
 
+## 0.2.2
+
+### Patch Changes
+
+-   84a8d56: Adds logger support to CommandRunner
+
 ## 0.2.1
 
 ### Patch Changes

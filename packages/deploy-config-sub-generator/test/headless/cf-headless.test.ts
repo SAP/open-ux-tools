@@ -23,7 +23,7 @@ import {
 import { runHeadlessGen } from './utils';
 import Generator from 'yeoman-generator';
 import { generatorNamespace, initI18n } from '../../src/utils';
-import type { AppConfig } from '@sap-ux/fiori-app-sub-generator';
+import type { AppConfig } from '@sap-ux/fiori-generator-shared';
 
 expect.extend({ toMatchFolder });
 

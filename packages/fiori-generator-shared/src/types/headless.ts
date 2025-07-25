@@ -1,4 +1,8 @@
 import { Authentication } from '@sap-ux/btp-utils';
+import type { Annotations } from '@sap-ux/axios-extension';
+import type { FloorplanKey } from './app-gen';
+import type { CapRuntime } from './cap';
+
 /**
  * Shared types used by headless generation from multiple modules
  */
@@ -70,4 +74,57 @@ export interface FLPConfig {
     readonly action?: string;
     readonly title?: string;
     readonly semanticObject?: string;
+}
+
+/**
+ * Defines the external interface used to generate in headless mode (no prompts)
+ * This is a deliberate re-definition of internal interfaces to avoid consumers having
+ * to update when internal interfaces are changed
+ * NOTE: Any breaking changes to this interface require a version bump
+ */
+export interface AppConfig {
+    readonly version: string; // The interface version
+    readonly floorplan: FloorplanKey;
+    project: {
+        readonly name: string;
+        targetFolder?: string; // Current working directory will be used if not provided
+        readonly namespace?: string;
+        readonly title?: string;
+        readonly description?: string;
+        readonly ui5Theme?: string;
+        readonly ui5Version?: string;
+        readonly localUI5Version?: string;
+        readonly sapux?: boolean;
+        readonly skipAnnotations?: boolean;
+        readonly enableCodeAssist?: boolean;
+        readonly enableEslint?: boolean;
+        readonly enableTypeScript?: boolean;
+    };
+    service?: {
+        readonly host?: string;
+        readonly servicePath?: string;
+        readonly client?: string;
+        readonly scp?: boolean; // If available key store entry must be available or provided at app runtime
+        readonly destination?: string;
+        readonly destinationInstance?: string;
+        readonly edmx?: string;
+        readonly annotations?: Annotations | Annotations[];
+        readonly capService?: {
+            readonly projectPath: string;
+            readonly serviceName: string;
+            readonly serviceCdsPath: string;
+            readonly capType?: CapRuntime;
+            readonly appPath?: string; // Alternative app path
+        };
+        readonly apiHubApiKey?: string; // Non-enterprise support only currently
+    };
+    deployConfig?: DeployConfig;
+    flpConfig?: FLPConfig;
+    /**
+     * Adds telemetry data when passed to generator `@sap/generator-fiori:headless`
+     */
+    telemetryData?: {
+        generationSourceName?: string;
+        generationSourceVersion?: string;
+    };
 }

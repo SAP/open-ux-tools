@@ -33,8 +33,8 @@ describe('Test traceChanges()', () => {
         await traceChanges(fsMock);
 
         // Result check
-        expect(loggerMock.info).toBeCalledWith(expect.stringContaining(`'${newFile}' added`));
-        expect(loggerMock.debug).toBeCalledWith('File content:\nCONTENT');
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining(`'${newFile}' added`));
+        expect(loggerMock.debug).toHaveBeenCalledWith('File content:\nCONTENT');
     });
 
     test('Unchanged file', async () => {
@@ -49,8 +49,8 @@ describe('Test traceChanges()', () => {
         await traceChanges(fsMock);
 
         // Result check
-        expect(loggerMock.info).toBeCalledWith(expect.stringContaining(`'${unchangedFile}' unchanged`));
-        expect(loggerMock.debug).toBeCalledWith(`File content:\n${contents}`);
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining(`'${unchangedFile}' unchanged`));
+        expect(loggerMock.debug).toHaveBeenCalledWith(`File content:\n${contents}`);
     });
 
     test('Modified json file', async () => {
@@ -69,8 +69,8 @@ describe('Test traceChanges()', () => {
         await traceChanges(fsMock);
 
         // Result check
-        expect(loggerMock.info).toBeCalledWith(expect.stringContaining(`'${modifiedFile}' modified`));
-        expect(loggerMock.debug).toBeCalledWith(`File changes:
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining(`'${modifiedFile}' modified`));
+        expect(loggerMock.debug).toHaveBeenCalledWith(`File changes:
 \x1B[90m{\x1B[39m
 \x1B[90m  "object": {\x1B[39m
 \x1B[90m    "array": [\x1B[39m
@@ -107,8 +107,8 @@ nested:
         await traceChanges(fsMock);
 
         // Result check
-        expect(loggerMock.info).toBeCalledWith(expect.stringContaining(`'${modifiedFile}' modified`));
-        expect(loggerMock.debug).toBeCalledWith(
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining(`'${modifiedFile}' modified`));
+        expect(loggerMock.debug).toHaveBeenCalledWith(
             `File changes:
 [31mrootProperty: 'prop on root'[39m
 [31m[39m[32mrootProperty: 'changed prop on root'[39m
@@ -136,8 +136,8 @@ nested:
         await traceChanges(fsMock);
 
         // Result check
-        expect(loggerMock.info).toBeCalledWith(expect.stringContaining(`'${modifiedFile}' modified`));
-        expect(loggerMock.debug).toBeCalledWith(
+        expect(loggerMock.info).toHaveBeenCalledWith(expect.stringContaining(`'${modifiedFile}' modified`));
+        expect(loggerMock.debug).toHaveBeenCalledWith(
             `Can't compare file. New file content:
 modified content`
         );

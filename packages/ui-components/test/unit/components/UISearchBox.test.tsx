@@ -31,7 +31,7 @@ describe('<UISearchBox />', () => {
                 value: expectQuery
             }
         });
-        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange.mock.calls[0][1]).toEqual(expectQuery);
 
         // Check reset
@@ -40,8 +40,8 @@ describe('<UISearchBox />', () => {
         expect(resetButton.length).toEqual(1);
 
         resetButton.simulate('click', {});
-        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange.mock.calls[0][1]).toEqual('');
-        expect(onClear).toBeCalledTimes(1);
+        expect(onClear).toHaveBeenCalledTimes(1);
     });
 });

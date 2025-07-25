@@ -1,5 +1,5 @@
 import { initI18n, t } from '../i18n';
-import type { CapRuntime } from '../cap-config/types';
+import type { CapRuntime } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Returns the url to the specified cap app as served by `cds serve` or `cds watch`.

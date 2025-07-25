@@ -21,10 +21,12 @@ import {
     type EntityAnswer,
     type EntityChoiceOptions,
     type EntitySetFilter,
+    filterAggregateTransformations,
     getEntityChoices,
     getNavigationEntityChoices,
     type NavigationEntityAnswer
 } from './entity-helper';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 /**
  * Validate the entity choice options. If the entity choice options are empty, a validation message will be returned.
@@ -170,7 +172,7 @@ export function getEntitySelectionQuestions(
     entityQuestions.push(...getAddAnnotationQuestions(metadata, templateType, odataVersion, isCapService));
 
     if (!promptOptions?.hideTableLayoutPrompts) {
-        entityQuestions.push(...getTableLayoutQuestions(templateType, odataVersion, isCapService));
+        entityQuestions.push(...getTableLayoutQuestions(templateType, odataVersion, isCapService, convertedMetadata));
     }
 
     if (templateType === 'alp') {
@@ -187,12 +189,14 @@ export function getEntitySelectionQuestions(
  * @param templateType used to determine if the tree table option should be included
  * @param odataVersion used to determine if the hierarchy qualifier is required when the selected table type is TreeTable
  * @param isCapService used to determine if the tree table option should be included
+ * @param metadata the metadata (edmx) string of the service
  * @returns the table layout questions
  */
 function getTableLayoutQuestions(
     templateType: TemplateType,
     odataVersion: OdataVersion,
-    isCapService: boolean
+    isCapService: boolean,
+    metadata: ConvertedMetadata
 ): Question<TableConfigAnswers>[] {
     const tableTypeChoices: { name: string; value: TableType }[] = [
         { name: t('prompts.tableType.choiceAnalytical'), value: 'AnalyticalTable' },
@@ -206,7 +210,7 @@ function getTableLayoutQuestions(
     const tableLayoutQuestions: Question<TableConfigAnswers>[] = [];
 
     if (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') {
-        const tableTypeDefault: TableType = templateType === 'alp' ? 'AnalyticalTable' : 'ResponsiveTable';
+        let setAnalyticalTableDefault = false;
         tableLayoutQuestions.push({
             when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
             type: 'list',
@@ -214,10 +218,29 @@ function getTableLayoutQuestions(
             message: t('prompts.tableType.message'),
             guiOptions: {
                 hint: t('prompts.tableType.hint'),
-                breadcrumb: true
+                breadcrumb: true,
+                applyDefaultWhenDirty: true // set table type on entity selection change
             },
             choices: tableTypeChoices,
-            default: tableTypeDefault
+            default: (prevAnswers: EntitySelectionAnswers & TableConfigAnswers) => {
+                const tableTypeDefault = getDefaultTableType(
+                    templateType,
+                    metadata,
+                    odataVersion,
+                    prevAnswers?.mainEntity?.entitySetName,
+                    prevAnswers?.tableType
+                );
+                setAnalyticalTableDefault = tableTypeDefault.setAnalyticalTableDefault;
+                return tableTypeDefault.tableType;
+            },
+            additionalMessages: (tableType: TableType) => {
+                if (tableType === 'AnalyticalTable' && setAnalyticalTableDefault) {
+                    return {
+                        message: t('prompts.tableType.analyticalTableDefault'),
+                        severity: Severity.information
+                    };
+                }
+            }
         } as ListQuestion<TableConfigAnswers>);
 
         tableLayoutQuestions.push({
@@ -255,6 +278,63 @@ function getEdmxSizeInKb(edmx: string): number {
         return sizeInBytes / 1024;
     }
     return 0;
+}
+
+/**
+ * Get the default table type based on the template type and previous answers.
+ *
+ * @param templateType the template type of the application to be generated from the prompt answers
+ * @param metadata the metadata (edmx) string of the service
+ * @param odataVersion the OData version of the service
+ * @param mainEntitySetName the name of the main entity set
+ * @param currentTableType the current table type selected by the user
+ * @returns the default table type and a boolean indicating if AnalyticalTable should be set as default
+ */
+function getDefaultTableType(
+    templateType: TemplateType,
+    metadata: ConvertedMetadata,
+    odataVersion: OdataVersion,
+    mainEntitySetName?: string,
+    currentTableType?: TableType
+): { tableType: TableType; setAnalyticalTableDefault: boolean } {
+    let tableType: TableType;
+    let setAnalyticalTableDefault = false;
+    if (
+        (templateType === 'lrop' || templateType === 'worklist') &&
+        odataVersion === OdataVersion.v4 &&
+        hasAggregateTransformationsForEntity(metadata, mainEntitySetName)
+    ) {
+        // For V4, if the selected entity has aggregate transformations, use AnalyticalTable as default
+        tableType = 'AnalyticalTable';
+        setAnalyticalTableDefault = true;
+    } else if (templateType === 'alp') {
+        // For ALP, use AnalyticalTable as default
+        tableType = 'AnalyticalTable';
+    } else if (currentTableType) {
+        // If the user has already selected a table type use it
+        tableType = currentTableType;
+    } else {
+        // Default to ResponsiveTable for other cases
+        tableType = 'ResponsiveTable';
+    }
+    return {
+        tableType,
+        setAnalyticalTableDefault
+    };
+}
+
+/**
+ * Checks if the given entity set name has aggregate transformations in the metadata.
+ *
+ * @param metadata The metadata (edmx) string of the service.
+ * @param entitySetName The entity set name to check for aggregate transformations.
+ * @returns true if the entity set has aggregate transformations, false otherwise.
+ */
+function hasAggregateTransformationsForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
+    if (!entitySetName) {
+        return false;
+    }
+    return filterAggregateTransformations(metadata.entitySets).some((entitySet) => entitySet.name === entitySetName);
 }
 
 /**

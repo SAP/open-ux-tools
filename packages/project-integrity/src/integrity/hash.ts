@@ -15,7 +15,7 @@ async function computeFileIntegrityData(filePath: string): Promise<FileIntegrity
         const fileStream = createReadStream(filePath);
         fileStream.on('data', (chunk: Buffer) => {
             content += chunk.toString();
-            hash.update(chunk);
+            hash.update(new Uint8Array(chunk));
         });
         fileStream.on('end', () => resolve({ filePath, hash: hash.digest('hex'), content }));
         fileStream.on('error', (err) => reject(err));

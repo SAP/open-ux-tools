@@ -21,8 +21,8 @@
     "start-mock": "fiori run --config ./ui5-mock.yaml --open \"test/flp.html#app-preview\"",
     "deploy": "fiori verify",
     "deploy-config": "fiori add deploy-config",
-    "start-noflp": "fiori run --open \"index.html?sap-ui-xx-viewCache=false\"",
-    "start-variants-management": "fiori run --open \"preview.html#app-preview\""
+    "start-noflp": "fiori run --open \"/index.html?sap-ui-xx-viewCache=false\"",
+    "start-variants-management": "fiori run --open \"/preview.html#app-preview\""
   },
   "sapuxLayer": "CUSTOMER_BASE",
   "sapux": true

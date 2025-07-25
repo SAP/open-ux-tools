@@ -1,5 +1,8 @@
 import { gte } from 'semver';
-import { type UI5 } from './types';
+import { type UI5, type TemplateOptions } from './types';
+import { join } from 'path';
+import { FileName } from '@sap-ux/project-access';
+import type { Editor } from 'mem-fs-editor';
 
 export const ui5LtsVersion_1_71 = '1.71.0';
 export const ui5LtsVersion_1_120 = '1.120.0';
@@ -46,4 +49,50 @@ export function getTemplateVersionPath(ui5: UI5): string {
  */
 export function processDestinationPath(filePath: string): string {
     return filePath.replace('/1.120.0', '').replace('/1.71.0', '');
+}
+
+/**
+ * Copies UI5 project template files and common files to the target base path.
+ *
+ * @param options - Options for copying template files
+ * @param options.fs - The mem-fs editor instance
+ * @param options.basePath - The target base path
+ * @param options.tmplPath - The template root path
+ * @param options.templateOptions - Template variables for file rendering
+ * @param options.ignore - Glob patterns to ignore during copy
+ * @param options.ui5Version - Optional UI5 version to determine template version
+ */
+export function copyTemplates(options: {
+    fs: Editor;
+    basePath: string;
+    tmplPath: string;
+    templateOptions: TemplateOptions;
+    ignore: string[];
+    ui5Version?: string;
+}): void {
+    const { fs, basePath, tmplPath, templateOptions, ignore, ui5Version } = options;
+
+    const remainingCoreFiles = ['gitignore.tmpl', FileName.Package, FileName.Ui5LocalYaml, FileName.Ui5Yaml];
+
+    const resolvedUi5Version = ui5Version ?? ui5LtsVersion_1_120;
+    const templateUi5Version = compareUI5VersionGte(resolvedUi5Version, ui5LtsVersion_1_120)
+        ? ui5LtsVersion_1_120
+        : ui5LtsVersion_1_71;
+
+    // Copy version-specific template files
+    fs.copyTpl(join(tmplPath, 'core', templateUi5Version, '**/*.*'), join(basePath), templateOptions, undefined, {
+        globOptions: { dot: true, ignore }
+    });
+
+    // Copy remaining common files
+    fs.copyTpl(
+        remainingCoreFiles.map((fileName) => join(tmplPath, 'core', fileName)),
+        join(basePath),
+        templateOptions,
+        undefined,
+        {
+            globOptions: { dot: true, ignore },
+            processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
+        }
+    );
 }

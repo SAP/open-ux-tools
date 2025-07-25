@@ -169,6 +169,17 @@ export interface AppOptions {
     useVirtualPreviewEndpoints?: boolean;
 }
 
+/**
+ * Options for template generation.
+ */
+export type TemplateOptions = {
+    app: App;
+    appOptions: Partial<AppOptions>;
+    ui5: UI5;
+    package: Package;
+    ui5ResourceUrl: string;
+};
+
 export interface Ui5App {
     app: App;
     appOptions?: Partial<AppOptions>;

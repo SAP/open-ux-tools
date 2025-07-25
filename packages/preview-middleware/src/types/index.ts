@@ -32,7 +32,7 @@ export interface RtaEditor {
 export type RtaConfig = Omit<InternalRtaConfig, 'editors'> & { endpoints: RtaEditor[] };
 
 interface InternalRtaConfig {
-    layer: UI5FlexLayer;
+    layer?: UI5FlexLayer;
     options?: {
         [key: string]: unknown;
         baseId?: string;
@@ -98,13 +98,13 @@ export type TestConfigDefaults = {
     qunit: {
         path: '/test/unitTests.qunit.html';
         init: '/test/unitTests.qunit.js';
-        pattern: '/test/**/*Test.*';
+        pattern: '/test/**/*Test.{js,ts}';
         framework: 'QUnit';
     };
     opa5: {
         path: '/test/opaTests.qunit.html';
         init: '/test/opaTests.qunit.js';
-        pattern: '/test/**/*Journey.*';
+        pattern: '/test/**/*Journey.{js,ts}';
         framework: 'OPA5';
     };
     testsuite: {

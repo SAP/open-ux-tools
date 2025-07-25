@@ -65,7 +65,7 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidMetadataConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidMetadataPackage'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.invalidMetadataPackage'));
     });
 
     it('should return false and log an error when service binding details validation fails', () => {
@@ -79,7 +79,7 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidServiceBindingConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidServiceName'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.invalidServiceName'));
     });
 
     it('should return false and log an error when service binding version is not provided', () => {
@@ -93,7 +93,7 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidServiceBindingConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidServiceVersion'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.invalidServiceVersion'));
     });
 
     it('should return false and log an error when main entity name is missing', () => {
@@ -107,7 +107,7 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidServiceBindingConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidMainEntityName'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.invalidMainEntityName'));
     });
 
     it('should return false and log an error when project attribute validation fails', () => {
@@ -118,7 +118,7 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidProjectAttributeConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidModuleName'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.invalidModuleName'));
     });
 
     it('should return false and log an error when deployment details validation fails', () => {
@@ -129,7 +129,7 @@ describe('validateQfaJsonFile', () => {
 
         const result = validateQfaJsonFile(invalidDeploymentDetailsConfig);
         expect(result).toBe(false);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidRepositoryName'));
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.invalidRepositoryName'));
     });
 });
 

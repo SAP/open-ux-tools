@@ -36,8 +36,8 @@ describe('add/html', () => {
         await command.parseAsync(testArgv([]));
 
         // Flow check
-        expect(generateSpy).toBeCalled();
-        expect(traceSpy).not.toBeCalled();
+        expect(generateSpy).toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
     });
 
     test('add html --simulate', async () => {
@@ -47,7 +47,7 @@ describe('add/html', () => {
         await command.parseAsync(testArgv(['--simulate']));
 
         // Flow check
-        expect(generateSpy).toBeCalled();
-        expect(traceSpy).toBeCalled();
+        expect(generateSpy).toHaveBeenCalled();
+        expect(traceSpy).toHaveBeenCalled();
     });
 });
