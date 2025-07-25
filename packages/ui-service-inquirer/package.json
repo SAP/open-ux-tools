@@ -47,7 +47,7 @@
         "@sap-ux/jest-file-matchers": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
-        "@types/inquirer-autocomplete-prompt": "2.0.1",
+        "@types/inquirer-autocomplete-prompt": "2.0.2",
         "@types/inquirer": "8.2.6",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.11",
