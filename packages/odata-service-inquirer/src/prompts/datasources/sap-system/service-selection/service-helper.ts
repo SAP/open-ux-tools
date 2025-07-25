@@ -26,7 +26,7 @@ import { showCollabDraftWarning } from '../../service-helpers/service-helpers';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 // Service ids continaining these paths should not be offered as UI compatible services
-const nonUIServicePaths = ['/IWBEP/COMMON/'];
+const nonUIServicePaths = ['/IWBEP/COMMON'];
 // Telemetry event name for successful service validation on BAS, note: legacy event names should not be changed
 export const telemEventBASServiceSuccess = 'SERVICE_INQUIRER_BAS_SUCCESS';
 /**
@@ -46,7 +46,7 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
 
     serviceInfos
         // Exclude non-UI compatible services
-        ?.filter((service) => !nonUIServicePaths.some((path) => service.path.includes(path)))
+        ?.filter((service) => !nonUIServicePaths.some((path) => service.id.includes(path)))
         .forEach((service) => {
             let serviceName = service.name;
             const servicePath = service.path;
@@ -68,6 +68,7 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
                 }
             }) as ListChoiceOptions<ServiceAnswer>;
         });
+    LoggerHelper.logger.debug(`Number of unique service choices: ${choices.length}`);
     return choices.sort((a, b) => (a.name ? a.name.localeCompare(b.name ?? '') : 0));
 };
 
@@ -105,10 +106,27 @@ export async function getServiceChoices(
     serviceFilter?: string[]
 ): Promise<ListChoiceOptions<ServiceAnswer>[]> {
     const requestErrors: Record<ODataVersion, unknown> | {} = {};
+    // Performance tracking for the requests
+    const requestTimes: Record<string, { serviceCount: number; duration: string }> = {}; // [v2, v4] request times in ms
+    const listServicesRequests = [];
 
-    const listServicesRequests = catalogs.map(async (catalog) => {
+    for (const catalog of catalogs) {
+        const catalogVer = catalog instanceof V2CatalogService ? ODataVersion.v2 : ODataVersion.v4;
         try {
-            return await catalog.listServices();
+            const startTime = Date.now();
+            const res = await catalog.listServices();
+            const endTime = Date.now();
+            const duration = endTime - startTime === 0 ? '<1 ms' : `${endTime - startTime}ms`;
+            requestTimes[`v${catalogVer}`] = {
+                serviceCount: res.length,
+                duration
+            };
+            LoggerHelper.logger.debug(
+                `Number of service${catalogVer === ODataVersion.v4 ? ' groups' : 's'}: ${
+                    res.length
+                } returned in: ${duration}}`
+            );
+            listServicesRequests.push(res);
         } catch (error) {
             LoggerHelper.logger.error(
                 t('errors.serviceCatalogRequest', {
@@ -119,13 +137,16 @@ export async function getServiceChoices(
             );
             // Save any errors for processing later as we may show more useful message to the user
             Object.assign(requestErrors, {
-                [catalog instanceof V2CatalogService ? ODataVersion.v2 : ODataVersion.v4]: error
+                [catalogVer]: error
             });
-            return [];
+            listServicesRequests.push([]);
         }
-    });
-    const serviceInfos: ODataServiceInfo[][] = await Promise.all(listServicesRequests);
-    let flatServices = serviceInfos?.flat() ?? [];
+    }
+    // Log the request times for debugging purposes
+    LoggerHelper.logger.debug(`Service catalog request times: ${JSON.stringify(requestTimes, undefined, '    ')}`);
+
+    // Flatten the array of arrays
+    let flatServices = listServicesRequests?.flat() ?? [];
     LoggerHelper.logger.debug(`Number of services available: ${flatServices.length}`);
 
     if (flatServices.length === 0) {
@@ -135,6 +156,7 @@ export async function getServiceChoices(
     if (serviceFilter) {
         flatServices = flatServices.filter((service) => serviceFilter.includes(service.id));
     }
+    // await writeFile(`/Users/i057546/dev/service-counts/${new URL(catalogs[1].getUri()).hostname}.json`, JSON.stringify(flatServices), 'utf8');
     return createServiceChoices(flatServices);
 }
 

@@ -43,16 +43,25 @@ export class V4CatalogService extends CatalogService {
      * Map the V4 service information to a version independent structure.
      *
      * @param groups v4 service groups
-     * @param entitySet entity set used for service selection
+     * @param entitySet entity set used for service selection. e.g. `RecommendedServices`
+     * @param dedup if true, duplicate services will be removed based on their id. Duplicate services may appear in multiple groups, e.g. '/IWBEP/ALL'.
      * @returns version independent information
      */
-    protected mapServices(groups: ServiceGroup[], entitySet: string): ODataServiceInfo[] {
+    protected mapServices(groups: ServiceGroup[], entitySet: string, dedup = false): ODataServiceInfo[] {
         const services: ODataServiceInfo[] = [];
+        // Duplicates can appear in multiple groups, e.g. '/IWBEP/ALL'
+        const uniqueServiceIds = new Set<string>();
         groups
             .filter((group) => group?.DefaultSystem?.[entitySet]?.length > 0)
             .forEach((group) => {
                 services.push(
-                    ...(group.DefaultSystem[entitySet] as V4Service[]).map((service) => {
+                    ...(group.DefaultSystem[entitySet] as V4Service[]).flatMap((service) => {
+                        if (dedup) {
+                            if (uniqueServiceIds.has(service.ServiceId)) {
+                                return [];
+                            }
+                            uniqueServiceIds.add(service.ServiceId);
+                        }
                         return {
                             id: service.ServiceId,
                             group: group.GroupId,
@@ -69,11 +78,11 @@ export class V4CatalogService extends CatalogService {
     }
 
     /**
-     * Fetch all services from the backend.
+     * Fetch all services from the backend using queued the @nexlink parameter to fetch all pages serially.
      *
      * @returns version independent service information
      */
-    protected async fetchServices(): Promise<ODataServiceInfo[]> {
+    protected async fetchServicesNextLink(): Promise<ODataServiceInfo[]> {
         if (this.entitySet === undefined) {
             const metadata = await this.metadata();
             this.entitySet = metadata.includes('Name="RecommendedServices"')
@@ -88,14 +97,17 @@ export class V4CatalogService extends CatalogService {
         const response = await this.get<ServiceGroupResponse>('/ServiceGroups', { params }, true);
         let serviceGroupResponseOdata = response.odata();
         const serviceGroups = serviceGroupResponseOdata.value;
+        let numPageRequests = 1;
         // Page by using the backends nextLink search parameters for the next request
         while (serviceGroupResponseOdata['@odata.nextLink']) {
             const nextLink = new URL(serviceGroupResponseOdata['@odata.nextLink'], this.defaults.baseURL);
             serviceGroupResponseOdata = (
                 await this.get<ServiceGroupResponse>('/ServiceGroups', { params: nextLink.searchParams }, true)
             ).odata();
+            numPageRequests++;
             serviceGroups.push(...serviceGroupResponseOdata.value);
         }
+        console.log(`Fetched ${serviceGroups.length} service groups in ${numPageRequests} requests.`);
 
         // check if the service responded with an odata error
         if (ODataRequestError.containsError(serviceGroups)) {
@@ -103,6 +115,74 @@ export class V4CatalogService extends CatalogService {
         }
 
         return this.mapServices(serviceGroups, this.entitySet);
+    }
+
+    /**
+     * Fetches all services from the catalog.
+     *
+     * @param useNextLink if true, uses the nextLink parameter to fetch all pages serially, otherwise fetches all pages in parallel.
+     * @returns v4 services
+     */
+    protected async fetchServices(useNextLink = false): Promise<ODataServiceInfo[]> {
+        if (useNextLink) {
+            return this.fetchServicesNextLink();
+        }
+        return this.fetchServicesParallel();
+    }
+
+    /**
+     * Uses the total service count to fetch all pages in parallel to improve performance where larger numbers of services and therefore pages are available.
+     *
+     * @returns List of unique services
+     */
+    protected async fetchServicesParallel(): Promise<ODataServiceInfo[]> {
+        const defaultInitialPageSize = 1000; // default page size for the services, large enough to get the first page and skiptoken to determine max page size
+        if (this.entitySet === undefined) {
+            const metadata = await this.metadata();
+            this.entitySet = metadata.includes('Name="RecommendedServices"')
+                ? V4_RECOMMENDED_ENTITYSET
+                : V4_CLASSIC_ENTITYSET;
+        }
+        const params = new URLSearchParams([
+            ['$count', 'true'],
+            ['$top', defaultInitialPageSize.toString()], // Get the first page of services,
+            ['$expand', `DefaultSystem($expand=${this.entitySet})`]
+        ]);
+
+        const response = await this.get<ServiceGroupResponse>('/ServiceGroups', { params }, true);
+        const serviceGroupResponseOdata = response.odata();
+        const serviceGroups = serviceGroupResponseOdata.value;
+        const serviceGroupCount = serviceGroupResponseOdata['@odata.count'];
+        const pageSize = parseInt(serviceGroupResponseOdata['@odata.nextLink']?.split('skiptoken=')[1], 10);
+        // If we dont have a valid skip token, we assume we have all services in the first page
+        let numPageRequests = 1;
+
+        if (!isNaN(pageSize)) {
+            const numPages = Math.ceil(serviceGroupCount / pageSize);
+            // Create an array of promises to fetch all pages in parallel
+            const fetchPromises = Array.from({ length: numPages - 1 }, (_, index) => {
+                const nextParams = new URLSearchParams([
+                    ['$count', 'true'],
+                    ['$skip', String((index + 1) * pageSize)],
+                    ['$top', pageSize.toString()], // Fetch the next 200 services
+                    ['$expand', `DefaultSystem($expand=${this.entitySet})`]
+                ]);
+                numPageRequests++;
+                return this.get<ServiceGroupResponse>('/ServiceGroups', { params: nextParams }, true);
+            });
+
+            const pageResults = await Promise.all(fetchPromises); // Fetch all remaining pages in parallel
+            pageResults.forEach((pageResponse) => {
+                const pageData = pageResponse.odata();
+                serviceGroups.push(...pageData.value);
+            });
+        }
+        // check if the service responded with an odata error
+        if (ODataRequestError.containsError(serviceGroups)) {
+            throw new ODataRequestError(serviceGroups);
+        }
+
+        return this.mapServices(serviceGroups, this.entitySet, true);
     }
 
     /**
