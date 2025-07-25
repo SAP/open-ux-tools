@@ -117,7 +117,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -374,7 +374,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -582,7 +582,7 @@ archive.zip
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
-}    
+}
 }",
     "state": "modified",
   },
@@ -629,7 +629,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -947,8 +947,8 @@ appDescription=Test App Description",
     };
 })(sap);
 
-function registerSAPFonts() {  
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+function registerSAPFonts() {
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -983,7 +983,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization 
+        // setting the app title with internationalization
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -1010,7 +1010,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text 
+                // setting the app title with the i18n text
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -1032,7 +1032,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5 
+                    // support older versions of ui5
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -1078,7 +1078,7 @@ archive.zip
     \\"start\\": \\"ui5 serve --config=ui5.yaml --open index.html\\",
     \\"start-local\\": \\"ui5 serve --config=ui5-local.yaml --open index.html\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\"
-}    
+}
 }",
     "state": "modified",
   },
@@ -1125,7 +1125,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -1355,7 +1355,7 @@ appDescription=Test App Description",
         };
         return new Promise(function (resolve, reject) {
 
-            sap.ui.require([\\"sap/ui/thirdparty/jquery\\"], function (localJQuery) {  
+            sap.ui.require([\\"sap/ui/thirdparty/jquery\\"], function (localJQuery) {
                 localJQuery.ajax(url)
                     .done(function (manifest) {
                         if (manifest) {
@@ -1431,7 +1431,7 @@ appDescription=Test App Description",
                         }
                         resolve(url);
                     }).then(function (url2) {
-                        sap.ui.require([\\"sap/ui/thirdparty/jquery\\"], function (localJQuery) {  
+                        sap.ui.require([\\"sap/ui/thirdparty/jquery\\"], function (localJQuery) {
                             return localJQuery.ajax(url2)
                                 .done(function (data) {
                                     if (data) {
@@ -1446,8 +1446,8 @@ appDescription=Test App Description",
         });
     };
 
-    var registerSAPFonts = function () {  
-        sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+    var registerSAPFonts = function () {
+        sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
         //Fiori Theme font family and URI
         var fioriTheme = {
             fontFamily: \\"SAP-icons-TNT\\",
@@ -1464,7 +1464,7 @@ appDescription=Test App Description",
         IconPool.registerFont(bSuiteTheme);
         });
     };
-    
+
     /*eslint-disable fiori-custom/sap-browser-api-warning, fiori-custom/sap-no-dom-access*/
     var currentScript = document.getElementById(\\"locate-reuse-libs\\");
     if (!currentScript) {
@@ -1473,11 +1473,11 @@ appDescription=Test App Description",
     var manifestUri = currentScript.getAttribute(\\"data-sap-ui-manifest-uri\\");
     var componentName = currentScript.getAttribute(\\"data-sap-ui-componentName\\");
     var useMockserver = currentScript.getAttribute(\\"data-sap-ui-use-mockserver\\");
-    
+
     // Patch (KW): resourceRoot is needed to load the correct ResourceBundles
     var resourceRoot = manifestUri.substring(0, manifestUri.lastIndexOf('/')+1);
-    
-    
+
+
     return registerComponentDependencyPaths(manifestUri)
         .catch(function (error) {
             sap.ui.require([\\"sap/base/Log\\"], function (Log) {
@@ -1485,8 +1485,8 @@ appDescription=Test App Description",
             });
         })
         .finally(function () {
-    
-            // setting the app title with internationalization 
+
+            // setting the app title with internationalization
             sap.ui.require([\\"sap/ui/core/Core\\"], async function(Core) {
                 Core.ready(() => {
                    sap.ui.require([\\"sap/base/i18n/Localization\\"], function (Localization) {
@@ -1500,8 +1500,8 @@ appDescription=Test App Description",
                         });
                     });
                 });
-            });        
-    
+            });
+
            if (componentName && componentName.length > 0) {
                 if (useMockserver && useMockserver === \\"true\\") {
                     sap.ui.require([\\"sap/ui/core/Core\\"], async function(Core) {
@@ -1517,13 +1517,13 @@ appDescription=Test App Description",
                                     });
                                 });
                             });
-                        });        
+                        });
                     });
                 } else {
                     // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                     sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
-    
-                    // setting the app title with the i18n text 
+
+                    // setting the app title with the i18n text
                     sap.ui.require([\\"sap/ui/core/Core\\"], async function(Core) {
                         Core.ready(() => {
                             registerSAPFonts();
@@ -1538,7 +1538,7 @@ appDescription=Test App Description",
                                 });
                             });
                         });
-                    });        
+                    });
                 }
             } else {
                 sap.ui.require([\\"sap/ui/core/Core\\"], async function(Core) {
@@ -1551,7 +1551,7 @@ appDescription=Test App Description",
                                 component.placeAt(\\"content\\");
                             });
                             } catch (error) {
-                                // support older versions of ui5 
+                                // support older versions of ui5
                                 Container.createRenderer().placeAt(\\"content\\");
                             }
                         });
@@ -1649,7 +1649,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -2044,7 +2044,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources

@@ -171,13 +171,13 @@ exports[`UI5Config addAbapDeployTask use open source task 1`] = `
 "
 `;
 
-exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out backend first and then call add backend 1`] = `
+exports[`UI5Config addBackendToFioriToolsProxyMiddleware add proxy without out backend first and then call add backend 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -189,13 +189,13 @@ exports[`UI5Config addBackendToFioriToolsProxydMiddleware add proxy without out 
 "
 `;
 
-exports[`UI5Config addBackendToFioriToolsProxydMiddleware should add comments with backend authentication type as reentrance ticket 1`] = `
+exports[`UI5Config addBackendToFioriToolsProxyMiddleware should add comments with backend authentication type as reentrance ticket 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -272,13 +272,13 @@ exports[`UI5Config addCloudFoundryDeployTask minimal settings required 1`] = `
 "
 `;
 
-exports[`UI5Config addFioriToolsProxydMiddleware add / get commonly configured backend (and UI5 defaults) 1`] = `
+exports[`UI5Config addFioriToolsProxyMiddleware add / get commonly configured backend (and UI5 defaults) 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - url: http://localhost:8080
             path: /~testpath~
@@ -297,13 +297,13 @@ exports[`UI5Config addFioriToolsProxydMiddleware add / get commonly configured b
 "
 `;
 
-exports[`UI5Config addFioriToolsProxydMiddleware add backend with flexible parameters (and UI5 defaults) & writes ignoreCertError true if enabled 1`] = `
+exports[`UI5Config addFioriToolsProxyMiddleware add backend with flexible parameters (and UI5 defaults) & writes ignoreCertError true if enabled 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: true # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: true # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - url: http://localhost:8080
             path: /~testpath~
@@ -317,13 +317,13 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend with flexible param
 "
 `;
 
-exports[`UI5Config addFioriToolsProxydMiddleware add backend without destination (and UI5 defaults) 1`] = `
+exports[`UI5Config addFioriToolsProxyMiddleware add backend without destination (and UI5 defaults) 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - url: http://localhost:8080
             path: /~testpath~
@@ -336,13 +336,13 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without destination
 "
 `;
 
-exports[`UI5Config addFioriToolsProxydMiddleware add backend without path or destination (and UI5 defaults) 1`] = `
+exports[`UI5Config addFioriToolsProxyMiddleware add backend without path or destination (and UI5 defaults) 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - url: http://localhost:8080
             path: /
@@ -354,23 +354,23 @@ exports[`UI5Config addFioriToolsProxydMiddleware add backend without path or des
 "
 `;
 
-exports[`UI5Config addFioriToolsProxydMiddleware add without backend or UI5 1`] = `
+exports[`UI5Config addFioriToolsProxyMiddleware add without backend or UI5 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
 "
 `;
 
-exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but UI5 defaults 1`] = `
+exports[`UI5Config addFioriToolsProxyMiddleware add without backend or but UI5 defaults 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -379,13 +379,13 @@ exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but UI5 
 "
 `;
 
-exports[`UI5Config addFioriToolsProxydMiddleware add without backend or but all properties for UI5 1`] = `
+exports[`UI5Config addFioriToolsProxyMiddleware add without backend or but all properties for UI5 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /~customResources
@@ -634,13 +634,13 @@ exports[`UI5Config addUI5Framework Use horizon high dark theme 1`] = `
 "
 `;
 
-exports[`UI5Config addUi5ToFioriToolsProxydMiddleware add ui5 config to empty tools middleware config 1`] = `
+exports[`UI5Config addUi5ToFioriToolsProxyMiddleware add ui5 config to empty tools middleware config 1`] = `
 "server:
   customMiddleware:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           - path:
               - /~customResources
