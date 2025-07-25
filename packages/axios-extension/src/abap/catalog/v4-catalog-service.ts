@@ -2,6 +2,7 @@ import type { Annotations, ODataServiceInfo, ServiceType } from './base';
 import { CatalogService } from './base';
 import { ODataVersion } from '../../base/odata-service';
 import { ODataRequestError } from '../../base/odata-request-error';
+import { type Logger, ToolsLogger } from '@sap-ux/logger';
 
 const V4_RECOMMENDED_ENTITYSET = 'RecommendedServices';
 const V4_CLASSIC_ENTITYSET = 'Services';
@@ -37,6 +38,7 @@ interface ServiceGroupResponse {
  * OData V4 specific implmentation of SAP's catalog service
  */
 export class V4CatalogService extends CatalogService {
+    private logger: Logger = new ToolsLogger();
     public static readonly PATH = '/sap/opu/odata4/iwfnd/config/default/iwfnd/catalog/0002';
 
     /**
@@ -78,7 +80,7 @@ export class V4CatalogService extends CatalogService {
     }
 
     /**
-     * Fetch all services from the backend using queued the @nexlink parameter to fetch all pages serially.
+     * Fetch all services from the backend using the @nexlink parameter to fetch all pages serially.
      *
      * @returns version independent service information
      */
@@ -107,7 +109,7 @@ export class V4CatalogService extends CatalogService {
             numPageRequests++;
             serviceGroups.push(...serviceGroupResponseOdata.value);
         }
-        console.log(`Fetched ${serviceGroups.length} service groups in ${numPageRequests} requests.`);
+        this.logger.debug(`Fetched ${serviceGroups.length} service groups in ${numPageRequests} requests.`);
 
         // check if the service responded with an odata error
         if (ODataRequestError.containsError(serviceGroups)) {
@@ -131,7 +133,8 @@ export class V4CatalogService extends CatalogService {
     }
 
     /**
-     * Uses the total service count to fetch all pages in parallel to improve performance where larger numbers of services and therefore pages are available.
+     * Fetches all services from the catalog in parallel. Uses the total service count to fetch all service group pages in parallel
+     * to improve performance where larger numbers of services and therefore pages are available.
      *
      * @returns List of unique services
      */
@@ -154,9 +157,9 @@ export class V4CatalogService extends CatalogService {
         const serviceGroups = serviceGroupResponseOdata.value;
         const serviceGroupCount = serviceGroupResponseOdata['@odata.count'];
         const pageSize = parseInt(serviceGroupResponseOdata['@odata.nextLink']?.split('skiptoken=')[1], 10);
-        // If we dont have a valid skip token, we assume we have all services in the first page
         let numPageRequests = 1;
 
+        // If we dont have a valid skip token, we assume we have all services in the first page
         if (!isNaN(pageSize)) {
             const numPages = Math.ceil(serviceGroupCount / pageSize);
             // Create an array of promises to fetch all pages in parallel
@@ -177,6 +180,7 @@ export class V4CatalogService extends CatalogService {
                 serviceGroups.push(...pageData.value);
             });
         }
+        this.logger.debug(`Fetched ${serviceGroups.length} service groups in ${numPageRequests} requests.`);
         // check if the service responded with an odata error
         if (ODataRequestError.containsError(serviceGroups)) {
             throw new ODataRequestError(serviceGroups);
