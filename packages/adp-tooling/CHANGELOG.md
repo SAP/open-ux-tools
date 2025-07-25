@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.15.5
+
+### Patch Changes
+
+-   d4a45ae: fix: provide templates path parameter to handle different runtime context
+
 ## 0.15.4
 
 ### Patch Changes
