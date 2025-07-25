@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Project&#39;s &#34;Title&#34;</title>
+    <title><%= app.title %></title>
     <style>
         html, body, body > div, #container, #container-uiarea {
             height: 100%;
@@ -12,10 +12,10 @@
     </style>
     <script
         id="sap-ui-bootstrap"
-        src="resources/sap-ui-core.js"
-        data-sap-ui-theme="sap_horizon"
+        src="<%- locals.ui5ResourceUrl %>"
+        data-sap-ui-theme="<%- ui5.ui5Theme %>"
         data-sap-ui-resource-roots='{
-            "testnamepsace.lropv4noui5version": "./"
+            "<%- app.id %>": "./"
         }'
         data-sap-ui-on-init="module:sap/ui/core/ComponentSupport"
         data-sap-ui-compat-version="edge"
@@ -26,9 +26,9 @@
 <body class="sapUiBody sapUiSizeCompact" id="content">
     <div
         data-sap-ui-component
-        data-name="testnamepsace.lropv4noui5version"
+        data-name="<%- app.id %>"
         data-id="container"
-        data-settings='{"id" : "testnamepsace.lropv4noui5version"}'
+        data-settings='{"id" : "<%- app.id %>"}'
         data-handle-validation="true"
     ></div>
 </body>

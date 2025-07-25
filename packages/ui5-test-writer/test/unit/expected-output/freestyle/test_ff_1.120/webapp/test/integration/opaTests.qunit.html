@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<title>Unit tests for <%= appId %></title>
+	<meta charset="utf-8" />
+	<title>Integration tests for Basic Template</title>
+
 	<script
 		id="sap-ui-bootstrap"
 		src="../../resources/sap-ui-core.js"
+		data-sap-ui-theme=""
 		data-sap-ui-resource-roots='{
-			"<%= appIdWithSlash %>": "../../",
-			"unit": "."
+			"test_ff_1.120": "../../",
+			"integration": "./"
 		}'
+		data-sap-ui-animation-mode="none"
+		data-sap-ui-compat-version="edge"
 		data-sap-ui-async="true"
-		data-sap-ui-compat-version="edge">
+		data-sap-ui-preload="async">
 	</script>
 	<link rel="stylesheet" type="text/css" href="../../resources/sap/ui/thirdparty/qunit-2.css">
 	<script src="../../resources/sap/ui/thirdparty/qunit-2.js"></script>
 	<script src="../../resources/sap/ui/qunit/qunit-junit.js"></script>
-	<script src="../../resources/sap/ui/qunit/qunit-coverage.js"></script>
-	<script src="../../resources/sap/ui/thirdparty/sinon.js"></script>
-	<script src="../../resources/sap/ui/thirdparty/sinon-qunit.js"></script>
-	<script src="unitTests.qunit.js"></script>
+	<script src="opaTests.qunit.js"></script>
 </head>
 <body>
 	<div id="qunit"></div>
