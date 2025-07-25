@@ -289,7 +289,9 @@ export class UI5Config {
             resolvedIgnoreCertErrors = proxyConfig.ignoreCertErrors;
         } else if (proxyConfig.ignoreCertError !== undefined) {
             resolvedIgnoreCertErrors = proxyConfig.ignoreCertError;
-            console.warn('Warning: ignoreCertError is deprecated. Please use ignoreCertErrors instead. The ignoreCertError property will be removed in a future version.');
+            console.warn(
+                'Warning: ignoreCertError is deprecated. Please use ignoreCertErrors instead. The ignoreCertError property will be removed in a future version.'
+            );
         }
 
         const { config, comments } = getFioriToolsProxyMiddlewareConfig(
@@ -343,10 +345,11 @@ export class UI5Config {
             value: backend,
             comments
         });
-        
+
         // Support both old and new property names for backward compatibility
-        const currentIgnoreCertErrors = proxyMiddlewareConfig?.ignoreCertErrors ?? proxyMiddlewareConfig?.ignoreCertError ?? false;
-        
+        const currentIgnoreCertErrors =
+            proxyMiddlewareConfig?.ignoreCertErrors ?? proxyMiddlewareConfig?.ignoreCertError ?? false;
+
         if (ignoreCertErrors !== undefined && currentIgnoreCertErrors !== ignoreCertErrors) {
             // Always set the new property name
             configuration.set('ignoreCertErrors', ignoreCertErrors);
@@ -355,7 +358,7 @@ export class UI5Config {
                 configuration.delete('ignoreCertError');
             }
         }
-        
+
         // Add new entry to existing backend configurations in yaml, avoid duplicates
         if (proxyMiddlewareConfig?.backend) {
             if (!proxyMiddlewareConfig?.backend.find((existingBackend) => existingBackend.path === backend.path)) {
