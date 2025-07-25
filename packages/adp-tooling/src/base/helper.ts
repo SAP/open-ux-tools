@@ -147,48 +147,17 @@ export function filterAndMapInboundsToManifest(inbounds: Inbound[]): ManifestNam
         return undefined;
     }
     const filteredInbounds = inbounds.reduce((acc: { [key: string]: InboundContent }, inbound) => {
-        // Skip if hideLauncher is not false
-        if (!inbound?.content || inbound.content.hideLauncher !== false) {
+        // Skip if hideLauncher is true
+        if (!inbound?.content || inbound.content.hideLauncher === true) {
             return acc;
         }
-        const { semanticObject, action, signature } = inbound.content;
+        const { semanticObject, action } = inbound.content;
         if (semanticObject && action) {
             const key = `${semanticObject}-${action}`;
-
-            // Temporary filtration of parameters to avoid issues with merged manifest until release of ABAP Platform Cloud 2508
-            if (signature?.parameters) {
-                filterIboundsParameters(signature);
-            }
-
             acc[key] = inbound.content;
         }
         return acc;
     }, {} as { [key: string]: InboundContent });
 
     return Object.keys(filteredInbounds).length === 0 ? undefined : filteredInbounds;
-}
-
-/**
- * Filters parameters of the inbound signature to remove invalid or incomplete entries.
- *
- * @param {ManifestNamespace.SignatureDef} inboundSinature - The inbound signature definition to filter.
- */
-function filterIboundsParameters(inboundSinature: ManifestNamespace.SignatureDef): void {
-    Object.keys(inboundSinature.parameters).forEach((paramKey) => {
-        const param = inboundSinature.parameters[paramKey];
-        if (param.defaultValue && (!param.defaultValue.format || !param.defaultValue.value)) {
-            delete inboundSinature.parameters[paramKey];
-            return;
-        }
-        if (param.filter && !param.filter.format) {
-            delete inboundSinature.parameters[paramKey].filter;
-        }
-        if (param.launcherValue) {
-            Object.keys(param.launcherValue).forEach((launcherKey) => {
-                if (launcherKey !== 'value') {
-                    delete (param.launcherValue as { [key: string]: unknown })[launcherKey];
-                }
-            });
-        }
-    });
 }

@@ -1,5 +1,53 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.3.47
+
+### Patch Changes
+
+-   089b56f: updates extension types and extends prompt options in sub gens
+-   Updated dependencies [089b56f]
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.39
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.43
+
+## 0.3.46
+
+### Patch Changes
+
+-   Updated dependencies [45bbe6c]
+    -   @sap-ux/odata-service-inquirer@2.5.22
+
+## 0.3.45
+
+### Patch Changes
+
+-   ca44076: move headless AppConfig type and associated types to fiori gen shared module
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.42
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.38
+    -   @sap-ux/deploy-config-generator-shared@0.1.22
+    -   @sap-ux/inquirer-common@0.7.27
+    -   @sap-ux/odata-service-inquirer@2.5.21
+
+## 0.3.44
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.26
+-   @sap-ux/cf-deploy-config-sub-generator@0.2.37
+-   @sap-ux/deploy-config-generator-shared@0.1.21
+-   @sap-ux/odata-service-inquirer@2.5.20
+-   @sap-ux/abap-deploy-config-sub-generator@0.1.41
+
+## 0.3.43
+
+### Patch Changes
+
+-   @sap-ux/deploy-config-generator-shared@0.1.21
+-   @sap-ux/odata-service-inquirer@2.5.19
+-   @sap-ux/abap-deploy-config-sub-generator@0.1.40
+-   @sap-ux/cf-deploy-config-sub-generator@0.2.36
+
 ## 0.3.42
 
 ### Patch Changes

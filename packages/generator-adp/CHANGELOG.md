@@ -1,5 +1,45 @@
 # @sap-ux/generator-adp
 
+## 0.3.52
+
+### Patch Changes
+
+-   d4a45ae: fix: provide templates path parameter to handle different runtime context
+-   Updated dependencies [d4a45ae]
+    -   @sap-ux/adp-tooling@0.15.5
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.51
+
+## 0.3.51
+
+### Patch Changes
+
+-   @sap-ux/adp-flp-config-sub-generator@0.1.50
+
+## 0.3.50
+
+### Patch Changes
+
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.49
+    -   @sap-ux/inquirer-common@0.7.27
+    -   @sap-ux/adp-tooling@0.15.4
+
+## 0.3.49
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.3
+-   @sap-ux/inquirer-common@0.7.26
+-   @sap-ux/adp-flp-config-sub-generator@0.1.48
+
+## 0.3.48
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.2
+-   @sap-ux/adp-flp-config-sub-generator@0.1.47
+
 ## 0.3.47
 
 ### Patch Changes

@@ -54,7 +54,7 @@ describe('Building Blocks', () => {
                     },
                     fs
                 )
-        ).rejects.toThrowError(/Invalid project folder/);
+        ).rejects.toThrow(/Invalid project folder/);
 
         // Test generator with an invalid view path
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
@@ -72,7 +72,7 @@ describe('Building Blocks', () => {
                     },
                     fs
                 )
-        ).rejects.toThrowError(/Invalid view path/);
+        ).rejects.toThrow(/Invalid view path/);
     });
 
     test('validate view path', async () => {
@@ -93,7 +93,7 @@ describe('Building Blocks', () => {
                     },
                     fs
                 )
-        ).rejects.toThrowError(/Invalid view path testViewPath./);
+        ).rejects.toThrow(/Invalid view path testViewPath./);
     });
 
     const dependenciesInput = [
@@ -160,7 +160,7 @@ describe('Building Blocks', () => {
                     },
                     fs
                 )
-        ).rejects.toThrowError(/Aggregation control not found/);
+        ).rejects.toThrow(/Aggregation control not found/);
     });
 
     test('validate xml view file', async () => {
@@ -182,7 +182,7 @@ describe('Building Blocks', () => {
                     },
                     fs
                 )
-        ).rejects.toThrowError(/Invalid view path/);
+        ).rejects.toThrow(/Invalid view path/);
     });
 
     test('validate xml view content', async () => {
@@ -212,7 +212,7 @@ describe('Building Blocks', () => {
                     },
                     fs
                 )
-        ).rejects.toThrowError(/Unable to parse xml view file/);
+        ).rejects.toThrow(/Unable to parse xml view file/);
     });
 
     test('fails to read view content', async () => {
@@ -228,7 +228,7 @@ describe('Building Blocks', () => {
                         buildingBlockType: BuildingBlockType.FilterBar
                     }
                 })
-        ).rejects.toThrowError(/Unable to read xml view file/);
+        ).rejects.toThrow(/Unable to read xml view file/);
     });
 
     const testInput = [

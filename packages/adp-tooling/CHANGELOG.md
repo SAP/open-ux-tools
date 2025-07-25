@@ -1,5 +1,32 @@
 # @sap-ux/adp-tooling
 
+## 0.15.5
+
+### Patch Changes
+
+-   d4a45ae: fix: provide templates path parameter to handle different runtime context
+
+## 0.15.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.27
+
+## 0.15.3
+
+### Patch Changes
+
+-   Updated dependencies [07d4e25]
+    -   @sap-ux/ui5-info@0.12.1
+    -   @sap-ux/inquirer-common@0.7.26
+
+## 0.15.2
+
+### Patch Changes
+
+-   Updated dependencies [84a8d56]
+    -   @sap-ux/nodejs-utils@0.2.2
+
 ## 0.15.1
 
 ### Patch Changes

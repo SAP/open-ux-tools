@@ -66,7 +66,7 @@ describe('fetchAppListForSelectedSystem', () => {
             mockAnswers[PromptNames.systemSelection].connectedSystem as ConnectedSystem,
             mockAnswers[PromptNames.selectedApp].appId
         );
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
             t('error.applicationListFetchError', { error: error.message })
         );
         expect(result).toEqual([]);
@@ -110,7 +110,7 @@ describe('formatAppChoices', () => {
     it('should log error if required fields are missing', () => {
         const appList: AppIndex = [invalidApp];
         const result = formatAppChoices(appList);
-        expect(RepoAppDownloadLogger.logger.warn).toBeCalledWith(
+        expect(RepoAppDownloadLogger.logger.warn).toHaveBeenCalledWith(
             t('warn.requiredFieldsMissing', { app: JSON.stringify(appList) })
         );
     });
@@ -118,7 +118,7 @@ describe('formatAppChoices', () => {
     it('should handle a mix of valid and invalid apps by throwing an error', () => {
         const appList: AppIndex = [validApp, invalidApp];
         const result = formatAppChoices(appList);
-        expect(RepoAppDownloadLogger.logger.warn).toBeCalledWith(
+        expect(RepoAppDownloadLogger.logger.warn).toHaveBeenCalledWith(
             t('warn.requiredFieldsMissing', { app: JSON.stringify(appList) })
         );
     });

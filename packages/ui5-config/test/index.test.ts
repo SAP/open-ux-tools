@@ -335,7 +335,7 @@ describe('UI5Config', () => {
 
         test('try adding backend without a proxy middleware added before', () => {
             ui5Config.addFioriToolsAppReloadMiddleware();
-            expect(() => ui5Config.addBackendToFioriToolsProxydMiddleware({ url, path })).toThrowError();
+            expect(() => ui5Config.addBackendToFioriToolsProxydMiddleware({ url, path })).toThrow();
         });
 
         test('Should add preview middlewares correctly', () => {
@@ -473,7 +473,7 @@ describe('UI5Config', () => {
 
         test('try removing backend without a proxy middleware added before', () => {
             ui5Config.addFioriToolsAppReloadMiddleware();
-            expect(() => ui5Config.removeBackendFromFioriToolsProxydMiddleware(url)).toThrowError();
+            expect(() => ui5Config.removeBackendFromFioriToolsProxydMiddleware(url)).toThrow();
         });
 
         test('all occurances of backend should be deleted, except one with "/sap" path', () => {

@@ -82,7 +82,7 @@ describe('Test updateProjectIntegrity()', () => {
 
         const integrityFilePath = join(__dirname, '../../test-input/update-project/integrity.json');
         await updateProjectIntegrity(integrityFilePath, { 'key': 'new string' });
-        expect(writeSpy).toBeCalledWith(expect.stringContaining('integrity.json'), {
+        expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
             'enabled': true,
             'fileIntegrity': [
                 {
@@ -167,7 +167,7 @@ describe('Test enableProjectIntegrity()', () => {
         const writeSpy = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
         const integrityFilePath = join(__dirname, '../../test-input/disabled-project/integrity.json');
         await enableProjectIntegrity(integrityFilePath);
-        expect(writeSpy).toBeCalledWith(expect.stringContaining('integrity.json'), {
+        expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
             'enabled': true,
             'fileIntegrity': [],
             'contentIntegrity': []
@@ -179,7 +179,7 @@ describe('Test enableProjectIntegrity()', () => {
         const integrityFilePath = join(__dirname, '../../test-input/enabled-project/integrity.json');
         await enableProjectIntegrity(integrityFilePath);
         // project already enabled, so writeIntegrityData should not be called
-        expect(writeSpy).not.toBeCalled();
+        expect(writeSpy).not.toHaveBeenCalled();
     });
 
     test('Enable integrity for non existing project', async () => {
@@ -201,7 +201,7 @@ describe('Test disableProjectIntegrity()', () => {
         const writeSpy = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
         const integrityFilePath = join(__dirname, '../../test-input/enabled-project/integrity.json');
         await disableProjectIntegrity(integrityFilePath);
-        expect(writeSpy).toBeCalledWith(expect.stringContaining('integrity.json'), {
+        expect(writeSpy).toHaveBeenCalledWith(expect.stringContaining('integrity.json'), {
             'enabled': false,
             'fileIntegrity': [],
             'contentIntegrity': []
@@ -213,7 +213,7 @@ describe('Test disableProjectIntegrity()', () => {
         const integrityFilePath = join(__dirname, '../../test-input/disabled-project/integrity.json');
         await disableProjectIntegrity(integrityFilePath);
         // project already disabled, so writeIntegrityData should not be called
-        expect(writeSpy).not.toBeCalled();
+        expect(writeSpy).not.toHaveBeenCalled();
     });
 
     test('Disable integrity for non existing project', async () => {
