@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.15.6
+
+### Patch Changes
+
+-   e25ee86: fix: remove filtering of parameters for inbounds
+
 ## 0.15.5
 
 ### Patch Changes
