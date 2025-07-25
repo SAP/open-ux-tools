@@ -380,7 +380,7 @@ describe('UIQuickNavigation', () => {
             });
             const stopPropagationSpy = jest.spyOn(KeyboardEvent.prototype, 'stopPropagation');
             fireEvent.keyUp(document.body, keyDownEvent);
-            expect(stopPropagationSpy).toBeCalledTimes(1);
+            expect(stopPropagationSpy).toHaveBeenCalledTimes(1);
             stopPropagationSpy.mockRestore();
         }
     });

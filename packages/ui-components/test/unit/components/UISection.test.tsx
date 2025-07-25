@@ -66,7 +66,7 @@ describe('<Section />', () => {
         expect(wrapper.find('.section__body').length).toEqual(1);
         wrapper.find('.section__body').simulate('scroll', {});
         // Check result
-        expect(onScroll).toBeCalledTimes(1);
+        expect(onScroll).toHaveBeenCalledTimes(1);
     });
 
     it('Test "hidden" property', () => {

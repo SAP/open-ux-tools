@@ -20,7 +20,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "cross-env FIORI_TOOLS_DISABLE_SECURE_STORE=true jest --ci --forceExit --detectOpenHandles --colors --testPathPattern=test/unit",
+        "test": "cross-env FIORI_TOOLS_DISABLE_SECURE_STORE=true jest --ci --forceExit --detectOpenHandles --colors --testPathPatterns=test/unit",
         "test-u": "cross-env FIORI_TOOLS_DISABLE_SECURE_STORE=true jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"

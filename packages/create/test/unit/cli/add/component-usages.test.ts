@@ -63,9 +63,9 @@ describe('add/component-usages', () => {
         addComponentUsagesCommand(command);
         await command.parseAsync(getArgv());
 
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalledWith('This command is not supported for CF projects.');
-        expect(generateChangeSpy).not.toBeCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for CF projects.');
+        expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 
     test('should result in error when the project is not adaptation project', async () => {
@@ -77,9 +77,9 @@ describe('add/component-usages', () => {
         addComponentUsagesCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalledWith('This command can only be used for an adaptation project');
-        expect(generateChangeSpy).not.toBeCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith('This command can only be used for an adaptation project');
+        expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 
     test('should pass succesfully and commit changes', async () => {
@@ -87,9 +87,9 @@ describe('add/component-usages', () => {
         addComponentUsagesCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(promptYUIQuestionsSpy).toBeCalled();
-        expect(generateChangeSpy).toBeCalled();
-        expect(traceSpy).not.toBeCalled();
+        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
+        expect(generateChangeSpy).toHaveBeenCalled();
+        expect(traceSpy).not.toHaveBeenCalled();
     });
 
     test('should not commit changes when called with simulate', async () => {
@@ -97,8 +97,8 @@ describe('add/component-usages', () => {
         addComponentUsagesCommand(command);
         await command.parseAsync(getArgv(appRoot, '--simulate'));
 
-        expect(promptYUIQuestionsSpy).toBeCalled();
-        expect(generateChangeSpy).toBeCalled();
-        expect(traceSpy).toBeCalled();
+        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
+        expect(generateChangeSpy).toHaveBeenCalled();
+        expect(traceSpy).toHaveBeenCalled();
     });
 });
