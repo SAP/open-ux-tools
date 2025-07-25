@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Fiori Elements template: feopTemplate Generate files for template: fefeop1 1`] = `
 Object {
@@ -202,7 +202,7 @@ server:
             /**
              * Gets the component startup parameters, setting preferredMode to 'create'.
              * @public
-             * @returns
+             * @returns 
              */
             getStartupParameters: function() {
                 return Promise.resolve({
@@ -3583,8 +3583,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -3619,7 +3619,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -3646,7 +3646,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -3668,7 +3668,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });

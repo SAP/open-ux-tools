@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Fiori freestyle template: listDetailTemplate Generate files for template: listdetail-advanced-ts 1`] = `
 Object {
@@ -467,7 +467,7 @@ export default class BaseController extends Controller {
      * Event handler for navigating back.
      * It there is a history entry we go one step back in the browser history
      * If not, it will replace the current entry of the browser history with the list route.
-     *
+     * 
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
@@ -524,7 +524,7 @@ export default class Detail extends BaseController {
         );
     }
 
-
+    
     /**
      * Updates the item count within the line item table's header
      * @param event an event containing the total number of items in the list
@@ -614,7 +614,7 @@ export default class Detail extends BaseController {
                 resourceBundle.getText(\\"shareSendEmailObjectSubject\\", [detailObject.SupplierID]));
             viewModel.setProperty(\\"/shareSendEmailMessage\\",
                 resourceBundle.getText(\\"shareSendEmailObjectMessage\\", [detailObject.CompanyName, detailObject.SupplierID, location.href]));
-        }
+        }    
     }
 
     protected onMetadataLoaded() {
@@ -776,7 +776,7 @@ export default class List extends BaseController {
         aFilter: [] as Filter[],
         aSearch: [] as Filter[]
     };
-
+        
     private groupFunctions: { [key:string]: (context: Context) => { key: string; text: string; }; } = {
         Phone: (context: Context) => {
             const iNumber = context.getProperty(\\"Phone\\");
@@ -919,7 +919,7 @@ export default class List extends BaseController {
      * @param oEvent the confirm event
      */
     public onConfirmViewSettingsDialog(event: Event) {
-
+        
         const filterItems = event.getParameter(\\"filterItems\\") as ViewSettingsItem[];
         const filters:  Filter[] = [];
         const captions: string[] = [];
@@ -957,7 +957,7 @@ export default class List extends BaseController {
             sortDescending: boolean;
         };
         const sorters = [];
-
+        
         // apply sorter to binding
         // (grouping comes before sorting)
         if (params.groupItem) {
@@ -965,7 +965,7 @@ export default class List extends BaseController {
             const fnGroup = this.groupFunctions[path];
             sorters.push(new Sorter(path, params.sortDescending, fnGroup));
         }
-
+        
         sorters.push(new Sorter(params.sortItem.getKey(), params.sortDescending));
         (this.list.getBinding(\\"items\\") as ListBinding).sort(sorters);
     }
@@ -1242,10 +1242,10 @@ listFilterName=Phone
 listFilterNone=none
 
 #XSEL: Option to filter the list by  if the value is less than 100
-listFilter1=<100
+listFilter1=<100 
 
 #XSEL: Option to filter the list by  if the value is greater than 100
-listFilter2=>100
+listFilter2=>100 
 
 #YMSG: Filter text that is displayed above the list
 listFilterBarText=Filtered by {0}
@@ -2325,8 +2325,8 @@ export function createDeviceModel () {
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -2361,7 +2361,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -2388,7 +2388,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -2410,7 +2410,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -3194,7 +3194,7 @@ export default class BaseController extends Controller {
      * Event handler for navigating back.
      * It there is a history entry we go one step back in the browser history
      * If not, it will replace the current entry of the browser history with the list route.
-     *
+     * 
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
@@ -3251,7 +3251,7 @@ export default class Detail extends BaseController {
         );
     }
 
-
+    
     /**
      * Updates the item count within the line item table's header
      * @param event an event containing the total number of items in the list
@@ -3341,7 +3341,7 @@ export default class Detail extends BaseController {
                 resourceBundle.getText(\\"shareSendEmailObjectSubject\\", [detailObject.SupplierID]));
             viewModel.setProperty(\\"/shareSendEmailMessage\\",
                 resourceBundle.getText(\\"shareSendEmailObjectMessage\\", [detailObject.CompanyName, detailObject.SupplierID, location.href]));
-        }
+        }    
     }
 
     protected onMetadataLoaded() {
@@ -3503,7 +3503,7 @@ export default class List extends BaseController {
         aFilter: [] as Filter[],
         aSearch: [] as Filter[]
     };
-
+        
     private groupFunctions: { [key:string]: (context: Context) => { key: string; text: string; }; } = {
         Phone: (context: Context) => {
             const iNumber = context.getProperty(\\"Phone\\");
@@ -3646,7 +3646,7 @@ export default class List extends BaseController {
      * @param oEvent the confirm event
      */
     public onConfirmViewSettingsDialog(event: Event) {
-
+        
         const filterItems = event.getParameter(\\"filterItems\\") as ViewSettingsItem[];
         const filters:  Filter[] = [];
         const captions: string[] = [];
@@ -3684,7 +3684,7 @@ export default class List extends BaseController {
             sortDescending: boolean;
         };
         const sorters = [];
-
+        
         // apply sorter to binding
         // (grouping comes before sorting)
         if (params.groupItem) {
@@ -3692,7 +3692,7 @@ export default class List extends BaseController {
             const fnGroup = this.groupFunctions[path];
             sorters.push(new Sorter(path, params.sortDescending, fnGroup));
         }
-
+        
         sorters.push(new Sorter(params.sortItem.getKey(), params.sortDescending));
         (this.list.getBinding(\\"items\\") as ListBinding).sort(sorters);
     }
@@ -3969,10 +3969,10 @@ listFilterName=Phone
 listFilterNone=none
 
 #XSEL: Option to filter the list by  if the value is less than 100
-listFilter1=<100
+listFilter1=<100 
 
 #XSEL: Option to filter the list by  if the value is greater than 100
-listFilter2=>100
+listFilter2=>100 
 
 #YMSG: Filter text that is displayed above the list
 listFilterBarText=Filtered by {0}
@@ -5052,8 +5052,8 @@ export function createDeviceModel () {
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -5088,7 +5088,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -5115,7 +5115,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -5137,7 +5137,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -5921,7 +5921,7 @@ export default class BaseController extends Controller {
      * Event handler for navigating back.
      * It there is a history entry we go one step back in the browser history
      * If not, it will replace the current entry of the browser history with the list route.
-     *
+     * 
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
@@ -5978,7 +5978,7 @@ export default class Detail extends BaseController {
         );
     }
 
-
+    
     /**
      * Updates the item count within the line item table's header
      * @param event an event containing the total number of items in the list
@@ -6068,7 +6068,7 @@ export default class Detail extends BaseController {
                 resourceBundle.getText(\\"shareSendEmailObjectSubject\\", [detailObject.SupplierID]));
             viewModel.setProperty(\\"/shareSendEmailMessage\\",
                 resourceBundle.getText(\\"shareSendEmailObjectMessage\\", [detailObject.CompanyName, detailObject.SupplierID, location.href]));
-        }
+        }    
     }
 
     protected onMetadataLoaded() {
@@ -6230,7 +6230,7 @@ export default class List extends BaseController {
         aFilter: [] as Filter[],
         aSearch: [] as Filter[]
     };
-
+        
     private groupFunctions: { [key:string]: (context: Context) => { key: string; text: string; }; } = {
         Phone: (context: Context) => {
             const iNumber = context.getProperty(\\"Phone\\");
@@ -6373,7 +6373,7 @@ export default class List extends BaseController {
      * @param oEvent the confirm event
      */
     public onConfirmViewSettingsDialog(event: Event) {
-
+        
         const filterItems = event.getParameter(\\"filterItems\\") as ViewSettingsItem[];
         const filters:  Filter[] = [];
         const captions: string[] = [];
@@ -6411,7 +6411,7 @@ export default class List extends BaseController {
             sortDescending: boolean;
         };
         const sorters = [];
-
+        
         // apply sorter to binding
         // (grouping comes before sorting)
         if (params.groupItem) {
@@ -6419,7 +6419,7 @@ export default class List extends BaseController {
             const fnGroup = this.groupFunctions[path];
             sorters.push(new Sorter(path, params.sortDescending, fnGroup));
         }
-
+        
         sorters.push(new Sorter(params.sortItem.getKey(), params.sortDescending));
         (this.list.getBinding(\\"items\\") as ListBinding).sort(sorters);
     }
@@ -6696,10 +6696,10 @@ listFilterName=Phone
 listFilterNone=none
 
 #XSEL: Option to filter the list by  if the value is less than 100
-listFilter1=<100
+listFilter1=<100 
 
 #XSEL: Option to filter the list by  if the value is greater than 100
-listFilter2=>100
+listFilter2=>100 
 
 #YMSG: Filter text that is displayed above the list
 listFilterBarText=Filtered by {0}
@@ -7779,8 +7779,8 @@ export function createDeviceModel () {
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -7815,7 +7815,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -7842,7 +7842,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -7864,7 +7864,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -8407,7 +8407,7 @@ server:
     \\"./model/models\\",
     \\"./controller/ListSelector\\",
     \\"./controller/ErrorHandler\\"
-],
+], 
 function (UIComponent, Device, models, ListSelector, ErrorHandler) {
     \\"use strict\\";
 
@@ -8643,7 +8643,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
             );
         },
 
-
+        
         /**
          * Updates the item count within the line item table's header
          * @param {object} oEvent an event containing the total number of items in the list
@@ -9032,7 +9032,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
          * @public
          */
         onConfirmViewSettingsDialog: function (oEvent) {
-
+            
             this._applySortGroup(oEvent);
         },
 
@@ -9046,7 +9046,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
                 sPath,
                 bDescending,
                 aSorters = [];
-
+            
             sPath = mParams.sortItem.getKey();
             bDescending = mParams.sortDescending;
             aSorters.push(new Sorter(sPath, bDescending));
@@ -10167,7 +10167,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     "contents": "sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
-],
+], 
 function (JSONModel, Device) {
     \\"use strict\\";
 
@@ -10422,8 +10422,8 @@ function (JSONModel, Device) {
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -10458,7 +10458,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -10485,7 +10485,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -10507,7 +10507,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -11233,7 +11233,7 @@ export default class BaseController extends Controller {
      * Event handler for navigating back.
      * It there is a history entry we go one step back in the browser history
      * If not, it will replace the current entry of the browser history with the list route.
-     *
+     * 
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
@@ -11290,7 +11290,7 @@ export default class Detail extends BaseController {
         );
     }
 
-
+    
     /**
      * Updates the item count within the line item table's header
      * @param event an event containing the total number of items in the list
@@ -11380,7 +11380,7 @@ export default class Detail extends BaseController {
                 resourceBundle.getText(\\"shareSendEmailObjectSubject\\", [detailObject.SupplierID]));
             viewModel.setProperty(\\"/shareSendEmailMessage\\",
                 resourceBundle.getText(\\"shareSendEmailObjectMessage\\", [detailObject.CompanyName, detailObject.SupplierID, location.href]));
-        }
+        }    
     }
 
     protected onMetadataLoaded() {
@@ -11667,7 +11667,7 @@ export default class List extends BaseController {
      * @param oEvent the confirm event
      */
     public onConfirmViewSettingsDialog(event: Event) {
-
+        
         this.applySortGroup(event);
     }
 
@@ -11682,7 +11682,7 @@ export default class List extends BaseController {
             sortDescending: boolean;
         };
         const sorters = [];
-
+        
         sorters.push(new Sorter(params.sortItem.getKey(), params.sortDescending));
         (this.list.getBinding(\\"items\\") as ListBinding).sort(sorters);
     }
@@ -13002,8 +13002,8 @@ export function createDeviceModel () {
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -13038,7 +13038,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -13065,7 +13065,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -13087,7 +13087,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
