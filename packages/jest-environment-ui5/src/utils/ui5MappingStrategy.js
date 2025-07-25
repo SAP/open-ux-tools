@@ -23,17 +23,27 @@ async function getFileMapFromUI5(graph, rootProject) {
         const sourcePath = dependency.getSourcePath();
         const namespace = dependency.getNamespace();
         const isRootProject = dependency.getName() === rootProject.getName();
+        const dependencyType = dependency.getType();
+        const isReusableLibrary = dependencyType === 'library' && !dependency.isFrameworkProject();
         ui5VersionInfo.libraries.push({
             name: dependency.getName(),
             version: dependency.getVersion(),
             buildTimestamp: '202412051614',
             scmRevision: ''
         });
-        let resources = await reader.byGlob(`**/*.{ts,tsx,js,xml,properties,json}`);
+        const resources = await reader.byGlob(`**/*.{ts,tsx,js,xml,properties,json}`);
 
         for (const resource of resources) {
             const resourcePath = resource.getPath().replace(/\/resources\/|\/test-resources\//g, '');
-            const itemPath = path.join(sourcePath, resourcePath);
+
+            let itemPath = '';
+            if (isReusableLibrary) {
+                // Reusable library resources are imported with the namespace,
+                // so we need to adjust the path accordingly.
+                itemPath = path.join(sourcePath, resourcePath.replace(namespace, ''));
+            } else {
+                itemPath = path.join(sourcePath, resourcePath);
+            }
 
             let targetPath = resourcePath.replace(/\\/g, '/');
             if (targetPath.endsWith('.js')) {
@@ -41,7 +51,7 @@ async function getFileMapFromUI5(graph, rootProject) {
                 ui5PathMapping[targetPath + '.js'] = itemPath;
             }
 
-            if (isRootProject) {
+            if (isRootProject || isReusableLibrary) {
                 if (targetPath.endsWith('.ts')) {
                     targetPath = targetPath.replace('.ts', '');
                     ui5PathMapping[targetPath + '.ts'] = itemPath;
