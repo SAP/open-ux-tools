@@ -61,7 +61,7 @@
         "@types/yeoman-generator": "5.2.11",
         "@types/yeoman-environment": "2.10.11",
         "inquirer-autocomplete-prompt": "2.0.1",
-        "@types/inquirer-autocomplete-prompt": "2.0.1",
+        "@types/inquirer-autocomplete-prompt": "2.0.2",
         "@types/yeoman-test": "4.0.6",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@types/fs-extra": "9.0.13",
