@@ -1,13 +1,10 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import type { AnnotationDataSourceResponse } from '../../api-handler';
 import { getDataSourceAnnotationFileMap } from '../../api-handler';
-import {
-    NESTED_QUICK_ACTION_KIND,
-    NestedQuickAction,
-    NestedQuickActionChild
-} from '@sap-ux-private/control-property-editor-common';
+import type { NestedQuickAction, NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
+import { NESTED_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-editor-common';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { QuickActionDefinitionBase } from '../quick-action-base';
@@ -36,10 +33,17 @@ export class AddNewAnnotationFile
     readonly type = ADD_NEW_ANNOTATION_FILE;
     readonly forceRefreshAfterExecution = true;
     public isApplicable = true;
+    /**
+     *
+     */
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
     private annotationDataSourceData: AnnotationDataSourceResponse;
+    /**
+     *
+     * @param context
+     */
     constructor(protected readonly context: QuickActionContext) {
         super(ADD_NEW_ANNOTATION_FILE, NESTED_QUICK_ACTION_KIND, '', context, [DIALOG_ENABLEMENT_VALIDATOR]);
     }
@@ -81,6 +85,9 @@ export class AddNewAnnotationFile
             }
         }
     }
+    /**
+     *
+     */
     protected get textKey() {
         let result = ADD_NEW_ANNOTATION_FILE_TITLE;
         const dataSourceIds = Object.keys(this.annotationDataSourceData.annotationDataSourceMap);
@@ -92,6 +99,10 @@ export class AddNewAnnotationFile
         }
         return result;
     }
+    /**
+     *
+     * @param path
+     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { annotationDataSourceMap, isRunningInBAS } = this.annotationDataSourceData;
         const appType = getApplicationType(this.context.rta.getRootControlInstance().getManifest());
@@ -160,6 +171,7 @@ export class AddNewAnnotationFile
 
     /**
      * Prepares nested quick action object
+     *
      * @returns action instance
      */
     getActionObject(): NestedQuickAction {

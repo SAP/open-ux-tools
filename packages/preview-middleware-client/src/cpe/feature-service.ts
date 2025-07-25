@@ -1,3 +1,6 @@
+/**
+ *
+ */
 export class FeatureService {
     private static features: Record<string, boolean> = {};
 

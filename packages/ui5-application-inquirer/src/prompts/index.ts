@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 // Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
 import os from 'os';
 import { join } from 'path';

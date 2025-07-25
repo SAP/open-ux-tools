@@ -39,7 +39,7 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
     const choices: ListChoiceOptions<ServiceAnswer>[] = [];
     // Provide additional service information in trace mode (YUI only)
     let isLogTrace = false;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Only specific loggers have this method
+
     if (typeof (LoggerHelper.logger as any).getLogLevel === 'function') {
         isLogTrace = (LoggerHelper.logger as any).getLogLevel() === 'trace';
     }

@@ -43,7 +43,11 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @param options - optional options, see below
      * @param options.fs - optional `mem-fs-editor` instance
      */
-    constructor(private _project: Project, private appId: string, private options?: ApplicationAccessOptions) {}
+    constructor(
+        private _project: Project,
+        private appId: string,
+        private options?: ApplicationAccessOptions
+    ) {}
 
     /**
      * Returns the application structure.
@@ -241,7 +245,10 @@ class ProjectAccessImp implements ProjectAccess {
      * @param _project - Project structure
      * @param options - optional options, like logger
      */
-    constructor(private _project: Project, private options?: ProjectAccessOptions) {}
+    constructor(
+        private _project: Project,
+        private options?: ProjectAccessOptions
+    ) {}
 
     /**
      * Returns list of application IDs.

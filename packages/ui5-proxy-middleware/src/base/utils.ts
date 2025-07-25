@@ -14,6 +14,7 @@ import {
 } from './constants';
 import type { Url } from 'url';
 import { t } from '../i18n';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 
 /**

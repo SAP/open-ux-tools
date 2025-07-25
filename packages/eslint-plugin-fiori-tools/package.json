@@ -17,16 +17,18 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "devDependencies": {
-        "eslint": "8.57.0"
+        "eslint": "^9"
     },
     "dependencies": {
-        "eslint-plugin-fiori-custom": "^2.6.7",
+        "@eslint/eslintrc": "^3.3.1",
+        "@eslint/js": "^9.23.0",
+        "eslint-plugin-fiori-custom": "file:/Users/I058153/git/SAPDevelop/eslint-plugin-fiori-custom",
         "yaml": "2.2.2"
     },
     "peerDependencies": {
-        "eslint": ">=8",
-        "@typescript-eslint/eslint-plugin": ">=7.1.1",
-        "@typescript-eslint/parser": ">=5.62.0"
+        "eslint": "^9",
+        "@typescript-eslint/eslint-plugin": "^8.27.0",
+        "@typescript-eslint/parser": "^8.27.0"
     },
     "engines": {
         "node": ">=20.x"

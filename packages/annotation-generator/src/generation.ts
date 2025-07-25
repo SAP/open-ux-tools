@@ -325,7 +325,7 @@ function getDataFieldRecordCollection(context: Context, isListReport = false): A
             type === 'Edm.Guid' ||
             !type?.startsWith('Edm') ||
             // can't use nullish coalescing for boolean values
-            // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+
             mdElement?.isCollectionValued ||
             // for CDS: no fields from sap.cds.common
             ((project.projectType === 'CAPJava' || project.projectType === 'CAPNodejs') &&

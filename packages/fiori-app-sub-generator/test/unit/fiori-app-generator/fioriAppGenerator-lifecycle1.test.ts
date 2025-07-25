@@ -14,8 +14,8 @@ import yeomanTest from 'yeoman-test';
 import { FioriAppGenerator, type FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
 import { promptOdataServiceAnswers, promptUI5ApplicationAnswers } from '../../../src/fiori-app-generator/prompting';
 import { addDeployGen, addFlpGen } from '../../../src/fiori-app-generator/subgenHelpers';
-import type { Project } from '../../../src/types';
-import {
+import type {
+    Project,
     FIORI_STEPS,
     FloorplanFE,
     FloorplanFF,

@@ -1,5 +1,7 @@
 import ZipFile from 'adm-zip';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 
@@ -31,7 +33,7 @@ import {
 import { addCustomSectionFragment } from './descriptor-change-handler';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
-    // eslint-disable-next-line no-var
+
     var __SAP_UX_MANIFEST_SYNC_REQUIRED__: boolean | undefined;
 }
 

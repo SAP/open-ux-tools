@@ -1,18 +1,18 @@
-import Dialog from 'sap/m/Dialog';
-import Input from 'sap/m/Input';
-import Event from 'sap/ui/base/Event';
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import UI5Element from 'sap/ui/core/Element';
+import type Dialog from 'sap/m/Dialog';
+import type Input from 'sap/m/Input';
+import type Event from 'sap/ui/base/Event';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type UI5Element from 'sap/ui/core/Element';
 import { ValueState } from 'sap/ui/core/library';
 import Controller from 'sap/ui/core/mvc/Controller';
-import JSONModel from 'sap/ui/model/json/JSONModel';
-import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type CommandExecutor from '../command-executor';
+import type JSONModel from 'sap/ui/model/json/JSONModel';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import MessageToast from 'sap/m/MessageToast';
-import CommandExecutor from '../command-executor';
 import { checkForExistingChange } from '../utils';
 import type { Fragments } from '../api-handler';
 import { getError } from '../../utils/error';
-import ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
+import type ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
 import { getControlById } from '../../utils/core';
 import ControlUtils from '../control-utils';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
@@ -22,6 +22,9 @@ import { reportTelemetry } from '@sap-ux-private/control-property-editor-common'
 import Log from 'sap/base/Log';
 
 type BaseDialogModel = JSONModel & {
+    /**
+     *
+     */
     getProperty(sPath: '/fragmentList'): Fragments;
 };
 
@@ -85,6 +88,7 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
 
     /**
      * Method is used in add fragment dialog controllers to get current control metadata which are needed on the dialog
+     *
      * @returns control metadata and target aggregations
      */
     protected getControlMetadata(): { controlMetadata: ManagedObjectMetadata; targetAggregation: string[] } {

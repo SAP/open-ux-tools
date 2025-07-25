@@ -2,7 +2,7 @@ import { sapCoreMock } from 'mock/window';
 import { OutlineService } from '../../../../src/cpe/outline/service';
 import * as nodes from '../../../../src/cpe/outline/nodes';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
-import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import Log from 'sap/base/Log';
 import type { ChangeService } from '../../../../src/cpe/changes/service';

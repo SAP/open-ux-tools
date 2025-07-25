@@ -149,6 +149,7 @@ describe('Test credentials prompts', () => {
         expect(await (passwordPrompt?.validate as Function)('pword01', { [systemUsernamePromptName]: username })).toBe(
             'Could not authenticate with provided credentials'
         );
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         expect(PromptState.odataService.connectedSystem).toBeUndefined;
     });
 

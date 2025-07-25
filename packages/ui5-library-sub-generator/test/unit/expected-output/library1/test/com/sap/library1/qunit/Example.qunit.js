@@ -1,65 +1,67 @@
 /*global QUnit */
-// eslint-disable-next-line no-undef
-sap.ui.define([
-	"sap/ui/qunit/QUnitUtils",
-	"sap/ui/qunit/utils/createAndAppendDiv",
-	"com/sap/library1/library",
-	"com/sap/library1/Example"
-], function(qutils, createAndAppendDiv, library, Example) {
-	"use strict";
 
-	// refer to library types
-	var ExampleColor = library.ExampleColor;
+sap.ui.define(
+    [
+        'sap/ui/qunit/QUnitUtils',
+        'sap/ui/qunit/utils/createAndAppendDiv',
+        'com/sap/library1/library',
+        'com/sap/library1/Example'
+    ],
+    function (qutils, createAndAppendDiv, library, Example) {
+        'use strict';
 
-	// prepare DOM
-	createAndAppendDiv("uiArea1");
+        // refer to library types
+        var ExampleColor = library.ExampleColor;
 
-	// module for basic checks
-	QUnit.module("Example Tests");
+        // prepare DOM
+        createAndAppendDiv('uiArea1');
 
-	// example sync test
-	QUnit.test("Sync", function(assert) {
-		assert.expect(1);
-		assert.ok(true, "ok");
-	});
+        // module for basic checks
+        QUnit.module('Example Tests');
 
-	// example async test
-	QUnit.test("Async", function(assert) {
-		assert.expect(1);
-		return new Promise(function(resolve, reject) {
-			assert.ok(true, "ok");
-			resolve();
-		});
-	})
+        // example sync test
+        QUnit.test('Sync', function (assert) {
+            assert.expect(1);
+            assert.ok(true, 'ok');
+        });
 
-	// module for basic checks
-	QUnit.module("Basic Control Checks");
+        // example async test
+        QUnit.test('Async', function (assert) {
+            assert.expect(1);
+            return new Promise(function (resolve, reject) {
+                assert.ok(true, 'ok');
+                resolve();
+            });
+        });
 
-	// some basic control checks
-	QUnit.test("Test get properties", function(assert) {
-		assert.expect(2);
-		var oExample = new Example({
-			text: "Example"
-		});
-		assert.equal(oExample.getText(), "Example", "Check text equals 'Example'");
-		assert.equal(oExample.getColor(), ExampleColor.Default, "Check color equals 'Default'");
-	});
+        // module for basic checks
+        QUnit.module('Basic Control Checks');
 
-	// some basic eventing check
-	QUnit.test("Test click event", function(assert) {
-		assert.expect(1);
-		var oExample = new Example("example", {
-			text: "Example",
-			press: function() {
-				assert.ok(true, "Event has been fired!")
-			}
-		}).placeAt("uiArea1");
-		return new Promise(function(resolve, reject) {
-			setTimeout(function() {
-				qutils.triggerMouseEvent("example", "click", 1, 1);
-        resolve();
-			}, 100);
-		});
-	});
+        // some basic control checks
+        QUnit.test('Test get properties', function (assert) {
+            assert.expect(2);
+            var oExample = new Example({
+                text: 'Example'
+            });
+            assert.equal(oExample.getText(), 'Example', "Check text equals 'Example'");
+            assert.equal(oExample.getColor(), ExampleColor.Default, "Check color equals 'Default'");
+        });
 
-});
+        // some basic eventing check
+        QUnit.test('Test click event', function (assert) {
+            assert.expect(1);
+            var oExample = new Example('example', {
+                text: 'Example',
+                press: function () {
+                    assert.ok(true, 'Event has been fired!');
+                }
+            }).placeAt('uiArea1');
+            return new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    qutils.triggerMouseEvent('example', 'click', 1, 1);
+                    resolve();
+                }, 100);
+            });
+        });
+    }
+);
