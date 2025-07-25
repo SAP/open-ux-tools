@@ -1,22 +1,25 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import type { AnnotationDataSourceResponse } from '../../api-handler';
-import { getDataSourceAnnotationFileMap } from '../../api-handler';
 import {
+    MessageBarType,
     NESTED_QUICK_ACTION_KIND,
     NestedQuickAction,
     NestedQuickActionChild
 } from '@sap-ux-private/control-property-editor-common';
-import { DialogFactory, DialogNames } from '../../dialog-factory';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import { QuickActionDefinitionBase } from '../quick-action-base';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
-import { getV2AppComponent } from '../fe-v2/utils';
-import { getV4AppComponent } from '../../../utils/fe-v4';
+import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getApplicationType } from '../../../utils/application';
+import { getError } from '../../../utils/error';
+import { getV4AppComponent } from '../../../utils/fe-v4';
+import { sendInfoCenterMessage } from '../../../utils/info-center-message';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
+import type { AnnotationDataSourceResponse } from '../../api-handler';
+import { getDataSourceAnnotationFileMap } from '../../api-handler';
+import { DialogFactory, DialogNames } from '../../dialog-factory';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import { getV2AppComponent } from '../fe-v2/utils';
+import { QuickActionDefinitionBase } from '../quick-action-base';
 
 export const ADD_NEW_ANNOTATION_FILE = 'add-new-annotation-file';
 const ADD_NEW_ANNOTATION_FILE_TITLE = 'QUICK_ACTION_ADD_NEW_ANNOTATION_FILE';
@@ -50,7 +53,17 @@ export class AddNewAnnotationFile
             this.isApplicable = false;
             return;
         }
-        this.annotationDataSourceData = await getDataSourceAnnotationFileMap();
+        try {
+            this.annotationDataSourceData = await getDataSourceAnnotationFileMap();
+        } catch (e) {
+            const error = getError(e);
+            await sendInfoCenterMessage({
+                title: { key: 'ADP_GET_ANNOTATION_ERROR_TITLE' },
+                description: error.message,
+                type: MessageBarType.error
+            });
+            throw error;
+        }
         const { annotationDataSourceMap } = this.annotationDataSourceData;
         if (!Object.keys(this.annotationDataSourceData.annotationDataSourceMap).length) {
             throw new Error('No data sources found in the manifest');

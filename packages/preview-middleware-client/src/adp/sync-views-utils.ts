@@ -1,12 +1,11 @@
-import type DTElement from 'sap/ui/dt/Element';
-import Element from 'sap/ui/core/Element';
 import Log from 'sap/base/Log';
-import { showMessage } from '@sap-ux-private/control-property-editor-common';
+import Element from 'sap/ui/core/Element';
+import type DTElement from 'sap/ui/dt/Element';
 
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import { getError } from '../utils/error';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
-import { getTextBundle } from '../i18n';
-import { CommunicationService } from '../cpe/communication-service';
 
 const syncViews = new Set<string>();
 let warningShown = false;
@@ -54,13 +53,12 @@ export async function showSyncViewsWarning(): Promise<void> {
     }
 
     warningShown = true;
-    const bundle = await getTextBundle();
-    CommunicationService.sendAction(
-        showMessage({
-            message: bundle.getText('ADP_SYNC_VIEWS_MESSAGE'),
-            shouldHideIframe: false
-        })
-    );
+
+    await sendInfoCenterMessage({
+        title: { key: 'ADP_SYNC_VIEWS_TITLE' },
+        description: { key: 'ADP_SYNC_VIEWS_MESSAGE' },
+        type: MessageBarType.warning
+    });
 }
 
 /**
