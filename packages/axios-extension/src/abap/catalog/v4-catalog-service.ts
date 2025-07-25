@@ -109,7 +109,7 @@ export class V4CatalogService extends CatalogService {
             numPageRequests++;
             serviceGroups.push(...serviceGroupResponseOdata.value);
         }
-        this.logger.debug(`Fetched ${serviceGroups.length} service groups in ${numPageRequests} requests.`);
+        this.logger.log(`Fetched ${serviceGroups.length} service groups in ${numPageRequests} requests.`);
 
         // check if the service responded with an odata error
         if (ODataRequestError.containsError(serviceGroups)) {
@@ -180,7 +180,7 @@ export class V4CatalogService extends CatalogService {
                 serviceGroups.push(...pageData.value);
             });
         }
-        this.logger.debug(`Fetched ${serviceGroups.length} service groups in ${numPageRequests} requests.`);
+        this.logger.log(`Fetched ${serviceGroups.length} service groups in ${numPageRequests} requests.`);
         // check if the service responded with an odata error
         if (ODataRequestError.containsError(serviceGroups)) {
             throw new ODataRequestError(serviceGroups);
