@@ -47,7 +47,7 @@ describe('Test entity prompts', () => {
         const errorLogSpy = jest.spyOn(LoggerHelper.logger, 'error');
         questions = getEntitySelectionQuestions('{}', 'lrop');
         expect(questions).toEqual([]);
-        expect(errorLogSpy).toBeCalledWith(expect.stringMatching('Unable to parse entities'));
+        expect(errorLogSpy).toHaveBeenCalledWith(expect.stringMatching('Unable to parse entities'));
     });
 
     test('getEntityQuestions should return prompts based options specified', () => {
@@ -199,7 +199,7 @@ describe('Test entity prompts', () => {
         PromptState.isYUI = false;
         questions = getEntitySelectionQuestions(metadataV2NoEntities, 'worklist');
         mainEntityPrompt = questions.find((question) => question.name === EntityPromptNames.mainEntity) as ListQuestion;
-        expect(() => (mainEntityPrompt.validate as Function)()).toThrowError(
+        expect(() => (mainEntityPrompt.validate as Function)()).toThrow(
             'Exiting generation. Exit: The template and service selected have no relevant entities that you can use.'
         );
     });

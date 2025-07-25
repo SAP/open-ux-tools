@@ -73,9 +73,9 @@ describe('Test getModule()', () => {
 
         // Result check
         expect(module.exec()).toBe('works');
-        expect(rmSpy).toBeCalledWith(modulePath, { recursive: true });
-        expect(mkdirSpy).toBeCalledWith(modulePath, { recursive: true });
-        expect(npmCommandSpy).toBeCalledWith(['install', '--prefix', modulePath, '@scope/module@1.2.3'], {
+        expect(rmSpy).toHaveBeenCalledWith(modulePath, { recursive: true });
+        expect(mkdirSpy).toHaveBeenCalledWith(modulePath, { recursive: true });
+        expect(npmCommandSpy).toHaveBeenCalledWith(['install', '--prefix', modulePath, '@scope/module@1.2.3'], {
             'cwd': modulePath,
             logger
         });
@@ -92,7 +92,7 @@ describe('Test getModule()', () => {
         const module = await getModule<Module>('@scope/module', '1.2.3', { logger });
 
         expect(module.exec()).toBe('works');
-        expect(npmCommandSpy).toBeCalledWith(['install', '--prefix', modulePath, '@scope/module@1.2.3'], {
+        expect(npmCommandSpy).toHaveBeenCalledWith(['install', '--prefix', modulePath, '@scope/module@1.2.3'], {
             'cwd': modulePath,
             logger
         });
@@ -110,7 +110,7 @@ describe('Test getModule()', () => {
         const module = await getModule<Module>('@scope/module', '1.2.3', { logger });
 
         expect(module.exec()).toBe('works');
-        expect(npmCommandSpy).toBeCalledWith(['ci'], {
+        expect(npmCommandSpy).toHaveBeenCalledWith(['ci'], {
             'cwd': modulePath,
             logger
         });
@@ -131,7 +131,7 @@ describe('Test deleteModule()', () => {
         await deleteModule('@scope/module', '1.2.3');
 
         // Result check
-        expect(rmSpy).toBeCalledWith(modulePath, { recursive: true });
+        expect(rmSpy).toHaveBeenCalledWith(modulePath, { recursive: true });
     });
 
     test('Delete non existing module (mocked)', async () => {
@@ -142,6 +142,6 @@ describe('Test deleteModule()', () => {
         await deleteModule('@scope/module', '1.2.4');
 
         // Result check
-        expect(rmSpy).not.toBeCalled();
+        expect(rmSpy).not.toHaveBeenCalled();
     });
 });

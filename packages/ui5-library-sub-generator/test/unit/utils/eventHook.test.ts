@@ -16,7 +16,7 @@ describe('runPostLibGenHook', () => {
             path: generatedProjectRootPath,
             vscodeInstance: getVscodeInstance as unknown as VSCodeInstance
         });
-        expect(mockExecuteCommand).toBeCalledWith(POST_LIB_GEN_COMMAND, {
+        expect(mockExecuteCommand).toHaveBeenCalledWith(POST_LIB_GEN_COMMAND, {
             fsPath: generatedProjectRootPath
         });
     });
@@ -32,7 +32,7 @@ describe('runPostLibGenHook', () => {
                 path: generatedProjectRootPath,
                 vscodeInstance: getVscodeInstance as unknown as VSCodeInstance
             })
-        ).resolves.not.toThrowError();
+        ).resolves.not.toThrow();
     });
 
     it('if no vscode instance is passed in, nothing happens', async () => {
@@ -42,6 +42,6 @@ describe('runPostLibGenHook', () => {
             runPostLibGenHook({
                 path: generatedProjectRootPath
             })
-        ).resolves.not.toThrowError();
+        ).resolves.not.toThrow();
     });
 });

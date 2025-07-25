@@ -14,6 +14,6 @@ describe('createForAbapCloud', () => {
         expect(
             createForAbapOnCloud({ environment: AbapCloudEnvironment.EmbeddedSteampunk, url: 'someUrl.example' })
         ).toBeInstanceOf(AbapServiceProvider);
-        expect(reentraceTicketInterceptorSpy).toBeCalledTimes(1);
+        expect(reentraceTicketInterceptorSpy).toHaveBeenCalledTimes(1);
     });
 });

@@ -21,10 +21,10 @@ describe('cli/config', () => {
             expect(await getDeploymentConfig(join(fixture, 'ui5-deploy.yaml'))).toBeDefined();
         });
         test('invalid config', async () => {
-            await expect(getDeploymentConfig(join(fixture, 'ui5.yaml'))).rejects.toThrowError();
+            await expect(getDeploymentConfig(join(fixture, 'ui5.yaml'))).rejects.toThrow();
         });
         test('invalid path', async () => {
-            await expect(getDeploymentConfig(join(fixture, 'ui5-invalid.yaml'))).rejects.toThrowError();
+            await expect(getDeploymentConfig(join(fixture, 'ui5-invalid.yaml'))).rejects.toThrow();
         });
     });
 
