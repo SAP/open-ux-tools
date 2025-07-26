@@ -77,7 +77,7 @@
         "rimraf": "5.0.5",
         "unionfs": "4.4.0",
         "yeoman-test": "6.3.0",
-        "yo": "4"
+        "yo": "4.3.1"
     },
     "engines": {
         "node": ">=20.x"
