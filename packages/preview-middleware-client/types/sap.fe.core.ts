@@ -10,8 +10,15 @@ declare module 'sap/fe/core/TemplateComponent' {
     import type AppComponent from 'sap/fe/core/AppComponent';
     interface TemplateComponent extends UIComponent {
         getAppComponent(): AppComponent;
+        getEntitySet: () => string;
+        getContextPath: () => string;
     }
 
     export default TemplateComponent;
 }
 
+declare module 'sap/fe/core/sap/VariantManagement' {
+    type VariantManagement = 'Control' | 'None' | 'Page';
+
+    export default VariantManagement;
+}
