@@ -9,6 +9,7 @@ import { convertToVirtualPreview, simulatePrompt, includeTestRunnersPrompt } fro
  */
 export function addConvertPreviewCommand(cmd: Command): void {
     cmd.command('preview-config [path]')
+        .description('Convert an app to use virtual preview endpoints and update configuration files.')
         .option('-s, --simulate <boolean>', 'simulate only do not write')
         .option('-v, --verbose', 'show verbose information')
         .option('-t, --tests <boolean>', 'also convert test suite and test runners')

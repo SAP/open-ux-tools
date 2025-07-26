@@ -15,6 +15,7 @@ import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
  */
 export function addAddHtmlFilesCmd(cmd: Command): void {
     cmd.command('html [path]')
+        .description('Add HTML files for local preview and testing, using the preview middleware configuration.')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')
