@@ -37,7 +37,7 @@
     "devDependencies": {
         "@types/pluralize": "0.0.30",
         "@types/qs": "6.9.1",
-        "fast-check": "2.19.0",
+        "fast-check": "2.25.0",
         "jest-extended": "6.0.0",
         "memfs": "3.3.0",
         "unionfs": "4.4.0"
