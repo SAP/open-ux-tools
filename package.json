@@ -73,7 +73,9 @@
     "pnpm": {
         "overrides": {
             "router>path-to-regexp": "0.1.12",
-            "@storybook/manager-api>store2": "2.14.4"
+            "@storybook/manager-api>store2": "2.14.4",
+            "@sap/bas-sdk>axios": "1.11.0",
+            "@sap/service-provider-apis>axios": "1.11.0"
         }
     }
 }
