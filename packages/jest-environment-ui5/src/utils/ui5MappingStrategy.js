@@ -3,6 +3,39 @@ let pathMappingFn = null;
 let ui5VersionCache = null;
 
 /**
+ * Processes the resources of a UI5 project and updates the path mapping.
+ * @param resources The resources to process.
+ * @param ui5PathMapping The mapping object to update.
+ * @param isRootProject Whether the project is the root project.
+ * @param isReusableLibrary Whether the project is a reusable library.
+ * @param namespace The namespace of the project.
+ */
+function processDependencyResources(resources, ui5PathMapping, isRootProject, isReusableLibrary, namespace) {
+    for (const resource of resources) {
+        const resourcePath = resource.getPath().replace(/\/resources\/|\/test-resources\//g, '');
+        const itemPath = resource.getSourceMetadata().fsPath;
+
+        let targetPath = resourcePath.replace(/\\/g, '/');
+        if (targetPath.endsWith('.js')) {
+            targetPath = targetPath.replace('.js', '');
+            ui5PathMapping[targetPath + '.js'] = itemPath;
+        }
+
+        if (isRootProject || isReusableLibrary) {
+            if (targetPath.endsWith('.ts')) {
+                targetPath = targetPath.replace('.ts', '');
+                ui5PathMapping[targetPath + '.ts'] = itemPath;
+            }
+            if (!targetPath.startsWith(namespace)) {
+                targetPath = path.posix.join(namespace, targetPath);
+            }
+        }
+
+        ui5PathMapping[targetPath] = itemPath;
+    }
+}
+
+/**
  * Retrieves the file map from the UI5 project.
  * @param {object} graph  The graph object.
  * @param {object} rootProject The root project.
@@ -21,8 +54,9 @@ async function getFileMapFromUI5(graph, rootProject) {
     await graph.traverseBreadthFirst(async ({ project: dependency }) => {
         const reader = dependency.getReader({ style: 'runtime' });
         if (dependency.getType() !== 'module') {
-            const sourcePath = dependency.getSourcePath();
             const namespace = dependency.getNamespace();
+            const dependencyType = dependency.getType();
+            const isReusableLibrary = dependencyType === 'library' && !dependency.isFrameworkProject();
             const isRootProject = dependency.getName() === rootProject.getName();
             ui5VersionInfo.libraries.push({
                 name: dependency.getName(),
@@ -31,29 +65,7 @@ async function getFileMapFromUI5(graph, rootProject) {
                 scmRevision: ''
             });
             let resources = await reader.byGlob(`**/*.{ts,tsx,js,xml,properties,json}`);
-
-            for (const resource of resources) {
-                const resourcePath = resource.getPath().replace(/\/resources\/|\/test-resources\//g, '');
-                const itemPath = path.join(sourcePath, resourcePath);
-
-                let targetPath = resourcePath.replace(/\\/g, '/');
-                if (targetPath.endsWith('.js')) {
-                    targetPath = targetPath.replace('.js', '');
-                    ui5PathMapping[targetPath + '.js'] = itemPath;
-                }
-
-                if (isRootProject) {
-                    if (targetPath.endsWith('.ts')) {
-                        targetPath = targetPath.replace('.ts', '');
-                        ui5PathMapping[targetPath + '.ts'] = itemPath;
-                    }
-                    if (!targetPath.startsWith(namespace)) {
-                        targetPath = path.posix.join(namespace, targetPath);
-                    }
-                }
-
-                ui5PathMapping[targetPath] = itemPath;
-            }
+            processDependencyResources(resources, ui5PathMapping, isRootProject, isReusableLibrary, namespace);
         }
     });
     return { ui5PathMapping, ui5VersionInfo };
