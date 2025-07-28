@@ -103,10 +103,10 @@ describe('Should generate annotations correctly for FEOP projects', () => {
             }
         };
         await generate(curTestOutPath, fioriElementsApp, fs);
-        expect(generateAnnotations).toBeCalledTimes(1);
+        expect(generateAnnotations).toHaveBeenCalledTimes(1);
 
         // ensure addLineItems is false for feop project
-        expect(generateAnnotations).toBeCalledWith(
+        expect(generateAnnotations).toHaveBeenCalledWith(
             fs,
             {
                 serviceName: sampleCapService.serviceName,
@@ -131,6 +131,6 @@ describe('Should generate annotations correctly for FEOP projects', () => {
             }
         };
         await generate(curTestOutPath, fioriElementsApp, fs);
-        expect(generateAnnotations).not.toBeCalled();
+        expect(generateAnnotations).not.toHaveBeenCalled();
     });
 });

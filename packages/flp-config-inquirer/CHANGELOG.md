@@ -1,5 +1,25 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [e25ee86]
+    -   @sap-ux/adp-tooling@0.15.6
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [d4a45ae]
+    -   @sap-ux/adp-tooling@0.15.5
+
+## 0.4.0
+
+### Minor Changes
+
+-   089b56f: updates extension types and extends prompt options in sub gens
+
 ## 0.3.49
 
 ### Patch Changes

@@ -20,7 +20,7 @@ describe('Validate', () => {
             })
         } as FioriElementsApp<LROPSettings>;
 
-        expect(() => validateApp(feApp)).not.toThrowError();
+        expect(() => validateApp(feApp)).not.toThrow();
     });
 
     test('Invalid ODataVersion for template type', () => {
@@ -36,7 +36,7 @@ describe('Validate', () => {
             })
         } as FioriElementsApp<LROPSettings>;
 
-        expect(() => validateApp(feApp)).toThrowError(
+        expect(() => validateApp(feApp)).toThrow(
             t('error.unsupportedOdataVersion', {
                 serviceVersion: feApp.service.version,
                 templateType: feApp.template.type
@@ -66,7 +66,7 @@ describe('Validate', () => {
             )
         } as FioriElementsApp<LROPSettings>;
 
-        expect(() => validateApp(feApp)).toThrowError(
+        expect(() => validateApp(feApp)).toThrow(
             t('error.invalidUI5Version', {
                 versionProperty: 'version',
                 ui5Version: feApp.ui5?.version
@@ -80,7 +80,7 @@ describe('Validate', () => {
             }
         });
 
-        expect(() => validateApp(feApp)).toThrowError(
+        expect(() => validateApp(feApp)).toThrow(
             t('error.invalidUI5Version', {
                 versionProperty: 'minUI5Version',
                 ui5Version: feApp.ui5?.minUI5Version
@@ -110,7 +110,7 @@ describe('Validate', () => {
             )
         } as FioriElementsApp<ALPSettings>;
 
-        expect(() => validateApp(feApp)).toThrowError(
+        expect(() => validateApp(feApp)).toThrow(
             t('error.unsupportedUI5Version', {
                 versionProperty: 'version',
                 ui5Version: feApp.ui5?.version,
@@ -143,7 +143,7 @@ describe('Validate', () => {
             )
         } as FioriElementsApp<ALPSettings>;
 
-        expect(() => validateApp(feApp)).toThrowError(
+        expect(() => validateApp(feApp)).toThrow(
             t('error.unsupportedUI5Version', {
                 versionProperty: 'minUI5Version',
                 ui5Version: feApp.ui5?.minUI5Version,
@@ -174,7 +174,7 @@ describe('Validate', () => {
             )
         } as FioriElementsApp<ALPSettings>;
 
-        expect(() => validateRequiredProperties(feApp)).toThrowError(
+        expect(() => validateRequiredProperties(feApp)).toThrow(
             t('error.missingRequiredProperty', {
                 propertyName: 'FioriElementsApp.service'
             })

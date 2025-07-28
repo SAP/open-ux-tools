@@ -2,6 +2,7 @@ import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { VSCodeInstance, TelemetryData, LogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { ManifestNamespace } from '@sap-ux/project-access';
+import type { FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
 
 export interface FlpConfigOptions extends Generator.GeneratorOptions {
     /**
@@ -53,4 +54,8 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
      * Logger instance
      */
     logWrapper?: LogWrapper;
+    /**
+     * FLP configuration inqurier prompt options
+     */
+    inquirerPromptOptions?: FLPConfigPromptOptions;
 }

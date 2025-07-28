@@ -1,4 +1,4 @@
-import type { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
+import type { YUIQuestion, GuiOptions, PromptSeverityMessage, CommonPromptOptions } from '@sap-ux/inquirer-common';
 import type { ListQuestionOptions } from 'inquirer';
 import type { InboundContent } from '@sap-ux/axios-extension';
 
@@ -141,18 +141,24 @@ type FLPConfigCommonInquirerOptions = {
     silentOverwrite?: boolean;
 };
 
+type PromptOptionMap = {
+    [promptNames.inboundId]: InboundIdPromptOptions;
+    [promptNames.semanticObject]: SemanticObjectPromptOptions;
+    [promptNames.action]: ActionPromptOptions;
+    [promptNames.overwrite]: OverwritePromptOptions;
+    [promptNames.title]: TitlePromptOptions;
+    [promptNames.subTitle]: SubTitlePromptOptions;
+    [promptNames.icon]: IconPromptOptions;
+    [promptNames.additionalParameters]: ParameterStringPromptOptions;
+    [promptNames.existingFlpConfigInfo]: ExistingFlpConfigInfo;
+};
+
 /**
  * The options for the FLP config inquirer & the prompts.
  */
-type flpConfigPromptOptions = Record<promptNames.inboundId, InboundIdPromptOptions> &
-    Record<promptNames.semanticObject, SemanticObjectPromptOptions> &
-    Record<promptNames.action, ActionPromptOptions> &
-    Record<promptNames.overwrite, OverwritePromptOptions> &
-    Record<promptNames.title, TitlePromptOptions> &
-    Record<promptNames.subTitle, SubTitlePromptOptions> &
-    Record<promptNames.icon, IconPromptOptions> &
-    Record<promptNames.additionalParameters, ParameterStringPromptOptions> &
-    Record<promptNames.existingFlpConfigInfo, ExistingFlpConfigInfo>;
+type flpConfigPromptOptions = {
+    [K in keyof PromptOptionMap]: PromptOptionMap[K] & CommonPromptOptions;
+};
 
 /**
  * The options for the FLP config inquirer & the prompts.

@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 0.15.6
+
+### Patch Changes
+
+-   e25ee86: fix: remove filtering of parameters for inbounds
+
+## 0.15.5
+
+### Patch Changes
+
+-   d4a45ae: fix: provide templates path parameter to handle different runtime context
+
 ## 0.15.4
 
 ### Patch Changes

@@ -114,7 +114,7 @@ describe('flp-config generator', () => {
                     }
                 )
                 .run()
-        ).rejects.toThrowError(t('error.noManifest', { path: path.resolve(`${appDir}/webapp/manifest.json`) }));
+        ).rejects.toThrow(t('error.noManifest', { path: path.resolve(`${appDir}/webapp/manifest.json`) }));
     });
 
     it('throw when manifest[sap.app] is missing', async () => {
@@ -140,7 +140,7 @@ describe('flp-config generator', () => {
                     }
                 )
                 .run()
-        ).rejects.toThrowError(t('error.sapNotDefined'));
+        ).rejects.toThrow(t('error.sapNotDefined'));
     });
 
     it('inbound key exists - overwrite: false', async () => {

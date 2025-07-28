@@ -37,7 +37,7 @@ describe('ui5', () => {
     test('no errors', async () => {
         mockedUi5RepoService.deploy.mockResolvedValue(undefined);
         await task({ workspace, options } as any);
-        expect(config).toBeCalledTimes(1);
+        expect(config).toHaveBeenCalledTimes(1);
     });
 
     test('verify correct export', () => {

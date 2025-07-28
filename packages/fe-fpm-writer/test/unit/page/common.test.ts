@@ -180,7 +180,7 @@ describe('common page functionality', () => {
             const manifest = JSON.parse(testAppManifest) as Manifest;
 
             fs.writeJSON(join(testDir, 'webapp/manifest.json'), manifest);
-            await expect(async () => await validatePageConfig(testDir, config, fs)).not.toThrowError();
+            await expect(async () => await validatePageConfig(testDir, config, fs)).not.toThrow();
         });
 
         test('provided navigation config is not valid for existing manifest', async () => {
@@ -191,29 +191,29 @@ describe('common page functionality', () => {
             manifest['sap.ui5'].routing = manifest['sap.ui5'].routing ?? {};
             manifest['sap.ui5'].routing.routes = [];
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            await expect(async () => await validatePageConfig(target, config, fs)).rejects.toThrowError();
+            await expect(async () => await validatePageConfig(target, config, fs)).rejects.toThrow();
 
             delete manifest['sap.ui5']?.routing?.routes;
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            await expect(async () => await validatePageConfig(target, config, fs)).rejects.toThrowError();
+            await expect(async () => await validatePageConfig(target, config, fs)).rejects.toThrow();
 
             manifest = JSON.parse(testAppManifest) as Manifest;
 
             delete manifest['sap.ui5']?.routing?.targets?.['TestObjectPage'];
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            await expect(async () => await validatePageConfig(target, config, fs)).rejects.toThrowError();
+            await expect(async () => await validatePageConfig(target, config, fs)).rejects.toThrow();
 
             delete manifest['sap.ui5']?.routing?.targets;
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            await expect(async () => await validatePageConfig(target, config, fs)).rejects.toThrowError();
+            await expect(async () => await validatePageConfig(target, config, fs)).rejects.toThrow();
 
             delete manifest['sap.ui5']?.routing;
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            await expect(async () => await validatePageConfig(target, config, fs)).rejects.toThrowError();
+            await expect(async () => await validatePageConfig(target, config, fs)).rejects.toThrow();
 
             delete manifest['sap.ui5'];
             fs.writeJSON(join(target, 'webapp/manifest.json'), manifest);
-            await expect(async () => await validatePageConfig(target, config, fs)).rejects.toThrowError();
+            await expect(async () => await validatePageConfig(target, config, fs)).rejects.toThrow();
         });
     });
 

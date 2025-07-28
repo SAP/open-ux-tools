@@ -37,7 +37,7 @@ describe('connection', () => {
 
         it('Do not crash if the response has no headers', () => {
             const response = newAxiosResponseWithCookies();
-            expect(() => new Cookies().setCookies(response)).not.toThrowError();
+            expect(() => new Cookies().setCookies(response)).not.toThrow();
         });
 
         it('do not crash if cookie string is empty string', () => {
@@ -45,7 +45,7 @@ describe('connection', () => {
                 ...newAxiosResponseWithCookies(),
                 headers: { 'set-cookie': [''] } as unknown as AxiosRequestHeaders
             };
-            expect(() => new Cookies().setCookies(response)).not.toThrowError();
+            expect(() => new Cookies().setCookies(response)).not.toThrow();
         });
     });
 

@@ -18,27 +18,27 @@ describe('api-hub service', () => {
 
         it('is called before read', async () => {
             await new ApiHubSettingsService(logger).read();
-            expect(migrateToLatestVersionSpy).toBeCalledTimes(1);
+            expect(migrateToLatestVersionSpy).toHaveBeenCalledTimes(1);
         });
 
         it('is called before write', async () => {
             await new ApiHubSettingsService(logger).write({ apiKey: 'dummyKey' });
-            expect(migrateToLatestVersionSpy).toBeCalledTimes(1);
+            expect(migrateToLatestVersionSpy).toHaveBeenCalledTimes(1);
         });
 
         it('is called before delete', async () => {
             await new ApiHubSettingsService(logger).delete({ apiKey: 'dummyKey' });
-            expect(migrateToLatestVersionSpy).toBeCalledTimes(1);
+            expect(migrateToLatestVersionSpy).toHaveBeenCalledTimes(1);
         });
 
         it('is called before getAll', async () => {
             await new ApiHubSettingsService(logger).getAll();
-            expect(migrateToLatestVersionSpy).toBeCalledTimes(1);
+            expect(migrateToLatestVersionSpy).toHaveBeenCalledTimes(1);
         });
 
         it('is called before partialUpdate', async () => {
-            await expect(new ApiHubSettingsService(logger).partialUpdate()).rejects.toThrowError();
-            expect(migrateToLatestVersionSpy).toBeCalledTimes(1);
+            await expect(new ApiHubSettingsService(logger).partialUpdate()).rejects.toThrow();
+            expect(migrateToLatestVersionSpy).toHaveBeenCalledTimes(1);
         });
     });
 });

@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.4.0
+
+### Minor Changes
+
+-   089b56f: updates extension types and extends prompt options in sub gens
+
 ## 0.3.30
 
 ### Patch Changes
