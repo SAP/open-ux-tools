@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.22.4
+
+### Patch Changes
+
+-   ffac61c: Improved performance of v4 catalog service loading
+
 ## 1.22.3
 
 ### Patch Changes

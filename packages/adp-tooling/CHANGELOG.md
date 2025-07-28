@@ -1,5 +1,19 @@
 # @sap-ux/adp-tooling
 
+## 0.15.7
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/system-access@0.6.11
+
+## 0.15.6
+
+### Patch Changes
+
+-   e25ee86: fix: remove filtering of parameters for inbounds
+
 ## 0.15.5
 
 ### Patch Changes
