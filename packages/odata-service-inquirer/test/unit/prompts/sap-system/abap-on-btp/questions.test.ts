@@ -246,7 +246,7 @@ describe('questions', () => {
 
         // CLI throws to exit, as you cannot continue
         PromptState.isYUI = false;
-        await expect(((cfDiscoPrompt as ListQuestion).choices as Function)()).rejects.toThrowError(
+        await expect(((cfDiscoPrompt as ListQuestion).choices as Function)()).rejects.toThrow(
             t('errors.abapEnvsUnavailable')
         );
 
@@ -374,7 +374,7 @@ describe('questions', () => {
                 abapOnBtpAuthType: 'cloudFoundry',
                 cloudFoundryAbapSystem: cfDiscoveredAbapEnvsMock[1]
             })
-        ).rejects.toThrowError('Cannot connect');
+        ).rejects.toThrow('Cannot connect');
 
         expect(connectionValidatorMock.connectedSystemName).toBe(undefined);
         expect(PromptState.odataService.connectedSystem).toBeUndefined();

@@ -4,12 +4,21 @@ import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import { t } from '../../src/i18n';
+import { toMatchFolder } from '@sap-ux/jest-file-matchers';
+import * as fileSystem from 'fs';
+import { rimraf } from 'rimraf';
+import { promisify } from 'util';
+
+expect.extend({ toMatchFolder });
 
 describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
     let fs: Editor | undefined;
+    const testOutputDir = join(__dirname, '../test-output');
+    const expectedOutputPath = join(__dirname, './expected-output');
 
-    beforeEach(() => {
-        // remove specific generated app folder
+    beforeEach(async () => {
+        await rimraf(testOutputDir);
+        fileSystem.mkdirSync(testOutputDir, { recursive: true });
         fs = create(createStorage());
     });
 
@@ -565,7 +574,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
                 <script
                         id="sap-ui-bootstrap"
                         src="../../resources/sap-ui-core.js"
-                        data-sap-ui-resourceroots='{
+                        data-sap-ui-resource-roots='{
                                 "test-app-typescript": "../../",
                                 "unit": "."
                         }'
@@ -613,12 +622,12 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
                         id="sap-ui-bootstrap"
                         src="../../resources/sap-ui-core.js"
                         data-sap-ui-theme=""
-                        data-sap-ui-resourceroots='{
+                        data-sap-ui-resource-roots='{
                                 "test-app-typescript": "../../",
                                 "integration": "./"
                         }'
-                        data-sap-ui-animation="false"
-                        data-sap-ui-compatVersion="edge"
+                        data-sap-ui-animation-mode="none"
+                        data-sap-ui-compat-version="edge"
                         data-sap-ui-async="true"
                         data-sap-ui-preload="async"
                         >
@@ -635,6 +644,25 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
         `)
         );
     });
+
+    test('Generate OPA test files correctly when typescript is not enabled when version is > 1.120.0', async () => {
+        const projectName = 'test_ff_1.120';
+        const opaConfig = {
+            appId: projectName,
+            applicationTitle: 'App test',
+            applicationDescription: 'App description',
+            viewName: 'View1',
+            ui5Version: '1.120.0'
+        };
+
+        fs = await generateFreestyleOPAFiles(testOutputDir, opaConfig, fs);
+        const commitAsync = promisify(fs.commit.bind(fs));
+        await commitAsync();
+
+        const testOutPutPath = join(testOutputDir, 'webapp', 'test');
+        const expectedTestOutputPath = join(expectedOutputPath, 'freestyle', projectName, 'webapp', 'test');
+        expect(testOutPutPath).toMatchFolder(expectedTestOutputPath);
+    });
 });
 
 describe('writeOPATsconfigJsonUpdates', () => {
@@ -649,7 +677,6 @@ describe('writeOPATsconfigJsonUpdates', () => {
         viewName: 'view-test',
         ui5Version: '1.71.0'
     };
-
     beforeEach(() => {
         fs = {
             readJSON: jest.fn(),

@@ -1,5 +1,64 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/odata-service-inquirer@2.5.23
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/fiori-generator-shared@0.13.3
+
+## 0.6.2
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.15
+-   @sap-ux/fiori-freestyle-writer@2.4.26
+-   @sap-ux/odata-service-inquirer@2.5.22
+
+## 0.6.1
+
+### Patch Changes
+
+-   eedfc47: updates FioriAppGeneratorPromptSettings
+
+## 0.6.0
+
+### Minor Changes
+
+-   089b56f: updates extension types and extends prompt options in sub gens
+
+## 0.5.30
+
+### Patch Changes
+
+-   Updated dependencies [45bbe6c]
+    -   @sap-ux/odata-service-inquirer@2.5.22
+
+## 0.5.29
+
+### Patch Changes
+
+-   ca44076: move headless AppConfig type and associated types to fiori gen shared module
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/cap-config-writer@0.10.21
+    -   @sap-ux/fiori-elements-writer@2.5.14
+    -   @sap-ux/fiori-freestyle-writer@2.4.25
+    -   @sap-ux/odata-service-inquirer@2.5.21
+    -   @sap-ux/ui5-application-inquirer@0.14.31
+
+## 0.5.28
+
+### Patch Changes
+
+-   Updated dependencies [07d4e25]
+    -   @sap-ux/ui5-info@0.12.1
+    -   @sap-ux/launch-config@0.10.14
+    -   @sap-ux/ui5-application-inquirer@0.14.30
+    -   @sap-ux/odata-service-inquirer@2.5.20
+
 ## 0.5.27
 
 ### Patch Changes

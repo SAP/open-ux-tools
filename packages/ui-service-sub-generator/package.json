@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/ui-service-sub-generator",
     "description": "Generator for creating UI Service",
-    "version": "0.1.47",
+    "version": "0.1.52",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -16,7 +16,7 @@
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
@@ -54,7 +54,7 @@
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.11",
         "@vscode-logging/logger": "2.0.0",
-        "jest-extended": "4.0.2",
+        "jest-extended": "6.0.0",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "rimraf": "5.0.5",

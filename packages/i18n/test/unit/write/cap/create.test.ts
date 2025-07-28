@@ -110,6 +110,6 @@ describe('createCapI18nEntries', () => {
         // act
         const result = createCapI18nEntries('root', 'path', newEntries, env);
         // assert
-        return expect(result).rejects.toThrowError('should-throw-error');
+        return expect(result).rejects.toThrow('should-throw-error');
     });
 });

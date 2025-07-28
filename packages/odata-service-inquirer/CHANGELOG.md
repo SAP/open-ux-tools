@@ -1,5 +1,34 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.23
+
+### Patch Changes
+
+-   ffac61c: Improved performance of v4 catalog service loading
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/fiori-generator-shared@0.13.3
+
+## 2.5.22
+
+### Patch Changes
+
+-   45bbe6c: set analytical table type when supported by entity
+
+## 2.5.21
+
+### Patch Changes
+
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/inquirer-common@0.7.27
+
+## 2.5.20
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.26
+
 ## 2.5.19
 
 ### Patch Changes

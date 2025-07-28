@@ -1,5 +1,25 @@
 # @sap-ux/deploy-tooling
 
+## 0.16.33
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/system-access@0.6.11
+
+## 0.16.32
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.27
+
+## 0.16.31
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.26
+
 ## 0.16.30
 
 ### Patch Changes

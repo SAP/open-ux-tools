@@ -49,13 +49,13 @@ describe('Test command add cds-plugin-ui5', () => {
         await command.parseAsync(getArgv(['cds-plugin-ui5', __dirname]));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.info).toBeCalled();
-        expect(loggerMock.warn).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
-        expect(execNpmCommandSpy).toBeCalledWith(['install'], { cwd: __dirname, logger: undefined });
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.info).toHaveBeenCalled();
+        expect(loggerMock.warn).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
+        expect(execNpmCommandSpy).toHaveBeenCalledWith(['install'], { cwd: __dirname, logger: undefined });
     });
 
     test('Test create-fiori add cds-plugin-ui5 --simulate', async () => {
@@ -63,9 +63,9 @@ describe('Test command add cds-plugin-ui5', () => {
         await command.parseAsync(getArgv(['cds-plugin-ui5', '--simulate']));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).not.toHaveBeenCalled();
     });
 
     test('Test create-fiori add cds-plugin-ui5 --simulate', async () => {
@@ -73,10 +73,10 @@ describe('Test command add cds-plugin-ui5', () => {
         await command.parseAsync(getArgv(['cds-plugin-ui5', '--skip-install']));
 
         // Result check
-        expect(logLevelSpy).not.toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
+        expect(logLevelSpy).not.toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
     });
 
     test(`Test create-fiori add cds-plugin-ui5 --skip-install --verbose join(__dirname, '..')`, async () => {
@@ -85,10 +85,10 @@ describe('Test command add cds-plugin-ui5', () => {
         await command.parseAsync(getArgv(['cds-plugin-ui5', '--skip-install', '--verbose', parentDir]));
 
         // Result check
-        expect(logLevelSpy).toBeCalled();
-        expect(loggerMock.error).not.toBeCalled();
-        expect(fsMock.commit).toBeCalled();
-        expect(spawnSpy).not.toBeCalled();
+        expect(logLevelSpy).toHaveBeenCalled();
+        expect(loggerMock.error).not.toHaveBeenCalled();
+        expect(fsMock.commit).toHaveBeenCalled();
+        expect(spawnSpy).not.toHaveBeenCalled();
         const loggerInfoCalls = (loggerMock.info as jest.Mock).mock.calls;
         const hasCdInfo = !!loggerInfoCalls.find(
             (c) => Array.isArray(c) && c.length >= 1 && typeof c[0] === 'string' && c[0].startsWith('cd ')
@@ -104,8 +104,8 @@ describe('Test command add cds-plugin-ui5', () => {
         await command.parseAsync(getArgv(['cds-plugin-ui5']));
 
         // Result check
-        expect(loggerMock.error).toBeCalledWith(expect.stringContaining('ENABLE_ERROR'));
-        expect(loggerMock.debug).toBeCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('ENABLE_ERROR'));
+        expect(loggerMock.debug).toHaveBeenCalled();
     });
 
     test('Error handling with non-string error', async () => {
@@ -116,6 +116,6 @@ describe('Test command add cds-plugin-ui5', () => {
         await command.parseAsync(getArgv(['cds-plugin-ui5']));
 
         // Result check
-        expect(loggerMock.error).toBeCalled();
+        expect(loggerMock.error).toHaveBeenCalled();
     });
 });

@@ -826,7 +826,7 @@ describe('<Sections />', () => {
             </UISections>
         );
         simulateSplitterResize(wrapper, 1000, 50);
-        expect(resizeFn).toBeCalledTimes(1);
+        expect(resizeFn).toHaveBeenCalledTimes(1);
     });
 
     it('Test window resize', () => {
@@ -865,7 +865,7 @@ describe('<Sections />', () => {
         // Simulate restore for min size
         mockWidth(970);
         windowEventListenerMock.simulateEvent('resize', {});
-        expect(onToggleFullscreen).toBeCalledTimes(0);
+        expect(onToggleFullscreen).toHaveBeenCalledTimes(0);
         expect(wrapper.state().sizes).toEqual([
             { end: 530, percentage: false, start: 0 },
             { end: 0, percentage: false, size: 530, start: undefined }
@@ -874,7 +874,7 @@ describe('<Sections />', () => {
         onToggleFullscreen.mockClear();
         mockWidth(800);
         windowEventListenerMock.simulateEvent('resize', {});
-        expect(onToggleFullscreen).toBeCalledTimes(1);
+        expect(onToggleFullscreen).toHaveBeenCalledTimes(1);
         expect(wrapper.state().sizes).toEqual([
             {
                 end: 360,
@@ -894,7 +894,7 @@ describe('<Sections />', () => {
         mockWidth(1000);
 
         windowEventListenerMock.simulateEvent('resize', {});
-        expect(onToggleFullscreen).toBeCalledTimes(1);
+        expect(onToggleFullscreen).toHaveBeenCalledTimes(1);
         expect(wrapper.state().sizes).toEqual([
             {
                 end: 560,
@@ -1164,7 +1164,7 @@ describe('<Sections />', () => {
         mockWidth(670);
 
         windowEventListenerMock.simulateEvent('resize', {});
-        expect(onToggleFullscreen).toBeCalledTimes(1);
+        expect(onToggleFullscreen).toHaveBeenCalledTimes(1);
         expect(wrapper.state().sizes).toEqual([
             { end: 220, percentage: false, size: 450, start: 0 },
             { end: 0, percentage: false, size: 220, start: 450 }
