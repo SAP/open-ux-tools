@@ -53,9 +53,9 @@ async function getFileMapFromUI5(graph, rootProject) {
 
     await graph.traverseBreadthFirst(async ({ project: dependency }) => {
         const reader = dependency.getReader({ style: 'runtime' });
-        if (dependency.getType() !== 'module') {
+        const dependencyType = dependency.getType();
+        if (dependencyType !== 'module') {
             const namespace = dependency.getNamespace();
-            const dependencyType = dependency.getType();
             const isReusableLibrary = dependencyType === 'library' && !dependency.isFrameworkProject();
             const isRootProject = dependency.getName() === rootProject.getName();
             ui5VersionInfo.libraries.push({
