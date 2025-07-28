@@ -157,7 +157,6 @@ describe('change-handler', () => {
 
         beforeEach(() => {
             mockFs.exists.mockClear();
-            mockFs.copy.mockClear();
             mockFs.read.mockClear();
             mockFs.write.mockClear();
             mockLogger.info.mockClear();
@@ -166,27 +165,51 @@ describe('change-handler', () => {
 
         it('should create the XML fragment and log information if it does not exist', () => {
             mockFs.exists.mockReturnValue(false);
+            mockFs.read.mockReturnValue(`
+            <!-- Use stable and unique IDs!-->
+            <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+                <!-- targetAggregation: <%= targetAggregation %> -->
+                <!-- controlType: <%= controlType %> -->
+                <!--  add your xml here -->
+            </core:FragmentDefinition>`);
 
-            addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+            addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                targetAggregation: 'content',
+                controlType: 'sampleType'
+            });
 
-            expect(mockFs.copy).toHaveBeenCalled();
+            expect(mockFs.write).toHaveBeenCalled();
             expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
         });
 
         it('should log an error if the XML fragment creation fails', () => {
             mockFs.exists.mockReturnValue(false);
-            mockFs.copy.mockImplementation(() => {
-                throw new Error('Copy failed');
+            mockFs.write.mockImplementation(() => {
+                throw new Error('Write failed');
+            });
+            mockFs.read.mockReturnValue(`
+            <!-- Use stable and unique IDs!-->
+            <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+                <!-- targetAggregation: <%= targetAggregation %> -->
+                <!-- controlType: <%= controlType %> -->
+                <!--  add your xml here -->
+            </core:FragmentDefinition>`);
+
+            addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                targetAggregation: 'content',
+                controlType: 'sampleType'
             });
 
-            addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger);
-
+            expect(mockFs.write).toHaveBeenCalled();
             expect(mockLogger.error).toHaveBeenCalledWith(
                 expect.stringContaining(`Failed to create XML Fragment "${fragmentName}.fragment.xml"`)
             );
         });
 
         describe('custom fragments', () => {
+            beforeAll(() => {
+                mockFs.write.mockReset();
+            });
             beforeEach(() => {
                 jest.spyOn(crypto, 'randomBytes').mockImplementation((size: number) => Buffer.from('0'.repeat(size)));
             });
