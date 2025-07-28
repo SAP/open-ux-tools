@@ -20,38 +20,40 @@ async function getFileMapFromUI5(graph, rootProject) {
 
     await graph.traverseBreadthFirst(async ({ project: dependency }) => {
         const reader = dependency.getReader({ style: 'runtime' });
-        const sourcePath = dependency.getSourcePath();
-        const namespace = dependency.getNamespace();
-        const isRootProject = dependency.getName() === rootProject.getName();
-        ui5VersionInfo.libraries.push({
-            name: dependency.getName(),
-            version: dependency.getVersion(),
-            buildTimestamp: '202412051614',
-            scmRevision: ''
-        });
-        let resources = await reader.byGlob(`**/*.{ts,tsx,js,xml,properties,json}`);
+        if (dependency.getType() !== 'module') {
+            const sourcePath = dependency.getSourcePath();
+            const namespace = dependency.getNamespace();
+            const isRootProject = dependency.getName() === rootProject.getName();
+            ui5VersionInfo.libraries.push({
+                name: dependency.getName(),
+                version: dependency.getVersion(),
+                buildTimestamp: '202412051614',
+                scmRevision: ''
+            });
+            let resources = await reader.byGlob(`**/*.{ts,tsx,js,xml,properties,json}`);
 
-        for (const resource of resources) {
-            const resourcePath = resource.getPath().replace(/\/resources\/|\/test-resources\//g, '');
-            const itemPath = path.join(sourcePath, resourcePath);
+            for (const resource of resources) {
+                const resourcePath = resource.getPath().replace(/\/resources\/|\/test-resources\//g, '');
+                const itemPath = path.join(sourcePath, resourcePath);
 
-            let targetPath = resourcePath.replace(/\\/g, '/');
-            if (targetPath.endsWith('.js')) {
-                targetPath = targetPath.replace('.js', '');
-                ui5PathMapping[targetPath + '.js'] = itemPath;
-            }
-
-            if (isRootProject) {
-                if (targetPath.endsWith('.ts')) {
-                    targetPath = targetPath.replace('.ts', '');
-                    ui5PathMapping[targetPath + '.ts'] = itemPath;
+                let targetPath = resourcePath.replace(/\\/g, '/');
+                if (targetPath.endsWith('.js')) {
+                    targetPath = targetPath.replace('.js', '');
+                    ui5PathMapping[targetPath + '.js'] = itemPath;
                 }
-                if (!targetPath.startsWith(namespace)) {
-                    targetPath = path.posix.join(namespace, targetPath);
-                }
-            }
 
-            ui5PathMapping[targetPath] = itemPath;
+                if (isRootProject) {
+                    if (targetPath.endsWith('.ts')) {
+                        targetPath = targetPath.replace('.ts', '');
+                        ui5PathMapping[targetPath + '.ts'] = itemPath;
+                    }
+                    if (!targetPath.startsWith(namespace)) {
+                        targetPath = path.posix.join(namespace, targetPath);
+                    }
+                }
+
+                ui5PathMapping[targetPath] = itemPath;
+            }
         }
     });
     return { ui5PathMapping, ui5VersionInfo };
