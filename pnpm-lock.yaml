@@ -702,8 +702,8 @@ importers:
   packages/annotation-generator:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.2
-        version: 0.10.2
+        specifier: 0.10.3
+        version: 0.10.3
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -1724,8 +1724,8 @@ importers:
   packages/fe-fpm-writer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.2
-        version: 0.10.2
+        specifier: 0.10.3
+        version: 0.10.3
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -1803,8 +1803,8 @@ importers:
   packages/fiori-annotation-api:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.2
-        version: 0.10.2
+        specifier: 0.10.3
+        version: 0.10.3
       '@sap-ux/cds-annotation-parser':
         specifier: workspace:*
         version: link:../cds-annotation-parser
@@ -2783,8 +2783,8 @@ importers:
   packages/odata-service-inquirer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.2
-        version: 0.10.2
+        specifier: 0.10.3
+        version: 0.10.3
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -9899,12 +9899,6 @@ packages:
 
   /@sap-devx/yeoman-ui-types@1.16.9:
     resolution: {integrity: sha512-GpyTtj2RGWopUWROS3dfAV+0MQzARSRpqoWGDLQflCQpQWCkEFUQlj/dgowrEblj+1oJDTYBEdLu7nPc5lkNMA==}
-
-  /@sap-ux/annotation-converter@0.10.2:
-    resolution: {integrity: sha512-3GY8Etb2D+HnCNf2Yy7qfRtZuJ8ITjAGdlnbpmIg5sLtHRfhffEzZOveEWWMJ0apgIedUouvglkw6+oBabTfnA==}
-    dependencies:
-      '@sap-ux/vocabularies-types': 0.13.0
-    dev: false
 
   /@sap-ux/annotation-converter@0.10.3:
     resolution: {integrity: sha512-mLQTJv4SXyxbizE2guXi/m9BuFi+jcn7Vk8pGzkbdjWhBgI2OK0F30GXEsy7lprYFGycCLzXbBj/X7Unz+pIeg==}
