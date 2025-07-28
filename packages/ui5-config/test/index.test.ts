@@ -245,6 +245,15 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
+        test('add backend with flexible parameters (and UI5 defaults) & writes ignoreCertErrors true if enabled', () => {
+            ui5Config.addFioriToolsProxyMiddleware({
+                backend: [{ url, path, pathPrefix: '/~prefix', scp: true }],
+                ignoreCertErrors: true,
+                ui5: {}
+            });
+            expect(ui5Config.toString()).toMatchSnapshot();
+        });
+
         test('add backend without destination (and UI5 defaults)', () => {
             ui5Config.addFioriToolsProxyMiddleware({ backend: [{ url, path, client }], ui5: {} });
             expect(ui5Config.toString()).toMatchSnapshot();
@@ -283,7 +292,7 @@ describe('UI5Config', () => {
 
         test('add backend and do not update the "ignoreCertError" property', () => {
             const expectedIgnoreCertErrors = false;
-            ui5Config.addFioriToolsProxyMiddleware({ ui5: {}, ignoreCertError: false });
+            ui5Config.addFioriToolsProxyMiddleware({ ui5: {}, ignoreCertErrors: false });
             ui5Config.addBackendToFioriToolsProxyMiddleware(
                 {
                     url,
@@ -854,14 +863,14 @@ describe('UI5Config', () => {
             name: 'fiori-tools-proxy',
             afterMiddleware: 'compression',
             configuration: {
-                ignoreCertError: false,
+                ignoreCertErrors: false,
                 backend: [
                     {
                         path: '/sap',
                         url: 'http://test.url.com:50017'
                     }
                 ]
-            }
+            } satisfies FioriToolsProxyConfig
         };
 
         test('add with single path (no existing serve static config)', () => {

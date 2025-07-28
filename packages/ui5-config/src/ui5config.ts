@@ -285,10 +285,11 @@ export class UI5Config {
         // Support both old and new property names with deprecation warning
         let resolvedIgnoreCertErrors: boolean = false;
 
+        //prettier-ignore
         if (proxyConfig.ignoreCertErrors !== undefined) {
             resolvedIgnoreCertErrors = proxyConfig.ignoreCertErrors;
-        } else if (proxyConfig.ignoreCertError !== undefined) {
-            resolvedIgnoreCertErrors = proxyConfig.ignoreCertError;
+        } else if (proxyConfig.ignoreCertError !== undefined) { //NOSONAR
+            resolvedIgnoreCertErrors = proxyConfig.ignoreCertError; //NOSONAR
             console.warn(
                 'Warning: ignoreCertError is deprecated. Please use ignoreCertErrors instead. The ignoreCertError property will be removed in a future version.'
             );
@@ -348,13 +349,14 @@ export class UI5Config {
 
         // Support both old and new property names for backward compatibility
         const currentIgnoreCertErrors =
-            proxyMiddlewareConfig?.ignoreCertErrors ?? proxyMiddlewareConfig?.ignoreCertError ?? false;
+            proxyMiddlewareConfig?.ignoreCertErrors ?? proxyMiddlewareConfig?.ignoreCertError ?? false; // NOSONAR
 
         if (ignoreCertErrors !== undefined && currentIgnoreCertErrors !== ignoreCertErrors) {
             // Always set the new property name
             configuration.set('ignoreCertErrors', ignoreCertErrors);
             // Remove the old property if it exists
-            if (proxyMiddlewareConfig?.ignoreCertError !== undefined) {
+            //prettier-ignore
+            if (proxyMiddlewareConfig?.ignoreCertError !== undefined) { // NOSONAR
                 configuration.delete('ignoreCertError');
             }
         }
@@ -478,7 +480,7 @@ export class UI5Config {
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addUi5ToFioriToolsProxyMiddleware(ui5: FioriToolsProxyConfigUI5): UI5Config {
+    public addUi5ToFioriToolsProxyMiddleware(ui5: FioriToolsProxyConfigUI5): this {
         const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
         const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
         if (!proxyMiddleware) {

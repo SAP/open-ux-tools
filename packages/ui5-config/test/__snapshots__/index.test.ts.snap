@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`UI5Config Schema validation newInstance with schema validation success 1`] = `
 UI5Config {
@@ -317,6 +317,26 @@ exports[`UI5Config addFioriToolsProxyMiddleware add backend with flexible parame
 "
 `;
 
+exports[`UI5Config addFioriToolsProxyMiddleware add backend with flexible parameters (and UI5 defaults) & writes ignoreCertErrors true if enabled 1`] = `
+"server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: true # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        backend:
+          - url: http://localhost:8080
+            path: /~testpath~
+            pathPrefix: /~prefix
+            scp: true
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+"
+`;
+
 exports[`UI5Config addFioriToolsProxyMiddleware add backend without destination (and UI5 defaults) 1`] = `
 "server:
   customMiddleware:
@@ -518,7 +538,7 @@ exports[`UI5Config addServeStaticConfig update serve static config 1`] = `
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false
+        ignoreCertErrors: false
         backend:
           - path: /sap
             url: http://test.url.com:50017
