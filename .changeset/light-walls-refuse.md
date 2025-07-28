@@ -1,4 +1,5 @@
 ---
+'@sap-ux/fiori-app-sub-generator': patch
 '@sap-ux/fiori-freestyle-writer': patch
 ---
 
