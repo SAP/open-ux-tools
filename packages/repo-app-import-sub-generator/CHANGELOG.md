@@ -1,5 +1,13 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.70
+
+### Patch Changes
+
+-   Updated dependencies [2cae662]
+    -   @sap-ux/odata-service-inquirer@2.5.24
+    -   @sap-ux/fiori-elements-writer@2.5.16
+
 ## 0.3.69
 
 ### Patch Changes

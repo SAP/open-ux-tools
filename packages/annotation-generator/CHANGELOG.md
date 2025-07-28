@@ -1,5 +1,13 @@
 # @sap-ux/annotation-generator
 
+## 0.3.47
+
+### Patch Changes
+
+-   2cae662: fix(deps): update dependency @sap-ux/annotation-converter to v0.10.3
+-   Updated dependencies [2cae662]
+    -   @sap-ux/fiori-annotation-api@0.6.10
+
 ## 0.3.46
 
 ### Patch Changes
