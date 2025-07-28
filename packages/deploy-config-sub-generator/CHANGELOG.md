@@ -1,5 +1,24 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.3.48
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/odata-service-inquirer@2.5.23
+    -   @sap-ux/deploy-config-generator-shared@0.1.22
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.44
+
+## 0.3.47
+
+### Patch Changes
+
+-   089b56f: updates extension types and extends prompt options in sub gens
+-   Updated dependencies [089b56f]
+    -   @sap-ux/cf-deploy-config-sub-generator@0.2.39
+    -   @sap-ux/abap-deploy-config-sub-generator@0.1.43
+
 ## 0.3.46
 
 ### Patch Changes

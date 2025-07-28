@@ -12,7 +12,7 @@
                 "RecommendedServices": [
                     {
                         "RepositoryId": "DEFAULT",
-                        "ServiceId": "/AIF/MESSAGEHANDLING",
+                        "ServiceId": "/AIF/MESSAGEHANDLING1",
                         "ServiceVersion": "0001",
                         "ServiceAlias": "",
                         "Description": "AIF Monitoring service",
@@ -20,7 +20,7 @@
                     },
                     {
                         "RepositoryId": "DEFAULT",
-                        "ServiceId": "/IWBEP/COMMON",
+                        "ServiceId": "/IWBEP/COMMON1",
                         "ServiceVersion": "0001",
                         "ServiceAlias": "",
                         "Description": "V4 Common Service",
@@ -38,7 +38,7 @@
                 "RecommendedServices": [
                     {
                         "RepositoryId": "DEFAULT",
-                        "ServiceId": "/IWBEP/COMMON",
+                        "ServiceId": "/IWBEP/COMMON1a",
                         "ServiceVersion": "0001",
                         "ServiceAlias": "",
                         "Description": "V4 Common Service",
@@ -46,7 +46,7 @@
                     },
                     {
                         "RepositoryId": "SRVD",
-                        "ServiceId": "/AIF/MESSAGEMONITOR",
+                        "ServiceId": "/AIF/MESSAGEMONITOR1",
                         "ServiceVersion": "0001",
                         "ServiceAlias": "/AIF/MESSAGEMONITOR",
                         "Description": "AIF Interface Monitor Service",
@@ -64,7 +64,7 @@
                 "RecommendedServices": [
                     {
                         "RepositoryId": "DEFAULT",
-                        "ServiceId": "/IWBEP/COMMON",
+                        "ServiceId": "/IWBEP/COMMON1b",
                         "ServiceVersion": "0001",
                         "ServiceAlias": "",
                         "Description": "V4 Common Service",
@@ -72,7 +72,7 @@
                     },
                     {
                         "RepositoryId": "SRVD",
-                        "ServiceId": "/DMO/UI_TRAVEL_D_D",
+                        "ServiceId": "/DMO/UI_TRAVEL_D_D1",
                         "ServiceVersion": "0001",
                         "ServiceAlias": "/DMO/UI_TRAVEL_D_D",
                         "Description": "Service Definition Travel Draft Scenario (draft projection)",
@@ -80,7 +80,7 @@
                     },
                     {
                         "RepositoryId": "SRVD",
-                        "ServiceId": "/DMO/UI_TRAVEL_D_D",
+                        "ServiceId": "/DMO/UI_TRAVEL_D_D1a",
                         "ServiceVersion": "0001",
                         "ServiceAlias": "/DMO/UI_TRAVEL_D_D",
                         "Description": "Service Definition Travel Draft Scenario (draft projection)",
@@ -98,7 +98,7 @@
                 "RecommendedServices": [
                     {
                         "RepositoryId": "DEFAULT",
-                        "ServiceId": "/IWFND/CATALOG",
+                        "ServiceId": "/IWFND/CATALOG1",
                         "ServiceVersion": "0001",
                         "ServiceAlias": "",
                         "Description": "Service Catalog",
@@ -106,7 +106,7 @@
                     },
                     {
                         "RepositoryId": "DEFAULT",
-                        "ServiceId": "/IWFND/CATALOG",
+                        "ServiceId": "/IWFND/CATALOG1a",
                         "ServiceVersion": "0002",
                         "ServiceAlias": "",
                         "Description": "Service Catalog",
@@ -124,7 +124,7 @@
                 "RecommendedServices": [
                     {
                         "RepositoryId": "DEFAULT",
-                        "ServiceId": "/IWNGW/NOTIFICATION_SRV",
+                        "ServiceId": "/IWNGW/NOTIFICATION_SRV1",
                         "ServiceVersion": "0001",
                         "ServiceAlias": "",
                         "Description": "Notification Gateway OData V4 Service",
