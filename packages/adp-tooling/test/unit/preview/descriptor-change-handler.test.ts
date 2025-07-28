@@ -307,9 +307,15 @@ id="<%- ids.columnTitle %>
 id="<%- ids.customData %>
 id="<%- ids.index %>
 `);
-                addXmlFragment(projectPath, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
-                    templateName: `V2_SMART_TABLE_COLUMN`
-                });
+                addXmlFragment(
+                    projectPath,
+                    updatedChange,
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger,
+                    {
+                        templateName: `V2_SMART_TABLE_COLUMN`
+                    }
+                );
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -423,9 +429,15 @@ id="<%- ids.text %>
 id="<%- ids.customData %>
 id="<%- ids.index %>
 `);
-                addXmlFragment(projectPath, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
-                    templateName: testCase.tableType
-                });
+                addXmlFragment(
+                    projectPath,
+                    updatedChange,
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger,
+                    {
+                        templateName: testCase.tableType
+                    }
+                );
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
