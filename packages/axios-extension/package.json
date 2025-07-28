@@ -29,7 +29,7 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
-        "axios": "1.11.0",
+        "axios": "1.8.2",
         "detect-content-type": "1.2.0",
         "fast-xml-parser": "4.4.1",
         "lodash": "4.17.21",
@@ -45,7 +45,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@types/lodash": "4.14.202",
         "nock": "13.4.0",
-        "supertest": "7.1.4",
+        "supertest": "6.3.3",
         "@types/proxy-from-env": "1.0.1"
     },
     "files": [

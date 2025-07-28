@@ -74,7 +74,7 @@
         "express": "4.21.2",
         "nock": "13.4.0",
         "rimraf": "5.0.5",
-        "supertest": "7.1.4",
+        "supertest": "6.3.3",
         "cross-env": "^7.0.3"
     },
     "engines": {

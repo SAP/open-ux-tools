@@ -27,7 +27,7 @@
     },
     "dependencies": {
         "@sap/cf-tools": "3.2.2",
-        "axios": "1.11.0",
+        "axios": "1.8.2",
         "@sap/bas-sdk": "3.11.6"
     },
     "devDependencies": {

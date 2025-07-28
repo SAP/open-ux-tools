@@ -32,8 +32,8 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "applicationinsights": "2.9.7",
-        "axios": "1.11.0",
+        "applicationinsights": "2.9.2",
+        "axios": "1.8.2",
         "performance-now": "2.1.0",
         "yaml": "2.3.3"
     },

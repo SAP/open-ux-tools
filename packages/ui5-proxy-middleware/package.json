@@ -48,7 +48,7 @@
         "@types/proxy-from-env": "1.0.1",
         "express": "4.21.2",
         "nock": "13.4.0",
-        "supertest": "7.1.4",
+        "supertest": "6.3.3",
         "yaml": "2.2.2"
     },
     "ui5": {
