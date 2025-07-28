@@ -44,7 +44,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/store": "workspace:*",
-        "axios": "1.8.2",
+        "axios": "1.11.0",
         "axios-logger": "2.8.0",
         "fast-xml-parser": "4.4.1",
         "i18next": "25.3.0",
