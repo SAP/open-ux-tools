@@ -6,6 +6,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import * as crypto from 'crypto';
 import * as path from 'path';
+import * as fs from 'fs';
 
 import {
     addAnnotationFile,
@@ -147,13 +148,15 @@ describe('change-handler', () => {
             error: jest.fn()
         };
 
-        const path = 'project/path';
+        const projectPath = 'project/path';
         const fragmentName = 'Share';
         const change = {
             content: {
                 fragmentPath: `${fragmentName}.fragment.xml`
             }
         } as unknown as AddXMLChange;
+        const fragmentTemplatePath = path.join(__dirname, '../../../templates/rta/fragment.xml');
+        const realTemplateContent = fs.readFileSync(fragmentTemplatePath, 'utf-8');
 
         beforeEach(() => {
             mockFs.exists.mockClear();
@@ -165,15 +168,10 @@ describe('change-handler', () => {
 
         it('should create the XML fragment and log information if it does not exist', () => {
             mockFs.exists.mockReturnValue(false);
-            mockFs.read.mockReturnValue(`
-            <!-- Use stable and unique IDs!-->
-            <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-                <!-- targetAggregation: <%= targetAggregation %> -->
-                <!-- controlType: <%= controlType %> -->
-                <!--  add your xml here -->
-            </core:FragmentDefinition>`);
 
-            addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+            mockFs.read.mockReturnValue(realTemplateContent);
+
+            addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                 targetAggregation: 'content',
                 controlType: 'sampleType'
             });
@@ -187,15 +185,9 @@ describe('change-handler', () => {
             mockFs.write.mockImplementation(() => {
                 throw new Error('Write failed');
             });
-            mockFs.read.mockReturnValue(`
-            <!-- Use stable and unique IDs!-->
-            <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
-                <!-- targetAggregation: <%= targetAggregation %> -->
-                <!-- controlType: <%= controlType %> -->
-                <!--  add your xml here -->
-            </core:FragmentDefinition>`);
+            mockFs.read.mockReturnValue(realTemplateContent);
 
-            addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+            addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                 targetAggregation: 'content',
                 controlType: 'sampleType'
             });
@@ -219,7 +211,7 @@ describe('change-handler', () => {
 id="<%- ids.objectPageSection %>"
 id="<%- ids.objectPageSubSection %>"
 id="<%- ids.hBox %>"`);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `OBJECT_PAGE_CUSTOM_SECTION`
                 });
 
@@ -249,7 +241,7 @@ id="<%- ids.hBox %>"`);
                 mockFs.read.mockReturnValue(`
 id="<%- ids.vBoxContainer %>"
 id="<%- ids.label %>"`);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `OBJECT_PAGE_HEADER_FIELD`
                 });
 
@@ -277,7 +269,7 @@ id="<%- ids.label %>"`);
                 mockFs.exists.mockReturnValue(false);
                 mockFs.read.mockReturnValue(`
 id="<%- ids.toolbarActionButton %>`);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `CUSTOM_ACTION`
                 });
 
@@ -315,7 +307,7 @@ id="<%- ids.columnTitle %>
 id="<%- ids.customData %>
 id="<%- ids.index %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `V2_SMART_TABLE_COLUMN`
                 });
 
@@ -347,7 +339,7 @@ id="<%- ids.index %>
                 mockFs.read.mockReturnValue(`
 id="<%- ids.text %>
 `);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `V2_SMART_TABLE_CELL`
                 });
 
@@ -377,7 +369,7 @@ id="<%- ids.text %>
 id="<%- ids.column %>
 id="<%- ids.text %>
 `);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `V4_MDC_TABLE_COLUMN`
                 });
 
@@ -431,7 +423,7 @@ id="<%- ids.text %>
 id="<%- ids.customData %>
 id="<%- ids.index %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: testCase.tableType
                 });
 
@@ -462,7 +454,7 @@ id="<%- ids.index %>
                 mockFs.read.mockReturnValue(`
 id="<%- ids.customToolbarAction %>"
 id="<%- ids.customActionButton %>"`);
-                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
                     templateName: `TABLE_ACTION`
                 });
 
