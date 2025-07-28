@@ -57,7 +57,7 @@ describe('<UIDialog />', () => {
         );
         const acceptButton = screen.getByText('Yes');
         fireEvent.click(acceptButton);
-        expect(onAcceptSpy).toBeCalledTimes(1);
+        expect(onAcceptSpy).toHaveBeenCalledTimes(1);
     });
 
     it('On Cancel', () => {
@@ -73,7 +73,7 @@ describe('<UIDialog />', () => {
         );
         const cancelButton = screen.getByText('No');
         fireEvent.click(cancelButton);
-        expect(onRejectSpy).toBeCalledTimes(1);
+        expect(onRejectSpy).toHaveBeenCalledTimes(1);
     });
 
     describe('Footer', () => {
@@ -408,7 +408,7 @@ describe('<UIDialog />', () => {
             if (title) {
                 const focusSpy = jest.spyOn(title as HTMLElement, 'focus');
                 fireEvent.mouseDown(title);
-                expect(focusSpy).not.toBeCalled();
+                expect(focusSpy).not.toHaveBeenCalled();
             }
         });
     });

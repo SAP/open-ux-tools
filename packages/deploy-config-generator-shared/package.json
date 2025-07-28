@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/deploy-config-generator-shared",
     "description": "Commonly used shared functionality and types to support the deploy config generator.",
-    "version": "0.1.21",
+    "version": "0.1.22",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -15,7 +15,7 @@
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"

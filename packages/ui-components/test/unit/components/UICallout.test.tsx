@@ -187,8 +187,8 @@ describe('<UICallout />', () => {
                 const dummyElement = container.querySelector('.dummy');
                 if (dummyElement) {
                     fireEvent.keyDown(dummyElement, { key, shiftKey });
-                    expect(getNextElementSpy).toBeCalledTimes(focusNext ? 1 : 0);
-                    expect(getPreviousElementSpy).toBeCalledTimes(focusPrevious ? 1 : 0);
+                    expect(getNextElementSpy).toHaveBeenCalledTimes(focusNext ? 1 : 0);
+                    expect(getPreviousElementSpy).toHaveBeenCalledTimes(focusPrevious ? 1 : 0);
                 }
             });
         }

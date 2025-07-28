@@ -42,7 +42,7 @@ describe('<UIVirtualList />', () => {
         const row = 3;
         const recomputeRowHeightsSpy = jest.spyOn(List.prototype, 'recomputeRowHeights');
         componentRef.current!.recomputeRowHeights(row);
-        expect(recomputeRowHeightsSpy).toBeCalledTimes(1);
+        expect(recomputeRowHeightsSpy).toHaveBeenCalledTimes(1);
         expect(recomputeRowHeightsSpy).toHaveBeenCalledWith(row);
     });
 
@@ -50,13 +50,13 @@ describe('<UIVirtualList />', () => {
         const row = 3;
         const scrollToRowSpy = jest.spyOn(List.prototype, 'scrollToRow');
         componentRef.current!.scrollToRow(row);
-        expect(scrollToRowSpy).toBeCalledTimes(1);
+        expect(scrollToRowSpy).toHaveBeenCalledTimes(1);
         expect(scrollToRowSpy).toHaveBeenCalledWith(row);
     });
 
     it('Public method "forceListUpdate"', () => {
         const forceUpdateSpy = jest.spyOn(List.prototype, 'forceUpdate');
         componentRef.current!.forceListUpdate();
-        expect(forceUpdateSpy).toBeCalledTimes(1);
+        expect(forceUpdateSpy).toHaveBeenCalledTimes(1);
     });
 });

@@ -234,7 +234,7 @@ describe('<UITable />', () => {
         fireEvent.change(input, { target: { value: 'orange' } });
         fireEvent.keyDown(input, { key: 'Enter' });
         jest.runOnlyPendingTimers();
-        expect(onSaveSpy).toBeCalledTimes(1);
+        expect(onSaveSpy).toHaveBeenCalledTimes(1);
         expect(onSaveSpy.mock.calls[0][1]).toBe('orange');
     });
 
@@ -247,7 +247,7 @@ describe('<UITable />', () => {
         fireEvent.change(input, { target: { value: 'orange' } });
         fireEvent.keyDown(input, { key: 'Escape' });
         jest.runOnlyPendingTimers();
-        expect(onSaveSpy).toBeCalledTimes(0);
+        expect(onSaveSpy).toHaveBeenCalledTimes(0);
     });
 
     it('Date picker', () => {
@@ -261,7 +261,7 @@ describe('<UITable />', () => {
         fireEvent.change(input, { target: { value: '2020-08-07' } });
         fireEvent.keyDown(input, { key: 'Enter' });
         jest.runOnlyPendingTimers();
-        expect(onSaveSpy).toBeCalledTimes(1);
+        expect(onSaveSpy).toHaveBeenCalledTimes(1);
         expect(onSaveSpy.mock.calls[0][1]).toBe('2020-08-07');
     });
 
@@ -290,7 +290,7 @@ describe('<UITable />', () => {
         Object.defineProperty(input, 'value', { value: 'false', writable: true });
         fireEvent.keyDown(input, { key: 'Enter' });
         jest.runOnlyPendingTimers();
-        expect(onSaveSpy).toBeCalledTimes(1);
+        expect(onSaveSpy).toHaveBeenCalledTimes(1);
         expect(onSaveSpy.mock.calls[0][1]).toBe('false');
     });
 
@@ -351,7 +351,7 @@ describe('<UITable />', () => {
         );
         fireEvent.change(input, { target: { value: 'stillinvalid' } });
         jest.runOnlyPendingTimers();
-        expect(mockCell.setSelectionRange).toBeCalledWith(100, 100);
+        expect(mockCell.setSelectionRange).toHaveBeenCalledWith(100, 100);
     });
 
     it('Should handle componentDidMount lifecycle', () => {

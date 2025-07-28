@@ -44,8 +44,8 @@ describe('<UISearchBox />', () => {
         expect(resetButton).toBeTruthy();
 
         await userEvent.click(resetButton as HTMLElement);
-        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toHaveBeenCalledTimes(1);
         expect(onChange.mock.calls[0][1]).toEqual('');
-        expect(onClear).toBeCalledTimes(1);
+        expect(onClear).toHaveBeenCalledTimes(1);
     });
 });

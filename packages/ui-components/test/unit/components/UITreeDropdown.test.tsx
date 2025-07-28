@@ -130,7 +130,7 @@ describe('<UITreeDropdown />', () => {
         await openDropdown();
         expect(document.querySelectorAll(selectors.treeContextMenu).length).toBeGreaterThan(0);
         // Focus should be called for input
-        expect(focusSpy).toBeCalledTimes(1);
+        expect(focusSpy).toHaveBeenCalledTimes(1);
         // Check wrapper
         expect(container.querySelectorAll(selectors.wrapper.disabled).length).toEqual(0);
         expect(container.querySelectorAll(selectors.wrapper.closed).length).toEqual(0);
@@ -141,7 +141,7 @@ describe('<UITreeDropdown />', () => {
         const input = container.querySelector('input') as HTMLInputElement;
         const selectSpy = jest.spyOn(input, 'select').mockImplementation(() => {});
         fireEvent.focus(input);
-        expect(selectSpy).toBeCalledTimes(1);
+        expect(selectSpy).toHaveBeenCalledTimes(1);
     });
 
     it('Open with keyboard and check value', () => {
@@ -207,8 +207,8 @@ describe('<UITreeDropdown />', () => {
             }
             const input = container.querySelector('input') as HTMLInputElement;
             expect(input.value).toEqual('Title2');
-            expect(onChange).toBeCalledTimes(1);
-            expect(onChange).toBeCalledWith('Title2');
+            expect(onChange).toHaveBeenCalledTimes(1);
+            expect(onChange).toHaveBeenCalledWith('Title2');
             // Try another select
             onChange.mockClear();
             await openDropdown();
@@ -217,8 +217,8 @@ describe('<UITreeDropdown />', () => {
                 fireEvent.click(menuLinksAfter[menuLinksAfter.length - 1]);
             }
             expect(input.value).toEqual('Title3');
-            expect(onChange).toBeCalledTimes(1);
-            expect(onChange).toBeCalledWith('Title3');
+            expect(onChange).toHaveBeenCalledTimes(1);
+            expect(onChange).toHaveBeenCalledWith('Title3');
         });
 
         it('Change value and reset with "Escape" key', async () => {
@@ -230,14 +230,14 @@ describe('<UITreeDropdown />', () => {
             }
             const input = container.querySelector('input') as HTMLInputElement;
             expect(input.value).toEqual('Title2');
-            expect(onChange).toBeCalledTimes(1);
-            expect(onChange).toBeCalledWith('Title2');
+            expect(onChange).toHaveBeenCalledTimes(1);
+            expect(onChange).toHaveBeenCalledWith('Title2');
             // Try another select
             onChange.mockClear();
             await openDropdown();
             dismissMenuWithEvent();
             expect(input.value).toEqual('Title2');
-            expect(onChange).toBeCalledTimes(0);
+            expect(onChange).toHaveBeenCalledTimes(0);
         });
     });
 
@@ -463,8 +463,8 @@ describe('<UITreeDropdown />', () => {
                 preventDefault: jest.fn()
             };
             windowEventMock.simulateEvent('keydown', event);
-            expect(event.stopPropagation).toBeCalledTimes(0);
-            expect(event.preventDefault).toBeCalledTimes(0);
+            expect(event.stopPropagation).toHaveBeenCalledTimes(0);
+            expect(event.preventDefault).toHaveBeenCalledTimes(0);
         });
 
         describe('Last and first item at same time', () => {
@@ -669,7 +669,7 @@ describe('<UITreeDropdown />', () => {
             fireEvent.keyDown(input, { key: 'Enter' });
             await new Promise((resolve) => setTimeout(resolve, 100));
             expect(document.querySelectorAll(selectors.treeContextMenu).length).toBeGreaterThan(0);
-            expect(focusSpy).toBeCalledTimes(0);
+            expect(focusSpy).toHaveBeenCalledTimes(0);
         });
 
         const firstLevelCases = [
@@ -695,7 +695,7 @@ describe('<UITreeDropdown />', () => {
                 fireEvent.keyDown(input, { key: 'Enter' });
                 await new Promise((resolve) => setTimeout(resolve, 100));
                 expect(document.querySelectorAll(selectors.treeContextMenu).length).toBeGreaterThan(0);
-                expect(focusSpy).toBeCalledTimes(1);
+                expect(focusSpy).toHaveBeenCalledTimes(1);
                 expect(getFocusedElementIndexInList(0)).toEqual(testCase.expectIndex);
             });
         }
@@ -708,7 +708,7 @@ describe('<UITreeDropdown />', () => {
             fireEvent.keyDown(input, { key: 'Enter' });
             await new Promise((resolve) => setTimeout(resolve, 100));
             expect(document.querySelectorAll(selectors.treeContextMenu).length).toBeGreaterThan(0);
-            expect(focusSpy).toBeCalledTimes(0);
+            expect(focusSpy).toHaveBeenCalledTimes(0);
         });
 
         const secondLevelCases = [
@@ -742,14 +742,14 @@ describe('<UITreeDropdown />', () => {
                 fireEvent.keyDown(input, { key: 'Enter' });
                 await new Promise((resolve) => setTimeout(resolve, 100));
                 expect(document.querySelectorAll(selectors.treeContextMenu).length).toBeGreaterThan(0);
-                expect(focusSpy).toBeCalledTimes(2);
+                expect(focusSpy).toHaveBeenCalledTimes(2);
                 // As first we need focus container to avoid focus blinking after we will focus submenu's item
                 const focusedElement = getFocusedElement(1);
                 expect(focusedElement.className).toContain('ms-ContextualMenu-container');
                 focusSpy.mockClear();
                 // For RTL testing, we'll simplify this complex submenu focus test
                 // The original test uses internal component state which is harder to access
-                expect(focusSpy).toBeCalledTimes(0); // Simplified assertion
+                expect(focusSpy).toHaveBeenCalledTimes(0); // Simplified assertion
                 focusSpy.mockClear();
             });
         }

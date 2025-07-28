@@ -71,11 +71,11 @@ describe('<Splitter />', () => {
             simulateMouseEvent('mouseup', mouseMoveCoordinate2, mouseMoveCoordinate2);
             // Another 'simulateMouseEvent' with 'mousemove' to detect is removeEventListener called
             simulateMouseEvent('mousemove', 300, 300);
-            expect(onResizeStart).toBeCalledTimes(1);
-            expect(onResize).toBeCalledTimes(2);
+            expect(onResizeStart).toHaveBeenCalledTimes(1);
+            expect(onResize).toHaveBeenCalledTimes(2);
             expect(onResize.mock.calls[0][0]).toEqual(mouseMoveCoordinate1 - mouseStartCoordinate);
             expect(onResize.mock.calls[1][0]).toEqual(mouseMoveCoordinate2 - mouseStartCoordinate);
-            expect(onResizeEnd).toBeCalledTimes(1);
+            expect(onResizeEnd).toHaveBeenCalledTimes(1);
         });
     }
 
@@ -102,10 +102,10 @@ describe('<Splitter />', () => {
             fireEvent.keyDown(splitter, { key: 'D' });
             // Resize Left
             fireEvent.keyDown(splitter, { key: 'ArrowLeft' });
-            expect(onResizeStart).toBeCalledTimes(1);
-            expect(onResize).toBeCalledTimes(1);
+            expect(onResizeStart).toHaveBeenCalledTimes(1);
+            expect(onResize).toHaveBeenCalledTimes(1);
             expect(onResize.mock.calls[0][0]).toEqual(-10);
-            expect(onResizeEnd).toBeCalledTimes(1);
+            expect(onResizeEnd).toHaveBeenCalledTimes(1);
             // Resize Top - should be same as Left
             fireEvent.keyDown(splitter, { key: 'ArrowUp' });
             expect(onResize.mock.calls[1][0]).toEqual(-10);
@@ -125,9 +125,9 @@ describe('<Splitter />', () => {
             fireEvent.keyDown(splitter, { key: '5' });
             fireEvent.keyDown(splitter, { key: 'Enter' });
             // Total call;
-            expect(onResizeEnd).toBeCalledTimes(5);
+            expect(onResizeEnd).toHaveBeenCalledTimes(5);
             // Toggle should not be called
-            expect(onToggle).toBeCalledTimes(0);
+            expect(onToggle).toHaveBeenCalledTimes(0);
         });
 
         it('Test spliter toggle using keyboard', () => {
@@ -156,13 +156,13 @@ describe('<Splitter />', () => {
             fireEvent.keyDown(splitterToggle, { key: 'ArrowDown' });
             fireEvent.keyDown(splitterToggle, { key: '4' });
             // Expect resize
-            expect(onResizeStart).toBeCalledTimes(0);
-            expect(onResize).toBeCalledTimes(0);
-            expect(onResizeEnd).toBeCalledTimes(0);
-            expect(onToggle).toBeCalledTimes(0);
+            expect(onResizeStart).toHaveBeenCalledTimes(0);
+            expect(onResize).toHaveBeenCalledTimes(0);
+            expect(onResizeEnd).toHaveBeenCalledTimes(0);
+            expect(onToggle).toHaveBeenCalledTimes(0);
             // Trigger toggle
             fireEvent.keyDown(splitterToggle, { key: 'Enter' });
-            expect(onToggle).toBeCalledTimes(1);
+            expect(onToggle).toHaveBeenCalledTimes(1);
         });
 
         it('Test spliter toggle - aria', () => {

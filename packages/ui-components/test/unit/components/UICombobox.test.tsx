@@ -618,9 +618,9 @@ describe('<UIComboBox />', () => {
                             testCase.element.clientHeight
                         );
                         // Test that scrolling behavior is handled correctly
-                        expect(scrollTopSetter).toBeCalledTimes(testCase.expect ? 1 : 0);
+                        expect(scrollTopSetter).toHaveBeenCalledTimes(testCase.expect ? 1 : 0);
                         if (testCase.expect !== undefined) {
-                            expect(scrollTopSetter).toBeCalledWith(testCase.expect);
+                            expect(scrollTopSetter).toHaveBeenCalledWith(testCase.expect);
                         }
                     }
                 }
@@ -997,7 +997,7 @@ describe('<UIComboBox />', () => {
         );
         expect(getDropdownElements(menuDropdownSelector).length).toEqual(0);
         // Open callout
-        expect(onPendingValueChanged).not.toBeCalled();
+        expect(onPendingValueChanged).not.toHaveBeenCalled();
         const input = container.querySelector('input');
         if (input) {
             fireEvent.keyDown(input, { which: KeyCodes.down });
@@ -1414,8 +1414,8 @@ describe('<UIComboBox />', () => {
                 fireEvent.input(input, { target: { value: 'My dummy' } });
                 fireEvent.input(input, { target: { value: 'My dummy value' } });
                 await new Promise((resolve) => setTimeout(resolve, 20));
-                expect(onInputChange).toBeCalledTimes(3);
-                expect(onExternalSearch).toBeCalledTimes(1);
+                expect(onInputChange).toHaveBeenCalledTimes(3);
+                expect(onExternalSearch).toHaveBeenCalledTimes(1);
                 expect(onExternalSearch).toHaveBeenCalledWith('My dummy value');
             }
         });

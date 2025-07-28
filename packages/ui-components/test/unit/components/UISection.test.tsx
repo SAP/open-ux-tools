@@ -81,7 +81,7 @@ describe('<Section />', () => {
         expect(sectionBody).toBeTruthy();
         fireEvent.scroll(sectionBody as HTMLElement, {});
         // Check result
-        expect(onScroll).toBeCalledTimes(1);
+        expect(onScroll).toHaveBeenCalledTimes(1);
     });
 
     it('Test "hidden" property', () => {

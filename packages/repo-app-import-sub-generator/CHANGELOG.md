@@ -1,5 +1,35 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.68
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.15
+-   @sap-ux/odata-service-inquirer@2.5.22
+
+## 0.3.67
+
+### Patch Changes
+
+-   c073a1b: set only css: [] in manifest resources to avoid deprecated 'sap.ui5/resources/js' linter errors in repo-app-import-sub-generator
+
+## 0.3.66
+
+### Patch Changes
+
+-   Updated dependencies [45bbe6c]
+    -   @sap-ux/odata-service-inquirer@2.5.22
+
+## 0.3.65
+
+### Patch Changes
+
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/fiori-elements-writer@2.5.14
+    -   @sap-ux/inquirer-common@0.7.27
+    -   @sap-ux/odata-service-inquirer@2.5.21
+
 ## 0.3.64
 
 ### Patch Changes

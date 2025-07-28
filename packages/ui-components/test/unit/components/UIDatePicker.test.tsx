@@ -35,7 +35,7 @@ describe('<UIDatePicker />', () => {
         const input = container.querySelector('input[type="text"]');
         if (input) {
             fireEvent.change(input, { target: { value: '2022-08-22' } });
-            expect(onChangeSpy).toBeCalledTimes(1);
+            expect(onChangeSpy).toHaveBeenCalledTimes(1);
             expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22');
         }
     });
@@ -45,7 +45,7 @@ describe('<UIDatePicker />', () => {
         const input = container.querySelector('input[type="text"]');
         if (input) {
             fireEvent.change(input, { target: { value: '' } });
-            expect(onChangeSpy).toBeCalledTimes(0);
+            expect(onChangeSpy).toHaveBeenCalledTimes(0);
         }
     });
 
@@ -54,7 +54,7 @@ describe('<UIDatePicker />', () => {
         const input = container.querySelector('input[type="date"]');
         if (input) {
             fireEvent.change(input, { target: { value: '2022-08-22' } });
-            expect(onChangeSpy).toBeCalledTimes(1);
+            expect(onChangeSpy).toHaveBeenCalledTimes(1);
             expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22');
         }
     });
@@ -64,7 +64,7 @@ describe('<UIDatePicker />', () => {
         const input = container.querySelector('input[type="datetime-local"]');
         if (input) {
             fireEvent.change(input, { target: { value: '2022-08-22T22:00' } });
-            expect(onChangeSpy).toBeCalledTimes(1);
+            expect(onChangeSpy).toHaveBeenCalledTimes(1);
             expect(onChangeSpy.mock.calls[0][1]).toBe('2022-08-22T22:00:00');
         }
     });

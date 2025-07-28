@@ -1,4 +1,4 @@
-import { withCondition } from '@sap-ux/inquirer-common';
+import { extendWithOptions, withCondition } from '@sap-ux/inquirer-common';
 import { join } from 'path';
 import { t } from '../utils';
 import { DeploymentGenerator, showOverwriteQuestion, TargetName } from '@sap-ux/deploy-config-generator-shared';
@@ -6,6 +6,7 @@ import { getAbapQuestions, indexHtmlExists } from '@sap-ux/abap-deploy-config-su
 import { getCFQuestions } from '@sap-ux/cf-deploy-config-sub-generator';
 import { FileName } from '@sap-ux/project-access';
 import { getDeployTargetQuestion } from './deploy-target';
+import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
 import type {
@@ -18,9 +19,8 @@ import type {
     AbapDeployConfigPromptOptions,
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-sub-generator';
-import type { CommonPromptOptions, PromptDefaultValue } from '@sap-ux/inquirer-common';
 import type { Answers, Question } from 'inquirer';
-import type { DeployConfigOptions, Target } from '../types';
+import type { DeployConfigOptions, DeployConfigSubGenPromptOptions, Target } from '../types';
 
 /**
  * Retrieves the combined sub generator prompts.
@@ -30,7 +30,7 @@ import type { DeployConfigOptions, Target } from '../types';
  * @param promptOpts - options for prompts
  * @param promptOpts.launchDeployConfigAsSubGenerator - whether the generator is launched as a sub generator
  * @param promptOpts.launchStandaloneFromYui - whether the generator is launched standalone from YUI
- * @param promptOpts.extensionPromptOpts - extension prompt options
+ * @param promptOpts.promptOptions - sub gen prompt options
  * @param promptOpts.supportedTargets - supported deployment targets
  * @param promptOpts.backendConfig - backend configuration
  * @param promptOpts.cfDestination - CF destination
@@ -46,7 +46,7 @@ export async function getSubGenPrompts(
     {
         launchDeployConfigAsSubGenerator,
         launchStandaloneFromYui,
-        extensionPromptOpts,
+        promptOptions,
         supportedTargets,
         backendConfig,
         cfDestination,
@@ -56,7 +56,7 @@ export async function getSubGenPrompts(
     }: {
         launchDeployConfigAsSubGenerator: boolean;
         launchStandaloneFromYui: boolean;
-        extensionPromptOpts?: Record<string, CommonPromptOptions & PromptDefaultValue<string | boolean>>;
+        promptOptions?: DeployConfigSubGenPromptOptions;
         supportedTargets: Target[];
         backendConfig: FioriToolsProxyConfigBackend;
         cfDestination: string;
@@ -115,8 +115,7 @@ export async function getSubGenPrompts(
             supportedTargets,
             abapPrompts,
             cfPrompts,
-            extensionPromptOpts,
-            launchStandaloneFromYui
+            promptOptions
         });
     } else {
         questions = targetDeployment === TargetName.ABAP ? (abapPrompts as Question[]) : (cfPrompts as Question[]);
@@ -133,8 +132,7 @@ export async function getSubGenPrompts(
  * @param opts.supportedTargets - the support deployment targets
  * @param opts.abapPrompts - abap specific prompts
  * @param opts.cfPrompts - cf specific prompts
- * @param opts.extensionPromptOpts - extension prompt options
- * @param opts.launchStandaloneFromYui - whether the generator is launched standalone from YUI
+ * @param opts.promptOptions - sub gen prompt options
  * @returns - all the different prompts combined
  */
 function combineAllPrompts(
@@ -143,25 +141,21 @@ function combineAllPrompts(
         supportedTargets,
         abapPrompts,
         cfPrompts,
-        extensionPromptOpts,
-        launchStandaloneFromYui
+        promptOptions
     }: {
         supportedTargets: Target[];
         abapPrompts: AbapDeployConfigQuestion[];
         cfPrompts: CfDeployConfigQuestions[];
-        extensionPromptOpts?: Record<string, CommonPromptOptions & PromptDefaultValue<string | boolean>>;
-        launchStandaloneFromYui: boolean;
+        promptOptions?: DeployConfigSubGenPromptOptions;
     }
 ): Question[] {
-    const questions = getDeployTargetQuestion(
-        supportedTargets,
-        projectRoot,
-        extensionPromptOpts,
-        launchStandaloneFromYui
-    );
+    const questions = getDeployTargetQuestion(supportedTargets, projectRoot);
     questions.push(
         ...withCondition(abapPrompts as Question[], (answers: Answers) => answers.targetName === TargetName.ABAP)
     );
     questions.push(...withCondition(cfPrompts, (answers: Answers) => answers.targetName === TargetName.CF));
-    return questions;
+
+    return promptOptions
+        ? extendWithOptions(questions as YUIQuestion[], promptOptions as Record<string, CommonPromptOptions>)
+        : questions;
 }

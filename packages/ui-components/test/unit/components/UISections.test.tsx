@@ -925,7 +925,7 @@ describe('<Sections />', () => {
         );
         const { container } = testRender;
         simulateSplitterResize(container, 1000, 50);
-        expect(resizeFn).toBeCalledTimes(1);
+        expect(resizeFn).toHaveBeenCalledTimes(1);
         testRender.unmount();
     });
 
@@ -965,20 +965,20 @@ describe('<Sections />', () => {
         // Simulate restore for min size
         mockWidth(970);
         windowEventListenerMock.simulateEvent('resize', {});
-        expect(onToggleFullscreen).toBeCalledTimes(0);
+        expect(onToggleFullscreen).toHaveBeenCalledTimes(0);
         // Note: state testing not available in RTL, focusing on callback behavior
 
         onToggleFullscreen.mockClear();
         mockWidth(800);
         windowEventListenerMock.simulateEvent('resize', {});
-        expect(onToggleFullscreen).toBeCalledTimes(1);
+        expect(onToggleFullscreen).toHaveBeenCalledTimes(1);
         // Note: internal state changes cannot be directly tested with RTL
 
         onToggleFullscreen.mockClear();
         mockWidth(1000);
 
         windowEventListenerMock.simulateEvent('resize', {});
-        expect(onToggleFullscreen).toBeCalledTimes(1);
+        expect(onToggleFullscreen).toHaveBeenCalledTimes(1);
         // Note: focusing on callback behavior rather than internal state
         testRender.unmount();
     });
@@ -1244,7 +1244,7 @@ describe('<Sections />', () => {
         mockWidth(670);
 
         windowEventListenerMock.simulateEvent('resize', {});
-        expect(onToggleFullscreen).toBeCalledTimes(1);
+        expect(onToggleFullscreen).toHaveBeenCalledTimes(1);
         // Note: state testing not available in RTL, focusing on callback behavior
         testRender.unmount();
     });

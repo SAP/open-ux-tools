@@ -32,7 +32,7 @@
     },
     "devDependencies": {
         "@types/validate-npm-package-name": "4.0.1",
-        "jest-extended": "4.0.2"
+        "jest-extended": "6.0.0"
     },
     "files": [
         "dist",

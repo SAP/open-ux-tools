@@ -1,5 +1,41 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.3.2
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.4.2
+-   @sap-ux/app-config-writer@0.6.23
+
+## 0.3.1
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.4.1
+-   @sap-ux/app-config-writer@0.6.23
+
+## 0.3.0
+
+### Minor Changes
+
+-   089b56f: updates extension types and extends prompt options in sub gens
+
+### Patch Changes
+
+-   Updated dependencies [089b56f]
+    -   @sap-ux/flp-config-inquirer@0.4.0
+
+## 0.2.55
+
+### Patch Changes
+
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/deploy-config-generator-shared@0.1.22
+    -   @sap-ux/flp-config-inquirer@0.3.49
+    -   @sap-ux/inquirer-common@0.7.27
+    -   @sap-ux/app-config-writer@0.6.23
+
 ## 0.2.54
 
 ### Patch Changes

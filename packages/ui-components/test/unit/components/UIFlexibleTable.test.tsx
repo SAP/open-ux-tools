@@ -1344,8 +1344,8 @@ describe('<UIFlexibleTable />', () => {
                         expect(touchStartMock.mock.calls.length).toBeLessThanOrEqual(1);
                         expect(touchEndMock.mock.calls.length).toBeLessThanOrEqual(1);
                     } else {
-                        expect(touchStartMock).not.toBeCalled();
-                        expect(touchEndMock).not.toBeCalled();
+                        expect(touchStartMock).not.toHaveBeenCalled();
+                        expect(touchEndMock).not.toHaveBeenCalled();
                     }
                 });
             }

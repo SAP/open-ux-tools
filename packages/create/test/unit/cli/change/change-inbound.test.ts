@@ -64,9 +64,9 @@ describe('change/inbound', () => {
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalledWith('This command can only be used for an adaptation project');
-        expect(generateChangeSpy).not.toBeCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith('This command can only be used for an adaptation project');
+        expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 
     test('change-inbound - CF environment', async () => {
@@ -78,9 +78,9 @@ describe('change/inbound', () => {
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(appRoot));
 
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalledWith('This command is not supported for CF projects.');
-        expect(generateChangeSpy).not.toBeCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith('This command is not supported for CF projects.');
+        expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 
     test('change-inbound - onPremise project', async () => {
@@ -91,32 +91,32 @@ describe('change/inbound', () => {
         const command = new Command('inbound');
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(appRoot));
-        expect(loggerMock.debug).toBeCalled();
-        expect(loggerMock.error).toBeCalledWith('This command can only be used for Cloud Adaptation Project');
-        expect(generateChangeSpy).not.toBeCalled();
+        expect(loggerMock.debug).toHaveBeenCalled();
+        expect(loggerMock.error).toHaveBeenCalledWith('This command can only be used for Cloud Adaptation Project');
+        expect(generateChangeSpy).not.toHaveBeenCalled();
     });
 
     test('change-inbound - --simulate', async () => {
         const command = new Command('inbound');
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(appRoot, '--simulate'));
-        expect(promptYUIQuestionsSpy).toBeCalled();
-        expect(generateChangeSpy).toBeCalled();
-        expect(traceSpy).toBeCalled();
+        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
+        expect(generateChangeSpy).toHaveBeenCalled();
+        expect(traceSpy).toHaveBeenCalled();
     });
 
     test('change-inbound - cloudProject', async () => {
         const command = new Command('inbound');
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(appRoot));
-        expect(promptYUIQuestionsSpy).toBeCalled();
-        expect(generateChangeSpy).toBeCalled();
+        expect(promptYUIQuestionsSpy).toHaveBeenCalled();
+        expect(generateChangeSpy).toHaveBeenCalled();
     });
 
     test('change-inbound - no basePath', async () => {
         const command = new Command('inbound');
         addChangeInboundCommand(command);
         await command.parseAsync(getArgv(''));
-        expect(generateChangeSpy).toBeCalled();
+        expect(generateChangeSpy).toHaveBeenCalled();
     });
 });

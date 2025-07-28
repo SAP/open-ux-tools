@@ -31,7 +31,7 @@ describe('waitFor', () => {
 
     it('should reject with an error when the element is not found', async () => {
         const result = waitFor('#non-existent-element', 1);
-        await expect(result).rejects.toThrowError('Element for selector not found: #non-existent-element');
+        await expect(result).rejects.toThrow('Element for selector not found: #non-existent-element');
     });
 });
 
