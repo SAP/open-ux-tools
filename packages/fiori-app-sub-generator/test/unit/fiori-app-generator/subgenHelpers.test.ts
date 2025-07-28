@@ -78,15 +78,12 @@ describe('Subgen (flp/deploy) are correctly composedWith', () => {
             },
             projectName: 'testAppName',
             targetFolder: '/test/target/folder',
-            applicationType: 'telemetryData_appType1',
-            promptSettings: {
-                '@sap-ux/deploy-config-sub-generator': {
-                    packageManual: { default: 'PKG123' }
-                }
-            }
+            applicationType: 'telemetryData_appType1'
         };
 
-        addDeployGen(addDeployGenOpts, composeWithMock, DefaultLogger, {} as AppWizard);
+        addDeployGen(addDeployGenOpts, composeWithMock, DefaultLogger, {} as AppWizard, {
+            packageManual: { default: 'PKG123' }
+        });
 
         expect(composeWithMock).toHaveBeenCalledWith('@sap/fiori:deploy-config', {
             apiHubConfig: undefined,
@@ -127,7 +124,8 @@ describe('Subgen (flp/deploy) are correctly composedWith', () => {
             },
             composeWithMock,
             DefaultLogger,
-            {} as AppWizard
+            {} as AppWizard,
+            { packageManual: { default: 'PKG123' } }
         );
 
         expect(composeWithMock).toHaveBeenCalledWith('@sap/fiori:deploy-config', {

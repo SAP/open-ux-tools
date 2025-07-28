@@ -440,8 +440,18 @@ describe('prompting.ts', () => {
                     requiredOdataVersion: OdataVersion.v4,
                     allowNoDatasource: undefined,
                     promptOptions: {
+                        [odataServiceInqPromptNames.datasourceType]: {
+                            choices: [DatasourceType.sapSystem, DatasourceType.odataServiceUrl, DatasourceType.none]
+                        },
+                        [odataServiceInqPromptNames.metadataFilePath]: { requiredOdataVersion: OdataVersion.v4 },
                         [odataServiceInqPromptNames.systemSelection]: { defaultChoice: 'someDestination' },
-                        [odataServiceInqPromptNames.serviceSelection]: { serviceFilter: ['Service1', 'Service2'] }
+                        [odataServiceInqPromptNames.serviceSelection]: {
+                            serviceFilter: ['Service1', 'Service2'],
+                            requiredOdataVersion: OdataVersion.v4
+                        },
+                        [odataServiceInqPromptNames.userSystemName]: {
+                            hide: true
+                        }
                     },
                     showCollabDraftWarning: true
                 },
@@ -481,7 +491,8 @@ describe('prompting.ts', () => {
                     [odataServiceInqPromptNames.capService]: { defaultChoice: undefined },
                     [odataServiceInqPromptNames.datasourceType]: {
                         default: DatasourceType.sapSystem,
-                        includeNone: false
+                        includeNone: false,
+                        choices: [DatasourceType.sapSystem, DatasourceType.odataServiceUrl, DatasourceType.none]
                     },
                     [odataServiceInqPromptNames.metadataFilePath]: { requiredOdataVersion: OdataVersion.v4 },
                     [odataServiceInqPromptNames.serviceSelection]: {
@@ -499,7 +510,8 @@ describe('prompting.ts', () => {
                         useAutoComplete: false,
                         includeCloudFoundryAbapEnvChoice: true,
                         defaultChoice: 'someDestination'
-                    }
+                    },
+                    [odataServiceInqPromptNames.userSystemName]: { hide: true }
                 }),
                 DefaultLogger as unknown as Logger,
                 true, // is GA feature enabled

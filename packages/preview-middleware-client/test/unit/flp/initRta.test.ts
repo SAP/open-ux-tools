@@ -45,7 +45,7 @@ describe('flp/initRta', () => {
 
         await initRta(options as unknown as RTAOptions, pluginScript);
 
-        expect(setVisibleSpy).toBeCalledTimes(2);
+        expect(setVisibleSpy).toHaveBeenCalledTimes(2);
     });
 
     test('throws error when invalid layer is passed', async () => {

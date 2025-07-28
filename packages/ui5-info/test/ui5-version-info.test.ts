@@ -211,26 +211,26 @@ describe('getUI5Versions: Handle error cases while getting UI5 versions: ', () =
     test('UI5 versions fallback if official is not available ', async () => {
         const versions = await getUI5Versions();
         expect(versions).toMatchSnapshot();
-        expect(logWarnSpy).toBeCalledTimes(1);
+        expect(logWarnSpy).toHaveBeenCalledTimes(1);
     });
 
     test('UI5 versions fallback if snapshot is not available ', async () => {
         const versions = await getUI5Versions({ snapshotVersionsHost });
         expect(versions).toMatchSnapshot();
-        expect(logErrorSpy).toBeCalledTimes(1);
-        expect(logWarnSpy).toBeCalledTimes(1);
+        expect(logErrorSpy).toHaveBeenCalledTimes(1);
+        expect(logWarnSpy).toHaveBeenCalledTimes(1);
     });
 
     test('UI5 versions fallback for specified min UI5 version, if request fails', async () => {
         const versions = await getUI5Versions({ minSupportedUI5Version: '1.71.0' });
         expect(versions).toMatchSnapshot();
-        expect(logWarnSpy).toBeCalledTimes(1);
+        expect(logWarnSpy).toHaveBeenCalledTimes(1);
     });
 
     test('UI5 versions fallback for maintained versions, if request fails', async () => {
         const versions = await getUI5Versions({ includeMaintained: true });
         expect(versions).toMatchSnapshot();
-        expect(logWarnSpy).toBeCalledTimes(2);
+        expect(logWarnSpy).toHaveBeenCalledTimes(2);
     });
 });
 
@@ -253,14 +253,14 @@ describe('getUI5Versions: Handle fatal cases while getting UI5 versions: ', () =
     test('UI5 versions fallback if official is not available ', async () => {
         const versions = await getUI5Versions();
         expect(versions).toMatchSnapshot();
-        expect(logWarnSpy).toBeCalledTimes(1);
+        expect(logWarnSpy).toHaveBeenCalledTimes(1);
     });
 
     test('UI5 versions fallback if snapshot is not available ', async () => {
         const versions = await getUI5Versions({ snapshotVersionsHost });
         expect(versions).toMatchSnapshot();
-        expect(logErrorSpy).toBeCalledTimes(1);
-        expect(logWarnSpy).toBeCalledTimes(1);
+        expect(logErrorSpy).toHaveBeenCalledTimes(1);
+        expect(logWarnSpy).toHaveBeenCalledTimes(1);
     });
 });
 

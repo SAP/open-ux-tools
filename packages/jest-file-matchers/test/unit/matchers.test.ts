@@ -74,7 +74,7 @@ describe('Test matchers', () => {
 
         expect(() => {
             expect(receivedFolder).toMatchFolder(expected, invalidignoreMatcherOpts as any);
-        }).toThrowError(`Invalid ignore regex provided to file snapshot matcher: ${'('}`);
+        }).toThrow(`Invalid ignore regex provided to file snapshot matcher: ${'('}`);
     });
 
     it('matches content of file on disk with specified filename', () => {

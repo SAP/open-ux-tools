@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.5.9
+
+### Patch Changes
+
+-   2809593: update test snapshots to reflect latest template and linting changes
+
 ## 1.5.8
 
 ### Patch Changes

@@ -41,9 +41,9 @@ describe('setupRedirectHandling()', () => {
         });
 
         jest.advanceTimersByTime(TIMEOUT);
-        expect(resolveCallback).not.toBeCalled();
-        expect(rejectCallback).toBeCalledTimes(1);
-        expect(rejectCallback).toBeCalledWith(expect.any(TimeoutError));
+        expect(resolveCallback).not.toHaveBeenCalled();
+        expect(rejectCallback).toHaveBeenCalledTimes(1);
+        expect(rejectCallback).toHaveBeenCalledWith(expect.any(TimeoutError));
     });
 
     // Convenience function to extract the redirect path from the full redirect url
@@ -64,9 +64,9 @@ describe('setupRedirectHandling()', () => {
 
         const { server, redirectUrl } = setup({ resolve: resolveCallback, reject: rejectCallback });
         await request(server).get(`${redirectPath(redirectUrl)}?reentrance-ticket=${REENTRANCE_TICKET}`);
-        expect(rejectCallback).not.toBeCalled();
-        expect(resolveCallback).toBeCalledTimes(1);
-        expect(resolveCallback).toBeCalledWith(expect.objectContaining({ reentranceTicket: REENTRANCE_TICKET }));
+        expect(rejectCallback).not.toHaveBeenCalled();
+        expect(resolveCallback).toHaveBeenCalledTimes(1);
+        expect(resolveCallback).toHaveBeenCalledWith(expect.objectContaining({ reentranceTicket: REENTRANCE_TICKET }));
     });
 
     it('calls resolve() with the with API URL', async () => {
@@ -82,9 +82,9 @@ describe('setupRedirectHandling()', () => {
         });
         await request(server).get(`${redirectPath(redirectUrl)}?reentrance-ticket=${REENTRANCE_TICKET}`);
 
-        expect(rejectCallback).not.toBeCalled();
-        expect(resolveCallback).toBeCalledTimes(1);
-        expect(resolveCallback).toBeCalledWith(expect.objectContaining({ apiUrl: backedUrl + '-api' }));
+        expect(rejectCallback).not.toHaveBeenCalled();
+        expect(resolveCallback).toHaveBeenCalledTimes(1);
+        expect(resolveCallback).toHaveBeenCalledWith(expect.objectContaining({ apiUrl: backedUrl + '-api' }));
     });
 
     it('calls reject() when reentrance ticket is missing', async () => {
@@ -99,9 +99,9 @@ describe('setupRedirectHandling()', () => {
         });
         await request(server).get(redirectPath(redirectUrl));
 
-        expect(resolveCallback).not.toBeCalled();
-        expect(rejectCallback).toBeCalledTimes(1);
-        expect(rejectCallback).toBeCalledWith(expect.any(ConnectionError));
+        expect(resolveCallback).not.toHaveBeenCalled();
+        expect(rejectCallback).toHaveBeenCalledTimes(1);
+        expect(rejectCallback).toHaveBeenCalledWith(expect.any(ConnectionError));
     });
 
     it('returns an HTTP Server', () => {

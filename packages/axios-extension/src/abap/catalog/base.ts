@@ -49,16 +49,23 @@ export abstract class CatalogService extends ODataService {
 
     public isS4Cloud: Promise<boolean>;
 
-    protected abstract fetchServices(): Promise<ODataServiceInfo[]>;
+    /**
+     * Fetch all services from the backend.
+     *
+     * @param useNextLink if true, the next link will be used to fetch the next page of results, pages are fetched serially.
+     */
+    protected abstract fetchServices(useNextLink?: boolean): Promise<ODataServiceInfo[]>;
 
     /**
      * Returns list of services from the catalog service.
      *
+     * @param useNextLink if true, the next link tags will be used to fetch the next page of results, pages are fetched serially.
+     * Note that this will be less performant for larger datasets.
      * @returns list of services
      */
-    async listServices(): Promise<ODataServiceInfo[]> {
+    async listServices(useNextLink = false): Promise<ODataServiceInfo[]> {
         if (!this.services) {
-            this.services = await this.fetchServices();
+            this.services = await this.fetchServices(useNextLink);
         }
         return this.services;
     }

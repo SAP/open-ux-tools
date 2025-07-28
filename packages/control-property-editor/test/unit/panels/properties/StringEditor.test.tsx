@@ -133,7 +133,7 @@ describe('StringEditor', () => {
         expect(textBox).toBeInTheDocument();
         expect((textBox as any).value).toBe(value);
         fireEvent.blur(textBox);
-        expect(dispatch).toBeCalledTimes(0);
+        expect(dispatch).toHaveBeenCalledTimes(0);
     });
 
     test('integer value onPress "Enter"', () => {

@@ -179,7 +179,7 @@ describe('FlpSandbox', () => {
                 'sap.app': { id: 'my.id', title: '{i18n>myTitle}', description: '{{i18n>myDescription}}' }
             } as Manifest;
             await flp.init(manifest);
-            expect(projectAccessMock).toBeCalled();
+            expect(projectAccessMock).toHaveBeenCalled();
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
@@ -852,7 +852,7 @@ describe('FlpSandbox', () => {
                 ]
             };
             const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload);
-            expect(projectAccessMock).toBeCalled();
+            expect(projectAccessMock).toHaveBeenCalled();
             expect(response.status).toBe(201);
             expect(response.text).toBe('Files were updated/created');
         });
@@ -1052,7 +1052,7 @@ describe('FlpSandbox', () => {
             logger.info.mockReset();
             mockProject.byPath.mockResolvedValueOnce({});
             await server.get('/test/existingFlp.html?sap-ui-xx-viewCache=false');
-            expect(logger.info).toBeCalledWith(
+            expect(logger.info).toHaveBeenCalledWith(
                 'HTML file returned at /test/existingFlp.html is loaded from the file system.'
             );
             await server.get('/cdm.json').expect(404);
@@ -1397,8 +1397,8 @@ describe('initAdp', () => {
             jest.fn();
         });
         await initAdp(mockAdpProject, config.adp, flp, {} as MiddlewareUtils, logger);
-        expect(adpToolingMock).toBeCalled();
-        expect(flpInitMock).toBeCalled();
+        expect(adpToolingMock).toHaveBeenCalled();
+        expect(flpInitMock).toHaveBeenCalled();
     });
 
     test('initAdp - cloud scenario', async () => {
@@ -1432,8 +1432,8 @@ describe('initAdp', () => {
             jest.fn();
         });
         await initAdp(mockAdpProject, config.adp as AdpPreviewConfig, flp, {} as MiddlewareUtils, logger);
-        expect(adpToolingMock).toBeCalled();
-        expect(flpInitMock).toBeCalled();
+        expect(adpToolingMock).toHaveBeenCalled();
+        expect(flpInitMock).toHaveBeenCalled();
         expect(flp.rta?.options?.isCloud).toBe(true);
     });
 });

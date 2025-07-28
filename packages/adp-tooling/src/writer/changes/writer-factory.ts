@@ -23,14 +23,25 @@ export class WriterFactory {
      * @param type - The type of the change which will be handled by the writer.
      * @param fs - The filesystem editor instance.
      * @param projectPath - The path to the project for which the writer is created.
+     * @param templatesPath - The path to the templates used for generating changes.
      * @returns An instance of the writer associated with the specified generator type.
      * @throws If the specified generator type is not supported.
      */
-    static createWriter<T extends ChangeType>(type: T, fs: Editor, projectPath: string): IWriterData<T> {
+    static createWriter<T extends ChangeType>(
+        type: T,
+        fs: Editor,
+        projectPath: string,
+        templatesPath?: string
+    ): IWriterData<T> {
         const WriterClass = this.writers.get(type);
         if (!WriterClass) {
             throw new Error(`Unsupported generator type: ${type}`);
         }
+
+        if (type === ChangeType.ADD_ANNOTATIONS_TO_ODATA) {
+            return new (WriterClass as typeof AnnotationsWriter)(fs, projectPath, templatesPath) as IWriterData<T>;
+        }
+
         return new WriterClass(fs, projectPath);
     }
 }
