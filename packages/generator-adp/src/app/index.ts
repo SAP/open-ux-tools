@@ -224,7 +224,8 @@ export default class extends Generator {
                     projectName: this.attributeAnswers.projectName,
                     targetFolder: this.attributeAnswers.targetFolder,
                     connectedSystem: this.configAnswers.system,
-                    client
+                    client,
+                    promptOptions: { ui5AbapRepo: { hideIfOnPremise: true } }
                 },
                 this.composeWith.bind(this),
                 this.logger,
