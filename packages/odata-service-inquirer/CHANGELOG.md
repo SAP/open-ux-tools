@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.24
+
+### Patch Changes
+
+-   2cae662: fix(deps): update dependency @sap-ux/annotation-converter to v0.10.3
+
 ## 2.5.23
 
 ### Patch Changes
