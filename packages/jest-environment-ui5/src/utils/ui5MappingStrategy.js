@@ -21,7 +21,12 @@ function processDependencyResources(
 ) {
     for (const resource of resources) {
         const resourcePath = resource.getPath().replace(/\/resources\/|\/test-resources\//g, '');
-        const itemPath = path.join(sourceDirectory, resourcePath);
+        let itemPath;
+        if (sourceDirectory) {
+            itemPath = path.join(sourceDirectory, resourcePath);
+        } else {
+            itemPath = resource.getSourceMetadata?.().fsPath ?? resourcePath;
+        }
 
         let targetPath = resourcePath.replace(/\\/g, '/');
         if (targetPath.endsWith('.js')) {
@@ -34,7 +39,7 @@ function processDependencyResources(
                 targetPath = targetPath.replace('.ts', '');
                 ui5PathMapping[targetPath + '.ts'] = itemPath;
             }
-            if (!targetPath.startsWith(namespace)) {
+            if (namespace && !targetPath.startsWith(namespace)) {
                 targetPath = path.posix.join(namespace, targetPath);
             }
         }
@@ -53,7 +58,7 @@ async function getFileMapFromUI5(graph, rootProject) {
     let ui5PathMapping = {};
     let ui5VersionInfo = {
         name: 'SAPUI5 Distribution',
-        version: rootProject._config.framework.version,
+        version: rootProject._config.framework?.version ?? '1.0.0',
         'buildTimestamp': '202412051614',
         'scmRevision': '',
         'libraries': []
@@ -64,24 +69,19 @@ async function getFileMapFromUI5(graph, rootProject) {
         const isReusableLibrary = dependencyType === 'library' && !dependency.isFrameworkProject();
         const isRootProject = dependency.getName() === rootProject.getName();
         const reader = dependency.getReader({ style: isReusableLibrary || isRootProject ? 'flat' : 'runtime' });
+        let sourcePath;
         if (dependencyType !== 'module') {
-            const namespace = dependency.getNamespace();
-            ui5VersionInfo.libraries.push({
-                name: dependency.getName(),
-                version: dependency.getVersion(),
-                buildTimestamp: '202412051614',
-                scmRevision: ''
-            });
-            let resources = await reader.byGlob(`**/*.{ts,tsx,js,xml,properties,json}`);
-            processDependencyResources(
-                resources,
-                ui5PathMapping,
-                isRootProject,
-                isReusableLibrary,
-                namespace,
-                dependency.getSourcePath()
-            );
+            sourcePath = dependency.getSourcePath();
         }
+        const namespace = dependency.getNamespace();
+        ui5VersionInfo.libraries.push({
+            name: dependency.getName(),
+            version: dependency.getVersion(),
+            buildTimestamp: '202412051614',
+            scmRevision: ''
+        });
+        let resources = await reader.byGlob(`**/*.{ts,tsx,js,xml,properties,json}`);
+        processDependencyResources(resources, ui5PathMapping, isRootProject, isReusableLibrary, namespace, sourcePath);
     });
     return { ui5PathMapping, ui5VersionInfo };
 }
