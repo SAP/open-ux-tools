@@ -1,5 +1,22 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.4.28
+
+### Patch Changes
+
+-   d5cb2a3: remove single quotes from test script paths for Windows compatibility
+
+## 2.4.27
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/ui5-application-writer@1.5.10
+    -   @sap-ux/cap-config-writer@0.10.22
+    -   @sap-ux/fiori-generator-shared@0.13.4
+    -   @sap-ux/odata-service-writer@0.27.13
+    -   @sap-ux/ui5-test-writer@0.7.14
+
 ## 2.4.26
 
 ### Patch Changes
