@@ -25,7 +25,9 @@ describe('UAA', () => {
 
             await uaaInstance({ url: uaaUrl }).getUserInfo('someToken');
 
-            expect(mockRequest).toBeCalledWith(expect.objectContaining({ url: uaaUrl + '/userinfo', method: 'GET' }));
+            expect(mockRequest).toHaveBeenCalledWith(
+                expect.objectContaining({ url: uaaUrl + '/userinfo', method: 'GET' })
+            );
         });
 
         it('Uses the token passed in for auth', async () => {
@@ -34,7 +36,7 @@ describe('UAA', () => {
 
             await uaaInstance().getUserInfo(token);
 
-            expect(mockRequest).toBeCalledWith(
+            expect(mockRequest).toHaveBeenCalledWith(
                 expect.objectContaining({
                     headers: expect.objectContaining({ authorization: expect.stringContaining(token) })
                 })
@@ -96,8 +98,8 @@ describe('UAA', () => {
             jest.spyOn(axios, 'request').mockResolvedValueOnce(mockedResponse);
             const mockCb = jest.fn();
             await uaaInstance().getAccessToken(refreshToken, mockCb);
-            expect(mockCb).toBeCalled();
-            expect(mockCb).toBeCalledWith(undefined, accessToken);
+            expect(mockCb).toHaveBeenCalled();
+            expect(mockCb).toHaveBeenCalledWith(undefined, accessToken);
         });
     });
 

@@ -222,8 +222,8 @@ describe('Questions', () => {
             const { rerender } = render(
                 <Questions {...props} onChange={onChangeFn} questions={testQuestions} answers={externalAnswers} />
             );
-            expect(onChangeFn).toBeCalledTimes(1);
-            expect(onChangeFn).toBeCalledWith({
+            expect(onChangeFn).toHaveBeenCalledTimes(1);
+            expect(onChangeFn).toHaveBeenCalledWith({
                 'test1': {
                     'key2': 'External value 1'
                 },
@@ -239,7 +239,7 @@ describe('Questions', () => {
                 <Questions {...props} onChange={onChangeFn} questions={testQuestions} answers={externalAnswers} />
             );
             // Should not trigger change as value was not changed
-            expect(onChangeFn).toBeCalledTimes(1);
+            expect(onChangeFn).toHaveBeenCalledTimes(1);
         });
 
         it('Render questions component - merge external answers and questions with default answers', async () => {
@@ -257,8 +257,8 @@ describe('Questions', () => {
             const { rerender } = render(
                 <Questions {...props} onChange={onChangeFn} questions={questionsTemp} answers={externalAnswers} />
             );
-            expect(onChangeFn).toBeCalledTimes(1);
-            expect(onChangeFn).toBeCalledWith({
+            expect(onChangeFn).toHaveBeenCalledTimes(1);
+            expect(onChangeFn).toHaveBeenCalledWith({
                 'test1': {
                     'key1': 'Default value',
                     'key2': 'External value 1'
@@ -280,7 +280,7 @@ describe('Questions', () => {
                 />
             );
             // Should not trigger change as value was not changed
-            expect(onChangeFn).toBeCalledTimes(1);
+            expect(onChangeFn).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -318,8 +318,8 @@ describe('Questions', () => {
             clickI18nButton();
             acceptI18nCallout('my-prompt--testInput--input');
             // Check result
-            expect(onTranslateEvent).toBeCalledTimes(1);
-            expect(onTranslateEvent).toBeCalledWith('testInput', {
+            expect(onTranslateEvent).toHaveBeenCalledTimes(1);
+            expect(onTranslateEvent).toHaveBeenCalledWith('testInput', {
                 entry: { key: { value: 'dummyValue' }, value: { value: 'dummy value' } },
                 name: TRANSLATE_EVENT_UPDATE,
                 properties: translationAnnotation
@@ -342,8 +342,8 @@ describe('Questions', () => {
             // Act
             clickI18nButton(false);
             // Check result
-            expect(onTranslateEvent).toBeCalledTimes(1);
-            expect(onTranslateEvent).toBeCalledWith('testInput', {
+            expect(onTranslateEvent).toHaveBeenCalledTimes(1);
+            expect(onTranslateEvent).toHaveBeenCalledWith('testInput', {
                 entry: { key: { value: 'test' }, value: { value: 'Test value' } },
                 name: TRANSLATE_EVENT_SHOW
             });
