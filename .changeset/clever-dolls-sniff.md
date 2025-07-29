@@ -1,5 +1,6 @@
 ---
 '@sap-ux/preview-middleware': patch
+'@sap-ux/i18n': patch
 ---
 
-fix: incomplete regex to resolve i18n
+fix: resolve i18n key
