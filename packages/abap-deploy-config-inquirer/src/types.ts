@@ -51,6 +51,9 @@ export interface AbapSystemChoice {
 
 /**
  * Enumeration of prompt names used by
+ *
+ * N.B. as these prompts are merged with CF prompts (see `promptNames` in packages/cf-deploy-config-inquirer/src/types.ts),
+ * ensure that the names are unique across both files.
  */
 export enum promptNames {
     destination = 'destination',

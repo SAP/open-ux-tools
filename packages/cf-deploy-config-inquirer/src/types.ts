@@ -3,6 +3,9 @@ import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 /**
  * Enum defining prompt names for Cloud Foundry (CF) deployment configuration.
+ *
+ * N.B. as these prompts are merged with ABAP prompts (see `promptNames` in packages/abap-deploy-config-inquirer/src/types.ts),
+ * ensure that the names are unique across both files.
  */
 export enum promptNames {
     /** The prompt to specify the destination name for CF deployment. */
@@ -10,7 +13,7 @@ export enum promptNames {
     /** The prompt to specify if a managed app router should be added to the deployment. */
     addManagedAppRouter = 'addManagedAppRouter',
     /** The prompt for confirming destination overwrite. */
-    overwrite = 'overwrite',
+    overwriteDestinationName = 'overwriteDestinationName',
     /** The prompt for confirming the router type. */
     routerType = 'routerType'
 }
@@ -78,7 +81,7 @@ export type DestinationRouterPromptOptions = {
 type cfDeployConfigPromptOptions = {
     [promptNames.destinationName]: DestinationNamePromptOptions & CommonPromptOptions;
     [promptNames.addManagedAppRouter]: CommonPromptOptions;
-    [promptNames.overwrite]: CommonPromptOptions;
+    [promptNames.overwriteDestinationName]: CommonPromptOptions;
     [promptNames.routerType]: CommonPromptOptions;
 };
 
