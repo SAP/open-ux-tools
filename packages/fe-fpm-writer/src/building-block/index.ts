@@ -3,6 +3,7 @@ import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join, parse, relative } from 'path';
+import type { UpdateViewOptions } from './types';
 import { BuildingBlockType, type BuildingBlock, type BuildingBlockConfig, type BuildingBlockMetaPath } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
@@ -33,12 +34,14 @@ interface MetadataPath {
  * @param {string} basePath - the base path
  * @param {BuildingBlockConfig} config - the building block configuration parameters
  * @param {Editor} [fs] - the memfs editor instance
+ * @param {UpdateViewOptions} [updateViewOptions] - Options for updating the view file.
  * @returns {Editor} the updated memfs editor instance
  */
 export async function generateBuildingBlock<T extends BuildingBlock>(
     basePath: string,
     config: BuildingBlockConfig<T>,
-    fs?: Editor
+    fs?: Editor,
+    updateViewOptions?: UpdateViewOptions
 ): Promise<Editor> {
     const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
@@ -55,7 +58,15 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
     const { content: manifest } = await getManifest(basePath, fs);
     const templateDocument = getTemplateDocument(buildingBlockData, xmlDocument, fs, manifest);
-    fs = updateViewFile(basePath, viewOrFragmentPath, aggregationPath, xmlDocument, templateDocument, fs);
+    fs = updateViewFile(
+        basePath,
+        viewOrFragmentPath,
+        aggregationPath,
+        xmlDocument,
+        templateDocument,
+        fs,
+        updateViewOptions
+    );
 
     if (allowAutoAddDependencyLib && manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
         // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
@@ -273,6 +284,9 @@ function getTemplateDocument<T extends BuildingBlock>(
  * @param {Document} viewDocument - the view xml document
  * @param {Document} templateDocument - the template xml document
  * @param {Editor} [fs] - the memfs editor instance
+ * @param {UpdateViewOptions} [updateViewOptions] - Options for updating the view file.
+ *   @param {string} [updateViewOptions.replaceTargetLocalName] - If specified, replaces the child element of the target node
+ *     with this local name (e.g., 'Page') with the new building block. If not specified, the new building block is appended as a child.
  * @returns {Editor} the updated memfs editor instance
  */
 function updateViewFile(
@@ -281,7 +295,8 @@ function updateViewFile(
     aggregationPath: string,
     viewDocument: Document,
     templateDocument: Document,
-    fs: Editor
+    fs: Editor,
+    updateViewOptions?: UpdateViewOptions
 ): Editor {
     const xpathSelect = xpath.useNamespaces((viewDocument.firstChild as any)._nsMap);
 
@@ -290,7 +305,22 @@ function updateViewFile(
     if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
         const targetNode = targetNodes[0] as Node;
         const sourceNode = viewDocument.importNode(templateDocument.documentElement, true);
-        targetNode.appendChild(sourceNode);
+
+        if (updateViewOptions?.replaceTargetLocalName) {
+            // replace the target node with the source node if the replaceTargetLocalName is provided
+            const elementToReplace = Array.from(targetNode.childNodes).find(
+                (node) =>
+                    node.nodeType === node.ELEMENT_NODE &&
+                    (node as Element).localName === updateViewOptions.replaceTargetLocalName
+            );
+            if (elementToReplace) {
+                targetNode.replaceChild(sourceNode, elementToReplace);
+            } else {
+                throw new Error(`Cannot replace node: Page Node in aggregationPath: ${aggregationPath}`);
+            }
+        } else {
+            targetNode.appendChild(sourceNode);
+        }
 
         // Serialize and format new view xml document
         const newXmlContent = new XMLSerializer().serializeToString(viewDocument);

@@ -51,7 +51,19 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
             if (!node) {
                 continue;
             }
-            result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
+
+            // If the current node does NOT have a <macros:Page> child, add <mvc:View> XPath to the result.
+            // This prevents suggesting insertion points outside macros:Page when a macros:Page is present.
+            const hasPageMacroChild = Array.from(node.childNodes).some(
+                (child) =>
+                    child.nodeType === child.ELEMENT_NODE &&
+                    (child as Element).localName === 'Page' &&
+                    child.nodeName === 'macros:Page'
+            );
+            if (!hasPageMacroChild) {
+                result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
+            }
+
             const childNodes = Array.from(node.childNodes);
             for (const childNode of childNodes) {
                 if (childNode.nodeType === childNode.ELEMENT_NODE) {

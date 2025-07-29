@@ -769,4 +769,61 @@ describe('Building Blocks', () => {
         );
         expect(fs.readJSON(join(basePath, manifestFilePath))).toMatchSnapshot();
     });
+
+    test('generate Page building block with replace target locator set', async () => {
+        const aggregationPath = '/mvc:View';
+        const basePath = join(testAppPath, 'generate-page-block');
+        const pageBlockData = {
+            id: 'testPage',
+            buildingBlockType: BuildingBlockType.Page,
+            title: 'Test Page Title',
+            description: 'Test Page Description'
+        };
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: pageBlockData
+            },
+            fs,
+            {
+                replaceTargetLocalName: 'Page'
+            }
+        );
+        expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block');
+        await writeFilesForDebugging(fs);
+    });
+
+    test('throws error if replaceTargetLocalName is not found', async () => {
+        const aggregationPath = '/mvc:View';
+        const basePath = join(testAppPath, 'generate-page-block-error');
+        const pageBlockData = {
+            id: 'testPage',
+            buildingBlockType: BuildingBlockType.Page,
+            title: 'Test Page Title',
+            description: 'Test Page Description'
+        };
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await expect(
+            async () =>
+                await generateBuildingBlock(
+                    basePath,
+                    {
+                        viewOrFragmentPath: xmlViewFilePath,
+                        aggregationPath,
+                        buildingBlockData: pageBlockData
+                    },
+                    fs,
+                    {
+                        replaceTargetLocalName: 'NonExistentElement'
+                    }
+                )
+        ).rejects.toThrowError(/Cannot replace node: Page Node in aggregationPath/);
+    });
 });

@@ -419,6 +419,42 @@ Object {
 }
 `;
 
+exports[`Prompts - no project getPageBuildingBlockPrompts 1`] = `
+Object {
+  "initialAnswers": Object {
+    "buildingBlockData": Object {
+      "buildingBlockType": "page",
+    },
+  },
+  "questions": Array [
+    Object {
+      "default": "Page",
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Enter a building block ID",
+      },
+      "message": "Building Block ID",
+      "name": "buildingBlockData.id",
+      "type": "input",
+      "validate": [Function],
+    },
+    Object {
+      "guiOptions": Object {
+        "mandatory": true,
+      },
+      "message": "Page Title",
+      "name": "buildingBlockData.title",
+      "type": "input",
+    },
+    Object {
+      "message": "Page Description",
+      "name": "buildingBlockData.description",
+      "type": "input",
+    },
+  ],
+}
+`;
+
 exports[`Prompts - no project getTableBuildingBlockPrompts 1`] = `
 Object {
   "groups": Array [
@@ -1592,6 +1628,42 @@ Object {
 }
 `;
 
+exports[`Prompts getPageBuildingBlockPrompts 1`] = `
+Object {
+  "initialAnswers": Object {
+    "buildingBlockData": Object {
+      "buildingBlockType": "page",
+    },
+  },
+  "questions": Array [
+    Object {
+      "default": "Page",
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Enter a building block ID",
+      },
+      "message": "Building Block ID",
+      "name": "buildingBlockData.id",
+      "type": "input",
+      "validate": [Function],
+    },
+    Object {
+      "guiOptions": Object {
+        "mandatory": true,
+      },
+      "message": "Page Title",
+      "name": "buildingBlockData.title",
+      "type": "input",
+    },
+    Object {
+      "message": "Page Description",
+      "name": "buildingBlockData.description",
+      "type": "input",
+    },
+  ],
+}
+`;
+
 exports[`Prompts getTableBuildingBlockPrompts 1`] = `
 Object {
   "groups": Array [
@@ -2047,6 +2119,12 @@ exports[`Prompts submitAnswers Type generation prompts type without generator 1`
     <Page title=\\"Main\\">
         <content />
     </Page>
+</mvc:View>"
+`;
+
+exports[`Prompts submitAnswers Type generation prompts type without generator 2`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <macros:Page id=\\"TestPage\\" title=\\"Test Page\\"/>
 </mvc:View>"
 `;
 

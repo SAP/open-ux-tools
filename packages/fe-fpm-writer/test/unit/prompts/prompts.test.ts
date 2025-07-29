@@ -41,6 +41,11 @@ describe('Prompts', () => {
         expect(questionnair).toMatchSnapshot();
     });
 
+    test('getPageBuildingBlockPrompts', async () => {
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Page);
+        expect(questionnair).toMatchSnapshot();
+    });
+
     test('get prompts for invalid propmts type', async () => {
         const questionnair = await promptsAPI.getPrompts('notValid' as PromptsType);
         expect(questionnair).toStrictEqual({ questions: [] });
@@ -238,6 +243,16 @@ describe('Prompts', () => {
                 filterChanged: 'function1',
                 search: 'function2'
             }
+        },
+        [PromptsType.Page]: {
+            ...baseAnswers,
+            aggregationPath: '/mvc:View',
+            buildingBlockData: {
+                ...baseAnswers.buildingBlockData,
+                buildingBlockType: BuildingBlockType.Page,
+                id: 'TestPage',
+                title: 'Test Page'
+            }
         }
     };
     describe('getCodeSnippet', () => {
@@ -329,6 +344,17 @@ describe('Prompts', () => {
             );
             expect(result.read(join(projectPath, baseAnswers.viewOrFragmentPath))).toMatchSnapshot();
         });
+
+        test('Type generation prompts type without generator', async () => {
+            const result = await promptsAPI.submitAnswers(
+                PromptsType.Page,
+                answers[PromptsType.Page] as SupportedGeneratorAnswers,
+                {
+                    replaceTargetLocalName: 'Page'
+                }
+            );
+            expect(result.read(join(projectPath, baseAnswers.viewOrFragmentPath))).toMatchSnapshot();
+        });
     });
 });
 
@@ -362,6 +388,11 @@ describe('Prompts - no project', () => {
 
     test('getTableBuildingBlockPrompts', async () => {
         const questionnair = await promptsAPI.getPrompts(PromptsType.Table);
+        expect(questionnair).toMatchSnapshot();
+    });
+
+    test('getPageBuildingBlockPrompts', async () => {
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Page);
         expect(questionnair).toMatchSnapshot();
     });
 

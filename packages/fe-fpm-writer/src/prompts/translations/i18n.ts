@@ -205,6 +205,22 @@ const ns1 = {
             'pasteFromClipboard': 'Enable Paste From Clipboard',
             'tableSearchableToggle': 'Table Searchable Toggle',
             'valuesDependentOnEntityTypeInfo': 'Values are dependent on entity set'
+        },
+        'page': {
+            'id': {
+                'message': 'Building Block ID',
+                'validation': 'An ID is required to generate the page building block'
+            },
+            'title': {
+                'message': 'Page Title',
+                'validation': 'Enter a Page Title',
+                'translationAnnotation': 'Title of the Page'
+            },
+            'description': {
+                'message': 'Page Description',
+                'validation': 'Enter a Page Description',
+                'translationAnnotation': 'Description of the Page'
+            }
         }
     }
 };
