@@ -3004,6 +3004,9 @@ importers:
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -3032,9 +3035,6 @@ importers:
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
-      '@sap-ux/i18n':
-        specifier: workspace:*
-        version: link:../i18n
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store

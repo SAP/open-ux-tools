@@ -13,6 +13,7 @@ import type {
 import { render } from 'ejs';
 import { join, posix } from 'path';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
+import { extractI18nKey } from '@sap-ux/i18n';
 import { readFileSync } from 'fs';
 import { mergeTestConfigDefaults } from './test';
 import { type Editor, create } from 'mem-fs-editor';
@@ -329,11 +330,20 @@ async function getI18nTextFromProperty(
     propertyValue: string | undefined,
     logger: Logger
 ): Promise<string | undefined> {
-    //i18n model format could be {{key}} or {i18n>key}; limit max length of key to 100 characters to avoid performance issues
-    if (!projectRoot || !propertyValue || propertyValue.search(/{{([^}]{1,100})}}|{i18n>([^}]{1,100})}/g) === -1) {
+    /*
+    if ((propertyValue?.length ?? 0) > 300) {
+        logger.warn('i18n key exceeds maximum length of 300 characters, skipping i18n resolution.');
         return propertyValue;
     }
-    const propertyI18nKey = propertyValue.replace(/i18n>|[{}]/g, '');
+    //i18n model format could be {{key}} or {i18n>key}; limit max length of key to 300 characters to avoid performance issues
+    if (!projectRoot || !propertyValue || propertyValue.search(/{{([^}]{1,300})}}|{i18n>([^}]{1,300})}/g) === -1) {
+        return propertyValue;
+    }
+    */
+    if (!projectRoot || !propertyValue || !propertyValue.startsWith('{')) {
+        return propertyValue;
+    }
+    const propertyI18nKey = extractI18nKey(propertyValue);
     const projectAccess = await createProjectAccess(projectRoot);
     const applicationIds = projectAccess.getApplicationIds();
     try {

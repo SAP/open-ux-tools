@@ -44,6 +44,54 @@ describe('key', () => {
             // assert
             expect(result).toEqual('generalInformation');
         });
+        test('case 5: double curly brackets with i18n prefix', () => {
+            // arrange
+            const input = '{{i18n>myTitle}}';
+            // act
+            const result = extractI18nKey(input);
+            // assert
+            expect(result).toEqual('myTitle');
+        });
+        test('case 6: double curly brackets with @i18n prefix', () => {
+            // arrange
+            const input = '{{@i18n>myDescription}}';
+            // act
+            const result = extractI18nKey(input);
+            // assert
+            expect(result).toEqual('myDescription');
+        });
+        test('case 7: double curly brackets with i18n and &gt;', () => {
+            // arrange
+            const input = '{{i18n&gt;myOtherTitle}}';
+            // act
+            const result = extractI18nKey(input);
+            // assert
+            expect(result).toEqual('myOtherTitle');
+        });
+        test('case 8: double curly brackets without i18n prefix', () => {
+            // arrange
+            const input = '{{my.custom.key.Description}}';
+            // act
+            const result = extractI18nKey(input);
+            // assert
+            expect(result).toEqual('my.custom.key.Description');
+        });
+        test('case 9: double curly brackets with custom key prefix', () => {
+            // arrange
+            const input = '{{myI18nTest>customKey}}';
+            // act
+            const result = extractI18nKey(input, 'myI18nTest');
+            // assert
+            expect(result).toEqual('customKey');
+        });
+        test('case 10: double curly brackets with spaces', () => {
+            // arrange
+            const input = '{{ i18n>keyWithSpaces }}';
+            // act
+            const result = extractI18nKey(input);
+            // assert
+            expect(result).toEqual('keyWithSpaces');
+        });
     });
     describe('extractDoubleCurlyBracketsKey', () => {
         test('case 1: without space', () => {
