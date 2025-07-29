@@ -3,8 +3,13 @@ import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join, parse, relative } from 'path';
-import type { UpdateViewOptions } from './types';
-import { BuildingBlockType, type BuildingBlock, type BuildingBlockConfig, type BuildingBlockMetaPath } from './types';
+import {
+    BuildingBlockType,
+    type BuildingBlock,
+    type BuildingBlockConfig,
+    type BuildingBlockMetaPath,
+    type UpdateViewOptions
+} from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
