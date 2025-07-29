@@ -824,6 +824,6 @@ describe('Building Blocks', () => {
                         replaceTargetLocalName: 'NonExistentElement'
                     }
                 )
-        ).rejects.toThrowError(/Cannot replace node: Page Node in aggregationPath/);
+        ).rejects.toThrowError(`Cannot replace node: Page Node in aggregationPath: ${aggregationPath}`);
     });
 });
