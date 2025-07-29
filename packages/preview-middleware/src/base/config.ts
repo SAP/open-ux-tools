@@ -330,7 +330,7 @@ async function getI18nTextFromProperty(
     propertyValue: string | undefined,
     logger: Logger
 ): Promise<string | undefined> {
-    if (!projectRoot || !propertyValue || !propertyValue.startsWith('{')) {
+    if (!projectRoot || !propertyValue?.startsWith('{')) {
         return propertyValue;
     }
     const propertyI18nKey = extractI18nKey(propertyValue);
