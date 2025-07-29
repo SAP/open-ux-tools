@@ -61,10 +61,10 @@ describe('generateOPATests', () => {
             undefined
         );
         expect(packageJson.scripts?.['unit-test']).toBe(
-            "fiori run --config ./ui5-mock.yaml --open 'test/unit/unitTests.qunit.html'"
+            'fiori run --config ./ui5-mock.yaml --open "test/unit/unitTests.qunit.html"'
         );
         expect(packageJson.scripts?.['int-test']).toBe(
-            "fiori run --config ./ui5-mock.yaml --open 'test/integration/opaTests.qunit.html'"
+            'fiori run --config ./ui5-mock.yaml --open "test/integration/opaTests.qunit.html"'
         );
     });
 
@@ -85,8 +85,8 @@ describe('generateOPATests', () => {
             undefined,
             undefined
         );
-        expect(packageJson.scripts?.['unit-test']).toBe("fiori run --open 'test/unit/unitTests.qunit.html'");
-        expect(packageJson.scripts?.['int-test']).toBe("fiori run --open 'test/integration/opaTests.qunit.html'");
+        expect(packageJson.scripts?.['unit-test']).toBe('fiori run --open "test/unit/unitTests.qunit.html"');
+        expect(packageJson.scripts?.['int-test']).toBe('fiori run --open "test/integration/opaTests.qunit.html"');
     });
 
     it('should not add test scripts to package.json when addMock is true and template is worklist', async () => {
