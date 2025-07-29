@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.4.28
+
+### Patch Changes
+
+-   d5cb2a3: remove single quotes from test script paths for Windows compatibility
+
 ## 2.4.27
 
 ### Patch Changes
