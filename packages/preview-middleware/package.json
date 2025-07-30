@@ -47,6 +47,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
+        "@sap-ux/i18n": "workspace:*",
         "ejs": "3.1.10",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0"
@@ -55,7 +56,6 @@
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",
         "@sap-ux-private/playwright": "0.2.0",
         "@sap-ux/axios-extension": "workspace:*",
-        "@sap-ux/i18n": "workspace:*",
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
         "@types/connect": "^3.4.38",
