@@ -71,10 +71,10 @@ describe('Prompts', () => {
             const getPromptsSpy = jest.spyOn(promptsAPI, 'getPrompts');
             // First call - read questions
             await promptsAPI.getChoices(PromptsType.Table, 'buildingBlockData.id', {});
-            expect(getPromptsSpy).toBeCalledTimes(1);
+            expect(getPromptsSpy).toHaveBeenCalledTimes(1);
             // Second call - use cached questions
             await promptsAPI.getChoices(PromptsType.Table, 'buildingBlockData.id', {});
-            expect(getPromptsSpy).toBeCalledTimes(1);
+            expect(getPromptsSpy).toHaveBeenCalledTimes(1);
         });
 
         const types = [PromptsType.Chart, PromptsType.FilterBar, PromptsType.Table];
@@ -156,10 +156,10 @@ describe('Prompts', () => {
             const getPromptsSpy = jest.spyOn(promptsAPI, 'getPrompts');
             // First call - read questions
             await promptsAPI.validateAnswers(PromptsType.Chart, { type: '' }, [{ name: 'type' }]);
-            expect(getPromptsSpy).toBeCalledTimes(1);
+            expect(getPromptsSpy).toHaveBeenCalledTimes(1);
             // Second call - use cached questions
             await promptsAPI.validateAnswers(PromptsType.Chart, { type: '' }, [{ name: 'type' }]);
-            expect(getPromptsSpy).toBeCalledTimes(1);
+            expect(getPromptsSpy).toHaveBeenCalledTimes(1);
         });
 
         describe('validate function', () => {

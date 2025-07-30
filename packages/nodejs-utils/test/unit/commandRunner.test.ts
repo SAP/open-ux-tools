@@ -99,7 +99,7 @@ describe('CommandRunner', () => {
         spawnMock.sequence.add(function (this: any) {
             this.emit('error', new Error(expectedError));
         });
-        await expect(commandRunner.run(cmd, args, {}, logger as unknown as Logger)).rejects.toThrowError(expectedError);
+        await expect(commandRunner.run(cmd, args, {}, logger as unknown as Logger)).rejects.toThrow(expectedError);
         expect(logger.error).toHaveBeenCalledWith(`Command failed with error: ${expectedError}`);
     });
 });

@@ -1,5 +1,46 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.25
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/fiori-generator-shared@0.13.4
+    -   @sap-ux/project-input-validator@0.6.13
+    -   @sap-ux/telemetry@0.6.11
+    -   @sap-ux/inquirer-common@0.7.28
+
+## 2.5.24
+
+### Patch Changes
+
+-   2cae662: fix(deps): update dependency @sap-ux/annotation-converter to v0.10.3
+
+## 2.5.23
+
+### Patch Changes
+
+-   ffac61c: Improved performance of v4 catalog service loading
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/fiori-generator-shared@0.13.3
+
+## 2.5.22
+
+### Patch Changes
+
+-   45bbe6c: set analytical table type when supported by entity
+
+## 2.5.21
+
+### Patch Changes
+
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/inquirer-common@0.7.27
+
 ## 2.5.20
 
 ### Patch Changes

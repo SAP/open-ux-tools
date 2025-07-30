@@ -1,6 +1,6 @@
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { ServiceProvider, SystemInfo } from '@sap-ux/axios-extension';
-import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -51,12 +51,14 @@ export interface AbapSystemChoice {
 
 /**
  * Enumeration of prompt names used by
+ *
+ * N.B. as these prompts are merged with CF prompts (see `promptNames` in packages/cf-deploy-config-inquirer/src/types.ts),
+ * ensure that the names are unique across both files.
  */
 export enum promptNames {
     destination = 'destination',
     destinationCliSetter = 'destinationCliSetter',
     targetSystem = 'targetSystem',
-    targetSystemLabel = 'targetSystemLabel',
     targetSystemCliSetter = 'targetSystemCliSetter',
     url = 'url',
     scp = 'scp',
@@ -78,7 +80,7 @@ export enum promptNames {
     transportFromList = 'transportFromList',
     transportManual = 'transportManual',
     index = 'index',
-    overwrite = 'overwrite'
+    overwriteAbapConfig = 'overwriteAbapConfig'
 }
 
 /**
@@ -184,21 +186,36 @@ export type TransportInputChoicePromptOptions = {
 };
 
 export type TargetSystemPromptOptions = {
-    additionalValidation: {
+    additionalValidation?: {
         shouldRestrictDifferentSystemType: boolean;
     };
 };
 
-type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepoPromptOptions> &
-    Record<promptNames.description, DescriptionPromptOptions> &
-    Record<promptNames.packageManual, PackageManualPromptOptions> &
-    Record<promptNames.transportManual, TransportManualPromptOptions> &
-    Record<promptNames.transportCreated, TransportCreatedPromptOptions> &
-    Record<promptNames.overwrite, OverwritePromptOptions> &
-    Record<promptNames.index, IndexPromptOptions> &
-    Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions> &
-    Record<promptNames.transportInputChoice, TransportInputChoicePromptOptions> &
-    Record<promptNames.targetSystem, TargetSystemPromptOptions>;
+type AbapPromptsCommonOptions =
+    | promptNames.destination
+    | promptNames.url
+    | promptNames.scp
+    | promptNames.clientChoice
+    | promptNames.client
+    | promptNames.username
+    | promptNames.password
+    | promptNames.packageInputChoice
+    | promptNames.transportFromList;
+
+type abapPromptOptions = {
+    [K in AbapPromptsCommonOptions]: CommonPromptOptions;
+} & {
+    [promptNames.targetSystem]: TargetSystemPromptOptions & CommonPromptOptions;
+    [promptNames.ui5AbapRepo]: UI5AbapRepoPromptOptions & CommonPromptOptions;
+    [promptNames.description]: DescriptionPromptOptions & CommonPromptOptions;
+    [promptNames.packageManual]: PackageManualPromptOptions & CommonPromptOptions;
+    [promptNames.transportManual]: TransportManualPromptOptions & CommonPromptOptions;
+    [promptNames.transportCreated]: TransportCreatedPromptOptions & CommonPromptOptions;
+    [promptNames.overwriteAbapConfig]: OverwritePromptOptions & CommonPromptOptions;
+    [promptNames.index]: IndexPromptOptions & CommonPromptOptions;
+    [promptNames.packageAutocomplete]: PackageAutocompletePromptOptions & CommonPromptOptions;
+    [promptNames.transportInputChoice]: TransportInputChoicePromptOptions & CommonPromptOptions;
+};
 
 /**
  * The options which are common for the abap deploy config inquirer.
@@ -210,8 +227,7 @@ type AbapDeployConfigCommonInquirerOptions = {
 /**
  * The options for the abap deploy config inquirer & the prompts.
  */
-export type AbapDeployConfigPromptOptions = Partial<abapDeployConfigPromptOptions> &
-    AbapDeployConfigCommonInquirerOptions;
+export type AbapDeployConfigPromptOptions = Partial<abapPromptOptions> & AbapDeployConfigCommonInquirerOptions;
 
 export interface TransportAnswers {
     transportRequired?: boolean;

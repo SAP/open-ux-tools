@@ -133,8 +133,8 @@ describe('<UICallout />', () => {
                     target
                 });
                 wrapper.find('.dummy').simulate('keydown', { key, shiftKey });
-                expect(getNextElementSpy).toBeCalledTimes(focusNext ? 1 : 0);
-                expect(getPreviousElementSpy).toBeCalledTimes(focusPrevious ? 1 : 0);
+                expect(getNextElementSpy).toHaveBeenCalledTimes(focusNext ? 1 : 0);
+                expect(getPreviousElementSpy).toHaveBeenCalledTimes(focusPrevious ? 1 : 0);
             });
         }
     });

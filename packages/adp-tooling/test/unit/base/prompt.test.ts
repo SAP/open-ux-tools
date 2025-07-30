@@ -60,7 +60,7 @@ describe('base/prompts', () => {
 
         test('invalid target', async () => {
             prompts.inject([invalidUrl, undefined]);
-            await expect(promptTarget({}, logger)).rejects.toThrowError('Unable to fetch system information.');
+            await expect(promptTarget({}, logger)).rejects.toThrow('Unable to fetch system information.');
         });
 
         test('invalid certificate prompt', async () => {

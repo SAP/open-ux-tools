@@ -72,7 +72,7 @@ describe('utils - questions', () => {
             ...context,
             project: {} as unknown as Project
         });
-        await expect(async () => await (entityPrompt.choices as Choices)()).rejects.toThrowError();
+        await expect(async () => await (entityPrompt.choices as Choices)()).rejects.toThrow();
     });
 
     test('transformChoices', async () => {
@@ -153,7 +153,7 @@ describe('utils - questions', () => {
                         }
                     }
                 })
-        ).rejects.toThrowError();
+        ).rejects.toThrow();
 
         // no entity set in answers
         choices = await choicesProp({

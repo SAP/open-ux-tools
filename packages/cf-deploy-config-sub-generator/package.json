@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/cf-deploy-config-sub-generator",
     "description": "Generators for configuring Cloud Foundry deployment configuration",
-    "version": "0.2.37",
+    "version": "0.2.41",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -18,7 +18,7 @@
         "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"

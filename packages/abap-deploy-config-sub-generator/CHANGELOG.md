@@ -1,5 +1,49 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.46
+
+### Patch Changes
+
+-   6e2c5aa: fix overwrite prompt conflict
+-   Updated dependencies [6e2c5aa]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.0
+
+## 0.1.45
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/abap-deploy-config-writer@0.2.2
+    -   @sap-ux/fiori-generator-shared@0.13.4
+    -   @sap-ux/abap-deploy-config-inquirer@1.5.2
+    -   @sap-ux/deploy-config-generator-shared@0.1.23
+
+## 0.1.44
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.5.1
+-   @sap-ux/deploy-config-generator-shared@0.1.22
+-   @sap-ux/fiori-generator-shared@0.13.3
+-   @sap-ux/abap-deploy-config-writer@0.2.1
+
+## 0.1.43
+
+### Patch Changes
+
+-   Updated dependencies [089b56f]
+    -   @sap-ux/abap-deploy-config-inquirer@1.5.0
+
+## 0.1.42
+
+### Patch Changes
+
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/abap-deploy-config-inquirer@1.4.38
+    -   @sap-ux/deploy-config-generator-shared@0.1.22
+
 ## 0.1.41
 
 ### Patch Changes

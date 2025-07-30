@@ -86,7 +86,7 @@ describe('QuickActionList', () => {
 
         // simple quick action
         fireEvent.click(quickAction1);
-        expect(dispatch).toBeCalledWith(
+        expect(dispatch).toHaveBeenCalledWith(
             executeQuickAction({
                 kind: 'simple',
                 id: 'quick-action-1'
@@ -108,7 +108,7 @@ describe('QuickActionList', () => {
                     expect(subMenu.getElementsByTagName('span')[0].innerHTML).toBe(children[1].children[i].label);
                 });
                 fireEvent.click(submenuItems[3]);
-                expect(dispatch).toBeCalledWith(
+                expect(dispatch).toHaveBeenCalledWith(
                     executeQuickAction({
                         kind: 'nested',
                         path: '1/1',
@@ -120,7 +120,7 @@ describe('QuickActionList', () => {
 
         // nested quick action with single child
         fireEvent.click(quickAction3);
-        expect(dispatch).toBeCalledWith(
+        expect(dispatch).toHaveBeenCalledWith(
             executeQuickAction({
                 kind: 'nested',
                 id: 'quick-action-3',
