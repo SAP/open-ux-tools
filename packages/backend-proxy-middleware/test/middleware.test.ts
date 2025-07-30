@@ -55,7 +55,7 @@ describe('backend-proxy-middleware', () => {
 
         test('debug', async () => {
             await getTestServerForExpress({ backend, debug: true });
-            expect(generateProxyOptionsSpy).toBeCalledWith(
+            expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
                 expect.objectContaining(backend),
                 expect.objectContaining({ secure: true, logger: expect.objectContaining({}) }),
                 expect.any(ToolsLogger)
@@ -131,7 +131,7 @@ describe('backend-proxy-middleware with connect', () => {
 
     test('minimal configuration', async () => {
         await getTestServerForConnect({ backend });
-        expect(generateProxyOptionsSpy).toBeCalledWith(
+        expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
             expect.objectContaining(backend),
             expect.objectContaining({ secure: true, logger: undefined }),
             expect.any(ToolsLogger)
@@ -145,7 +145,7 @@ describe('backend-proxy-middleware with connect', () => {
             destination: '~destination'
         };
         await getTestServerForConnect({ backend: addtionalConfig });
-        expect(generateProxyOptionsSpy).toBeCalledWith(
+        expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
             expect.objectContaining(addtionalConfig),
             expect.objectContaining({ secure: true, logger: undefined }),
             expect.any(ToolsLogger)
@@ -158,7 +158,7 @@ describe('backend-proxy-middleware with connect', () => {
             xfwd: true
         };
         await getTestServerForConnect({ backend, options });
-        expect(generateProxyOptionsSpy).toBeCalledWith(
+        expect(generateProxyOptionsSpy).toHaveBeenCalledWith(
             expect.objectContaining(backend),
             expect.objectContaining({ ...options, secure: true, logger: undefined }),
             expect.any(ToolsLogger)
