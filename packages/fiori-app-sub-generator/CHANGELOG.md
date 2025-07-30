@@ -1,5 +1,14 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.6.6
+
+### Patch Changes
+
+-   d5cb2a3: remove single quotes from test script paths for Windows compatibility
+-   Updated dependencies [d5cb2a3]
+    -   @sap-ux/fiori-freestyle-writer@2.4.28
+    -   @sap-ux/odata-service-inquirer@2.5.25
+
 ## 0.6.5
 
 ### Patch Changes
