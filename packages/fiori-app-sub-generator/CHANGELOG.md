@@ -1,5 +1,64 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.6.6
+
+### Patch Changes
+
+-   d5cb2a3: remove single quotes from test script paths for Windows compatibility
+-   Updated dependencies [d5cb2a3]
+    -   @sap-ux/fiori-freestyle-writer@2.4.28
+    -   @sap-ux/odata-service-inquirer@2.5.25
+
+## 0.6.5
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/annotation-generator@0.3.48
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/cap-config-writer@0.10.22
+    -   @sap-ux/fiori-generator-shared@0.13.4
+    -   @sap-ux/launch-config@0.10.15
+    -   @sap-ux/odata-service-inquirer@2.5.25
+    -   @sap-ux/odata-service-writer@0.27.13
+    -   @sap-ux/telemetry@0.6.11
+    -   @sap-ux/ui5-application-inquirer@0.14.32
+    -   @sap-ux/fiori-elements-writer@2.5.17
+    -   @sap-ux/fiori-freestyle-writer@2.4.27
+
+## 0.6.4
+
+### Patch Changes
+
+-   Updated dependencies [2cae662]
+    -   @sap-ux/annotation-generator@0.3.47
+    -   @sap-ux/odata-service-inquirer@2.5.24
+    -   @sap-ux/fiori-elements-writer@2.5.16
+
+## 0.6.3
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/odata-service-inquirer@2.5.23
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/fiori-generator-shared@0.13.3
+
+## 0.6.2
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.15
+-   @sap-ux/fiori-freestyle-writer@2.4.26
+-   @sap-ux/odata-service-inquirer@2.5.22
+
+## 0.6.1
+
+### Patch Changes
+
+-   eedfc47: updates FioriAppGeneratorPromptSettings
+
 ## 0.6.0
 
 ### Minor Changes

@@ -171,7 +171,7 @@ export class FioriAppGenerator extends Generator {
                     capService: cachedService?.capService ?? this.state.service?.capService,
                     requiredOdataVersion: getRequiredOdataVersion(this.state.floorplan),
                     allowNoDatasource: isFioriFreestyleTemplate,
-                    promptOptions: generatorOptions.promptSettings,
+                    promptOptions: generatorOptions.promptSettings?.['@sap/generator-fiori'],
                     showCollabDraftWarning: generatorOptions.showCollabDraftWarning,
                     workspaceFolders: generatorOptions.workspaceFolders
                 };
@@ -259,7 +259,7 @@ export class FioriAppGenerator extends Generator {
                             targetFolder: this.state.project?.targetFolder,
                             service: this.state.service,
                             floorplan: this.state.floorplan,
-                            promptSettings: generatorOptions.promptSettings,
+                            promptSettings: generatorOptions.promptSettings?.['@sap/generator-fiori'],
                             promptExtension: generatorOptions.extensions
                         },
                         [this.yeomanUiStepConfig],
