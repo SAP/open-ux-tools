@@ -13,7 +13,7 @@ import type {
 import { render } from 'ejs';
 import { join, posix } from 'path';
 import { createProjectAccess, getWebappPath, type Manifest, type UI5FlexLayer } from '@sap-ux/project-access';
-import { extractI18nKey } from '@sap-ux/i18n';
+import { extractDoubleCurlyBracketsKey } from '@sap-ux/i18n';
 import { readFileSync } from 'fs';
 import { mergeTestConfigDefaults } from './test';
 import { type Editor, create } from 'mem-fs-editor';
@@ -330,10 +330,10 @@ async function getI18nTextFromProperty(
     propertyValue: string | undefined,
     logger: Logger
 ): Promise<string | undefined> {
-    if (!projectRoot || !propertyValue?.startsWith('{')) {
+    const propertyI18nKey = extractDoubleCurlyBracketsKey(propertyValue ?? '');
+    if (!projectRoot || !propertyI18nKey) {
         return propertyValue;
     }
-    const propertyI18nKey = extractI18nKey(propertyValue);
     const projectAccess = await createProjectAccess(projectRoot);
     const applicationIds = projectAccess.getApplicationIds();
     try {
