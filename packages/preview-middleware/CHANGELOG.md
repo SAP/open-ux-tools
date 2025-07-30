@@ -1,5 +1,16 @@
 # @sap-ux/preview-middleware
 
+## 0.20.72
+
+### Patch Changes
+
+-   009143e: fix: resolve i18n key
+-   Updated dependencies [009143e]
+    -   @sap-ux/i18n@0.3.2
+    -   @sap-ux/adp-tooling@0.15.9
+    -   @sap-ux/project-access@1.30.9
+    -   @sap-ux/system-access@0.6.11
+
 ## 0.20.71
 
 ### Patch Changes

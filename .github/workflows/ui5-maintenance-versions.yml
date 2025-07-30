@@ -43,8 +43,11 @@ jobs:
             - name: List previously cached UI5 maintenance versions
               id: previous-ui5-versions
               run: |
-                cat tests/integration/adaptation-editor/versions.json
-                echo "versions=$(cat tests/integration/adaptation-editor/versions.json)" >> $GITHUB_OUTPUT
+                if [[ -f tests/integration/adaptation-editor/versions.json ]]; then
+                  cat tests/integration/adaptation-editor/versions.json
+                else
+                  echo "No previous versions found."
+                fi
             - name: Load UI5 maintenance versions
               id: current-ui5-versions
               run: |

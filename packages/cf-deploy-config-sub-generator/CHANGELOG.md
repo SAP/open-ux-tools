@@ -1,5 +1,24 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.2.42
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/cf-deploy-config-writer@0.3.18
+-   @sap-ux/fiori-generator-shared@0.13.5
+-   @sap-ux/deploy-config-generator-shared@0.1.24
+-   @sap-ux/inquirer-common@0.7.29
+-   @sap-ux/cf-deploy-config-inquirer@0.5.1
+
+## 0.2.41
+
+### Patch Changes
+
+-   6e2c5aa: fix overwrite prompt conflict
+-   Updated dependencies [6e2c5aa]
+    -   @sap-ux/cf-deploy-config-inquirer@0.5.0
+
 ## 0.2.40
 
 ### Patch Changes
