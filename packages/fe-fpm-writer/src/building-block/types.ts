@@ -435,7 +435,7 @@ export interface BuildingBlockConfig<T extends BuildingBlock> {
 
     /**
      * If true, replaces the element selected by aggregationPath in the view with the page building block.
-     * If false or undefined, the page building block will be appended as a child.
+     * If false or undefined, the page building block will be appended.
      */
     replace?: boolean;
 }
