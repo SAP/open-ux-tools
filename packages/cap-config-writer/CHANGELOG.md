@@ -1,5 +1,21 @@
 # @sap-ux/cap-config-writer
 
+## 0.10.22
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/fiori-generator-shared@0.13.4
+
+## 0.10.21
+
+### Patch Changes
+
+-   ca44076: move headless AppConfig type and associated types to fiori gen shared module
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+
 ## 0.10.20
 
 ### Patch Changes

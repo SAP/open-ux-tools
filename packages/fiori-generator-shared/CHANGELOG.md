@@ -1,5 +1,19 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.13.4
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/telemetry@0.6.11
+
+## 0.13.3
+
+### Patch Changes
+
+-   ca44076: move headless AppConfig type and associated types to fiori gen shared module
+
 ## 0.13.2
 
 ### Patch Changes

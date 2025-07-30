@@ -61,7 +61,7 @@ describe('Test new system prompt', () => {
         expect(await (userSystemNamePrompt.validate as Function)(serviceUrl)).toBe(
             'A system with that name already exists in the secure storage. Please try a different name.'
         );
-        expect(validateSystemName).toBeCalledWith(serviceUrl);
+        expect(validateSystemName).toHaveBeenCalledWith(serviceUrl);
 
         // Only connected systems should be stored
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
@@ -72,7 +72,7 @@ describe('Test new system prompt', () => {
             serviceProvider: {} as ServiceProvider
         };
         expect(await (userSystemNamePrompt.validate as Function)('http://abap.on.prem:1234 12/08/24')).toBe(true);
-        expect(validateSystemName).toBeCalledWith('http://abap.on.prem:1234 12/08/24');
+        expect(validateSystemName).toHaveBeenCalledWith('http://abap.on.prem:1234 12/08/24');
 
         expect(PromptState.odataService.connectedSystem.backendSystem).toEqual({
             authenticationType: 'basic',

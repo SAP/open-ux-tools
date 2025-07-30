@@ -193,7 +193,9 @@ describe('Prompt Generation Tests', () => {
         beforeEach(() => {
             promptOptions = {
                 ...promptOptions,
-                [promptNames.addManagedAppRouter]: true
+                [promptNames.addManagedAppRouter]: {
+                    hide: false
+                }
             };
         });
 
@@ -214,14 +216,15 @@ describe('Prompt Generation Tests', () => {
         });
 
         it('Displays managed router prompt when disabled', async () => {
-            promptOptions[promptNames.addManagedAppRouter] = false;
+            promptOptions[promptNames.addManagedAppRouter] = {
+                hide: true
+            };
 
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions, mockLog);
             const managedAppRouterPrompt = questions.find(
                 (question) => question.name === promptNames.addManagedAppRouter
             );
             expect(managedAppRouterPrompt).toBeUndefined();
-            expect(mockLog.info).not.toHaveBeenCalled();
         });
     });
 
@@ -229,7 +232,9 @@ describe('Prompt Generation Tests', () => {
         beforeEach(() => {
             promptOptions = {
                 ...promptOptions,
-                [promptNames.overwrite]: true
+                [promptNames.overwrite]: {
+                    hide: false
+                }
             };
         });
 
@@ -244,19 +249,25 @@ describe('Prompt Generation Tests', () => {
 
         it('Displays get overwrite prompt when disabled', async () => {
             if (promptOptions[promptNames.overwrite]) {
-                promptOptions[promptNames.overwrite] = false;
+                promptOptions[promptNames.overwrite] = {
+                    hide: true
+                };
             }
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions, mockLog);
             const overwritePrompt = questions.find((question) => question.name === promptNames.overwrite);
             expect(overwritePrompt?.type).toBeUndefined();
-            expect(mockLog.info).not.toHaveBeenCalled();
         });
     });
 
     describe('getQuestions with Router Option', () => {
         it('Displays CF prompt with App Router selection', async () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(
-                { ...promptOptions, routerType: true },
+                {
+                    ...promptOptions,
+                    routerType: {
+                        hide: false
+                    }
+                },
                 mockLog
             );
             const routerTypePrompt = questions.find((question) => question.name === promptNames.routerType);
@@ -277,7 +288,13 @@ describe('Prompt Generation Tests', () => {
             });
         });
         it('Displays CF prompt with App Router selection disabled', async () => {
-            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions, mockLog);
+            const promptOptionsWithRouterDisabled: CfDeployConfigPromptOptions = {
+                ...promptOptions,
+                routerType: {
+                    hide: true
+                }
+            };
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptionsWithRouterDisabled, mockLog);
             const routerTypePrompt = questions.find((question) => question.name === promptNames.routerType);
             expect(routerTypePrompt).toBeUndefined();
         });

@@ -14,6 +14,7 @@ import { t } from '../utils/i18n';
 import { GeneratorTypes } from '../types';
 import SubGeneratorWithAuthBase from '../base/sub-gen-auth-base';
 import type { GeneratorOpts } from '../utils/opts';
+import path from 'path';
 
 /**
  * Generator for adding annotations to OData services.
@@ -73,7 +74,8 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
             this.projectPath,
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
             changeData,
-            this.fs
+            this.fs,
+            path.join(__dirname, 'templates')
         );
         this.logger.log('Change written to changes folder');
 

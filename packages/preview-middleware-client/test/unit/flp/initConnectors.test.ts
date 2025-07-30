@@ -13,12 +13,12 @@ describe('flp/initConnectors', () => {
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.60' });
         await initConnectors();
 
-        expect(sapMock.ui.require).toBeCalledWith(
+        expect(sapMock.ui.require).toHaveBeenCalledWith(
             ['open/ux/preview/client/flp/enableFakeConnector'],
             expect.anything()
         );
 
-        expect(sapMock.ui.require).not.toBeCalledWith(
+        expect(sapMock.ui.require).not.toHaveBeenCalledWith(
             ['open/ux/preview/client/flp/WorkspaceConnector'],
             expect.anything()
         );

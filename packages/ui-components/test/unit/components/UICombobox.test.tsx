@@ -516,9 +516,9 @@ describe('<UIComboBox />', () => {
                 // Simulate navigation
                 onScrollToItem(5);
                 // Check result
-                expect(scrollTopSetter).toBeCalledTimes(testCase.expect ? 1 : 0);
+                expect(scrollTopSetter).toHaveBeenCalledTimes(testCase.expect ? 1 : 0);
                 if (testCase.expect !== undefined) {
-                    expect(scrollTopSetter).toBeCalledWith(testCase.expect);
+                    expect(scrollTopSetter).toHaveBeenCalledWith(testCase.expect);
                 }
             });
         }
@@ -818,9 +818,9 @@ describe('<UIComboBox />', () => {
         });
         expect(wrapper.find(menuDropdownSelector).length).toEqual(0);
         // Open callout
-        expect(onPendingValueChanged).not.toBeCalled();
+        expect(onPendingValueChanged).not.toHaveBeenCalled();
         wrapper.find('input').simulate('keyDown', { which: KeyCodes.down });
-        expect(onPendingValueChanged).toBeCalled();
+        expect(onPendingValueChanged).toHaveBeenCalled();
         const callArgs = onPendingValueChanged.mock.calls[0];
         expect(callArgs[0].key).toEqual('LV');
         expect(callArgs[1]).toEqual(35);
@@ -862,9 +862,9 @@ describe('<UIComboBox />', () => {
                     calloutProps?.preventDismissOnEvent?.({} as Event);
                     calloutProps?.layerProps?.onLayerDidMount?.();
                     calloutProps?.layerProps?.onLayerWillUnmount?.();
-                    expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(expected ? 1 : 0);
-                    expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(expected ? 1 : 0);
-                    expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(expected ? 1 : 0);
+                    expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toHaveBeenCalledTimes(expected ? 1 : 0);
+                    expect(CalloutCollisionTransformSpy.applyTransformation).toHaveBeenCalledTimes(expected ? 1 : 0);
+                    expect(CalloutCollisionTransformSpy.resetTransformation).toHaveBeenCalledTimes(expected ? 1 : 0);
                 } else {
                     expect(calloutProps?.preventDismissOnEvent).toBeUndefined();
                     expect(calloutProps?.layerProps?.onLayerDidMount).toBeUndefined();
@@ -895,12 +895,12 @@ describe('<UIComboBox />', () => {
             calloutProps?.preventDismissOnEvent?.({} as Event);
             calloutProps?.layerProps?.onLayerDidMount?.();
             calloutProps?.layerProps?.onLayerWillUnmount?.();
-            expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toBeCalledTimes(1);
-            expect(CalloutCollisionTransformSpy.applyTransformation).toBeCalledTimes(1);
-            expect(CalloutCollisionTransformSpy.resetTransformation).toBeCalledTimes(1);
-            expect(externalListeners.calloutProps.preventDismissOnEvent).toBeCalledTimes(1);
-            expect(externalListeners.calloutProps.layerProps.onLayerDidMount).toBeCalledTimes(1);
-            expect(externalListeners.calloutProps.layerProps.onLayerWillUnmount).toBeCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.preventDismissOnEvent).toHaveBeenCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.applyTransformation).toHaveBeenCalledTimes(1);
+            expect(CalloutCollisionTransformSpy.resetTransformation).toHaveBeenCalledTimes(1);
+            expect(externalListeners.calloutProps.preventDismissOnEvent).toHaveBeenCalledTimes(1);
+            expect(externalListeners.calloutProps.layerProps.onLayerDidMount).toHaveBeenCalledTimes(1);
+            expect(externalListeners.calloutProps.layerProps.onLayerWillUnmount).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -1160,8 +1160,8 @@ describe('<UIComboBox />', () => {
             wrapper.find('input').simulate('input', { target: { value: 'My dummy' } });
             wrapper.find('input').simulate('input', { target: { value: 'My dummy value' } });
             await new Promise((resolve) => setTimeout(resolve, 20));
-            expect(onInputChange).toBeCalledTimes(3);
-            expect(onExternalSearch).toBeCalledTimes(1);
+            expect(onInputChange).toHaveBeenCalledTimes(3);
+            expect(onExternalSearch).toHaveBeenCalledTimes(1);
             expect(onExternalSearch).toHaveBeenCalledWith('My dummy value');
         });
     });

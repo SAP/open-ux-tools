@@ -11,6 +11,7 @@ import { findProjectRoot, getProjectType } from '@sap-ux/project-access';
  */
 export function addCardsEditorConfigCommand(cmd: Command): void {
     cmd.command('cards-editor [path]')
+        .description('Add a cards editor configuration to a project, enabling card generation.')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')
