@@ -4,6 +4,7 @@ import type { MiddlewareParameters } from '@ui5/server';
 import { type EnhancedRouter, FlpSandbox, initAdp } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
 import { getPreviewPaths, sanitizeConfig } from '../base/config';
+import { getRemoteUrl, isRemoteConnectionsEnabled, getPortFromArgs } from '../base/remote-url';
 
 /**
  * Create the router that is to be exposed as UI5 middleware.
@@ -44,6 +45,33 @@ async function createRouter(
 }
 
 /**
+ * Log remote URL for mobile device access if available.
+ *
+ * @param logger Logger instance
+ */
+async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
+    try {
+        const acceptRemoteConnections = isRemoteConnectionsEnabled();
+        const port = getPortFromArgs();
+
+        const remoteUrl = await getRemoteUrl(
+            {
+                acceptRemoteConnections,
+                port,
+                protocol: 'http'
+            },
+            logger
+        );
+
+        if (remoteUrl) {
+            logger.info(`Remote URL: ${remoteUrl}`);
+        }
+    } catch (error) {
+        logger.debug(`Could not generate remote URL: ${error.message}`);
+    }
+}
+
+/**
  * Exporting the middleware for usage in the UI5 tooling.
  *
  * @param params middleware configuration
@@ -55,7 +83,12 @@ module.exports = async (params: MiddlewareParameters<MiddlewareConfig>): Promise
         logLevel: params.options.configuration?.debug ? LogLevel.Debug : LogLevel.Info
     });
     try {
-        return await createRouter(params, logger);
+        const router = await createRouter(params, logger);
+
+        // Log remote URL for mobile device access
+        await logRemoteUrl(logger);
+
+        return router;
     } catch (error) {
         logger.error('Could not start preview-middleware.');
         logger.error(error.message);

@@ -4,7 +4,8 @@ import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 export enum Arguments {
     FrameworkVersion = '--framework-version',
     Open = '--open',
-    Config = '--config'
+    Config = '--config',
+    AcceptRemoteConnections = '--accept-remote-connections'
 }
 
 export interface FioriOptions {
@@ -33,6 +34,11 @@ export interface FioriOptions {
      * Use this flag to dynamically manage workspace modifications.
      */
     enableVSCodeReload?: boolean;
+    /**
+     * Enable remote access for mobile device preview.
+     * Adds --accept-remote-connections parameter to the preview command.
+     */
+    enableRemoteAccess?: boolean;
 }
 
 export interface LaunchJSON {
