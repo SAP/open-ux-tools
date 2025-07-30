@@ -106,7 +106,7 @@ function getAddManagedAppRouterPrompt(): CfDeployConfigQuestions {
 function getOverwritePrompt(): CfDeployConfigQuestions {
     return {
         type: 'confirm',
-        name: promptNames.overwriteDestinationName,
+        name: promptNames.overwriteCfConfig,
         guiOptions: {
             hint: t('prompts.overwriteHintMessage')
         },
@@ -162,7 +162,7 @@ export async function getQuestions(
     log?: Logger
 ): Promise<CfDeployConfigQuestions[]> {
     const destinationOptions = promptOptions[promptNames.destinationName] as DestinationNamePromptOptions;
-    const addOverwriteQuestion = !promptOptions.overwriteDestinationName?.hide;
+    const addOverwriteQuestion = !promptOptions.overwriteCfConfig?.hide;
     const addManagedAppRouterQuestions = !promptOptions.addManagedAppRouter?.hide;
     const addRouterTypeQuestion = !promptOptions.routerType?.hide;
 

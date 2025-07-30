@@ -70,7 +70,7 @@ export async function getCFQuestions({
         },
         [promptNames.addManagedAppRouter]: { hide: true, ...promptOptions?.addManagedAppRouter },
         [promptNames.routerType]: { hide: mtaYamlExists || isCap, ...promptOptions?.routerType },
-        [promptNames.overwriteDestinationName]: { hide: !addOverwrite, ...promptOptions?.overwriteDestinationName }
+        [promptNames.overwriteCfConfig]: { hide: !addOverwrite, ...promptOptions?.overwriteCfConfig }
     };
 
     DeploymentGenerator.logger?.debug(t('cfGen.debug.promptOptions', { options: JSON.stringify(options) }));

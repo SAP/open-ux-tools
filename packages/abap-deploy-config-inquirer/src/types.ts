@@ -80,7 +80,7 @@ export enum promptNames {
     transportFromList = 'transportFromList',
     transportManual = 'transportManual',
     index = 'index',
-    overwrite = 'overwrite'
+    overwriteAbapConfig = 'overwriteAbapConfig'
 }
 
 /**
@@ -211,7 +211,7 @@ type abapPromptOptions = {
     [promptNames.packageManual]: PackageManualPromptOptions & CommonPromptOptions;
     [promptNames.transportManual]: TransportManualPromptOptions & CommonPromptOptions;
     [promptNames.transportCreated]: TransportCreatedPromptOptions & CommonPromptOptions;
-    [promptNames.overwrite]: OverwritePromptOptions & CommonPromptOptions;
+    [promptNames.overwriteAbapConfig]: OverwritePromptOptions & CommonPromptOptions;
     [promptNames.index]: IndexPromptOptions & CommonPromptOptions;
     [promptNames.packageAutocomplete]: PackageAutocompletePromptOptions & CommonPromptOptions;
     [promptNames.transportInputChoice]: TransportInputChoicePromptOptions & CommonPromptOptions;

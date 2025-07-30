@@ -232,7 +232,7 @@ describe('Prompt Generation Tests', () => {
         beforeEach(() => {
             promptOptions = {
                 ...promptOptions,
-                [promptNames.overwriteDestinationName]: {
+                [promptNames.overwriteCfConfig]: {
                     hide: false
                 }
             };
@@ -240,9 +240,7 @@ describe('Prompt Generation Tests', () => {
 
         it('Displays get overwrite prompt when enabled', async () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions, mockLog);
-            const overwritePrompt = questions.find(
-                (question) => question.name === promptNames.overwriteDestinationName
-            );
+            const overwritePrompt = questions.find((question) => question.name === promptNames.overwriteCfConfig);
             expect(overwritePrompt?.type).toBe('confirm');
             expect((overwritePrompt?.default as Function)()).toBe(true);
             expect((overwritePrompt?.message as Function)()).toBe(t('prompts.overwriteMessage'));
@@ -250,15 +248,13 @@ describe('Prompt Generation Tests', () => {
         });
 
         it('Displays get overwrite prompt when disabled', async () => {
-            if (promptOptions[promptNames.overwriteDestinationName]) {
-                promptOptions[promptNames.overwriteDestinationName] = {
+            if (promptOptions[promptNames.overwriteCfConfig]) {
+                promptOptions[promptNames.overwriteCfConfig] = {
                     hide: true
                 };
             }
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions, mockLog);
-            const overwritePrompt = questions.find(
-                (question) => question.name === promptNames.overwriteDestinationName
-            );
+            const overwritePrompt = questions.find((question) => question.name === promptNames.overwriteCfConfig);
             expect(overwritePrompt?.type).toBeUndefined();
         });
     });

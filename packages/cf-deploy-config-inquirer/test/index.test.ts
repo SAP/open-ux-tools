@@ -25,7 +25,7 @@ describe('index', () => {
         [promptNames.addManagedAppRouter]: {
             hide: true
         },
-        [promptNames.overwriteDestinationName]: {
+        [promptNames.overwriteCfConfig]: {
             hide: false
         }
     };
