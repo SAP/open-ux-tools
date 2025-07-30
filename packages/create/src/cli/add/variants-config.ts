@@ -11,6 +11,7 @@ import { isAbsolute, join } from 'path';
  */
 export function addAddVariantsConfigCommand(cmd: Command): void {
     cmd.command('variants-config [path]')
+        .description('Add configuration and scripts for variant management.')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')
