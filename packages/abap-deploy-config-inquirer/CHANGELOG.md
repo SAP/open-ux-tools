@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.0
+
+### Minor Changes
+
+-   6e2c5aa: fix overwrite prompt conflict
+
 ## 1.5.2
 
 ### Patch Changes

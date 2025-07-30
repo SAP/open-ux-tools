@@ -1,5 +1,13 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.46
+
+### Patch Changes
+
+-   6e2c5aa: fix overwrite prompt conflict
+-   Updated dependencies [6e2c5aa]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.0
+
 ## 0.1.45
 
 ### Patch Changes
