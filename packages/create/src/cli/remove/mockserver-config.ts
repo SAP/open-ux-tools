@@ -11,6 +11,7 @@ import { hasFileDeletes, validateBasePath } from '../../validation';
  */
 export function addRemoveMockserverConfigCommand(cmd: Command): void {
     cmd.command('mockserver-config [path]')
+        .description('Remove the configuration for the mockserver module from a project.')
         .option('-v, --verbose', 'show verbose information')
         .option('-f, --force', 'do not ask for confirmation when deleting files')
         .action(async (path, options) => {

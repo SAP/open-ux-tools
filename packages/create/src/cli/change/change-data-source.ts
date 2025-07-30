@@ -21,6 +21,7 @@ let loginAttempts = 3;
  */
 export function addChangeDataSourceCommand(cmd: Command): void {
     cmd.command('data-source [path]')
+        .description('Change the OData source of the base application in an adaptation project.')
         .option('-s, --simulate', 'simulate only do not write or install')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .action(async (path, options) => {
