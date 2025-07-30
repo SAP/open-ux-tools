@@ -146,8 +146,8 @@ describe('TranslationInput', () => {
         clickI18nButton();
 
         acceptI18nCallout(id);
-        expect(triggerEventMock).toBeCalledTimes(1);
-        expect(triggerEventMock).toBeCalledWith('testInput', {
+        expect(triggerEventMock).toHaveBeenCalledTimes(1);
+        expect(triggerEventMock).toHaveBeenCalledWith('testInput', {
             entry: { key: { value: 'dummy' }, value: { value: 'dummy' } },
             name: TRANSLATE_EVENT_UPDATE,
             properties: annotationProps
@@ -158,8 +158,8 @@ describe('TranslationInput', () => {
         render(<TranslationInput {...props} value="{i18n>test}" />);
         clickI18nButton(false);
 
-        expect(triggerEventMock).toBeCalledTimes(1);
-        expect(triggerEventMock).toBeCalledWith('testInput', {
+        expect(triggerEventMock).toHaveBeenCalledTimes(1);
+        expect(triggerEventMock).toHaveBeenCalledWith('testInput', {
             entry: { key: { value: 'test' }, value: { value: 'Test value' } },
             name: TRANSLATE_EVENT_SHOW
         });

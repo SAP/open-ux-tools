@@ -75,7 +75,7 @@ describe('bsp', () => {
             expect(options.pathRewrite).toBeDefined();
             expect(options.pathRewrite).not.toBe(oldPathRewrite);
             (options.pathRewrite as Function)('test');
-            expect(oldPathRewrite).toBeCalled();
+            expect(oldPathRewrite).toHaveBeenCalled();
         });
 
         test('no existing options', async () => {

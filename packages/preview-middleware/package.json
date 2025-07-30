@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Apreview-middleware"
     },
-    "version": "0.20.66",
+    "version": "0.20.71",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -71,7 +71,7 @@
         "express": "4.21.2",
         "nock": "13.4.0",
         "npm-run-all2": "6.2.0",
-        "supertest": "6.3.3"
+        "supertest": "7.1.4"
     },
     "peerDependencies": {
         "express": "4"

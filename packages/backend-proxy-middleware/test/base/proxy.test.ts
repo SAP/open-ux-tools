@@ -97,20 +97,20 @@ describe('proxy', () => {
             const mockSetHeader = jest.fn() as unknown;
 
             onProxyReq({ setHeader: mockSetHeader } as ClientRequest);
-            expect(mockSetHeader).not.toBeCalled();
+            expect(mockSetHeader).not.toHaveBeenCalled();
 
             onProxyReq({ path: 'hello/world', setHeader: mockSetHeader } as ClientRequest);
-            expect(mockSetHeader).not.toBeCalled();
+            expect(mockSetHeader).not.toHaveBeenCalled();
 
             onProxyReq({
                 path: 'hello/Fiorilaunchpad.html',
                 headersSent: true,
                 setHeader: mockSetHeader
             } as ClientRequest);
-            expect(mockSetHeader).not.toBeCalled();
+            expect(mockSetHeader).not.toHaveBeenCalled();
 
             onProxyReq({ path: 'hello/Fiorilaunchpad.html', setHeader: mockSetHeader } as ClientRequest);
-            expect(mockSetHeader).toBeCalledWith('accept-encoding', '*');
+            expect(mockSetHeader).toHaveBeenCalledWith('accept-encoding', '*');
         });
 
         test('onProxyRes', () => {
@@ -157,13 +157,13 @@ describe('proxy', () => {
 
             // do nothing if no error is provided, but log for debug purposes
             proxyErrorHandler(undefined as unknown as Error, request, logger);
-            expect(debugSpy).toBeCalled();
+            expect(debugSpy).toHaveBeenCalled();
 
             // handle CA error
             const certError: Error & { code?: string } = new Error('Certificate error');
             certError.code = 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY';
             proxyErrorHandler(certError, requestWithNext, logger);
-            expect(mockNext).toBeCalled();
+            expect(mockNext).toHaveBeenCalled();
             try {
                 proxyErrorHandler(certError, request, logger);
             } catch (error) {
@@ -174,7 +174,7 @@ describe('proxy', () => {
             // forward or throw other errors
             const otherError = new Error();
             proxyErrorHandler(otherError, requestWithNext, logger);
-            expect(mockNext).toBeCalledTimes(1);
+            expect(mockNext).toHaveBeenCalledTimes(1);
             try {
                 proxyErrorHandler(otherError, request, logger);
             } catch (error) {
@@ -185,8 +185,8 @@ describe('proxy', () => {
             debugSpy.mockReset();
             const emptyError = { message: '', stack: 'Error' } as Error;
             proxyErrorHandler(emptyError, requestCausingError, logger);
-            expect(debugSpy).toBeCalledTimes(1);
-            expect(debugSpy).toBeCalledWith(
+            expect(debugSpy).toHaveBeenCalledTimes(1);
+            expect(debugSpy).toHaveBeenCalledWith(
                 `Error ${JSON.stringify(emptyError, null, 2)} thrown for request ${requestCausingError.originalUrl}`
             );
         });

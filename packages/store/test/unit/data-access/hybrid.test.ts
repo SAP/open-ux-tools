@@ -226,15 +226,15 @@ describe('hybrid store', () => {
             mockSecureStore.save = jest.fn();
 
             await getHybridStore(logger).write({ entityName: 'dummy', id: '42', entity: new HasOnlyOrdinaryProps() });
-            expect(mockSecureStore.save).not.toBeCalled();
-            expect(mockFilesystemStore.write).not.toBeCalled();
+            expect(mockSecureStore.save).not.toHaveBeenCalled();
+            expect(mockFilesystemStore.write).not.toHaveBeenCalled();
         });
 
         it('writes serializable properties to file system', async () => {
             mockSecureStore.save = jest.fn();
 
             await getHybridStore(logger).write({ entityName: 'dummy', id: '42', entity: new HasSerializableProps() });
-            expect(mockSecureStore.save).not.toBeCalled();
+            expect(mockSecureStore.save).not.toHaveBeenCalled();
             expect(mockFilesystemStore.write).toHaveBeenCalledWith(
                 expect.objectContaining({
                     entity: {
@@ -249,7 +249,7 @@ describe('hybrid store', () => {
             mockSecureStore.save = jest.fn();
 
             await getHybridStore(logger).write({ entityName: 'dummy', id: '42', entity: new HasSensitiveDataProps() });
-            expect(mockFilesystemStore.write).not.toBeCalled();
+            expect(mockFilesystemStore.write).not.toHaveBeenCalled();
             expect(mockSecureStore.save).toHaveBeenCalledWith(expect.anything(), expect.anything(), {
                 sensitiveDataProperty1: '1',
                 sensitiveDataProperty2: '2'

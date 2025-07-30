@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.30.8
+
+### Patch Changes
+
+-   4e0bd83: fix(deps): update dependency @ui5/manifest to v1.76.0
+
 ## 1.30.7
 
 ### Patch Changes

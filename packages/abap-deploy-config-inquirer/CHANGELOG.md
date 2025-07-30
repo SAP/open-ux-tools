@@ -1,5 +1,37 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.5.2
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/fiori-generator-shared@0.13.4
+-   @sap-ux/system-access@0.6.11
+-   @sap-ux/inquirer-common@0.7.28
+
+## 1.5.1
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/system-access@0.6.11
+
+## 1.5.0
+
+### Minor Changes
+
+-   089b56f: updates extension types and extends prompt options in sub gens
+
+## 1.4.38
+
+### Patch Changes
+
+-   Updated dependencies [ca44076]
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/inquirer-common@0.7.27
+
 ## 1.4.37
 
 ### Patch Changes

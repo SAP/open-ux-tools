@@ -48,7 +48,7 @@ describe('Test get system info', () => {
         });
         const systemInfo = await getSystemInfo(packageName);
         expect(systemInfo).toStrictEqual({ apiExist: false });
-        expect(loggerSpy).toBeCalledWith(
+        expect(loggerSpy).toHaveBeenCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'getSystemInfo', error: errorObj.message })
         );
     });
