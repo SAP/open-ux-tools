@@ -3872,8 +3872,8 @@ importers:
         specifier: 2.1.9
         version: 2.1.9
       '@sap/subaccount-destination-service-provider':
-        specifier: 2.4.2
-        version: 2.4.2
+        specifier: 2.4.4
+        version: 2.4.4
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -8806,22 +8806,6 @@ packages:
       - bufferutil
       - debug
       - utf-8-validate
-    dev: false
-
-  /@sap/bas-sdk@3.8.9:
-    resolution: {integrity: sha512-ycYttnSTlEPjDrb0svSv0jBgqEvoekD4bNB4IxuKCu5OKk5FycwsOTgufU8CXYf1ag23wTlurN+N7c4Po6PcJQ==}
-    dependencies:
-      axios: 1.7.4
-      cross-spawn: 7.0.6
-      fs-extra: 11.1.1
-      lodash: 4.17.21
-      url-join: 4.0.1
-      ws: 8.17.1
-    transitivePeerDependencies:
-      - bufferutil
-      - debug
-      - utf-8-validate
-    dev: true
 
   /@sap/cds-compiler@4.8.0:
     resolution: {integrity: sha512-C8IkzNfdMIzG136K/VvOmG65d8UnR9lcZF5q/c//Jp2/RZIZvwFvO5HHPre19+YWhuwJXbIMb3kc5x9CW9ZLNw==}
@@ -8849,16 +8833,6 @@ packages:
       temp-dir: 2.0.0
       which: 2.0.2
 
-  /@sap/service-provider-apis@2.1.7:
-    resolution: {integrity: sha512-OFNKOt10oseaAO4u8xxOsVLB6CHAaTxrjBore7ybxT103IOQV9geSF5CcTL38a5Q4CJZqyQLsXE8VXpiSBZKDg==}
-    dependencies:
-      axios: 1.7.7
-      lodash: 4.17.21
-      xml2js: 0.6.2
-    transitivePeerDependencies:
-      - debug
-    dev: true
-
   /@sap/service-provider-apis@2.1.9:
     resolution: {integrity: sha512-Rb4RdbeaG980+XuHuGgPbjEt6BTJRv2La4NFqa2yO3L3+GbI1knz27GROArJrAgKHeS9riYMGBoZ6//55LpRvA==}
     dependencies:
@@ -8868,11 +8842,11 @@ packages:
     transitivePeerDependencies:
       - debug
 
-  /@sap/subaccount-destination-service-provider@2.4.2:
-    resolution: {integrity: sha512-x4MVUMvHqFPEEY4CKfnbNarFQtSnFND9pYxK/Ux6zi9JWHHfPBJT2RCZecg8I4PyuzgoSYWgvvvooyNYC5VJNQ==}
+  /@sap/subaccount-destination-service-provider@2.4.4:
+    resolution: {integrity: sha512-R4o8Hry8poj/hBNpP8H137dRI0seTqelaTYMhpzDWLO9UnsVzKmkWHk3ooMb2S1drx+xHHgyImwN/etI0FPQ5g==}
     dependencies:
-      '@sap/bas-sdk': 3.8.9
-      '@sap/service-provider-apis': 2.1.7
+      '@sap/bas-sdk': 3.11.6
+      '@sap/service-provider-apis': 2.1.9
       stream-json: 1.8.0
       vkbeautify: 0.99.3
       xml2js: 0.6.2
@@ -12182,26 +12156,6 @@ packages:
     transitivePeerDependencies:
       - debug
     dev: false
-
-  /axios@1.7.4:
-    resolution: {integrity: sha512-DukmaFRnY6AzAALSH4J2M3k6PkaC+MfaAGdEERRWcC9q3/TWQwLpHR8ZRLKTdQ3aBDL64EdluRDjJqKw+BPZEw==}
-    dependencies:
-      follow-redirects: 1.15.6
-      form-data: 4.0.4
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
-    dev: true
-
-  /axios@1.7.7:
-    resolution: {integrity: sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==}
-    dependencies:
-      follow-redirects: 1.15.6
-      form-data: 4.0.4
-      proxy-from-env: 1.1.0
-    transitivePeerDependencies:
-      - debug
-    dev: true
 
   /axios@1.8.2:
     resolution: {integrity: sha512-ls4GYBm5aig9vWx8AWDSGLpnpDQRtWAfrjU+EuytuODrFBkqesN2RkOQCBzrA1RQNHw1SmRMSDDDSwzNAYQ6Rg==}
@@ -18853,7 +18807,6 @@ packages:
   /jwt-decode@4.0.0:
     resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
     engines: {node: '>=18'}
-    dev: false
 
   /keyv@3.0.0:
     resolution: {integrity: sha512-eguHnq22OE3uVoSYG0LVWNP+4ppamWr9+zWBe1bsNcovIMy6huUJFPgy4mGwCd/rnl3vOLGW1MTlu4c57CT1xA==}
