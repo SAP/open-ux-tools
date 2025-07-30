@@ -1,5 +1,11 @@
 # @sap-ux/create
 
+## 0.13.85
+
+### Patch Changes
+
+-   d0c5ee1: feat: enhance cli command descriptions
+
 ## 0.13.84
 
 ### Patch Changes
