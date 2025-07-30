@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.8
+
+### Patch Changes
+
+-   4a4e0c9: We now ignore `module` type dependency during the jest environment processing
+
 ## 5.3.7
 
 ### Patch Changes

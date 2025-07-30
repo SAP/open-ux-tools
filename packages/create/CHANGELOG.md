@@ -1,5 +1,52 @@
 # @sap-ux/create
 
+## 0.13.87
+
+### Patch Changes
+
+-   Updated dependencies [009143e]
+    -   @sap-ux/preview-middleware@0.20.72
+    -   @sap-ux/app-config-writer@0.6.26
+    -   @sap-ux/adp-tooling@0.15.9
+    -   @sap-ux/project-access@1.30.9
+    -   @sap-ux/flp-config-inquirer@0.4.5
+    -   @sap-ux/abap-deploy-config-writer@0.2.3
+    -   @sap-ux/cap-config-writer@0.10.23
+    -   @sap-ux/mockserver-config-writer@0.9.10
+    -   @sap-ux/odata-service-writer@0.27.14
+    -   @sap-ux/system-access@0.6.11
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.1
+
+## 0.13.86
+
+### Patch Changes
+
+-   Updated dependencies [6e2c5aa]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.0
+
+## 0.13.85
+
+### Patch Changes
+
+-   d0c5ee1: feat: enhance cli command descriptions
+
+## 0.13.84
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/abap-deploy-config-writer@0.2.2
+    -   @sap-ux/adp-tooling@0.15.8
+    -   @sap-ux/app-config-writer@0.6.25
+    -   @sap-ux/cap-config-writer@0.10.22
+    -   @sap-ux/flp-config-inquirer@0.4.4
+    -   @sap-ux/mockserver-config-writer@0.9.9
+    -   @sap-ux/odata-service-writer@0.27.13
+    -   @sap-ux/preview-middleware@0.20.71
+    -   @sap-ux/system-access@0.6.11
+    -   @sap-ux/abap-deploy-config-inquirer@1.5.2
+
 ## 0.13.83
 
 ### Patch Changes

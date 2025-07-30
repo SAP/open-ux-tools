@@ -110,7 +110,7 @@ describe('Test getAbapQuestions', () => {
                         shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
-                overwrite: { hide: true },
+                overwriteAbapConfig: { hide: true },
                 transportInputChoice: { hideIfOnPremise: false },
                 targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             },
@@ -193,7 +193,7 @@ describe('Test getAbapQuestions', () => {
                         shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
-                overwrite: { hide: true },
+                overwriteAbapConfig: { hide: true },
                 transportInputChoice: { hideIfOnPremise: false },
                 targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             },
