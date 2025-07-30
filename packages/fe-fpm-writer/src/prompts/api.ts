@@ -12,7 +12,6 @@ import type {
     CodeSnippet,
     PromptsType
 } from './types';
-import type { UpdateViewOptions } from '../building-block/types';
 import { i18nNamespaces, initI18n, translate } from '../i18n';
 import { join } from 'path';
 import type { SupportedPrompts, NarrowPrompt, SupportedGeneratorPrompts } from './map';
@@ -163,13 +162,11 @@ export class PromptsAPI {
      *
      * @param type The prompt type
      * @param answers The answers object
-     * @param updateViewOptions
      * @returns The updated memfs editor instance
      */
     public async submitAnswers<N extends SupportedPrompts['type']>(
         type: N,
-        answers: NarrowPrompt<typeof type>['answers'],
-        updateViewOptions?: UpdateViewOptions
+        answers: NarrowPrompt<typeof type>['answers']
     ): Promise<Editor> {
         const config = { type, answers };
         if (!this.isGenerationSupported(config)) {
@@ -178,7 +175,7 @@ export class PromptsAPI {
         const generator = PromptsGeneratorsMap.hasOwnProperty(config.type)
             ? PromptsGeneratorsMap[config.type]
             : undefined;
-        return generator?.(this.context.appPath, config.answers, this.context.fs, updateViewOptions) ?? this.context.fs;
+        return generator?.(this.context.appPath, config.answers, this.context.fs) ?? this.context.fs;
     }
 
     /**

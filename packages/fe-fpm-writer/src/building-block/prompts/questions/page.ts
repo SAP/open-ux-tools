@@ -1,6 +1,6 @@
 import type { Answers } from 'inquirer';
 import { i18nNamespaces, translate } from '../../../i18n';
-import { getBuildingBlockIdPrompt } from '../utils';
+import { getBuildingBlockIdPrompt, getViewOrFragmentPathPrompt, getAggregationPathPrompt } from '../utils';
 import type { PromptContext, Prompts } from '../../../prompts/types';
 import { BuildingBlockType } from '../../types';
 import type { BuildingBlockConfig, Page } from '../../types';
@@ -18,6 +18,23 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
 
     return {
         questions: [
+            getViewOrFragmentPathPrompt(context, t('viewOrFragmentPath.validate') as string, {
+                message: t('viewOrFragmentPath.message') as string,
+                guiOptions: {
+                    mandatory: true,
+                    dependantPromptNames: ['aggregationPath']
+                }
+            }),
+            getAggregationPathPrompt(
+                context,
+                {
+                    message: t('aggregation') as string,
+                    guiOptions: {
+                        mandatory: true
+                    }
+                },
+                BuildingBlockType.Page
+            ),
             getBuildingBlockIdPrompt(context, t('id.validation') as string, {
                 message: t('id.message') as string,
                 default: 'Page',

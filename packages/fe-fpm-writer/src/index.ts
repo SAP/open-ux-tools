@@ -28,7 +28,6 @@ export {
     FieldFormatOptions,
     Table,
     BuildingBlockConfig,
-    UpdateViewOptions,
     Page
 } from './building-block/types';
 export { generateBuildingBlock, getSerializedFileContent } from './building-block';

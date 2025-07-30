@@ -3,13 +3,7 @@ import { create } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import { join, parse, relative } from 'path';
-import {
-    BuildingBlockType,
-    type BuildingBlock,
-    type BuildingBlockConfig,
-    type BuildingBlockMetaPath,
-    type UpdateViewOptions
-} from './types';
+import { BuildingBlockType, type BuildingBlock, type BuildingBlockConfig, type BuildingBlockMetaPath } from './types';
 import { DOMParser, XMLSerializer } from '@xmldom/xmldom';
 import * as xpath from 'xpath';
 import format from 'xml-formatter';
@@ -39,14 +33,12 @@ interface MetadataPath {
  * @param {string} basePath - the base path
  * @param {BuildingBlockConfig} config - the building block configuration parameters
  * @param {Editor} [fs] - the memfs editor instance
- * @param {UpdateViewOptions} [updateViewOptions] - Options for updating the view file.
  * @returns {Editor} the updated memfs editor instance
  */
 export async function generateBuildingBlock<T extends BuildingBlock>(
     basePath: string,
     config: BuildingBlockConfig<T>,
-    fs?: Editor,
-    updateViewOptions?: UpdateViewOptions
+    fs?: Editor
 ): Promise<Editor> {
     const { viewOrFragmentPath, aggregationPath, buildingBlockData, allowAutoAddDependencyLib = true } = config;
     // Validate the base and view paths
@@ -70,7 +62,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
         xmlDocument,
         templateDocument,
         fs,
-        updateViewOptions
+        config.replace
     );
 
     if (allowAutoAddDependencyLib && manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
@@ -289,9 +281,8 @@ function getTemplateDocument<T extends BuildingBlock>(
  * @param {Document} viewDocument - the view xml document
  * @param {Document} templateDocument - the template xml document
  * @param {Editor} [fs] - the memfs editor instance
- * @param {UpdateViewOptions} [updateViewOptions] - Options for updating the view file.
- *   @param {string} [updateViewOptions.replaceTargetLocalName] - If specified, replaces the child element of the target node
- *     with this local name (e.g., 'Page') with the new building block. If not specified, the new building block is appended as a child.
+ * @param {boolean} [replace] - If true, replaces the target element with the template xml document;
+ * if false, appends the source node.
  * @returns {Editor} the updated memfs editor instance
  */
 function updateViewFile(
@@ -301,7 +292,7 @@ function updateViewFile(
     viewDocument: Document,
     templateDocument: Document,
     fs: Editor,
-    updateViewOptions?: UpdateViewOptions
+    replace: boolean = false
 ): Editor {
     const xpathSelect = xpath.useNamespaces((viewDocument.firstChild as any)._nsMap);
 
@@ -310,23 +301,11 @@ function updateViewFile(
     if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
         const targetNode = targetNodes[0] as Node;
         const sourceNode = viewDocument.importNode(templateDocument.documentElement, true);
-
-        if (updateViewOptions?.replaceTargetLocalName) {
-            // replace the target node with the source node if the replaceTargetLocalName is provided
-            const elementToReplace = Array.from(targetNode.childNodes).find(
-                (node) =>
-                    node.nodeType === node.ELEMENT_NODE &&
-                    (node as Element).localName === updateViewOptions.replaceTargetLocalName
-            );
-            if (elementToReplace) {
-                targetNode.replaceChild(sourceNode, elementToReplace);
-            } else {
-                throw new Error(`Cannot replace node: Page Node in aggregationPath: ${aggregationPath}`);
-            }
+        if (replace) {
+            targetNode.parentNode?.replaceChild(sourceNode, targetNode);
         } else {
             targetNode.appendChild(sourceNode);
         }
-
         // Serialize and format new view xml document
         const newXmlContent = new XMLSerializer().serializeToString(viewDocument);
         fs.write(join(basePath, viewPath), format(newXmlContent));

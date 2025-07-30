@@ -771,7 +771,7 @@ describe('Building Blocks', () => {
     });
 
     test('generate Page building block with replace target locator set', async () => {
-        const aggregationPath = '/mvc:View';
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
         const basePath = join(testAppPath, 'generate-page-block');
         const pageBlockData = {
             id: 'testPage',
@@ -787,19 +787,17 @@ describe('Building Blocks', () => {
             {
                 viewOrFragmentPath: xmlViewFilePath,
                 aggregationPath,
-                buildingBlockData: pageBlockData
+                buildingBlockData: pageBlockData,
+                replace: true
             },
-            fs,
-            {
-                replaceTargetLocalName: 'Page'
-            }
+            fs
         );
         expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block');
         await writeFilesForDebugging(fs);
     });
 
-    test('throws error if replaceTargetLocalName is not found', async () => {
-        const aggregationPath = '/mvc:View';
+    test('throws error if aggregationPath not found', async () => {
+        const aggregationPath = `/mvc:Test`;
         const basePath = join(testAppPath, 'generate-page-block-error');
         const pageBlockData = {
             id: 'testPage',
@@ -817,13 +815,11 @@ describe('Building Blocks', () => {
                     {
                         viewOrFragmentPath: xmlViewFilePath,
                         aggregationPath,
-                        buildingBlockData: pageBlockData
+                        buildingBlockData: pageBlockData,
+                        replace: true
                     },
-                    fs,
-                    {
-                        replaceTargetLocalName: 'NonExistentElement'
-                    }
+                    fs
                 )
-        ).rejects.toThrow(`Cannot replace node: Page Node in aggregationPath: ${aggregationPath}`);
+        ).rejects.toThrow(`Aggregation control not found /mvc:Test.`);
     });
 });

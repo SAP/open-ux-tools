@@ -428,6 +428,32 @@ Object {
   },
   "questions": Array [
     Object {
+      "choices": Array [],
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "aggregationPath",
+        ],
+        "mandatory": true,
+        "placeholder": "Select a view or fragment file",
+        "selectType": "dynamic",
+      },
+      "message": "View or Fragment File",
+      "name": "viewOrFragmentPath",
+      "type": "list",
+      "validate": [Function],
+    },
+    Object {
+      "choices": Array [],
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Select an aggregation path",
+        "selectType": "dynamic",
+      },
+      "message": "Aggregation Path",
+      "name": "aggregationPath",
+      "type": "list",
+    },
+    Object {
       "default": "Page",
       "guiOptions": Object {
         "mandatory": true,
@@ -1636,6 +1662,32 @@ Object {
     },
   },
   "questions": Array [
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "aggregationPath",
+        ],
+        "mandatory": true,
+        "placeholder": "Select a view or fragment file",
+        "selectType": "dynamic",
+      },
+      "message": "View or Fragment File",
+      "name": "viewOrFragmentPath",
+      "type": "list",
+      "validate": [Function],
+    },
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Select an aggregation path",
+        "selectType": "dynamic",
+      },
+      "message": "Aggregation Path",
+      "name": "aggregationPath",
+      "type": "list",
+    },
     Object {
       "default": "Page",
       "guiOptions": Object {

@@ -211,6 +211,11 @@ const ns1 = {
                 'message': 'Building Block ID',
                 'validation': 'An ID is required to generate the page building block'
             },
+            'viewOrFragmentPath': {
+                'message': 'View or Fragment File',
+                'validation': 'A View or Fragment is required to generate the page building block'
+            },
+            'aggregation': 'Aggregation Path',
             'title': {
                 'message': 'Page Title',
                 'validation': 'Enter a Page Title',

@@ -246,13 +246,14 @@ describe('Prompts', () => {
         },
         [PromptsType.Page]: {
             ...baseAnswers,
-            aggregationPath: '/mvc:View',
+            aggregationPath: "/mvc:View/*[local-name()='Page']",
             buildingBlockData: {
                 ...baseAnswers.buildingBlockData,
                 buildingBlockType: BuildingBlockType.Page,
                 id: 'TestPage',
                 title: 'Test Page'
-            }
+            },
+            replace: true
         }
     };
     describe('getCodeSnippet', () => {
@@ -348,10 +349,7 @@ describe('Prompts', () => {
         test('Type generation prompts type without generator', async () => {
             const result = await promptsAPI.submitAnswers(
                 PromptsType.Page,
-                answers[PromptsType.Page] as SupportedGeneratorAnswers,
-                {
-                    replaceTargetLocalName: 'Page'
-                }
+                answers[PromptsType.Page] as SupportedGeneratorAnswers
             );
             expect(result.read(join(projectPath, baseAnswers.viewOrFragmentPath))).toMatchSnapshot();
         });

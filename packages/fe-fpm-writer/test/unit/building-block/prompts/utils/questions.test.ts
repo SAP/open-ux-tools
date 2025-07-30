@@ -20,6 +20,7 @@ import {
     getViewOrFragmentPathPrompt
 } from '../../../../../src/building-block/prompts/utils/questions';
 import type { ListPromptQuestion, PromptContext } from '../../../../../src/prompts/types';
+import { BuildingBlockType } from '../../../../../src';
 
 const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');
@@ -199,9 +200,13 @@ describe('utils - questions', () => {
             ...context,
             appPath: join(__dirname, '../../../sample/building-block/webapp-with-page-macro')
         };
-        const aggregationPathPrompt = getAggregationPathPrompt(contextWithPageMacro, {
-            message: 'AggregationPathMessage'
-        });
+        const aggregationPathPrompt = getAggregationPathPrompt(
+            contextWithPageMacro,
+            {
+                message: 'AggregationPathMessage'
+            },
+            BuildingBlockType.Page
+        );
         expect(aggregationPathPrompt).toMatchSnapshot();
         const choicesProp = aggregationPathPrompt.choices as Choices;
         expect(choicesProp).toBeDefined();
