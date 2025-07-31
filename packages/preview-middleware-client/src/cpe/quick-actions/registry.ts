@@ -14,6 +14,7 @@ import { getRootControlFromComponentContainer } from '../utils';
 
 const NAV_CONTAINER_CONTROL_TYPE = 'sap.m.NavContainer';
 const FLEXIBLE_COLUMN_LAYOUT_CONTROL_TYPE = 'sap.f.FlexibleColumnLayout';
+const APP_CONTROL_TYPE = 'sap.m.App';
 
 export interface ActivePage<T extends string> {
     name: T;
@@ -69,7 +70,13 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
                     name: pageName,
                     view
                 });
-            } else {
+            } else if(name.toLowerCase().includes('.listreport.')){
+                // TODO: determine pageName for freestyle app. Is it needed at all?
+                pages.push({
+                    name: 'listReport' as T,
+                    view
+                });
+            } else{
                 Log.warning(`Could not find matching page for view of type "${name}".`);
             }
         }
@@ -88,10 +95,14 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
 
         for (const page of pages) {
             if (page) {
-                const container = this.getComponentContainerFromPage(page);
-                const rootControl = getRootControlFromComponentContainer(container);
-                if (rootControl) {
-                    views.push(rootControl);
+                if (page instanceof XMLView) {
+                    views.push(page); /// freestyle app case
+                } else {
+                    const container = this.getComponentContainerFromPage(page);
+                    const rootControl = getRootControlFromComponentContainer(container);
+                    if (rootControl) {
+                        views.push(rootControl);
+                    }
                 }
             }
         }
@@ -118,6 +129,14 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
             const control = getControlById(flexibleLayoutNode.controlId);
             if (control instanceof FlexibleColumnLayout) {
                 return this.getVisibleFlexibleColumnLayoutPages(control);
+            }
+        }
+
+        const appNode = controlIndex[APP_CONTROL_TYPE]?.[0];
+        if (appNode) {
+            const control = getControlById(appNode.controlId);
+            if (control instanceof NavContainer) {
+                return [control.getCurrentPage()];
             }
         }
 
