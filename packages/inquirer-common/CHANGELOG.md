@@ -1,5 +1,18 @@
 # @sap-ux/inquirer-common
 
+## 0.7.30
+
+### Patch Changes
+
+-   9fa7f0b: move aggregration entity helpers to inq-common
+
+## 0.7.29
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.5
+-   @sap-ux/telemetry@0.6.12
+
 ## 0.7.28
 
 ### Patch Changes
