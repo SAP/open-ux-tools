@@ -1,5 +1,13 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.27
+
+### Patch Changes
+
+-   9fa7f0b: move aggregration entity helpers to inq-common
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+
 ## 2.5.26
 
 ### Patch Changes

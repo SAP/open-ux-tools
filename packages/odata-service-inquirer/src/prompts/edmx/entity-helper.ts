@@ -5,6 +5,8 @@ import type { ConvertedMetadata, EntitySet, NavigationProperty } from '@sap-ux/v
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../i18n';
 import LoggerHelper from '../logger-helper';
+import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
+import { filterAggregateTransformations, hasAggregateTransformationsForEntity } from '@sap-ux/inquirer-common';
 
 export type EntityAnswer = {
     entitySetName: string;
@@ -220,22 +222,6 @@ export function getNavigationEntityChoices(
 }
 
 /**
- * Returns only entity sets that have the `Aggregation.ApplySupported` annotation term with the `Transformations` property.
- * This can be found within the entity set annotations or the entity type annotations.
- *
- * @param entitySets the entity sets to filter
- * @returns the filtered entity sets
- */
-export function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
-    return entitySets.filter((entitySet) => {
-        return (
-            !!entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
-            !!entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations
-        );
-    });
-}
-
-/**
  * Returns only entities that have a type property of 'HasDraftEnabled'.
  *
  * @param entitySets the entity sets to filter by draft enabled entities
@@ -246,4 +232,47 @@ export function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[]
         const entitySetTypeProperties = entitySet.entityType.entityProperties;
         return !!entitySetTypeProperties.find((property) => property.name === 'HasDraftEntity');
     });
+}
+
+/**
+ * Get the default table type based on the template type and previous answers.
+ *
+ * @param templateType the template type of the application to be generated from the prompt answers
+ * @param metadata the metadata (edmx) string of the service
+ * @param odataVersion the OData version of the service
+ * @param mainEntitySetName the name of the main entity set
+ * @param currentTableType the current table type selected by the user
+ * @returns the default table type and a boolean indicating if AnalyticalTable should be set as default
+ */
+export function getDefaultTableType(
+    templateType: TemplateType,
+    metadata: ConvertedMetadata,
+    odataVersion: OdataVersion,
+    mainEntitySetName?: string,
+    currentTableType?: TableType
+): { tableType: TableType; setAnalyticalTableDefault: boolean } {
+    let tableType: TableType;
+    let setAnalyticalTableDefault = false;
+    if (
+        (templateType === 'lrop' || templateType === 'worklist') &&
+        odataVersion === OdataVersion.v4 &&
+        hasAggregateTransformationsForEntity(metadata, mainEntitySetName)
+    ) {
+        // For V4, if the selected entity has aggregate transformations, use AnalyticalTable as default
+        tableType = 'AnalyticalTable';
+        setAnalyticalTableDefault = true;
+    } else if (templateType === 'alp') {
+        // For ALP, use AnalyticalTable as default
+        tableType = 'AnalyticalTable';
+    } else if (currentTableType) {
+        // If the user has already selected a table type use it
+        tableType = currentTableType;
+    } else {
+        // Default to ResponsiveTable for other cases
+        tableType = 'ResponsiveTable';
+    }
+    return {
+        tableType,
+        setAnalyticalTableDefault
+    };
 }
