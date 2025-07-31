@@ -33,12 +33,14 @@ import { ConfigPrompter } from './questions/configuration';
 import { validateJsonInput } from './questions/helper/validators';
 import { getPackageInfo, installDependencies } from '../utils/deps';
 import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
-import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
+import { addAdpLegacyProjectGen, addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
-import { type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput } from './types';
+import { TargetEnvironment, type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput } from './types';
 import { getWizardPages, updateFlpWizardSteps, updateWizardSteps, getDeployPage } from '../utils/steps';
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
+import { getTargetEnvironmentPrompt } from './questions/environment';
+import { isTargetEnvironmentConfigurable } from '../utils/environment';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -62,6 +64,10 @@ export default class extends Generator {
      * A boolean flag indicating whether an extension project should be created.
      */
     private shouldCreateExtProject: boolean;
+    /**
+     * A boolean flag indicating whether the legacy ADP generator should be started.
+     */
+    private shouldRunLegacyGenerator: boolean;
     /**
      * Generator prompts.
      */
@@ -160,7 +166,7 @@ export default class extends Generator {
         this.systemLookup = new SystemLookup(this.logger);
 
         if (!this.jsonInput) {
-            this.prompts.splice(0, 0, getWizardPages());
+            this.prompts.splice(0, 0, getWizardPages(this.vscode));
             this.prompter = this._getOrCreatePrompter();
         }
 
@@ -176,6 +182,24 @@ export default class extends Generator {
 
     async prompting(): Promise<void> {
         if (this.jsonInput) {
+            return;
+        }
+
+        let targetEnvironment: TargetEnvironment | undefined;
+        if (isTargetEnvironmentConfigurable(this.vscode)) {
+            const environmentQuestions = getTargetEnvironmentPrompt(this.vscode, this.appWizard);
+            const environmentAnswer = await this.prompt(environmentQuestions);
+            targetEnvironment = environmentAnswer.targetEnvironment;
+        }
+
+        this.shouldRunLegacyGenerator = targetEnvironment === TargetEnvironment.cloudFoundry;
+        if (this.shouldRunLegacyGenerator) {
+            addAdpLegacyProjectGen(
+                this.args,
+                { ...this.options, appWizard: this.appWizard, isCFWorkflow: true, prompts: this.prompts },
+                this.composeWith.bind(this),
+                this.logger
+            );
             return;
         }
 
@@ -249,6 +273,10 @@ export default class extends Generator {
 
     async writing(): Promise<void> {
         try {
+            if (this.shouldRunLegacyGenerator) {
+                return;
+            }
+
             if (this.jsonInput) {
                 await this._initFromJson();
             }
@@ -294,7 +322,7 @@ export default class extends Generator {
     }
 
     async install(): Promise<void> {
-        if (!this.shouldInstallDeps || this.shouldCreateExtProject) {
+        if (!this.shouldInstallDeps || this.shouldCreateExtProject || this.shouldRunLegacyGenerator) {
             return;
         }
 
@@ -306,7 +334,7 @@ export default class extends Generator {
     }
 
     async end(): Promise<void> {
-        if (this.shouldCreateExtProject) {
+        if (this.shouldCreateExtProject || this.shouldRunLegacyGenerator) {
             return;
         }
 

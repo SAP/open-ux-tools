@@ -35,6 +35,7 @@
         "!dist/**/*.map"
     ],
     "dependencies": {
+        "@sap/cf-tools": "3.2.2",
         "@sap-devx/yeoman-ui-types": "1.16.9",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",

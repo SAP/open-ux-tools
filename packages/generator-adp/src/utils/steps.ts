@@ -2,14 +2,24 @@ import type { Prompts as YeomanUiSteps, IPrompt } from '@sap-devx/yeoman-ui-type
 
 import { t } from './i18n';
 import { GeneratorTypes } from '../types';
+import { isTargetEnvironmentConfigurable } from './environment';
 
 /**
  * Returns the list of base wizard pages used in the Adaptation Project.
  *
+ * @param vscode The instance to the vscode env.
  * @returns {IPrompt[]} The list of static wizard steps to show initially.
  */
-export function getWizardPages(): IPrompt[] {
+export function getWizardPages(vscode: any): IPrompt[] {
     return [
+        ...(isTargetEnvironmentConfigurable(vscode)
+            ? [
+                  {
+                      name: t('yuiNavSteps.targetEnvironmentName'),
+                      description: ''
+                  }
+              ]
+            : []),
         {
             name: t('yuiNavSteps.configurationName'),
             description: t('yuiNavSteps.configurationDescr')

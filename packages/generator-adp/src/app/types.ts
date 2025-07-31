@@ -179,6 +179,14 @@ export interface ExtensionProjectData {
 }
 
 /**
+ * Interface representing the corresponding target environment - ABAP or Cloud Foundry.
+ */
+export enum TargetEnvironment {
+    abap,
+    cloudFoundry
+}
+
+/**
  * An interface representing the json input used to store the complete adaptation project
  * generator configurations. The json is passed as an CLI argument.
  */

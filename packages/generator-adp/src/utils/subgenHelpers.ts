@@ -6,7 +6,12 @@ import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer } from '@sap-ux/adp-tooling';
 
 import { t } from './i18n';
-import { getExtensionProjectData, resolveNodeModuleGenerator } from '../app/extension-project';
+import {
+    EXTENSIBILITY_GENERATOR_NS,
+    getExtensionProjectData,
+    LEGACY_ADP_GENERATOR_NS,
+    resolveNodeModuleGenerator
+} from '../app/extension-project';
 /**
  * Parameters required for composing the extension project generator.
  */
@@ -135,7 +140,7 @@ export async function addExtProjectGen(
 ): Promise<void> {
     try {
         const data = await getExtensionProjectData(configAnswers, attributeAnswers, systemLookup);
-        const generator = resolveNodeModuleGenerator();
+        const generator = resolveNodeModuleGenerator(EXTENSIBILITY_GENERATOR_NS);
 
         composeWith(generator!, {
             arguments: [JSON.stringify(data)],
@@ -146,5 +151,42 @@ export async function addExtProjectGen(
         logger.info(t('error.creatingExtensionProjectError'));
         logger.error(e);
         throw new Error(`Could not call '@bas-dev/generator-extensibility-sub' sub-generator: ${e.message}`);
+    }
+}
+
+/**
+ * Starts the legacy ADP generator as a sub-generator.
+ *
+ * @param {string|string[]} args - The generator arguments list.
+ * @param {Generator.GeneratorOptions} options - The generaotr options.
+ * @param {Generator['composeWith']} composeWith - Instance to the composer.
+ * @param {ToolsLogger} logger - Logger instance.
+ */
+export function addAdpLegacyProjectGen(
+    args: string | string[],
+    options: Generator.GeneratorOptions,
+    composeWith: Generator['composeWith'],
+    logger: ToolsLogger
+): void {
+    try {
+        const generator = resolveNodeModuleGenerator(LEGACY_ADP_GENERATOR_NS);
+
+        // [dev only] a.vasilev When testing in vscode on machine which has nvm we do not
+        // have NODE_PATH so the above func does not work.
+        // const generator =
+        //     '/Users/I762682/.nvm/versions/node/v20.19.0/lib/node_modules/@sap/generator-adaptation-project/generators/app';
+
+        // [dev only] a.vasilev Whne testing in BAS with globally installed legacy generator from a checkout repo instance
+        // again the above func does not work it detects the installed legacy generator from the extension.
+        // const generator =
+        //     '/home/user/.node_modules_global/lib/node_modules/@sap/generator-adaptation-project/generators/app';
+
+        composeWith(generator!, { arguments: args, ...options });
+        logger.info(`${LEGACY_ADP_GENERATOR_NS} was called.`);
+    } catch (error) {
+        logger.error(error);
+        throw new Error(
+            t('error.createPojectError', { namespace: LEGACY_ADP_GENERATOR_NS, errorMessage: error.message })
+        );
     }
 }

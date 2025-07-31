@@ -15,7 +15,8 @@
         "addLocalAnnotationFileName": "Add Local Annotation File",
         "addLocalAnnotationFileDescr": "Select an OData service and annotation XML file.",
         "replaceODataServiceName": "Replace OData Service",
-        "replaceODataServiceDescr": "Select an OData service and new OData URI."
+        "replaceODataServiceDescr": "Select an OData service and new OData URI.",
+        "targetEnvironmentName": "Target Environment"
     },
     "prompts": {
         "systemLabel": "System",
@@ -56,7 +57,12 @@
         "projectNameLengthErrorInt": "The name cannot start with the word 'customer', contain more than 61 characters, or end with the word 'component'.",
         "projectNameValidationErrorInt": "The name must only contain Latin alphanumeric characters and it must have at least two parts. Every part must start with a letter and the different parts must be separated by a period.",
         "projectNotInWorkspace": "The project: '{{- path}}' is not in the workspace. Some adaptation project tools may not work. What do you want to do?",
-        "emptyAnnotationFile": "An empty annotation file will be created in the webapp/changes/annotations folder of your project."
+        "emptyAnnotationFile": "An empty annotation file will be created in the webapp/changes/annotations folder of your project.",
+        "cfNotInstalledWarning": "Cloud Foundry is not installed in your space.",
+        "targetEnvironmentLabel": "Select environment",
+        "targetEnvironmentTooltip": "Select the target environment for your Adaptation Project",
+        "targetEnvironmentAbapName": "ABAP",
+        "targetEnvironmentCFName": "Cloud Foundry"
     },
     "error": {
         "selectCannotBeEmptyError": "The {{value}} has to be selected.",
@@ -77,6 +83,9 @@
         "systemNotFound": "System could not be found or is not supported: {{system}}. Please check the system exists.",
         "applicationNotFound": "The application could not be found or is not supported: {{appName}}. Please check the application exists.",
         "backendCommunicationError": "An error occurred when communicating with the back end. Please try again later.",
-        "pleaseProvideAllRequiredData": "Please provide the required data and try again."
+        "pleaseProvideAllRequiredData": "Please provide the required data and try again.",
+        "createPojectError": "Could not call '{{namespace}}' sub-generator: {{errorMessage}}",
+        "targetEnvironmentNotSelected": "Target environment has to be selected",
+        "cfLoginNotEnabled": "CF Login cannot be detected as extension in current installation of VSCode, please refer to documentation (link not yet available) in order to install it."
     }
 }

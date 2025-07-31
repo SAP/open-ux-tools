@@ -11,6 +11,7 @@ import { t } from '../../utils/i18n';
 import type { ExtensionProjectData } from '../types';
 
 export const EXTENSIBILITY_GENERATOR_NS = '@bas-dev/generator-extensibility-sub/generators/app';
+export const LEGACY_ADP_GENERATOR_NS = '@sap/generator-adaptation-project/generators/app';
 
 /**
  * Prepares data required for generating an extension project.
@@ -55,23 +56,27 @@ export async function getExtensionProjectData(
 }
 
 /**
- * Attempts to resolve the path to a specific node module generator from the NODE_PATH environment variable.
- * This is particularly used in the prompt for extension projects within SAP Business Application Studio (BAS)
- * when an application is not supported by the adaptation project. It functions by resolving the path to the
- * generator which is then utilized with `this.composeWith()` of the Yeoman generator. If the path to the generator
- * is found, it returns the path, allowing the extension project to continue. If no path is found, it indicates that
- * the Extensibility Generator is not installed in the development space, preventing the user from proceeding.
+ * Resolves the path to a Yeoman generator module by its namespace.
  *
- * @returns {string | undefined} The resolved path to the generator module if found, or undefined if not found.
+ * This utility searches through the paths specified in the `NODE_PATH` environment variable to locate the generator
+ * corresponding to the provided namespace. It is designed to support dynamic generator resolution at runtime,
+ * enabling tools such as `this.composeWith()` in Yeoman to invoke generators that may not be locally required,
+ * but are available in a shared development environment (e.g., SAP Business Application Studio).
+ *
+ * This method is especially useful in scenarios where the exact generator may vary or is not bundled with the project,
+ * but still expected to be available in a global or shared context (e.g., within a dev space).
+ *
+ * @param {string} namespace - The Yeoman generator namespace (e.g., '@bas-dev/generator-extensibility-sub/generators/app').
+ * @returns {string | undefined} The absolute path to the generator module if found, or undefined if not found.
  */
-export function resolveNodeModuleGenerator(): string | undefined {
+export function resolveNodeModuleGenerator(namespace: string): string | undefined {
     const nodePath = process.env['NODE_PATH'];
     const nodePaths = nodePath?.split(':') ?? [];
 
     let generator: string | undefined;
     for (const path of nodePaths) {
         try {
-            generator = require.resolve(resolve(path, EXTENSIBILITY_GENERATOR_NS));
+            generator = require.resolve(resolve(path, namespace));
         } catch (e) {
             /**
              * We don't care if there's an error while resolving the module, continue with the next node_module path

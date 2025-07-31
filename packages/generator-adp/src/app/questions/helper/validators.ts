@@ -1,9 +1,11 @@
-import type { SystemLookup } from '@sap-ux/adp-tooling';
+import { type SystemLookup, isCFExternalLoginEnabled } from '@sap-ux/adp-tooling';
 import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
+import { isAppStudio } from '@sap-ux/btp-utils';
 import { t } from '../../../utils/i18n';
 import { isString } from '../../../utils/type-guards';
-import { resolveNodeModuleGenerator } from '../../extension-project';
+import { EXTENSIBILITY_GENERATOR_NS, resolveNodeModuleGenerator } from '../../extension-project';
+import { TargetEnvironment } from '../../types';
 
 interface JsonInputParams {
     projectName: string;
@@ -27,7 +29,7 @@ export function validateExtensibilityGenerator(
     hasSyncViews: boolean
 ): boolean | string {
     if (value) {
-        const generator = resolveNodeModuleGenerator();
+        const generator = resolveNodeModuleGenerator(EXTENSIBILITY_GENERATOR_NS);
 
         if (!generator) {
             return t('error.extensibilityGenNotFound');
@@ -74,4 +76,29 @@ export async function validateJsonInput(
     if (!systemEndpoint) {
         throw new Error(t('error.systemNotFound', { system }));
     }
+}
+
+/**
+ * Validates the target envuironment.
+ *
+ * @param {TargetEnvironment|undefined} value - The selected target envuironment.
+ * @param vscode The VS Code env instance.
+ * @returns {Promise<boolean|string>} Resolves with true if the target envuironment
+ * is valid otherwise a string representing the corresponding validation error.
+ */
+export async function validateTargetEnvironment(
+    value: TargetEnvironment | undefined,
+    vscode: any
+): Promise<boolean | string> {
+    if (value === undefined) {
+        return t('error.targetEnvironmentNotSelected');
+    }
+
+    if (isAppStudio() || value !== TargetEnvironment.cloudFoundry) {
+        return true;
+    }
+
+    const isExternalLoginEnabled = await isCFExternalLoginEnabled(vscode);
+
+    return isExternalLoginEnabled || t('error.cfLoginNotEnabled');
 }
