@@ -23,6 +23,7 @@ let loginAttempts = 3;
  */
 export function addAnnotationsToOdataCommand(cmd: Command): void {
     cmd.command('annotations [path]')
+        .description('Add annotations to the OData service of an adaptation project.')
         .option('-s, --simulate', 'simulate only do not write or install')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .action(async (path, options) => {
