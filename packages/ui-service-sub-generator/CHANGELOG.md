@@ -1,5 +1,11 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.57
+
+### Patch Changes
+
+-   b63a36e: update "@sap/service-provider-apis": "2.1.9"
+
 ## 0.1.56
 
 ### Patch Changes
