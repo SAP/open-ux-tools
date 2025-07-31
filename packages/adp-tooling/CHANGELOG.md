@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 0.15.9
+
+### Patch Changes
+
+-   Updated dependencies [009143e]
+    -   @sap-ux/i18n@0.3.2
+    -   @sap-ux/project-access@1.30.9
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/odata-service-writer@0.27.14
+    -   @sap-ux/project-input-validator@0.6.14
+    -   @sap-ux/system-access@0.6.11
+    -   @sap-ux/inquirer-common@0.7.29
+
 ## 0.15.8
 
 ### Patch Changes
