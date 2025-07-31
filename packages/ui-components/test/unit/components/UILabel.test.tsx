@@ -1,27 +1,25 @@
 import * as React from 'react';
-import * as Enzyme from 'enzyme';
-import type { IStyleFunction, ILabelStyles } from '@fluentui/react';
-import { Label } from '@fluentui/react';
-import type { UILabelProps } from '../../../src/components/UILabel';
+import { render } from '@testing-library/react';
+import type { ILabelStyles } from '@fluentui/react';
 import { UILabel } from '../../../src/components/UILabel';
 
+// Test helper class to access protected methods
+class UILabelTestHelper extends UILabel {
+    public getStyles(): ILabelStyles {
+        const labelStyles = (this.render() as any).props.styles;
+        return labelStyles({});
+    }
+}
+
 describe('<UILabel />', () => {
-    let wrapper: Enzyme.ReactWrapper<UILabelProps>;
-
-    beforeEach(() => {
-        wrapper = Enzyme.mount(<UILabel>Dummy</UILabel>);
-    });
-
-    afterEach(() => {
-        wrapper.unmount();
-    });
-
-    it('Should render a UIToggle component', () => {
-        expect(wrapper.find('.ms-Label').length).toEqual(1);
+    it('Should render a UILabel component', () => {
+        const { container } = render(<UILabel>Dummy</UILabel>);
+        expect(container.querySelector('.ms-Label')).toBeTruthy();
     });
 
     it('Styles', () => {
-        const styles = (wrapper.find(Label).props().styles as IStyleFunction<{}, {}>)({}) as ILabelStyles;
+        const testInstance = new UILabelTestHelper({ children: 'Dummy' });
+        const styles = testInstance.getStyles();
         expect(styles.root).toMatchInlineSnapshot(
             {},
             `
