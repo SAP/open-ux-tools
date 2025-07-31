@@ -5,6 +5,7 @@ import { type EnhancedRouter, FlpSandbox, initAdp } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
 import { getPreviewPaths, sanitizeConfig } from '../base/config';
 import { getRemoteUrl, isRemoteConnectionsEnabled, getPortFromArgs } from '../base/remote-url';
+import * as QRCode from 'qrcode';
 
 /**
  * Create the router that is to be exposed as UI5 middleware.
@@ -63,8 +64,19 @@ async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
             logger
         );
 
+        const generateQRCode = async (text: string): Promise<void> => {
+            try {
+                const qrString = await QRCode.toString(text, { type: 'terminal' });
+                logger.info(qrString);
+            } catch (err) {
+                logger.error(err);
+            }
+        };
+
         if (remoteUrl) {
             logger.info(`Remote URL: ${remoteUrl}`);
+            logger.info('Scan the QR code below with your mobile device to access the preview:');
+            await generateQRCode(remoteUrl);
         }
     } catch (error) {
         logger.debug(`Could not generate remote URL: ${error.message}`);
