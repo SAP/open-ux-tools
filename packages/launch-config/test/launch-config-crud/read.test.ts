@@ -70,7 +70,7 @@ describe('read', () => {
         } catch (error) {
             expect(error.message).toContain('WRONG_PATH');
         }
-        expect(logger.error).toBeCalledTimes(1);
+        expect(logger.error).toHaveBeenCalledTimes(1);
 
         jest.clearAllMocks();
 
@@ -80,7 +80,7 @@ describe('read', () => {
         } catch (error) {
             expect(error.message).toContain('NON EXISTING CONFIG');
         }
-        expect(logger.error).toBeCalledTimes(1);
+        expect(logger.error).toHaveBeenCalledTimes(1);
     });
 
     describe('using memfs', () => {
@@ -143,7 +143,7 @@ describe('read', () => {
             } catch (error) {
                 expect(error.message).toContain('WRONG_PATH');
             }
-            expect(logger.error).toBeCalledTimes(1);
+            expect(logger.error).toHaveBeenCalledTimes(1);
 
             jest.clearAllMocks();
 
@@ -153,7 +153,7 @@ describe('read', () => {
             } catch (error) {
                 expect(error.message).toContain('NON EXISTING CONFIG');
             }
-            expect(logger.error).toBeCalledTimes(1);
+            expect(logger.error).toHaveBeenCalledTimes(1);
         });
     });
 });

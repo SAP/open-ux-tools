@@ -1,5 +1,65 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.4.6
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+    -   @sap-ux/adp-tooling@0.15.10
+
+## 0.4.5
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.9
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/fiori-generator-shared@0.13.5
+-   @sap-ux/project-input-validator@0.6.14
+-   @sap-ux/inquirer-common@0.7.29
+
+## 0.4.4
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/adp-tooling@0.15.8
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/fiori-generator-shared@0.13.4
+    -   @sap-ux/project-input-validator@0.6.13
+    -   @sap-ux/inquirer-common@0.7.28
+
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/adp-tooling@0.15.7
+    -   @sap-ux/fiori-generator-shared@0.13.3
+
+## 0.4.2
+
+### Patch Changes
+
+-   Updated dependencies [e25ee86]
+    -   @sap-ux/adp-tooling@0.15.6
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [d4a45ae]
+    -   @sap-ux/adp-tooling@0.15.5
+
+## 0.4.0
+
+### Minor Changes
+
+-   089b56f: updates extension types and extends prompt options in sub gens
+
 ## 0.3.49
 
 ### Patch Changes

@@ -51,7 +51,7 @@ describe('message helpers', () => {
             const msg = '<xml>~message</xml>';
             const debugMock = (log.debug = jest.fn());
             prettyPrintMessage({ msg, log, host });
-            expect(debugMock).toBeCalledWith(msg);
+            expect(debugMock).toHaveBeenCalledWith(msg);
         });
     });
 
@@ -83,17 +83,17 @@ describe('message helpers', () => {
         const infoMock = (log.info = jest.fn());
         prettyPrintError({ error, log, host, isDest: true });
         // log message, each resolution and each error detail
-        expect(errorMock).toBeCalledTimes(
+        expect(errorMock).toHaveBeenCalledTimes(
             1 + Object.keys(error.innererror.Error_Resolution).length + error.innererror.errordetails.length
         );
-        expect(infoMock).toBeCalledTimes(3);
+        expect(infoMock).toHaveBeenCalledTimes(3);
 
         // Restrict to only errordetails, typical for deployment with test mode enabled
         errorMock.mockReset();
         infoMock.mockReset();
         prettyPrintError({ error, log, host }, false);
-        expect(errorMock).toBeCalledTimes(Object.keys(error.innererror.Error_Resolution).length);
-        expect(infoMock).toBeCalledTimes(2);
+        expect(errorMock).toHaveBeenCalledTimes(Object.keys(error.innererror.Error_Resolution).length);
+        expect(infoMock).toHaveBeenCalledTimes(2);
         expect(infoMock).toHaveBeenLastCalledWith(expect.stringMatching('http://host.example/~longtext_url'));
 
         delete error.message;
@@ -101,8 +101,8 @@ describe('message helpers', () => {
         errorMock.mockReset();
         infoMock.mockReset();
         prettyPrintError({ error, log, host });
-        expect(errorMock).toBeCalledTimes(1);
-        expect(infoMock).toBeCalledTimes(0);
+        expect(errorMock).toHaveBeenCalledTimes(1);
+        expect(infoMock).toHaveBeenCalledTimes(0);
     });
 
     test('prettyPrintTimeInMs', () => {

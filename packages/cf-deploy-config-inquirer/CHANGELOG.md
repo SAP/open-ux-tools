@@ -1,5 +1,36 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.29
+
+## 0.5.0
+
+### Minor Changes
+
+-   6e2c5aa: fix overwrite prompt conflict
+
+## 0.4.1
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.28
+
+## 0.4.0
+
+### Minor Changes
+
+-   089b56f: updates extension types and extends prompt options in sub gens
+
 ## 0.3.30
 
 ### Patch Changes

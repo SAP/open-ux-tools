@@ -1,5 +1,69 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.58
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+    -   @sap-ux/ui-service-inquirer@0.1.56
+
+## 0.1.57
+
+### Patch Changes
+
+-   b63a36e: update "@sap/service-provider-apis": "2.1.9"
+
+## 0.1.56
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/fiori-generator-shared@0.13.5
+-   @sap-ux/system-access@0.6.11
+-   @sap-ux/telemetry@0.6.12
+-   @sap-ux/inquirer-common@0.7.29
+-   @sap-ux/ui-service-inquirer@0.1.55
+
+## 0.1.55
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.1.54
+
+## 0.1.54
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/fiori-generator-shared@0.13.4
+-   @sap-ux/system-access@0.6.11
+-   @sap-ux/telemetry@0.6.11
+-   @sap-ux/inquirer-common@0.7.28
+-   @sap-ux/ui-service-inquirer@0.1.53
+
+## 0.1.53
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.1.52
+
+## 0.1.52
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/ui-service-inquirer@0.1.51
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/system-access@0.6.11
+
+## 0.1.51
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.1.50
+
 ## 0.1.50
 
 ### Patch Changes

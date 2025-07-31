@@ -237,9 +237,9 @@ describe('AdaptationProject', () => {
                 logger
             );
 
-            expect(() => adp.descriptor).toThrowError();
-            expect(() => adp.resources).toThrowError();
-            expect(() => adp.isCloudProject).toThrowError();
+            expect(() => adp.descriptor).toThrow();
+            expect(() => adp.resources).toThrow();
+            expect(() => adp.isCloudProject).toThrow();
             await expect(() => adp.sync()).rejects.toEqual(Error('Not initialized'));
         });
     });
@@ -454,12 +454,12 @@ describe('AdaptationProject', () => {
             ]);
             const response = await server.get(`${mockMergedDescriptor.url}${localPath}.js`).expect(302);
             expect(response.text).toEqual(`Found. Redirecting to ${localPath}.js`);
-            expect(mockProject.byGlob).toBeCalledWith(`${localPath}.*`);
+            expect(mockProject.byGlob).toHaveBeenCalledWith(`${localPath}.*`);
         });
 
         test('/original.file', async () => {
             await server.get(`${mockMergedDescriptor.url}/original.file`).expect(200);
-            expect(next).toBeCalled();
+            expect(next).toHaveBeenCalled();
         });
     });
 

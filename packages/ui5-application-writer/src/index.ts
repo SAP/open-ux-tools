@@ -9,6 +9,7 @@ import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getT
 import { Ui5App } from './types';
 import type { Editor } from 'mem-fs-editor';
 import type { App, AppOptions, UI5 } from './types';
+import { copyTemplates } from './utils';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -44,9 +45,14 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ...ui5App,
         ui5ResourceUrl
     };
-    fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), templateOptions, undefined, {
-        globOptions: { dot: true, ignore },
-        processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
+
+    copyTemplates({
+        fs,
+        basePath,
+        tmplPath,
+        templateOptions,
+        ignore,
+        ui5Version: ui5App.ui5?.version
     });
 
     // ui5.yaml

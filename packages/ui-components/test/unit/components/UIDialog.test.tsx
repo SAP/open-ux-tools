@@ -53,14 +53,14 @@ describe('<UIDialog />', () => {
         const buttons = wrapper.find(UIDefaultButton);
         expect(buttons.length).toEqual(2);
         buttons.first().simulate('click');
-        expect(onAcceptSpy).toBeCalledTimes(1);
+        expect(onAcceptSpy).toHaveBeenCalledTimes(1);
     });
 
     it('On Cancel', () => {
         const buttons = wrapper.find(UIDefaultButton);
         expect(buttons.length).toEqual(2);
         buttons.last().simulate('click');
-        expect(onRejectSpy).toBeCalledTimes(1);
+        expect(onRejectSpy).toHaveBeenCalledTimes(1);
     });
 
     describe('Footer', () => {
@@ -424,10 +424,10 @@ describe('<UIDialog />', () => {
             expect(wrapper.find(dialogSelectors.main).length).toEqual(1);
             const titleElement = wrapper.find(dialogSelectors.title);
             expect(titleElement.length).toEqual(1);
-            expect(focusSpy).toBeCalledTimes(0);
+            expect(focusSpy).toHaveBeenCalledTimes(0);
             titleElement.simulate('mousedown');
             expect(titleElement.length).toEqual(1);
-            expect(focusSpy).toBeCalledTimes(1);
+            expect(focusSpy).toHaveBeenCalledTimes(1);
         });
 
         it('Undraggable', async () => {
@@ -435,10 +435,10 @@ describe('<UIDialog />', () => {
             expect(wrapper.find(dialogSelectors.main).length).toEqual(1);
             const titleElement = wrapper.find(dialogSelectors.title);
             expect(titleElement.length).toEqual(1);
-            expect(focusSpy).toBeCalledTimes(0);
+            expect(focusSpy).toHaveBeenCalledTimes(0);
             titleElement.simulate('mousedown');
             expect(titleElement.length).toEqual(1);
-            expect(focusSpy).toBeCalledTimes(0);
+            expect(focusSpy).toHaveBeenCalledTimes(0);
         });
     });
 

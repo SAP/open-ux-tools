@@ -270,8 +270,15 @@ describe('Deployment Generator', () => {
                     hint: false,
                     useAutocomplete: true
                 },
-                overwriteDestinationName: false,
-                routerType: true
+                overwriteCfConfig: {
+                    hide: true
+                },
+                routerType: {
+                    hide: false
+                },
+                addManagedAppRouter: {
+                    hide: true
+                }
             },
             expect.any(Object)
         );

@@ -94,7 +94,7 @@ describe('Ui5AbapRepositoryService', () => {
         });
 
         test('Not authorized to access app', async () => {
-            await expect(service.getInfo(restrictedApp)).rejects.toThrowError();
+            await expect(service.getInfo(restrictedApp)).rejects.toThrow();
         });
     });
 
@@ -164,7 +164,7 @@ describe('Ui5AbapRepositoryService', () => {
                     (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
                 .reply(400, JSON.stringify({ error }));
-            await expect(destinationService.deploy({ archive, bsp: { name: notExistingApp } })).rejects.toThrowError();
+            await expect(destinationService.deploy({ archive, bsp: { name: notExistingApp } })).rejects.toThrow();
             expect(loggerMock.info).toHaveBeenCalledTimes(4); // Ensures the logError flow is handled
         });
 
@@ -218,7 +218,7 @@ describe('Ui5AbapRepositoryService', () => {
                     (body) => body.indexOf(archive.toString('base64')) !== -1
                 )
                 .reply(401, 'Deployment failed');
-            await expect(service.deploy({ archive, bsp: { name: validApp } })).rejects.toThrowError();
+            await expect(service.deploy({ archive, bsp: { name: validApp } })).rejects.toThrow();
         });
         it.each([{ code: 408 }, { code: 504 }])('retry deployment based on error codes', async ({ code }) => {
             const badService = createForAbap({ baseURL: server }).getUi5AbapRepository();
@@ -403,13 +403,13 @@ describe('Ui5AbapRepositoryService', () => {
             nock(server)
                 .delete(`${Ui5AbapRepositoryService.PATH}/Repositories('${validApp}')?${updateParams}`)
                 .replyWithError('Failed');
-            await expect(service.undeploy({ bsp: { name: validApp } })).rejects.toThrowError();
+            await expect(service.undeploy({ bsp: { name: validApp } })).rejects.toThrow();
         });
 
         test('failed removal, not authorised', async () => {
             const appName = 'TestApp';
             nock(server).get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?$format=json`).reply(401);
-            await expect(service.undeploy({ bsp: { name: appName } })).rejects.toThrowError();
+            await expect(service.undeploy({ bsp: { name: appName } })).rejects.toThrow();
             expect(loggerMock.debug).toHaveBeenCalledTimes(1);
             expect(loggerMock.info).toHaveBeenCalledTimes(0);
             expect(loggerMock.error).toHaveBeenCalledTimes(0);
