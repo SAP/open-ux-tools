@@ -412,15 +412,15 @@ id="<%- ids.text %>
                 tableType: 'ANALYTICAL_TABLE_COLUMN' | 'GRID_TREE_TABLE_COLUMN';
                 fragmentFileName: string;
             }[] = [
-                    {
-                        tableType: 'ANALYTICAL_TABLE_COLUMN',
-                        fragmentFileName: 'templates/rta/common/analytical-custom-column.xml'
-                    },
-                    {
-                        tableType: 'GRID_TREE_TABLE_COLUMN',
-                        fragmentFileName: 'templates/rta/common/grid-tree-custom-column.xml'
-                    }
-                ];
+                {
+                    tableType: 'ANALYTICAL_TABLE_COLUMN',
+                    fragmentFileName: 'templates/rta/common/analytical-custom-column.xml'
+                },
+                {
+                    tableType: 'GRID_TREE_TABLE_COLUMN',
+                    fragmentFileName: 'templates/rta/common/grid-tree-custom-column.xml'
+                }
+            ];
             it.each(testCases)('should create custom table column fragment (%s table)', (testCase) => {
                 mockFs.exists.mockReturnValue(false);
                 const updatedChange = {
