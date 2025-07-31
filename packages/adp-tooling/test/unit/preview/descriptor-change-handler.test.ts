@@ -7,7 +7,6 @@ import type { Editor } from 'mem-fs-editor';
 import * as crypto from 'crypto';
 import * as path from 'path';
 import * as fs from 'fs';
-
 import {
     addAnnotationFile,
     addXmlFragment,
@@ -168,7 +167,6 @@ describe('change-handler', () => {
 
         it('should create the XML fragment and log information if it does not exist', () => {
             mockFs.exists.mockReturnValue(false);
-
             mockFs.read.mockReturnValue(realTemplateContent);
 
             addXmlFragment(projectPath, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
@@ -177,6 +175,16 @@ describe('change-handler', () => {
             });
 
             expect(mockFs.write).toHaveBeenCalled();
+            expect(mockFs.write.mock.calls[0][1]).toMatchInlineSnapshot(`
+"<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!-- controlType: sampleType -->
+    <!-- targetAggregation: content --> 
+    <!--  add your xml here -->
+
+</core:FragmentDefinition>
+"
+`);
             expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
         });
 
@@ -398,15 +406,15 @@ id="<%- ids.text %>
                 tableType: 'ANALYTICAL_TABLE_COLUMN' | 'GRID_TREE_TABLE_COLUMN';
                 fragmentFileName: string;
             }[] = [
-                {
-                    tableType: 'ANALYTICAL_TABLE_COLUMN',
-                    fragmentFileName: 'templates/rta/common/analytical-custom-column.xml'
-                },
-                {
-                    tableType: 'GRID_TREE_TABLE_COLUMN',
-                    fragmentFileName: 'templates/rta/common/grid-tree-custom-column.xml'
-                }
-            ];
+                    {
+                        tableType: 'ANALYTICAL_TABLE_COLUMN',
+                        fragmentFileName: 'templates/rta/common/analytical-custom-column.xml'
+                    },
+                    {
+                        tableType: 'GRID_TREE_TABLE_COLUMN',
+                        fragmentFileName: 'templates/rta/common/grid-tree-custom-column.xml'
+                    }
+                ];
             it.each(testCases)('should create custom table column fragment (%s table)', (testCase) => {
                 mockFs.exists.mockReturnValue(false);
                 const updatedChange = {
