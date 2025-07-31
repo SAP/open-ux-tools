@@ -50,7 +50,8 @@
         "ejs": "3.1.10",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "qrcode": "1.5.4"
+        "qrcode": "1.5.4",
+        "@sap/bas-sdk": "3.11.6"
     },
     "devDependencies": {
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",

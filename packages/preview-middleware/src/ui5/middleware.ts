@@ -4,7 +4,7 @@ import type { MiddlewareParameters } from '@ui5/server';
 import { type EnhancedRouter, FlpSandbox, initAdp } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
 import { getPreviewPaths, sanitizeConfig } from '../base/config';
-import { getRemoteUrl, isRemoteConnectionsEnabled, getPortFromArgs } from '../base/remote-url';
+import { getRemoteUrl, isRemoteConnectionsEnabled } from '../base/remote-url';
 import * as QRCode from 'qrcode';
 
 /**
@@ -46,23 +46,13 @@ async function createRouter(
 }
 
 /**
- * Log remote URL for mobile device access if available.
+ * Log remote URL for mobile device access.
  *
  * @param logger Logger instance
  */
 async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
     try {
-        const acceptRemoteConnections = isRemoteConnectionsEnabled();
-        const port = getPortFromArgs();
-
-        const remoteUrl = await getRemoteUrl(
-            {
-                acceptRemoteConnections,
-                port,
-                protocol: 'http'
-            },
-            logger
-        );
+        const remoteUrl = await getRemoteUrl(logger);
 
         const generateQRCode = async (text: string): Promise<void> => {
             try {
@@ -97,8 +87,9 @@ module.exports = async (params: MiddlewareParameters<MiddlewareConfig>): Promise
     try {
         const router = await createRouter(params, logger);
 
-        // Log remote URL for mobile device access
-        await logRemoteUrl(logger);
+        if (isRemoteConnectionsEnabled()) {
+            await logRemoteUrl(logger);
+        }
 
         return router;
     } catch (error) {
