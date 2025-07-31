@@ -1,5 +1,19 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.6.9
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/odata-service-inquirer@2.5.27
+    -   @sap-ux/ui5-application-inquirer@0.14.34
+
+## 0.6.8
+
+### Patch Changes
+
+-   b63a36e: update "@sap/service-provider-apis": "2.1.9"
+
 ## 0.6.7
 
 ### Patch Changes

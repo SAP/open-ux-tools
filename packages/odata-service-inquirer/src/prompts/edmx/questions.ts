@@ -21,7 +21,7 @@ import {
     type EntityAnswer,
     type EntityChoiceOptions,
     type EntitySetFilter,
-    filterAggregateTransformations,
+    getDefaultTableType,
     getEntityChoices,
     getNavigationEntityChoices,
     type NavigationEntityAnswer
@@ -278,63 +278,6 @@ function getEdmxSizeInKb(edmx: string): number {
         return sizeInBytes / 1024;
     }
     return 0;
-}
-
-/**
- * Get the default table type based on the template type and previous answers.
- *
- * @param templateType the template type of the application to be generated from the prompt answers
- * @param metadata the metadata (edmx) string of the service
- * @param odataVersion the OData version of the service
- * @param mainEntitySetName the name of the main entity set
- * @param currentTableType the current table type selected by the user
- * @returns the default table type and a boolean indicating if AnalyticalTable should be set as default
- */
-function getDefaultTableType(
-    templateType: TemplateType,
-    metadata: ConvertedMetadata,
-    odataVersion: OdataVersion,
-    mainEntitySetName?: string,
-    currentTableType?: TableType
-): { tableType: TableType; setAnalyticalTableDefault: boolean } {
-    let tableType: TableType;
-    let setAnalyticalTableDefault = false;
-    if (
-        (templateType === 'lrop' || templateType === 'worklist') &&
-        odataVersion === OdataVersion.v4 &&
-        hasAggregateTransformationsForEntity(metadata, mainEntitySetName)
-    ) {
-        // For V4, if the selected entity has aggregate transformations, use AnalyticalTable as default
-        tableType = 'AnalyticalTable';
-        setAnalyticalTableDefault = true;
-    } else if (templateType === 'alp') {
-        // For ALP, use AnalyticalTable as default
-        tableType = 'AnalyticalTable';
-    } else if (currentTableType) {
-        // If the user has already selected a table type use it
-        tableType = currentTableType;
-    } else {
-        // Default to ResponsiveTable for other cases
-        tableType = 'ResponsiveTable';
-    }
-    return {
-        tableType,
-        setAnalyticalTableDefault
-    };
-}
-
-/**
- * Checks if the given entity set name has aggregate transformations in the metadata.
- *
- * @param metadata The metadata (edmx) string of the service.
- * @param entitySetName The entity set name to check for aggregate transformations.
- * @returns true if the entity set has aggregate transformations, false otherwise.
- */
-function hasAggregateTransformationsForEntity(metadata: ConvertedMetadata, entitySetName?: string): boolean {
-    if (!entitySetName) {
-        return false;
-    }
-    return filterAggregateTransformations(metadata.entitySets).some((entitySet) => entitySet.name === entitySetName);
 }
 
 /**
