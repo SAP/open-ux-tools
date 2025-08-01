@@ -15,7 +15,6 @@ import type {
     SavedChange,
     SavedControlChange,
     Scenario,
-    ShowMessage,
     PendingGenericChange,
     SavedGenericChange
 } from '@sap-ux-private/control-property-editor-common';
@@ -27,7 +26,6 @@ import {
     outlineChanged,
     propertyChanged,
     propertyChangeFailed,
-    showMessage,
     SCENARIO,
     reloadApplication,
     storageFileChanged,
@@ -44,7 +42,8 @@ import {
     PENDING_CHANGE_TYPE,
     requestControlContextMenu,
     showInfoCenterMessage,
-    GENERIC_CHANGE_KIND
+    GENERIC_CHANGE_KIND,
+    toggleAppPreviewVisibility
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -64,7 +63,7 @@ export interface SliceState {
     icons: IconDetails[];
     features: Record<string, boolean>;
     changes: ChangesSlice;
-    dialogMessage: ShowMessage | undefined;
+    isAppPreviewVisible: boolean;
     fileChanges?: string[];
     lastExternalFileChangeTimestamp?: number;
     appMode: 'navigation' | 'adaptation';
@@ -167,7 +166,7 @@ export const initialState: SliceState = {
         saved: [],
         pendingChangeIds: []
     },
-    dialogMessage: undefined,
+    isAppPreviewVisible: true,
     appMode: 'adaptation',
     changeStack: {
         canUndo: false,
@@ -365,9 +364,12 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     }
                 }
             })
-            .addMatcher(showMessage.match, (state, action: ReturnType<typeof showMessage>): void => {
-                state.dialogMessage = action.payload;
-            })
+            .addMatcher(
+                toggleAppPreviewVisibility.match,
+                (state: SliceState, action: ReturnType<typeof toggleAppPreviewVisibility>): void => {
+                    state.isAppPreviewVisible = action.payload;
+                }
+            )
             .addMatcher(fileChanged.match, (state, action: ReturnType<typeof fileChanged>): void => {
                 const firstFile = action.payload[0] ?? '';
                 const separator = firstFile.indexOf('\\') > -1 ? '\\' : '/';

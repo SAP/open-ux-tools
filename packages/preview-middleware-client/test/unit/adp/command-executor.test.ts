@@ -5,8 +5,9 @@ import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
-import MessageToast from 'mock/sap/m/MessageToast';
 import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 describe('client/command-executor', () => {
     describe('generateAndExecuteCommand', () => {
@@ -31,7 +32,7 @@ describe('client/command-executor', () => {
         });
 
         test('throws error when pushAndExecute fails', async () => {
-
+            jest.spyOn(CommunicationService, 'sendAction');
             pushAndExecuteSpy.mockRejectedValueOnce(new Error('Could not execute command!'));
             const commandExecutor = new CommandExecutor(rta as unknown as RuntimeAuthoring);
             try {
@@ -39,12 +40,21 @@ describe('client/command-executor', () => {
             } catch (e) {
                 expect(e.message).toBe('Could not execute command!');
                 expect(pushAndExecuteSpy.mock.calls.length).toBe(1);
+                expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                    showInfoCenterMessage({
+                        title: 'Run Command Failed',
+                        description: e.message,
+                        type: MessageBarType.error
+                    })
+                );
             }
         });
     });
 
     describe('getCommand', () => {
-        const mockRuntimeControl = {};
+        const mockRuntimeControl = {
+            getId: () => 'id'
+        };
         const commandName = 'addXML';
         const modifiedValue = { fragmentPath: 'fragments/Share.fragment.xml' };
         const designMetadata = {};
@@ -77,7 +87,9 @@ describe('client/command-executor', () => {
             );
         });
 
-        it('should show a message toast and throw an error if getting command fails', async () => {
+        it('should show a message in the info center and throw an error if getting command fails', async () => {
+            jest.spyOn(CommunicationService, 'sendAction');
+
             const errorMessage = 'Missing properties';
             CommandFactory.getCommandFor.mockImplementation(() => {
                 throw new Error(errorMessage);
@@ -94,9 +106,13 @@ describe('client/command-executor', () => {
                     designMetadata as DesignTimeMetadata
                 )
             ).rejects.toThrow(`Could not get command for '${commandName}'. ${errorMessage}`);
-
-            expect(MessageToast.show).toHaveBeenCalledWith(expect.stringContaining(commandName));
-            expect(MessageToast.show).toHaveBeenCalledWith(expect.stringContaining(errorMessage));
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'Get Command Failed',
+                    description: `Could not get the command for ''${commandName}''. ${errorMessage}.`,
+                    type: MessageBarType.error
+                })
+            );
         });
     });
 });
