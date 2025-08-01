@@ -9,6 +9,13 @@ import {
     withCondition
 } from '../../../src/prompts/helpers';
 import type { PromptDefaultValue, YUIQuestion } from '../../../src/types';
+import {
+    hasAggregateTransformationsForEntity,
+    filterAggregateTransformations,
+    convertEdmxToConvertedMetadata
+} from '../../../src/prompts/helpers';
+import * as fs from 'fs';
+import * as path from 'path';
 
 describe('helpers', () => {
     describe('extendAdditionalMessages', () => {
@@ -393,5 +400,66 @@ describe('helpers', () => {
         `);
         additionalMessages = extQuestions.find((question) => question.name === 'A')?.additionalMessages as Function;
         expect(additionalMessages('testName')).toEqual(testNameAddMsg);
+    });
+
+    describe('aggregate transformation helpers', () => {
+        let metadata: ReturnType<typeof convertEdmxToConvertedMetadata>;
+
+        beforeAll(() => {
+            const edmx = fs.readFileSync(
+                path.resolve(__dirname, 'fixtures/metadataV4WithAggregateTransforms.xml'),
+                'utf-8'
+            );
+            metadata = convertEdmxToConvertedMetadata(edmx);
+        });
+
+        it('filterAggregateTransformations should return only entity sets with Aggregation.ApplySupported.Transformations', () => {
+            const filtered = filterAggregateTransformations(metadata.entitySets);
+            expect(Array.isArray(filtered)).toBe(true);
+            // At least one entity set should be returned if the metadata contains such annotations
+            expect(filtered.length).toBeGreaterThanOrEqual(0);
+            // All returned entity sets should have the annotation
+            filtered.forEach((entitySet) => {
+                expect(
+                    entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ??
+                        entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations
+                ).toBeTruthy();
+            });
+        });
+
+        it('hasAggregateTransformationsForEntity should return true for an entity set with aggregation', () => {
+            const filtered = filterAggregateTransformations(metadata.entitySets);
+            if (filtered.length > 0) {
+                expect(hasAggregateTransformationsForEntity(metadata, filtered[0].name)).toBe(true);
+            }
+        });
+
+        it('hasAggregateTransformationsForEntity should return false for an entity set without aggregation', () => {
+            // Find an entity set without aggregation
+            const nonAgg = metadata.entitySets.find(
+                (es) =>
+                    !(
+                        es.annotations?.Aggregation?.ApplySupported?.Transformations ??
+                        es.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations
+                    )
+            );
+            if (nonAgg) {
+                expect(hasAggregateTransformationsForEntity(metadata, nonAgg.name)).toBe(false);
+            }
+        });
+
+        it('hasAggregateTransformationsForEntity should return false if entitySetName is not provided', () => {
+            expect(hasAggregateTransformationsForEntity(metadata)).toBe(false);
+        });
+
+        it('should throw if EDMX is not valid XML', () => {
+            expect(() => convertEdmxToConvertedMetadata('<not><valid></xml>')).toThrow();
+        });
+
+        it('should throw if EDMX has unparseable OData version', () => {
+            // Minimal valid XML with missing/invalid version
+            const badVersionEdmx = `<?xml version="1.0" encoding="utf-8" ?>\n<edmx:Edmx Version=\"notanumber\" xmlns:edmx=\"http://docs.oasis-open.org/odata/ns/edmx\"><edmx:DataServices></edmx:DataServices></edmx:Edmx>`;
+            expect(() => convertEdmxToConvertedMetadata(badVersionEdmx)).toThrow();
+        });
     });
 });

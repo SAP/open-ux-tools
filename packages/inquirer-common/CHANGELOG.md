@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.7.30
+
+### Patch Changes
+
+-   9fa7f0b: move aggregration entity helpers to inq-common
+
 ## 0.7.29
 
 ### Patch Changes
