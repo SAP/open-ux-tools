@@ -6,7 +6,8 @@ import {
     reportTelemetry,
     Properties,
     changeProperty,
-    PropertyType
+    PropertyType,
+    MessageBarType
 } from '@sap-ux-private/control-property-editor-common';
 import { buildControlData } from './control-data';
 import { getOverlay, getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
@@ -24,6 +25,7 @@ import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import { getComponent, getControlById } from '../utils/core';
 import { getError } from '../utils/error';
 import { ChangeService } from './changes';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
 
 export interface PropertyChangeParams {
     name: string;
@@ -112,7 +114,15 @@ export class SelectionService implements Service {
         const eventOrigin: Set<string> = new Set();
         const onselectionChange = this.createOnSelectionChangeHandler(sendAction, eventOrigin);
         this.rta.attachSelectionChange((event) => {
-            onselectionChange(event).catch((error) => Log.error('Event interrupted: ', getError(error)));
+            onselectionChange(event).catch((error) => {
+                const extendedError = getError(error);
+                Log.error('Event interrupted: ', extendedError);
+                return sendInfoCenterMessage({
+                    title: { key: 'CHANGE_SELECTION_ERROR_TITLE' },
+                    description: extendedError.message,
+                    type: MessageBarType.error
+                });
+            });
         });
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (changeProperty.match(action)) {
@@ -216,7 +226,8 @@ export class SelectionService implements Service {
                             reportTelemetry({ category: 'Overlay Selection', controlName: name });
                         }
                     } catch (error) {
-                        Log.error('Failed to report telemetry', getError(error));
+                        const extendedError = getError(error);
+                        Log.error('Failed to report telemetry', extendedError);
                     } finally {
                         await this.buildProperties(runtimeControl, sendAction, overlayControl);
                         eventOrigin.delete('outline');
