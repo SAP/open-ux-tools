@@ -43,7 +43,7 @@ export async function getRemoteUrl(logger: ToolsLogger): Promise<string | undefi
         if (isAppStudio()) {
             return await getBASRemoteUrl(logger);
         } else {
-            return getVSCodeRemoteUrl(logger);
+            return getIdeRemoteUrl(logger);
         }
     } catch (error) {
         logger.error(`Failed to generate remote URL: ${error.message}`);
@@ -76,13 +76,13 @@ async function getBASRemoteUrl(logger: ToolsLogger): Promise<string | undefined>
 }
 
 /**
- * Get remote URL for VSCode environment by detecting network IP.
+ * Get remote URL for the local IDE environment by detecting network IP.
  * Only works if --accept-remote-connections is enabled.
  *
- * @param logger  ToolsLogger instance instance
+ * @param logger  ToolsLogger instance
  * @returns The remote URL based on network IP
  */
-function getVSCodeRemoteUrl(logger: ToolsLogger): string | undefined {
+function getIdeRemoteUrl(logger: ToolsLogger): string | undefined {
     try {
         const networkIP = getNetworkIP();
         if (!networkIP) {
@@ -94,10 +94,10 @@ function getVSCodeRemoteUrl(logger: ToolsLogger): string | undefined {
         const baseUrl = `${protocol}://${networkIP}:${port}`;
         const remoteUrl = appendOpenPath(baseUrl, getOpenPathFromArgs());
 
-        logger.debug(`VSCode remote URL generated: ${remoteUrl}`);
+        logger.debug(`IDE remote URL generated: ${remoteUrl}`);
         return remoteUrl;
     } catch (error) {
-        logger.error(`Failed to generate VSCode remote URL: ${error.message}`);
+        logger.error(`Failed to generate IDE remote URL: ${error.message}`);
         return undefined;
     }
 }

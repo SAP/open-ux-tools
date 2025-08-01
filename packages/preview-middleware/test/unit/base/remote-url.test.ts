@@ -154,19 +154,17 @@ describe('remote-url', () => {
     });
 
     describe('getRemoteUrl', () => {
-        it('should generate VSCode remote URL when network interface is available', async () => {
+        it('should generate IDE remote URL when network interface is available', async () => {
             mockIsAppStudio.mockReturnValue(false);
             mockNetworkInterfaces.mockReturnValue(MOCK_EXTERNAL_NETWORK_INTERFACES);
 
             const result = await getRemoteUrl(mockToolsLogger);
 
             expect(result).toBe('http://192.168.1.100:8080');
-            expect(mockToolsLogger.debug).toHaveBeenCalledWith(
-                'VSCode remote URL generated: http://192.168.1.100:8080'
-            );
+            expect(mockToolsLogger.debug).toHaveBeenCalledWith('IDE remote URL generated: http://192.168.1.100:8080');
         });
 
-        it('should append open path to VSCode remote URL', async () => {
+        it('should append open path to IDE remote URL', async () => {
             mockIsAppStudio.mockReturnValue(false);
             mockNetworkInterfaces.mockReturnValue(MOCK_EXTERNAL_NETWORK_INTERFACES);
 
@@ -176,7 +174,7 @@ describe('remote-url', () => {
 
             expect(result).toBe('http://192.168.1.100:8080/localService/index.html#Samples-display');
             expect(mockToolsLogger.debug).toHaveBeenCalledWith(
-                'VSCode remote URL generated: http://192.168.1.100:8080/localService/index.html#Samples-display'
+                'IDE remote URL generated: http://192.168.1.100:8080/localService/index.html#Samples-display'
             );
         });
 
@@ -216,7 +214,7 @@ describe('remote-url', () => {
             const result = await getRemoteUrl(mockToolsLogger);
 
             expect(result).toBeUndefined();
-            expect(mockToolsLogger.error).toHaveBeenCalledWith('Failed to generate VSCode remote URL: Network error');
+            expect(mockToolsLogger.error).toHaveBeenCalledWith('Failed to generate IDE remote URL: Network error');
         });
     });
 
