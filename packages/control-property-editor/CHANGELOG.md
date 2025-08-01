@@ -1,11 +1,5 @@
 # @sap-ux/control-property-editor
 
-## 1.0.0
-
-### Major Changes
-
--   a181df0: feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
-
 ## 0.6.8
 
 ### Patch Changes
