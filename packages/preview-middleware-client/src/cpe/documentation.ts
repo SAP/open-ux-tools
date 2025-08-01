@@ -2,7 +2,9 @@ import { getLibrary } from './utils';
 import type { SchemaForApiJsonFiles, Ui5Metadata, Ui5Property } from './api-json';
 import type { Properties } from './utils';
 import Log from 'sap/base/Log';
-import { PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
+import { getError } from '../utils/error';
 
 export interface ControlMetadata {
     baseType: string | undefined;
@@ -43,7 +45,14 @@ export function loadDefaultLibraries(): void {
                 }
             });
         })
-        .catch((reason) => Log.error('Loading Library Failed: ' + reason));
+        .catch((reason) => {
+            Log.error('Loading Library Failed: ' + reason);
+            return sendInfoCenterMessage({
+                title: { key: 'LIBRARY_ERROR_TITLE' },
+                description: getError(reason).message,
+                type: MessageBarType.error
+            });
+        });
 }
 
 /**
@@ -163,6 +172,11 @@ export async function getDocumentation(controlName: string, contLibName: string)
         doc = await getControlPropertyDocumentation(controlName, contLibName);
     } catch (err) {
         Log.error(`Error in getting documentation for ${contLibName}`);
+        await sendInfoCenterMessage({
+            title: { key: 'DOCUMENTATION_ERROR_TITLE' },
+            description: { key: 'DOCUMENTATION_ERROR_DESCRIPTION', params: [contLibName] },
+            type: MessageBarType.error
+        });
     }
     return doc;
 }

@@ -218,11 +218,6 @@ export interface PropertyChangeDeletionDetails extends ChangeDeletionDetails {
     propertyName: string;
 }
 
-export interface ShowMessage {
-    message: string;
-    shouldHideIframe: boolean;
-}
-
 export const SIMPLE_QUICK_ACTION_KIND = 'simple';
 export interface SimpleQuickAction {
     kind: typeof SIMPLE_QUICK_ACTION_KIND;
@@ -445,7 +440,7 @@ export const changeProperty = createExternalAction<PropertyChange>('change-prope
 export const propertyChanged = createExternalAction<PropertyChanged>('property-changed');
 export const propertyChangeFailed = createExternalAction<PropertyChangeFailed>('change-property-failed');
 export const changeStackModified = createExternalAction<ChangeStackModified>('change-stack-modified');
-export const showMessage = createExternalAction<ShowMessage>('show-dialog-message');
+export const toggleAppPreviewVisibility = createExternalAction<boolean>('toggle-app-preview-visibility');
 export const reloadApplication = createExternalAction<{
     save?: boolean;
 }>('reload-application');
@@ -496,7 +491,7 @@ export type ExternalAction =
     | ReturnType<typeof addExtensionPoint>
     | ReturnType<typeof propertyChangeFailed>
     | ReturnType<typeof changeStackModified>
-    | ReturnType<typeof showMessage>
+    | ReturnType<typeof toggleAppPreviewVisibility>
     | ReturnType<typeof reloadApplication>
     | ReturnType<typeof storageFileChanged>
     | ReturnType<typeof setAppMode>

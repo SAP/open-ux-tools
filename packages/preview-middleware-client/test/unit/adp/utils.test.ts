@@ -1,6 +1,5 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import MessageToast from 'mock/sap/m/MessageToast';
 import FlexUtils from 'mock/sap/ui/fl/Utils';
 import isReuseComponentApi from 'mock/sap/ui/rta/util/isReuseComponent';
 import * as Utils from '../../../src/utils/core';
@@ -10,7 +9,6 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
 import {
     createDeferred,
-    notifyUser,
     getReuseComponentChecker,
     resetReuseComponentChecker,
     matchesChangeProperty,
@@ -168,31 +166,6 @@ describe('utils', () => {
         it('should return false if a matching change is not found and command does subCommands', () => {
             const result = checkForExistingChange(mockRta, 'codeExt', 'content.codeRef', 'coding/test.js');
             expect(result).toBe(false);
-        });
-    });
-
-    describe('notifyUser', () => {
-        beforeEach(() => {
-            MessageToast.show.mockClear();
-        });
-
-        it('displays the message with default duration if no duration is provided', () => {
-            const message = 'Hello, world!';
-            notifyUser(message);
-
-            expect(MessageToast.show).toHaveBeenCalledWith(message, {
-                duration: 5000
-            });
-        });
-
-        it('displays the message with specified duration', () => {
-            const message = 'Goodbye, world!';
-            const duration = 3000;
-            notifyUser(message, duration);
-
-            expect(MessageToast.show).toHaveBeenCalledWith(message, {
-                duration
-            });
         });
     });
 
