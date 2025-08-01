@@ -7,7 +7,6 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { ValueState } from 'mock/sap/ui/core/library';
 import { fetchMock, openMock, sapCoreMock } from 'mock/window';
-import MessageToast from 'mock/sap/m/MessageToast';
 
 import * as apiHandler from '../../../../src/adp/api-handler';
 
@@ -16,6 +15,8 @@ import { ExtendControllerData } from 'open/ux/preview/client/adp/extend-controll
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import * as utils from '../../../../src/utils/version';
 import * as coreUtils from '../../../../src/utils/core';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 jest.mock('../../../../src/adp/command-executor', () => {
     return jest.fn().mockImplementation(() => ({
@@ -617,6 +618,72 @@ describe('ControllerExtension', () => {
             expect(getControlByIdMock).toHaveBeenCalledWith('::Toolbar');
         });
 
+        test('display info message in the info center when the controller extension is supported during creation of a new controller', async () => {
+            jest.spyOn(coreUtils, 'getControlById').mockReturnValueOnce(undefined);
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
+            jest.spyOn(utils, 'getUi5Version').mockResolvedValueOnce({ major: 1, minor: 136, patch: 0 });
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+            const mockData = {
+                deferred: {
+                    resolve: jest.fn()
+                }
+            } as unknown as ExtendControllerData;
+            const controllerExt = new ControllerExtension(
+                'adp.extension.controllers.ControllerExtension',
+                overlays as unknown as UI5Element,
+                {
+                    getService: jest.fn(),
+                    getFlexSettings: jest.fn()
+                } as unknown as RuntimeAuthoring,
+                mockData
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            controllerExt.model = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce(false)
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('::Toolbar'),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({ controllers: [], id: 'adp.app' }),
+                text: jest.fn().mockReturnValueOnce('Controller was created!').mockReturnValueOnce('Change created'),
+                ok: true
+            });
+
+            controllerExt.handleDialogClose = jest.fn();
+
+            jest.spyOn(CommunicationService, 'sendAction');
+
+            await controllerExt.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await controllerExt.onCreateBtnPress(event as unknown as Event);
+
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'Create Controller Extension',
+                    description: 'Note: The `Share` controller extension will be created once you save the change.',
+                    type: MessageBarType.info
+                })
+            );
+        });
+
         test('resolve deffered data promise when passed', async () => {
             jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const addSpy = jest.fn().mockResolvedValue({ fileName: 'something.change' });
@@ -653,6 +720,8 @@ describe('ControllerExtension', () => {
 
             controllerExt.handleDialogClose = jest.fn();
 
+            jest.spyOn(CommunicationService, 'sendAction');
+
             await controllerExt.setup({
                 setEscapeHandler: jest.fn(),
                 destroy: jest.fn(),
@@ -667,9 +736,12 @@ describe('ControllerExtension', () => {
                 codeRef: 'coding/testController.js',
                 viewId: 'viewId'
             });
-            expect(MessageToast.show).toHaveBeenCalledWith(
-                'Note: The `testController` controller extension will be created once you save the change.',
-                { 'duration': 8000 }
+            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+                showInfoCenterMessage({
+                    title: 'SAPUI5 Version Retrieval Failed',
+                    description: 'Could not get the SAPUI5 version of the application. Using 1.130.0 as fallback.',
+                    type: MessageBarType.error
+                })
             );
         });
 
