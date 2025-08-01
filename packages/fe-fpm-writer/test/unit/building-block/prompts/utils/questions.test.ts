@@ -200,13 +200,9 @@ describe('utils - questions', () => {
             ...context,
             appPath: join(__dirname, '../../../sample/building-block/webapp-with-page-macro')
         };
-        const aggregationPathPrompt = getAggregationPathPrompt(
-            contextWithPageMacro,
-            {
-                message: 'AggregationPathMessage'
-            },
-            BuildingBlockType.Page
-        );
+        const aggregationPathPrompt = getAggregationPathPrompt(contextWithPageMacro, {
+            message: 'AggregationPathMessage'
+        });
         expect(aggregationPathPrompt).toMatchSnapshot();
         const choicesProp = aggregationPathPrompt.choices as Choices;
         expect(choicesProp).toBeDefined();

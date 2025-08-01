@@ -220,35 +220,24 @@ export async function getCAPServiceChoices(project: Project, appId: string): Pro
 }
 
 /**
- * Determines whether the choices list should be filtered to exclude the parent node
- * when inserting building blocks inside macros:Page.
- *
- * @param choices - The list of available aggregation path choices.
- * @param type - The building block type being processed.
- * @returns True if the parent node (e.g., mvc:View) should be excluded
- */
-function shouldFilterChoicesForMacrosPage(choices: PromptListChoices, type?: BuildingBlockType): boolean {
-    return type === BuildingBlockType.Page && choices.length > 1 && (choices[1] as any).value.includes('macros:Page');
-}
-/**
  * Return a Prompt for choosing the aggregation path.
  *
  * @param context - prompt context including data about project
  * @param properties - object with additional properties of question
- * @param type - the building block type being processed
  * @returns prompt for choosing aggregation path of selected xml file.
  */
 export function getAggregationPathPrompt(
     context: PromptContext,
-    properties: Partial<ListPromptQuestion> = {},
-    type?: BuildingBlockType
+    properties: Partial<ListPromptQuestion> = {}
 ): ListPromptQuestion {
     const { fs, project, appPath } = context;
     const { guiOptions } = properties;
+
     return {
         ...properties,
         type: 'list',
         name: 'aggregationPath',
+        default: 0,
         choices: project
             ? (answers: Answers) => {
                   const { viewOrFragmentPath } = answers;
@@ -260,9 +249,7 @@ export function getAggregationPathPrompt(
                       if (!choices.length) {
                           throw new Error('Failed while fetching the aggregation path.');
                       }
-                      // If type is Page and the second choice is macros:Page, remove the parent node (e.g., mvc:View) from choices.
-                      // This ensures building blocks are only inserted inside macros:Page.
-                      return shouldFilterChoicesForMacrosPage(choices, type) ? choices.slice(1) : choices;
+                      return choices;
                   }
                   return [];
               }

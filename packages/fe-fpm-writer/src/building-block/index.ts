@@ -15,6 +15,7 @@ import type { Manifest } from '../common/types';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
+import { getOrAddMacrosNamespace } from './prompts/utils/xml';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -110,21 +111,6 @@ function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): Docu
     }
 
     return viewDocument;
-}
-/**
- * Returns the macros namespace from the xml document if it exists or creates a new one and returns it.
- *
- * @param {Document} ui5XmlDocument - the view/fragment xml file document
- * @returns {string} the macros namespace
- */
-function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
-    const namespaceMap = (ui5XmlDocument.firstChild as any)._nsMap;
-    const macrosNamespaceEntry = Object.entries(namespaceMap).find(([_, value]) => value === 'sap.fe.macros');
-    if (!macrosNamespaceEntry) {
-        (ui5XmlDocument.firstChild as any)._nsMap['macros'] = 'sap.fe.macros';
-        ui5XmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
-    }
-    return macrosNamespaceEntry ? macrosNamespaceEntry[0] : 'macros';
 }
 
 /**

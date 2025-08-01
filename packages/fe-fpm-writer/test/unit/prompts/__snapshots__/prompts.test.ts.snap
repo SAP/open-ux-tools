@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Prompts - no project getBuildingBlockTypePrompts 1`] = `
 Object {
@@ -149,6 +149,7 @@ Object {
     },
     Object {
       "choices": Array [],
+      "default": 0,
       "guiOptions": Object {
         "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
@@ -359,6 +360,7 @@ Object {
     },
     Object {
       "choices": Array [],
+      "default": 0,
       "guiOptions": Object {
         "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
@@ -444,6 +446,7 @@ Object {
     },
     Object {
       "choices": Array [],
+      "default": 0,
       "guiOptions": Object {
         "mandatory": true,
         "placeholder": "Select an aggregation path",
@@ -598,6 +601,7 @@ Object {
     },
     Object {
       "choices": Array [],
+      "default": 0,
       "guiOptions": Object {
         "groupId": "tableBuildingBlockProperties",
         "mandatory": true,
@@ -1162,6 +1166,7 @@ Object {
     },
     Object {
       "choices": [Function],
+      "default": 0,
       "guiOptions": Object {
         "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
@@ -1594,6 +1599,7 @@ Object {
     },
     Object {
       "choices": [Function],
+      "default": 0,
       "guiOptions": Object {
         "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
@@ -1679,6 +1685,7 @@ Object {
     },
     Object {
       "choices": [Function],
+      "default": 0,
       "guiOptions": Object {
         "mandatory": true,
         "placeholder": "Select an aggregation path",
@@ -1833,6 +1840,7 @@ Object {
     },
     Object {
       "choices": [Function],
+      "default": 0,
       "guiOptions": Object {
         "groupId": "tableBuildingBlockProperties",
         "mandatory": true,

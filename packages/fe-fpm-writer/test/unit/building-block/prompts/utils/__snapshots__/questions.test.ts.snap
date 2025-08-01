@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`utils - questions entityPrompt 1`] = `
 Object {
@@ -51,6 +51,7 @@ Array [
 exports[`utils - questions getAggregationPathPrompt 1`] = `
 Object {
   "choices": [Function],
+  "default": 0,
   "guiOptions": Object {
     "placeholder": "Select an aggregation path",
     "selectType": "dynamic",
@@ -81,6 +82,7 @@ Array [
 exports[`utils - questions getAggregationPathPrompt 3`] = `
 Object {
   "choices": [Function],
+  "default": 0,
   "guiOptions": Object {
     "placeholder": "Select an aggregation path",
     "selectType": "dynamic",
@@ -93,6 +95,7 @@ Object {
 exports[`utils - questions getAggregationPathPrompt with page macro 1`] = `
 Object {
   "choices": [Function],
+  "default": 0,
   "guiOptions": Object {
     "placeholder": "Select an aggregation path",
     "selectType": "dynamic",

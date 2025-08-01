@@ -25,16 +25,12 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
                     dependantPromptNames: ['aggregationPath']
                 }
             }),
-            getAggregationPathPrompt(
-                context,
-                {
-                    message: t('aggregation') as string,
-                    guiOptions: {
-                        mandatory: true
-                    }
-                },
-                BuildingBlockType.Page
-            ),
+            getAggregationPathPrompt(context, {
+                message: t('aggregation') as string,
+                guiOptions: {
+                    mandatory: true
+                }
+            }),
             getBuildingBlockIdPrompt(context, t('id.validation') as string, {
                 message: t('id.message') as string,
                 default: 'Page',
