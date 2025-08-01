@@ -164,6 +164,11 @@ describe('UI5Config', () => {
         test('Add with specific theme and additional library', () => {
             ui5Config.addUI5Framework('SAPUI5', '1.64.0', ['sap.m'], 'sap_belize');
             expect(ui5Config.toString()).toMatchSnapshot();
+            expect(ui5Config.getUi5Framework()).toStrictEqual({
+                name: 'SAPUI5',
+                version: '1.64.0',
+                libraries: [{ name: 'sap.m' }, { name: 'themelib_sap_belize' }]
+            });
         });
 
         test('Use a dark theme', () => {

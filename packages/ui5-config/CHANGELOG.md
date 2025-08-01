@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.29.1
+
+### Patch Changes
+
+-   43bc887: add getter for ui5 framework
+
 ## 0.29.0
 
 ### Minor Changes

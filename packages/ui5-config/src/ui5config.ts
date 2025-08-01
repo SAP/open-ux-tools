@@ -197,6 +197,15 @@ export class UI5Config {
     }
 
     /**
+     * Get the UI5 framework from the yaml.
+     *
+     * @returns the ui5 framework.
+     */
+    public getUi5Framework(): Ui5Document['framework'] | undefined {
+        return this.document.getMap({ path: 'framework' }).toJSON();
+    }
+
+    /**
      * Adds a UI5 Framework entry to the yaml file.
      *
      * @param {string} ui5Framework - whether to user SAPUI5 or OpenUI5

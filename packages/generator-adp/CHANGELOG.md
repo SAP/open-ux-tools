@@ -1,5 +1,30 @@
 # @sap-ux/generator-adp
 
+## 0.3.59
+
+### Patch Changes
+
+-   Updated dependencies [9f10a60]
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.58
+    -   @sap-ux/adp-tooling@0.15.12
+    -   @sap-ux/fiori-generator-shared@0.13.6
+    -   @sap-ux/system-access@0.6.12
+
+## 0.3.58
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.11
+-   @sap-ux/odata-service-writer@0.27.15
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/adp-flp-config-sub-generator@0.1.57
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/fiori-generator-shared@0.13.6
+-   @sap-ux/project-input-validator@0.6.15
+-   @sap-ux/system-access@0.6.11
+-   @sap-ux/inquirer-common@0.7.31
+
 ## 0.3.57
 
 ### Patch Changes
