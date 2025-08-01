@@ -110,7 +110,7 @@ export type AdtTransportStatus = 'S' | 'E';
 // In XML response of ADT TransportChecks service,
 // the <DLVUNIT/> element contain text that indicate it is local package.
 // No transport number required for deploying to local pacakge.
-export const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL'];
+export const LocalPackageText = ['LOCAL_PACKAGE', 'LOCAL', 'ZLOCAL'];
 
 export interface ArchiveFileNode {
     /**
