@@ -1,5 +1,44 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.29
+
+### Patch Changes
+
+-   9f10a60: Use `ZLOCAL` to determine local packages and multiple minor bug fixes
+-   Updated dependencies [9f10a60]
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/fiori-generator-shared@0.13.6
+
+## 2.5.28
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/telemetry@0.6.13
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/fiori-generator-shared@0.13.6
+-   @sap-ux/project-input-validator@0.6.15
+-   @sap-ux/inquirer-common@0.7.31
+
+## 2.5.27
+
+### Patch Changes
+
+-   9fa7f0b: move aggregration entity helpers to inq-common
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+
+## 2.5.26
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/fiori-generator-shared@0.13.5
+-   @sap-ux/project-input-validator@0.6.14
+-   @sap-ux/telemetry@0.6.12
+-   @sap-ux/inquirer-common@0.7.29
+
 ## 2.5.25
 
 ### Patch Changes

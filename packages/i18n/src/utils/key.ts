@@ -8,9 +8,9 @@ import type { I18nBundle, I18nEntry } from './../types';
  * @returns extracted key
  */
 export function extractI18nKey(input: string, key = 'i18n'): string {
-    input = input.trim();
+    const sanitizedInput = input.trim();
     const regPattern = new RegExp(`^({@?${key}(>|&gt;))`, 'g');
-    return input.replace(regPattern, '').replace(/\}$/gm, '').trim();
+    return sanitizedInput.replace(regPattern, '').replace(/\}$/gm, '').trim();
 }
 
 /**
