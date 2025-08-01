@@ -1,13 +1,13 @@
-import MessageToast from 'sap/m/MessageToast';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import type CompositeCommand from 'sap/ui/rta/command/CompositeCommand';
-import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
+import CommandFactory from 'sap/ui/rta/command/CommandFactory';
+import type CompositeCommand from 'sap/ui/rta/command/CompositeCommand';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type { FlexSettings } from 'sap/ui/rta/RuntimeAuthoring';
 import { getError } from '../utils/error';
-
+import { sendInfoCenterMessage } from '../utils/info-center-message';
 type CommandNames = 'addXML' | 'codeExt' | 'appDescriptor';
 
 /**
@@ -37,7 +37,7 @@ export default class CommandExecutor {
         designMetadata?: DesignTimeMetadata
     ): Promise<FlexCommand<T>> {
         try {
-            return await CommandFactory.getCommandFor(
+            return await CommandFactory.getCommandFor<FlexCommand<T>>(
                 runtimeControl,
                 commandName,
                 modifiedValue,
@@ -46,9 +46,15 @@ export default class CommandExecutor {
             );
         } catch (e) {
             const error = getError(e);
-            const msgToastErrorMsg = `Could not get command for '${commandName}'. ${error.message}`;
-            error.message = msgToastErrorMsg;
-            MessageToast.show(msgToastErrorMsg);
+            await sendInfoCenterMessage({
+                title: { key: 'ADP_GET_COMMAND_FAILURE_TITLE' },
+                description: {
+                    key: 'ADP_GET_COMMAND_FAILURE_DESCRIPTION',
+                    params: [commandName, error.message]
+                },
+                type: MessageBarType.error
+            });
+            error.message = `Could not get command for '${commandName}'. ${error.message}`;
             throw error;
         }
     }
@@ -63,9 +69,14 @@ export default class CommandExecutor {
             return await CommandFactory.getCommandFor<CompositeCommand>(runtimeControl, 'composite');
         } catch (e) {
             const error = getError(e);
-            const msgToastErrorMsg = `Could not get composite command'. ${error.message}`;
-            error.message = msgToastErrorMsg;
-            MessageToast.show(msgToastErrorMsg);
+            await sendInfoCenterMessage({
+                title: { key: 'ADP_GET_COMMAND_FAILURE_TITLE' },
+                description: {
+                    key: 'ADP_GET_COMPOSITE_COMMAND_FAILURE_DESCRIPTION',
+                    params: [error.message]
+                },
+                type: MessageBarType.error
+            });
             throw error;
         }
     }
@@ -83,7 +94,11 @@ export default class CommandExecutor {
             await this.rta.getCommandStack().pushAndExecute(command);
         } catch (e) {
             const error = getError(e);
-            MessageToast.show(error.message);
+            await sendInfoCenterMessage({
+                title: { key: 'ADP_RUN_COMMAND_FAILED_TITLE' },
+                description: error.message,
+                type: MessageBarType.error
+            });
             throw error;
         }
     }

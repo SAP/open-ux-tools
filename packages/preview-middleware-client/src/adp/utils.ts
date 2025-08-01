@@ -1,4 +1,3 @@
-import MessageToast from 'sap/m/MessageToast';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
@@ -118,19 +117,6 @@ export function matchesChangeProperty(command: FlexCommand, propertyPath: string
     const nestedProperty = getNestedProperty(change, propertyPath);
     return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
 }
-
-/**
- * Displays a message to the user indicating that an XML fragment will be created upon saving a change.
- *
- * @param {string} message - The message to be shown in the message toast.
- * @param {number} duration - The duration during which message toast will be active.
- */
-export function notifyUser(message: string, duration: number = 5000) {
-    MessageToast.show(message, {
-        duration
-    });
-}
-
 interface ControllerInfo {
     controllerName: string;
     viewId: string;
