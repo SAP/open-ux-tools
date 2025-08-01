@@ -38,7 +38,7 @@ export async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
  * @param logger ToolsLogger instance
  * @returns The remote URL or undefined if not available
  */
-async function getRemoteUrl(logger: ToolsLogger): Promise<string | undefined> {
+export async function getRemoteUrl(logger: ToolsLogger): Promise<string | undefined> {
     try {
         if (isAppStudio()) {
             return await getBASRemoteUrl(logger);
@@ -155,7 +155,7 @@ export function isRemoteConnectionsEnabled(): boolean {
  *
  * @returns The port number if found
  */
-function getPortFromArgs(): number | undefined {
+export function getPortFromArgs(): number | undefined {
     // Check for --port argument
     const portIndex = process.argv.findIndex((arg) => arg === '--port' || arg.startsWith('--port='));
     if (portIndex !== -1) {
@@ -185,7 +185,7 @@ function getPortFromArgs(): number | undefined {
  *
  * @returns The path from --open or -o parameter if found
  */
-function getOpenPathFromArgs(): string | undefined {
+export function getOpenPathFromArgs(): string | undefined {
     // Check for --open or -o argument
     const openIndex = process.argv.findIndex(
         (arg) => arg === '--open' || arg === '-o' || arg.startsWith('--open=') || arg.startsWith('--o=')
