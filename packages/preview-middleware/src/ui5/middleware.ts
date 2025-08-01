@@ -4,8 +4,7 @@ import type { MiddlewareParameters } from '@ui5/server';
 import { type EnhancedRouter, FlpSandbox, initAdp } from '../base/flp';
 import type { MiddlewareConfig } from '../types';
 import { getPreviewPaths, sanitizeConfig } from '../base/config';
-import { getRemoteUrl, isRemoteConnectionsEnabled } from '../base/remote-url';
-import * as QRCode from 'qrcode';
+import { logRemoteUrl, isRemoteConnectionsEnabled } from '../base/remote-url';
 
 /**
  * Create the router that is to be exposed as UI5 middleware.
@@ -43,34 +42,6 @@ async function createRouter(
     // add exposed endpoints for cds-plugin-ui5
     flp.router.getAppPages = (): string[] => getPreviewPaths(config).map(({ path }) => path);
     return flp.router;
-}
-
-/**
- * Log remote URL for mobile device access.
- *
- * @param logger Logger instance
- */
-async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
-    try {
-        const remoteUrl = await getRemoteUrl(logger);
-
-        const generateQRCode = async (text: string): Promise<void> => {
-            try {
-                const qrString = await QRCode.toString(text, { type: 'terminal', small: true });
-                logger.info(qrString);
-            } catch (err) {
-                logger.error(err);
-            }
-        };
-
-        if (remoteUrl) {
-            logger.info(`Remote URL: ${remoteUrl}`);
-            logger.info('Scan the QR code below with your mobile device to access the preview:');
-            await generateQRCode(remoteUrl);
-        }
-    } catch (error) {
-        logger.debug(`Could not generate remote URL: ${error.message}`);
-    }
 }
 
 /**

@@ -2,6 +2,36 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Logger } from '@sap-ux/logger';
 import { networkInterfaces } from 'os';
 import { devspace } from '@sap/bas-sdk';
+import type { ToolsLogger } from '@sap-ux/logger';
+import QRCode from 'qrcode';
+
+/**
+ * Log remote URL for mobile device access.
+ *
+ * @param logger Logger instance
+ */
+export async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
+    try {
+        const remoteUrl = await getRemoteUrl(logger);
+
+        const generateQRCode = async (text: string): Promise<void> => {
+            try {
+                const qrString = await QRCode.toString(text, { type: 'terminal', small: true });
+                logger.info(qrString);
+            } catch (err) {
+                logger.error(err);
+            }
+        };
+
+        if (remoteUrl) {
+            logger.info(`Remote URL: ${remoteUrl}`);
+            logger.info('Scan the QR code below with your mobile device to access the preview:');
+            await generateQRCode(remoteUrl);
+        }
+    } catch (error) {
+        logger.debug(`Could not generate remote URL: ${error.message}`);
+    }
+}
 
 /**
  * Get the remote URL for mobile device access.
@@ -158,7 +188,9 @@ export function getPortFromArgs(): number | undefined {
  */
 export function getOpenPathFromArgs(): string | undefined {
     // Check for --open or -o argument
-    const openIndex = process.argv.findIndex((arg) => arg === '--open' || arg === '-o' || arg.startsWith('--open='));
+    const openIndex = process.argv.findIndex(
+        (arg) => arg === '--open' || arg === '-o' || arg.startsWith('--open=') || arg.startsWith('--o=')
+    );
     if (openIndex !== -1) {
         const openArg = process.argv[openIndex];
         if (openArg.includes('=')) {
