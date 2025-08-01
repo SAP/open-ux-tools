@@ -2,4 +2,4 @@
 "@sap-ux/ui-components": patch
 ---
 
-add a tiertary red color uidefaultbutton
+add an alert red color uidefaultbutton
