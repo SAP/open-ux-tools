@@ -89,10 +89,13 @@ describe('Sub-generator helpers', () => {
         it('should compose deploy-config generator with merged options', () => {
             const deployOptions = {
                 projectName: 'some.app',
-                targetFolder: '/project',
-                client: '100',
+                projectPath: '/project',
                 connectedSystem: 'SYS',
-                destinationName: 'DEST'
+                system: {
+                    Name: 'SYS',
+                    Client: '100',
+                    Url: 'sys-url'
+                }
             };
 
             addDeployGen(deployOptions, composeWith, logger, wizard);
@@ -104,8 +107,11 @@ describe('Sub-generator helpers', () => {
                     projectPath: '/project',
                     appGenClient: '100',
                     connectedSystem: 'SYS',
-                    appGenDestination: 'DEST',
-                    telemetryData: expect.any(Object)
+                    appGenDestination: 'SYS',
+                    appGenServiceHost: 'sys-url',
+                    telemetryData: { appType: 'Fiori Adaptation' },
+                    appType: 'Fiori Adaptation',
+                    subGenPromptOptions: expect.any(Object)
                 })
             );
             expect(logger.info).toHaveBeenCalled();

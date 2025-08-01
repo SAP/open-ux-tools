@@ -3,7 +3,7 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer, Endpoint } from '@sap-ux/adp-tooling';
 
 import { t } from './i18n';
 import { getExtensionProjectData, resolveNodeModuleGenerator } from '../app/extension-project';
@@ -31,11 +31,19 @@ interface FlpGenProps {
  */
 interface DeployGenOptions {
     projectName: string;
-    targetFolder: string;
-    client?: string;
+    projectPath: string;
     connectedSystem: string;
-    destinationName?: string;
+    system?: Endpoint;
 }
+
+/**
+ * Static validation configuration for package prompts in ADP deployment.
+ */
+const PACKAGE_ADDITIONAL_VALIDATION = {
+    shouldValidatePackageForStartingPrefix: true,
+    shouldValidatePackageType: true,
+    shouldValidateFormatAndSpecialCharacters: true
+} as const;
 
 /**
  * Composes the FLP config sub-generator using `composeWith`. This generator is used to scaffold
@@ -80,32 +88,46 @@ export function addFlpGen(
  * @param {DeployGenOptions} options - Deployment generator input options
  * @param {string} options.projectName - Project name
  * @param {string} options.targetFolder - Folder where project will be generated
- * @param {string} options.applicationType - Type of application being deployed
- * @param {string} options.client - (Optional) ABAP client number
- * @param {string} options.connectedSystem - (Optional) Connected system data
- * @param {string} options.destinationName - (Optional) Destination name for deployment
+ * @param {string} options.connectedSystem - Connected system data
+ * @param {Endpoint} options.system - (Optional) System endpoint with connection details
  * @param {Generator['composeWith']} composeWith - Yeoman composeWith method from generator context
  * @param {ToolsLogger} logger - Logger for info and error output
  * @param {AppWizard} appWizard - Optional AppWizard instance for displaying UI messages
  */
 export function addDeployGen(
-    { projectName, targetFolder, client, connectedSystem, destinationName }: DeployGenOptions,
+    { projectName, projectPath, connectedSystem, system }: DeployGenOptions,
     composeWith: Generator['composeWith'],
     logger: ToolsLogger,
     appWizard: AppWizard
 ): void {
     try {
+        const appType = 'Fiori Adaptation';
+        const subGenPromptOptions = {
+            ui5AbapRepo: { hideIfOnPremise: true },
+            transportInputChoice: { hideIfOnPremise: true },
+            packageAutocomplete: {
+                additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
+            },
+            packageManual: {
+                additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
+            },
+            targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: true } }
+        };
+
         const generatorOptions = {
             launchDeployConfigAsSubGenerator: true,
             projectName,
-            projectPath: targetFolder,
-            telemetryData: { appType: 'Fiori Adaptation' },
+            projectPath,
+            telemetryData: { appType },
             appWizard,
             logWrapper: logger,
             target: 'abap',
-            ...(client && { appGenClient: client }),
+            appType,
+            subGenPromptOptions,
             ...(connectedSystem && { connectedSystem }),
-            ...(destinationName && { appGenDestination: destinationName })
+            ...(system?.Name && { appGenDestination: system.Name }),
+            ...(system?.Client && { appGenClient: system.Client }),
+            ...(system?.Url && { appGenServiceHost: system.Url })
         };
 
         composeWith('@sap/fiori:deploy-config', generatorOptions);
