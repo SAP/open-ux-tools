@@ -1,5 +1,71 @@
 # @sap-ux/generator-adp
 
+## 0.3.57
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.56
+    -   @sap-ux/adp-tooling@0.15.10
+
+## 0.3.56
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.9
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/adp-flp-config-sub-generator@0.1.55
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/fiori-generator-shared@0.13.5
+-   @sap-ux/odata-service-writer@0.27.14
+-   @sap-ux/project-input-validator@0.6.14
+-   @sap-ux/system-access@0.6.11
+-   @sap-ux/inquirer-common@0.7.29
+
+## 0.3.55
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.54
+    -   @sap-ux/adp-tooling@0.15.8
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/fiori-generator-shared@0.13.4
+    -   @sap-ux/odata-service-writer@0.27.13
+    -   @sap-ux/project-input-validator@0.6.13
+    -   @sap-ux/system-access@0.6.11
+    -   @sap-ux/inquirer-common@0.7.28
+
+## 0.3.54
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.53
+    -   @sap-ux/adp-tooling@0.15.7
+    -   @sap-ux/fiori-generator-shared@0.13.3
+    -   @sap-ux/system-access@0.6.11
+
+## 0.3.53
+
+### Patch Changes
+
+-   Updated dependencies [e25ee86]
+    -   @sap-ux/adp-tooling@0.15.6
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.52
+
+## 0.3.52
+
+### Patch Changes
+
+-   d4a45ae: fix: provide templates path parameter to handle different runtime context
+-   Updated dependencies [d4a45ae]
+    -   @sap-ux/adp-tooling@0.15.5
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.51
+
 ## 0.3.51
 
 ### Patch Changes

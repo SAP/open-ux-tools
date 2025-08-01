@@ -1,5 +1,57 @@
 # @sap-ux/adp-tooling
 
+## 0.15.10
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+
+## 0.15.9
+
+### Patch Changes
+
+-   Updated dependencies [009143e]
+    -   @sap-ux/i18n@0.3.2
+    -   @sap-ux/project-access@1.30.9
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/odata-service-writer@0.27.14
+    -   @sap-ux/project-input-validator@0.6.14
+    -   @sap-ux/system-access@0.6.11
+    -   @sap-ux/inquirer-common@0.7.29
+
+## 0.15.8
+
+### Patch Changes
+
+-   Updated dependencies [4e0bd83]
+    -   @sap-ux/project-access@1.30.8
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/odata-service-writer@0.27.13
+    -   @sap-ux/project-input-validator@0.6.13
+    -   @sap-ux/system-access@0.6.11
+    -   @sap-ux/inquirer-common@0.7.28
+
+## 0.15.7
+
+### Patch Changes
+
+-   Updated dependencies [ffac61c]
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/system-access@0.6.11
+
+## 0.15.6
+
+### Patch Changes
+
+-   e25ee86: fix: remove filtering of parameters for inbounds
+
+## 0.15.5
+
+### Patch Changes
+
+-   d4a45ae: fix: provide templates path parameter to handle different runtime context
+
 ## 0.15.4
 
 ### Patch Changes

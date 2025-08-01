@@ -134,6 +134,53 @@ Object {
 
 exports[`FlpSandbox init do not add component to applications single 1`] = `Object {}`;
 
+exports[`FlpSandbox init i18n key more that a word 1`] = `
+Object {
+  "apps": Object {
+    "app-preview": Object {
+      "additionalInformation": "SAPUI5.Component=test.fe.v2.app",
+      "applicationType": "URL",
+      "description": "my.custom.key.Description",
+      "title": "My Simple App",
+      "url": "..",
+    },
+  },
+  "basePath": "..",
+  "enableCardGenerator": false,
+  "enhancedHomePage": false,
+  "init": undefined,
+  "locateReuseLibsScript": false,
+  "ui5": Object {
+    "bootstrapOptions": "",
+    "flex": Array [
+      Object {
+        "connector": "LrepConnector",
+        "layers": Array [],
+        "url": "/sap/bc/lrep",
+      },
+      Object {
+        "applyConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+        "custom": true,
+        "writeConnector": "open/ux/preview/client/flp/WorkspaceConnector",
+      },
+      Object {
+        "connector": "LocalStorageConnector",
+        "layers": Array [
+          "CUSTOMER",
+          "USER",
+        ],
+      },
+    ],
+    "libs": "sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template",
+    "resources": Object {
+      "open.ux.preview.client": "../preview/client",
+      "test.fe.v2.app": "..",
+    },
+    "theme": "sap_horizon_dark",
+  },
+}
+`;
+
 exports[`FlpSandbox init i18n manifest 1`] = `
 Object {
   "apps": Object {
