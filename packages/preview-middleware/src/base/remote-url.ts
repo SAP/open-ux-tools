@@ -1,5 +1,4 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { Logger } from '@sap-ux/logger';
 import { networkInterfaces } from 'os';
 import { devspace } from '@sap/bas-sdk';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -8,7 +7,7 @@ import QRCode from 'qrcode';
 /**
  * Log remote URL for mobile device access.
  *
- * @param logger Logger instance
+ * @param logger ToolsLogger instance
  */
 export async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
     try {
@@ -36,10 +35,10 @@ export async function logRemoteUrl(logger: ToolsLogger): Promise<void> {
 /**
  * Get the remote URL for mobile device access.
  *
- * @param logger Logger instance
+ * @param logger ToolsLogger instance
  * @returns The remote URL or undefined if not available
  */
-export async function getRemoteUrl(logger: Logger): Promise<string | undefined> {
+export async function getRemoteUrl(logger: ToolsLogger): Promise<string | undefined> {
     try {
         if (isAppStudio()) {
             return await getBASRemoteUrl(logger);
@@ -55,10 +54,10 @@ export async function getRemoteUrl(logger: Logger): Promise<string | undefined> 
 /**
  * Get remote URL for BAS environment using BAS SDK.
  *
- * @param logger Logger instance
+ * @param logger  ToolsLogger instance instance
  * @returns The remote URL from BAS SDK
  */
-async function getBASRemoteUrl(logger: Logger): Promise<string | undefined> {
+async function getBASRemoteUrl(logger: ToolsLogger): Promise<string | undefined> {
     try {
         const devspaceInfo = await devspace.getDevspaceInfo();
         if (devspaceInfo?.url) {
@@ -80,10 +79,10 @@ async function getBASRemoteUrl(logger: Logger): Promise<string | undefined> {
  * Get remote URL for VSCode environment by detecting network IP.
  * Only works if --accept-remote-connections is enabled.
  *
- * @param logger Logger instance
+ * @param logger  ToolsLogger instance instance
  * @returns The remote URL based on network IP
  */
-function getVSCodeRemoteUrl(logger: Logger): string | undefined {
+function getVSCodeRemoteUrl(logger: ToolsLogger): string | undefined {
     try {
         const networkIP = getNetworkIP();
         if (!networkIP) {
@@ -194,7 +193,7 @@ export function getOpenPathFromArgs(): string | undefined {
     if (openIndex !== -1) {
         const openArg = process.argv[openIndex];
         if (openArg.includes('=')) {
-            // --open=path format
+            // --open=path or -o=path format
             return openArg.split('=')[1];
         } else if (openIndex + 1 < process.argv.length) {
             // --open path or -o path format
