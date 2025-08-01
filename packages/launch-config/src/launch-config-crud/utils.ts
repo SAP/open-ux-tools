@@ -32,10 +32,6 @@ function getArgs(options: FioriOptions): string[] | undefined {
         }
     }
 
-    if (options.enableRemoteAccess) {
-        args.push(Arguments.AcceptRemoteConnections);
-    }
-
     return args.length > 0 ? args : undefined;
 }
 
@@ -151,7 +147,6 @@ export function getFioriOptions(
     let ui5LocalVersion;
     let backendConfigs;
     let urlParameters;
-    let enableRemoteAccess = false;
     // Do not display configurations which have different type than node
     let visible = launchConfig.type === 'node';
     if (launchConfig.env) {
@@ -178,9 +173,6 @@ export function getFioriOptions(
                 ui5LocalVersion = parsedArguments['framework-version'];
             }
         }
-        // Check for --accept-remote-connections argument
-        enableRemoteAccess = launchConfig.args.includes(Arguments.AcceptRemoteConnections);
-
         const stringArguments = launchConfig.args.toString().toLowerCase();
         // filter configurations containing input:UI5MinVersion, this will be supported later
         visible = visible || stringArguments.indexOf('${input:') === -1;
@@ -197,8 +189,7 @@ export function getFioriOptions(
         startFile,
         backendConfigs,
         urlParameters,
-        visible,
-        enableRemoteAccess
+        visible
     };
 }
 
