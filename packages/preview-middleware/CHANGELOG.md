@@ -1,5 +1,16 @@
 # @sap-ux/preview-middleware
 
+## 0.21.0
+
+### Minor Changes
+
+-   b1213b1: feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.12
+-   @sap-ux/system-access@0.6.12
+
 ## 0.20.74
 
 ### Patch Changes
