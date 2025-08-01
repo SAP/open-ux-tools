@@ -1,11 +1,5 @@
 # @sap-ux-private/preview-middleware-client
 
-## 1.0.0
-
-### Major Changes
-
--   a181df0: feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
-
 ## 0.14.11
 
 ### Patch Changes
