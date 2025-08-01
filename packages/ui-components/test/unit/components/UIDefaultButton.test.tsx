@@ -344,6 +344,168 @@ describe('<UIDefaultButton />', () => {
         `);
     });
 
+    it('Styles - tertiary', () => {
+        wrapper.setProps({
+            tertiary: true
+        });
+        const styles = wrapper.find(DefaultButton).props().styles;
+        expect(styles?.root).toMatchInlineSnapshot(
+            {},
+            `
+            Object {
+              "backgroundColor": "var(--vscode-errorForeground)",
+              "borderColor": "var(--vscode-button-border, transparent)",
+              "borderRadius": 2,
+              "color": "var(--vscode-button-foreground)",
+              "fontSize": "13px",
+              "fontWeight": 400,
+              "height": 22,
+              "minWidth": "initial",
+              "paddingLeft": 13,
+              "paddingRight": 13,
+              "selectors": Object {
+                ".ms-Fabric--isFocusVisible &:focus:after": Object {
+                  "inset": -3,
+                  "outlineColor": "var(--vscode-focusBorder)",
+                },
+              },
+            }
+        `
+        );
+        expect(styles?.rootHovered).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-editorError-foreground)",
+              "borderColor": "var(--vscode-button-border, transparent)",
+              "color": "var(--vscode-button-foreground)",
+              "selectors": Object {
+                "svg > path, svg > rect": Object {
+                  "fill": "var(--vscode-button-foreground)",
+                },
+              },
+            }
+        `);
+        expect(styles?.rootDisabled).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-errorForeground)",
+              "borderColor": "var(--vscode-button-border, transparent)",
+              "color": "var(--vscode-button-foreground)",
+              "opacity": "0.5 !important",
+            }
+        `);
+        expect(styles?.icon).toMatchInlineSnapshot(`
+            Object {
+              "color": "var(--vscode-button-foreground)",
+              "height": 16,
+              "lineHeight": 16,
+              "marginLeft": -3,
+              "selectors": Object {
+                "svg > path, svg > rect": Object {
+                  "fill": "var(--vscode-button-foreground)",
+                },
+              },
+            }
+        `);
+        expect(styles?.rootChecked).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-errorForeground)",
+              "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
+              "color": "var(--vscode-button-foreground)",
+            }
+        `);
+        expect(styles?.rootCheckedHovered).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-editorError-foreground)",
+              "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
+              "color": "var(--vscode-button-foreground)",
+              "selectors": Object {
+                "svg > path, svg > rect": Object {
+                  "fill": "var(--vscode-button-foreground)",
+                },
+              },
+            }
+        `);
+    });
+
+    it('Styles - tertiary and checked', () => {
+        wrapper.setProps({
+            tertiary: true,
+            checked: true
+        });
+        const styles = wrapper.find(DefaultButton).props().styles;
+        expect(styles?.root).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-errorForeground)",
+              "borderColor": "var(--vscode-button-border, transparent)",
+              "borderRadius": 2,
+              "color": "var(--vscode-button-foreground)",
+              "fontSize": "13px",
+              "fontWeight": 400,
+              "height": 22,
+              "minWidth": "initial",
+              "paddingLeft": 13,
+              "paddingRight": 13,
+              "selectors": Object {
+                ".ms-Fabric--isFocusVisible &:focus:after": Object {
+                  "inset": -3,
+                  "outlineColor": "var(--vscode-focusBorder)",
+                },
+              },
+            }
+        `);
+        expect(styles?.rootHovered).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-editorError-foreground)",
+              "borderColor": "var(--vscode-button-border, transparent)",
+              "color": "var(--vscode-button-foreground)",
+              "selectors": Object {
+                "svg > path, svg > rect": Object {
+                  "fill": "var(--vscode-button-foreground)",
+                },
+              },
+            }
+        `);
+        expect(styles?.rootDisabled).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-errorForeground)",
+              "borderColor": "var(--vscode-button-border, transparent)",
+              "color": "var(--vscode-button-foreground)",
+              "opacity": "0.5 !important",
+            }
+        `);
+        expect(styles?.icon).toMatchInlineSnapshot(`
+            Object {
+              "color": "var(--vscode-button-foreground)",
+              "height": 16,
+              "lineHeight": 16,
+              "marginLeft": -3,
+              "selectors": Object {
+                "svg > path, svg > rect": Object {
+                  "fill": "var(--vscode-button-foreground)",
+                },
+              },
+            }
+        `);
+        expect(styles?.rootChecked).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-errorForeground)",
+              "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
+              "color": "var(--vscode-button-foreground)",
+            }
+        `);
+        expect(styles?.rootCheckedHovered).toMatchInlineSnapshot(`
+            Object {
+              "backgroundColor": "var(--vscode-editorError-foreground)",
+              "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
+              "color": "var(--vscode-button-foreground)",
+              "selectors": Object {
+                "svg > path, svg > rect": Object {
+                  "fill": "var(--vscode-button-foreground)",
+                },
+              },
+            }
+        `);
+    });
+
     it('Styles - transparent', () => {
         wrapper.setProps({
             transparent: true
