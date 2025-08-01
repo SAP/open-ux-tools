@@ -1,5 +1,14 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.5.29
+
+### Patch Changes
+
+-   9f10a60: Use `ZLOCAL` to determine local packages and multiple minor bug fixes
+-   Updated dependencies [9f10a60]
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/fiori-generator-shared@0.13.6
+
 ## 2.5.28
 
 ### Patch Changes
