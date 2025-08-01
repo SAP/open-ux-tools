@@ -128,6 +128,19 @@ export const defaultUsage = (): JSX.Element => {
             </Stack>
             <Stack tokens={stackTokens}>
                 <Text variant={'large'} className="textColor" block>
+                    tertiary Button
+                </Text>
+                <Stack horizontal tokens={stackTokens}>
+                    <UIDefaultButton tertiary>Tertiary button</UIDefaultButton>
+                    <UIDefaultButton tertiary disabled>Tertiary disabled button</UIDefaultButton>
+                    <UIDefaultButton tertiary iconProps={{ iconName: UiIcons.Calendar }}>
+                        Tertiary button with icon
+                    </UIDefaultButton>
+                    <UIDefaultButton tertiary checked>Tertiary checked button</UIDefaultButton>
+                </Stack>
+            </Stack>
+            <Stack tokens={stackTokens}>
+                <Text variant={'large'} className="textColor" block>
                     Transparent Button
                 </Text>
                 <Stack horizontal tokens={stackTokens}>
