@@ -39,6 +39,11 @@ async function createRouter(
             throw new Error('No manifest.json found.');
         }
     }
+
+    if (isRemoteConnectionsEnabled()) {
+        await logRemoteUrl(logger);
+    }
+
     // add exposed endpoints for cds-plugin-ui5
     flp.router.getAppPages = (): string[] => getPreviewPaths(config).map(({ path }) => path);
     return flp.router;
@@ -56,13 +61,7 @@ module.exports = async (params: MiddlewareParameters<MiddlewareConfig>): Promise
         logLevel: params.options.configuration?.debug ? LogLevel.Debug : LogLevel.Info
     });
     try {
-        const router = await createRouter(params, logger);
-
-        if (isRemoteConnectionsEnabled()) {
-            await logRemoteUrl(logger);
-        }
-
-        return router;
+        return await createRouter(params, logger);
     } catch (error) {
         logger.error('Could not start preview-middleware.');
         logger.error(error.message);
