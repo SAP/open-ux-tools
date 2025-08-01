@@ -344,9 +344,9 @@ describe('<UIDefaultButton />', () => {
         `);
     });
 
-    it('Styles - tertiary', () => {
+    it('Styles - alert', () => {
         wrapper.setProps({
-            tertiary: true
+            alert: true
         });
         const styles = wrapper.find(DefaultButton).props().styles;
         expect(styles?.root).toMatchInlineSnapshot(
@@ -426,9 +426,9 @@ describe('<UIDefaultButton />', () => {
         `);
     });
 
-    it('Styles - tertiary and checked', () => {
+    it('Styles - alert and checked', () => {
         wrapper.setProps({
-            tertiary: true,
+            alert: true,
             checked: true
         });
         const styles = wrapper.find(DefaultButton).props().styles;
