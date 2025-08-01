@@ -101,10 +101,10 @@ export function addDeployGen(
     appWizard: AppWizard
 ): void {
     try {
-        const appType = 'Fiori Adaptation';
         const subGenPromptOptions = {
             ui5AbapRepo: { hideIfOnPremise: true },
             transportInputChoice: { hideIfOnPremise: true },
+            overwriteAbapConfig: { hide: true },
             packageAutocomplete: {
                 additionalValidation: PACKAGE_ADDITIONAL_VALIDATION
             },
@@ -118,11 +118,10 @@ export function addDeployGen(
             launchDeployConfigAsSubGenerator: true,
             projectName,
             projectPath,
-            telemetryData: { appType },
+            telemetryData: { appType: 'Fiori Adaptation' },
             appWizard,
             logWrapper: logger,
             target: 'abap',
-            appType,
             subGenPromptOptions,
             ...(connectedSystem && { connectedSystem }),
             ...(system?.Name && { appGenDestination: system.Name }),

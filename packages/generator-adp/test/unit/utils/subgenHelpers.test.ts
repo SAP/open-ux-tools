@@ -110,7 +110,6 @@ describe('Sub-generator helpers', () => {
                     appGenDestination: 'SYS',
                     appGenServiceHost: 'sys-url',
                     telemetryData: { appType: 'Fiori Adaptation' },
-                    appType: 'Fiori Adaptation',
                     subGenPromptOptions: expect.any(Object)
                 })
             );
