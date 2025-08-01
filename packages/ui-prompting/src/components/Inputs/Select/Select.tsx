@@ -20,7 +20,14 @@ export const Select = (props: SelectProps) => {
     const [value, setValue] = useValue('', props.value ?? '');
     const inputRef = React.createRef<ITextField>();
     const options = useOptions(props, dynamicChoices);
-    const defaultValue = options.length === 1 ? options[0].data?.value : undefined;
+    let defaultValue = options.length === 1 ? options[0].data?.value : props.default;
+    if (
+        typeof defaultValue === 'number' &&
+        !options.some((option) => option.key === defaultValue) &&
+        options[defaultValue]
+    ) {
+        defaultValue = options[defaultValue].data?.value ?? defaultValue;
+    }
     useEffect(() => {
         if (defaultValue !== undefined && value !== defaultValue) {
             setValue(defaultValue);
