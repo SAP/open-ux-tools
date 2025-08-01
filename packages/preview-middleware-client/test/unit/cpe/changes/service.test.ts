@@ -4,9 +4,11 @@ import { ActionHandler } from '../../../../src/cpe/types';
 import {
     changeProperty,
     deletePropertyChanges,
+    MessageBarType,
     propertyChangeFailed,
     PropertyType,
-    setApplicationRequiresReload
+    setApplicationRequiresReload,
+    showInfoCenterMessage
 } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
@@ -15,6 +17,7 @@ import JsControlTreeModifierMock from 'mock/sap/ui/core/util/reflection/JsContro
 import Control from 'sap/ui/core/Control';
 import * as Utils from '../../../../src/utils/version';
 import ChangesWriteAPIMock from 'mock/sap/ui/fl/write/api/ChangesWriteAPI';
+import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
 
 describe('ChangeService', () => {
     const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
@@ -1575,6 +1578,7 @@ describe('ChangeService', () => {
             getCommands: jest.fn().mockReturnValue(commands),
             getAllExecutedCommands: jest.fn().mockReturnValue(commands)
         });
+        jest.spyOn(CommunicationService, 'sendAction');
         const service = new ChangeService({ rta: rtaMock } as any);
 
         await service.init(sendActionMock, subscribeMock);
@@ -1622,6 +1626,13 @@ describe('ChangeService', () => {
                 ]
             }
         });
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'Save and Reload Required',
+                description: 'Note: The change will be visible after save and reload.',
+                type: MessageBarType.info
+            })
+        );
     });
     test('FE V4 manifest change', async () => {
         fetchMock.mockResolvedValue({ json: () => Promise.resolve({}) });
@@ -1764,9 +1775,11 @@ describe('ChangeService', () => {
             json: () => Promise.resolve({})
         });
 
+        const errorMessage = 'RTA Error: Not acceptable value';
         const applyChangeSpy = jest.spyOn(flexChange, 'applyChange').mockImplementation(() => {
-            throw 'RTA Error: Not acceptable value';
+            throw errorMessage;
         });
+        jest.spyOn(CommunicationService, 'sendAction');
 
         const service = new ChangeService({ rta: rtaMock } as any);
 
@@ -1802,6 +1815,14 @@ describe('ChangeService', () => {
                 changeType: 'propertyChange',
                 errorMessage: 'Error: "RTA Error: Not acceptable value"'
             } as any)
+        );
+
+        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
+            showInfoCenterMessage({
+                title: 'Change Creation Failed',
+                description: `Error: ${JSON.stringify(errorMessage)}`,
+                type: MessageBarType.error
+            })
         );
     });
 });

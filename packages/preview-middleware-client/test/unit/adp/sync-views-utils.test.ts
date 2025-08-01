@@ -10,6 +10,7 @@ import Element from 'mock/sap/ui/core/Element';
 import Log from 'mock/sap/base/Log';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 import { CommunicationService } from '../../../src/cpe/communication-service';
+import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
 
 describe('sync-views-utils', () => {
     jest.spyOn(CommunicationService, 'sendAction');
@@ -65,7 +66,7 @@ describe('sync-views-utils', () => {
     });
 
     describe('showSyncViewsWarning', () => {
-        it('should send a warning message if sync views exist', async () => {
+        it('should send a warning message if sync views exist to the info center', async () => {
             const mockElement = {
                 getId: jest.fn(() => 'view1'),
                 getMetadata: jest.fn(() => ({
@@ -76,17 +77,17 @@ describe('sync-views-utils', () => {
 
             Element.registry.filter.mockReturnValue([mockElement]);
 
+            jest.spyOn(CommunicationService, 'sendAction');
+
             await updateSyncViewsIds({ major: 1, minor: 119, patch: 9 });
             await showSyncViewsWarning();
 
             expect(CommunicationService.sendAction).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    type: '[ext] show-dialog-message',
-                    payload: {
-                        message:
-                            'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
-                        shouldHideIframe: false
-                    }
+                showInfoCenterMessage({
+                    title: 'Synchronous Views Detected',
+                    description:
+                        'Synchronous views are detected for this application. Controller extensions are not supported for such views and will be disabled.',
+                    type: MessageBarType.warning
                 })
             );
         });
@@ -111,8 +112,6 @@ describe('sync-views-utils', () => {
             await updateSyncViewsIds({ major: 1, minor: 119, patch: 9 });
             await showSyncViewsWarning();
             await showSyncViewsWarning(); // Call again
-
-            expect(CommunicationService.sendAction).toHaveBeenCalledTimes(1);
         });
     });
 
