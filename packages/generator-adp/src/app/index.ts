@@ -218,13 +218,13 @@ export default class extends Generator {
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
         if (this.attributeAnswers.addDeployConfig) {
-            const client = (await this.systemLookup.getSystemByName(this.configAnswers.system))?.Client;
+            const system = await this.systemLookup.getSystemByName(this.configAnswers.system);
             addDeployGen(
                 {
                     projectName: this.attributeAnswers.projectName,
-                    targetFolder: this.attributeAnswers.targetFolder,
+                    projectPath: this.attributeAnswers.targetFolder,
                     connectedSystem: this.configAnswers.system,
-                    client
+                    system
                 },
                 this.composeWith.bind(this),
                 this.logger,
