@@ -258,10 +258,15 @@ export function addXmlFragment(
             const template = render(text, templateConfig.getData(change));
             fs.write(fullPath, template);
         } else {
-            // copy default fragment template
+            // use default fragment template
             const templateName = 'fragment.xml'; /* TemplateFileName.Fragment */
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateName);
-            fs.copy(fragmentTemplatePath, fullPath);
+            const text = fs.read(fragmentTemplatePath);
+            const template = render(text, {
+                targetAggregation: additionalChangeInfo?.targetAggregation,
+                controlType: additionalChangeInfo?.controlType
+            });
+            fs.write(fullPath, template);
         }
         logger.info(`XML Fragment "${fragmentPath}" was created`);
     } catch (error) {
