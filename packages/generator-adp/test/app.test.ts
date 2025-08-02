@@ -365,7 +365,10 @@ describe('Adaptation Project Generator Integration Test', () => {
                 client: '010',
                 connectedSystem: 'urlA',
                 projectName: 'app.variant',
-                targetFolder: testOutputDir
+                targetFolder: testOutputDir,
+                promptOptions: {
+                    ui5AbapRepo: { hideIfOnPremise: true }
+                }
             },
             expect.any(Function),
             expect.any(Object),

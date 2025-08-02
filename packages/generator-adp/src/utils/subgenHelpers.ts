@@ -4,6 +4,7 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer } from '@sap-ux/adp-tooling';
+import type { DeployConfigSubGenPromptOptions } from '@sap-ux/deploy-config-sub-generator';
 
 import { t } from './i18n';
 import { getExtensionProjectData, resolveNodeModuleGenerator } from '../app/extension-project';
@@ -35,6 +36,7 @@ interface DeployGenOptions {
     client?: string;
     connectedSystem: string;
     destinationName?: string;
+    promptOptions?: DeployConfigSubGenPromptOptions;
 }
 
 /**
@@ -89,7 +91,7 @@ export function addFlpGen(
  * @param {AppWizard} appWizard - Optional AppWizard instance for displaying UI messages
  */
 export function addDeployGen(
-    { projectName, targetFolder, client, connectedSystem, destinationName }: DeployGenOptions,
+    { projectName, targetFolder, client, connectedSystem, destinationName, promptOptions }: DeployGenOptions,
     composeWith: Generator['composeWith'],
     logger: ToolsLogger,
     appWizard: AppWizard
@@ -97,6 +99,7 @@ export function addDeployGen(
     try {
         const generatorOptions = {
             launchDeployConfigAsSubGenerator: true,
+            subGenPromptOptions: promptOptions,
             projectName,
             projectPath: targetFolder,
             telemetryData: { appType: 'Fiori Adaptation' },
