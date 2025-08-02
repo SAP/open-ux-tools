@@ -171,7 +171,7 @@ describe('UI5 templates', () => {
                 - name: fiori-tools-proxy
                   afterMiddleware: compression
                   configuration:
-                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                     ui5:
                       path:
                         - /resources

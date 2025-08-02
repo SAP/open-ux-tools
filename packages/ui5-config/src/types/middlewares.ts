@@ -37,7 +37,11 @@ export interface FioriToolsProxyConfigUI5 {
 export interface FioriToolsProxyConfig {
     backend?: FioriToolsProxyConfigBackend[];
     ui5?: Partial<FioriToolsProxyConfigUI5>;
+    /**
+     * @deprecated Use ignoreCertErrors instead. This property will be removed in a future version.
+     */
     ignoreCertError?: boolean;
+    ignoreCertErrors?: boolean;
 }
 
 export interface MockserverService {
