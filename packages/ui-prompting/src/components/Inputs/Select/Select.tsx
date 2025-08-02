@@ -26,7 +26,7 @@ export const Select = (props: SelectProps) => {
         !options.some((option) => option.key === defaultValue) &&
         options[defaultValue]
     ) {
-        defaultValue = options[defaultValue].data?.value ?? defaultValue;
+        defaultValue = options[defaultValue].data?.value;
     }
     useEffect(() => {
         if (defaultValue !== undefined && value !== defaultValue) {
