@@ -1,5 +1,10 @@
 import { join } from 'path';
-import type { ChartPromptsAnswer, FilterBarPromptsAnswer, TablePromptsAnswer } from '@sap-ux/fe-fpm-writer';
+import type {
+    ChartPromptsAnswer,
+    FilterBarPromptsAnswer,
+    TablePromptsAnswer,
+    PagePromptsAnswer
+} from '@sap-ux/fe-fpm-writer';
 import { promisify } from 'util';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
@@ -9,6 +14,7 @@ import type { Data } from 'ws';
 import {
     GET_QUESTIONS,
     SET_TABLE_QUESTIONS,
+    SET_PAGE_QUESTIONS,
     SET_CHART_QUESTIONS,
     SET_FILTERBAR_QUESTIONS,
     PromptsType,
@@ -141,6 +147,14 @@ async function handleAction(action: Actions): Promise<void> {
                         questions,
                         groups,
                         initialAnswers: initialAnswers as Partial<TablePromptsAnswer>
+                    };
+                } else if (action.value === PromptsType.Page) {
+                    // Post processing
+                    responseAction = {
+                        type: SET_PAGE_QUESTIONS,
+                        questions,
+                        groups,
+                        initialAnswers: initialAnswers as Partial<PagePromptsAnswer>
                     };
                 } else if (action.value === PromptsType.Chart) {
                     // Post processing

@@ -1053,6 +1053,12 @@ exports[`Building Blocks Generate with optional parameters getSerializedFileCont
 />"
 `;
 
+exports[`Building Blocks generate Page building block with replace target locator set: generate-page-block 1`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <macros:Page id=\\"testPage\\" title=\\"Test Page Title\\" description=\\"Test Page Description\\"/>
+</mvc:View>"
+`;
+
 exports[`Building Blocks generate building block with \`sap.fe.templates\` dependency: generate-filter-bar-templates-library-only 1`] = `
 Object {
   "../../../../unit/sample/building-block/webapp-prompts/webapp/ext/main/Main.view.xml": Object {

@@ -3,12 +3,14 @@ import { PromptsType } from './types';
 import {
     getChartBuildingBlockPrompts,
     getTableBuildingBlockPrompts,
+    getPageBuildingBlockPrompts,
     getFilterBarBuildingBlockPrompts,
     getBuildingBlockTypePrompts
 } from '../building-block/prompts/questions';
 import type {
     ChartPromptsAnswer,
     TablePromptsAnswer,
+    PagePromptsAnswer,
     FilterBarPromptsAnswer,
     BuildingBlockTypePromptsAnswer
 } from '../building-block/prompts/questions';
@@ -17,6 +19,7 @@ import { generateBuildingBlock, getSerializedFileContent } from '../building-blo
 type AnswerMapping = {
     [PromptsType.Chart]: ChartPromptsAnswer;
     [PromptsType.Table]: TablePromptsAnswer;
+    [PromptsType.Page]: PagePromptsAnswer;
     [PromptsType.FilterBar]: FilterBarPromptsAnswer;
     [PromptsType.BuildingBlocks]: BuildingBlockTypePromptsAnswer;
 };
@@ -31,11 +34,13 @@ export type SupportedPrompts =
     | BasePrompt<PromptsType.Chart>
     | BasePrompt<PromptsType.Table>
     | BasePrompt<PromptsType.FilterBar>
+    | BasePrompt<PromptsType.Page>
     | BasePrompt<PromptsType.BuildingBlocks>;
 
 export type SupportedGeneratorPrompts =
     | BasePrompt<PromptsType.Chart>
     | BasePrompt<PromptsType.Table>
+    | BasePrompt<PromptsType.Page>
     | BasePrompt<PromptsType.FilterBar>;
 
 export type NarrowPrompt<T, N = SupportedPrompts> = N extends { type: T } ? N : never;
@@ -50,19 +55,26 @@ export const PromptsQuestionsMap: SupportedPromptsMap = {
     [PromptsType.Chart]: getChartBuildingBlockPrompts,
     [PromptsType.Table]: getTableBuildingBlockPrompts,
     [PromptsType.FilterBar]: getFilterBarBuildingBlockPrompts,
-    [PromptsType.BuildingBlocks]: getBuildingBlockTypePrompts
+    [PromptsType.BuildingBlocks]: getBuildingBlockTypePrompts,
+    [PromptsType.Page]: getPageBuildingBlockPrompts
 };
 
 export const PromptsGeneratorsMap = {
     [PromptsType.Chart]: generateBuildingBlock,
     [PromptsType.Table]: generateBuildingBlock,
-    [PromptsType.FilterBar]: generateBuildingBlock
+    [PromptsType.FilterBar]: generateBuildingBlock,
+    [PromptsType.Page]: generateBuildingBlock
 };
 
 export const PromptsCodePreviewMap = {
     [PromptsType.Chart]: getSerializedFileContent,
     [PromptsType.Table]: getSerializedFileContent,
-    [PromptsType.FilterBar]: getSerializedFileContent
+    [PromptsType.FilterBar]: getSerializedFileContent,
+    [PromptsType.Page]: getSerializedFileContent
 };
 
-export type SupportedGeneratorAnswers = TablePromptsAnswer | ChartPromptsAnswer | FilterBarPromptsAnswer;
+export type SupportedGeneratorAnswers =
+    | TablePromptsAnswer
+    | ChartPromptsAnswer
+    | FilterBarPromptsAnswer
+    | PagePromptsAnswer;

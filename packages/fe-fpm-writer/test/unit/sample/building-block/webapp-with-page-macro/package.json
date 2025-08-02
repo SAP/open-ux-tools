@@ -1,0 +1,26 @@
+{
+    "name": "mytestapp",
+    "version": "0.0.1",
+    "private": true,
+    "sapux": true,
+    "description": "An SAP Fiori application.",
+    "keywords": [
+        "ui5",
+        "openui5",
+        "sapui5"
+    ],
+    "main": "index.html",
+    "scripts": {
+        "start": "fiori run --open 'test/flpSandbox.html#mytestapp-tile'",
+        "start-local": "fiori run --config ./ui5-local.yaml --open 'test/flpSandboxMockServer.html#mytestapp-tile'",
+        "start-noflp": "fiori run --open 'index.html'",
+        "build": "ui5 build -a --clean-dest --include-task=generateCachebusterInfo",
+        "deploy": "fiori verify",
+        "deploy-config": "fiori add deploy-config",
+        "start-mock": "fiori run --open 'test/flpSandboxMockServer.html#mytestapp-tile'"
+    },
+    "devDependencies": {},
+    "ui5": {
+        "dependencies": []
+    }
+}

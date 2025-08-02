@@ -1,0 +1,5 @@
+<<%- macrosNamespace %>:Page
+    id="<%- data.id %>"<% if (data.title) { %>
+    title="<%- data.title %>"<% } %><% if (data.description) { %>
+    description="<%- data.description %>"<% } %>
+/>
