@@ -7,7 +7,7 @@ function getCurrentAnswers(): string {
     return window.localStorage.getItem(storageKey) ?? '{}';
 }
 
-export const render = (props: { active?: boolean }): React.ReactElement => {
+export const CodePreview = (props: { active?: boolean }): React.ReactElement => {
     const { active = false } = props;
     const [answers, setAnswers] = useState(getCurrentAnswers());
     useEffect(() => {
