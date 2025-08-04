@@ -1,5 +1,27 @@
 # @sap-ux/app-config-writer
 
+## 0.6.29
+
+### Patch Changes
+
+-   Updated dependencies [9f10a60]
+    -   @sap-ux/axios-extension@1.22.5
+
+## 0.6.28
+
+### Patch Changes
+
+-   Updated dependencies [43bc887]
+    -   @sap-ux/ui5-config@0.29.1
+    -   @sap-ux/project-access@1.30.10
+    -   @sap-ux/axios-extension@1.22.4
+
+## 0.6.27
+
+### Patch Changes
+
+-   7b6aaa3: fix convert preview config error related to the @ui5/cli dependency with the ^4 version range
+
 ## 0.6.26
 
 ### Patch Changes
