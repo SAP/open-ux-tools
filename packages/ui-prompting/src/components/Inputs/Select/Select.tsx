@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import type { ChoiceOptions } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
 import type { ITextField, UIComboBoxRef, UISelectableOption } from '@sap-ux/ui-components';
@@ -20,14 +20,24 @@ export const Select = (props: SelectProps) => {
     const [value, setValue] = useValue('', props.value ?? '');
     const inputRef = React.createRef<ITextField>();
     const options = useOptions(props, dynamicChoices);
-    let defaultValue = options.length === 1 ? options[0].data?.value : props.default;
-    if (
-        typeof defaultValue === 'number' &&
-        !options.some((option) => option.key === defaultValue) &&
-        options[defaultValue]
-    ) {
-        defaultValue = options[defaultValue].data?.value;
-    }
+    const defaultValue = useMemo(() => {
+        // Single option - auto-select
+        if (options.length === 1) {
+            return options[0].data?.value;
+        }
+
+        // Handle numeric default that isn't a key = it could be an index
+        if (
+            typeof props.default === 'number' &&
+            !options.some((option) => option.key === props.default) &&
+            options[props.default]
+        ) {
+            return options[props.default].data?.value;
+        }
+
+        return props.default;
+    }, [props.default, options]);
+
     useEffect(() => {
         if (defaultValue !== undefined && value !== defaultValue) {
             setValue(defaultValue);
