@@ -198,7 +198,7 @@ describe('utils - questions', () => {
     test('getAggregationPathPrompt with page macro', async () => {
         const contextWithPageMacro = {
             ...context,
-            appPath: join(__dirname, '../../../sample/building-block/webapp-with-page-macro')
+            appPath: projectFolder
         };
         const aggregationPathPrompt = getAggregationPathPrompt(contextWithPageMacro, {
             message: 'AggregationPathMessage'
@@ -207,12 +207,12 @@ describe('utils - questions', () => {
         const choicesProp = aggregationPathPrompt.choices as Choices;
         expect(choicesProp).toBeDefined();
         let choices = await choicesProp({
-            viewOrFragmentPath: join('webapp/ext/main/Main.view.xml')
+            viewOrFragmentPath: join('webapp/ext/view/Page.view.xml')
         });
         expect(choices).toMatchSnapshot();
 
         choices = await choicesProp({
-            viewOrFragmentPath: join('webapp/ext/main/Main.view.xml')
+            viewOrFragmentPath: join('webapp/ext/view/Page.view.xml')
         });
     });
 
@@ -227,7 +227,7 @@ describe('utils - questions', () => {
         const choicesProp = viewOrFragmentPathPrompt.choices as Choices;
         expect(choicesProp).toBeDefined();
         const choices = await choicesProp();
-        expect(choices.length).toBe(1);
+        expect(choices.length).toBe(2);
 
         const validateFn = viewOrFragmentPathPrompt.validate;
         expect(typeof validateFn).toBe('function');

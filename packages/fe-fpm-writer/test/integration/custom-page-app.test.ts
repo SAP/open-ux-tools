@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Chart, FilterBar, Table, Page } from '../../src';
+import type { Chart, FilterBar, Table } from '../../src';
 import { generateBuildingBlock, BuildingBlockType } from '../../src';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
 
