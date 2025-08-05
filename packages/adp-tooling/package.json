@@ -36,6 +36,7 @@
     ],
     "dependencies": {
         "@sap-devx/yeoman-ui-types": "1.16.9",
+        "@sap/cf-tools": "3.2.2",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
@@ -57,7 +58,8 @@
         "mem-fs-editor": "9.4.0",
         "prompts": "2.4.2",
         "sanitize-filename": "1.6.3",
-        "uuid": "10.0.0"
+        "uuid": "10.0.0",
+        "axios": "1.8.2"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
@@ -70,6 +72,7 @@
         "@types/prompts": "2.4.4",
         "@types/supertest": "2.0.12",
         "@types/uuid": "10.0.0",
+        "adm-zip": "0.5.16",
         "dotenv": "16.3.1",
         "express": "4.21.2",
         "nock": "13.4.0",

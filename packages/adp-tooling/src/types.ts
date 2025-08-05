@@ -798,3 +798,171 @@ export interface InboundChange {
         };
     };
 }
+
+export interface Uaa {
+    clientid: string;
+    clientsecret: string;
+    url: string;
+}
+
+export interface AppParams {
+    appName: string;
+    appVersion: string;
+    appHostId: string;
+}
+
+export interface AppParamsExtended extends AppParams {
+    spaceGuid: string;
+}
+
+export interface CFParameters {
+    org: string;
+    space: string;
+    html5RepoRuntime: string;
+}
+
+export interface Credentials {
+    [key: string]: any;
+
+    uaa: Uaa;
+    uri: string;
+    endpoints: any;
+}
+
+export interface ServiceKeys {
+    credentials: Credentials[];
+    serviceInstance: ServiceInstance;
+}
+
+export interface HTML5Content {
+    // entries: AdmZip.IZipEntry[];
+    entries: any[]; // TODO: replace with AdmZip.IZipEntry[]
+    serviceInstanceGuid: string;
+    manifest: any;
+}
+
+export interface ServiceInstance {
+    name: string;
+    guid: string;
+}
+
+export interface GetServiceInstanceParams {
+    spaceGuids?: string[];
+    planNames?: string[];
+    names: string[];
+}
+
+export interface BusinessSeviceResource {
+    name: string;
+    label: string;
+}
+
+export interface AppParams {
+    appName: string;
+    appVersion: string;
+    appHostId: string;
+}
+
+export interface Resource {
+    name: string;
+    type: string;
+    parameters: any;
+}
+
+export interface Yaml {
+    '_schema-version': string;
+    'ID': string;
+    'version': string;
+    resources?: any[];
+    modules?: MTAModule[];
+}
+
+export interface MTAModule {
+    name: string;
+    parameters: any;
+    path: string;
+    requires: MTARequire[];
+    type: string;
+}
+
+export interface MTARequire {
+    name: string;
+}
+
+export interface ODataTargetSource {
+    dataSourceName: string;
+    uri: string;
+}
+
+export interface CfAdpConfig extends AdpConfig {
+    cfSpace: string;
+    cfOrganization: string;
+    cfApiUrl: string;
+}
+
+/** Old ADP config file types */
+export interface AdpConfig {
+    sourceSystem?: string;
+    componentname: string;
+    appvariant: string;
+    layer: string;
+    isOVPApp: boolean;
+    isFioriElement: boolean;
+    environment: string;
+    ui5Version: string;
+}
+
+export interface Organization {
+    guid: string;
+    name: string;
+}
+
+export interface Space {
+    guid: string;
+    name: string;
+}
+
+export interface CFConfig {
+    org: Organization;
+    space: Space;
+    token: string;
+    url: string;
+}
+
+export interface ConfigGeneric {
+    [key: string]: any;
+}
+
+export interface Config {
+    AccessToken: string;
+    AuthorizationEndpoint: string;
+    OrganizationFields: Organization;
+    Target: string;
+    SpaceFields: Space;
+}
+
+export interface HttpResponse {
+    statusText: string;
+    status: number;
+    data: string;
+}
+
+export interface CFApp {
+    appId: string;
+    appName: string;
+    appVersion: string;
+    serviceName: string;
+    title: string;
+    appHostId: string;
+    messages?: string[];
+}
+
+export interface RequestArguments {
+    url: string;
+    options: {
+        headers: {
+            'Content-Type': string;
+            Authorization?: string;
+        };
+    };
+}
