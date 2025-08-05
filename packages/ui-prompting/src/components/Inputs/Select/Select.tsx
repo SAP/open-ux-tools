@@ -27,16 +27,10 @@ export const Select = (props: SelectProps) => {
         }
 
         // Handle numeric default that isn't a key = it could be an index
-        if (
-            typeof props.default === 'number' &&
-            !options.some((option) => option.key === props.default) &&
-            options[props.default]
-        ) {
-            return options[props.default].data?.value;
+        if (props.defaultIndex !== undefined && options[props.defaultIndex]) {
+            return options[props.defaultIndex].data?.value;
         }
-
-        return props.default;
-    }, [props.default, options]);
+    }, [props.defaultIndex, options]);
 
     useEffect(() => {
         if (defaultValue !== undefined && value !== defaultValue) {
