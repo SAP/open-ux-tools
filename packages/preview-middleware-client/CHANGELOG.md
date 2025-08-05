@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.15.2
+
+### Patch Changes
+
+-   f4da4a6: Fix Sonar issue: Invalid loop. Its body allows only one iteration.
+
+## 0.15.1
+
+### Patch Changes
+
+-   98fbd93: Store fragment parent control info in fragment body
+
 ## 0.15.0
 
 ### Minor Changes
