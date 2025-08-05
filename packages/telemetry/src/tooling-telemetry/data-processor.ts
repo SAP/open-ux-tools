@@ -324,11 +324,11 @@ function populateSourceTemplate(sourceTemplate: SourceTemplate): SourceTemplate 
 /**
  * Get node.js runtime version installed in the operating system.
  *
- * @returns Node.js version
+ * @returns Node.js version or 'unknown' if it cannot be determined.
  */
 async function getOSNodeVersion(): Promise<string> {
     try {
-        const nodeVer = (await new CommandRunner().run('node', ['-v'])) || 'unknown';
+        const nodeVer = (await new CommandRunner().run('node', ['-v'])) ?? 'unknown';
         return nodeVer.replaceAll(/^v|[\r\n]{1,100}/g, '');
     } catch {
         return 'unknown';
