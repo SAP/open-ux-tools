@@ -232,10 +232,12 @@ export function getAggregationPathPrompt(
 ): ListPromptQuestion {
     const { fs, project, appPath } = context;
     const { guiOptions } = properties;
+
     return {
         ...properties,
         type: 'list',
         name: 'aggregationPath',
+        defaultIndex: 0,
         choices: project
             ? (answers: Answers) => {
                   const { viewOrFragmentPath } = answers;
