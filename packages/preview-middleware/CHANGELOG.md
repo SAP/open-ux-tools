@@ -1,5 +1,49 @@
 # @sap-ux/preview-middleware
 
+## 0.21.1
+
+### Patch Changes
+
+-   98fbd93: Store fragment parent control info in fragment body
+-   Updated dependencies [98fbd93]
+    -   @sap-ux/adp-tooling@0.15.13
+
+## 0.21.0
+
+### Minor Changes
+
+-   b1213b1: feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.12
+-   @sap-ux/system-access@0.6.12
+
+## 0.20.74
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.11
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/system-access@0.6.11
+
+## 0.20.73
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.10
+
+## 0.20.72
+
+### Patch Changes
+
+-   009143e: fix: resolve i18n key
+-   Updated dependencies [009143e]
+    -   @sap-ux/i18n@0.3.2
+    -   @sap-ux/adp-tooling@0.15.9
+    -   @sap-ux/project-access@1.30.9
+    -   @sap-ux/system-access@0.6.11
+
 ## 0.20.71
 
 ### Patch Changes

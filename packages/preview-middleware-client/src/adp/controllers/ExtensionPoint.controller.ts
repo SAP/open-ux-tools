@@ -1,7 +1,7 @@
 /** sap.m */
 import type Button from 'sap/m/Button';
-import type Select from 'sap/m/Select';
 import type Dialog from 'sap/m/Dialog';
+import type Select from 'sap/m/Select';
 
 /** sap.ui.core */
 import type UI5Element from 'sap/ui/core/Element';
@@ -15,10 +15,12 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import { getError } from '../../utils/error';
+import { sendInfoCenterMessage } from '../../utils/info-center-message';
 import { getFragments } from '../api-handler';
-import BaseDialog from './BaseDialog.controller';
 import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
-import { notifyUser } from '../utils';
+import BaseDialog from './BaseDialog.controller';
 
 type ExtensionPointModel = JSONModel & {
     getProperty(sPath: '/newFragmentName'): string;
@@ -70,7 +72,11 @@ export default class ExtensionPoint extends BaseDialog<ExtensionPointModel> {
 
         this.createExtensionPointFragmentChange(fragmentName);
 
-        notifyUser(`Note: The '${fragmentName}.fragment.xml' fragment will be created once you save the change.`, 8000);
+        await sendInfoCenterMessage({
+            title: { key: 'ADP_CREATE_XML_FRAGMENT_TITLE' },
+            description: { key: 'ADP_CREATE_XML_FRAGMENT_DESCRIPTION', params: [fragmentName] },
+            type: MessageBarType.info
+        });
 
         this.handleDialogClose();
     }
@@ -138,7 +144,13 @@ export default class ExtensionPoint extends BaseDialog<ExtensionPointModel> {
 
             this.model.setProperty('/fragmentList', fragments);
         } catch (e) {
-            this.handleError(e);
+            const error = getError(e);
+            await sendInfoCenterMessage({
+                title: { key: 'ADP_EXTENSION_POINT_ERROR_TITLE' },
+                description: error.message,
+                type: MessageBarType.error
+            });
+            throw error;
         }
     }
 
