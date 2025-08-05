@@ -209,22 +209,22 @@ const ns1 = {
         'page': {
             'id': {
                 'message': 'Building Block ID',
-                'validation': 'An ID is required to generate the page building block'
+                'validation': 'An ID is required to generate the page building block.'
             },
             'viewOrFragmentPath': {
                 'message': 'View or Fragment File',
-                'validation': 'A View or Fragment is required to generate the page building block'
+                'validation': 'A View or Fragment is required to generate the page building block.'
             },
             'aggregation': 'Aggregation Path',
             'title': {
                 'message': 'Page Title',
                 'validation': 'Enter a Page Title',
-                'translationAnnotation': 'Title of the Page'
+                'translationAnnotation': 'Title of the Page.'
             },
             'description': {
                 'message': 'Page Description',
                 'validation': 'Enter a Page Description',
-                'translationAnnotation': 'Description of the Page'
+                'translationAnnotation': 'Description of the Page.'
             }
         }
     }
