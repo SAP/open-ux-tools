@@ -1,5 +1,11 @@
 # @sap-ux/ui-prompting
 
+## 0.3.37
+
+### Patch Changes
+
+-   e4197e0: Support index-based default values for 'list' type questions. New property 'defaultIndex' for 'list' question.
+
 ## 0.3.36
 
 ### Patch Changes

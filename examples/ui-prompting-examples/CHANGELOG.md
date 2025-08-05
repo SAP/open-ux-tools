@@ -1,5 +1,16 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.3.0
+
+### Minor Changes
+
+-   f81c86b: Add Page building block support to fpm writer
+
+### Patch Changes
+
+-   Updated dependencies [e4197e0]
+    -   @sap-ux/ui-prompting@0.3.37
+
 ## 0.2.50
 
 ### Patch Changes
