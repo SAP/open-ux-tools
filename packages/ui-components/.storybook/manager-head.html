@@ -100,7 +100,7 @@
      */
     function isStorybookInitMessage(data) {
         try {
-            data = JSON.parse(data);
+            data = typeof data === 'string' ? JSON.parse(data) : data;
             // setStories is called when stories initialized
             return data && data.event && data.event.type === 'setGlobals';
         } catch (exception) {
