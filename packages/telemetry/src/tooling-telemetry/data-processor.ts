@@ -1,4 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { UI5Config } from '@sap-ux/ui5-config';
 import axios from 'axios';
 import fs from 'fs';
@@ -14,17 +15,15 @@ import yaml from 'yaml';
  * packages consuming telemetry need to add dependencies manually (for ex: sap/cds)
  * Further, size of generated .vsix will be increased by esbuild
  */
-import { getAppProgrammingLanguage, getProjectType, getAppType } from '@sap-ux/project-access/dist/project/info';
-import { findProjectRoot } from '@sap-ux/project-access/dist/project/search';
+import { getWebappPath } from '@sap-ux/project-access';
 import { isCapJavaProject } from '@sap-ux/project-access/dist/project/cap';
+import { getAppProgrammingLanguage, getAppType, getProjectType } from '@sap-ux/project-access/dist/project/info';
+import { findProjectRoot } from '@sap-ux/project-access/dist/project/search';
 import type { ProjectType } from '@sap-ux/project-access/dist/types';
-import type { CommonFioriProjectProperties, InternalFeature, SourceTemplate } from './types';
-import { ODataSource, DeployTarget, CommonProperties, ToolsId } from './types';
-import { spawn } from 'child_process';
-import os from 'os';
 import type { CustomTask } from '@sap-ux/ui5-config';
 import { ToolingTelemetrySettings } from './config-state';
-import { getWebappPath } from '@sap-ux/project-access';
+import type { CommonFioriProjectProperties, InternalFeature, SourceTemplate } from './types';
+import { CommonProperties, DeployTarget, ODataSource, ToolsId } from './types';
 
 /**
  * Collect commone properties that needs to be added to telemetry event.
@@ -59,7 +58,7 @@ export async function getCommonProperties(): Promise<CommonFioriProjectPropertie
     commonProperties[CommonProperties.InternlVsExternalBackwardCompatible] =
         commonProperties[CommonProperties.InternlVsExternal];
 
-    commonProperties[CommonProperties.NodeVersion] = (await getProcessVersions()).node;
+    commonProperties[CommonProperties.NodeVersion] = await getOSNodeVersion();
     return commonProperties;
 }
 
@@ -323,47 +322,15 @@ function populateSourceTemplate(sourceTemplate: SourceTemplate): SourceTemplate 
 }
 
 /**
- * Get node.js runtime version.
+ * Get node.js runtime version installed in the operating system.
  *
  * @returns Node.js version
  */
-async function getProcessVersions(): Promise<NodeJS.ProcessVersions> {
+async function getOSNodeVersion(): Promise<string> {
     try {
-        const output = await spawnCommand('node', ['-p', 'JSON.stringify(process.versions)']);
-        return JSON.parse(output);
+        const nodeVer = (await new CommandRunner().run('node', ['-v'])) || 'unknown';
+        return nodeVer.replaceAll(/^v|[\r\n]{1,100}/g, '');
     } catch {
-        return {} as NodeJS.ProcessVersions;
+        return 'unknown';
     }
-}
-
-/**
- * Spawn a command to find out node.js version used for the runtime.
- *
- * @param command command name
- * @param commandArgs command arguments
- * @returns Node.js version
- */
-export function spawnCommand(command: string, commandArgs: string[]): Promise<string> {
-    const spawnOptions = process.platform.startsWith('win')
-        ? { windowsVerbatimArguments: true, shell: true, cwd: os.homedir() }
-        : { cwd: os.homedir() };
-
-    return new Promise((resolve, reject) => {
-        let output = '';
-        const spawnProcess = spawn(command, commandArgs, spawnOptions);
-        spawnProcess.stdout.on('data', (data) => {
-            const newData = data.toString();
-            output += newData;
-        });
-        spawnProcess.stderr.on('data', (data) => {
-            const newData = data.toString();
-            output += newData;
-        });
-        spawnProcess.on('exit', () => {
-            resolve(output);
-        });
-        spawnProcess.on('error', (error) => {
-            reject(error);
-        });
-    });
 }
