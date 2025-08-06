@@ -1763,18 +1763,14 @@
 						})
 					}
                     const output = oModule.data.call(__global);
-					if(output && mShims[oModule.name] && mShims[oModule.name].exports && Object.keys(output).length > 0 && !global[mShims[oModule.name].exports]) {
+					if(output && mShims[oModule.name] && mShims[oModule.name].exports && Object.keys(output).length > 0) {
 						if(global[mShims[oModule.name].exports] ) {
 							global[mShims[oModule.name].exports] = {...global[mShims[oModule.name].exports], ...output}
-						} else {
-							if(output[mShims[oModule.name].exports] !== undefined) {
-								global[mShims[oModule.name].exports] = output[mShims[oModule.name].exports];
-							} else {
-							global[mShims[oModule.name].exports] = output;
-							}
-
+						} else if(output[mShims[oModule.name].exports] !== undefined) {
+                            global[mShims[oModule.name].exports] = output[mShims[oModule.name].exports];
+                        } else {
+						    global[mShims[oModule.name].exports] = output;
 						}
-
 					}
 					else if(output && Object.keys(output).length > 0) {
 						if( Object.keys(oModule.content).length === 0) {
