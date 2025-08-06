@@ -56,3 +56,13 @@ export function generateImportList(ns: string, resourceList: Resource[]): string
           })
         : [];
 }
+
+/**
+ * Dummy function to ensure the file is not empty.
+ * This can be used to avoid issues with empty files in some build systems.
+ *
+ * @returns true
+ */
+export function dummy(): boolean {
+    return true;
+}
