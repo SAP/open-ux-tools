@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.21.2
+
+### Patch Changes
+
+-   ad49c30: fix: `Add Custom Table Column` Quick Action not using the correct fragment template.
+
 ## 0.21.1
 
 ### Patch Changes
