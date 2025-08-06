@@ -4,8 +4,7 @@ import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 import CFToolsCli = require('@sap/cf-tools/out/src/cli');
 import { eFilters } from '@sap/cf-tools/out/src/types';
 
-import { YamlUtils } from './';
-import { Messages } from '../i18n/messages';
+import YamlUtils from './yaml';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { GetServiceInstanceParams, ServiceKeys, ServiceInstance } from '../types';
 
@@ -28,8 +27,9 @@ export default class CFUtils {
                 };
             }
             return null;
-        } catch (error) {
-            const errorMessage = Messages.FAILED_TO_GET_SERVICE_INSTANCE_KEYS(error.message);
+        } catch (e) {
+            // const errorMessage = Messages.FAILED_TO_GET_SERVICE_INSTANCE_KEYS(error.message);
+            const errorMessage = `Failed to get service instance keys. Reason: ${e.message}`;
             logger?.error(errorMessage);
             throw new Error(errorMessage);
         }
@@ -75,9 +75,11 @@ export default class CFUtils {
             if (query.exitCode !== 0) {
                 throw new Error(query.stderr);
             }
-        } catch (error) {
-            logger?.error(Messages.FAILED_TO_CREATE_SERVICE_INSTANCE(serviceInstanceName, spaceGuid, error.message));
-            throw new Error(Messages.FAILED_TO_CREATE_SERVICE_INSTANCE(serviceInstanceName, spaceGuid, error.message));
+        } catch (e) {
+            // const errorMessage = Messages.FAILED_TO_CREATE_SERVICE_INSTANCE(serviceInstanceName, spaceGuid, e.message);
+            const errorMessage = `Cannot create a service instance '${serviceInstanceName}' in space '${spaceGuid}'. Reason: ${e.message}`;
+            logger?.error(errorMessage);
+            throw new Error(errorMessage);
         }
     }
 
@@ -87,14 +89,14 @@ export default class CFUtils {
             if (response.exitCode === 0) {
                 try {
                     return JSON.parse(response.stdout);
-                } catch (error) {
-                    throw new Error(Messages.FAILED_TO_PARSE_RESPONSE_FROM_CF(error.message));
+                } catch (e) {
+                    throw new Error(`Failed to parse response from request CF API: ${e.message}`);
                 }
             }
             throw new Error(response.stderr);
-        } catch (error) {
+        } catch (e) {
             // log error: CFUtils.ts=>requestCfApi(params)
-            throw new Error(Messages.REQUEST_TO_CF_API_FAILED(error.message));
+            throw new Error(`Request to CF API failed. Reason: ${e.message}`);
         }
     }
 
@@ -114,7 +116,7 @@ export default class CFUtils {
             }
         } catch (error) {
             // log error: CFUtils.ts=>checkForCf
-            throw new Error(Messages.CLOUD_FOUNDRY_NOT_INSTALLED);
+            throw new Error('Cloud Foundry is not installed in your space.');
         }
     }
 
@@ -141,10 +143,10 @@ export default class CFUtils {
                     guid: service.guid
                 }));
             }
-            throw new Error(Messages.NO_VALID_JSON_FOR_SERVICE_INSTANCE);
-        } catch (error) {
+            throw new Error('No valid JSON for service instance');
+        } catch (e) {
             // log error: CFUtils.ts=>getServiceInstance with uriParameters
-            throw new Error(Messages.FAILED_TO_GET_SERVICE_INSTANCE(uriParameters, error.message));
+            throw new Error(`Failed to get service instance with params ${uriParameters}. Reason: ${e.message}`);
         }
     }
 
@@ -159,9 +161,11 @@ export default class CFUtils {
                 await this.createServiceKey(serviceInstance.name, serviceKeyName);
                 return this.getServiceKeys(serviceInstance.guid);
             }
-        } catch (error) {
+        } catch (e) {
             // log error: CFUtils.ts=>getOrCreateServiceKeys with param
-            throw new Error(Messages.FAILED_TO_GET_OR_CREATE_SERVICE_KEYS(serviceInstance.name, error.message));
+            throw new Error(
+                `Failed to get or create service keys for instance name ${serviceInstance.name}. Reason: ${e.message}`
+            );
         }
     }
 
@@ -171,13 +175,16 @@ export default class CFUtils {
                 filters: [
                     {
                         value: serviceInstanceGuid,
+                        // key: eFilters.service_instance_guid
                         key: eFilters.service_instance_guid
                     }
                 ]
             });
-        } catch (error) {
+        } catch (e) {
             // log error: CFUtils.ts=>getServiceKeys for guid
-            throw new Error(Messages.FAILED_TO_GET_INSTANCE_CREDENTIALS(serviceInstanceGuid, error.message));
+            throw new Error(
+                `Failed to get service instance credentials from CFLocal for guid ${serviceInstanceGuid}. Reason: ${e.message}`
+            );
         }
     }
 
@@ -190,9 +197,11 @@ export default class CFUtils {
             if (cliResult.exitCode !== 0) {
                 throw new Error(cliResult.stderr);
             }
-        } catch (error) {
+        } catch (e) {
             // log error: CFUtils.ts=>createServiceKey for serviceInstanceName
-            throw new Error(Messages.FAILED_TO_CREATE_SERVICE_KEY_FOR_INSTANCE(serviceInstanceName, error.message));
+            throw new Error(
+                `Failed to create service key for instance name ${serviceInstanceName}. Reason: ${e.message}`
+            );
         }
     }
 }

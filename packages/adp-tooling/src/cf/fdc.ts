@@ -8,8 +8,9 @@ import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import { YamlUtils, HTML5RepoUtils, CFUtils } from './';
-import { Messages } from '../i18n/messages';
+import YamlUtils from './yaml';
+import HTML5RepoUtils from './html5-repo';
+import CFUtils from './utils';
 import type {
     Config,
     CFConfig,
@@ -25,6 +26,7 @@ import type {
 } from '../types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getApplicationType, isSupportedAppTypeForAdp } from '../source';
+import { t } from '../i18n';
 
 export default class FDCService {
     public html5RepoRuntimeGuid: string;
@@ -75,34 +77,34 @@ export default class FDCService {
         let config = {} as Config;
         try {
             const configAsString = fs.readFileSync(configFileLocation, 'utf-8');
-            config = JSON.parse(configAsString);
+            config = JSON.parse(configAsString) as Config;
         } catch (e) {
-            this.logger?.error(Messages.CANNOT_RECIEVE_TOKEN_ERROR_MSG);
+            this.logger?.error('Cannot receive token from config.json');
         }
 
         const API_CF = this.API_CF;
         if (config) {
             const result = {} as CFConfig;
-            if (config[this.TARGET]) {
-                const apiCfIndex = config[this.TARGET].indexOf(API_CF);
-                result.url = config[this.TARGET].substring(apiCfIndex + API_CF.length);
+            if (config.Target) {
+                const apiCfIndex = config.Target.indexOf(API_CF);
+                result.url = config.Target.substring(apiCfIndex + API_CF.length);
             }
 
-            if (config[this.ACCESS_TOKEN]) {
-                result.token = config[this.ACCESS_TOKEN].substring(this.BEARER_SPACE.length);
+            if (config.AccessToken) {
+                result.token = config.AccessToken.substring(this.BEARER_SPACE.length);
             }
 
-            if (config[this.ORGANIZATION_FIELDS]) {
+            if (config.OrganizationFields) {
                 result.org = {
-                    name: config[this.ORGANIZATION_FIELDS].Name,
-                    guid: config[this.ORGANIZATION_FIELDS].GUID
+                    name: config.OrganizationFields.name,
+                    guid: config.OrganizationFields.guid
                 };
             }
 
-            if (config[this.SPACE_FIELDS]) {
+            if (config.SpaceFields) {
                 result.space = {
-                    name: config[this.SPACE_FIELDS].Name,
-                    guid: config[this.SPACE_FIELDS].GUID
+                    name: config.SpaceFields.name,
+                    guid: config.SpaceFields.guid
                 };
             }
 
@@ -154,7 +156,7 @@ export default class FDCService {
         if (loginResponse === this.OK) {
             isSuccessful = true;
         } else {
-            throw new Error(Messages.LOGIN_FAILED_MSG);
+            throw new Error('Login failed');
         }
 
         return isSuccessful;
@@ -166,7 +168,7 @@ export default class FDCService {
             organizations = await CFLocal.cfGetAvailableOrgs();
             this.logger?.log(`Available organizations: ${JSON.stringify(organizations)}`);
         } catch (error) {
-            this.logger?.error(Messages.CANNOT_GET_ORGANIZATIONS);
+            this.logger?.error('Cannot get organizations');
         }
 
         return organizations;
@@ -179,10 +181,10 @@ export default class FDCService {
                 spaces = await CFLocal.cfGetAvailableSpaces(spaceGuid);
                 this.logger?.log(`Available spaces: ${JSON.stringify(spaces)} for space guid: ${spaceGuid}.`);
             } catch (error) {
-                this.logger?.error(Messages.CANNOT_GET_SPACES);
+                this.logger?.error('Cannot get spaces');
             }
         } else {
-            this.logger?.error(Messages.INVALID_GUID_MSG);
+            this.logger?.error('Invalid GUID');
         }
 
         return spaces;
@@ -190,7 +192,7 @@ export default class FDCService {
 
     public async setOrgSpace(orgName: string, spaceName: string): Promise<void> {
         if (!orgName || !spaceName) {
-            throw new Error(Messages.MISSING_ORG_OR_SPACE_NAME);
+            throw new Error('Organization or space name is not provided.');
         }
 
         await CFLocal.cfSetOrgSpace(orgName, spaceName);
@@ -216,10 +218,9 @@ export default class FDCService {
                         return results;
                     }
                     throw new Error(
-                        Messages.FAILED_TO_CONNECT_TO_FDC(
-                            appHostId,
-                            Messages.HTTP_STATUS_MESSAGE(response.status.toString(), response.statusText)
-                        )
+                        `Failed to connect to Flexibility Design and Configuration service for app_host_id ${appHostId}. Reason: HTTP status code ${response.status.toString()}: ${
+                            response.statusText
+                        }`
                     );
                 } catch (error) {
                     return [{ appHostId: appHostId, messages: [error.message] }];
@@ -262,11 +263,14 @@ export default class FDCService {
         return this.cfConfig;
     }
 
-    public async getBusinessServiceKeys(businessService: string): Promise<ServiceKeys> {
-        const serviceKeys = await CFUtils.getServiceInstanceKeys({
-            spaceGuids: [this.getConfig().space.guid],
-            names: [businessService]
-        });
+    public async getBusinessServiceKeys(businessService: string): Promise<ServiceKeys | null> {
+        const serviceKeys = await CFUtils.getServiceInstanceKeys(
+            {
+                spaceGuids: [this.getConfig().space.guid],
+                names: [businessService]
+            },
+            this.logger
+        );
         this.logger?.log(`Available service key instance : ${JSON.stringify(serviceKeys?.serviceInstance)}`);
         return serviceKeys;
     }
@@ -298,9 +302,9 @@ export default class FDCService {
             );
             messages.push(...this.matchRoutesAndDatasources(dataSources, routes, serviceKeyEndpoints));
         } else if (routes && !dataSources) {
-            messages.push(Messages.MANIFEST_MISSING_DATASOURCES);
+            messages.push("Base app manifest.json doesn't contain data sources specified in xs-app.json");
         } else if (!routes && dataSources) {
-            messages.push(Messages.XSAPP_MISSING_ROUTES);
+            messages.push("Base app xs-app.json doesn't contain data sources routes specified in manifest.json");
         }
         return messages;
     }
@@ -311,8 +315,8 @@ export default class FDCService {
             if (item.entryName.endsWith('xs-app.json')) {
                 try {
                     xsApp = JSON.parse(item.getData().toString('utf8'));
-                } catch (error) {
-                    throw new Error(Messages.FAILED_TO_PARSE_XS_APP_JSON_IN_APP_ZIP(error.message));
+                } catch (e) {
+                    throw new Error(`Failed to parse xs-app.json. Reason: ${e.message}`);
                 }
             }
         });
@@ -325,8 +329,8 @@ export default class FDCService {
             if (item.entryName.endsWith('manifest.json')) {
                 try {
                     manifest = JSON.parse(item.getData().toString('utf8'));
-                } catch (error) {
-                    throw new Error(Messages.FAILED_TO_PARSE_MANIFEST_JSON_IN_APP_ZIP(error.message));
+                } catch (e) {
+                    throw new Error(`Failed to parse manifest.json. Reason: ${e.message}`);
                 }
             }
         });
@@ -337,7 +341,7 @@ export default class FDCService {
         const messages: string[] = [];
         routes.forEach((route: any) => {
             if (route.endpoint && !serviceKeyEndpoints.includes(route.endpoint)) {
-                messages.push(Messages.MANIFEST_DATASOURCE_NOT_MATCH(route.endpoint));
+                messages.push(`Route endpoint '${route.endpoint}' doesn't match a corresponding OData endpoint`);
             }
         });
 
@@ -347,7 +351,9 @@ export default class FDCService {
                     dataSources[dataSourceName].uri?.match(this.normalizeRouteRegex(route.source))
                 )
             ) {
-                messages.push(Messages.SERVICE_KEY_ENDPOINT_NOT_MATCH(dataSourceName));
+                messages.push(
+                    `Data source '${dataSourceName}' doesn't match a corresponding route in xs-app.json routes`
+                );
             }
         });
         return messages;
@@ -391,7 +397,13 @@ export default class FDCService {
                 return result;
             }
         }
-        throw new Error(Messages.FAILED_TO_FIND_BUSINESS_SERVICES);
+        throw new Error(`No business services found, please specify the business services in resource section of mts.yaml:
+        - name: <arbitrary name of resource, e.g. my_service>
+            type: org.cloudfoundry.<managed|existing>-service
+            parameters:
+            service: <business service name, e.g. my-service-name>
+            service-name: <business service instance name, e.g. my_service_instance_name>
+            service-plan: <plan name, e.g. standard>`);
     }
 
     public normalizeRouteRegex(value: string) {
@@ -450,13 +462,17 @@ export default class FDCService {
                 }, response data: ${JSON.stringify(response.data)}`
             );
             return response;
-        } catch (error) {
+        } catch (e) {
             this.logger?.error(
-                `Getting FDC apps. Request url: ${url}, response status: ${error?.response?.status}, message: ${
-                    error.message || error
+                `Getting FDC apps. Request url: ${url}, response status: ${e?.response?.status}, message: ${
+                    e.message || e
                 }`
             );
-            throw new Error(Messages.FAILED_TO_GET_FDC_APP(url, error.message || error));
+            throw new Error(
+                `Failed to get application from Flexibility Design and Configuration service ${url}. Reason: ${
+                    e.message || e
+                }`
+            );
         }
     }
 
@@ -478,7 +494,8 @@ export default class FDCService {
         try {
             const { entries, serviceInstanceGuid, manifest } = await HTML5RepoUtils.downloadAppContent(
                 this.cfConfig.space.guid,
-                appParams
+                appParams,
+                this.logger
             );
             this.manifests.push(manifest);
             const messages = await this.validateSmartTemplateApplication(manifest);
@@ -488,8 +505,8 @@ export default class FDCService {
             } else {
                 return messages;
             }
-        } catch (error) {
-            return [error.message];
+        } catch (e) {
+            return [e.message];
         }
     }
 
@@ -499,17 +516,19 @@ export default class FDCService {
 
         if (isSupportedAppTypeForAdp(appType)) {
             if (manifest['sap.ui5'] && manifest['sap.ui5'].flexEnabled === false) {
-                return messages.concat(Messages.I18N_KEY_APPLICATION_DO_NOT_SUPPORT_ADAPTATION);
+                return messages.concat(t('error.appDoesNotSupportFlexibility'));
             }
         } else {
-            return messages.concat(Messages.ADAPTATIONPROJECTPLUGIN_SMARTTEMPLATE_PROJECT_CHECK);
+            return messages.concat(
+                "Select a different application. Adaptation project doesn't support the selected application."
+            );
         }
         return messages;
     }
 
     private async readMta(projectPath: string): Promise<string[]> {
         if (!projectPath) {
-            throw new Error(Messages.NO_PROJECT_PATH_ERR_MSG);
+            throw new Error('Project path is missing.');
         }
 
         const mtaYamlPath = path.resolve(projectPath, this.MTA_YAML_FILE);

@@ -74,6 +74,9 @@
         "ui5VersionDoesNotExistGeneric": "An error occurred when validating the SAPUI5 version: {{error}}. Please select a different version.",
         "ui5VersionNotDetectedError": "The SAPUI5 version of the selected system cannot be determined. You will be able to create and edit adaptation projects using the newest version but it will not be usable on this system until the system`s SAPUI5 version is upgraded to version 1.71 or higher."
     },
+    "error": {
+        "appDoesNotSupportFlexibility": "The selected application does not support flexibility because it has (`flexEnabled=false`). SAPUI5 Adaptation Project only supports applications that support flexibility. Please select a different application."
+    },
     "choices": {
         "true": "true",
         "false": "false",
