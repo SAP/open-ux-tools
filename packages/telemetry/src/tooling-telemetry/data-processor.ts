@@ -15,11 +15,15 @@ import yaml from 'yaml';
  * packages consuming telemetry need to add dependencies manually (for ex: sap/cds)
  * Further, size of generated .vsix will be increased by esbuild
  */
-import { getWebappPath } from '@sap-ux/project-access';
-import { isCapJavaProject } from '@sap-ux/project-access/dist/project/cap';
-import { getAppProgrammingLanguage, getAppType, getProjectType } from '@sap-ux/project-access/dist/project/info';
-import { findProjectRoot } from '@sap-ux/project-access/dist/project/search';
-import type { ProjectType } from '@sap-ux/project-access/dist/types';
+import type { ProjectType } from '@sap-ux/project-access';
+import {
+    findProjectRoot,
+    getAppProgrammingLanguage,
+    getAppType,
+    getProjectType,
+    getWebappPath,
+    isCapJavaProject
+} from '@sap-ux/project-access';
 import type { CustomTask } from '@sap-ux/ui5-config';
 import { ToolingTelemetrySettings } from './config-state';
 import type { CommonFioriProjectProperties, InternalFeature, SourceTemplate } from './types';

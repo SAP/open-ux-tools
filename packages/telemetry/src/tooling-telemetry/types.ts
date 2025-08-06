@@ -1,5 +1,5 @@
 import type { ProjectInfo, TelemetryMeasurements, TelemetryProperties } from '../base/types';
-import type { AppType } from '@sap-ux/project-access/dist/types';
+import type { AppType } from '@sap-ux/project-access';
 
 export type TelemetryHelperProperties = {
     appPath: string;
