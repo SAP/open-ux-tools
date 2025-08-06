@@ -39,6 +39,7 @@ import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/d
 import { type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput } from './types';
 import { getWizardPages, updateFlpWizardSteps, updateWizardSteps, getDeployPage } from '../utils/steps';
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
+import { FDCService } from '@sap-ux/adp-tooling';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -115,6 +116,7 @@ export default class extends Generator {
      * Base application inbounds, if the base application is an FLP app.
      */
     private baseAppInbounds?: ManifestNamespace.Inbound;
+    private readonly fdcService: FDCService;
 
     /**
      * Creates an instance of the generator.
@@ -127,6 +129,7 @@ export default class extends Generator {
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.shouldInstallDeps = opts.shouldInstallDeps ?? true;
         this.toolsLogger = new ToolsLogger();
+        this.fdcService = new FDCService(this.logger, opts.vscode);
         this.vscode = opts.vscode;
         this.options = opts;
 
@@ -178,6 +181,9 @@ export default class extends Generator {
         if (this.jsonInput) {
             return;
         }
+
+        const isCfInstalled = await this.fdcService.isCfInstalled();
+        this.logger.info(`isCfInstalled: ${isCfInstalled}`);
 
         const configQuestions = this.prompter.getPrompts({
             appValidationCli: { hide: !this.isCli },

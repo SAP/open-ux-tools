@@ -35,11 +35,7 @@ export default class FDCService {
     private WIN32 = 'win32';
     private HOMEDRIVE = 'HOMEDRIVE';
     private HOMEPATH = 'HOMEPATH';
-    private TARGET = 'Target';
-    private ACCESS_TOKEN = 'AccessToken';
     private BEARER_SPACE = 'bearer ';
-    private ORGANIZATION_FIELDS = 'OrganizationFields';
-    private SPACE_FIELDS = 'SpaceFields';
     private CF_FOLDER_NAME = '.cf';
     private CONFIG_JSON_FILE = 'config.json';
     private API_CF = 'api.cf.';
