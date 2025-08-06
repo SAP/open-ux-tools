@@ -15,6 +15,7 @@ import type { Manifest } from '../common/types';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
+import { getOrAddMacrosNamespace } from './prompts/utils/xml';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -55,7 +56,15 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     const xmlDocument = getUI5XmlDocument(basePath, viewOrFragmentPath, fs);
     const { content: manifest } = await getManifest(basePath, fs);
     const templateDocument = getTemplateDocument(buildingBlockData, xmlDocument, fs, manifest);
-    fs = updateViewFile(basePath, viewOrFragmentPath, aggregationPath, xmlDocument, templateDocument, fs);
+    fs = updateViewFile(
+        basePath,
+        viewOrFragmentPath,
+        aggregationPath,
+        xmlDocument,
+        templateDocument,
+        fs,
+        config.replace
+    );
 
     if (allowAutoAddDependencyLib && manifest && !validateDependenciesLibs(manifest, ['sap.fe.macros'])) {
         // "sap.fe.macros" is missing - enhance manifest.json for missing "sap.fe.macros"
@@ -102,21 +111,6 @@ function getUI5XmlDocument(basePath: string, viewPath: string, fs: Editor): Docu
     }
 
     return viewDocument;
-}
-/**
- * Returns the macros namespace from the xml document if it exists or creates a new one and returns it.
- *
- * @param {Document} ui5XmlDocument - the view/fragment xml file document
- * @returns {string} the macros namespace
- */
-function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
-    const namespaceMap = (ui5XmlDocument.firstChild as any)._nsMap;
-    const macrosNamespaceEntry = Object.entries(namespaceMap).find(([_, value]) => value === 'sap.fe.macros');
-    if (!macrosNamespaceEntry) {
-        (ui5XmlDocument.firstChild as any)._nsMap['macros'] = 'sap.fe.macros';
-        ui5XmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
-    }
-    return macrosNamespaceEntry ? macrosNamespaceEntry[0] : 'macros';
 }
 
 /**
@@ -273,6 +267,8 @@ function getTemplateDocument<T extends BuildingBlock>(
  * @param {Document} viewDocument - the view xml document
  * @param {Document} templateDocument - the template xml document
  * @param {Editor} [fs] - the memfs editor instance
+ * @param {boolean} [replace] - If true, replaces the target element with the template xml document;
+ * if false, appends the source node.
  * @returns {Editor} the updated memfs editor instance
  */
 function updateViewFile(
@@ -281,7 +277,8 @@ function updateViewFile(
     aggregationPath: string,
     viewDocument: Document,
     templateDocument: Document,
-    fs: Editor
+    fs: Editor,
+    replace: boolean = false
 ): Editor {
     const xpathSelect = xpath.useNamespaces((viewDocument.firstChild as any)._nsMap);
 
@@ -290,8 +287,11 @@ function updateViewFile(
     if (targetNodes && Array.isArray(targetNodes) && targetNodes.length > 0) {
         const targetNode = targetNodes[0] as Node;
         const sourceNode = viewDocument.importNode(templateDocument.documentElement, true);
-        targetNode.appendChild(sourceNode);
-
+        if (replace) {
+            targetNode.parentNode?.replaceChild(sourceNode, targetNode);
+        } else {
+            targetNode.appendChild(sourceNode);
+        }
         // Serialize and format new view xml document
         const newXmlContent = new XMLSerializer().serializeToString(viewDocument);
         fs.write(join(basePath, viewPath), format(newXmlContent));
