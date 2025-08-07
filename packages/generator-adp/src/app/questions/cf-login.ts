@@ -1,7 +1,7 @@
 import type { FDCService } from '@sap-ux/adp-tooling';
 import { type InputQuestion, type YUIQuestion } from '@sap-ux/inquirer-common';
 
-import CFUtils from '@sap-ux/adp-tooling/src/cf/utils';
+import { CFUtils } from '@sap-ux/adp-tooling';
 import { type CFConfig } from '@sap-ux/adp-tooling';
 import { type CFLoginQuestion, type CFLoginAnswers, cfLoginPromptNames } from '../types';
 
