@@ -296,6 +296,7 @@ export default class extends Generator {
 
             await this.prompt(getCFLoginPrompts(this.vscode, this.fdcService, this.isCFLoggedIn));
             this.cfConfig = this.fdcService.getConfig();
+            this.isCFLoggedIn = await this.fdcService.isLoggedIn();
 
             this.logger.log(`Project organization information: ${JSON.stringify(this.cfConfig.org, null, 2)}`);
             this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
