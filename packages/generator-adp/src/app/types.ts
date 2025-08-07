@@ -174,6 +174,8 @@ export type TargetEnvAnswers = { targetEnv: TargetEnv };
 
 export type TargetEnvQuestion = YUIQuestion<TargetEnvAnswers>;
 
+export type ProjectLocationAnswers = { projectLocation: string };
+
 export enum cfLoginPromptNames {
     cfLoggedInMainMessage = 'cfLoggedInMainMessage',
     cfLoggedApiEndpointMessage = 'cfLoggedApiEndpointMessage',

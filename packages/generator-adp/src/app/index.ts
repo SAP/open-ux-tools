@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { join } from 'path';
 import Generator from 'yeoman-generator';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
@@ -51,7 +52,7 @@ import {
 } from '../utils/steps';
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
 import { FDCService } from '@sap-ux/adp-tooling';
-import { getTargetEnvPrompt } from './questions/target-env';
+import { getTargetEnvPrompt, promptUserForProjectPath } from './questions/target-env';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
 const generatorTitle = 'Adaptation Project';
@@ -135,6 +136,8 @@ export default class extends Generator {
     private isCfEnv = false;
     private isCFLoggedIn = false;
     private cfConfig: CFConfig;
+    private projectLocation: string;
+    private cfProjectDestinationPath: string;
 
     /**
      * Creates an instance of the generator.
@@ -297,6 +300,20 @@ export default class extends Generator {
             this.logger.log(`Project organization information: ${JSON.stringify(this.cfConfig.org, null, 2)}`);
             this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
             this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
+
+            if (!this.isMtaYamlFound) {
+                const projectPathAnswers = await this.prompt(
+                    promptUserForProjectPath(this.fdcService, this.isCFLoggedIn, this.vscode)
+                );
+                this.projectLocation = projectPathAnswers.projectLocation;
+                this.projectLocation = fs.realpathSync(this.projectLocation, 'utf-8');
+                this.cfProjectDestinationPath = this.destinationRoot(this.projectLocation);
+                this.logger.log(`Project path information: ${this.projectLocation}`);
+            } else {
+                this.cfProjectDestinationPath = this.destinationRoot(process.cwd());
+                YamlUtils.loadYamlContent(join(this.cfProjectDestinationPath, 'mta.yaml'));
+                this.logger.log(`Project path information: ${this.cfProjectDestinationPath}`);
+            }
         }
     }
 

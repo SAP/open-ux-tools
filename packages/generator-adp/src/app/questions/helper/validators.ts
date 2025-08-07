@@ -1,4 +1,6 @@
-import type { FDCService, SystemLookup } from '@sap-ux/adp-tooling';
+import fs from 'fs';
+
+import { YamlUtils, type FDCService, type SystemLookup } from '@sap-ux/adp-tooling';
 import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../utils/i18n';
@@ -77,7 +79,19 @@ export async function validateJsonInput(
     }
 }
 
-export async function validateEnvironment(value: string, label: string, fdcService: FDCService) {
+/**
+ * Validates the environment.
+ *
+ * @param {string} value - The value to validate.
+ * @param {string} label - The label to validate.
+ * @param {FDCService} fdcService - The FDC service instance.
+ * @returns {Promise<string | boolean>} Returns true if the environment is valid, otherwise returns an error message.
+ */
+export async function validateEnvironment(
+    value: string,
+    label: string,
+    fdcService: FDCService
+): Promise<string | boolean> {
     if (!value) {
         return t('error.selectCannotBeEmptyError', { value: label });
     }
@@ -87,6 +101,46 @@ export async function validateEnvironment(value: string, label: string, fdcServi
         if (!isExternalLoginEnabled) {
             return 'CF Login cannot be detected as extension in current installation of VSCode, please refer to documentation (link not yet available) in order to install it.';
         }
+    }
+
+    return true;
+}
+
+/**
+ * Validates the project path.
+ *
+ * @param {string} projectPath - The path to the project.
+ * @param {FDCService} fdcService - The FDC service instance.
+ * @returns {Promise<string | boolean>} Returns true if the project path is valid, otherwise returns an error message.
+ */
+export async function validateProjectPath(projectPath: string, fdcService: FDCService): Promise<string | boolean> {
+    if (!projectPath) {
+        return 'Input cannot be empty';
+    }
+
+    try {
+        fs.realpathSync(projectPath, 'utf-8');
+    } catch (e) {
+        return 'The project does not exist.';
+    }
+
+    if (!fs.existsSync(projectPath)) {
+        return 'The project does not exist.';
+    }
+
+    if (!YamlUtils.isMtaProject(projectPath)) {
+        return 'Provide the path to the MTA project where you want to have your Adaptation Project created';
+    }
+
+    let services: string[];
+    try {
+        services = await fdcService.getServices(projectPath);
+    } catch (err) {
+        services = [];
+    }
+
+    if (services.length < 1) {
+        return 'No adaptable business service found in the MTA';
     }
 
     return true;

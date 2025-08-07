@@ -1,9 +1,12 @@
-import type { FDCService } from '@sap-ux/adp-tooling';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
 
-import { validateEnvironment } from './helper/validators';
+import type { FDCService } from '@sap-ux/adp-tooling';
+import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
+import type { InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+
+import type { ProjectLocationAnswers } from '../types';
+import { validateEnvironment, validateProjectPath } from './helper/validators';
 import { TargetEnv, type TargetEnvAnswers, type TargetEnvQuestion } from '../types';
 
 type EnvironmentChoice = { name: string; value: TargetEnv };
@@ -52,4 +55,35 @@ export function getEnvironments(appWizard: AppWizard, isCfInstalled: boolean): E
     }
 
     return choices;
+}
+
+/**
+ * Returns the project path prompt.
+ *
+ * @param {FDCService} fdcService - The FDC service instance.
+ * @param {boolean} isCFLoggedIn - Whether the user is logged in to Cloud Foundry.
+ * @param {any} vscode - The VSCode instance.
+ * @returns {YUIQuestion<ProjectLocationAnswers>[]} The project path prompt.
+ */
+export function promptUserForProjectPath(
+    fdcService: FDCService,
+    isCFLoggedIn: boolean,
+    vscode: any
+): YUIQuestion<ProjectLocationAnswers>[] {
+    return [
+        {
+            type: 'input',
+            name: 'projectLocation',
+            guiOptions: {
+                type: 'folder-browser',
+                mandatory: true,
+                hint: 'Select the path to the root of your project'
+            },
+            message: 'Specify the path to the project root',
+            validate: (value: string) => validateProjectPath(value, fdcService),
+            when: () => isCFLoggedIn,
+            default: () => getDefaultTargetFolder(vscode),
+            store: false
+        } as InputQuestion<ProjectLocationAnswers>
+    ];
 }

@@ -1,4 +1,4 @@
-import type { FDCService } from '@sap-ux/adp-tooling';
+import type { CFConfig, FDCService } from '@sap-ux/adp-tooling';
 import { type InputQuestion, type YUIQuestion } from '@sap-ux/inquirer-common';
 
 import { CFUtils } from '@sap-ux/adp-tooling';
@@ -16,19 +16,7 @@ export function getPrompts(vscode: any, fdcService: FDCService, isCFLoggedIn: bo
     const cfConfig = fdcService.getConfig();
 
     if (isCFLoggedIn) {
-        return [
-            getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedInMainMessage, 'You are currently logged in:'),
-            getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedApiEndpointMessage, `CF API Endpoint: ${cfConfig.url}`),
-            getLoggedInInfoPrompt(
-                cfLoginPromptNames.cfLoggedInOrganizationMessage,
-                `Organization: ${cfConfig.org.name}`
-            ),
-            getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedInSpaceMessage, `Space: ${cfConfig.space.name}`),
-            getLoggedInInfoPrompt(
-                cfLoginPromptNames.cfLoggedInEndingMessage,
-                'You can proceed with the project creation.'
-            )
-        ];
+        return getLoggedInPrompts(cfConfig);
     }
 
     let isCFLoginSuccessful = false;
@@ -64,6 +52,22 @@ export function getPrompts(vscode: any, fdcService: FDCService, isCFLoggedIn: bo
     };
 
     return [externalLoginPrompt, successLabelPrompt];
+}
+
+/**
+ * Returns the logged-in information prompts.
+ *
+ * @param {CFConfig} cfConfig - The CF config.
+ * @returns {CFLoginQuestion[]} The logged-in information prompts.
+ */
+export function getLoggedInPrompts(cfConfig: CFConfig): CFLoginQuestion[] {
+    return [
+        getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedInMainMessage, 'You are currently logged in:'),
+        getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedApiEndpointMessage, `CF API Endpoint: ${cfConfig.url}`),
+        getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedInOrganizationMessage, `Organization: ${cfConfig.org.name}`),
+        getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedInSpaceMessage, `Space: ${cfConfig.space.name}`),
+        getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedInEndingMessage, 'You can proceed with the project creation.')
+    ];
 }
 
 /**
