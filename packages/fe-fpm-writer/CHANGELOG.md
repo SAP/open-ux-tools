@@ -1,5 +1,18 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.36.0
+
+### Minor Changes
+
+-   f81c86b: Add Page building block support to fpm writer
+
+## 0.35.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/fiori-annotation-api@0.6.13
+
 ## 0.35.14
 
 ### Patch Changes

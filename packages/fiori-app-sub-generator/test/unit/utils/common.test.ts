@@ -1,4 +1,4 @@
-import type { Annotations } from '@sap-ux/axios-extension';
+import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
 import * as capConfigWriter from '@sap-ux/cap-config-writer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
@@ -27,7 +27,8 @@ import {
     getMinSupportedUI5Version,
     getODataVersion,
     getReadMeDataSourceLabel,
-    getRequiredOdataVersion
+    getRequiredOdataVersion,
+    restoreServiceProviderLoggers
 } from '../../../src/utils/common';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Logger } from '@sap-ux/logger';
@@ -398,5 +399,26 @@ describe('Test utils', () => {
             expect(createLaunchConfig).toHaveBeenCalledWith(projectPath, expectedFioriOptions, editor, {});
             expect(writeApplicationInfoSettings).toHaveBeenCalledWith(projectPath);
         });
+    });
+
+    test('restoreServiceProviderLoggers should re-add removed log ref', () => {
+        const logger = {
+            info: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn()
+        } as unknown as Logger;
+
+        const serviceProvider = {
+            log: {},
+            services: {
+                service1: { log: {} },
+                service2: { log: {} }
+            }
+        } as unknown as ServiceProvider;
+
+        const restoredServiceProvider = restoreServiceProviderLoggers(logger, serviceProvider);
+        expect(restoredServiceProvider?.log).toBe(logger);
+        expect((restoredServiceProvider as any)?.services.service1.log).toBe(logger);
+        expect((restoredServiceProvider as any)?.services.service2.log).toBe(logger);
     });
 });

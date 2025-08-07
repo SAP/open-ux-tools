@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.22.5
+
+### Patch Changes
+
+-   9f10a60: Use `ZLOCAL` to determine local packages and multiple minor bug fixes
+
 ## 1.22.4
 
 ### Patch Changes

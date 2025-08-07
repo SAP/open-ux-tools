@@ -1,5 +1,47 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.6.12
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.20
+-   @sap-ux/odata-service-inquirer@2.5.29
+
+## 0.6.11
+
+### Patch Changes
+
+-   9f10a60: Use `ZLOCAL` to determine local packages and multiple minor bug fixes
+-   Updated dependencies [9f10a60]
+    -   @sap-ux/odata-service-inquirer@2.5.29
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/fiori-generator-shared@0.13.6
+
+## 0.6.10
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.19
+-   @sap-ux/fiori-freestyle-writer@2.4.30
+-   @sap-ux/launch-config@0.10.17
+-   @sap-ux/odata-service-writer@0.27.15
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/telemetry@0.6.13
+-   @sap-ux/odata-service-inquirer@2.5.28
+-   @sap-ux/annotation-generator@0.3.50
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/cap-config-writer@0.10.24
+-   @sap-ux/fiori-generator-shared@0.13.6
+-   @sap-ux/ui5-application-inquirer@0.14.35
+
+## 0.6.9
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/odata-service-inquirer@2.5.27
+    -   @sap-ux/ui5-application-inquirer@0.14.34
+
 ## 0.6.8
 
 ### Patch Changes

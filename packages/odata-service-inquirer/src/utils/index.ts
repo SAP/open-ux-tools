@@ -11,6 +11,7 @@ import { PromptState } from './prompt-state';
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
+import { removeSync } from 'circular-reference-remover';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
@@ -131,17 +132,23 @@ export function getDefaultChoiceIndex(list: ListChoiceOptions[]): number | undef
 }
 
 /**
- * Temp fix for circular dependency issue within the service provider winston logger, causing issues with serialization in Yeoman generators.
- * More investigation is needed to determine what properties are required from the service provider for subsequent flows.
+ * Remove circular dependencies from within the service provider winston logger, causing issues with serialization in Yeoman generators.
  *
  * @param serviceProvider - instance of the service provider
  * @returns the service provider with the circular dependencies removed
  */
 export function removeCircularFromServiceProvider(serviceProvider: ServiceProvider): ServiceProvider {
     for (const service in (serviceProvider as any).services) {
-        delete (serviceProvider as any).services?.[service]?.log;
+        if ((serviceProvider as any).services?.[service].log) {
+            (serviceProvider as any).services[service].log = removeSync(
+                (serviceProvider as any).services[service]?.log,
+                { setUndefined: true }
+            );
+        }
     }
-    delete (serviceProvider as any).log;
+    if (serviceProvider.log) {
+        (serviceProvider as any).log = removeSync((serviceProvider as any).log, { setUndefined: true });
+    }
     return serviceProvider;
 }
 

@@ -2490,9 +2490,15 @@ importers:
 
   packages/inquirer-common:
     dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.2
+        version: 0.10.2
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.1
+        version: 0.9.1
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -2542,6 +2548,9 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
         version: 1.14.4
+      '@sap-ux/vocabularies-types':
+        specifier: 0.13.0
+        version: 0.13.0
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -2831,6 +2840,9 @@ importers:
       axios-logger:
         specifier: 2.8.0
         version: 2.8.0
+      circular-reference-remover:
+        specifier: 2.1.0
+        version: 2.1.0
       fast-xml-parser:
         specifier: 4.4.1
         version: 4.4.1
@@ -8742,6 +8754,12 @@ packages:
   /@sap-devx/yeoman-ui-types@1.16.9:
     resolution: {integrity: sha512-GpyTtj2RGWopUWROS3dfAV+0MQzARSRpqoWGDLQflCQpQWCkEFUQlj/dgowrEblj+1oJDTYBEdLu7nPc5lkNMA==}
 
+  /@sap-ux/annotation-converter@0.10.2:
+    resolution: {integrity: sha512-3GY8Etb2D+HnCNf2Yy7qfRtZuJ8ITjAGdlnbpmIg5sLtHRfhffEzZOveEWWMJ0apgIedUouvglkw6+oBabTfnA==}
+    dependencies:
+      '@sap-ux/vocabularies-types': 0.13.0
+    dev: false
+
   /@sap-ux/annotation-converter@0.10.3:
     resolution: {integrity: sha512-mLQTJv4SXyxbizE2guXi/m9BuFi+jcn7Vk8pGzkbdjWhBgI2OK0F30GXEsy7lprYFGycCLzXbBj/X7Unz+pIeg==}
     dependencies:
@@ -13115,6 +13133,10 @@ packages:
     resolution: {integrity: sha512-l+2bNRMiQgcfILUi33labAZYIWlH1kWDp+ecNo5iisRKrbm0xcRyCww71/YU0Fkw0mAFpz9bJayXPjey6vkmaQ==}
     engines: {node: '>=8'}
     dev: true
+
+  /circular-reference-remover@2.1.0:
+    resolution: {integrity: sha512-Q6HXB2XhbBECi1/5jqe4XwZTyHpweFORve1ATPMEMdi6kWPAwbMau5mLpASZAB+hfZ/OUjY+va1wEx5qwCH8MQ==}
+    dev: false
 
   /cjs-module-lexer@1.3.1:
     resolution: {integrity: sha512-a3KdPAANPbNE4ZUv9h6LckSl9zLsYOP4MBmhIPkRaeyybt+r4UghLvq+xw/YwUcC1gqylCkL4rdVs3Lwupjm4Q==}

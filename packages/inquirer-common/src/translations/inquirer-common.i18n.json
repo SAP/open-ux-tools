@@ -46,7 +46,9 @@
         "internalServerError": "Internal server error{{-errorMsg, addMsgWithColonFormatter}}",
         "badGateway": "Bad gateway{{- errorMsg, addMsgWithColonFormatter}}",
         "badRequest": "Bad request{{- errorMsg, addMsgWithColonFormatter}}",
-        "cannotBeEmpty": "{{- field}} cannot be empty."
+        "cannotBeEmpty": "{{- field}} cannot be empty.",
+        "unparseableMetadata": "Unable to parse entities from the metadata document: {{-error}}.",
+        "unparseableOdataVersion": "Unable to parse the OData version from the metadata."
     },
     "guidedAnswers": {
         "validationErrorHelpText": "Need help with this error?"

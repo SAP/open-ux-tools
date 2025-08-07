@@ -51,6 +51,7 @@ import {
     hasStep,
     initAppWizardCache,
     initI18nFioriAppSubGenerator,
+    restoreServiceProviderLoggers,
     t,
     updateDependentStep
 } from '../utils';
@@ -167,6 +168,11 @@ export class FioriAppGenerator extends Generator {
 
             if (hasStep(this.fioriSteps, STEP_DATASOURCE_AND_SERVICE)) {
                 const cachedService = getFromCache<Service>(this.appWizard, 'service', FioriAppGenerator.logger);
+
+                restoreServiceProviderLoggers(
+                    FioriAppGenerator.logger as Logger,
+                    cachedService?.connectedSystem?.serviceProvider
+                );
                 const options: OdataServiceInquirerOptions = {
                     capService: cachedService?.capService ?? this.state.service?.capService,
                     requiredOdataVersion: getRequiredOdataVersion(this.state.floorplan),
@@ -203,6 +209,11 @@ export class FioriAppGenerator extends Generator {
                         FioriAppGenerator.logger?.error(t('error.fatalError'));
                     }
                 }
+
+                restoreServiceProviderLoggers(
+                    FioriAppGenerator.logger as Logger,
+                    serviceAnswers?.connectedSystem?.serviceProvider
+                );
                 /** END: Back button temp fix */
                 this.state.service = { ...this.state?.service, ...serviceAnswers };
             }

@@ -1,7 +1,7 @@
 import Log from 'sap/base/Log';
 import type AppLifeCycle from 'sap/ushell/services/AppLifeCycle';
 import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
-import { SCENARIO, showMessage, type Scenario } from '@sap-ux-private/control-property-editor-common';
+import { MessageBarType, SCENARIO, type Scenario } from '@sap-ux-private/control-property-editor-common';
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
@@ -11,11 +11,10 @@ import { getError } from '../utils/error';
 import initCdm from './initCdm';
 import initConnectors from './initConnectors';
 import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
-import { CommunicationService } from '../cpe/communication-service';
-import { getTextBundle } from '../i18n';
 import type Component from 'sap/ui/core/Component';
 import type Extension from 'sap/ushell/services/Extension';
 import type { CardGeneratorType } from 'sap/cards/ap/generator';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -197,6 +196,11 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
             registerModules((await response.json()) as AppIndexData);
         } catch (error) {
             Log.error(`Registering of reuse libs failed. Error:${error}`);
+            await sendInfoCenterMessage({
+                title: { key: 'FLP_REGISTER_LIBS_FAILED_TITLE' },
+                description: getError(error).message,
+                type: MessageBarType.error
+            });
         }
     }
 }
@@ -256,14 +260,12 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
 
 /**
  * This function dynamically adds a "Generate Card" action to the SAP Fiori Launchpad for the given component instance.
- * 
+ *
  * @param componentInstance - The instance of the component for which the card generation action is being added.
  * @param container - The SAP Fiori Launchpad container instance used to access services.
  */
-function addCardGenerationUserAction(componentInstance : Component, container : typeof sap.ushell.Container) {
-    sap.ui.require([
-        'sap/cards/ap/generator/CardGenerator'
-    ], async (CardGenerator : CardGeneratorType) => {
+function addCardGenerationUserAction(componentInstance: Component, container: typeof sap.ushell.Container) {
+    sap.ui.require(['sap/cards/ap/generator/CardGenerator'], async (CardGenerator: CardGeneratorType) => {
         const extensionService = await container.getServiceAsync<Extension>('Extension');
         const controlProperties = {
             icon: 'sap-icon://add',
@@ -303,7 +305,7 @@ export async function init({
     flex?: string | null;
     customInit?: string | null;
     enhancedHomePage?: boolean | null;
-    enableCardGenerator?: boolean
+    enableCardGenerator?: boolean;
 }): Promise<void> {
     // Set CDM configuration before importing ushell container
     // to ensure proper configuration pickup during bootstrap
@@ -312,8 +314,9 @@ export async function init({
     }
 
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ??
-        (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
+    const container =
+        sap?.ushell?.Container ??
+        ((await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container);
     let scenario: string = '';
     const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
@@ -352,6 +355,11 @@ export async function init({
                         try {
                             await startAdaptation(options, pluginScript);
                         } catch (error) {
+                            await sendInfoCenterMessage({
+                                title: { key: 'FLP_ADAPTATION_START_FAILED_TITLE' },
+                                description: getError(error).message,
+                                type: MessageBarType.error
+                            });
                             await handleHigherLayerChanges(error, ui5VersionInfo);
                         }
                     }
@@ -367,9 +375,14 @@ export async function init({
                 addCardGenerationUserAction(componentInstance as unknown as Component, container);
             });
         });
-    } else {  
+    } else {
         Log.warning('Card generator is not supported for the current UI5 version.');
-    } 
+        await sendInfoCenterMessage({
+            title: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_TITLE' },
+            description: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_DESCRIPTION' },
+            type: MessageBarType.warning
+        });
+    }
 
     // reset app state if requested
     if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() !== 'true') {
@@ -399,7 +412,7 @@ export async function init({
     }
 
     const renderer =
-        (ui5VersionInfo.major < 2 && !ui5VersionInfo.label?.includes('legacy-free'))
+        ui5VersionInfo.major < 2 && !ui5VersionInfo.label?.includes('legacy-free')
             ? await container.createRenderer(undefined, true)
             : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
@@ -417,6 +430,11 @@ if (bootstrapConfig) {
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);
+        return sendInfoCenterMessage({
+            title: { key: 'FLP_SANDBOX_INIT_FAILED_TITLE' },
+            description: error.message,
+            type: MessageBarType.error
+        });
     });
 }
 
@@ -432,12 +450,11 @@ export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: U
     const err = getError(error);
     if (err.message.includes('Reload triggered')) {
         if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 84 })) {
-            const bundle = await getTextBundle();
-            const action = showMessage({
-                message: bundle.getText('HIGHER_LAYER_CHANGES_INFO_MESSAGE'),
-                shouldHideIframe: false
+            await sendInfoCenterMessage({
+                title: { key: 'HIGHER_LAYER_CHANGES_TITLE' },
+                description: { key: 'HIGHER_LAYER_CHANGES_INFO_MESSAGE' },
+                type: MessageBarType.warning
             });
-            CommunicationService.sendAction(action);
         }
 
         // eslint-disable-next-line fiori-custom/sap-no-location-reload

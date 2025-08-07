@@ -345,4 +345,12 @@ describe('Select', () => {
         expect(input).toBeDefined();
         expect(onChangeFn).toHaveBeenCalledWith('select', 111);
     });
+
+    it('Select default value as index', async () => {
+        const onChangeFn = jest.fn();
+        render(<Select {...props} onChange={onChangeFn} defaultIndex={1} />);
+        const input = screen.getByRole('combobox');
+        expect(input).toBeDefined();
+        expect(onChangeFn).toHaveBeenCalledWith('select', 'testValue1');
+    });
 });
