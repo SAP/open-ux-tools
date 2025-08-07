@@ -40,7 +40,13 @@ import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/d
 import type { TargetEnvAnswers } from './types';
 import { TargetEnv } from './types';
 import { type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput } from './types';
-import { getWizardPages, updateFlpWizardSteps, updateWizardSteps, getDeployPage } from '../utils/steps';
+import {
+    getWizardPages,
+    updateFlpWizardSteps,
+    updateWizardSteps,
+    getDeployPage,
+    getUIPageLabels
+} from '../utils/steps';
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
 import { FDCService } from '@sap-ux/adp-tooling';
 import { getTargetEnvPrompt } from './questions/target-env';
@@ -124,6 +130,8 @@ export default class extends Generator {
     private readonly fdcService: FDCService;
     private readonly isMtaYamlFound: boolean;
     private targetEnv: TargetEnv;
+    private isCfEnv = false;
+    private isCFLoggedIn = false;
 
     /**
      * Creates an instance of the generator.
@@ -198,78 +206,96 @@ export default class extends Generator {
                 getTargetEnvPrompt(this.appWizard, isCfInstalled, this.fdcService)
             ]);
             this.targetEnv = targetEnvAnswers.targetEnv;
+            this.isCfEnv = this.targetEnv === TargetEnv.CF;
             this.logger.info(`Target environment: ${this.targetEnv}`);
-            // this.prompts.splice(1, 1, getWizardPages()); // TODO: Add ABAP or CF pages accordingly
+            this.prompts.splice(1, 1, getUIPageLabels());
         } else {
             this.targetEnv = TargetEnv.ABAP;
         }
 
-        const configQuestions = this.prompter.getPrompts({
-            appValidationCli: { hide: !this.isCli },
-            systemValidationCli: { hide: !this.isCli }
-        });
-        this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
-        this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;
+        if (!this.isCfEnv) {
+            const configQuestions = this.prompter.getPrompts({
+                appValidationCli: { hide: !this.isCli },
+                systemValidationCli: { hide: !this.isCli }
+            });
+            this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
+            this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;
 
-        this.logger.info(`System: ${this.configAnswers.system}`);
-        this.logger.info(`Application: ${JSON.stringify(this.configAnswers.application, null, 2)}`);
+            this.logger.info(`System: ${this.configAnswers.system}`);
+            this.logger.info(`Application: ${JSON.stringify(this.configAnswers.application, null, 2)}`);
 
-        const { ui5Versions, systemVersion } = this.prompter.ui5;
-        const promptConfig = {
-            ui5Versions,
-            isVersionDetected: !!systemVersion,
-            isCloudProject: this.prompter.isCloud,
-            layer: this.layer,
-            prompts: this.prompts
+            const { ui5Versions, systemVersion } = this.prompter.ui5;
+            const promptConfig = {
+                ui5Versions,
+                isVersionDetected: !!systemVersion,
+                isCloudProject: this.prompter.isCloud,
+                layer: this.layer,
+                prompts: this.prompts
+            };
+            const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
+            if (this.prompter.isCloud) {
+                this.baseAppInbounds = await getBaseAppInbounds(
+                    this.configAnswers.application.id,
+                    this.prompter.provider
+                );
+            }
+            const options: AttributePromptOptions = {
+                targetFolder: { default: defaultFolder, hide: this.shouldCreateExtProject },
+                ui5ValidationCli: { hide: !this.isCli },
+                enableTypeScript: { hide: this.shouldCreateExtProject },
+                addFlpConfig: { hasBaseAppInbounds: !!this.baseAppInbounds, hide: this.shouldCreateExtProject },
+                addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase }
+            };
+            const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
+
+            this.attributeAnswers = await this.prompt(attributesQuestions);
+
+            // Steps need to be updated here to be available after back navigation in Yeoman UI.
+            this._updateWizardStepsAfterNavigation();
+
+            this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
+
+            if (this.attributeAnswers.addDeployConfig) {
+                const client = (await this.systemLookup.getSystemByName(this.configAnswers.system))?.Client;
+                addDeployGen(
+                    {
+                        projectName: this.attributeAnswers.projectName,
+                        targetFolder: this.attributeAnswers.targetFolder,
+                        connectedSystem: this.configAnswers.system,
+                        client
+                    },
+                    this.composeWith.bind(this),
+                    this.logger,
+                    this.appWizard
+                );
+            }
+
+            if (this.attributeAnswers?.addFlpConfig) {
+                addFlpGen(
+                    {
+                        vscode: this.vscode,
+                        projectRootPath: this._getProjectPath(),
+                        inbounds: this.baseAppInbounds,
+                        layer: this.layer
+                    },
+                    this.composeWith.bind(this),
+                    this.logger,
+                    this.appWizard
+                );
+            }
+        } else {
+            this.isCFLoggedIn = await this.fdcService.isLoggedIn();
+
+            this._setCFLoginPageDescription(this.isCFLoggedIn);
+        }
+    }
+
+    private _setCFLoginPageDescription(isLoggedIn: boolean): void {
+        const pageLabel = {
+            name: 'Login to Cloud Foundry',
+            description: isLoggedIn ? '' : 'Provide credentials.'
         };
-        const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
-        if (this.prompter.isCloud) {
-            this.baseAppInbounds = await getBaseAppInbounds(this.configAnswers.application.id, this.prompter.provider);
-        }
-        const options: AttributePromptOptions = {
-            targetFolder: { default: defaultFolder, hide: this.shouldCreateExtProject },
-            ui5ValidationCli: { hide: !this.isCli },
-            enableTypeScript: { hide: this.shouldCreateExtProject },
-            addFlpConfig: { hasBaseAppInbounds: !!this.baseAppInbounds, hide: this.shouldCreateExtProject },
-            addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase }
-        };
-        const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
-
-        this.attributeAnswers = await this.prompt(attributesQuestions);
-
-        // Steps need to be updated here to be available after back navigation in Yeoman UI.
-        this._updateWizardStepsAfterNavigation();
-
-        this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
-
-        if (this.attributeAnswers.addDeployConfig) {
-            const client = (await this.systemLookup.getSystemByName(this.configAnswers.system))?.Client;
-            addDeployGen(
-                {
-                    projectName: this.attributeAnswers.projectName,
-                    targetFolder: this.attributeAnswers.targetFolder,
-                    connectedSystem: this.configAnswers.system,
-                    client
-                },
-                this.composeWith.bind(this),
-                this.logger,
-                this.appWizard
-            );
-        }
-
-        if (this.attributeAnswers?.addFlpConfig) {
-            addFlpGen(
-                {
-                    vscode: this.vscode,
-                    projectRootPath: this._getProjectPath(),
-                    inbounds: this.baseAppInbounds,
-                    layer: this.layer
-                },
-                this.composeWith.bind(this),
-                this.logger,
-                this.appWizard
-            );
-        }
+        this.prompts.splice(1, 1, [pageLabel]);
     }
 
     async writing(): Promise<void> {

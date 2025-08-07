@@ -24,6 +24,39 @@ export function getWizardPages(): IPrompt[] {
 }
 
 /**
+ * Returns the UI page labels.
+ *
+ * @returns {IPrompt[]} The UI page labels.
+ */
+export function getUIPageLabels(): IPrompt[] {
+    let prompts;
+    if (!isAppStudio()) {
+        prompts = [
+            {
+                name: t('yuiNavSteps.configurationName'),
+                description: t('yuiNavSteps.configurationDescr')
+            },
+            {
+                name: t('yuiNavSteps.projectAttributesName'),
+                description: t('yuiNavSteps.projectAttributesDescr')
+            }
+        ];
+    } else {
+        prompts = [
+            { name: 'Login to Cloud Foundry', description: 'Provide credentials.' },
+            { name: 'Project path', description: 'Provide path to MTA project.' },
+            {
+                name: t('yuiNavSteps.projectAttributesName'),
+                description: t('yuiNavSteps.projectAttributesDescr')
+            },
+            { name: 'Application Details', description: 'Setup application details.' }
+        ];
+    }
+
+    return prompts;
+}
+
+/**
  * Returns the FLP configuration page step.
  *
  * @param {boolean} showTileSettingsPage - Flag to determine if the tile settings page should be shown.
