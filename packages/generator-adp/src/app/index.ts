@@ -47,7 +47,7 @@ import {
     updateFlpWizardSteps,
     updateWizardSteps,
     getDeployPage,
-    getUIPageLabels
+    updateCfWizardSteps
 } from '../utils/steps';
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
 import { FDCService } from '@sap-ux/adp-tooling';
@@ -211,7 +211,7 @@ export default class extends Generator {
             this.targetEnv = targetEnvAnswers.targetEnv;
             this.isCfEnv = this.targetEnv === TargetEnv.CF;
             this.logger.info(`Target environment: ${this.targetEnv}`);
-            this.prompts.splice(1, 1, getUIPageLabels(this.isCfEnv));
+            updateCfWizardSteps(this.isCfEnv, this.prompts);
         } else {
             this.targetEnv = TargetEnv.ABAP;
         }

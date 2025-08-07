@@ -24,26 +24,14 @@ export function getWizardPages(): IPrompt[] {
 }
 
 /**
- * Returns the UI page labels.
+ * Updates the CF wizard steps.
  *
  * @param {boolean} isCFEnv - Whether the target environment is Cloud Foundry.
- * @returns {IPrompt[]} The UI page labels.
+ * @param {YeomanUiSteps} prompts - The Yeoman UI Prompts container object.
  */
-export function getUIPageLabels(isCFEnv: boolean): IPrompt[] {
-    let prompts;
-    if (!isCFEnv) {
-        prompts = [
-            {
-                name: t('yuiNavSteps.configurationName'),
-                description: t('yuiNavSteps.configurationDescr')
-            },
-            {
-                name: t('yuiNavSteps.projectAttributesName'),
-                description: t('yuiNavSteps.projectAttributesDescr')
-            }
-        ];
-    } else {
-        prompts = [
+export function updateCfWizardSteps(isCFEnv: boolean, prompts: YeomanUiSteps): void {
+    if (isCFEnv) {
+        prompts.splice(1, 1, [
             { name: 'Login to Cloud Foundry', description: 'Provide credentials.' },
             { name: 'Project path', description: 'Provide path to MTA project.' },
             {
@@ -51,10 +39,8 @@ export function getUIPageLabels(isCFEnv: boolean): IPrompt[] {
                 description: t('yuiNavSteps.projectAttributesDescr')
             },
             { name: 'Application Details', description: 'Setup application details.' }
-        ];
+        ]);
     }
-
-    return prompts;
 }
 
 /**
