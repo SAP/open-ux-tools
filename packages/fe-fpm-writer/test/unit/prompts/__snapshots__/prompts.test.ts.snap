@@ -149,7 +149,6 @@ Object {
     },
     Object {
       "choices": Array [],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
@@ -360,7 +359,6 @@ Object {
     },
     Object {
       "choices": Array [],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
@@ -446,7 +444,6 @@ Object {
     },
     Object {
       "choices": Array [],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "mandatory": true,
         "placeholder": "Select an aggregation path",
@@ -601,7 +598,6 @@ Object {
     },
     Object {
       "choices": Array [],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "groupId": "tableBuildingBlockProperties",
         "mandatory": true,
@@ -1166,7 +1162,6 @@ Object {
     },
     Object {
       "choices": [Function],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "groupId": "chartBuildingBlockProperties",
         "mandatory": true,
@@ -1599,7 +1594,6 @@ Object {
     },
     Object {
       "choices": [Function],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "groupId": "filterBarBuildingBlockProperties",
         "mandatory": true,
@@ -1685,7 +1679,6 @@ Object {
     },
     Object {
       "choices": [Function],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "mandatory": true,
         "placeholder": "Select an aggregation path",
@@ -1840,7 +1833,6 @@ Object {
     },
     Object {
       "choices": [Function],
-      "defaultIndex": 0,
       "guiOptions": Object {
         "groupId": "tableBuildingBlockProperties",
         "mandatory": true,
