@@ -26,11 +26,12 @@ export function getWizardPages(): IPrompt[] {
 /**
  * Returns the UI page labels.
  *
+ * @param {boolean} isCFEnv - Whether the target environment is Cloud Foundry.
  * @returns {IPrompt[]} The UI page labels.
  */
-export function getUIPageLabels(): IPrompt[] {
+export function getUIPageLabels(isCFEnv: boolean): IPrompt[] {
     let prompts;
-    if (!isAppStudio()) {
+    if (!isCFEnv) {
         prompts = [
             {
                 name: t('yuiNavSteps.configurationName'),

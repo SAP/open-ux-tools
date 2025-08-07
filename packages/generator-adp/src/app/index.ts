@@ -208,7 +208,7 @@ export default class extends Generator {
             this.targetEnv = targetEnvAnswers.targetEnv;
             this.isCfEnv = this.targetEnv === TargetEnv.CF;
             this.logger.info(`Target environment: ${this.targetEnv}`);
-            this.prompts.splice(1, 1, getUIPageLabels());
+            this.prompts.splice(1, 1, getUIPageLabels(this.isCfEnv));
         } else {
             this.targetEnv = TargetEnv.ABAP;
         }
