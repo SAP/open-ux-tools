@@ -4,6 +4,7 @@ import { processToolsSuiteTelemetry } from '../../src/tooling-telemetry';
 import { ToolingTelemetrySettings } from '../../src/tooling-telemetry/config-state';
 import fs from 'fs';
 import { join } from 'path';
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 jest.mock('fs', () => {
     const fs1 = jest.requireActual('fs');
@@ -57,6 +58,24 @@ describe('Tools Suite Telemetry Tests', () => {
             internalVsExternal: 'external',
             'cmn.nodeVersion': expect.any(String)
         });
+    });
+
+    it('Node version cannot be determined', async () => {
+        const cmdRunnerSpy = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => {
+            throw new Error('Cannot determine Node version');
+        });
+        isAppStudioMock.mockReturnValue(false);
+        const commonProperties = await processToolsSuiteTelemetry(undefined);
+        expect(commonProperties).toEqual({
+            appstudio: false,
+            'cmn.appstudio': false,
+            'cmn.devspace': '',
+            'cmn.internalFeatures': 'external',
+            internalVsExternal: 'external',
+            'cmn.nodeVersion': 'unknown'
+        });
+        expect(cmdRunnerSpy).toHaveBeenCalledWith('node', ['-v']);
+        cmdRunnerSpy.mockRestore();
     });
 
     it('No additional properties, SBAS', async () => {
