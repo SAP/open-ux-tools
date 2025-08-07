@@ -2,7 +2,6 @@ import type { FDCService } from '@sap-ux/adp-tooling';
 import { type InputQuestion, type YUIQuestion } from '@sap-ux/inquirer-common';
 
 import { CFUtils } from '@sap-ux/adp-tooling';
-import { type CFConfig } from '@sap-ux/adp-tooling';
 import { type CFLoginQuestion, type CFLoginAnswers, cfLoginPromptNames } from '../types';
 
 /**
@@ -42,19 +41,16 @@ export function getPrompts(vscode: any, fdcService: FDCService, isCFLoggedIn: bo
         validate: async (): Promise<boolean | string> => {
             // loop until both org & space appear in the refreshed config
             let result = '';
-            let cfg: CFConfig = { org: { guid: '', name: '' }, space: { guid: '', name: '' }, token: '', url: '' };
+            const cfg = fdcService.getConfig();
             while (!cfg.org.name && !cfg.space.name) {
                 result = (await vscode?.commands.executeCommand('cf.login', 'side')) as string;
                 fdcService.loadConfig();
-                cfg = fdcService.getConfig();
                 if (result !== 'OK' || !result) {
                     await CFUtils.cFLogout();
                     return 'Login failed.';
                 }
             }
             isCFLoginSuccessful = true;
-            // update outer state so the generator can reuse the token later
-            Object.assign(cfConfig, cfg);
             return true;
         }
     };
