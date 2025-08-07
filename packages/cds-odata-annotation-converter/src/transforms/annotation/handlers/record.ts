@@ -1,7 +1,7 @@
 import { RECORD_TYPE, STRING_LITERAL_TYPE, nodeRange, ReservedProperties } from '@sap-ux/cds-annotation-parser';
 import type { Record, RecordProperty, AnnotationNode } from '@sap-ux/cds-annotation-parser';
 
-import type { Element } from '@sap-ux/odata-annotation-core-types';
+import type { Deprecated$ValueSyntax, Element } from '@sap-ux/odata-annotation-core-types';
 import {
     Diagnostic,
     createElementNode,
@@ -214,7 +214,31 @@ function handleValueProperty(
 
         validateReservedPropertyName(state, ReservedProperties.Value, valueProperty);
         addDiagnosticForExtraneousProperties(state, node, valueProperty);
+        addDeprecatedDiagnostics(state, node, valueProperty);
     }
+}
+
+/**
+ * Adds diagnostics for deprecated $value syntax.
+ *
+ * @param state - The visitor state.
+ * @param node - The artificial record node containing the $value property.
+ * @param valueProperty - $value property node.
+ */
+function addDeprecatedDiagnostics(state: VisitorState, node: Record, valueProperty: RecordProperty | undefined): void {
+    if (!valueProperty?.range || !node.range) {
+        return;
+    }
+    const diagnostic: Deprecated$ValueSyntax = {
+        message: i18n.t('diagnostics.deprecated_$value_syntax'),
+        rule: 'deprecated-$value-syntax',
+        range: valueProperty?.range,
+        severity: DiagnosticSeverity.Warning,
+        data: {
+            descriptionLink: 'https://cap.cloud.sap/docs/releases/archive/2022/jun22#annotating-odata-annotations'
+        }
+    };
+    state.addDiagnostic(diagnostic);
 }
 
 /**

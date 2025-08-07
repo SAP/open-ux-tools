@@ -1,11 +1,14 @@
 {
-  "Property_is_not_allowed_here": "The `{{name}}` property is not allowed here.",
-  "The_attribute_value_must_be_a_string_literal": "The attribute value must be a string literal.",
-  "Wrong_element_0_Did_you_mean_1": "`{{currentValue}}` is incorrect. Did you mean `{{proposedValue}}`?",
-  "Mandatory_property_not_provided_0": "The mandatory `{{property}}` property was not provided.",
-  "Path_escaping_brackets_should_be_used": "Path escaping brackets `![]` must be used.",
-  "Type_value_must_be_string": "The `$Type` value must be a string literal.",
-  "Wrong_path_separator_0_Did_you_mean_1": "`{{currentValue}}` is the wrong path separator. Did you mean `{{proposedValue}}`?",
-  "No_segments_after_type": "Segments are not allowed after `$Type.`",
-   "Value_must_be_provided": "The `$Type` must have a value."
+    "Property_is_not_allowed_here": "The `{{name}}` property is not allowed here.",
+    "The_attribute_value_must_be_a_string_literal": "The attribute value must be a string literal.",
+    "Wrong_element_0_Did_you_mean_1": "`{{currentValue}}` is incorrect. Did you mean `{{proposedValue}}`?",
+    "Mandatory_property_not_provided_0": "The mandatory `{{property}}` property was not provided.",
+    "Path_escaping_brackets_should_be_used": "Path escaping brackets `![]` must be used.",
+    "Type_value_must_be_string": "The `$Type` value must be a string literal.",
+    "Wrong_path_separator_0_Did_you_mean_1": "`{{currentValue}}` is the wrong path separator. Did you mean `{{proposedValue}}`?",
+    "No_segments_after_type": "Segments are not allowed after `$Type.`",
+    "Value_must_be_provided": "The `$Type` must have a value.",
+    "diagnostics": {
+        "deprecated_$value_syntax": "Annotating values with $value is deprecated, use nested annotations names instead."
+    }
 }
