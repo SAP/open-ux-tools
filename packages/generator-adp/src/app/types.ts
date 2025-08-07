@@ -174,11 +174,21 @@ export type TargetEnvAnswers = { targetEnv: TargetEnv };
 
 export type TargetEnvQuestion = YUIQuestion<TargetEnvAnswers>;
 
-// export type TargetEnvPromptOptions = Partial<{
-//     [targetEnvPromptNames.targetEnv]: {
-//         hide?: boolean;
-//     };
-// }>;
+export enum cfLoginPromptNames {
+    cfLoggedInMainMessage = 'cfLoggedInMainMessage',
+    cfLoggedApiEndpointMessage = 'cfLoggedApiEndpointMessage',
+    cfLoggedInOrganizationMessage = 'cfLoggedInOrganizationMessage',
+    cfLoggedInSpaceMessage = 'cfLoggedInSpaceMessage',
+    cfLoggedInEndingMessage = 'cfLoggedInEndingMessage',
+    cfExternalLogin = 'cfExternalLogin',
+    cfExternalLoginSuccessMessage = 'cfExternalLoginSuccessMessage'
+}
+
+export type CFLoginAnswers = {
+    [K in cfLoginPromptNames]?: string;
+};
+
+export type CFLoginQuestion = YUIQuestion<CFLoginAnswers>;
 
 export interface ExtensionProjectData {
     destination: {

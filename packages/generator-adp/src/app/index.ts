@@ -2,6 +2,8 @@ import { join } from 'path';
 import Generator from 'yeoman-generator';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
 
+import type { CFConfig } from '@sap-ux/adp-tooling';
+import { getPrompts as getCFLoginPrompts } from './questions/cf-login';
 import {
     FlexLayer,
     SystemLookup,
@@ -132,6 +134,7 @@ export default class extends Generator {
     private targetEnv: TargetEnv;
     private isCfEnv = false;
     private isCFLoggedIn = false;
+    private cfConfig: CFConfig;
 
     /**
      * Creates an instance of the generator.
@@ -287,6 +290,13 @@ export default class extends Generator {
             this.isCFLoggedIn = await this.fdcService.isLoggedIn();
 
             this._setCFLoginPageDescription(this.isCFLoggedIn);
+
+            await this.prompt(getCFLoginPrompts(this.vscode, this.fdcService, this.isCFLoggedIn));
+            this.cfConfig = this.fdcService.getConfig();
+
+            this.logger.log(`Project organization information: ${JSON.stringify(this.cfConfig.org, null, 2)}`);
+            this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
+            this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
         }
     }
 
