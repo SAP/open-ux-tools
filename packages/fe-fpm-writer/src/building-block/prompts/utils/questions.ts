@@ -237,7 +237,6 @@ export function getAggregationPathPrompt(
         ...properties,
         type: 'list',
         name: 'aggregationPath',
-        defaultIndex: 0,
         choices: project
             ? (answers: Answers) => {
                   const { viewOrFragmentPath } = answers;
