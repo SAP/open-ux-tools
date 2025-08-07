@@ -29,15 +29,32 @@ export function getPrompts(vscode: any, fdcService: FDCService, isCFLoggedIn: bo
         validate: async (): Promise<boolean | string> => {
             // loop until both org & space appear in the refreshed config
             let result = '';
-            const cfg = fdcService.getConfig();
-            while (!cfg.org.name && !cfg.space.name) {
+            let cfg = fdcService.getConfig();
+            let retryCount = 0;
+            const maxRetries = 10;
+
+            while (!cfg.org?.name && !cfg.space?.name && retryCount < maxRetries) {
                 result = (await vscode?.commands.executeCommand('cf.login', 'side')) as string;
-                fdcService.loadConfig();
+
                 if (result !== 'OK' || !result) {
                     await CFUtils.cFLogout();
                     return 'Login failed.';
                 }
+
+                // Add a small delay to allow the config file to be written
+                await new Promise((resolve) => setTimeout(resolve, 1000));
+
+                // Reload config and retry
+                fdcService.loadConfig();
+                cfg = fdcService.getConfig();
+                retryCount++;
             }
+
+            if (!cfg.org?.name && !cfg.space?.name) {
+                await CFUtils.cFLogout();
+                return 'Login succeeded but configuration could not be loaded. Please try again.';
+            }
+
             isCFLoginSuccessful = true;
             return true;
         }
