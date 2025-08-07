@@ -162,6 +162,24 @@ export type AttributePromptOptions = Partial<{
     [attributePromptNames.addFlpConfig]: AddFlpConfigPromptOptions;
 }>;
 
+export enum targetEnvPromptNames {
+    targetEnv = 'targetEnv'
+}
+
+export const TargetEnv = { ABAP: 'ABAP', CF: 'CF' } as const;
+
+export type TargetEnv = (typeof TargetEnv)[keyof typeof TargetEnv];
+
+export type TargetEnvAnswers = { targetEnv: TargetEnv };
+
+export type TargetEnvQuestion = YUIQuestion<TargetEnvAnswers>;
+
+// export type TargetEnvPromptOptions = Partial<{
+//     [targetEnvPromptNames.targetEnv]: {
+//         hide?: boolean;
+//     };
+// }>;
+
 export interface ExtensionProjectData {
     destination: {
         name: string;

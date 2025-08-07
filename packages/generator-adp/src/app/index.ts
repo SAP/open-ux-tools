@@ -15,7 +15,8 @@ import {
     type UI5Version,
     SourceManifest,
     isCFEnvironment,
-    getBaseAppInbounds
+    getBaseAppInbounds,
+    YamlUtils
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
@@ -36,10 +37,12 @@ import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
+import type { TargetEnv, TargetEnvAnswers } from './types';
 import { type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput } from './types';
 import { getWizardPages, updateFlpWizardSteps, updateWizardSteps, getDeployPage } from '../utils/steps';
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
 import { FDCService } from '@sap-ux/adp-tooling';
+import { getTargetEnvPrompt } from './questions/target-env';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -117,6 +120,9 @@ export default class extends Generator {
      */
     private baseAppInbounds?: ManifestNamespace.Inbound;
     private readonly fdcService: FDCService;
+    private readonly isMtaYamlFound: boolean;
+    private readonly isExtensionInstalled: boolean;
+    private targetEnv: TargetEnv;
 
     /**
      * Creates an instance of the generator.
@@ -130,6 +136,8 @@ export default class extends Generator {
         this.shouldInstallDeps = opts.shouldInstallDeps ?? true;
         this.toolsLogger = new ToolsLogger();
         this.fdcService = new FDCService(this.logger, opts.vscode);
+        this.isMtaYamlFound = YamlUtils.isMtaProject(process.cwd());
+        this.isExtensionInstalled = !!this.vscode?.extensions?.getExtension('SAPSE.sap-ux-adp-tooling');
         this.vscode = opts.vscode;
         this.options = opts;
 
@@ -163,7 +171,7 @@ export default class extends Generator {
         this.systemLookup = new SystemLookup(this.logger);
 
         if (!this.jsonInput) {
-            this.prompts.splice(0, 0, getWizardPages());
+            this.prompts.splice(0, 0, getWizardPages(this.isExtensionInstalled));
             this.prompter = this._getOrCreatePrompter();
         }
 
@@ -184,6 +192,15 @@ export default class extends Generator {
 
         const isCfInstalled = await this.fdcService.isCfInstalled();
         this.logger.info(`isCfInstalled: ${isCfInstalled}`);
+
+        if (this.isExtensionInstalled) {
+            const targetEnvAnswers = await this.prompt<TargetEnvAnswers>([
+                getTargetEnvPrompt(this.appWizard, isCfInstalled, this.fdcService)
+            ]);
+            this.targetEnv = targetEnvAnswers.targetEnv;
+            this.logger.info(`Target environment: ${this.targetEnv}`);
+            this.prompts.splice(1, 1, getWizardPages(false));
+        }
 
         const configQuestions = this.prompter.getPrompts({
             appValidationCli: { hide: !this.isCli },

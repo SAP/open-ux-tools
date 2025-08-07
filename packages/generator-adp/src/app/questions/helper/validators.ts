@@ -1,9 +1,10 @@
-import type { SystemLookup } from '@sap-ux/adp-tooling';
+import type { FDCService, SystemLookup } from '@sap-ux/adp-tooling';
 import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../utils/i18n';
 import { isString } from '../../../utils/type-guards';
 import { resolveNodeModuleGenerator } from '../../extension-project';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 interface JsonInputParams {
     projectName: string;
@@ -74,4 +75,19 @@ export async function validateJsonInput(
     if (!systemEndpoint) {
         throw new Error(t('error.systemNotFound', { system }));
     }
+}
+
+export async function validateEnvironment(value: string, label: string, fdcService: FDCService) {
+    if (!value) {
+        return t('error.selectCannotBeEmptyError', { value: label });
+    }
+
+    if (value === 'CF' && !isAppStudio()) {
+        const isExternalLoginEnabled = await fdcService.isExternalLoginEnabled();
+        if (!isExternalLoginEnabled) {
+            return 'CF Login cannot be detected as extension in current installation of VSCode, please refer to documentation (link not yet available) in order to install it.';
+        }
+    }
+
+    return true;
 }
