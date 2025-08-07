@@ -2,16 +2,16 @@ import type { Prompts as YeomanUiSteps, IPrompt } from '@sap-devx/yeoman-ui-type
 
 import { t } from './i18n';
 import { GeneratorTypes } from '../types';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 /**
  * Returns the list of base wizard pages used in the Adaptation Project.
  *
- * @param {boolean} isExtensionInstalled - Whether the extension is installed.
  * @returns {IPrompt[]} The list of static wizard steps to show initially.
  */
-export function getWizardPages(isExtensionInstalled: boolean): IPrompt[] {
+export function getWizardPages(): IPrompt[] {
     return [
-        ...(isExtensionInstalled ? [{ name: 'Target environment', description: '' }] : []),
+        ...(isAppStudio() ? [{ name: 'Target environment', description: '' }] : []),
         {
             name: t('yuiNavSteps.configurationName'),
             description: t('yuiNavSteps.configurationDescr')
