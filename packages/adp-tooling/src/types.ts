@@ -913,13 +913,13 @@ export interface AdpConfig {
 }
 
 export interface Organization {
-    guid: string;
-    name: string;
+    GUID: string;
+    Name: string;
 }
 
 export interface Space {
-    guid: string;
-    name: string;
+    GUID: string;
+    Name: string;
 }
 
 export interface CFConfig {

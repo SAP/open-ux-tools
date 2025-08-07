@@ -33,7 +33,7 @@ export function getPrompts(vscode: any, fdcService: FDCService, isCFLoggedIn: bo
             let retryCount = 0;
             const maxRetries = 10;
 
-            while (!cfg.org?.name && !cfg.space?.name && retryCount < maxRetries) {
+            while (!cfg.org?.Name && !cfg.space?.Name && retryCount < maxRetries) {
                 result = (await vscode?.commands.executeCommand('cf.login', 'side')) as string;
 
                 if (result !== 'OK' || !result) {
@@ -50,7 +50,7 @@ export function getPrompts(vscode: any, fdcService: FDCService, isCFLoggedIn: bo
                 retryCount++;
             }
 
-            if (!cfg.org?.name && !cfg.space?.name) {
+            if (!cfg.org?.Name && !cfg.space?.Name) {
                 await CFUtils.cFLogout();
                 return 'Login succeeded but configuration could not be loaded. Please try again.';
             }
@@ -81,8 +81,8 @@ export function getLoggedInPrompts(cfConfig: CFConfig): CFLoginQuestion[] {
     return [
         getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedInMainMessage, 'You are currently logged in:'),
         getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedApiEndpointMessage, `CF API Endpoint: ${cfConfig.url}`),
-        getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedInOrganizationMessage, `Organization: ${cfConfig.org.name}`),
-        getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedInSpaceMessage, `Space: ${cfConfig.space.name}`),
+        getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedInOrganizationMessage, `Organization: ${cfConfig.org.Name}`),
+        getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedInSpaceMessage, `Space: ${cfConfig.space.Name}`),
         getLoggedInInfoPrompt(cfLoginPromptNames.cfLoggedInEndingMessage, 'You can proceed with the project creation.')
     ];
 }

@@ -92,20 +92,20 @@ export default class FDCService {
 
             if (config.OrganizationFields) {
                 result.org = {
-                    name: config.OrganizationFields.name,
-                    guid: config.OrganizationFields.guid
+                    Name: config.OrganizationFields.Name,
+                    GUID: config.OrganizationFields.GUID
                 };
             }
 
             if (config.SpaceFields) {
                 result.space = {
-                    name: config.SpaceFields.name,
-                    guid: config.SpaceFields.guid
+                    Name: config.SpaceFields.Name,
+                    GUID: config.SpaceFields.GUID
                 };
             }
 
             this.cfConfig = result;
-            YamlUtils.spaceGuid = this.cfConfig?.space?.guid;
+            YamlUtils.spaceGuid = this.cfConfig?.space?.GUID;
         }
     }
 
@@ -141,7 +141,7 @@ export default class FDCService {
         const cfConfig = this.getConfig();
         const isLoggedToDifferentSource =
             isLoggedIn &&
-            (cfConfig.org.name !== organizacion || cfConfig.space.name !== space || cfConfig.url !== apiurl);
+            (cfConfig.org.Name !== organizacion || cfConfig.space.Name !== space || cfConfig.url !== apiurl);
 
         return isLoggedToDifferentSource;
     }
@@ -262,7 +262,7 @@ export default class FDCService {
     public async getBusinessServiceKeys(businessService: string): Promise<ServiceKeys | null> {
         const serviceKeys = await CFUtils.getServiceInstanceKeys(
             {
-                spaceGuids: [this.getConfig().space.guid],
+                spaceGuids: [this.getConfig().space.GUID],
                 names: [businessService]
             },
             this.logger
@@ -489,7 +489,7 @@ export default class FDCService {
     private async validateSelectedApp(appParams: AppParams, credentials: any): Promise<string[]> {
         try {
             const { entries, serviceInstanceGuid, manifest } = await HTML5RepoUtils.downloadAppContent(
-                this.cfConfig.space.guid,
+                this.cfConfig.space.GUID,
                 appParams,
                 this.logger
             );
