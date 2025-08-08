@@ -1,1 +1,38 @@
-[]
+[
+    {
+        "message": "Annotating values with $value is deprecated, use nested annotations names instead.",
+        "rule": "deprecated-$value-syntax",
+        "range": "[(2,8)..(2,29)]",
+        "severity": 2,
+        "data": {
+            "descriptionLink": "https://cap.cloud.sap/docs/releases/archive/2022/jun22#annotating-odata-annotations"
+        }
+    },
+    {
+        "message": "Annotating values with $value is deprecated, use nested annotations names instead.",
+        "rule": "deprecated-$value-syntax",
+        "range": "[(2,19)..(2,27)]",
+        "severity": 2,
+        "data": {
+            "descriptionLink": "https://cap.cloud.sap/docs/releases/archive/2022/jun22#annotating-odata-annotations"
+        }
+    },
+    {
+        "message": "Annotating values with $value is deprecated, use nested annotations names instead.",
+        "rule": "deprecated-$value-syntax",
+        "range": "[(5,8)..(6,4)]",
+        "severity": 2,
+        "data": {
+            "descriptionLink": "https://cap.cloud.sap/docs/releases/archive/2022/jun22#annotating-odata-annotations"
+        }
+    },
+    {
+        "message": "Annotating values with $value is deprecated, use nested annotations names instead.",
+        "rule": "deprecated-$value-syntax",
+        "range": "[(9,12)..(10,8)]",
+        "severity": 2,
+        "data": {
+            "descriptionLink": "https://cap.cloud.sap/docs/releases/archive/2022/jun22#annotating-odata-annotations"
+        }
+    }
+]

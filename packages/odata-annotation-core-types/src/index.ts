@@ -20,4 +20,13 @@ export {
 
 export { Constraints, Facets } from './types/vocabularies';
 
-export { Location, Range, Position, Diagnostic, DiagnosticSeverity, TextEdit, WorkspaceEdit } from './language-server';
+export {
+    Location,
+    Range,
+    Position,
+    Diagnostic,
+    DiagnosticSeverity,
+    DiagnosticTag,
+    TextEdit,
+    WorkspaceEdit
+} from './language-server';
