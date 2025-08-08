@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.36.1
+
+### Patch Changes
+
+-   47bd07a: Remove default Index logic from getAggregationPathPrompt of fpm writers
+
 ## 0.36.0
 
 ### Minor Changes
