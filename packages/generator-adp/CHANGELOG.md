@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.3.62
+
+### Patch Changes
+
+-   f5f6a31: fix: Pass the same prompt options when running deployment generator as a step or standalone
+
 ## 0.3.61
 
 ### Patch Changes
