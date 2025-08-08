@@ -41,7 +41,7 @@ export async function applyCAPUpdates(
     } = capProjectSettings;
 
     // update root package.json
-    await updateRootPackageJson(fs, packageName, sapux, capService, appId, log, enableNPMWorkspaces);
+    await updateRootPackageJson(fs, packageName, sapux, capService, appId, enableCdsUi5Plugin, enableNPMWorkspaces);
 
     if (capService.capType === 'Java') {
         const capProjectPath = capService.projectPath;

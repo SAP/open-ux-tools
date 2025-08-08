@@ -1,10 +1,9 @@
 import type { Package } from '@sap-ux/project-access';
-import { getCapCustomPaths, checkCdsUi5PluginEnabled } from '@sap-ux/project-access';
+import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import { dirname, join, normalize, posix } from 'path';
+import { join, normalize, posix } from 'path';
 import type { CapServiceCdsInfo } from '../cap-config/types';
 import { enableCdsUi5Plugin } from '../cap-config';
-import type { Logger } from '@sap-ux/logger';
 
 /**
  * Retrieves the CDS watch script for the CAP app.
@@ -53,12 +52,12 @@ async function updateScripts(
     packageJsonPath: string,
     projectName: string,
     appId: string,
-    enableNPMWorkspaces?: boolean
+    enableNPMWorkspaces?: boolean,
+    isCdsUi5PluginEnabled?: boolean
 ): Promise<void> {
-    const hasNPMworkspaces = await checkCdsUi5PluginEnabled(dirname(packageJsonPath), fs);
     let cdsScript;
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    if (enableNPMWorkspaces || hasNPMworkspaces) {
+    if (enableNPMWorkspaces || isCdsUi5PluginEnabled) {
         // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId
         cdsScript = getCDSWatchScript(projectName, appId);
     } else {
@@ -87,18 +86,25 @@ export async function updateRootPackageJson(
     sapux: boolean,
     capService: CapServiceCdsInfo,
     appId: string,
-    log?: Logger,
-    enableNPMWorkspaces?: boolean
+    shouldEnableCdsUi5Plugin: boolean,
+    shouldEnableNPMWorkspaces?: boolean
 ): Promise<void> {
     const packageJsonPath: string = join(capService.projectPath, 'package.json');
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const capNodeType = 'Node.js';
 
-    if (enableNPMWorkspaces && packageJson) {
+    if ((shouldEnableCdsUi5Plugin || shouldEnableNPMWorkspaces) && packageJson) {
         await enableCdsUi5Plugin(capService.projectPath, fs);
     }
     if (capService?.capType === capNodeType) {
-        await updateScripts(fs, packageJsonPath, projectName, appId, enableNPMWorkspaces);
+        await updateScripts(
+            fs,
+            packageJsonPath,
+            projectName,
+            appId,
+            shouldEnableNPMWorkspaces,
+            capService.cdsUi5PluginInfo.isCdsUi5PluginEnabled
+        );
     }
     if (sapux) {
         const dirPath = join(capService.appPath ?? (await getCapCustomPaths(capService.projectPath)).app, projectName);
