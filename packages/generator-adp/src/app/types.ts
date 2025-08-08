@@ -135,6 +135,7 @@ export interface TargetFolderPromptOptions {
 
 export interface UI5VersionPromptOptions {
     default?: string;
+    hide?: boolean;
 }
 
 export interface EnableTypeScriptPromptOptions {
@@ -223,3 +224,46 @@ export interface JsonInput {
     projectName?: string;
     namespace?: string;
 }
+
+/**
+ * CF services (application sources) prompts
+ */
+export enum cfServicesPromptNames {
+    approuter = 'approuter',
+    businessService = 'businessService',
+    businessSolutionName = 'businessSolutionName',
+    baseApp = 'baseApp'
+}
+
+export type CfServicesAnswers = {
+    [cfServicesPromptNames.approuter]?: string;
+    [cfServicesPromptNames.businessService]?: string;
+    [cfServicesPromptNames.businessSolutionName]?: string;
+    // Base app object returned by discovery (shape provided by FDC service)
+    [cfServicesPromptNames.baseApp]?: unknown;
+};
+
+export type CFServicesQuestion = YUIQuestion<CfServicesAnswers>;
+
+export interface ApprouterPromptOptions {
+    hide?: boolean;
+}
+
+export interface BusinessServicePromptOptions {
+    hide?: boolean;
+}
+
+export interface BusinessSolutionNamePromptOptions {
+    hide?: boolean;
+}
+
+export interface BaseAppPromptOptions {
+    hide?: boolean;
+}
+
+export type CfServicesPromptOptions = Partial<{
+    [cfServicesPromptNames.approuter]: ApprouterPromptOptions;
+    [cfServicesPromptNames.businessService]: BusinessServicePromptOptions;
+    [cfServicesPromptNames.businessSolutionName]: BusinessSolutionNamePromptOptions;
+    [cfServicesPromptNames.baseApp]: BaseAppPromptOptions;
+}>;

@@ -33,6 +33,7 @@ import { EventName } from '../telemetryEvents';
 import { setHeaderTitle } from '../utils/opts';
 import AdpGeneratorLogger from '../utils/logger';
 import { getPrompts } from './questions/attributes';
+import { getPrompts as getCFServicesPrompts } from './questions/cf-services';
 import { ConfigPrompter } from './questions/configuration';
 import { validateJsonInput } from './questions/helper/validators';
 import { getPackageInfo, installDependencies } from '../utils/deps';
@@ -40,7 +41,7 @@ import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
-import type { TargetEnvAnswers } from './types';
+import type { TargetEnvAnswers, CfServicesAnswers } from './types';
 import { TargetEnv } from './types';
 import { type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput } from './types';
 import {
@@ -138,6 +139,7 @@ export default class extends Generator {
     private cfConfig: CFConfig;
     private projectLocation: string;
     private cfProjectDestinationPath: string;
+    private cfServicesAnswers: CfServicesAnswers;
 
     /**
      * Creates an instance of the generator.
@@ -317,12 +319,14 @@ export default class extends Generator {
             }
 
             const options: AttributePromptOptions = {
-                targetFolder: { default: this.cfProjectDestinationPath, hide: true },
+                targetFolder: { hide: true },
+                ui5Version: { hide: true },
                 ui5ValidationCli: { hide: true },
                 enableTypeScript: { hide: true },
                 addFlpConfig: { hide: true },
                 addDeployConfig: { hide: true }
             };
+
             const attributesQuestions = getPrompts(
                 this.destinationPath(),
                 {
@@ -337,8 +341,17 @@ export default class extends Generator {
             );
 
             this.attributeAnswers = await this.prompt(attributesQuestions);
-
             this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
+
+            const cfServicesQuestions = await getCFServicesPrompts({
+                isCFLoggedIn: this.isCFLoggedIn,
+                fdcService: this.fdcService,
+                mtaProjectPath: this.cfProjectDestinationPath,
+                isInternalUsage: isInternalFeaturesSettingEnabled(),
+                logger: this.logger
+            });
+            this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(cfServicesQuestions);
+            this.logger.info(`CF Services Answers: ${JSON.stringify(this.cfServicesAnswers, null, 2)}`);
         }
     }
 
