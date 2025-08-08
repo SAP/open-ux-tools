@@ -103,9 +103,9 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
-        await super.onCreateBtnPressHandler();
         const source = event.getSource<Button>();
         source.setEnabled(false);
+        await super.onCreateBtnPressHandler();
 
         const columnFragmentName = this.model.getProperty('/newColumnFragmentName');
         const cellFragmentName = this.model.getProperty('/newCellFragmentName');

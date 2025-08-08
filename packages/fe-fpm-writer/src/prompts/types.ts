@@ -15,6 +15,7 @@ export enum PromptsType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
     Table = 'table',
+    Page = 'page',
     BuildingBlocks = 'building-blocks'
 }
 

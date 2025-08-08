@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.15.3
+
+### Patch Changes
+
+-   ad49c30: fix: `Add Custom Table Column` Quick Action not using the correct fragment template.
+
+## 0.15.2
+
+### Patch Changes
+
+-   f4da4a6: Fix Sonar issue: Invalid loop. Its body allows only one iteration.
+
 ## 0.15.1
 
 ### Patch Changes

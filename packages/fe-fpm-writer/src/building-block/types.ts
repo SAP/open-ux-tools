@@ -7,6 +7,7 @@ export enum BuildingBlockType {
     FilterBar = 'filter-bar',
     Chart = 'chart',
     Field = 'field',
+    Page = 'page',
     Table = 'table'
 }
 
@@ -386,6 +387,26 @@ export interface Table extends BuildingBlock {
 }
 
 /**
+ * Building block used to create a page.
+ * The page building block allows configuration of the title, and description.
+ *
+ * @example
+ * <macro:Page title="My Page Title" description="My Page Description" />
+ * @extends {BuildingBlock}
+ */
+export interface Page extends BuildingBlock {
+    /**
+     * The title of the page.
+     */
+    title?: string;
+
+    /**
+     * The description of the page.
+     */
+    description?: string;
+}
+
+/**
  * Input configuration for the generate function.
  */
 export interface BuildingBlockConfig<T extends BuildingBlock> {
@@ -411,4 +432,10 @@ export interface BuildingBlockConfig<T extends BuildingBlock> {
      * @default true
      */
     allowAutoAddDependencyLib?: boolean;
+
+    /**
+     * If true, replaces the element selected by aggregationPath in the view with the page building block.
+     * If false or undefined, the page building block will be appended.
+     */
+    replace?: boolean;
 }
