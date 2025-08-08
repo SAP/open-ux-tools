@@ -63,7 +63,7 @@ export async function validateJsonInput(
     isCustomerBase: boolean,
     { projectName, targetFolder, namespace, system }: JsonInputParams
 ): Promise<void> {
-    let validationResult = validateProjectName(projectName, targetFolder, isCustomerBase);
+    let validationResult = validateProjectName(projectName, targetFolder, isCustomerBase, false);
     if (isString(validationResult)) {
         throw new Error(validationResult);
     }
