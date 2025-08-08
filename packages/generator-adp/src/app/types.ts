@@ -235,6 +235,13 @@ export enum cfServicesPromptNames {
     baseApp = 'baseApp'
 }
 
+export const AppRouterType = {
+    MANAGED: 'Managed HTML5 Application Runtime',
+    STANDALONE: 'Standalone HTML5 Application Runtime'
+} as const;
+
+export type AppRouterType = (typeof AppRouterType)[keyof typeof AppRouterType];
+
 export type CfServicesAnswers = {
     [cfServicesPromptNames.approuter]?: string;
     [cfServicesPromptNames.businessService]?: string;

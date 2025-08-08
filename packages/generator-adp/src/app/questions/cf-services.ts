@@ -2,23 +2,43 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { CFApp, FDCService, ServiceKeys } from '@sap-ux/adp-tooling';
 import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 
-import { cfServicesPromptNames } from '../types';
+import { cfServicesPromptNames, AppRouterType } from '../types';
 import type { CfServicesAnswers, CFServicesQuestion, CfServicesPromptOptions } from '../types';
 
-export interface CFServicesPromptsConfig {
-    fdcService: FDCService;
-    isInternalUsage?: boolean;
-    logger?: { log: (msg: string) => void; error: (msg: string) => void };
-}
-
-const MANAGED_APPROUTER = 'Managed HTML5 Application Runtime';
-const STANDALONE_APPROUTER = 'Standalone HTML5 Application Runtime';
-
+/**
+ * Get the choices for the base app.
+ *
+ * @param {CFApp[]} apps - The apps to get the choices for.
+ * @param {FDCService} fdcService - The FDC service instance.
+ * @returns {Array<{ name: string; value: CFApp }>} The choices for the base app.
+ */
 const getBaseAppChoices = (apps: CFApp[], fdcService: FDCService): { name: string; value: CFApp }[] => {
     return apps.map((result: CFApp) => ({
         name: fdcService.formatDiscovery?.(result) ?? `${result.title} (${result.appId}, ${result.appVersion})`,
         value: result
     }));
+};
+
+/**
+ * Get the choices for the approuter.
+ *
+ * @param {boolean} isInternalUsage - Whether the user is using internal features.
+ * @returns {Array<{ name: AppRouterType; value: AppRouterType }>} The choices for the approuter.
+ */
+const getAppRouterChoices = (isInternalUsage: boolean): { name: AppRouterType; value: AppRouterType }[] => {
+    const options: { name: AppRouterType; value: AppRouterType }[] = [
+        {
+            name: AppRouterType.MANAGED,
+            value: AppRouterType.MANAGED
+        }
+    ];
+    if (isInternalUsage) {
+        options.push({
+            name: AppRouterType.STANDALONE,
+            value: AppRouterType.STANDALONE
+        });
+    }
+    return options;
 };
 
 /**
@@ -63,37 +83,31 @@ export class CFServicesPrompter {
     private baseAppOnChoiceError: string | null = null;
 
     /**
+     * Constructor for CFServicesPrompter.
+     *
      * @param {FDCService} fdcService - FDC service instance.
+     * @param {boolean} isCFLoggedIn - Whether the user is logged in to Cloud Foundry.
      * @param {ToolsLogger} logger - Logger instance.
      * @param {boolean} [isInternalUsage] - Internal usage flag.
      */
-    constructor(fdcService: FDCService, logger: ToolsLogger, isInternalUsage: boolean = false) {
+    constructor(fdcService: FDCService, isCFLoggedIn: boolean, logger: ToolsLogger, isInternalUsage: boolean = false) {
         this.fdcService = fdcService;
         this.isInternalUsage = isInternalUsage;
         this.logger = logger;
+        this.isCFLoggedIn = isCFLoggedIn;
     }
 
-    /**
-     * Public API: returns prompts for CF application sources.
-     *
-     * @param {string} mtaProjectPath - The path to the MTA project.
-     * @param {boolean} isCFLoggedIn - Whether the user is logged in to Cloud Foundry.
-     * @returns {Promise<any[]>} The prompts for CF application sources.
-     */
     /**
      * Builds the CF services prompts, keyed and hide-filtered like attributes.ts.
      *
      * @param {string} mtaProjectPath - MTA project path
-     * @param {boolean} isCFLoggedIn - Whether user is logged in to CF
      * @param {CfServicesPromptOptions} [promptOptions] - Optional per-prompt visibility controls
      * @returns {Promise<CFServicesQuestion[]>} CF services questions
      */
     public async getPrompts(
         mtaProjectPath: string,
-        isCFLoggedIn: boolean,
         promptOptions?: CfServicesPromptOptions
     ): Promise<CFServicesQuestion[]> {
-        this.isCFLoggedIn = isCFLoggedIn;
         if (this.isCFLoggedIn) {
             this.businessServices = await this.fdcService.getServices(mtaProjectPath);
         }
@@ -108,9 +122,9 @@ export class CFServicesPrompter {
         const questions = Object.entries(keyedPrompts)
             .filter(([promptName]) => {
                 const options = promptOptions?.[promptName as cfServicesPromptNames];
-                return !(options && 'hide' in options && (options as { hide?: boolean }).hide);
+                return !(options && 'hide' in options && options.hide);
             })
-            .map(([, question]) => question);
+            .map(([_, question]) => question);
 
         return questions;
     }
@@ -127,7 +141,7 @@ export class CFServicesPrompter {
             message: 'Enter a unique name for the business solution of the project',
             when: (answers: CfServicesAnswers) =>
                 this.isCFLoggedIn &&
-                answers.approuter === MANAGED_APPROUTER &&
+                answers.approuter === AppRouterType.MANAGED &&
                 this.showSolutionNamePrompt &&
                 answers.businessService
                     ? true
@@ -150,24 +164,12 @@ export class CFServicesPrompter {
     private getAppRouterPrompt(mtaProjectPath: string): CFServicesQuestion {
         const mtaProjectName =
             mtaProjectPath.indexOf('/') > -1 ? mtaProjectPath.split('/').pop() : mtaProjectPath.split('\\').pop();
-        const options = [
-            {
-                name: MANAGED_APPROUTER,
-                value: MANAGED_APPROUTER
-            }
-        ];
-        if (this.isInternalUsage) {
-            options.push({
-                name: STANDALONE_APPROUTER,
-                value: STANDALONE_APPROUTER
-            });
-        }
 
         return {
             type: 'list',
             name: cfServicesPromptNames.approuter,
             message: 'Select your HTML5 application runtime',
-            choices: options,
+            choices: getAppRouterChoices(this.isInternalUsage),
             when: () => {
                 const modules = this.fdcService.getModuleNames(mtaProjectPath);
                 const hasRouter = this.fdcService.hasApprouter(mtaProjectName as string, modules);
@@ -336,6 +338,6 @@ export async function getPrompts({
     isCFLoggedIn: boolean;
     logger: ToolsLogger;
 }): Promise<CFServicesQuestion[]> {
-    const prompter = new CFServicesPrompter(fdcService, logger, isInternalUsage);
-    return prompter.getPrompts(mtaProjectPath, isCFLoggedIn);
+    const prompter = new CFServicesPrompter(fdcService, isCFLoggedIn, logger, isInternalUsage);
+    return prompter.getPrompts(mtaProjectPath);
 }
