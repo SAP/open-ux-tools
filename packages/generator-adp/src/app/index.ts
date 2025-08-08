@@ -315,6 +315,30 @@ export default class extends Generator {
                 YamlUtils.loadYamlContent(join(this.cfProjectDestinationPath, 'mta.yaml'));
                 this.logger.log(`Project path information: ${this.cfProjectDestinationPath}`);
             }
+
+            const options: AttributePromptOptions = {
+                targetFolder: { default: this.cfProjectDestinationPath, hide: true },
+                ui5ValidationCli: { hide: true },
+                enableTypeScript: { hide: true },
+                addFlpConfig: { hide: true },
+                addDeployConfig: { hide: true }
+            };
+            const attributesQuestions = getPrompts(
+                this.destinationPath(),
+                {
+                    ui5Versions: [],
+                    isVersionDetected: false,
+                    isCloudProject: false,
+                    layer: this.layer,
+                    prompts: this.prompts,
+                    isCfEnv: true
+                },
+                options
+            );
+
+            this.attributeAnswers = await this.prompt(attributesQuestions);
+
+            this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
         }
     }
 
