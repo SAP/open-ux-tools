@@ -4,6 +4,7 @@ config.collectCoverage = false;
 config.testEnvironment = './src/index.js';
 config.testEnvironmentOptions = {
     configPath: process.env.UI5_JEST_CONFIG || 'test/fixtures/ui5.yaml',
+    shimManifests: true,
     force: true
 };
 module.exports = config;
