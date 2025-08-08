@@ -286,9 +286,10 @@ export function getAddFlpConfigPrompt(
  */
 export function getEnableVirtualEndpoints(capCdsInfo?: CdsUi5PluginInfo): UI5ApplicationQuestion {
     return {
-        when: (answers: UI5ApplicationAnswers): boolean => {
+        when: (): boolean => {
             if (capCdsInfo) {
-                return capCdsInfo.isCdsUi5PluginEnabled || !!answers?.enableTypeScript;
+                // show the prompt if cds plugin and workspaces are enabled or the criteria is met and it will be enabled
+                return capCdsInfo.isCdsUi5PluginEnabled || (capCdsInfo.hasMinCdsVersion && !capCdsInfo.hasCdsUi5Plugin);
             }
             return true;
         },
