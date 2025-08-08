@@ -2,6 +2,7 @@ import type { Prompts as YeomanUiSteps, IPrompt } from '@sap-devx/yeoman-ui-type
 
 import { t } from './i18n';
 import { GeneratorTypes } from '../types';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 /**
  * Returns the list of base wizard pages used in the Adaptation Project.
@@ -10,6 +11,7 @@ import { GeneratorTypes } from '../types';
  */
 export function getWizardPages(): IPrompt[] {
     return [
+        ...(isAppStudio() ? [{ name: 'Target environment', description: '' }] : []),
         {
             name: t('yuiNavSteps.configurationName'),
             description: t('yuiNavSteps.configurationDescr')
@@ -19,6 +21,26 @@ export function getWizardPages(): IPrompt[] {
             description: t('yuiNavSteps.projectAttributesDescr')
         }
     ];
+}
+
+/**
+ * Updates the CF wizard steps.
+ *
+ * @param {boolean} isCFEnv - Whether the target environment is Cloud Foundry.
+ * @param {YeomanUiSteps} prompts - The Yeoman UI Prompts container object.
+ */
+export function updateCfWizardSteps(isCFEnv: boolean, prompts: YeomanUiSteps): void {
+    if (isCFEnv) {
+        prompts.splice(1, 1, [
+            { name: 'Login to Cloud Foundry', description: 'Provide credentials.' },
+            { name: 'Project path', description: 'Provide path to MTA project.' },
+            {
+                name: t('yuiNavSteps.projectAttributesName'),
+                description: t('yuiNavSteps.projectAttributesDescr')
+            },
+            { name: 'Application Details', description: 'Setup application details.' }
+        ]);
+    }
 }
 
 /**

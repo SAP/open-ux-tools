@@ -1,7 +1,10 @@
+import fs from 'fs';
 import { join } from 'path';
 import Generator from 'yeoman-generator';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
 
+import type { CFConfig } from '@sap-ux/adp-tooling';
+import { getPrompts as getCFLoginPrompts } from './questions/cf-login';
 import {
     FlexLayer,
     SystemLookup,
@@ -15,7 +18,8 @@ import {
     type UI5Version,
     SourceManifest,
     isCFEnvironment,
-    getBaseAppInbounds
+    getBaseAppInbounds,
+    YamlUtils
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
@@ -36,9 +40,20 @@ import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
+import type { TargetEnvAnswers } from './types';
+import { TargetEnv } from './types';
 import { type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput } from './types';
-import { getWizardPages, updateFlpWizardSteps, updateWizardSteps, getDeployPage } from '../utils/steps';
+import {
+    getWizardPages,
+    updateFlpWizardSteps,
+    updateWizardSteps,
+    getDeployPage,
+    updateCfWizardSteps
+} from '../utils/steps';
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
+import { FDCService } from '@sap-ux/adp-tooling';
+import { getTargetEnvPrompt, promptUserForProjectPath } from './questions/target-env';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -115,6 +130,14 @@ export default class extends Generator {
      * Base application inbounds, if the base application is an FLP app.
      */
     private baseAppInbounds?: ManifestNamespace.Inbound;
+    private readonly fdcService: FDCService;
+    private readonly isMtaYamlFound: boolean;
+    private targetEnv: TargetEnv;
+    private isCfEnv = false;
+    private isCFLoggedIn = false;
+    private cfConfig: CFConfig;
+    private projectLocation: string;
+    private cfProjectDestinationPath: string;
 
     /**
      * Creates an instance of the generator.
@@ -127,6 +150,8 @@ export default class extends Generator {
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.shouldInstallDeps = opts.shouldInstallDeps ?? true;
         this.toolsLogger = new ToolsLogger();
+        this.fdcService = new FDCService(this.logger, opts.vscode);
+        this.isMtaYamlFound = YamlUtils.isMtaProject(process.cwd());
         this.vscode = opts.vscode;
         this.options = opts;
 
@@ -179,72 +204,150 @@ export default class extends Generator {
             return;
         }
 
-        const configQuestions = this.prompter.getPrompts({
-            appValidationCli: { hide: !this.isCli },
-            systemValidationCli: { hide: !this.isCli }
-        });
-        this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
-        this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;
+        if (isAppStudio()) {
+            const isCfInstalled = await this.fdcService.isCfInstalled();
+            this.logger.info(`isCfInstalled: ${isCfInstalled}`);
 
-        this.logger.info(`System: ${this.configAnswers.system}`);
-        this.logger.info(`Application: ${JSON.stringify(this.configAnswers.application, null, 2)}`);
-
-        const { ui5Versions, systemVersion } = this.prompter.ui5;
-        const promptConfig = {
-            ui5Versions,
-            isVersionDetected: !!systemVersion,
-            isCloudProject: this.prompter.isCloud,
-            layer: this.layer,
-            prompts: this.prompts
-        };
-        const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
-        if (this.prompter.isCloud) {
-            this.baseAppInbounds = await getBaseAppInbounds(this.configAnswers.application.id, this.prompter.provider);
+            const targetEnvAnswers = await this.prompt<TargetEnvAnswers>([
+                getTargetEnvPrompt(this.appWizard, isCfInstalled, this.fdcService)
+            ]);
+            this.targetEnv = targetEnvAnswers.targetEnv;
+            this.isCfEnv = this.targetEnv === TargetEnv.CF;
+            this.logger.info(`Target environment: ${this.targetEnv}`);
+            updateCfWizardSteps(this.isCfEnv, this.prompts);
+        } else {
+            this.targetEnv = TargetEnv.ABAP;
         }
-        const options: AttributePromptOptions = {
-            targetFolder: { default: defaultFolder, hide: this.shouldCreateExtProject },
-            ui5ValidationCli: { hide: !this.isCli },
-            enableTypeScript: { hide: this.shouldCreateExtProject },
-            addFlpConfig: { hasBaseAppInbounds: !!this.baseAppInbounds, hide: this.shouldCreateExtProject },
-            addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase }
-        };
-        const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
 
-        this.attributeAnswers = await this.prompt(attributesQuestions);
+        if (!this.isCfEnv) {
+            const configQuestions = this.prompter.getPrompts({
+                appValidationCli: { hide: !this.isCli },
+                systemValidationCli: { hide: !this.isCli }
+            });
+            this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
+            this.shouldCreateExtProject = !!this.configAnswers.shouldCreateExtProject;
 
-        // Steps need to be updated here to be available after back navigation in Yeoman UI.
-        this._updateWizardStepsAfterNavigation();
+            this.logger.info(`System: ${this.configAnswers.system}`);
+            this.logger.info(`Application: ${JSON.stringify(this.configAnswers.application, null, 2)}`);
 
-        this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
+            const { ui5Versions, systemVersion } = this.prompter.ui5;
+            const promptConfig = {
+                ui5Versions,
+                isVersionDetected: !!systemVersion,
+                isCloudProject: this.prompter.isCloud,
+                layer: this.layer,
+                prompts: this.prompts
+            };
+            const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
+            if (this.prompter.isCloud) {
+                this.baseAppInbounds = await getBaseAppInbounds(
+                    this.configAnswers.application.id,
+                    this.prompter.provider
+                );
+            }
+            const options: AttributePromptOptions = {
+                targetFolder: { default: defaultFolder, hide: this.shouldCreateExtProject },
+                ui5ValidationCli: { hide: !this.isCli },
+                enableTypeScript: { hide: this.shouldCreateExtProject },
+                addFlpConfig: { hasBaseAppInbounds: !!this.baseAppInbounds, hide: this.shouldCreateExtProject },
+                addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase }
+            };
+            const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
 
-        if (this.attributeAnswers.addDeployConfig) {
-            const client = (await this.systemLookup.getSystemByName(this.configAnswers.system))?.Client;
-            addDeployGen(
+            this.attributeAnswers = await this.prompt(attributesQuestions);
+
+            // Steps need to be updated here to be available after back navigation in Yeoman UI.
+            this._updateWizardStepsAfterNavigation();
+
+            this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
+
+            if (this.attributeAnswers.addDeployConfig) {
+                const client = (await this.systemLookup.getSystemByName(this.configAnswers.system))?.Client;
+                addDeployGen(
+                    {
+                        projectName: this.attributeAnswers.projectName,
+                        targetFolder: this.attributeAnswers.targetFolder,
+                        connectedSystem: this.configAnswers.system,
+                        client
+                    },
+                    this.composeWith.bind(this),
+                    this.logger,
+                    this.appWizard
+                );
+            }
+
+            if (this.attributeAnswers?.addFlpConfig) {
+                addFlpGen(
+                    {
+                        vscode: this.vscode,
+                        projectRootPath: this._getProjectPath(),
+                        inbounds: this.baseAppInbounds,
+                        layer: this.layer
+                    },
+                    this.composeWith.bind(this),
+                    this.logger,
+                    this.appWizard
+                );
+            }
+        } else {
+            this.isCFLoggedIn = await this.fdcService.isLoggedIn();
+
+            this._setCFLoginPageDescription(this.isCFLoggedIn);
+
+            await this.prompt(getCFLoginPrompts(this.vscode, this.fdcService, this.isCFLoggedIn));
+            this.cfConfig = this.fdcService.getConfig();
+            this.isCFLoggedIn = await this.fdcService.isLoggedIn();
+
+            this.logger.log(`Project organization information: ${JSON.stringify(this.cfConfig.org, null, 2)}`);
+            this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
+            this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
+
+            if (!this.isMtaYamlFound) {
+                const projectPathAnswers = await this.prompt(
+                    promptUserForProjectPath(this.fdcService, this.isCFLoggedIn, this.vscode)
+                );
+                this.projectLocation = projectPathAnswers.projectLocation;
+                this.projectLocation = fs.realpathSync(this.projectLocation, 'utf-8');
+                this.cfProjectDestinationPath = this.destinationRoot(this.projectLocation);
+                this.logger.log(`Project path information: ${this.projectLocation}`);
+            } else {
+                this.cfProjectDestinationPath = this.destinationRoot(process.cwd());
+                YamlUtils.loadYamlContent(join(this.cfProjectDestinationPath, 'mta.yaml'));
+                this.logger.log(`Project path information: ${this.cfProjectDestinationPath}`);
+            }
+
+            const options: AttributePromptOptions = {
+                targetFolder: { default: this.cfProjectDestinationPath, hide: true },
+                ui5ValidationCli: { hide: true },
+                enableTypeScript: { hide: true },
+                addFlpConfig: { hide: true },
+                addDeployConfig: { hide: true }
+            };
+            const attributesQuestions = getPrompts(
+                this.destinationPath(),
                 {
-                    projectName: this.attributeAnswers.projectName,
-                    targetFolder: this.attributeAnswers.targetFolder,
-                    connectedSystem: this.configAnswers.system,
-                    client
+                    ui5Versions: [],
+                    isVersionDetected: false,
+                    isCloudProject: false,
+                    layer: this.layer,
+                    prompts: this.prompts,
+                    isCfEnv: true
                 },
-                this.composeWith.bind(this),
-                this.logger,
-                this.appWizard
+                options
             );
-        }
 
-        if (this.attributeAnswers?.addFlpConfig) {
-            addFlpGen(
-                {
-                    vscode: this.vscode,
-                    projectRootPath: this._getProjectPath(),
-                    inbounds: this.baseAppInbounds,
-                    layer: this.layer
-                },
-                this.composeWith.bind(this),
-                this.logger,
-                this.appWizard
-            );
+            this.attributeAnswers = await this.prompt(attributesQuestions);
+
+            this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
         }
+    }
+
+    private _setCFLoginPageDescription(isLoggedIn: boolean): void {
+        const pageLabel = {
+            name: 'Login to Cloud Foundry',
+            description: isLoggedIn ? '' : 'Provide credentials.'
+        };
+        this.prompts.splice(1, 1, [pageLabel]);
     }
 
     async writing(): Promise<void> {

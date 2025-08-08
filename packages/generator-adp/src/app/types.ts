@@ -162,6 +162,36 @@ export type AttributePromptOptions = Partial<{
     [attributePromptNames.addFlpConfig]: AddFlpConfigPromptOptions;
 }>;
 
+export enum targetEnvPromptNames {
+    targetEnv = 'targetEnv'
+}
+
+export const TargetEnv = { ABAP: 'ABAP', CF: 'CF' } as const;
+
+export type TargetEnv = (typeof TargetEnv)[keyof typeof TargetEnv];
+
+export type TargetEnvAnswers = { targetEnv: TargetEnv };
+
+export type TargetEnvQuestion = YUIQuestion<TargetEnvAnswers>;
+
+export type ProjectLocationAnswers = { projectLocation: string };
+
+export enum cfLoginPromptNames {
+    cfLoggedInMainMessage = 'cfLoggedInMainMessage',
+    cfLoggedApiEndpointMessage = 'cfLoggedApiEndpointMessage',
+    cfLoggedInOrganizationMessage = 'cfLoggedInOrganizationMessage',
+    cfLoggedInSpaceMessage = 'cfLoggedInSpaceMessage',
+    cfLoggedInEndingMessage = 'cfLoggedInEndingMessage',
+    cfExternalLogin = 'cfExternalLogin',
+    cfExternalLoginSuccessMessage = 'cfExternalLoginSuccessMessage'
+}
+
+export type CFLoginAnswers = {
+    [K in cfLoginPromptNames]?: string;
+};
+
+export type CFLoginQuestion = YUIQuestion<CFLoginAnswers>;
+
 export interface ExtensionProjectData {
     destination: {
         name: string;
