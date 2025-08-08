@@ -36,7 +36,7 @@
         "react-virtualized": "9.22.5",
         "rimraf": "5.0.5",
         "ts-jest": "29.4.0",
-        "typescript": "5.8.3",
+        "typescript": "5.9.2",
         "update-ts-references": "3.2.1",
         "yargs-parser": "21.1.1"
     },
