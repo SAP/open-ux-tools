@@ -345,4 +345,19 @@ describe('Select', () => {
         expect(input).toBeDefined();
         expect(onChangeFn).toHaveBeenCalledWith('select', 111);
     });
+
+    it('Select checked value as default', async () => {
+        const onChangeFn = jest.fn();
+        const promptsWithChecked = {
+            ...props,
+            choices: [
+                { name: 'testText0', value: 'testValue0' },
+                { name: 'testText1', value: 'testValue1', checked: true }
+            ]
+        };
+        render(<Select {...promptsWithChecked} onChange={onChangeFn} />);
+        const input = screen.getByRole('combobox');
+        expect(input).toBeDefined();
+        expect(onChangeFn).toHaveBeenCalledWith('select', 'testValue1');
+    });
 });
