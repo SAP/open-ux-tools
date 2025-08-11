@@ -61,15 +61,10 @@ export function getEnvironments(appWizard: AppWizard, isCfInstalled: boolean): E
  * Returns the project path prompt.
  *
  * @param {FDCService} fdcService - The FDC service instance.
- * @param {boolean} isCFLoggedIn - Whether the user is logged in to Cloud Foundry.
  * @param {any} vscode - The VSCode instance.
  * @returns {YUIQuestion<ProjectLocationAnswers>[]} The project path prompt.
  */
-export function getProjectPathPrompt(
-    fdcService: FDCService,
-    isCFLoggedIn: boolean,
-    vscode: any
-): YUIQuestion<ProjectLocationAnswers> {
+export function getProjectPathPrompt(fdcService: FDCService, vscode: any): YUIQuestion<ProjectLocationAnswers> {
     return {
         type: 'input',
         name: 'projectLocation',

@@ -294,8 +294,6 @@ export default class extends Generator {
         } else {
             this.isCFLoggedIn = await this.fdcService.isLoggedIn();
 
-            this._setCFLoginPageDescription(this.isCFLoggedIn);
-
             await this.prompt(getCFLoginPrompts(this.vscode, this.fdcService, this.isCFLoggedIn));
             this.cfConfig = this.fdcService.getConfig();
             this.isCFLoggedIn = await this.fdcService.isLoggedIn();
@@ -304,19 +302,7 @@ export default class extends Generator {
             this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
             this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
 
-            if (!this.isMtaYamlFound) {
-                const pathAnswers = await this.prompt([
-                    getProjectPathPrompt(this.fdcService, this.isCFLoggedIn, this.vscode)
-                ]);
-                this.projectLocation = pathAnswers.projectLocation;
-                this.projectLocation = fs.realpathSync(this.projectLocation, 'utf-8');
-                this.cfProjectDestinationPath = this.destinationRoot(this.projectLocation);
-                this.logger.log(`Project path information: ${this.projectLocation}`);
-            } else {
-                this.cfProjectDestinationPath = this.destinationRoot(process.cwd());
-                YamlUtils.loadYamlContent(join(this.cfProjectDestinationPath, 'mta.yaml'));
-                this.logger.log(`Project path information: ${this.cfProjectDestinationPath}`);
-            }
+            await this.promptForCfProjectPath();
 
             const options: AttributePromptOptions = {
                 targetFolder: { hide: true },
@@ -355,12 +341,18 @@ export default class extends Generator {
         }
     }
 
-    private _setCFLoginPageDescription(isLoggedIn: boolean): void {
-        const pageLabel = {
-            name: 'Login to Cloud Foundry',
-            description: isLoggedIn ? '' : 'Provide credentials.'
-        };
-        this.prompts.splice(1, 1, [pageLabel]);
+    private async promptForCfProjectPath(): Promise<void> {
+        if (!this.isMtaYamlFound) {
+            const pathAnswers = await this.prompt([getProjectPathPrompt(this.fdcService, this.vscode)]);
+            this.projectLocation = pathAnswers.projectLocation;
+            this.projectLocation = fs.realpathSync(this.projectLocation, 'utf-8');
+            this.cfProjectDestinationPath = this.destinationRoot(this.projectLocation);
+            this.logger.log(`Project path information: ${this.projectLocation}`);
+        } else {
+            this.cfProjectDestinationPath = this.destinationRoot(process.cwd());
+            YamlUtils.loadYamlContent(join(this.cfProjectDestinationPath, 'mta.yaml'));
+            this.logger.log(`Project path information: ${this.cfProjectDestinationPath}`);
+        }
     }
 
     async writing(): Promise<void> {
