@@ -226,13 +226,13 @@ function handleValueProperty(
  * @param valueProperty - $value property node.
  */
 function addDeprecatedDiagnostics(state: VisitorState, node: Record, valueProperty: RecordProperty | undefined): void {
-    if (!valueProperty?.range || !node.range) {
+    if (!valueProperty?.name?.range) {
         return;
     }
     const diagnostic: Deprecated$ValueSyntax = {
         message: i18n.t('diagnostics.deprecated_$value_syntax'),
         rule: 'deprecated-$value-syntax',
-        range: valueProperty?.range,
+        range: valueProperty.name.range,
         severity: DiagnosticSeverity.Warning,
         data: {
             descriptionLink: 'https://cap.cloud.sap/docs/releases/archive/2022/jun22#annotating-odata-annotations'
