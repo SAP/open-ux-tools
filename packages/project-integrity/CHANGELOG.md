@@ -1,5 +1,11 @@
 # @sap-ux/project-integrity
 
+## 0.2.11
+
+### Patch Changes
+
+-   944af3e: Update all UI5 OPA test runner HTML files to use relative resource paths instead of absolute paths
+
 ## 0.2.10
 
 ### Patch Changes
