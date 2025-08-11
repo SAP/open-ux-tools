@@ -302,7 +302,7 @@ export default class extends Generator {
             this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
             this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
 
-            await this.promptForCfProjectPath();
+            await this._promptForCfProjectPath();
 
             const options: AttributePromptOptions = {
                 targetFolder: { hide: true },
@@ -341,7 +341,7 @@ export default class extends Generator {
         }
     }
 
-    private async promptForCfProjectPath(): Promise<void> {
+    private async _promptForCfProjectPath(): Promise<void> {
         if (!this.isMtaYamlFound) {
             const pathAnswers = await this.prompt([getProjectPathPrompt(this.fdcService, this.vscode)]);
             this.projectLocation = pathAnswers.projectLocation;
