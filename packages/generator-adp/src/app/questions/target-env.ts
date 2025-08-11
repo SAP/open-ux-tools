@@ -80,7 +80,6 @@ export function getProjectPathPrompt(
         },
         message: 'Specify the path to the project root',
         validate: (value: string) => validateProjectPath(value, fdcService),
-        when: () => isCFLoggedIn,
         default: () => getDefaultTargetFolder(vscode),
         store: false
     } as InputQuestion<ProjectLocationAnswers>;
