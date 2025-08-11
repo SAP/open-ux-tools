@@ -1,4 +1,4 @@
-import type { Identifier, AnnotationValue, StringLiteral } from '@sap-ux/cds-annotation-parser';
+import type { Identifier, AnnotationValue, StringLiteral, Annotation } from '@sap-ux/cds-annotation-parser';
 import { nodeRange, ReservedProperties, STRING_LITERAL_TYPE } from '@sap-ux/cds-annotation-parser';
 
 import type { Element, Range } from '@sap-ux/odata-annotation-core';
@@ -6,7 +6,7 @@ import { DiagnosticSeverity, Edm, createAttributeNode, createElementNode } from 
 
 import type { Subtree } from './handler';
 
-import { createPropertyAttribute, createTermAttribute } from './creators';
+import { createPropertyAttribute, createQualifierAttribute, createTermAttribute } from './creators';
 import { getPropertyType, getTerm } from './type-resolver';
 
 import type { Context, VisitorState } from './visitor-state';
@@ -20,12 +20,14 @@ import { i18n } from '../../i18n';
  * @param state VisitorSate for which context will be updated with the inferred value types.
  * @param segments Array of identifiers representing flattened record structure.
  * @param value annotation value.
+ * @param annotation Annotation AST node.
  * @returns subtree representing flattened structure
  */
 export function convertFlattenedPath(
     state: VisitorState,
     segments: Identifier[],
-    value: AnnotationValue | undefined
+    value: AnnotationValue | undefined,
+    annotation?: Annotation
 ): Subtree | undefined {
     // |________________Annotation____________________|
     // |         |                                    |
@@ -52,7 +54,14 @@ export function convertFlattenedPath(
     if (!expandedStructures.length) {
         return;
     }
-
+    const last = expandedStructures[expandedStructures.length - 1];
+    if (last.kind === 'annotation' && annotation?.qualifier) {
+        // last qualifier is parsed in annotation AST node and we need to attach it to the last flattened annotation
+        last.element.attributes[Edm.Qualifier] = createQualifierAttribute(
+            annotation.qualifier.value,
+            nodeRange(annotation.qualifier, false)
+        );
+    }
     for (const expandedStructure of expandedStructures) {
         if (parent) {
             if (expandedStructure.kind === 'record-type') {
@@ -152,6 +161,7 @@ function convertToExpandedStructure(
                 ? `${vocabularyNameOrAlias}.${termNameSegment.value}`
                 : vocabularyNameOrAlias;
             const termValueRange = createRange(segment.range?.start, termNameSegment.range?.end);
+            console.log(vocabularyNameOrAlias, termNameSegment);
 
             const embeddedAnnotation = createElementNode({
                 name: Edm.Annotation,

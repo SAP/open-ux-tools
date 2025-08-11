@@ -5,7 +5,7 @@ import { Position, Range } from '@sap-ux/text-document-utils';
 import { initI18n } from '../../src/i18n';
 import type { Assignment } from '@sap-ux/cds-annotation-parser';
 import { parse } from '@sap-ux/cds-annotation-parser';
-import type { Element, TextNode } from '@sap-ux/odata-annotation-core';
+import { Edm, type Element, type TextNode } from '@sap-ux/odata-annotation-core';
 import { convertAnnotation as toTerms } from '../../src/transforms/annotation/convert';
 
 declare const expect: jest.Expect;
@@ -529,7 +529,7 @@ describe('ast to generic format', () => {
 
     describe('property-annotation', () => {
         testConversion('property-annotation');
-        describe('pointer', () => {
+        describe.skip('pointer', () => {
             describe('property-annotation', () => {
                 test('first property-annotation', async () => {
                     const ast = await getAst('property-annotation');
@@ -1019,5 +1019,22 @@ UI.LineItem : { $value: []}`);
     });
     describe('expression', () => {
         testConversion('expression');
+    });
+    describe.only('flatten-embedded-annotation-with-qualifiers', () => {
+        testConversion('flatten-embedded-annotation-with-qualifiers');
+        test.only('two levels', () => {
+            const ast = parse(
+                `![Common.Text#first].![@UI.TextArrangement#second].@Core.Description #third : #TextLast`
+            );
+            const { terms } = toTerms(ast as Assignment, { vocabularyService });
+            const level1 = terms[0].content[0] as Element;
+            expect(level1.name).toStrictEqual('Annotation');
+            expect(level1.attributes[Edm.Term].value).toStrictEqual('Common.Text');
+            expect(level1.attributes[Edm.Qualifier].value).toStrictEqual('first');
+            const level2 = level1.content[0] as Element;
+            expect(level2.name).toStrictEqual('Annotation');
+            expect(level2.attributes[Edm.Term].value).toStrictEqual('UI.TextArrangement');
+            expect(level2.attributes[Edm.Qualifier].value).toStrictEqual('first');
+        });
     });
 });

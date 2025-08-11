@@ -1,0 +1,61 @@
+[
+    {
+        "type": "element",
+        "range": "[(0,0)..(0,60)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "Common.Text",
+                "valueRange": "[(0,2)..(0,19)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "first",
+                "valueRange": "[(0,14)..(0,19)]"
+            }
+        },
+        "contentRange": "[(0,21)..(0,60)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(0,21)..(0,60)]",
+                "name": "Annotation",
+                "attributes": {
+                    "Term": {
+                        "type": "attribute",
+                        "name": "Term",
+                        "value": "UI.TextArrangement",
+                        "valueRange": "[(0,21)..(0,40)]"
+                    },
+                    "Qualifier": {
+                        "type": "attribute",
+                        "name": "Qualifier",
+                        "value": "second",
+                        "valueRange": "[(0,42)..(0,48)]"
+                    }
+                },
+                "contentRange": "[(0,51)..(0,60)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(0,51)..(0,60)]",
+                        "name": "EnumMember",
+                        "attributes": {},
+                        "contentRange": "[(0,51)..(0,60)]",
+                        "content": [
+                            {
+                                "type": "text",
+                                "range": "[(0,51)..(0,60)]",
+                                "text": "com.sap.vocabularies.UI.v1.TextArrangementType/TextLast",
+                                "fragmentRanges": ["[(0,51)..(0,60)]"]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
