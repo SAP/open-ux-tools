@@ -245,7 +245,8 @@ export function getAggregationPathPrompt(
                           join(appPath, viewOrFragmentPath),
                           fs
                       );
-                      const choices = transformChoices(inputChoices, false, pageMacroDefinition);
+                      const key = `/mvc:View/${pageMacroDefinition}`;
+                      const choices = transformChoices(inputChoices, false, key);
                       if (!choices.length) {
                           throw new Error('Failed while fetching the aggregation path.');
                       }
@@ -267,19 +268,19 @@ export function getAggregationPathPrompt(
  *
  * @param obj - object to be converted to choices
  * @param sort - apply alphabetical sort(default is "true")
- * @param pageMacroDefinition - the page macro definition to check against
+ * @param defaultKey - default key to be checked in choices
  * @returns the list of choices.
  */
 export function transformChoices(
     obj: Record<string, string> | string[],
     sort = true,
-    pageMacroDefinition?: string
+    defaultKey?: string
 ): PromptListChoices {
     let choices: PromptListChoices = [];
     if (!Array.isArray(obj)) {
         choices = Object.entries(obj).map(([key, value]) => {
-            // Add checked if value matches Page macro choice definition example: `/mvc:View/macro:Page/`
-            if (key.endsWith(`/${pageMacroDefinition}`)) {
+            // Add checked if value matches defaultKey example: `/mvc:View/macro:Page/`
+            if (key === defaultKey) {
                 return { name: key, value, checked: true };
             }
             return { name: key, value };
