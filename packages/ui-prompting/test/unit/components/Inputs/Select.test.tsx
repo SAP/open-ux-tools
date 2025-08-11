@@ -338,7 +338,7 @@ describe('Select', () => {
         });
     });
 
-    it('Auto select single option', () => {
+    it('Auto-selects the option with checked=true as the default value', () => {
         const onChangeFn = jest.fn();
         render(<Select {...props} onChange={onChangeFn} choices={[{ name: 'Dummy', value: 111 }]} />);
         const input = screen.getByRole('combobox');
