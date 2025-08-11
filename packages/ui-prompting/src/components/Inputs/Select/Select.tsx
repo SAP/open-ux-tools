@@ -3,7 +3,7 @@ import type { ChoiceOptions } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
 import type { ITextField, UIComboBoxRef, UISelectableOption } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer, useOptions } from '../../../utilities';
-import type { AnswerValue, ListPromptQuestion, PromptListChoices, UICheckableChoice } from '../../../types';
+import type { AnswerValue, ListPromptQuestion, PromptListChoices } from '../../../types';
 
 export interface SelectProps extends ListPromptQuestion {
     id?: string;
@@ -27,7 +27,7 @@ export const Select = (props: SelectProps) => {
         }
 
         // Use the first checked option as default
-        const checkedOption = options.find((opt) => opt.data && (opt.data as UICheckableChoice).checked);
+        const checkedOption = options.find((opt) => opt.data && 'checked' in opt.data && opt.data.checked === true);
         if (checkedOption) {
             return checkedOption.data?.value;
         }

@@ -133,7 +133,6 @@ export interface ValidationResults {
     [questionName: string]: ValidationResult;
 }
 
-export type UICheckableChoice = DistinctChoice & { checked?: boolean };
 export type PromptListChoices = ReadonlyArray<DistinctChoice>;
 
 export interface DynamicChoices {
