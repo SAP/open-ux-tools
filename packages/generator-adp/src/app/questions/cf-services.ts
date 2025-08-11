@@ -4,42 +4,8 @@ import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 
 import { cfServicesPromptNames, AppRouterType } from '../types';
 import type { CfServicesAnswers, CFServicesQuestion, CfServicesPromptOptions } from '../types';
-
-/**
- * Get the choices for the base app.
- *
- * @param {CFApp[]} apps - The apps to get the choices for.
- * @param {FDCService} fdcService - The FDC service instance.
- * @returns {Array<{ name: string; value: CFApp }>} The choices for the base app.
- */
-const getBaseAppChoices = (apps: CFApp[], fdcService: FDCService): { name: string; value: CFApp }[] => {
-    return apps.map((result: CFApp) => ({
-        name: fdcService.formatDiscovery?.(result) ?? `${result.title} (${result.appId}, ${result.appVersion})`,
-        value: result
-    }));
-};
-
-/**
- * Get the choices for the approuter.
- *
- * @param {boolean} isInternalUsage - Whether the user is using internal features.
- * @returns {Array<{ name: AppRouterType; value: AppRouterType }>} The choices for the approuter.
- */
-const getAppRouterChoices = (isInternalUsage: boolean): { name: AppRouterType; value: AppRouterType }[] => {
-    const options: { name: AppRouterType; value: AppRouterType }[] = [
-        {
-            name: AppRouterType.MANAGED,
-            value: AppRouterType.MANAGED
-        }
-    ];
-    if (isInternalUsage) {
-        options.push({
-            name: AppRouterType.STANDALONE,
-            value: AppRouterType.STANDALONE
-        });
-    }
-    return options;
-};
+import { getAppRouterChoices, getCFAppChoices } from './helper/choices';
+import { validateBusinessSolutionName } from './helper/validators';
 
 /**
  * Prompter for CF services.
@@ -146,7 +112,7 @@ export class CFServicesPrompter {
                 answers.businessService
                     ? true
                     : false,
-            validate: (value: string) => this.validateBusinessSolutionName(value),
+            validate: (value: string) => validateBusinessSolutionName(value),
             guiOptions: {
                 mandatory: true,
                 hint: 'Business solution name must consist of at least two segments and they should be separated by period.'
@@ -162,9 +128,6 @@ export class CFServicesPrompter {
      * @returns {CFServicesQuestion} Prompt for approuter.
      */
     private getAppRouterPrompt(mtaProjectPath: string): CFServicesQuestion {
-        const mtaProjectName =
-            mtaProjectPath.indexOf('/') > -1 ? mtaProjectPath.split('/').pop() : mtaProjectPath.split('\\').pop();
-
         return {
             type: 'list',
             name: cfServicesPromptNames.approuter,
@@ -172,7 +135,11 @@ export class CFServicesPrompter {
             choices: getAppRouterChoices(this.isInternalUsage),
             when: () => {
                 const modules = this.fdcService.getModuleNames(mtaProjectPath);
-                const hasRouter = this.fdcService.hasApprouter(mtaProjectName as string, modules);
+                const mtaProjectName =
+                    (mtaProjectPath.indexOf('/') > -1
+                        ? mtaProjectPath.split('/').pop()
+                        : mtaProjectPath.split('\\').pop()) ?? '';
+                const hasRouter = this.fdcService.hasApprouter(mtaProjectName, modules);
                 if (hasRouter) {
                     // keep behavior even if getApprouterType is not declared in typing
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -224,7 +191,7 @@ export class CFServicesPrompter {
                         this.apps = await this.fdcService.getBaseApps(this.businessServiceKeys.credentials);
                         this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
                     }
-                    return getBaseAppChoices(this.apps, this.fdcService);
+                    return getCFAppChoices(this.apps, this.fdcService);
                 } catch (e) {
                     // log error: baseApp => choices
                     /* the error will be shown by the validation functionality */
@@ -292,25 +259,6 @@ export class CFServicesPrompter {
     private validateEmptySelect(value: string, label: string): string | true {
         if (!value) {
             return `${label} has to be selected`;
-        }
-        return true;
-    }
-
-    /**
-     * Validate business solution name.
-     *
-     * @param {string} value - Value to validate.
-     * @returns {string | boolean} Validation result.
-     */
-    private validateBusinessSolutionName(value: string): string | boolean {
-        if (!value) {
-            return 'Value cannot be empty';
-        }
-        const parts = String(value)
-            .split('.')
-            .filter((p) => p.length > 0);
-        if (parts.length < 2) {
-            return 'Business solution name must consist of at least two segments and they should be separated by period.';
         }
         return true;
     }

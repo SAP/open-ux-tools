@@ -145,3 +145,22 @@ export async function validateProjectPath(projectPath: string, fdcService: FDCSe
 
     return true;
 }
+
+/**
+ * Validate business solution name.
+ *
+ * @param {string} value - Value to validate.
+ * @returns {string | boolean} Validation result.
+ */
+export function validateBusinessSolutionName(value: string): string | boolean {
+    if (!value) {
+        return 'Value cannot be empty';
+    }
+    const parts = String(value)
+        .split('.')
+        .filter((p) => p.length > 0);
+    if (parts.length < 2) {
+        return 'Business solution name must consist of at least two segments and they should be separated by period.';
+    }
+    return true;
+}

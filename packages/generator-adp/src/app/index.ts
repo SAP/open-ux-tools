@@ -367,7 +367,7 @@ export default class extends Generator {
         try {
             if (this.isCfEnv) {
                 // Will be removed once CF project generation is supported.
-                this.vscode.showInformationMessage('CF project generation is not supported yet.');
+                this.vscode.window.showInformationMessage('CF project generation is not supported yet.');
                 return;
             }
 
