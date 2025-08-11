@@ -245,7 +245,7 @@ export function getAggregationPathPrompt(
                           join(appPath, viewOrFragmentPath),
                           fs
                       );
-                      const key = `/mvc:View/${pageMacroDefinition}`;
+                      const key = Object.keys(inputChoices).find((k) => k.endsWith(`/${pageMacroDefinition}`));
                       const choices = transformChoices(inputChoices, false, key);
                       if (!choices.length) {
                           throw new Error('Failed while fetching the aggregation path.');
