@@ -53,7 +53,7 @@ import {
 } from '../utils/steps';
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
 import { FDCService } from '@sap-ux/adp-tooling';
-import { getTargetEnvPrompt, promptUserForProjectPath } from './questions/target-env';
+import { getTargetEnvPrompt, getProjectPathPrompt } from './questions/target-env';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
 const generatorTitle = 'Adaptation Project';
@@ -305,10 +305,10 @@ export default class extends Generator {
             this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
 
             if (!this.isMtaYamlFound) {
-                const projectPathAnswers = await this.prompt(
-                    promptUserForProjectPath(this.fdcService, this.isCFLoggedIn, this.vscode)
-                );
-                this.projectLocation = projectPathAnswers.projectLocation;
+                const pathAnswers = await this.prompt([
+                    getProjectPathPrompt(this.fdcService, this.isCFLoggedIn, this.vscode)
+                ]);
+                this.projectLocation = pathAnswers.projectLocation;
                 this.projectLocation = fs.realpathSync(this.projectLocation, 'utf-8');
                 this.cfProjectDestinationPath = this.destinationRoot(this.projectLocation);
                 this.logger.log(`Project path information: ${this.projectLocation}`);

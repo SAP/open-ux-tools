@@ -31,7 +31,9 @@ export function getWizardPages(): IPrompt[] {
  */
 export function updateCfWizardSteps(isCFEnv: boolean, prompts: YeomanUiSteps): void {
     if (isCFEnv) {
-        prompts.splice(1, 1, [
+        // Replace all pages starting from index 1 (after "Target environment")
+        // This prevents "Project Attributes" from being pushed to the end
+        prompts.splice(1, prompts['items'].length - 1, [
             { name: 'Login to Cloud Foundry', description: 'Provide credentials.' },
             { name: 'Project path', description: 'Provide path to MTA project.' },
             {

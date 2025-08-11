@@ -65,25 +65,23 @@ export function getEnvironments(appWizard: AppWizard, isCfInstalled: boolean): E
  * @param {any} vscode - The VSCode instance.
  * @returns {YUIQuestion<ProjectLocationAnswers>[]} The project path prompt.
  */
-export function promptUserForProjectPath(
+export function getProjectPathPrompt(
     fdcService: FDCService,
     isCFLoggedIn: boolean,
     vscode: any
-): YUIQuestion<ProjectLocationAnswers>[] {
-    return [
-        {
-            type: 'input',
-            name: 'projectLocation',
-            guiOptions: {
-                type: 'folder-browser',
-                mandatory: true,
-                hint: 'Select the path to the root of your project'
-            },
-            message: 'Specify the path to the project root',
-            validate: (value: string) => validateProjectPath(value, fdcService),
-            when: () => isCFLoggedIn,
-            default: () => getDefaultTargetFolder(vscode),
-            store: false
-        } as InputQuestion<ProjectLocationAnswers>
-    ];
+): YUIQuestion<ProjectLocationAnswers> {
+    return {
+        type: 'input',
+        name: 'projectLocation',
+        guiOptions: {
+            type: 'folder-browser',
+            mandatory: true,
+            hint: 'Select the path to the root of your project'
+        },
+        message: 'Specify the path to the project root',
+        validate: (value: string) => validateProjectPath(value, fdcService),
+        when: () => isCFLoggedIn,
+        default: () => getDefaultTargetFolder(vscode),
+        store: false
+    } as InputQuestion<ProjectLocationAnswers>;
 }
