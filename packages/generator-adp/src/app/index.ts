@@ -365,6 +365,12 @@ export default class extends Generator {
 
     async writing(): Promise<void> {
         try {
+            if (this.isCfEnv) {
+                // Will be removed once CF project generation is supported.
+                this.vscode.showInformationMessage('CF project generation is not supported yet.');
+                return;
+            }
+
             if (this.jsonInput) {
                 await this._initFromJson();
             }
@@ -410,7 +416,7 @@ export default class extends Generator {
     }
 
     async install(): Promise<void> {
-        if (!this.shouldInstallDeps || this.shouldCreateExtProject) {
+        if (!this.shouldInstallDeps || this.shouldCreateExtProject || this.isCfEnv) {
             return;
         }
 
@@ -422,7 +428,7 @@ export default class extends Generator {
     }
 
     async end(): Promise<void> {
-        if (this.shouldCreateExtProject) {
+        if (this.shouldCreateExtProject || this.isCfEnv) {
             return;
         }
 
