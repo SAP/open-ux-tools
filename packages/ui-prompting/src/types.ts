@@ -95,10 +95,6 @@ export interface ListPromptQuestion<T extends Answers = Answers> extends ListQue
      * Additional properties for ui.
      */
     guiOptions?: ListGuiOptions;
-    /**
-     * Default selection index.
-     */
-    defaultIndex?: number;
 }
 
 /**
@@ -137,7 +133,8 @@ export interface ValidationResults {
     [questionName: string]: ValidationResult;
 }
 
-export type PromptListChoices = ReadonlyArray<DistinctChoice>;
+export type UICheckableChoice = DistinctChoice & { checked?: boolean };
+export type PromptListChoices = ReadonlyArray<UICheckableChoice>;
 
 export interface DynamicChoices {
     [key: string]: PromptListChoices;

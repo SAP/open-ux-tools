@@ -3,7 +3,7 @@ import type { ChoiceOptions } from 'inquirer';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
 import type { ITextField, UIComboBoxRef, UISelectableOption } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer, useOptions } from '../../../utilities';
-import type { AnswerValue, ListPromptQuestion, PromptListChoices } from '../../../types';
+import type { AnswerValue, ListPromptQuestion, PromptListChoices, UICheckableChoice } from '../../../types';
 
 export interface SelectProps extends ListPromptQuestion {
     id?: string;
@@ -26,11 +26,15 @@ export const Select = (props: SelectProps) => {
             return options[0].data?.value;
         }
 
-        // Handle numeric default that isn't a key = it could be an index
-        if (props.defaultIndex !== undefined && options[props.defaultIndex]) {
-            return options[props.defaultIndex].data?.value;
+        // Use the first checked option as default
+        const checkedOption = options.find((opt) => opt.data && (opt.data as UICheckableChoice).checked);
+        if (checkedOption) {
+            return checkedOption.data?.value;
         }
-    }, [props.defaultIndex, options]);
+
+        // do not preselect any value by default
+        return undefined;
+    }, [options]);
 
     useEffect(() => {
         if (defaultValue !== undefined && value !== defaultValue) {

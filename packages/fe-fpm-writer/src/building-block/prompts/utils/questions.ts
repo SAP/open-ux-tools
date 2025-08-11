@@ -241,10 +241,11 @@ export function getAggregationPathPrompt(
             ? (answers: Answers) => {
                   const { viewOrFragmentPath } = answers;
                   if (viewOrFragmentPath) {
-                      const choices = transformChoices(
-                          getXPathStringsForXmlFile(join(appPath, viewOrFragmentPath), fs),
-                          false
+                      const { inputChoices, pageMacroDefinition } = getXPathStringsForXmlFile(
+                          join(appPath, viewOrFragmentPath),
+                          fs
                       );
+                      const choices = transformChoices(inputChoices, false, pageMacroDefinition);
                       if (!choices.length) {
                           throw new Error('Failed while fetching the aggregation path.');
                       }
@@ -266,12 +267,23 @@ export function getAggregationPathPrompt(
  *
  * @param obj - object to be converted to choices
  * @param sort - apply alphabetical sort(default is "true")
+ * @param pageMacroDefinition - the page macro definition to check against
  * @returns the list of choices.
  */
-export function transformChoices(obj: Record<string, string> | string[], sort = true): PromptListChoices {
+export function transformChoices(
+    obj: Record<string, string> | string[],
+    sort = true,
+    pageMacroDefinition?: string
+): PromptListChoices {
     let choices: PromptListChoices = [];
     if (!Array.isArray(obj)) {
-        choices = Object.entries(obj).map(([key, value]) => ({ name: key, value }));
+        choices = Object.entries(obj).map(([key, value]) => {
+            // Add checked if value matches Page macro choice definition example: `/mvc:View/macro:Page/`
+            if (key.endsWith(`/${pageMacroDefinition}`)) {
+                return { name: key, value, checked: true };
+            }
+            return { name: key, value };
+        });
         if (sort) {
             choices = (choices as { name: string; value: string }[]).sort((a, b) => a.name.localeCompare(b.name));
         }
