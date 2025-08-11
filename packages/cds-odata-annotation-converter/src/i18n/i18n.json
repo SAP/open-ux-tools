@@ -9,6 +9,6 @@
   "No_segments_after_type": "Segments are not allowed after `$Type.`",
   "Value_must_be_provided": "The `$Type` must have a value.",
   "diagnostics": {
-    "deprecated_$value_syntax": "Annotating values with $value is deprecated, use nested annotations names instead."
+    "deprecated_$value_syntax": "Annotating values with $value is deprecated. Use nested annotations names instead."
   }
 }
