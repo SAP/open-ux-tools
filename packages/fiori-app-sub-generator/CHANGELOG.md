@@ -1,5 +1,22 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.6.16
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.24
+-   @sap-ux/odata-service-inquirer@2.5.30
+
+## 0.6.15
+
+### Patch Changes
+
+-   944af3e: Update all UI5 OPA test runner HTML files to use relative resource paths instead of absolute paths
+-   Updated dependencies [944af3e]
+    -   @sap-ux/fiori-elements-writer@2.5.23
+    -   @sap-ux/odata-service-inquirer@2.5.30
+    -   @sap-ux/fiori-freestyle-writer@2.4.32
+
 ## 0.6.14
 
 ### Patch Changes
