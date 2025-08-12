@@ -35,10 +35,14 @@ const augmentXpathWithLocalNames = (path: string): string => {
  *
  * @param xmlFilePath - the xml file path
  * @param fs - the file system object for reading files
- * @returns the list of xpath strings.
+ * @returns the list of xpath strings & page macro definition if page macro has been added by user.
  */
-export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Record<string, string> {
+export function getXPathStringsForXmlFile(
+    xmlFilePath: string,
+    fs: Editor
+): { inputChoices: Record<string, string>; pageMacroDefinition?: string } {
     const result: Record<string, string> = {};
+    let pageMacroDefinition: string | undefined;
     try {
         const xmlContent = fs.read(xmlFilePath);
         const errorHandler = (level: string, message: string) => {
@@ -49,7 +53,7 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
 
         // check macros namespace and page macro definition
         const macrosNamespace = getOrAddMacrosNamespace(xmlDocument);
-        const pageMacroDefinition = macrosNamespace ? `${macrosNamespace}:Page` : 'macros:Page';
+        pageMacroDefinition = macrosNamespace ? `${macrosNamespace}:Page` : 'macros:Page';
         let hasPageMacroChild = false;
 
         while (nodes && nodes.length > 0) {
@@ -82,7 +86,7 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
     } catch (error) {
         throw new Error(`An error occurred while parsing the view or fragment xml. Details: ${getErrorMessage(error)}`);
     }
-    return result;
+    return { inputChoices: result, pageMacroDefinition };
 }
 
 /**

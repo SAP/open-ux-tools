@@ -338,7 +338,7 @@ describe('Select', () => {
         });
     });
 
-    it('Auto select single option', () => {
+    it('Auto-selects the option with checked=true as the default value', () => {
         const onChangeFn = jest.fn();
         render(<Select {...props} onChange={onChangeFn} choices={[{ name: 'Dummy', value: 111 }]} />);
         const input = screen.getByRole('combobox');
@@ -346,9 +346,16 @@ describe('Select', () => {
         expect(onChangeFn).toHaveBeenCalledWith('select', 111);
     });
 
-    it('Select default value as index', async () => {
+    it('Select checked value as default', async () => {
         const onChangeFn = jest.fn();
-        render(<Select {...props} onChange={onChangeFn} defaultIndex={1} />);
+        const promptsWithChecked = {
+            ...props,
+            choices: [
+                { name: 'testText0', value: 'testValue0' },
+                { name: 'testText1', value: 'testValue1', checked: true }
+            ]
+        };
+        render(<Select {...promptsWithChecked} onChange={onChangeFn} />);
         const input = screen.getByRole('combobox');
         expect(input).toBeDefined();
         expect(onChangeFn).toHaveBeenCalledWith('select', 'testValue1');
