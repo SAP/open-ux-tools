@@ -106,6 +106,7 @@ Object {
 exports[`utils - questions getAggregationPathPrompt with page macro 2`] = `
 Array [
   Object {
+    "checked": true,
     "name": "/mvc:View/macros:Page",
     "value": "/mvc:View/macros:Page",
   },
