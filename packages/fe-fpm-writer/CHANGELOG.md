@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.37.0
+
+### Minor Changes
+
+-   69cfbe3: add support for checked property in Select choices for default selection
+
+## 0.36.1
+
+### Patch Changes
+
+-   47bd07a: Remove default Index logic from getAggregationPathPrompt of fpm writers
+
 ## 0.36.0
 
 ### Minor Changes

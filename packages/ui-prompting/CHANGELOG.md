@@ -1,5 +1,11 @@
 # @sap-ux/ui-prompting
 
+## 0.4.0
+
+### Minor Changes
+
+-   69cfbe3: add support for checked property in Select choices for default selection
+
 ## 0.3.37
 
 ### Patch Changes
