@@ -6,7 +6,7 @@ import { ADP_FIORI_ELEMENTS_V2 } from '../../project';
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 test.describe(`@quick-actions @fe-v2 @object-page`, () => {
     test(
-        'Object Page: Enable Empty row mode and Change table actions',
+        '1. Object Page: Enable Empty row mode and Change table actions',
         {
             annotation: {
                 type: 'skipUI5Version',
@@ -24,7 +24,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
                 await lr.locatorForListReportTableRow(0).click();
             });
 
-            await test.step('Enable Empty row mode', async () => {
+            await test.step('1.1 Enable Empty row mode', async () => {
                 await editor.toolbar.uiAdaptationModeButton.click();
                 await editor.quickActions.enableEmptyRowMode.click();
                 await editor.toolbar.saveAndReloadButton.click();
@@ -55,7 +55,7 @@ test.describe(`@quick-actions @fe-v2 @object-page`, () => {
                     );
             });
 
-            await test.step('OP - Change table actions', async () => {
+            await test.step('1.2 OP - Change table actions', async () => {
                 await editor.toolbar.uiAdaptationModeButton.click();
                 await editor.quickActions.changeTableActions.click();
                 let actionTexts = await tableSettings.getActionSettingsTexts();

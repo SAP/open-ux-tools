@@ -11,7 +11,7 @@ import { AdaptationEditorShell, AdpDialog, ListReport, readChanges, TableSetting
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
 test.describe(`@quick-actions @fe-v2 @list-report`, () => {
-    test('Enable/Disable clear filter bar button', {}, async ({ page, previewFrame, ui5Version, projectCopy }) => {
+    test('1. Enable/Disable clear filter bar button', {}, async ({ page, previewFrame, ui5Version, projectCopy }) => {
         const lr = new ListReport(previewFrame);
         const editor = new AdaptationEditorShell(page, ui5Version);
 
@@ -66,7 +66,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
     });
 
     test(
-        'Add controller to page',
+        '2. Add controller to page',
         {
             annotation: {
                 type: 'skipUI5Version',
@@ -142,7 +142,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
     );
 
     test(
-        'Change table columns',
+        '3. Change table columns',
         {
             annotation: {
                 type: 'skipUI5Version',
@@ -162,7 +162,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
     );
 
     test(
-        'Add Custom Table Action',
+        '4. Add Custom Table Action',
         {
             annotation: {
                 type: 'skipUI5Version',
@@ -214,7 +214,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
     );
 
     test(
-        'Add Custom Table Column',
+        '5. Add Custom Table Column',
         {
             annotation: {
                 type: 'skipUI5Version',
@@ -311,7 +311,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
     );
 
     test(
-        'Enable/Disable Semantic Date Range in Filter Bar',
+        '6. Enable/Disable Semantic Date Range in Filter Bar',
         {
             annotation: {
                 type: 'skipUI5Version',
@@ -406,7 +406,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
     );
 
     test(
-        'Enable Variant Management in Tables and Charts',
+        '7. Enable Variant Management in Tables and Charts',
         {
             annotation: {
                 type: 'skipUI5Version',
@@ -450,7 +450,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
     );
 
     test(
-        'Change table actions',
+        '8. Change table actions',
         {
             annotation: {
                 type: 'skipUI5Version',
