@@ -26,6 +26,21 @@ export function getCDSWatchScript(projectName: string, appId?: string): { [x: st
 }
 
 /**
+ * Returns an updated CDS watch script based on new format for cds-ui5-plugin.
+ *
+ * @param {string} projectName - the project's name
+ * @param {string} script - the existing script to be updated.
+ * @returns {{ [x: string]: string }} The CDS watch script for the CAP app.
+ */
+export function updateExistingWatchScript(projectName: string, script?: string): { [x: string]: string | undefined } {
+    let updatedScript = script?.replace('/webapp', '');
+    if (!updatedScript?.includes('--livereload false')) {
+        updatedScript += ' --livereload false';
+    }
+    return { [`watch-${projectName}`]: updatedScript };
+}
+
+/**
  * Updates the scripts in the package json file with the provided scripts object.
  *
  * @param {Editor} fs - The file system editor.
@@ -41,6 +56,7 @@ function updatePackageJsonWithScripts(fs: Editor, packageJsonPath: string, scrip
  * Updates the scripts in the package json file for a CAP project.
  *
  * @param {Editor} fs - The file system editor.
+ * @param {Package} packageJson - The package.json object to be updated.
  * @param {string} packageJsonPath - The path to the package.json file.
  * @param {string} projectName - The project's name, which is the module name.
  * @param {string} appId - The application's ID, including its namespace and the module name.
@@ -49,21 +65,31 @@ function updatePackageJsonWithScripts(fs: Editor, packageJsonPath: string, scrip
  */
 async function updateScripts(
     fs: Editor,
+    packageJson: Package,
     packageJsonPath: string,
     projectName: string,
     appId: string,
-    enableNPMWorkspaces?: boolean,
-    isCdsUi5PluginEnabled?: boolean
+    enableNPMWorkspaces?: boolean
 ): Promise<void> {
-    let cdsScript;
+    let cdsScripts: { [x: string]: string } = {};
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    if (enableNPMWorkspaces || isCdsUi5PluginEnabled) {
+    if (enableNPMWorkspaces) {
         // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId
-        cdsScript = getCDSWatchScript(projectName, appId);
+        // Update existing watch scripts if they exist
+        if (packageJson?.scripts) {
+            for (const script in packageJson.scripts) {
+                if (script.startsWith('watch-')) {
+                    const existingProjName = script.split('-')[1];
+                    Object.assign(cdsScripts, updateExistingWatchScript(existingProjName, packageJson.scripts[script]));
+                }
+            }
+        }
+        // Add the watch script for the new app
+        Object.assign(cdsScripts, getCDSWatchScript(projectName, appId));
     } else {
-        cdsScript = getCDSWatchScript(projectName);
+        cdsScripts = getCDSWatchScript(projectName);
     }
-    updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
+    updatePackageJsonWithScripts(fs, packageJsonPath, cdsScripts);
 }
 
 /**
@@ -76,7 +102,6 @@ async function updateScripts(
  * @param {boolean} sapux - Whether to add the app name to the sapux array.
  * @param {CapServiceCdsInfo} capService - The CAP service instance.
  * @param {string} appId - The application's ID, including its namespace and the module name.
- * @param {Logger} [log] - The logger instance for logging warnings.
  * @param {boolean} [enableNPMWorkspaces] - Whether to enable npm workspaces.
  * @returns {Promise<void>} A Promise that resolves once the root package.json is updated.
  */
@@ -86,25 +111,17 @@ export async function updateRootPackageJson(
     sapux: boolean,
     capService: CapServiceCdsInfo,
     appId: string,
-    shouldEnableCdsUi5Plugin: boolean,
-    shouldEnableNPMWorkspaces?: boolean
+    enableNPMWorkspaces?: boolean
 ): Promise<void> {
     const packageJsonPath: string = join(capService.projectPath, 'package.json');
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const capNodeType = 'Node.js';
 
-    if ((shouldEnableCdsUi5Plugin || shouldEnableNPMWorkspaces) && packageJson) {
+    if (enableNPMWorkspaces && packageJson) {
         await enableCdsUi5Plugin(capService.projectPath, fs);
     }
     if (capService?.capType === capNodeType) {
-        await updateScripts(
-            fs,
-            packageJsonPath,
-            projectName,
-            appId,
-            shouldEnableNPMWorkspaces,
-            capService.cdsUi5PluginInfo.isCdsUi5PluginEnabled
-        );
+        await updateScripts(fs, packageJson, packageJsonPath, projectName, appId, enableNPMWorkspaces);
     }
     if (sapux) {
         const dirPath = join(capService.appPath ?? (await getCapCustomPaths(capService.projectPath)).app, projectName);

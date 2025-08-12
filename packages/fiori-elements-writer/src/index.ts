@@ -263,16 +263,12 @@ async function generate<T extends {}>(
     }
 
     if (feApp.service.capService) {
-        const cdsUi5PluginInfo = feApp?.service.capService?.cdsUi5PluginInfo ?? {};
         const settings: CapProjectSettings = {
             appRoot: basePath,
             packageName: feApp.package.name ?? '',
             appId: feApp.app.id,
             sapux: feApp.appOptions?.sapux,
-            enableTypescript: feApp.appOptions?.typescript,
-            // Enable CDS UI5 plugin if the minimum CDS version is met and the plugin is not already enabled
-            enableCdsUi5Plugin: !!cdsUi5PluginInfo.hasMinCdsVersion && !cdsUi5PluginInfo.hasCdsUi5Plugin,
-            enableNPMWorkspaces: !!cdsUi5PluginInfo.hasMinCdsVersion && !cdsUi5PluginInfo.isWorkspaceEnabled
+            enableTypescript: feApp.appOptions?.typescript
         };
         // apply cap updates when service is cap
         await applyCAPUpdates(fs, feApp.service.capService, settings);

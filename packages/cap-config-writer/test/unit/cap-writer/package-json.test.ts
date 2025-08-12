@@ -73,7 +73,6 @@ describe('Writing/package json files', () => {
             isSapUxEnabled,
             capService,
             'test.app.project',
-            logger,
             isNpmWorkspacesEnabled
         );
         const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
@@ -108,14 +107,13 @@ describe('Writing/package json files', () => {
             isSapUxEnabled,
             capServiceWS,
             'test.app.project.ws.already.enabled',
-            logger,
             isNpmWorkspacesEnabled
         );
         const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
         const scripts = packageJson.scripts;
         expect(scripts?.['watch-testprojectwsalreadyenabled']).toBeDefined();
         expect(scripts?.['watch-testprojectwsalreadyenabled']).toEqual(
-            'cds watch --open test.app.project.ws.already.enabled/index.html?sap-ui-xx-viewCache=false --livereload false'
+            'cds watch --open testprojectwsalreadyenabled/webapp/index.html?sap-ui-xx-viewCache=false'
         );
     });
 
