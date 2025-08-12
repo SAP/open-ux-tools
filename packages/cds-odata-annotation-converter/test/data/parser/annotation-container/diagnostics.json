@@ -1,6 +1,6 @@
 [
     {
-        "message": "Annotating values with $value is deprecated, use nested annotations names instead.",
+        "message": "Annotating values with $value is deprecated. Use nested annotations names instead.",
         "rule": "deprecated-$value-syntax",
         "range": "[(2,8)..(2,14)]",
         "severity": 2,
@@ -9,7 +9,7 @@
         }
     },
     {
-        "message": "Annotating values with $value is deprecated, use nested annotations names instead.",
+        "message": "Annotating values with $value is deprecated. Use nested annotations names instead.",
         "rule": "deprecated-$value-syntax",
         "range": "[(2,19)..(2,25)]",
         "severity": 2,
@@ -18,7 +18,7 @@
         }
     },
     {
-        "message": "Annotating values with $value is deprecated, use nested annotations names instead.",
+        "message": "Annotating values with $value is deprecated. Use nested annotations names instead.",
         "rule": "deprecated-$value-syntax",
         "range": "[(5,8)..(5,14)]",
         "severity": 2,
@@ -27,7 +27,7 @@
         }
     },
     {
-        "message": "Annotating values with $value is deprecated, use nested annotations names instead.",
+        "message": "Annotating values with $value is deprecated. Use nested annotations names instead.",
         "rule": "deprecated-$value-syntax",
         "range": "[(9,12)..(9,18)]",
         "severity": 2,

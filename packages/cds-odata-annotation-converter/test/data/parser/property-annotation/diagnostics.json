@@ -1,6 +1,6 @@
 [
     {
-        "message": "Annotating values with $value is deprecated, use nested annotations names instead.",
+        "message": "Annotating values with $value is deprecated. Use nested annotations names instead.",
         "rule": "deprecated-$value-syntax",
         "range": "[(6,12)..(6,18)]",
         "severity": 2,
