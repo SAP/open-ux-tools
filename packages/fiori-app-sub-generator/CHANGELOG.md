@@ -1,5 +1,12 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.6.17
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.5.31
+-   @sap-ux/ui5-application-inquirer@0.14.37
+
 ## 0.6.16
 
 ### Patch Changes
