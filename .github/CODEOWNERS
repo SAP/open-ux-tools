@@ -111,6 +111,9 @@
 # Module: jest-environment-ui5
 /packages/jest-environment-ui5/ @SAP/ux-tools-ui5-jest
 
+# Module: ux-tools-control-property-editor
+/tests/integration/adaptation-editor/ @SAP/ux-tools-control-property-editor
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin
