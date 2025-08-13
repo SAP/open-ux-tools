@@ -823,7 +823,6 @@ export interface CFParameters {
 
 export interface Credentials {
     [key: string]: any;
-
     uaa: Uaa;
     uri: string;
     endpoints: any;
@@ -965,4 +964,93 @@ export interface RequestArguments {
             Authorization?: string;
         };
     };
+}
+
+// CF API Response Interfaces
+export interface CFAPIResponse<T> {
+    pagination: CFPagination;
+    resources: T[];
+}
+
+export interface CFPagination {
+    total_results: number;
+    total_pages: number;
+    first: CFPaginationLink;
+    last: CFPaginationLink;
+    next: CFPaginationLink | null;
+    previous: CFPaginationLink | null;
+}
+
+export interface CFPaginationLink {
+    href: string;
+}
+
+export interface CFServiceInstance {
+    guid: string;
+    created_at: string;
+    updated_at: string;
+    name: string;
+    tags: string[];
+    last_operation: CFLastOperation;
+    type: string;
+    maintenance_info: Record<string, unknown>;
+    upgrade_available: boolean;
+    dashboard_url: string | null;
+    relationships: CFServiceInstanceRelationships;
+    metadata: CFMetadata;
+    links: CFServiceInstanceLinks;
+}
+
+export interface CFLastOperation {
+    type: string;
+    state: string;
+    description: string;
+    updated_at: string;
+    created_at: string;
+}
+
+export interface CFServiceInstanceRelationships {
+    space: CFRelationshipData;
+    service_plan: CFRelationshipData;
+}
+
+export interface CFRelationshipData {
+    data: {
+        guid: string;
+    };
+}
+
+export interface CFMetadata {
+    labels: Record<string, unknown>;
+    annotations: Record<string, unknown>;
+}
+
+export interface CFServiceInstanceLinks {
+    self: CFLink;
+    space: CFLink;
+    service_credential_bindings: CFLink;
+    service_route_bindings: CFLink;
+    service_plan: CFLink;
+    parameters: CFLink;
+    shared_spaces: CFLink;
+}
+
+export interface CFLink {
+    href: string;
+}
+
+export interface CFServiceOffering {
+    name: string;
+    tags?: string[];
+    broker_catalog?: {
+        metadata?: {
+            sapservice?: {
+                odataversion?: string;
+                [key: string]: unknown;
+            };
+            [key: string]: unknown;
+        };
+        [key: string]: unknown;
+    };
+    [key: string]: unknown;
 }

@@ -1,5 +1,5 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { CFApp, FDCService, ServiceKeys } from '@sap-ux/adp-tooling';
+import { getBusinessServiceKeys, type CFApp, type FDCService, type ServiceKeys } from '@sap-ux/adp-tooling';
 import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 
 import { cfServicesPromptNames, AppRouterType } from '../types';
@@ -13,7 +13,7 @@ import { validateBusinessSolutionName } from './helper/validators';
 export class CFServicesPrompter {
     private readonly fdcService: FDCService;
     private readonly isInternalUsage: boolean;
-    private readonly logger?: { log: (msg: string) => void; error: (msg: string) => void };
+    private readonly logger: ToolsLogger;
 
     /**
      * Whether the user is logged in to Cloud Foundry.
@@ -182,8 +182,10 @@ export class CFServicesPrompter {
                     this.baseAppOnChoiceError = null;
                     if (this.cachedServiceName != answers.businessService) {
                         this.cachedServiceName = answers.businessService;
-                        this.businessServiceKeys = await this.fdcService.getBusinessServiceKeys(
-                            answers.businessService ?? ''
+                        this.businessServiceKeys = await getBusinessServiceKeys(
+                            answers.businessService ?? '',
+                            this.fdcService.getConfig(),
+                            this.logger
                         );
                         if (!this.businessServiceKeys) {
                             return [];
@@ -235,7 +237,11 @@ export class CFServicesPrompter {
                 if (!value) {
                     return 'Business service has to be selected';
                 }
-                this.businessServiceKeys = await this.fdcService.getBusinessServiceKeys(value);
+                this.businessServiceKeys = await getBusinessServiceKeys(
+                    value,
+                    this.fdcService.getConfig(),
+                    this.logger
+                );
                 if (this.businessServiceKeys === null) {
                     return 'The service chosen does not exist in cockpit or the user is not member of the needed space.';
                 }

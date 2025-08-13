@@ -2,16 +2,16 @@ import type { Prompts as YeomanUiSteps, IPrompt } from '@sap-devx/yeoman-ui-type
 
 import { t } from './i18n';
 import { GeneratorTypes } from '../types';
-import { isAppStudio } from '@sap-ux/btp-utils';
 
 /**
  * Returns the list of base wizard pages used in the Adaptation Project.
  *
+ * @param {boolean} shouldShowTargetEnv - Whether to show the target environment page.
  * @returns {IPrompt[]} The list of static wizard steps to show initially.
  */
-export function getWizardPages(): IPrompt[] {
+export function getWizardPages(shouldShowTargetEnv: boolean): IPrompt[] {
     return [
-        ...(isAppStudio() ? [{ name: 'Target environment', description: '' }] : []),
+        ...(shouldShowTargetEnv ? [{ name: 'Target environment', description: '' }] : []),
         {
             name: t('yuiNavSteps.configurationName'),
             description: t('yuiNavSteps.configurationDescr')
@@ -31,10 +31,7 @@ export function getWizardPages(): IPrompt[] {
  */
 export function updateCfWizardSteps(isCFEnv: boolean, prompts: YeomanUiSteps): void {
     if (isCFEnv) {
-        // Replace all pages starting from index 1 (after "Target environment")
-        // This prevents "Project Attributes" from being pushed to the end
         prompts.splice(1, prompts['items'].length - 1, [
-            { name: 'Login to Cloud Foundry', description: 'Provide credentials.' },
             { name: 'Project path', description: 'Provide path to MTA project.' },
             {
                 name: t('yuiNavSteps.projectAttributesName'),

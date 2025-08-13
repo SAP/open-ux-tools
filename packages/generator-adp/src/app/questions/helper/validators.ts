@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import { YamlUtils, type FDCService, type SystemLookup } from '@sap-ux/adp-tooling';
+import { isMtaProject, type FDCService, type SystemLookup } from '@sap-ux/adp-tooling';
 import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../utils/i18n';
@@ -83,17 +83,17 @@ export async function validateJsonInput(
  * Validates the environment.
  *
  * @param {string} value - The value to validate.
- * @param {string} label - The label to validate.
  * @param {FDCService} fdcService - The FDC service instance.
+ * @param {boolean} isCFLoggedIn - Whether Cloud Foundry is logged in.
  * @returns {Promise<string | boolean>} Returns true if the environment is valid, otherwise returns an error message.
  */
 export async function validateEnvironment(
     value: string,
-    label: string,
-    fdcService: FDCService
+    fdcService: FDCService,
+    isCFLoggedIn: boolean
 ): Promise<string | boolean> {
-    if (!value) {
-        return t('error.selectCannotBeEmptyError', { value: label });
+    if (value === 'CF' && !isCFLoggedIn) {
+        return 'Please login to Cloud Foundry to continue.';
     }
 
     if (value === 'CF' && !isAppStudio()) {
@@ -128,7 +128,7 @@ export async function validateProjectPath(projectPath: string, fdcService: FDCSe
         return 'The project does not exist.';
     }
 
-    if (!YamlUtils.isMtaProject(projectPath)) {
+    if (!isMtaProject(projectPath)) {
         return 'Provide the path to the MTA project where you want to have your Adaptation Project created';
     }
 

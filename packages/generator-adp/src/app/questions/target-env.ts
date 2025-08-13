@@ -1,4 +1,4 @@
-import { MessageType } from '@sap-devx/yeoman-ui-types';
+import { MessageType, Severity } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { FDCService } from '@sap-ux/adp-tooling';
@@ -16,14 +16,18 @@ type EnvironmentChoice = { name: string; value: TargetEnv };
  *
  * @param {AppWizard} appWizard - The app wizard instance.
  * @param {boolean} isCfInstalled - Whether Cloud Foundry is installed.
+ * @param {boolean} isCFLoggedIn - Whether Cloud Foundry is logged in.
  * @param {FDCService} fdcService - The FDC service instance.
  * @returns {object[]} The target environment prompt.
  */
 export function getTargetEnvPrompt(
     appWizard: AppWizard,
     isCfInstalled: boolean,
+    isCFLoggedIn: boolean,
     fdcService: FDCService
 ): TargetEnvQuestion {
+    const cfConfig = fdcService.getConfig();
+
     return {
         type: 'list',
         name: 'targetEnv',
@@ -34,7 +38,17 @@ export function getTargetEnvPrompt(
             mandatory: true,
             hint: 'Select the target environment for your Adaptation Project.'
         },
-        validate: (value: string) => validateEnvironment(value, 'Target environment', fdcService)
+        validate: (value: string) => validateEnvironment(value, fdcService, isCFLoggedIn),
+        additionalMessages: (value: string) => {
+            if (value === 'CF' && isCFLoggedIn) {
+                return {
+                    message: `You are logged in to Cloud Foundry: ${cfConfig.url} / ${cfConfig.org?.Name} / ${cfConfig.space?.Name}.`,
+                    severity: Severity.information
+                };
+            }
+
+            return undefined;
+        }
     } as ListQuestion<TargetEnvAnswers>;
 }
 

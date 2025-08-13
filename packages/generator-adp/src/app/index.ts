@@ -4,7 +4,6 @@ import Generator from 'yeoman-generator';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
 
 import type { CFConfig } from '@sap-ux/adp-tooling';
-import { getPrompts as getCFLoginPrompts } from './questions/cf-login';
 import {
     FlexLayer,
     SystemLookup,
@@ -19,13 +18,21 @@ import {
     SourceManifest,
     isCFEnvironment,
     getBaseAppInbounds,
-    YamlUtils
+    YamlUtils,
+    isMtaProject,
+    isCfInstalled
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { TelemetryHelper, getDefaultTargetFolder, isCli, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import {
+    TelemetryHelper,
+    getDefaultTargetFolder,
+    isCli,
+    // isExtensionInstalled,
+    sendTelemetry
+} from '@sap-ux/fiori-generator-shared';
 
 import { getFlexLayer } from './layer';
 import { initI18n, t } from '../utils/i18n';
@@ -140,7 +147,8 @@ export default class extends Generator {
     private projectLocation: string;
     private cfProjectDestinationPath: string;
     private cfServicesAnswers: CfServicesAnswers;
-
+    private isExtensionInstalled: boolean;
+    private cfInstalled: boolean;
     /**
      * Creates an instance of the generator.
      *
@@ -153,7 +161,9 @@ export default class extends Generator {
         this.shouldInstallDeps = opts.shouldInstallDeps ?? true;
         this.toolsLogger = new ToolsLogger();
         this.fdcService = new FDCService(this.logger, opts.vscode);
-        this.isMtaYamlFound = YamlUtils.isMtaProject(process.cwd());
+        this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
+        // TODO: Remove this once the PR is ready.
+        this.isExtensionInstalled = true; // isExtensionInstalled(opts.vscode, 'SAP.adp-ve-bas-ext');
         this.vscode = opts.vscode;
         this.options = opts;
 
@@ -186,8 +196,13 @@ export default class extends Generator {
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
         this.systemLookup = new SystemLookup(this.logger);
 
+        this.cfInstalled = await isCfInstalled();
+        this.isCFLoggedIn = await this.fdcService.isLoggedIn();
+        this.logger.info(`isCfInstalled: ${this.cfInstalled}`);
+
         if (!this.jsonInput) {
-            this.prompts.splice(0, 0, getWizardPages());
+            const shouldShowTargetEnv = isAppStudio() && this.cfInstalled && this.isExtensionInstalled;
+            this.prompts.splice(0, 0, getWizardPages(shouldShowTargetEnv));
             this.prompter = this._getOrCreatePrompter();
         }
 
@@ -206,20 +221,7 @@ export default class extends Generator {
             return;
         }
 
-        if (isAppStudio()) {
-            const isCfInstalled = await this.fdcService.isCfInstalled();
-            this.logger.info(`isCfInstalled: ${isCfInstalled}`);
-
-            const targetEnvAnswers = await this.prompt<TargetEnvAnswers>([
-                getTargetEnvPrompt(this.appWizard, isCfInstalled, this.fdcService)
-            ]);
-            this.targetEnv = targetEnvAnswers.targetEnv;
-            this.isCfEnv = this.targetEnv === TargetEnv.CF;
-            this.logger.info(`Target environment: ${this.targetEnv}`);
-            updateCfWizardSteps(this.isCfEnv, this.prompts);
-        } else {
-            this.targetEnv = TargetEnv.ABAP;
-        }
+        await this._determineTargetEnv();
 
         if (!this.isCfEnv) {
             const configQuestions = this.prompter.getPrompts({
@@ -292,73 +294,14 @@ export default class extends Generator {
                 );
             }
         } else {
-            this.isCFLoggedIn = await this.fdcService.isLoggedIn();
-
-            await this.prompt(getCFLoginPrompts(this.vscode, this.fdcService, this.isCFLoggedIn));
-            this.cfConfig = this.fdcService.getConfig();
-            this.isCFLoggedIn = await this.fdcService.isLoggedIn();
-
-            this.logger.log(`Project organization information: ${JSON.stringify(this.cfConfig.org, null, 2)}`);
-            this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
-            this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
-
-            await this._promptForCfProjectPath();
-
-            const options: AttributePromptOptions = {
-                targetFolder: { hide: true },
-                ui5Version: { hide: true },
-                ui5ValidationCli: { hide: true },
-                enableTypeScript: { hide: true },
-                addFlpConfig: { hide: true },
-                addDeployConfig: { hide: true }
-            };
-
-            const attributesQuestions = getPrompts(
-                this.destinationPath(),
-                {
-                    ui5Versions: [],
-                    isVersionDetected: false,
-                    isCloudProject: false,
-                    layer: this.layer,
-                    prompts: this.prompts,
-                    isCfEnv: true
-                },
-                options
-            );
-
-            this.attributeAnswers = await this.prompt(attributesQuestions);
-            this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
-
-            const cfServicesQuestions = await getCFServicesPrompts({
-                isCFLoggedIn: this.isCFLoggedIn,
-                fdcService: this.fdcService,
-                mtaProjectPath: this.cfProjectDestinationPath,
-                isInternalUsage: isInternalFeaturesSettingEnabled(),
-                logger: this.logger
-            });
-            this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(cfServicesQuestions);
-            this.logger.info(`CF Services Answers: ${JSON.stringify(this.cfServicesAnswers, null, 2)}`);
-        }
-    }
-
-    private async _promptForCfProjectPath(): Promise<void> {
-        if (!this.isMtaYamlFound) {
-            const pathAnswers = await this.prompt([getProjectPathPrompt(this.fdcService, this.vscode)]);
-            this.projectLocation = pathAnswers.projectLocation;
-            this.projectLocation = fs.realpathSync(this.projectLocation, 'utf-8');
-            this.cfProjectDestinationPath = this.destinationRoot(this.projectLocation);
-            this.logger.log(`Project path information: ${this.projectLocation}`);
-        } else {
-            this.cfProjectDestinationPath = this.destinationRoot(process.cwd());
-            YamlUtils.loadYamlContent(join(this.cfProjectDestinationPath, 'mta.yaml'));
-            this.logger.log(`Project path information: ${this.cfProjectDestinationPath}`);
+            await this._promptForCfEnvironment();
         }
     }
 
     async writing(): Promise<void> {
         try {
             if (this.isCfEnv) {
-                // Will be removed once CF project generation is supported.
+                // TODO: Will be removed once CF project generation is supported.
                 this.vscode.window.showInformationMessage('CF project generation is not supported yet.');
                 return;
             }
@@ -453,6 +396,99 @@ export default class extends Generator {
         } catch (e) {
             this.appWizard.showError(e.message, MessageType.notification);
         }
+    }
+
+    /**
+     * Prompts the user for the CF project path.
+     */
+    private async _promptForCfProjectPath(): Promise<void> {
+        if (!this.isMtaYamlFound) {
+            const pathAnswers = await this.prompt([getProjectPathPrompt(this.fdcService, this.vscode)]);
+            this.projectLocation = pathAnswers.projectLocation;
+            this.projectLocation = fs.realpathSync(this.projectLocation, 'utf-8');
+            this.cfProjectDestinationPath = this.destinationRoot(this.projectLocation);
+            this.logger.log(`Project path information: ${this.projectLocation}`);
+        } else {
+            this.cfProjectDestinationPath = this.destinationRoot(process.cwd());
+            YamlUtils.loadYamlContent(join(this.cfProjectDestinationPath, 'mta.yaml'));
+            this.logger.log(`Project path information: ${this.cfProjectDestinationPath}`);
+        }
+    }
+
+    /**
+     * Determines the target environment based on the current context.
+     * Sets the target environment and updates related state accordingly.
+     */
+    private async _determineTargetEnv(): Promise<void> {
+        const hasRequiredExtensions = this.isExtensionInstalled && this.cfInstalled;
+
+        if (isAppStudio() && hasRequiredExtensions) {
+            await this._promptForTargetEnvironment();
+        } else {
+            this.targetEnv = TargetEnv.ABAP;
+        }
+    }
+
+    /**
+     * Prompts the user to select the target environment and updates related state.
+     */
+    private async _promptForTargetEnvironment(): Promise<void> {
+        const targetEnvAnswers = await this.prompt<TargetEnvAnswers>([
+            getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCFLoggedIn, this.fdcService)
+        ]);
+
+        this.targetEnv = targetEnvAnswers.targetEnv;
+        this.isCfEnv = this.targetEnv === TargetEnv.CF;
+        this.logger.info(`Target environment: ${this.targetEnv}`);
+
+        updateCfWizardSteps(this.isCfEnv, this.prompts);
+
+        this.cfConfig = this.fdcService.getConfig();
+        this.logger.log(`Project organization information: ${JSON.stringify(this.cfConfig.org, null, 2)}`);
+        this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
+        this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
+    }
+
+    /**
+     * Prompts the user for the CF environment.
+     */
+    private async _promptForCfEnvironment(): Promise<void> {
+        await this._promptForCfProjectPath();
+
+        const options: AttributePromptOptions = {
+            targetFolder: { hide: true },
+            ui5Version: { hide: true },
+            ui5ValidationCli: { hide: true },
+            enableTypeScript: { hide: true },
+            addFlpConfig: { hide: true },
+            addDeployConfig: { hide: true }
+        };
+
+        const attributesQuestions = getPrompts(
+            this.destinationPath(),
+            {
+                ui5Versions: [],
+                isVersionDetected: false,
+                isCloudProject: false,
+                layer: this.layer,
+                prompts: this.prompts,
+                isCfEnv: true
+            },
+            options
+        );
+
+        this.attributeAnswers = await this.prompt(attributesQuestions);
+        this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
+
+        const cfServicesQuestions = await getCFServicesPrompts({
+            isCFLoggedIn: this.isCFLoggedIn,
+            fdcService: this.fdcService,
+            mtaProjectPath: this.cfProjectDestinationPath,
+            isInternalUsage: isInternalFeaturesSettingEnabled(),
+            logger: this.logger
+        });
+        this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(cfServicesQuestions);
+        this.logger.info(`CF Services Answers: ${JSON.stringify(this.cfServicesAnswers, null, 2)}`);
     }
 
     /**
