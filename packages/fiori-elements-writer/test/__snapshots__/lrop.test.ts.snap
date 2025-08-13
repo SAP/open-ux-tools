@@ -18951,42 +18951,41 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
   },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\"
-], function (opaTest) {
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (test, JourneyRunner) {
     \\"use strict\\";
 
-    var Journey = {
-        run: function() {
-            QUnit.module(\\"First journey\\");
+    function run() {
+        QUnit.module(\\"First journey\\");
 
-            opaTest(\\"Start application\\", function (Given, When, Then) {
-                Given.iStartMyApp();
+        test(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
-                
-                When.onTheTravelList.onFilterBar().iExecuteSearch();
-                
-                Then.onTheTravelList.onTable().iCheckRows();
+        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-            });
+        });
 
-            opaTest(\\"Teardown\\", function (Given, When, Then) { 
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        test(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    JourneyRunner.run({}, run)
 });",
     "state": "modified",
   },
@@ -19027,32 +19026,13 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
   "webapp/test/integration/opaTests.qunit.js": Object {
     "contents": "sap.ui.require(
     [
-        'sap/fe/test/JourneyRunner',
-        'lrop_v4_add_test_virtual_endpoints/test/integration/FirstJourney',
-		'lrop_v4_add_test_virtual_endpoints/test/integration/pages/TravelList',
-		'lrop_v4_add_test_virtual_endpoints/test/integration/pages/TravelObjectPage',
-		'lrop_v4_add_test_virtual_endpoints/test/integration/pages/BookingObjectPage'
+       'lrop_v4_add_test_virtual_endpoints/test/integration/FirstJourney'
     ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start test/flp.html?sap-ui-xx-viewCache=false#app-preview in web folder
-            launchUrl: sap.ui.require.toUrl('lrop_v4_add_test_virtual_endpoints') + '/test/flp.html?sap-ui-xx-viewCache=false#app-preview'
-        });
-
-       
-        JourneyRunner.run(
-            {
-                pages: { 
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
-    }
-);",
+    function () {
+        \\"use strict\\";
+        
+        QUnit.start();
+});",
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
@@ -19073,6 +19053,31 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
         CustomPageDefinitions
     );
 });",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/fe/test/JourneyRunner\\",
+	\\"lrop_v4_add_test_virtual_endpoints/test/integration/pages/TravelList\\",
+	\\"lrop_v4_add_test_virtual_endpoints/test/integration/pages/TravelObjectPage\\",
+	\\"lrop_v4_add_test_virtual_endpoints/test/integration/pages/BookingObjectPage\\"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('lrop_v4_add_test_virtual_endpoints') + '/test/flp.html?sap-ui-xx-viewCache=false#app-preview',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelList.js": Object {
@@ -22836,42 +22841,41 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\"
-], function (opaTest) {
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (test, JourneyRunner) {
     \\"use strict\\";
 
-    var Journey = {
-        run: function() {
-            QUnit.module(\\"First journey\\");
+    function run() {
+        QUnit.module(\\"First journey\\");
 
-            opaTest(\\"Start application\\", function (Given, When, Then) {
-                Given.iStartMyApp();
+        test(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
-                
-                When.onTheTravelList.onFilterBar().iExecuteSearch();
-                
-                Then.onTheTravelList.onTable().iCheckRows();
+        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-            });
+        });
 
-            opaTest(\\"Teardown\\", function (Given, When, Then) { 
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        test(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    JourneyRunner.run({}, run)
 });",
     "state": "modified",
   },
@@ -22912,32 +22916,13 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   "webapp/test/integration/opaTests.qunit.js": Object {
     "contents": "sap.ui.require(
     [
-        'sap/fe/test/JourneyRunner',
-        'lrop_v4_addtests/test/integration/FirstJourney',
-		'lrop_v4_addtests/test/integration/pages/TravelList',
-		'lrop_v4_addtests/test/integration/pages/TravelObjectPage',
-		'lrop_v4_addtests/test/integration/pages/BookingObjectPage'
+       'lrop_v4_addtests/test/integration/FirstJourney'
     ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start index.html in web folder
-            launchUrl: sap.ui.require.toUrl('lrop_v4_addtests') + '/index.html'
-        });
-
-       
-        JourneyRunner.run(
-            {
-                pages: { 
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
-    }
-);",
+    function () {
+        \\"use strict\\";
+        
+        QUnit.start();
+});",
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
@@ -22958,6 +22943,31 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         CustomPageDefinitions
     );
 });",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/fe/test/JourneyRunner\\",
+	\\"lrop_v4_addtests/test/integration/pages/TravelList\\",
+	\\"lrop_v4_addtests/test/integration/pages/TravelObjectPage\\",
+	\\"lrop_v4_addtests/test/integration/pages/BookingObjectPage\\"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests') + '/index.html',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelList.js": Object {
@@ -23654,42 +23664,41 @@ appDescription=A Fiori application.",
   },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\"
-], function (opaTest) {
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (test, JourneyRunner) {
     \\"use strict\\";
 
-    var Journey = {
-        run: function() {
-            QUnit.module(\\"First journey\\");
+    function run() {
+        QUnit.module(\\"First journey\\");
 
-            opaTest(\\"Start application\\", function (Given, When, Then) {
-                Given.iStartMyApp();
+        test(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
-                
-                When.onTheTravelList.onFilterBar().iExecuteSearch();
-                
-                Then.onTheTravelList.onTable().iCheckRows();
+        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-            });
+        });
 
-            opaTest(\\"Teardown\\", function (Given, When, Then) { 
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        test(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    JourneyRunner.run({}, run)
 });",
     "state": "modified",
   },
@@ -23730,32 +23739,13 @@ appDescription=A Fiori application.",
   "webapp/test/integration/opaTests.qunit.js": Object {
     "contents": "sap.ui.require(
     [
-        'sap/fe/test/JourneyRunner',
-        'lrop_v4_addtests_cds/test/integration/FirstJourney',
-		'lrop_v4_addtests_cds/test/integration/pages/TravelList',
-		'lrop_v4_addtests_cds/test/integration/pages/TravelObjectPage',
-		'lrop_v4_addtests_cds/test/integration/pages/BookingObjectPage'
+       'lrop_v4_addtests_cds/test/integration/FirstJourney'
     ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start index.html in web folder
-            launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/index.html'
-        });
-
-       
-        JourneyRunner.run(
-            {
-                pages: { 
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
-    }
-);",
+    function () {
+        \\"use strict\\";
+        
+        QUnit.start();
+});",
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
@@ -23776,6 +23766,31 @@ appDescription=A Fiori application.",
         CustomPageDefinitions
     );
 });",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/fe/test/JourneyRunner\\",
+	\\"lrop_v4_addtests_cds/test/integration/pages/TravelList\\",
+	\\"lrop_v4_addtests_cds/test/integration/pages/TravelObjectPage\\",
+	\\"lrop_v4_addtests_cds/test/integration/pages/BookingObjectPage\\"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/index.html',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelList.js": Object {
@@ -24539,42 +24554,41 @@ appDescription=A Fiori application.",
   },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\"
-], function (opaTest) {
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (test, JourneyRunner) {
     \\"use strict\\";
 
-    var Journey = {
-        run: function() {
-            QUnit.module(\\"First journey\\");
+    function run() {
+        QUnit.module(\\"First journey\\");
 
-            opaTest(\\"Start application\\", function (Given, When, Then) {
-                Given.iStartMyApp();
+        test(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
-                
-                When.onTheTravelList.onFilterBar().iExecuteSearch();
-                
-                Then.onTheTravelList.onTable().iCheckRows();
+        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-            });
+        });
 
-            opaTest(\\"Teardown\\", function (Given, When, Then) { 
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        test(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    JourneyRunner.run({}, run)
 });",
     "state": "modified",
   },
@@ -24615,32 +24629,13 @@ appDescription=A Fiori application.",
   "webapp/test/integration/opaTests.qunit.js": Object {
     "contents": "sap.ui.require(
     [
-        'sap/fe/test/JourneyRunner',
-        'lrop_v4_addtests_cds/test/integration/FirstJourney',
-		'lrop_v4_addtests_cds/test/integration/pages/TravelList',
-		'lrop_v4_addtests_cds/test/integration/pages/TravelObjectPage',
-		'lrop_v4_addtests_cds/test/integration/pages/BookingObjectPage'
+       'lrop_v4_addtests_cds/test/integration/FirstJourney'
     ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtestscds-tile in web folder
-            launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtestscds-tile'
-        });
-
-       
-        JourneyRunner.run(
-            {
-                pages: { 
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
-    }
-);",
+    function () {
+        \\"use strict\\";
+        
+        QUnit.start();
+});",
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
@@ -24661,6 +24656,31 @@ appDescription=A Fiori application.",
         CustomPageDefinitions
     );
 });",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/fe/test/JourneyRunner\\",
+	\\"lrop_v4_addtests_cds/test/integration/pages/TravelList\\",
+	\\"lrop_v4_addtests_cds/test/integration/pages/TravelObjectPage\\",
+	\\"lrop_v4_addtests_cds/test/integration/pages/BookingObjectPage\\"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtestscds-tile',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelList.js": Object {
@@ -25896,42 +25916,41 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
   },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\"
-], function (opaTest) {
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (test, JourneyRunner) {
     \\"use strict\\";
 
-    var Journey = {
-        run: function() {
-            QUnit.module(\\"First journey\\");
+    function run() {
+        QUnit.module(\\"First journey\\");
 
-            opaTest(\\"Start application\\", function (Given, When, Then) {
-                Given.iStartMyApp();
+        test(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
-                
-                When.onTheTravelList.onFilterBar().iExecuteSearch();
-                
-                Then.onTheTravelList.onTable().iCheckRows();
+        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-            });
+        });
 
-            opaTest(\\"Teardown\\", function (Given, When, Then) { 
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        test(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    JourneyRunner.run({}, run)
 });",
     "state": "modified",
   },
@@ -25972,32 +25991,13 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
   "webapp/test/integration/opaTests.qunit.js": Object {
     "contents": "sap.ui.require(
     [
-        'sap/fe/test/JourneyRunner',
-        'lrop_v4_annotation_reuse_lib/test/integration/FirstJourney',
-		'lrop_v4_annotation_reuse_lib/test/integration/pages/TravelList',
-		'lrop_v4_annotation_reuse_lib/test/integration/pages/TravelObjectPage',
-		'lrop_v4_annotation_reuse_lib/test/integration/pages/BookingObjectPage'
+       'lrop_v4_annotation_reuse_lib/test/integration/FirstJourney'
     ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start index.html in web folder
-            launchUrl: sap.ui.require.toUrl('lrop_v4_annotation_reuse_lib') + '/index.html'
-        });
-
-       
-        JourneyRunner.run(
-            {
-                pages: { 
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
-    }
-);",
+    function () {
+        \\"use strict\\";
+        
+        QUnit.start();
+});",
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
@@ -26018,6 +26018,31 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
         CustomPageDefinitions
     );
 });",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/fe/test/JourneyRunner\\",
+	\\"lrop_v4_annotation_reuse_lib/test/integration/pages/TravelList\\",
+	\\"lrop_v4_annotation_reuse_lib/test/integration/pages/TravelObjectPage\\",
+	\\"lrop_v4_annotation_reuse_lib/test/integration/pages/BookingObjectPage\\"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('lrop_v4_annotation_reuse_lib') + '/index.html',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelList.js": Object {

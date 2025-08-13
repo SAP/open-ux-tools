@@ -14428,40 +14428,39 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\"
-], function (opaTest) {
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (test, JourneyRunner) {
     \\"use strict\\";
 
-    var Journey = {
-        run: function() {
-            QUnit.module(\\"First journey\\");
+    function run() {
+        QUnit.module(\\"First journey\\");
 
-            opaTest(\\"Start application\\", function (Given, When, Then) {
-                Given.iStartMyApp();
+        test(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
-                
-                Then.onTheTravelList.onTable().iCheckRows();
+        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-            });
+        });
 
-            opaTest(\\"Teardown\\", function (Given, When, Then) { 
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        test(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    JourneyRunner.run({}, run)
 });",
     "state": "modified",
   },
@@ -14502,32 +14501,13 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   "webapp/test/integration/opaTests.qunit.js": Object {
     "contents": "sap.ui.require(
     [
-        'sap/fe/test/JourneyRunner',
-        'fewrk2/test/integration/FirstJourney',
-		'fewrk2/test/integration/pages/TravelList',
-		'fewrk2/test/integration/pages/TravelObjectPage',
-		'fewrk2/test/integration/pages/BookingObjectPage'
+       'fewrk2/test/integration/FirstJourney'
     ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start test/flpSandbox.html?sap-ui-xx-viewCache=false#fewrk2-tile in web folder
-            launchUrl: sap.ui.require.toUrl('fewrk2') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#fewrk2-tile'
-        });
-
-       
-        JourneyRunner.run(
-            {
-                pages: { 
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
-    }
-);",
+    function () {
+        \\"use strict\\";
+        
+        QUnit.start();
+});",
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
@@ -14548,6 +14528,31 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         CustomPageDefinitions
     );
 });",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/fe/test/JourneyRunner\\",
+	\\"fewrk2/test/integration/pages/TravelList\\",
+	\\"fewrk2/test/integration/pages/TravelObjectPage\\",
+	\\"fewrk2/test/integration/pages/BookingObjectPage\\"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('fewrk2') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#fewrk2-tile',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelList.js": Object {

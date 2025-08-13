@@ -1,38 +1,37 @@
 sap.ui.define([
-    "sap/ui/test/opaQunit"
-], function (opaTest) {
+    "sap/ui/test/opaQunit",
+    "./pages/JourneyRunner"
+], function (test, JourneyRunner) {
     "use strict";
 
-    var Journey = {
-        run: function() {
-            QUnit.module("First journey");
+    function run() {
+        QUnit.module("First journey");
 
-            opaTest("Start application", function (Given, When, Then) {
-                Given.iStartMyApp();
+        test("Start application", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest("Navigate to ObjectPage", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
-                
-                When.onTheTravelList.onFilterBar().iExecuteSearch();
-                
-                Then.onTheTravelList.onTable().iCheckRows();
+        test("Navigate to ObjectPage", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-            });
+        });
 
-            opaTest("Teardown", function (Given, When, Then) { 
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        test("Teardown", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    JourneyRunner.run({}, run)
 });
