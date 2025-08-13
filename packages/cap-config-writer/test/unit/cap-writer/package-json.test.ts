@@ -17,9 +17,9 @@ jest.mock('@sap-ux/project-access', () => ({
 describe('Writing/package json files', () => {
     let fs: Editor;
     const testInputPath = join(__dirname, 'test-inputs');
-    const logger = new ToolsLogger();
     const testProjectNameNoSapUx = 'test-cap-package-no-sapux';
     const testProjectNameWithSapUx = 'test-cap-package-sapux';
+    const testProjectCapNode = 'test-cap-node';
     let capService: CapServiceCdsInfo;
     const capNodeType: CapRuntime = 'Node.js';
 
@@ -60,6 +60,21 @@ describe('Writing/package json files', () => {
         expect(scripts).toEqual({
             'watch-test-cap-package-no-sapux':
                 'cds watch --open test-cap-package-no-sapux/webapp/index.html?sap-ui-xx-viewCache=false'
+        });
+    });
+
+    test('should update old watch scripts for node cap project', async () => {
+        const packageJsonPath = join(testInputPath, testProjectCapNode, 'package.json');
+        const isSapUxEnabled = true;
+        capService.projectPath = join(testInputPath, testProjectCapNode);
+        await updateRootPackageJson(fs, 'project', isSapUxEnabled, capService, 'test.app.project', true);
+        const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
+        const scripts = packageJson.scripts;
+        expect(scripts).toEqual({
+            'watch-project':
+                'cds watch --open test.app.project/index.html?sap-ui-xx-viewCache=false --livereload false',
+            'watch-testapp1':
+                'cds watch --open ns.test.testapp1/index.html?sap-ui-xx-viewCache=false --livereload false'
         });
     });
 
