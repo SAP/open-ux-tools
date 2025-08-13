@@ -47,7 +47,7 @@ describe('Proxy check', () => {
     });
 
     it('should return env-only status with HTTPS_PROXY', () => {
-        process.env.HTTPS_PROXY = 'https://secure-proxy.company.com:8443';
+        process.env.HTTPS_PROXY = 'https://secure-proxy.company.com:8443/';
         const result = validateProxySettings();
         expect(result).toEqual({
             isValid: false,
