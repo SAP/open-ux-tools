@@ -1,5 +1,25 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/ui5-application-writer@1.5.11
+
+## 0.7.17
+
+### Patch Changes
+
+-   944af3e: Update all UI5 OPA test runner HTML files to use relative resource paths instead of absolute paths
+
+## 0.7.16
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/ui5-application-writer@1.5.11
+
 ## 0.7.15
 
 ### Patch Changes

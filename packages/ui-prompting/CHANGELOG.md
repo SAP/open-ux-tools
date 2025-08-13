@@ -1,5 +1,24 @@
 # @sap-ux/ui-prompting
 
+## 0.4.0
+
+### Minor Changes
+
+-   69cfbe3: add support for checked property in Select choices for default selection
+
+## 0.3.37
+
+### Patch Changes
+
+-   e4197e0: Support index-based default values for 'list' type questions. New property 'defaultIndex' for 'list' question.
+
+## 0.3.36
+
+### Patch Changes
+
+-   Updated dependencies [e660064]
+    -   @sap-ux/ui-components@1.26.9
+
 ## 0.3.35
 
 ### Patch Changes
