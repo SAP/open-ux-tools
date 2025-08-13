@@ -50,7 +50,7 @@ export interface CapProjectSettings {
     /**
      * @deprecated
      * Indicates if the CDS UI5 plugin should be added.
-     * Default is true and will be removed in future versions.
+     * It is added automatically if `enableNPMWorkspaces` is true.
      */
     enableCdsUi5Plugin?: boolean;
     enableTypescript?: boolean;
