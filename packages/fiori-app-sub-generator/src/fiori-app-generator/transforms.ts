@@ -349,7 +349,8 @@ function getBaseAppConfig(
             addTests: canGenerateTests(template.type),
             generateIndex: generateIndexHtml,
             addAnnotations: entityRelatedConfig?.addFEOPAnnotations || entityRelatedConfig?.addLineItemAnnotations,
-            useVirtualPreviewEndpoints: project.enableVirtualEndpoints
+            useVirtualPreviewEndpoints: project.enableVirtualEndpoints,
+            enableNpmWorkspaces: project.enableNpmWorkspaces ?? true // Defaults to true
         },
         template: template as templateSetting extends BasicAppSettings
             ? TemplateSettingsFF<BasicAppSettings>

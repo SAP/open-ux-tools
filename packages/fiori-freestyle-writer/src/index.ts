@@ -193,6 +193,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
             packageName: ffApp.package.name ?? '',
             appId: ffApp.app.id,
             sapux: ffApp.appOptions?.sapux,
+            enableNPMWorkspaces: ffApp.appOptions?.enableNpmWorkspaces,
             enableTypescript: ffApp.appOptions?.typescript
         };
         // apply cap updates when service is cap

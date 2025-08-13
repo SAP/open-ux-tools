@@ -167,6 +167,10 @@ export interface AppOptions {
      * Also updates the configs (e.g. ui5.yaml) and package.json scripts accordingly.
      */
     useVirtualPreviewEndpoints?: boolean;
+    /**
+     * enable the use of npm workspaces in the project - defaults to true.
+     */
+    enableNpmWorkspaces?: boolean;
 }
 
 /**
