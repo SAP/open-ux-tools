@@ -1,5 +1,12 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.52
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.6
+-   @sap-ux/deploy-config-generator-shared@0.1.26
+
 ## 0.1.51
 
 ### Patch Changes

@@ -95,10 +95,6 @@ export interface ListPromptQuestion<T extends Answers = Answers> extends ListQue
      * Additional properties for ui.
      */
     guiOptions?: ListGuiOptions;
-    /**
-     * Default selection index.
-     */
-    defaultIndex?: number;
 }
 
 /**

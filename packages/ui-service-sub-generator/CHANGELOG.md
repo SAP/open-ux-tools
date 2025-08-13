@@ -1,5 +1,13 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.62
+
+### Patch Changes
+
+-   Updated dependencies [b6ce4a2]
+    -   @sap-ux/ui-service-inquirer@0.2.0
+    -   @sap-ux/inquirer-common@0.7.33
+
 ## 0.1.61
 
 ### Patch Changes
