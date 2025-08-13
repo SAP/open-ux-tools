@@ -1,9 +1,10 @@
-import type { Package } from '@sap-ux/project-access';
-import { getCapCustomPaths } from '@sap-ux/project-access';
-import type { Editor } from 'mem-fs-editor';
+import { existsSync } from 'fs';
+import { FileName, getCapCustomPaths, getWebappPath } from '@sap-ux/project-access';
 import { join, normalize, posix } from 'path';
-import type { CapServiceCdsInfo } from '../cap-config/types';
 import { enableCdsUi5Plugin } from '../cap-config';
+import type { CapServiceCdsInfo } from '../cap-config/types';
+import type { Editor } from 'mem-fs-editor';
+import type { Manifest, Package } from '@sap-ux/project-access';
 
 /**
  * Retrieves the CDS watch script for the CAP app.
@@ -26,21 +27,6 @@ export function getCDSWatchScript(projectName: string, appId?: string): { [x: st
 }
 
 /**
- * Returns an updated CDS watch script based on new format for cds-ui5-plugin.
- *
- * @param {string} projectName - the project's name
- * @param {string} script - the existing script to be updated.
- * @returns {{ [x: string]: string }} The CDS watch script for the CAP app.
- */
-export function updateExistingWatchScript(projectName: string, script?: string): { [x: string]: string | undefined } {
-    let updatedScript = script?.replace('/webapp', '');
-    if (!updatedScript?.includes('--livereload false')) {
-        updatedScript += ' --livereload false';
-    }
-    return { [`watch-${projectName}`]: updatedScript };
-}
-
-/**
  * Updates the scripts in the package json file with the provided scripts object.
  *
  * @param {Editor} fs - The file system editor.
@@ -53,22 +39,71 @@ function updatePackageJsonWithScripts(fs: Editor, packageJsonPath: string, scrip
 }
 
 /**
+ * Returns updated watch scripts for the package.json.
+ *
+ * @param fs - the file system editor
+ * @param projectPath - the path to the cap project
+ * @param appsPath - the path to the apps directory
+ * @param packageJson - the package.json object
+ * @returns - the watch scripts for existing applications
+ */
+async function updateExistingWatchScripts(
+    fs: Editor,
+    projectPath: string,
+    appsPath: string,
+    packageJson: Package
+): Promise<{ [x: string]: string } | undefined> {
+    const cdsScripts: { [x: string]: string } = {};
+
+    if (!packageJson?.scripts) {
+        return cdsScripts;
+    }
+
+    for (const script in packageJson.scripts) {
+        if (script.startsWith('watch-') && packageJson?.scripts?.[script]?.includes('/webapp/')) {
+            const appName = script.split('-')[1];
+            const appPath = join(projectPath, appsPath, appName);
+            if (existsSync(appPath)) {
+                const manifestPath = join(await getWebappPath(appPath), FileName.Manifest);
+                const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
+                const appId = manifest['sap.app']?.id;
+                if (appId) {
+                    Object.assign(cdsScripts, getCDSWatchScript(appName, appId));
+                }
+            }
+        }
+    }
+
+    return cdsScripts;
+}
+
+/**
  * Updates the scripts in the package json file for a CAP project.
  *
  * @param {Editor} fs - The file system editor.
  * @param {Package} packageJson - The package.json object to be updated.
- * @param {string} packageJsonPath - The path to the package.json file.
- * @param {string} projectName - The project's name, which is the module name.
- * @param {string} appId - The application's ID, including its namespace and the module name.
+ * @param project - project details.
+ * @param {string} project.projectPath - the path to the CAP project.
+ * @param {string} project.projectName - the project name.
+ * @param {string} project.appsPath - the path to the apps directory in the cap project
+ * @param {string} project.appId - The application's ID, including its namespace and the module name.
  * @param {boolean} [enableNPMWorkspaces] - Whether to enable npm workspaces.
  * @returns {Promise<void>} A Promise that resolves once the scripts are updated.
  */
 async function updateScripts(
     fs: Editor,
     packageJson: Package,
-    packageJsonPath: string,
-    projectName: string,
-    appId: string,
+    {
+        projectPath,
+        projectName,
+        appsPath,
+        appId
+    }: {
+        projectPath: string;
+        projectName: string;
+        appsPath: string;
+        appId: string;
+    },
     enableNPMWorkspaces?: boolean
 ): Promise<void> {
     let cdsScripts: { [x: string]: string } = {};
@@ -76,20 +111,13 @@ async function updateScripts(
     if (enableNPMWorkspaces) {
         // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId
         // Update existing watch scripts if they exist
-        if (packageJson?.scripts) {
-            for (const script in packageJson.scripts) {
-                if (script.startsWith('watch-')) {
-                    const existingProjName = script.split('-')[1];
-                    Object.assign(cdsScripts, updateExistingWatchScript(existingProjName, packageJson.scripts[script]));
-                }
-            }
-        }
+        Object.assign(cdsScripts, await updateExistingWatchScripts(fs, projectPath, appsPath, packageJson));
         // Add the watch script for the new app
         Object.assign(cdsScripts, getCDSWatchScript(projectName, appId));
     } else {
         cdsScripts = getCDSWatchScript(projectName);
     }
-    updatePackageJsonWithScripts(fs, packageJsonPath, cdsScripts);
+    updatePackageJsonWithScripts(fs, join(projectPath, 'package.json'), cdsScripts);
 }
 
 /**
@@ -120,11 +148,18 @@ export async function updateRootPackageJson(
     if (enableNPMWorkspaces && packageJson) {
         await enableCdsUi5Plugin(capService.projectPath, fs);
     }
+    const appsPath = (await getCapCustomPaths(capService.projectPath)).app;
+
     if (capService?.capType === capNodeType) {
-        await updateScripts(fs, packageJson, packageJsonPath, projectName, appId, enableNPMWorkspaces);
+        await updateScripts(
+            fs,
+            packageJson,
+            { projectPath: capService.projectPath, projectName, appsPath, appId },
+            enableNPMWorkspaces
+        );
     }
     if (sapux) {
-        const dirPath = join(capService.appPath ?? (await getCapCustomPaths(capService.projectPath)).app, projectName);
+        const dirPath = join(capService.appPath ?? appsPath, projectName);
         // Converts a directory path to a POSIX-style path.
         const capProjectPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
         const sapuxExt = Array.isArray(packageJson?.sapux) ? [...packageJson.sapux, capProjectPath] : [capProjectPath];

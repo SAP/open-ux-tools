@@ -2,14 +2,22 @@
   "name": "test_cap",
   "version": "0",
   "description": "Test file",
-  "dependencies": {},
+  "dependencies": {
+    "@sap/cds": "^6.8.2"
+  },
   "sapux": [
     "app/1",
     "app/2",
     "app/3",
     "app/alp_v4_cap"
   ],
+  "workspaces": [
+    "app/*"
+  ],
+  "devDependencies": {
+    "cds-plugin-ui5": "^0.13.0"
+  },
   "scripts": {
-    "watch-alp_v4_cap": "cds watch --open alp_v4_cap/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-alp_v4_cap": "cds watch --open testNameSpace.alpv4cap/index.html?sap-ui-xx-viewCache=false --livereload false"
   }
 }
