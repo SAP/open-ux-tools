@@ -27,7 +27,12 @@ const getEnvProxy = (): string | undefined => {
 };
 
 const normalizeProxy = (value?: string): string | undefined => {
-    return value?.trim().toLowerCase().replace(/\/+$/, '') || undefined;
+    if (!value) {
+        return undefined;
+    }
+    const normalized = value.trim().toLowerCase();
+    // Replaces one or more trailing slashes in a single pass
+    return normalized.replace(/\/+$/, '') || undefined;
 };
 
 /**
