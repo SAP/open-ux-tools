@@ -1,5 +1,84 @@
 # @sap-ux/generator-adp
 
+## 0.3.64
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.16
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/adp-flp-config-sub-generator@0.1.62
+-   @sap-ux/axios-extension@1.22.5
+-   @sap-ux/fiori-generator-shared@0.13.8
+-   @sap-ux/odata-service-writer@0.27.16
+-   @sap-ux/project-input-validator@0.6.16
+-   @sap-ux/system-access@0.6.12
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.3.63
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+-   @sap-ux/adp-flp-config-sub-generator@0.1.61
+-   @sap-ux/adp-tooling@0.15.15
+
+## 0.3.62
+
+### Patch Changes
+
+-   f5f6a31: fix: Pass the same prompt options when running deployment generator as a step or standalone
+
+## 0.3.61
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.7
+-   @sap-ux/inquirer-common@0.7.32
+-   @sap-ux/adp-flp-config-sub-generator@0.1.60
+-   @sap-ux/adp-tooling@0.15.14
+
+## 0.3.60
+
+### Patch Changes
+
+-   Updated dependencies [98fbd93]
+    -   @sap-ux/adp-tooling@0.15.13
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.59
+
+## 0.3.59
+
+### Patch Changes
+
+-   Updated dependencies [9f10a60]
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.58
+    -   @sap-ux/adp-tooling@0.15.12
+    -   @sap-ux/fiori-generator-shared@0.13.6
+    -   @sap-ux/system-access@0.6.12
+
+## 0.3.58
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.11
+-   @sap-ux/odata-service-writer@0.27.15
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/adp-flp-config-sub-generator@0.1.57
+-   @sap-ux/axios-extension@1.22.4
+-   @sap-ux/fiori-generator-shared@0.13.6
+-   @sap-ux/project-input-validator@0.6.15
+-   @sap-ux/system-access@0.6.11
+-   @sap-ux/inquirer-common@0.7.31
+
+## 0.3.57
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.56
+    -   @sap-ux/adp-tooling@0.15.10
+
 ## 0.3.56
 
 ### Patch Changes

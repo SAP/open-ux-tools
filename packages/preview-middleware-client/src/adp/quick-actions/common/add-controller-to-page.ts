@@ -8,13 +8,13 @@ import type {
     QuickActionContext,
     SimpleQuickActionDefinition
 } from '../../../cpe/quick-actions/quick-action-definition';
+import { getTextBundle } from '../../../i18n';
+import { getExistingController } from '../../api-handler';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { isControllerExtensionEnabledForControl } from '../../init-dialogs';
-import { getExistingController } from '../../api-handler';
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 import type { EnablementValidatorResult } from '../enablement-validator';
-import { getTextBundle } from '../../../i18n';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
 export const ADD_CONTROLLER_TO_PAGE_TYPE = 'add-controller-to-page';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
@@ -33,7 +33,9 @@ export class AddControllerToPageQuickAction
                 run: async (): Promise<EnablementValidatorResult> => {
                     const controllerName = getControllerInfoForControl(this.context.view).controllerName;
                     const i18n = await getTextBundle();
-                    if (checkForExistingChange(this.context.rta, 'codeExt', 'selector.controllerName', controllerName)) {
+                    if (
+                        checkForExistingChange(this.context.rta, 'codeExt', 'selector.controllerName', controllerName)
+                    ) {
                         return {
                             type: 'error',
                             message: i18n.getText('ADP_QUICK_ACTION_CONTROLLER_PENDING_CHANGE_EXISTS')
@@ -51,11 +53,12 @@ export class AddControllerToPageQuickAction
         const version = await getUi5Version();
         const isReuseComponent = await getReuseComponentChecker(version);
 
-        for (const control of getRelevantControlFromActivePage(
+        const control = getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
             CONTROL_TYPES
-        )) {
+        )[0];
+        if (control) {
             const controlInfo = getControllerInfoForControl(control);
             const data = await getExistingController(controlInfo.controllerName);
             this.controllerExists = data?.controllerExists;
@@ -65,7 +68,6 @@ export class AddControllerToPageQuickAction
                 this.context.flexSettings.isCloud
             );
             this.control = isActiveAction ? control : undefined;
-            break;
         }
     }
 

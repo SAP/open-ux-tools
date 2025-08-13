@@ -1,5 +1,63 @@
 # @sap-ux/adp-tooling
 
+## 0.15.16
+
+### Patch Changes
+
+-   @sap-ux/i18n@0.3.3
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/axios-extension@1.22.5
+-   @sap-ux/odata-service-writer@0.27.16
+-   @sap-ux/project-input-validator@0.6.16
+-   @sap-ux/system-access@0.6.12
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.15.15
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+
+## 0.15.14
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.32
+
+## 0.15.13
+
+### Patch Changes
+
+-   98fbd93: Store fragment parent control info in fragment body
+
+## 0.15.12
+
+### Patch Changes
+
+-   Updated dependencies [9f10a60]
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/system-access@0.6.12
+
+## 0.15.11
+
+### Patch Changes
+
+-   Updated dependencies [43bc887]
+    -   @sap-ux/ui5-config@0.29.1
+    -   @sap-ux/odata-service-writer@0.27.15
+    -   @sap-ux/project-access@1.30.10
+    -   @sap-ux/axios-extension@1.22.4
+    -   @sap-ux/project-input-validator@0.6.15
+    -   @sap-ux/system-access@0.6.11
+    -   @sap-ux/inquirer-common@0.7.31
+
+## 0.15.10
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+
 ## 0.15.9
 
 ### Patch Changes
