@@ -36,6 +36,7 @@ const normalizeProxy = (value?: string): string | undefined => {
 
 /**
  * Validates if the proxy settings match against the process.env proxy settings. Typically used to ensure that the proxy settings in VSCode match those in the environment.
+ *
  * @param {string} [proxy] - The proxy setting to validate. If not provided, it will check the environment variables.
  * @returns {ProxyValidationResult} - An object containing the validation result, status, and messages.
  */
