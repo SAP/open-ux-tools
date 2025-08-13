@@ -11,7 +11,7 @@ import { GeneratorTypes } from '../types';
  */
 export function getWizardPages(shouldShowTargetEnv: boolean): IPrompt[] {
     return [
-        ...(shouldShowTargetEnv ? [{ name: 'Target environment', description: '' }] : []),
+        ...(shouldShowTargetEnv ? [{ name: 'Target Environment', description: '' }] : []),
         {
             name: t('yuiNavSteps.configurationName'),
             description: t('yuiNavSteps.configurationDescr')
@@ -32,7 +32,7 @@ export function getWizardPages(shouldShowTargetEnv: boolean): IPrompt[] {
 export function updateCfWizardSteps(isCFEnv: boolean, prompts: YeomanUiSteps): void {
     if (isCFEnv) {
         prompts.splice(1, prompts['items'].length - 1, [
-            { name: 'Project path', description: 'Provide path to MTA project.' },
+            { name: 'Project Path', description: 'Provide path to MTA project.' },
             {
                 name: t('yuiNavSteps.projectAttributesName'),
                 description: t('yuiNavSteps.projectAttributesDescr')
