@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.34
+
 ## 0.5.5
 
 ### Patch Changes
