@@ -30,6 +30,7 @@ import {
     SET_CHOICES,
     SET_FILTERBAR_QUESTIONS,
     SET_TABLE_QUESTIONS,
+    SET_PAGE_QUESTIONS,
     SET_VALIDATION_RESULTS,
     PromptsType,
     REQUEST_I18N,
@@ -129,7 +130,8 @@ export function onMessageDetach(type: string, listener: Listener): void {
 const QUESTIONS_TYPE_MAP = new Map([
     [PromptsType.Table, SET_TABLE_QUESTIONS],
     [PromptsType.Chart, SET_CHART_QUESTIONS],
-    [PromptsType.FilterBar, SET_FILTERBAR_QUESTIONS]
+    [PromptsType.FilterBar, SET_FILTERBAR_QUESTIONS],
+    [PromptsType.Page, SET_PAGE_QUESTIONS]
 ]);
 
 /**

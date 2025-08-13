@@ -53,11 +53,12 @@ export class AddControllerToPageQuickAction
         const version = await getUi5Version();
         const isReuseComponent = await getReuseComponentChecker(version);
 
-        for (const control of getRelevantControlFromActivePage(
+        const control = getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
             CONTROL_TYPES
-        )) {
+        )[0];
+        if (control) {
             const controlInfo = getControllerInfoForControl(control);
             const data = await getExistingController(controlInfo.controllerName);
             this.controllerExists = data?.controllerExists;
@@ -67,7 +68,6 @@ export class AddControllerToPageQuickAction
                 this.context.flexSettings.isCloud
             );
             this.control = isActiveAction ? control : undefined;
-            break;
         }
     }
 

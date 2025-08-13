@@ -60,6 +60,27 @@ describe('additional-change-info.ts', () => {
 
             expect(getAddXMLAdditionalInfoSpy).not.toHaveBeenCalled();
         });
+
+        it('should not set additional change info if a value is already set', () => {
+            const mockChange = new FlexChange({
+                selector: { id: 'mockSelectorId', idIsLocal: false },
+                changeType: 'addXML',
+                layer: 'CUSTOMER_BASE',
+                fileName: 'mockFileName'
+            });
+            const getAddXMLAdditionalInfoSpy = jest
+                .spyOn(xmlAdditionalInfo, 'getAddXMLAdditionalInfo')
+                .mockReturnValueOnce({ templateName: 'template' })
+                .mockReturnValueOnce({ controlType: 'test' });
+
+            setAdditionalChangeInfo(mockChange);
+            setAdditionalChangeInfo(mockChange);
+
+            expect(getAddXMLAdditionalInfoSpy).toHaveBeenCalledTimes(2);
+
+            const result = getAdditionalChangeInfo(mockChange as unknown as Change);
+            expect(result).toEqual({ templateName: 'template' });
+        });
     });
 
     describe('setAdditionalChangeInfoForChangeFile', () => {

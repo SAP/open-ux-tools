@@ -1,5 +1,17 @@
 # @sap-ux/telemetry
 
+## 0.6.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+
+## 0.6.14
+
+### Patch Changes
+
+-   18a5ee2: Fix OS node version, unstable code
+
 ## 0.6.13
 
 ### Patch Changes

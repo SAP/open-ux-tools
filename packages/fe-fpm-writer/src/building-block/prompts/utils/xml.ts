@@ -35,10 +35,14 @@ const augmentXpathWithLocalNames = (path: string): string => {
  *
  * @param xmlFilePath - the xml file path
  * @param fs - the file system object for reading files
- * @returns the list of xpath strings.
+ * @returns the list of xpath strings & page macro definition if page macro has been added by user.
  */
-export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Record<string, string> {
+export function getXPathStringsForXmlFile(
+    xmlFilePath: string,
+    fs: Editor
+): { inputChoices: Record<string, string>; pageMacroDefinition?: string } {
     const result: Record<string, string> = {};
+    let pageMacroDefinition: string | undefined;
     try {
         const xmlContent = fs.read(xmlFilePath);
         const errorHandler = (level: string, message: string) => {
@@ -46,12 +50,29 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
         };
         const xmlDocument = new DOMParser({ errorHandler }).parseFromString(xmlContent);
         const nodes = [{ parentNode: '', node: xmlDocument.firstChild }];
+
+        // check macros namespace and page macro definition
+        const macrosNamespace = getOrAddMacrosNamespace(xmlDocument);
+        pageMacroDefinition = macrosNamespace ? `${macrosNamespace}:Page` : 'macros:Page';
+        let hasPageMacroChild = false;
+
         while (nodes && nodes.length > 0) {
             const { parentNode, node } = nodes.shift()!;
             if (!node) {
                 continue;
             }
-            result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
+            // If the current node does NOT have a <macros:Page> child, add <mvc:View> XPath to the result.
+            // This prevents suggesting insertion points outside macros:Page when a macros:Page is present.
+            hasPageMacroChild = Array.from(node.childNodes).some(
+                (child) =>
+                    child.nodeType === child.ELEMENT_NODE &&
+                    (child as Element).localName === 'Page' &&
+                    child.nodeName === pageMacroDefinition
+            );
+            if (!hasPageMacroChild) {
+                result[`${parentNode}/${node.nodeName}`] = augmentXpathWithLocalNames(`${parentNode}/${node.nodeName}`);
+            }
+
             const childNodes = Array.from(node.childNodes);
             for (const childNode of childNodes) {
                 if (childNode.nodeType === childNode.ELEMENT_NODE) {
@@ -65,7 +86,7 @@ export function getXPathStringsForXmlFile(xmlFilePath: string, fs: Editor): Reco
     } catch (error) {
         throw new Error(`An error occurred while parsing the view or fragment xml. Details: ${getErrorMessage(error)}`);
     }
-    return result;
+    return { inputChoices: result, pageMacroDefinition };
 }
 
 /**
@@ -99,4 +120,20 @@ export async function getFilterBarIdsInFile(viewOrFragmentPath: string, fs: Edit
         id && ids.push(id);
     }
     return ids;
+}
+
+/**
+ * Returns the macros namespace from the xml document if it exists or creates a new one and returns it.
+ *
+ * @param {Document} ui5XmlDocument - the view/fragment xml file document
+ * @returns {string} the macros namespace
+ */
+export function getOrAddMacrosNamespace(ui5XmlDocument: Document): string {
+    const namespaceMap = (ui5XmlDocument.firstChild as any)._nsMap;
+    const macrosNamespaceEntry = Object.entries(namespaceMap).find(([_, value]) => value === 'sap.fe.macros');
+    if (!macrosNamespaceEntry) {
+        (ui5XmlDocument.firstChild as any)._nsMap['macros'] = 'sap.fe.macros';
+        ui5XmlDocument.documentElement.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:macros', 'sap.fe.macros');
+    }
+    return macrosNamespaceEntry ? macrosNamespaceEntry[0] : 'macros';
 }

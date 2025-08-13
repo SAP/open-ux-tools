@@ -1,5 +1,51 @@
 # @sap-ux/preview-middleware
 
+## 0.21.5
+
+### Patch Changes
+
+-   @sap-ux/i18n@0.3.3
+-   @sap-ux/adp-tooling@0.15.16
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/system-access@0.6.12
+
+## 0.21.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.15
+
+## 0.21.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.14
+
+## 0.21.2
+
+### Patch Changes
+
+-   ad49c30: fix: `Add Custom Table Column` Quick Action not using the correct fragment template.
+
+## 0.21.1
+
+### Patch Changes
+
+-   98fbd93: Store fragment parent control info in fragment body
+-   Updated dependencies [98fbd93]
+    -   @sap-ux/adp-tooling@0.15.13
+
+## 0.21.0
+
+### Minor Changes
+
+-   b1213b1: feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.12
+-   @sap-ux/system-access@0.6.12
+
 ## 0.20.74
 
 ### Patch Changes

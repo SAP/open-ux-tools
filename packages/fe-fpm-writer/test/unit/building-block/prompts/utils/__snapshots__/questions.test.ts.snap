@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`utils - questions entityPrompt 1`] = `
 Object {
@@ -88,6 +88,33 @@ Object {
   "name": "aggregationPath",
   "type": "list",
 }
+`;
+
+exports[`utils - questions getAggregationPathPrompt with page macro 1`] = `
+Object {
+  "choices": [Function],
+  "guiOptions": Object {
+    "placeholder": "Select an aggregation path",
+    "selectType": "dynamic",
+  },
+  "message": "AggregationPathMessage",
+  "name": "aggregationPath",
+  "type": "list",
+}
+`;
+
+exports[`utils - questions getAggregationPathPrompt with page macro 2`] = `
+Array [
+  Object {
+    "checked": true,
+    "name": "/mvc:View/macros:Page",
+    "value": "/mvc:View/macros:Page",
+  },
+  Object {
+    "name": "/mvc:View/macros:Page/macros:Table",
+    "value": "/mvc:View/macros:Page/macros:Table",
+  },
+]
 `;
 
 exports[`utils - questions getAnnotationPathQualifierPrompt 1`] = `

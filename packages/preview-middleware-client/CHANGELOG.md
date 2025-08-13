@@ -1,10 +1,28 @@
 # @sap-ux-private/preview-middleware-client
 
-## 1.0.0
+## 0.15.3
 
-### Major Changes
+### Patch Changes
 
--   a181df0: feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
+-   ad49c30: fix: `Add Custom Table Column` Quick Action not using the correct fragment template.
+
+## 0.15.2
+
+### Patch Changes
+
+-   f4da4a6: Fix Sonar issue: Invalid loop. Its body allows only one iteration.
+
+## 0.15.1
+
+### Patch Changes
+
+-   98fbd93: Store fragment parent control info in fragment body
+
+## 0.15.0
+
+### Minor Changes
+
+-   b1213b1: feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
 
 ## 0.14.11
 

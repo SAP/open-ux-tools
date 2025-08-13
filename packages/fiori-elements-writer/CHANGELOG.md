@@ -1,5 +1,53 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.5.25
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.51
+-   @sap-ux/fe-fpm-writer@0.37.1
+-   @sap-ux/cap-config-writer@0.10.26
+-   @sap-ux/fiori-generator-shared@0.13.8
+-   @sap-ux/odata-service-writer@0.27.16
+-   @sap-ux/ui5-application-writer@1.5.11
+-   @sap-ux/ui5-test-writer@0.7.18
+
+## 2.5.24
+
+### Patch Changes
+
+-   Updated dependencies [69cfbe3]
+    -   @sap-ux/fe-fpm-writer@0.37.0
+
+## 2.5.23
+
+### Patch Changes
+
+-   944af3e: Update all UI5 OPA test runner HTML files to use relative resource paths instead of absolute paths
+-   Updated dependencies [944af3e]
+    -   @sap-ux/ui5-test-writer@0.7.17
+
+## 2.5.22
+
+### Patch Changes
+
+-   Updated dependencies [47bd07a]
+    -   @sap-ux/fe-fpm-writer@0.36.1
+
+## 2.5.21
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.7
+-   @sap-ux/cap-config-writer@0.10.25
+
+## 2.5.20
+
+### Patch Changes
+
+-   Updated dependencies [f81c86b]
+    -   @sap-ux/fe-fpm-writer@0.36.0
+
 ## 2.5.19
 
 ### Patch Changes
