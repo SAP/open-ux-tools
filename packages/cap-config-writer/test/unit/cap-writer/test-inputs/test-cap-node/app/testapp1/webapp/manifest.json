@@ -1,0 +1,10 @@
+{
+    "sap.app": {
+        "id": "ns.test.testapp1",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        }
+    }
+}

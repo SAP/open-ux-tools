@@ -263,17 +263,13 @@ async function generate<T extends {}>(
     }
 
     if (feApp.service.capService) {
-        const enableCdsUi5Plugin =
-            !!feApp?.appOptions?.typescript || !!feApp?.service.capService?.cdsUi5PluginInfo?.isCdsUi5PluginEnabled;
         const settings: CapProjectSettings = {
             appRoot: basePath,
             packageName: feApp.package.name ?? '',
             appId: feApp.app.id,
             sapux: feApp.appOptions?.sapux,
-            enableTypescript: feApp.appOptions?.typescript,
-            // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
-            enableCdsUi5Plugin: enableCdsUi5Plugin,
-            enableNPMWorkspaces: enableCdsUi5Plugin
+            enableCdsUi5Plugin: feApp.appOptions?.addCdsUi5Plugin,
+            enableTypescript: feApp.appOptions?.typescript
         };
         // apply cap updates when service is cap
         await applyCAPUpdates(fs, feApp.service.capService, settings);
