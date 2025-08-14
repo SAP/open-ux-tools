@@ -79,7 +79,7 @@ export function getProjectPathPrompt(fdcService: FDCService, vscode: any): YUIQu
             type: 'folder-browser',
             mandatory: true,
             hint: t('prompts.projectLocationTooltip'),
-            breadcrumb: true
+            breadcrumb: t('prompts.projectLocationBreadcrumb')
         },
         message: t('prompts.projectLocationLabel'),
         validate: (value: string) => validateProjectPath(value, fdcService),

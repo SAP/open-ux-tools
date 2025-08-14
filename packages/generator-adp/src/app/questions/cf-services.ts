@@ -119,7 +119,7 @@ export class CFServicesPrompter {
             guiOptions: {
                 mandatory: true,
                 hint: t('prompts.businessSolutionNameTooltip'),
-                breadcrumb: true
+                breadcrumb: t('prompts.businessSolutionBreadcrumb')
             },
             store: false
         } as InputQuestion<CfServicesAnswers>;
