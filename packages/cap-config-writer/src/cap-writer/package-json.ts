@@ -144,13 +144,12 @@ export async function updateRootPackageJson(
     const packageJsonPath: string = join(capService.projectPath, 'package.json');
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const capNodeType = 'Node.js';
-
-    if (enableNPMWorkspaces && packageJson) {
-        await enableCdsUi5Plugin(capService.projectPath, fs);
-    }
     const appsPath = (await getCapCustomPaths(capService.projectPath)).app;
 
     if (capService?.capType === capNodeType) {
+        if (enableNPMWorkspaces) {
+            await enableCdsUi5Plugin(capService.projectPath, fs);
+        }
         await updateScripts(
             fs,
             packageJson,
@@ -158,6 +157,7 @@ export async function updateRootPackageJson(
             enableNPMWorkspaces
         );
     }
+
     if (sapux) {
         const dirPath = join(capService.appPath ?? appsPath, projectName);
         // Converts a directory path to a POSIX-style path.
