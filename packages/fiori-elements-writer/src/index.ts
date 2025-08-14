@@ -268,7 +268,7 @@ async function generate<T extends {}>(
             packageName: feApp.package.name ?? '',
             appId: feApp.app.id,
             sapux: feApp.appOptions?.sapux,
-            enableNPMWorkspaces: feApp.appOptions?.enableNpmWorkspaces,
+            enableCdsUi5Plugin: feApp.appOptions?.addCdsUi5Plugin,
             enableTypescript: feApp.appOptions?.typescript
         };
         // apply cap updates when service is cap

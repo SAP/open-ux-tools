@@ -350,7 +350,7 @@ function getBaseAppConfig(
             generateIndex: generateIndexHtml,
             addAnnotations: entityRelatedConfig?.addFEOPAnnotations || entityRelatedConfig?.addLineItemAnnotations,
             useVirtualPreviewEndpoints: project.enableVirtualEndpoints,
-            enableNpmWorkspaces: project.enableNpmWorkspaces ?? true // Defaults to true
+            addCdsUi5Plugin: project.addCdsUi5Plugin ?? true // Defaults to true
         },
         template: template as templateSetting extends BasicAppSettings
             ? TemplateSettingsFF<BasicAppSettings>

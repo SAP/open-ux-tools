@@ -43,14 +43,14 @@ export interface CapProjectSettings {
     appId: string;
     sapux?: boolean;
     /**
-     * Indicates if NPM workspaces should be enabled, cds-ui5-plugin will also be added if this is true.
-     * Default is true.
+     * @deprecated
+     * Indicates if NPM workspaces will be enabled.
+     * If cds-ui5-plugin is added or `enableCdsUi5Plugin` is true then npm workspaces is enabled.
      */
     enableNPMWorkspaces?: boolean;
     /**
-     * @deprecated
-     * Indicates if the CDS UI5 plugin should be added.
-     * It is added automatically if `enableNPMWorkspaces` is true.
+     * Indicates if the CDS UI5 plugin will be added.
+     * If true, npm workspaces will also be automatically enabled.
      */
     enableCdsUi5Plugin?: boolean;
     enableTypescript?: boolean;

@@ -168,9 +168,9 @@ export interface AppOptions {
      */
     useVirtualPreviewEndpoints?: boolean;
     /**
-     * enable the use of npm workspaces in the project - defaults to true.
+     * add the cds ui5 plugin (and enable npm workspaces) in the project - defaults to true.
      */
-    enableNpmWorkspaces?: boolean;
+    addCdsUi5Plugin?: boolean;
 }
 
 /**
