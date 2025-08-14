@@ -1,5 +1,15 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.4.35
+
+### Patch Changes
+
+-   55bb22e: updates cap projects to use npm workspaces by default
+-   Updated dependencies [55bb22e]
+    -   @sap-ux/cap-config-writer@0.11.0
+    -   @sap-ux/ui5-application-writer@1.5.13
+    -   @sap-ux/ui5-test-writer@0.7.20
+
 ## 2.4.34
 
 ### Patch Changes

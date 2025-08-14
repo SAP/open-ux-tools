@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.11.0
+
+### Minor Changes
+
+-   55bb22e: updates cap projects to use npm workspaces by default
+
 ## 0.10.27
 
 ### Patch Changes
