@@ -171,13 +171,13 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (test, JourneyRunner) {
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    function run() {
+    function journey() {
         QUnit.module(\\"First journey\\");
 
-        test(\\"Start application\\", function (Given, When, Then) {
+        opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
@@ -185,7 +185,7 @@ Object {
         });
 
 
-        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
             When.onTheEmployeesList.onFilterBar().iExecuteSearch();
@@ -197,13 +197,13 @@ Object {
 
         });
 
-        test(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
         });
     }
 
-    JourneyRunner.run({}, run)
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -227,9 +227,6 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -242,15 +239,42 @@ Object {
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+  ], function (QUnit) {
+    \\"use strict\\";
+    sap.ui.require(
     [
        'ui5-test-writer/test/employees/test/integration/myOPATest'
     ],
     function () {
-        \\"use strict\\";
         
         QUnit.start();
-});",
+    });
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.js": Object {
@@ -517,13 +541,13 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (test, JourneyRunner) {
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    function run() {
+    function journey() {
         QUnit.module(\\"First journey\\");
 
-        test(\\"Start application\\", function (Given, When, Then) {
+        opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
@@ -533,7 +557,7 @@ Object {
         });
 
 
-        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
             When.onTheEmployeesList.onFilterBar().iExecuteSearch();
@@ -545,13 +569,13 @@ Object {
 
         });
 
-        test(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
         });
     }
 
-    JourneyRunner.run({}, run)
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -575,9 +599,6 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -590,15 +611,42 @@ Object {
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+  ], function (QUnit) {
+    \\"use strict\\";
+    sap.ui.require(
     [
        'ui5-test-writer/test/employees/test/integration/FirstJourney'
     ],
     function () {
-        \\"use strict\\";
         
         QUnit.start();
-});",
+    });
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.js": Object {
@@ -842,13 +890,13 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (test, JourneyRunner) {
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    function run() {
+    function journey() {
         QUnit.module(\\"First journey\\");
 
-        test(\\"Start application\\", function (Given, When, Then) {
+        opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
@@ -856,7 +904,7 @@ Object {
         });
 
 
-        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
             When.onTheEmployeesList.onFilterBar().iExecuteSearch();
@@ -868,13 +916,13 @@ Object {
 
         });
 
-        test(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
         });
     }
 
-    JourneyRunner.run({}, run)
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -898,9 +946,6 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -913,15 +958,42 @@ Object {
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+  ], function (QUnit) {
+    \\"use strict\\";
+    sap.ui.require(
     [
        'ui5-test-writer/test/employees/test/integration/FirstJourney'
     ],
     function () {
-        \\"use strict\\";
         
         QUnit.start();
-});",
+    });
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.js": Object {
@@ -1165,13 +1237,13 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (test, JourneyRunner) {
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    function run() {
+    function journey() {
         QUnit.module(\\"First journey\\");
 
-        test(\\"Start application\\", function (Given, When, Then) {
+        opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
@@ -1179,7 +1251,7 @@ Object {
         });
 
 
-        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
             When.onTheEmployeesList.onFilterBar().iExecuteSearch();
@@ -1191,13 +1263,13 @@ Object {
 
         });
 
-        test(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
         });
     }
 
-    JourneyRunner.run({}, run)
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -1221,9 +1293,6 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -1236,15 +1305,42 @@ Object {
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+  ], function (QUnit) {
+    \\"use strict\\";
+    sap.ui.require(
     [
        'ui5-test-writer/test/employees/test/integration/FirstJourney'
     ],
     function () {
-        \\"use strict\\";
         
         QUnit.start();
-});",
+    });
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.js": Object {
@@ -1465,13 +1561,13 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (test, JourneyRunner) {
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    function run() {
+    function journey() {
         QUnit.module(\\"First journey\\");
 
-        test(\\"Start application\\", function (Given, When, Then) {
+        opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
@@ -1479,7 +1575,7 @@ Object {
         });
 
 
-        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
             When.onTheEmployeesList.onFilterBar().iExecuteSearch();
@@ -1488,13 +1584,13 @@ Object {
 
         });
 
-        test(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
         });
     }
 
-    JourneyRunner.run({}, run)
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -1518,9 +1614,6 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -1533,15 +1626,42 @@ Object {
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+  ], function (QUnit) {
+    \\"use strict\\";
+    sap.ui.require(
     [
        'ui5-test-writer/test/employees/test/integration/FirstJourney'
     ],
     function () {
-        \\"use strict\\";
         
         QUnit.start();
-});",
+    });
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.js": Object {
@@ -1740,25 +1860,25 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (test, JourneyRunner) {
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    function run() {
+    function journey() {
         QUnit.module(\\"First journey\\");
 
-        test(\\"Start application\\", function (Given, When, Then) {
+        opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
         });
 
 
-        test(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
         });
     }
 
-    JourneyRunner.run({}, run)
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -1782,9 +1902,6 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -1797,15 +1914,42 @@ Object {
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+  ], function (QUnit) {
+    \\"use strict\\";
+    sap.ui.require(
     [
        'ui5-test-writer/test/employees/test/integration/FirstJourney'
     ],
     function () {
-        \\"use strict\\";
         
         QUnit.start();
-});",
+    });
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
@@ -2009,13 +2153,13 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (test, JourneyRunner) {
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    function run() {
+    function journey() {
         QUnit.module(\\"First journey\\");
 
-        test(\\"Start application\\", function (Given, When, Then) {
+        opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
             Then.onTheEmployeesObjectPage.iSeeThisPage();
@@ -2023,13 +2167,13 @@ Object {
         });
 
 
-        test(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
         });
     }
 
-    JourneyRunner.run({}, run)
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -2053,9 +2197,6 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -2068,15 +2209,42 @@ Object {
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+  ], function (QUnit) {
+    \\"use strict\\";
+    sap.ui.require(
     [
        'ui5-test-writer/test/employees/test/integration/FirstJourney'
     ],
     function () {
-        \\"use strict\\";
         
         QUnit.start();
-});",
+    });
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
@@ -2341,13 +2509,13 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (test, JourneyRunner) {
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    function run() {
+    function journey() {
         QUnit.module(\\"First journey\\");
 
-        test(\\"Start application\\", function (Given, When, Then) {
+        opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
@@ -2355,7 +2523,7 @@ Object {
         });
 
 
-        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
             When.onTheEmployeesList.onFilterBar().iExecuteSearch();
@@ -2367,13 +2535,13 @@ Object {
 
         });
 
-        test(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
         });
     }
 
-    JourneyRunner.run({}, run)
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -2397,9 +2565,6 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -2412,15 +2577,42 @@ Object {
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+  ], function (QUnit) {
+    \\"use strict\\";
+    sap.ui.require(
     [
        'vesc/demo/employee/project2/test/integration/FirstJourney'
     ],
     function () {
-        \\"use strict\\";
         
         QUnit.start();
-});",
+    });
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.js": Object {
@@ -2751,13 +2943,13 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (test, JourneyRunner) {
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    function run() {
+    function journey() {
         QUnit.module(\\"First journey\\");
 
-        test(\\"Start application\\", function (Given, When, Then) {
+        opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
             Then.onTheEmployeesList.iSeeThisPage();
@@ -2765,7 +2957,7 @@ Object {
         });
 
 
-        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
             When.onTheEmployeesList.onFilterBar().iExecuteSearch();
@@ -2777,13 +2969,13 @@ Object {
 
         });
 
-        test(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
         });
     }
 
-    JourneyRunner.run({}, run)
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -2807,9 +2999,6 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -2822,15 +3011,42 @@ Object {
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+  ], function (QUnit) {
+    \\"use strict\\";
+    sap.ui.require(
     [
        'vesc/demo/employee/project2/test/integration/FirstJourney'
     ],
     function () {
-        \\"use strict\\";
         
         QUnit.start();
-});",
+    });
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesList.js": Object {
@@ -3140,13 +3356,13 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (test, JourneyRunner) {
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    function run() {
+    function journey() {
         QUnit.module(\\"First journey\\");
 
-        test(\\"Start application\\", function (Given, When, Then) {
+        opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
             Then.onTheEmployeesListTarget.iSeeThisPage();
@@ -3154,7 +3370,7 @@ Object {
         });
 
 
-        test(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             
             When.onTheEmployeesListTarget.onFilterBar().iExecuteSearch();
@@ -3166,13 +3382,13 @@ Object {
 
         });
 
-        test(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
         });
     }
 
-    JourneyRunner.run({}, run)
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -3196,9 +3412,6 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -3211,15 +3424,42 @@ Object {
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+  ], function (QUnit) {
+    \\"use strict\\";
+    sap.ui.require(
     [
        'projectservice/test/integration/FirstJourney'
     ],
     function () {
-        \\"use strict\\";
         
         QUnit.start();
-});",
+    });
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesCustomPageTarget.js": Object {
@@ -3462,13 +3702,13 @@ Object {
     "contents": "sap.ui.define([
     \\"sap/ui/test/opaQunit\\",
     \\"./pages/JourneyRunner\\"
-], function (test, JourneyRunner) {
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    function run() {
+    function journey() {
         QUnit.module(\\"First journey\\");
 
-        test(\\"Start application\\", function (Given, When, Then) {
+        opaTest(\\"Start application\\", function (Given, When, Then) {
             Given.iStartMyApp();
 
             Then.onTheEmployeesObjectPage.iSeeThisPage();
@@ -3476,13 +3716,13 @@ Object {
         });
 
 
-        test(\\"Teardown\\", function (Given, When, Then) { 
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();
         });
     }
 
-    JourneyRunner.run({}, run)
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -3506,9 +3746,6 @@ Object {
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -3521,15 +3758,42 @@ Object {
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
+    }
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+  ], function (QUnit) {
+    \\"use strict\\";
+    sap.ui.require(
     [
        'test/ui5-test-writer/test/integration/FirstJourney'
     ],
     function () {
-        \\"use strict\\";
         
         QUnit.start();
-});",
+    });
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/EmployeesObjectPage.js": Object {
