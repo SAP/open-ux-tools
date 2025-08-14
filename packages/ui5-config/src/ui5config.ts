@@ -291,18 +291,8 @@ export class UI5Config {
      * @memberof UI5Config
      */
     public addFioriToolsProxyMiddleware(proxyConfig: FioriToolsProxyConfig, afterMiddleware?: string): UI5Config {
-        // Support both old and new property names with deprecation warning
-        let resolvedIgnoreCertErrors: boolean = false;
-
-        //prettier-ignore
-        if (proxyConfig.ignoreCertErrors !== undefined) {
-            resolvedIgnoreCertErrors = proxyConfig.ignoreCertErrors;
-        } else if (proxyConfig.ignoreCertError !== undefined) { //NOSONAR
-            resolvedIgnoreCertErrors = proxyConfig.ignoreCertError; //NOSONAR
-            console.warn(
-                'Warning: ignoreCertError is deprecated. Please use ignoreCertErrors instead. The ignoreCertError property will be removed in a future version.'
-            );
-        }
+        // Support both old and new property names for backward compatibility
+        const resolvedIgnoreCertErrors = proxyConfig?.ignoreCertErrors ?? proxyConfig?.ignoreCertError ?? false; // NOSONAR
 
         const { config, comments } = getFioriToolsProxyMiddlewareConfig(
             proxyConfig.backend,
@@ -360,10 +350,9 @@ export class UI5Config {
         const currentIgnoreCertErrors =
             proxyMiddlewareConfig?.ignoreCertErrors ?? proxyMiddlewareConfig?.ignoreCertError ?? false; // NOSONAR
 
-        if (ignoreCertErrors !== undefined && currentIgnoreCertErrors !== ignoreCertErrors) {
-            // Always set the new property name
+        if (currentIgnoreCertErrors !== ignoreCertErrors) {
             configuration.set('ignoreCertErrors', ignoreCertErrors);
-            // Remove the old property if it exists
+            // Remove the deprecated property if it exists
             //prettier-ignore
             if (proxyMiddlewareConfig?.ignoreCertError !== undefined) { // NOSONAR
                 configuration.delete('ignoreCertError');
