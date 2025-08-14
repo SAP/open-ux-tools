@@ -174,12 +174,5 @@ describe('Test applyCAPUpdates updates files correctly', () => {
             'int-test': 'test command',
             start: 'start command'
         });
-        // pom.xml file should be updated
-        const pomXmlPath = join(settings.appRoot, 'pom.xml');
-        expect(fs.read(pomXmlPath).toString()).toContain('spring-boot-maven-plugin');
-        // application.yaml file should be updated
-        const applicationYamlPath = join(capService.projectPath, 'srv/src/main/resources', 'application.yaml');
-        const applicationYaml = fs.read(applicationYamlPath).toString();
-        expect(applicationYaml).toContain('spring:\n  web.resources.static-locations: file:./app/');
     });
 });

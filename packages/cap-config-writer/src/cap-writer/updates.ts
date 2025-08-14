@@ -1,10 +1,7 @@
-import { getCapFolderPathsSync } from '@sap-ux/fiori-generator-shared';
 import type { CapServiceCdsInfo, CapProjectSettings } from '../cap-config/types';
 import { updateRootPackageJson, updateAppPackageJson } from './package-json';
-import { updateTsConfig, updateStaticLocationsInApplicationYaml } from './tsconfig-and-yaml';
-import { updatePomXml } from './pom-xml';
+import { updateTsConfig} from './tsconfig-and-yaml';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'path';
 import type { Logger } from '@sap-ux/logger';
 
 /**
@@ -42,29 +39,6 @@ export async function applyCAPUpdates(
 
     // update root package.json
     await updateRootPackageJson(fs, packageName, sapux, capService, appId, log, enableNPMWorkspaces);
-
-    if (capService.capType === 'Java') {
-        const capProjectPath = capService.projectPath;
-        const capCustomPaths = getCapFolderPathsSync(capProjectPath);
-        //pom.xml file update
-        const pomPath: string = join(capProjectPath, 'pom.xml');
-        if (fs.exists(pomPath)) {
-            updatePomXml(fs, pomPath, log);
-        }
-
-        // Application.yaml file update
-        const applicationYamlPath: string = join(
-            capProjectPath,
-            capCustomPaths.srv,
-            'src',
-            'main',
-            'resources',
-            'application.yaml'
-        );
-        if (fs.exists(applicationYamlPath)) {
-            await updateStaticLocationsInApplicationYaml(fs, applicationYamlPath, capCustomPaths.app, log);
-        }
-    }
 
     if (enableTypescript) {
         // update tsconfig.json if TypeScript is enabled
