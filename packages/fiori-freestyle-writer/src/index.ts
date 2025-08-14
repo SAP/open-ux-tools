@@ -183,7 +183,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         // Add placeholder middleware so allow adding service later
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
-        ui5LocalConfig.addFioriToolsProxydMiddleware({});
+        ui5LocalConfig.addFioriToolsProxyMiddleware({});
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     }
 

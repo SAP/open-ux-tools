@@ -1,5 +1,22 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.83
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/odata-service-inquirer@2.5.33
+    -   @sap-ux/fiori-elements-writer@2.5.26
+    -   @sap-ux/abap-deploy-config-writer@0.2.7
+    -   @sap-ux/launch-config@0.10.19
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/fiori-generator-shared@0.13.9
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/system-access@0.6.12
+    -   @sap-ux/inquirer-common@0.7.35
+
 ## 0.3.82
 
 ### Patch Changes

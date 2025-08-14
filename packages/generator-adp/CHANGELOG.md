@@ -1,5 +1,21 @@
 # @sap-ux/generator-adp
 
+## 0.3.65
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/odata-service-writer@0.27.17
+    -   @sap-ux/adp-tooling@0.15.17
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.63
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/fiori-generator-shared@0.13.9
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/system-access@0.6.12
+    -   @sap-ux/inquirer-common@0.7.35
+
 ## 0.3.64
 
 ### Patch Changes
