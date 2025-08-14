@@ -1,5 +1,13 @@
 # @sap-ux/odata-annotation-core-types
 
+## 0.4.5
+
+### Patch Changes
+
+-   c7db726: feat: add deprecated $value syntax diagnostic message.
+-   Updated dependencies [c7db726]
+    -   @sap-ux/text-document-utils@0.3.1
+
 ## 0.4.4
 
 ### Patch Changes

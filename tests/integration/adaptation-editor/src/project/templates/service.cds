@@ -10,6 +10,11 @@ service Service {
                 $Type: 'UI.ReferenceFacet',
                 Label: 'General Information',
                 Target: '@UI.FieldGroup#GeneralInfo'
+            },
+            {
+                $Type: 'UI.ReferenceFacet',
+                Label: 'Table Section',
+                Target: 'toFirstAssociatedEntity/@UI.LineItem#tableSection'
             }
         ],
         FieldGroup#GeneralInfo: {
@@ -39,5 +44,16 @@ service Service {
         TextProperty    : String        @Common.Label: 'Text Property';
         @Common.ValueListWithFixedValues: true
         DateProperty    : Date          @Common.Label: 'Date Property';
+        toFirstAssociatedEntity: Association to many FirstAssociatedEntity on toFirstAssociatedEntity.root = $self;
+  };
+  @UI.LineItem #tableSection: [ { Value: StringProperty }, { Value: DateProperty}]
+  entity FirstAssociatedEntity {
+    key ID              : Integer       @Common.Label: 'Identifier';
+        StringProperty  : String        @Common.Label: 'String Property';
+        IntegerProperty : Integer       @Common.Label: 'Integer Property';
+        NumberProperty  : Decimal(4, 2) @Common.Label: 'Number Property';
+        BooleanProperty : Boolean       @Common.Label: 'Boolean Property';
+        DateProperty    : Date          @Common.Label: 'Date Property';
+        root : Association to RootEntity;
   }
 }

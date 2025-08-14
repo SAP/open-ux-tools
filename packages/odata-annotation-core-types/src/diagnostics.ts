@@ -81,6 +81,7 @@ export const INCOMPLETE_PATH_WITH_COMPATIBLE_TYPES = 'incomplete-path-with-compa
 export const COMMON_CASE_ISSUE = 'common-case-issue';
 export const ODATA_PATH_SEPARATOR_RULE = 'no-odata-path-separator';
 export const INVALID_PRIMITIVE_TYPE = 'invalid-primitive-type';
+export const DEPRECATED_$VALUE_SYNTAX = 'deprecated-$value-syntax';
 
 export interface ReplacementData {
     value: string;
@@ -188,6 +189,7 @@ export type IncompletePathWithCompatibleTypes = DiagnosticBase<
 export type ODataPathSeparatorDiagnostic = DiagnosticBase<typeof ODATA_PATH_SEPARATOR_RULE, ReplacementData>;
 
 export type CommonCaseIssue = DiagnosticBase<typeof COMMON_CASE_ISSUE, CaseCheckBase>;
+export type Deprecated$ValueSyntax = DiagnosticBase<typeof DEPRECATED_$VALUE_SYNTAX, { descriptionLink: string }>;
 
 export type DiagnosticWithRule =
     | NoUndefinedNamespaceDiagnostic
@@ -216,7 +218,8 @@ export type DiagnosticWithRule =
     | IncompletePathWithCompatibleTypes
     | CommonCaseIssue
     | ODataPathSeparatorDiagnostic
-    | InvalidPrimitiveType;
+    | InvalidPrimitiveType
+    | Deprecated$ValueSyntax;
 
 export type ExtendedDiagnostic = DiagnosticBaseWithOptionalRule | DiagnosticWithRule;
 

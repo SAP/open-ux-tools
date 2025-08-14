@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/odata-annotation-core-types",
-    "version": "0.4.4",
+    "version": "0.4.5",
     "description": "Annotation Core types",
     "repository": {
         "type": "git",
