@@ -1,5 +1,17 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.2.2
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.8
+    -   @sap-ux/odata-service-inquirer@2.5.33
+    -   @sap-ux/telemetry@0.6.16
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/inquirer-common@0.7.35
+
 ## 0.2.1
 
 ### Patch Changes
