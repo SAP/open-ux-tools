@@ -18,8 +18,8 @@ import type { Logger } from '@sap-ux/logger';
  * @param {string} capProjectSettings.packageName - The name of the package.
  * @param {string} capProjectSettings.appId - The application's ID, including its namespace and the module name.
  * @param {boolean} capProjectSettings.sapux - Indicates if SAP UX is enabled.
- * @param {boolean} capProjectSettings.enableNPMWorkspaces - indicates if NPM workspaces will be enabled (default is true).
- * @param {boolean} [capProjectSettings.enableTypescript] - Indicates if TypeScript is enabled.
+ * @param {boolean} capProjectSettings.enableCdsUi5Plugin - Indicates if cds ui5 plugin will be added  (default is true).
+ * @param {boolean} capProjectSettings.enableTypescript - Indicates if TypeScript is enabled.
  * @param {Logger} [log] - logger for logging information.
  * @returns {Promise<void>} A promise that resolves when the updates are applied.
  */
