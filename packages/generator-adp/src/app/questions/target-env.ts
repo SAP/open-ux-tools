@@ -1,4 +1,4 @@
-import { MessageType, Severity } from '@sap-devx/yeoman-ui-types';
+import { MessageType } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { FDCService } from '@sap-ux/adp-tooling';
@@ -8,6 +8,8 @@ import type { InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-
 import type { ProjectLocationAnswers } from '../types';
 import { validateEnvironment, validateProjectPath } from './helper/validators';
 import { TargetEnv, type TargetEnvAnswers, type TargetEnvQuestion } from '../types';
+import { t } from '../../utils/i18n';
+import { getTargetEnvAdditionalMessages } from './helper/additional-messages';
 
 type EnvironmentChoice = { name: string; value: TargetEnv };
 
@@ -31,24 +33,15 @@ export function getTargetEnvPrompt(
     return {
         type: 'list',
         name: 'targetEnv',
-        message: 'Select environment',
+        message: t('prompts.targetEnvironmentLabel'),
         choices: () => getEnvironments(appWizard, isCfInstalled),
         default: () => getEnvironments(appWizard, isCfInstalled)[0]?.name,
         guiOptions: {
             mandatory: true,
-            hint: 'Select the target environment for your Adaptation Project.'
+            hint: t('prompts.targetEnvironmentTooltip')
         },
         validate: (value: string) => validateEnvironment(value, fdcService, isCFLoggedIn),
-        additionalMessages: (value: string) => {
-            if (value === 'CF' && isCFLoggedIn) {
-                return {
-                    message: `You are logged in to Cloud Foundry: ${cfConfig.url} / ${cfConfig.org?.Name} / ${cfConfig.space?.Name}.`,
-                    severity: Severity.information
-                };
-            }
-
-            return undefined;
-        }
+        additionalMessages: (value: string) => getTargetEnvAdditionalMessages(value, isCFLoggedIn, cfConfig)
     } as ListQuestion<TargetEnvAnswers>;
 }
 
@@ -65,7 +58,7 @@ export function getEnvironments(appWizard: AppWizard, isCfInstalled: boolean): E
     if (isCfInstalled) {
         choices.push({ name: 'Cloud Foundry', value: TargetEnv.CF });
     } else {
-        appWizard.showInformation('Cloud Foundry is not installed in your space.', MessageType.prompt);
+        appWizard.showInformation(t('error.cfNotInstalled'), MessageType.prompt);
     }
 
     return choices;
@@ -85,9 +78,10 @@ export function getProjectPathPrompt(fdcService: FDCService, vscode: any): YUIQu
         guiOptions: {
             type: 'folder-browser',
             mandatory: true,
-            hint: 'Select the path to the root of your project'
+            hint: t('prompts.projectLocationTooltip'),
+            breadcrumb: true
         },
-        message: 'Specify the path to the project root',
+        message: t('prompts.projectLocationLabel'),
         validate: (value: string) => validateProjectPath(value, fdcService),
         default: () => getDefaultTargetFolder(vscode),
         store: false

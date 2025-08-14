@@ -1,12 +1,12 @@
 import fs from 'fs';
 
+import { isAppStudio } from '@sap-ux/btp-utils';
 import { isMtaProject, type FDCService, type SystemLookup } from '@sap-ux/adp-tooling';
-import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
+import { validateEmptyString, validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../utils/i18n';
 import { isString } from '../../../utils/type-guards';
 import { resolveNodeModuleGenerator } from '../../extension-project';
-import { isAppStudio } from '@sap-ux/btp-utils';
 
 interface JsonInputParams {
     projectName: string;
@@ -93,13 +93,13 @@ export async function validateEnvironment(
     isCFLoggedIn: boolean
 ): Promise<string | boolean> {
     if (value === 'CF' && !isCFLoggedIn) {
-        return 'Please login to Cloud Foundry to continue.';
+        return t('error.cfNotLoggedIn');
     }
 
     if (value === 'CF' && !isAppStudio()) {
         const isExternalLoginEnabled = await fdcService.isExternalLoginEnabled();
         if (!isExternalLoginEnabled) {
-            return 'CF Login cannot be detected as extension in current installation of VSCode, please refer to documentation (link not yet available) in order to install it.';
+            return t('error.cfLoginCannotBeDetected');
         }
     }
 
@@ -114,22 +114,23 @@ export async function validateEnvironment(
  * @returns {Promise<string | boolean>} Returns true if the project path is valid, otherwise returns an error message.
  */
 export async function validateProjectPath(projectPath: string, fdcService: FDCService): Promise<string | boolean> {
-    if (!projectPath) {
-        return 'Input cannot be empty';
+    const validationResult = validateEmptyString(projectPath);
+    if (typeof validationResult === 'string') {
+        return validationResult;
     }
 
     try {
         fs.realpathSync(projectPath, 'utf-8');
     } catch (e) {
-        return 'The project does not exist.';
+        return t('error.projectDoesNotExist');
     }
 
     if (!fs.existsSync(projectPath)) {
-        return 'The project does not exist.';
+        return t('error.projectDoesNotExist');
     }
 
     if (!isMtaProject(projectPath)) {
-        return 'Provide the path to the MTA project where you want to have your Adaptation Project created';
+        return t('error.projectDoesNotExistMta');
     }
 
     let services: string[];
@@ -140,7 +141,7 @@ export async function validateProjectPath(projectPath: string, fdcService: FDCSe
     }
 
     if (services.length < 1) {
-        return 'No adaptable business service found in the MTA';
+        return t('error.noAdaptableBusinessServiceFoundInMta');
     }
 
     return true;
@@ -153,14 +154,16 @@ export async function validateProjectPath(projectPath: string, fdcService: FDCSe
  * @returns {string | boolean} Validation result.
  */
 export function validateBusinessSolutionName(value: string): string | boolean {
-    if (!value) {
-        return 'Value cannot be empty';
+    const validationResult = validateEmptyString(value);
+    if (typeof validationResult === 'string') {
+        return validationResult;
     }
+
     const parts = String(value)
         .split('.')
         .filter((p) => p.length > 0);
     if (parts.length < 2) {
-        return 'Business solution name must consist of at least two segments and they should be separated by period.';
+        return t('error.businessSolutionNameInvalid');
     }
     return true;
 }

@@ -1,11 +1,14 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import { getBusinessServiceKeys, type CFApp, type FDCService, type ServiceKeys } from '@sap-ux/adp-tooling';
+import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import { getBusinessServiceKeys, type CFApp, type FDCService, type ServiceKeys } from '@sap-ux/adp-tooling';
 
-import { cfServicesPromptNames, AppRouterType } from '../types';
-import type { CfServicesAnswers, CFServicesQuestion, CfServicesPromptOptions } from '../types';
-import { getAppRouterChoices, getCFAppChoices } from './helper/choices';
+import { t } from '../../utils/i18n';
+import { cfServicesPromptNames } from '../types';
 import { validateBusinessSolutionName } from './helper/validators';
+import { getAppRouterChoices, getCFAppChoices } from './helper/choices';
+import { showBusinessSolutionNameQuestion } from './helper/conditions';
+import type { CfServicesAnswers, CFServicesQuestion, CfServicesPromptOptions } from '../types';
 
 /**
  * Prompter for CF services.
@@ -104,18 +107,19 @@ export class CFServicesPrompter {
         return {
             type: 'input',
             name: cfServicesPromptNames.businessSolutionName,
-            message: 'Enter a unique name for the business solution of the project',
+            message: t('prompts.businessSolutionNameLabel'),
             when: (answers: CfServicesAnswers) =>
-                this.isCFLoggedIn &&
-                answers.approuter === AppRouterType.MANAGED &&
-                this.showSolutionNamePrompt &&
-                answers.businessService
-                    ? true
-                    : false,
+                showBusinessSolutionNameQuestion(
+                    answers,
+                    this.isCFLoggedIn,
+                    this.showSolutionNamePrompt,
+                    answers.businessService
+                ),
             validate: (value: string) => validateBusinessSolutionName(value),
             guiOptions: {
                 mandatory: true,
-                hint: 'Business solution name must consist of at least two segments and they should be separated by period.'
+                hint: t('prompts.businessSolutionNameTooltip'),
+                breadcrumb: true
             },
             store: false
         } as InputQuestion<CfServicesAnswers>;
@@ -131,7 +135,7 @@ export class CFServicesPrompter {
         return {
             type: 'list',
             name: cfServicesPromptNames.approuter,
-            message: 'Select your HTML5 application runtime',
+            message: t('prompts.approuterLabel'),
             choices: getAppRouterChoices(this.isInternalUsage),
             when: () => {
                 const modules = this.fdcService.getModuleNames(mtaProjectPath);
@@ -156,13 +160,19 @@ export class CFServicesPrompter {
             validate: async (value: string) => {
                 this.isCFLoggedIn = await this.fdcService.isLoggedIn();
                 if (!this.isCFLoggedIn) {
-                    return 'You are not logged in to Cloud Foundry.';
+                    return t('error.cfNotLoggedIn');
                 }
 
-                return this.validateEmptySelect(value, 'Approuter');
+                const validationResult = validateEmptyString(value);
+                if (typeof validationResult === 'string') {
+                    return validationResult;
+                }
+
+                return true;
             },
             guiOptions: {
-                hint: 'Select the HTML5 application runtime that you want to use'
+                hint: t('prompts.approuterTooltip'),
+                breadcrumb: true
             }
         } as ListQuestion<CfServicesAnswers>;
     }
@@ -176,15 +186,16 @@ export class CFServicesPrompter {
         return {
             type: 'list',
             name: cfServicesPromptNames.baseApp,
-            message: 'Select base application',
+            message: t('prompts.baseAppLabel'),
             choices: async (answers: CfServicesAnswers): Promise<any[]> => {
                 try {
                     this.baseAppOnChoiceError = null;
                     if (this.cachedServiceName != answers.businessService) {
                         this.cachedServiceName = answers.businessService;
+                        const config = this.fdcService.getConfig();
                         this.businessServiceKeys = await getBusinessServiceKeys(
                             answers.businessService ?? '',
-                            this.fdcService.getConfig(),
+                            config,
                             this.logger
                         );
                         if (!this.businessServiceKeys) {
@@ -202,10 +213,12 @@ export class CFServicesPrompter {
                     return [];
                 }
             },
-            validate: async (value: string) => {
-                if (!value) {
-                    return 'Base application has to be selected';
+            validate: (value: string) => {
+                const validationResult = validateEmptyString(value);
+                if (typeof validationResult === 'string') {
+                    return t('error.baseAppHasToBeSelected');
                 }
+
                 if (this.baseAppOnChoiceError !== null) {
                     return this.baseAppOnChoiceError;
                 }
@@ -213,7 +226,8 @@ export class CFServicesPrompter {
             },
             when: (answers: any) => this.isCFLoggedIn && answers.businessService,
             guiOptions: {
-                hint: 'Select the base application you want to use'
+                hint: t('prompts.baseAppTooltip'),
+                breadcrumb: true
             }
         } as ListQuestion<CfServicesAnswers>;
     }
@@ -227,46 +241,32 @@ export class CFServicesPrompter {
         return {
             type: 'list',
             name: cfServicesPromptNames.businessService,
-            message: 'Select business service',
+            message: t('prompts.businessServiceLabel'),
             choices: this.businessServices,
             default: (_answers?: any) => (this.businessServices.length === 1 ? this.businessServices[0] ?? '' : ''),
             when: (answers: CfServicesAnswers) => {
                 return this.isCFLoggedIn && (this.approuter || answers.approuter);
             },
             validate: async (value: string) => {
-                if (!value) {
-                    return 'Business service has to be selected';
+                const validationResult = validateEmptyString(value);
+                if (typeof validationResult === 'string') {
+                    return t('error.businessServiceHasToBeSelected');
                 }
-                this.businessServiceKeys = await getBusinessServiceKeys(
-                    value,
-                    this.fdcService.getConfig(),
-                    this.logger
-                );
+
+                const config = this.fdcService.getConfig();
+                this.businessServiceKeys = await getBusinessServiceKeys(value, config, this.logger);
                 if (this.businessServiceKeys === null) {
-                    return 'The service chosen does not exist in cockpit or the user is not member of the needed space.';
+                    return t('error.businessServiceDoesNotExist');
                 }
 
                 return true;
             },
             guiOptions: {
                 mandatory: true,
-                hint: 'Select the business service you want to use'
+                hint: t('prompts.businessServiceTooltip'),
+                breadcrumb: true
             }
         } as ListQuestion<CfServicesAnswers>;
-    }
-
-    /**
-     * Validate empty select.
-     *
-     * @param {string} value - Value to validate.
-     * @param {string} label - Label to validate.
-     * @returns {string | true} Validation result.
-     */
-    private validateEmptySelect(value: string, label: string): string | true {
-        if (!value) {
-            return `${label} has to be selected`;
-        }
-        return true;
     }
 }
 

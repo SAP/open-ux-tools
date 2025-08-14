@@ -1,5 +1,6 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ConfigAnswers, FlexUISupportedSystem } from '@sap-ux/adp-tooling';
+import { AppRouterType, type CfServicesAnswers } from '../../types';
 
 /**
  * Determines if a credential question should be shown.
@@ -79,4 +80,22 @@ export function showInternalQuestions(
     isApplicationSupported: boolean
 ): boolean {
     return !!answers.system && answers.application && !isCustomerBase && isApplicationSupported;
+}
+
+/**
+ * Determines if the business solution name question should be shown.
+ *
+ * @param {CfServicesAnswers} answers - The user-provided answers containing application details.
+ * @param {boolean} isCFLoggedIn - A flag indicating whether the user is logged in to Cloud Foundry.
+ * @param {boolean} showSolutionNamePrompt - A flag indicating whether the solution name prompt should be shown.
+ * @param {string} businessService - The business service to be used.
+ * @returns {boolean} True if the business solution name question should be shown, otherwise false.
+ */
+export function showBusinessSolutionNameQuestion(
+    answers: CfServicesAnswers,
+    isCFLoggedIn: boolean,
+    showSolutionNamePrompt: boolean,
+    businessService: string | undefined
+): boolean {
+    return isCFLoggedIn && answers.approuter === AppRouterType.MANAGED && showSolutionNamePrompt && !!businessService;
 }
