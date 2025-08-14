@@ -146,7 +146,7 @@ export default class extends DeploymentGenerator {
         );
         this.projectType =
             ui5Config.getType() === 'library' ? DeployProjectType.Library : DeployProjectType.Application;
-        this.backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxydMiddleware()[0];
+        this.backendConfig = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware()[0];
     }
 
     private async _initializing(): Promise<void> {
