@@ -1,5 +1,18 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.54
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.8
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/abap-deploy-config-writer@0.2.7
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/fiori-generator-shared@0.13.9
+    -   @sap-ux/deploy-config-generator-shared@0.1.28
+
 ## 0.1.53
 
 ### Patch Changes

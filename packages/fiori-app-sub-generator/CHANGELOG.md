@@ -1,5 +1,24 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.6.19
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-application-inquirer@0.14.39
+    -   @sap-ux/fiori-freestyle-writer@2.4.34
+    -   @sap-ux/odata-service-inquirer@2.5.33
+    -   @sap-ux/fiori-elements-writer@2.5.26
+    -   @sap-ux/odata-service-writer@0.27.17
+    -   @sap-ux/launch-config@0.10.19
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/telemetry@0.6.16
+    -   @sap-ux/annotation-generator@0.3.52
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/cap-config-writer@0.10.27
+    -   @sap-ux/fiori-generator-shared@0.13.9
+
 ## 0.6.18
 
 ### Patch Changes
