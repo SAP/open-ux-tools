@@ -1,5 +1,17 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.6.20
+
+### Patch Changes
+
+-   55bb22e: updates cap projects to use npm workspaces by default
+-   Updated dependencies [55bb22e]
+    -   @sap-ux/ui5-application-inquirer@0.15.0
+    -   @sap-ux/cap-config-writer@0.11.0
+    -   @sap-ux/fiori-freestyle-writer@2.4.35
+    -   @sap-ux/fiori-elements-writer@2.5.27
+    -   @sap-ux/odata-service-inquirer@2.5.33
+
 ## 0.6.19
 
 ### Patch Changes

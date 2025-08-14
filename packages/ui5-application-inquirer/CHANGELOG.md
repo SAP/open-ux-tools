@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.15.0
+
+### Minor Changes
+
+-   55bb22e: updates cap projects to use npm workspaces by default
+
 ## 0.14.39
 
 ### Patch Changes

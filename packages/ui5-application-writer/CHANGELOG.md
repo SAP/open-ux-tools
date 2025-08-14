@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.5.13
+
+### Patch Changes
+
+-   55bb22e: updates cap projects to use npm workspaces by default
+
 ## 1.5.12
 
 ### Patch Changes
