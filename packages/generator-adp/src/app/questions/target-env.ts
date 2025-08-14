@@ -33,12 +33,13 @@ export function getTargetEnvPrompt(
     return {
         type: 'list',
         name: 'targetEnv',
-        message: t('prompts.targetEnvironmentLabel'),
+        message: t('prompts.targetEnvLabel'),
         choices: () => getEnvironments(appWizard, isCfInstalled),
         default: () => getEnvironments(appWizard, isCfInstalled)[0]?.name,
         guiOptions: {
             mandatory: true,
-            hint: t('prompts.targetEnvironmentTooltip')
+            hint: t('prompts.targetEnvTooltip'),
+            breadcrumb: t('prompts.targetEnvBreadcrumb')
         },
         validate: (value: string) => validateEnvironment(value, fdcService, isCFLoggedIn),
         additionalMessages: (value: string) => getTargetEnvAdditionalMessages(value, isCFLoggedIn, cfConfig)
