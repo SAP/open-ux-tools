@@ -19,6 +19,7 @@ import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
 import { addExtensionTypes, getManifestPath } from '../common/utils';
 import { extendJSON } from '../common/file';
+import { addPageBuildingBlockToCustomPage } from '../building-block';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -114,6 +115,11 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor):
             fs.copyTpl(i18TemplatePath, i18nPath, config);
         }
     }
+
+    if(data.pageBuildingBlockTitle) {
+        await addPageBuildingBlockToCustomPage(basePath, config.name, data.pageBuildingBlockTitle, fs);
+    }
+
     const ext = data.typescript ? 'ts' : 'js';
     const controllerPath = join(config.path, `${config.name}.controller.${ext}`);
     if (!fs.exists(controllerPath)) {

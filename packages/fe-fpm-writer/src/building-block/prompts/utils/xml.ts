@@ -22,7 +22,7 @@ export function isElementIdAvailable(fs: Editor, viewOrFragmentPath: string, id:
  * @param path - the xpath string
  * @returns the augmented xpath string.
  */
-const augmentXpathWithLocalNames = (path: string): string => {
+export const augmentXpathWithLocalNames = (path: string): string => {
     const result = [];
     for (const token of path.split('/')) {
         result.push(token === '' || token.includes(':') ? token : `*[local-name()='${token}']`);

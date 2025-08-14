@@ -101,6 +101,10 @@ export function transformTemplateType(
             };
         }
     }
+
+    // Add page title if addPageBuildingBlock is true
+    const pageBuildingBlockConfig = entityRelatedConfig?.addPageBuildingBlock ? { pageBuildingBlockTitle: entityRelatedConfig.pageBuildingBlockTitle } : {};
+
     const templateSettingsMap = {
         [TemplateTypeFE.ListReportObjectPage]: {
             entityConfig: _entityConfig,
@@ -132,7 +136,8 @@ export function transformTemplateType(
         },
         [TemplateTypeFE.FlexibleProgrammingModel]: {
             entityConfig: _entityConfig,
-            pageName: FPM_DEFAULT_PAGE_NAME
+            ...pageBuildingBlockConfig,
+            pageName: FPM_DEFAULT_PAGE_NAME 
         } as FPMSettings
     };
 

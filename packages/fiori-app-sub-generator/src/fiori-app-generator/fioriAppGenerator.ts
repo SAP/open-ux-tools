@@ -36,7 +36,8 @@ import {
     STEP_DATASOURCE_AND_SERVICE,
     STEP_DEPLOY_CONFIG,
     STEP_FLP_CONFIG,
-    STEP_PROJECT_ATTRIBUTES
+    STEP_PROJECT_ATTRIBUTES,
+    FloorplanFE
 } from '../types';
 import {
     addToCache,
@@ -165,7 +166,6 @@ export class FioriAppGenerator extends Generator {
         try {
             const generatorOptions: FioriAppGeneratorOptions = this.options;
             const isFioriFreestyleTemplate = this.state.floorplan === FloorplanFF.FF_SIMPLE;
-
             if (hasStep(this.fioriSteps, STEP_DATASOURCE_AND_SERVICE)) {
                 const cachedService = getFromCache<Service>(this.appWizard, 'service', FioriAppGenerator.logger);
 
@@ -224,15 +224,19 @@ export class FioriAppGenerator extends Generator {
                 this.state.viewName = viewNameAnswer.viewName;
             } else if (this.state.service.edmx) {
                 // Fiori Elements templates require entity and related settings
+                const templateType = getTemplateType(this.state.floorplan) as TemplateTypeFE;
+                const promptOptions = {
+                    defaultMainEntityName: generatorOptions.preselectedEntityName,
+                    useAutoComplete: getHostEnvironment() === hostEnvironment.cli,
+                    hideTableLayoutPrompts: generatorOptions.showLayoutPrompts === false, // Defaults to show layout prompts
+                    displayPageBuildingBlockPrompt: templateType === FloorplanFE.FE_FPM // If templateType is FPM, add displayPageBuildingBlockPrompt to promptOptions
+                }
+
                 const entityQuestions = getEntityRelatedPrompts(
                     this.state.service.edmx,
-                    getTemplateType(this.state.floorplan) as TemplateTypeFE,
+                    templateType,
                     !!this.state.service.capService,
-                    {
-                        defaultMainEntityName: generatorOptions.preselectedEntityName,
-                        useAutoComplete: getHostEnvironment() === hostEnvironment.cli,
-                        hideTableLayoutPrompts: generatorOptions.showLayoutPrompts === false // Defaults to show layout prompts
-                    },
+                    promptOptions,
                     this.state.service.annotations?.[0],
                     FioriAppGenerator.logger as Logger,
                     getHostEnvironment() !== hostEnvironment.cli
