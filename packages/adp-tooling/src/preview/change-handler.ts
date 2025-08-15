@@ -337,7 +337,7 @@ export async function addAnnotationFile(
         const variant = await getVariant(projectRoot);
         const manifestService = await ManifestService.initMergedManifest(
             provider,
-            webappPath,
+            projectRoot,
             variant,
             logger as unknown as ToolsLogger
         );
