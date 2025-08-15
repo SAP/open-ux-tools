@@ -313,7 +313,7 @@ export async function addControllerExtension(
 /**
  * Asynchronously adds an XML fragment to the project if it doesn't already exist.
  *
- * @param {string} basePath - The base path of the project.
+ * @param {string} webappPath - The path to the webapp of the project.
  * @param {string} projectRoot - The root path of the project.
  * @param {AnnotationFileChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
@@ -321,7 +321,7 @@ export async function addControllerExtension(
  *@param {AbapServiceProvider} provider - abap provider.
  */
 export async function addAnnotationFile(
-    basePath: string,
+    webappPath: string,
     projectRoot: string,
     change: AnnotationFileChange,
     fs: Editor,
@@ -332,12 +332,12 @@ export async function addAnnotationFile(
     const annotationDataSourceKey = annotations[0];
     const annotationUriSegments = dataSource[annotationDataSourceKey].uri.split('/');
     annotationUriSegments.shift();
-    const fullPath = join(basePath, DirName.Changes, ...annotationUriSegments);
+    const fullPath = join(webappPath, DirName.Changes, ...annotationUriSegments);
     try {
-        const variant = await getVariant(basePath);
+        const variant = await getVariant(projectRoot);
         const manifestService = await ManifestService.initMergedManifest(
             provider,
-            basePath,
+            webappPath,
             variant,
             logger as unknown as ToolsLogger
         );
