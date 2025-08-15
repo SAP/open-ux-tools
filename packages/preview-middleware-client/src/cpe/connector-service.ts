@@ -29,7 +29,7 @@ export class WorkspaceConnectorService {
             const FakeLrepConnector = (await import('sap/ui/fl/FakeLrepConnector')).default;
             FakeLrepConnector.fileChangeRequestNotifier = this.onChangeSaved.bind(this);
         } else {
-            const connector = (await import('open/ux/preview/client/flp/WorkspaceConnector')).default;
+            const connector = await (await import('open/ux/preview/client/flp/WorkspaceConnector')).default;
             // hook the file deletion listener to the UI5 workspace connector
             connector.storage.fileChangeRequestNotifier = this.onChangeSaved.bind(this);
         }

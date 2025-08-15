@@ -103,6 +103,11 @@ declare module 'sap/ui/fl/Utils' {
     export default Utils;
 }
 
+declare module 'sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector' {
+    export * from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
+    export { default } from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
+}
+
 declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
     import type { Layer } from 'sap/ui/fl';
     interface Features {
@@ -163,7 +168,7 @@ declare module 'sap/ui/fl/write/api/ChangesWriteAPI' {
 
 declare module 'sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory' {
     interface FlexObjectFactory {
-        createFromFileContent(fileContent: object, ObjectClass?: class, isPersisted?: boolean): object;
+        createFromFileContent(fileContent: object, ObjectClass?: new (...args: any[]) => object, isPersisted?: boolean): object;
     }
 
     const FlexObjectFactory: FlexObjectFactory;
