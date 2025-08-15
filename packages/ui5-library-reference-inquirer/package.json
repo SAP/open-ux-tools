@@ -35,9 +35,9 @@
         "i18next": "25.3.0"
     },
     "devDependencies": {
-        "inquirer": "8.2.6",
+        "inquirer": "8.2.7",
         "@sap-devx/yeoman-ui-types": "1.14.4",
-        "@types/inquirer": "8.2.6"
+        "@types/inquirer": "8.2.12"
     },
     "engines": {
         "node": ">=20.x"
