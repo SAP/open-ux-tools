@@ -110,7 +110,7 @@ declare module 'sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector' {
 
 declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
     import type { Layer } from 'sap/ui/fl';
-    export interface Features {
+    interface Features {
         isCondensingEnabled?: boolean;
         isContextSharingEnabled?: boolean;
         isKeyUser?: boolean;
@@ -168,7 +168,7 @@ declare module 'sap/ui/fl/write/api/ChangesWriteAPI' {
 
 declare module 'sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory' {
     interface FlexObjectFactory {
-        createFromFileContent(fileContent: object, ObjectClass?: class, isPersisted?: boolean): object;
+        createFromFileContent(fileContent: object, ObjectClass?: new (...args: any[]) => object, isPersisted?: boolean): object;
     }
 
     const FlexObjectFactory: FlexObjectFactory;
