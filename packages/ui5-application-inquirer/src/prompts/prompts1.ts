@@ -5,6 +5,7 @@ import { t } from '../i18n';
 import { promptNames } from '../types';
 import { defaultAppName } from './prompt-helpers';
 import { validateAppName } from './validators';
+import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
@@ -179,10 +180,14 @@ export function getUI5VersionPrompt(
 /**
  * Get the `enableTypeScript` prompt.
  *
+ * @param capCdsInfo CDS UI5 plugin information
  * @returns The `enableTypeScript` prompt
  */
-export function getEnableTypeScriptPrompt(): UI5ApplicationQuestion {
+export function getEnableTypeScriptPrompt(capCdsInfo?: CdsUi5PluginInfo): UI5ApplicationQuestion {
     return {
+        when: (): boolean => {
+            return capCdsInfo ? capCdsInfo.hasMinCdsVersion : true;
+        },
         type: 'confirm',
         name: promptNames.enableTypeScript,
         message: t('prompts.enableTypeScript.message'),
@@ -265,10 +270,14 @@ export function getAddFlpConfigPrompt(
 /**
  * Get the `enableVirtualEndpoints` prompt.
  *
+ * @param capCdsInfo CDS UI5 plugin information
  * @returns the `enableVirtualEndpoints` prompt
  */
-export function getEnableVirtualEndpoints(): UI5ApplicationQuestion {
+export function getEnableVirtualEndpoints(capCdsInfo?: CdsUi5PluginInfo): UI5ApplicationQuestion {
     return {
+        when: (): boolean => {
+            return capCdsInfo ? capCdsInfo.hasMinCdsVersion : true;
+        },
         type: 'confirm',
         name: promptNames.enableVirtualEndpoints,
         guiOptions: {

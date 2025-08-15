@@ -80,6 +80,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
     "message": "Enable TypeScript",
     "name": "enableTypeScript",
     "type": "confirm",
+    "when": [Function],
   },
   {
     "default": [Function],
@@ -111,6 +112,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
     "message": [Function],
     "name": "enableVirtualEndpoints",
     "type": "confirm",
+    "when": [Function],
   },
   {
     "default": false,
