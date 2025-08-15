@@ -1,5 +1,25 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.37.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.12
+-   @sap-ux/fiori-annotation-api@0.6.15
+
+## 0.37.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.14
+-   @sap-ux/project-access@1.30.11
+
+## 0.37.0
+
+### Minor Changes
+
+-   69cfbe3: add support for checked property in Select choices for default selection
+
 ## 0.36.1
 
 ### Patch Changes
