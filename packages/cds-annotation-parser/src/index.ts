@@ -31,6 +31,10 @@ export {
     MULTI_LINE_STRING_LITERAL_TYPE,
     SEPARATOR_TYPE,
     IDENTIFIER_TYPE,
+    FLATTENED_EXPRESSION_TYPE,
+    FLATTENED_PATH_TYPE,
+    FLATTENED_ANNOTATION_SEGMENT_TYPE,
+    FLATTENED_PROPERTY_SEGMENT_TYPE,
     Record,
     Node,
     AnnotationValue,
@@ -63,6 +67,11 @@ export {
     Assignment,
     Separator,
     NarrowAnnotationNode,
+    FlattenedExpression,
+    FlattenedPath,
+    FlattenedPathSegment,
+    FlattenedAnnotationSegment,
+    FlattenedPropertySegment,
     nodeRange,
     isContainer
 } from './transformer';

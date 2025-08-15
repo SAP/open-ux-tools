@@ -9,7 +9,6 @@ import {
 
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { Range, createElementNode, Edm, Position } from '@sap-ux/odata-annotation-core-types';
-import { convertFlattenedPath } from '../flattened';
 
 import type { ConvertResult, NodeHandler, Subtree } from '../handler';
 import { getTerm } from '../type-resolver';
@@ -92,11 +91,11 @@ function convert(state: VisitorState, annotation: Annotation): ConvertResult {
                 : Position.create(0, 0);
         }
     }
-    const flattenedSubtree = handleFlattenedStructure(state, annotation, element);
+    // const flattenedSubtree = handleFlattenedStructure(state, annotation, element);
 
-    if (flattenedSubtree) {
-        return flattenedSubtree;
-    }
+    // if (flattenedSubtree) {
+    //     return flattenedSubtree;
+    // }
 
     return element;
 }
@@ -149,7 +148,7 @@ function pp(namespace: string | undefined, identifier: Identifier, namespaceStar
         qualifiedName,
         termNameRange
     };
-    console.log(parsedTermName);
+    // console.log(parsedTermName);
     if (qualifier) {
         parsedTermName.qualifier = qualifier;
         const qualifierRange = nodeRange(identifier, false);
@@ -215,41 +214,3 @@ function getFlattenedSegments(state: VisitorState, annotation: Annotation): Iden
     return annotation.term.segments.slice(trailingTermSegmentStart);
 }
 
-/**
- * Handles a flattened structure in the CDS syntax and builds nested structures.
- *
- * @param state - The visitor state.
- * @param annotation - The annotation containing the flattened structure.
- * @param element - The element to which the flattened structure will be added.
- * @returns Returns a Subtree representing the nested structures, or undefined if not applicable.
- */
-function handleFlattenedStructure(state: VisitorState, annotation: Annotation, element: Element): Subtree | undefined {
-    // Build nested structures for CDS flattened syntax
-    // e.g UI.Chart.AxisScaling.ScaleBehavior : #AutoScale, @Common.Text.@UI.TextArrangement : #TextFirst
-    const flattenedSegments = getFlattenedSegments(state, annotation);
-    if (flattenedSegments.length) {
-        const subtree = convertFlattenedPath(state, flattenedSegments, annotation.value, annotation);
-        if (subtree) {
-            const range = subtree.root.range ? copyRange(subtree.root.range) : undefined;
-            if (subtree.root.name === Edm.PropertyValue) {
-                const record = createElementNode({
-                    name: Edm.Record,
-                    range,
-                    contentRange: range
-                });
-                record.content.push(subtree.root);
-                element.content.push(record);
-            } else {
-                element.content.push(subtree.root);
-            }
-
-            element.contentRange = range ? copyRange(range) : undefined;
-
-            return {
-                root: element,
-                leaf: subtree.leaf
-            };
-        }
-    }
-    return undefined;
-}

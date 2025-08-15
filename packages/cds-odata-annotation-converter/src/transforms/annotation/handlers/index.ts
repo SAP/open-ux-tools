@@ -13,6 +13,7 @@ import { stringHandler, multiLineStringHandler } from './string';
 import { quotedLiteralHandler } from './quoted-literal';
 import { pathHandler } from './path';
 import { tokenHandler } from './token';
+import { flattenedExpressionHandler } from './flattenedExpression';
 
 export type NodeHandlerConfig = {
     [Node in AnnotationNode as Node['type']]?: NodeHandler<Node>;
@@ -20,6 +21,7 @@ export type NodeHandlerConfig = {
 
 export const nodeHandlerConfig: NodeHandlerConfig = {
     [annotationHandler.type]: annotationHandler,
+    [flattenedExpressionHandler.type]: flattenedExpressionHandler,
     [recordHandler.type]: recordHandler,
     [recordPropertyHandler.type]: recordPropertyHandler,
     [collectionHandler.type]: collectionHandler,

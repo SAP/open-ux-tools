@@ -36,6 +36,7 @@ export {
     copyPosition,
     arePositionsEqual,
     createRange,
-    createRangeWithPosition
+    createRangeWithPosition,
+    compareByRange
 } from './range';
 export { printOptions } from './text-formatting';

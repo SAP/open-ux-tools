@@ -41,7 +41,15 @@ describe('cds annotation parser', () => {
     const allTests = getAllNormalizeFolderPath();
     const skip: string[] = [];
     const todo: string[] = [];
-    // const only: string[] = []; // to be used for debugging purposes only
+    const only: string[] = [
+        // '/valid/qualifier/flat-syntax-3', 
+        // '/valid/qualifier/flat-syntax-with-spaces',
+        // '/valid/qualifier/flat-syntax-in-group',
+        '/invalid/missing/value-with-flattened-syntax',
+        // '/valid/qualifier/flat-syntax-qualifier-in-last-segment',
+        // '/valid/struct/flattened',
+        // '/valid/term/boolean-value'
+    ]; // to be used for debugging purposes only
     for (const t of allTests) {
         if (skip.includes(t)) {
             test.skip(`${t}`, () => {
@@ -55,12 +63,12 @@ describe('cds annotation parser', () => {
         }
 
         // // Sonar is compaining about test.only(). Use this code for debugging purposes only
-        // if (only.includes(t)) {
-        //     test.only(`${t}`, async () => {
-        //         await testParser(t, t.startsWith('valid'));
-        //     });
-        //     continue;
-        // }
+        if (only.includes(t)) {
+            test.only(`${t}`, async () => {
+                await testParser(t, t.startsWith('valid'));
+            });
+            continue;
+        }
 
         test(`${t}`, async () => {
             await testParser(t, t.startsWith('valid'));

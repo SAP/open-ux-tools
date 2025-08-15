@@ -39,7 +39,10 @@ export function convertAnnotation(assignment: Assignment, options: ToTermsOption
             groupName: assignment.name.value
         });
     }
-    const nodes = assignment.type === 'annotation' ? [assignment] : assignment.items.items;
+    const nodes =
+        assignment.type === 'annotation' || assignment.type === 'flattened-expression'
+            ? [assignment]
+            : assignment.items.items;
 
     for (const item of nodes) {
         const context = { ...state.context };

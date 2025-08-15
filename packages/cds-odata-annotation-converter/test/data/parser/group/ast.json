@@ -28,8 +28,8 @@
                 "range": "[(1,4)..(1,42)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(1,17)..(1,18)]"
+                    "range": "[(1,17)..(1,18)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -109,8 +109,8 @@
                 "range": "[(2,4)..(11,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(2,17)..(2,18)]"
+                    "range": "[(2,17)..(2,18)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "collection",
@@ -375,8 +375,8 @@
                 "range": "[(12,4)..(20,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(12,17)..(12,18)]"
+                    "range": "[(12,17)..(12,18)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "collection",
@@ -573,8 +573,8 @@
                 "range": "[(21,4)..(25,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(21,17)..(21,18)]"
+                    "range": "[(21,17)..(21,18)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -727,8 +727,8 @@
                 "range": "[(26,4)..(32,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(26,14)..(26,15)]"
+                    "range": "[(26,14)..(26,15)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -880,8 +880,8 @@
                 "range": "[(33,4)..(37,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(33,14)..(33,15)]"
+                    "range": "[(33,14)..(33,15)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",

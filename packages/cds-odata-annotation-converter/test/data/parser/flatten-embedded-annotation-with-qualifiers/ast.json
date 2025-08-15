@@ -1,51 +1,59 @@
 {
-    "type": "annotation",
-    "term": {
-        "type": "path",
+    "type": "flattened-expression",
+    "path": {
+        "type": "flattened-path",
         "value": "Common.Text#first.@UI.TextArrangement",
         "segments": [
             {
-                "type": "identifier",
-                "value": "Common",
-                "range": "[(0,2)..(0,8)]",
-                "quoted": true
+                "type": "flattened-annotation-segment",
+                "vocabulary": {
+                    "type": "identifier",
+                    "value": "Common",
+                    "range": "[(0,2)..(0,8)]",
+                    "quoted": true
+                },
+                "prefix": false,
+                "term": {
+                    "type": "identifier",
+                    "value": "Text",
+                    "range": "[(0,9)..(0,13)]",
+                    "quoted": true
+                },
+                "range": "[(0,2)..(0,19)]",
+                "qualifier": {
+                    "type": "qualifier",
+                    "value": "first",
+                    "range": "[(0,14)..(0,19)]"
+                }
             },
             {
-                "type": "identifier",
-                "value": "Text#first",
-                "range": "[(0,9)..(0,19)]",
-                "quoted": true
-            },
-            {
-                "type": "identifier",
-                "value": "@UI",
-                "range": "[(0,21)..(0,24)]",
-                "quoted": false
-            },
-            {
-                "type": "identifier",
-                "value": "TextArrangement",
-                "range": "[(0,25)..(0,40)]",
-                "quoted": false
+                "type": "flattened-annotation-segment",
+                "vocabulary": {
+                    "type": "identifier",
+                    "value": "UI",
+                    "range": "[(0,22)..(0,24)]",
+                    "quoted": false
+                },
+                "prefix": true,
+                "term": {
+                    "type": "identifier",
+                    "value": "TextArrangement",
+                    "range": "[(0,25)..(0,40)]",
+                    "quoted": false
+                },
+                "range": "[(0,21)..(0,48)]",
+                "qualifier": {
+                    "type": "qualifier",
+                    "value": "second",
+                    "range": "[(0,42)..(0,48)]"
+                }
             }
         ],
         "separators": [
             {
                 "type": "separator",
                 "value": ".",
-                "range": "[(0,8)..(0,9)]",
-                "escaped": true
-            },
-            {
-                "type": "separator",
-                "value": ".",
                 "range": "[(0,20)..(0,21)]",
-                "escaped": false
-            },
-            {
-                "type": "separator",
-                "value": ".",
-                "range": "[(0,24)..(0,25)]",
                 "escaped": false
             }
         ],
@@ -56,11 +64,6 @@
         "type": "token",
         "range": "[(0,49)..(0,50)]",
         "value": ":"
-    },
-    "qualifier": {
-        "type": "qualifier",
-        "value": "second",
-        "range": "[(0,42)..(0,48)]"
     },
     "value": {
         "type": "enum",

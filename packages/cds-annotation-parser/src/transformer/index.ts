@@ -24,6 +24,10 @@ export {
     INCORRECT_EXPRESSION_TYPE,
     CORRECT_EXPRESSION_TYPE,
     EXPRESSION_TYPES,
+    FLATTENED_EXPRESSION_TYPE,
+    FLATTENED_PATH_TYPE,
+    FLATTENED_ANNOTATION_SEGMENT_TYPE,
+    FLATTENED_PROPERTY_SEGMENT_TYPE,
     Expression,
     UnsupportedOperatorExpression,
     IncorrectExpression,
@@ -52,6 +56,11 @@ export {
     Assignment,
     Separator,
     NarrowAnnotationNode,
+    FlattenedExpression,
+    FlattenedPath,
+    FlattenedPathSegment,
+    FlattenedAnnotationSegment,
+    FlattenedPropertySegment,
     nodeRange,
     isContainer
 } from './annotation-ast-nodes';

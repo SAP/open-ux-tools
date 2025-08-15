@@ -1,0 +1,84 @@
+{
+  "type": "flattened-expression",
+  "range": "[(0,0)..(0,50)]",
+  "path": {
+    "type": "flattened-path",
+    "range": "[(0,0)..(0,38)]",
+    "value": "UI.HeaderInfo#abc.@Core.Description",
+    "segments": [
+      {
+        "type": "flattened-annotation-segment",
+        "range": "[(0,2)..(0,19)]",
+        "prefix": false,
+        "vocabulary": {
+          "type": "identifier",
+          "range": "[(0,2)..(0,4)]",
+          "value": "UI",
+          "quoted": true
+        },
+        "term": {
+          "type": "identifier",
+          "range": "[(0,5)..(0,15)]",
+          "value": "HeaderInfo",
+          "quoted": true
+        },
+        "qualifier": {
+          "type": "qualifier",
+          "range": "[(0,16)..(0,19)]",
+          "value": "abc"
+        }
+      },
+      {
+        "type": "flattened-annotation-segment",
+        "range": "[(0,21)..(0,45)]",
+        "prefix": true,
+        "vocabulary": {
+          "type": "identifier",
+          "range": "[(0,22)..(0,26)]",
+          "value": "Core",
+          "quoted": false
+        },
+        "term": {
+          "type": "identifier",
+          "range": "[(0,27)..(0,38)]",
+          "value": "Description",
+          "quoted": false
+        },
+        "qualifier": {
+          "type": "qualifier",
+          "range": "[(0,40)..(0,45)]",
+          "value": "third"
+        }
+      }
+    ],
+    "separators": [
+      {
+        "type": "separator",
+        "range": "[(0,20)..(0,21)]",
+        "value": ".",
+        "escaped": false
+      }
+    ]
+  },
+  "colon": {
+    "type": "token",
+    "range": "[(0,46)..(0,47)]",
+    "value": ":"
+  },
+  "value": {
+    "type": "record",
+    "range": "[(0,48)..(0,50)]",
+    "properties": [],
+    "commas": [],
+    "openToken": {
+      "type": "token",
+      "range": "[(0,48)..(0,49)]",
+      "value": "{"
+    },
+    "closeToken": {
+      "type": "token",
+      "range": "[(0,49)..(0,50)]",
+      "value": "}"
+    }
+  }
+}

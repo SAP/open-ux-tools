@@ -1020,21 +1020,28 @@ UI.LineItem : { $value: []}`);
     describe('expression', () => {
         testConversion('expression');
     });
-    describe.only('flatten-embedded-annotation-with-qualifiers', () => {
+    describe('flatten-embedded-annotation-with-qualifiers', () => {
         testConversion('flatten-embedded-annotation-with-qualifiers');
-        test.only('two levels', () => {
+        test.skip('two levels', () => {
             const ast = parse(
                 `![Common.Text#first].![@UI.TextArrangement#second].@Core.Description #third : #TextLast`
             );
             const { terms } = toTerms(ast as Assignment, { vocabularyService });
-            const level1 = terms[0].content[0] as Element;
+
+            const level1 = terms[0] as Element;
             expect(level1.name).toStrictEqual('Annotation');
             expect(level1.attributes[Edm.Term].value).toStrictEqual('Common.Text');
             expect(level1.attributes[Edm.Qualifier].value).toStrictEqual('first');
-            const level2 = level1.content[0] as Element;
+
+            const level2 = (level1.content[0] as Element).content[0] as Element;
             expect(level2.name).toStrictEqual('Annotation');
             expect(level2.attributes[Edm.Term].value).toStrictEqual('UI.TextArrangement');
-            expect(level2.attributes[Edm.Qualifier].value).toStrictEqual('first');
+            expect(level2.attributes[Edm.Qualifier].value).toStrictEqual('second');
+
+            const level3 = (level2.content[0] as Element).content[0] as Element;
+            expect(level3.name).toStrictEqual('Annotation');
+            expect(level3.attributes[Edm.Term].value).toStrictEqual('Core.Description');
+            expect(level3.attributes[Edm.Qualifier].value).toStrictEqual('third');
         });
     });
 });

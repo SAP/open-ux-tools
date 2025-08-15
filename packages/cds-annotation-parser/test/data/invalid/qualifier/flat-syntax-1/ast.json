@@ -1,37 +1,46 @@
 {
-  "type": "annotation",
+  "type": "flattened-expression",
   "range": "[(0,0)..(0,38)]",
-  "term": {
-    "type": "path",
+  "path": {
+    "type": "flattened-path",
     "range": "[(0,0)..(0,34)]",
     "value": "UI.HeaderInfo.Description#wrong",
     "segments": [
       {
-        "type": "identifier",
-        "range": "[(0,0)..(0,2)]",
-        "value": "UI",
-        "quoted": false
+        "type": "flattened-annotation-segment",
+        "range": "[(0,0)..(0,15)]",
+        "prefix": false,
+        "vocabulary": {
+          "type": "identifier",
+          "range": "[(0,0)..(0,2)]",
+          "value": "UI",
+          "quoted": false
+        },
+        "term": {
+          "type": "identifier",
+          "range": "[(0,5)..(0,15)]",
+          "value": "HeaderInfo",
+          "quoted": true
+        }
       },
       {
-        "type": "identifier",
-        "range": "[(0,5)..(0,15)]",
-        "value": "HeaderInfo",
-        "quoted": true
-      },
-      {
-        "type": "identifier",
+        "type": "flattened-annotation-segment",
         "range": "[(0,16)..(0,33)]",
-        "value": "Description#wrong",
-        "quoted": true
+        "prefix": false,
+        "term": {
+          "type": "identifier",
+          "range": "[(0,16)..(0,27)]",
+          "value": "Description",
+          "quoted": true
+        },
+        "qualifier": {
+          "type": "qualifier",
+          "range": "[(0,28)..(0,33)]",
+          "value": "wrong"
+        }
       }
     ],
     "separators": [
-      {
-        "type": "separator",
-        "range": "[(0,2)..(0,3)]",
-        "value": ".",
-        "escaped": false
-      },
       {
         "type": "separator",
         "range": "[(0,15)..(0,16)]",

@@ -3,7 +3,6 @@ import { RECORD_PROPERTY_TYPE, nodeRange } from '@sap-ux/cds-annotation-parser';
 
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, Edm, Position } from '@sap-ux/odata-annotation-core-types';
-import { convertFlattenedPath } from '../flattened';
 
 import type { NodeHandler, Subtree } from '../handler';
 import { getImplicitPropertyType } from '../type-resolver';
@@ -60,8 +59,6 @@ export const recordPropertyHandler: NodeHandler<RecordProperty> = {
                 }
             }
             return element;
-        } else {
-            return convertFlattenedPath(state, node.name.segments, node.value);
         }
     }
 };

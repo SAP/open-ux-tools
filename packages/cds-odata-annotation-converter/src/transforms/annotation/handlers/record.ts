@@ -89,6 +89,9 @@ function getChildren(state: VisitorState, node: Record): AnnotationNode[] {
         if (node.annotations) {
             Array.prototype.push.apply(children, node.annotations);
         }
+        if (node.flattenedExpressions) {
+            Array.prototype.push.apply(children, node.flattenedExpressions);
+        }
         return children;
     }
     const recordProperties = node.properties.filter(
@@ -96,7 +99,7 @@ function getChildren(state: VisitorState, node: Record): AnnotationNode[] {
             property.name.value !== ReservedProperties.Type &&
             property.name.value.toUpperCase() !== ReservedProperties.Value.toUpperCase()
     );
-    return [...recordProperties, ...(node.annotations ?? [])];
+    return [...recordProperties, ...(node.annotations ?? []), ...(node.flattenedExpressions ?? [])];
 }
 
 const uiDataFieldAbstract = 'com.sap.vocabularies.UI.v1.DataFieldAbstract';

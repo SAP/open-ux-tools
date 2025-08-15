@@ -19,7 +19,8 @@ import {
     CORRECT_EXPRESSION_TYPE,
     UNSUPPORTED_OPERATOR_EXPRESSION_TYPE,
     INCORRECT_EXPRESSION_TYPE,
-    OPERATOR_TYPE
+    OPERATOR_TYPE,
+    FLATTENED_EXPRESSION_TYPE
 } from './transformer';
 import { positionContained } from '@sap-ux/odata-annotation-core';
 
@@ -65,6 +66,7 @@ class PositionVisitor {
         this.createNodeHandler(CORRECT_EXPRESSION_TYPE, [], ['operators', 'operands']);
         this.createNodeHandler(INCORRECT_EXPRESSION_TYPE, [], ['operators', 'operands']);
         this.createNodeHandler(UNSUPPORTED_OPERATOR_EXPRESSION_TYPE, [], ['operators', 'operands']);
+        this.createNodeHandler(FLATTENED_EXPRESSION_TYPE, [], ['value']);
     }
 
     /**

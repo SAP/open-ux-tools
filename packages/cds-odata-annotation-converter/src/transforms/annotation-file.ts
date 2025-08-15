@@ -85,15 +85,20 @@ export const adjustCdsTermNames = (assignment: Assignment, cdsVocabulary: CdsVoc
             adaptSegments(assignment.term.segments, internalTermName);
         }
     } else if (assignment?.type === ANNOTATION_GROUP_TYPE && cdsVocabulary.groupNames.has(assignment.name.value)) {
-        // only CDS annotations ? set group name to CDS vocabulary alias and goup item name to internal term name
+        // only CDS annotations ? set group name to CDS vocabulary alias and group item name to internal term name
         const nonCdsItems = (assignment?.items?.items || []).filter(
-            (groupItem) => !cdsVocabulary.nameMap.has(assignment.name.value + '.' + groupItem.term.value)
+            (groupItem) =>
+                groupItem.type === ANNOTATION_TYPE &&
+                !cdsVocabulary.nameMap.has(assignment.name.value + '.' + groupItem.term.value)
         );
         if (nonCdsItems.length === 0 && cdsVocabulary.nameMap) {
             (assignment?.items?.items || []).forEach((groupItem) => {
-                const internalTermName = getInternalTermName(cdsVocabulary, groupItem, assignment);
-                groupItem.term.value = internalTermName ?? '';
-                adaptSegments(groupItem.term.segments, internalTermName);
+                // TODO: check for flattened syntax
+                if (groupItem.type === ANNOTATION_TYPE) {
+                    const internalTermName = getInternalTermName(cdsVocabulary, groupItem, assignment);
+                    groupItem.term.value = internalTermName ?? '';
+                    adaptSegments(groupItem.term.segments, internalTermName);
+                }
             });
             assignment.name.value = cdsVocabulary.alias;
         }
