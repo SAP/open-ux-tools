@@ -103,9 +103,14 @@ declare module 'sap/ui/fl/Utils' {
     export default Utils;
 }
 
+declare module 'sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector' {
+    export * from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
+    export { default } from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
+}
+
 declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
     import type { Layer } from 'sap/ui/fl';
-    interface Features {
+    export interface Features {
         isCondensingEnabled?: boolean;
         isContextSharingEnabled?: boolean;
         isKeyUser?: boolean;

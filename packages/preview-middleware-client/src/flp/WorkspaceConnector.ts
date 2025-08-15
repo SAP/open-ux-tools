@@ -1,13 +1,26 @@
 import merge from 'sap/base/util/merge';
-import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
+import type ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import Layer from 'sap/ui/fl/Layer';
 import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 import { getAdditionalChangeInfo } from '../utils/additional-change-info';
 
-const connector = merge({}, ObjectStorageConnector, {
+let ObjectStorageConnectorInstance: typeof ObjectStorageConnector;
+let storagePropertyName = 'storage';
+const ui5Version = await getUi5Version();
+
+// We need to use a dynamic import to ensure that the ObjectStorageConnector is loaded correctly depending on the UI5 version.
+// Types are identical so we use ObjectStorageConnector for both imports.
+if (ui5Version.major === 1 && ui5Version.minor === 76) {
+    ObjectStorageConnectorInstance = (await import('sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector')) as unknown as typeof ObjectStorageConnector;
+    storagePropertyName = 'oStorage';
+} else {
+    ObjectStorageConnectorInstance = (await import('sap/ui/fl/write/api/connectors/ObjectStorageConnector')) as unknown as typeof ObjectStorageConnector;
+}
+
+const connector = merge({}, ObjectStorageConnectorInstance, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
-    storage: {
+    [storagePropertyName]: {
         _itemsStoredAsObjects: true,
         fileChangeRequestNotifier: undefined,
         setItem: function (_key: string, change: FlexChange) {
@@ -74,8 +87,8 @@ const connector = merge({}, ObjectStorageConnector, {
         }
     } as typeof ObjectStorageConnector.storage,
     loadFeatures: async function () {
-        const features = await ObjectStorageConnector.loadFeatures();
-        features.isVariantAdaptationEnabled = !isLowerThanMinimalUi5Version(await getUi5Version(), {
+        const features = await ObjectStorageConnectorInstance.loadFeatures();
+        features.isVariantAdaptationEnabled = !isLowerThanMinimalUi5Version(ui5Version, {
             major: 1,
             minor: 90
         });
