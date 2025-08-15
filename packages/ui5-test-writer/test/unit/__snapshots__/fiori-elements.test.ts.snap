@@ -263,16 +263,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'ui5-test-writer/test/employees/test/integration/myOPATest'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'ui5-test-writer/test/employees/test/integration/myOPATest'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -635,16 +629,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'ui5-test-writer/test/employees/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'ui5-test-writer/test/employees/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -982,16 +970,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'ui5-test-writer/test/employees/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'ui5-test-writer/test/employees/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -1329,16 +1311,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'ui5-test-writer/test/employees/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'ui5-test-writer/test/employees/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -1650,16 +1626,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'ui5-test-writer/test/employees/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'ui5-test-writer/test/employees/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -1938,16 +1908,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'ui5-test-writer/test/employees/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'ui5-test-writer/test/employees/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -2233,16 +2197,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'ui5-test-writer/test/employees/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'ui5-test-writer/test/employees/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -2601,16 +2559,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'vesc/demo/employee/project2/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'vesc/demo/employee/project2/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -3035,16 +2987,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'vesc/demo/employee/project2/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'vesc/demo/employee/project2/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -3448,16 +3394,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'projectservice/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'projectservice/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -3782,16 +3722,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'test/ui5-test-writer/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'test/ui5-test-writer/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",

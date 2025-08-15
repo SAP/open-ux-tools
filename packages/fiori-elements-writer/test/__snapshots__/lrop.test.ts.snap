@@ -19045,16 +19045,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'lrop_v4_add_test_virtual_endpoints/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'lrop_v4_add_test_virtual_endpoints/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -22959,16 +22953,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'lrop_v4_addtests/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'lrop_v4_addtests/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -23806,16 +23794,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'lrop_v4_addtests_cds/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'lrop_v4_addtests_cds/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -24720,16 +24702,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'lrop_v4_addtests_cds/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'lrop_v4_addtests_cds/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",
@@ -26106,16 +26082,10 @@ sap.ui.require(
     \\"sap/ui/thirdparty/qunit-2\\",
     \\"sap/ui/qunit/qunit-junit\\",
     \\"sap/ui/qunit/qunit-coverage\\",
+    'lrop_v4_annotation_reuse_lib/test/integration/FirstJourney'
   ], function (QUnit) {
     \\"use strict\\";
-    sap.ui.require(
-    [
-       'lrop_v4_annotation_reuse_lib/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
 ",
     "state": "modified",

@@ -22,14 +22,8 @@ sap.ui.require(
     "sap/ui/thirdparty/qunit-2",
     "sap/ui/qunit/qunit-junit",
     "sap/ui/qunit/qunit-coverage",
+    'testnamepsace/lropv4noui5version/test/integration/FirstJourney'
   ], function (QUnit) {
     "use strict";
-    sap.ui.require(
-    [
-       'testnamepsace/lropv4noui5version/test/integration/FirstJourney'
-    ],
-    function () {
-        
-        QUnit.start();
-    });
+    QUnit.start();
 });
