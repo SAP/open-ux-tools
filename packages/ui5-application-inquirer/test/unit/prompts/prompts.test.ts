@@ -444,14 +444,13 @@ describe('getQuestions', () => {
         expect((enableVirtualEndpointsQuestion?.message as Function)()).toMatchInlineSnapshot(
             `"Use Virtual Endpoints for Local Preview"`
         );
-        expect((enableVirtualEndpointsQuestion?.when as Function)({})).toBe(true);
 
         // CAP project with cds version
         questions = await getQuestions([], {}, mockCdsInfo);
         enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
-        expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(true);
+        expect(enableVirtualEndpointsQuestion).toBeDefined();
 
         // CAP project with cds-ui5 plugin disabled and hasMinCdsVersion is false
         questions = await getQuestions(
@@ -462,7 +461,7 @@ describe('getQuestions', () => {
         enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
-        expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(false);
+        expect(enableVirtualEndpointsQuestion).toBe(undefined);
     });
 
     test('getQuestions, prompt: `ui5Theme`', async () => {
@@ -569,7 +568,6 @@ describe('getQuestions', () => {
         let enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
         // default
         expect(enableTypeScriptQuestion?.default).toEqual(false);
-        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
         const mockCdsInfoFalse = {
             hasCdsUi5Plugin: false,
             isCdsUi5PluginEnabled: false,
@@ -579,25 +577,7 @@ describe('getQuestions', () => {
         enableTypeScriptQuestion = (await getQuestions([], undefined, mockCdsInfoFalse)).find(
             (question) => question.name === promptNames.enableTypeScript
         );
-        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(false);
-        enableTypeScriptQuestion = (
-            await getQuestions([], undefined, {
-                hasCdsUi5Plugin: true,
-                isCdsUi5PluginEnabled: true,
-                isWorkspaceEnabled: true,
-                hasMinCdsVersion: true
-            })
-        ).find((question) => question.name === promptNames.enableTypeScript);
-        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
-        enableTypeScriptQuestion = (
-            await getQuestions([], undefined, {
-                hasCdsUi5Plugin: false,
-                isCdsUi5PluginEnabled: false,
-                isWorkspaceEnabled: false,
-                hasMinCdsVersion: true
-            })
-        ).find((question) => question.name === promptNames.enableTypeScript);
-        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
+        expect(enableTypeScriptQuestion).toBe(undefined);
     });
 
     test('getQuestions, advanced prompt grouping', async () => {
