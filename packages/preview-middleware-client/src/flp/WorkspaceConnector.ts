@@ -5,104 +5,110 @@ import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 import { getAdditionalChangeInfo } from '../utils/additional-change-info';
 
-let ObjectStorageConnectorInstance: typeof ObjectStorageConnector;
-let storagePropertyName = 'storage';
-const ui5Version = await getUi5Version();
+// Use a Promise to hold the initialized connector
+const connectorPromise: Promise<typeof ObjectStorageConnector> = (async () => {
+    let ObjectStorageConnectorInstance: typeof ObjectStorageConnector;
+    let storagePropertyName = 'storage';
 
-// We need to use a dynamic import to ensure that the ObjectStorageConnector is loaded correctly depending on the UI5 version.
-// Types are identical so we use ObjectStorageConnector for both imports.
-if (ui5Version.major === 1 && ui5Version.minor === 76) {
-    ObjectStorageConnectorInstance = (await import('sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector')) as unknown as typeof ObjectStorageConnector;
-    storagePropertyName = 'oStorage';
-} else {
-    ObjectStorageConnectorInstance = (await import('sap/ui/fl/write/api/connectors/ObjectStorageConnector')) as unknown as typeof ObjectStorageConnector;
-}
+    const ui5Version = await getUi5Version();
 
-const connector = merge({}, ObjectStorageConnectorInstance, {
-    layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
-    [storagePropertyName]: {
-        _itemsStoredAsObjects: true,
-        fileChangeRequestNotifier: undefined,
-        setItem: function (_key: string, change: FlexChange) {
-            const settings = getFlexSettings();
-            if (settings) {
-                change.support ??= {};
-                change.support.generator = settings.generator;
-            }
-
-            const additionalChangeInfo = getAdditionalChangeInfo(change);
-
-            if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
-                try {
-                    this.fileChangeRequestNotifier(change.fileName, 'create', change, additionalChangeInfo);
-                } catch (e) {
-                    // exceptions in the listener call are ignored
-                }
-            }
-
-            const body = {
-                change,
-                additionalChangeInfo
-            };
-
-            return fetch(CHANGES_API_PATH, {
-                method: 'POST',
-                body: JSON.stringify(body, null, 2),
-                headers: {
-                    'content-type': 'application/json'
-                }
-            });
-        },
-        removeItem: function (key: string) {
-            if (typeof this.fileChangeRequestNotifier === 'function') {
-                try {
-                    this.fileChangeRequestNotifier(key, 'delete');
-                } catch (e) {
-                    // exceptions in the listener call are ignored
-                }
-            }
-
-            return fetch(CHANGES_API_PATH, {
-                method: 'DELETE',
-                body: JSON.stringify({ fileName: key }),
-                headers: {
-                    'content-type': 'application/json'
-                }
-            });
-        },
-        clear: function () {
-            // not implemented
-        },
-        getItem: function (_key: string) {
-            // not implemented
-        },
-        getItems: async function () {
-            const response = await fetch(CHANGES_API_PATH, {
-                method: 'GET',
-                headers: {
-                    'content-type': 'application/json'
-                }
-            });
-            return (await response.json()) as unknown as FlexChange[];
-        }
-    } as typeof ObjectStorageConnector.storage,
-    loadFeatures: async function () {
-        const features = await ObjectStorageConnectorInstance.loadFeatures();
-        features.isVariantAdaptationEnabled = !isLowerThanMinimalUi5Version(ui5Version, {
-            major: 1,
-            minor: 90
-        });
-        const settings = getFlexSettings();
-        if (settings?.developerMode) {
-            features.isVariantAdaptationEnabled = false;
-        }
-
-        if (settings?.scenario === 'ADAPTATION_PROJECT') {
-            features.isVariantAdaptationEnabled = true;
-        }
-
-        return features;
+    // Dynamically import the ObjectStorageConnector based on the UI5 version.
+    if (ui5Version.major === 1 && ui5Version.minor === 76) {
+        ObjectStorageConnectorInstance = (await import('sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector')).default as unknown as typeof ObjectStorageConnector;
+        storagePropertyName = 'oStorage';
+    } else {
+        ObjectStorageConnectorInstance = (await import('sap/ui/fl/write/api/connectors/ObjectStorageConnector')).default as unknown as typeof ObjectStorageConnector;
     }
-}) as typeof ObjectStorageConnector;
 
-export default connector;
+    return merge({}, ObjectStorageConnectorInstance, {
+        layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
+        [storagePropertyName]: {
+            _itemsStoredAsObjects: true,
+            fileChangeRequestNotifier: undefined,
+            setItem: function (_key: string, change: FlexChange) {
+                const settings = getFlexSettings();
+                if (settings) {
+                    change.support ??= {};
+                    change.support.generator = settings.generator;
+                }
+
+                const additionalChangeInfo = getAdditionalChangeInfo(change);
+
+                if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
+                    try {
+                        this.fileChangeRequestNotifier(change.fileName, 'create', change, additionalChangeInfo);
+                    } catch (e) {
+                        // exceptions in the listener call are ignored
+                    }
+                }
+
+                const body = {
+                    change,
+                    additionalChangeInfo
+                };
+
+                return fetch(CHANGES_API_PATH, {
+                    method: 'POST',
+                    body: JSON.stringify(body, null, 2),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                });
+            },
+            removeItem: function (key: string) {
+                if (typeof this.fileChangeRequestNotifier === 'function') {
+                    try {
+                        this.fileChangeRequestNotifier(key, 'delete');
+                    } catch (e) {
+                        // exceptions in the listener call are ignored
+                    }
+                }
+
+                return fetch(CHANGES_API_PATH, {
+                    method: 'DELETE',
+                    body: JSON.stringify({ fileName: key }),
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                });
+            },
+            clear: function () {
+                // not implemented
+            },
+            getItem: function (_key: string) {
+                // not implemented
+            },
+            getItems: async function () {
+                const response = await fetch(CHANGES_API_PATH, {
+                    method: 'GET',
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                });
+                return (await response.json()) as unknown as FlexChange[];
+            }
+        } as typeof ObjectStorageConnector.storage,
+        loadFeatures: async function () {
+            const features = await ObjectStorageConnectorInstance.loadFeatures();
+            features.isVariantAdaptationEnabled = !isLowerThanMinimalUi5Version(ui5Version, {
+                major: 1,
+                minor: 90
+            });
+            const settings = getFlexSettings();
+            if (settings?.developerMode) {
+                features.isVariantAdaptationEnabled = false;
+            }
+
+            if (settings?.scenario === 'ADAPTATION_PROJECT') {
+                features.isVariantAdaptationEnabled = true;
+            }
+
+            return features;
+        }
+    }) as typeof ObjectStorageConnector;
+})();
+
+/**
+ * A Promise that resolves to the initialized ObjectStorageConnector instance.
+ */
+export default connectorPromise;

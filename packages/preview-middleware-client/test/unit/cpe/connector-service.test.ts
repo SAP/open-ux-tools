@@ -1,5 +1,5 @@
 import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
-import connector from '../../../src/flp/WorkspaceConnector';
+import connectorPromise from '../../../src/flp/WorkspaceConnector';
 import * as common from '@sap-ux-private/control-property-editor-common';
 import FakeLrepConnector from 'mock/sap/ui/fl/FakeLrepConnector';
 import { create } from '../../../src/flp/enableFakeConnector';
@@ -18,6 +18,7 @@ describe('connector-service', () => {
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
         const wsConnector = new WorkspaceConnectorService();
         await wsConnector.init(sendActionMock, jest.fn());
+        const connector = await connectorPromise;
 
         expect(connector.storage.fileChangeRequestNotifier).toBeInstanceOf(Function);
 
@@ -42,6 +43,7 @@ describe('connector-service', () => {
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
         const wsConnector = new WorkspaceConnectorService();
         await wsConnector.init(sendActionMock, jest.fn());
+        const connector = await connectorPromise;
 
         // call notifier
         await connector.storage.setItem('sap.ui.fl.testFile', {
@@ -57,6 +59,7 @@ describe('connector-service', () => {
         const wsConnector = new WorkspaceConnectorService();
         const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
+        const connector = await connectorPromise;
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: false }));
         // call notifier
@@ -73,6 +76,7 @@ describe('connector-service', () => {
         const wsConnector = new WorkspaceConnectorService();
         const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
+        const connector = await connectorPromise;
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: true }));
         // call notifier
@@ -91,6 +95,7 @@ describe('connector-service', () => {
         const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
         jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValue({ templateName: 'my-template' });
+        const connector = await connectorPromise;
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: true }));
         // call notifier
