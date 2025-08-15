@@ -484,4 +484,61 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             expect(changes.length).toBe(1);
         }
     );
+    test.fail(
+        'Add New Annotation File',
+        {
+            annotation: {
+                type: 'skipUI5Version',
+                description: '<1.108.27'
+            }
+        },
+        async ({ page, projectCopy, ui5Version, previewFrame }) => {
+            const editor = new AdaptationEditorShell(page, ui5Version);
+            await editor.toolbar.uiAdaptationModeButton.click();
+
+            await editor.quickActions.addLocalAnnotationFile.click();
+
+            await editor.toolbar.saveAndReloadButton.click();
+
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+            await page.waitForTimeout(2000); // wait for changes to be processed
+            await expect
+                .poll(
+                    async () => {
+                        const changes = await readChanges(projectCopy);
+                        const annotationFile = Object.keys(changes.annotations)[0];
+                        expect(changes.annotations[annotationFile]).toContain(
+                            `<Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local_`
+                        );
+                        return changes;
+                    },
+                    {
+                        message: 'make sure change file is created'
+                    }
+                )
+                .toEqual(
+                    expect.objectContaining({
+                        annotations: expect.any(Object), // Generic - just check it exists
+                        changes: expect.arrayContaining([
+                            expect.objectContaining({
+                                fileType: 'change',
+                                changeType: 'appdescr_app_addAnnotationsToOData',
+                                content: expect.objectContaining({
+                                    dataSourceId: 'mainService',
+                                    annotations: expect.arrayContaining([
+                                        expect.stringMatching(/customer\.annotation\.annotation_\d+/)
+                                    ])
+                                })
+                            })
+                        ])
+                    })
+                );
+            await editor.reloadCompleted();
+            await editor.quickActions.showLocalAnnotationFile.click();
+            await expect(
+                previewFrame.getByText(/adp\.fiori\.elements\.v2\/changes\/annotations\/annotation_\d+\.xml/)
+            ).toBeVisible();
+            await expect(previewFrame.getByRole('button', { name: 'Show File in VSCode' })).toBeVisible();
+        }
+    );
 });
