@@ -69,19 +69,30 @@ export async function getCredentialsFromStore(
  * @param logger reference to the logger instance
  * @returns true if the credentials are successfully stored
  */
-export async function storeCredentials(
+export function storeCredentials(
     name: string,
     target: { url: string; client?: string },
     credentials: { username: string; password: string },
     logger: Logger
 ): Promise<boolean> {
+    const system = new BackendSystem({
+        name,
+        ...target,
+        ...credentials
+    });
+    return storeSystem(system, logger);
+}
+
+/**
+ * Store a system configuration in the secure storage.
+ *
+ * @param system system object
+ * @param logger reference to the logger instance
+ * @returns true if the credentials are successfully stored
+ */
+export async function storeSystem(system: BackendSystem, logger: Logger): Promise<boolean> {
     try {
         const systemService = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
-        const system = new BackendSystem({
-            name,
-            ...target,
-            ...credentials
-        });
         await systemService.write(system);
         return true;
     } catch (error) {
