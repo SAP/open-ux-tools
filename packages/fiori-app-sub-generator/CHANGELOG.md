@@ -1,5 +1,12 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.6.21
+
+### Patch Changes
+
+-   Updated dependencies [7772a11]
+    -   @sap-ux/ui5-application-inquirer@0.15.1
+
 ## 0.6.20
 
 ### Patch Changes
