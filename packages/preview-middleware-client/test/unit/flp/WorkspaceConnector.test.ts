@@ -138,6 +138,18 @@ describe('flp/WorkspaceConnector', () => {
             expect(features.isVariantAdaptationEnabled).toBe(false);
         });
 
+        test('version = 1.76', async () => {
+            jest.resetModules();
+            const VersionInfo = (await import('mock/sap/ui/VersionInfo')).default;
+            VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.76' });
+            const ObjectStorageConnector = (await import('mock/sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector')).default;
+            ObjectStorageConnector.loadFeatures.mockResolvedValue({ isVariantAdaptationEnabled: false });
+            const connectorPromise = (await import('../../../src/flp/WorkspaceConnector')).default;
+            const connector = await connectorPromise;
+            const features = await connector.loadFeatures();
+            expect(features.isVariantAdaptationEnabled).toBe(false);
+        });
+
         test('version >= 1.90, developerMode=true', async () => {
             VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.118.1' });
             documentMock.getElementById.mockReturnValueOnce({
