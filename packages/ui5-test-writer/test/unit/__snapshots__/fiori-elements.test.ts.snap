@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`ui5-test-writer generateOPAFiles FCL LR-OP 1`] = `
 Object {
@@ -216,7 +216,7 @@ Object {
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"ui5-test-writer.test.employees\\": \\"../../\\"
@@ -226,10 +226,10 @@ Object {
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -238,7 +238,8 @@ Object {
     <div id=\\"qunit\\"></div>
     <div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
@@ -558,7 +559,7 @@ Object {
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"ui5-test-writer.test.employees\\": \\"../../\\"
@@ -568,10 +569,10 @@ Object {
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -580,7 +581,8 @@ Object {
     <div id=\\"qunit\\"></div>
     <div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
@@ -875,7 +877,7 @@ Object {
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"ui5-test-writer.test.employees\\": \\"../../\\"
@@ -885,10 +887,10 @@ Object {
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -897,7 +899,8 @@ Object {
     <div id=\\"qunit\\"></div>
     <div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
@@ -1192,7 +1195,7 @@ Object {
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"ui5-test-writer.test.employees\\": \\"../../\\"
@@ -1202,10 +1205,10 @@ Object {
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -1214,7 +1217,8 @@ Object {
     <div id=\\"qunit\\"></div>
     <div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
@@ -1483,7 +1487,7 @@ Object {
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"ui5-test-writer.test.employees\\": \\"../../\\"
@@ -1493,10 +1497,10 @@ Object {
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -1505,7 +1509,8 @@ Object {
     <div id=\\"qunit\\"></div>
     <div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
@@ -1741,7 +1746,7 @@ Object {
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"ui5-test-writer.test.employees\\": \\"../../\\"
@@ -1751,10 +1756,10 @@ Object {
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -1763,7 +1768,8 @@ Object {
     <div id=\\"qunit\\"></div>
     <div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
@@ -2006,7 +2012,7 @@ Object {
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"ui5-test-writer.test.employees\\": \\"../../\\"
@@ -2016,10 +2022,10 @@ Object {
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -2028,7 +2034,8 @@ Object {
     <div id=\\"qunit\\"></div>
     <div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
@@ -2344,7 +2351,7 @@ Object {
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"vesc.demo.employee.project2\\": \\"../../\\"
@@ -2354,10 +2361,10 @@ Object {
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -2366,7 +2373,8 @@ Object {
     <div id=\\"qunit\\"></div>
     <div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
@@ -2748,7 +2756,7 @@ Object {
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"vesc.demo.employee.project2\\": \\"../../\\"
@@ -2758,10 +2766,10 @@ Object {
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -2770,7 +2778,8 @@ Object {
     <div id=\\"qunit\\"></div>
     <div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
@@ -3131,7 +3140,7 @@ Object {
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"projectservice\\": \\"../../\\"
@@ -3141,10 +3150,10 @@ Object {
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -3153,7 +3162,8 @@ Object {
     <div id=\\"qunit\\"></div>
     <div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
@@ -3435,7 +3445,7 @@ Object {
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"test.ui5-test-writer\\": \\"../../\\"
@@ -3445,10 +3455,10 @@ Object {
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -3457,7 +3467,8 @@ Object {
     <div id=\\"qunit\\"></div>
     <div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {

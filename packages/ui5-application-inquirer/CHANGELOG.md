@@ -1,5 +1,40 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.15.0
+
+### Minor Changes
+
+-   55bb22e: updates cap projects to use npm workspaces by default
+
+## 0.14.39
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 0.14.38
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/project-input-validator@0.6.16
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.14.37
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+
+## 0.14.36
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.32
+
 ## 0.14.35
 
 ### Patch Changes

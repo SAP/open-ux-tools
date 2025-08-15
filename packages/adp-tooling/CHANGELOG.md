@@ -1,5 +1,49 @@
 # @sap-ux/adp-tooling
 
+## 0.15.17
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/odata-service-writer@0.27.17
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/system-access@0.6.12
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 0.15.16
+
+### Patch Changes
+
+-   @sap-ux/i18n@0.3.3
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/axios-extension@1.22.5
+-   @sap-ux/odata-service-writer@0.27.16
+-   @sap-ux/project-input-validator@0.6.16
+-   @sap-ux/system-access@0.6.12
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.15.15
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+
+## 0.15.14
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.32
+
+## 0.15.13
+
+### Patch Changes
+
+-   98fbd93: Store fragment parent control info in fragment body
+
 ## 0.15.12
 
 ### Patch Changes

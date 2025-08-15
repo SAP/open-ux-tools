@@ -51,7 +51,7 @@ export async function deleteServiceData(
         if (paths.ui5Yaml) {
             ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
             // Delete service backend from fiori-tools-proxy middleware config
-            ui5Config.removeBackendFromFioriToolsProxydMiddleware(service.path);
+            ui5Config.removeBackendFromFioriToolsProxyMiddleware(service.path);
             fs.write(paths.ui5Yaml, ui5Config.toString());
         }
         const serviceAnnotationPaths = getEDMXAnnotationPaths(
@@ -60,7 +60,7 @@ export async function deleteServiceData(
         if (paths.ui5LocalYaml) {
             ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
             // Delete service backend from fiori-tools-proxy middleware config
-            ui5LocalConfig.removeBackendFromFioriToolsProxydMiddleware(service.path);
+            ui5LocalConfig.removeBackendFromFioriToolsProxyMiddleware(service.path);
             // Delete service from mockserver middleware config
             ui5LocalConfig.removeServiceFromMockServerMiddleware(service.path, serviceAnnotationPaths);
             fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
@@ -68,7 +68,7 @@ export async function deleteServiceData(
         if (paths.ui5MockYaml) {
             ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
             // Delete service backend from fiori-tools-proxy middleware config
-            ui5MockConfig.removeBackendFromFioriToolsProxydMiddleware(service.path);
+            ui5MockConfig.removeBackendFromFioriToolsProxyMiddleware(service.path);
             // Delete service from mockserver config
             ui5MockConfig.removeServiceFromMockServerMiddleware(service.path, serviceAnnotationPaths);
             fs.write(paths.ui5MockYaml, ui5MockConfig.toString());
