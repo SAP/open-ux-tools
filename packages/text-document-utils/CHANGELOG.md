@@ -1,5 +1,11 @@
 # @sap-ux/text-document-utils
 
+## 0.3.1
+
+### Patch Changes
+
+-   c7db726: feat: add deprecated $value syntax diagnostic message.
+
 ## 0.3.0
 
 ### Minor Changes

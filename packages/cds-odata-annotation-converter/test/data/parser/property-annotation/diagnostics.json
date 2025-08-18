@@ -1,1 +1,11 @@
-[]
+[
+    {
+        "message": "Annotating values with $value is deprecated. Use nested annotations names instead.",
+        "rule": "deprecated-$value-syntax",
+        "range": "[(6,12)..(6,18)]",
+        "severity": 2,
+        "data": {
+            "descriptionLink": "https://cap.cloud.sap/docs/releases/archive/2022/jun22#annotating-odata-annotations"
+        }
+    }
+]

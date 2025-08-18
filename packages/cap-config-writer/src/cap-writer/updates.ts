@@ -28,20 +28,20 @@ export async function applyCAPUpdates(
         packageName,
         appId,
         sapux = false,
-        enableNPMWorkspaces = false,
-        enableCdsUi5Plugin = false,
+        enableCdsUi5Plugin = true,
         enableTypescript = false
     } = capProjectSettings;
 
     // update root package.json
-    await updateRootPackageJson(fs, packageName, sapux, capService, appId, enableNPMWorkspaces);
+    await updateRootPackageJson(fs, packageName, sapux, capService, appId, enableCdsUi5Plugin);
 
     if (enableTypescript) {
         // update tsconfig.json if TypeScript is enabled
         updateTsConfig(fs, appRoot);
     }
-    if (enableCdsUi5Plugin || enableNPMWorkspaces) {
-        // update app package.json if CDS UI5 plugin is enabled or NPM workspaces are enabled
+
+    if (capService.capType === 'Node.js' && enableCdsUi5Plugin) {
+        // update app package.json if CDS UI5 plugin is enabled
         updateAppPackageJson(fs, appRoot);
     }
 }

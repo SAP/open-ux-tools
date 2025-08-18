@@ -1,5 +1,24 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.7
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 0.5.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.5.5
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+
 ## 0.5.4
 
 ### Patch Changes

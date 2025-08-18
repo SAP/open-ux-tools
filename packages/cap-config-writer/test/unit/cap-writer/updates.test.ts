@@ -103,9 +103,10 @@ describe('Test applyCAPUpdates updates files correctly', () => {
         const packageJsonPath = join(capService.projectPath, 'package.json');
         const packageJson = fs.readJSON(packageJsonPath) as Package;
         const scripts = packageJson.scripts;
-        // package json file should be updated with scripts only where watch command uses projectName since enableNPMWorkspaces is not provided
+        // watch script should be updated to the new format as enableNPMWorkspaces now defaults to true
         expect(scripts).toEqual({
-            'watch-test-cap-app1': 'cds watch --open test-cap-app1/webapp/index.html?sap-ui-xx-viewCache=false'
+            'watch-test-cap-app1':
+                'cds watch --open test-cap-app1-id/index.html?sap-ui-xx-viewCache=false --livereload false'
         });
         // tsconfig.json file should be updated
         const tsConfigPath = join(settings.appRoot, 'tsconfig.json');
@@ -120,7 +121,7 @@ describe('Test applyCAPUpdates updates files correctly', () => {
         // sapux array should not be deleted from app package json since enableNPMWorkspaces is not provided
         const appPackageJson = fs.readJSON(appPackageJsonPath) as Package;
         const sapUxArray = appPackageJson.sapux;
-        expect(sapUxArray).toBeDefined();
+        expect(sapUxArray).not.toBeDefined();
     });
 
     test('applyCAPUpdates updates specific files for CAP Node js projects when CdsUi5Plugin is not enabled but enableNPMWorkspaces is enabled', async () => {
