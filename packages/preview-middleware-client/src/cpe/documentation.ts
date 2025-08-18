@@ -20,7 +20,6 @@ export interface ControlMetadata {
  */
 export async function getUi5ApiDtMetadata(libName: string): Promise<SchemaForApiJsonFiles> {
     const libUrl = '/test-resources/' + libName.split('.').join('/') + '/designtime/api.json';
-    // return fetch(libUrl).then((res) => res.json() as unknown as SchemaForApiJsonFiles);
     const response = await fetch(libUrl);
     if (!response.ok) {
         throw new FetchError(response);
