@@ -4,7 +4,6 @@ import type { Editor } from 'mem-fs-editor';
 import { dirname, join, normalize, posix } from 'path';
 import type { CapServiceCdsInfo } from '../cap-config/types';
 import { enableCdsUi5Plugin } from '../cap-config';
-import type { Logger } from '@sap-ux/logger';
 
 /**
  * Retrieves the CDS watch script for the CAP app.
@@ -77,7 +76,6 @@ async function updateScripts(
  * @param {boolean} sapux - Whether to add the app name to the sapux array.
  * @param {CapServiceCdsInfo} capService - The CAP service instance.
  * @param {string} appId - The application's ID, including its namespace and the module name.
- * @param {Logger} [log] - The logger instance for logging warnings.
  * @param {boolean} [enableNPMWorkspaces] - Whether to enable npm workspaces.
  * @returns {Promise<void>} A Promise that resolves once the root package.json is updated.
  */
@@ -87,7 +85,6 @@ export async function updateRootPackageJson(
     sapux: boolean,
     capService: CapServiceCdsInfo,
     appId: string,
-    log?: Logger,
     enableNPMWorkspaces?: boolean
 ): Promise<void> {
     const packageJsonPath: string = join(capService.projectPath, 'package.json');

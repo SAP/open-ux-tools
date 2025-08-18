@@ -2,7 +2,6 @@ import type { CapServiceCdsInfo, CapProjectSettings } from '../cap-config/types'
 import { updateRootPackageJson, updateAppPackageJson } from './package-json';
 import { updateTsConfig } from './tsconfig-and-yaml';
 import type { Editor } from 'mem-fs-editor';
-import type { Logger } from '@sap-ux/logger';
 
 /**
  * Applies updates to a CAP project based on the provided options.
@@ -15,17 +14,14 @@ import type { Logger } from '@sap-ux/logger';
  * @param {string} capProjectSettings.packageName - The name of the package.
  * @param {string} capProjectSettings.appId - The application's ID, including its namespace and the module name.
  * @param {boolean} capProjectSettings.sapux - Indicates if SAP UX is enabled.
- * @param {boolean} capProjectSettings.enableNPMWorkspaces - Indicates if NPM workspaces are enabled.
- * @param {boolean} capProjectSettings.enableCdsUi5Plugin - Indicates if the CDS UI5 plugin is enabled.
- * @param {boolean} [capProjectSettings.enableTypescript] - Indicates if TypeScript is enabled.
- * @param {Logger} [log] - logger for logging information.
+ * @param {boolean} capProjectSettings.enableCdsUi5Plugin - Indicates if cds ui5 plugin should be added (default is true).  The cds ui5 plugin will only be added if the minimum cds version that supports it is present.
+ * @param {boolean} capProjectSettings.enableTypescript - Indicates if TypeScript is enabled.
  * @returns {Promise<void>} A promise that resolves when the updates are applied.
  */
 export async function applyCAPUpdates(
     fs: Editor,
     capService: CapServiceCdsInfo,
-    capProjectSettings: CapProjectSettings,
-    log?: Logger
+    capProjectSettings: CapProjectSettings
 ): Promise<void> {
     const {
         appRoot,
@@ -38,7 +34,7 @@ export async function applyCAPUpdates(
     } = capProjectSettings;
 
     // update root package.json
-    await updateRootPackageJson(fs, packageName, sapux, capService, appId, log, enableNPMWorkspaces);
+    await updateRootPackageJson(fs, packageName, sapux, capService, appId, enableNPMWorkspaces);
 
     if (enableTypescript) {
         // update tsconfig.json if TypeScript is enabled

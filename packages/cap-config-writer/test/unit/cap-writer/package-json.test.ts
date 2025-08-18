@@ -73,7 +73,6 @@ describe('Writing/package json files', () => {
             isSapUxEnabled,
             capService,
             'test.app.project',
-            logger,
             isNpmWorkspacesEnabled
         );
         const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
@@ -108,7 +107,6 @@ describe('Writing/package json files', () => {
             isSapUxEnabled,
             capServiceWS,
             'test.app.project.ws.already.enabled',
-            logger,
             isNpmWorkspacesEnabled
         );
         const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
