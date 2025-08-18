@@ -161,11 +161,11 @@ declare module 'sap/ui/fl/apply/api/FlexRuntimeInfoAPI' {
 }
 
 declare module 'sap/ui/fl/write/api/ChangesWriteAPI' {
-    interface ChangeHander {
+    interface ChangeHandler {
         getChangeVisualizationInfo(change, appComponent): Promise<object>;
     }
     interface ChangesWriteAPI {
-        getChangeHandler(propertyBag: object): Promise<ChangeHander>;
+        getChangeHandler(propertyBag: object): Promise<ChangeHandler>;
     }
 
     const ChangesWriteAPI: ChangesWriteAPI;
