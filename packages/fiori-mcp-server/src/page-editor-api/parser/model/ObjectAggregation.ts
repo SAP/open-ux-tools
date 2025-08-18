@@ -488,7 +488,14 @@ export class ObjectAggregation {
      * @return {ObjectAggregation} Copy of ObjectAggregation.
      */
     public getCopy(type: typeof ObjectAggregation = ObjectAggregation): ObjectAggregation {
-        const cloneData = JSON.parse(JSON.stringify(this)) as PageEditAggregationData;
+        const cloneData = JSON.parse(
+            JSON.stringify(this, (key: string, value: unknown): unknown => {
+                if (key === 'parent') {
+                    return undefined;
+                }
+                return value;
+            })
+        ) as PageEditAggregationData;
         const cloneObject = new type(cloneData);
         this.createAggregations(cloneObject, type);
         return new type(cloneObject);
