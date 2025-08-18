@@ -20,6 +20,10 @@ describe('connector-service', () => {
         await wsConnector.init(sendActionMock, jest.fn());
         const connector = await connectorPromise;
 
+        if (!('storage' in connector)) {
+            expect('storage' in connector).toBeTruthy();
+            return;
+        }
         expect(connector.storage.fileChangeRequestNotifier).toBeInstanceOf(Function);
 
         // call notifier
@@ -46,6 +50,10 @@ describe('connector-service', () => {
         const connector = await connectorPromise;
 
         // call notifier
+        if (!('storage' in connector)) {
+            expect('storage' in connector).toBeTruthy();
+            return;
+        }
         await connector.storage.setItem('sap.ui.fl.testFile', {
             changeType: 'appdescr_fe_changePageConfiguration',
             fileName: 'sap.ui.fl.testFile',
@@ -63,6 +71,10 @@ describe('connector-service', () => {
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: false }));
         // call notifier
+        if (!('storage' in connector)) {
+            expect('storage' in connector).toBeTruthy();
+            return;
+        }
         await connector.storage.setItem('sap.ui.fl.testFile', {
             changeType: 'appdescr_fe_changePageConfiguration',
             fileName: 'sap.ui.fl.testFile',
@@ -80,6 +92,10 @@ describe('connector-service', () => {
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: true }));
         // call notifier
+        if (!('storage' in connector)) {
+            expect('storage' in connector).toBeTruthy();
+            return;
+        }
         await connector.storage.setItem('sap.ui.fl.testFile', {
             changeType: 'addXML',
             fileName: 'sap.ui.fl.testFile',
@@ -95,7 +111,7 @@ describe('connector-service', () => {
         const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
         jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValue({ templateName: 'my-template' });
-        const connector = await connectorPromise;
+        const connector: any = await connectorPromise;
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: true }));
         // call notifier

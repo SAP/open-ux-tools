@@ -31,7 +31,11 @@ export class WorkspaceConnectorService {
         } else {
             const connector = await (await import('open/ux/preview/client/flp/WorkspaceConnector')).default;
             // hook the file deletion listener to the UI5 workspace connector
-            connector.storage.fileChangeRequestNotifier = this.onChangeSaved.bind(this);
+            if('oStorage' in connector) {
+                connector.oStorage.fileChangeRequestNotifier = this.onChangeSaved.bind(this);
+            } else {
+                connector.storage.fileChangeRequestNotifier = this.onChangeSaved.bind(this);
+            }
         }
     }
 

@@ -1,23 +1,24 @@
 import merge from 'sap/base/util/merge';
 import type ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
+import type ObjectStorageConnector176 from 'sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector';
 import Layer from 'sap/ui/fl/Layer';
 import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 import { getAdditionalChangeInfo } from '../utils/additional-change-info';
 
 // Use a Promise to hold the initialized connector
-const connectorPromise: Promise<typeof ObjectStorageConnector> = (async () => {
-    let ObjectStorageConnectorInstance: typeof ObjectStorageConnector;
+const connectorPromise: Promise<typeof ObjectStorageConnector | typeof ObjectStorageConnector176> = (async () => {
+    let ObjectStorageConnectorInstance: typeof ObjectStorageConnector | typeof ObjectStorageConnector176;
     let storagePropertyName = 'storage';
 
     const ui5Version = await getUi5Version();
 
     // Dynamically import the ObjectStorageConnector based on the UI5 version.
     if (ui5Version.major === 1 && ui5Version.minor === 76) {
-        ObjectStorageConnectorInstance = (await import('sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector')).default as unknown as typeof ObjectStorageConnector;
+        ObjectStorageConnectorInstance = (await import('sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector')).default;
         storagePropertyName = 'oStorage';
     } else {
-        ObjectStorageConnectorInstance = (await import('sap/ui/fl/write/api/connectors/ObjectStorageConnector')).default as unknown as typeof ObjectStorageConnector;
+        ObjectStorageConnectorInstance = (await import('sap/ui/fl/write/api/connectors/ObjectStorageConnector')).default;
     }
 
     return merge({}, ObjectStorageConnectorInstance, {
@@ -25,7 +26,7 @@ const connectorPromise: Promise<typeof ObjectStorageConnector> = (async () => {
         [storagePropertyName]: {
             _itemsStoredAsObjects: true,
             fileChangeRequestNotifier: undefined,
-            setItem: function (_key: string, change: FlexChange) {
+            setItem: function (key: string, change: FlexChange) {
                 const settings = getFlexSettings();
                 if (settings) {
                     change.support ??= {};
@@ -75,7 +76,7 @@ const connectorPromise: Promise<typeof ObjectStorageConnector> = (async () => {
             clear: function () {
                 // not implemented
             },
-            getItem: function (_key: string) {
+            getItem: function () {
                 // not implemented
             },
             getItems: async function () {

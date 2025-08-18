@@ -104,12 +104,19 @@ declare module 'sap/ui/fl/Utils' {
 }
 
 declare module 'sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector' {
-    export * from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
-    export { default } from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
+    import type { Layer } from 'sap/ui/fl';
+    import type { Features, Storage } from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
+    class ObjectStorageConnector {
+        static layers: Layer[];
+        static oStorage: Storage;
+        static loadFeatures(): Promise<Features>;
+    }
+    export default ObjectStorageConnector;
 }
 
 declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
     import type { Layer } from 'sap/ui/fl';
+    import { FlexChange } from './common';
     interface Features {
         isCondensingEnabled?: boolean;
         isContextSharingEnabled?: boolean;
@@ -120,27 +127,26 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
     }
 
     interface Storage {
-        setItem(key: string, change: unknown): Promise<unknown>;
+        setItem(key: string, change: FlexChange): Promise<unknown>;
         removeItem(key: string): Promise<unknown>;
         clear(): void;
         getItem(key: string): unknown;
         getItems(): Promise<unknown[]>;
         fileChangeRequestNotifier:
             | (<T extends object, U extends object>(
-                  fileName: string,
-                  kind: 'create' | 'delete',
-                  change?: T,
-                  additionalChangeInfo?: U
-              ) => void)
+            fileName: string,
+            kind: 'create' | 'delete',
+            change?: T,
+            additionalChangeInfo?: U
+        ) => void)
             | undefined;
+        _itemsStoredAsObjects: boolean
     }
-
     class ObjectStorageConnector {
         static layers: Layer[];
         static storage: Storage;
         static loadFeatures(): Promise<Features>;
     }
-
     export default ObjectStorageConnector;
 }
 

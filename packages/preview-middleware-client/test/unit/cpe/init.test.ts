@@ -143,6 +143,10 @@ describe('main', () => {
 
         // check delete notifier
         const connector = await connectorPromise;
+        if (!('storage' in connector)) {
+            expect('storage' in connector).toBeTruthy();
+            return;
+        }
         await connector.storage.removeItem('sap.ui.fl.testFile');
 
         //assert

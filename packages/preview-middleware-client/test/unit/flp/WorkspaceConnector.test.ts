@@ -22,6 +22,10 @@ describe('flp/WorkspaceConnector', () => {
                 templateName: 'templateName'
             });
             const connector = await connectorPromise;
+            if (!('storage' in connector)) {
+                expect('storage' in connector).toBeTruthy();
+                return;
+            }
             connector.storage.fileChangeRequestNotifier = jest.fn();
             const change = { data: '~Data' };
             await connector.storage.setItem('~notUsed', change);
@@ -45,6 +49,10 @@ describe('flp/WorkspaceConnector', () => {
 
         test('setItem (fileChange)', async () => {
             const connector = await connectorPromise;
+            if (!('storage' in connector)) {
+                expect('storage' in connector).toBeTruthy();
+                return;
+            }
             connector.storage.fileChangeRequestNotifier = jest.fn();
             const change = { data: '~Data', fileName: 'dummyFile', changeType: 'property' };
             await connector.storage.setItem('~notUsed', change);
@@ -71,12 +79,20 @@ describe('flp/WorkspaceConnector', () => {
             });
 
             const connector = await connectorPromise;
+            if (!('storage' in connector)) {
+                expect('storage' in connector).toBeTruthy();
+                return;
+            }
             await connector.storage.setItem('~notUsed', change);
             expect((change as any).support.generator).toBe('tool-variant');
         });
 
         test('removeItem', async () => {
             const connector = await connectorPromise;
+            if (!('storage' in connector)) {
+                expect('storage' in connector).toBeTruthy();
+                return;
+            }
             connector.storage.fileChangeRequestNotifier = jest.fn();
             const key = '~Key';
             await connector.storage.removeItem(key);
@@ -101,6 +117,10 @@ describe('flp/WorkspaceConnector', () => {
             });
 
             const connector = await connectorPromise;
+            if (!('storage' in connector)) {
+                expect('storage' in connector).toBeTruthy();
+                return;
+            }
             const result = await connector.storage.getItems();
 
             expect(fetch).toHaveBeenCalledWith(
