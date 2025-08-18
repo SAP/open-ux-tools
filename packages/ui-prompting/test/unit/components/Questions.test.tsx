@@ -372,4 +372,28 @@ describe('Questions', () => {
             expect(document.querySelectorAll(translationInputSelectors.button).length).toEqual(0);
         });
     });
+
+    describe('Questions component', () => {
+        const mockQuestions: PromptQuestion[] = [
+            { name: 'foo', type: 'input', message: 'Foo?' },
+            { name: 'bar', type: 'input', message: 'Bar?' }
+        ];
+
+        it('should update answer and call onChange only when answer changes', () => {
+            const onChange = jest.fn();
+            const { getByLabelText } = render(<Questions questions={mockQuestions} onChange={onChange} />);
+
+            // Simulate input change for 'foo'
+            const fooInput = getByLabelText('Foo?');
+            fireEvent.change(fooInput, { target: { value: 'newValue' } });
+
+            // onChange should be called with updated answers
+            expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ foo: 'newValue' }), 'foo', 'newValue');
+
+            // Simulate input change with same value, should not call onChange again
+            onChange.mockClear();
+            fireEvent.change(fooInput, { target: { value: 'newValue' } });
+            expect(onChange).not.toHaveBeenCalled();
+        });
+    });
 });
