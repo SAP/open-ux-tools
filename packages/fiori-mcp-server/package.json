@@ -1,0 +1,52 @@
+{
+    "name": "@sap-ux/fiori-mcp-server",
+    "description": "SAP Fiori tools - Model Context Protocol (MCP) server for Fiori AI",
+    "version": "0.37.2",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/fiori-mcp-server"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Afiori-mcp-server"
+    },
+    "license": "Apache-2.0",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "watch": "tsc --watch",
+        "clean": "rimraf --glob dist test/test-output *.tsbuildinfo",
+        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors"
+    },
+    "files": [
+        "LICENSE",
+        "dist",
+        "!dist/*.map",
+        "!dist/**/*.map"
+    ],
+    "devDependencies": {
+        "@sap-ux/i18n": "workspace:*",
+        "@sap-ux/text-document-utils": "workspace:*",
+        "@sap-ux/odata-annotation-core-types": "workspace:*",
+        "@sap-ux/odata-entity-model": "workspace:*",
+        "@types/json-schema": "7.0.5",
+        "@types/mem-fs": "1.1.2",
+        "@types/lodash": "4.14.202",
+        "typescript": "5.9.2"
+    },
+    "dependencies": {
+        "i18next": "25.3.0",
+        "@modelcontextprotocol/sdk": "1.17.0",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap/ux-specification": "1.124.8",
+        "@sap-ux/fiori-annotation-api": "workspace:*",
+        "@sap-ux/annotation-converter": "0.10.3",
+        "lodash": "4.17.21"
+    },
+    "engines": {
+        "node": ">=20.x"
+    }
+}

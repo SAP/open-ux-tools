@@ -1,0 +1,129 @@
+import { PageEditorApi, SapuxFtfsFileIO, type TreeNode, type TreeNodeProperty } from '../page-editor-api';
+import type { Functionality, ListFunctionalitiesInput, ListFunctionalitiesOutput } from '../types';
+import { FUNCTIONALITIES_DETAILS } from './functionalities';
+import { resolveApplication } from './utils';
+import type { ApplicationAccess } from '@sap-ux/project-access';
+
+export async function listFunctionalities(
+    params: ListFunctionalitiesInput
+): Promise<ListFunctionalitiesOutput | string> {
+    const { appPath } = params;
+    let functionalities: Functionality[] = [];
+    try {
+        // If we need dynamic handlers then we can add additional method in interface of FUNCTIONALITIES_HANDLERS
+        for (const functionality of FUNCTIONALITIES_DETAILS) {
+            functionalities.push({
+                id: functionality.id,
+                description: functionality.description
+            });
+        }
+        const project = await resolveApplication(appPath);
+        const apps = project?.applicationAccess?.project.apps ?? {};
+        if (project?.applicationAccess && Object.keys(apps).length) {
+            const { applicationAccess } = project;
+            const ftfsFileIo = new SapuxFtfsFileIO(applicationAccess);
+            const appData = await ftfsFileIo.readApp();
+            functionalities = functionalities.concat(await getAppFunctionalities(applicationAccess));
+            const pages = Object.keys(appData.config?.pages ?? {});
+            for (const pageId of pages) {
+                functionalities = functionalities.concat(await getPageFunctionalities(applicationAccess, pageId));
+            }
+        }
+    } catch (error) {
+        return `Error while trying to list functionalities: ${error.message}`;
+    }
+    return {
+        applicationPath: appPath,
+        functionalities
+    };
+}
+
+async function getAppFunctionalities(appAccess: ApplicationAccess): Promise<Functionality[]> {
+    const pageEditorApi = new PageEditorApi(appAccess, undefined);
+    const tree = await pageEditorApi.getPageTree();
+
+    const settingsNode = tree.children.find((node) => node.path[node.path.length - 1] === 'settings');
+    if (!settingsNode) {
+        return [];
+    }
+
+    // Ignore 'minVersion', 'lazy' properties
+    settingsNode.properties = settingsNode.properties.filter(
+        (setting) => !['minVersion', 'lazy', 'dependencies'].includes(setting.name)
+    );
+
+    return getFunctionalitiesFromPageTree(settingsNode);
+}
+
+async function getPageFunctionalities(appAccess: ApplicationAccess, pageId?: string): Promise<Functionality[]> {
+    const pageEditorApi = new PageEditorApi(appAccess, pageId);
+    const pageTree = await pageEditorApi.getPageTree();
+    return getFunctionalitiesFromPageTree(pageTree, undefined, pageId);
+}
+
+function getFunctionalitiesFromPageTree(
+    pageTree: TreeNode,
+    parentId: string[] = [],
+    pageName?: string
+): Functionality[] {
+    const functionalities: Functionality[] = [];
+
+    // Process properties of the current node
+    if (pageTree.properties) {
+        for (const property of pageTree.properties) {
+            // Create functionality from property with schemaPath as id
+            const functionality = getPropertyFunctionality(property, pageName);
+            functionalities.push(functionality);
+
+            // Recursively process nested properties
+            if (property.properties) {
+                const nestedFunctionalities = processNestedProperties(property.properties);
+                functionalities.push(...nestedFunctionalities);
+            }
+        }
+    }
+
+    // Recursively process child nodes
+    if (pageTree.children) {
+        for (const child of pageTree.children) {
+            const childFunctionalities = getFunctionalitiesFromPageTree(
+                child,
+                [...parentId, ...pageTree.path.map(String)],
+                pageName
+            );
+            functionalities.push(...childFunctionalities);
+        }
+    }
+
+    return functionalities;
+}
+
+function processNestedProperties(properties: TreeNodeProperty[], pageName?: string): Functionality[] {
+    const functionalities: Functionality[] = [];
+
+    for (const property of properties) {
+        const functionality = getPropertyFunctionality(property, pageName);
+        functionalities.push(functionality);
+
+        // Recursively process further nested properties
+        if (property.properties) {
+            const nestedFunctionalities = processNestedProperties(property.properties);
+            functionalities.push(...nestedFunctionalities);
+        }
+    }
+
+    return functionalities;
+}
+
+function getPropertyFunctionality(property: TreeNodeProperty, pageName?: string): Functionality {
+    const path: Array<string | number> = [];
+    if (pageName) {
+        path.push(pageName);
+    }
+    path.push(...property.schemaPath);
+    return {
+        id: path,
+        // id: property.schemaPath.map(String), // Convert PropertyPath to string[]
+        description: property.description || property.displayName || property.name || 'No description available'
+    };
+}

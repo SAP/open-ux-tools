@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`add-page getFunctionalityDetails case 2: empty page 1`] = `
+Object {
+  "description": "Create new fiori elements page like ListReport, ObjectPage, CustomPage",
+  "id": "add-page",
+  "name": "Add new page to application by updating manifest.json",
+  "parameters": Array [
+    Object {
+      "description": "Entity set for the new page. First try to extract entity from user input in a format defined in example, if not possible suggest content defined in options.",
+      "examples": Array [
+        "entitySet: Travels",
+      ],
+      "id": "entitySet",
+      "options": Array [
+        "Travels",
+        "Expenses",
+        "TravelsStatusCodeList",
+        "TravelsStatusCodeList_texts",
+      ],
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "description": "Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.",
+      "examples": Array [
+        "pageType: ObjectPage",
+      ],
+      "id": "pageType",
+      "options": Array [
+        "ObjectPage",
+        "ListReport",
+        "CustomPage",
+        "FPMCustomPage",
+        "AnalyticalListPage",
+      ],
+      "required": true,
+      "type": "string",
+    },
+  ],
+}
+`;
+
+exports[`add-page getFunctionalityDetails case 3: one or more pages 1`] = `
+Object {
+  "description": "Create new fiori elements page like ListReport, ObjectPage, CustomPage",
+  "id": "add-page",
+  "name": "Add new page to application by updating manifest.json",
+  "parameters": Array [
+    Object {
+      "description": "Parent page is id/name of parent page. First try to extract parent page from user input in a format defined in example, if not possible suggest content defined in options",
+      "examples": Array [
+        "parentPage: TravelsList",
+      ],
+      "id": "parentPage",
+      "options": Array [
+        "TravelsList",
+        "TravelsObjectPage",
+      ],
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "description": "Page navigation option for parent page. First try to extract navigation option from user input in a format defined in example, if not possible suggest content defined in options",
+      "examples": Array [
+        "pageNavigation: TravelsExpensesTravelsStatusCodeListTravelsStatusCodeList_texts",
+      ],
+      "id": "pageNavigation",
+      "options": Array [
+        "TravelsExpensesTravelsStatusCodeListTravelsStatusCodeList_texts",
+        "Expenses",
+      ],
+      "required": true,
+      "type": "string",
+    },
+    Object {
+      "description": "Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.",
+      "examples": Array [
+        "pageType: ObjectPage",
+      ],
+      "id": "pageType",
+      "options": Array [
+        "ObjectPage",
+        "ListReport",
+        "CustomPage",
+        "FPMCustomPage",
+        "AnalyticalListPage",
+      ],
+      "required": true,
+      "type": "string",
+    },
+  ],
+}
+`;
+
+exports[`delete-page getFunctionalityDetails case 2: zero or more pages 1`] = `
+Object {
+  "description": "Remove existing fiori elements page from the application",
+  "id": "delete-page",
+  "name": "Delete page from application by updating manifest.json",
+  "parameters": Array [
+    Object {
+      "description": "Page id to be deleted. First try to extract page id from user input in a format defined in example, if not possible suggest content defined in options",
+      "examples": Array [
+        "pageId: TravelsList",
+      ],
+      "id": "pageId",
+      "options": Array [
+        "TravelsList",
+        "TravelsObjectPage",
+      ],
+      "required": true,
+      "type": "string",
+    },
+  ],
+}
+`;

@@ -1,0 +1,167 @@
+{
+    "namespace": "manageTravels",
+    "entities": [
+        {
+            "name": "Travels",
+            "label": "Travel",
+            "associations": [],
+            "labelPlural": "Travels",
+            "elements": [
+                {
+                    "name": "ID",
+                    "type": "UUID",
+                    "key": true,
+                    "label": ""
+                },
+                {
+                    "name": "tripName",
+                    "type": "String(50)",
+                    "essentialElement": true,
+                    "label": "Trip Name",
+                    "hasFixedValuesList": false,
+                    "values": [],
+                    "semanticKey": true
+                },
+                {
+                    "name": "employee",
+                    "type": "String(50)",
+                    "key": false,
+                    "essentialElement": false,
+                    "label": "Employee",
+                    "hasFixedValuesList": false,
+                    "values": []
+                },
+                {
+                    "name": "status",
+                    "type": "String(20)",
+                    "key": false,
+                    "essentialElement": true,
+                    "label": "Status",
+                    "hasFixedValuesList": true,
+                    "values": [
+                        "Planned",
+                        "In Progress",
+                        "Completed",
+                        "Cancelled"
+                    ]
+                },
+                {
+                    "name": "startDate",
+                    "type": "Date",
+                    "key": false,
+                    "essentialElement": false,
+                    "label": "Start Date",
+                    "hasFixedValuesList": false,
+                    "values": []
+                },
+                {
+                    "name": "price",
+                    "type": "Decimal",
+                    "key": false,
+                    "essentialElement": false,
+                    "label": "Price",
+                    "hasFixedValuesList": false,
+                    "values": []
+                }
+            ]
+        }
+    ],
+    "service": {
+        "name": "manageTravelsSrv",
+        "path": "srv/service.cds"
+    },
+    "applications": [
+        {
+            "pages": [
+                {
+                    "type": "ListReport",
+                    "entityType": "Travels",
+                    "listReportContent": {
+                        "loadDataOnAppLaunch": "Enabled",
+                        "tables": [
+                            {
+                                "title": "Manage Travels",
+                                "id": "manageTravels",
+                                "baseEntityType": "Travels",
+                                "columns": [
+                                    "tripName",
+                                    "employee",
+                                    "status",
+                                    "startDate",
+                                    "price"
+                                ]
+                            }
+                        ],
+                        "filters": [
+                            "tripName",
+                            "status"
+                        ],
+                        "fields": [
+                            {
+                                "name": "tripName",
+                                "type": "String(50)",
+                                "essentialElement": true,
+                                "label": "Trip Name",
+                                "hasFixedValuesList": false,
+                                "values": [],
+                                "semanticKey": true
+                            },
+                            {
+                                "name": "employee",
+                                "type": "String(50)",
+                                "key": false,
+                                "essentialElement": false,
+                                "label": "Employee",
+                                "hasFixedValuesList": false,
+                                "values": []
+                            },
+                            {
+                                "name": "status",
+                                "type": "String(20)",
+                                "key": false,
+                                "essentialElement": true,
+                                "label": "Status",
+                                "hasFixedValuesList": true,
+                                "values": [
+                                    "Planned",
+                                    "In Progress",
+                                    "Completed",
+                                    "Cancelled"
+                                ]
+                            },
+                            {
+                                "name": "startDate",
+                                "type": "Date",
+                                "key": false,
+                                "essentialElement": false,
+                                "label": "Start Date",
+                                "hasFixedValuesList": false,
+                                "values": []
+                            },
+                            {
+                                "name": "price",
+                                "type": "Decimal",
+                                "key": false,
+                                "essentialElement": false,
+                                "label": "Price",
+                                "hasFixedValuesList": false,
+                                "values": []
+                            }
+                        ]
+                    }
+                },
+                {
+                    "type": "ObjectPage",
+                    "entityType": "Travels",
+                    "objectPageContent": {
+                        "tableSectionAssociations": [],
+                        "sections": [],
+                        "tabs": [],
+                        "chartSections": []
+                    }
+                }
+            ],
+            "name": "manageTravels"
+        }
+    ]
+}

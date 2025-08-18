@@ -1,0 +1,2957 @@
+{
+    "type": "object",
+    "properties": {
+        "variantManagement": {
+            "$ref": "#/definitions/VariantManagementTypeListReport",
+            "description": "variantManagement defines how the variant management of page personalizations is controlled.\n- None - No variant management by default.\n- Control - Individual personalizations for each control.",
+            "artifactType": "Manifest"
+        },
+        "header": {
+            "$ref": "#/definitions/Header",
+            "description": "Header",
+            "propertyIndex": 0
+        },
+        "filterBar": {
+            "$ref": "#/definitions/FilterBar",
+            "description": "Filter Bar",
+            "propertyIndex": 1
+        },
+        "chart": {
+            "$ref": "#/definitions/ALPChartView",
+            "description": "Chart",
+            "artifactType": "Manifest",
+            "hidden": true,
+            "propertyIndex": 2
+        },
+        "table": {
+            "description": "Table",
+            "$ref": "#/definitions/Table",
+            "propertyIndex": 3
+        },
+        "defaultTemplateAnnotationPath": {
+            "description": "defaultTemplateAnnotationPath must be a reference to a SelectionPresentationVariant.\nYou use the SelectionPresentationVariant to configure the default visualizations and default filter values of the main content area.",
+            "type": "string",
+            "artifactType": "Manifest",
+            "hidden": true
+        },
+        "defaultPath": {
+            "$ref": "#/definitions/DefaultPathType",
+            "description": "Defines the initial view mode:\n- primary: This property loads the app in chart-only view.\n- secondary: This property loads the app in table-only view.\n- both: This property loads the app in hybrid view.",
+            "artifactType": "Manifest",
+            "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/2a9df06673d34f72b238549d49da8bfb",
+            "hidden": true
+        },
+        "$schema": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": false,
+    "definitions": {
+        "VariantManagementTypeListReport": {
+            "enum": [
+                "Control",
+                "None",
+                "Page"
+            ],
+            "type": "string"
+        },
+        "Header": {
+            "description": "Header",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "$ref": "#/definitions/HeaderActions"
+                }
+            },
+            "additionalProperties": false
+        },
+        "HeaderActions": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/CustomHeaderAction"
+            },
+            "isViewNode": true,
+            "description": "Actions",
+            "properties": {
+                "TestHeaderAction": {
+                    "$ref": "#/definitions/CustomHeaderAction",
+                    "description": "TestHeaderAction",
+                    "keys": [
+                        {
+                            "name": "Key",
+                            "value": "TestHeaderAction"
+                        }
+                    ],
+                    "actionType": "Custom",
+                    "propertyIndex": 0
+                }
+            }
+        },
+        "CustomHeaderAction": {
+            "type": "object",
+            "properties": {
+                "position": {
+                    "$ref": "#/definitions/CustomHeaderActionPosition",
+                    "description": "Defines the position of the action relative to other actions.",
+                    "artifactType": "Manifest"
+                },
+                "text": {
+                    "description": "The text that is displayed on the button (typically a binding to an i18n entry).",
+                    "i18nClassification": "COL: Custom action text",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "press": {
+                    "description": "Relevant for extension actions; allows the definition of a target action handler.",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the action button is visible.",
+                    "artifactType": "Manifest"
+                },
+                "enabled": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the action is enabled. The default value is true.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "press",
+                "text"
+            ],
+            "isViewNode": true,
+            "description": "Custom Action"
+        },
+        "CustomHeaderActionPosition": {
+            "type": "object",
+            "properties": {
+                "anchor": {
+                    "description": "The key of another action to be used as placement anchor.",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "oneOf": [
+                        {
+                            "const": "TestHeaderAction",
+                            "description": "TestHeaderAction",
+                            "custom": true
+                        }
+                    ]
+                },
+                "placement": {
+                    "$ref": "#/definitions/ActionPlacement",
+                    "description": "Define the placement, either before or after the anchor action.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "placement"
+            ]
+        },
+        "ActionPlacement": {
+            "enum": [
+                "After",
+                "Before"
+            ],
+            "type": "string"
+        },
+        "FilterBar": {
+            "description": "Filter Bar",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "hideFilterBar": {
+                    "description": "Allows you to hide the filter bar.",
+                    "artifactType": "Manifest",
+                    "type": "boolean",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/4bd7590569c74c61a0124c6e370030f6"
+                },
+                "selectionFields": {
+                    "isViewNode": true,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/SelectionFields"
+                        },
+                        {
+                            "$ref": "#/definitions/CompactFilters"
+                        }
+                    ]
+                },
+                "visualFilters": {
+                    "$ref": "#/definitions/VisualFilters"
+                },
+                "initialLayout": {
+                    "$ref": "#/definitions/InitialLayoutType",
+                    "description": "Allows you to specify the default filter mode on the initial load.",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/33f3d807c10b47d9a8141692d2619dc2",
+                    "hidden": true
+                },
+                "layout": {
+                    "$ref": "#/definitions/LayoutType",
+                    "description": "Allows you to specify the layout of the filter bar.\n- Compact: This setting shows filter fields in compact mode.\n- CompactVisual: This setting shows filter fields in both compact and visual modes.",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/33f3d807c10b47d9a8141692d2619dc2",
+                    "hidden": true
+                }
+            },
+            "additionalProperties": false
+        },
+        "SelectionFields": {
+            "description": "Filter Fields",
+            "isViewNode": true,
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/CustomFilterField"
+            },
+            "properties": {
+                "SelectionField::TravelID": {
+                    "$ref": "#/definitions/SelectionField::TravelID",
+                    "propertyIndex": 0
+                },
+                "SelectionField::AgencyID": {
+                    "$ref": "#/definitions/SelectionField::AgencyID",
+                    "propertyIndex": 1
+                },
+                "SelectionField::CustomerID": {
+                    "$ref": "#/definitions/SelectionField::CustomerID",
+                    "propertyIndex": 2
+                }
+            },
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.SelectionFields"
+        },
+        "CustomFilterField": {
+            "description": "Custom Filter Field",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "label": {
+                    "description": "A static or i18n binding string.",
+                    "i18nClassification": "COL: Custom filter field label",
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "property": {
+                    "description": "The full path to the property to be filtered.",
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "template": {
+                    "description": "The path to the XML template containing the filter control.",
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "required": {
+                    "description": "Determines whether the filter field requires a value.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "position": {
+                    "$ref": "#/definitions/CustomFilterFieldPosition",
+                    "description": "Defines the position of the filter field relative to another filter field.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "label",
+                "property",
+                "template"
+            ]
+        },
+        "CustomFilterFieldPosition": {
+            "type": "object",
+            "properties": {
+                "anchor": {
+                    "description": "The key of another filter field is to be used as a placement anchor.",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "oneOf": [
+                        {
+                            "const": "TravelID",
+                            "description": "TravelID"
+                        },
+                        {
+                            "const": "AgencyID",
+                            "description": "AgencyID"
+                        },
+                        {
+                            "const": "CustomerID",
+                            "description": "Kunden ID"
+                        }
+                    ]
+                },
+                "placement": {
+                    "$ref": "#/definitions/FilterFieldPlacement",
+                    "description": "Define the placement, either before or after the anchor filter field.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "placement"
+            ]
+        },
+        "FilterFieldPlacement": {
+            "enum": [
+                "After",
+                "Before"
+            ],
+            "type": "string"
+        },
+        "CompactFilters": {
+            "description": "Compact Filters",
+            "isViewNode": true,
+            "type": "object",
+            "additionalProperties": {
+                "type": "object",
+                "properties": {}
+            },
+            "hidden": true
+        },
+        "VisualFilters": {
+            "description": "Visual Filters",
+            "isViewNode": true,
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/VisualFilter"
+            },
+            "hidden": true
+        },
+        "VisualFilter": {
+            "description": "Visual Filter",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "availability": {
+                    "$ref": "#/definitions/Availability",
+                    "description": "Defines where the selection field appears.\n- Default: The filter field appears by default in the filter bar (both the regular filter fields as well as the corresponding visual filter fields).\n- Adaptation: The filter field only appears under Adapt Filters.\n- Hidden: The filter field is hidden.",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/33f3d807c10b47d9a8141692d2619dc2"
+                },
+                "visualFilterValueList": {
+                    "description": "The valuelist annotation corresponding to the visual filter representation.",
+                    "artifactType": "Manifest",
+                    "hidden": true,
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        },
+        "Availability": {
+            "enum": [
+                "Adaptation",
+                "Default",
+                "Hidden"
+            ],
+            "type": "string"
+        },
+        "InitialLayoutType": {
+            "enum": [
+                "Compact",
+                "Visual"
+            ],
+            "type": "string"
+        },
+        "LayoutType": {
+            "enum": [
+                "Compact",
+                "CompactVisual"
+            ],
+            "type": "string"
+        },
+        "ALPChartView": {
+            "description": "Chart View",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "annotationPath": {
+                    "description": "The primary annotation path can be either UI.Chart, UI.PresentationVariant, or UI.SelectionPresentationVariant.",
+                    "type": "string"
+                },
+                "toolBar": {
+                    "$ref": "#/definitions/ViewChartToolBar",
+                    "description": "Chart Toolbar"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "annotationPath"
+            ]
+        },
+        "ViewChartToolBar": {
+            "description": "Chart Toolbar",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "$ref": "#/definitions/ViewActions"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "actions"
+            ]
+        },
+        "ViewActions": {
+            "description": "Actions",
+            "isViewNode": true,
+            "type": "object",
+            "additionalProperties": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/ViewToolBarActionGroup"
+                    },
+                    {
+                        "$ref": "#/definitions/ViewToolBarAction"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {}
+                    },
+                    {
+                        "$ref": "#/definitions/ViewTableCustomAction"
+                    }
+                ]
+            }
+        },
+        "ViewToolBarActionGroup": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/ViewToolBarAction"
+            }
+        },
+        "ViewToolBarAction": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false
+        },
+        "SelectType": {
+            "enum": [
+                "multi",
+                "single"
+            ],
+            "type": "string"
+        },
+        "ActionAfterExecutionConfigurationToolBarLR": {
+            "type": "object",
+            "properties": {
+                "navigateToInstance": {
+                    "description": "Allows you to disable the navigation. By default, navigation is automatically triggered after you have performed an action.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/2c65f07f44094012a511d6bd83f50f2d"
+                },
+                "enableAutoScroll": {
+                    "description": "Allows you to scroll to the newly created or changed item after you have performed an action.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ViewTableCustomAction": {
+            "type": "object",
+            "properties": {
+                "position": {
+                    "$ref": "#/definitions/ViewCustomActionPosition",
+                    "description": "Defines the position of the action relative to other actions.",
+                    "artifactType": "Manifest"
+                },
+                "requiresSelection": {
+                    "description": "Indicates whether the action requires a selection of items.",
+                    "artifactType": "Manifest",
+                    "type": "boolean"
+                },
+                "text": {
+                    "description": "The text that is displayed on the button (typically a binding to an i18n entry).",
+                    "i18nClassification": "COL: Custom action text",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "press": {
+                    "description": "Relevant for extension actions; allows the definition of a target action handler.",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the action button is visible.",
+                    "artifactType": "Manifest"
+                },
+                "enabled": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the action is enabled. The default value is true.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "press",
+                "text"
+            ]
+        },
+        "ViewCustomActionPosition": {
+            "type": "object",
+            "properties": {
+                "anchor": {
+                    "description": "The key of another action to be used as placement anchor.",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "placement": {
+                    "$ref": "#/definitions/ActionPlacement",
+                    "description": "Define the placement, either before or after the anchor action.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "placement"
+            ]
+        },
+        "InitialLoadType": {
+            "enum": [
+                "Auto",
+                "Disabled",
+                "Enabled"
+            ],
+            "type": "string"
+        },
+        "ViewPersonalizationType": {
+            "type": "object",
+            "properties": {
+                "column": {
+                    "description": "Defines whether the user can add and remove columns to a given table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "sort": {
+                    "description": "Defines whether the user can sort a given table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "filter": {
+                    "description": "Defines whether the user can filter data of a given table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ToolBar": {
+            "description": "Table Toolbar",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "$ref": "#/definitions/Actions"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "actions"
+            ]
+        },
+        "Actions": {
+            "description": "Actions",
+            "isViewNode": true,
+            "type": "object",
+            "additionalProperties": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/ToolBarAction"
+                    },
+                    {
+                        "$ref": "#/definitions/ToolBarActionGroup"
+                    },
+                    {
+                        "$ref": "#/definitions/CustomTableAction"
+                    }
+                ]
+            }
+        },
+        "ToolBarAction": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action.",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ToolBarActionGroup": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/ToolBarAction"
+            }
+        },
+        "CustomTableAction": {
+            "type": "object",
+            "properties": {
+                "requiresSelection": {
+                    "description": "Indicates whether the action requires a selection of items.",
+                    "artifactType": "Manifest",
+                    "type": "boolean"
+                },
+                "text": {
+                    "description": "The text that is displayed on the button (typically a binding to an i18n entry).",
+                    "i18nClassification": "COL: Custom action text",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "position": {
+                    "$ref": "#/definitions/CustomActionPosition",
+                    "description": "Defines the position of the action relative to other actions.",
+                    "artifactType": "Manifest"
+                },
+                "press": {
+                    "description": "Relevant for extension actions; allows the definition of a target action handler.",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the action button is visible.",
+                    "artifactType": "Manifest"
+                },
+                "enabled": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the action is enabled. The default value is true.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "press",
+                "text"
+            ]
+        },
+        "CustomActionPosition": {
+            "type": "object",
+            "properties": {
+                "anchor": {
+                    "description": "The key of another action to be used as placement anchor.",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "oneOf": [
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createTravelDraft::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Create Draft"
+                        },
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Check Travel"
+                        },
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createDraftTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Template Draft"
+                        },
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createActiveTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Template Active"
+                        },
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Deduct Discount"
+                        },
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Set To New"
+                        },
+                        {
+                            "const": "TableAction",
+                            "description": "TableAction",
+                            "custom": true
+                        },
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Set To Booked"
+                        }
+                    ]
+                },
+                "placement": {
+                    "$ref": "#/definitions/ActionPlacement",
+                    "description": "Define the placement, either before or after the anchor action.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "placement"
+            ]
+        },
+        "ViewColumns": {
+            "description": "View Columns",
+            "isViewNode": true,
+            "type": "object",
+            "additionalProperties": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/ViewTableColumn"
+                    },
+                    {
+                        "$ref": "#/definitions/ViewTableColumnAction"
+                    },
+                    {
+                        "$ref": "#/definitions/ViewTableCustomColumn"
+                    }
+                ]
+            }
+        },
+        "ViewTableColumn": {
+            "description": "Table Column",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "width": {
+                    "description": "A string type that represents CSS size values.\nRefer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/api/sap.ui.core.CSSSize"
+                },
+                "availability": {
+                    "$ref": "#/definitions/Availability",
+                    "description": "Defines where the column should be shown.\nDefault: it will be shown by default in the table.\nAdaptation: it will initially not be shown in the table but be available via end user adaptation.\nHidden: the column is neither available in the table nor in adaptation.",
+                    "artifactType": "Manifest"
+                },
+                "widthIncludingColumnHeader": {
+                    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/c0f6592a592e47f9bb6d09900de47412"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ViewTableColumnAction": {
+            "description": "Inline Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfiguration",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                },
+                "width": {
+                    "description": "A string type that represents CSS size values.\nRefer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/api/sap.ui.core.CSSSize"
+                },
+                "availability": {
+                    "$ref": "#/definitions/Availability",
+                    "description": "Defines where the column should be shown.\nDefault: it will be shown by default in the table.\nAdaptation: it will initially not be shown in the table but be available via end user adaptation.\nHidden: the column is neither available in the table nor in adaptation.",
+                    "artifactType": "Manifest"
+                },
+                "widthIncludingColumnHeader": {
+                    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/c0f6592a592e47f9bb6d09900de47412"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ActionAfterExecutionConfiguration": {
+            "type": "object",
+            "properties": {
+                "navigateToInstance": {
+                    "description": "Allows you to disable the navigation. By default, navigation is automatically triggered after you have performed an action.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/2c65f07f44094012a511d6bd83f50f2d"
+                },
+                "enableAutoScroll": {
+                    "description": "Allows you to scroll to the newly created or changed item after you have performed an action.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ViewTableCustomColumn": {
+            "description": "Custom Column",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "position": {
+                    "$ref": "#/definitions/ViewPosition",
+                    "description": "Defines the position of the column relative to other columns.",
+                    "artifactType": "Manifest"
+                },
+                "header": {
+                    "description": "The header appears in the table as a header, as well as in the add and remove dialogs.",
+                    "i18nClassification": "COL: Custom column header text",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "width": {
+                    "description": "A string type that represents CSS size values.\nRefer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "descriptionSrcURL": "https://ui5.sap.com/api/sap.ui.core.CSSSize"
+                },
+                "template": {
+                    "description": "Defines a target fragment.",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "horizontalAlign": {
+                    "$ref": "#/definitions/HorizontalAlign",
+                    "description": "Aligns the header as well as the content horizontally.",
+                    "artifactType": "Manifest"
+                },
+                "availability": {
+                    "$ref": "#/definitions/Availability",
+                    "description": "Defines where the column should be shown.\n- Default: it will be shown by default in the table.\n- Adaptation: it will initially not be shown in the table but be available via end user adaptation\n- Hidden: the column is neither available in the table nor in adaptation",
+                    "artifactType": "Manifest"
+                },
+                "properties": {
+                    "description": "If provided and sorting for the table is enabled, the custom column header can be clicked.\nOnce clicked, a list of properties that can be sorted by are displayed.",
+                    "artifactType": "Manifest",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "header",
+                "template"
+            ]
+        },
+        "ViewPosition": {
+            "type": "object",
+            "properties": {
+                "anchor": {
+                    "description": "The key of another column to be used as placement anchor.",
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "placement": {
+                    "$ref": "#/definitions/Placement",
+                    "description": "Define the placement, either before or after the anchor column.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "placement"
+            ]
+        },
+        "Placement": {
+            "enum": [
+                "After",
+                "Before"
+            ],
+            "type": "string"
+        },
+        "HorizontalAlign": {
+            "enum": [
+                "Begin",
+                "Center",
+                "End"
+            ],
+            "type": "string"
+        },
+        "TableTypeV4": {
+            "enum": [
+                "AnalyticalTable",
+                "GridTable",
+                "ResponsiveTable",
+                "TreeTable"
+            ],
+            "type": "string"
+        },
+        "SelectionMode": {
+            "enum": [
+                "Auto",
+                "Multi",
+                "None",
+                "Single"
+            ],
+            "type": "string"
+        },
+        "QuickVariantSelectionV4": {
+            "type": "object",
+            "properties": {
+                "paths": {
+                    "description": "List of annotation paths referring to SelectionVariant annotations.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/AnnotationPathAsObject"
+                    },
+                    "artifactType": "Manifest"
+                },
+                "hideTableTitle": {
+                    "description": "Determines whether the table title is hidden and the tab titles are displayed.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "showCounts": {
+                    "description": "Determines whether the entry view counts are shown.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "paths"
+            ]
+        },
+        "AnnotationPathAsObject": {
+            "type": "object",
+            "properties": {
+                "annotationPath": {
+                    "type": "string",
+                    "const": "com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "annotationPath"
+            ]
+        },
+        "Table": {
+            "description": "Table",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "annotationPath": {
+                    "description": "The secondary annotation path can be either UI.LineItem, UI.PresentationVariant, or UI.SelectionPresentationVariant.",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "hidden": true
+                },
+                "initialLoad": {
+                    "$ref": "#/definitions/InitialLoadType",
+                    "description": "Determines whether the data in the table is automatically loaded.\n- Auto (default): Data is loaded automatically if a default filter value has been set in the filter bar.\n- Enabled: Data is loaded automatically, as defined by the standard variant\n- Disabled: Data is not loaded automatically. Users have to click the Go button.",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/9f4e1192f1384b85bc160288e17f69c4"
+                },
+                "views": {
+                    "$ref": "#/definitions/MultiTableModeV4"
+                }
+            },
+            "additionalProperties": false
+        },
+        "PersonalizationType": {
+            "type": "object",
+            "properties": {
+                "column": {
+                    "description": "Defines whether the user can add and remove columns to a given table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "sort": {
+                    "description": "Defines whether the user can sort a given table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "filter": {
+                    "description": "Defines whether the user can filter data of a given table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false
+        },
+        "MultiTableModeV4": {
+            "description": "Views",
+            "isViewNode": true,
+            "type": "object",
+            "additionalProperties": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/LRTableView"
+                    },
+                    {
+                        "$ref": "#/definitions/LRChartView"
+                    },
+                    {
+                        "$ref": "#/definitions/TableViewExtension"
+                    },
+                    {
+                        "type": "boolean"
+                    }
+                ]
+            },
+            "properties": {
+                "showCounts": {
+                    "description": "You can show the counts of entries of each view. To do so, add the showCounts option and set it to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "tableView": {
+                    "$ref": "#/definitions/LRTableView<tableView>",
+                    "description": "Table View",
+                    "title": "Table View (key: tableView)",
+                    "isViewNode": true,
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+                    "artifactType": "Manifest",
+                    "key": "tableView",
+                    "keys": [
+                        {
+                            "name": "Key",
+                            "value": "tableView"
+                        }
+                    ]
+                },
+                "tableView1": {
+                    "$ref": "#/definitions/LRTableView<tableView1>",
+                    "description": "Table View Booking",
+                    "title": "Table View (key: tableView1)",
+                    "isViewNode": true,
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.BookingType/@com.sap.vocabularies.UI.v1.SelectionPresentationVariant#tableView",
+                    "artifactType": "Manifest",
+                    "key": "tableView1",
+                    "keys": [
+                        {
+                            "name": "Key",
+                            "value": "tableView1"
+                        }
+                    ]
+                },
+                "CustomView": {
+                    "description": "View (CustomView)",
+                    "title": "CustomView",
+                    "$ref": "#/definitions/TableViewExtension",
+                    "isViewNode": true,
+                    "artifactType": "Manifest",
+                    "key": "CustomView",
+                    "keys": [
+                        {
+                            "name": "Key",
+                            "value": "CustomView"
+                        }
+                    ]
+                }
+            }
+        },
+        "LRTableView": {
+            "description": "Table View",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "key": {
+                    "description": "Unique tab identifier.",
+                    "hidden": true,
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "index": {
+                    "hidden": true,
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "annotationPath": {
+                    "description": "The annotation path can be either UI.LineItem, UI.PresentationVariant, or UI.SelectionPresentationVariant.",
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "entitySet": {
+                    "description": "Each table can be based on a different entitySet.",
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "keepPreviousPersonalization": {
+                    "description": "The tab keeps the default LineItem ID (without the key), so the variant is applied to it.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "personalization": {
+                    "$ref": "#/definitions/ViewPersonalizationType",
+                    "description": "Defines the personalization mode, currently only effective if variant management on page is either set to Page or Control.\nBy default all table settings are enabled. You can change this for the different parts of the table by setting the properties \"Column\", \"Sort\" and \"Filter\" accordingly.\nOmitting a property is treated as false, this allows apps to avoid getting new features like grouping in upcoming releases.",
+                    "artifactType": "Manifest"
+                },
+                "toolBar": {
+                    "$ref": "#/definitions/ToolBar",
+                    "description": "Table Toolbar"
+                },
+                "columns": {
+                    "$ref": "#/definitions/ViewColumns",
+                    "description": "Columns"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines whether the view is visible.",
+                    "artifactType": "Manifest"
+                },
+                "type": {
+                    "$ref": "#/definitions/TableTypeV4",
+                    "description": "Defines the table type. Note: Grid tables, analytical tables, and tree tables aren't rendered on small-screen devices. Responsive tables are shown instead.",
+                    "artifactType": "Manifest"
+                },
+                "selectionMode": {
+                    "$ref": "#/definitions/SelectionMode",
+                    "description": "Allows you to enable or disable row selection and choose between single or multiple row selection.\n- Auto: This type is deprecated. Choose any of the following modes:\n- Multi (default): This type allows multiple table selections if relevant actions are available in the toolbar.\n- Single: This type allows single table selection if relevant actions are available in the toolbar.\n- None: No table selection is possible in display mode.",
+                    "artifactType": "Manifest"
+                },
+                "selectAll": {
+                    "description": "The selectAll configuration overrides the selectionLimit and allows the user to select all the items. When set to true, the select all feature is enabled: a checkbox in the table header is displayed which selects all items when clicked.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "selectionLimit": {
+                    "description": "You can define how many items can be selected at a time using the selectionLimit.",
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "enableExport": {
+                    "description": "Defines whether the Export button is displayed in the table toolbar. The default value is true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/4bab6f2043814257974b52d4dafe1dcd"
+                },
+                "quickVariantSelection": {
+                    "$ref": "#/definitions/QuickVariantSelectionV4",
+                    "description": "With quickVariantSelection you can switch to multiple views (single table mode). It links to a SelectionVariant (filters) or SelectionPresentationVariant (filters and sorters) that you have added to your annotations.",
+                    "artifactType": "Manifest"
+                },
+                "condensedTableLayout": {
+                    "description": "Determines whether the content density for ui.table is condensed.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/f3cc057e405c4fd58ee2ed42c557797c"
+                },
+                "hierarchyQualifier": {
+                    "description": "Leading property that decides between either a recursive hierarchy or data aggregation.",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/7f844f1021cd4791b8f7408eac7c1cec"
+                },
+                "widthIncludingColumnHeader": {
+                    "description": "Determines whether the column header is included in the column width calculation. By default, the column width is calculated based on the type of the content.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/c0f6592a592e47f9bb6d09900de47412"
+                },
+                "disableCopyToClipboard": {
+                    "description": "Determines the visibility of the Copy to Clipboard button. By default, the Copy to Clipboard button is displayed in the table toolbar if the selection mode is configured.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/c0f6592a592e47f9bb6d09900de47412"
+                },
+                "enableMassEdit": {
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/965ef5b2895641bc9b6cd44f1bd0eb4d",
+                    "description": "Mass editing allows end users to simultaneously change multiple objects that share the same editable properties.",
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "visibleFields": {
+                                    "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog.",
+                                    "artifactType": "Manifest",
+                                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/965ef5b2895641bc9b6cd44f1bd0eb4d",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "ignoredFields": {
+                                    "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table.",
+                                    "artifactType": "Manifest",
+                                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/965ef5b2895641bc9b6cd44f1bd0eb4d",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        {
+                            "type": "boolean"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "annotationPath",
+                "index",
+                "key"
+            ]
+        },
+        "LRChartView": {
+            "description": "Chart View",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "toolBar": {
+                    "$ref": "#/definitions/ViewChartToolBar",
+                    "description": "Chart Toolbar"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines whether the view is visible or not.",
+                    "artifactType": "Manifest"
+                },
+                "key": {
+                    "description": "Unique tab identifier.",
+                    "hidden": true,
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "index": {
+                    "hidden": true,
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "annotationPath": {
+                    "description": "The annotationPath refers to a SelectionPresentationVariant or PresentationVariant annotation.\nTo use charts in multiple table mode, define a UI.Chart annotation, including a qualifier, and reference the UI.Chart annotation in your SelectionPresentationVariant or PresentationVariant annotation.",
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "entitySet": {
+                    "description": "Each chart can be based on a different entitySet.",
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "enableMassEdit": {
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/965ef5b2895641bc9b6cd44f1bd0eb4d",
+                    "description": "Mass editing allows end users to simultaneously change multiple objects that share the same editable properties.",
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "visibleFields": {
+                                    "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog.",
+                                    "artifactType": "Manifest",
+                                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/965ef5b2895641bc9b6cd44f1bd0eb4d",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "ignoredFields": {
+                                    "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table.",
+                                    "artifactType": "Manifest",
+                                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/965ef5b2895641bc9b6cd44f1bd0eb4d",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        {
+                            "type": "boolean"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "annotationPath",
+                "index",
+                "key"
+            ]
+        },
+        "TableViewExtension": {
+            "description": "Table View Extension",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "key": {
+                    "description": "Unique tab identifier.",
+                    "hidden": true,
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "index": {
+                    "hidden": true,
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "label": {
+                    "description": "View title (localization supported).",
+                    "i18nClassification": "TIT: Custom view title",
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "template": {
+                    "description": "The name contains sap.app.id as a prefix, followed by the path in the app/webapp folder and the name of the XML view.",
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines whether the view is visible.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "index",
+                "key",
+                "template"
+            ]
+        },
+        "TableColumn": {
+            "description": "Table Column",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "width": {
+                    "description": "A string type that represents CSS size values.\nRefer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/api/sap.ui.core.CSSSize"
+                },
+                "availability": {
+                    "$ref": "#/definitions/Availability",
+                    "description": "Defines where the column should be shown.\nDefault: it will be shown by default in the table.\nAdaptation: it will initially not be shown in the table but be available via end user adaptation.\nHidden: the column is neither available in the table nor in adaptation.",
+                    "artifactType": "Manifest"
+                },
+                "widthIncludingColumnHeader": {
+                    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/c0f6592a592e47f9bb6d09900de47412"
+                }
+            },
+            "additionalProperties": false
+        },
+        "TableColumnAction": {
+            "description": "Inline Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfiguration",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                },
+                "width": {
+                    "description": "A string type that represents CSS size values.\nRefer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/api/sap.ui.core.CSSSize"
+                },
+                "availability": {
+                    "$ref": "#/definitions/Availability",
+                    "description": "Defines where the column should be shown.\nDefault: it will be shown by default in the table.\nAdaptation: it will initially not be shown in the table but be available via end user adaptation.\nHidden: the column is neither available in the table nor in adaptation.",
+                    "artifactType": "Manifest"
+                },
+                "widthIncludingColumnHeader": {
+                    "description": "By default, the column width is calculated based on the type of the content. You can include the column header in the width calculation using the widthIncludingColumnHeader setting in the manifest.json.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/c0f6592a592e47f9bb6d09900de47412"
+                }
+            },
+            "additionalProperties": false
+        },
+        "TableCustomColumn": {
+            "description": "Custom Column",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "position": {
+                    "$ref": "#/definitions/Position",
+                    "description": "Defines the position of the column relative to other columns.",
+                    "artifactType": "Manifest"
+                },
+                "header": {
+                    "description": "The header is shown on the table as header, as well as in the add/remove dialog.",
+                    "i18nClassification": "COL: Custom column header text",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "width": {
+                    "description": "A string type that represents CSS size values.\nRefer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "descriptionSrcURL": "https://ui5.sap.com/api/sap.ui.core.CSSSize"
+                },
+                "template": {
+                    "description": "Defines a target fragment.",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "horizontalAlign": {
+                    "$ref": "#/definitions/HorizontalAlign",
+                    "description": "Aligns the header as well as the content horizontally.",
+                    "artifactType": "Manifest"
+                },
+                "availability": {
+                    "$ref": "#/definitions/Availability",
+                    "description": "Defines where the column should be shown.\n- Default: it will be shown by default in the table.\n- Adaptation: it will initially not be shown in the table but be available via end user adaptation\n- Hidden: the column is neither available in the table nor in adaptation",
+                    "artifactType": "Manifest"
+                },
+                "properties": {
+                    "description": "If provided and sorting for the table is enabled, the custom column header can be clicked.\nOnce clicked, a list of properties that can be sorted by are displayed.",
+                    "artifactType": "Manifest",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "TravelID",
+                            "AgencyID",
+                            "CustomerID",
+                            "BeginDate",
+                            "EndDate",
+                            "TotalPrice",
+                            "Memo",
+                            "Status"
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "header",
+                "template"
+            ]
+        },
+        "DefaultPathType": {
+            "enum": [
+                "both",
+                "primary",
+                "secondary"
+            ],
+            "type": "string"
+        },
+        "SelectionField::TravelID": {
+            "type": "object",
+            "properties": {},
+            "description": "TravelID",
+            "additionalProperties": false,
+            "dataType": "String",
+            "isViewNode": true,
+            "keys": [
+                {
+                    "name": "Value",
+                    "value": "TravelID"
+                }
+            ],
+            "target": "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+            "annotationType": "PropertyPath",
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.SelectionFields/0"
+        },
+        "SelectionField::AgencyID": {
+            "type": "object",
+            "properties": {},
+            "description": "AgencyID",
+            "additionalProperties": false,
+            "dataType": "String",
+            "isViewNode": true,
+            "keys": [
+                {
+                    "name": "Value",
+                    "value": "AgencyID"
+                }
+            ],
+            "target": "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+            "annotationType": "PropertyPath",
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.SelectionFields/1"
+        },
+        "SelectionField::CustomerID": {
+            "type": "object",
+            "properties": {},
+            "description": "Kunden ID",
+            "additionalProperties": false,
+            "dataType": "String",
+            "isViewNode": true,
+            "keys": [
+                {
+                    "name": "Value",
+                    "value": "CustomerID"
+                }
+            ],
+            "target": "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+            "annotationType": "PropertyPath",
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.SelectionFields/2"
+        },
+        "ToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createTravelDraft::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action.",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/8"
+        },
+        "ToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action.",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/9"
+        },
+        "ToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createDraftTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action.",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/10"
+        },
+        "ToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createActiveTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action.",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/11"
+        },
+        "ToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action.",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/12"
+        },
+        "ToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action.",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/13"
+        },
+        "ToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action.",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/14"
+        },
+        "LRTableView<tableView>": {
+            "description": "Table View",
+            "type": "object",
+            "properties": {
+                "key": {
+                    "description": "Unique tab identifier.",
+                    "hidden": true,
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "index": {
+                    "hidden": true,
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "annotationPath": {
+                    "description": "The annotation path can be either UI.LineItem, UI.PresentationVariant, or UI.SelectionPresentationVariant.",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "hidden": true
+                },
+                "entitySet": {
+                    "description": "Each table can be based on a different entitySet.",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "hidden": true
+                },
+                "keepPreviousPersonalization": {
+                    "description": "The tab keeps the default LineItem ID (without the key), so the variant is applied to it.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "personalization": {
+                    "$ref": "#/definitions/ViewPersonalizationType",
+                    "description": "Defines the personalization mode, currently only effective if variant management on page is either set to Page or Control.\nBy default all table settings are enabled. You can change this for the different parts of the table by setting the properties \"Column\", \"Sort\" and \"Filter\" accordingly.\nOmitting a property is treated as false, this allows apps to avoid getting new features like grouping in upcoming releases.",
+                    "artifactType": "Manifest"
+                },
+                "toolBar": {
+                    "$ref": "#/definitions/ToolBar<LineItemsOfView::tableView>",
+                    "description": "Table Toolbar"
+                },
+                "columns": {
+                    "$ref": "#/definitions/LineItemsOfView::tableView",
+                    "description": "Columns"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines whether the view is visible.",
+                    "artifactType": "Manifest"
+                },
+                "type": {
+                    "$ref": "#/definitions/TableTypeV4",
+                    "description": "Defines the table type. Note: Grid tables, analytical tables, and tree tables aren't rendered on small-screen devices. Responsive tables are shown instead.",
+                    "artifactType": "Manifest"
+                },
+                "selectionMode": {
+                    "$ref": "#/definitions/SelectionMode",
+                    "description": "Allows you to enable or disable row selection and choose between single or multiple row selection.\n- Auto: This type is deprecated. Choose any of the following modes:\n- Multi (default): This type allows multiple table selections if relevant actions are available in the toolbar.\n- Single: This type allows single table selection if relevant actions are available in the toolbar.\n- None: No table selection is possible in display mode.",
+                    "artifactType": "Manifest"
+                },
+                "selectAll": {
+                    "description": "The selectAll configuration overrides the selectionLimit and allows the user to select all the items. When set to true, the select all feature is enabled: a checkbox in the table header is displayed which selects all items when clicked.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "selectionLimit": {
+                    "description": "You can define how many items can be selected at a time using the selectionLimit.",
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "enableExport": {
+                    "description": "Defines whether the Export button is displayed in the table toolbar. The default value is true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/4bab6f2043814257974b52d4dafe1dcd"
+                },
+                "quickVariantSelection": {
+                    "$ref": "#/definitions/QuickVariantSelectionV4",
+                    "description": "With quickVariantSelection you can switch to multiple views (single table mode). It links to a SelectionVariant (filters) or SelectionPresentationVariant (filters and sorters) that you have added to your annotations.",
+                    "artifactType": "Manifest"
+                },
+                "condensedTableLayout": {
+                    "description": "Determines whether the content density for ui.table is condensed.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/f3cc057e405c4fd58ee2ed42c557797c"
+                },
+                "hierarchyQualifier": {
+                    "description": "Leading property that decides between either a recursive hierarchy or data aggregation.",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/7f844f1021cd4791b8f7408eac7c1cec"
+                },
+                "widthIncludingColumnHeader": {
+                    "description": "Determines whether the column header is included in the column width calculation. By default, the column width is calculated based on the type of the content.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/c0f6592a592e47f9bb6d09900de47412"
+                },
+                "disableCopyToClipboard": {
+                    "description": "Determines the visibility of the Copy to Clipboard button. By default, the Copy to Clipboard button is displayed in the table toolbar if the selection mode is configured.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/c0f6592a592e47f9bb6d09900de47412"
+                },
+                "enableMassEdit": {
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/965ef5b2895641bc9b6cd44f1bd0eb4d",
+                    "description": "Mass editing allows end users to simultaneously change multiple objects that share the same editable properties.",
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "visibleFields": {
+                                    "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog.",
+                                    "artifactType": "Manifest",
+                                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/965ef5b2895641bc9b6cd44f1bd0eb4d",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "enum": [
+                                            "TravelID",
+                                            "AgencyID",
+                                            "CustomerID",
+                                            "BeginDate",
+                                            "EndDate",
+                                            "TotalPrice",
+                                            "Memo",
+                                            "Status"
+                                        ]
+                                    },
+                                    "uniqueItems": true
+                                },
+                                "ignoredFields": {
+                                    "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table.",
+                                    "artifactType": "Manifest",
+                                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/965ef5b2895641bc9b6cd44f1bd0eb4d",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "enum": [
+                                            "TravelID",
+                                            "AgencyID",
+                                            "CustomerID",
+                                            "BeginDate",
+                                            "EndDate",
+                                            "TotalPrice",
+                                            "Memo",
+                                            "Status"
+                                        ]
+                                    },
+                                    "uniqueItems": true
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        {
+                            "type": "boolean"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "annotationPath",
+                "index",
+                "key"
+            ],
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem"
+        },
+        "LineItemsOfView::tableView": {
+            "type": "object",
+            "properties": {
+                "DataField::TravelID": {
+                    "description": "TravelID",
+                    "$ref": "#/definitions/ViewTableColumn",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/0",
+                    "propertyIndex": 0,
+                    "dataType": "String",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "TravelID"
+                        }
+                    ]
+                },
+                "DataField::AgencyID": {
+                    "description": "AgencyID",
+                    "$ref": "#/definitions/ViewTableColumn",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/1",
+                    "propertyIndex": 1,
+                    "dataType": "String",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "AgencyID"
+                        }
+                    ]
+                },
+                "TestCustomColumn": {
+                    "$ref": "#/definitions/ViewTableCustomColumn<LineItemsOfView::tableView>",
+                    "description": "TestCustomColumn",
+                    "keys": [
+                        {
+                            "name": "Key",
+                            "value": "TestCustomColumn"
+                        }
+                    ],
+                    "actionType": "Custom",
+                    "propertyIndex": 2
+                },
+                "DataField::CustomerID": {
+                    "description": "Kunden ID",
+                    "$ref": "#/definitions/ViewTableColumn",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/2",
+                    "propertyIndex": 3,
+                    "dataType": "String",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "CustomerID"
+                        }
+                    ]
+                },
+                "DataField::BeginDate": {
+                    "description": "BeginDate",
+                    "$ref": "#/definitions/ViewTableColumn",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/3",
+                    "propertyIndex": 4,
+                    "dataType": "Date",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "BeginDate"
+                        }
+                    ]
+                },
+                "DataField::EndDate": {
+                    "description": "EndDate",
+                    "$ref": "#/definitions/ViewTableColumn",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/4",
+                    "propertyIndex": 5,
+                    "dataType": "Date",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "EndDate"
+                        }
+                    ]
+                },
+                "DataField::TotalPrice": {
+                    "description": "TotalPrice",
+                    "$ref": "#/definitions/ViewTableColumn",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/5",
+                    "propertyIndex": 6,
+                    "dataType": "Decimal",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "TotalPrice"
+                        }
+                    ]
+                },
+                "DataField::Memo": {
+                    "description": "Memo",
+                    "$ref": "#/definitions/ViewTableColumn",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/6",
+                    "propertyIndex": 7,
+                    "dataType": "String",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "Memo"
+                        }
+                    ]
+                },
+                "DataField::Status": {
+                    "description": "Status",
+                    "$ref": "#/definitions/ViewTableColumn",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/7",
+                    "propertyIndex": 8,
+                    "dataType": "String",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "Status"
+                        }
+                    ]
+                }
+            },
+            "description": "Columns",
+            "isViewNode": true,
+            "additionalProperties": {
+                "$ref": "#/definitions/ViewTableCustomColumn<LineItemsOfView::tableView>"
+            }
+        },
+        "ViewTableCustomColumn<LineItemsOfView::tableView>": {
+            "description": "Custom Column",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "position": {
+                    "$ref": "#/definitions/ViewPosition<LineItemsOfView::tableView>",
+                    "description": "Defines the position of the column relative to other columns.",
+                    "artifactType": "Manifest"
+                },
+                "header": {
+                    "description": "The header appears in the table as a header, as well as in the add and remove dialogs.",
+                    "i18nClassification": "COL: Custom column header text",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "width": {
+                    "description": "A string type that represents CSS size values.\nRefer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "descriptionSrcURL": "https://ui5.sap.com/api/sap.ui.core.CSSSize"
+                },
+                "template": {
+                    "description": "Defines a target fragment.",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "horizontalAlign": {
+                    "$ref": "#/definitions/HorizontalAlign",
+                    "description": "Aligns the header as well as the content horizontally.",
+                    "artifactType": "Manifest"
+                },
+                "availability": {
+                    "$ref": "#/definitions/Availability",
+                    "description": "Defines where the column should be shown.\n- Default: it will be shown by default in the table.\n- Adaptation: it will initially not be shown in the table but be available via end user adaptation\n- Hidden: the column is neither available in the table nor in adaptation",
+                    "artifactType": "Manifest"
+                },
+                "properties": {
+                    "description": "If provided and sorting for the table is enabled, the custom column header can be clicked.\nOnce clicked, a list of properties that can be sorted by are displayed.",
+                    "artifactType": "Manifest",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "TravelID",
+                            "AgencyID",
+                            "CustomerID",
+                            "BeginDate",
+                            "EndDate",
+                            "TotalPrice",
+                            "Memo",
+                            "Status"
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "header",
+                "template"
+            ]
+        },
+        "ToolBar<LineItemsOfView::tableView>": {
+            "description": "Table Toolbar",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "$ref": "#/definitions/Actions<LineItemsOfView::tableView>"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "actions"
+            ],
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem"
+        },
+        "Actions<LineItemsOfView::tableView>": {
+            "description": "Actions",
+            "isViewNode": true,
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/ViewTableCustomAction<LineItemsOfView::tableView>"
+            },
+            "properties": {
+                "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createTravelDraft::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType": {
+                    "description": "Create Draft",
+                    "$ref": "#/definitions/ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createTravelDraft::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>",
+                    "propertyIndex": 0,
+                    "dataType": "DataFieldForAction",
+                    "keys": [
+                        {
+                            "name": "Action",
+                            "value": "createTravelDraft"
+                        }
+                    ],
+                    "target": "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataFieldForAction"
+                },
+                "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType": {
+                    "description": "Check Travel",
+                    "$ref": "#/definitions/ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>",
+                    "propertyIndex": 1,
+                    "dataType": "DataFieldForAction",
+                    "keys": [
+                        {
+                            "name": "Action",
+                            "value": "Check"
+                        }
+                    ],
+                    "target": "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataFieldForAction"
+                },
+                "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createDraftTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType": {
+                    "description": "Template Draft",
+                    "$ref": "#/definitions/ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createDraftTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>",
+                    "propertyIndex": 2,
+                    "dataType": "DataFieldForAction",
+                    "keys": [
+                        {
+                            "name": "Action",
+                            "value": "createDraftTemplate"
+                        }
+                    ],
+                    "target": "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataFieldForAction"
+                },
+                "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createActiveTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType": {
+                    "description": "Template Active",
+                    "$ref": "#/definitions/ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createActiveTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>",
+                    "propertyIndex": 3,
+                    "dataType": "DataFieldForAction",
+                    "keys": [
+                        {
+                            "name": "Action",
+                            "value": "createActiveTemplate"
+                        }
+                    ],
+                    "target": "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataFieldForAction"
+                },
+                "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType": {
+                    "description": "Deduct Discount",
+                    "$ref": "#/definitions/ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>",
+                    "propertyIndex": 4,
+                    "dataType": "DataFieldForAction",
+                    "keys": [
+                        {
+                            "name": "Action",
+                            "value": "deductDiscount"
+                        }
+                    ],
+                    "target": "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataFieldForAction"
+                },
+                "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType": {
+                    "description": "Set To New",
+                    "$ref": "#/definitions/ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>",
+                    "propertyIndex": 5,
+                    "dataType": "DataFieldForAction",
+                    "keys": [
+                        {
+                            "name": "Action",
+                            "value": "setToNew"
+                        }
+                    ],
+                    "target": "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataFieldForAction"
+                },
+                "TableAction": {
+                    "$ref": "#/definitions/ViewTableCustomAction<LineItemsOfView::tableView>",
+                    "description": "TableAction",
+                    "keys": [
+                        {
+                            "name": "Key",
+                            "value": "TableAction"
+                        }
+                    ],
+                    "actionType": "Custom",
+                    "propertyIndex": 6
+                },
+                "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType": {
+                    "description": "Set To Booked",
+                    "$ref": "#/definitions/ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>",
+                    "propertyIndex": 7,
+                    "dataType": "DataFieldForAction",
+                    "keys": [
+                        {
+                            "name": "Action",
+                            "value": "setToBooked"
+                        }
+                    ],
+                    "target": "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataFieldForAction"
+                }
+            }
+        },
+        "ViewTableCustomAction<LineItemsOfView::tableView>": {
+            "type": "object",
+            "properties": {
+                "position": {
+                    "$ref": "#/definitions/ViewCustomActionPosition<LineItemsOfView::tableView>",
+                    "description": "Defines the position of the action relative to other actions.",
+                    "artifactType": "Manifest"
+                },
+                "requiresSelection": {
+                    "description": "Indicates whether the action requires a selection of items.",
+                    "artifactType": "Manifest",
+                    "type": "boolean"
+                },
+                "text": {
+                    "description": "The text that is displayed on the button (typically a binding to an i18n entry).",
+                    "i18nClassification": "COL: Custom action text",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "press": {
+                    "description": "Relevant for extension actions; allows the definition of a target action handler.",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the action button is visible.",
+                    "artifactType": "Manifest"
+                },
+                "enabled": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the action is enabled. The default value is true.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "press",
+                "text"
+            ]
+        },
+        "ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createTravelDraft::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/8"
+        },
+        "ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/9"
+        },
+        "ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createDraftTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/10"
+        },
+        "ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createActiveTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/11"
+        },
+        "ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/12"
+        },
+        "ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/13"
+        },
+        "ViewToolBarAction<com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType>": {
+            "description": "Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "enableOnSelect": {
+                    "$ref": "#/definitions/SelectType",
+                    "description": "Enables single selection for a bound action",
+                    "artifactType": "Manifest"
+                },
+                "afterExecution": {
+                    "$ref": "#/definitions/ActionAfterExecutionConfigurationToolBarLR",
+                    "description": "Settings that control the behavior after creating a new entry.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType/@com.sap.vocabularies.UI.v1.LineItem/14"
+        },
+        "ViewPosition<LineItemsOfView::tableView>": {
+            "type": "object",
+            "properties": {
+                "anchor": {
+                    "description": "The key of another column to be used as placement anchor.",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "enum": [
+                        "DataField::TravelID",
+                        "DataField::AgencyID",
+                        "TestCustomColumn",
+                        "DataField::CustomerID",
+                        "DataField::BeginDate",
+                        "DataField::EndDate",
+                        "DataField::TotalPrice",
+                        "DataField::Memo",
+                        "DataField::Status"
+                    ]
+                },
+                "placement": {
+                    "$ref": "#/definitions/Placement",
+                    "description": "Define the placement, either before or after the anchor column.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "placement"
+            ]
+        },
+        "ViewCustomActionPosition<LineItemsOfView::tableView>": {
+            "type": "object",
+            "properties": {
+                "anchor": {
+                    "description": "The key of another action to be used as placement anchor.",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "oneOf": [
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createTravelDraft::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Create Draft"
+                        },
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.Check::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Check Travel"
+                        },
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createDraftTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Template Draft"
+                        },
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.createActiveTemplate::Collection::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Template Active"
+                        },
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.deductDiscount::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Deduct Discount"
+                        },
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Set To New"
+                        },
+                        {
+                            "const": "TableAction",
+                            "description": "TableAction",
+                            "custom": true
+                        },
+                        {
+                            "const": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToBooked::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType",
+                            "description": "Set To Booked"
+                        }
+                    ]
+                },
+                "placement": {
+                    "$ref": "#/definitions/ActionPlacement",
+                    "description": "Define the placement, either before or after the anchor action.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "placement"
+            ]
+        },
+        "LRTableView<tableView1>": {
+            "description": "Table View",
+            "type": "object",
+            "properties": {
+                "key": {
+                    "description": "Unique tab identifier.",
+                    "hidden": true,
+                    "type": "string",
+                    "artifactType": "Manifest"
+                },
+                "index": {
+                    "hidden": true,
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "annotationPath": {
+                    "description": "The annotation path can be either UI.LineItem, UI.PresentationVariant, or UI.SelectionPresentationVariant.",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "hidden": true
+                },
+                "entitySet": {
+                    "description": "Each table can be based on a different entitySet.",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "hidden": true
+                },
+                "keepPreviousPersonalization": {
+                    "description": "The tab keeps the default LineItem ID (without the key), so the variant is applied to it.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "personalization": {
+                    "$ref": "#/definitions/ViewPersonalizationType",
+                    "description": "Defines the personalization mode, currently only effective if variant management on page is either set to Page or Control.\nBy default all table settings are enabled. You can change this for the different parts of the table by setting the properties \"Column\", \"Sort\" and \"Filter\" accordingly.\nOmitting a property is treated as false, this allows apps to avoid getting new features like grouping in upcoming releases.",
+                    "artifactType": "Manifest"
+                },
+                "toolBar": {
+                    "$ref": "#/definitions/ToolBar<LineItemsOfView::tableView1>",
+                    "description": "Table Toolbar"
+                },
+                "columns": {
+                    "$ref": "#/definitions/LineItemsOfView::tableView1",
+                    "description": "Columns"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines whether the view is visible.",
+                    "artifactType": "Manifest"
+                },
+                "type": {
+                    "$ref": "#/definitions/TableTypeV4",
+                    "description": "Defines the table type. Note: Grid tables, analytical tables, and tree tables aren't rendered on small-screen devices. Responsive tables are shown instead.",
+                    "artifactType": "Manifest"
+                },
+                "selectionMode": {
+                    "$ref": "#/definitions/SelectionMode",
+                    "description": "Allows you to enable or disable row selection and choose between single or multiple row selection.\n- Auto: This type is deprecated. Choose any of the following modes:\n- Multi (default): This type allows multiple table selections if relevant actions are available in the toolbar.\n- Single: This type allows single table selection if relevant actions are available in the toolbar.\n- None: No table selection is possible in display mode.",
+                    "artifactType": "Manifest"
+                },
+                "selectAll": {
+                    "description": "The selectAll configuration overrides the selectionLimit and allows the user to select all the items. When set to true, the select all feature is enabled: a checkbox in the table header is displayed which selects all items when clicked.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "selectionLimit": {
+                    "description": "You can define how many items can be selected at a time using the selectionLimit.",
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "enableExport": {
+                    "description": "Defines whether the Export button is displayed in the table toolbar. The default value is true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/4bab6f2043814257974b52d4dafe1dcd"
+                },
+                "quickVariantSelection": {
+                    "$ref": "#/definitions/QuickVariantSelectionV4",
+                    "description": "With quickVariantSelection you can switch to multiple views (single table mode). It links to a SelectionVariant (filters) or SelectionPresentationVariant (filters and sorters) that you have added to your annotations.",
+                    "artifactType": "Manifest"
+                },
+                "condensedTableLayout": {
+                    "description": "Determines whether the content density for ui.table is condensed.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/f3cc057e405c4fd58ee2ed42c557797c"
+                },
+                "hierarchyQualifier": {
+                    "description": "Leading property that decides between either a recursive hierarchy or data aggregation.",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/7f844f1021cd4791b8f7408eac7c1cec"
+                },
+                "widthIncludingColumnHeader": {
+                    "description": "Determines whether the column header is included in the column width calculation. By default, the column width is calculated based on the type of the content.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/c0f6592a592e47f9bb6d09900de47412"
+                },
+                "disableCopyToClipboard": {
+                    "description": "Determines the visibility of the Copy to Clipboard button. By default, the Copy to Clipboard button is displayed in the table toolbar if the selection mode is configured.",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/c0f6592a592e47f9bb6d09900de47412"
+                },
+                "enableMassEdit": {
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/965ef5b2895641bc9b6cd44f1bd0eb4d",
+                    "description": "Mass editing allows end users to simultaneously change multiple objects that share the same editable properties.",
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "visibleFields": {
+                                    "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog.",
+                                    "artifactType": "Manifest",
+                                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/965ef5b2895641bc9b6cd44f1bd0eb4d",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "enum": [
+                                            "AirlineName",
+                                            "BookingDate",
+                                            "BookingID"
+                                        ]
+                                    },
+                                    "uniqueItems": true
+                                },
+                                "ignoredFields": {
+                                    "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table.",
+                                    "artifactType": "Manifest",
+                                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/965ef5b2895641bc9b6cd44f1bd0eb4d",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "enum": [
+                                            "AirlineName",
+                                            "BookingDate",
+                                            "BookingID"
+                                        ]
+                                    },
+                                    "uniqueItems": true
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        {
+                            "type": "boolean"
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "annotationPath",
+                "index",
+                "key"
+            ],
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.BookingType/@com.sap.vocabularies.UI.v1.LineItem#tableView",
+            "navigationProperty": "_Booking",
+            "entitySet": "Booking"
+        },
+        "LineItemsOfView::tableView1": {
+            "type": "object",
+            "properties": {
+                "DataField::AirlineName": {
+                    "description": "AirlineName",
+                    "$ref": "#/definitions/ViewTableColumn",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.BookingType/@com.sap.vocabularies.UI.v1.LineItem#tableView/0",
+                    "propertyIndex": 0,
+                    "dataType": "String",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "AirlineName"
+                        }
+                    ]
+                },
+                "DataField::BookingDate": {
+                    "description": "BookingDate",
+                    "$ref": "#/definitions/ViewTableColumn",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.BookingType/@com.sap.vocabularies.UI.v1.LineItem#tableView/1",
+                    "propertyIndex": 1,
+                    "dataType": "Date",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "BookingDate"
+                        }
+                    ]
+                },
+                "DataField::BookingID": {
+                    "description": "BookingID",
+                    "$ref": "#/definitions/ViewTableColumn",
+                    "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+                    "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.BookingType/@com.sap.vocabularies.UI.v1.LineItem#tableView/2",
+                    "propertyIndex": 2,
+                    "dataType": "String",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "BookingID"
+                        }
+                    ]
+                }
+            },
+            "description": "Columns",
+            "isViewNode": true,
+            "additionalProperties": {
+                "$ref": "#/definitions/ViewTableCustomColumn<LineItemsOfView::tableView1>"
+            }
+        },
+        "ViewTableCustomColumn<LineItemsOfView::tableView1>": {
+            "description": "Custom Column",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "position": {
+                    "$ref": "#/definitions/ViewPosition<LineItemsOfView::tableView1>",
+                    "description": "Defines the position of the column relative to other columns.",
+                    "artifactType": "Manifest"
+                },
+                "header": {
+                    "description": "The header appears in the table as a header, as well as in the add and remove dialogs.",
+                    "i18nClassification": "COL: Custom column header text",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "width": {
+                    "description": "A string type that represents CSS size values.\nRefer to https://ui5.sap.com/api/sap.ui.core.CSSSize",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "descriptionSrcURL": "https://ui5.sap.com/api/sap.ui.core.CSSSize"
+                },
+                "template": {
+                    "description": "Defines a target fragment.",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "horizontalAlign": {
+                    "$ref": "#/definitions/HorizontalAlign",
+                    "description": "Aligns the header as well as the content horizontally.",
+                    "artifactType": "Manifest"
+                },
+                "availability": {
+                    "$ref": "#/definitions/Availability",
+                    "description": "Defines where the column should be shown.\n- Default: it will be shown by default in the table.\n- Adaptation: it will initially not be shown in the table but be available via end user adaptation\n- Hidden: the column is neither available in the table nor in adaptation",
+                    "artifactType": "Manifest"
+                },
+                "properties": {
+                    "description": "If provided and sorting for the table is enabled, the custom column header can be clicked.\nOnce clicked, a list of properties that can be sorted by are displayed.",
+                    "artifactType": "Manifest",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "AirlineName",
+                            "BookingDate",
+                            "BookingID"
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "header",
+                "template"
+            ]
+        },
+        "ToolBar<LineItemsOfView::tableView1>": {
+            "description": "Table Toolbar",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "$ref": "#/definitions/Actions<LineItemsOfView::tableView1>"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "actions"
+            ],
+            "annotationPath": "/com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.BookingType/@com.sap.vocabularies.UI.v1.LineItem#tableView"
+        },
+        "Actions<LineItemsOfView::tableView1>": {
+            "description": "Actions",
+            "isViewNode": true,
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/ViewTableCustomAction<LineItemsOfView::tableView1>"
+            },
+            "properties": {
+                "CustomActionInView": {
+                    "$ref": "#/definitions/ViewTableCustomAction<LineItemsOfView::tableView1>",
+                    "description": "CustomActionInView",
+                    "keys": [
+                        {
+                            "name": "Key",
+                            "value": "CustomActionInView"
+                        }
+                    ],
+                    "actionType": "Custom",
+                    "propertyIndex": 0
+                }
+            }
+        },
+        "ViewTableCustomAction<LineItemsOfView::tableView1>": {
+            "type": "object",
+            "properties": {
+                "position": {
+                    "$ref": "#/definitions/ViewCustomActionPosition<LineItemsOfView::tableView1>",
+                    "description": "Defines the position of the action relative to other actions.",
+                    "artifactType": "Manifest"
+                },
+                "requiresSelection": {
+                    "description": "Indicates whether the action requires a selection of items.",
+                    "artifactType": "Manifest",
+                    "type": "boolean"
+                },
+                "text": {
+                    "description": "The text that is displayed on the button (typically a binding to an i18n entry).",
+                    "i18nClassification": "COL: Custom action text",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "press": {
+                    "description": "Relevant for extension actions; allows the definition of a target action handler.",
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the action button is visible.",
+                    "artifactType": "Manifest"
+                },
+                "enabled": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the action is enabled. The default value is true.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "press",
+                "text"
+            ]
+        },
+        "ViewPosition<LineItemsOfView::tableView1>": {
+            "type": "object",
+            "properties": {
+                "anchor": {
+                    "description": "The key of another column to be used as placement anchor.",
+                    "type": "string",
+                    "artifactType": "Manifest",
+                    "enum": [
+                        "DataField::AirlineName",
+                        "DataField::BookingDate",
+                        "DataField::BookingID"
+                    ]
+                },
+                "placement": {
+                    "$ref": "#/definitions/Placement",
+                    "description": "Define the placement, either before or after the anchor column.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "placement"
+            ]
+        },
+        "ViewCustomActionPosition<LineItemsOfView::tableView1>": {
+            "type": "object",
+            "properties": {
+                "anchor": {
+                    "description": "The key of another action to be used as placement anchor.",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "oneOf": [
+                        {
+                            "const": "CustomActionInView",
+                            "description": "CustomActionInView",
+                            "custom": true
+                        }
+                    ]
+                },
+                "placement": {
+                    "$ref": "#/definitions/ActionPlacement",
+                    "description": "Define the placement, either before or after the anchor action.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "placement"
+            ]
+        }
+    },
+    "$schema": "http://json-schema.org/draft-07/schema#"
+}
