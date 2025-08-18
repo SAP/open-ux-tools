@@ -6,22 +6,12 @@ import { PromptsLayoutType, TRANSLATE_EVENT_UPDATE, TRANSLATE_EVENT_SHOW } from 
 import type { ListPromptQuestion, PromptQuestion } from '../../../src/types';
 import type { QuestionsProps } from '../../../src';
 import { questions } from '../../mock-data/questions';
-import { getDependantQuestions, getAnswer } from '../../../src/utilities';
+import { getDependantQuestions } from '../../../src/utilities';
 import { acceptI18nCallout, clickI18nButton, isI18nLoading, translationInputSelectors } from '../utils';
 import { SapShortTextType } from '@sap-ux/i18n';
 
-jest.mock('../../../src/utilities', () => ({
-    ...jest.requireActual('../../../src/utilities'),
-    getAnswer: jest.fn()
-}));
-
 describe('Questions', () => {
     initIcons();
-
-    beforeEach(() => {
-        (getAnswer as jest.Mock).mockReset();
-        (getAnswer as jest.Mock).mockImplementation(jest.requireActual('../../../src/utilities').getAnswer);
-    });
 
     const props: QuestionsProps = {
         questions: [],
