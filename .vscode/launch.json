@@ -164,6 +164,19 @@
             "internalConsoleOptions": "neverOpen",
             "cwd": "${workspaceFolder}/packages/fiori-elements-writer"
         },
+         {
+            "type": "node",
+            "request": "launch",
+            "name": "fiori-mcp-server: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/fiori-mcp-server"
+        },
         {
             "type": "node",
             "request": "launch",
@@ -354,7 +367,7 @@
             "request": "launch",
             "name": "ui-components: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
-            "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "windows": {
