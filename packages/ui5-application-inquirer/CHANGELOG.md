@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.15.1
+
+### Patch Changes
+
+-   7772a11: fix typescript and virtual endpoint prompts for cap projects
+
 ## 0.15.0
 
 ### Minor Changes
