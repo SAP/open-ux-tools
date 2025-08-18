@@ -9,7 +9,6 @@ import { questions } from '../../mock-data/questions';
 import { getDependantQuestions, getAnswer } from '../../../src/utilities';
 import { acceptI18nCallout, clickI18nButton, isI18nLoading, translationInputSelectors } from '../utils';
 import { SapShortTextType } from '@sap-ux/i18n';
-import { act } from 'react-dom/test-utils';
 
 jest.mock('../../../src/utilities', () => ({
     ...jest.requireActual('../../../src/utilities'),
@@ -404,31 +403,6 @@ describe('Questions', () => {
             // Second change: set value to same 'newValue'
             onChange.mockClear();
             fireEvent.change(fooInput, { target: { value: 'newValue' } });
-
-            // Should NOT call onChange again, as oldAnswer === answer
-            expect(onChange).not.toHaveBeenCalled();
-        });
-
-        it('should not update localAnswers or call onChange when answer does not change (return prevAnswers branch)', () => {
-            const onChange = jest.fn();
-            const mockQuestions: PromptQuestion[] = [{ name: 'foo', type: 'input', message: 'Foo?' }];
-
-            // Render with initial answer
-            const initialAnswers = { foo: 'baz' };
-            const { getByLabelText } = render(
-                <Questions questions={mockQuestions} answers={initialAnswers} onChange={onChange} />
-            );
-            const fooInput = getByLabelText('Foo?');
-
-            onChange.mockClear();
-
-            // First change: set value to 'baz'
-            fireEvent.change(fooInput, { target: { value: 'baz' } });
-            // Clear calls again
-            onChange.mockClear();
-
-            // Second change: set value to 'baz' again (no change)
-            fireEvent.change(fooInput, { target: { value: 'baz' } });
             expect(onChange).not.toHaveBeenCalled();
         });
     });
