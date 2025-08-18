@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`annotation generation (CDS) example 1`] = `
 "using MainService as service from '../../srv/service';
@@ -325,6 +325,57 @@ annotate service.Capex with @(
         },
     ],
 );
+"
+`;
+
+exports[`annotation generation (CDS) missing navigation property in service 1`] = `
+"using ProcessorService as service from '../../srv/services';
+annotate service.Incidents with @(
+    UI.FieldGroup #GeneratedGroup : {
+        $Type : 'UI.FieldGroupType',
+        Data : [
+            {
+                $Type : 'UI.DataField',
+                Value : title,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'urgency_code',
+                Value : urgency_code,
+            },
+            {
+                $Type : 'UI.DataField',
+                Label : 'status_code',
+                Value : status_code,
+            },
+        ],
+    },
+    UI.Facets : [
+        {
+            $Type : 'UI.ReferenceFacet',
+            ID : 'GeneratedFacet1',
+            Label : 'General Information',
+            Target : '@UI.FieldGroup#GeneratedGroup',
+        },
+    ],
+    UI.LineItem : [
+        {
+            $Type : 'UI.DataField',
+            Value : title,
+        },
+        {
+            $Type : 'UI.DataField',
+            Label : 'urgency_code',
+            Value : urgency_code,
+        },
+        {
+            $Type : 'UI.DataField',
+            Label : 'status_code',
+            Value : status_code,
+        },
+    ],
+);
+
 "
 `;
 
