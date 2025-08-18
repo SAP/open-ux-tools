@@ -1,7 +1,7 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Chart, FilterBar, Table } from '../../src';
+import type { Chart, FilterBar, Table, Page } from '../../src';
 import { generateBuildingBlock, BuildingBlockType } from '../../src';
 import { clearTestOutput, writeFilesForDebugging } from '../common';
 
@@ -61,6 +61,23 @@ describe('Test FPM features using a pre-generated Fiori Custom Page app', () => 
                         filterBar: 'testFilterBar',
                         personalization: 'Type,Item,Sort',
                         selectionMode: 'Single'
+                    }
+                },
+                fs
+            );
+        });
+
+        test.each(configs)('generateBuildingBlock:Page in custom page', async (config) => {
+            await generateBuildingBlock<Page>(
+                config.path,
+                {
+                    viewOrFragmentPath: join('webapp/ext/main/Main.view.xml'),
+                    aggregationPath: `/mvc:View/*[local-name()='Page']`,
+                    buildingBlockData: {
+                        id: 'testPage',
+                        buildingBlockType: BuildingBlockType.Page,
+                        title: 'testPageTitle',
+                        description: 'testPageDescription'
                     }
                 },
                 fs

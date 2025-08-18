@@ -79,7 +79,13 @@ export function getEntitySelectionQuestions(
     isCapService = false,
     promptOptions?: EntityPromptOptions,
     annotations?: Annotations
-): Question<EntitySelectionAnswers & TableConfigAnswers & AnnotationGenerationAnswers & AlpTableConfigAnswers>[] {
+): Question<
+    EntitySelectionAnswers &
+        TableConfigAnswers &
+        AnnotationGenerationAnswers &
+        AlpTableConfigAnswers &
+        PageBuildingBlockAnswers
+>[] {
     const useAutoComplete = promptOptions?.useAutoComplete;
     let entitySetFilter: EntitySetFilter | undefined;
     if (templateType === 'feop' && !!isCapService) {
@@ -100,7 +106,11 @@ export function getEntitySelectionQuestions(
     const odataVersion = entityChoices.odataVersion;
 
     const entityQuestions: Question<
-        EntitySelectionAnswers & TableConfigAnswers & AnnotationGenerationAnswers & AlpTableConfigAnswers & PageBuildingBlockAnswers
+        EntitySelectionAnswers &
+            TableConfigAnswers &
+            AnnotationGenerationAnswers &
+            AlpTableConfigAnswers &
+            PageBuildingBlockAnswers
     >[] = [];
 
     // OVP only has filter entity, does not use tables and we do not add annotations
@@ -191,10 +201,10 @@ export function getEntitySelectionQuestions(
 
 /**
  * Get the questions for page building block.
- * 
+ *
  * @returns the page building block questions
  */
-function getPageBuildingBlockQuestions (): Question<PageBuildingBlockAnswers>[] {
+function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
     const pageBuildingBlockQuestions: Question<PageBuildingBlockAnswers>[] = [];
 
     pageBuildingBlockQuestions.push({
@@ -206,7 +216,7 @@ function getPageBuildingBlockQuestions (): Question<PageBuildingBlockAnswers>[] 
             breadcrumb: true
         }
     } as ConfirmQuestion<PageBuildingBlockAnswers>);
-    
+
     // If the user wants to add a Page Building Block, ask for the title
     pageBuildingBlockQuestions.push({
         when: (answers: EntitySelectionAnswers & PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
@@ -218,7 +228,7 @@ function getPageBuildingBlockQuestions (): Question<PageBuildingBlockAnswers>[] 
             mandatory: true
         },
         validate: (input: string) => !!input
-    } as InputQuestion<PageBuildingBlockAnswers>)
+    } as InputQuestion<PageBuildingBlockAnswers>);
 
     return pageBuildingBlockQuestions;
 }

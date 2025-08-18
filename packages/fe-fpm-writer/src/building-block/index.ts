@@ -16,7 +16,6 @@ import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { detectTabSpacing, extendJSON } from '../common/file';
 import { getManifest, getManifestPath } from '../common/utils';
 import { getOrAddMacrosNamespace } from './prompts/utils/xml';
-import { augmentXpathWithLocalNames } from './prompts/utils/xml';
 
 const PLACEHOLDERS = {
     'id': 'REPLACE_WITH_BUILDING_BLOCK_ID',
@@ -27,50 +26,6 @@ const PLACEHOLDERS = {
 interface MetadataPath {
     contextPath?: string;
     metaPath: string;
-}
-
-
-// export async function addPageBuildingBlockToCustomPage(
-//     basePath: string,
-//     viewName: string,
-//     pageBuildingBlockTitle: string,
-//     fs: Editor,
-//     config: { path: string; name: string }
-// ): Promise<void> {
-//     const viewDirRelative = relative(basePath, dirname(config.path));
-//     const viewPath = join(viewDirRelative, `${config.name}.view.xml`);
-//     await generateBuildingBlock(basePath, {
-//         viewOrFragmentPath: viewPath,
-//         aggregationPath: augmentXpathWithLocalNames('/mvc:View/Page'),
-//         replace: true,
-//         buildingBlockData: {
-//             id: 'Page',
-//             buildingBlockType: BuildingBlockType.Page,
-//             title: pageBuildingBlockTitle
-//         }
-//     }, fs);
-// }
-/**
- * Adds a Page building block to a custom page XML view.
- *
- * @param {string} basePath - The base path of the project.
- * @param {string} viewName - The name of the view (used to construct the view XML path).
- * @param {string} pageBuildingBlockTitle - The title to be set for the Page building block.
- * @param {Editor} fs - The mem-fs editor instance.
- * @returns {Promise<void>} Resolves when the building block has been added.
- */
-export async function addPageBuildingBlockToCustomPage(basePath: string, viewName: string, pageBuildingBlockTitle: string, fs: Editor): Promise<void> {
-    const viewPath = join('/webapp/ext/main', `${viewName}.view.xml`);
-    await generateBuildingBlock(basePath, {
-        viewOrFragmentPath: viewPath,
-        aggregationPath: augmentXpathWithLocalNames('/mvc:View/Page'),
-        replace: true,
-        buildingBlockData: {
-            id: 'Page',
-            buildingBlockType: BuildingBlockType.Page,
-            title: pageBuildingBlockTitle
-        }
-    }, fs);
 }
 
 /**

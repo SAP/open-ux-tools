@@ -103,7 +103,9 @@ export function transformTemplateType(
     }
 
     // Add page title if addPageBuildingBlock is true
-    const pageBuildingBlockConfig = entityRelatedConfig?.addPageBuildingBlock ? { pageBuildingBlockTitle: entityRelatedConfig.pageBuildingBlockTitle } : {};
+    const pageBuildingBlockConfig = entityRelatedConfig?.addPageBuildingBlock
+        ? { pageBuildingBlockTitle: entityRelatedConfig.pageBuildingBlockTitle }
+        : {};
 
     const templateSettingsMap = {
         [TemplateTypeFE.ListReportObjectPage]: {
@@ -137,7 +139,7 @@ export function transformTemplateType(
         [TemplateTypeFE.FlexibleProgrammingModel]: {
             entityConfig: _entityConfig,
             ...pageBuildingBlockConfig,
-            pageName: FPM_DEFAULT_PAGE_NAME 
+            pageName: FPM_DEFAULT_PAGE_NAME
         } as FPMSettings
     };
 

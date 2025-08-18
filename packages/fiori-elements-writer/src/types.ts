@@ -106,7 +106,7 @@ export interface FPMSettings {
      * Used for custom apps when the user opts to add a Page Building Block during app generation.
      * This value will be displayed as the title of the generated custom page.
      */
-    pageBuildingBlockTitle?: string; 
+    pageBuildingBlockTitle?: string;
     /**
      * Name of the custom page.
      */

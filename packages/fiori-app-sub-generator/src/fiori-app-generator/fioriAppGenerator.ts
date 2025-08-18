@@ -229,8 +229,8 @@ export class FioriAppGenerator extends Generator {
                     defaultMainEntityName: generatorOptions.preselectedEntityName,
                     useAutoComplete: getHostEnvironment() === hostEnvironment.cli,
                     hideTableLayoutPrompts: generatorOptions.showLayoutPrompts === false, // Defaults to show layout prompts
-                    displayPageBuildingBlockPrompt: templateType === FloorplanFE.FE_FPM // If templateType is FPM, add displayPageBuildingBlockPrompt to promptOptions
-                }
+                    ...(templateType === FloorplanFE.FE_FPM && { displayPageBuildingBlockPrompt: true }) // If templateType is FPM, add displayPageBuildingBlockPrompt to promptOptions
+                };
 
                 const entityQuestions = getEntityRelatedPrompts(
                     this.state.service.edmx,

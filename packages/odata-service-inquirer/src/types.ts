@@ -223,7 +223,7 @@ export interface AlpTableConfigAnswers {
  * Convienience alias type for the entity related answers
  */
 export type EntityRelatedAnswers = EntitySelectionAnswers &
-    PageBuildingBlockAnswers & 
+    PageBuildingBlockAnswers &
     TableConfigAnswers &
     AnnotationGenerationAnswers &
     AlpTableConfigAnswers;
@@ -408,7 +408,7 @@ export type EntityPromptOptions = {
      */
     hideTableLayoutPrompts?: boolean;
     /**
-     * Used to determine if the display page building block prompt should be displayed. 
+     * Used to determine if the display page building block prompt should be displayed.
      */
-    displayPageBuildingBlockPrompt?: boolean; 
+    displayPageBuildingBlockPrompt?: boolean;
 };
