@@ -127,4 +127,30 @@ describe('connector-service', () => {
         expect(sendActionMock).toHaveBeenNthCalledWith(1, common.storageFileChanged('testFile'));
         expect(sendActionMock).toHaveBeenNthCalledWith(2, common.storageFileChanged('fragments/fragment.xml'));
     });
+
+    test('appdescr_fe_changePageConfiguration change when app is reloading (UI5 1.76.0)', async () => {
+        jest.resetModules();
+        const VersionInfo = (await import('mock/sap/ui/VersionInfo')).default;
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.76.0' });
+        const wsConnector = new WorkspaceConnectorService();
+        const subscribeSpy = jest.fn<void, [ActionHandler]>();
+        await wsConnector.init(sendActionMock, subscribeSpy);
+        const ObjectStorageConnector = (await import('mock/sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector')).default;
+        ObjectStorageConnector.loadFeatures.mockResolvedValue({ isVariantAdaptationEnabled: false });
+        const connectorPromise = (await import('../../../src/flp/WorkspaceConnector')).default;
+        const connector = await connectorPromise;
+
+        subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: false }));
+        // call notifier
+        if (!('oStorage' in connector)) {
+            expect('oStorage' in connector).toBeTruthy();
+            return;
+        }
+        await connector.oStorage.setItem('sap.ui.fl.testFile', {
+            changeType: 'appdescr_fe_changePageConfiguration',
+            fileName: 'sap.ui.fl.testFile',
+            support: {}
+        });
+        expect(sendActionMock).toHaveBeenCalledWith(common.storageFileChanged('testFile'));
+    });
 });
