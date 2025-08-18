@@ -6,12 +6,23 @@ import { PromptsLayoutType, TRANSLATE_EVENT_UPDATE, TRANSLATE_EVENT_SHOW } from 
 import type { ListPromptQuestion, PromptQuestion } from '../../../src/types';
 import type { QuestionsProps } from '../../../src';
 import { questions } from '../../mock-data/questions';
-import { getDependantQuestions } from '../../../src/utilities';
+import { getDependantQuestions, getAnswer } from '../../../src/utilities';
 import { acceptI18nCallout, clickI18nButton, isI18nLoading, translationInputSelectors } from '../utils';
 import { SapShortTextType } from '@sap-ux/i18n';
+import { act } from 'react-dom/test-utils';
+
+jest.mock('../../../src/utilities', () => ({
+    ...jest.requireActual('../../../src/utilities'),
+    getAnswer: jest.fn()
+}));
 
 describe('Questions', () => {
     initIcons();
+
+    beforeEach(() => {
+        (getAnswer as jest.Mock).mockReset();
+        (getAnswer as jest.Mock).mockImplementation(jest.requireActual('../../../src/utilities').getAnswer);
+    });
 
     const props: QuestionsProps = {
         questions: [],
@@ -383,16 +394,41 @@ describe('Questions', () => {
             const onChange = jest.fn();
             const { getByLabelText } = render(<Questions questions={mockQuestions} onChange={onChange} />);
 
-            // Simulate input change for 'foo'
+            // First change: set value to 'newValue'
             const fooInput = getByLabelText('Foo?');
             fireEvent.change(fooInput, { target: { value: 'newValue' } });
 
             // onChange should be called with updated answers
             expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ foo: 'newValue' }), 'foo', 'newValue');
 
-            // Simulate input change with same value, should not call onChange again
+            // Second change: set value to same 'newValue'
             onChange.mockClear();
             fireEvent.change(fooInput, { target: { value: 'newValue' } });
+
+            // Should NOT call onChange again, as oldAnswer === answer
+            expect(onChange).not.toHaveBeenCalled();
+        });
+
+        it('should not update localAnswers or call onChange when answer does not change (return prevAnswers branch)', () => {
+            const onChange = jest.fn();
+            const mockQuestions: PromptQuestion[] = [{ name: 'foo', type: 'input', message: 'Foo?' }];
+
+            // Render with initial answer
+            const initialAnswers = { foo: 'baz' };
+            const { getByLabelText } = render(
+                <Questions questions={mockQuestions} answers={initialAnswers} onChange={onChange} />
+            );
+            const fooInput = getByLabelText('Foo?');
+
+            onChange.mockClear();
+
+            // First change: set value to 'baz'
+            fireEvent.change(fooInput, { target: { value: 'baz' } });
+            // Clear calls again
+            onChange.mockClear();
+
+            // Second change: set value to 'baz' again (no change)
+            fireEvent.change(fooInput, { target: { value: 'baz' } });
             expect(onChange).not.toHaveBeenCalled();
         });
     });
