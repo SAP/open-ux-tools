@@ -32,10 +32,6 @@ export interface CustomElement extends WriterConfig {
      * If set to true then all code snippets are generated in Typescript instead of Javascript.
      */
     typescript?: boolean;
-    /**
-     * If page building block title is defined then it will be used to automatically add a macro page to the generated custom page.
-     */
-    pageBuildingBlockTitle?: string;
 }
 
 export interface InternalCustomElement extends CustomElement {
