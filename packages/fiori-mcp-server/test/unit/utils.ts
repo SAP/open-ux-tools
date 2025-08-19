@@ -5,7 +5,8 @@ import listReportSchema from './page-editor-api/data/schema/ListReport.json';
 import listReportConfig from './page-editor-api/data/config/ListReport.json';
 import objectPageSchema from './page-editor-api/data/schema/ObjectPage.json';
 import objectPageConfig from './page-editor-api/data/config/ObjectPage.json';
-import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, rmdirSync, unlinkSync } from 'fs';
+import { copyFileSync, existsSync, lstatSync, mkdirSync, readdirSync, rmSync, unlinkSync } from 'fs';
+import { execSync } from 'child_process';
 
 const getDataFile = (
     dataSourceUri: string,
@@ -67,23 +68,70 @@ export function copyDirectory(src: string, dest: string): void {
     }
 }
 
-export function removeDirectory(dirPath: string): void {
+export function removeDirectory(
+    dirPath: string,
+    options: { skipNodeModules?: boolean; preserveRoot?: boolean } = {}
+): void {
+    const { skipNodeModules = true, preserveRoot = true } = options;
+
     if (!existsSync(dirPath)) {
         return;
     }
 
-    const files = readdirSync(dirPath);
+    // Skip node_modules directories if skipNodeModules is true
+    if (skipNodeModules && dirPath.endsWith('node_modules')) {
+        return;
+    }
 
-    for (const file of files) {
-        const filePath = join(dirPath, file);
-        const fileStats = lstatSync(filePath);
+    try {
+        if (preserveRoot) {
+            // Remove contents but preserve the root directory
+            const files = readdirSync(dirPath);
+            for (const file of files) {
+                const filePath = join(dirPath, file);
+                const fileStats = lstatSync(filePath);
 
-        if (fileStats.isDirectory()) {
-            removeDirectory(filePath); // Recursive call
+                if (fileStats.isDirectory()) {
+                    // For subdirectories, remove completely (don't preserve)
+                    removeDirectory(filePath, { skipNodeModules, preserveRoot: false });
+                } else {
+                    unlinkSync(filePath);
+                }
+            }
         } else {
-            unlinkSync(filePath); // Remove file
+            // Remove the entire directory and its contents using modern rmSync
+            rmSync(dirPath, { recursive: true, force: true });
+        }
+    } catch (error) {
+        console.error(`Failed to remove directory ${dirPath}:`, error);
+        throw error;
+    }
+}
+
+export function npmInstall(projectPath: string): void {
+    const isWindows = process.platform === 'win32';
+    const npmCommand = isWindows ? 'npm.cmd' : 'npm';
+
+    // Check if node_modules exists and is not empty
+    const nodeModulesPath = join(projectPath, 'node_modules');
+    if (existsSync(nodeModulesPath)) {
+        const stat = lstatSync(nodeModulesPath);
+        if (stat.isDirectory()) {
+            const contents = readdirSync(nodeModulesPath);
+            if (contents.length > 0) {
+                return;
+            }
         }
     }
 
-    rmdirSync(dirPath); // Remove the directory itself
+    try {
+        execSync(`${npmCommand} install`, {
+            cwd: projectPath,
+            stdio: 'inherit'
+        });
+        console.log('npm install completed successfully');
+    } catch (error) {
+        console.error('npm install failed:', error);
+        throw error;
+    }
 }
