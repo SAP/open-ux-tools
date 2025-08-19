@@ -63,6 +63,7 @@ export class Service {
      * Each entity includes its entity set name, entity type, and navigable properties
      * that are collections (i.e., to-many relationships).
      *
+     * @param refresh Refresh metadata by avoiding cached values.
      * @returns A promise that resolves to an array of allowed entities with their navigations.
      */
     public async getAllowedEntities(refresh = false): Promise<AllowedEntity[]> {
@@ -101,6 +102,7 @@ export class Service {
      *
      * @param entitySet Optional entity set name to match.
      * @param entityType Optional entity type name to match.
+     * @param refresh Refresh metadata by avoiding cached values.
      * @returns A promise that resolves to an array of allowed navigations.
      */
     public async getAllowedNavigations(

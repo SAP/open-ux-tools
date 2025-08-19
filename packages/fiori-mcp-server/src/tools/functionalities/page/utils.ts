@@ -10,14 +10,13 @@ const newPagePrefixForType = new Map<PageTypeV4, string>([
 ]);
 
 /**
- * Generates the id for a new V4 page
- * @param {Page} page - page attributes
- * @param {string | undefined} parentPage - parent page; to check if it is a root page
- * @param {number} specApiVersion - API version of @sap/ux-specification
- * @param {string} navigationProperty - Navigation property (optional)
- * @returns parts = an array of strings that shall be joined to form the page ID
+ * Generates the id for a new V4 page.
+ *
+ * @param page - page attributes.
+ * @param parentPage - parent page; to check if it is a root page.
+ * @param navigationProperty - Navigation property (optional).
+ * @returns parts = an array of strings that shall be joined to form the page ID.
  */
-
 function generatePageIdV4(page: PageDef, parentPage: string | undefined, navigationProperty?: string): string[] {
     let name = '';
     let parts: string[] = [];
@@ -43,14 +42,13 @@ function generatePageIdV4(page: PageDef, parentPage: string | undefined, navigat
 }
 
 /**
- * Generates the id for a new page
- * @param {FioriElementsVersion} appVersion - Fiori Elements version - V2 or V4
- * @param {Page} page - page attributes
- * @param {string | undefined} parentPage - parent page
- * @param {PageMapState} application - application data
- * @param {string} navigationProperty - navigation property (optional)
- * @param {string} specApiVersion - API version of @sap/ux-specification
- * @returns {string} Generated page id
+ * Generates the id for a new page.
+ *
+ * @param page - page attributes.
+ * @param parentPage - parent page.
+ * @param pages - Object with existing pages.
+ * @param navigationProperty - navigation property (optional).
+ * @returns Generated page id.
  */
 export function generatePageId(
     page: PageDef,

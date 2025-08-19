@@ -319,11 +319,12 @@ export class Application {
     }
     /**
      * Function to evaluate the navigation entry of a page.
-     * Old format (spec version <=3): <target page name>: <route name>
-     * New format (spec version >=4): <route name>: { route: <target page name>}
-     * @param {PageNodeModel} pageObj - Page node model
-     * @param key - key in schema for the route definition
-     * @returns the target page name from the route definition
+     * Old format (spec version <=3): <target page name>: <route name>.
+     * New format (spec version >=4): <route name>: { route: <target page name>}.
+     *
+     * @param pageObjNavigation - Page data.
+     * @param key - key in schema for the route definition.
+     * @returns the target page name from the route definition.
      */
     private findPageByNavigation(
         pageObjNavigation: {
@@ -336,7 +337,8 @@ export class Application {
     }
 
     /**
-     * Method which deletes pages recursively by looping through navigation
+     * Method which deletes pages recursively by looping through navigation.
+     *
      * @param app - Content of 'app.json'.
      * @param pageName - page's name to remove
      */

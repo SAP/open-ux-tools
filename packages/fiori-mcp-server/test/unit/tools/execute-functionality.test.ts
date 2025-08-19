@@ -179,34 +179,31 @@ describe('executeFunctionality', () => {
             }
         }
     ];
-    for (const objectUpdateTestCase of objectUpdateTestCases) {
-        const { name, parameters, expectedResult } = objectUpdateTestCase;
-        test(name, async () => {
-            const updatedManifest = { changed: true };
-            mockSpecificationImport(importProjectMock);
-            mockSpecificationExport(updatedManifest);
-            const details = await executeFunctionality({
-                appPath,
-                functionalityId: ['settings', 'flexibleColumnLayout'],
-                parameters
-            });
-            expect(details).toEqual(
-                expect.objectContaining({
-                    appPath: 'testApplicationPath',
-                    changes: ['Modified webapp/manifest.json'],
-                    functionalityId: ['settings', 'flexibleColumnLayout'],
-                    message: "Successfully executed 'Change property'",
-                    parameters,
-                    status: 'success'
-                })
-            );
-            expect(exportProjectMock).toHaveBeenCalledTimes(1);
-            const modifiedConfig = exportProjectMock.mock.calls[0][0].v4.Application.application;
-            expect(modifiedConfig.settings.flexibleColumnLayout).toEqual(expectedResult);
-            expect(updateManifestJSONMock).toHaveBeenCalledTimes(1);
-            expect(updateManifestJSONMock).toHaveBeenCalledWith(updatedManifest);
+    test.each(objectUpdateTestCases)('$name', async ({ parameters, expectedResult }) => {
+        const updatedManifest = { changed: true };
+        mockSpecificationImport(importProjectMock);
+        mockSpecificationExport(updatedManifest);
+        const details = await executeFunctionality({
+            appPath,
+            functionalityId: ['settings', 'flexibleColumnLayout'],
+            parameters
         });
-    }
+        expect(details).toEqual(
+            expect.objectContaining({
+                appPath: 'testApplicationPath',
+                changes: ['Modified webapp/manifest.json'],
+                functionalityId: ['settings', 'flexibleColumnLayout'],
+                message: "Successfully executed 'Change property'",
+                parameters,
+                status: 'success'
+            })
+        );
+        expect(exportProjectMock).toHaveBeenCalledTimes(1);
+        const modifiedConfig = exportProjectMock.mock.calls[0][0].v4.Application.application;
+        expect(modifiedConfig.settings.flexibleColumnLayout).toEqual(expectedResult);
+        expect(updateManifestJSONMock).toHaveBeenCalledTimes(1);
+        expect(updateManifestJSONMock).toHaveBeenCalledWith(updatedManifest);
+    });
 
     test('Property change is received through node', async () => {
         const updatedManifest = { changed: true };

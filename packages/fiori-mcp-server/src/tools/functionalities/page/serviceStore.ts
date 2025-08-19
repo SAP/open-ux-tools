@@ -4,9 +4,10 @@ import { Service } from './service';
 const serviceStore: Map<string, Service> = new Map();
 
 /**
- * get service from service store (cache)
- * @param options
- * @returns
+ * Get service from service store (cache).
+ *
+ * @param options Service options.
+ * @returns Resolved service from service store (cache).
  */
 export async function getService(options: ServiceOptions): Promise<Service> {
     const key = options.serviceName;
@@ -21,7 +22,8 @@ export async function getService(options: ServiceOptions): Promise<Service> {
 }
 
 /**
- * remove service from serviceStore - e.g. if it is outdated
+ * Remove service from serviceStore - e.g. if it is outdated.
+ *
  * @param options
  * @returns
  */
