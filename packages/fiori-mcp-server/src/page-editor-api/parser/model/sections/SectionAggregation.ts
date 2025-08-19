@@ -23,7 +23,8 @@ export class SectionAggregation extends ObjectAggregation {
 
     /**
      * Setter for title.
-     * @param {string} title Title.
+     *
+     * @param title Title.
      */
     public setTitle(title: string): void {
         this.title = title;
@@ -31,7 +32,8 @@ export class SectionAggregation extends ObjectAggregation {
 
     /**
      * Setter for id.
-     * @param {string} id Title.
+     *
+     * @param id Title.
      */
     public setId(id: string): void {
         this.id = id;
@@ -40,7 +42,8 @@ export class SectionAggregation extends ObjectAggregation {
     /**
      * Method returns display name of aggregation without applying i18n translation.
      * Overwritten for section handling.
-     * @returns {string} Display name of aggregation.
+     *
+     * @returns Display name of aggregation.
      */
     protected getRawDisplayName(): string {
         return this.title || this.getSectionId() || super.getRawDisplayName();
@@ -48,8 +51,9 @@ export class SectionAggregation extends ObjectAggregation {
 
     /**
      * Public method to read/determine section id.
-     * @param {string} fallback Resolve id with V4 fallback solution by reading label/description.
-     * @returns {string | undefined} Section id.
+     *
+     * @param fallback Resolve id with V4 fallback solution by reading label/description.
+     * @returns Section id.
      */
     public getSectionId(fallback = true): string | undefined {
         if (this.schema) {
@@ -72,7 +76,8 @@ export class SectionAggregation extends ObjectAggregation {
 
     /**
      * Public method to mark section as replaced with other section.
-     * @param {string} replacedWith Section replaced with.
+     *
+     * @param replacedWith Section replaced with.
      */
     public markAsReplaced(replacedWith: string): void {
         this.inactive = true;
@@ -100,7 +105,8 @@ export class SectionAggregation extends ObjectAggregation {
 
     /**
      * Method parses object path key and returns field name / technical id.
-     * @returns {string | undefined} Section id.
+     *
+     * @returns Section id.
      */
     public getTechnicalName(): string | undefined {
         return this.getSectionId();
@@ -108,7 +114,8 @@ export class SectionAggregation extends ObjectAggregation {
 
     /**
      * Protected method which returns name with additional formatting by removing 'SAP_ANNOTATION_NAMESPACE' from full name/id.
-     * @returns {string} Name of aggregation.
+     *
+     * @returns Name of aggregation.
      */
     protected getFormattedName(): string | undefined {
         let name = this.name;

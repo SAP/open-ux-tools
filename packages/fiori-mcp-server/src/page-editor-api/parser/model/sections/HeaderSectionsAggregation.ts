@@ -34,12 +34,13 @@ export class HeaderSectionsAggregation extends SectionsObjectAggregation {
     /**
      * Overwritten method for data update of object page header sections
      * Method receives current values for sections - loops custom sections array and appends existing/standard aggregations with custom section aggregations.
-     * @param {PageData} data Data which should be used for value population.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {PropertyPath} path Aggregation path.
-     * @param {PageAnnotations} annotations Page annotations.
-     * @param {ModelParModelParserParams<ObjectAggregation>ModelParModelParserParams | undefined} parser Model parser parameters.
+     *
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
+     * @param annotations Page annotations.
+     * @param parser Model parser parameters.
      */
     public updatePropertiesValues(
         data: PageData,

@@ -47,8 +47,9 @@ export const getTechnicalIdFromPath = (path: PropertyPath, firstOnly = false): s
 /**
  * Method disables deletion of last annotation node if there is any custom nodes.
  * There can be cases when custom nodes referenced to last annotation node and by deleting last annotation node, we can not provide correct order.
- * @param {ObjectAggregation} aggregation Container aggregation.
- * @param {string} text I18n key for disabled deletion explanation.
+ *
+ * @param aggregation Container aggregation.
+ * @param text I18n key for disabled deletion explanation.
  */
 export const ensureLastNodeIsUndeletable = (aggregation: ObjectAggregation, text: string): void => {
     // Find if there is very last node
@@ -91,10 +92,11 @@ export const ensureLastNodeIsUndeletable = (aggregation: ObjectAggregation, text
 
 /**
  * Function validates extension using validation parameter by setting warning message to aggregation.
- * @param {ObjectAggregation} aggregation aggregation for which to set warning message.
- * @param {boolean} isValid validation result.
- * @param {string} description description to show in case extension is invalid.
- * @param {string} property name of the property
+ *
+ * @param aggregation aggregation for which to set warning message.
+ * @param isValid validation result.
+ * @param description description to show in case extension is invalid.
+ * @param property name of the property
  */
 export const validateExtension = (
     aggregation: ObjectAggregation,
@@ -119,8 +121,9 @@ export const validateExtension = (
 
 /**
  * Function validates macros extension key by checking aggregation value of it.
- * @param {ObjectAggregation} aggregation aggregation for which to set warning message.
- * @param {unknown} value value of custom extension aggregation.
+ *
+ * @param aggregation aggregation for which to set warning message.
+ * @param value value of custom extension aggregation.
  */
 export const validateMacrosExtension = (aggregation: ObjectAggregation, value = aggregation.value): void => {
     const extensionValue = value && typeof value === 'object' ? value : {};
@@ -132,11 +135,12 @@ export const validateMacrosExtension = (aggregation: ObjectAggregation, value = 
 /**
  * Method which formats and returns display/description text for anchor selection option.
  * Method resolves i18n translation for text if translation exists.
- * @param {string} i18nKey I18n entry for option.
- * @param {ObjectAggregation} aggregation Object aggregation.
- * @param {string} text Anchor label without i18n resolution.
- * @param {string} [id] Anchor ID.
- * @returns {string} Formatted text for related anchor option.
+ *
+ * @param i18nKey I18n entry for option.
+ * @param aggregation Object aggregation.
+ * @param text Anchor label without i18n resolution.
+ * @param id Anchor ID.
+ * @returns Formatted text for related anchor option.
  */
 export const formatAnchorDescriptionText = (
     i18nKey: string,
@@ -157,10 +161,11 @@ export const formatAnchorDescriptionText = (
 
 /**
  * Method which receives 'oneOf' entries from schema and converts to dropdown option entries.
- * @param {string} i18nKey I18n entry for option.
- * @param {ObjectAggregation} aggregation Object aggregation.
- * @param {JSONSchema4[]} [oneOf] One of entries from schema.
- * @returns {UIComboBoxOption[]} Options for dropdown.
+ *
+ * @param i18nKey I18n entry for option.
+ * @param aggregation Object aggregation.
+ * @param oneOf One of entries from schema.
+ * @returns Options for dropdown.
  */
 export const oneOfToDropdownOptions = (
     i18nKey: string,
@@ -181,9 +186,10 @@ export const oneOfToDropdownOptions = (
 /**
  * Method returns updated schema for anchor property.
  * Method hides enum entry which is associated with passed aggregation to avoid anchoring extension to itself.
- * @param {ObjectAggregation} aggregation Aggregation object.
- * @param {JSONSchema4} originalSchema Schema of anchor property.
- * @returns {JSONSchema4} Modified schema.
+ *
+ * @param aggregation Aggregation object.
+ * @param originalSchema Schema of anchor property.
+ * @returns Modified schema.
  */
 export const updateAnchorSchema = (aggregation: ObjectAggregation, originalSchema: JSONSchema4): JSONSchema4 => {
     const anchor = aggregation.name === 'position' ? aggregation.parent?.name : aggregation.name;
@@ -219,6 +225,7 @@ export const updateAnchorSchema = (aggregation: ObjectAggregation, originalSchem
 
 /**
  * Method adds validation message to property or node instance.
+ *
  * @param instance Property or node instance.
  * @param messages Array of validation messages.
  */

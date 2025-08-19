@@ -107,6 +107,7 @@ const NOT_ALLOWED_IN_FOOTER_AGGREGATION_NAMES = [DATA_FIELD_FOR_INTENT_BASED_NAV
 
 /**
  * Method returns dom id for node.
+ *
  * @param path Node path.
  * @returns Outline node id.
  */
@@ -134,8 +135,9 @@ export function getGenericBase(
 
 /**
  * Method checks if passed value is a valid number.
- * @param {any} value Value as unknown type.
- * @returns {boolean} Is nummber value.
+ *
+ * @param value Value as unknown type.
+ * @returns Is nummber value.
  */
 const isNumber = (value: number): boolean => {
     return !isNaN(value) && !isNaN(value - 0);
@@ -143,8 +145,9 @@ const isNumber = (value: number): boolean => {
 
 /**
  * Method returns options for passed enum entries.
- * @param {JSONSchema4Type[]} entries Enum entries.
- * @returns {Array<SelectionOption>} Array of options.
+ *
+ * @param entries Enum entries.
+ * @returns Array of options.
  */
 const getEnumOptions = (entries: JSONSchema4Type[]): NodePropertyOptions[] => {
     const options: NodePropertyOptions[] = [];
@@ -293,6 +296,7 @@ function getProperties(aggregation: ObjectAggregation, breadCrumbs: ObjectAggreg
 
 /**
  * Recursive method goes through aggregation tree and creates tree node.
+ *
  * @param aggregation Start Aggregation.
  * @param traverseNodeData Traverse data contains traverse context information.
  * @returns Outline tree node.
@@ -351,6 +355,7 @@ export function traverseTree(aggregation: ObjectAggregation, traverseNodeData: T
 
 /**
  * Method returns node's movable props.
+ *
  * @param model Edit model.
  * @param aggregation Aggregation object.
  * @param nodeId Node id.
@@ -380,6 +385,7 @@ function getMovable(model: PageEditModel, aggregation: ObjectAggregation): NodeM
 
 /**
  * Method returns array of node paths, which are allowed to drop/move in.
+ *
  * @param root Root aggregation.
  * @param aggregation Target aggregation to get alowed parents.
  * @returns Array of diagnostic messages for passed aggregation.
@@ -433,6 +439,7 @@ function getNodeType(aggregation: ObjectAggregation): AggregationNodeType | unde
 
 /**
  * Method creates tree for passed edit model.
+ *
  * @param model Page edit model.
  * @param messages Array of messages.
  * @param filter Applied filter data.
@@ -469,6 +476,7 @@ export function getTree(
 
 /**
  * Method finds node by passed annotation nodeId.
+ *
  * @param tree Nodes tree to lookup.
  * @param path Path to find node by.
  * @returns Found node information.

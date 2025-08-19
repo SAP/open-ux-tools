@@ -29,12 +29,13 @@ export class AdditionalObjectsAggregation extends ObjectAggregation {
     /**
      * Method adds aggregation object.
      * Overwritten to mark standard action.
-     * @param {string} name Name of aggregation.
-     * @param {ObjectAggregation} aggregation Aggregation to add.
-     * @param {PropertyPath} path Array of path to aggregation.
-     * @param {number} [order] Order index.
-     * @param {number} [overwrite] Overwrite existing aggregation.
-     * @returns {ObjectAggregation} Added aggregation.
+     *
+     * @param name Name of aggregation.
+     * @param aggregation Aggregation to add.
+     * @param path Array of path to aggregation.
+     * @param order Order index.
+     * @param overwrite Overwrite existing aggregation.
+     * @returns Added aggregation.
      */
     public addAggregation(
         name: string,
@@ -51,11 +52,12 @@ export class AdditionalObjectsAggregation extends ObjectAggregation {
     /**
      * Overwritten method for data update of object page actions
      * Method receives current values for actions and detects custom actions.
-     * @param {PageData} data Data which should be used for value population.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {PropertyPath} path Aggregation path.
-     * @param {PageAnnotations} annotations Annotations data.
+     *
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
+     * @param annotations Annotations data.
      */
     public updatePropertiesValues(
         data: PageData,

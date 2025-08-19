@@ -11,7 +11,8 @@ interface DeletionSupport {
 
 export class ChartAggregation extends ObjectAggregation {
     /**
-     * Refreshes internal data based on latest annotation node data
+     * Refreshes internal data based on latest annotation node data.
+     *
      * @param annotations
      */
     public updateAnnotationData(annotations: PageAnnotations | undefined): void {
@@ -33,10 +34,11 @@ export class ChartAggregation extends ObjectAggregation {
      * Overwritten method for data update.
      * Is used to detect if we need hide aggregation depending on received data.
      * Method should be removed after action status fulfilled would consider full sync flow(18990).
-     * @param {PageData} data Data which should be used for value population.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {PropertyPath} path Aggregation path.
+     *
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
      */
     public updatePropertiesValues(
         data: PageData,
@@ -55,8 +57,9 @@ export class ChartAggregation extends ObjectAggregation {
 
     /**
      * Method checks if deletion is supported depending on if spec support complex deletion or not.
-     * @param {DeletionSupport} support Deletion support received from annotation.
-     * @returns {DeletionSupport} Deletion support based on spec check.
+     *
+     * @param support Deletion support received from annotation.
+     * @returns Deletion support based on spec check.
      */
     private getDeletionSupport(support: DeletionSupport = {}): DeletionSupport {
         if (support?.deletionEnabled) {
@@ -82,8 +85,9 @@ export class ChartAggregation extends ObjectAggregation {
 
     /**
      * Method checks if passed target annotation is considered as complex scenario and unsupported by older spec.
-     * @param {string} value Value to check.
-     * @returns {boolean} Is complex scenario.
+     *
+     * @param value Value to check.
+     * @returns Is complex scenario.
      */
     private isComplexScenario(value: string): boolean {
         const parts = value.split('.');

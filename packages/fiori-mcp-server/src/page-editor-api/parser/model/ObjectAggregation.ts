@@ -360,7 +360,7 @@ export class ObjectAggregation {
 
         // Go with recursion
         for (const rootName in this.aggregations) {
-            const pathPart = this.type === AggregationType.Array ? parseInt(rootName) : rootName;
+            const pathPart = this.type === AggregationType.Array ? parseInt(rootName, 10) : rootName;
             const names = this.aggregations[rootName].union?.originalNames || [rootName];
             for (const name of names) {
                 this.aggregations[rootName].updatePropertiesValues(
@@ -415,17 +415,19 @@ export class ObjectAggregation {
      * and sets disabled param for add action button.
      *
      * @param annotations Page annotations.
+     * @param uiNode Annotation node.
      */
-    private setAllowedParents(annotations: PageAnnotations | undefined, currentUINode?: UINode): void {
-        if (currentUINode) {
-            this.dropUINodes = currentUINode?.allowedParentNodes;
+    private setAllowedParents(annotations: PageAnnotations | undefined, uiNode?: UINode): void {
+        if (uiNode) {
+            this.dropUINodes = uiNode?.allowedParentNodes;
         }
     }
 
     /**
      * Refreshes node locations based on the annotation node data
      *
-     * @param annotations
+     * @param annotations All page annotations.
+     * @param currentUINode Annotation node.
      */
     protected updateLocations(annotations: PageAnnotations | undefined, currentUINode?: UINode): void {
         this.locations = this.locations || [];

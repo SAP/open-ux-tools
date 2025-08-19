@@ -27,7 +27,8 @@ export class ColumnAggregation extends ObjectAggregation {
 
     /**
      * Setter for title.
-     * @param {string} title Title.
+     *
+     * @param title Title.
      */
     public setTitle(title?: string): void {
         this.title = title;
@@ -36,7 +37,8 @@ export class ColumnAggregation extends ObjectAggregation {
     /**
      * Method returns display name of aggregation without applying i18n translation.
      * Overwritten for column handling.
-     * @returns {string} Display name of aggregation.
+     *
+     * @returns Display name of aggregation.
      */
     protected getRawDisplayName(): string {
         return this.title || super.getRawDisplayName();
@@ -44,7 +46,8 @@ export class ColumnAggregation extends ObjectAggregation {
 
     /**
      * Method validates column positioning by checking anchoring.
-     * @param {boolean} isMacro Whether column is a part of macros table.
+     *
+     * @param isMacro Whether column is a part of macros table.
      */
     private validateColumnPositioning(): void {
         const value = this.value && typeof this.value === 'object' ? this.value : {};
@@ -73,7 +76,8 @@ export class ColumnAggregation extends ObjectAggregation {
 
     /**
      * Public method to mark section as custom section.
-     * @param {PageType} params Custom column params
+     *
+     * @param params Custom column params
      */
     public markAsCustomColumn(params: {
         pageType: PageType;
@@ -142,7 +146,8 @@ export class ColumnAggregation extends ObjectAggregation {
 
     /**
      * Method parses object path key and returns field name / technical id.
-     * @returns {string | undefined} Field name / technical id.
+     *
+     * @returns Field name / technical id.
      */
     public getTechnicalName(): string | undefined {
         return getTechnicalIdFromPath(this.path);
@@ -150,11 +155,12 @@ export class ColumnAggregation extends ObjectAggregation {
 
     /**
      * Overwritten method for aggregation update.
-     * @param {PageData} data Data which should be used for value population.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {PropertyPath} path Aggregation path.
-     * @param {PageAnnotations} annotations Annotation data.
+     *
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
+     * @param annotations Annotation data.
      */
     public updatePropertiesValues(
         data: PageData,

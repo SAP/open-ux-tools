@@ -112,10 +112,11 @@ export class ViewsAggregation extends ObjectAggregation {
 
     /**
      * Overwritten method which handles sort.
-     * @param {string[]} order New order of all nodes.
-     * @param {PageAggregations} aggregations Mapped object containing all aggregations for new sorting
+     *
+     * @param order New order of all nodes.
+     * @param aggregations Mapped object containing all aggregations for new sorting
      * - it can contain new element if there was drop from outside.
-     * @returns {SchemaNodesMove[]} Schema based node moves for move action.
+     * @returns Schema based node moves for move action.
      */
     protected onMultiSort(order: string[], aggregations: PageAggregations): SchemaNodesMove[] {
         const moves: SchemaNodesMove[] = [];
@@ -159,7 +160,8 @@ export class ViewsAggregation extends ObjectAggregation {
 
     /**
      * Method returns count of annotations views.
-     * @returns {CreationFormOptions[]} Count of annotations views.
+     *
+     * @returns Count of annotations views.
      */
     private getAnnotationViewCount(): number {
         let count = 0;

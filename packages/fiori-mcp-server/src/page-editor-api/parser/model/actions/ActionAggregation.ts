@@ -13,7 +13,8 @@ export class ActionAggregation extends ObjectAggregation {
 
     /**
      * Method parses object path key and returns action name.
-     * @returns {string | undefined} Action name.
+     *
+     * @returns Action name.
      */
     public getTechnicalName(): string | undefined {
         const key = this.path[this.path.length - 1];
@@ -75,6 +76,7 @@ export class ActionAggregation extends ObjectAggregation {
 
     /**
      * Method returns action type from schema data.
+     *
      * @returns Action type from schema.
      */
     public getActionType(): string | undefined {
