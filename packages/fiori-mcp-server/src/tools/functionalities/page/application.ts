@@ -236,6 +236,15 @@ export class Application {
         return null;
     }
 
+    /**
+     * Validates the navigation input for page creation.
+     *
+     * @param parentPage - The parent page definition, if any.
+     * @param navigation - Optional navigation string.
+     * @param entitySet - Optional entity set.
+     * @param pages - Array of existing page definitions.
+     * @returns A promise that resolves to an ExecuteFunctionalityOutput object if there's an error, or null if validation passes.
+     */
     private async validateNavigationInput(
         parentPage: PageDef | undefined,
         navigation?: string,
@@ -357,6 +366,14 @@ export class Application {
         return { pageID: id, changes };
     }
 
+    /**
+     * Writes the Flexible Programming Model (FPM) configuration.
+     *
+     * @param pageType - The type of the page.
+     * @param pageApi - The page API configuration.
+     * @param viewName - Optional view name for custom pages.
+     * @returns A promise that resolves to an array of strings representing the changes made.
+     */
     private async writeFPM(pageType: string, pageApi: any, viewName?: string): Promise<string[]> {
         const ftfsFileIo = new SapuxFtfsFileIO(this.applicationAccess);
         let customExtension = CustomExtensionType.ListReport;
@@ -375,6 +392,12 @@ export class Application {
             data: { ...pageApi, folder }
         });
     }
+    /**
+     * Deletes navigation links for a given page.
+     *
+     * @param navigation - The navigation object containing links.
+     * @param pageName - The name of the page to remove links for.
+     */
     private deleteNavigationLinks(
         navigation: {
             [property: string]: string | object;
@@ -440,6 +463,11 @@ export class Application {
         }
     }
 
+    /**
+     * Retrieves all pages defined in the application.
+     *
+     * @returns An array of PageDef objects representing the pages in the application.
+     */
     public getPages(): PageDef[] {
         const { config } = this.appData;
         const { pages = {} } = config;
@@ -457,6 +485,13 @@ export class Application {
         }
         return result;
     }
+    /**
+     * Retrieves allowed navigation options for a given parent page.
+     *
+     * @param parentPage - Optional parent page definition.
+     * @param refresh - Whether to refresh the data from the service.
+     * @returns A promise that resolves to an array of AllowedNavigationOptions.
+     */
     public async getAllowedNavigations(parentPage?: PageDef, refresh = false): Promise<AllowedNavigationOptions[]> {
         if (!parentPage || parentPage?.pageType === 'ListReport') {
             // Entities from zero page or from list report
@@ -472,6 +507,12 @@ export class Application {
             (navigation) => ({ ...navigation, isNavigation: true })
         );
     }
+    /**
+     * Retrieves navigation options for the root page.
+     * 
+     * @param refresh - Whether to refresh the data from the service.
+     * @returns A promise that resolves to an array of AllowedNavigationOptions.
+     */
     public async getRootPageNavigationOptions(refresh = false): Promise<AllowedNavigationOptions[]> {
         const service = await getService({
             appName: this.appId,
@@ -486,6 +527,12 @@ export class Application {
             };
         });
     }
+    /**
+     * Retrieves creation options for a new page.
+     * 
+     * @param pageType - Optional page type to get specific creation options.
+     * @returns A promise that resolves to GetFunctionalityDetailsOutput containing creation options.
+     */
     public async getCreationOptions(pageType?: string): Promise<GetFunctionalityDetailsOutput> {
         ADD_PAGE_FUNCTIONALITY.parameters = [];
 
@@ -561,6 +608,12 @@ export class Application {
         ];
         return ADD_PAGE_FUNCTIONALITY;
     }
+    /**
+     * Creates a new page in the application.
+     * 
+     * @param newPage - Details of the new page to be created.
+     * @returns A promise that resolves to ExecuteFunctionalityOutput containing the result of the page creation.
+     */
     public async createPage(newPage: NewPage): Promise<ExecuteFunctionalityOutput> {
         const { parent, navigation, pageType, entitySet } = newPage;
         const viewName = newPage.pageType === PageTypeV4.CustomPage ? newPage.viewName : undefined;
@@ -604,6 +657,11 @@ export class Application {
         };
     }
 
+    /**
+     * Retrieves options for deleting a page.
+     * 
+     * @returns A promise that resolves to GetFunctionalityDetailsOutput containing delete options.
+     */
     public async getDeleteOptions(): Promise<GetFunctionalityDetailsOutput> {
         DELETE_PAGE_FUNCTIONALITY.parameters = [];
         const pages = this.getPages();
@@ -618,6 +676,12 @@ export class Application {
         return DELETE_PAGE_FUNCTIONALITY;
     }
 
+    /**
+     * Deletes a page from the application.
+     * 
+     * @param pageId - The ID of the page to be deleted.
+     * @returns A promise that resolves to ExecuteFunctionalityOutput containing the result of the page deletion.
+     */
     public async deletePage({ pageId }: { pageId: string }): Promise<ExecuteFunctionalityOutput> {
         const appData = structuredClone(this.appData);
         const { config } = appData;

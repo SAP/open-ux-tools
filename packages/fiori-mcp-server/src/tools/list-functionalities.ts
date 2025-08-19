@@ -4,6 +4,13 @@ import { FUNCTIONALITIES_DETAILS } from './functionalities';
 import { resolveApplication } from './utils';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 
+/**
+ * Lists all functionalities for a given application.
+ *
+ * @param params - The input parameters for listing functionalities.
+ * @param params.appPath - The path to the application.
+ * @returns A promise that resolves to either a ListFunctionalitiesOutput object or an error message string.
+ */
 export async function listFunctionalities(
     params: ListFunctionalitiesInput
 ): Promise<ListFunctionalitiesOutput | string> {
@@ -38,6 +45,12 @@ export async function listFunctionalities(
     };
 }
 
+/**
+ * Retrieves functionalities for the application settings.
+ *
+ * @param appAccess - The ApplicationAccess object for accessing the application.
+ * @returns A promise that resolves to an array of Functionality objects.
+ */
 async function getAppFunctionalities(appAccess: ApplicationAccess): Promise<Functionality[]> {
     const pageEditorApi = new PageEditorApi(appAccess, undefined);
     const tree = await pageEditorApi.getPageTree();
@@ -55,12 +68,27 @@ async function getAppFunctionalities(appAccess: ApplicationAccess): Promise<Func
     return getFunctionalitiesFromPageTree(settingsNode);
 }
 
+/**
+ * Retrieves functionalities for a specific page in the application.
+ *
+ * @param appAccess - The ApplicationAccess object for accessing the application.
+ * @param pageId - Optional. The ID of the page to retrieve functionalities for.
+ * @returns A promise that resolves to an array of Functionality objects.
+ */
 async function getPageFunctionalities(appAccess: ApplicationAccess, pageId?: string): Promise<Functionality[]> {
     const pageEditorApi = new PageEditorApi(appAccess, pageId);
     const pageTree = await pageEditorApi.getPageTree();
     return getFunctionalitiesFromPageTree(pageTree, undefined, pageId);
 }
 
+/**
+ * Extracts functionalities from a page tree structure.
+ *
+ * @param pageTree - The TreeNode representing the page structure.
+ * @param parentId - Optional. The parent ID array for nested functionalities.
+ * @param pageName - Optional. The name of the page being processed.
+ * @returns An array of Functionality objects extracted from the page tree.
+ */
 function getFunctionalitiesFromPageTree(
     pageTree: TreeNode,
     parentId: string[] = [],
@@ -98,6 +126,13 @@ function getFunctionalitiesFromPageTree(
     return functionalities;
 }
 
+/**
+ * Processes nested properties to extract functionalities.
+ *
+ * @param properties - An array of TreeNodeProperty objects to process.
+ * @param pageName - Optional. The name of the page being processed.
+ * @returns An array of Functionality objects extracted from the nested properties.
+ */
 function processNestedProperties(properties: TreeNodeProperty[], pageName?: string): Functionality[] {
     const functionalities: Functionality[] = [];
 
@@ -115,6 +150,13 @@ function processNestedProperties(properties: TreeNodeProperty[], pageName?: stri
     return functionalities;
 }
 
+/**
+ * Creates a Functionality object from a TreeNodeProperty.
+ *
+ * @param property - The TreeNodeProperty to convert into a Functionality.
+ * @param pageName - Optional. The name of the page the property belongs to.
+ * @returns A Functionality object representing the property.
+ */
 function getPropertyFunctionality(property: TreeNodeProperty, pageName?: string): Functionality {
     const path: Array<string | number> = [];
     if (pageName) {

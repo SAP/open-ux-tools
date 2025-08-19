@@ -4,6 +4,15 @@ import type { TreeNode, PropertyPath, TreeNodeProperty } from '../page-editor-ap
 import { FUNCTIONALITIES_HANDLERS } from './functionalities';
 import { resolveApplication } from './utils';
 
+/**
+ * Retrieves functionality details based on the provided input parameters.
+ *
+ * @param params - The input parameters for getting functionality details.
+ * @param params.appPath - The path to the application.
+ * @param params.functionalityId - The ID of the functionality to retrieve details for.
+ * @returns A promise that resolves to the functionality details output.
+ * @throws Error if appPath or functionalityId is not provided.
+ */
 export async function getFunctionalityDetails(
     params: GetFunctionalityDetailsInput
 ): Promise<GetFunctionalityDetailsOutput> {
@@ -33,6 +42,12 @@ export async function getFunctionalityDetails(
     return details;
 }
 
+/**
+ * Converts TreeNodeProperty objects to Parameter objects.
+ *
+ * @param properties - An array of TreeNodeProperty objects to convert.
+ * @returns An array of Parameter objects.
+ */
 function getParameters(properties: TreeNodeProperty[]): Parameter[] {
     const parameters: Parameter[] = [];
     for (const property of properties) {
@@ -54,6 +69,13 @@ function getParameters(properties: TreeNodeProperty[]): Parameter[] {
     return parameters;
 }
 
+/**
+ * Retrieves property details from a page tree node based on the provided property path.
+ *
+ * @param page - The root TreeNode of the page.
+ * @param propertyPath - The path to the desired property.
+ * @returns The functionality details output for the specified property, or undefined if not found.
+ */
 function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunctionalityDetailsOutput | undefined {
     const { property, node } = findByPath([page], propertyPath) ?? {};
     let details: GetFunctionalityDetailsOutput | undefined;
@@ -88,6 +110,13 @@ function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunc
     return details;
 }
 
+/**
+ * Retrieves the page tree for a given application and page.
+ *
+ * @param appPath - The path to the application.
+ * @param pageName - Optional. The name of the page to retrieve details for.
+ * @returns A promise that resolves to the page TreeNode, or undefined if not found.
+ */
 async function getDetails(appPath: string, pageName?: string): Promise<TreeNode | undefined> {
     const project = await resolveApplication(appPath);
     if (project?.applicationAccess) {
@@ -96,6 +125,13 @@ async function getDetails(appPath: string, pageName?: string): Promise<TreeNode 
     }
 }
 
+/**
+ * Resolves a functionality ID into a page name and property path.
+ *
+ * @param functionalityId - The ID of the functionality to resolve, either as a string or an array of strings.
+ * @returns An object containing the resolved page name (if applicable) and property path.
+ * @throws Error if the functionalityId parameter has an invalid format.
+ */
 export function resolveFunctionality(functionalityId: string | string[]): {
     pageName?: string;
     propertyPath: PropertyPath;
