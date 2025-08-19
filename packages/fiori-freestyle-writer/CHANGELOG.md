@@ -1,5 +1,45 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.4.35
+
+### Patch Changes
+
+-   55bb22e: updates cap projects to use npm workspaces by default
+-   Updated dependencies [55bb22e]
+    -   @sap-ux/cap-config-writer@0.11.0
+    -   @sap-ux/ui5-application-writer@1.5.13
+    -   @sap-ux/ui5-test-writer@0.7.20
+
+## 2.4.34
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-application-writer@1.5.12
+    -   @sap-ux/odata-service-writer@0.27.17
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/ui5-test-writer@0.7.19
+    -   @sap-ux/cap-config-writer@0.10.27
+    -   @sap-ux/fiori-generator-shared@0.13.9
+
+## 2.4.33
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.10.26
+-   @sap-ux/fiori-generator-shared@0.13.8
+-   @sap-ux/odata-service-writer@0.27.16
+-   @sap-ux/ui5-application-writer@1.5.11
+-   @sap-ux/ui5-test-writer@0.7.18
+
+## 2.4.32
+
+### Patch Changes
+
+-   Updated dependencies [944af3e]
+    -   @sap-ux/ui5-test-writer@0.7.17
+
 ## 2.4.31
 
 ### Patch Changes

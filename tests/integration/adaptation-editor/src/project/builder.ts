@@ -199,6 +199,35 @@ export async function generateUi5Project(
                 undefined,
                 2
             )
+        ),
+        writeFile(
+            join(root, 'data', 'FirstAssociatedEntity.json'),
+            JSON.stringify(
+                [
+                    {
+                        'ID': 100,
+                        'root_ID': 1,
+                        'StringProperty': 'Hello JPY',
+                        'NumberProperty': 78.777,
+                        'IntegerProperty': 89,
+                        'BooleanProperty': true,
+                        'Currency': 'JPY',
+                        'TextProperty': 'Description'
+                    },
+                    {
+                        'ID': 101,
+                        'root_ID': 1,
+                        'StringProperty': 'Hello AED',
+                        'NumberProperty': 78.777,
+                        'IntegerProperty': 89,
+                        'BooleanProperty': true,
+                        'Currency': 'AED',
+                        'TextProperty': 'Description'
+                    }
+                ],
+                undefined,
+                2
+            )
         )
     ]);
     return root;
@@ -340,6 +369,35 @@ export async function generateAdpProject(
                         'Currency': 'JPY',
                         'TextProperty': 'Description',
                         'DateProperty': '/Date(1746057600000)/'
+                    }
+                ],
+                undefined,
+                2
+            )
+        ),
+        writeFile(
+            join(root, 'data', 'FirstAssociatedEntity.json'),
+            JSON.stringify(
+                [
+                    {
+                        'ID': 100,
+                        'root_ID': 1,
+                        'StringProperty': 'Hello JPY',
+                        'NumberProperty': 78.777,
+                        'IntegerProperty': 89,
+                        'BooleanProperty': true,
+                        'Currency': 'JPY',
+                        'TextProperty': 'Description'
+                    },
+                    {
+                        'ID': 101,
+                        'root_ID': 1,
+                        'StringProperty': 'Hello AED',
+                        'NumberProperty': 78.777,
+                        'IntegerProperty': 89,
+                        'BooleanProperty': true,
+                        'Currency': 'AED',
+                        'TextProperty': 'Description'
                     }
                 ],
                 undefined,

@@ -26,11 +26,15 @@ export const Select = (props: SelectProps) => {
             return options[0].data?.value;
         }
 
-        // Handle numeric default that isn't a key = it could be an index
-        if (props.defaultIndex !== undefined && options[props.defaultIndex]) {
-            return options[props.defaultIndex].data?.value;
+        // Use the first checked option as default
+        const checkedOption = options.find((opt) => opt.data && 'checked' in opt.data && opt.data.checked === true);
+        if (checkedOption) {
+            return checkedOption.data?.value;
         }
-    }, [props.defaultIndex, options]);
+
+        // do not preselect any value by default
+        return undefined;
+    }, [options]);
 
     useEffect(() => {
         if (defaultValue !== undefined && value !== defaultValue) {

@@ -242,6 +242,12 @@ describe('ast to generic format', () => {
     });
     describe('flatten embedded annotation - Common.Text', () => {
         testConversion('flatten-embedded-annotation');
+        test('empty annotation term segment', () => {
+            const ast = parse(`Common.Text.@`);
+            const { terms } = toTerms(ast as Assignment, { vocabularyService });
+            const annotation = terms[0].content[0] as Element;
+            expect(annotation.attributes['Term'].value).toStrictEqual('');
+        });
         describe('pointer', () => {
             describe('@UI.TextArrangement', () => {
                 test('Inside embedded term name', async () => {

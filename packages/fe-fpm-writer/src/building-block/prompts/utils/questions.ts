@@ -241,10 +241,12 @@ export function getAggregationPathPrompt(
             ? (answers: Answers) => {
                   const { viewOrFragmentPath } = answers;
                   if (viewOrFragmentPath) {
-                      const choices = transformChoices(
-                          getXPathStringsForXmlFile(join(appPath, viewOrFragmentPath), fs),
-                          false
+                      const { inputChoices, pageMacroDefinition } = getXPathStringsForXmlFile(
+                          join(appPath, viewOrFragmentPath),
+                          fs
                       );
+                      const key = Object.keys(inputChoices).find((k) => k.endsWith(`/${pageMacroDefinition}`));
+                      const choices = transformChoices(inputChoices, false, key);
                       if (!choices.length) {
                           throw new Error('Failed while fetching the aggregation path.');
                       }
@@ -266,12 +268,23 @@ export function getAggregationPathPrompt(
  *
  * @param obj - object to be converted to choices
  * @param sort - apply alphabetical sort(default is "true")
+ * @param defaultKey - default key to be checked in choices
  * @returns the list of choices.
  */
-export function transformChoices(obj: Record<string, string> | string[], sort = true): PromptListChoices {
+export function transformChoices(
+    obj: Record<string, string> | string[],
+    sort = true,
+    defaultKey?: string
+): PromptListChoices {
     let choices: PromptListChoices = [];
     if (!Array.isArray(obj)) {
-        choices = Object.entries(obj).map(([key, value]) => ({ name: key, value }));
+        choices = Object.entries(obj).map(([key, value]) => {
+            // Add checked if value matches defaultKey example: `/mvc:View/macro:Page/`
+            if (key === defaultKey) {
+                return { name: key, value, checked: true };
+            }
+            return { name: key, value };
+        });
         if (sort) {
             choices = (choices as { name: string; value: string }[]).sort((a, b) => a.name.localeCompare(b.name));
         }

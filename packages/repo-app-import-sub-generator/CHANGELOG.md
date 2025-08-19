@@ -1,5 +1,76 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.3.85
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.28
+-   @sap-ux/odata-service-inquirer@2.5.33
+
+## 0.3.84
+
+### Patch Changes
+
+-   Updated dependencies [55bb22e]
+    -   @sap-ux/fiori-elements-writer@2.5.27
+    -   @sap-ux/odata-service-inquirer@2.5.33
+
+## 0.3.83
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/odata-service-inquirer@2.5.33
+    -   @sap-ux/fiori-elements-writer@2.5.26
+    -   @sap-ux/abap-deploy-config-writer@0.2.7
+    -   @sap-ux/launch-config@0.10.19
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/fiori-generator-shared@0.13.9
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/system-access@0.6.12
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 0.3.82
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.25
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/odata-service-inquirer@2.5.32
+-   @sap-ux/abap-deploy-config-writer@0.2.6
+-   @sap-ux/axios-extension@1.22.5
+-   @sap-ux/fiori-generator-shared@0.13.8
+-   @sap-ux/launch-config@0.10.18
+-   @sap-ux/project-input-validator@0.6.16
+-   @sap-ux/system-access@0.6.12
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.3.81
+
+### Patch Changes
+
+-   Updated dependencies [b6ce4a2]
+    -   @sap-ux/guided-answers-helper@0.4.0
+    -   @sap-ux/inquirer-common@0.7.33
+    -   @sap-ux/odata-service-inquirer@2.5.31
+
+## 0.3.80
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.5.24
+-   @sap-ux/odata-service-inquirer@2.5.30
+
+## 0.3.79
+
+### Patch Changes
+
+-   Updated dependencies [944af3e]
+    -   @sap-ux/fiori-elements-writer@2.5.23
+    -   @sap-ux/odata-service-inquirer@2.5.30
+
 ## 0.3.78
 
 ### Patch Changes

@@ -1,5 +1,49 @@
 # @sap-ux/generator-adp
 
+## 0.3.65
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/odata-service-writer@0.27.17
+    -   @sap-ux/adp-tooling@0.15.17
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.63
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/fiori-generator-shared@0.13.9
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/system-access@0.6.12
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 0.3.64
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.16
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/adp-flp-config-sub-generator@0.1.62
+-   @sap-ux/axios-extension@1.22.5
+-   @sap-ux/fiori-generator-shared@0.13.8
+-   @sap-ux/odata-service-writer@0.27.16
+-   @sap-ux/project-input-validator@0.6.16
+-   @sap-ux/system-access@0.6.12
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.3.63
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+-   @sap-ux/adp-flp-config-sub-generator@0.1.61
+-   @sap-ux/adp-tooling@0.15.15
+
+## 0.3.62
+
+### Patch Changes
+
+-   f5f6a31: fix: Pass the same prompt options when running deployment generator as a step or standalone
+
 ## 0.3.61
 
 ### Patch Changes
