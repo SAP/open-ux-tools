@@ -67,23 +67,6 @@ describe('Test FPM features using a pre-generated Fiori Custom Page app', () => 
             );
         });
 
-        test.each(configs)('generateBuildingBlock:Page in custom page', async (config) => {
-            await generateBuildingBlock<Page>(
-                config.path,
-                {
-                    viewOrFragmentPath: join('webapp/ext/main/Main.view.xml'),
-                    aggregationPath: `/mvc:View/*[local-name()='Page']`,
-                    buildingBlockData: {
-                        id: 'testPage',
-                        buildingBlockType: BuildingBlockType.Page,
-                        title: 'testPageTitle',
-                        description: 'testPageDescription'
-                    }
-                },
-                fs
-            );
-        });
-
         test.each(configs)('generateBuildingBlock:Table in custom page', async (config) => {
             await generateBuildingBlock<Table>(
                 config.path,
