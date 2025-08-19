@@ -5,10 +5,14 @@ import {
     DELETE_PAGE_FUNCTIONALITY,
     deletePageHandlers
 } from '../../../../../src/tools/functionalities/page';
-import { copyDirectory, removeDirectory } from '../../../utils';
+import { copyDirectory, npmInstall, removeDirectory } from '../../../utils';
 import { writeFileSync, readFileSync } from 'fs';
 import { createApplicationAccess } from '@sap-ux/project-access';
 import { getManifest } from '../../../../../src/page-editor-api/project';
+
+const TIME_OUT = 5 * 60 * 1000; // 5 min due to npm install.
+
+jest.setTimeout(TIME_OUT);
 
 jest.mock('@sap-ux/project-access', () => {
     const actual = jest.requireActual('@sap-ux/project-access');
@@ -55,6 +59,7 @@ beforeEach(() => {
     });
     removeDirectory(copyProjectRoot);
     copyDirectory(originProjectRoot, copyProjectRoot);
+    npmInstall(copyProjectRoot);
 });
 
 afterEach(() => jest.clearAllMocks());
