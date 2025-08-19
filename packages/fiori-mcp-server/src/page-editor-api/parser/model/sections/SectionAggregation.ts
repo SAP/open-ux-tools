@@ -40,7 +40,7 @@ export class SectionAggregation extends ObjectAggregation {
     /**
      * Method returns display name of aggregation without applying i18n translation.
      * Overwritten for section handling.
-     * @return {string} Display name of aggregation.
+     * @returns {string} Display name of aggregation.
      */
     protected getRawDisplayName(): string {
         return this.title || this.getSectionId() || super.getRawDisplayName();
@@ -49,7 +49,7 @@ export class SectionAggregation extends ObjectAggregation {
     /**
      * Public method to read/determine section id.
      * @param {string} fallback Resolve id with V4 fallback solution by reading label/description.
-     * @return {string | undefined} Section id.
+     * @returns {string | undefined} Section id.
      */
     public getSectionId(fallback = true): string | undefined {
         if (this.schema) {
@@ -100,7 +100,7 @@ export class SectionAggregation extends ObjectAggregation {
 
     /**
      * Method parses object path key and returns field name / technical id.
-     * @return {string | undefined} Section id.
+     * @returns {string | undefined} Section id.
      */
     public getTechnicalName(): string | undefined {
         return this.getSectionId();
@@ -108,7 +108,7 @@ export class SectionAggregation extends ObjectAggregation {
 
     /**
      * Protected method which returns name with additional formatting by removing 'SAP_ANNOTATION_NAMESPACE' from full name/id.
-     * @return {string} Name of aggregation.
+     * @returns {string} Name of aggregation.
      */
     protected getFormattedName(): string | undefined {
         let name = this.name;

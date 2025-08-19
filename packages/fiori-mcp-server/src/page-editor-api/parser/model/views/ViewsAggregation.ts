@@ -115,7 +115,7 @@ export class ViewsAggregation extends ObjectAggregation {
      * @param {string[]} order New order of all nodes.
      * @param {PageAggregations} aggregations Mapped object containing all aggregations for new sorting
      * - it can contain new element if there was drop from outside.
-     * @return {SchemaNodesMove[]} Schema based node moves for move action.
+     * @returns {SchemaNodesMove[]} Schema based node moves for move action.
      */
     protected onMultiSort(order: string[], aggregations: PageAggregations): SchemaNodesMove[] {
         const moves: SchemaNodesMove[] = [];

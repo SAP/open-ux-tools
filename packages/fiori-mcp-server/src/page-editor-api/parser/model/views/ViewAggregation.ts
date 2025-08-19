@@ -23,7 +23,7 @@ export class ViewAggregation extends ObjectAggregation {
     /**
      * Method returns display name of aggregation without applying i18n translation.
      * Overwritten for column handling.
-     * @return {string} Display name of aggregation.
+     * @returns {string} Display name of aggregation.
      */
     protected getRawDisplayName(): string {
         return this.title || super.getRawDisplayName();

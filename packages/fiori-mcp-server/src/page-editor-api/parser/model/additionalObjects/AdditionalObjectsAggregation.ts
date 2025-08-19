@@ -34,7 +34,7 @@ export class AdditionalObjectsAggregation extends ObjectAggregation {
      * @param {PropertyPath} path Array of path to aggregation.
      * @param {number} [order] Order index.
      * @param {number} [overwrite] Overwrite existing aggregation.
-     * @return {ObjectAggregation} Added aggregation.
+     * @returns {ObjectAggregation} Added aggregation.
      */
     public addAggregation(
         name: string,

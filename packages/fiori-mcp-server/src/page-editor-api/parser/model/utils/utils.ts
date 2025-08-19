@@ -13,7 +13,7 @@ export interface AppTranslationBundleData {
 
 /**
  * Method returns application specific i18n bundle data.
- * @return {AppTranslationBundleData} i18n bundle data.
+ * @returns {AppTranslationBundleData} i18n bundle data.
  */
 export const getAppI18nBundle = (): AppTranslationBundleData => {
     return {
@@ -136,7 +136,7 @@ export const validateMacrosExtension = (aggregation: ObjectAggregation, value = 
  * @param {ObjectAggregation} aggregation Object aggregation.
  * @param {string} text Anchor label without i18n resolution.
  * @param {string} [id] Anchor ID.
- * @return {string} Formatted text for related anchor option.
+ * @returns {string} Formatted text for related anchor option.
  */
 export const formatAnchorDescriptionText = (
     i18nKey: string,
@@ -160,7 +160,7 @@ export const formatAnchorDescriptionText = (
  * @param {string} i18nKey I18n entry for option.
  * @param {ObjectAggregation} aggregation Object aggregation.
  * @param {JSONSchema4[]} [oneOf] One of entries from schema.
- * @return {UIComboBoxOption[]} Options for dropdown.
+ * @returns {UIComboBoxOption[]} Options for dropdown.
  */
 export const oneOfToDropdownOptions = (
     i18nKey: string,
@@ -183,7 +183,7 @@ export const oneOfToDropdownOptions = (
  * Method hides enum entry which is associated with passed aggregation to avoid anchoring extension to itself.
  * @param {ObjectAggregation} aggregation Aggregation object.
  * @param {JSONSchema4} originalSchema Schema of anchor property.
- * @return {JSONSchema4} Modified schema.
+ * @returns {JSONSchema4} Modified schema.
  */
 export const updateAnchorSchema = (aggregation: ObjectAggregation, originalSchema: JSONSchema4): JSONSchema4 => {
     const anchor = aggregation.name === 'position' ? aggregation.parent?.name : aggregation.name;

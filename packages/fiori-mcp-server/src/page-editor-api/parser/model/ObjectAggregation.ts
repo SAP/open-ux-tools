@@ -152,12 +152,13 @@ export class ObjectAggregation {
 
     /**
      * Method adds aggregation object.
-     * @param {string} name Name of aggregation.
-     * @param {ObjectAggregation} aggregation Aggregation to add.
-     * @param {PropertyPath} path Array of path to aggregation.
-     * @param {number} [order] Order index.
-     * @param {number} [overwrite] Overwrite existing aggregation.
-     * @return {ObjectAggregation} Added aggregation.
+     *
+     * @param name Name of aggregation.
+     * @param aggregation Aggregation to add.
+     * @param path Array of path to aggregation.
+     * @param order Order index.
+     * @param overwrite Overwrite existing aggregation.
+     * @returns Added aggregation.
      */
     public addAggregation(
         name: string,
@@ -196,9 +197,10 @@ export class ObjectAggregation {
 
     /**
      * Method adds property object.
-     * @param {string} name Name of property.
-     * @param {JSONSchema4} schema Schema object of property.
-     * @return {PageEditProperty} Instance of new property.
+     *
+     * @param name Name of property.
+     * @param schema Schema object of property.
+     * @returns Instance of new property.
      */
     public addProperty(name: string, schema: JSONSchema4): PageEditProperty {
         if (CUSTOM_EXTENSION_ANCHOR_PROPERTIES.includes(name)) {
@@ -213,8 +215,9 @@ export class ObjectAggregation {
     /**
      * Public method returns display name of aggregation.
      * Is used as display name in outline.
+     *
      * @param i18nBundle I18n translation entries which should be looked up if display value persists.
-     * @return Display name of aggregation with applied i18n.
+     * @returns Display name of aggregation with applied i18n.
      */
     public getDisplayName(i18nBundle: I18nBundle = {}): string {
         const nameResolutionMethods = [
@@ -255,7 +258,8 @@ export class ObjectAggregation {
 
     /**
      * Public method that returns keys from schema for an aggregation object.
-     * @return {SpecificationKeysTag | undefined} array of keys.
+     *
+     * @returns Array of keys.
      */
     public getKeys(): SpecificationKeysTag | undefined {
         if (this.schema?.keys) {
@@ -266,9 +270,10 @@ export class ObjectAggregation {
     }
 
     /**
-     * Method returns value of passed schema key .
+     * Method returns value of passed schema key.
+     *
      * @param name Name to search.
-     * @return {string | undefined} Value for passed key's name.
+     * @returns Value for passed key's name.
      */
     public getValueOfSchemaKey(name: string): string | undefined {
         const keyObject = this.getKeys()?.find((schemaKey: SpecificationKey) => schemaKey.name === name);
@@ -278,7 +283,8 @@ export class ObjectAggregation {
     /**
      * Public method that returns technical name for an aggregation object.
      * Currently it is used to display in tooltip.
-     * @return {string | undefined} technical name.
+     *
+     * @returns technical name.
      */
     public getTechnicalName(): string | undefined {
         return undefined;
@@ -286,7 +292,8 @@ export class ObjectAggregation {
 
     /**
      * Protected method returns display name of aggregation without applying i18n translation.
-     * @return {string} Display name of aggregation.
+     *
+     * @returns Display name of aggregation.
      */
     protected getRawDisplayName(): string {
         if (this.isViewNode) {
@@ -301,8 +308,9 @@ export class ObjectAggregation {
     /**
      * Method formats text for display.
      * Trim is used to avoid whitespaces.
-     * @param {string} [text=''] Text to format.
-     * @return {string} Formatted text.
+     *
+     * @param text Text to format.
+     * @returns Formatted text.
      */
     private formatTextForDisplay(text = ''): string {
         return text.trim();
@@ -310,6 +318,7 @@ export class ObjectAggregation {
 
     /**
      * Method updates value of aggregatipn properties and child aggregations.
+     *
      * @param data Data which should be used for value population.
      */
     private updateValues(data: PageData | undefined): void {
@@ -329,12 +338,13 @@ export class ObjectAggregation {
 
     /**
      * Public method which recursively updates aggregation's properties with values from passed data object.
-     * @param {PageData} data Data which should be used for value population.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {PropertyPath} path Aggregation path.
-     * @param {PageAnnotations} annotations Page annotations.
-     * @param {ModelParserParams | undefined} parser Model parser parameters.
+     *
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
+     * @param annotations Page annotations.
+     * @param parser Model parser parameters.
      */
     public updatePropertiesValues(
         data: PageData | undefined,
@@ -377,7 +387,8 @@ export class ObjectAggregation {
     }
 
     /**
-     * Refreshes internal data based on annotation node data
+     * Refreshes internal data based on annotation node data.
+     *
      * @param annotations
      */
 
@@ -402,7 +413,8 @@ export class ObjectAggregation {
     /**
      * Method checks if annotation contains allowedSubnodeTypes
      * and sets disabled param for add action button.
-     * @param {PageAnnotations} annotations Page annotations.
+     *
+     * @param annotations Page annotations.
      */
     private setAllowedParents(annotations: PageAnnotations | undefined, currentUINode?: UINode): void {
         if (currentUINode) {
@@ -412,6 +424,7 @@ export class ObjectAggregation {
 
     /**
      * Refreshes node locations based on the annotation node data
+     *
      * @param annotations
      */
     protected updateLocations(annotations: PageAnnotations | undefined, currentUINode?: UINode): void {
@@ -437,7 +450,8 @@ export class ObjectAggregation {
 
     /**
      * Method provides creation options based on its related annotation node
-     * @param {PageAnnotations} annotations Page annotations.
+     *
+     * @param annotations Page annotations.
      */
     protected getNativeNodeCreationForms(annotations: PageAnnotations | undefined): CreationFormOptions[] {
         if (!this.name || !annotations) {
@@ -461,7 +475,8 @@ export class ObjectAggregation {
 
     /**
      * Method recursively searches for parent with 'annotationNodeId' and returns 'annotationNodeId' as current context.
-     * @return {number[] | undefined} Annotation node id.
+     *
+     * @returns Annotation node id.
      */
     public getParentAnnotationNodeId(): number[] | undefined {
         let parent = this.parent;
@@ -476,7 +491,8 @@ export class ObjectAggregation {
     /**
      * Method get valid object of properties.
      * There can be case when aggregation can have several variants of property combination - we are returning currently valid, depending on entered values.
-     * @return {PageProperties} Object of properties.
+     *
+     * @returns Object of properties.
      */
     public getProperties(): PageProperties {
         return this.properties;
@@ -484,8 +500,9 @@ export class ObjectAggregation {
 
     /**
      * Method returns copy of ObjectAggregation object.
-     * @param {typeof ObjectAggregation} [type] Type of aggregation.
-     * @return {ObjectAggregation} Copy of ObjectAggregation.
+     *
+     * @param type Type of aggregation.
+     * @returns Copy of ObjectAggregation.
      */
     public getCopy(type: typeof ObjectAggregation = ObjectAggregation): ObjectAggregation {
         const cloneData = JSON.parse(
@@ -503,9 +520,9 @@ export class ObjectAggregation {
 
     /**
      * Recursive method to use for copying aggregations objects.
-     * @param {ObjectAggregation} aggregation Original aggregation for copy.
-     * @param {typeof ObjectAggregation} [type] Type of aggregation.
-     * @param {ObjectAggregation} aggregation Aggregation to go through.
+     *
+     * @param aggregation Original aggregation for copy.
+     * @param type Type of aggregation.
      */
     private createAggregations(
         aggregation: ObjectAggregation,
@@ -525,9 +542,10 @@ export class ObjectAggregation {
 
     /**
      * Method sorts aggregation by 'order' property.
-     * @param {string} name1 Aggregation name.
-     * @param {string} name2 Aggregation name.
-     * @return {number} Sort result.
+     *
+     * @param name1 Aggregation name.
+     * @param name2 Aggregation name.
+     * @returns Sort result.
      */
     private aggregationOrderSorter(name1: string, name2: string): number {
         // Ordering when order is represented in aggregation
@@ -541,9 +559,10 @@ export class ObjectAggregation {
 
     /**
      * Method returns array of ordered aggregation keys/names.
+     *
      * @param viewNodesOnly Return only aggregations for view.
      * @param sortBy Sorting type. Currently aggregations can be sorted by 'ViewNode' to move visible nodes to top.
-     * @return {Array<string>} Array of aggregations keys/names.
+     * @returns Array of aggregations keys/names.
      */
     public getAggregationKeys(viewNodesOnly = false, sortBy?: AggregationSortBy): Array<string> {
         let aggregationKeys = Object.keys(this.aggregations).sort(this.aggregationOrderSorter.bind(this));
@@ -577,9 +596,10 @@ export class ObjectAggregation {
     /**
      * Aggregation key sorter by view node.
      * Sorter also sorts by aggregation key in scope of save view node group.
+     *
      * @param key1 First aggregation key.
      * @param key2 Second aggregation key.
-     * @return {number} Sorter result.
+     * @returns Sorter result.
      */
     private getViewNodeSorter(key1: string, key2: string): number {
         const isViewNode1 = this.aggregations[key1].isViewNode;
@@ -606,8 +626,9 @@ export class ObjectAggregation {
 
     /**
      * Method updates path recursively.
-     * @param {ObjectAggregation} aggregation Aggregation to update.
-     * @param {PropertyPath} path Current path.
+     *
+     * @param aggregation Aggregation to update.
+     * @param path Current path.
      */
     private updatePath(aggregation: ObjectAggregation, path: PropertyPath): void {
         aggregation.setPath(path);
@@ -620,7 +641,8 @@ export class ObjectAggregation {
 
     /**
      * Set method to store path of aggregation.
-     * @param {PropertyPath} path Path array.
+     *
+     * @param path Path array.
      */
     protected setPath(path: PropertyPath): void {
         this.path = path;
@@ -628,7 +650,8 @@ export class ObjectAggregation {
 
     /**
      * Method returns maximal order by looping through all properties.
-     * @return {number} Maximal property order index.
+     *
+     * @returns Maximal property order index.
      */
     public getMaxOrder(): number {
         let maxOrder = 0;
@@ -653,8 +676,9 @@ export class ObjectAggregation {
 
     /**
      * Method enables union handling by adding setting union name and passing original name of aggregation.
-     * @param {string} name Union name for aggregation.
-     * @param {string} originalName Original name of aggregation.
+     *
+     * @param name Union name for aggregation.
+     * @param originalName Original name of aggregation.
      */
     public addUnionName(name: string, originalName: string): void {
         const originalNames = this.union?.originalNames || [];
@@ -670,7 +694,8 @@ export class ObjectAggregation {
     /**
      * Protected method which returns name with additional formatting if it is unnecessary.
      * Default logic does not apply any additional formatting, but it allows to overwrite such method and provide additional logic specific to each aggregation.
-     * @return {string} Name of aggregation.
+     *
+     * @returns Name of aggregation.
      */
     protected getFormattedName(): string | undefined {
         return this.name;
@@ -678,8 +703,9 @@ export class ObjectAggregation {
 
     /**
      * Method returns associated annotation UI Node for aggregation.
-     * @param {PageAnnotations | undefined} annotations Annotations data.
-     * @returns {AssociatedUINode | undefined} Associated annotation UI Node.
+     *
+     * @param annotations Annotations data.
+     * @returns Associated annotation UI Node.
      */
     private getCurrentUINode(annotations: PageAnnotations | undefined): AssociatedUINode | undefined {
         if (this.name && annotations) {
@@ -743,7 +769,8 @@ export class ObjectAggregation {
 
     /**
      * Method removes passed action from visible actions.
-     * @param {AggregationActions} action Action to remove.
+     *
+     * @param action Action to remove.
      */
     protected removeAction(action: AggregationActions): void {
         if (this.actions) {
@@ -756,8 +783,9 @@ export class ObjectAggregation {
 
     /**
      * Method to stringify node id to string to match 'allowedParents' properties format.
+     *
      * @param annotationNodeId - Annotation node id.
-     * @return Formatted node id.
+     * @returns Formatted node id.
      */
     private nodeIdToString(annotationNodeId: number[]): string {
         return `[${annotationNodeId.join(',')}]`;
@@ -765,9 +793,10 @@ export class ObjectAggregation {
 
     /**
      * Method to find all droppable collections inside aggregation by passed collection name.
+     *
      * @param aggregation Current aggregation to check.
      * @param collectionName Collection name to check.
-     * @return Found droppable collections.
+     * @returns Found droppable collections.
      */
     private findDropableCollectionsByCollection(
         aggregation: ObjectAggregation,
@@ -790,6 +819,7 @@ export class ObjectAggregation {
 
     /**
      * Method returns allowed drop ranges for passed source aggregation.
+     *
      * @param source Source aggregation.
      * @returns Allowed drop ranges for passed source aggregation.
      */
@@ -800,9 +830,10 @@ export class ObjectAggregation {
 
     /**
      * Method to find allowed drop parents for aggregation.
+     *
      * @param source Source aggregation.
      * @param aggregation Aggregation to search in.
-     * @return Found allowed drop parents.
+     * @returns Found allowed drop parents.
      */
     public findAllowedDropAggregations(
         source: ObjectAggregation,
@@ -831,7 +862,8 @@ export class ObjectAggregation {
 
     /**
      * Method returns whether aggregation node has macros metadata.
-     * @return Whether aggregation node is macros node.
+     *
+     * @returns Whether aggregation node is macros node.
      */
     public isMacrosNode(): boolean {
         return !!this.schema?.metadata;
@@ -839,6 +871,7 @@ export class ObjectAggregation {
 
     /**
      * Method converts property to aggregation.
+     *
      * @param key Property key/index in object.
      * @param path Aggregation path.
      */
@@ -854,6 +887,7 @@ export class ObjectAggregation {
 
     /**
      * Method handles atomic aggregation by converting properties to aggregation.
+     *
      * @param data Aggregation source data.
      * @param path Aggregation path.
      */

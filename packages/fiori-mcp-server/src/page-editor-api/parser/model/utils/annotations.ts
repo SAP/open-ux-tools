@@ -73,7 +73,7 @@ export function nodeMatcher(
  * @param {UINode[]} annotationNodes Full annotation nodes tree.
  * @param {UINode[]} childAnnotationNodes Current level's annotation nodes - mainly nested nodes are used to look up, but there is special cases when nodes are not on same level as schema.
  * @param {string} [nodeAnnotationPath] Current annotation node path.
- * @return {UINode | undefined} Matching annotation node.
+ * @returns {UINode | undefined} Matching annotation node.
  */
 export function getMatchingNode(
     schemaAnnotationPath: string,
@@ -109,7 +109,7 @@ export function getMatchingNode(
  * It is used for cases when nodes can have same path, but different order indexes.
  * @param {UINode[]} nodes - Nodes to loop.
  * @param {number} [index] - Index to place as very first.
- * @return {number[]} Array of index to loop.
+ * @returns {number[]} Array of index to loop.
  */
 function getNodeMatcherIndexes(nodes: UINode[], index?: number): number[] {
     const indexes: number[] = [];

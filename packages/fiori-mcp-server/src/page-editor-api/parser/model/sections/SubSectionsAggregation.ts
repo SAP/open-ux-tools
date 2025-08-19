@@ -48,7 +48,7 @@ export class SubSectionsAggregation extends SectionsObjectAggregation {
      * There is two reordering approaches:
      * 1. When annotations sections are merged into one. There no any collection section in such case;
      * 2. When sections are separated. There is at least one collection section in such case;
-     * @return {boolean} Annotation sections are merged by 'sap.fe' in runtime.
+     * @returns {boolean} Annotation sections are merged by 'sap.fe' in runtime.
      */
     public isSectionsMerged(): boolean {
         let mergedAnnotationNodes = 0;

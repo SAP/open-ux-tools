@@ -351,7 +351,7 @@ export class SectionsAggregation extends ObjectAggregation {
      * Also generates unique id if custom section has same values.
      *
      * @param {ObjectPageCustomSectionBase} customSectionData Section id.
-     * @return {string} Custom section id.
+     * @returns {string} Custom section id.
      */
     private storeSection(customSectionData: v2.ObjectPageCustomSectionBase): string {
         // Determine the insertion index based on relative position and related facet
@@ -378,7 +378,7 @@ export class SectionsAggregation extends ObjectAggregation {
     /**
      * Method returns available section id for candidate section id
      * @param {string} sectionId Candidate section id.
-     * @return {string} Available section id.
+     * @returns {string} Available section id.
      */
     public getFreeSectionId(sectionId: string): string {
         // Find available id
@@ -400,7 +400,7 @@ export class SectionsAggregation extends ObjectAggregation {
     /**
      * Method returns available section id for candidate section id
      * @param {string} [position=''] Section position.
-     * @return {string} Available section id.
+     * @returns {string} Available section id.
      */
     private checkRelatedPosition(position = '', ...matchingPositions: v2.SectionPosition[]): boolean {
         const positionQuery = new Map<v2.SectionPosition, string>([
@@ -421,7 +421,7 @@ export class SectionsAggregation extends ObjectAggregation {
     /**
      * Method returns value  for relativePosition - it can be different for V2 or V4.
      * @param {SectionPosition} position Section position.
-     * @return {string} Available section id.
+     * @returns {string} Available section id.
      */
     private getSortingApproach(): SortingApproach {
         if (this.isV4()) {
@@ -434,7 +434,7 @@ export class SectionsAggregation extends ObjectAggregation {
      * Public method validates potentialy new section against rule that id should be unique for V4.
      * Property 'id' is part of custom section only for V4 application.
      * @param {string} id Candidate id.
-     * @return {boolean} Is V4 application.
+     * @returns {boolean} Is V4 application.
      */
     private isV4(): boolean {
         return !!(this.formSchema && this.formSchema.properties.id);

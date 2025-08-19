@@ -2,10 +2,11 @@ import type { PropertyPath } from './parser';
 
 /**
  * Static method updates object for passed path.
- * @param {object} obj - Object to update.
- * @param {PropertyPath} paths - Path for update.
- * @param {unknown} value - New value to update with.
- * @param {boolean} [arrayElement = false] - Value should be inserted into array.
+ *
+ * @param obj Object to update.
+ * @param paths Path for update.
+ * @param value New value to update with.
+ * @param arrayElement Value should be inserted into array.
  */
 export function updateProperty(obj: object, paths: PropertyPath, value: unknown, arrayElement = false): void {
     traverseProperty(obj, paths, value !== undefined, (context: any, key: string | number) => {
@@ -18,7 +19,7 @@ export function updateProperty(obj: object, paths: PropertyPath, value: unknown,
             }
         } else {
             if (Array.isArray(context)) {
-                context.splice(typeof key === 'string' ? parseInt(key) : key, 1);
+                context.splice(typeof key === 'string' ? parseInt(key, 10) : key, 1);
             } else {
                 delete context[key];
             }
@@ -28,10 +29,11 @@ export function updateProperty(obj: object, paths: PropertyPath, value: unknown,
 
 /**
  * Method traverse object by given path and call callback when given path is resolved/found.
- * @param {object} obj - Object to update.
- * @param {PropertyPath} paths - Path for update.
- * @param {boolean} prepare - If any sub property is not found, then prepare object.
- * @param {(context: object, key: string) => void} callback - Callback listener.
+ *
+ * @param obj Object to update.
+ * @param paths Path for update.
+ * @param prepare If any sub property is not found, then prepare object.
+ * @param callback Callback listener.
  */
 function traverseProperty(
     obj: any,

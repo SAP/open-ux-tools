@@ -135,7 +135,7 @@ export function getGenericBase(
 /**
  * Method checks if passed value is a valid number.
  * @param {any} value Value as unknown type.
- * @return {boolean} Is nummber value.
+ * @returns {boolean} Is nummber value.
  */
 const isNumber = (value: number): boolean => {
     return !isNaN(value) && !isNaN(value - 0);
@@ -144,7 +144,7 @@ const isNumber = (value: number): boolean => {
 /**
  * Method returns options for passed enum entries.
  * @param {JSONSchema4Type[]} entries Enum entries.
- * @return {Array<SelectionOption>} Array of options.
+ * @returns {Array<SelectionOption>} Array of options.
  */
 const getEnumOptions = (entries: JSONSchema4Type[]): NodePropertyOptions[] => {
     const options: NodePropertyOptions[] = [];
@@ -382,7 +382,7 @@ function getMovable(model: PageEditModel, aggregation: ObjectAggregation): NodeM
  * Method returns array of node paths, which are allowed to drop/move in.
  * @param root Root aggregation.
  * @param aggregation Target aggregation to get alowed parents.
- * @return Array of diagnostic messages for passed aggregation.
+ * @returns Array of diagnostic messages for passed aggregation.
  */
 function getAllowedParentPaths(root: ObjectAggregation, aggregation: ObjectAggregation): undefined | AllowedParent[] {
     let result: undefined | AllowedParent[] = undefined;

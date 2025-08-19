@@ -36,7 +36,7 @@ export class ColumnAggregation extends ObjectAggregation {
     /**
      * Method returns display name of aggregation without applying i18n translation.
      * Overwritten for column handling.
-     * @return {string} Display name of aggregation.
+     * @returns {string} Display name of aggregation.
      */
     protected getRawDisplayName(): string {
         return this.title || super.getRawDisplayName();
@@ -142,7 +142,7 @@ export class ColumnAggregation extends ObjectAggregation {
 
     /**
      * Method parses object path key and returns field name / technical id.
-     * @return {string | undefined} Field name / technical id.
+     * @returns {string | undefined} Field name / technical id.
      */
     public getTechnicalName(): string | undefined {
         return getTechnicalIdFromPath(this.path);

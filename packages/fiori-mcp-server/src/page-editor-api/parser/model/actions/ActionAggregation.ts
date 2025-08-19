@@ -13,7 +13,7 @@ export class ActionAggregation extends ObjectAggregation {
 
     /**
      * Method parses object path key and returns action name.
-     * @return {string | undefined} Action name.
+     * @returns {string | undefined} Action name.
      */
     public getTechnicalName(): string | undefined {
         const key = this.path[this.path.length - 1];

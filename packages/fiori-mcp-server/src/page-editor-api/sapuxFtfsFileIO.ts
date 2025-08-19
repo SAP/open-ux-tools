@@ -92,7 +92,7 @@ export class SapuxFtfsFileIO {
     /**
      * Get page data object using Project Provider.
      * @param {string} pageId - page id.
-     * @return {Promise<{ config: PageConfig; schema: string; path: string; pageType: PageType }>} Promise to page data.
+     * @returns {Promise<{ config: PageConfig; schema: string; path: string; pageType: PageType }>} Promise to page data.
      */
     public async readPageData(pageId: string): Promise<PageData | undefined> {
         try {
