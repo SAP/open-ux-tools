@@ -63,12 +63,12 @@ Object {
     Object {
       "description": "Page navigation option for parent page. First try to extract navigation option from user input in a format defined in example, if not possible suggest content defined in options",
       "examples": Array [
-        "pageNavigation: TravelsExpensesTravelsStatusCodeListTravelsStatusCodeList_texts",
+        "pageNavigation: Travels",
       ],
       "id": "pageNavigation",
       "options": Array [
-        "TravelsExpensesTravelsStatusCodeListTravelsStatusCodeList_texts",
-        "Expenses",
+        "for TravelsList: available navigation(s) is/are one of: Travels, Expenses, TravelsStatusCodeList, TravelsStatusCodeList_texts",
+        "for TravelsObjectPage: available navigation(s) is/are one of: Expenses",
       ],
       "required": true,
       "type": "string",

@@ -1,4 +1,4 @@
-import { CustomExtensionType, PageTypeV4 } from '@sap/ux-specification-types';
+import { CustomExtensionType, PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { SapuxFtfsFileIO, type AppData } from '../../../page-editor-api';
 import type {
@@ -13,7 +13,7 @@ import { generatePageId } from './utils';
 import { DirName } from '@sap-ux/project-access';
 import { join } from 'path';
 import { ADD_PAGE, DELETE_PAGE } from '../../../constant';
-import type { Application as ApplicationConfig, v4 } from '@sap/ux-specification-types';
+import type { Application as ApplicationConfig, v4 } from '@sap/ux-specification/dist/types/src';
 import { getDefaultExtensionFolder } from '../../utils';
 
 export const ADD_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
