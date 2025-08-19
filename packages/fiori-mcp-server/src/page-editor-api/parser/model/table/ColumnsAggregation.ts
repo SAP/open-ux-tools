@@ -62,7 +62,7 @@ export class ColumnsAggregation extends ObjectAggregation {
         // Child objects as column aggregation
         this.childClass = ColumnAggregation;
         if (schema?.properties) {
-            let formName: AggregationCreationForm | undefined = undefined;
+            let formName: AggregationCreationForm | undefined;
             if (schema.properties?.custom) {
                 formName = AggregationCreationForm.CustomColumn;
             } else if (
@@ -257,7 +257,7 @@ export class ColumnsAggregation extends ObjectAggregation {
         // Find available id
         let counter = 1;
         const originalId = id;
-        while (existingIds.some((existingId: string | undefined) => existingId === id)) {
+        while (existingIds.includes(id)) {
             id = originalId + counter;
             counter++;
         }

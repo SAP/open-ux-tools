@@ -1,4 +1,3 @@
-import type { CreationFormOptions } from '../types';
 import { ObjectAggregation } from '../ObjectAggregation';
 import { VisualFilterAggregation } from './VisualFilterAggregation';
 

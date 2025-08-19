@@ -10,13 +10,15 @@ export class RootAggregation extends ObjectAggregation {
     /**
      * Method provides creation options based on its related annotation node.
      * Overwritten, return array which was calculated on annotation data refresh.
+     *
+     * @returns Array of creation forms.
      */
     public getDefaultNativeCreationForms(): CreationFormOptions[] {
         return this.annotationCreationForms;
     }
 
     /**
-     * Refreshes internal data based on latest annotation node data
+     * Refreshes internal data based on latest annotation node data.
      *
      * @param annotations
      */

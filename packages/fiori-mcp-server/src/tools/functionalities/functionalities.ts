@@ -1,4 +1,4 @@
-import type { FunctionalityHandlers, GetFunctionalityDetailsOutput } from '../../types';
+import type { FunctionalityHandlers } from '../../types';
 import { ADD_PAGE_FUNCTIONALITY, addPageHandlers, DELETE_PAGE_FUNCTIONALITY, deletePageHandlers } from './page';
 import { CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY, createControllerExtensionHandlers } from './controller-extension';
 import { GENERATE_FIORI_UI_APP, generateFioriUIAppHandlers } from './generate-fiori-ui-app';
@@ -18,7 +18,7 @@ export const FUNCTIONALITIES_HANDLERS: Map<string, FunctionalityHandlers> = new 
 
 // NOTE!!!: Mocked/demo/example functionality
 // Detailed functionality information
-const FUNCTIONALITY_DETAILS: { [key: string]: GetFunctionalityDetailsOutput } = {
+/*const FUNCTIONALITY_DETAILS: { [key: string]: GetFunctionalityDetailsOutput } = {
     'add-table-column': {
         id: 'add-table-column',
         name: 'Add Column to List Report Table',
@@ -343,4 +343,4 @@ const FUNCTIONALITY_DETAILS: { [key: string]: GetFunctionalityDetailsOutput } = 
             'Enable both exports: enableExcelExport=true, enablePdfExport=true'
         ]
     }
-};
+};*/

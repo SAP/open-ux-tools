@@ -14,8 +14,7 @@ import { join } from 'path';
 /**
  * Method returns main service of the application.
  *
- * @param project = project
- * @param appId - application id
+ * @param appAccess Application access.
  * @returns main service name
  */
 export function getMainService(appAccess: ApplicationAccess): string {
@@ -96,7 +95,8 @@ export async function getManifest(appAccess: ApplicationAccess): Promise<Manifes
  * It reads the vesion from minUI5Version in the manifest.json.
  * If the minUI5Version is not a number, then 'latest' is returned as default value in case of exceptions.
  *
- * @param appAccess - application access object
+ * @param appAccess - application access object.
+ * @returns Resolved UI5 version for passed application.
  */
 export async function getUI5Version(appAccess: ApplicationAccess): Promise<string> {
     try {

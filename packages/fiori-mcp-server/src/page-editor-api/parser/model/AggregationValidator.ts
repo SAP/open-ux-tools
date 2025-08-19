@@ -9,9 +9,9 @@ import { addValidationMessages } from './utils';
 export class AggregationValidator {
     /**
      * Method validates states of properties and aggregation. Following states are supported:
-     * 1. Valid;
-     * 2. Invalid - when value is set for property/aggregation, but it is not valid;
-     * 3. Skipped - when property/aggregation is not relevant in current value context and value does not set;
+     * 1. Valid.
+     * 2. Invalid - when value is set for property/aggregation, but it is not valid.
+     * 3. Skipped - when property/aggregation is not relevant in current value context and value does not set.
      *
      * @param aggregation ObjectAggregation which state should be validated.
      * @param data Page data.
@@ -109,6 +109,7 @@ export class AggregationValidator {
      * @param variant Variant to use as validation rule.
      * @param aggregation Aggregation to validate.
      * @param property Name of inner property or aggregation, which should be validated.
+     * @param ignoreUnexisting Do not return skip state when ignore passed and variant property does not exist.
      * @returns Validation result.
      */
     validateVariant(

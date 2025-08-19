@@ -15,9 +15,10 @@ export class FieldsAggregation extends ObjectAggregation {
     i18nKey = 'FIELDS';
 
     /**
-     * Refreshes internal data based on annotation node data
-     * Overwritten to keep child nodes order the same as they defined in connected fields template
-     * @param annotations
+     * Refreshes internal data based on annotation node data.
+     * Overwritten to keep child nodes order the same as they defined in connected fields template.
+     *
+     * @param annotations Page annotations.
      */
     public updateAnnotationData(annotations: PageAnnotations | undefined): void {
         super.updateAnnotationData(annotations);

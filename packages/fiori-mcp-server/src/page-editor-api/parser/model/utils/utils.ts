@@ -13,7 +13,8 @@ export interface AppTranslationBundleData {
 
 /**
  * Method returns application specific i18n bundle data.
- * @returns {AppTranslationBundleData} i18n bundle data.
+ *
+ * @returns i18n bundle data.
  */
 export const getAppI18nBundle = (): AppTranslationBundleData => {
     return {
@@ -227,6 +228,7 @@ export const updateAnchorSchema = (aggregation: ObjectAggregation, originalSchem
  * Method adds validation message to property or node instance.
  *
  * @param instance Property or node instance.
+ * @param instance.messages Messages of instance.
  * @param messages Array of validation messages.
  */
 export function addValidationMessages(instance: { messages?: PropertyMessage[] }, messages: PropertyMessage[]): void {

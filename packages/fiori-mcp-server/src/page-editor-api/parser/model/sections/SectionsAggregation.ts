@@ -67,6 +67,8 @@ export class SectionsAggregation extends ObjectAggregation {
      * @param page Page config data.
      * @param pageType Page type.
      * @param path Aggregation path.
+     * @param annotations Page annotations.
+     * @param parser Model parser parameters.
      */
     public updatePropertiesValues(
         data: PageData,
@@ -179,15 +181,7 @@ export class SectionsAggregation extends ObjectAggregation {
         const index = this.customSections.indexOf(sectionData);
         // Create instance for Custom section aggregation by copying form schema
         const customSection = this.formSchema.getCopy(SectionAggregation) as SectionAggregation;
-        customSection.markAsCustomSection(
-            sectionData,
-            this.checkRelatedPosition(
-                sectionData.relativePosition,
-                v2.SectionPosition.BeforeFacet,
-                v2.SectionPosition.AfterFacet
-            ),
-            this.i18nKey
-        );
+        customSection.markAsCustomSection(sectionData, this.i18nKey);
         if (parser) {
             const fragmentData = sectionData as unknown as SectionFragmentData;
             const { fragmentName } = fragmentData;
@@ -277,6 +271,7 @@ export class SectionsAggregation extends ObjectAggregation {
      *
      * @param sectionId Section id.
      * @param relatedFacet Related facet id.
+     * @returns True if section id matches passed related facet id.
      */
     public isSectionMatchesRelatedFacet(sectionId = '', relatedFacet = ''): boolean {
         // At some point maybe we would not need it, but currently schema does not return same ids as custom section's facets
@@ -380,7 +375,7 @@ export class SectionsAggregation extends ObjectAggregation {
     }
 
     /**
-     * Method returns available section id for candidate section id
+     * Method returns available section id for candidate section id.
      *
      * @param sectionId Candidate section id.
      * @returns Available section id.
@@ -395,7 +390,7 @@ export class SectionsAggregation extends ObjectAggregation {
             return this.sections.indexOf(key) === -1;
         });
         const sectionIds = [...this.sections, ...keys];
-        while (sectionIds.some((existingSectionId: string) => existingSectionId === sectionId)) {
+        while (sectionIds.includes(sectionId)) {
             sectionId = originalSectionId + counter;
             counter++;
         }
@@ -403,10 +398,11 @@ export class SectionsAggregation extends ObjectAggregation {
     }
 
     /**
-     * Method returns available section id for candidate section id.
+     * Checks whether the given position string matches any of the provided section positions.
      *
-     * @param position Section position.
-     * @returns Available section id.
+     * @param position A section position string (case-insensitive). Defaults to an empty string.
+     * @param matchingPositions One or more section positions to check against.
+     * @returns True if the position string includes any of the matching section positions; otherwise, false.
      */
     private checkRelatedPosition(position = '', ...matchingPositions: v2.SectionPosition[]): boolean {
         const positionQuery = new Map<v2.SectionPosition, string>([
@@ -425,10 +421,9 @@ export class SectionsAggregation extends ObjectAggregation {
     }
 
     /**
-     * Method returns value  for relativePosition - it can be different for V2 or V4.
+     * Method returns sorting/reorder approach - it can be different for V2 or V4.
      *
-     * @param position Section position.
-     * @returns Available section id.
+     * @returns Sorting approach.
      */
     private getSortingApproach(): SortingApproach {
         if (this.isV4()) {
@@ -438,11 +433,9 @@ export class SectionsAggregation extends ObjectAggregation {
     }
 
     /**
-     * Public method validates potentialy new section against rule that id should be unique for V4.
-     * Property 'id' is part of custom section only for V4 application.
+     * Checks whether the section schema belongs to a Fiori Elements V4 application.
      *
-     * @param id Candidate id.
-     * @returns Is V4 application.
+     * @returns {boolean} True if the schema is for a V4 application.
      */
     private isV4(): boolean {
         return !!(this.formSchema && this.formSchema.properties.id);

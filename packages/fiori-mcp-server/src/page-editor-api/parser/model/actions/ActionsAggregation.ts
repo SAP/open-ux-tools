@@ -111,7 +111,7 @@ export class ActionsAggregation extends ObjectAggregation {
      * Method provides creation options based on its related annotation node.
      *
      * @param annotations Page annotations.
-     * @returns Creation form options.
+     * @returns Array of creation forms.
      */
     protected getNativeNodeCreationForms(annotations: PageAnnotations | undefined): CreationFormOptions[] {
         if (this.parent) {

@@ -217,7 +217,7 @@ function resolveParameterValue(
         // Whole object is received as parameters
         return value;
     }
-    let value: unknown = undefined;
+    let value;
     if (propertyName in parametersValue) {
         // Change property is part of parameters object
         value = parametersValue[propertyName];

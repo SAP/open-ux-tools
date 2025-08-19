@@ -130,8 +130,8 @@ export class SapuxFtfsFileIO {
     /**
      * Update content of the passed page.
      *
-     * @param pageName Page name.
-     * @param config Configuration for update.
+     * @param pageData Page data.
+     * @returns Result of export operation.
      */
     public async writePage(pageData: PageData): Promise<ExportResults | undefined> {
         const manifest = await getManifest(this.appAccess);

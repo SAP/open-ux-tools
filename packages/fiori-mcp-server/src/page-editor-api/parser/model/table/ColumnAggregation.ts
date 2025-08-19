@@ -46,8 +46,6 @@ export class ColumnAggregation extends ObjectAggregation {
 
     /**
      * Method validates column positioning by checking anchoring.
-     *
-     * @param isMacro Whether column is a part of macros table.
      */
     private validateColumnPositioning(): void {
         const value = this.value && typeof this.value === 'object' ? this.value : {};
@@ -77,7 +75,15 @@ export class ColumnAggregation extends ObjectAggregation {
     /**
      * Public method to mark section as custom section.
      *
-     * @param params Custom column params
+     * @param params Parameters used to configure the custom column.
+     * @param params.pageType Page type
+     * @param params.originalIndex Original element index - data to store and use on reordering.
+     * @param params.columnExtension Column extension type.
+     * @param params.isExtensionTypeSupported Whether column extension type is supported.
+     * @param params.i18nKey I18n custom key.
+     * @param params.tableExtension Target table extension type.
+     * @param params.isV4 Whether Custom column is for V4.
+     * @param params.tabkey Tab/view key identificator.
      */
     public markAsCustomColumn(params: {
         pageType: PageType;

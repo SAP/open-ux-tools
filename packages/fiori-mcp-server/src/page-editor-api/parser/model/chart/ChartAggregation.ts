@@ -39,6 +39,7 @@ export class ChartAggregation extends ObjectAggregation {
      * @param page Page config data.
      * @param pageType Page type.
      * @param path Aggregation path.
+     * @param annotations Page annotations.
      */
     public updatePropertiesValues(
         data: PageData,

@@ -358,8 +358,6 @@ export function traverseTree(aggregation: ObjectAggregation, traverseNodeData: T
  *
  * @param model Edit model.
  * @param aggregation Aggregation object.
- * @param nodeId Node id.
- * @param features Supported app features.
  * @returns Movable props.
  */
 function getMovable(model: PageEditModel, aggregation: ObjectAggregation): NodeMoveProps | undefined {
@@ -391,7 +389,7 @@ function getMovable(model: PageEditModel, aggregation: ObjectAggregation): NodeM
  * @returns Array of diagnostic messages for passed aggregation.
  */
 function getAllowedParentPaths(root: ObjectAggregation, aggregation: ObjectAggregation): undefined | AllowedParent[] {
-    let result: undefined | AllowedParent[] = undefined;
+    let result: undefined | AllowedParent[];
     if (aggregation.custom) {
         const allowedDropRange = aggregation.parent?.getAllowedDropRange(aggregation);
         result = [];
@@ -440,10 +438,10 @@ function getNodeType(aggregation: ObjectAggregation): AggregationNodeType | unde
 /**
  * Method creates tree for passed edit model.
  *
- * @param model Page edit model.
- * @param messages Array of messages.
- * @param filter Applied filter data.
- * @param features Supported features.
+ * @param schema Page or application schema.
+ * @param data Configuration file mapped to schema.
+ * @param pageType Page type. If pageType is not passed, then considered as application.
+ * @param annotation Page annotations.
  * @returns Outline tree.
  */
 export function getTree(
@@ -478,7 +476,7 @@ export function getTree(
  * Method finds node by passed annotation nodeId.
  *
  * @param tree Nodes tree to lookup.
- * @param path Path to find node by.
+ * @param nodeId Annotation node id.
  * @returns Found node information.
  */
 export function findNodeByAnnotationNodeId(tree: TreeNode[], nodeId: number[]): TreeNode | undefined {

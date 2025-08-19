@@ -34,7 +34,8 @@ export class ViewsAggregation extends ObjectAggregation {
     i18nKey = 'VIEWS';
 
     /**
-     * Refreshes internal data based on latest annotation node data
+     * Refreshes internal data based on latest annotation node data.
+     *
      * @param annotations
      */
     public updateAnnotationData(annotations: PageAnnotations | undefined): void {

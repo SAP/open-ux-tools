@@ -88,10 +88,13 @@ export class SectionAggregation extends ObjectAggregation {
 
     /**
      * Public method to mark section as custom section.
+     *
+     * @param data Configuration of section(segment of page config).
+     * @param i18nKey I18n custom key.
+     * @param goCodeAction Go to code action.
      */
     public markAsCustomSection(
         data?: v2.ObjectPageCustomSectionBase,
-        sortable?: boolean,
         i18nKey?: string,
         goCodeAction?: SupportedAggregationAction
     ): void {

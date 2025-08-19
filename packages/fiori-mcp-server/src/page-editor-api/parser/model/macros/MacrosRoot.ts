@@ -76,7 +76,6 @@ export class MacrosRootAggregation extends ObjectAggregation {
     /**
      * Method provides creation options for macros elements.
      *
-     * @param annotations Page annotations.
      * @returns Creation forms for macros node.
      */
     protected getNativeNodeCreationForms(): CreationFormOptions[] {
@@ -86,8 +85,7 @@ export class MacrosRootAggregation extends ObjectAggregation {
     /**
      * Method stores passed file path as source of macros node.
      *
-     * @param annotations Page annotations.
-     * @returns Creation forms for macros node.
+     * @param filePath File path to set.
      */
     public setFilePath(filePath: string): void {
         this.filePath = join(DirName.Webapp, filePath);

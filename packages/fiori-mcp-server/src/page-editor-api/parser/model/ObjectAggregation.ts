@@ -383,7 +383,7 @@ export class ObjectAggregation {
      * Method which caled when properties and aggregation data was applied and updated.
      */
     protected onPropertiesUpdated(): void {
-        return undefined;
+        // no-op
     }
 
     /**
@@ -424,7 +424,7 @@ export class ObjectAggregation {
     }
 
     /**
-     * Refreshes node locations based on the annotation node data
+     * Refreshes node locations based on the annotation node data.
      *
      * @param annotations All page annotations.
      * @param currentUINode Annotation node.
@@ -451,9 +451,10 @@ export class ObjectAggregation {
     }
 
     /**
-     * Method provides creation options based on its related annotation node
+     * Method provides creation options based on its related annotation node.
      *
      * @param annotations Page annotations.
+     * @returns Array of creation forms.
      */
     protected getNativeNodeCreationForms(annotations: PageAnnotations | undefined): CreationFormOptions[] {
         if (!this.name || !annotations) {
@@ -468,7 +469,10 @@ export class ObjectAggregation {
     }
 
     /**
-     * Method provides default creation options, when no matching annotation node exists
+     * Method provides default creation options, when no matching annotation node exists.
+     *
+     * @param annotations Page annotations.
+     * @returns Array of creation forms.
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getDefaultNativeCreationForms(annotations: PageAnnotations): CreationFormOptions[] {
@@ -727,6 +731,8 @@ export class ObjectAggregation {
 
     /**
      * Method handles readonly annotation node by disabling actions and DnD.
+     *
+     * @param readonlyTooltip Tooltip text for readonly mode.
      */
     protected applyReadonlyAnnotationNode(readonlyTooltip?: string): void {
         // Method to disable actions

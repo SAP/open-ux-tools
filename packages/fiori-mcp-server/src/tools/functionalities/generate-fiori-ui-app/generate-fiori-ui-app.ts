@@ -4,7 +4,6 @@ import type {
     ExecuteFunctionalitiesInput,
     ExecuteFunctionalityOutput,
     FunctionalityHandlers,
-    GetFunctionalityDetailsInput,
     GetFunctionalityDetailsOutput
 } from '../../../types';
 
@@ -198,7 +197,7 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
     ]
 };
 
-async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Promise<GetFunctionalityDetailsOutput> {
+async function getFunctionalityDetails(): Promise<GetFunctionalityDetailsOutput> {
     return GENERATE_FIORI_UI_APP;
 }
 

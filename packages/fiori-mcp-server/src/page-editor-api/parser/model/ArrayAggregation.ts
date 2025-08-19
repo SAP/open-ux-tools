@@ -52,7 +52,7 @@ export class ArrayAggregation extends ObjectAggregation {
         if (aggregation.schema && !aggregation.schema.title) {
             // Apply custom title as node label for array element
             aggregation.schema.title = i18next.t('PAGE_EDITOR_OUTLINE_ARRAY_ITEM', {
-                name: parseInt(name) + 1
+                name: parseInt(name, 10) + 1
             });
         }
         aggregation.custom = true;
@@ -84,7 +84,7 @@ export class ArrayAggregation extends ObjectAggregation {
                 if (!aggregation) {
                     continue;
                 }
-                let additionalText = undefined;
+                let additionalText;
                 if (this.isAtomic) {
                     additionalText = data[i];
                 } else {
@@ -110,7 +110,7 @@ export class ArrayAggregation extends ObjectAggregation {
         // Start with predefined most common properties
         const primaryProperties = ['id', 'title', 'key', 'name'];
         const schemaProperties = aggregation.schema ? aggregation.schema.properties || {} : {};
-        let primaryProperty = undefined;
+        let primaryProperty: string | undefined;
         for (const property of primaryProperties) {
             if (property in schemaProperties) {
                 primaryProperty = property;

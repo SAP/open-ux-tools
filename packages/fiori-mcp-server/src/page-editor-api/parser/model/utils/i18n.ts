@@ -56,8 +56,9 @@ export const resolveI18nValue = (value: string, i18nBundle: I18nBundle = {}): st
 /**
  * Method returns name of i18n bundle depending on passed project type and entity.
  *
- * @param custom Is custom extension.
+ * @param isCustom Is custom extension.
  * @param isViewNode Is visible node.
+ * @param isAnnotation Node has mapping to annotation.
  * @param projectType Project type.
  * @returns I18n bundle name.
  */

@@ -33,11 +33,12 @@ export class FilterFieldsAggregation extends ObjectAggregation {
     /**
      * Overwritten method for data update of object page actions
      * Method receives current values for actions and detects custom actions.
-     * @param {PageData} data Data which should be used for value population.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {PropertyPath} path Aggregation path.
-     * @param {PageAnnotations} annotations Annotations data.
+     *
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
+     * @param annotations Annotations data.
      */
     public updatePropertiesValues(
         data: PageData,

@@ -24,12 +24,13 @@ export class SubSectionsAggregation extends SectionsObjectAggregation {
     /**
      * Overwritten method for data update of object page sections
      * Method receives current values for sections - loops custom sections array and appends existing/standard aggregations with custom section aggregations.
-     * @param {PageData} data Data which should be used for value population.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {PropertyPath} path Aggregation path.
-     * @param {PageAnnotations} annotations Page annotations.
-     * @param {ModelParModelParserParams<ObjectAggregation> | undefined} parser Model parser parameters.
+     *
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
+     * @param annotations Page annotations.
+     * @param parser Model parser parameters.
      */
     public updatePropertiesValues(
         data: PageData,
@@ -46,9 +47,10 @@ export class SubSectionsAggregation extends SectionsObjectAggregation {
     /**
      * Public method checks if annotation sections are merged by 'sap.fe' in runtime.
      * There is two reordering approaches:
-     * 1. When annotations sections are merged into one. There no any collection section in such case;
-     * 2. When sections are separated. There is at least one collection section in such case;
-     * @returns {boolean} Annotation sections are merged by 'sap.fe' in runtime.
+     * 1. When annotations sections are merged into one. There no any collection section in such case.
+     * 2. When sections are separated. There is at least one collection section in such case.
+     *
+     * @returns Annotation sections are merged by 'sap.fe' in runtime.
      */
     public isSectionsMerged(): boolean {
         let mergedAnnotationNodes = 0;

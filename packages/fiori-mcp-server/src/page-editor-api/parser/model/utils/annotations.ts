@@ -75,6 +75,7 @@ export function nodeMatcher(
  * @param annotationNodes Full annotation nodes tree.
  * @param childAnnotationNodes Current level's annotation nodes - mainly nested nodes are used to look up, but there is special cases when nodes are not on same level as schema.
  * @param nodeAnnotationPath Current annotation node path.
+ * @param index Node index to look.
  * @returns Matching annotation node.
  */
 export function getMatchingNode(

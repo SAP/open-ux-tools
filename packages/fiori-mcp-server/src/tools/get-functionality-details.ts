@@ -106,7 +106,7 @@ export function resolveFunctionality(functionalityId: string | string[]): {
     } catch (e) {
         throw new Error('Invalid format of functionalityId parameter');
     }
-    let pageName: string | undefined = undefined;
+    let pageName: string | undefined;
     if (propertyPath[0] !== 'settings') {
         // Currently all application paths starts with settings and it is simple to detect pagename from path
         pageName = propertyPath.shift()?.toString();

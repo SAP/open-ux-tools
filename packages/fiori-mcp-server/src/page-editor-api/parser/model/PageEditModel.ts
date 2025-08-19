@@ -89,7 +89,7 @@ const isInstanceOfUI5Control = (controlName: string, aggregation?: ObjectAggrega
  * Method checks if passed schema is instance of passed macros control name.
  *
  * @param controlName SAPUI5 macros control name.
- * @param aggregation Aggregation object.
+ * @param schema Schema node to check.
  * @returns Is passed aggregation instance of passed SAPUI5 control.
  */
 const isSchemaOfUI5Control = (controlName: string, schema?: JSONSchema4): boolean => {
@@ -249,6 +249,8 @@ export class PageEditModel {
 
     /**
      * Initialize model data - parse schema and current page object values.
+     *
+     * @param annotations Page annotations.
      */
     private init(annotations: PageAnnotations): void {
         // Store definitions with full path
@@ -348,7 +350,7 @@ export class PageEditModel {
             }
             if (this.isAggregation(currentNode)) {
                 params.path = params.path.concat([
-                    params.aggregation.type === AggregationType.Array ? parseInt(name) : name
+                    params.aggregation.type === AggregationType.Array ? parseInt(name, 10) : name
                 ]);
                 const displayName = currentNode.displayName || name;
                 const type =
@@ -643,7 +645,6 @@ export class PageEditModel {
      *
      * @param anyOf Array value of "anyOf" schema property.
      * @param params Schema parse params.
-     * @returns Sort result.
      */
     private createAnyOfPropertiesVariations(anyOf: JSONSchema4[], params: SchemaParseParams) {
         const { aggregation, currentAnnotationNode, name, path, context } = params;
@@ -678,6 +679,7 @@ export class PageEditModel {
      *
      * @param aggregation Current aggregation.
      * @param currentNode Current schema node.
+     * @param currentAnnotationNode Current annotation node.
      * @param name Name of aggregation.
      * @param path Array containing path to current aggregation.
      * @param context Object containing Parser context.
@@ -762,11 +764,8 @@ export class PageEditModel {
      * @param schema Schema node to check.
      * @returns Schema node should be used for aggregation.
      */
-    private isAggregation(currentNode: JSONSchema4): boolean {
-        return (
-            (currentNode.type === JSON_SCHEMA_TYPE_OBJECT || currentNode.type === JSON_SCHEMA_TYPE_ARRAY) &&
-            !currentNode.$ref
-        );
+    private isAggregation(schema: JSONSchema4): boolean {
+        return (schema.type === JSON_SCHEMA_TYPE_OBJECT || schema.type === JSON_SCHEMA_TYPE_ARRAY) && !schema.$ref;
     }
 
     /**
@@ -820,10 +819,10 @@ export class PageEditModel {
     /**
      * Method uses recursion to populate 'aggregation' with values from page object.
      *
-     * @param object ObjectAggregation which would be populated.
+     * @param aggregation ObjectAggregation which would be populated.
      * @param data Page data - object contains latest page values.
      */
-    readPropertiesData(aggregation: ObjectAggregation, data: PageData, parentPath = ''): void {
+    readPropertiesData(aggregation: ObjectAggregation, data: PageData): void {
         const propertyKeys = Object.keys(aggregation.properties);
         for (const name in data) {
             if (propertyKeys.includes(name)) {
@@ -833,11 +832,7 @@ export class PageEditModel {
         // Go with recursion
         for (const name in aggregation.aggregations) {
             if (name in data) {
-                this.readPropertiesData(
-                    aggregation.aggregations[name],
-                    data[name] as PageData,
-                    parentPath + '/' + name
-                );
+                this.readPropertiesData(aggregation.aggregations[name], data[name] as PageData);
             }
         }
     }
@@ -845,8 +840,10 @@ export class PageEditModel {
     /**
      * Method prepares simple aggregation object.
      *
-     * @param object ObjectAggregation which would be populated.
-     * @param data Page data - object contains latest page values.
+     * @param path Path for aggregation.
+     * @param schema Schema segment for new aggregation.
+     * @param parentAggregation Parent aggregation.
+     * @param type Aggregation type.
      * @returns Predefined aggregation object.
      */
     prepareAggregation(
@@ -881,7 +878,7 @@ export class PageEditModel {
     /**
      * Method to check if free text entry should be enabled for property.
      *
-     * @param anyOf Array of JSON schema nodes.
+     * @param schema Schema node to check.
      * @returns Free text entry allowed.
      */
     private isFreeText(schema: JSONSchema4[] | JSONSchema4): boolean {
@@ -957,6 +954,7 @@ export class PageEditModel {
      * Method updates aggregation 'formSchema' property with schema object which will represent creation form.
      *
      * @param aggregation Aggregation to handle.
+     * @param name Aggregation name in 'additionalProperties'.
      */
     private updateFormSchema(aggregation: ObjectAggregation, name?: string): void {
         if (aggregation instanceof ArrayAggregation) {
@@ -990,6 +988,9 @@ export class PageEditModel {
 
     /**
      * Method goes with recursion and marks all visible nodes for outline.
+     *
+     * @param aggregation Aggregation object.
+     * @returns Returns visbility of aggregation.
      */
     private updateViewNodes(aggregation: ObjectAggregation): boolean {
         for (const name in aggregation.aggregations) {
@@ -1050,6 +1051,8 @@ export class PageEditModel {
     /**
      * Method handles post initialization.
      * Currently it is used for FPM custom pages to add additional root 'macros' node.
+     *
+     * @param annotations Page annotations.
      */
     private afterInit(annotations: PageAnnotations): void {
         if (this.pageType === PageType.FPMCustomPage) {
