@@ -88,7 +88,7 @@ export async function getQuestions(
     };
 
     // Hide not applicable prompts based on passed options or if this is a CAP project
-    let questions: UI5ApplicationQuestion[] = hidePrompts(keyedPrompts, promptOptions, isCapProject);
+    let questions: UI5ApplicationQuestion[] = hidePrompts(keyedPrompts, promptOptions, capCdsInfo);
 
     // Add an additional condition to 'advanced' prompts so they can be shown/hidden at runtime
     applyAdvancedOption(questions, promptOptions);

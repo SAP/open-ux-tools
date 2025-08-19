@@ -1,5 +1,11 @@
 # @sap-ux/ui-prompting
 
+## 0.4.1
+
+### Patch Changes
+
+-   2d0380a: Improve answer change handling and dependent question choice requests in Questions component in ui prompting
+
 ## 0.4.0
 
 ### Minor Changes
