@@ -4,6 +4,7 @@ import { getBuildingBlockIdPrompt, getViewOrFragmentPathPrompt, getAggregationPa
 import type { PromptContext, Prompts } from '../../../prompts/types';
 import { BuildingBlockType } from '../../types';
 import type { BuildingBlockConfig, Page } from '../../types';
+import { SapShortTextType, SapLongTextType } from '@sap-ux/i18n';
 
 export type PagePromptsAnswer = BuildingBlockConfig<Page> & Answers;
 
@@ -43,13 +44,23 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
                 name: 'buildingBlockData.title',
                 message: t('title.message') as string,
                 guiOptions: {
-                    mandatory: true
+                    mandatory: true,
+                    translationProperties: {
+                        type: SapShortTextType.TableTitle,
+                        annotation: t('title.translationAnnotation') as string
+                    }
                 }
             },
             {
                 type: 'input',
                 name: 'buildingBlockData.description',
-                message: t('description.message') as string
+                message: t('description.message') as string,
+                guiOptions: {
+                    translationProperties: {
+                        type: SapLongTextType.Description,
+                        annotation: t('description.translationAnnotation') as string
+                    }
+                }
             }
         ],
         initialAnswers: {

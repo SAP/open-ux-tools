@@ -180,7 +180,6 @@ export function getEntitySelectionQuestions(
         } as ListQuestion<EntitySelectionAnswers>);
     }
 
-    // Add Page Building Block question todo: confirm if we need to explicitly check for template type fpm here ?
     if (promptOptions?.displayPageBuildingBlockPrompt) {
         entityQuestions.push(...getPageBuildingBlockQuestions());
     }
