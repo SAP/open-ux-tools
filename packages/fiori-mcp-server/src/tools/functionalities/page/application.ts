@@ -1,4 +1,4 @@
-import { CustomExtensionType, PageTypeV4 } from '@sap/ux-specification/dist/types/src';
+import { CustomExtensionType, PageTypeV4 } from '@sap/ux-specification-types';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { SapuxFtfsFileIO, type AppData } from '../../../page-editor-api';
 import type {
@@ -13,7 +13,7 @@ import { generatePageId } from './utils';
 import { DirName } from '@sap-ux/project-access';
 import { join } from 'path';
 import { ADD_PAGE, DELETE_PAGE } from '../../../constant';
-import type { Application as ApplicationConfig, v4 } from '@sap/ux-specification/dist/types/src';
+import type { Application as ApplicationConfig, v4 } from '@sap/ux-specification-types';
 import { getDefaultExtensionFolder } from '../../utils';
 
 export const ADD_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
@@ -60,7 +60,7 @@ export class Application {
     }
 
     private getAllowedNavigationsOutput(navigations: AllowedNavigationOptions[]): string {
-        return navigations.map((navigation) => this.getAllowedNavigationsName(navigation)).join('');
+        return navigations.map((navigation) => this.getAllowedNavigationsName(navigation)).join(', ');
     }
 
     private getMissingNavigationMessage(
@@ -446,8 +446,10 @@ export class Application {
                     id: 'pageNavigation',
                     type: 'string',
                     description: `Page navigation option for parent page. First try to extract navigation option from user input in a format defined in example, if not possible suggest content defined in options`,
-                    options: Object.values(navigationsMap).filter((navigation) => navigation !== ''),
-                    examples: ['pageNavigation: ' + Object.values(navigationsMap)[0]],
+                    options: Object.keys(navigationsMap).map(
+                        (item) => `for ${item}: available navigation(s) is/are one of: ${navigationsMap[item]}`
+                    ),
+                    examples: ['pageNavigation: ' + Object.values(navigationsMap)[0].split(',')[0]],
                     required: true
                 },
                 {
