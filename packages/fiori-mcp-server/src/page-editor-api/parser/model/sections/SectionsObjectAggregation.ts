@@ -22,7 +22,16 @@ interface ParseData {
     pageType: PageType;
 }
 
+/**
+ * Represents an aggregation for sections objects.
+ */
 export class SectionsObjectAggregation extends SectionsAggregation {
+    /**
+     * Creates an instance of `SectionsObjectAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         super(data, schema);
         const additionalProperties = schema?.additionalProperties;

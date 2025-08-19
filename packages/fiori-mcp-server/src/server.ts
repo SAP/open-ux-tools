@@ -35,6 +35,9 @@ type ToolArgs =
     | ExecuteFunctionalitiesInput
     | Record<string, unknown>;
 
+/**
+ *
+ */
 export class FioriFunctionalityServer {
     private server: Server;
 

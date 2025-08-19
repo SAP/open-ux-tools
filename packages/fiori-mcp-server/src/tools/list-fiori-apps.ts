@@ -13,7 +13,7 @@ export async function listFioriApps(params: ListFioriAppsInput): Promise<ListFio
     const { searchPath = [] } = params;
     const newFoundFioriArtifacts = await findFioriArtifacts({
         wsFolders: searchPath,
-        arti facts: ['applications']
+        artifacts: ['applications']
     });
 
     return {

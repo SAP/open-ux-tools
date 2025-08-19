@@ -3,6 +3,9 @@ import { AggregationCreationForm, ANNOTATION_CREATION_FORM } from './types';
 import type { CreationFormOptions, PageAnnotations } from './types';
 import i18next from 'i18next';
 
+/**
+ * Represents an aggregation for root level object in page/application schema.
+ */
 export class RootAggregation extends ObjectAggregation {
     public allowedAnnotationCreationForms: AggregationCreationForm[] = [AggregationCreationForm.AnalyticalChart];
     name = 'root';

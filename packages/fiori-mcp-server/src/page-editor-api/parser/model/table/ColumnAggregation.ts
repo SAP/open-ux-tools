@@ -17,6 +17,9 @@ import { getTechnicalIdFromPath, validateExtension, validateMacrosExtension, get
 import { PageType } from '@sap/ux-specification/dist/types/src';
 import type { PageConfig } from '@sap/ux-specification/dist/types/src';
 
+/**
+ * Represents an aggregation for column objects.
+ */
 export class ColumnAggregation extends ObjectAggregation {
     private title?: string;
     public originalIndex?: number;

@@ -12,9 +12,18 @@ import type { PageEditAggregationData } from './ObjectAggregation';
 import { ObjectAggregation } from './ObjectAggregation';
 import type { PageConfig, PageType } from '@sap/ux-specification/dist/types/src';
 
+/**
+ * Represents an aggregation for array object.
+ */
 export class ArrayAggregation extends ObjectAggregation {
     public readonly type = AggregationType.Array;
 
+    /**
+     * Creates an instance of `ArrayAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         super(data, schema);
         this.schemaCreationForms = [

@@ -210,6 +210,14 @@ type SchemaReferenceParsers = Map<SchemaReferenceProperties, SchemaParserMethod>
 // then default behavior is that most top properties have higher priority, but for some cases we need take it from deeper level.
 const SCHEMA_DEEP_LEVEL_PROPS = ['annotationPath'];
 
+/**
+ * Page/application schema parsing model.
+ * `PageEditModel` is responsible for:
+ * - Holding metadata about a page (type, schema, annotations, etc.).
+ * - Storing both current (`data`) and original (`originalData`) page definitions.
+ * - Managing the root aggregation tree (`root`) for further parsing and validation.
+ * - Supporting schema traversal, validation, and exclusion rules.
+ */
 export class PageEditModel {
     public name: string;
     public pageType: PageType;
@@ -226,6 +234,15 @@ export class PageEditModel {
     public pendingNodes: ObjectAggregation[] = [];
     public contextPathOrEntitySet?: string;
 
+    /**
+     *
+     * @param name
+     * @param pageType
+     * @param page
+     * @param schema
+     * @param annotations
+     * @param contextPathOrEntitySet
+     */
     constructor(
         name: string,
         pageType: PageType,
@@ -285,6 +302,12 @@ export class PageEditModel {
         this.afterInit(annotations);
     }
 
+    /**
+     *
+     * @param name
+     * @param aggregation
+     * @param currentNode
+     */
     private updatePropertyFromSchema(name: string, aggregation: ObjectAggregation, currentNode: JSONSchema4) {
         if (!(name in aggregation.properties)) {
             // Simple property
@@ -861,7 +884,7 @@ export class PageEditModel {
         }
         // Use parent aggregation to create child
         let aggregation;
-        if (parentAggregation && parentAggregation.childClass) {
+        if (parentAggregation?.childClass) {
             aggregation = new parentAggregation.childClass(undefined, schema);
         } else {
             // Default generic aggregation
@@ -959,7 +982,7 @@ export class PageEditModel {
     private updateFormSchema(aggregation: ObjectAggregation, name?: string): void {
         if (aggregation instanceof ArrayAggregation) {
             this.updateArrayFormSchema(aggregation);
-        } else if (name && aggregation.additionalProperties && aggregation.additionalProperties.aggregations[name]) {
+        } else if (name && aggregation.additionalProperties?.aggregations[name]) {
             const formSchema = this.prepareAggregation();
             this.parseSchema(
                 formSchema,

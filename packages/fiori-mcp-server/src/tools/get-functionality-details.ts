@@ -91,7 +91,7 @@ function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunc
             description: `Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.`,
             parameters
         };
-    } else if (node && node.path.length) {
+    } else if (node?.path.length) {
         // Node was found by path - list node properties
         let parameters: Parameter[] = [];
         for (const property of node.properties) {

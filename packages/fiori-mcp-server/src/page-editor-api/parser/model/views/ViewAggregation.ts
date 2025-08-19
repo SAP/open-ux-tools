@@ -6,12 +6,21 @@ import { AggregationActions, SortingOptions, CUSTOM_VIEW_PREFIX, PropertyMessage
 import type { PageData, PropertyPath, PageAnnotations } from '../types';
 import type { PageConfig, PageType } from '@sap/ux-specification/dist/types/src';
 
+/**
+ * Represents an aggregation for view objects.
+ */
 export class ViewAggregation extends ObjectAggregation {
     private title?: string;
     public actions: AggregationActions[] = [];
     public sortableItem: SortingOptions | undefined = SortingOptions.Enabled;
     public sortableCollection: string | undefined = 'views';
 
+    /**
+     * Creates an instance of `ViewAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         super(data, schema);
         if (schema?.key && !schema.annotationPath && !schema.properties?.['annotationPath']) {

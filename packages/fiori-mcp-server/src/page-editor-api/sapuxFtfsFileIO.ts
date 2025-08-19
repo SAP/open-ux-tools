@@ -36,6 +36,9 @@ type Editor = NonNullable<Awaited<ReturnType<Specification['generateCustomExtens
 // Extended interface of the mem-fs editor to restrict writing to specific files
 interface EditorExtended extends Editor {
     store: Store;
+    /**
+     *
+     */
     dump(): { [key: string]: { contents: string; state: 'modified' | 'deleted' } };
 }
 

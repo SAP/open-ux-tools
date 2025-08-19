@@ -4,6 +4,9 @@ import { AggregationActions, SortingOptions, DATA_FIELD_ACTION } from '../types'
 import type { DefaultExtensionPosition } from '../utils/sort';
 import { validateExtension, validateMacrosExtension } from '../utils';
 
+/**
+ * Represents an aggregation for action object.
+ */
 export class ActionAggregation extends ObjectAggregation {
     public actions = [AggregationActions.Delete];
     public sortableItem: SortingOptions | undefined = SortingOptions.Enabled;

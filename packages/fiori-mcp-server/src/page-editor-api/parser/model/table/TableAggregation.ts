@@ -1,6 +1,9 @@
 import { ObjectAggregation } from '../ObjectAggregation';
 import { getTechnicalIdFromPath } from '../utils';
 
+/**
+ * Represents an aggregation for table objects.
+ */
 export class TableAggregation extends ObjectAggregation {
     /**
      * Method parses object path key and returns table source entity name(target).

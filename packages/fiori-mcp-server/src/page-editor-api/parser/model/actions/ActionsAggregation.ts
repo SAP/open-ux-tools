@@ -21,6 +21,9 @@ export interface ActionsContainers {
     bottom: AllowedMoveRange;
 }
 
+/**
+ * Represents an aggregation for actions container object.
+ */
 export class ActionsAggregation extends ObjectAggregation {
     sortableList = true;
     childClass = ActionAggregation;
@@ -28,6 +31,12 @@ export class ActionsAggregation extends ObjectAggregation {
     sortableCollection: string | undefined = 'actions';
     i18nKey = 'ACTIONS';
 
+    /**
+     * Creates an instance of `ActionsAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         super(data, schema);
         // Custom creation form - check schema if supported

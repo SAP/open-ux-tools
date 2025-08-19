@@ -5,7 +5,16 @@ import type { ModelParserParams, PageData, PageAnnotations, PropertyPath } from 
 import { SectionsObjectAggregation } from './SectionsObjectAggregation';
 import type { PageConfig, PageType } from '@sap/ux-specification/dist/types/src';
 
+/**
+ * Represents an aggregation for sub-sections objects.
+ */
 export class SubSectionsAggregation extends SectionsObjectAggregation {
+    /**
+     * Creates an instance of `SubSectionsAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         super(data, schema);
         const additionalProperties = schema?.additionalProperties;

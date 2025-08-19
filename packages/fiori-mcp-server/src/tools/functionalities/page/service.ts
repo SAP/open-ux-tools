@@ -26,6 +26,9 @@ export interface AllowedNavigation {
     entitySet: string;
 }
 
+/**
+ *
+ */
 export class Service {
     metadataService?: MetadataService;
     annotationService?: FioriAnnotationService;
@@ -33,7 +36,15 @@ export class Service {
     nodesMap: Map<string, MetadataNode> = new Map();
     private namespace: string = '';
 
+    /**
+     *
+     * @param options
+     */
     constructor(private options: ServiceOptions) {}
+    /**
+     *
+     * @param refresh
+     */
     private async loadMetadata(refresh = false): Promise<void> {
         if (!refresh && this.metadataService) {
             return;
@@ -46,6 +57,10 @@ export class Service {
         this.namespace = [...this.metadataService.getNamespaces()][0];
         this.metadataService.visitMetadataElements(this.visitMdElement.bind(this));
     }
+    /**
+     *
+     * @param mdElement
+     */
     visitMdElement(mdElement: MetadataElement) {
         const { path, name } = mdElement;
         const kind = this.metadataService?.getEdmTargetKinds(path)[0] || '';

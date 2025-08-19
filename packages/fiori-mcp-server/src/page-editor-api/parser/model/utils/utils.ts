@@ -67,7 +67,7 @@ export const ensureLastNodeIsUndeletable = (aggregation: ObjectAggregation, text
         }
     }
     // Check if signle and last annotation node exists with actions
-    if (!customNodeExists || !lastNativeNode || !lastNativeNode.actions) {
+    if (!customNodeExists || !lastNativeNode?.actions) {
         return;
     }
     // Find deletion action

@@ -29,12 +29,24 @@ export const DELETE_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
     parameters: []
 };
 
+/**
+ *
+ */
 export class Application {
     private serviceName: string;
     private appData: AppData;
     private appId: string;
     private applicationAccess: ApplicationAccess;
     private params: GetFunctionalityDetailsInput;
+    /**
+     *
+     * @param root0
+     * @param root0.params
+     * @param root0.applicationAccess
+     * @param root0.appId
+     * @param root0.serviceName
+     * @param root0.appData
+     */
     constructor({
         params,
         applicationAccess,
@@ -130,15 +142,13 @@ export class Application {
         let contextPath: string | undefined;
         if (!parentPage || parentPage.pageType === PageTypeV4.ListReport) {
             contextPath = `/${entitySet}`;
-        } else {
-            if (parentPage.contextPath) {
-                contextPath =
-                    navigationProperty && parentPage.routePattern !== ':?query:'
-                        ? `${parentPage.contextPath}/${navigationProperty}`
-                        : `/${entitySet}`;
-            } else if (parentPage.entitySet) {
-                contextPath = this.calculateContextPathBasedOnEntitySet(parentPage, navigationProperty);
-            }
+        } else if (parentPage.contextPath) {
+            contextPath =
+                navigationProperty && parentPage.routePattern !== ':?query:'
+                    ? `${parentPage.contextPath}/${navigationProperty}`
+                    : `/${entitySet}`;
+        } else if (parentPage.entitySet) {
+            contextPath = this.calculateContextPathBasedOnEntitySet(parentPage, navigationProperty);
         }
 
         return contextPath;
@@ -154,7 +164,7 @@ export class Application {
     private calculateContextPathBasedOnEntitySet(parentPage: PageDef, navigationProperty?: string): string | undefined {
         let contextPath: string | undefined;
         const routePattern = parentPage.routePattern;
-        const convertedParentPattern = routePattern && routePattern.replace(':?query:', '').replace(/\({[^}]*}\)/g, '');
+        const convertedParentPattern = routePattern?.replace(':?query:', '').replace(/\({[^}]*}\)/g, '');
         if (!convertedParentPattern) {
             contextPath =
                 navigationProperty && navigationProperty !== ''

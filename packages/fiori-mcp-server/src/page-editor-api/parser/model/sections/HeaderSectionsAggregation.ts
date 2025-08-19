@@ -7,6 +7,9 @@ import type { PageData, SupportedAggregationAction, PageAnnotations, PropertyPat
 import { AggregationActions, AggregationCreationForm, SCHEMA_CREATION_FORM } from '../types';
 import type { PageConfig, PageType } from '@sap/ux-specification/dist/types/src';
 
+/**
+ * Represents an aggregation for header sections objects.
+ */
 export class HeaderSectionsAggregation extends SectionsObjectAggregation {
     allowedAnnotationCreationForms?: AggregationCreationForm[] = [
         AggregationCreationForm.NativeSection,
@@ -16,6 +19,12 @@ export class HeaderSectionsAggregation extends SectionsObjectAggregation {
         AggregationCreationForm.ChartSection
     ];
 
+    /**
+     * Creates an instance of `HeaderSectionsAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         super(data, schema);
         const additionalProperties = schema?.additionalProperties;

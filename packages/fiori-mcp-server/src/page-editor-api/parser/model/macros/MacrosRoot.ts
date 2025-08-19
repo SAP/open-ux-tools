@@ -12,9 +12,18 @@ interface MacrosForms {
     external: CreationFormOptions[];
 }
 
+/**
+ * Represents an aggregation for macros objects.
+ */
 export class MacrosRootAggregation extends ObjectAggregation {
     public filePath?: string;
 
+    /**
+     * Creates an instance of `MacrosRootAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         super(data, schema);
         this.path = ['macros'];

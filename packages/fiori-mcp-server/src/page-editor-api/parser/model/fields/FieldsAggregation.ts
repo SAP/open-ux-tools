@@ -3,6 +3,9 @@ import { FieldAggregation } from './FieldAggregation';
 import { AggregationCreationForm } from '../types';
 import type { PageAnnotations } from '../types';
 
+/**
+ * Represents an aggregation for fields objects.
+ */
 export class FieldsAggregation extends ObjectAggregation {
     sortableList = true;
     childClass = FieldAggregation;

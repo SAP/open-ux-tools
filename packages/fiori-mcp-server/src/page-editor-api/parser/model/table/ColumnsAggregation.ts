@@ -37,6 +37,9 @@ const PAGE_TYPE_DEFAULT_EXTENSION_MAP: Map<PageType, TableColumnExtensionType> =
     [PageType.AnalyticalListPage, TableColumnExtensionType.AnalyticalTableColumnsExtension]
 ]);
 
+/**
+ * Represents an aggregation for columns objects.
+ */
 export class ColumnsAggregation extends ObjectAggregation {
     public declare formSchema?: ObjectAggregation;
     // Array of end result ordered columns
@@ -57,6 +60,12 @@ export class ColumnsAggregation extends ObjectAggregation {
 
     // In case if we would need connect columns and actions separately - in future it can be changed to array ['columns', 'actions']
     sortableCollection: string | undefined = 'actions';
+    /**
+     * Creates an instance of `ColumnsAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         super(data, schema);
         // Child objects as column aggregation
@@ -329,7 +338,7 @@ export class ColumnsAggregation extends ObjectAggregation {
      * @returns True if 'extensionType' property exists in schema for Custom Column definition.
      */
     public isExtensionTypeSupported(): boolean {
-        return !!(this.formSchema && this.formSchema.properties.extensionType);
+        return !!this.formSchema?.properties.extensionType;
     }
 
     /**

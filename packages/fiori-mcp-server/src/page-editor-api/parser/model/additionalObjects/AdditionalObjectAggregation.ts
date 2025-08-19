@@ -1,7 +1,9 @@
 import { ObjectAggregation } from '../ObjectAggregation';
 import { AggregationActions } from '../types';
 
-// Generic implementation, used for additionalSemanticObjects of related Apps
+/**
+ * Represents an aggregation for additional object.
+ */
 export class AdditionalObjectAggregation extends ObjectAggregation {
     public actions = [AggregationActions.Delete];
 

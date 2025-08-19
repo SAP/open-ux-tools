@@ -2,6 +2,9 @@ import { ObjectAggregation } from '../ObjectAggregation';
 import { SortingOptions, AggregationActions } from '../types';
 import { getTechnicalIdFromPath } from '../utils';
 
+/**
+ * Represents an aggregation for field objects.
+ */
 export class FieldAggregation extends ObjectAggregation {
     public actions = [AggregationActions.Delete];
     public sortableItem: SortingOptions | undefined = SortingOptions.Enabled;

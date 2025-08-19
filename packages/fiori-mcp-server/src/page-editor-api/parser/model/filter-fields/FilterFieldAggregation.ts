@@ -5,6 +5,9 @@ import { SortingOptions, AggregationActions } from '../types';
 import { validateExtension, validateMacrosExtension } from '../utils';
 import type { PageEditProperty } from '../PageEditProperty';
 
+/**
+ * Represents an aggregation for filter field objects.
+ */
 export class FilterFieldAggregation extends ObjectAggregation {
     public actions = [AggregationActions.Delete];
     public sortableItem: SortingOptions | undefined = SortingOptions.Enabled;

@@ -6,6 +6,9 @@ import type { JSONSchema4 } from 'json-schema';
 import type { SupportedAggregationAction, SupportedAggregationActions } from '../types';
 import { SortingOptions, AggregationActions, FacetTitlePrefix, SAP_ANNOTATION_NAMESPACE } from '../types';
 
+/**
+ * Represents an aggregation for section objects.
+ */
 export class SectionAggregation extends ObjectAggregation {
     public actions: SupportedAggregationActions = [AggregationActions.Delete];
     private title?: string;
@@ -16,6 +19,12 @@ export class SectionAggregation extends ObjectAggregation {
     public isViewNode = true;
     public sortableCollection: string | undefined = 'sections';
 
+    /**
+     * Creates an instance of `SectionAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         super(data, schema);
         this.sortableItem = SortingOptions.Enabled;

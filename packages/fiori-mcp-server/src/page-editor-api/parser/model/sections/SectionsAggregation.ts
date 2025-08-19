@@ -27,6 +27,9 @@ type CustomSectionTraverseCallback = (sectionData: v2.ObjectPageCustomSectionBas
 
 type CustomSectionSchemaParserParams = ModelParserParams<ObjectAggregation> | undefined;
 
+/**
+ * Represents an aggregation for sections objects.
+ */
 export class SectionsAggregation extends ObjectAggregation {
     // Array of end result ordered sections
     private customSections: Array<v2.ObjectPageCustomSectionBase> = [];
@@ -37,6 +40,12 @@ export class SectionsAggregation extends ObjectAggregation {
 
     sortableCollection: string | undefined = 'sections';
 
+    /**
+     * Creates an instance of `SectionsAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         super(data, schema);
         // Child objects as section aggregation
@@ -240,12 +249,9 @@ export class SectionsAggregation extends ObjectAggregation {
      *   - we can map them and read label for 'relatedFacet'.
      */
     public correctSectionData(): void {
-        const relatedFacets =
-            this.formSchema &&
-            this.formSchema.properties.relatedFacet &&
-            this.formSchema.properties.relatedFacet.schema.oneOf
-                ? this.formSchema.properties.relatedFacet.schema.oneOf
-                : [];
+        const relatedFacets = this.formSchema?.properties.relatedFacet?.schema.oneOf
+            ? this.formSchema.properties.relatedFacet.schema.oneOf
+            : [];
         for (const key in this.aggregations) {
             const section = this.aggregations[key] as SectionAggregation;
             if (section.custom) {
@@ -259,7 +265,7 @@ export class SectionsAggregation extends ObjectAggregation {
             }
             const sectionId = section.getSectionId() || key;
             const facet = relatedFacets.find((facet) => this.isSectionMatchesRelatedFacet(sectionId, facet.const));
-            if (facet && facet.description) {
+            if (facet?.description) {
                 section.setTitle(facet.description);
                 section.setId(facet.const);
             }
@@ -438,7 +444,7 @@ export class SectionsAggregation extends ObjectAggregation {
      * @returns {boolean} True if the schema is for a V4 application.
      */
     private isV4(): boolean {
-        return !!(this.formSchema && this.formSchema.properties.id);
+        return !!this.formSchema?.properties.id;
     }
 
     /**

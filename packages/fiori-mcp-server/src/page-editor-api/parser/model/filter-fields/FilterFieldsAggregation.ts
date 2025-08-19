@@ -9,12 +9,21 @@ import { FilterFieldAggregation } from './FilterFieldAggregation';
 
 export const VISUAL_FILTER_PROPERTY_NAME = 'visualFilters';
 
+/**
+ * Represents an aggregation for filter fields objects.
+ */
 export class FilterFieldsAggregation extends ObjectAggregation {
     sortableList = true;
     allowedAnnotationCreationForms = [AggregationCreationForm.NativeFilterFields];
     childClass = FilterFieldAggregation;
     i18nKey = 'FILTER_FIELDS';
 
+    /**
+     * Creates an instance of `FilterFieldsAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         super(data, schema);
         const additionalProperties = schema?.additionalProperties;

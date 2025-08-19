@@ -196,6 +196,11 @@ const getEnumOptions = (entries: JSONSchema4Type[]): NodePropertyOptions[] => {
     return options;
 };
 
+/**
+ *
+ * @param property
+ * @param schema
+ */
 function updateStringProperty(property: TreeNodeProperty, schema: JSONSchema4) {
     if (schema.enum || schema.oneOf) {
         let options: NodePropertyOptions[] = [];

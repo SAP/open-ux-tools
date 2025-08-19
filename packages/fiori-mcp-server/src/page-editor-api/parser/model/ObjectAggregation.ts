@@ -70,6 +70,9 @@ interface AssociatedUINode {
 
 export const CUSTOM_EXTENSION_ANCHOR_PROPERTIES = ['anchor', 'relatedFacet'];
 
+/**
+ * Represents an aggregation for objects.
+ */
 export class ObjectAggregation {
     // Path
     public path: PropertyPath = [];
@@ -140,6 +143,12 @@ export class ObjectAggregation {
     public icon?: string;
     // Is aggregation atomic - it means that value is number/string/boolean
     public isAtomic?: boolean;
+    /**
+     * Creates an instance of `ObjectAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         if (data) {
             this.aggregations = data.aggregations;
@@ -255,7 +264,7 @@ export class ObjectAggregation {
      */
     public getSupportedActions(): SupportedAggregationActions {
         const actions = [...(this.actions ?? [])];
-        if (this.locations && this.locations.length) {
+        if (this.locations?.length) {
             actions.push(AggregationActions.OpenSource);
         }
         return actions;
@@ -397,6 +406,10 @@ export class ObjectAggregation {
      * @param annotations
      */
 
+    /**
+     *
+     * @param annotations
+     */
     public updateAnnotationData(annotations: PageAnnotations | undefined): void {
         const currentUINode: AssociatedUINode | undefined = this.getCurrentUINode(annotations);
         const directNode = currentUINode?.direct ? currentUINode.node : undefined;
@@ -546,7 +559,7 @@ export class ObjectAggregation {
             aggregation.aggregations[name] = new type(aggregation.aggregations[name]);
             this.createAggregations(aggregation.aggregations[name]);
         }
-        if (aggregation.additionalProperties && aggregation.additionalProperties.aggregations) {
+        if (aggregation.additionalProperties?.aggregations) {
             aggregation.additionalProperties = new type(aggregation.additionalProperties);
         }
     }

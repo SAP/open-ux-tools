@@ -17,12 +17,10 @@ export function updateProperty(obj: object, paths: PropertyPath, value: unknown,
             } else {
                 context[key] = arrayElement ? [value] : value;
             }
+        } else if (Array.isArray(context)) {
+            context.splice(typeof key === 'string' ? parseInt(key, 10) : key, 1);
         } else {
-            if (Array.isArray(context)) {
-                context.splice(typeof key === 'string' ? parseInt(key, 10) : key, 1);
-            } else {
-                delete context[key];
-            }
+            delete context[key];
         }
     });
 }

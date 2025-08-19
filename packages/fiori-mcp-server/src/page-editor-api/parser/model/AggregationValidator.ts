@@ -6,6 +6,9 @@ import { ValidationState } from './types';
 import i18next from 'i18next';
 import { addValidationMessages } from './utils';
 
+/**
+ * Represents validator for aggregations.
+ */
 export class AggregationValidator {
     /**
      * Method validates states of properties and aggregation. Following states are supported:

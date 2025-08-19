@@ -20,6 +20,9 @@ import i18next from 'i18next';
 import { isArrayEqual } from '../utils';
 import type { PageConfig, PageType } from '@sap/ux-specification/dist/types/src';
 
+/**
+ * Represents an aggregation for views objects.
+ */
 export class ViewsAggregation extends ObjectAggregation {
     sortableList = true;
     childClass = ViewAggregation;
@@ -52,6 +55,14 @@ export class ViewsAggregation extends ObjectAggregation {
         }
     }
 
+    /**
+     *
+     * @param data
+     * @param page
+     * @param pageType
+     * @param path
+     * @param annotations
+     */
     public updatePropertiesValues(
         data: PageData,
         page: PageConfig,
@@ -131,7 +142,7 @@ export class ViewsAggregation extends ObjectAggregation {
         for (let i = 0; i < order.length; i++) {
             const id = order[i];
             const value = aggregations[id].value as { index?: number };
-            if (!value || value.index === undefined) {
+            if (value?.index === undefined) {
                 continue;
             }
             const oldIndex = value.index;

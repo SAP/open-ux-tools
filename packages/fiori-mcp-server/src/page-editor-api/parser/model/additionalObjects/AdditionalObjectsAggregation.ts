@@ -6,13 +6,21 @@ import { AggregationCreationForm, SCHEMA_CREATION_FORM } from '../types';
 import type { PageData, PropertyPath, PageAnnotations } from '../types';
 import { AdditionalObjectAggregation } from './AdditionalObjectAggregation';
 
-// Generic implementation, using the generic creation form
+/**
+ * Represents an aggregation for additional objects.
+ */
 export class AdditionalObjectsAggregation extends ObjectAggregation {
     sortableList = false;
     childClass = AdditionalObjectAggregation;
     declare sortableCollection: string | undefined;
     i18nKey = 'ADDITIONALOBJECTS';
 
+    /**
+     * Creates an instance of `AdditionalObjectsAggregation`.
+     *
+     * @param data Optional aggregation data object used to initialize properties.
+     * @param schema Optional JSON schema fragment associated with this aggregation.
+     */
     constructor(data?: PageEditAggregationData, schema?: JSONSchema4) {
         super(data, schema);
         // Custom creation form - check schema if supported

@@ -9,6 +9,9 @@ interface DeletionSupport {
     deletionTooltip?: string;
 }
 
+/**
+ * Represents an aggregation for analytical chart objects.
+ */
 export class ChartAggregation extends ObjectAggregation {
     /**
      * Refreshes internal data based on latest annotation node data.
@@ -51,7 +54,7 @@ export class ChartAggregation extends ObjectAggregation {
         super.updatePropertiesValues(data, page, pageType, path, annotations);
         // Can be removed after webview action status "fulfilled" would considers full sync flow(18990).
         const hasAnnotationPathProperty = !!this.schema?.properties?.['annotationPath'];
-        if (hasAnnotationPathProperty && (!data || !data.annotationPath)) {
+        if (hasAnnotationPathProperty && !data?.annotationPath) {
             this.hidden = true;
         }
     }
