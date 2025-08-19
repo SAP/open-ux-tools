@@ -93,6 +93,11 @@ export class ColumnsAggregation extends ObjectAggregation {
         this.i18nKey = 'COLUMNS';
     }
 
+    /**
+     * Groups all custom table columns by their extension type.
+     *
+     * @returns {Map<TableColumnExtensionType, Array<ColumnBase>>}
+     */
     private groupCustomColumnsByExtension(): Map<TableColumnExtensionType, Array<ColumnBase>> {
         const customColumnGroups: Map<TableColumnExtensionType, Array<ColumnBase>> = new Map();
         // Sort all columns by index

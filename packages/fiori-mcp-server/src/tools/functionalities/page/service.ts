@@ -53,6 +53,12 @@ export class Service {
         this.nodes?.push(metadataNode);
         this.nodesMap.set(path, metadataNode);
     }
+
+    /**
+     * Retrieves the namespace for the current instance.
+     *
+     * @returns {Promise<string>} A promise that resolves to the namespace string.
+     */
     public async getNamespace(): Promise<string> {
         await this.loadMetadata();
         return this.namespace;

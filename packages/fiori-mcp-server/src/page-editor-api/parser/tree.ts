@@ -276,6 +276,14 @@ export function getPropertyData(
     return propertyInstance;
 }
 
+/**
+ * Recursively collects properties from an aggregation and its child aggregations,
+ * converting them into `TreeNodeProperty` objects.
+ *
+ * @param aggregation - The root aggregation to extract properties from.
+ * @param breadCrumbs - The chain of parent aggregations leading to this aggregation (used for recursive context).
+ * @returns A flat list of properties and nested object properties derived from the aggregation.
+ */
 function getProperties(aggregation: ObjectAggregation, breadCrumbs: ObjectAggregation[] = []): TreeNodeProperty[] {
     const properties: TreeNodeProperty[] = [];
     // Standard properties on same level as visible aggregation
