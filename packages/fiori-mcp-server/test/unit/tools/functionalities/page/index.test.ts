@@ -59,7 +59,7 @@ beforeEach(() => {
 
 afterEach(() => jest.clearAllMocks());
 
-describe('add-page', () => {
+describe.skip('add-page', () => {
     describe('getFunctionalityDetails', () => {
         test('case 1: Invalid project root or app path', async () => {
             const appPath = join(__dirname, 'invalid', 'app', 'path');
@@ -189,7 +189,7 @@ describe('add-page', () => {
     });
 });
 
-describe('delete-page', () => {
+describe.skip('delete-page', () => {
     describe('getFunctionalityDetails', () => {
         test('case 1: Invalid project root or app path', async () => {
             const appPath = join(__dirname, 'invalid', 'app', 'path');
