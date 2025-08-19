@@ -72,7 +72,7 @@ export class HeaderSectionsAggregation extends SectionsObjectAggregation {
                         ]
                     };
                 }
-                section.markAsCustomSection(undefined, undefined, undefined, goToCodeAction);
+                section.markAsCustomSection(undefined, undefined, goToCodeAction);
             }
         }
     }
