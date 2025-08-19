@@ -11,7 +11,7 @@ const I18N_BINDING_PREFIX = 'i18n';
  * @param {string} input - Binding value.
  * @param {boolean} [resolveAnnotationBinding=false] - Check if method should resolve syntax annotation based i18n binding.
  * @param {boolean} forceKeyExtraction - Optional parameter to force key extraction in case of {{key}} format.
- * @return {string | undefined} I18n entry key or undefined if input does not matches i18n binding pattern.
+ * @returns {string | undefined} I18n entry key or undefined if input does not matches i18n binding pattern.
  */
 export const extractI18nKey = (
     input = '',
@@ -35,7 +35,7 @@ export const extractI18nKey = (
  * Method to resolve passed i18n binding value into value from i18n bundle.
  * @param {string} value Binding value like `{i18n>key}`.
  * @param {I18nBundle} [i18nBundle={}] I18n bundle data.
- * @return {string | undefined} Resolved value from i18n bundle.
+ * @returns {string | undefined} Resolved value from i18n bundle.
  */
 export const resolveI18nValue = (value: string, i18nBundle: I18nBundle = {}): string | undefined => {
     const key = extractI18nKey(value, true, true);
@@ -56,7 +56,7 @@ export const resolveI18nValue = (value: string, i18nBundle: I18nBundle = {}): st
  * @param custom Is custom extension.
  * @param isViewNode Is visible node.
  * @param projectType Project type.
- * @return {TranslationBundleKeys} I18n bundle name.
+ * @returns {TranslationBundleKeys} I18n bundle name.
  */
 export const getI18nBundleName = (
     isCustom?: boolean,

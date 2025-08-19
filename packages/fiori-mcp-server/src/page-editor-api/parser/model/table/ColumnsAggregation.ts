@@ -248,7 +248,7 @@ export class ColumnsAggregation extends ObjectAggregation {
      * Method returns available column id for candidate column id
      * @param {string} id Candidate id.
      * @param {Array<string | undefined>} existingIds Array of existing ids.
-     * @return {string} Available id.
+     * @returns {string} Available id.
      */
     private getFreeId(id: string, existingIds: Array<string | undefined>): string {
         // Find available id

@@ -9,6 +9,7 @@ export class AdditionalObjectAggregation extends ObjectAggregation {
      * Method returns display name of aggregation.
      * Is used as display name in outline.
      * Overwritten to avoid translation attempt and "startCase" format.
+     *
      * @returns Display name of aggregation.
      */
     public getDisplayName(): string {

@@ -76,9 +76,10 @@ const isCustomSectionAction = (path: string, parentAggregation?: ObjectAggregati
 
 /**
  * Method checks if passed aggregation instance of passed macros control name.
- * @param {string} controlName SAPUI5 macros control name.
- * @param {ObjectAggregation} [aggregation] Aggregation object.
- * @return {boolean} Is passed aggregation instance of passed SAPUI5 control.
+ *
+ * @param controlName SAPUI5 macros control name.
+ * @param aggregation Aggregation object.
+ * @returns Is passed aggregation instance of passed SAPUI5 control.
  */
 const isInstanceOfUI5Control = (controlName: string, aggregation?: ObjectAggregation): boolean => {
     return aggregation?.schema?.metadata?.controlName === controlName;
@@ -86,9 +87,10 @@ const isInstanceOfUI5Control = (controlName: string, aggregation?: ObjectAggrega
 
 /**
  * Method checks if passed schema is instance of passed macros control name.
- * @param {string} controlName SAPUI5 macros control name.
- * @param {ObjectAggregation} [aggregation] Aggregation object.
- * @return {boolean} Is passed aggregation instance of passed SAPUI5 control.
+ *
+ * @param controlName SAPUI5 macros control name.
+ * @param aggregation Aggregation object.
+ * @returns Is passed aggregation instance of passed SAPUI5 control.
  */
 const isSchemaOfUI5Control = (controlName: string, schema?: JSONSchema4): boolean => {
     return schema?.metadata?.controlName === controlName;
@@ -300,9 +302,10 @@ export class PageEditModel {
 
     /**
      * Method returns context of passed macros node ID used in getMatchingNode.
-     * @param {string} currentMacrosNodeId Current macros node id.
-     * @param {UINode[]} annotationNodes All annotation nodes.
-     * @returns {UINode[]} Matched node context.
+     *
+     * @param currentMacrosNodeId Current macros node id.
+     * @param annotationNodes All annotation nodes.
+     * @returns Matched node context.
      */
     private getContextForMacrosNode = (currentMacrosNodeId: string, annotationNodes: UINode[]): UINode | undefined => {
         for (const i in annotationNodes) {
@@ -637,9 +640,10 @@ export class PageEditModel {
 
     /**
      * Method creates properties variants by handling array "anyOf" schema property.
+     *
      * @param anyOf Array value of "anyOf" schema property.
      * @param params Schema parse params.
-     * @return {number} Sort result.
+     * @returns Sort result.
      */
     private createAnyOfPropertiesVariations(anyOf: JSONSchema4[], params: SchemaParseParams) {
         const { aggregation, currentAnnotationNode, name, path, context } = params;
@@ -671,11 +675,12 @@ export class PageEditModel {
 
     /**
      * Method uses recursion to parse schema and populate model with aggregations and properties for tree structure.
-     * @param {ObjectAggregation} aggregation Current aggregation.
-     * @param {JSONSchema4} currentNode Current schema node.
-     * @param {string | undefined} name Name of aggregation.
-     * @param {PropertyPath} path Array containing path to current aggregation.
-     * @param {ParserContext} context Object containing Parser context.
+     *
+     * @param aggregation Current aggregation.
+     * @param currentNode Current schema node.
+     * @param name Name of aggregation.
+     * @param path Array containing path to current aggregation.
+     * @param context Object containing Parser context.
      */
     private parseSchema(
         aggregation: ObjectAggregation,
@@ -705,9 +710,10 @@ export class PageEditModel {
      * Handle and copy some simple properties from schema definition - we need copy them as they can be defined in multiple places inside of schema object like:
      * 1. Outside of reference. Example - "name": { "$ref": "....", "description": "..." }
      * 2. Inside of reference.
-     * @param {ObjectAggregation} aggregation Current aggregation.
-     * @param {JSONSchema4} currentNode Current schema node.
-     * @param {string | undefined} name Name of aggregation.
+     *
+     * @param aggregation Current aggregation.
+     * @param currentNode Current schema node.
+     * @param name Name of aggregation.
      */
     private copySchemaProperties(
         aggregation: ObjectAggregation,
@@ -742,8 +748,9 @@ export class PageEditModel {
 
     /**
      * Method checs is json schema node should be used for property.
-     * @param {JSONSchema4} schema Schema node to check.
-     * @return {boolean} Schema node should be used for property.
+     *
+     * @param schema Schema node to check.
+     * @returns Schema node should be used for property.
      */
     private isProperty(schema: JSONSchema4): boolean {
         return !schema.$ref && schema.type !== 'object' && schema.type !== 'array' && !schema.anyOf;
@@ -751,8 +758,9 @@ export class PageEditModel {
 
     /**
      * Method checs is json schema node should be used for aggregation.
-     * @param {JSONSchema4} schema Schema node to check.
-     * @return {boolean} Schema node should be used for aggregation.
+     *
+     * @param schema Schema node to check.
+     * @returns Schema node should be used for aggregation.
      */
     private isAggregation(currentNode: JSONSchema4): boolean {
         return (
@@ -763,8 +771,9 @@ export class PageEditModel {
 
     /**
      * Method uses recursion to populate aggregations/properties of aggregation by looping through 'additionalProperties' from schema.
-     * @param {ObjectAggregation} aggregation ObjectAggregation which would be populated.
-     * @param {PageData} data Page data - object contains latest page values.
+     *
+     * @param aggregation ObjectAggregation which would be populated.
+     * @param data Page data - object contains latest page values.
      */
     readAdvancedPropertiesData(aggregation: ObjectAggregation, data: PageData): void {
         const propertyKeys = Object.keys(aggregation.properties);
@@ -810,8 +819,9 @@ export class PageEditModel {
 
     /**
      * Method uses recursion to populate 'aggregation' with values from page object.
-     * @param {ObjectAggregation} object ObjectAggregation which would be populated.
-     * @param {PageData} data Page data - object contains latest page values.
+     *
+     * @param object ObjectAggregation which would be populated.
+     * @param data Page data - object contains latest page values.
      */
     readPropertiesData(aggregation: ObjectAggregation, data: PageData, parentPath = ''): void {
         const propertyKeys = Object.keys(aggregation.properties);
@@ -834,9 +844,10 @@ export class PageEditModel {
 
     /**
      * Method prepares simple aggregation object.
-     * @param {ObjectAggregation} object ObjectAggregation which would be populated.
-     * @param {PageData} data Page data - object contains latest page values.
-     * @return {ObjectAggregation} Predefined aggregation object.
+     *
+     * @param object ObjectAggregation which would be populated.
+     * @param data Page data - object contains latest page values.
+     * @returns Predefined aggregation object.
      */
     prepareAggregation(
         path?: PropertyPath,
@@ -869,8 +880,9 @@ export class PageEditModel {
 
     /**
      * Method to check if free text entry should be enabled for property.
-     * @param {JSONSchema4[]} anyOf Array of JSON schema nodes.
-     * @return {boolean} Free text entry allowed.
+     *
+     * @param anyOf Array of JSON schema nodes.
+     * @returns Free text entry allowed.
      */
     private isFreeText(schema: JSONSchema4[] | JSONSchema4): boolean {
         const validate = (node: JSONSchema4) => {
@@ -881,9 +893,10 @@ export class PageEditModel {
 
     /**
      * Generic method receives array of properties and copies received properties from 'currentNode' into target 'obj'.
-     * @param {T} targetObj Target object for store.
-     * @param {Array<keyof T & keyof JSONSchema4>} props Properties name to copy from 'currentNode' into 'targetObj'.
-     * @param {JSONSchema4} currentNode JSON Schema node.
+     *
+     * @param targetObj Target object for store.
+     * @param props Properties name to copy from 'currentNode' into 'targetObj'.
+     * @param currentNode JSON Schema node.
      */
     private storeInnerProperties<T>(
         targetObj: T,
@@ -909,8 +922,9 @@ export class PageEditModel {
 
     /**
      * Method returns schema item definition for array schema resolution.
-     * @param {JSONSchema4} currentNode Current schema node.
-     * @return {JSONSchema4 | undefined} Array's schema definition or undefined if it does not exist.
+     *
+     * @param currentNode Current schema node.
+     * @returns Array's schema definition or undefined if it does not exist.
      */
     private getSchemaArrayItem(currentNode: JSONSchema4): JSONSchema4 | undefined {
         const item = !Array.isArray(currentNode.items) ? currentNode.items : currentNode.additionalItems;
@@ -919,7 +933,8 @@ export class PageEditModel {
 
     /**
      * Method updates 'formSchema' property for array aggregation.
-     * @param {ObjectAggregation} aggregation Aggregation to handle.
+     *
+     * @param aggregation Aggregation to handle.
      */
     private updateArrayFormSchema(aggregation: ObjectAggregation): void {
         // Creation form currently supported by arrays
@@ -940,7 +955,8 @@ export class PageEditModel {
 
     /**
      * Method updates aggregation 'formSchema' property with schema object which will represent creation form.
-     * @param {ObjectAggregation} aggregation Aggregation to handle.
+     *
+     * @param aggregation Aggregation to handle.
      */
     private updateFormSchema(aggregation: ObjectAggregation, name?: string): void {
         if (aggregation instanceof ArrayAggregation) {
@@ -989,9 +1005,10 @@ export class PageEditModel {
     /**
      * Method validates property from JSON schema.
      * That method helps to avoid issues, when we are receiving incorrect schema.
-     * @param {string} name Schema property name.
-     * @param {unknown} value Value of schema property.
-     * @return {boolean} Is schema property valid.
+     *
+     * @param name Schema property name.
+     * @param value Value of schema property.
+     * @returns Is schema property valid.
      */
     private isCorrectSchemaProperty(name: keyof JSONSchema4, value: unknown): boolean {
         let valid = true;
@@ -1015,10 +1032,11 @@ export class PageEditModel {
     /**
      * Method to sort schema properties.
      * Spec provides custom property 'propertyIndex', which should be used for sorting.
+     *
      * @param properties Object with properties.
      * @param name1 First property name.
      * @param name2 Second property name.
-     * @return {number} Sort result.
+     * @returns Sort result.
      */
     private propertySorter(properties: { [k: string]: JSONSchema4 }, name1: string, name2: string): number {
         const order1 = properties[name1].propertyIndex !== undefined ? properties[name1].propertyIndex : 0;
@@ -1051,6 +1069,7 @@ export class PageEditModel {
     /**
      * Method checks if passed schema is atomic type.
      * Atomic means that schema expects simple value as "string", "number" or "boolean".
+     *
      * @param schema Schema to check.
      * @returns True if passed schema should be considered as atomic.
      */

@@ -23,7 +23,8 @@ export class ViewAggregation extends ObjectAggregation {
     /**
      * Method returns display name of aggregation without applying i18n translation.
      * Overwritten for column handling.
-     * @return {string} Display name of aggregation.
+     *
+     * @returns Display name of aggregation.
      */
     protected getRawDisplayName(): string {
         return this.title || super.getRawDisplayName();
@@ -45,6 +46,7 @@ export class ViewAggregation extends ObjectAggregation {
 
     /**
      * Overwritten method for data update of list report view.
+     *
      * @param data Data which should be used for value population.
      * @param page Page config data.
      * @param pageType Page type.
@@ -81,6 +83,7 @@ export class ViewAggregation extends ObjectAggregation {
 
     /**
      * Method returns true if view aggregation is table view.
+     *
      * @returns True if view is table view.
      */
     private isTableView(): boolean {
@@ -89,6 +92,7 @@ export class ViewAggregation extends ObjectAggregation {
 
     /**
      * Method returns true if view aggregation is chart view.
+     *
      * @returns True if view is chart view.
      */
     private isChartView(): boolean {
@@ -97,6 +101,7 @@ export class ViewAggregation extends ObjectAggregation {
 
     /**
      * Method returns true if aggregation is annotation view.
+     *
      * @returns True if view is annotation view.
      */
     public isAnnotationView(): boolean {

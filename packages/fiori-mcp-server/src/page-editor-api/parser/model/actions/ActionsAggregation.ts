@@ -46,12 +46,13 @@ export class ActionsAggregation extends ObjectAggregation {
     /**
      * Method adds aggregation object.
      * Overwritten to mark standard action.
-     * @param {string} name Name of aggregation.
-     * @param {ObjectAggregation} aggregation Aggregation to add.
-     * @param {PropertyPath} path Array of path to aggregation.
-     * @param {number} [order] Order index.
-     * @param {number} [overwrite] Overwrite existing aggregation.
-     * @return {ObjectAggregation} Added aggregation.
+     *
+     * @param name Name of aggregation.
+     * @param aggregation Aggregation to add.
+     * @param path Array of path to aggregation.
+     * @param order Order index.
+     * @param overwrite Overwrite existing aggregation.
+     * @returns Added aggregation.
      */
     public addAggregation(
         name: string,
@@ -79,11 +80,12 @@ export class ActionsAggregation extends ObjectAggregation {
     /**
      * Overwritten method for data update of object page actions
      * Method receives current values for actions and detects custom actions.
-     * @param {PageData} data Data which should be used for value population.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {PropertyPath} path Aggregation path.
-     * @param {PageAnnotations} annotations Annotations data.
+     *
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
+     * @param annotations Annotations data.
      */
     public updatePropertiesValues(
         data: PageData,
@@ -106,8 +108,10 @@ export class ActionsAggregation extends ObjectAggregation {
     }
 
     /**
-     * Method provides creation options based on its related annotation node
-     * @param {PageAnnotations} annotations Page annotations.
+     * Method provides creation options based on its related annotation node.
+     *
+     * @param annotations Page annotations.
+     * @returns Creation form options.
      */
     protected getNativeNodeCreationForms(annotations: PageAnnotations | undefined): CreationFormOptions[] {
         if (this.parent) {
@@ -120,6 +124,7 @@ export class ActionsAggregation extends ObjectAggregation {
 
     /**
      * Method returns action type of passed action aggregation.
+     *
      * @param action Action aggregation.
      * @returns Action type of passed action aggregation.
      */
@@ -136,6 +141,7 @@ export class ActionsAggregation extends ObjectAggregation {
 
     /**
      * Method calculates edge position for two containers - above and below standard actions.
+     *
      * @param aggregationKeys Array of actions aggregation keys.
      * @param sourceType Movable source type.
      * @returns Drop range edges.
@@ -180,6 +186,7 @@ export class ActionsAggregation extends ObjectAggregation {
 
     /**
      * Method returns allowed drop ranges within action for passed action type.
+     *
      * @param sourceType Action type.
      * @returns Allowed drop ranges of top and bottom containers.
      */
@@ -225,6 +232,7 @@ export class ActionsAggregation extends ObjectAggregation {
 
     /**
      * Method returns allowed drop ranges for passed source aggregation.
+     *
      * @param source Source aggregation.
      * @returns Allowed drop ranges for passed source aggregation.
      */

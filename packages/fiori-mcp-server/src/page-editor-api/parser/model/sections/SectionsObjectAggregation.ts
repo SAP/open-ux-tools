@@ -151,7 +151,7 @@ export class SectionsObjectAggregation extends SectionsAggregation {
 
     /**
      * Public method checks if annotation sections are merged by 'sap.fe' in runtime.
-     * @return {boolean} Annotation sections are merged by 'sap.fe' in runtime.
+     * @returns {boolean} Annotation sections are merged by 'sap.fe' in runtime.
      */
     public isSectionsMerged(): boolean {
         return false;

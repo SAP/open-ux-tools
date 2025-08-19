@@ -11,7 +11,8 @@ export class FieldAggregation extends ObjectAggregation {
     /**
      * Method returns display name of aggregation without applying i18n translation.
      * Overwritten for column handling.
-     * @return {string} Display name of aggregation.
+     *
+     * @returns Display name of aggregation.
      */
     protected getRawDisplayName(): string {
         const displayName = super.getRawDisplayName();
@@ -27,7 +28,8 @@ export class FieldAggregation extends ObjectAggregation {
 
     /**
      * Method parses object path key and returns field name / technical id.
-     * @return {string | undefined} Field name / technical id.
+     *
+     * @returns Field name / technical id.
      */
     public getTechnicalName(): string | undefined {
         return getTechnicalIdFromPath(this.path);

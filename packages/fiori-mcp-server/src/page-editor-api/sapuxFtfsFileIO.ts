@@ -91,8 +91,9 @@ export class SapuxFtfsFileIO {
 
     /**
      * Get page data object using Project Provider.
-     * @param {string} pageId - page id.
-     * @return {Promise<{ config: PageConfig; schema: string; path: string; pageType: PageType }>} Promise to page data.
+     *
+     * @param pageId - page id.
+     * @returns Promise to page data.
      */
     public async readPageData(pageId: string): Promise<PageData | undefined> {
         try {
@@ -128,8 +129,9 @@ export class SapuxFtfsFileIO {
 
     /**
      * Update content of the passed page.
-     * @param {string} pageName - Page name.
-     * @param {PageConfig} config - Configuration for update.
+     *
+     * @param pageName Page name.
+     * @param config Configuration for update.
      */
     public async writePage(pageData: PageData): Promise<ExportResults | undefined> {
         const manifest = await getManifest(this.appAccess);

@@ -13,7 +13,8 @@ export class FilterFieldAggregation extends ObjectAggregation {
     /**
      * Method returns display name of aggregation without applying i18n translation.
      * Overwritten for column handling.
-     * @return {string} Display name of aggregation.
+     *
+     * @returns Display name of aggregation.
      */
     protected getRawDisplayName(): string {
         const displayName = super.getRawDisplayName();
@@ -29,7 +30,8 @@ export class FilterFieldAggregation extends ObjectAggregation {
 
     /**
      * Method parses object path key and returns field name / technical id.
-     * @return {string | undefined} Field name / technical id.
+     *
+     * @returns Field name / technical id.
      */
     public getTechnicalName(): string | undefined {
         const key = this.path[this.path.length - 1];
@@ -73,9 +75,10 @@ export class FilterFieldAggregation extends ObjectAggregation {
     /**
      * Method adds property object.
      * Overwritten to disable "property" property - it is done till we clarify how to handle it correctly.
-     * @param {string} name Name of property.
-     * @param {JSONSchema4} schema Schema object of property.
-     * @return {PageEditProperty} Instance of new property.
+     *
+     * @param name Name of property.
+     * @param schema Schema object of property.
+     * @returns Instance of new property.
      */
     public addProperty(name: string, schema: JSONSchema4): PageEditProperty {
         const property = super.addProperty(name, schema);

@@ -30,11 +30,12 @@ export class ArrayAggregation extends ObjectAggregation {
     /**
      * Method adds aggregation object.
      * Overwritten to modify array's children.
-     * @param {string} name Name of aggregation.
-     * @param {ObjectAggregation} aggregation Aggregation to add.
-     * @param {PropertyPath} path Array of path to aggregation.
-     * @param {number} [order] Order index.
-     * @return {ObjectAggregation} Added aggregation.
+     *
+     * @param name Name of aggregation.
+     * @param aggregation Aggregation to add.
+     * @param path Array of path to aggregation.
+     * @param order Order index.
+     * @returns Added aggregation.
      */
     public addAggregation(
         name: string,
@@ -61,10 +62,11 @@ export class ArrayAggregation extends ObjectAggregation {
     /**
      * Public method which recursively updates aggregation's properties with values from passed data object.
      * Overwritten to update children aggregations depending on data.
-     * @param {PageData} data Data which should be used for value population.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {PropertyPath} path Aggregation path.
+     *
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
      */
     public updatePropertiesValues(
         data: PageData | undefined,
@@ -99,8 +101,9 @@ export class ArrayAggregation extends ObjectAggregation {
     /**
      * Private method resolves primary property of aggregation.
      * Logic is that we look for certain properties like 'id', 'key', etc. If those properties do not exist, then we take first string property.
-     * @param {ObjectAggregation} aggregation Aggregation to add.
-     * @return {string | undefined} Property name.
+     *
+     * @param aggregation Aggregation to add.
+     * @returns Property name.
      */
     private getPrimaryKey(aggregation: ObjectAggregation): string | undefined {
         // Get additional text for item array

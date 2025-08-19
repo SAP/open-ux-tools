@@ -12,8 +12,9 @@ export class AggregationValidator {
      * 1. Valid;
      * 2. Invalid - when value is set for property/aggregation, but it is not valid;
      * 3. Skipped - when property/aggregation is not relevant in current value context and value does not set;
-     * @param {ObjectAggregation} aggregation ObjectAggregation which state should be validated.
-     * @param {PageData} data Page data.
+     *
+     * @param aggregation ObjectAggregation which state should be validated.
+     * @param data Page data.
      */
     validate(aggregation: ObjectAggregation, data: PageData): void {
         if (aggregation.state === ValidationState.Valid && aggregation.variants.length >= 1) {
@@ -44,9 +45,10 @@ export class AggregationValidator {
 
     /**
      * Method receives possible variants of variants received from schema and validates against current values.
-     * @param {Array<AggregationVariant>} variants Array of variants.
-     * @param {ObjectAggregation} aggregation Aggregation to validate.
-     * @return {{ [k: string]: ValidationState }} State of each property and aggregation.
+     *
+     * @param variants Array of variants.
+     * @param aggregation Aggregation to validate.
+     * @returns State of each property and aggregation.
      */
     validateVariants(
         variants: Array<AggregationVariant>,
@@ -103,10 +105,11 @@ export class AggregationValidator {
 
     /**
      * Method receives single variants and validates received property against variant schema.
-     * @param {AggregationVariant} variant Variant to use as validation rule.
-     * @param {ObjectAggregation} aggregation Aggregation to validate.
-     * @param {string} property Name of inner property or aggregation, which should be validated.
-     * @return {ValidationState} Validation result.
+     *
+     * @param variant Variant to use as validation rule.
+     * @param aggregation Aggregation to validate.
+     * @param property Name of inner property or aggregation, which should be validated.
+     * @returns Validation result.
      */
     validateVariant(
         variant: AggregationVariant,
@@ -139,8 +142,9 @@ export class AggregationValidator {
     /**
      * Method goes through passed variants and checks for unify aggregations.
      * If there is any aggregation for unification, then method updates unify aggregation with latest valid context paths.
-     * @param {ObjectAggregation} aggregation Aggregation to validate.
-     * @param {AggregationVariant[]} variants Valid aggeregation to use as context for properties and aggregations paths.
+     *
+     * @param aggregation Aggregation to validate.
+     * @param variants Valid aggeregation to use as context for properties and aggregations paths.
      */
     unifyVariants(aggregation: ObjectAggregation, variants: AggregationVariant[]): void {
         const handledProperties: { [key: string]: boolean } = {};
@@ -178,8 +182,9 @@ export class AggregationValidator {
 
     /**
      * Recursive method updates paths of all aggregations and properties using passed context path.
-     * @param {ObjectAggregation} aggregation Target aggregation.
-     * @param {PropertyPath} contextPath Context path.
+     *
+     * @param aggregation Target aggregation.
+     * @param contextPath Context path.
      */
     applyContextPath(aggregation: ObjectAggregation, contextPath: PropertyPath): void {
         aggregation.path = aggregation.path.slice();

@@ -17,6 +17,7 @@ export class RootAggregation extends ObjectAggregation {
 
     /**
      * Refreshes internal data based on latest annotation node data
+     *
      * @param annotations
      */
     public updateAnnotationData(annotations: PageAnnotations | undefined): void {
