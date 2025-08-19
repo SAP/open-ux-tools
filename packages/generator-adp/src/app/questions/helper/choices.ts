@@ -1,5 +1,5 @@
+import { AppRouterType } from '@sap-ux/adp-tooling';
 import type { CFApp, FDCService, SourceApplication } from '@sap-ux/adp-tooling';
-import { AppRouterType } from '../../types';
 
 interface Choice {
     name: string;

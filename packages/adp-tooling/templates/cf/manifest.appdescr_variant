@@ -1,0 +1,17 @@
+{
+  "fileName": "manifest",
+  "layer": "<%= layer %>",
+  "fileType": "appdescr_variant",
+  "reference": "<%= appId %>",
+  "id": "<%= appVariantId %>",
+  "namespace": "apps/<%= appId %>/appVariants/<%= appVariantId %>/",
+  "content": [
+    {
+      "changeType": "appdescr_app_setTitle",
+      "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    }
+  ]
+}

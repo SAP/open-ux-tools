@@ -12,6 +12,7 @@ export * from './base/project-builder';
 export * from './base/abap/manifest-service';
 export { promptGeneratorInput, PromptDefaults } from './base/prompt';
 export * from './preview/adp-preview';
+export * from './writer/cf';
 export * from './writer/manifest';
 export * from './writer/writer-config';
 export { generate, migrate } from './writer';

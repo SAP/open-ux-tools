@@ -3,7 +3,7 @@ import { join } from 'path';
 import Generator from 'yeoman-generator';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
 
-import type { CFConfig } from '@sap-ux/adp-tooling';
+import type { CFConfig, CfServicesAnswers } from '@sap-ux/adp-tooling';
 import {
     FlexLayer,
     SystemLookup,
@@ -20,7 +20,9 @@ import {
     getBaseAppInbounds,
     YamlUtils,
     isMtaProject,
-    isCfInstalled
+    isCfInstalled,
+    generateCf,
+    createCfConfig
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
@@ -48,7 +50,7 @@ import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
-import type { TargetEnvAnswers, CfServicesAnswers } from './types';
+import type { TargetEnvAnswers } from './types';
 import { TargetEnv } from './types';
 import { type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput } from './types';
 import {
@@ -301,8 +303,7 @@ export default class extends Generator {
     async writing(): Promise<void> {
         try {
             if (this.isCfEnv) {
-                // TODO: Will be removed once CF project generation is supported.
-                this.vscode.window.showInformationMessage('CF project generation is not supported yet.');
+                await this._generateAdpProjectArtifactsCF();
                 return;
             }
 
@@ -505,6 +506,35 @@ export default class extends Generator {
         const prompter = new ConfigPrompter(this.systemLookup, this.layer, this.logger);
         cachePut(this.appWizard, { prompter }, this.logger);
         return prompter;
+    }
+
+    /**
+     * Generates the ADP project artifacts for the CF environment.
+     */
+    private async _generateAdpProjectArtifactsCF(): Promise<void> {
+        const { baseApp } = this.cfServicesAnswers;
+
+        if (!baseApp) {
+            throw new Error('Base app is required for CF project generation. Please select a base app and try again.');
+        }
+
+        const projectPath = this.isMtaYamlFound ? process.cwd() : this.destinationPath();
+        const publicVersions = await fetchPublicVersions(this.logger);
+
+        const manifest = this.fdcService.getManifestByBaseAppId(this.cfServicesAnswers.baseApp?.appId ?? '');
+
+        const cfConfig = createCfConfig({
+            attributeAnswers: this.attributeAnswers,
+            cfServicesAnswers: this.cfServicesAnswers,
+            cfConfig: this.cfConfig,
+            layer: this.layer,
+            manifest,
+            html5RepoRuntimeGuid: this.fdcService.html5RepoRuntimeGuid,
+            projectPath,
+            publicVersions
+        });
+
+        await generateCf(projectPath, cfConfig, this.fs);
     }
 
     /**

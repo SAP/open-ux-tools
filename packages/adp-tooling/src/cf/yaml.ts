@@ -442,7 +442,7 @@ export class YamlUtils {
         appRouterType: string,
         businessSolutionName: string,
         businessService: string,
-        logger: ToolsLogger
+        logger?: ToolsLogger
     ): Promise<void> {
         this.setTimestamp();
 
@@ -500,7 +500,7 @@ export class YamlUtils {
     private static async createServices(
         resources: any[],
         initialServices: string[],
-        logger: ToolsLogger
+        logger?: ToolsLogger
     ): Promise<void> {
         const excludeServices = initialServices.concat(['portal', this.HTML5_APPS_REPO]);
         const xsSecurityPath = this.yamlPath.replace('mta.yaml', 'xs-security.json');

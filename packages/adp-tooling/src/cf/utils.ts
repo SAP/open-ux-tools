@@ -64,7 +64,7 @@ export async function createService(
     spaceGuid: string,
     plan: string,
     serviceInstanceName: string,
-    logger: ToolsLogger,
+    logger?: ToolsLogger,
     tags: string[] = [],
     securityFilePath: string | null = null,
     serviceName: string | undefined = undefined

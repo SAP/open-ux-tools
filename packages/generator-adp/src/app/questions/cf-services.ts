@@ -1,14 +1,18 @@
+import {
+    type CfServicesAnswers,
+    type CFServicesQuestion,
+    type CfServicesPromptOptions,
+    cfServicesPromptNames
+} from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import { getBusinessServiceKeys, type CFApp, type FDCService, type ServiceKeys } from '@sap-ux/adp-tooling';
 
 import { t } from '../../utils/i18n';
-import { cfServicesPromptNames } from '../types';
 import { validateBusinessSolutionName } from './helper/validators';
 import { getAppRouterChoices, getCFAppChoices } from './helper/choices';
 import { showBusinessSolutionNameQuestion } from './helper/conditions';
-import type { CfServicesAnswers, CFServicesQuestion, CfServicesPromptOptions } from '../types';
 
 /**
  * Prompter for CF services.

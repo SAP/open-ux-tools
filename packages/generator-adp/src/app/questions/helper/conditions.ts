@@ -1,6 +1,6 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { ConfigAnswers, FlexUISupportedSystem } from '@sap-ux/adp-tooling';
-import { AppRouterType, type CfServicesAnswers } from '../../types';
+import { AppRouterType } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, FlexUISupportedSystem, CfServicesAnswers } from '@sap-ux/adp-tooling';
 
 /**
  * Determines if a credential question should be shown.
