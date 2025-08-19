@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.0
+
+### Minor Changes
+
+-   8178b2b: Remove CAP Java specific config in pom.xml and application.yaml.
+
 ## 0.11.0
 
 ### Minor Changes
