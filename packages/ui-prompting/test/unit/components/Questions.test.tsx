@@ -395,5 +395,25 @@ describe('Questions', () => {
             fireEvent.change(fooInput, { target: { value: 'newValue' } });
             expect(onChange).not.toHaveBeenCalled();
         });
+
+        it('updates merged answers and calls onChange for each input change', () => {
+            const onChange = jest.fn();
+            const { getByLabelText } = render(
+                <Questions
+                    questions={mockQuestions}
+                    onChange={onChange}
+                    choices={{
+                        foo: ['autoValueFoo'],
+                        bar: ['autoValueBar']
+                    }}
+                />
+            );
+
+            fireEvent.change(getByLabelText('Foo?'), { target: { value: 'autoValueFoo' } });
+            fireEvent.change(getByLabelText('Bar?'), { target: { value: 'autoValueBar' } });
+
+            expect(onChange).toHaveBeenCalledTimes(2);
+            expect(onChange.mock.calls[1][0]).toEqual({ 'bar': 'autoValueBar', 'foo': 'autoValueFoo' });
+        });
     });
 });
