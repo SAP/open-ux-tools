@@ -37,7 +37,7 @@ export function getMainService(appAccess: ApplicationAccess): string {
 /**
  * Retrieves the service name for the application.
  *
- * @param appAccess - The ApplicationAccess object
+ * @param appAccess - The application access object
  * @returns A promise that resolves to the service name
  */
 export async function getServiceName(appAccess: ApplicationAccess): Promise<string> {
@@ -52,7 +52,7 @@ export async function getServiceName(appAccess: ApplicationAccess): Promise<stri
 /**
  * Reads annotation files for the application.
  *
- * @param appAccess - The ApplicationAccess object
+ * @param appAccess - The application access object
  * @returns A promise that resolves to an array of FileData objects
  */
 export async function readAnnotationFiles(appAccess: ApplicationAccess): Promise<FileData[]> {
@@ -95,7 +95,7 @@ export async function readAnnotationFiles(appAccess: ApplicationAccess): Promise
 /**
  * Retrieves the manifest file for the application.
  *
- * @param appAccess - The ApplicationAccess object
+ * @param appAccess - The application access object
  * @returns A promise that resolves to the Manifest object or undefined if not found
  */
 export async function getManifest(appAccess: ApplicationAccess): Promise<Manifest | undefined> {

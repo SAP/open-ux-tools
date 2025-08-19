@@ -75,7 +75,7 @@ export class PageEditorApi {
     /**
      * Retrieves the application data.
      *
-     * @returns Promise resolving to AppData
+     * @returns Promise resolving to application data
      */
     public async getApplication(): Promise<AppData> {
         return this.ftfsIO.readApp();

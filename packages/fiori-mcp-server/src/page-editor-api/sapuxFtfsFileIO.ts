@@ -40,7 +40,8 @@ interface EditorExtended extends Editor {
 }
 
 /**
- * Class for handling SAP UX FTFS file I/O operations
+ * Class for handling file I/O operations for page editor.
+ * Mainly it uses specification to import(manifest->config/schema) or export(config->manifest).
  */
 export class SapuxFtfsFileIO {
     private appAccess: ApplicationAccess;
@@ -48,7 +49,7 @@ export class SapuxFtfsFileIO {
     /**
      * Creates an instance of SapuxFtfsFileIO.
      *
-     * @param appAccess - The ApplicationAccess object
+     * @param appAccess - The application access object
      */
     constructor(appAccess: ApplicationAccess) {
         this.appAccess = appAccess;
