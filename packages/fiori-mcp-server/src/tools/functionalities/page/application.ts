@@ -509,7 +509,7 @@ export class Application {
     }
     /**
      * Retrieves navigation options for the root page.
-     * 
+     *
      * @param refresh - Whether to refresh the data from the service.
      * @returns A promise that resolves to an array of AllowedNavigationOptions.
      */
@@ -529,7 +529,7 @@ export class Application {
     }
     /**
      * Retrieves creation options for a new page.
-     * 
+     *
      * @param pageType - Optional page type to get specific creation options.
      * @returns A promise that resolves to GetFunctionalityDetailsOutput containing creation options.
      */
@@ -610,7 +610,7 @@ export class Application {
     }
     /**
      * Creates a new page in the application.
-     * 
+     *
      * @param newPage - Details of the new page to be created.
      * @returns A promise that resolves to ExecuteFunctionalityOutput containing the result of the page creation.
      */
@@ -659,7 +659,7 @@ export class Application {
 
     /**
      * Retrieves options for deleting a page.
-     * 
+     *
      * @returns A promise that resolves to GetFunctionalityDetailsOutput containing delete options.
      */
     public async getDeleteOptions(): Promise<GetFunctionalityDetailsOutput> {
@@ -678,11 +678,13 @@ export class Application {
 
     /**
      * Deletes a page from the application.
-     * 
-     * @param pageId - The ID of the page to be deleted.
+     *
+     * @param page - The page to be deleted.
+     * @param page.pageId - The ID of the page to be deleted.
      * @returns A promise that resolves to ExecuteFunctionalityOutput containing the result of the page deletion.
      */
-    public async deletePage({ pageId }: { pageId: string }): Promise<ExecuteFunctionalityOutput> {
+    public async deletePage(page: { pageId: string }): Promise<ExecuteFunctionalityOutput> {
+        const { pageId } = page;
         const appData = structuredClone(this.appData);
         const { config } = appData;
         let deleteHappened = false;

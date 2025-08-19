@@ -83,7 +83,7 @@ import { resolveApplication } from './utils';
 
 /**
  * Executes a functionality based on the provided parameters.
- * 
+ *
  * @param params - Input parameters for executing the functionality
  * @returns A promise that resolves to the execution output
  * @throws Error if required parameters are missing
@@ -149,7 +149,7 @@ export async function executeFunctionality(params: ExecuteFunctionalitiesInput):
 
 /**
  * Generates changes based on the functionality and parameters.
- * 
+ *
  * @param functionality - Details of the functionality to be executed
  * @param functionalityId - ID of the functionality
  * @param parametersValue - Values for the parameters
@@ -206,7 +206,7 @@ async function generateChanges(
 
 /**
  * Retrieves the PageEditorApi instance for the given application path and page name.
- * 
+ *
  * @param appPath - Path to the application
  * @param pageName - Optional name of the page
  * @returns A promise that resolves to a PageEditorApi instance or undefined
@@ -223,7 +223,7 @@ export async function getEditorApi(appPath: string, pageName?: string): Promise<
 // This method tries to resolve value before applying/saving it.
 /**
  * Resolves the value of a parameter based on the property path and provided parameters.
- * 
+ *
  * @param propertyPath - Path to the property
  * @param parametersValue - Object containing parameter values
  * @param parameterInfo - Optional information about the parameter
@@ -267,7 +267,7 @@ function resolveParameterValue(
 
 /**
  * Finds a parameter in the functionality details by its ID.
- * 
+ *
  * @param functionality - Details of the functionality
  * @param id - ID of the parameter to find
  * @returns The found Parameter object or undefined if not found
