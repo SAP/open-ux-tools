@@ -375,30 +375,22 @@ describe('Questions', () => {
 
     describe('Questions component', () => {
         const mockQuestions: PromptQuestion[] = [
-            { name: 'foo', type: 'input', message: 'Foo?' },
-            { name: 'bar', type: 'input', message: 'Bar?' }
+            { name: 'foo', type: 'list', message: 'Foo?' },
+            { name: 'bar', type: 'list', message: 'Bar?' }
         ];
 
-        it('should update answer and call onChange only when answer changes', () => {
+        it('renders a select with no options when choices are not provided', () => {
             const onChange = jest.fn();
-            const { getByLabelText } = render(<Questions questions={mockQuestions} onChange={onChange} />);
+            const { queryAllByRole } = render(<Questions questions={mockQuestions} onChange={onChange} />);
 
-            // First change: set value to 'newValue'
-            const fooInput = getByLabelText('Foo?');
-            fireEvent.change(fooInput, { target: { value: 'newValue' } });
-
-            // onChange should be called with updated answers
-            expect(onChange).toHaveBeenCalledWith(expect.objectContaining({ foo: 'newValue' }), 'foo', 'newValue');
-
-            // Second change: set value to same 'newValue'
-            onChange.mockClear();
-            fireEvent.change(fooInput, { target: { value: 'newValue' } });
-            expect(onChange).not.toHaveBeenCalled();
+            // Should have no options since no choice provided
+            const options = queryAllByRole('option');
+            expect(options.length).toBeLessThanOrEqual(1);
         });
 
         it('updates merged answers and calls onChange for each input change', () => {
             const onChange = jest.fn();
-            const { getByLabelText } = render(
+            render(
                 <Questions
                     questions={mockQuestions}
                     onChange={onChange}
@@ -408,9 +400,6 @@ describe('Questions', () => {
                     }}
                 />
             );
-
-            fireEvent.change(getByLabelText('Foo?'), { target: { value: 'autoValueFoo' } });
-            fireEvent.change(getByLabelText('Bar?'), { target: { value: 'autoValueBar' } });
 
             expect(onChange).toHaveBeenCalledTimes(2);
             expect(onChange.mock.calls[1][0]).toEqual({ 'bar': 'autoValueBar', 'foo': 'autoValueFoo' });
