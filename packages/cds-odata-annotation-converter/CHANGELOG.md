@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.6.6
+
+### Patch Changes
+
+-   48c6aaa: fix: crash on empty flattened annotation term conversion
+
 ## 0.6.5
 
 ### Patch Changes
