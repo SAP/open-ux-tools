@@ -7,13 +7,28 @@ import type { AppData } from './sapuxFtfsFileIO';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { updateProperty } from './json-helper';
 
+/**
+ * Class representing the Page Editor API
+ */
 export class PageEditorApi {
     private ftfsIO;
 
+    /**
+     * Creates an instance of PageEditorApi.
+     *
+     * @param appAccess - The application access object
+     * @param pageId - Optional page identifier
+     */
     constructor(public appAccess: ApplicationAccess, public pageId?: string) {
         this.ftfsIO = new SapuxFtfsFileIO(appAccess);
     }
 
+    /**
+     * Retrieves the page tree structure.
+     *
+     * @param annotation - Optional page annotations
+     * @returns Promise resolving to the TreeNode structure
+     */
     public async getPageTree(annotation?: PageAnnotations): Promise<TreeNode> {
         let tree: TreeNode = {
             children: [],
@@ -36,6 +51,13 @@ export class PageEditorApi {
         return tree;
     }
 
+    /**
+     * Changes a property in the page or application configuration.
+     *
+     * @param path - The property path to change
+     * @param value - The new value for the property
+     * @returns Promise resolving to ExportResults or undefined
+     */
     public async changeProperty(path: PropertyPath, value: unknown): Promise<ExportResults | undefined> {
         if (this.pageId) {
             const pageData = await this.ftfsIO.readPageData(this.pageId);
@@ -50,10 +72,21 @@ export class PageEditorApi {
         }
     }
 
+    /**
+     * Retrieves the application data.
+     *
+     * @returns Promise resolving to AppData
+     */
     public async getApplication(): Promise<AppData> {
         return this.ftfsIO.readApp();
     }
 
+    /**
+     * Updates the application data.
+     *
+     * @param appData - The new application data
+     * @returns Promise resolving when the update is complete
+     */
     public async updateApplication(appData: AppData): Promise<void> {
         await this.ftfsIO.writeApp(appData);
     }

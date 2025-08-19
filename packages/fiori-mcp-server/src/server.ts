@@ -38,6 +38,10 @@ type ToolArgs =
 export class FioriFunctionalityServer {
     private server: Server;
 
+    /**
+     * Initializes a new instance of the FioriFunctionalityServer.
+     * Sets up the MCP server with Fiori functionality tools and error handling.
+     */
     constructor() {
         this.server = new Server(
             {
@@ -55,6 +59,10 @@ export class FioriFunctionalityServer {
         this.setupErrorHandling();
     }
 
+    /**
+     * Sets up error handling for the server.
+     * Logs MCP errors and handles the SIGINT signal for graceful shutdown.
+     */
     private setupErrorHandling(): void {
         this.server.onerror = (error) => console.error('[MCP Error]', error);
         process.on('SIGINT', async () => {
@@ -63,6 +71,10 @@ export class FioriFunctionalityServer {
         });
     }
 
+    /**
+     * Sets up handlers for various MCP tools.
+     * Configures handlers for listing tools, and calling specific Fiori functionality tools.
+     */
     private setupToolHandlers(): void {
         this.server.setRequestHandler(ListToolsRequestSchema, async () => {
             return {
@@ -146,6 +158,12 @@ export class FioriFunctionalityServer {
         });
     }
 
+    /**
+     * Converts the result of a tool execution to the CallToolResult format.
+     *
+     * @param result - The result to be converted.
+     * @returns The converted result in CallToolResult format.
+     */
     private convertResultToCallToolResult<T extends object>(result: T | string): CallToolResult {
         const convertedResult: CallToolResult = {
             content: [
@@ -163,6 +181,10 @@ export class FioriFunctionalityServer {
         return convertedResult;
     }
 
+    /**
+     * Starts the FioriFunctionalityServer.
+     * Connects the server to a StdioServerTransport and begins listening for requests.
+     */
     async run(): Promise<void> {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);

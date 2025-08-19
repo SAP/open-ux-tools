@@ -39,21 +39,45 @@ interface EditorExtended extends Editor {
     dump(): { [key: string]: { contents: string; state: 'modified' | 'deleted' } };
 }
 
+/**
+ * Class for handling SAP UX FTFS file I/O operations
+ */
 export class SapuxFtfsFileIO {
     private appAccess: ApplicationAccess;
 
+    /**
+     * Creates an instance of SapuxFtfsFileIO.
+     *
+     * @param appAccess - The ApplicationAccess object
+     */
     constructor(appAccess: ApplicationAccess) {
         this.appAccess = appAccess;
     }
 
+    /**
+     * Retrieves the Specification object.
+     *
+     * @returns A promise that resolves to a Specification object
+     */
     private async getSpecification(): Promise<Specification> {
         return this.appAccess.getSpecification();
     }
 
+    /**
+     * Extracts the application ID from the manifest.
+     *
+     * @param manifest - The Manifest object
+     * @returns The application ID as a string
+     */
     private getAppId(manifest: Manifest): string {
         return manifest['sap.app']?.id ?? '';
     }
 
+    /**
+     * Retrieves virtual files for the project.
+     *
+     * @returns A promise that resolves to an array of File objects
+     */
     private async getVirtualFiles(): Promise<File[]> {
         const manifest = await getManifest(this.appAccess);
         if (!manifest) {
@@ -68,6 +92,12 @@ export class SapuxFtfsFileIO {
         });
     }
 
+    /**
+     * Reads the application data.
+     *
+     * @param files - Optional array of File objects
+     * @returns A promise that resolves to an AppData object
+     */
     public async readApp(files?: File[]): Promise<AppData> {
         if (!files) {
             files = await this.getVirtualFiles();
@@ -162,6 +192,12 @@ export class SapuxFtfsFileIO {
         return result;
     }
 
+    /**
+     * Writes the application data.
+     *
+     * @param appData - The AppData object to write
+     * @returns A promise that resolves to ExportResults or undefined
+     */
     public async writeApp(appData: AppData): Promise<ExportResults | undefined> {
         const { config, schema } = appData;
         const manifest = await getManifest(this.appAccess);
@@ -184,6 +220,12 @@ export class SapuxFtfsFileIO {
         return result;
     }
 
+    /**
+     * Writes FPM (Flexible Programming Model) data.
+     *
+     * @param params - The GenerateCustomExtensionParams object
+     * @returns A promise that resolves to an array of strings
+     */
     public async writeFPM(params: GenerateCustomExtensionParams): Promise<string[]> {
         if (params.data) {
             params.data.minUI5Version = await getUI5Version(this.appAccess);

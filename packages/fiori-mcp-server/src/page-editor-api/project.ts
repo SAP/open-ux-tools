@@ -34,6 +34,12 @@ export function getMainService(appAccess: ApplicationAccess): string {
     return mainService ?? 'mainService';
 }
 
+/**
+ * Retrieves the service name for the application.
+ *
+ * @param appAccess - The ApplicationAccess object
+ * @returns A promise that resolves to the service name
+ */
 export async function getServiceName(appAccess: ApplicationAccess): Promise<string> {
     let serviceName = getMainService(appAccess);
     if (appAccess.projectType === 'CAPJava' || appAccess.projectType === 'CAPNodejs') {
@@ -43,6 +49,12 @@ export async function getServiceName(appAccess: ApplicationAccess): Promise<stri
     return serviceName;
 }
 
+/**
+ * Reads annotation files for the application.
+ *
+ * @param appAccess - The ApplicationAccess object
+ * @returns A promise that resolves to an array of FileData objects
+ */
 export async function readAnnotationFiles(appAccess: ApplicationAccess): Promise<FileData[]> {
     const annotationData: FileData[] = [];
     const mainService = getMainService(appAccess);
@@ -80,6 +92,12 @@ export async function readAnnotationFiles(appAccess: ApplicationAccess): Promise
     return annotationData;
 }
 
+/**
+ * Retrieves the manifest file for the application.
+ *
+ * @param appAccess - The ApplicationAccess object
+ * @returns A promise that resolves to the Manifest object or undefined if not found
+ */
 export async function getManifest(appAccess: ApplicationAccess): Promise<Manifest | undefined> {
     const absoluteWebappPath = await getWebappPath(appAccess.app.appRoot);
     const manifest = join(absoluteWebappPath, FileName.Manifest);
