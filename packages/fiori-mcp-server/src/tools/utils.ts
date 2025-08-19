@@ -34,6 +34,7 @@ export async function resolveApplication(path: string): Promise<Appdetails | und
 
 /**
  * Method returns folder path for new extension creation using FPM writer approach.
+ *
  * @param directory Target file type(fragment or view).
  * @returns Relative path.
  */

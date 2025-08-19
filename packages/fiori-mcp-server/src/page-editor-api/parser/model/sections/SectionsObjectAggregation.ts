@@ -41,12 +41,13 @@ export class SectionsObjectAggregation extends SectionsAggregation {
     /**
      * Overwritten method for data update of object page sections
      * Method receives current values for sections - loops through custom sections object and appends existing/standard aggregations with custom section aggregations.
-     * @param {PageData} data Data which should be used for value population.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {PropertyPath} path Aggregation path.
-     * @param {PageAnnotations} annotations Page annotations.
-     * @param {ModelParModelParserParams<ObjectAggregation> | undefined} parser Model parser parameters.
+     *
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
+     * @param annotations Page annotations.
+     * @param parser Model parser parameters.
      */
     public updatePropertiesValues(
         data: PageData,
@@ -95,11 +96,12 @@ export class SectionsObjectAggregation extends SectionsAggregation {
 
     /**
      * Method parses building blocks for passed custom section.
-     * @param {ParseData} parseData Schema parse data and parser.
-     * @param {SectionAggregation} section Section to parse.
-     * @param {string} id Section id.
-     * @param {PageData} sections Sections data.
-     * @param {PropertyPath} path Aggregation path.
+     *
+     * @param parseData Schema parse data and parser.
+     * @param section Section to parse.
+     * @param id Section id.
+     * @param sections Sections data.
+     * @param path Aggregation path.
      */
     private parseBuildingBlocks(
         parseData: ParseData,
@@ -151,7 +153,8 @@ export class SectionsObjectAggregation extends SectionsAggregation {
 
     /**
      * Public method checks if annotation sections are merged by 'sap.fe' in runtime.
-     * @returns {boolean} Annotation sections are merged by 'sap.fe' in runtime.
+     *
+     * @returns Annotation sections are merged by 'sap.fe' in runtime.
      */
     public isSectionsMerged(): boolean {
         return false;

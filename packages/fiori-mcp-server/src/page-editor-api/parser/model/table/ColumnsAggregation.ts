@@ -130,11 +130,12 @@ export class ColumnsAggregation extends ObjectAggregation {
     }
 
     /**
-     * Data update of custom columns from 'custom' block, V2 scenario
-     * @param {PageData} data Data which should be used for value population.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type
-     * @param {PropertyPath} path Path of columns.
+     * Data update of custom columns from 'custom' block, V2 scenario.
+     *
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type
+     * @param path Path of columns.
      */
     private updatePropertiesFromCustomAggregation(
         data: PageData,
@@ -197,12 +198,13 @@ export class ColumnsAggregation extends ObjectAggregation {
     }
 
     /**
-     * Overwritten method for data update of table columns
-     * @param {PageData} data - Data which should be used for value population.
-     * @param {PageConfig} page - Page config data.
-     * @param {PageType} pageType - Page type
-     * @param {PropertyPath} path - Path of columns.
-     * @param {PageAnnotations} annotations - Annotations
+     * Overwritten method for data update of table columns.
+     *
+     * @param data - Data which should be used for value population.
+     * @param page - Page config data.
+     * @param pageType - Page type
+     * @param path - Path of columns.
+     * @param annotations - Annotations
      */
     public updatePropertiesValues(
         data: PageData,
@@ -245,10 +247,11 @@ export class ColumnsAggregation extends ObjectAggregation {
     }
 
     /**
-     * Method returns available column id for candidate column id
-     * @param {string} id Candidate id.
-     * @param {Array<string | undefined>} existingIds Array of existing ids.
-     * @returns {string} Available id.
+     * Method returns available column id for candidate column id.
+     *
+     * @param id Candidate id.
+     * @param existingIds Array of existing ids.
+     * @returns Available id.
      */
     private getFreeId(id: string, existingIds: Array<string | undefined>): string {
         // Find available id
@@ -263,9 +266,10 @@ export class ColumnsAggregation extends ObjectAggregation {
 
     /**
      * Method detects default extension type for current page with table object.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {PropertyPath} path Path of columns.
+     *
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Path of columns.
      */
     private resolveTableColumnExtensionType(page: PageConfig, pageType: PageType, path: PropertyPath): void {
         // Get path for table object
@@ -282,9 +286,10 @@ export class ColumnsAggregation extends ObjectAggregation {
 
     /**
      * Method to get value for passed path in passed object.
-     * @param {any} obj - Object to use.
-     * @param {string[]} paths - Path for searching property/value.
-     * @returns {unknown} Found value for passed path.
+     *
+     * @param obj - Object to use.
+     * @param paths - Path for searching property/value.
+     * @returns Found value for passed path.
      */
     private resolveProperty(obj: any, paths: PropertyPath): any {
         let current = obj;
@@ -304,8 +309,9 @@ export class ColumnsAggregation extends ObjectAggregation {
     /**
      * Method returns if passed custom column matches table type.
      * Table can have multiple columns with different 'extensionType', but Runtime will render only those which are matches to table type.
-     * @param {ColumnBase} column - Custom column object from 'page.json'.
-     * @returns {boolean} True if custom column extension type matches table type.
+     *
+     * @param column - Custom column object from 'page.json'.
+     * @returns True if custom column extension type matches table type.
      */
     private doesColumnExtensionMatchTableType(column: ColumnBase): boolean {
         return !this.isExtensionTypeSupported() || column.extensionType === this.tableColumnExtensionType;
@@ -314,7 +320,8 @@ export class ColumnsAggregation extends ObjectAggregation {
     /**
      * Method checks if custom columns schema supports 'extensionType' property.
      * Old 'spec' version does not support this property, but we still can support custom columns with old spec version.
-     * @returns {boolean} True if 'extensionType' property exists in schema for Custom Column definition.
+     *
+     * @returns True if 'extensionType' property exists in schema for Custom Column definition.
      */
     public isExtensionTypeSupported(): boolean {
         return !!(this.formSchema && this.formSchema.properties.extensionType);
@@ -322,8 +329,9 @@ export class ColumnsAggregation extends ObjectAggregation {
 
     /**
      * Method returns maximal order by looping through all aggregations and all custom columns data.
-     * @param {ColumnBase[]} columnData - Custom column data.
-     * @returns {number} Maximal property order index.
+     *
+     * @param columnData - Custom column data.
+     * @returns Maximal property order index.
      */
     private getMaxColumnIndex(columnData: ColumnBase[]): number {
         let maxIndex = this.getMaxOrder();

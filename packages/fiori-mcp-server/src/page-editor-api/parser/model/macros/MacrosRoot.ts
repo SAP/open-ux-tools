@@ -33,6 +33,7 @@ export class MacrosRootAggregation extends ObjectAggregation {
 
     /**
      * Method returns forms(internal/build-in and external/guided-help) based on supported features.
+     *
      * @returns Forms(internal/build-in and external/guided-help) based on supported features.
      */
     private getCreationForms(): MacrosForms {
@@ -65,6 +66,7 @@ export class MacrosRootAggregation extends ObjectAggregation {
 
     /**
      * Public method returns display name of aggregation.
+     *
      * @returns Display name of building blocks node.
      */
     public getDisplayName(): string {
@@ -72,7 +74,8 @@ export class MacrosRootAggregation extends ObjectAggregation {
     }
 
     /**
-     * Method provides creation options for macros elements
+     * Method provides creation options for macros elements.
+     *
      * @param annotations Page annotations.
      * @returns Creation forms for macros node.
      */
@@ -82,6 +85,7 @@ export class MacrosRootAggregation extends ObjectAggregation {
 
     /**
      * Method stores passed file path as source of macros node.
+     *
      * @param annotations Page annotations.
      * @returns Creation forms for macros node.
      */
@@ -90,7 +94,8 @@ export class MacrosRootAggregation extends ObjectAggregation {
     }
 
     /**
-     * Refreshes internal data based on annotation node data
+     * Refreshes internal data based on annotation node data.
+     *
      * @param annotations Annotation node data
      */
     public updateAnnotationData(annotations: PageAnnotations | undefined): void {

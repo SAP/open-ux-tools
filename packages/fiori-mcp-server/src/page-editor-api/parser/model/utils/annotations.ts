@@ -30,6 +30,7 @@ export function getAnnotationNodeById(annotations: PageAnnotations, id: number[]
 
 /**
  * Returns all locations for the given node.
+ *
  * @param node
  * @returns
  */
@@ -69,11 +70,12 @@ export function nodeMatcher(
 
 /**
  * Method finds matching node using passed schema annotation path and tree object nested nodes and full nodes.
- * @param {string} schemaAnnotationPath Annotation path from schema to look up in annotation nodes.
- * @param {UINode[]} annotationNodes Full annotation nodes tree.
- * @param {UINode[]} childAnnotationNodes Current level's annotation nodes - mainly nested nodes are used to look up, but there is special cases when nodes are not on same level as schema.
- * @param {string} [nodeAnnotationPath] Current annotation node path.
- * @returns {UINode | undefined} Matching annotation node.
+ *
+ * @param schemaAnnotationPath Annotation path from schema to look up in annotation nodes.
+ * @param annotationNodes Full annotation nodes tree.
+ * @param childAnnotationNodes Current level's annotation nodes - mainly nested nodes are used to look up, but there is special cases when nodes are not on same level as schema.
+ * @param nodeAnnotationPath Current annotation node path.
+ * @returns Matching annotation node.
  */
 export function getMatchingNode(
     schemaAnnotationPath: string,
@@ -107,9 +109,10 @@ export function getMatchingNode(
  * Method prepares array with indexes to loop through.
  * If index is passed as param, then we need place it first.
  * It is used for cases when nodes can have same path, but different order indexes.
- * @param {UINode[]} nodes - Nodes to loop.
- * @param {number} [index] - Index to place as very first.
- * @returns {number[]} Array of index to loop.
+ *
+ * @param nodes Nodes to loop.
+ * @param index Index to place as very first.
+ * @returns Array of index to loop.
  */
 function getNodeMatcherIndexes(nodes: UINode[], index?: number): number[] {
     const indexes: number[] = [];

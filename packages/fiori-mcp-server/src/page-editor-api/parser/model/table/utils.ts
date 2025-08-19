@@ -4,7 +4,8 @@ import type { ObjectAggregation } from '../ObjectAggregation';
 
 /**
  * Method checks if passed location is associated with annotation source/artifact.
- * @param {Location} location Location object.
+ *
+ * @param location Location object.
  * @returns True if passed location is associated with annotation source/artifact.
  */
 const isAnnotationLocation = (location: Location): boolean => {
@@ -17,7 +18,8 @@ const isAnnotationLocation = (location: Location): boolean => {
  * 1. "AnnotationPath" can be placed in "Table" node;
  * 2. "AnnotationPath" can be missed in "Table" node, but placed in child node;
  * In case of 2nd scenario - we need to copy "locations" from child and apply to "Table" node.
- * @param {ObjectAggregation} child Table's child aggregation/node.
+ *
+ * @param child Table's child aggregation/node.
  */
 export const updateTableChildNodeLocations = (child: ObjectAggregation): void => {
     const annotationLocations: Location[] = [];

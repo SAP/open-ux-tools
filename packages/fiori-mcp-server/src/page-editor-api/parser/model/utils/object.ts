@@ -1,8 +1,9 @@
 /**
  * Method checks if arrays are same - check is performed without deep equality.
- * @param {Array} arr1 - First array.
- * @param {Array} arr2 - Second array.
- * @returns {boolean} Is arrays are same.
+ *
+ * @param arr1 - First array.
+ * @param arr2 - Second array.
+ * @returns Is arrays are same.
  */
 export const isArrayEqual = (
     arr1: Array<unknown> | null | undefined,
@@ -21,9 +22,10 @@ export const isArrayEqual = (
 
 /**
  * Method checks if array 'arr1' ends with all entries from 'arr2'.
- * @param {Array} arr1 - First array.
- * @param {Array} arr2 - Second array.
- * @returns {boolean} Is 'arr1' ends with entries from 'arr2'.
+ *
+ * @param arr1 - First array.
+ * @param arr2 - Second array.
+ * @returns Is 'arr1' ends with entries from 'arr2'.
  */
 export const isArrayEndsWith = <T>(arr1: Array<T> | null, arr2: Array<T> | null): boolean => {
     if (!arr1 || !arr2 || arr2.length > arr1.length) {
@@ -43,9 +45,10 @@ export const isArrayEndsWith = <T>(arr1: Array<T> | null, arr2: Array<T> | null)
 
 /**
  * Method to get value for passed path in passed object.
- * @param {object} obj - Object to use.
- * @param {Array<string>} paths - Path for searching property/value.
- * @returns {unknown} Found value for passed path.
+ *
+ * @param obj - Object to use.
+ * @param paths - Path for searching property/value.
+ * @returns Found value for passed path.
  */
 export const getProperty = (obj: object, paths: Array<string | number>): unknown => {
     let current = obj;

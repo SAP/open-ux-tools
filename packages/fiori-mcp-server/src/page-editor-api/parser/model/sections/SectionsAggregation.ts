@@ -62,10 +62,11 @@ export class SectionsAggregation extends ObjectAggregation {
     /**
      * Overwritten method for data update of object page sections
      * Method receives current values for sections - loops custom sections array and appends existing/standard aggregations with custom section aggregations.
-     * @param {PageData} data Data which should be used for value population.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {PropertyPath} path Aggregation path.
+     *
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
      */
     public updatePropertiesValues(
         data: PageData,
@@ -138,8 +139,9 @@ export class SectionsAggregation extends ObjectAggregation {
     /**
      * Method traverses custom section with recursion.
      * Reason why we need recursion is because in V4 - custom section can refference to each other.
-     * @param {string} relatedFacet Facet id - method will traverso all section refferenced to passed id.
-     * @param {CustomSectionTraverseCallback} callback Traverse callback method.
+     *
+     * @param relatedFacet Facet id - method will traverso all section refferenced to passed id.
+     * @param callback Traverse callback method.
      */
     private traverseCustomSections(relatedFacet: string, callback: CustomSectionTraverseCallback) {
         const relatedSections = this.customSections.filter((customSection) => {
@@ -157,11 +159,12 @@ export class SectionsAggregation extends ObjectAggregation {
 
     /**
      * Factory method which creates aggregation object for passed custom section.
-     * @param {PageConfig} page Page config data.
-     * @param {PageType} pageType Page type.
-     * @param {Array<string>} path Aggregation path.
-     * @param {ModelParserParams | undefined} parser Model parser parameters.
-     * @param {ObjectPageCustomSectionBase} sectionData Custom section data.
+     *
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
+     * @param parser Model parser parameters.
+     * @param sectionData Custom section data.
      */
     private customSectionFactory(
         page: PageConfig,
@@ -271,8 +274,9 @@ export class SectionsAggregation extends ObjectAggregation {
 
     /**
      * Is section id matches related facet id.
-     * @param {string} sectionId Section id.
-     * @param {string} relatedFacet Related facet id.
+     *
+     * @param sectionId Section id.
+     * @param relatedFacet Related facet id.
      */
     public isSectionMatchesRelatedFacet(sectionId = '', relatedFacet = ''): boolean {
         // At some point maybe we would not need it, but currently schema does not return same ids as custom section's facets
@@ -350,8 +354,8 @@ export class SectionsAggregation extends ObjectAggregation {
      * Method receives custom section data and determines position of custom section in flat array.
      * Also generates unique id if custom section has same values.
      *
-     * @param {ObjectPageCustomSectionBase} customSectionData Section id.
-     * @returns {string} Custom section id.
+     * @param customSectionData Section id.
+     * @returns Custom section id.
      */
     private storeSection(customSectionData: v2.ObjectPageCustomSectionBase): string {
         // Determine the insertion index based on relative position and related facet
@@ -377,8 +381,9 @@ export class SectionsAggregation extends ObjectAggregation {
 
     /**
      * Method returns available section id for candidate section id
-     * @param {string} sectionId Candidate section id.
-     * @returns {string} Available section id.
+     *
+     * @param sectionId Candidate section id.
+     * @returns Available section id.
      */
     public getFreeSectionId(sectionId: string): string {
         // Find available id
@@ -398,9 +403,10 @@ export class SectionsAggregation extends ObjectAggregation {
     }
 
     /**
-     * Method returns available section id for candidate section id
-     * @param {string} [position=''] Section position.
-     * @returns {string} Available section id.
+     * Method returns available section id for candidate section id.
+     *
+     * @param position Section position.
+     * @returns Available section id.
      */
     private checkRelatedPosition(position = '', ...matchingPositions: v2.SectionPosition[]): boolean {
         const positionQuery = new Map<v2.SectionPosition, string>([
@@ -420,8 +426,9 @@ export class SectionsAggregation extends ObjectAggregation {
 
     /**
      * Method returns value  for relativePosition - it can be different for V2 or V4.
-     * @param {SectionPosition} position Section position.
-     * @returns {string} Available section id.
+     *
+     * @param position Section position.
+     * @returns Available section id.
      */
     private getSortingApproach(): SortingApproach {
         if (this.isV4()) {
@@ -433,8 +440,9 @@ export class SectionsAggregation extends ObjectAggregation {
     /**
      * Public method validates potentialy new section against rule that id should be unique for V4.
      * Property 'id' is part of custom section only for V4 application.
-     * @param {string} id Candidate id.
-     * @returns {boolean} Is V4 application.
+     *
+     * @param id Candidate id.
+     * @returns Is V4 application.
      */
     private isV4(): boolean {
         return !!(this.formSchema && this.formSchema.properties.id);
@@ -443,8 +451,9 @@ export class SectionsAggregation extends ObjectAggregation {
     /**
      * Method provides creation options based on its related annotation node.
      * Overwritten, specificly for sections - we should check dialogsContext to determine if creation enabled for AnalyticalChart form.
-     * @param {PageAnnotations | undefined} annotations Page annotations.
-     * @returns {CreationFormOptions[]} Array of creation forms.
+     *
+     * @param annotations Page annotations.
+     * @returns Array of creation forms.
      */
     protected getNativeNodeCreationForms(annotations: PageAnnotations | undefined): CreationFormOptions[] {
         if (!annotations) {

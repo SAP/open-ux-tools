@@ -40,7 +40,6 @@ export class HeaderSectionsAggregation extends SectionsObjectAggregation {
      * @param pageType Page type.
      * @param path Aggregation path.
      * @param annotations Page annotations.
-     * @param parser Model parser parameters.
      */
     public updatePropertiesValues(
         data: PageData,
@@ -57,7 +56,7 @@ export class HeaderSectionsAggregation extends SectionsObjectAggregation {
             if (section?.schema && !section.schema.annotationPath) {
                 const templateEdit = section.properties['templateEdit']?.value;
                 const template = section.properties['fragmentName']?.value;
-                let goToCodeAction: SupportedAggregationAction | undefined = undefined;
+                let goToCodeAction: SupportedAggregationAction | undefined;
                 if (typeof template === 'string' && typeof templateEdit === 'string') {
                     goToCodeAction = {
                         type: AggregationActions.OpenSource,
