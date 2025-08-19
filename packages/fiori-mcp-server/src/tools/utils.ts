@@ -2,6 +2,12 @@ import { findProjectRoot, createApplicationAccess, getProject, DirName } from '@
 import { join } from 'path';
 import type { Appdetails } from '../types';
 
+/**
+ * Resolves the application details from a given path.
+ *
+ * @param path - The file system path to resolve the application from.
+ * @returns A promise that resolves to an Appdetails object if the application is found, or undefined otherwise.
+ */
 export async function resolveApplication(path: string): Promise<Appdetails | undefined> {
     try {
         // normalize app path
@@ -33,10 +39,10 @@ export async function resolveApplication(path: string): Promise<Appdetails | und
 }
 
 /**
- * Method returns folder path for new extension creation using FPM writer approach.
+ * Returns the folder path for new extension creation using the FPM writer approach.
  *
- * @param directory Target file type(fragment or view).
- * @returns Relative path.
+ * @param directory - Target file type (fragment, view, controller) or a custom subfolder.
+ * @returns The relative path for the extension folder, or undefined if the directory type is not recognized.
  */
 export const getDefaultExtensionFolder = (directory: string): string | undefined => {
     let subFolder: string | undefined;
