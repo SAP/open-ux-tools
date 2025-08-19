@@ -1,5 +1,11 @@
 # @sap-ux/annotation-generator
 
+## 0.3.54
+
+### Patch Changes
+
+-   810d7eb: fix: Annotations are not generated if navigation property can't be resolved.
+
 ## 0.3.53
 
 ### Patch Changes
