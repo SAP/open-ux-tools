@@ -89,6 +89,13 @@ export class ViewsAggregation extends ObjectAggregation {
         }
     }
 
+    /**
+     * Determines the delete action configuration for a given view aggregation.
+     *
+     * @param viewAggregation - The view aggregation to evaluate.
+     * @param annotations - The current page annotations context.
+     * @returns The delete action configuration for the view.
+     */
     private getViewDeleteAction(
         viewAggregation: ObjectAggregation,
         annotations: PageAnnotations

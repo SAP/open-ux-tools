@@ -248,6 +248,11 @@ export class ObjectAggregation {
         return displayName;
     }
 
+    /**
+     * Retrieves the supported aggregation actions for this instance.
+     *
+     * @returns A list of supported aggregation actions.
+     */
     public getSupportedActions(): SupportedAggregationActions {
         const actions = [...(this.actions ?? [])];
         if (this.locations && this.locations.length) {
@@ -670,6 +675,12 @@ export class ObjectAggregation {
         return maxOrder;
     }
 
+    /**
+     * Traverses up the parent hierarchy to find the first matching parent of the specified aggregation type.
+     *
+     * @param matchType The constructor of the aggregation type to match against.
+     * @returns The first matching parent if found.
+     */
     public findMatchingParent(matchType: typeof ObjectAggregation = ObjectAggregation): ObjectAggregation | undefined {
         let parent = this.parent;
         while (parent) {

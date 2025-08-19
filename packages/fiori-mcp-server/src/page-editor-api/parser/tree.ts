@@ -115,6 +115,15 @@ export function getNodeId(path: string): string {
     return `outline-node${path.replace(/\//g, '-')}`;
 }
 
+/**
+ * Creates a generic `TreeNodeProperty` object from a property or aggregation.
+ *
+ * @param name - The name of the property.
+ * @param displayName - The display name of the property.
+ * @param property - The source property or aggregation.
+ * @param schemaPath - The schema path for the property.
+ * @returns The generated tree node property.
+ */
 export function getGenericBase(
     name: string,
     displayName: string,
@@ -211,6 +220,15 @@ function updateStringProperty(property: TreeNodeProperty, schema: JSONSchema4) {
     }
 }
 
+/**
+ * Generates a `TreeNodeProperty` with type-specific configurations based on a `SettingOption`.
+ *
+ * @param name - The name of the property.
+ * @param displayName - The display name of the property.
+ * @param property - The source property.
+ * @param schemaPath - The schema path for the property.
+ * @returns The configured tree node property, or `undefined` if unhandled.
+ */
 export function getPropertyData(
     name: string,
     displayName: string,
@@ -415,6 +433,12 @@ function getAllowedParentPaths(root: ObjectAggregation, aggregation: ObjectAggre
     return result;
 }
 
+/**
+ * Determines the aggregation node type for a given `ObjectAggregation`.
+ *
+ * @param aggregation - The aggregation instance to evaluate.
+ * @returns The corresponding node type, or `undefined` if not recognized.
+ */
 function getNodeType(aggregation: ObjectAggregation): AggregationNodeType | undefined {
     let type: AggregationNodeType | undefined;
     if (aggregation.custom) {
@@ -498,6 +522,13 @@ export function findNodeByAnnotationNodeId(tree: TreeNode[], nodeId: number[]): 
     return undefined;
 }
 
+/**
+ * Finds a node or property in a tree by its property path.
+ *
+ * @param tree - The tree of nodes to search.
+ * @param propertyPath - The path of the property to find.
+ * @returns The matching node or property if found, otherwise `undefined`.
+ */
 export function findByPath(
     tree: TreeNode[],
     propertyPath: PropertyPath
@@ -533,6 +564,13 @@ export function findByPath(
     return undefined;
 }
 
+/**
+ * Recursively searches nested properties of a `TreeNodeProperty` for a matching schema path.
+ *
+ * @param property - The property to search within.
+ * @param propertyPath - The schema path to match.
+ * @returns The matching nested property if found, otherwise `undefined`.
+ */
 function searchProperty(property: TreeNodeProperty, propertyPath: PropertyPath): TreeNodeProperty | undefined {
     if (property.properties) {
         for (const child of property.properties) {

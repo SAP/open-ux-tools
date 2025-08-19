@@ -11,6 +11,11 @@ import type {
 import { getDefaultExtensionFolder, resolveApplication } from '../../utils';
 import { join } from 'path';
 
+/**
+ * Retrieves the parameter definitions for creating a controller extension.
+ *
+ * @returns An object containing parameter definitions for pageType, pageId, and controllerName.
+ */
 function getParameters(): { pageType: Parameter; pageId: Parameter; controllerName: Parameter } {
     return {
         pageType: {
@@ -43,6 +48,12 @@ export const CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY: GetFunctionalityDetailsO
     parameters: Object.values(getParameters())
 };
 
+/**
+ * Retrieves the details of the create controller extension functionality.
+ *
+ * @param input - The input parameters for getting functionality details.
+ * @returns A promise that resolves to the functionality details output.
+ */
 async function getFunctionalityDetails(input: GetFunctionalityDetailsInput): Promise<GetFunctionalityDetailsOutput> {
     const defaultParameters = getParameters();
     // Populate options for pageId
@@ -67,6 +78,12 @@ async function getFunctionalityDetails(input: GetFunctionalityDetailsInput): Pro
     };
 }
 
+/**
+ * Executes the create controller extension functionality.
+ *
+ * @param input - The input parameters for executing the functionality.
+ * @returns A promise that resolves to the execution output.
+ */
 async function executeFunctionality(input: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
     const { parameters, appPath } = input;
     const project = await resolveApplication(appPath);

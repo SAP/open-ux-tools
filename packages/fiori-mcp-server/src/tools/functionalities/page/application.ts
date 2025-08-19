@@ -55,14 +55,34 @@ export class Application {
         this.applicationAccess = applicationAccess;
     }
 
+    /**
+     * Gets the name of an allowed navigation option.
+     *
+     * @param navigation - The allowed navigation option.
+     * @returns The name of the navigation option.
+     */
     private getAllowedNavigationsName(navigation: AllowedNavigationOptions) {
         return navigation.name;
     }
 
+    /**
+     * Generates a string representation of all allowed navigation options.
+     *
+     * @param navigations - An array of allowed navigation options.
+     * @returns A comma-separated string of navigation names.
+     */
     private getAllowedNavigationsOutput(navigations: AllowedNavigationOptions[]): string {
         return navigations.map((navigation) => this.getAllowedNavigationsName(navigation)).join(', ');
     }
 
+    /**
+     * Generates an error message for missing navigation.
+     *
+     * @param reason - The reason for the missing navigation.
+     * @param navigations - An array of allowed navigation options.
+     * @param parentPageId - Optional ID of the parent page.
+     * @returns An error message string.
+     */
     private getMissingNavigationMessage(
         reason: MissingNavigationReason,
         navigations: AllowedNavigationOptions[],
@@ -94,6 +114,14 @@ export class Application {
         return message;
     }
 
+    /**
+     * Calculates the context path for a page.
+     *
+     * @param parentPage - Optional parent page definition.
+     * @param navigationProperty - Optional navigation property.
+     * @param entitySet - Optional entity set.
+     * @returns The calculated context path or undefined.
+     */
     private calculateContextPath(
         parentPage?: PageDef,
         navigationProperty?: string,
@@ -116,6 +144,13 @@ export class Application {
         return contextPath;
     }
 
+    /**
+     * Calculates the context path based on the entity set of the parent page.
+     *
+     * @param parentPage - The parent page definition.
+     * @param navigationProperty - Optional navigation property.
+     * @returns The calculated context path or undefined.
+     */
     private calculateContextPathBasedOnEntitySet(parentPage: PageDef, navigationProperty?: string): string | undefined {
         let contextPath: string | undefined;
         const routePattern = parentPage.routePattern;
@@ -133,6 +168,12 @@ export class Application {
         }
         return contextPath;
     }
+    /**
+     * Creates an error response object.
+     *
+     * @param message - The error message.
+     * @returns An ExecuteFunctionalityOutput object with error details.
+     */
     private createErrorResponse(message: string): ExecuteFunctionalityOutput {
         return {
             functionalityId: ADD_PAGE,
@@ -145,6 +186,14 @@ export class Application {
         };
     }
 
+    /**
+     * Validates the input for page creation.
+     *
+     * @param newPage - The new page details.
+     * @param pages - Existing pages in the application.
+     * @param viewName - Optional view name for custom pages.
+     * @returns A promise that resolves to an ExecuteFunctionalityOutput object if there's an error, or null if validation passes.
+     */
     private async validatePageCreationInput(
         newPage: NewPage,
         pages: PageDef[],
@@ -164,6 +213,12 @@ export class Application {
         return null;
     }
 
+    /**
+     * Validates the view name for a custom page.
+     *
+     * @param viewName - The view name to validate.
+     * @returns An ExecuteFunctionalityOutput object if there's an error, or null if validation passes.
+     */
     private validateCustomPageViewName(viewName?: string): ExecuteFunctionalityOutput | null {
         const standardEnding = '.view.xml';
         const cleanViewName = viewName?.endsWith(standardEnding) ? viewName.slice(0, -standardEnding.length) : viewName;
@@ -225,6 +280,14 @@ export class Application {
         return null;
     }
 
+    /**
+     * Finds the target navigation option based on the provided navigation or entity set.
+     *
+     * @param navigations - Array of allowed navigation options.
+     * @param navigation - Optional navigation string to search for.
+     * @param entitySet - Optional entity set to search for.
+     * @returns The matching AllowedNavigationOptions object or undefined if not found.
+     */
     private findTargetNavigation(
         navigations: AllowedNavigationOptions[],
         navigation?: string,
@@ -236,6 +299,17 @@ export class Application {
         });
     }
 
+    /**
+     * Generates a new page using the FPM writer.
+     *
+     * @param newPage - The new page details.
+     * @param parentPage - The parent page, if any.
+     * @param targetNavigation - The target navigation option.
+     * @param pages - Existing pages in the application.
+     * @param viewName - Optional view name for custom pages.
+     * @param entitySet - Optional entity set for the new page.
+     * @returns A promise that resolves to an object containing the new page ID and changes made.
+     */
     private async generatePageWithFPMWriter(
         newPage: NewPage,
         parentPage: PageDef | undefined,

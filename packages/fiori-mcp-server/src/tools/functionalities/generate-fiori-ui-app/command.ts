@@ -6,6 +6,12 @@ import type { ExecuteFunctionalitiesInput, ExecuteFunctionalityOutput } from '..
 import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
 const exec = promisify(execAsync);
 
+/**
+ * Method to generate fiori app.
+ *
+ * @param params Input parameters for application generation.
+ * @returns Application generation execution output.
+ */
 export async function command(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
     const { appGenConfig = {} } = params.parameters;
     let { projectPath = '' } = params.parameters;

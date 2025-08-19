@@ -10,6 +10,12 @@ import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api';
 import { resolveApplication } from '../../utils';
 import { DELETE_PAGE } from '../../../constant';
 
+/**
+ * Retrieves the details of the Delete Page functionality.
+ *
+ * @param params - The input parameters for getting functionality details.
+ * @returns A promise resolving to the functionality details output.
+ */
 async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Promise<GetFunctionalityDetailsOutput> {
     const { appPath } = params;
     const appDetails = await resolveApplication(appPath);
@@ -29,6 +35,12 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
     return application.getDeleteOptions();
 }
 
+/**
+ * Executes the Delete Page functionality.
+ *
+ * @param params - The input parameters for executing the functionality.
+ * @returns A promise resolving to the execution output.
+ */
 async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
     const { appPath, parameters } = params;
     const appDetails = await resolveApplication(appPath);

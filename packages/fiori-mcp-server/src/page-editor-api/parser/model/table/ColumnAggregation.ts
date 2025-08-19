@@ -189,9 +189,20 @@ export class ColumnAggregation extends ObjectAggregation {
         }
     }
 
+    /**
+     * Checks if this column represents an action column.
+     *
+     * @returns true if this is an action column.
+     */
     public isActionColumn(): boolean {
         return !!this.name?.startsWith(`${DATA_FIELD_ACTION}${ANNOTATION_TYPES_SEPARATOR}`);
     }
+
+    /**
+     * Checks if this column represents a navigation column.
+     *
+     * @returns true if this is a navigation column.
+     */
     public isNavigationColumn(): boolean {
         return !!this.name?.startsWith(`${DATA_FIELD_FOR_INTENT_BASED_NAVIGATION}${ANNOTATION_TYPES_SEPARATOR}`);
     }

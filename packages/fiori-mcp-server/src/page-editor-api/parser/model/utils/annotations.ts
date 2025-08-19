@@ -17,6 +17,13 @@ SPECIAL_CHILD_NODES.set(
 const GENERIC_ACTION_TERMS = ['com.sap.vocabularies.UI.v1.DeleteHidden', 'com.sap.vocabularies.UI.v1.UpdateHidden'];
 const stripTarget = (annotationPath: string | undefined): string => (annotationPath || '').split('/@').pop() || '';
 
+/**
+ * Retrieves a `UINode` from the given annotations by its hierarchical node ID.
+ *
+ * @param annotations The annotations object containing nodes.
+ * @param id The hierarchical node ID to search for.
+ * @returns The matching `UINode` if found, otherwise `undefined`.
+ */
 export function getAnnotationNodeById(annotations: PageAnnotations, id: number[]): UINode | undefined {
     let node: UINode | undefined = annotations.nodes.find((node) => node?.nodeId && node.nodeId[0] === id[0]);
     for (let i = 1; i < id.length; i++) {
@@ -44,6 +51,15 @@ export function getNodeLocations(node: UINode): Location[] {
     return [];
 }
 
+/**
+ * Finds a `UINode` within a tree of nodes that matches the given annotation path.
+ *
+ * @param annotationPath - The annotation path to match.
+ * @param nodes - The list of nodes to search within.
+ * @param shallow - If true, only searches the top-level nodes.
+ * @param lookUpIndex - Optional index hint to optimize search order.
+ * @returns The matching node if found, otherwise `undefined`.
+ */
 export function nodeMatcher(
     annotationPath: string,
     nodes: UINode[],

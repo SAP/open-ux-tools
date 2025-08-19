@@ -343,6 +343,12 @@ export class ColumnsAggregation extends ObjectAggregation {
         return maxIndex;
     }
 
+    /**
+     * Updates the locations of this node and its child nodes.
+     *
+     * @param annotations Page annotations.
+     * @param currentUINode Current UI node context.
+     */
     protected updateLocations(annotations: PageAnnotations | undefined, currentUINode?: UINode): void {
         super.updateLocations(annotations, currentUINode);
         updateTableChildNodeLocations(this);

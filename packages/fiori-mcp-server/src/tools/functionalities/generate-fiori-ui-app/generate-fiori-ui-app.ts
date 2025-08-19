@@ -197,10 +197,21 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
     ]
 };
 
+/**
+ * Retrieves the details of the Generate SAP Fiori UI Application functionality.
+ *
+ * @returns A promise that resolves to the functionality details output.
+ */
 async function getFunctionalityDetails(): Promise<GetFunctionalityDetailsOutput> {
     return GENERATE_FIORI_UI_APP;
 }
 
+/**
+ * Executes the Generate SAP Fiori UI Application functionality.
+ *
+ * @param params - The input parameters for executing the functionality.
+ * @returns A promise that resolves to the execution output.
+ */
 async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
     return command(params);
 }
