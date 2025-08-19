@@ -16,7 +16,7 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
 
     constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
-        this.dataAccessor = getHybridStore(this.logger, options);
+        this.dataAccessor = getHybridStore(this.logger, { ...options, recoverFromSecureStore: true });
     }
 
     public async read(key: BackendSystemKey): Promise<BackendSystem | undefined> {
