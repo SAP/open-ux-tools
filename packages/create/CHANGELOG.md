@@ -1,5 +1,12 @@
 # @sap-ux/create
 
+## 0.13.99
+
+### Patch Changes
+
+-   Updated dependencies [8178b2b]
+    -   @sap-ux/cap-config-writer@0.12.0
+
 ## 0.13.98
 
 ### Patch Changes
