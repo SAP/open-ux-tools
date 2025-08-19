@@ -46,7 +46,7 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
                 guiOptions: {
                     mandatory: true,
                     translationProperties: {
-                        type: SapShortTextType.TableTitle,
+                        type: SapShortTextType.Heading,
                         annotation: t('title.translationAnnotation') as string
                     }
                 }

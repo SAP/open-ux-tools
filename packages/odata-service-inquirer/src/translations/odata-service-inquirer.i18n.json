@@ -145,7 +145,7 @@
             "noEntitiesError": "$t(errors.noRelevantEntities)"
         },
         "pageBuildingBlock": {
-            "message": "Add a Page Building Block to the application?",
+            "message": "Add a Page Building Block to the Application?",
             "titleMessage": "Page Title"
         },
         "tableType": {

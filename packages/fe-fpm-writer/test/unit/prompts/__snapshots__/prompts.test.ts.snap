@@ -469,7 +469,7 @@ Object {
         "mandatory": true,
         "translationProperties": Object {
           "annotation": "Title of the Page.",
-          "type": "XTIT",
+          "type": "XHED",
         },
       },
       "message": "Page Title",
@@ -1714,7 +1714,7 @@ Object {
         "mandatory": true,
         "translationProperties": Object {
           "annotation": "Title of the Page.",
-          "type": "XTIT",
+          "type": "XHED",
         },
       },
       "message": "Page Title",
