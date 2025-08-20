@@ -39,6 +39,7 @@ import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/d
 import { type AdpGeneratorOptions, type AttributePromptOptions, type JsonInput } from './types';
 import { getWizardPages, updateFlpWizardSteps, updateWizardSteps, getDeployPage } from '../utils/steps';
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
+import { getTemplatesOverwritePath } from '../utils/templates';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -283,6 +284,10 @@ export default class extends Generator {
                 packageJson,
                 logger: this.toolsLogger
             });
+
+            if (config.options) {
+                config.options.templatePathOverwrite = getTemplatesOverwritePath();
+            }
 
             await generate(this._getProjectPath(), config, this.fs);
         } catch (e) {

@@ -14,6 +14,7 @@ import { t } from '../utils/i18n';
 import { GeneratorTypes } from '../types';
 import SubGeneratorWithAuthBase from '../base/sub-gen-auth-base';
 import type { GeneratorOpts } from '../utils/opts';
+import { getTemplatesOverwritePath } from '../utils/templates'
 import path from 'path';
 
 /**
@@ -75,7 +76,7 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
             changeData,
             this.fs,
-            path.join(__dirname, 'templates')
+            getTemplatesOverwritePath()
         );
         this.logger.log('Change written to changes folder');
 
