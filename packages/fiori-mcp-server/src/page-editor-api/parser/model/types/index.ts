@@ -245,11 +245,9 @@ export interface PropertyMessage {
     preventMessagePropagation?: boolean;
 }
 
-export type SettingOptionValue = unknown;
-
 export interface SettingOption {
     schema: JSONSchema4;
-    value?: SettingOptionValue;
+    value?: unknown;
     pattern?: string;
     description?: string;
     state?: ValidationState;

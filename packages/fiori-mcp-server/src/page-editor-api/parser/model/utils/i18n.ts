@@ -19,10 +19,8 @@ export const extractI18nKey = (
     resolveAnnotationBinding = false,
     forceKeyExtraction?: boolean
 ): string | undefined => {
-    if (new RegExp(`^{{[^\\{}:]+}}$`).exec(input)) {
-        if (!resolveAnnotationBinding || forceKeyExtraction) {
-            return input.toString().substring(2, input.length - 2);
-        }
+    if (/^{{[^\\{}:]+}}$/.exec(input) && (!resolveAnnotationBinding || forceKeyExtraction)) {
+        return input.toString().substring(2, input.length - 2);
     }
     const prefixRegex = resolveAnnotationBinding
         ? `(${I18N_BINDING_PREFIX}|@${I18N_BINDING_PREFIX})`

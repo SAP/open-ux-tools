@@ -237,7 +237,7 @@ export class Application {
             return this.createErrorResponse('Provide "viewName" for CustomPage');
         }
 
-        if (!/^[a-zA-Z][a-zA-Z0-9_-]{0,}$/i.exec(cleanViewName)) {
+        if (!/^[a-z][a-z0-9_-]*$/i.exec(cleanViewName)) {
             return this.createErrorResponse(
                 `'viewName' must not contain spaces, must start with an upper-case letter, and may contain letters, digits, and underscores.`
             );
