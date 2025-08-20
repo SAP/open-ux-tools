@@ -4,7 +4,7 @@ import type { Properties } from './utils';
 import Log from 'sap/base/Log';
 import { MessageBarType, PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
-import { FetchError, getError } from '../utils/error';
+import { FetchError } from '../utils/error';
 
 export interface ControlMetadata {
     baseType: string | undefined;
