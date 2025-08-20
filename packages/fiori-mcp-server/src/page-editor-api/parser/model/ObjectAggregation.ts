@@ -879,7 +879,7 @@ export class ObjectAggregation {
             result.push(
                 ...droppableAggregations.map((droppableAggregation): AllowedDropAggregation => {
                     const range = droppableAggregation.getAllowedDropRange(source);
-                    return { aggregation: droppableAggregation, range };
+                    return { path: droppableAggregation.path, range };
                 })
             );
         }

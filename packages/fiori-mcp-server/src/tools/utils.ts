@@ -20,8 +20,8 @@ export async function resolveApplication(path: string): Promise<Appdetails | und
                 // projectProvider,
                 applicationAccess
             };
-        } catch (_e) {
-            console.log('Application was not found by given path - search project.');
+        } catch (e) {
+            console.log(`Application was not found by given path. Error: ${e}`);
             // Fallback - project without app
             const root = await findProjectRoot(path);
             const project = await getProject(root);
@@ -32,8 +32,8 @@ export async function resolveApplication(path: string): Promise<Appdetails | und
                 };
             }
         }
-    } catch (_e) {
-        console.log('Project was not found by given path.');
+    } catch (e) {
+        console.log(`Project was not found by given path. Error: ${e}`);
         return undefined;
     }
 

@@ -1,7 +1,6 @@
 import type { ArtifactType } from '@sap/ux-specification/dist/types/src';
 import { v2 } from '@sap/ux-specification/dist/types/src';
 import type { JSONSchema4 } from 'json-schema';
-import type { ObjectAggregation } from '../ObjectAggregation';
 import type { I18nBundle } from '@sap-ux/i18n';
 import type { AllowedMoveRange, Location } from './common';
 import type { UIDialogsContext, UINode } from './annotations';
@@ -181,7 +180,7 @@ export interface ModelParserParams<T> {
 }
 
 export interface AllowedDropAggregation {
-    aggregation: ObjectAggregation;
+    path: PropertyPath;
     range?: AllowedMoveRange[];
 }
 

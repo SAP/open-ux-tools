@@ -435,11 +435,11 @@ function getAllowedParentPaths(root: ObjectAggregation, aggregation: ObjectAggre
         if (NOT_ALLOWED_IN_FOOTER_AGGREGATION_NAMES.some((aggName) => aggregation.name?.startsWith(aggName))) {
             // restrict moving navigation node to footer - special case
             allowedParents = allowedParents.filter(
-                (allowedParent) => !isArrayEqual(allowedParent.aggregation.path, ['footer', 'actions'])
+                (allowedParent) => !isArrayEqual(allowedParent.path, ['footer', 'actions'])
             );
         }
         result = allowedParents.map((allowedParent) => ({
-            path: allowedParent.aggregation.path,
+            path: allowedParent.path,
             allowedRanges: allowedParent.range
         }));
     }
