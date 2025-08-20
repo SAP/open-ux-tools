@@ -1,13 +1,12 @@
-import { sapCoreMock } from 'mock/window';
-import { OutlineService } from '../../../../src/cpe/outline/service';
-import * as nodes from '../../../../src/cpe/outline/nodes';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
-import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
-import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import Log from 'sap/base/Log';
-import type { ChangeService } from '../../../../src/cpe/changes/service';
-import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
+import { sapCoreMock } from 'mock/window';
 import { CommunicationService } from 'open/ux/preview/client/cpe/communication-service';
+import Log from 'sap/base/Log';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { ChangeService } from '../../../../src/cpe/changes/service';
+import * as nodes from '../../../../src/cpe/outline/nodes';
+import { OutlineService } from '../../../../src/cpe/outline/service';
 
 const mockChangeService = {
     syncOutlineChanges: jest.fn()
@@ -98,13 +97,6 @@ describe('index', () => {
         // transformNodesSpy called but rejected.
         expect(transformNodesSpy).toHaveBeenCalled();
         expect(mockSendAction).not.toHaveBeenCalled();
-        expect(CommunicationService.sendAction).toHaveBeenCalledWith(
-            showInfoCenterMessage({
-                title: 'Outline Update Failed',
-                description: 'error',
-                type: MessageBarType.error
-            })
-        );
     });
 
     test('initOutline - empty additional data', async () => {

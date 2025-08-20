@@ -196,11 +196,6 @@ export async function registerComponentDependencyPaths(appUrls: string[], urlPar
             registerModules((await response.json()) as AppIndexData);
         } catch (error) {
             Log.error(`Registering of reuse libs failed. Error:${error}`);
-            await sendInfoCenterMessage({
-                title: { key: 'FLP_REGISTER_LIBS_FAILED_TITLE' },
-                description: getError(error).message,
-                type: MessageBarType.error
-            });
         }
     }
 }
@@ -377,11 +372,6 @@ export async function init({
         });
     } else {
         Log.warning('Card generator is not supported for the current UI5 version.');
-        await sendInfoCenterMessage({
-            title: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_TITLE' },
-            description: { key: 'FLP_CARD_GENERATOR_NOT_SUPPORTED_DESCRIPTION' },
-            type: MessageBarType.warning
-        });
     }
 
     // reset app state if requested
@@ -430,11 +420,6 @@ if (bootstrapConfig) {
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);
-        return sendInfoCenterMessage({
-            title: { key: 'FLP_SANDBOX_INIT_FAILED_TITLE' },
-            description: error.message,
-            type: MessageBarType.error
-        });
     });
 }
 
