@@ -64,7 +64,7 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         }
 
         for (const id of Object.keys(systems)) {
-            let system = systems[id];
+            let system: BackendSystem | undefined = systems[id];
             if (!system?.url?.trim()) {
                 // attempt to recover the system URL from the ID
                 await this.recoverUrlFromId(id);
