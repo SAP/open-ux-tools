@@ -51,11 +51,6 @@ export function loadDefaultLibraries(): void {
         })
         .catch((reason) => {
             Log.error('Loading Library Failed: ' + reason);
-            return sendInfoCenterMessage({
-                title: { key: 'LIBRARY_ERROR_TITLE' },
-                description: getError(reason).message,
-                type: MessageBarType.error
-            });
         });
 }
 
