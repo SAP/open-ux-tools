@@ -1,4 +1,5 @@
 ---
+'@sap-ux/preview-middleware': minor
 '@sap-ux-private/preview-middleware-client': minor
 ---
 
