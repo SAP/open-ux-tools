@@ -1,5 +1,31 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.38.0
+
+### Minor Changes
+
+-   43f94eb: Add support for automatically including a Page Building Block when generating a custom page
+
+## 0.37.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.16
+
+## 0.37.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.12
+-   @sap-ux/fiori-annotation-api@0.6.15
+
+## 0.37.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.14
+-   @sap-ux/project-access@1.30.11
+
 ## 0.37.0
 
 ### Minor Changes

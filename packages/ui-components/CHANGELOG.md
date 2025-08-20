@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.26.10
+
+### Patch Changes
+
+-   904f8e3: Change Help Action icon to blue.
+
 ## 1.26.9
 
 ### Patch Changes

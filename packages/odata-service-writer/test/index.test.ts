@@ -51,7 +51,7 @@ describe('ODataService templates', () => {
      */
     async function createTestDir(name: string): Promise<string> {
         const testDir = join(outputDir, name);
-        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxydMiddleware({ ui5: {} }).toString();
+        const ui5Yaml = (await UI5Config.newInstance('')).addFioriToolsProxyMiddleware({ ui5: {} }).toString();
         fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
         fs.write(join(testDir, 'ui5-local.yaml'), '');
         fs.writeJSON(join(testDir, 'package.json'), {});

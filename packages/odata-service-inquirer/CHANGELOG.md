@@ -1,5 +1,34 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.6.0
+
+### Minor Changes
+
+-   43f94eb: Add support for automatically including a Page Building Block when generating a custom page
+
+## 2.5.33
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/telemetry@0.6.16
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/fiori-generator-shared@0.13.9
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 2.5.32
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/axios-extension@1.22.5
+-   @sap-ux/fiori-generator-shared@0.13.8
+-   @sap-ux/project-input-validator@0.6.16
+-   @sap-ux/telemetry@0.6.15
+-   @sap-ux/inquirer-common@0.7.34
+
 ## 2.5.31
 
 ### Patch Changes

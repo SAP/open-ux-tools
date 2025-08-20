@@ -7,5 +7,8 @@
   "Type_value_must_be_string": "The `$Type` value must be a string literal.",
   "Wrong_path_separator_0_Did_you_mean_1": "`{{currentValue}}` is the wrong path separator. Did you mean `{{proposedValue}}`?",
   "No_segments_after_type": "Segments are not allowed after `$Type.`",
-   "Value_must_be_provided": "The `$Type` must have a value."
+  "Value_must_be_provided": "The `$Type` must have a value.",
+  "diagnostics": {
+    "deprecated_$value_syntax": "Annotating values with $value is deprecated. Use nested annotations names instead."
+  }
 }
