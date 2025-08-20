@@ -81,6 +81,31 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
         });
     });
 
+    test('Should generate view XML containing custom page building block title for FPM template', async () => {
+        const testPath = join(curTestOutPath, 'with-js');
+        const config = {
+            ...Object.assign(feBaseConfig('fefpmjs'), {
+                template: {
+                    ...fpmTemplate,
+                    settings: {
+                        ...fpmTemplate.settings,
+                        pageBuildingBlockTitle: 'My Custom Page'
+                    }
+                }
+            }),
+            ui5: {
+                minUI5Version: '1.96.11'
+            },
+            service: v4Service
+        } as FioriElementsApp<FPMSettings>;
+        const fs = await generate(testPath, config);
+        const viewXmlPath = join(testPath, 'webapp/ext/main/Main.view.xml');
+        const viewXml = fs.read(viewXmlPath).toString();
+
+        expect(viewXml).toContain('My Custom Page');
+        expect(viewXml).toContain('<macros:Page id="Page" title="My Custom Page"/>');
+    });
+
     test('Try generating with invalid service', async () => {
         const config = {
             ...fpmConfigs[0].config,
