@@ -157,13 +157,24 @@ async function writeCfTemplates(basePath: string, config: CfAdpWriterConfig, fs:
                 content: {
                     minUI5Version: ui5.version
                 }
+            },
+            {
+                changeType: 'appdescr_app_setTitle',
+                content: {},
+                texts: {
+                    i18n: 'i18n/i18n.properties'
+                }
             }
         ]
     };
 
     fillDescriptorContent(variant.content as Content[], app.appType, ui5.version, app.i18nModels);
 
-    fs.writeJSON(join(project.folder, 'webapp', 'manifest.appdescr_variant'), variant);
+    fs.copyTpl(
+        join(baseTmplPath, 'project/webapp/manifest.appdescr_variant'),
+        join(project.folder, 'webapp', 'manifest.appdescr_variant'),
+        { app: variant }
+    );
 
     fs.copyTpl(join(baseTmplPath, 'cf/package.json'), join(basePath, project.folder, 'package.json'), {
         module: project.name
