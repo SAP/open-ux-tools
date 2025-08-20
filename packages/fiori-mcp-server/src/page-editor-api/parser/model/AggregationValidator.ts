@@ -129,7 +129,10 @@ export class AggregationValidator {
         const entity = aggregation.properties[property] || aggregation.aggregations[property] || {};
         const value = entity.value as JSONSchema4Type;
         if (variantProperty.schema) {
-            if (variantProperty.schema.pattern && !(value as string).toString().match(variantProperty.schema.pattern)) {
+            if (
+                variantProperty.schema.pattern &&
+                !new RegExp(variantProperty.schema.pattern).exec((value as string).toString())
+            ) {
                 return ValidationState.Skipped;
             }
             if (

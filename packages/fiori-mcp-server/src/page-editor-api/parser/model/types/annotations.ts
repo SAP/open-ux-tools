@@ -34,12 +34,10 @@ export interface TooComplexData extends UINodeCore {
 
 export type UINodeId = number[];
 
-export type AnnotationPath = string;
-
 export interface UINodeCore {
     nodeType: string;
     nodeId: UINodeId;
-    annotationPath: AnnotationPath; // absolute path to the annotation which is basis for the UI Node (as in specification module)
+    annotationPath: string; // absolute path to the annotation which is basis for the UI Node (as in specification module)
     macroNodeId?: string; // id of macro node which is basis for this UI node
     allowedParentNodes?: Record<string, boolean>; // allowed parents when moving node; set of stringified UINodeIds
     allowedSubnodeTypes?: string[]; // allowed node types for creation of new subnodes, format: '<nodeType>[/<subType>]', e.g. 'formField', 'section/UI.Identification'

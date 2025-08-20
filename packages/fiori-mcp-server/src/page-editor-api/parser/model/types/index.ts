@@ -245,7 +245,7 @@ export interface PropertyMessage {
     preventMessagePropagation?: boolean;
 }
 
-export type SettingOptionValue = boolean | string | number | unknown;
+export type SettingOptionValue = unknown;
 
 export interface SettingOption {
     schema: JSONSchema4;

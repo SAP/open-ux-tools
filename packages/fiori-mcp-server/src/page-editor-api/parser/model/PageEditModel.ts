@@ -228,7 +228,7 @@ export class PageEditModel {
     // Definitions - used to look up when going through recursion
     public readonly definitions: { [key: string]: JSONSchema4 } = {};
     // List of properties to exclude from traversing
-    private excludeProperties: string[] = ['$schema'];
+    private readonly excludeProperties: string[] = ['$schema'];
     public schema: JSONSchema4;
     public validator: AggregationValidator = new AggregationValidator();
     public pendingNodes: ObjectAggregation[] = [];
@@ -332,7 +332,7 @@ export class PageEditModel {
      * @param annotationNodes All annotation nodes.
      * @returns Matched node context.
      */
-    private getContextForMacrosNode = (currentMacrosNodeId: string, annotationNodes: UINode[]): UINode | undefined => {
+    private getContextForMacrosNode(currentMacrosNodeId: string, annotationNodes: UINode[]): UINode | undefined {
         for (const i in annotationNodes) {
             const contextNode = annotationNodes[i];
             const subNodes = 'subnodes' in contextNode ? contextNode.subnodes : [];
@@ -343,7 +343,7 @@ export class PageEditModel {
             }
         }
         return undefined;
-    };
+    }
 
     // Separated and ordered schema parse methods
     private readonly schemaParsers: Array<(params: SchemaParseParams) => boolean> = [
@@ -961,7 +961,7 @@ export class PageEditModel {
         const item = this.getSchemaArrayItem(aggregation.schema || {});
         if (typeof item === 'object') {
             const formSchema = this.prepareAggregation();
-            aggregation.isAtomic = !item.type ? false : true;
+            aggregation.isAtomic = !!item.type;
             this.parseSchema(formSchema, item, undefined, aggregation.isAtomic ? '' : undefined, aggregation.path, {});
             if (Object.keys(formSchema.properties).length) {
                 aggregation.formSchema = formSchema;

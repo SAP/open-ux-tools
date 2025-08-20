@@ -232,8 +232,6 @@ export const updateAnchorSchema = (aggregation: ObjectAggregation, originalSchem
  * @param messages Array of validation messages.
  */
 export function addValidationMessages(instance: { messages?: PropertyMessage[] }, messages: PropertyMessage[]): void {
-    if (!instance.messages) {
-        instance.messages = [];
-    }
+    instance.messages ??= [];
     instance.messages.push(...messages);
 }

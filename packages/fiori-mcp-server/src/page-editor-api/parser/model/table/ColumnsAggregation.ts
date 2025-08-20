@@ -111,8 +111,8 @@ export class ColumnsAggregation extends ObjectAggregation {
         const customColumnGroups: Map<TableColumnExtensionType, Array<ColumnBase>> = new Map();
         // Sort all columns by index
         const customColumns = [...this.customColumns].sort((column1: ColumnBase, column2: ColumnBase) => {
-            const columnIndex1 = column1.columnIndex !== undefined ? column1.columnIndex : 0;
-            const columnIndex2 = column2.columnIndex !== undefined ? column2.columnIndex : 0;
+            const columnIndex1 = column1.columnIndex ?? 0;
+            const columnIndex2 = column2.columnIndex ?? 0;
             if (columnIndex1 === columnIndex2) {
                 return 0;
             }

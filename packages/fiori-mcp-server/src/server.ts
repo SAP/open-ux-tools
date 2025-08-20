@@ -39,7 +39,7 @@ type ToolArgs =
  *
  */
 export class FioriFunctionalityServer {
-    private server: Server;
+    private readonly server: Server;
 
     /**
      * Initializes a new instance of the FioriFunctionalityServer.

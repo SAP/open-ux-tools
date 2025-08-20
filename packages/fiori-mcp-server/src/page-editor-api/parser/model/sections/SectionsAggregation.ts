@@ -390,7 +390,7 @@ export class SectionsAggregation extends ObjectAggregation {
         // Find available id
         let counter = 1;
         // If section id is undefined - use 'missingId' key.
-        const originalSectionId = sectionId !== undefined ? sectionId : 'missingId';
+        const originalSectionId = sectionId ?? 'missingId';
         sectionId = originalSectionId;
         const keys = Object.keys(this.aggregations).filter((key: string) => {
             return this.sections.indexOf(key) === -1;

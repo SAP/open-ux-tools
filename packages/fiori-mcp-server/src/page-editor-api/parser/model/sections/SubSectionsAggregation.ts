@@ -73,6 +73,6 @@ export class SubSectionsAggregation extends SectionsObjectAggregation {
             }
         }
         // If there is at least one annotation node - sections are merged
-        return mergedAnnotationNodes > 0 ? true : false;
+        return mergedAnnotationNodes > 0;
     }
 }

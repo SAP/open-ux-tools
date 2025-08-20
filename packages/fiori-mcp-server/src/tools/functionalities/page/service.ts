@@ -40,7 +40,7 @@ export class Service {
      *
      * @param options
      */
-    constructor(private options: ServiceOptions) {}
+    constructor(private readonly options: ServiceOptions) {}
     /**
      *
      * @param refresh

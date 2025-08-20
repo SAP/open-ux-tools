@@ -33,11 +33,11 @@ export const DELETE_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
  *
  */
 export class Application {
-    private serviceName: string;
-    private appData: AppData;
-    private appId: string;
-    private applicationAccess: ApplicationAccess;
-    private params: GetFunctionalityDetailsInput;
+    private readonly serviceName: string;
+    private readonly appData: AppData;
+    private readonly appId: string;
+    private readonly applicationAccess: ApplicationAccess;
+    private readonly params: GetFunctionalityDetailsInput;
     /**
      *
      * @param root0
@@ -237,7 +237,7 @@ export class Application {
             return this.createErrorResponse('Provide "viewName" for CustomPage');
         }
 
-        if (!cleanViewName.match(/^[a-zA-Z][a-zA-Z0-9_-]{0,}$/i)) {
+        if (!/^[a-zA-Z][a-zA-Z0-9_-]{0,}$/i.exec(cleanViewName)) {
             return this.createErrorResponse(
                 `'viewName' must not contain spaces, must start with an upper-case letter, and may contain letters, digits, and underscores.`
             );

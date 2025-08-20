@@ -26,7 +26,7 @@ export class ColumnAggregation extends ObjectAggregation {
     public isViewNode = true;
     public actions = [AggregationActions.Delete];
     public sortableItem = SortingOptions.Enabled;
-    private criticality?: string;
+    private readonly criticality?: string;
 
     /**
      * Setter for title.
@@ -58,7 +58,7 @@ export class ColumnAggregation extends ObjectAggregation {
         if (this.isMacrosNode()) {
             // validate column key
             validateMacrosExtension(this, value);
-            const relatedAnchors = anchorOneOf ? anchorOneOf : [];
+            const relatedAnchors = anchorOneOf ?? [];
             // no positioning property for macros anchor
             const anchor = getProperty(value, ['anchor']);
             anchorMatches = anchor
@@ -67,7 +67,7 @@ export class ColumnAggregation extends ObjectAggregation {
                   })
                 : true;
         } else {
-            const relatedAnchors: unknown[] = anchorEnum ? anchorEnum : [];
+            const relatedAnchors: unknown[] = anchorEnum ?? [];
             const anchor = getProperty(value, ['position', 'anchor']);
             anchorMatches = anchor ? relatedAnchors.includes(anchor) : true;
         }
@@ -117,7 +117,7 @@ export class ColumnAggregation extends ObjectAggregation {
             !isExtensionTypeSupported || tableExtension === columnExtension
                 ? SortingOptions.Enabled
                 : SortingOptions.Excluded;
-        const columnExtensionText = columnExtension === undefined ? 'Unknown' : columnExtension;
+        const columnExtensionText = columnExtension ?? 'Unknown';
         if (tabkey && pageType === PageType.ListReport) {
             this.additionalText = isExtensionTypeSupported
                 ? i18next.t('PAGE_EDITOR_OUTLINE_NODE_DESC_CUSTOM_COLUMN_WITH_EXTENSION_TAB', {

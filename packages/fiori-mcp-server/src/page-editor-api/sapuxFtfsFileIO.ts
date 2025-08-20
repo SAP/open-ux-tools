@@ -47,7 +47,7 @@ interface EditorExtended extends Editor {
  * Mainly it uses specification to import(manifest->config/schema) or export(config->manifest).
  */
 export class SapuxFtfsFileIO {
-    private appAccess: ApplicationAccess;
+    private readonly appAccess: ApplicationAccess;
 
     /**
      * Creates an instance of SapuxFtfsFileIO.
@@ -103,9 +103,7 @@ export class SapuxFtfsFileIO {
      * @returns A promise that resolves to an AppData object
      */
     public async readApp(files?: File[]): Promise<AppData> {
-        if (!files) {
-            files = await this.getVirtualFiles();
-        }
+        files ??= await this.getVirtualFiles();
         const appJson = files.find((file) => file.dataSourceUri === FileName.App);
         const appConfig = JSON.parse(appJson?.fileContent ?? '{}') as Application;
         const schemaPath = join('.schemas', basename(join(appConfig?.$schema ?? '')));

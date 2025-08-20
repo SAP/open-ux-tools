@@ -11,7 +11,7 @@ import { updateProperty } from './json-helper';
  * Class representing the Page Editor API
  */
 export class PageEditorApi {
-    private ftfsIO;
+    private readonly ftfsIO;
 
     /**
      * Creates an instance of PageEditorApi.

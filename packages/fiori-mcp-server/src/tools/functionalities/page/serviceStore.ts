@@ -12,7 +12,7 @@ const serviceStore: Map<string, Service> = new Map();
 export async function getService(options: ServiceOptions): Promise<Service> {
     const key = options.serviceName;
     if (!serviceStore.has(key)) {
-        serviceStore.set(key, await new Service(options));
+        serviceStore.set(key, new Service(options));
     }
     const service = serviceStore.get(key);
     if (!service) {

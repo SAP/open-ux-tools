@@ -14,7 +14,7 @@ export interface PageProperties {
  */
 export class PageEditProperty implements SettingOption {
     public schema: JSONSchema4;
-    public value?: boolean | string | number | unknown;
+    public value?: unknown;
     public pattern?: string;
     // True if user can enter text freely. Is used to display as combobox:
     // 1. Selection options from enum;

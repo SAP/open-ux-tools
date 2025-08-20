@@ -19,7 +19,7 @@ export const extractI18nKey = (
     resolveAnnotationBinding = false,
     forceKeyExtraction?: boolean
 ): string | undefined => {
-    if (input.match(`^{{[^\\{}:]+}}$`)) {
+    if (new RegExp(`^{{[^\\{}:]+}}$`).exec(input)) {
         if (!resolveAnnotationBinding || forceKeyExtraction) {
             return input.toString().substring(2, input.length - 2);
         }
@@ -28,7 +28,7 @@ export const extractI18nKey = (
         ? `(${I18N_BINDING_PREFIX}|@${I18N_BINDING_PREFIX})`
         : `${I18N_BINDING_PREFIX}`;
     const mathIndex = resolveAnnotationBinding ? 2 : 1;
-    const i18nMatch = input.toString().match(`^{${prefixRegex}>([^\\{}:]+)}$`);
+    const i18nMatch = new RegExp(`^{${prefixRegex}>([^\\{}:]+)}$`).exec(input);
     return i18nMatch ? i18nMatch[mathIndex] : undefined;
 };
 
@@ -42,13 +42,9 @@ export const extractI18nKey = (
 export const resolveI18nValue = (value: string, i18nBundle: I18nBundle = {}): string | undefined => {
     const key = extractI18nKey(value, true, true);
     if (key) {
-        try {
-            const entries = i18nBundle[key];
-            if (entries?.length > 0) {
-                return entries[0].value.value;
-            }
-        } catch (e) {
-            return undefined;
+        const entries = i18nBundle[key];
+        if (entries?.length > 0) {
+            return entries[0].value?.value;
         }
     }
 };

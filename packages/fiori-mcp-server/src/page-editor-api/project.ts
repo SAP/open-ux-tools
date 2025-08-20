@@ -117,17 +117,12 @@ export async function getManifest(appAccess: ApplicationAccess): Promise<Manifes
  * @returns Resolved UI5 version for passed application.
  */
 export async function getUI5Version(appAccess: ApplicationAccess): Promise<string> {
-    try {
-        let ui5Version: string | undefined;
-        const manifest = await getManifest(appAccess);
-        if (manifest) {
-            ui5Version = getMinimumUI5Version(manifest);
-            if (ui5Version !== undefined && isNaN(parseFloat(ui5Version))) {
-                ui5Version = 'latest';
-            }
-        }
-        return ui5Version ?? 'latest';
-    } catch (error) {
-        return 'latest';
+    const manifest = await getManifest(appAccess);
+    let ui5Version = manifest ? getMinimumUI5Version(manifest) : undefined;
+
+    if (ui5Version !== undefined && isNaN(parseFloat(ui5Version))) {
+        ui5Version = 'latest';
     }
+
+    return ui5Version ?? 'latest';
 }
