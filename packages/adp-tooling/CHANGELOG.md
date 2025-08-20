@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.15.19
+
+### Patch Changes
+
+-   0729936: fix: ADP Generator templates / sub-generator resolution problem
+
 ## 0.15.18
 
 ### Patch Changes

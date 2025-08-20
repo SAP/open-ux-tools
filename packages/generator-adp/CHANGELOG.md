@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.3.67
+
+### Patch Changes
+
+-   0729936: fix: ADP Generator templates / sub-generator resolution problem
+-   Updated dependencies [0729936]
+    -   @sap-ux/adp-tooling@0.15.19
+
 ## 0.3.66
 
 ### Patch Changes

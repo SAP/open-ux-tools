@@ -64,9 +64,9 @@ export function addFlpGen(
 ): void {
     try {
         /**
-         * We are using this namespace for now because '@sap-ux/adp-flp-config-sub-generator' is not yet bundled in '@sap/generator-fiori'.
+         * We are using this namespace for now because '@sap/fiori:adp-flp-config' is not yet bundled in '@sap/generator-fiori'.
          */
-        composeWith(require.resolve('@sap-ux/adp-flp-config-sub-generator/generators/app'), {
+        composeWith('@sap/fiori:adp-flp-config', {
             launchAsSubGen: true,
             vscode,
             inbounds,
@@ -74,10 +74,10 @@ export function addFlpGen(
             data: { projectRootPath },
             appWizard
         });
-        logger.info(`'@sap-ux/adp-flp-config-sub-generator' was called.`);
+        logger.info(`'@sap/fiori:adp-flp-config' was called.`);
     } catch (e) {
         logger.error(e);
-        throw new Error(`Could not call '@sap-ux/adp-flp-config-sub-generator' sub-generator: ${e.message}`);
+        throw new Error(`Could not call '@sap/fiori:adp-flp-config' sub-generator: ${e.message}`);
     }
 }
 
