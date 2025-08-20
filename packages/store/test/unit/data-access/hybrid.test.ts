@@ -186,57 +186,6 @@ describe('hybrid store', () => {
                 );
             });
 
-            it('recovers sensitive data from secure store and adds it to the file system', async () => {
-                const entitiesInSecureStore = {
-                    'http://mock-backend:4000/100': {
-                        a: 'b'
-                    },
-                    'http://test-cloud.system': {
-                        c: 'd'
-                    }
-                };
-
-                const fileSystemEntires = {
-                    'http://mock-backend:4000/100': {
-                        client: '100',
-                        url: 'http://mock-backend:4000',
-                        name: 'http://mock-backend:4000, client 100'
-                    },
-                    'http://test-cloud.system': {
-                        url: 'http://test-cloud.system',
-                        name: 'http://test-cloud.system'
-                    }
-                };
-                mockFilesystemStore.readAll.mockResolvedValueOnce({}).mockResolvedValueOnce(fileSystemEntires);
-                mockSecureStore.getAll.mockResolvedValueOnce(entitiesInSecureStore);
-                mockFilesystemStore.write.mockResolvedValueOnce(undefined);
-
-                await expect(
-                    getHybridStore(logger, { recoverFromSecureStore: true }).getAll({ entityName: 'dummy' })
-                ).resolves.toIncludeSameMembers([
-                    {
-                        'a': 'b',
-                        'client': '100',
-                        'name': 'http://mock-backend:4000, client 100',
-                        'url': 'http://mock-backend:4000'
-                    },
-                    { 'c': 'd', 'name': 'http://test-cloud.system', 'url': 'http://test-cloud.system' }
-                ]);
-            });
-
-            it('returns sensitive data from secure store (and handle recovery error)', async () => {
-                const entitiesInSecureStore = {
-                    '42': { prop1: 42, prop2: '13' },
-                    '13': { prop1: 1, prop2: 'b' }
-                };
-                mockFilesystemStore.readAll.mockResolvedValue({});
-                mockSecureStore.getAll.mockResolvedValueOnce(entitiesInSecureStore);
-
-                await expect(
-                    getHybridStore(logger, { recoverFromSecureStore: true }).getAll({ entityName: 'dummy' })
-                ).resolves.toIncludeSameMembers(Object.values(entitiesInSecureStore));
-            });
-
             it('returns an empty object when both stores are empty', async () => {
                 mockFilesystemStore.readAll.mockResolvedValueOnce(undefined);
                 mockSecureStore.getAll.mockResolvedValueOnce(undefined);

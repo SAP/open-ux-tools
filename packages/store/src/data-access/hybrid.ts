@@ -16,13 +16,11 @@ class HybridStore<E extends object> implements DataAccess<E> {
     private readonly logger: Logger;
     private readonly filesystem: DataAccess<E>;
     private readonly secureStore: SecureStore;
-    private readonly recoverFromSecureStore: boolean;
 
     constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
         this.filesystem = dataAccessFilesystem<E>(this.logger, options);
         this.secureStore = getSecureStore(this.logger);
-        this.recoverFromSecureStore = options.recoverFromSecureStore ?? false;
     }
 
     public async read({ entityName, id }: { entityName: string; id: string }): Promise<undefined | E> {
@@ -69,7 +67,7 @@ class HybridStore<E extends object> implements DataAccess<E> {
         includeSensitiveData?: boolean;
     }): Promise<{ [key: string]: E }> {
         const result: { [key: string]: E } = {};
-        let entitiesFs = (await this.filesystem.readAll({ entityName })) || {};
+        const entitiesFs = (await this.filesystem.readAll({ entityName })) || {};
         const isEntitiesFsEmpty = Object.keys(entitiesFs).length === 0;
 
         if (!includeSensitiveData && !isEntitiesFsEmpty) {
@@ -79,14 +77,6 @@ class HybridStore<E extends object> implements DataAccess<E> {
         const entitiesInSecureStore =
             (await this.secureStore.getAll<E>(getFullyQualifiedServiceName(entityName))) || {};
 
-        if (this.recoverFromSecureStore && isEntitiesFsEmpty && Object.keys(entitiesInSecureStore).length > 0) {
-            /**
-             * the file may have been deleted, cleared or become corrupted, we can read the info from the secure store
-             */
-            await this.updateFileFromSecureStore(entityName, entitiesInSecureStore);
-            entitiesFs = await this.filesystem.readAll({ entityName });
-        }
-
         for (const key of new Set([...Object.keys(entitiesFs), ...Object.keys(entitiesInSecureStore)])) {
             // Make sure sensitive props override serialized ones
             const entity: E = { ...entitiesFs[key], ...entitiesInSecureStore[key] };
@@ -94,43 +84,6 @@ class HybridStore<E extends object> implements DataAccess<E> {
         }
 
         return result;
-    }
-
-    /**
-     * Reads all entries from the secure store for the given entity and writes them to the filesystem.
-     * This is only relevant for backend systems.
-     *
-     * @param entityName - the name of the entity to read
-     * @param entitiesInSecureStore - the entities read from the secure store
-     */
-    private async updateFileFromSecureStore(
-        entityName: string,
-        entitiesInSecureStore: {
-            [key: string]: E;
-        }
-    ): Promise<void> {
-        this.logger.debug(
-            `hybrid/readAll - No entities found in the filesystem for [${entityName}]. Adding them from the secure store.`
-        );
-
-        try {
-            for (const key of Object.keys(entitiesInSecureStore)) {
-                const urlObj = new URL(key);
-                const client =
-                    urlObj.pathname && /^\d{3}$/.test(urlObj.pathname.slice(1)) ? urlObj.pathname.slice(1) : undefined;
-                const entity: { name: string; url: string; client?: string } = {
-                    name: `${urlObj.origin}${client ? `, client ${client}` : ''}`,
-                    url: urlObj.origin,
-                    ...(client ? { client } : {})
-                };
-
-                await this.filesystem.write({ entityName, id: key, entity: entity as E });
-            }
-        } catch {
-            this.logger.error(
-                `hybrid/readAll - Error while writing recovered entries from the secure store to the file.`
-            );
-        }
     }
 
     public async write({

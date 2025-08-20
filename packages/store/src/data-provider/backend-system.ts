@@ -6,6 +6,7 @@ import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
 import type { Logger } from '@sap-ux/logger';
 import { Entities } from './constants';
 import { getBackendSystemType } from '../utils';
+import { getFilesystemStore } from '../data-access/filesystem';
 
 export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendSystemKey> = class
     implements DataProvider<BackendSystem, BackendSystemKey>
@@ -16,7 +17,7 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
 
     constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
-        this.dataAccessor = getHybridStore(this.logger, { ...options, recoverFromSecureStore: true });
+        this.dataAccessor = getHybridStore(this.logger, options);
     }
 
     public async read(key: BackendSystemKey): Promise<BackendSystem | undefined> {
@@ -63,13 +64,44 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         }
 
         for (const id of Object.keys(systems)) {
-            const system = systems[id];
+            let system = systems[id];
             if (!system?.url?.trim()) {
-                this.logger.warn(`Filtering system with ID [${id}] as it seems corrupt. Run repair`);
-                delete systems[id];
+                // attempt to recover the system URL from the ID
+                await this.recoverUrlFromId(id);
+                system = await this.dataAccessor.read({
+                    entityName: this.entityName,
+                    id
+                });
+                if (!system?.url?.trim()) {
+                    this.logger.warn(`Filtering system with ID [${id}] as it seems corrupt. Run repair`);
+                    delete systems[id];
+                }
             }
         }
         return Object.values(systems);
+    }
+
+    /**
+     * Recover the URL from the system ID and write it to the file.
+     *
+     * @param systemId - the specific system ID to recover
+     */
+    private async recoverUrlFromId(systemId: string): Promise<void> {
+        try {
+            const urlObj = new URL(systemId);
+            const client =
+                urlObj.pathname && /^\d{3}$/.test(urlObj.pathname.slice(1)) ? urlObj.pathname.slice(1) : undefined;
+            const backendSystem: BackendSystem = {
+                name: `${urlObj.origin}${client ? `, client ${client}` : ''}`,
+                url: urlObj.origin,
+                ...(client ? { client } : {})
+            };
+            // requires to write directly to the filesystem
+            const fileSystem = getFilesystemStore(this.logger);
+            await fileSystem.write({ entityName: this.entityName, id: systemId, entity: backendSystem });
+        } catch {
+            this.logger.error(`Error while writing recovered entries from the secure store to the file.`);
+        }
     }
 
     private async ensureSystemTypesExist(systems: Record<string, BackendSystem>): Promise<boolean> {
