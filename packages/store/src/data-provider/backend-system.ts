@@ -92,7 +92,7 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
             const client =
                 urlObj.pathname && /^\d{3}$/.test(urlObj.pathname.slice(1)) ? urlObj.pathname.slice(1) : undefined;
             const backendSystem: BackendSystem = {
-                name: `${urlObj.origin}${client ? `, client ${client}` : ''}`,
+                name: urlObj.origin + (client ? ', client ' + client : ''),
                 url: urlObj.origin,
                 ...(client ? { client } : {})
             };
