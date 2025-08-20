@@ -15,6 +15,8 @@
     "scripts": {
         "build": "tsc --build",
         "watch": "tsc --watch",
+        "bundle": "npm-run-all build tgz:package",
+        "tgz:package": "pnpm pack",
         "clean": "rimraf --glob dist test/test-output *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
@@ -27,6 +29,9 @@
         "!dist/*.map",
         "!dist/**/*.map"
     ],
+    "bin": {
+      "fiori-mcp": "./dist/index.js"
+    },
     "devDependencies": {
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
