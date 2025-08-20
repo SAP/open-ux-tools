@@ -99,6 +99,10 @@ export interface AdpWriterConfig {
          * Optional: if set to true then the generated project will support typescript
          */
         enableTypeScript?: boolean;
+        /**
+         * Optional: path to the template files to be used for generation
+         */
+        templatePathOverwrite?: string;
     };
 }
 

@@ -160,7 +160,7 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
             }
         }
     ]);
-    ui5Config.addFioriToolsProxydMiddleware(
+    ui5Config.addFioriToolsProxyMiddleware(
         {
             ui5: ui5ConfigOptions,
             backend: [backendConfig as FioriToolsProxyConfigBackend]

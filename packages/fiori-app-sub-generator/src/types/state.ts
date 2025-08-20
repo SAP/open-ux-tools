@@ -36,6 +36,7 @@ export interface Project {
     flpAppId?: string; // Represents the concatentation of sematicObject and action to form a navigation intent as used in url http://some/path#<semanticObject>-<action>
     minSupportedUI5Version?: string; // min supported version based on floorplan and odata version
     manifestMinUI5Version?: string; // ui5 version for manifest.json minUI5Version,
+    addCdsUi5Plugin?: boolean; // add cds ui5 plugin to the project (will also enable npm workspaces)
 }
 
 export interface Credentials {
