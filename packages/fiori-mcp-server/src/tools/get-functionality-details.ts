@@ -140,7 +140,9 @@ export function resolveFunctionality(functionalityId: string | string[]): {
     try {
         propertyPath = typeof functionalityId === 'string' ? JSON.parse(functionalityId) : [...functionalityId];
     } catch (e) {
-        throw new Error('Invalid format of functionalityId parameter');
+        const message = 'Invalid format of functionalityId parameter';
+        console.log(message);
+        throw new Error(message);
     }
     let pageName: string | undefined;
     if (propertyPath[0] !== 'settings') {
