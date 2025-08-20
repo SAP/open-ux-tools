@@ -792,32 +792,45 @@ export class PageEditModel {
     }
 
     /**
+     * Handles dynamic `additionalProperties` (or `additionalItems`) for an aggregation.
+     * If `data` contains keys that are not part of the aggregation's defined
+     * properties or child aggregations, this method tries to resolve them
+     * against the schema's `additionalProperties` definition and creates
+     * corresponding child aggregations dynamically.
+     *
+     * @param aggregation - Current aggregation node being processed.
+     * @param data - Page data object containing potential additional properties.
+     */
+    private handleAdditionalProperties(aggregation: ObjectAggregation, data: PageData): void {
+        const knownKeys = [...Object.keys(aggregation.properties), ...Object.keys(aggregation.aggregations)];
+
+        for (const name of Object.keys(data)) {
+            if (!knownKeys.includes(name) && aggregation.additionalProperties) {
+                const additionalProps = aggregation.schema
+                    ? aggregation.schema.additionalProperties || aggregation.schema.additionalItems
+                    : undefined;
+
+                if (typeof additionalProps === 'object') {
+                    this.parseSchema(aggregation, additionalProps, undefined, name, aggregation.path, {});
+                    const child = aggregation.aggregations[name];
+                    if (child?.isViewNode && child.description) {
+                        // For dynamic aggregations, fallback to object key instead of static description
+                        delete child.description;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Method uses recursion to populate aggregations/properties of aggregation by looping through 'additionalProperties' from schema.
      *
      * @param aggregation ObjectAggregation which would be populated.
      * @param data Page data - object contains latest page values.
      */
     readAdvancedPropertiesData(aggregation: ObjectAggregation, data: PageData): void {
-        const propertyKeys = Object.keys(aggregation.properties);
-        const aggregationKeys = Object.keys(aggregation.aggregations);
-        const keys = propertyKeys.concat(aggregationKeys);
-        for (const name in data) {
-            if (keys.includes(name) || !aggregation.additionalProperties || !aggregation.schema) {
-                continue;
-            }
-            const additionalProperties = aggregation.schema.additionalProperties || aggregation.schema.additionalItems;
-            if (typeof additionalProperties === 'object') {
-                this.parseSchema(aggregation, additionalProperties, undefined, name, aggregation.path, {});
-                const childAggregation = aggregation.aggregations[name];
-                if (childAggregation && childAggregation.isViewNode && childAggregation.description) {
-                    // Description for view nodes is used as display name
-                    // In case of 'additionalProperties'
-                    //  - they are used for dynamic aggregations and we should use object key instead of static description from reference schema
-                    // Just remove description and fallback case will do rest
-                    delete childAggregation.description;
-                }
-            }
-        }
+        // Handle dynamic additional properties
+        this.handleAdditionalProperties(aggregation, data);
         // Array handling
         if (aggregation && aggregation.type === AggregationType.Array && aggregation.schema) {
             const currentNode = aggregation.schema;
@@ -832,7 +845,7 @@ export class PageEditModel {
         for (const rootName in aggregation.aggregations) {
             const names = aggregation.aggregations[rootName].union?.originalNames || [rootName];
             for (const name of names) {
-                if (name in data) {
+                if (typeof data === 'object' && name in data) {
                     this.readAdvancedPropertiesData(aggregation.aggregations[rootName], data[name] as PageData);
                 }
             }
