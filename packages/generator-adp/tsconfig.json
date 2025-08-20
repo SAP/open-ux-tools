@@ -10,9 +10,6 @@
   },
   "references": [
     {
-      "path": "../adp-flp-config-sub-generator"
-    },
-    {
       "path": "../adp-tooling"
     },
     {
