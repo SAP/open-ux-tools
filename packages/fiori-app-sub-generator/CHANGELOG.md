@@ -1,5 +1,17 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.7.0
+
+### Minor Changes
+
+-   43f94eb: Add support for automatically including a Page Building Block when generating a custom page
+
+### Patch Changes
+
+-   Updated dependencies [43f94eb]
+    -   @sap-ux/odata-service-inquirer@2.6.0
+    -   @sap-ux/fiori-elements-writer@2.6.0
+
 ## 0.6.24
 
 ### Patch Changes
