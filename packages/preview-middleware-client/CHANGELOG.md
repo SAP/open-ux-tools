@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.17.0
+
+### Minor Changes
+
+-   372e9ce: fix: [ADP][Info center] Remove all messages from the info center which overlap with messages added with the ui5 Log library.
+
 ## 0.16.0
 
 ### Minor Changes
