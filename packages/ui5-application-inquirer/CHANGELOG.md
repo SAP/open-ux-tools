@@ -1,5 +1,26 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.15.1
+
+### Patch Changes
+
+-   7772a11: fix typescript and virtual endpoint prompts for cap projects
+
+## 0.15.0
+
+### Minor Changes
+
+-   55bb22e: updates cap projects to use npm workspaces by default
+
+## 0.14.39
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/inquirer-common@0.7.35
+
 ## 0.14.38
 
 ### Patch Changes

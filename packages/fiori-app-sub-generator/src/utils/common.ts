@@ -115,7 +115,7 @@ export async function getCdsUi5PluginInfo(
     cdsVersionInfo?: CdsVersionInfo
 ): Promise<CdsUi5PluginInfo | undefined> {
     // If the project is a Java project, do not pass cdsVersionInfo.
-    // This ensures that hasMinCdsVersion is false for Java project, preventing getEnableNPMWorkspacesPrompt from being invoked for Java projects.
+    // This ensures that hasMinCdsVersion is false for Java project, preventing certain prompts (e.g typescript, virtual endpoints) from being invoked for Java projects.
     const cdsVersion = (await isCapJavaProject(capProjectPath)) ? undefined : cdsVersionInfo;
     const capCdsInfo = await checkCdsUi5PluginEnabled(capProjectPath, fs, true, cdsVersion);
     return capCdsInfo === false ? undefined : (capCdsInfo as CdsUi5PluginInfo);
