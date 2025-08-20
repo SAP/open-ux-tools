@@ -1,5 +1,16 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.6.0
+
+### Minor Changes
+
+-   43f94eb: Add support for automatically including a Page Building Block when generating a custom page
+
+### Patch Changes
+
+-   Updated dependencies [43f94eb]
+    -   @sap-ux/fe-fpm-writer@0.38.0
+
 ## 2.5.30
 
 ### Patch Changes

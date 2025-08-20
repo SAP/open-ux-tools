@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.13.101
+
+### Patch Changes
+
+-   Updated dependencies [a39e0d9]
+    -   @sap-ux/preview-middleware@0.22.0
+    -   @sap-ux/app-config-writer@0.6.31
+
 ## 0.13.100
 
 ### Patch Changes

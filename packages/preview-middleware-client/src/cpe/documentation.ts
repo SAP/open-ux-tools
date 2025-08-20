@@ -4,7 +4,7 @@ import type { Properties } from './utils';
 import Log from 'sap/base/Log';
 import { MessageBarType, PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
 import { sendInfoCenterMessage } from '../utils/info-center-message';
-import { getError } from '../utils/error';
+import { FetchError, getError } from '../utils/error';
 
 export interface ControlMetadata {
     baseType: string | undefined;
@@ -20,7 +20,11 @@ export interface ControlMetadata {
  */
 export async function getUi5ApiDtMetadata(libName: string): Promise<SchemaForApiJsonFiles> {
     const libUrl = '/test-resources/' + libName.split('.').join('/') + '/designtime/api.json';
-    return fetch(libUrl).then((res) => res.json() as unknown as SchemaForApiJsonFiles);
+    const response = await fetch(libUrl);
+    if (!response.ok) {
+        throw new FetchError(response);
+    }
+    return response.json();
 }
 
 /**
@@ -170,8 +174,14 @@ export async function getDocumentation(controlName: string, contLibName: string)
     let doc: Properties | undefined;
     try {
         doc = await getControlPropertyDocumentation(controlName, contLibName);
-    } catch (err) {
+    } catch (error) {
         Log.error(`Error in getting documentation for ${contLibName}`);
+        // For some UI5 components we do not have an api.json provided instead 404, not found,
+        // response is retuned from the server. For such components we do not want to
+        // flood the info center with errors.
+        if (error instanceof FetchError && error.status === 404) {
+            return undefined;
+        }
         await sendInfoCenterMessage({
             title: { key: 'DOCUMENTATION_ERROR_TITLE' },
             description: { key: 'DOCUMENTATION_ERROR_DESCRIPTION', params: [contLibName] },

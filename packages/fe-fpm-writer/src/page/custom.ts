@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, relative } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -19,6 +19,9 @@ import { getTemplatePath } from '../templates';
 import { coerce, gte } from 'semver';
 import { addExtensionTypes, getManifestPath } from '../common/utils';
 import { extendJSON } from '../common/file';
+import { generateBuildingBlock } from '../building-block';
+import { BuildingBlockType } from '../building-block/types';
+import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/xml';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -114,6 +117,24 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor):
             fs.copyTpl(i18TemplatePath, i18nPath, config);
         }
     }
+
+    if (data.pageBuildingBlockTitle) {
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: relative(basePath, viewPath),
+                aggregationPath: augmentXpathWithLocalNames(`/mvc:View/Page`),
+                replace: true,
+                buildingBlockData: {
+                    id: 'Page',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: data.pageBuildingBlockTitle
+                }
+            },
+            fs
+        );
+    }
+
     const ext = data.typescript ? 'ts' : 'js';
     const controllerPath = join(config.path, `${config.name}.controller.${ext}`);
     if (!fs.exists(controllerPath)) {

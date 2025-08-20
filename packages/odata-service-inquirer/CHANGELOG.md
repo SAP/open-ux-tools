@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.6.0
+
+### Minor Changes
+
+-   43f94eb: Add support for automatically including a Page Building Block when generating a custom page
+
 ## 2.5.33
 
 ### Patch Changes

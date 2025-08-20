@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.22.0
+
+### Minor Changes
+
+-   a39e0d9: fix: [ADP] For ui5 components which do not provide api.json we do not display Documentation error in the info center.
+
 ## 0.21.7
 
 ### Patch Changes
