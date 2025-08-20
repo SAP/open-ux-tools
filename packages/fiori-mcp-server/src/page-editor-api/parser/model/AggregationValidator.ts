@@ -147,25 +147,39 @@ export class AggregationValidator {
     }
 
     /**
+     * Iterates over all aggregations contained in the given variants.
+     * Useful for replacing nested loops when traversing variant aggregations.
+     *
+     * @param variants List of variant aggregations to traverse.
+     * @yields A tuple containing:
+     *  - `name`: The aggregation key within the variant.
+     *  - `aggregation`: The aggregation within the variant.
+     */
+    private *iterateVariantAggregations(variants: AggregationVariant[]): Iterable<[string, ObjectAggregation]> {
+        for (const variant of variants) {
+            for (const [name, aggregation] of Object.entries(variant.aggregations)) {
+                yield [name, aggregation];
+            }
+        }
+    }
+
+    /**
      * Method goes through passed variants and checks for unify aggregations.
      * If there is any aggregation for unification, then method updates unify aggregation with latest valid context paths.
      *
      * @param aggregation Aggregation to validate.
      * @param variants Valid aggeregation to use as context for properties and aggregations paths.
      */
-    unifyVariants(aggregation: ObjectAggregation, variants: AggregationVariant[]): void {
+    private unifyVariants(aggregation: ObjectAggregation, variants: AggregationVariant[]): void {
         const handledProperties: { [key: string]: boolean } = {};
-        for (const variant of variants) {
-            for (const name in variant.aggregations) {
-                const variantAggregation = variant.aggregations[name];
-                if (variantAggregation.union && !handledProperties[name]) {
-                    this.applyContextPath(aggregation.aggregations[name], variantAggregation.path);
-                    // Name correction to show context
-                    aggregation.aggregations[name].name =
-                        variantAggregation.path[variantAggregation.path.length - 1].toString();
-                    // Mark handled property
-                    handledProperties[name] = true;
-                }
+        for (const [name, variantAggregation] of this.iterateVariantAggregations(variants)) {
+            if (variantAggregation.union && !handledProperties[name]) {
+                this.applyContextPath(aggregation.aggregations[name], variantAggregation.path);
+                // Name correction to show context
+                aggregation.aggregations[name].name =
+                    variantAggregation.path[variantAggregation.path.length - 1].toString();
+                // Mark handled property
+                handledProperties[name] = true;
             }
         }
         if (!Object.keys(handledProperties).length) {
