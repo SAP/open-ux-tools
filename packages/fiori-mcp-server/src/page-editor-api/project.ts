@@ -57,9 +57,13 @@ export async function getServiceName(appAccess: ApplicationAccess): Promise<stri
  */
 export async function readAnnotationFiles(appAccess: ApplicationAccess): Promise<FileData[]> {
     const annotationData: FileData[] = [];
-    const mainService = getMainService(appAccess);
-    if (appAccess.projectType === 'CAPJava' || appAccess.projectType === 'CAPNodejs') {
-        const serviceUri = appAccess.app?.services?.[mainService].uri ?? '';
+    const mainServiceName = getMainService(appAccess);
+    const mainService = appAccess.app?.services?.[mainServiceName];
+    if (!mainService) {
+        return [];
+    }
+    if (mainService.uri && (appAccess.projectType === 'CAPJava' || appAccess.projectType === 'CAPNodejs')) {
+        const serviceUri = mainService?.uri ?? '';
         if (serviceUri) {
             const edmx = await readCapServiceMetadataEdmx(appAccess.root, serviceUri);
             annotationData.push({
@@ -68,24 +72,21 @@ export async function readAnnotationFiles(appAccess: ApplicationAccess): Promise
             });
         }
     } else {
-        const service = appAccess.app?.services?.[mainService];
-        if (service) {
-            if (service.local) {
-                const serviceFile = await readFile(service.local);
+        if (mainService.local) {
+            const serviceFile = await readFile(mainService.local);
+            annotationData.push({
+                dataSourceUri: mainService.local,
+                fileContent: serviceFile.toString()
+            });
+        }
+        const { annotations = [] } = mainService;
+        for (const annotation of annotations) {
+            if (annotation.local) {
+                const annotationFile = await readFile(annotation.local);
                 annotationData.push({
-                    dataSourceUri: service.local,
-                    fileContent: serviceFile.toString()
+                    dataSourceUri: annotation.local,
+                    fileContent: annotationFile.toString()
                 });
-            }
-            const { annotations = [] } = service;
-            for (const annotation of annotations) {
-                if (annotation.local) {
-                    const annotationFile = await readFile(annotation.local);
-                    annotationData.push({
-                        dataSourceUri: annotation.local,
-                        fileContent: annotationFile.toString()
-                    });
-                }
             }
         }
     }

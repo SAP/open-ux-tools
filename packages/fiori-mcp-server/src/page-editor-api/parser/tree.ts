@@ -566,11 +566,9 @@ export function findByPath(
         }
 
         // Recursively search in children nodes
-        if (node.children) {
-            const result = findByPath(node.children, propertyPath);
-            if (result) {
-                return result;
-            }
+        const result = node.children ? findByPath(node.children, propertyPath) : undefined;
+        if (result) {
+            return result;
         }
     }
 
