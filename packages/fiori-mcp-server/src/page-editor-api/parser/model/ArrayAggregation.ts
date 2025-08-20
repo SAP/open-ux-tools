@@ -85,24 +85,24 @@ export class ArrayAggregation extends ObjectAggregation {
     ): void {
         // Base update
         super.updatePropertiesValues(data, page, pageType, path);
+        if (!Array.isArray(data)) {
+            return;
+        }
         // Update 'additionalText' property for child aggregations
-        if (Array.isArray(data)) {
-            // Update additional text
-            for (let i = 0; i < data.length; i++) {
-                const aggregation = this.aggregations[i];
-                if (!aggregation) {
-                    continue;
-                }
-                let additionalText;
-                if (this.isAtomic) {
-                    additionalText = data[i];
-                } else {
-                    const primaryKey = this.getPrimaryKey(aggregation);
-                    additionalText = primaryKey ? data[i][primaryKey] : undefined;
-                }
-                if (typeof additionalText !== 'object') {
-                    aggregation.additionalText = additionalText;
-                }
+        for (let i = 0; i < data.length; i++) {
+            const aggregation = this.aggregations[i];
+            if (!aggregation) {
+                continue;
+            }
+            let additionalText;
+            if (this.isAtomic) {
+                additionalText = data[i];
+            } else {
+                const primaryKey = this.getPrimaryKey(aggregation);
+                additionalText = primaryKey ? data[i][primaryKey] : undefined;
+            }
+            if (typeof additionalText !== 'object') {
+                aggregation.additionalText = additionalText;
             }
         }
     }
