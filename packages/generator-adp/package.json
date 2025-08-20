@@ -49,7 +49,6 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
-        "@sap-ux/adp-flp-config-sub-generator": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
         "i18next": "25.3.0",
         "yeoman-generator": "5.10.0",
