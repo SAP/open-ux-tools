@@ -168,21 +168,24 @@ export class AggregationValidator {
                 }
             }
         }
-        if (Object.keys(handledProperties).length) {
-            // update variant arrays
+        if (!Object.keys(handledProperties).length) {
+            return;
+        }
+        // update variant arrays
+        for (const name in handledProperties) {
+            aggregation.aggregations[name].variants = [];
+        }
+        for (const variant of variants) {
             for (const name in handledProperties) {
-                aggregation.aggregations[name].variants = [];
-            }
-            for (const variant of variants) {
-                for (const name in handledProperties) {
-                    const variantAggregation = variant.aggregations[name];
-                    if (variantAggregation) {
-                        aggregation.aggregations[name].variants = [
-                            ...aggregation.aggregations[name].variants,
-                            ...(variantAggregation.variants.length ? variantAggregation.variants : [variantAggregation])
-                        ];
-                    }
+                const variantAggregation = variant.aggregations[name];
+                if (!variantAggregation) {
+                    continue;
                 }
+
+                aggregation.aggregations[name].variants = [
+                    ...aggregation.aggregations[name].variants,
+                    ...(variantAggregation.variants.length ? variantAggregation.variants : [variantAggregation])
+                ];
             }
         }
     }
