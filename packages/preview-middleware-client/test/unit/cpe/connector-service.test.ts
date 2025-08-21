@@ -44,6 +44,21 @@ describe('connector-service', () => {
         expect(sendActionMock).toHaveBeenCalledWith(common.storageFileChanged('testFile'));
     });
 
+    test('init - ui5 < v1.84 from npmjs', async () => {
+        VersionInfo.load.mockResolvedValue({
+            name: 'My Application',
+            libraries: [{ name: 'sap.ui.core', version: '1.76.1' }]
+        });
+        const wsConnector = new WorkspaceConnectorService();
+        await wsConnector.init(sendActionMock, jest.fn());
+
+        expect(FakeLrepConnector.fileChangeRequestNotifier).not.toBeInstanceOf(Function);
+
+        // call notifier
+        await create([{ changeType: 'propertyType', fileName: 'sap.ui.fl.testFile', support: {} }]);
+        expect(sendActionMock).not.toHaveBeenCalled();
+    });
+
     test('appdescr_fe_changePageConfiguration change', async () => {
         VersionInfo.load.mockResolvedValue({
             name: 'SAPUI5 Distribution',
