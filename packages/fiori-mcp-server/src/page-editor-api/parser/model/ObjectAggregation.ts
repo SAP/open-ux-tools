@@ -16,9 +16,8 @@ import type {
 import { AggregationActions, AggregationType, AggregationSortBy, SortingOptions, ValidationState } from './types';
 import type { JSONSchema4 } from 'json-schema';
 import { PageEditProperty, type PageProperties } from './PageEditProperty';
-import startCase from 'lodash/startCase';
 import type { I18nBundle } from '@sap-ux/i18n';
-import { getAnnotationNodeById, updateAnchorSchema, resolveI18nValue, getNodeLocations } from './utils';
+import { getAnnotationNodeById, updateAnchorSchema, resolveI18nValue, getNodeLocations, startCase } from './utils';
 import type { ArtifactType, PageConfig, PageType } from '@sap/ux-specification/dist/types/src';
 import { isTooComplex } from '../annotations';
 

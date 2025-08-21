@@ -39,7 +39,6 @@
         "@sap-ux/odata-entity-model": "workspace:*",
         "@types/json-schema": "7.0.5",
         "@types/mem-fs": "1.1.2",
-        "@types/lodash": "4.14.202",
         "typescript": "5.9.2"
     },
     "dependencies": {
@@ -48,8 +47,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap/ux-specification": "1.124.8",
         "@sap-ux/fiori-annotation-api": "workspace:*",
-        "@sap-ux/annotation-converter": "0.10.3",
-        "lodash": "4.17.21"
+        "@sap-ux/annotation-converter": "0.10.3"
     },
     "engines": {
         "node": ">=20.x"

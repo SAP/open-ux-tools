@@ -331,7 +331,7 @@ Object {
             Object {
               "artifactType": undefined,
               "description": "Represents the minimum version of SAP UI5 that your component requires. It is either a specific version or an array of versions where each major version can only be included once. If array contains more than one version and if version 1 is included it must be at least 1.120.x.",
-              "displayName": "Min UI 5 Version",
+              "displayName": "Min UI5Version",
               "name": "minUI5Version",
               "schemaPath": Array [
                 "settings",

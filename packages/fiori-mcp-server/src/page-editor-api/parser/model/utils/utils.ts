@@ -235,3 +235,57 @@ export function addValidationMessages(instance: { messages?: PropertyMessage[] }
     instance.messages ??= [];
     instance.messages.push(...messages);
 }
+
+/**
+ * Converts a string into "Start Case" format.
+ *
+ * - Splits words on underscores (`_`), hyphens (`-`), and spaces.
+ * - Detects camelCase boundaries (`fooBar` → `Foo Bar`).
+ * - Capitalizes the first character of each word.
+ * - Preserves acronyms (`FCL`, `WORLD`) when they appear in uppercase.
+ *
+ * @param text - The input string to convert.
+ * @returns The formatted string in start case.
+ */
+export function startCase(text: string): string {
+    let result = '';
+    let capitalizeNext = true;
+
+    for (let i = 0; i < text.length; i++) {
+        let char = text[i];
+
+        // Treat separators as spaces
+        if (char === '_' || char === '-' || char === ' ') {
+            if (result[result.length - 1] !== ' ') {
+                result += ' ';
+            }
+            capitalizeNext = true;
+            continue;
+        }
+
+        const prev = text[i - 1];
+        const next = text[i + 1];
+
+        // Insert space before camelCase or acronym boundaries
+        if (
+            i > 0 &&
+            // lower → UPPER (camelCase)
+            ((prev >= 'a' && prev <= 'z' && char >= 'A' && char <= 'Z') ||
+                // acronym → next word (like FCLTo)
+                (prev >= 'A' && prev <= 'Z' && char >= 'A' && char <= 'Z' && next && next >= 'a' && next <= 'z'))
+        ) {
+            result += ' ';
+            capitalizeNext = true;
+        }
+
+        // Apply capitalization inline
+        if (capitalizeNext) {
+            result += char.toUpperCase();
+            capitalizeNext = false;
+        } else {
+            result += char;
+        }
+    }
+
+    return result.trim();
+}
