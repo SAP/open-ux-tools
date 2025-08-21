@@ -6,7 +6,7 @@ This package includes a [Model Context Protocol](https://modelcontextprotocol.io
 >
 > This feature is currently in an experimental state.
 >
-> Experimental features may be changed by SAP at any time for any reason without notice.
+> Experimental features may be changed at any time for any reason without notice.
 >
 > Experimental features are not for productive use. You must not demonstrate, test, examine, evaluate or otherwise use experimental features in a live operating environment or with data that has not been sufficiently backed up.
 
@@ -63,11 +63,18 @@ Then, add the following to your MCP client configuration file, e.g. cline:
 The following rules help guide the LLM to use the server correctly:
 
 ```markdown
-- The data model must be suitable for usage in a SAP Fiori elements frontend application. There must be one main entity and one or more navigation properties to related entities.
+## Rules for creation or modification of Fiori elements apps
+
+- When asked to create an SAP Fiori elements app check whether the user input can be interpreted as an application organized into one or more pages containing table data or forms, these can be translated into a SAP Fiori elements application, else ask the user for suitable input.
+- The application typically starts with a List Report page showing the data of the base entity of the application in a table. Details of a specific table row are shown in the ObjectPage. This first Object Page is therefore based on the base entity of the application.
+- An Object Page can contain one or more table sections based on to-many associations of its entity type. The details of a table section row can be shown in an another Object Page based on the associations target entity.
+- The data model must be suitable for usage in a SAP Fiori elements frontend application. So there must be one main entity and one or more navigation properties to related entities.
 - Each property of an entity must have a proper datatype.
-- For all entities in the data model provide primary keys of type UUID. When creating sample data, all primary keys and foreign keys MUST be in UUID format (e.g., `550e8400-e29b-41d4-a716-446655440001`).
-- Whenever you create a SAP Fiori elements application, you MUST use the fiori-mcp.
-- Whenever you attempt starting an app in the CAP project use the most specific script for the app in the 'package.json', only fallback to "npm start" if no specific start script exists.
+- For all entities in the data model provide primary keys of type UUID.
+- When creating sample data in CSV files, all primary keys and foreign keys MUST be in UUID format (e.g., `550e8400-e29b-41d4-a716-446655440001`).
+- When generating or modifying the SAP Fiori elements application on top of the CAP service use the Fiori MCP server if available.
+- When attempting to modify the SAP Fiori elements application like adding columns you must not use the screen personalization but instead modify the code of the project, before this first check whether an MCP server provides a suitable function.
+- When previewing the SAP Fiori elements application use the most specific script for the app in the `package.json`.
 ```
 
 ## [Available Tools](#available-tools)
