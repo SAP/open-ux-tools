@@ -256,7 +256,7 @@ export function startCase(text: string): string {
 
         // Treat separators as spaces
         if (char === '_' || char === '-' || char === ' ') {
-            if (result[result.length - 1] !== ' ') {
+            if (!result.endsWith(' ')) {
                 result += ' ';
             }
             capitalizeNext = true;
