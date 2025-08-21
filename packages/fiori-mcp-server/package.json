@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/fiori-mcp-server",
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
-    "version": "0.37.2",
+    "version": "0.0.0",
     "private": true,
     "repository": {
         "type": "git",
@@ -33,6 +33,7 @@
       "fiori-mcp": "./dist/index.js"
     },
     "devDependencies": {
+        "@sap/ux-specification": "1.136.4",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
@@ -41,12 +42,11 @@
         "@types/mem-fs": "1.1.2"
     },
     "dependencies": {
-        "i18next": "25.3.0",
         "@modelcontextprotocol/sdk": "1.17.0",
         "@sap-ux/project-access": "workspace:*",
-        "@sap/ux-specification": "1.136.4",
         "@sap-ux/fiori-annotation-api": "workspace:*",
-        "@sap-ux/annotation-converter": "0.10.3"
+        "@sap-ux/annotation-converter": "0.10.3",
+        "i18next": "25.3.0"
     },
     "engines": {
         "node": ">=20.x"
