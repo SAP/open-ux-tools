@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.3.69
+
+### Patch Changes
+
+-   49ee46c: fix: ADP Generator shows project type even if request for system info is failing
+
 ## 0.3.68
 
 ### Patch Changes
