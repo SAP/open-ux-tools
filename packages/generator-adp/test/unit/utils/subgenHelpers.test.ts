@@ -72,7 +72,7 @@ describe('Sub-generator helpers', () => {
             });
 
             expect(() => addFlpGen({} as any, composeWith, logger, wizard)).toThrow(
-                "Could not call '@sap-ux/adp-flp-config-sub-generator' sub-generator: Failed to compose"
+                "Could not call '@sap/fiori:adp-flp-config' sub-generator: Failed to compose"
             );
 
             expect(logger.error).toHaveBeenCalledWith(error);

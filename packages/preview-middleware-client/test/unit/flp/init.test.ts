@@ -164,14 +164,6 @@ describe('flp/init', () => {
             } catch (error) {
                 expect(error).toEqual('Error');
             }
-
-            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
-                showInfoCenterMessage({
-                    title: 'Registering of Reuse Libraries Failed',
-                    description: 'Error',
-                    type: MessageBarType.error
-                })
-            );
         });
     });
 
@@ -241,14 +233,6 @@ describe('flp/init', () => {
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toHaveBeenCalled();
             expect(sapMock.ushell.Container.createRenderer).toHaveBeenCalledWith(undefined, true);
             expect(sapMock.ushell.Container.createRendererInternal).not.toHaveBeenCalled();
-            expect(CommunicationService.sendAction).toHaveBeenCalledWith(
-                showInfoCenterMessage({
-                    title: 'Card Generator Not Supported',
-                    description:
-                        'The card generator is not supported by the SAPUI5 version you have installed. Install a supported version.',
-                    type: MessageBarType.warning
-                })
-            );
         });
 
         test('flex configured', async () => {

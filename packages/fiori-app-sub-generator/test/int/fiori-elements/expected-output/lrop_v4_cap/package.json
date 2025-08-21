@@ -11,7 +11,13 @@
     "app/3",
     "app/lrop_v4_cap"
   ],
+  "workspaces": [
+    "app/*"
+  ],
+  "devDependencies": {
+    "cds-plugin-ui5": "^0.13.0"
+  },
   "scripts": {
-    "watch-lrop_v4_cap": "cds watch --open lrop_v4_cap/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-lrop_v4_cap": "cds watch --open testNameSpace.lropv4cap/index.html?sap-ui-xx-viewCache=false --livereload false"
   }
 }
