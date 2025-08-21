@@ -566,6 +566,7 @@ export class ConfigPrompter {
 
         try {
             this.targetApps = [];
+            this.flexUISystem = undefined;
             this.abapProvider = await getConfiguredProvider(options, this.logger);
             this.isAuthRequired = await this.systemLookup.getSystemRequiresAuth(system);
             if (!this.isAuthRequired) {
