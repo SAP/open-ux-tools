@@ -467,12 +467,22 @@ Object {
     Object {
       "guiOptions": Object {
         "mandatory": true,
+        "translationProperties": Object {
+          "annotation": "Title of the Page.",
+          "type": "XHED",
+        },
       },
       "message": "Page Title",
       "name": "buildingBlockData.title",
       "type": "input",
     },
     Object {
+      "guiOptions": Object {
+        "translationProperties": Object {
+          "annotation": "Description of the Page.",
+          "type": "YDES",
+        },
+      },
       "message": "Page Description",
       "name": "buildingBlockData.description",
       "type": "input",
@@ -1702,12 +1712,22 @@ Object {
     Object {
       "guiOptions": Object {
         "mandatory": true,
+        "translationProperties": Object {
+          "annotation": "Title of the Page.",
+          "type": "XHED",
+        },
       },
       "message": "Page Title",
       "name": "buildingBlockData.title",
       "type": "input",
     },
     Object {
+      "guiOptions": Object {
+        "translationProperties": Object {
+          "annotation": "Description of the Page.",
+          "type": "YDES",
+        },
+      },
       "message": "Page Description",
       "name": "buildingBlockData.description",
       "type": "input",

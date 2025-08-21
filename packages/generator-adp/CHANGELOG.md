@@ -1,5 +1,27 @@
 # @sap-ux/generator-adp
 
+## 0.3.68
+
+### Patch Changes
+
+-   73ef87a: fix: ADP Generator shows misleading additional message when system requires auth
+
+## 0.3.67
+
+### Patch Changes
+
+-   0729936: fix: ADP Generator templates / sub-generator resolution problem
+-   Updated dependencies [0729936]
+    -   @sap-ux/adp-tooling@0.15.19
+
+## 0.3.66
+
+### Patch Changes
+
+-   Updated dependencies [9f84298]
+    -   @sap-ux/adp-tooling@0.15.18
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.64
+
 ## 0.3.65
 
 ### Patch Changes

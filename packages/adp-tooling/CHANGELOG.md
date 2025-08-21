@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 0.15.19
+
+### Patch Changes
+
+-   0729936: fix: ADP Generator templates / sub-generator resolution problem
+
+## 0.15.18
+
+### Patch Changes
+
+-   9f84298: fix: corrected path parameter to use project path instead of web app path
+
 ## 0.15.17
 
 ### Patch Changes
