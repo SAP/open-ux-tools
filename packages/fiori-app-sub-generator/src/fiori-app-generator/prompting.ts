@@ -25,9 +25,8 @@ import merge from 'lodash/merge';
 import { join } from 'path';
 import type { Adapter } from 'yeoman-environment';
 import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
-import { Features, defaultPromptValues } from '../types';
+import { Features, defaultPromptValues, minUi5VersionForPageBuildingBlock, FloorplanFE } from '../types';
 import { getMinSupportedUI5Version, t, validateNextStep } from '../utils';
-import { minUi5VersionForPageBuildingBlock, FloorplanFE } from '../types';
 
 /**
  * Validates the view name.
