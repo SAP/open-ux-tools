@@ -58,7 +58,7 @@ describe('executeFunctionality', () => {
             appPath: 'app1',
             functionalityId: GENERATE_FIORI_UI_APP.id,
             parameters: {
-                projectPath: join(test_output_dir, 'app1'),
+                projectPath: join(testOutputDir, 'app1'),
                 appGenConfig: {}
             }
         });
