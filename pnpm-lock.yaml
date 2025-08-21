@@ -2231,9 +2231,6 @@ importers:
       i18next:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
-      lodash:
-        specifier: 4.17.21
-        version: 4.17.21
     devDependencies:
       '@sap-ux/i18n':
         specifier: workspace:*
@@ -2250,9 +2247,6 @@ importers:
       '@types/json-schema':
         specifier: 7.0.5
         version: 7.0.5
-      '@types/lodash':
-        specifier: 4.14.202
-        version: 4.14.202
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2

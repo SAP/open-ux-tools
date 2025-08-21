@@ -252,7 +252,7 @@ export function startCase(text: string): string {
     let capitalizeNext = true;
 
     for (let i = 0; i < text.length; i++) {
-        let char = text[i];
+        const char = text[i];
 
         // Treat separators as spaces
         if (char === '_' || char === '-' || char === ' ') {
