@@ -91,17 +91,17 @@ export type PromptUI5AppAnswersOptions = {
  * Creates the prompt options for UI5 application prompting and calls `prompt`.
  * The answers to the questions are returned.
  *
- * @param param0
- * @param param0.service
- * @param param0.projectName
- * @param param0.targetFolder
- * @param param0.promptSettings
- * @param param0.floorplan
- * @param param0.promptExtension
- * @param param0.addPageBuildingBlock
- * @param yeomanUiStepConfig
- * @param adapter
- * @returns
+ * @param {PromptUI5AppAnswersOptions} param0 - Options for configuring the UI5 application prompt.
+ * @param {Partial<Service>} param0.service - The service configuration for the application.
+ * @param {string} [param0.projectName] - The name of the project.
+ * @param {string} [param0.targetFolder] - The target folder for the project.
+ * @param {UI5ApplicationPromptOptions} [param0.promptSettings] - Optional prompt settings to override defaults.
+ * @param {Floorplan} param0.floorplan - The floorplan type for the application.
+ * @param {UI5ApplicationPromptOptions} [param0.promptExtension] - Optional generator extension settings.
+ * @param {boolean} [param0.addPageBuildingBlock] - Whether to enable the page building block feature.
+ * @param {YeomanUiStepConfig[]} yeomanUiStepConfig - The Yeoman UI step configuration list.
+ * @param {Adapter} adapter - The Yeoman adapter instance.
+ * @returns {Promise<{ ui5AppAnswers: UI5ApplicationAnswers; localUI5Version: string | undefined }>} The answers to the UI5 application prompts and the local UI5 version.
  */
 export async function promptUI5ApplicationAnswers(
     {
