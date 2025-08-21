@@ -510,7 +510,10 @@ describe('FE V2 quick actions', () => {
             ];
             const setSelectedKeyMock = jest.fn();
             test.each(testCases)('initialize and execute (%s)', async (testCase) => {
-                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
+                VersionInfo.load.mockResolvedValue({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: testCase.versionInfo }]
+                });
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 let attachedEvent: (() => Promise<void>) | undefined = undefined;
@@ -1314,7 +1317,10 @@ describe('FE V2 quick actions', () => {
                 } as unknown as UIComponent;
             });
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
+                VersionInfo.load.mockResolvedValue({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: testCase.versionInfo }]
+                });
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartFilterBar') {
                         return {
@@ -1526,7 +1532,10 @@ describe('FE V2 quick actions', () => {
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
-                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.ui5version });
+                VersionInfo.load.mockResolvedValue({
+                    name: 'SAPUI5 Distribution',
+                    libraries: [{ name: 'sap.ui.core', version: testCase.ui5version }]
+                });
                 const scrollIntoView = jest.fn();
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'mTable') {
@@ -4218,7 +4227,10 @@ describe('FE V2 quick actions', () => {
         ];
         const setSelectedKeyMock = jest.fn();
         test.each(testCases)('initialize and execute (%s)', async (testCase) => {
-            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
+            VersionInfo.load.mockResolvedValue({
+                name: 'SAPUI5 Distribution',
+                libraries: [{ name: 'sap.ui.core', version: testCase.versionInfo }]
+            });
             const pageView = new XMLView();
             const scrollIntoView = jest.fn();
             const tableId = 'SmartTable' + (testCase.isWithIconTabBar ? '-tab1' : '');

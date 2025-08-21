@@ -15,7 +15,10 @@ describe('connector-service', () => {
         fetchMock.mockRestore();
     });
     test('init - ui5 > v1.72', async () => {
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
+        VersionInfo.load.mockResolvedValue({
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.120.4' }]
+        });
         const wsConnector = new WorkspaceConnectorService();
         await wsConnector.init(sendActionMock, jest.fn());
 
@@ -27,7 +30,10 @@ describe('connector-service', () => {
     });
 
     test('init - ui5 < v1.72', async () => {
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.67' });
+        VersionInfo.load.mockResolvedValue({
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.71.67' }]
+        });
         const wsConnector = new WorkspaceConnectorService();
         await wsConnector.init(sendActionMock, jest.fn());
 
@@ -39,7 +45,10 @@ describe('connector-service', () => {
     });
 
     test('appdescr_fe_changePageConfiguration change', async () => {
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
+        VersionInfo.load.mockResolvedValue({
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.120.4' }]
+        });
         const wsConnector = new WorkspaceConnectorService();
         await wsConnector.init(sendActionMock, jest.fn());
 
@@ -53,7 +62,10 @@ describe('connector-service', () => {
     });
 
     test('appdescr_fe_changePageConfiguration change when app is reloading ', async () => {
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
+        VersionInfo.load.mockResolvedValue({
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.120.4' }]
+        });
         const wsConnector = new WorkspaceConnectorService();
         const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
@@ -69,7 +81,10 @@ describe('connector-service', () => {
     });
 
     test('addXML', async () => {
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
+        VersionInfo.load.mockResolvedValue({
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.120.4' }]
+        });
         const wsConnector = new WorkspaceConnectorService();
         const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
@@ -86,7 +101,10 @@ describe('connector-service', () => {
     });
 
     test('addXML with template', async () => {
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
+        VersionInfo.load.mockResolvedValue({
+            name: 'SAPUI5 Distribution',
+            libraries: [{ name: 'sap.ui.core', version: '1.120.4' }]
+        });
         const wsConnector = new WorkspaceConnectorService();
         const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
