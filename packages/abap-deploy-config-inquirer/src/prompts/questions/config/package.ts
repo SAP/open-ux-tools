@@ -34,6 +34,7 @@ export function getPackagePrompts(
 ): Question<AbapDeployConfigAnswersInternal>[] {
     let packageInputChoiceValid: boolean | string | IValidationLink;
     let morePackageResultsMsg = '';
+    let packageName: string | undefined;
     PromptState.isYUI = isYUI;
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
@@ -128,17 +129,21 @@ export function getPackagePrompts(
                 input: string | ListChoiceOptions,
                 answers: AbapDeployConfigAnswersInternal
             ): Promise<boolean | string> => {
-                // Autocomplete can the entire choice object as the answer, so we need to extract the value
-                const pkgValue: string = (input as ListChoiceOptions)?.value
-                    ? (input as ListChoiceOptions).value
-                    : input;
-                return await validatePackage(
-                    pkgValue,
-                    answers,
-                    options.packageAutocomplete,
-                    options.ui5AbapRepo,
-                    options.backendTarget
-                );
+                if (input !== packageName) {
+                    // Autocomplete can the entire choice object as the answer, so we need to extract the value
+                    const pkgValue: string = (input as ListChoiceOptions)?.value
+                        ? (input as ListChoiceOptions).value
+                        : input;
+                    packageName = pkgValue;
+                    return await validatePackage(
+                        pkgValue,
+                        answers,
+                        options.packageAutocomplete,
+                        options.ui5AbapRepo,
+                        options.backendTarget
+                    );
+                }
+                return true;
             }
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
     ];

@@ -144,6 +144,44 @@ describe('getPackagePrompts', () => {
         }
     });
 
+    test('autocomplete validate returns true when input equals packageName', async () => {
+        const packagePrompts = getPackagePrompts({});
+        const packageAutocompletePrompt = packagePrompts.find(
+            (prompt) => prompt.name === promptNames.packageAutocomplete
+        );
+
+        if (packageAutocompletePrompt) {
+            // Simulate the closure by calling validate twice with the same value
+            await (packageAutocompletePrompt.validate as Function)('MATCHING_PACKAGE', {});
+            const result = await (packageAutocompletePrompt.validate as Function)('MATCHING_PACKAGE', {});
+            expect(result).toBe(true);
+        }
+    });
+
+    test('packageName is validated on change', async () => {
+        const packagePrompts = getPackagePrompts({});
+
+        jest.spyOn(conditions, 'defaultOrShowManualPackageQuestion').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validatePackage').mockResolvedValue(true);
+
+        const packageManualPrompt = packagePrompts.find((prompt) => prompt.name === promptNames.packageManual);
+
+        if (packageManualPrompt) {
+            expect((packageManualPrompt.when as Function)({ packageInputChoice: 'EnterManualChoice' })).toBe(true);
+            expect(packageManualPrompt.message).toBe(t('prompts.config.package.packageManual.message'));
+
+            expect(
+                (packageManualPrompt.default as Function)({
+                    packageManual: 'TEST_PACKAGE'
+                })
+            ).toBe('TEST_PACKAGE');
+            expect(await (packageManualPrompt.validate as Function)('TEST_PACKAGE')).toBe(true);
+
+            // Change the value and trigger validation again
+            expect(await (packageManualPrompt.validate as Function)('ANOTHER_PACKAGE')).toBe(true);
+        }
+    });
+
     test('should return expected values from packageAutocomplete prompt methods', async () => {
         jest.spyOn(conditions, 'defaultOrShowSearchPackageQuestion').mockReturnValueOnce(true);
         jest.spyOn(validators, 'validatePackage').mockResolvedValueOnce(true);
