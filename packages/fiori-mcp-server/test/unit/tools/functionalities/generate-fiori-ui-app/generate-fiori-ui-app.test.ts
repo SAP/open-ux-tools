@@ -6,6 +6,7 @@ import {
 
 // Mock child_process.exec
 const mockExec = jest.fn();
+const testOutputDir = join(__dirname, '../../../../test-output/');
 
 jest.mock('child_process', () => ({
     exec: (...args: any) => mockExec(...args)
@@ -30,19 +31,19 @@ describe('executeFunctionality', () => {
             appPath: 'app1',
             functionalityId: GENERATE_FIORI_UI_APP.id,
             parameters: {
-                projectPath: 'app1',
+                projectPath: join(testOutputDir, 'app1'),
                 appGenConfig: {}
             }
         });
         expect(result).toEqual(
             expect.objectContaining({
-                appPath: join('app1', 'app', 'default'),
+                appPath: join(testOutputDir, 'app1', 'app', 'default'),
                 changes: [],
                 functionalityId: 'generate-fiori-ui-app',
-                message: `Generation completed successfully: ${join('app1', 'app', 'default')}`,
+                message: `Generation completed successfully: ${join(testOutputDir, 'app1', 'app', 'default')}`,
                 parameters: {
                     appGenConfig: {},
-                    projectPath: 'app1'
+                    projectPath: join(testOutputDir, 'app1')
                 },
                 status: 'Success'
             })
@@ -57,19 +58,19 @@ describe('executeFunctionality', () => {
             appPath: 'app1',
             functionalityId: GENERATE_FIORI_UI_APP.id,
             parameters: {
-                projectPath: 'app1',
+                projectPath: join(test_output_dir, 'app1'),
                 appGenConfig: {}
             }
         });
         expect(result).toEqual(
             expect.objectContaining({
-                appPath: join('app1', 'app', 'default'),
+                appPath: join(testOutputDir, 'app1', 'app', 'default'),
                 changes: [],
                 functionalityId: 'generate-fiori-ui-app',
                 message: `Error generating application: Dummy`,
                 parameters: {
                     appGenConfig: {},
-                    projectPath: 'app1'
+                    projectPath: join(testOutputDir, 'app1')
                 },
                 status: 'Error'
             })
