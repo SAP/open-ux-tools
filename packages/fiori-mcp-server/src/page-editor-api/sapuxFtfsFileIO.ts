@@ -37,7 +37,8 @@ type Editor = NonNullable<Awaited<ReturnType<Specification['generateCustomExtens
 interface EditorExtended extends Editor {
     store: Store;
     /**
-     *
+     * Dump files to compare expected result. Provide a cwd for relative path.
+     * See also https://github.com/SBoudrias/mem-fs-editor#dumpcwd-filter for further details.
      */
     dump(): { [key: string]: { contents: string; state: 'modified' | 'deleted' } };
 }

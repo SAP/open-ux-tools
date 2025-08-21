@@ -358,10 +358,10 @@ export class ColumnsAggregation extends ObjectAggregation {
     }
 
     /**
-     * Updates the locations of this node and its child nodes.
+     * Refreshes node locations based on the annotation node data.
      *
-     * @param annotations Page annotations.
-     * @param currentUINode Current UI node context.
+     * @param annotations All page annotation nodes.
+     * @param currentUINode Current annotation node.
      */
     protected updateLocations(annotations: PageAnnotations | undefined, currentUINode?: UINode): void {
         super.updateLocations(annotations, currentUINode);

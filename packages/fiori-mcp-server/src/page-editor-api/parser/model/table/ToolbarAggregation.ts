@@ -7,9 +7,10 @@ import { updateTableChildNodeLocations } from './utils';
  */
 export class ToolbarAggregation extends ObjectAggregation {
     /**
+     * Refreshes node locations based on the annotation node data.
      *
-     * @param annotations
-     * @param currentUINode
+     * @param annotations All page annotation nodes.
+     * @param currentUINode Current annotation node.
      */
     protected updateLocations(annotations: PageAnnotations | undefined, currentUINode?: UINode): void {
         super.updateLocations(annotations, currentUINode);

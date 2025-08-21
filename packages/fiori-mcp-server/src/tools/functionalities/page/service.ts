@@ -27,7 +27,7 @@ export interface AllowedNavigation {
 }
 
 /**
- *
+ * Represents a service that manages Fiori metadata and annotations.
  */
 export class Service {
     metadataService?: MetadataService;
@@ -37,13 +37,17 @@ export class Service {
     private namespace: string = '';
 
     /**
+     * Creates a new instance of the Service class.
      *
-     * @param options
+     * @param options - Configuration options for the service,.
      */
     constructor(private readonly options: ServiceOptions) {}
+
     /**
+     * Loads and initializes metadata and annotation services.
      *
-     * @param refresh
+     * @param refresh - Whether to force a reload of the metadata.
+     * @returns A promise that resolves when metadata is loaded.
      */
     private async loadMetadata(refresh = false): Promise<void> {
         if (!refresh && this.metadataService) {
@@ -57,11 +61,13 @@ export class Service {
         this.namespace = [...this.metadataService.getNamespaces()][0];
         this.metadataService.visitMetadataElements(this.visitMdElement.bind(this));
     }
+
     /**
+     * Visits a metadata element and registers it as a node within the service.
      *
-     * @param mdElement
+     * @param mdElement - The metadata element to process and register.
      */
-    visitMdElement(mdElement: MetadataElement) {
+    visitMdElement(mdElement: MetadataElement): void {
         const { path, name } = mdElement;
         const kind = this.metadataService?.getEdmTargetKinds(path)[0] || '';
         const metadataNode = { path, name, mdElement, kind };

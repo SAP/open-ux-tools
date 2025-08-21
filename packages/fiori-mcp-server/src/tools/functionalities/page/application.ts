@@ -30,7 +30,7 @@ export const DELETE_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
 };
 
 /**
- *
+ * Represents an application instance with its metadata, access configuration and functionality details.
  */
 export class Application {
     private readonly serviceName: string;
@@ -39,13 +39,14 @@ export class Application {
     private readonly applicationAccess: ApplicationAccess;
     private readonly params: GetFunctionalityDetailsInput;
     /**
+     * Creates a new instance of the Application class.
      *
-     * @param root0
-     * @param root0.params
-     * @param root0.applicationAccess
-     * @param root0.appId
-     * @param root0.serviceName
-     * @param root0.appData
+     * @param root0 - The constructor arguments.
+     * @param root0.params - Input parameters for functionality details.
+     * @param root0.applicationAccess - The application access object.
+     * @param root0.appId - The unique identifier of the application.
+     * @param root0.serviceName - The service name associated with the application.
+     * @param root0.appData - Metadata and configuration data for the application.
      */
     constructor({
         params,

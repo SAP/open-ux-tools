@@ -232,25 +232,17 @@ export class PageEditModel {
     public schema: JSONSchema4;
     public validator: AggregationValidator = new AggregationValidator();
     public pendingNodes: ObjectAggregation[] = [];
-    public contextPathOrEntitySet?: string;
 
     /**
+     * Creates an instance of PageEditModel.
      *
-     * @param name
-     * @param pageType
-     * @param page
-     * @param schema
-     * @param annotations
-     * @param contextPathOrEntitySet
+     * @param name Page name.
+     * @param pageType Page type.
+     * @param page Page configuration object(generated from specification).
+     * @param schema Page configuration schema(generated from specification).
+     * @param annotations Page annotations.
      */
-    constructor(
-        name: string,
-        pageType: PageType,
-        page: PageConfig,
-        schema: string,
-        annotations: PageAnnotations,
-        contextPathOrEntitySet?: string
-    ) {
+    constructor(name: string, pageType: PageType, page: PageConfig, schema: string, annotations: PageAnnotations) {
         this.name = name;
         this.pageType = pageType;
         this.data = page;
@@ -259,7 +251,6 @@ export class PageEditModel {
             annotations,
             schema
         };
-        this.contextPathOrEntitySet = contextPathOrEntitySet;
         this.schema = JSON.parse(schema);
         this.init(annotations);
     }
@@ -303,12 +294,13 @@ export class PageEditModel {
     }
 
     /**
+     * Updates or creates an property in ObjectAggregation based on a JSON Schema node.
      *
-     * @param name
-     * @param aggregation
-     * @param currentNode
+     * @param name - The property name being updated.
+     * @param aggregation - The aggregation object that holds property definitions.
+     * @param currentNode - The JSON Schema node describing the property.
      */
-    private updatePropertyFromSchema(name: string, aggregation: ObjectAggregation, currentNode: JSONSchema4) {
+    private updatePropertyFromSchema(name: string, aggregation: ObjectAggregation, currentNode: JSONSchema4): void {
         if (!(name in aggregation.properties)) {
             // Simple property
             aggregation.properties[name] = aggregation.addProperty(name, currentNode);

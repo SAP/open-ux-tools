@@ -196,11 +196,12 @@ const getEnumOptions = (entries: JSONSchema4Type[]): NodePropertyOptions[] => {
 };
 
 /**
+ * Updates a string property definition based on its JSON Schema.
  *
- * @param property
- * @param schema
+ * @param property The tree node property being updated.
+ * @param schema The JSON Schema definition for the property.
  */
-function updateStringProperty(property: TreeNodeProperty, schema: JSONSchema4) {
+function updateStringProperty(property: TreeNodeProperty, schema: JSONSchema4): void {
     if (schema.enum || schema.oneOf) {
         let options: NodePropertyOptions[] = [];
         if (schema.enum) {
@@ -371,8 +372,6 @@ export function traverseTree(aggregation: ObjectAggregation, traverseNodeData: T
         path: aggregation.path.map((subPath) => subPath) as string[],
         children,
         text: text,
-        // actions: getActions(aggregation, id, features),
-        // icon: getIcon(model, aggregation),
         additionalText: aggregation.additionalText,
         moveProps: getMovable(model, aggregation),
         title: aggregation.getTechnicalName(),

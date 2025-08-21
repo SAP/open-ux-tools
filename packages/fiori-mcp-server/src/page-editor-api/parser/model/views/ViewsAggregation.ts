@@ -56,12 +56,13 @@ export class ViewsAggregation extends ObjectAggregation {
     }
 
     /**
+     * Overwritten method for data update of list report views container node.
      *
-     * @param data
-     * @param page
-     * @param pageType
-     * @param path
-     * @param annotations
+     * @param data Data which should be used for value population.
+     * @param page Page config data.
+     * @param pageType Page type.
+     * @param path Aggregation path.
+     * @param annotations Annotations data.
      */
     public updatePropertiesValues(
         data: PageData,

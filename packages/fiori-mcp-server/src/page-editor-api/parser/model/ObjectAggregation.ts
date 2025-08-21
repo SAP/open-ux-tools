@@ -406,6 +406,7 @@ export class ObjectAggregation {
      */
 
     /**
+     * Refreshes internal data based on latest annotation node data.
      *
      * @param annotations
      */
@@ -443,8 +444,8 @@ export class ObjectAggregation {
     /**
      * Refreshes node locations based on the annotation node data.
      *
-     * @param annotations All page annotations.
-     * @param currentUINode Annotation node.
+     * @param annotations All page annotation nodes.
+     * @param currentUINode Current annotation node.
      */
     protected updateLocations(annotations: PageAnnotations | undefined, currentUINode?: UINode): void {
         this.locations = this.locations || [];

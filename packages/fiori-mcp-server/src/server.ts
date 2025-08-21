@@ -36,7 +36,7 @@ type ToolArgs =
     | Record<string, unknown>;
 
 /**
- *
+ * Sets up and manages an MCP (Model Context Protocol) server that provides Fiori-related tools.
  */
 export class FioriFunctionalityServer {
     private readonly server: Server;

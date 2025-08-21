@@ -43,12 +43,14 @@ export class PageEditProperty implements SettingOption {
     public locations?: Location[];
 
     /**
+     * Creates an instance of `PageEditProperty`.
      *
-     * @param schema
-     * @param displayName
+     * @param schema JSON Schema fragment associated with this property.
+     * @param displayName Display name of the property.
      */
     constructor(schema: JSONSchema4, displayName: string) {
         // Use copy - it allows to make changes in schema if we need.
+        // todo -> structuredClone
         this.schema = JSON.parse(JSON.stringify(schema));
         this.name = displayName;
     }
