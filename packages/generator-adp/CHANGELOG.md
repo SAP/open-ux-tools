@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.3.68
+
+### Patch Changes
+
+-   73ef87a: fix: ADP Generator shows misleading additional message when system requires auth
+
 ## 0.3.67
 
 ### Patch Changes
