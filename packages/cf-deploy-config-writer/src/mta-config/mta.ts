@@ -193,12 +193,12 @@ export class MtaConfig {
 
     private async addUaa(): Promise<void> {
         const resource: mta.Resource = {
-            name: `${this.prefix.slice(0, 100)}-uaa`,
+            name: `${this.prefix?.slice(0, 100)}-uaa`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 'service-plan': 'application',
                 service: 'xsuaa',
-                config: { xsappname: `${this.prefix.slice(0, 100)}` + '-${space-guid}', 'tenant-mode': 'dedicated' }
+                config: { xsappname: `${this.prefix?.slice(0, 100)}` + '-${space-guid}', 'tenant-mode': 'dedicated' }
             }
         };
         await this.mta.addResource(resource);
@@ -482,9 +482,7 @@ export class MtaConfig {
                 // In theory, if there is more than one, it should be same!
                 moduleDestinations.some((destination: MTADestinationType) => {
                     cloudServiceName = destination['sap.cloud.service'] || undefined;
-                    if (cloudServiceName) {
-                        return true; // breakout
-                    }
+                    return !!cloudServiceName;
                 });
             }
         });
