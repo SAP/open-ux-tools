@@ -165,7 +165,6 @@ function getPropertyFunctionality(property: TreeNodeProperty, pageName?: string)
     path.push(...property.schemaPath);
     return {
         id: path,
-        // id: property.schemaPath.map(String), // Convert PropertyPath to string[]
         description: property.description || property.displayName || property.name || 'No description available'
     };
 }

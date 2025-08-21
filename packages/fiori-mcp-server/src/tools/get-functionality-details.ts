@@ -85,7 +85,6 @@ function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunc
         details = {
             id: 'change-property',
             name: 'Change property',
-            // description: `Change a property. To reset or remove it, set the value to undefined. If the property's description does not specify how to disable the related feature, setting it to undefined can typically be used to disable or clear it.`,
             // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
             // As workaround - I am using approach with null as currently there is no use case where null is real value.
             description: `Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.`,
@@ -100,7 +99,6 @@ function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunc
         details = {
             id: 'change-property',
             name: 'Change property',
-            // description: `Change a property. To reset or remove it, set the value to undefined. If the property's description does not specify how to disable the related feature, setting it to undefined can typically be used to disable or clear it.`,
             // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
             // As workaround - I am using approach with null as currently there is no use case where null is real value.
             description: `Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.`,

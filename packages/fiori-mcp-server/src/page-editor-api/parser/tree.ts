@@ -39,7 +39,6 @@ export interface TreeNode {
     id?: string;
     // Node will not be displayed in tree
     hidden?: boolean;
-    // icon?: UiIcons;
     additionalText?: string;
     // Drag and drop properties
     moveProps?: NodeMoveProps;
@@ -93,7 +92,7 @@ export interface TreeNodeProperty {
     // New
     artifactType?: ArtifactType;
     schemaPath: PropertyPath;
-    // ???
+    // Property type
     type: 'string' | 'number' | 'boolean' | 'object';
     // type and options
     options?: NodePropertyOptions[];
