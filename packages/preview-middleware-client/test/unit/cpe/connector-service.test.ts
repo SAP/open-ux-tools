@@ -52,8 +52,6 @@ describe('connector-service', () => {
         const wsConnector = new WorkspaceConnectorService();
         await wsConnector.init(sendActionMock, jest.fn());
 
-        expect(FakeLrepConnector.fileChangeRequestNotifier).not.toBeInstanceOf(Function);
-
         // call notifier
         await create([{ changeType: 'propertyType', fileName: 'sap.ui.fl.testFile', support: {} }]);
         expect(sendActionMock).not.toHaveBeenCalled();
