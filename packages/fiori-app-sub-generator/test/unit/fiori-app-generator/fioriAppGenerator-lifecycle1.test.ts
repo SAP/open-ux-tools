@@ -150,6 +150,7 @@ describe('Test FioriAppGenerator', () => {
         };
         odataServiceAnswers.source = DatasourceType.none;
         jest.restoreAllMocks();
+        jest.clearAllMocks();
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
     });
 
@@ -406,7 +407,7 @@ describe('Test FioriAppGenerator', () => {
         });
     });
 
-    test('Should prompt for entity related answers custom page ', async () => {
+    test('prompts for entity and UI5 application answers with page building block enabled for FE_FPM custom page', async () => {
         // Force cache usage, YUI only
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
         // Must be a datasource that provides an service to be cached (DatasourceType.none is not cached)
@@ -414,19 +415,7 @@ describe('Test FioriAppGenerator', () => {
         // Set cache to simulate back navigation state (edmx and cap service) restoration entity prompting
         const mockCachedService: Service = {
             edmx: '<edmx></edmx>',
-            capService: {
-                projectPath: '/cap/project/path',
-                serviceName: 'aCapService'
-            },
-            annotations: [
-                {
-                    TechnicalName: 'testAnnotationsTechName',
-                    Definitions: 'testAnnotations',
-                    Version: '1.0.0',
-                    Uri: 'testUri'
-                }
-            ],
-            source: DatasourceType.capProject
+            source: DatasourceType.odataServiceUrl
         };
         // Note: These are not real-world combinations of options and state, they are for testing as many branches and options as possible
         (options.appWizard as AppWizardCache)!['$fiori-cache'] = {
@@ -435,8 +424,6 @@ describe('Test FioriAppGenerator', () => {
         options.floorplan = FloorplanFE.FE_FPM;
         options.preselectedEntityName = 'TestPreSelectedEntity';
         options.showLayoutPrompts = false;
-        // Skipping the project attributes step for this test
-        options.fioriSteps = FIORI_STEPS.filter((step) => step.key !== STEP_PROJECT_ATTRIBUTES);
 
         const mockEntityRelatedAnswers: EntityRelatedAnswers = {
             mainEntity: {
@@ -447,9 +434,8 @@ describe('Test FioriAppGenerator', () => {
                 entitySetName: 'to_ProductTextSetName',
                 navigationPropertyName: 'to_ProductTextNavPropName'
             },
-            presentationQualifier: '',
-            tableType: 'ResponsiveTable',
-            tableSelectionMode: 'None'
+            addPageBuildingBlock: true,
+            pageBuildingBlockTitle: 'Test Page title'
         };
         // Should prompt for entity related answers
         const promptForEntitiesSpy = jest
@@ -460,21 +446,22 @@ describe('Test FioriAppGenerator', () => {
         await fioriAppGen.initializing();
         await fioriAppGen.prompting();
 
-        // Should pass relevant option to `getEntityRelatedPrompts`
+        // Verify getEntityRelatedPrompts called with correct options for FE_FPM and display page building block prompt
         expect(getEntityRelatedPrompts).toHaveBeenCalledWith(
             mockCachedService.edmx,
-            'fpm',
-            true,
+            FloorplanFE.FE_FPM,
+            false,
             {
                 defaultMainEntityName: 'TestPreSelectedEntity',
                 hideTableLayoutPrompts: true,
                 useAutoComplete: false,
                 displayPageBuildingBlockPrompt: true
             },
-            mockCachedService.annotations?.[0],
+            undefined,
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
             true
         );
+
         // Should prompt for entity related answers, since this is an FE floorplan
         expect(promptForEntitiesSpy).toHaveBeenCalledWith(mockEntityRelatedQuestions);
         expect(fioriAppGen['state'].entityRelatedConfig).toEqual({
@@ -486,10 +473,32 @@ describe('Test FioriAppGenerator', () => {
                 entitySetName: 'to_ProductTextSetName',
                 navigationPropertyName: 'to_ProductTextNavPropName'
             },
-            presentationQualifier: '',
-            tableSelectionMode: 'None',
-            tableType: 'ResponsiveTable'
+            addPageBuildingBlock: true,
+            pageBuildingBlockTitle: 'Test Page title'
         });
+
+        // Verify UI5 application answers are prompted with page building block option
+        expect(promptUI5ApplicationAnswers).toHaveBeenCalledWith(
+            {
+                projectName: undefined,
+                targetFolder: undefined,
+                service: {
+                    edmx: '<edmx></edmx>',
+                    source: DatasourceType.odataServiceUrl
+                },
+                floorplan: FloorplanFE.FE_FPM,
+                promptSettings: undefined,
+                promptExtension: undefined,
+                addPageBuildingBlock: true
+            },
+            expect.arrayContaining([
+                {
+                    activeSteps: expect.any(YeomanUiSteps),
+                    dependentMap: expect.any(Object)
+                }
+            ]),
+            expect.anything()
+        );
     });
 
     test('Should prompt for project attributes', async () => {

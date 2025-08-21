@@ -64,7 +64,8 @@ import {
     type OdataServiceInquirerOptions,
     promptOdataServiceAnswers,
     promptUI5ApplicationAnswers,
-    type ViewNameAnswer
+    type ViewNameAnswer,
+    type PromptUI5AppAnswersOptions
 } from './prompting';
 import { addDeployGen, addFlpGen } from './subgenHelpers';
 import { getTemplateType, transformState } from './transforms';
@@ -264,19 +265,27 @@ export class FioriAppGenerator extends Generator {
             }
             // get project information
             if (hasStep(this.fioriSteps, STEP_PROJECT_ATTRIBUTES)) {
+                const promptUi5AnswerOptions: PromptUI5AppAnswersOptions = {
+                    projectName: this.state.project?.name,
+                    targetFolder: this.state.project?.targetFolder,
+                    service: this.state.service,
+                    floorplan: this.state.floorplan,
+                    promptSettings: generatorOptions.promptSettings?.['@sap/generator-fiori'],
+                    promptExtension: generatorOptions.extensions
+                };
+
+                if (this.state.entityRelatedConfig?.addPageBuildingBlock) {
+                    // If the user has opted to add a Page Building Block for a custom app,
+                    // addPageBuildingBlock ensure's that the minimum supported UI5 version is set to enable page macros functionality.
+                    promptUi5AnswerOptions.addPageBuildingBlock = true;
+                }
+
                 const {
                     ui5AppAnswers,
                     localUI5Version
                 }: { ui5AppAnswers: UI5ApplicationAnswers; localUI5Version?: string } =
                     await promptUI5ApplicationAnswers(
-                        {
-                            projectName: this.state.project?.name,
-                            targetFolder: this.state.project?.targetFolder,
-                            service: this.state.service,
-                            floorplan: this.state.floorplan,
-                            promptSettings: generatorOptions.promptSettings?.['@sap/generator-fiori'],
-                            promptExtension: generatorOptions.extensions
-                        },
+                        promptUi5AnswerOptions,
                         [this.yeomanUiStepConfig],
                         this.env.adapter as unknown as Adapter
                     );
