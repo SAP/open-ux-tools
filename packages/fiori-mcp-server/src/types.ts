@@ -142,7 +142,7 @@ export interface Parameter {
     /** Description of the parameter */
     description?: string;
     /** Default value of the parameter */
-    defaultValue?: any;
+    defaultValue?: unknown;
     /** Possible options for the parameter */
     options?: Array<string | number | boolean | undefined>;
     /** Current value of the parameter */

@@ -12,6 +12,7 @@ import { ColumnAggregation } from './ColumnAggregation';
 import type { PageConfig } from '@sap/ux-specification/dist/types/src';
 import { PageTypeV2, v2, PageType } from '@sap/ux-specification/dist/types/src';
 import { updateTableChildNodeLocations } from './utils';
+import { getProperty } from '../utils';
 
 const CUSTOM_PROPERTY_NAME = 'custom';
 // Perhaps replace when spec would be released and spec dependency would be updated in TS package.json
@@ -290,34 +291,12 @@ export class ColumnsAggregation extends ObjectAggregation {
         const tableTypePath = path.splice(0, path.length - 1);
         // Read table type
         tableTypePath.push('type');
-        const tableType = this.resolveProperty(page, tableTypePath);
+        const tableType = getProperty(page, tableTypePath);
         // Use mappings and detect extension type
         this.tableColumnExtensionType =
-            tableType in v2.TableTypeV2
-                ? TABLE_TYPE_EXTENSION_MAP.get(tableType)
+            typeof tableType === 'string' && tableType in v2.TableTypeV2
+                ? TABLE_TYPE_EXTENSION_MAP.get(tableType as v2.TableTypeV2)
                 : PAGE_TYPE_DEFAULT_EXTENSION_MAP.get(pageType);
-    }
-
-    /**
-     * Method to get value for passed path in passed object.
-     *
-     * @param obj - Object to use.
-     * @param paths - Path for searching property/value.
-     * @returns Found value for passed path.
-     */
-    private resolveProperty(obj: any, paths: PropertyPath): any {
-        let current = obj;
-        if (paths) {
-            for (const path of paths) {
-                if (typeof current === 'object' && path in current) {
-                    // found and continue
-                    current = current[path];
-                } else {
-                    return undefined;
-                }
-            }
-        }
-        return current;
     }
 
     /**

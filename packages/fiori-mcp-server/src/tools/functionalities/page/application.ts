@@ -13,7 +13,7 @@ import { generatePageId } from './utils';
 import { DirName } from '@sap-ux/project-access';
 import { join } from 'path';
 import { ADD_PAGE, DELETE_PAGE } from '../../../constant';
-import type { Application as ApplicationConfig, v4 } from '@sap/ux-specification/dist/types/src';
+import type { Application as ApplicationConfig, CustomExtensionData, v4 } from '@sap/ux-specification/dist/types/src';
 import { getDefaultExtensionFolder } from '../../utils';
 
 export const ADD_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
@@ -385,7 +385,7 @@ export class Application {
      * @param viewName - Optional view name for custom pages.
      * @returns A promise that resolves to an array of strings representing the changes made.
      */
-    private async writeFPM(pageType: string, pageApi: any, viewName?: string): Promise<string[]> {
+    private async writeFPM(pageType: string, fpmData: CustomExtensionData, viewName?: string): Promise<string[]> {
         const ftfsFileIo = new SapuxFtfsFileIO(this.applicationAccess);
         let customExtension = CustomExtensionType.ListReport;
         if (pageType === PageTypeV4.ObjectPage) {
@@ -400,7 +400,7 @@ export class Application {
         return ftfsFileIo.writeFPM({
             customExtension,
             basePath: join(this.applicationAccess.project.root, this.appId),
-            data: { ...pageApi, folder }
+            data: { ...fpmData, folder }
         });
     }
     /**

@@ -1,19 +1,16 @@
 import { ObjectAggregation } from '../ObjectAggregation';
-import type { PageAggregations } from '../ObjectAggregation';
 import type {
     SupportedAggregationAction,
     CreationFormOptions,
     PageData,
     PageAnnotations,
-    PropertyPath,
-    SchemaNodesMove
+    PropertyPath
 } from '../types';
 import {
     CUSTOM_VIEW_PREFIX,
     SCHEMA_CREATION_FORM,
     AggregationActions,
-    AggregationCreationForm,
-    NODE_MOVE_CONFIG
+    AggregationCreationForm
 } from '../types';
 import { ViewAggregation } from './ViewAggregation';
 import i18next from 'i18next';
@@ -128,33 +125,6 @@ export class ViewsAggregation extends ObjectAggregation {
                 disableViewDeletion ? 'TABLE_VIEW_DELETE_DISABLED_TOOLTIP' : 'PAGE_EDITOR_OUTLINE_DELETE_TOOLTIP'
             )
         };
-    }
-
-    /**
-     * Overwritten method which handles sort.
-     *
-     * @param order New order of all nodes.
-     * @param aggregations Mapped object containing all aggregations for new sorting
-     * - it can contain new element if there was drop from outside.
-     * @returns Schema based node moves for move action.
-     */
-    protected onMultiSort(order: string[], aggregations: PageAggregations): SchemaNodesMove[] {
-        const moves: SchemaNodesMove[] = [];
-        for (let i = 0; i < order.length; i++) {
-            const id = order[i];
-            const value = aggregations[id].value as { index?: number };
-            if (value?.index === undefined) {
-                continue;
-            }
-            const oldIndex = value.index;
-            moves.push({
-                oldIndex,
-                newIndex: i,
-                path: this.path,
-                type: NODE_MOVE_CONFIG
-            });
-        }
-        return moves;
     }
 
     /**
