@@ -1,4 +1,5 @@
 import { CustomExtensionType, DirName } from '@sap/ux-specification/dist/types/src';
+import type { ControllerExtensionPageType } from '@sap/ux-specification/dist/types/src';
 import { SapuxFtfsFileIO } from '../../../page-editor-api';
 import type {
     ExecuteFunctionalitiesInput,
@@ -86,31 +87,33 @@ async function getFunctionalityDetails(input: GetFunctionalityDetailsInput): Pro
  */
 async function executeFunctionality(input: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
     const { parameters, appPath } = input;
+    const { pageId, controllerName, pageType } = parameters;
     const project = await resolveApplication(appPath);
     let changes: string[] = [];
+    if (!controllerName || typeof controllerName !== 'string') {
+        throw new Error('Missing or invalid parameter "controllerName"');
+    }
     if (project?.applicationAccess) {
         const { appId, root } = project;
-        const { pageType, pageId, controllerName } = parameters;
-        const extension = {
-            pageId,
-            pageType
-        };
         const ftfsFileIo = new SapuxFtfsFileIO(project.applicationAccess);
-        if (pageId && !pageType) {
-            // Find pageType for passed page id
-            const appData = await ftfsFileIo.readApp();
-            extension.pageType = appData.config.pages?.[pageId]?.pageType;
-        }
+        const exensionPageType = await retrieveControllerExtensionPageType(ftfsFileIo, pageType, pageId);
 
-        changes = await ftfsFileIo.writeFPM({
-            customExtension: CustomExtensionType.ControllerExtension,
-            basePath: join(root, appId),
-            data: {
-                extension,
-                folder: getDefaultExtensionFolder(DirName.Controller),
-                name: controllerName
-            }
-        });
+        if (exensionPageType && typeof exensionPageType === 'string') {
+            const extension = {
+                pageId: typeof pageId === 'string' ? pageId : undefined,
+                pageType: exensionPageType
+            };
+
+            changes = await ftfsFileIo.writeFPM({
+                customExtension: CustomExtensionType.ControllerExtension,
+                basePath: join(root, appId),
+                data: {
+                    extension,
+                    folder: getDefaultExtensionFolder(DirName.Controller),
+                    name: controllerName
+                }
+            });
+        }
     }
 
     return {
@@ -122,6 +125,29 @@ async function executeFunctionality(input: ExecuteFunctionalitiesInput): Promise
         changes,
         timestamp: new Date().toISOString()
     };
+}
+
+/**
+ * Retrieves the controller extension page type for a given page or pageType.
+ *
+ * @param appReader - File I/O handler used to read the SAP Fiori application data.
+ * @param pageType - Optional page type value..
+ * @param pageId - Optional page identifier used to look up the page type if `pageType` is not explicitly provided.
+ * @returns A promise resolving to the controller extension page type, or `undefined` if it cannot be determined.
+ */
+async function retrieveControllerExtensionPageType(
+    appReader: SapuxFtfsFileIO,
+    pageType?: unknown,
+    pageId?: unknown
+): Promise<ControllerExtensionPageType | undefined> {
+    if (!pageType && typeof pageId === 'string') {
+        // Find pageType for passed page id
+        const appData = await appReader.readApp();
+        pageType = appData.config.pages?.[pageId]?.pageType as string;
+    }
+    if (pageType && typeof pageType === 'string') {
+        return pageType as ControllerExtensionPageType;
+    }
 }
 
 export const createControllerExtensionHandlers: FunctionalityHandlers = {

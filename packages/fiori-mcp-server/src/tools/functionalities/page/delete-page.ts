@@ -43,6 +43,10 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
  */
 async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
     const { appPath, parameters } = params;
+    const { pageId } = parameters;
+    if (!pageId || pageId !== 'string') {
+        throw new Error('Missing or invalid parameter "pageId"');
+    }
     const appDetails = await resolveApplication(appPath);
     if (!appDetails?.applicationAccess) {
         return {
@@ -61,7 +65,7 @@ async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promis
     const serviceName = await getServiceName(applicationAccess);
     const application = new Application({ params, applicationAccess, serviceName, appId, appData });
     return application.deletePage({
-        pageId: parameters.pageId
+        pageId
     });
 }
 

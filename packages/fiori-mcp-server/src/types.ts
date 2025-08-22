@@ -78,7 +78,7 @@ export interface ExecuteFunctionalitiesInput {
     /** ID or array of IDs of the functionality(ies) to execute */
     functionalityId: string | string[];
     /** Parameters for the functionality execution */
-    parameters: any;
+    parameters: { [key: string]: unknown };
     /** Path to the Fiori application */
     appPath: string;
 }
@@ -94,7 +94,7 @@ export interface ExecuteFunctionalityOutput {
     /** Message describing the execution result */
     message: string;
     /** Parameters used in the execution */
-    parameters: any;
+    parameters: unknown;
     /** Path to the Fiori application */
     appPath: string;
     /** Array of changes made during the execution */
