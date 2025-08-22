@@ -106,7 +106,17 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
                         {
                             id: 'servicePath',
                             type: 'string',
-                            description: "e.g. 'service/servicename/'",
+                            examples: [
+                                'odata/v4/<servicename>/',
+                                'odata/v4/MyRiskService/',
+                                'odata/v2/MyOdataV2Service/',
+                                'odata/v4/MyOdataV4Service/',
+                                "odata/v4/<relative '@path' annotation from service cds file>/",
+                                "<absolute '@path' annotation from service cds file>/",
+                                'myAbsolutePathFromServiceCdsFile/'
+                            ],
+                            description:
+                                'The odata endpoint as provided by the cds mcp or as fallback in case that tool is not available from the service cds file.',
                             required: true
                         },
                         {
@@ -126,7 +136,13 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
                                 {
                                     id: 'serviceCdsPath',
                                     type: 'string',
-                                    description: "e.g. 'srv/service.cds'",
+                                    examples: [
+                                        'srv/service.cds',
+                                        'srv/my-service.cds',
+                                        'path/to/srv/service.cds',
+                                        'path/to/srv/my-service.cds'
+                                    ],
+                                    description: 'The path to the service cds file',
                                     required: true
                                 }
                             ],
@@ -146,7 +162,8 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
                                 {
                                     id: 'entityName',
                                     type: 'string',
-                                    description: "e.g. 'SalesOrder'",
+                                    examples: ["'SalesOrder'", "'PurchaseOrderHeader'", "'MyEntity'"],
+                                    description: "The name of the main entity, e.g. 'SalesOrder'",
                                     required: true
                                 }
                             ],
