@@ -203,23 +203,6 @@ export interface PageAnnotations {
     errorMessage?: string;
 }
 
-// Types for move payloads
-export const NODE_MOVE_ANNOTATION = 'annotation';
-export const NODE_MOVE_CONFIG = 'schema';
-export interface SchemaNodesMove {
-    type: typeof NODE_MOVE_CONFIG;
-    path: PropertyPath;
-    oldIndex: number;
-    newIndex: number;
-    key?: string;
-    // Additional data for sorting. In case of custom sections - it is position and relatedFacet.
-    data?: any;
-    // Controls processUpdateTask of WatchersHandler
-    waitForSchemaUpdate?: boolean;
-    // Is target macro element
-    isMacro?: boolean;
-}
-
 export enum PropertyMessageType {
     /**
      * Reports an error.

@@ -32,12 +32,6 @@ export interface PageEditAggregationData {
     propertiesVariants?: Array<PageProperties>;
 }
 
-export interface ReorderingResult {
-    oldIndex: number;
-    newIndex: number;
-    data?: any;
-}
-
 export interface AggregationVariant {
     properties: PageProperties;
     aggregations: PageAggregations;

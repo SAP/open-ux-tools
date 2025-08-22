@@ -22,13 +22,14 @@ export async function command(params: ExecuteFunctionalitiesInput): Promise<Exec
     console.log('Starting Fiori UI generation...');
     console.log('Project path is:' + projectPath);
 
-    if (!projectPath) {
+    if (!projectPath || typeof projectPath !== 'string') {
         throw new Error('Please provide a valid path to the CAP project folder.');
     }
     if (!appGenConfig || typeof appGenConfig !== 'object') {
         throw new Error('Invalid appGenConfig. Please provide a valid configuration object.');
     }
-    const appName = appGenConfig.project?.name || 'default';
+    const project = 'project' in appGenConfig && typeof appGenConfig.project === 'object' ? appGenConfig.project : {};
+    const appName = project && 'name' in project && typeof project.name === 'string' ? project.name : 'default';
     const appPath = join(projectPath, 'app', appName);
     try {
         const targetDir = projectPath;
