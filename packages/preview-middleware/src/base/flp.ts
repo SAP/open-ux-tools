@@ -252,19 +252,22 @@ export class FlpSandbox {
      * @private
      */
     private checkDeleteConnectors(ui5VersionMajor: number, ui5VersionMinor: number, isCDN: boolean): void {
-        if (ui5VersionMajor === 1 && ui5VersionMinor < 84 && isCDN) {
+        if (ui5VersionMajor === 1 && ui5VersionMinor < 84) {
             this.templateConfig.ui5.flex = this.templateConfig.ui5?.flex?.filter((connector) =>
                 isFlexConnector(connector)
             );
             this.logger.debug(
-                `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it. The Fiori Tools fake connector (FakeLrepConnector) will be used instead.`
+                `The Fiori Tools local connector (WorkspaceConnector) is not being used because the current UI5 version does not support it.${
+                    isCDN ? 'The Fiori Tools fake connector (FakeLrepConnector) will be used instead.' : ''
+                } `
             );
-        } else if (isCDN) {
-            this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
+            if (!isCDN) {
+                this.logger.warn(
+                    `Local Flex changes are not supported for the used UI5 version ${ui5VersionMajor}.${ui5VersionMinor} from npmjs. Consider using a proxy to load the UI5 resources from CDN (e.g. https://ui5.sap.com).`
+                );
+            }
         } else {
-            this.logger.warn(
-                `Local Flex changes are not supported for the used UI5 version ${ui5VersionMajor}.${ui5VersionMinor} from npmjs.`
-            );
+            this.logger.debug(`The Fiori Tools local connector (WorkspaceConnector) is being used.`);
         }
         if (this.projectType === 'CAPJava' || this.projectType === 'CAPNodejs') {
             this.templateConfig.ui5.flex = this.templateConfig.ui5?.flex?.filter(
