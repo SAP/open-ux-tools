@@ -50,8 +50,7 @@ export class PageEditProperty implements SettingOption {
      */
     constructor(schema: JSONSchema4, displayName: string) {
         // Use copy - it allows to make changes in schema if we need.
-        // todo -> structuredClone
-        this.schema = JSON.parse(JSON.stringify(schema));
+        this.schema = structuredClone(schema);
         this.name = displayName;
     }
 }

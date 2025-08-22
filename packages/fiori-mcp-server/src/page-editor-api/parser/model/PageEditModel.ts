@@ -247,7 +247,7 @@ export class PageEditModel {
         this.pageType = pageType;
         this.data = page;
         this.originalData = {
-            page: JSON.parse(JSON.stringify(this.data)),
+            page: structuredClone(this.data),
             annotations,
             schema
         };
