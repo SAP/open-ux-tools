@@ -92,7 +92,7 @@ Executes a specific functionality to create a new or modify an existing SAP Fior
 
 ## Code of Conduct
 
-Everyone participating in this joint project is welcome as long as our [Code of Conduct](./docs/CODE_OF_CONDUCT.md) is being adhered to.
+Everyone participating in this joint project is welcome as long as our [Code of Conduct](https://github.com/SAP/open-ux-tools/blob/main/docs/CODE_OF_CONDUCT.md) is being adhered to.
 
 ## Licensing
 
