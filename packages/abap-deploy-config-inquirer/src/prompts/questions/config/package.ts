@@ -134,14 +134,17 @@ export function getPackagePrompts(
                     const pkgValue: string = (input as ListChoiceOptions)?.value
                         ? (input as ListChoiceOptions).value
                         : input;
-                    packageName = pkgValue;
-                    return await validatePackage(
+                    const validationResult = await validatePackage(
                         pkgValue,
                         answers,
                         options.packageAutocomplete,
                         options.ui5AbapRepo,
                         options.backendTarget
                     );
+                    if (validationResult === true) {
+                        packageName = pkgValue;
+                    }
+                    return validationResult;
                 }
                 return true;
             }

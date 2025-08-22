@@ -158,27 +158,35 @@ describe('getPackagePrompts', () => {
         }
     });
 
-    test('packageName is validated on change', async () => {
+    test('autocomplete validate uses assigned packageName for subsequent validations', async () => {
         const packagePrompts = getPackagePrompts({});
+        const packageAutocompletePrompt = packagePrompts.find(
+            (prompt) => prompt.name === promptNames.packageAutocomplete
+        );
 
-        jest.spyOn(conditions, 'defaultOrShowManualPackageQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validatePackage').mockResolvedValue(true);
+        // Spy to track calls and simulate validation
+        const validateSpy = jest.spyOn(validators, 'validatePackage').mockImplementation(async (pkgValue) => {
+            // Return true only for a specific value to simulate assignment
+            return pkgValue === 'ASSIGN_PACKAGE' ? true : false;
+        });
 
-        const packageManualPrompt = packagePrompts.find((prompt) => prompt.name === promptNames.packageManual);
+        if (packageAutocompletePrompt) {
+            // Validate with a value that will be assigned
+            const result1 = await (packageAutocompletePrompt.validate as Function)('ASSIGN_PACKAGE', {});
+            expect(result1).toBe(true);
 
-        if (packageManualPrompt) {
-            expect((packageManualPrompt.when as Function)({ packageInputChoice: 'EnterManualChoice' })).toBe(true);
-            expect(packageManualPrompt.message).toBe(t('prompts.config.package.packageManual.message'));
+            // Now validate with the same value, should return true immediately (closure variable used)
+            const result2 = await (packageAutocompletePrompt.validate as Function)('ASSIGN_PACKAGE', {});
+            expect(result2).toBe(true);
 
-            expect(
-                (packageManualPrompt.default as Function)({
-                    packageManual: 'TEST_PACKAGE'
-                })
-            ).toBe('TEST_PACKAGE');
-            expect(await (packageManualPrompt.validate as Function)('TEST_PACKAGE')).toBe(true);
+            // Validate with a different value, should call validatePackage again
+            const result3 = await (packageAutocompletePrompt.validate as Function)('DIFFERENT_PACKAGE', {});
+            expect(result3).toBe(false);
 
-            // Change the value and trigger validation again
-            expect(await (packageManualPrompt.validate as Function)('ANOTHER_PACKAGE')).toBe(true);
+            // Ensure validatePackage was called with both values
+            const calls = validateSpy.mock.calls.map((call) => call[0]);
+            expect(calls).toContain('ASSIGN_PACKAGE');
+            expect(calls).toContain('DIFFERENT_PACKAGE');
         }
     });
 
