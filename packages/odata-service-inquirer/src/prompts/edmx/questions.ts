@@ -215,8 +215,8 @@ function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
             breadcrumb: true,
             hint: t('prompts.pageBuildingBlock.tooltip')
         },
-        additionalMessages: (answers: boolean) => {
-            if (answers) {
+        additionalMessages: (addPageBuildingBlock: boolean) => {
+            if (addPageBuildingBlock) {
                 return {
                     message: t('prompts.pageBuildingBlock.warning'),
                     severity: Severity.warning

@@ -19,13 +19,13 @@ import type {
     UI5ApplicationPromptOptions
 } from '@sap-ux/ui5-application-inquirer';
 import { prompt as promptUI5App, promptNames as ui5AppInquirerPromptNames } from '@sap-ux/ui5-application-inquirer';
-import { getSapSystemUI5Version, getUI5Versions, latestVersionString } from '@sap-ux/ui5-info';
+import { getSapSystemUI5Version, getUI5Versions, latestVersionString, ui5VersionStrCmp } from '@sap-ux/ui5-info';
 import type { Question } from 'inquirer';
 import merge from 'lodash/merge';
 import { join } from 'path';
 import type { Adapter } from 'yeoman-environment';
 import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
-import { Features, defaultPromptValues, minUi5VersionForPageBuildingBlock, FloorplanFE } from '../types';
+import { Features, defaultPromptValues, minUi5VersionForPageBuildingBlock } from '../types';
 import { getMinSupportedUI5Version, t, validateNextStep } from '../utils';
 
 /**
@@ -76,42 +76,32 @@ export const getViewQuestion = (): Question<ViewNameAnswer> => {
 /**
  * Options for getting UI5 application answers
  */
-export type PromptUI5AppAnswersOptions = {
+type PromptUI5AppAnswersOptions = {
     projectName?: Project['name'];
     targetFolder?: Project['targetFolder'];
     service: Partial<Service>;
     promptSettings?: UI5ApplicationPromptOptions;
     floorplan: Floorplan;
     promptExtension?: UI5ApplicationPromptOptions;
-    addPageBuildingBlock?: boolean;
 };
 
 /**
  * Creates the prompt options for UI5 application prompting and calls `prompt`.
  * The answers to the questions are returned.
  *
- * @param {PromptUI5AppAnswersOptions} param0 - Options for configuring the UI5 application prompt.
- * @param {Partial<Service>} param0.service - The service configuration for the application.
- * @param {string} [param0.projectName] - The name of the project.
- * @param {string} [param0.targetFolder] - The target folder for the project.
- * @param {UI5ApplicationPromptOptions} [param0.promptSettings] - Optional prompt settings to override defaults.
- * @param {Floorplan} param0.floorplan - The floorplan type for the application.
- * @param {UI5ApplicationPromptOptions} [param0.promptExtension] - Optional generator extension settings.
- * @param {boolean} [param0.addPageBuildingBlock] - Whether to enable the page building block feature.
- * @param {YeomanUiStepConfig[]} yeomanUiStepConfig - The Yeoman UI step configuration list.
- * @param {Adapter} adapter - The Yeoman adapter instance.
- * @returns {Promise<{ ui5AppAnswers: UI5ApplicationAnswers; localUI5Version: string | undefined }>} The answers to the UI5 application prompts and the local UI5 version.
+ * @param param0
+ * @param param0.service
+ * @param param0.projectName
+ * @param param0.targetFolder
+ * @param param0.promptSettings
+ * @param param0.floorplan
+ * @param param0.promptExtension
+ * @param yeomanUiStepConfig
+ * @param adapter
+ * @returns
  */
 export async function promptUI5ApplicationAnswers(
-    {
-        service,
-        projectName,
-        targetFolder,
-        promptSettings,
-        floorplan,
-        promptExtension,
-        addPageBuildingBlock
-    }: PromptUI5AppAnswersOptions,
+    { service, projectName, targetFolder, promptSettings, floorplan, promptExtension }: PromptUI5AppAnswersOptions,
     yeomanUiStepConfig: YeomanUiStepConfig[],
     adapter: Adapter
 ): Promise<{ ui5AppAnswers: UI5ApplicationAnswers; localUI5Version: string | undefined }> {
@@ -125,16 +115,15 @@ export async function promptUI5ApplicationAnswers(
         inquirerAdapter = adapter;
     }
 
-    const promptOptions = await createUI5ApplicationPromptOptions({
+    const promptOptions = await createUI5ApplicationPromptOptions(
         service,
-        appGenStepConfigList: yeomanUiStepConfig,
+        yeomanUiStepConfig,
         floorplan,
         projectName,
         targetFolder,
         promptSettings,
-        extensions: promptExtension,
-        addPageBuildingBlock
-    });
+        promptExtension
+    );
     const ui5AppAnswers: UI5ApplicationAnswers = await promptUI5App(
         inquirerAdapter,
         promptOptions,
@@ -207,79 +196,58 @@ export async function promptOdataServiceAnswers(
 }
 
 /**
- * Determines the minimum required UI5 version for the application.
- * If the page building block feature is enabled for custom app, returns the minimum version required.
- * Otherwise, returns the minimum version from prompt settings or falls back to the supported version for the service and floorplan.
+ * Returns prompt settings for the FPM floorplan and ensures that the minimum UI5 version is set to the required value for page building block support.
+ * If the provided minUI5Version is missing or less than the required minimum, it will be set to minUi5VersionForPageBuildingBlock.
  *
- * @param {UI5ApplicationPromptOptions | undefined} promptSettings - Optional prompt settings.
- * @param {Partial<Service>} service - The service configuration.
- * @param {Floorplan} floorplan - The floorplan type.
- * @param {boolean} addPageBuildingBlock - Whether the page building block feature is enabled.
- * @returns {string} The minimum required UI5 version.
+ * @param {UI5ApplicationPromptOptions} [promptSettings] - The prompt settings object.
+ * @returns {UI5ApplicationPromptOptions} Prompt settings with minimum UI5 version for page building block.
  */
-function getMinUi5Version(
-    promptSettings: UI5ApplicationPromptOptions | undefined,
-    service: Partial<Service>,
-    floorplan: Floorplan,
-    addPageBuildingBlock: boolean = false
-): string {
-    if (addPageBuildingBlock && floorplan === FloorplanFE.FE_FPM) {
-        return minUi5VersionForPageBuildingBlock;
-    }
-    return (
-        promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.minUI5Version ??
-        getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan)
-    );
-}
+export function getFPMPromptSettings(promptSettings?: UI5ApplicationPromptOptions): UI5ApplicationPromptOptions {
+    const baseSettings = promptSettings ?? {};
+    const minUI5Version = baseSettings.ui5Version?.minUI5Version;
 
-/**
- * Options for creating UI5 application prompt options.
- */
-type CreateUI5AppPromptOptions = {
-    service: Partial<Readonly<Service>>;
-    appGenStepConfigList: YeomanUiStepConfig[];
-    floorplan: Floorplan;
-    projectName?: Project['name'];
-    targetFolder?: Project['targetFolder'];
-    promptSettings?: UI5ApplicationPromptOptions;
-    extensions?: UI5ApplicationPromptOptions;
-    addPageBuildingBlock?: boolean;
-};
+    if (minUI5Version && ui5VersionStrCmp(minUI5Version, minUi5VersionForPageBuildingBlock) >= 0) {
+        return baseSettings;
+    }
+
+    return {
+        ...baseSettings,
+        ui5Version: {
+            ...baseSettings.ui5Version,
+            minUI5Version: minUi5VersionForPageBuildingBlock
+        }
+    };
+}
 
 /**
  * Creates the `UIApplicationPromptOptions`.
  * Note that setting 'default', the default prompt value or function, or 'hide', whether the prompt should be shown,
  * to `undefined` should mean that the setting is ignored by the prompt.
  *
- * @param {CreateUI5AppPromptOptions} ui5ApplicationPromptOptions - The options used to configure the UI5 application prompts.
- * @param {Partial<Service>} ui5ApplicationPromptOptions.service - The service configuration for the application.
- * @param {YeomanUiStepConfig[]} ui5ApplicationPromptOptions.appGenStepConfigList - The Yeoman UI step configuration list.
- * @param {Floorplan} ui5ApplicationPromptOptions.floorplan - The floorplan type for the application.
- * @param {string} [ui5ApplicationPromptOptions.projectName] - The name of the project.
- * @param {string} [ui5ApplicationPromptOptions.targetFolder] - The target folder for the project.
- * @param {UI5ApplicationPromptOptions} [ui5ApplicationPromptOptions.promptSettings] - Optional prompt settings to override defaults.
- * @param {UI5ApplicationPromptOptions} [ui5ApplicationPromptOptions.extensions] - Optional generator extension settings.
- * @param {boolean} [ui5ApplicationPromptOptions.addPageBuildingBlock] - Whether to enable the page building block feature.
+ * @param service
+ * @param appGenStepConfigList
+ * @param floorplan
+ * @param projectName
+ * @param targetFolder
+ * @param promptSettings
+ * @param extensions
  * @returns {Promise<UI5ApplicationPromptOptions>} prompt options that may be used to configure UI5 application prompting
  */
 export async function createUI5ApplicationPromptOptions(
-    ui5ApplicationPromptOptions: CreateUI5AppPromptOptions
+    service: Partial<Readonly<Service>>,
+    appGenStepConfigList: YeomanUiStepConfig[],
+    floorplan: Floorplan,
+    projectName?: Project['name'],
+    targetFolder?: Project['targetFolder'],
+    promptSettings?: UI5ApplicationPromptOptions,
+    extensions?: UI5ApplicationPromptOptions
 ): Promise<UI5ApplicationPromptOptions> {
-    const {
-        service,
-        appGenStepConfigList,
-        floorplan,
-        projectName,
-        targetFolder,
-        promptSettings,
-        extensions,
-        addPageBuildingBlock = false
-    } = ui5ApplicationPromptOptions;
-
     // prompt settings may be additionally provided e.g. set by adaptors
     const ui5VersionPromptOptions: UI5ApplicationPromptOptions['ui5Version'] = {
         hide: promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.hide ?? false,
-        minUI5Version: getMinUi5Version(promptSettings, service, floorplan, addPageBuildingBlock),
+        minUI5Version:
+            promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.minUI5Version ??
+            getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan),
         includeSeparators: getHostEnvironment() !== hostEnvironment.cli,
         useAutocomplete: getHostEnvironment() === hostEnvironment.cli
     };

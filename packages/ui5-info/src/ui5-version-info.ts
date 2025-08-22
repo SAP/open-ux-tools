@@ -18,7 +18,7 @@ import {
 let latestUI5Version: string;
 const passThroughStrings = new Set(['snapshot', 'snapshot-untested', latestVersionString]);
 
-const ui5VersionStrCmp = (a: string, b: string) => {
+export const ui5VersionStrCmp = (a: string, b: string) => {
     const a1 = a.split('.');
     const b1 = b.split('.');
     const len = Math.max(a1.length, b1.length);

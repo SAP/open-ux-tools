@@ -21,16 +21,13 @@ import {
     createUI5ApplicationPromptOptions,
     getViewQuestion,
     promptOdataServiceAnswers,
-    promptUI5ApplicationAnswers
+    promptUI5ApplicationAnswers,
+    getFPMPromptSettings
 } from '../../../src/fiori-app-generator/prompting';
-import {
-    type Service,
-    FloorplanFE,
-    minUi5VersionForPageBuildingBlock,
-    minSupportedUi5Version
-} from '../../../src/types';
+import { type Service, FloorplanFE } from '../../../src/types';
 import { initI18nFioriAppSubGenerator, t } from '../../../src/utils/i18n';
 import * as stepsHelper from '../../../src/utils/stepsHelper';
+import { minUi5VersionForPageBuildingBlock } from '../../../src/types/constants';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
@@ -83,11 +80,7 @@ describe('prompting.ts', () => {
         });
 
         test('createUI5ApplicationPromptOptions - empty state', async () => {
-            const promptOptions = await createUI5ApplicationPromptOptions({
-                service: {},
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_FEOP
-            });
+            const promptOptions = await createUI5ApplicationPromptOptions({}, [], FloorplanFE.FE_FEOP);
             expect(promptOptions).toMatchInlineSnapshot(`
                 {
                   "addDeployConfig": {
@@ -137,13 +130,13 @@ describe('prompting.ts', () => {
 
         test('createUI5ApplicationPromptOptions - project name and projectFolder provided', async () => {
             const service: Partial<Service> = {};
-            const promptOptions = await createUI5ApplicationPromptOptions({
+            const promptOptions = await createUI5ApplicationPromptOptions(
                 service,
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_FEOP,
-                projectName: 'project_name1',
-                targetFolder: join('/some/project/path')
-            });
+                [],
+                FloorplanFE.FE_FEOP,
+                'project_name1',
+                join('/some/project/path')
+            );
             expect(promptOptions).toMatchObject({
                 name: {
                     defaultValue: 'project_name1'
@@ -163,13 +156,13 @@ describe('prompting.ts', () => {
                 }
             };
 
-            const promptOptions = await createUI5ApplicationPromptOptions({
+            const promptOptions = await createUI5ApplicationPromptOptions(
                 service,
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_FEOP,
-                projectName: 'project_name1',
-                targetFolder: join('/ignored/for/cap')
-            });
+                [],
+                FloorplanFE.FE_FEOP,
+                'project_name1',
+                join('/ignored/for/cap')
+            );
             expect(promptOptions).toMatchObject({
                 name: {
                     defaultValue: 'project_name1'
@@ -192,16 +185,16 @@ describe('prompting.ts', () => {
                 }
             };
 
-            const promptOptions = await createUI5ApplicationPromptOptions({
+            const promptOptions = await createUI5ApplicationPromptOptions(
                 service,
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_FEOP,
-                projectName: 'project_name1',
-                targetFolder: join('/ignored/for/cap'),
-                promptSettings: {
+                [],
+                FloorplanFE.FE_FEOP,
+                'project_name1',
+                join('/ignored/for/cap'),
+                {
                     [promptNames.ui5Version]: { hide: true }
                 }
-            });
+            );
             expect(promptOptions).toMatchObject({
                 name: {
                     defaultValue: 'project_name1'
@@ -219,13 +212,13 @@ describe('prompting.ts', () => {
         });
 
         test('createUI5ApplicationPromptOptions - provided prompt settings (e.g. from adaptors) are merged', async () => {
-            const promptOptions = await createUI5ApplicationPromptOptions({
-                service: {},
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_LROP,
-                projectName: 'project_name1',
-                targetFolder: join('/some/project/path'),
-                promptSettings: {
+            const promptOptions = await createUI5ApplicationPromptOptions(
+                {},
+                [],
+                FloorplanFE.FE_LROP,
+                'project_name1',
+                join('/some/project/path'),
+                {
                     [promptNames.targetFolder]: {
                         hide: true
                     },
@@ -233,7 +226,7 @@ describe('prompting.ts', () => {
                         hide: true
                     }
                 }
-            });
+            );
             expect(promptOptions).toMatchObject({
                 name: {
                     hide: true,
@@ -251,14 +244,14 @@ describe('prompting.ts', () => {
 
         test('createUI5ApplicationPromptOptions - sap system UI5 version is set as default choice', async () => {
             jest.spyOn(ui5Info, 'getSapSystemUI5Version').mockResolvedValue('1.100.100');
-            const promptOptions = await createUI5ApplicationPromptOptions({
-                service: {
+            const promptOptions = await createUI5ApplicationPromptOptions(
+                {
                     version: OdataVersion.v4,
                     host: 'http://some/sap/system/url'
                 },
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_LROP
-            });
+                [],
+                FloorplanFE.FE_LROP
+            );
             expect(promptOptions).toMatchObject({
                 ui5Version: {
                     defaultChoice: {
@@ -275,11 +268,11 @@ describe('prompting.ts', () => {
 
         test('createUI5ApplicationPromptOptions - ui5Version options set based on platform', async () => {
             (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            let promptOptions = await createUI5ApplicationPromptOptions({
-                service: { version: OdataVersion.v4 },
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_LROP
-            });
+            let promptOptions = await createUI5ApplicationPromptOptions(
+                { version: OdataVersion.v4 },
+                [],
+                FloorplanFE.FE_LROP
+            );
             expect(promptOptions).toMatchObject({
                 ui5Version: {
                     hide: false,
@@ -289,11 +282,11 @@ describe('prompting.ts', () => {
                 }
             });
             (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
-            promptOptions = await createUI5ApplicationPromptOptions({
-                service: { version: OdataVersion.v4 },
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_LROP
-            });
+            promptOptions = await createUI5ApplicationPromptOptions(
+                { version: OdataVersion.v4 },
+                [],
+                FloorplanFE.FE_LROP
+            );
             expect(promptOptions).toMatchObject({
                 ui5Version: {
                     hide: false,
@@ -306,11 +299,7 @@ describe('prompting.ts', () => {
 
         test('createUI5ApplicationPromptOptions - validator callbacks are added by default', async () => {
             const validateNextStepSpy = jest.spyOn(stepsHelper, 'validateNextStep').mockReturnValue(true);
-            const promptOptions = await createUI5ApplicationPromptOptions({
-                service: {},
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_FEOP
-            });
+            const promptOptions = await createUI5ApplicationPromptOptions({}, [], FloorplanFE.FE_FEOP);
             expect(promptOptions.addDeployConfig?.validatorCallback).toBeDefined();
             expect(promptOptions.addFlpConfig?.validatorCallback).toBeDefined();
 
@@ -333,42 +322,6 @@ describe('prompting.ts', () => {
             validateNextStepSpy.mockRestore();
         });
 
-        test('sets minUI5Version to 1.136.0 when addPageBuildingBlock is enabled for custom floorplan', async () => {
-            const promptOptions = await createUI5ApplicationPromptOptions({
-                service: {},
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_FPM,
-                addPageBuildingBlock: true
-            });
-            expect(promptOptions.ui5Version).toMatchObject({
-                minUI5Version: minUi5VersionForPageBuildingBlock
-            });
-        });
-
-        test('sets minUI5Version to default when addPageBuildingBlock is disabled for custom project', async () => {
-            const promptOptions = await createUI5ApplicationPromptOptions({
-                service: {},
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_FPM,
-                addPageBuildingBlock: false
-            });
-            expect(promptOptions.ui5Version).toMatchObject({
-                minUI5Version: minSupportedUi5Version
-            });
-        });
-
-        test('minUI5Version is default for FE_LROP even if addPageBuildingBlock is enabled', async () => {
-            const promptOptions = await createUI5ApplicationPromptOptions({
-                service: {},
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_LROP,
-                addPageBuildingBlock: true
-            });
-            expect(promptOptions.ui5Version).toMatchObject({
-                minUI5Version: minSupportedUi5Version
-            });
-        });
-
         test('createUI5ApplicationPromptOptions - generator extension settings are applied', async () => {
             const validateExtFunc = (input: string, answers: unknown) => true;
             const addMsgs: PromptSeverityMessage = (input, previousAnswers) => ({
@@ -385,15 +338,15 @@ describe('prompting.ts', () => {
                     default: 'sap.com'
                 }
             };
-            const promptOptions = await createUI5ApplicationPromptOptions({
-                service: {},
-                appGenStepConfigList: [],
-                floorplan: FloorplanFE.FE_FEOP,
-                projectName: undefined,
-                targetFolder: undefined,
-                promptSettings: undefined,
-                extensions: promptExtensions
-            });
+            const promptOptions = await createUI5ApplicationPromptOptions(
+                {},
+                [],
+                FloorplanFE.FE_FEOP,
+                undefined,
+                undefined,
+                undefined,
+                promptExtensions
+            );
             expect(promptOptions).toMatchObject({
                 addDeployConfig: {
                     default: true,
@@ -666,6 +619,41 @@ describe('prompting.ts', () => {
                 false, // isYUI
                 undefined // cached connected system
             );
+        });
+    });
+
+    describe('getFPMPromptSettings', () => {
+        it('should return original promptSettings if minUI5Version is >= required minimum', () => {
+            const promptSettings = {
+                ui5Version: {
+                    minUI5Version: '1.140.0'
+                }
+            };
+            const result = getFPMPromptSettings(promptSettings);
+            expect(result).toBe(promptSettings);
+        });
+
+        it('should override minUI5Version if not set', () => {
+            const promptSettings = {
+                ui5Version: {}
+            };
+            const result = getFPMPromptSettings(promptSettings);
+            expect(result.ui5Version?.minUI5Version).toBe(minUi5VersionForPageBuildingBlock);
+        });
+
+        it('should override minUI5Version if less than required minimum', () => {
+            const promptSettings = {
+                ui5Version: {
+                    minUI5Version: '1.120.0'
+                }
+            };
+            const result = getFPMPromptSettings(promptSettings);
+            expect(result.ui5Version?.minUI5Version).toBe(minUi5VersionForPageBuildingBlock);
+        });
+
+        it('should handle undefined promptSettings', () => {
+            const result = getFPMPromptSettings(undefined);
+            expect(result.ui5Version?.minUI5Version).toBe(minUi5VersionForPageBuildingBlock);
         });
     });
 });

@@ -12,7 +12,11 @@ import { type UI5ApplicationAnswers } from '@sap-ux/ui5-application-inquirer';
 import { getUI5Versions } from '@sap-ux/ui5-info';
 import yeomanTest from 'yeoman-test';
 import { FioriAppGenerator, type FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
-import { promptOdataServiceAnswers, promptUI5ApplicationAnswers } from '../../../src/fiori-app-generator/prompting';
+import {
+    promptOdataServiceAnswers,
+    promptUI5ApplicationAnswers,
+    getFPMPromptSettings
+} from '../../../src/fiori-app-generator/prompting';
 import { addDeployGen, addFlpGen } from '../../../src/fiori-app-generator/subgenHelpers';
 import type { Project } from '../../../src/types';
 import {
@@ -477,6 +481,7 @@ describe('Test FioriAppGenerator', () => {
             pageBuildingBlockTitle: 'Test Page title'
         });
 
+        const expectedPromptSettings = getFPMPromptSettings(undefined);
         // Verify UI5 application answers are prompted with page building block option
         expect(promptUI5ApplicationAnswers).toHaveBeenCalledWith(
             {
@@ -487,9 +492,8 @@ describe('Test FioriAppGenerator', () => {
                     source: DatasourceType.odataServiceUrl
                 },
                 floorplan: FloorplanFE.FE_FPM,
-                promptSettings: undefined,
-                promptExtension: undefined,
-                addPageBuildingBlock: true
+                promptSettings: expectedPromptSettings,
+                promptExtension: undefined
             },
             expect.arrayContaining([
                 {
