@@ -424,6 +424,21 @@ describe('FlpSandbox', () => {
                     expect(response.text).toMatchSnapshot();
                 });
 
+                test('test/flp.html UI5 1.76.0 from npmjs', async () => {
+                    const jsonSpy = () =>
+                        Promise.resolve({
+                            name: 'myApp',
+                            libraries: [{ name: 'sap.ui.core', version: '1.76.0' }]
+                        });
+                    fetchMock.mockResolvedValue({
+                        json: jsonSpy,
+                        text: jest.fn(),
+                        ok: true
+                    });
+                    const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+                    expect(response.text).toMatchSnapshot();
+                });
+
                 test('test/flp.html UI5 snapshot', async () => {
                     const jsonSpy = () =>
                         Promise.resolve({
