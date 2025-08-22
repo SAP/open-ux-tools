@@ -3,6 +3,7 @@
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { CallToolRequestSchema, ListToolsRequestSchema, type CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import packageJson from '../package.json';
 import { listFioriApps, listFunctionalities, getFunctionalityDetails, executeFunctionality, tools } from './tools';
 import type {
     ExecuteFunctionalitiesInput,
@@ -32,7 +33,7 @@ export class FioriFunctionalityServer {
         this.server = new Server(
             {
                 name: 'fiori-mcp',
-                version: '0.0.1'
+                version: packageJson.version
             },
             {
                 capabilities: {

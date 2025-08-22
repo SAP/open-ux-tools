@@ -26,7 +26,7 @@ describe('FioriFunctionalityServer', () => {
     test('Constructor', () => {
         new FioriFunctionalityServer();
         // Check initialization
-        expect(Server).toHaveBeenCalledWith({ name: 'fiori-mcp', version: '0.0.1' }, { capabilities: { tools: {} } });
+        expect(Server).toHaveBeenCalledWith({ name: 'fiori-mcp', version: '0.0.0' }, { capabilities: { tools: {} } });
         expect(setRequestHandlerMock).toHaveBeenCalledTimes(2);
     });
 
