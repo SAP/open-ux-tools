@@ -10,20 +10,21 @@ import type { PropertyPath } from './parser';
  */
 export function updateProperty(obj: object, paths: PropertyPath, value: unknown, arrayElement = false): void {
     traverseProperty(obj, paths, value !== undefined, (context: unknown, key: string | number) => {
-        if (typeof context === 'object' && context !== null) {
-            const ctx = context as Record<string | number, unknown>;
-            // Update received element
-            if (value !== undefined) {
-                if (arrayElement && Array.isArray(ctx[key])) {
-                    ctx[key].push(value);
-                } else {
-                    ctx[key] = arrayElement ? [value] : value;
-                }
-            } else if (Array.isArray(ctx)) {
-                ctx.splice(typeof key === 'string' ? parseInt(key, 10) : key, 1);
+        if (typeof context !== 'object' || context === null) {
+            return;
+        }
+        const ctx = context as Record<string | number, unknown>;
+        // Update received element
+        if (value !== undefined) {
+            if (arrayElement && Array.isArray(ctx[key])) {
+                ctx[key].push(value);
             } else {
-                delete ctx[key];
+                ctx[key] = arrayElement ? [value] : value;
             }
+        } else if (Array.isArray(ctx)) {
+            ctx.splice(typeof key === 'string' ? parseInt(key, 10) : key, 1);
+        } else {
+            delete ctx[key];
         }
     });
 }
