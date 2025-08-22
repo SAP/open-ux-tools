@@ -1,6 +1,7 @@
 import { findFioriArtifacts } from '@sap-ux/project-access';
 import type { AllAppResults } from '@sap-ux/project-access';
 import type { FioriApp, ListFioriAppsInput, ListFioriAppsOutput } from '../types';
+import { basename } from 'path';
 
 /**
  * Scans the provided workspace paths for Fiori applications and returns
@@ -20,7 +21,7 @@ export async function listFioriApps(params: ListFioriAppsInput): Promise<ListFio
         applications:
             newFoundFioriArtifacts.applications?.map((app: AllAppResults): FioriApp => {
                 return {
-                    name: app.manifest['sap.app']?.id,
+                    name: app.manifest['sap.app']?.id ?? basename(app.appRoot),
                     path: app.appRoot,
                     type: 'list-report',
                     version: app.manifest['sap.app']?.dataSources?.mainService?.settings?.odataVersion ?? '4.0'

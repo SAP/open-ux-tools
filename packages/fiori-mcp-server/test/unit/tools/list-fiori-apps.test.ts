@@ -1,5 +1,6 @@
 import * as projectAccess from '@sap-ux/project-access';
 import { listFioriApps } from '../../../src/tools';
+import { join } from 'path';
 
 jest.mock('@sap-ux/project-access', () => ({
     __esModule: true,
@@ -16,7 +17,7 @@ describe('listFioriApps', () => {
     });
 
     test('call with valid app and empty manifest', async () => {
-        const appRoot = 'dummyAppRoot';
+        const appRoot = join('root', 'dummyAppRoot');
         findFioriArtifactsSpy.mockReturnValueOnce(
             Promise.resolve({
                 applications: [
@@ -31,7 +32,7 @@ describe('listFioriApps', () => {
             searchPath
         });
         expect(apps).toEqual({
-            applications: [{ name: undefined, path: appRoot, type: 'list-report', version: '4.0' }]
+            applications: [{ name: 'dummyAppRoot', path: appRoot, type: 'list-report', version: '4.0' }]
         });
     });
 
