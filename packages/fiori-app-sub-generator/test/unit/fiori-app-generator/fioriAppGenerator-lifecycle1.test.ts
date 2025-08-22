@@ -12,11 +12,7 @@ import { type UI5ApplicationAnswers } from '@sap-ux/ui5-application-inquirer';
 import { getUI5Versions } from '@sap-ux/ui5-info';
 import yeomanTest from 'yeoman-test';
 import { FioriAppGenerator, type FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
-import {
-    promptOdataServiceAnswers,
-    promptUI5ApplicationAnswers,
-    getFPMPromptSettings
-} from '../../../src/fiori-app-generator/prompting';
+import { promptOdataServiceAnswers, promptUI5ApplicationAnswers } from '../../../src/fiori-app-generator/prompting';
 import { addDeployGen, addFlpGen } from '../../../src/fiori-app-generator/subgenHelpers';
 import type { Project, FioriAppGeneratorPromptSettings } from '../../../src/types';
 import {
@@ -445,19 +441,19 @@ describe('Test FioriAppGenerator', () => {
             {
                 title: 'with building block and minUI5Version >= required',
                 promptSettings: { '@sap/generator-fiori': { ui5Version: { minUI5Version: '1.137.0' } } },
-                expectedPromptSettings: getFPMPromptSettings({ ui5Version: { minUI5Version: '1.137.0' } }),
+                expectedPromptSettings: { ui5Version: { minUI5Version: '1.137.0' } },
                 addPageBuildingBlock: true
             },
             {
                 title: 'with building block and undefined promptSettings',
                 promptSettings: undefined,
-                expectedPromptSettings: getFPMPromptSettings(undefined),
+                expectedPromptSettings: undefined,
                 addPageBuildingBlock: true
             },
             {
                 title: 'with building block and minUI5Version < required',
                 promptSettings: { '@sap/generator-fiori': { ui5Version: { minUI5Version: '1.96.4' } } },
-                expectedPromptSettings: getFPMPromptSettings({ ui5Version: { minUI5Version: '1.96.4' } }),
+                expectedPromptSettings: { ui5Version: { minUI5Version: '1.96.4' } },
                 addPageBuildingBlock: true
             },
             {
@@ -505,6 +501,7 @@ describe('Test FioriAppGenerator', () => {
                         projectName: undefined,
                         targetFolder: undefined,
                         service: { edmx: '<edmx></edmx>', source: DatasourceType.odataServiceUrl },
+                        entityRelatedConfig: mockEntityRelatedAnswers,
                         floorplan: FloorplanFE.FE_FPM,
                         promptSettings: expectedPromptSettings,
                         promptExtension: undefined
@@ -516,7 +513,7 @@ describe('Test FioriAppGenerator', () => {
                 );
 
                 if (!addPageBuildingBlock) {
-                    expect(expectedPromptSettings.ui5Version?.minUI5Version).toBeUndefined();
+                    expect(expectedPromptSettings?.ui5Version?.minUI5Version).toBeUndefined();
                 }
             }
         );

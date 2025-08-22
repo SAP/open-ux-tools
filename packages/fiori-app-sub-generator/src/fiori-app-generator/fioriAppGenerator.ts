@@ -64,8 +64,7 @@ import {
     type OdataServiceInquirerOptions,
     promptOdataServiceAnswers,
     promptUI5ApplicationAnswers,
-    type ViewNameAnswer,
-    getFPMPromptSettings
+    type ViewNameAnswer
 } from './prompting';
 import { addDeployGen, addFlpGen } from './subgenHelpers';
 import { getTemplateType, transformState } from './transforms';
@@ -265,14 +264,6 @@ export class FioriAppGenerator extends Generator {
             }
             // get project information
             if (hasStep(this.fioriSteps, STEP_PROJECT_ATTRIBUTES)) {
-                let promptSettings = generatorOptions.promptSettings?.['@sap/generator-fiori'];
-                if (
-                    this.state.floorplan === FloorplanFE.FE_FPM &&
-                    this.state.entityRelatedConfig?.addPageBuildingBlock
-                ) {
-                    promptSettings = getFPMPromptSettings(generatorOptions.promptSettings?.['@sap/generator-fiori']);
-                }
-
                 const {
                     ui5AppAnswers,
                     localUI5Version
@@ -282,8 +273,9 @@ export class FioriAppGenerator extends Generator {
                             projectName: this.state.project?.name,
                             targetFolder: this.state.project?.targetFolder,
                             service: this.state.service,
+                            entityRelatedConfig: this.state.entityRelatedConfig,
                             floorplan: this.state.floorplan,
-                            promptSettings,
+                            promptSettings: generatorOptions.promptSettings?.['@sap/generator-fiori'],
                             promptExtension: generatorOptions.extensions
                         },
                         [this.yeomanUiStepConfig],
