@@ -128,23 +128,32 @@ function getFDCRequestArguments(cfConfig: CFConfig): RequestArguments {
             'Content-Type': 'application/json'
         }
     };
-    // Public cloud
-    let url = `${fdcUrl}cert.cfapps.${endpointParts?.[1]}.hana.ondemand.com`;
-    if (!endpointParts?.[3]) {
-        // Private cloud - if hana.ondemand.com missing as a part of CF api endpotint
-        url = `${fdcUrl}sapui5flex.cfapps${endpointParts?.[4]}`;
+
+    // Determine the appropriate domain based on environment
+    let url: string;
+
+    if (endpointParts?.[3]) {
+        // Public cloud - use mTLS enabled domain with "cert" prefix
+        const region = endpointParts[1];
+        url = `${fdcUrl}cert.cfapps.${region}.hana.ondemand.com`;
+    } else {
+        // Private cloud or other environments
         if (endpointParts?.[4]?.endsWith('.cn')) {
             // China has a special URL pattern
-            const parts = endpointParts?.[4]?.split('.');
+            const parts = endpointParts[4].split('.');
             parts.splice(2, 0, 'apps');
             url = `${fdcUrl}sapui5flex${parts.join('.')}`;
+        } else {
+            url = `${fdcUrl}sapui5flex.cfapps${endpointParts?.[4]}`;
         }
     }
+
+    // Add authorization token for non-BAS environments or private cloud
+    // For BAS environments with mTLS, the certificate authentication is handled automatically
     if (!isAppStudio() || !endpointParts?.[3]) {
-        // Adding authorization token for none BAS enviourment and
-        // for private cloud as a temporary solution until enablement of cert auth
         options.headers['Authorization'] = `Bearer ${cfConfig.token}`;
     }
+
     return {
         url: url,
         options
@@ -414,27 +423,54 @@ export class FDCService {
     public async getBaseApps(credentials: Credentials[], includeInvalid = false): Promise<CFApp[]> {
         const appHostIds = getAppHostIds(credentials);
         this.logger?.log(`App Host Ids: ${JSON.stringify(appHostIds)}`);
-        const discoveryApps = await Promise.all(
-            Array.from(appHostIds).map(async (appHostId: string) => {
-                try {
-                    const response = await this.getFDCApps(appHostId);
-                    if (response.status === 200) {
-                        const results = (response.data as any)?.['results'] as CFApp[];
-                        results.forEach((result) => (result.appHostId = appHostId)); // store appHostId in order to know by which appHostId was the app selected
-                        return results;
-                    }
-                    throw new Error(
-                        `Failed to connect to Flexibility Design and Configuration service for app_host_id ${appHostId}. Reason: HTTP status code ${response.status.toString()}: ${
-                            response.statusText
-                        }`
-                    );
-                } catch (error) {
-                    return [{ appHostId: appHostId, messages: [error.message] }];
-                }
-            })
-        ).then((results) => results.flat());
 
-        const validatedApps = await this.getValidatedApps(discoveryApps, credentials);
+        // Validate appHostIds array length (max 100 as per API specification)
+        if (appHostIds.size > 100) {
+            throw new Error(`Too many appHostIds provided. Maximum allowed is 100, but ${appHostIds.size} were found.`);
+        }
+
+        const appHostIdsArray = Array.from(appHostIds);
+
+        try {
+            const response = await this.getFDCApps(appHostIdsArray);
+
+            if (response.status === 200) {
+                const results = (response.data as any)?.['results'] as CFApp[];
+
+                return this.processApps(results, credentials, includeInvalid);
+            } else {
+                throw new Error(
+                    `Failed to connect to Flexibility Design and Configuration service. Reason: HTTP status code ${response.status}: ${response.statusText}`
+                );
+            }
+        } catch (error) {
+            this.logger?.error(`Error in getBaseApps: ${error.message}`);
+
+            // Create error apps for each appHostId and validate them to maintain original behavior
+            const errorApps: CFApp[] = appHostIdsArray.map((appHostId) => ({
+                appId: '',
+                appName: '',
+                appVersion: '',
+                serviceName: '',
+                title: '',
+                appHostId,
+                messages: [error.message]
+            }));
+
+            return this.processApps(errorApps, credentials, includeInvalid);
+        }
+    }
+
+    /**
+     * Process and validate apps, then filter based on includeInvalid flag.
+     *
+     * @param apps - Array of apps to process
+     * @param credentials - Credentials for validation
+     * @param includeInvalid - Whether to include invalid apps in the result
+     * @returns Processed and filtered apps
+     */
+    private async processApps(apps: CFApp[], credentials: Credentials[], includeInvalid: boolean): Promise<CFApp[]> {
+        const validatedApps = await this.getValidatedApps(apps, credentials);
         return includeInvalid ? validatedApps : validatedApps.filter((app) => !app.messages?.length);
     }
 
@@ -536,10 +572,16 @@ export class FDCService {
             service-plan: <plan name, e.g. standard>`);
     }
 
-    private async getFDCApps(appHostId: string): Promise<HttpResponse> {
+    private async getFDCApps(appHostIds: string[]): Promise<HttpResponse> {
         const requestArguments = getFDCRequestArguments(this.cfConfig);
-        this.logger?.log(`App Host: ${appHostId}, request arguments: ${JSON.stringify(requestArguments)}`);
-        const url = `${requestArguments.url}/api/business-service/discovery?appHostId=${appHostId}`;
+        this.logger?.log(
+            `App Hosts: ${JSON.stringify(appHostIds)}, request arguments: ${JSON.stringify(requestArguments)}`
+        );
+
+        // Construct the URL with multiple appHostIds as separate query parameters
+        // Format: ?appHostId=<id1>&appHostId=<id2>&appHostId=<id3>
+        const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
+        const url = `${requestArguments.url}/api/business-service/discovery?${appHostIdParams}`;
 
         try {
             const isLoggedIn = await this.isLoggedIn();
@@ -568,8 +610,8 @@ export class FDCService {
         }
     }
 
-    private async getValidatedApps(discoveryApps: any[], credentials: any): Promise<CFApp[]> {
-        const validatedApps: any[] = [];
+    private async getValidatedApps(discoveryApps: CFApp[], credentials: Credentials[]): Promise<CFApp[]> {
+        const validatedApps: CFApp[] = [];
         await Promise.all(
             discoveryApps.map(async (app) => {
                 if (!(app.messages && app.messages.length)) {
@@ -582,7 +624,7 @@ export class FDCService {
         return validatedApps;
     }
 
-    private async validateSelectedApp(appParams: AppParams, credentials: any): Promise<string[]> {
+    private async validateSelectedApp(appParams: AppParams, credentials: Credentials[]): Promise<string[]> {
         try {
             const { entries, serviceInstanceGuid, manifest } = await downloadAppContent(
                 this.cfConfig.space.GUID,
