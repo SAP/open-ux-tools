@@ -9,18 +9,21 @@ import type { PropertyPath } from './parser';
  * @param arrayElement Value should be inserted into array.
  */
 export function updateProperty(obj: object, paths: PropertyPath, value: unknown, arrayElement = false): void {
-    traverseProperty(obj, paths, value !== undefined, (context: any, key: string | number) => {
-        // Update received element
-        if (value !== undefined) {
-            if (arrayElement && Array.isArray(context[key])) {
-                context[key].push(value);
+    traverseProperty(obj, paths, value !== undefined, (context: unknown, key: string | number) => {
+        if (typeof context === 'object' && context !== null) {
+            const ctx = context as Record<string | number, unknown>;
+            // Update received element
+            if (value !== undefined) {
+                if (arrayElement && Array.isArray(ctx[key])) {
+                    ctx[key].push(value);
+                } else {
+                    ctx[key] = arrayElement ? [value] : value;
+                }
+            } else if (Array.isArray(ctx)) {
+                ctx.splice(typeof key === 'string' ? parseInt(key, 10) : key, 1);
             } else {
-                context[key] = arrayElement ? [value] : value;
+                delete ctx[key];
             }
-        } else if (Array.isArray(context)) {
-            context.splice(typeof key === 'string' ? parseInt(key, 10) : key, 1);
-        } else {
-            delete context[key];
         }
     });
 }
@@ -34,12 +37,12 @@ export function updateProperty(obj: object, paths: PropertyPath, value: unknown,
  * @param callback Callback listener.
  */
 function traverseProperty(
-    obj: any,
+    obj: unknown,
     paths: PropertyPath,
     prepare: boolean,
-    callback: (context: any, key: string | number) => void
+    callback: (context: unknown, key: string | number) => void
 ): void {
-    let current = obj;
+    let current = obj as Record<string | number, unknown>;
     for (let i = 0; i < paths.length; i++) {
         if (paths[i] === undefined) {
             continue;
@@ -53,7 +56,7 @@ function traverseProperty(
             const isArray = paths[i + 1] !== undefined && typeof paths[i + 1] === 'number';
             current[paths[i]] = !isArray ? {} : [];
         }
-        current = current[paths[i]];
+        current = current[paths[i]] as Record<string | number, unknown>;
         if (!current) {
             break;
         }
