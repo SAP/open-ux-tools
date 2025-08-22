@@ -44,7 +44,7 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
 async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
     const { appPath, parameters } = params;
     const { pageId } = parameters;
-    if (!pageId || pageId !== 'string') {
+    if (!pageId || typeof pageId !== 'string') {
         throw new Error('Missing or invalid parameter "pageId"');
     }
     const appDetails = await resolveApplication(appPath);

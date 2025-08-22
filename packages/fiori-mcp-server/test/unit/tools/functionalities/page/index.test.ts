@@ -118,7 +118,9 @@ describe('add-page', () => {
             const result = await addPageHandlers.executeFunctionality({
                 appPath,
                 functionalityId: ADD_PAGE_FUNCTIONALITY.id,
-                parameters: {}
+                parameters: {
+                    pageType: 'ListReport'
+                }
             });
             expect(result.status).toBe('Failed');
             expect(result.message).toContain(`Project root not found for app path: ${appPath}`);
@@ -191,6 +193,30 @@ describe('add-page', () => {
             expect(commitMock).toHaveBeenCalledTimes(1);
             expect(memFsDumpMock).toHaveBeenCalledTimes(1);
         });
+
+        test('case 4: Missing pageType', async () => {
+            const appPath = join(__dirname, 'invalid', 'app', 'path');
+            await expect(
+                addPageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.id,
+                    parameters: {}
+                })
+            ).rejects.toThrow('Missing or invalid parameter "pageType"');
+        });
+
+        test('case 5: Invalid pageType', async () => {
+            const appPath = join(__dirname, 'invalid', 'app', 'path');
+            await expect(
+                addPageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.id,
+                    parameters: {
+                        pageType: 'Dummy'
+                    }
+                })
+            ).rejects.toThrow('Missing or invalid parameter "pageType"');
+        });
     });
 });
 
@@ -230,7 +256,9 @@ describe('delete-page', () => {
             const result = await deletePageHandlers.executeFunctionality({
                 appPath,
                 functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
-                parameters: {}
+                parameters: {
+                    pageId: 'dummy'
+                }
             });
             expect(result.status).toBe('Failed');
             expect(result.message).toContain(`Project root not found for app path: ${appPath}`);
@@ -286,6 +314,28 @@ describe('delete-page', () => {
             );
             expect(result.status).toBe('success');
             expect(exportConfigMock).toHaveBeenCalledTimes(1);
+        });
+        test('case 4: missing page id', async () => {
+            const appPath = join(__dirname, 'invalid', 'app', 'path');
+            await expect(
+                deletePageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
+                    parameters: {}
+                })
+            ).rejects.toThrow('Missing or invalid parameter "pageId"');
+        });
+        test('case 5: invalid page id', async () => {
+            const appPath = join(__dirname, 'invalid', 'app', 'path');
+            await expect(
+                deletePageHandlers.executeFunctionality({
+                    appPath,
+                    functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
+                    parameters: {
+                        pageId: {}
+                    }
+                })
+            ).rejects.toThrow('Missing or invalid parameter "pageId"');
         });
     });
 });

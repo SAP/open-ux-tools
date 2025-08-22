@@ -48,7 +48,7 @@ async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promis
     const parentPage = typeof parameters.parentPage === 'string' ? parameters.parentPage : undefined;
     const entitySet = typeof parameters.entitySet === 'string' ? parameters.entitySet : undefined;
     const pageNavigation = typeof parameters.pageNavigation === 'string' ? parameters.pageNavigation : undefined;
-    const viewName = typeof parameters.viewName === 'string' ? parameters.viewName : 'CustomView';
+    const viewName = typeof parameters.pageViewName === 'string' ? parameters.pageViewName : 'CustomView';
     if (!pageType) {
         throw new Error('Missing or invalid parameter "pageType"');
     }
