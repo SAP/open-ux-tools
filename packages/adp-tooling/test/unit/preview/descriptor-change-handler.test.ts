@@ -621,6 +621,13 @@ id="<%- ids.customActionButton %>"`);
     });
 
     describe('addAnnotationFile', () => {
+        const variantResult = {
+            content: [],
+            id: 'adp/project',
+            layer: 'VENDOR',
+            namespace: 'test',
+            reference: 'adp/project'
+        } as unknown as DescriptorVariant;
         jest.spyOn(serviceWriter, 'getAnnotationNamespaces').mockReturnValue([
             {
                 namespace: 'com.sap.test.serviceorder.v0001',
@@ -657,13 +664,6 @@ id="<%- ids.customActionButton %>"`);
                 }
             })
         } as any);
-        jest.spyOn(helper, 'getVariant').mockResolvedValue({
-            content: [],
-            id: 'adp/project',
-            layer: 'VENDOR',
-            namespace: 'test',
-            reference: 'adp/project'
-        });
         jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
             target: {
                 destination: 'testDestination'
@@ -707,11 +707,12 @@ id="<%- ids.customActionButton %>"`);
             mockFs.write.mockClear();
             mockLogger.info.mockClear();
             mockLogger.error.mockClear();
+            jest.clearAllMocks();
+            jest.spyOn(helper, 'getVariant').mockResolvedValue(variantResult);
         });
 
         it('should call the geneate change', async () => {
             mockFs.exists.mockReturnValue(false);
-
             await addAnnotationFile(
                 'projectRoot/webapp',
                 'projectRoot',
@@ -721,6 +722,14 @@ id="<%- ids.customActionButton %>"`);
                 {} as any
             );
 
+            // Assert
+            expect(manifestService.ManifestService.initMergedManifest).toHaveBeenCalledWith(
+                {} as any,
+                'projectRoot',
+                variantResult,
+                mockLogger
+            );
+            expect(helper.getVariant).toHaveBeenCalledWith('projectRoot');
             expect(generateChangeSpy).toHaveBeenCalled();
         });
     });

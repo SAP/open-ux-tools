@@ -1,5 +1,44 @@
 # @sap-ux/generator-adp
 
+## 0.3.70
+
+### Patch Changes
+
+-   Updated dependencies [c6a0062]
+    -   @sap-ux/store@1.1.3
+    -   @sap-ux/adp-tooling@0.15.20
+    -   @sap-ux/system-access@0.6.13
+    -   @sap-ux/fiori-generator-shared@0.13.10
+    -   @sap-ux/inquirer-common@0.7.36
+
+## 0.3.69
+
+### Patch Changes
+
+-   49ee46c: fix: ADP Generator shows project type even if request for system info is failing
+
+## 0.3.68
+
+### Patch Changes
+
+-   73ef87a: fix: ADP Generator shows misleading additional message when system requires auth
+
+## 0.3.67
+
+### Patch Changes
+
+-   0729936: fix: ADP Generator templates / sub-generator resolution problem
+-   Updated dependencies [0729936]
+    -   @sap-ux/adp-tooling@0.15.19
+
+## 0.3.66
+
+### Patch Changes
+
+-   Updated dependencies [9f84298]
+    -   @sap-ux/adp-tooling@0.15.18
+    -   @sap-ux/adp-flp-config-sub-generator@0.1.64
+
 ## 0.3.65
 
 ### Patch Changes

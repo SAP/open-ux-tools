@@ -1,5 +1,46 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.6.2
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.29.2
+-   @sap-ux/fiori-generator-shared@0.13.10
+-   @sap-ux/cap-config-writer@0.12.1
+
+## 2.6.1
+
+### Patch Changes
+
+-   Updated dependencies [1fff3c0]
+    -   @sap-ux/ui5-test-writer@0.7.21
+
+## 2.6.0
+
+### Minor Changes
+
+-   43f94eb: Add support for automatically including a Page Building Block when generating a custom page
+
+### Patch Changes
+
+-   Updated dependencies [43f94eb]
+    -   @sap-ux/fe-fpm-writer@0.38.0
+
+## 2.5.30
+
+### Patch Changes
+
+-   Updated dependencies [8178b2b]
+    -   @sap-ux/cap-config-writer@0.12.0
+    -   @sap-ux/fe-fpm-writer@0.37.3
+
+## 2.5.29
+
+### Patch Changes
+
+-   Updated dependencies [810d7eb]
+    -   @sap-ux/annotation-generator@0.3.54
+
 ## 2.5.28
 
 ### Patch Changes

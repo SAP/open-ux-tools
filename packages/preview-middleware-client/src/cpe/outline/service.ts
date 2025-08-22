@@ -3,13 +3,12 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
-import { MessageBarType, outlineChanged } from '@sap-ux-private/control-property-editor-common';
+import { outlineChanged } from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../../utils/error';
+import { ChangeService } from '../changes';
 import { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';
-import { ChangeService } from '../changes';
-import { sendInfoCenterMessage } from '../../utils/info-center-message';
 
 export const OUTLINE_CHANGE_EVENT = 'OUTLINE_CHANGED';
 
@@ -54,13 +53,7 @@ export class OutlineService extends EventTarget {
                 sendAction(outlineChanged(outlineNodes));
                 await this.changeService.updateConfigurationProps(configPropertyIdMap);
             } catch (error) {
-                const extendError = getError(error);
-                Log.error('Outline sync failed!', extendError);
-                await sendInfoCenterMessage({
-                    title: { key: 'OUTLINE_ERROR_TITLE' },
-                    description: extendError.message,
-                    type: MessageBarType.error
-                });
+                Log.error('Outline sync failed!', getError(error));
             }
         };
         await syncOutline();

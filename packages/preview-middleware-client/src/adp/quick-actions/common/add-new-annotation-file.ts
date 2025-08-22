@@ -1,7 +1,6 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import {
-    MessageBarType,
     NESTED_QUICK_ACTION_KIND,
     NestedQuickAction,
     NestedQuickActionChild
@@ -10,9 +9,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getApplicationType } from '../../../utils/application';
-import { getError } from '../../../utils/error';
 import { getV4AppComponent } from '../../../utils/fe-v4';
-import { sendInfoCenterMessage } from '../../../utils/info-center-message';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import type { AnnotationDataSourceResponse } from '../../api-handler';
 import { getDataSourceAnnotationFileMap } from '../../api-handler';
@@ -53,17 +50,7 @@ export class AddNewAnnotationFile
             this.isApplicable = false;
             return;
         }
-        try {
-            this.annotationDataSourceData = await getDataSourceAnnotationFileMap();
-        } catch (e) {
-            const error = getError(e);
-            await sendInfoCenterMessage({
-                title: { key: 'ADP_GET_ANNOTATION_ERROR_TITLE' },
-                description: error.message,
-                type: MessageBarType.error
-            });
-            throw error;
-        }
+        this.annotationDataSourceData = await getDataSourceAnnotationFileMap();
         const { annotationDataSourceMap } = this.annotationDataSourceData;
         if (!Object.keys(this.annotationDataSourceData.annotationDataSourceMap).length) {
             throw new Error('No data sources found in the manifest');
