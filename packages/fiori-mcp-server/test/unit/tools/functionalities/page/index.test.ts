@@ -22,7 +22,7 @@ jest.mock('@sap-ux/project-access', () => {
     };
 });
 
-const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'data', 'ai-created-cap');
+const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', 'ai-created-cap');
 const copyProjectRoot = `${originProjectRoot}-add-page-copy`;
 const appPath = join(copyProjectRoot, 'app', 'managetravels');
 
@@ -80,11 +80,11 @@ describe('add-page', () => {
             expect(commitMock).not.toHaveBeenCalled();
         });
         test('case 2: empty page', async () => {
-            const manifestSrcPath = join(__dirname, 'data', 'empty-page-manifest.json');
+            const manifestSrcPath = join(__dirname, 'test-data', 'empty-page-manifest.json');
             const manifestDestPath = join(copyProjectRoot, 'app', 'managetravels', 'webapp', 'manifest.json');
             const manifestData = JSON.parse(readFileSync(manifestSrcPath, 'utf8'));
             writeFileSync(manifestDestPath, JSON.stringify(manifestData, null, 4));
-            const fileContent = readFileSync(join(__dirname, 'data', 'empty-page-spec-app.json'), 'utf8');
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'empty-page-spec-app.json'), 'utf8');
             importProjectMock.mockResolvedValue([
                 {
                     dataSourceUri: 'app.json',
@@ -98,7 +98,7 @@ describe('add-page', () => {
             expect(result).toMatchSnapshot();
         });
         test('case 3: one or more pages', async () => {
-            const fileContent = readFileSync(join(__dirname, 'data', 'two-pages-spec-app.json'), 'utf8');
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
             importProjectMock.mockResolvedValue([
                 {
                     dataSourceUri: 'app.json',
@@ -130,11 +130,11 @@ describe('add-page', () => {
             expect(commitMock).not.toHaveBeenCalledTimes(1);
         });
         test('case 2: empty page', async () => {
-            const manifestSrcPath = join(__dirname, 'data', 'empty-page-manifest.json');
+            const manifestSrcPath = join(__dirname, 'test-data', 'empty-page-manifest.json');
             const manifestDestPath = join(copyProjectRoot, 'app', 'managetravels', 'webapp', 'manifest.json');
             const manifestData = JSON.parse(readFileSync(manifestSrcPath, 'utf8'));
             writeFileSync(manifestDestPath, JSON.stringify(manifestData, null, 4));
-            const fileContent = readFileSync(join(__dirname, 'data', 'empty-page-spec-app.json'), 'utf8');
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'empty-page-spec-app.json'), 'utf8');
             importProjectMock.mockResolvedValue([
                 {
                     dataSourceUri: 'app.json',
@@ -164,7 +164,7 @@ describe('add-page', () => {
             expect(memFsDumpMock).toHaveBeenCalledTimes(1);
         });
         test('case 3: one or more pages', async () => {
-            const fileContent = readFileSync(join(__dirname, 'data', 'two-pages-spec-app.json'), 'utf8');
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
             importProjectMock.mockResolvedValue([
                 {
                     dataSourceUri: 'app.json',
@@ -236,7 +236,7 @@ describe('delete-page', () => {
             expect(commitMock).not.toHaveBeenCalled();
         });
         test('case 2: zero or more pages', async () => {
-            const fileContent = readFileSync(join(__dirname, 'data', 'two-pages-spec-app.json'), 'utf8');
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
             importProjectMock.mockResolvedValue([
                 {
                     dataSourceUri: 'app.json',
@@ -268,11 +268,11 @@ describe('delete-page', () => {
             expect(commitMock).not.toHaveBeenCalledTimes(1);
         });
         test('case 2: empty page', async () => {
-            const manifestSrcPath = join(__dirname, 'data', 'empty-page-manifest.json');
+            const manifestSrcPath = join(__dirname, 'test-data', 'empty-page-manifest.json');
             const manifestDestPath = join(copyProjectRoot, 'app', 'managetravels', 'webapp', 'manifest.json');
             const manifestData = JSON.parse(readFileSync(manifestSrcPath, 'utf8'));
             writeFileSync(manifestDestPath, JSON.stringify(manifestData, null, 4));
-            const fileContent = readFileSync(join(__dirname, 'data', 'empty-page-spec-app.json'), 'utf8');
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'empty-page-spec-app.json'), 'utf8');
             importProjectMock.mockResolvedValue([
                 {
                     dataSourceUri: 'app.json',
@@ -294,7 +294,7 @@ describe('delete-page', () => {
             expect(result.status).toBe('unchanged');
         });
         test('case 3: one or more pages', async () => {
-            const fileContent = readFileSync(join(__dirname, 'data', 'two-pages-spec-app.json'), 'utf8');
+            const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
             importProjectMock.mockResolvedValue([
                 {
                     dataSourceUri: 'app.json',

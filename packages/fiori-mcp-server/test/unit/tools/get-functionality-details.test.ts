@@ -1,7 +1,7 @@
 import * as openUxProjectAccessDependency from '@sap-ux/project-access';
 import { getFunctionalityDetails } from '../../../src/tools';
 import { mockSpecificationImport } from '../utils';
-import applicationConfig from '../page-editor-api/data/config/App.json';
+import applicationConfig from '../page-editor-api/test-data/config/App.json';
 import * as addPageDependency from '../../../src/tools/functionalities/page';
 import * as projectUtils from '../../../src/page-editor-api/project';
 
