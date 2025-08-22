@@ -6,12 +6,7 @@ import type {
     PageAnnotations,
     PropertyPath
 } from '../types';
-import {
-    CUSTOM_VIEW_PREFIX,
-    SCHEMA_CREATION_FORM,
-    AggregationActions,
-    AggregationCreationForm
-} from '../types';
+import { CUSTOM_VIEW_PREFIX, SCHEMA_CREATION_FORM, AggregationActions, AggregationCreationForm } from '../types';
 import { ViewAggregation } from './ViewAggregation';
 import i18next from 'i18next';
 import { isArrayEqual } from '../utils';

@@ -381,7 +381,7 @@ export class Application {
      * Writes the Flexible Programming Model (FPM) configuration.
      *
      * @param pageType - The type of the page.
-     * @param pageApi - The page API configuration.
+     * @param fpmData - The page API configuration.
      * @param viewName - Optional view name for custom pages.
      * @returns A promise that resolves to an array of strings representing the changes made.
      */
