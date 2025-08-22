@@ -35,7 +35,6 @@
       "fiori-mcp": "./dist/index.js"
     },
     "devDependencies": {
-        "@sap/ux-specification": "1.136.4",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
@@ -45,6 +44,7 @@
     },
     "dependencies": {
         "@modelcontextprotocol/sdk": "1.17.0",
+        "@sap/ux-specification": "1.136.4",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/annotation-converter": "0.10.3",
