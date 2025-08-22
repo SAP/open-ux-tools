@@ -387,7 +387,7 @@ export class ObjectAggregation {
     }
 
     /**
-     * Method which caled when properties and aggregation data was applied and updated.
+     * Method which called when properties and aggregation data was applied and updated.
      */
     protected onPropertiesUpdated(): void {
         // no-op
