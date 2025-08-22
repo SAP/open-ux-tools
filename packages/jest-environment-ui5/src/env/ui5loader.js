@@ -599,6 +599,7 @@
      * @param {string} sUrlPrefix path to the resource
      */
     function registerResourcePath(sResourceNamePrefix, sUrlPrefix) {
+
         sResourceNamePrefix = String(sResourceNamePrefix || "");
 
         if ( sUrlPrefix == null ) {
@@ -625,7 +626,9 @@
         if ( sUrlPrefix.slice(-1) !== '/' ) {
             sUrlPrefix += '/';
         }
-
+        if(sUrlPrefix === "./" && sResourceNamePrefix === "") {
+            sUrlPrefix = "";
+        }
         mUrlPrefixes[sResourceNamePrefix] = {
             url: sUrlPrefix,
             // calculate absolute URL, only to be used by 'guessResourceName'
@@ -995,12 +998,7 @@
                     const oShim = mShims[this.name],
                         sExport = oShim && (Array.isArray(oShim.exports) ? oShim.exports[0] : oShim.exports);
                     // best guess for thirdparty modules or legacy modules that don't use sap.ui.define
-					if(this.name === "sap/ui/thirdparty/crossroads.js") {
-						this.content = window.crossroads;
-					} else {
-                    	this.content = getGlobalProperty( sExport || urnToUI5(this.name) );
-                	}
-
+                    this.content = getGlobalProperty(sExport || urnToUI5(this.name));
                 }
                 return this.content;
             }
@@ -1765,13 +1763,14 @@
 						})
 					}
                     const output = oModule.data.call(__global);
-					if(output && mShims[oModule.name] && mShims[oModule.name].exports && Object.keys(output).length > 0 && !global[mShims[oModule.name].exports]) {
-						// if(global[mShims[oModule.name].exports] ) {
-						// 	global[mShims[oModule.name].exports] = {...global[mShims[oModule.name].exports], ...output}
-						// } else {
-							global[mShims[oModule.name].exports] = output;
-						//}
-
+					if(output && mShims[oModule.name] && mShims[oModule.name].exports && Object.keys(output).length > 0) {
+						if(global[mShims[oModule.name].exports] ) {
+							global[mShims[oModule.name].exports] = {...global[mShims[oModule.name].exports], ...output}
+						} else if(output[mShims[oModule.name].exports] !== undefined) {
+                            global[mShims[oModule.name].exports] = output[mShims[oModule.name].exports];
+                        } else {
+						    global[mShims[oModule.name].exports] = output;
+						}
 					}
 					else if(output && Object.keys(output).length > 0) {
 						if( Object.keys(oModule.content).length === 0) {
