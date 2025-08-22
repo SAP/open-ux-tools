@@ -187,13 +187,6 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
             ],
             required: true
         }
-    ],
-    examples: [
-        'Create an app that I can use to maintain bookings for my dog grooming business',
-        'Create an app that I can use to maintain orders taken for dog equipment',
-        'Create an app that I can use to add bookings for my dog grooming business',
-        'Create an app that I can use to show bookings for my dog grooming business',
-        'Create a fiori app to show top ten beautiful parks in the world.'
     ]
 };
 
