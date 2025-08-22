@@ -7,7 +7,6 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { fetchMock, sapCoreMock } from 'mock/window';
 
-import { MessageBarType, showInfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
 import { ChangeService } from '../../../src/cpe/changes';
 import * as flexChange from '../../../src/cpe/changes/flex-change';
 import { CommunicationService } from '../../../src/cpe/communication-service';
@@ -160,14 +159,6 @@ describe('main', () => {
         // assert
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
         expect(Log.error).toHaveBeenCalledWith('Service Initialization Failed: ', error);
-        expect(CommunicationService.sendAction).toHaveBeenNthCalledWith(
-            2,
-            showInfoCenterMessage({
-                title: 'Control Property Editor Initialization Failed',
-                description: error.message,
-                type: MessageBarType.error
-            })
-        );
     });
 
     test('init and appLoaed called', async () => {

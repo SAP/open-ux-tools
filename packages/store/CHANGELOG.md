@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.1.3
+
+### Patch Changes
+
+-   c6a0062: improve backend system recovery when file read fails
+
 ## 1.1.2
 
 ### Patch Changes
