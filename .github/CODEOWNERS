@@ -114,6 +114,12 @@
 # Module: ux-tools-control-property-editor
 /tests/integration/adaptation-editor/ @SAP/ux-tools-control-property-editor
 
+# Module: odata-service-inquirer
+/packages/odata-service-inquirer/ @SAP/ux-tools-fiori-app-sub-generator
+
+# Module: fiori-app-sub-generator
+/packages/fiori-app-sub-generator/ @SAP/ux-tools-fiori-app-sub-generator
+
 # Admin
 /.github/ @SAP/ux-tools-admin
 /.LICENSES/ @SAP/ux-tools-admin
