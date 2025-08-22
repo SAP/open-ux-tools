@@ -1,14 +1,6 @@
 # @sap-ux/fiori-mcp-server
 
-This package includes a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for integration with AI assistants.
-
-> ⚠️ Caution
->
-> This feature is currently in an experimental state.
->
-> Experimental features may be changed at any time for any reason without notice.
->
-> Experimental features are not for productive use. You must not demonstrate, test, examine, evaluate or otherwise use experimental features in a live operating environment or with data that has not been sufficiently backed up.
+This package includes a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for integration with agentic AI tools.
 
 The server helps AI models to create or modify SAP Fiori applications like:
 
@@ -17,19 +9,19 @@ The server helps AI models to create or modify SAP Fiori applications like:
 - _Add the FCL to the SAP Fiori elements app_
 - _Enable initial load for the fiori app_
 
-The main functionalities are:
-
-- generate a Fiori elements app inside an [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap/) project
-- generate a Fiori elements app standalone based on an OData resource
-- adding and deleting pages from an app
-- adding and modifying controller extensions
-- `manifest.json` properties depending on the app (e.g. adding Flexible Column Layout, enabling initial load)
+> ⚠️ Caution
+>
+> This feature is currently in an experimental state.
+>
+> Experimental features may be changed at any time for any reason without notice.
+>
+> Experimental features are not for productive use. Please consider backing up your data before using it.
 
 ## [Usage](#usage)
 
 ### Method 1: npx
 
-Add the following to your MCP client configuration file, e.g. cline:
+Configure your MCP client to start the server with command `fiori-mcp`. Here is a sample config for Cline:
 ```json
 {
   "servers": {
@@ -46,7 +38,7 @@ First, install the required package via `npm`:
 ```bash
 npm install -g @sap-ux/fiori-mcp-server
 ```
-Then, add the following to your MCP client configuration file, e.g. cline:
+Then, configure your MCP client to start the server with command `fiori-mcp`. Here is a sample config for Cline:
 ```json
 {
   "servers": {
@@ -63,7 +55,7 @@ Then, add the following to your MCP client configuration file, e.g. cline:
 The following rules help guide the LLM to use the server correctly:
 
 ```markdown
-## Rules for creation or modification of Fiori elements apps
+## Rules for creation or modification of SAP Fiori elements apps
 
 - When asked to create an SAP Fiori elements app check whether the user input can be interpreted as an application organized into one or more pages containing table data or forms, these can be translated into a SAP Fiori elements application, else ask the user for suitable input.
 - The application typically starts with a List Report page showing the data of the base entity of the application in a table. Details of a specific table row are shown in the ObjectPage. This first Object Page is therefore based on the base entity of the application.
@@ -85,17 +77,23 @@ Scans a specified directory to find existing SAP Fiori applications that can be 
 #### `list-functionalities` (Step 1 of 3)
 Gets the list of supported functionalities to create a new or modify an existing SAP Fiori application.
 
+The main functionalities are:
+
+- Generate a Fiori elements app inside an [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap/) project
+- Adding and deleting pages from an app
+- Adding and modifying controller extensions
+- `manifest.json` properties depending on the app (e.g. adding Flexible Column Layout, enabling initial load)
+
 #### `get-functionality-details` (Step 2 of 3)
 Gets the required parameters and detailed information for a specific functionality to create a new or modify an existing SAP Fiori application.
 
 #### `execute-functionality` (Step 3 of 3)
 Executes a specific functionality to create a new or modify an existing SAP Fiori application with provided parameters.
 
+## Code of Conduct
+
+Everyone participating in this joint project is welcome as long as our [Code of Conduct](./docs/CODE_OF_CONDUCT.md) is being adhered to.
+
 ## Licensing
 
 Please see our [LICENSE](./LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available via the [REUSE tool](https://api.reuse.software/info/github.com/SAP/open-ux-tools).
-
-## Keywords
-* SAP Fiori tools
-* SAP Fiori elements
-* SAP Fiori freestyle
