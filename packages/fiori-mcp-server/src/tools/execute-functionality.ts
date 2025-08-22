@@ -148,10 +148,9 @@ export async function getEditorApi(appPath: string, pageName?: string): Promise<
     return undefined;
 }
 
-// Currently resolved values through params passed differently time to time by AI.
-// This method tries to resolve value before applying/saving it.
 /**
- * Resolves the value of a parameter based on the property path and provided parameters.
+ * Currently resolved values through params passed differently time to time by AI.
+ * This method tries to resolve value before applying/saving it.
  *
  * @param propertyPath - Path to the property
  * @param parametersValue - Object containing parameter values

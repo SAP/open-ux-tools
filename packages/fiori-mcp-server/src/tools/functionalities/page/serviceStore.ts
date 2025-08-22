@@ -22,10 +22,10 @@ export async function getService(options: ServiceOptions): Promise<Service> {
 }
 
 /**
- * Remove service from serviceStore - e.g. if it is outdated.
+ * Removes a service from the `serviceStore`.
  *
- * @param options
- * @returns
+ * @param options - The configuration object containing details about the service.
+ * @returns `true` if the service was removed successfully.
  */
 export function removeService(options: ServiceOptions): boolean {
     const key = options.serviceName;
