@@ -1,6 +1,6 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { isAbapEnvironmentOnBtp, isS4HC, type Destinations } from '@sap-ux/btp-utils';
+import { isAbapEnvironmentOnBtp, isAppStudio, isS4HC, type Destinations } from '@sap-ux/btp-utils';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import { AuthenticationType } from '@sap-ux/store';
 import { DEFAULT_PACKAGE_ABAP } from '../constants';
@@ -278,12 +278,14 @@ export function validateClient(client: string): boolean | string {
  * @param input - password entered
  * @param previousAnswers - previous answers
  * @param backendTarget - backend target from abap deploy config prompt options
+ * @param shouldCheckSystemType - if the system type should be checked
  * @returns boolean or error message as a string
  */
 export async function validateCredentials(
     input: string,
     previousAnswers: AbapDeployConfigAnswersInternal,
-    backendTarget?: BackendTarget
+    backendTarget?: BackendTarget,
+    shouldCheckSystemType = false
 ): Promise<boolean | string> {
     if (!input || !previousAnswers.username) {
         return t('errors.requireCredentials');
@@ -301,6 +303,11 @@ export async function validateCredentials(
             handleTransportConfigError(e);
         }
     });
+
+    if (isAppStudio() && shouldCheckSystemType) {
+        const isS4HCloud = await isAbapCloud(backendTarget);
+        PromptState.abapDeployConfig.isS4HC = isS4HCloud ?? false;
+    }
 
     PromptState.transportAnswers.transportConfigNeedsCreds = transportConfigNeedsCreds ?? false;
     return transportConfigNeedsCreds ? t('errors.incorrectCredentials') : true;
