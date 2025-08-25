@@ -31,32 +31,32 @@ const memFsDumpMock = jest.fn();
 const commitMock = jest.fn();
 const exportConfigMock = jest.fn();
 beforeEach(() => {
-    memFsDumpMock.mockReturnValue({
-        'manifest.json': {}
-    });
-    importProjectMock = jest.fn().mockResolvedValue([]);
-    // get actual createProjectProvider from the module
-    const actualCreateApplicationAccess = jest.requireActual('@sap-ux/project-access').createApplicationAccess;
+    // memFsDumpMock.mockReturnValue({
+    //     'manifest.json': {}
+    // });
+    // importProjectMock = jest.fn().mockResolvedValue([]);
+    // // get actual createProjectProvider from the module
+    // const actualCreateApplicationAccess = jest.requireActual('@sap-ux/project-access').createApplicationAccess;
 
-    // Setup the mock implementation
-    (createApplicationAccess as jest.Mock).mockImplementation(async (...args: any[]) => {
-        // Create the real project provider
-        const realApplicationAccess = await actualCreateApplicationAccess(...args);
-        const manifest = await getManifest(realApplicationAccess);
-        // Mock only the getSpecification method
-        const mockSpecification = {
-            importProject: importProjectMock,
-            exportConfig: exportConfigMock.mockReturnValue({ manifest }),
-            generateCustomExtension: jest.fn().mockResolvedValue({
-                commit: commitMock,
-                dump: memFsDumpMock
-            })
-        };
+    // // Setup the mock implementation
+    // (createApplicationAccess as jest.Mock).mockImplementation(async (...args: any[]) => {
+    //     // Create the real project provider
+    //     const realApplicationAccess = await actualCreateApplicationAccess(...args);
+    //     const manifest = await getManifest(realApplicationAccess);
+    //     // Mock only the getSpecification method
+    //     const mockSpecification = {
+    //         importProject: importProjectMock,
+    //         exportConfig: exportConfigMock.mockReturnValue({ manifest }),
+    //         generateCustomExtension: jest.fn().mockResolvedValue({
+    //             commit: commitMock,
+    //             dump: memFsDumpMock
+    //         })
+    //     };
 
-        jest.spyOn(realApplicationAccess, 'getSpecification').mockResolvedValue(mockSpecification);
+    //     jest.spyOn(realApplicationAccess, 'getSpecification').mockResolvedValue(mockSpecification);
 
-        return realApplicationAccess;
-    });
+    //     return realApplicationAccess;
+    // });
     removeDirectory(copyProjectRoot);
     copyDirectory(originProjectRoot, copyProjectRoot);
     npmInstall(copyProjectRoot);
