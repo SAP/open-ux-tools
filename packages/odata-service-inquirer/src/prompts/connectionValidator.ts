@@ -506,11 +506,8 @@ export class ConnectionValidator {
     }): Promise<void> {
         this.resetConnectionState();
         this.resetValidity();
-
-        if (this.systemAuthType === 'reentranceTicket') {
-            this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo, refreshToken);
-        } else if (serviceInfo) {
-            // Handle existing stored service keys for backward compatibility
+        // Handle existing stored service keys for backward compatibility
+        if (this.systemAuthType === 'reentranceTicket' || serviceInfo) {
             this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo, refreshToken);
         } else if (destination) {
             // Assumption: the destination configured URL is a valid URL, will be needed later for basic auth error handling
