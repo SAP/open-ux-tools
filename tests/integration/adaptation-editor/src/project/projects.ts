@@ -11,6 +11,7 @@ export interface GeneratedBaseProjectConfig {
     id: string;
     mainServiceUri: string;
     entitySet: string;
+    userParams?: Record<string, string | boolean>;
 }
 
 export interface GeneratedAdpProjectConfig {

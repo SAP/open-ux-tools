@@ -11,6 +11,7 @@ export interface ProjectParameters {
     id: string;
     mainServiceUri: string;
     entitySet: string;
+    userParams?: Record<string, string | boolean>;
 }
 
 export const ADAPTATION_EDITOR_PATH = '/adaptation-editor.html';
@@ -25,7 +26,8 @@ function getProjectParametersWithDefaults(parameters: ProjectParameters): Projec
     return {
         id: parameters.id,
         mainServiceUri: parameters.mainServiceUri ?? `/sap/opu/odata/sap/SERVICE/`,
-        entitySet: parameters.entitySet ?? 'RootEntity'
+        entitySet: parameters.entitySet ?? 'RootEntity',
+        userParams: parameters.userParams ?? {}
     };
 }
 
@@ -37,7 +39,8 @@ function getProjectParametersWithDefaults(parameters: ProjectParameters): Projec
  * @returns A manifest object for the project.
  */
 export function createV2Manifest(userParameters: ProjectParameters, workerId: string): Manifest {
-    const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(userParameters);
+    const { id, mainServiceUri, entitySet, userParams } = getProjectParametersWithDefaults(userParameters);
+    const { qualifier = '', navigationProperty, variantManagement = true, analyticalTable } = userParams ?? {};
     const result = structuredClone(template) as Manifest;
     result['sap.app'].id = id + '.' + workerId;
     result['sap.app'].dataSources!.mainService.uri = mainServiceUri;
@@ -70,7 +73,21 @@ export function createV2Manifest(userParameters: ProjectParameters, workerId: st
                     'entitySet': entitySet,
                     'defaultLayoutTypeIfExternalNavigation': 'MidColumnFullScreen',
                     'component': {
-                        'name': 'sap.suite.ui.generic.template.ObjectPage'
+                        'name': 'sap.suite.ui.generic.template.ObjectPage',
+                        ...(navigationProperty && {
+                            'settings': {
+                                'sections': {
+                                    [`${navigationProperty}::com.sap.vocabularies.UI.v1.LineItem${
+                                        qualifier ? `::${qualifier}` : ''
+                                    }`]: {
+                                        'tableSettings': {
+                                            variantManagement,
+                                            ...(analyticalTable && { 'type': 'AnalyticalTable' })
+                                        }
+                                    }
+                                }
+                            }
+                        })
                     }
                 }
             }
