@@ -1,0 +1,103 @@
+{
+    "header": {
+        "editableHeaderContent": false,
+        "sections": {
+            "@com.sap.vocabularies.UI.v1.FieldGroup#HeaderFormSection": {},
+            "HeaderCustomSection": {
+                "requestGroupId": "Heroes",
+                "flexSettings": {
+                    "designtime": "Default"
+                },
+                "fragmentName": "project1.ext.fragment.HeaderCustomSection",
+                "relatedFacet": "HeaderFormSection",
+                "relativePosition": "After",
+                "title": "HeaderCustomSection",
+                "stashed": false
+            }
+        },
+        "actions": {
+            "HeaderAction": {
+                "position": {
+                    "placement": "Before",
+                    "anchor": "DataFieldForAction::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.setToNew::com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001.TravelType"
+                },
+                "text": "HeaderAction",
+                "press": "project1.ext.controller.HeaderAction.HeaderAction",
+                "visible": true,
+                "enabled": true
+            }
+        }
+    },
+    "footer": {
+        "actions": {
+            "CustomFooterAction": {
+                "text": "CustomFooterAction",
+                "press": "project1.ext.controller.CustomFooterAction.onFooterAction",
+                "visible": true,
+                "enabled": true
+            }
+        }
+    },
+    "layout": {},
+    "sections": {
+        "_Booking::@com.sap.vocabularies.UI.v1.LineItem": {
+            "table": {
+                "toolBar": {
+                    "actions": {}
+                },
+                "columns": {
+                    "CustomColumns": {
+                        "position": {
+                            "anchor": "DataField::BookingDate",
+                            "placement": "After"
+                        },
+                        "header": "CustomColumns",
+                        "template": "project1.ext.fragment.CustomColumns"
+                    }
+                }
+            }
+        },
+        "GroupSection": {
+            "subsections": {
+                "@com.sap.vocabularies.UI.v1.FieldGroup#SubSection1": {
+                    "form": {
+                        "actions": {
+                            "SubSectionActipon": {
+                                "text": "SubSectionActipon",
+                                "press": "project1.ext.controller.SubSectionActipon.onSubSectionActipon",
+                                "visible": true,
+                                "enabled": true
+                            }
+                        }
+                    }
+                },
+                "CustomSubSection": {
+                    "fragmentName": "project1.ext.fragment.CustomSubSection",
+                    "title": "Custom Sub Section",
+                    "controls": {}
+                }
+            }
+        },
+        "CustomSection": {
+            "fragmentName": "project1.ext.fragment.CustomSection",
+            "relatedFacet": "Travel",
+            "relativePosition": "After",
+            "title": "CustomSection",
+            "actions": {
+                "CustomSectionAction": {
+                    "text": "CustomSectionAction",
+                    "press": "project1.ext.controller.CustomSectionAction.CustomSectionAction",
+                    "visible": true,
+                    "enabled": true
+                }
+            },
+            "controls": {
+                "FilterBar": {
+                    "metaPath": "_Booking/@com.sap.vocabularies.UI.v1.SelectionFields#filterBarMacro",
+                    "id": "FilterBar"
+                }
+            }
+        }
+    },
+    "$schema": "../.schemas/ObjectPage_TravelObjectPage.json"
+}

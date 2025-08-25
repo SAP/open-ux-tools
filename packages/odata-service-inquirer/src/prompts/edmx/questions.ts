@@ -11,7 +11,8 @@ import type {
     AnnotationGenerationAnswers,
     EntityPromptOptions,
     EntitySelectionAnswers,
-    TableConfigAnswers
+    TableConfigAnswers,
+    PageBuildingBlockAnswers
 } from '../../types';
 import { EntityPromptNames, MetadataSizeWarningLimitKb } from '../../types';
 import { PromptState } from '../../utils';
@@ -78,7 +79,13 @@ export function getEntitySelectionQuestions(
     isCapService = false,
     promptOptions?: EntityPromptOptions,
     annotations?: Annotations
-): Question<EntitySelectionAnswers & TableConfigAnswers & AnnotationGenerationAnswers & AlpTableConfigAnswers>[] {
+): Question<
+    EntitySelectionAnswers &
+        TableConfigAnswers &
+        AnnotationGenerationAnswers &
+        AlpTableConfigAnswers &
+        PageBuildingBlockAnswers
+>[] {
     const useAutoComplete = promptOptions?.useAutoComplete;
     let entitySetFilter: EntitySetFilter | undefined;
     if (templateType === 'feop' && !!isCapService) {
@@ -99,7 +106,11 @@ export function getEntitySelectionQuestions(
     const odataVersion = entityChoices.odataVersion;
 
     const entityQuestions: Question<
-        EntitySelectionAnswers & TableConfigAnswers & AnnotationGenerationAnswers & AlpTableConfigAnswers
+        EntitySelectionAnswers &
+            TableConfigAnswers &
+            AnnotationGenerationAnswers &
+            AlpTableConfigAnswers &
+            PageBuildingBlockAnswers
     >[] = [];
 
     // OVP only has filter entity, does not use tables and we do not add annotations
@@ -169,6 +180,10 @@ export function getEntitySelectionQuestions(
         } as ListQuestion<EntitySelectionAnswers>);
     }
 
+    if (promptOptions?.displayPageBuildingBlockPrompt) {
+        entityQuestions.push(...getPageBuildingBlockQuestions());
+    }
+
     entityQuestions.push(...getAddAnnotationQuestions(metadata, templateType, odataVersion, isCapService));
 
     if (!promptOptions?.hideTableLayoutPrompts) {
@@ -181,6 +196,40 @@ export function getEntitySelectionQuestions(
         );
     }
     return entityQuestions;
+}
+
+/**
+ * Get the questions for page building block.
+ *
+ * @returns the page building block questions
+ */
+function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
+    const pageBuildingBlockQuestions: Question<PageBuildingBlockAnswers>[] = [];
+
+    pageBuildingBlockQuestions.push({
+        type: 'confirm',
+        name: EntityPromptNames.addPageBuildingBlock,
+        message: t('prompts.pageBuildingBlock.message'),
+        default: false,
+        guiOptions: {
+            breadcrumb: true
+        }
+    } as ConfirmQuestion<PageBuildingBlockAnswers>);
+
+    // If the user wants to add a Page Building Block, ask for the title
+    pageBuildingBlockQuestions.push({
+        when: (answers: EntitySelectionAnswers & PageBuildingBlockAnswers) => answers.addPageBuildingBlock === true,
+        type: 'input',
+        name: EntityPromptNames.pageBuildingBlockTitle,
+        message: t('prompts.pageBuildingBlock.titleMessage'),
+        guiOptions: {
+            breadcrumb: true,
+            mandatory: true
+        },
+        validate: (input: string) => !!input
+    } as InputQuestion<PageBuildingBlockAnswers>);
+
+    return pageBuildingBlockQuestions;
 }
 
 /**

@@ -1,5 +1,27 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.67
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.2.5
+
+## 0.1.66
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.6.13
+-   @sap-ux/telemetry@0.6.17
+-   @sap-ux/ui-service-inquirer@0.2.4
+-   @sap-ux/fiori-generator-shared@0.13.10
+-   @sap-ux/inquirer-common@0.7.36
+
+## 0.1.65
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.2.3
+
 ## 0.1.64
 
 ### Patch Changes

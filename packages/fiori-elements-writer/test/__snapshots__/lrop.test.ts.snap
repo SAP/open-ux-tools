@@ -1097,7 +1097,7 @@ appDescription=A Fiori application.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-
+    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -3539,8 +3539,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -3575,7 +3575,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -3602,7 +3602,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -3624,7 +3624,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -4732,7 +4732,7 @@ appDescription=A Fiori application.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-
+    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -7174,8 +7174,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -7210,7 +7210,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -7237,7 +7237,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -7259,7 +7259,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -8469,7 +8469,7 @@ appDescription=A Fiori application.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-
+    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -14378,8 +14378,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -14414,7 +14414,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -14441,7 +14441,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -14463,7 +14463,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -18070,8 +18070,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -18106,7 +18106,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -18133,7 +18133,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -18155,7 +18155,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -18950,42 +18950,41 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
   },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\"
-], function (opaTest) {
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    var Journey = {
-        run: function() {
-            QUnit.module(\\"First journey\\");
+    function journey() {
+        QUnit.module(\\"First journey\\");
 
-            opaTest(\\"Start application\\", function (Given, When, Then) {
-                Given.iStartMyApp();
+        opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onFilterBar().iExecuteSearch();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-                Then.onTheTravelList.onTable().iCheckRows();
+        });
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
-
-            });
-
-            opaTest(\\"Teardown\\", function (Given, When, Then) {
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -19009,9 +19008,6 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -19024,34 +19020,36 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
-    [
-        'sap/fe/test/JourneyRunner',
-        'lrop_v4_add_test_virtual_endpoints/test/integration/FirstJourney',
-		'lrop_v4_add_test_virtual_endpoints/test/integration/pages/TravelList',
-		'lrop_v4_add_test_virtual_endpoints/test/integration/pages/TravelObjectPage',
-		'lrop_v4_add_test_virtual_endpoints/test/integration/pages/BookingObjectPage'
-    ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start test/flp.html?sap-ui-xx-viewCache=false#app-preview in web folder
-            launchUrl: sap.ui.require.toUrl('lrop_v4_add_test_virtual_endpoints') + '/test/flp.html?sap-ui-xx-viewCache=false#app-preview'
-        });
-
-
-        JourneyRunner.run(
-            {
-                pages: {
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
     }
-);",
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+    'lrop_v4_add_test_virtual_endpoints/test/integration/FirstJourney'
+  ], function (QUnit) {
+    \\"use strict\\";
+    QUnit.start();
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
@@ -19072,6 +19070,31 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
         CustomPageDefinitions
     );
 });",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/fe/test/JourneyRunner\\",
+	\\"lrop_v4_add_test_virtual_endpoints/test/integration/pages/TravelList\\",
+	\\"lrop_v4_add_test_virtual_endpoints/test/integration/pages/TravelObjectPage\\",
+	\\"lrop_v4_add_test_virtual_endpoints/test/integration/pages/BookingObjectPage\\"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('lrop_v4_add_test_virtual_endpoints') + '/test/flp.html?sap-ui-xx-viewCache=false#app-preview',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelList.js": Object {
@@ -19265,8 +19288,8 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -19301,7 +19324,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -19328,7 +19351,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -19350,7 +19373,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -19376,7 +19399,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
     // eslint-disable-next-line
     var oSuite = new parent.jsUnitTestSuite(),
-
+    
     sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
     oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
@@ -22835,42 +22858,41 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\"
-], function (opaTest) {
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    var Journey = {
-        run: function() {
-            QUnit.module(\\"First journey\\");
+    function journey() {
+        QUnit.module(\\"First journey\\");
 
-            opaTest(\\"Start application\\", function (Given, When, Then) {
-                Given.iStartMyApp();
+        opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onFilterBar().iExecuteSearch();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-                Then.onTheTravelList.onTable().iCheckRows();
+        });
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
-
-            });
-
-            opaTest(\\"Teardown\\", function (Given, When, Then) {
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -22894,9 +22916,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -22909,34 +22928,36 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
-    [
-        'sap/fe/test/JourneyRunner',
-        'lrop_v4_addtests/test/integration/FirstJourney',
-		'lrop_v4_addtests/test/integration/pages/TravelList',
-		'lrop_v4_addtests/test/integration/pages/TravelObjectPage',
-		'lrop_v4_addtests/test/integration/pages/BookingObjectPage'
-    ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start index.html in web folder
-            launchUrl: sap.ui.require.toUrl('lrop_v4_addtests') + '/index.html'
-        });
-
-
-        JourneyRunner.run(
-            {
-                pages: {
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
     }
-);",
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+    'lrop_v4_addtests/test/integration/FirstJourney'
+  ], function (QUnit) {
+    \\"use strict\\";
+    QUnit.start();
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
@@ -22957,6 +22978,31 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         CustomPageDefinitions
     );
 });",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/fe/test/JourneyRunner\\",
+	\\"lrop_v4_addtests/test/integration/pages/TravelList\\",
+	\\"lrop_v4_addtests/test/integration/pages/TravelObjectPage\\",
+	\\"lrop_v4_addtests/test/integration/pages/BookingObjectPage\\"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests') + '/index.html',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelList.js": Object {
@@ -23150,8 +23196,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -23186,7 +23232,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -23213,7 +23259,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -23235,7 +23281,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -23261,7 +23307,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
     // eslint-disable-next-line
     var oSuite = new parent.jsUnitTestSuite(),
-
+    
     sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
     oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
@@ -23653,42 +23699,41 @@ appDescription=A Fiori application.",
   },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\"
-], function (opaTest) {
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    var Journey = {
-        run: function() {
-            QUnit.module(\\"First journey\\");
+    function journey() {
+        QUnit.module(\\"First journey\\");
 
-            opaTest(\\"Start application\\", function (Given, When, Then) {
-                Given.iStartMyApp();
+        opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onFilterBar().iExecuteSearch();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-                Then.onTheTravelList.onTable().iCheckRows();
+        });
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
-
-            });
-
-            opaTest(\\"Teardown\\", function (Given, When, Then) {
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -23712,9 +23757,6 @@ appDescription=A Fiori application.",
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -23727,34 +23769,36 @@ appDescription=A Fiori application.",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
-    [
-        'sap/fe/test/JourneyRunner',
-        'lrop_v4_addtests_cds/test/integration/FirstJourney',
-		'lrop_v4_addtests_cds/test/integration/pages/TravelList',
-		'lrop_v4_addtests_cds/test/integration/pages/TravelObjectPage',
-		'lrop_v4_addtests_cds/test/integration/pages/BookingObjectPage'
-    ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start index.html in web folder
-            launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/index.html'
-        });
-
-
-        JourneyRunner.run(
-            {
-                pages: {
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
     }
-);",
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+    'lrop_v4_addtests_cds/test/integration/FirstJourney'
+  ], function (QUnit) {
+    \\"use strict\\";
+    QUnit.start();
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
@@ -23775,6 +23819,31 @@ appDescription=A Fiori application.",
         CustomPageDefinitions
     );
 });",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/fe/test/JourneyRunner\\",
+	\\"lrop_v4_addtests_cds/test/integration/pages/TravelList\\",
+	\\"lrop_v4_addtests_cds/test/integration/pages/TravelObjectPage\\",
+	\\"lrop_v4_addtests_cds/test/integration/pages/BookingObjectPage\\"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/index.html',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelList.js": Object {
@@ -23968,8 +24037,8 @@ appDescription=A Fiori application.",
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -24004,7 +24073,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -24031,7 +24100,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -24053,7 +24122,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -24079,7 +24148,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
     // eslint-disable-next-line
     var oSuite = new parent.jsUnitTestSuite(),
-
+    
     sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
     oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
@@ -24132,7 +24201,6 @@ Object {
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
-        \\"target\\": \\"es2022\\",
         \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
         \\"allowJs\\": true,
@@ -24538,42 +24606,41 @@ appDescription=A Fiori application.",
   },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\"
-], function (opaTest) {
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    var Journey = {
-        run: function() {
-            QUnit.module(\\"First journey\\");
+    function journey() {
+        QUnit.module(\\"First journey\\");
 
-            opaTest(\\"Start application\\", function (Given, When, Then) {
-                Given.iStartMyApp();
+        opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onFilterBar().iExecuteSearch();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-                Then.onTheTravelList.onTable().iCheckRows();
+        });
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
-
-            });
-
-            opaTest(\\"Teardown\\", function (Given, When, Then) {
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -24597,9 +24664,6 @@ appDescription=A Fiori application.",
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -24612,34 +24676,36 @@ appDescription=A Fiori application.",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
-    [
-        'sap/fe/test/JourneyRunner',
-        'lrop_v4_addtests_cds/test/integration/FirstJourney',
-		'lrop_v4_addtests_cds/test/integration/pages/TravelList',
-		'lrop_v4_addtests_cds/test/integration/pages/TravelObjectPage',
-		'lrop_v4_addtests_cds/test/integration/pages/BookingObjectPage'
-    ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtestscds-tile in web folder
-            launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtestscds-tile'
-        });
-
-
-        JourneyRunner.run(
-            {
-                pages: {
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
     }
-);",
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+    'lrop_v4_addtests_cds/test/integration/FirstJourney'
+  ], function (QUnit) {
+    \\"use strict\\";
+    QUnit.start();
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
@@ -24660,6 +24726,31 @@ appDescription=A Fiori application.",
         CustomPageDefinitions
     );
 });",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/fe/test/JourneyRunner\\",
+	\\"lrop_v4_addtests_cds/test/integration/pages/TravelList\\",
+	\\"lrop_v4_addtests_cds/test/integration/pages/TravelObjectPage\\",
+	\\"lrop_v4_addtests_cds/test/integration/pages/BookingObjectPage\\"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtestscds-tile',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelList.js": Object {
@@ -24853,8 +24944,8 @@ appDescription=A Fiori application.",
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -24889,7 +24980,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -24916,7 +25007,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -24938,7 +25029,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -24964,7 +25055,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
     // eslint-disable-next-line
     var oSuite = new parent.jsUnitTestSuite(),
-
+    
     sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
     oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
@@ -25895,42 +25986,41 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
   },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\"
-], function (opaTest) {
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    var Journey = {
-        run: function() {
-            QUnit.module(\\"First journey\\");
+    function journey() {
+        QUnit.module(\\"First journey\\");
 
-            opaTest(\\"Start application\\", function (Given, When, Then) {
-                Given.iStartMyApp();
+        opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            When.onTheTravelList.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onFilterBar().iExecuteSearch();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-                Then.onTheTravelList.onTable().iCheckRows();
+        });
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
-
-            });
-
-            opaTest(\\"Teardown\\", function (Given, When, Then) {
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -25954,9 +26044,6 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
 
     <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
-    <script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
-
     <script src=\\"opaTests.qunit.js\\"></script>
 
 </head>
@@ -25969,34 +26056,36 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
-    [
-        'sap/fe/test/JourneyRunner',
-        'lrop_v4_annotation_reuse_lib/test/integration/FirstJourney',
-		'lrop_v4_annotation_reuse_lib/test/integration/pages/TravelList',
-		'lrop_v4_annotation_reuse_lib/test/integration/pages/TravelObjectPage',
-		'lrop_v4_annotation_reuse_lib/test/integration/pages/BookingObjectPage'
-    ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start index.html in web folder
-            launchUrl: sap.ui.require.toUrl('lrop_v4_annotation_reuse_lib') + '/index.html'
-        });
-
-
-        JourneyRunner.run(
-            {
-                pages: {
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
     }
-);",
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+    'lrop_v4_annotation_reuse_lib/test/integration/FirstJourney'
+  ], function (QUnit) {
+    \\"use strict\\";
+    QUnit.start();
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
@@ -26017,6 +26106,31 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
         CustomPageDefinitions
     );
 });",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/fe/test/JourneyRunner\\",
+	\\"lrop_v4_annotation_reuse_lib/test/integration/pages/TravelList\\",
+	\\"lrop_v4_annotation_reuse_lib/test/integration/pages/TravelObjectPage\\",
+	\\"lrop_v4_annotation_reuse_lib/test/integration/pages/BookingObjectPage\\"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('lrop_v4_annotation_reuse_lib') + '/index.html',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelList.js": Object {
@@ -26210,8 +26324,8 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -26246,7 +26360,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -26273,7 +26387,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -26295,7 +26409,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -26321,7 +26435,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 
     // eslint-disable-next-line
     var oSuite = new parent.jsUnitTestSuite(),
-
+    
     sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
     oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
@@ -29928,8 +30042,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -29964,7 +30078,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -29991,7 +30105,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -30013,7 +30127,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -33621,8 +33735,8 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -33657,7 +33771,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -33684,7 +33798,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -33706,7 +33820,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -34814,7 +34928,7 @@ appDescription=A Fiori application.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-
+    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -37258,8 +37372,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -37294,7 +37408,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -37321,7 +37435,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -37343,7 +37457,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -38439,7 +38553,7 @@ appDescription=A Fiori application.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-
+    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -41509,7 +41623,7 @@ appDescription=A Fiori application.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-
+    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -43952,8 +44066,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -43988,7 +44102,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -44015,7 +44129,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -44037,7 +44151,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -45145,7 +45259,7 @@ appDescription=A Fiori application.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-
+    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -47588,8 +47702,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -47624,7 +47738,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -47651,7 +47765,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -47673,7 +47787,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -48883,7 +48997,7 @@ appDescription=A Fiori application.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-
+    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -52384,7 +52498,7 @@ appDescription=A Fiori application.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-
+    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -55885,7 +55999,7 @@ appDescription=A Fiori application.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-
+    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -59705,7 +59819,7 @@ appDescription=A Fiori application.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-
+    
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">

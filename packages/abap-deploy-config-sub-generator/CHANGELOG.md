@@ -1,5 +1,22 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.56
+
+### Patch Changes
+
+-   Updated dependencies [384bb40]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.10
+
+## 0.1.55
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.9
+-   @sap-ux/deploy-config-generator-shared@0.1.29
+-   @sap-ux/ui5-config@0.29.2
+-   @sap-ux/abap-deploy-config-writer@0.2.8
+-   @sap-ux/fiori-generator-shared@0.13.10
+
 ## 0.1.54
 
 ### Patch Changes
