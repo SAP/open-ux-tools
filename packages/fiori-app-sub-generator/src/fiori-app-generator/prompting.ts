@@ -20,15 +20,14 @@ import type {
     UI5ApplicationPromptOptions
 } from '@sap-ux/ui5-application-inquirer';
 import { prompt as promptUI5App, promptNames as ui5AppInquirerPromptNames } from '@sap-ux/ui5-application-inquirer';
-import { getSapSystemUI5Version, getUI5Versions, latestVersionString, getLatestUI5Version } from '@sap-ux/ui5-info';
+import { getSapSystemUI5Version, getUI5Versions, latestVersionString } from '@sap-ux/ui5-info';
 import type { Question } from 'inquirer';
 import merge from 'lodash/merge';
 import { join } from 'path';
 import type { Adapter } from 'yeoman-environment';
 import type { Floorplan, Project, Service, YeomanUiStepConfig } from '../types';
-import { Features, defaultPromptValues, minUi5VersionForPageBuildingBlock, FloorplanFE } from '../types';
+import { Features, defaultPromptValues } from '../types';
 import { getMinSupportedUI5Version, t, validateNextStep } from '../utils';
-import { gte, coerce } from 'semver';
 
 /**
  * Validates the view name.
@@ -218,28 +217,16 @@ export async function promptOdataServiceAnswers(
  * @param entityRelatedConfig - Entity-related configuration.
  * @returns {Promise<string>} The resolved minimum UI5 version.
  */
-async function resolveMinUI5Version(
+function resolveMinUI5Version(
     promptSettings: UI5ApplicationPromptOptions | undefined,
     service: Partial<Service>,
     floorplan: Floorplan,
     entityRelatedConfig?: Partial<EntityRelatedAnswers>
-): Promise<string> {
-    let minUI5Version =
+): string {
+    const minUI5Version =
         promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.minUI5Version ??
-        getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan);
+        getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan, entityRelatedConfig);
 
-    if (floorplan === FloorplanFE.FE_FPM && entityRelatedConfig?.addPageBuildingBlock) {
-        const cleanUi5Version = coerce(minUI5Version);
-
-        if (cleanUi5Version && cleanUi5Version.version) {
-            // If the provided version is less than 1.136.0, set to 1.136.0
-            minUI5Version = gte(minUi5VersionForPageBuildingBlock, cleanUi5Version.version)
-                ? minUi5VersionForPageBuildingBlock
-                : cleanUi5Version.version;
-        } else {
-            minUI5Version = (await getLatestUI5Version()) ?? minUi5VersionForPageBuildingBlock;
-        }
-    }
     return minUI5Version;
 }
 
@@ -277,7 +264,7 @@ export async function createUI5ApplicationPromptOptions(
         entityRelatedConfig
     } = ui5PromptOptions;
 
-    const minUI5Version = await resolveMinUI5Version(promptSettings, service, floorplan, entityRelatedConfig);
+    const minUI5Version = resolveMinUI5Version(promptSettings, service, floorplan, entityRelatedConfig);
 
     // prompt settings may be additionally provided e.g. set by adaptors
     const ui5VersionPromptOptions: UI5ApplicationPromptOptions['ui5Version'] = {

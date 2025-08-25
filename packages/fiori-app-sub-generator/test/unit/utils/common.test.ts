@@ -10,7 +10,7 @@ import type { Editor } from 'mem-fs-editor';
 import memFsEditor from 'mem-fs-editor';
 import { join } from 'path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types';
-import { ApiHubType, SapSystemSourceType } from '../../../src/types/constants';
+import { ApiHubType, SapSystemSourceType, minUi5VersionForPageBuildingBlock } from '../../../src/types/constants';
 import {
     convertCapRuntimeToCapProjectType,
     getCdsUi5PluginInfo,
@@ -32,6 +32,7 @@ import {
 } from '../../../src/utils/common';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Logger } from '@sap-ux/logger';
+import * as semver from 'semver';
 
 const getProjectTypeMock = jest.fn();
 jest.mock('@sap-ux/project-access', () => ({
@@ -68,6 +69,11 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     generateAppGenInfo: jest.fn()
 }));
 
+jest.mock('semver', () => ({
+    coerce: jest.fn(),
+    gte: jest.fn()
+}));
+
 // rootPath exists only in SBAS
 const vscodeMock = {
     workspace: {
@@ -94,6 +100,7 @@ const vscodeMock = {
 describe('Test utils', () => {
     beforeAll(async () => {
         await initI18nFioriAppSubGenerator();
+        jest.clearAllMocks();
     });
     test('getODataVersion ', async () => {
         const validMetadataV2 =
@@ -149,6 +156,35 @@ describe('Test utils', () => {
         expect(minVerson).toBe('1.96.8');
         minVerson = getMinSupportedUI5Version(OdataVersion.v2, FloorplanFE.FE_OVP);
         expect(minVerson).toBe('1.65.0');
+    });
+
+    it('getMinSupportedUI5Version - FPM - returns minUi5VersionForPageBuildingBlock if cleanUi5Version < 1.136.0 with page building block', () => {
+        (semver.coerce as jest.Mock).mockReturnValue({ version: '1.120.0' });
+        (semver.gte as jest.Mock).mockReturnValue(true);
+
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, { addPageBuildingBlock: true });
+        expect(result).toBe(minUi5VersionForPageBuildingBlock);
+    });
+
+    it('getMinSupportedUI5Version - FPM - returns cleanUi5Version if cleanUi5Version >= 1.136.0 with page building block', () => {
+        (semver.coerce as jest.Mock).mockReturnValue({ version: '1.140.0' });
+        (semver.gte as jest.Mock).mockReturnValue(false);
+
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, { addPageBuildingBlock: true });
+        expect(result).toBe('1.140.0');
+    });
+
+    it('getMinSupportedUI5Version - FPM - returns minUi5VersionForPageBuildingBlock if cleanUi5Version is invalid with page building block', () => {
+        (semver.coerce as jest.Mock).mockReturnValue(undefined);
+
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, { addPageBuildingBlock: true });
+        expect(result).toBe(minUi5VersionForPageBuildingBlock);
+    });
+
+    it('getMinSupportedUI5Version - FPM - returns min ui5 version if when page building block is disabled', () => {
+        (semver.coerce as jest.Mock).mockReturnValue('1.90.0');
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, { addPageBuildingBlock: false });
+        expect(result).toBe('1.94.0');
     });
 
     test('buildSapClientParam', () => {
