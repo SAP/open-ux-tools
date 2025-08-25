@@ -26,7 +26,7 @@ const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', '
 const copyProjectRoot = `${originProjectRoot}-add-page-copy`;
 const appPath = join(copyProjectRoot, 'app', 'managetravels');
 
-let importProjectMock = jest.fn();
+const importProjectMock = jest.fn();
 const memFsDumpMock = jest.fn();
 const commitMock = jest.fn();
 const exportConfigMock = jest.fn();
