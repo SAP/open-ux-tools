@@ -1,5 +1,39 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.21
+
+### Patch Changes
+
+-   1fff3c0: use self contained journeys for OPA tests
+
+## 0.7.20
+
+### Patch Changes
+
+-   Updated dependencies [55bb22e]
+    -   @sap-ux/ui5-application-writer@1.5.13
+
+## 0.7.19
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-application-writer@1.5.12
+    -   @sap-ux/project-access@1.30.12
+
+## 0.7.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/ui5-application-writer@1.5.11
+
+## 0.7.17
+
+### Patch Changes
+
+-   944af3e: Update all UI5 OPA test runner HTML files to use relative resource paths instead of absolute paths
+
 ## 0.7.16
 
 ### Patch Changes

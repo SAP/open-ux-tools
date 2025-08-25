@@ -1,5 +1,33 @@
 # @sap-ux/telemetry
 
+## 0.6.17
+
+### Patch Changes
+
+-   Updated dependencies [c6a0062]
+    -   @sap-ux/store@1.1.3
+    -   @sap-ux/ui5-config@0.29.2
+
+## 0.6.16
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/project-access@1.30.12
+
+## 0.6.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+
+## 0.6.14
+
+### Patch Changes
+
+-   18a5ee2: Fix OS node version, unstable code
+
 ## 0.6.13
 
 ### Patch Changes

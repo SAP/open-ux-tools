@@ -1,0 +1,399 @@
+{
+    "type": "object",
+    "properties": {
+        "settings": {
+            "$ref": "#/definitions/AppSettings"
+        },
+        "pages": {
+            "$ref": "#/definitions/PagesV4"
+        },
+        "$schema": {
+            "type": "string"
+        },
+        "id": {
+            "type": "string"
+        },
+        "home": {
+            "type": "string"
+        },
+        "target": {
+            "$ref": "#/definitions/Target"
+        }
+    },
+    "additionalProperties": false,
+    "definitions": {
+        "AppSettings": {
+            "type": "object",
+            "properties": {
+                "flexibleColumnLayout": {
+                    "$ref": "#/definitions/FlexibleColumnLayoutV4",
+                    "description": "The flexible column layout allows users to see more details on the page, and to expand and collapse the screen areas."
+                },
+                "path": {
+                    "description": "Represents a prefix that is prepended in front of the viewName",
+                    "type": "string"
+                },
+                "viewType": {
+                    "$ref": "#/definitions/ViewTypes",
+                    "description": "standard view type of views"
+                },
+                "controllerExtensions": {
+                    "$ref": "#/definitions/ControllerExtensions",
+                    "description": "Controller extensions allow users to extensiate default behaviour with custom controllers code."
+                },
+                "dependencies": {
+                    "$ref": "#/definitions/Dependencies",
+                    "description": "Dependencies of the application."
+                },
+                "hideDraft": {
+                    "description": "Hidden draft features.",
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "description": "All features related to draft handling can be hidden from the UI while the draft functionality remains active in the background. To achieve this, enable the 'Hide Draft' property.",
+                                    "descriptionSrcURL": "https://sapui5.hana.ondemand.com/#/topic/ed9aa41c563a44b18701529c8327db4d",
+                                    "type": "boolean",
+                                    "const": true
+                                },
+                                "stayOnCurrentPageAfterSave": {
+                                    "description": "Determines whether to stay on the current page after saving an object.\nTo ensure a consistent experience, set this and 'Stay On Current Page After Cancel' to the same value.",
+                                    "descriptionSrcURL": "https://sapui5.hana.ondemand.com/#/topic/ed9aa41c563a44b18701529c8327db4d",
+                                    "type": "boolean"
+                                },
+                                "stayOnCurrentPageAfterCancel": {
+                                    "description": "Determines whether to stay on the current page after canceling an object.\nTo ensure a consistent experience, set this and 'Stay On Current Page After Save' to the same value.",
+                                    "descriptionSrcURL": "https://sapui5.hana.ondemand.com/#/topic/ed9aa41c563a44b18701529c8327db4d",
+                                    "type": "boolean"
+                                },
+                                "hideCreateNext": {
+                                    "description": "Controls the visibility of the 'Create Next' button.",
+                                    "descriptionSrcURL": "https://sapui5.hana.ondemand.com/#/topic/ed9aa41c563a44b18701529c8327db4d",
+                                    "type": "boolean"
+                                }
+                            },
+                            "additionalProperties": false,
+                            "required": [
+                                "enabled"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "enabled": {
+                                    "description": "All features related to draft handling can be hidden from the UI while the draft functionality remains active in the background. To achieve this, enable the 'Hide Draft' property.",
+                                    "descriptionSrcURL": "https://sapui5.hana.ondemand.com/#/topic/ed9aa41c563a44b18701529c8327db4d",
+                                    "type": "boolean",
+                                    "const": false
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    ]
+                },
+                "title": {
+                    "description": "Defines the title for the application.",
+                    "i18nClassification": "TIT: Title of the application",
+                    "type": "string"
+                },
+                "description": {
+                    "description": "Defines the description for the application.",
+                    "i18nClassification": "TIT: Description of the application",
+                    "type": "string"
+                },
+                "flexEnabled": {
+                    "description": "Enables key user adaptation for an application.",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/ccd45ba3f0b446a0901b2c9d42b8ad53",
+                    "type": "boolean"
+                },
+                "cloudDevAdaptationStatus": {
+                    "$ref": "#/definitions/CloudDevAdaptationStatus",
+                    "description": "Represents the release status for the developer adaptation in the cloud (relevant for SAP internal only). The supported types are released, deprecated, obsolete, no value means not released."
+                }
+            },
+            "additionalProperties": false
+        },
+        "FlexibleColumnLayoutV4": {
+            "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/e762257125b34513b0859faa1610b09e",
+            "type": "object",
+            "properties": {
+                "limitFCLToTwoColumns": {
+                    "description": "Determines whether the Flexible Column Layout is limited to two columns. If set to true, the third level will be displayed in full screen mode rather than a third column.",
+                    "type": "boolean"
+                },
+                "defaultTwoColumnLayoutType": {
+                    "$ref": "#/definitions/FlexibleColumnLayoutType"
+                },
+                "defaultThreeColumnLayoutType": {
+                    "$ref": "#/definitions/FlexibleColumnLayoutType"
+                }
+            },
+            "additionalProperties": false
+        },
+        "FlexibleColumnLayoutType": {
+            "enum": [
+                "EndColumnFullScreen",
+                "MidColumnFullScreen",
+                "OneColumn",
+                "ThreeColumnsBeginExpandedEndHidden",
+                "ThreeColumnsEndExpanded",
+                "ThreeColumnsMidExpanded",
+                "ThreeColumnsMidExpandedEndHidden",
+                "TwoColumnsBeginExpanded",
+                "TwoColumnsMidExpanded"
+            ],
+            "type": "string"
+        },
+        "ViewTypes": {
+            "enum": [
+                "HTML",
+                "JSON",
+                "XML"
+            ],
+            "type": "string"
+        },
+        "ControllerExtensions": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/SapUi5ControllerExtensionV4"
+            }
+        },
+        "SapUi5ControllerExtensionV4": {
+            "type": "object",
+            "properties": {
+                "controllerName": {
+                    "type": "string"
+                },
+                "controllerNames": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "Dependencies": {
+            "type": "object",
+            "properties": {
+                "minUI5Version": {
+                    "description": "Represents the minimum version of SAP UI5 that your component requires. It is either a specific version or an array of versions where each major version can only be included once. If array contains more than one version and if version 1 is included it must be at least 1.120.x.",
+                    "anyOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "libs": {
+                    "description": "Represents the id (namespace) of the libraries that should be loaded by UI5 Core to be used in your component",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/Lib"
+                    }
+                },
+                "components": {
+                    "description": "Represents the id (namespace) of the components that should be loaded by UI5 Core to be used in your component",
+                    "type": "object",
+                    "additionalProperties": {
+                        "$ref": "#/definitions/Component"
+                    }
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "minUI5Version"
+            ]
+        },
+        "Lib": {
+            "description": "Represents sapui5 library name\n\nThis interface was referenced by `undefined`'s JSON-Schema definition\nvia the `patternProperty` \"^([a-z][a-z0-9]{0,39})(\\.[a-z][a-z0-9]{0,39})*$\".",
+            "type": "object",
+            "additionalProperties": {},
+            "properties": {
+                "minVersion": {
+                    "description": "Represents minimal version of ui5 library",
+                    "type": "string"
+                },
+                "lazy": {
+                    "description": "Represents Indicator to lazy loading lib",
+                    "type": "boolean"
+                }
+            }
+        },
+        "Component": {
+            "description": "Represents sapui5 component name\n\nThis interface was referenced by `undefined`'s JSON-Schema definition\nvia the `patternProperty` \"^([a-zA-Z_$][a-zA-Z0-9_$]{0,39}\\.)*([a-zA-Z_$][a-zA-Z0-9_$]{0,39})$\".",
+            "type": "object",
+            "additionalProperties": {},
+            "properties": {
+                "minVersion": {
+                    "description": "Represents minimal version of ui5 component",
+                    "type": "string"
+                },
+                "lazy": {
+                    "description": "Represents Indicator to lazy loading component",
+                    "type": "boolean"
+                }
+            }
+        },
+        "CloudDevAdaptationStatus": {
+            "internal": true,
+            "enum": [
+                "deprecated",
+                "obsolete",
+                "released"
+            ],
+            "type": "string"
+        },
+        "PagesV4": {
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/definitions/PageV4"
+            }
+        },
+        "PageV4": {
+            "type": "object",
+            "properties": {
+                "view": {
+                    "$ref": "#/definitions/PageView"
+                },
+                "controlAggregation": {
+                    "$ref": "#/definitions/FlexibleColumnLayoutAggregations"
+                },
+                "pageType": {
+                    "$ref": "#/definitions/PageTypeV4"
+                },
+                "routePattern": {
+                    "type": "string"
+                },
+                "contextPath": {
+                    "type": "string"
+                },
+                "entityType": {
+                    "type": "string"
+                },
+                "template": {
+                    "description": "Full template name from `manifest.json`.",
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "entitySet": {
+                    "type": "string"
+                },
+                "navigationProperty": {
+                    "type": "string"
+                },
+                "config": {
+                    "$ref": "#/definitions/PageConfig"
+                },
+                "navigation": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "anyOf": [
+                            {
+                                "type": "object",
+                                "properties": {},
+                                "additionalProperties": true
+                            },
+                            {
+                                "type": "string"
+                            }
+                        ]
+                    }
+                },
+                "variantManagement": {
+                    "type": "string"
+                },
+                "defaultLayoutType": {
+                    "$ref": "#/definitions/FlexibleColumnLayoutType"
+                }
+            },
+            "additionalProperties": false
+        },
+        "PageView": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "viewType": {
+                    "$ref": "#/definitions/ViewTypes"
+                },
+                "template": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "id"
+            ]
+        },
+        "FlexibleColumnLayoutAggregations": {
+            "enum": [
+                "beginColumnPages",
+                "endColumnPages",
+                "midColumnPages"
+            ],
+            "type": "string"
+        },
+        "PageTypeV4": {
+            "enum": [
+                "AnalyticalListPage",
+                "CustomPage",
+                "FPMCustomPage",
+                "ListReport",
+                "ObjectPage"
+            ],
+            "type": "string"
+        },
+        "PageConfig": {
+            "type": "object",
+            "properties": {
+                "$schema": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false
+        },
+        "Target": {
+            "type": "object",
+            "properties": {
+                "fioriElements": {
+                    "$ref": "#/definitions/FioriElementsVersion"
+                },
+                "odata": {
+                    "$ref": "#/definitions/OdataVersion"
+                }
+            },
+            "additionalProperties": false
+        },
+        "FioriElementsVersion": {
+            "enum": [
+                "v2",
+                "v4"
+            ],
+            "type": "string"
+        },
+        "OdataVersion": {
+            "enum": [
+                "v2",
+                "v4"
+            ],
+            "type": "string"
+        }
+    },
+    "$schema": "http://json-schema.org/draft-07/schema#"
+}

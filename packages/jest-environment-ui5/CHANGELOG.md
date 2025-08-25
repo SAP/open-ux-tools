@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.9
+
+### Patch Changes
+
+-   cefd15e: We improved the support the ui5 legacy free
+
 ## 5.3.8
 
 ### Patch Changes

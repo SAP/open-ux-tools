@@ -1,5 +1,53 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.1.55
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.9
+-   @sap-ux/deploy-config-generator-shared@0.1.29
+-   @sap-ux/ui5-config@0.29.2
+-   @sap-ux/abap-deploy-config-writer@0.2.8
+-   @sap-ux/fiori-generator-shared@0.13.10
+
+## 0.1.54
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/abap-deploy-config-inquirer@1.6.8
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/abap-deploy-config-writer@0.2.7
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/fiori-generator-shared@0.13.9
+    -   @sap-ux/deploy-config-generator-shared@0.1.28
+
+## 0.1.53
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/abap-deploy-config-writer@0.2.6
+-   @sap-ux/fiori-generator-shared@0.13.8
+-   @sap-ux/abap-deploy-config-inquirer@1.6.7
+-   @sap-ux/deploy-config-generator-shared@0.1.27
+
+## 0.1.52
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.6.6
+-   @sap-ux/deploy-config-generator-shared@0.1.26
+
+## 0.1.51
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.7
+-   @sap-ux/abap-deploy-config-inquirer@1.6.5
+-   @sap-ux/deploy-config-generator-shared@0.1.26
+
 ## 0.1.50
 
 ### Patch Changes

@@ -175,7 +175,7 @@ export function useAnswers(
     questions: PromptQuestion[],
     externalAnswers?: Answers,
     onInitialChange?: (value: Answers) => void
-): [Answers, (value: Answers) => void] {
+): [Answers, (value: Answers | ((prev: Answers) => Answers)) => void] {
     const currentExternalAnswers = useRef<Answers>({});
     const [localAnswers, setLocalAnswers] = useState(() => {
         // Initial value
@@ -200,7 +200,12 @@ export function useAnswers(
         }
     }, [questions, externalAnswers]);
 
-    return [localAnswers, setLocalAnswers];
+    return [
+        localAnswers,
+        (value: Answers | ((prev: Answers) => Answers)) => {
+            setLocalAnswers((prev) => (typeof value === 'function' ? value(prev) : value));
+        }
+    ];
 }
 
 let GENERATED_PROMPT_ID_INDEX = 0;
