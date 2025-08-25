@@ -4,7 +4,8 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import {
     appLoaded,
     enableTelemetry,
-    iconsLoaded
+    iconsLoaded,
+    MessageBarType
 } from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../utils/error';
@@ -20,6 +21,9 @@ import { RtaService } from './rta-service';
 import { SelectionService } from './selection';
 import type { ActionHandler, Service } from './types';
 import { getIcons } from './ui5-utils';
+import { ODataHealthChecker } from './odata-health/odata-health-checker';
+import { sendInfoCenterMessage } from '../utils/info-center-message';
+import { isODataServiceHealthy } from './odata-health/odata-health-status';
 
 export default function init(
     rta: RuntimeAuthoring,
@@ -58,6 +62,24 @@ export default function init(
         rtaService,
         quickActionService
     ];
+
+    // Do health check to all available oData service instances.
+    const oDataHealthChecker = new ODataHealthChecker();
+    oDataHealthChecker.getHealthStatus().then((healthStatus) =>
+        healthStatus.forEach((status) => {
+            const isServiceHealthy = isODataServiceHealthy(status);
+            sendInfoCenterMessage({
+                title: { key: 'ADP_ODATA_HEALTH_CHECK_TITLE' },
+                description: isServiceHealthy
+                    ? { key: 'ADP_ODATA_SERVICE_UP_DESCRIPTION', params: [status.serviceUrl] }
+                    : {
+                          key: 'ADP_ODATA_SERVICE_DOWN_DESCRIPTION',
+                          params: [status.serviceUrl, status.errorMessage]
+                      },
+                type: isServiceHealthy ? MessageBarType.info : MessageBarType.error
+            });
+        })
+    );
 
     try {
         loadDefaultLibraries();
