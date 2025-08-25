@@ -537,6 +537,7 @@ describe('ConnectionValidator', () => {
         expect(connectValidator.serviceInfo).toEqual(serviceInfoMock);
         expect(connectValidator.validatedUrl).toBe(serviceInfoMock.url);
         expect(connectValidator.connectedSystemName).toBe('abap_btp_001');
+        // expect(connectValidator.connectedSystemName).toBe(serviceInfoMock.url);
 
         // Ensure the refresh token is updated when it changes
         (connectValidator.serviceProvider as any).refreshTokenChangedCb('newToken1234');

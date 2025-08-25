@@ -16,8 +16,7 @@ import { validateSystemName } from '../validators';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
- * Convert the system connection scheme (Service Key, Rentrance Ticket, etc) to the store specific authentication type.
- * Note the absence of CF Discovery, in this case the service key file (UAA) is also used for the Abap connectivity.
+ * Convert the system connection scheme (Reentrance Ticket, etc) to the store specific authentication type.
  *
  * @param systemAuthType The system authentication type
  * @returns The store specific authentication type
@@ -26,8 +25,6 @@ function systemAuthTypeToAuthenticationType(
     systemAuthType: SystemAuthType | undefined
 ): AuthenticationType | undefined {
     switch (systemAuthType) {
-        case 'serviceKey':
-            return AuthenticationType.OAuth2RefreshToken;
         case 'reentranceTicket':
             return AuthenticationType.ReentranceTicket;
         case 'basic':
@@ -162,10 +159,8 @@ export function getUserSystemNameQuestion(
                         client: connectValidator.validatedClient,
                         username: connectValidator.axiosConfig?.auth?.username,
                         password: connectValidator.axiosConfig?.auth?.password,
-                        serviceKeys: connectValidator.serviceInfo,
                         userDisplayName: connectValidator.connectedUserName,
                         systemType: getBackendSystemType({
-                            serviceKeys: connectValidator.serviceInfo,
                             authenticationType: connectValidator.systemAuthType
                         } as BackendSystem),
                         refreshToken: connectValidator.refreshToken
