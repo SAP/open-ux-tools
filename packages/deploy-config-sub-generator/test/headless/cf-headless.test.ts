@@ -285,7 +285,6 @@ describe('Test headless generator', () => {
         jest.spyOn(CFGen.prototype, 'writing').mockImplementation(jest.fn());
         jest.spyOn(CFGen.prototype, 'initializing').mockImplementation(jest.fn());
         const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
-
         await runHeadlessGen(testAppName, DeployTarget.CF, OUTPUT_DIR);
 
         expect(composeWithSpy).toHaveBeenCalledWith(

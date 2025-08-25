@@ -273,6 +273,7 @@ export class FioriAppGenerator extends Generator {
                             projectName: this.state.project?.name,
                             targetFolder: this.state.project?.targetFolder,
                             service: this.state.service,
+                            entityRelatedConfig: this.state.entityRelatedConfig,
                             floorplan: this.state.floorplan,
                             promptSettings: generatorOptions.promptSettings?.['@sap/generator-fiori'],
                             promptExtension: generatorOptions.extensions
