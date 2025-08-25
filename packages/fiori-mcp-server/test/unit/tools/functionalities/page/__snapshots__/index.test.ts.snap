@@ -2,116 +2,27 @@
 
 exports[`add-page getFunctionalityDetails case 2: empty page 1`] = `
 Object {
-  "description": "Create new fiori elements page like ListReport, ObjectPage, CustomPage",
+  "description": "To add a new page, provide a valid project root or application path. \\"/Users/D063593/SAPDevelop/git/open-ux-tools/packages/fiori-mcp-server/test/test-data/ai-created-cap-add-page-copy/app/managetravels\\" is not valid",
   "id": "add-page",
-  "name": "Add new page to application by updating manifest.json",
-  "parameters": Array [
-    Object {
-      "description": "Entity set for the new page. First try to extract entity from user input in a format defined in example, if not possible suggest content defined in options.",
-      "examples": Array [
-        "entitySet: Travels",
-      ],
-      "id": "entitySet",
-      "options": Array [
-        "Travels",
-        "Expenses",
-        "TravelsStatusCodeList",
-        "TravelsStatusCodeList_texts",
-      ],
-      "required": true,
-      "type": "string",
-    },
-    Object {
-      "description": "Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.",
-      "examples": Array [
-        "pageType: ObjectPage",
-      ],
-      "id": "pageType",
-      "options": Array [
-        "ObjectPage",
-        "ListReport",
-        "CustomPage",
-        "FPMCustomPage",
-        "AnalyticalListPage",
-      ],
-      "required": true,
-      "type": "string",
-    },
-  ],
+  "name": "Invalid Project Root or Application Path",
+  "parameters": Array [],
 }
 `;
 
 exports[`add-page getFunctionalityDetails case 3: one or more pages 1`] = `
 Object {
-  "description": "Create new fiori elements page like ListReport, ObjectPage, CustomPage",
+  "description": "To add a new page, provide a valid project root or application path. \\"/Users/D063593/SAPDevelop/git/open-ux-tools/packages/fiori-mcp-server/test/test-data/ai-created-cap-add-page-copy/app/managetravels\\" is not valid",
   "id": "add-page",
-  "name": "Add new page to application by updating manifest.json",
-  "parameters": Array [
-    Object {
-      "description": "Parent page is id/name of parent page. First try to extract parent page from user input in a format defined in example, if not possible suggest content defined in options",
-      "examples": Array [
-        "parentPage: TravelsList",
-      ],
-      "id": "parentPage",
-      "options": Array [
-        "TravelsList",
-        "TravelsObjectPage",
-      ],
-      "required": true,
-      "type": "string",
-    },
-    Object {
-      "description": "Page navigation option for parent page. First try to extract navigation option from user input in a format defined in example, if not possible suggest content defined in options",
-      "examples": Array [
-        "pageNavigation: Travels",
-      ],
-      "id": "pageNavigation",
-      "options": Array [
-        "for TravelsList: available navigation(s) is/are one of: Travels, Expenses, TravelsStatusCodeList, TravelsStatusCodeList_texts",
-        "for TravelsObjectPage: available navigation(s) is/are one of: Expenses",
-      ],
-      "required": true,
-      "type": "string",
-    },
-    Object {
-      "description": "Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.",
-      "examples": Array [
-        "pageType: ObjectPage",
-      ],
-      "id": "pageType",
-      "options": Array [
-        "ObjectPage",
-        "ListReport",
-        "CustomPage",
-        "FPMCustomPage",
-        "AnalyticalListPage",
-      ],
-      "required": true,
-      "type": "string",
-    },
-  ],
+  "name": "Invalid Project Root or Application Path",
+  "parameters": Array [],
 }
 `;
 
 exports[`delete-page getFunctionalityDetails case 2: zero or more pages 1`] = `
 Object {
-  "description": "Remove existing fiori elements page from the application",
+  "description": "To delete a page, provide a valid project root or application path. \\"/Users/D063593/SAPDevelop/git/open-ux-tools/packages/fiori-mcp-server/test/test-data/ai-created-cap-add-page-copy/app/managetravels\\" is not valid",
   "id": "delete-page",
-  "name": "Delete page from application by updating manifest.json",
-  "parameters": Array [
-    Object {
-      "description": "Page id to be deleted. First try to extract page id from user input in a format defined in example, if not possible suggest content defined in options",
-      "examples": Array [
-        "pageId: TravelsList",
-      ],
-      "id": "pageId",
-      "options": Array [
-        "TravelsList",
-        "TravelsObjectPage",
-      ],
-      "required": true,
-      "type": "string",
-    },
-  ],
+  "name": "Invalid Project Root or Application Path",
+  "parameters": Array [],
 }
 `;
