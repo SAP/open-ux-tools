@@ -1,0 +1,2613 @@
+{
+    "type": "object",
+    "properties": {
+        "showConfirmationOnDraftActivate": {
+            "description": "Set showConfirmationOnDraftActivate to true to enable a confirmation before a save if you have pending warnings.",
+            "type": "boolean",
+            "artifactType": "Manifest"
+        },
+        "hideChevronForUnauthorizedExtNav": {
+            "description": "If you set this property to true, the navigation chevron is hidden in case the launchpad indicates that the user has no authorization to navigate.",
+            "type": "boolean",
+            "artifactType": "Manifest"
+        },
+        "allowDeepLinking": {
+            "description": "Restricts deep linking to certain object page levels.",
+            "type": "boolean",
+            "artifactType": "Manifest"
+        },
+        "navToListOnSave": {
+            "description": "If you set navToListOnSave to true, the application will navigate back to the list on a save.",
+            "type": "boolean",
+            "artifactType": "Manifest"
+        },
+        "defaultLayoutTypeIfExternalNavigation": {
+            "description": "If this flag is set, then during inbound navigation to flexible column layout application, if the navigation context points to a unique object, the object page is opened in full screen mode.",
+            "type": "string",
+            "const": "MidColumnFullScreen",
+            "artifactType": "Manifest"
+        },
+        "globalTableSettings": {
+            "$ref": "#/definitions/GlobalTableSettings",
+            "description": "Settings for all tables of the object page.",
+            "artifactType": "Manifest"
+        },
+        "globalChartSettings": {
+            "$ref": "#/definitions/GlobalChartSettings",
+            "description": "Settings for all charts on an object page.",
+            "artifactType": "Manifest"
+        },
+        "header": {
+            "$ref": "#/definitions/ObjectPageHeader",
+            "propertyIndex": 0
+        },
+        "layout": {
+            "$ref": "#/definitions/ObjectPageLayout"
+        },
+        "sections": {
+            "$ref": "#/definitions/Sections",
+            "propertyIndex": 1
+        },
+        "footer": {
+            "$ref": "#/definitions/ObjectPageFooter",
+            "propertyIndex": 2
+        },
+        "$schema": {
+            "type": "string"
+        }
+    },
+    "additionalProperties": false,
+    "definitions": {
+        "GlobalTableSettings": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "$ref": "#/definitions/TableTypeV2",
+                    "description": "Use type to define the default table type (can be overridden by specific tables).",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/7f844f1021cd4791b8f7408eac7c1cec"
+                },
+                "multiSelect": {
+                    "description": "Single selection in tables is enabled by default. You can enable multi-select by setting this property to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "condensedTableLayout": {
+                    "description": "For the analytical table, grid table and tree table you can decide on a condensed table layout by setting condensedTableLayout to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "inlineDelete": {
+                    "description": "Used to enable inline deletion in a responsive table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "selectAll": {
+                    "description": "The 'Select All' button is disabled by default. To enable it, set selectAll to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "variantManagement": {
+                    "description": "Set this property to true to enable variant management for the table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "copy": {
+                    "description": "If copy is set to true, the Copy button is shown in the table toolbar.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false
+        },
+        "TableTypeV2": {
+            "enum": [
+                "AnalyticalTable",
+                "GridTable",
+                "ResponsiveTable",
+                "TreeTable"
+            ],
+            "type": "string"
+        },
+        "GlobalChartSettings": {
+            "type": "object",
+            "properties": {
+                "variantManagement": {
+                    "description": "Enables variant management for charts in an object page.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ObjectPageHeader": {
+            "description": "Header",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "showRelatedApps": {
+                    "description": "Set showRelatedApps to true to show the navigation button for related apps.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "editableHeaderContent": {
+                    "description": "Set editableHeaderContent to true to make the header fields editable.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "simpleHeaderFacets": {
+                    "description": "Set simpleHeaderFacets to true to use simpler header facets.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "displayShape": {
+                    "pattern": "^(Circle|Square)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/AvatarShape"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "With displayShape you can define the shape of the avatar.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.f.Avatar"
+                },
+                "actions": {
+                    "$ref": "#/definitions/ObjectPageHeaderActions"
+                },
+                "showHeaderAsCarouselOnDesktop": {
+                    "description": "Enables the carousel header on the desktop",
+                    "type": "boolean",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/17dbd5b7a61e4cdcb079062e976cd63f"
+                },
+                "sections": {
+                    "$ref": "#/definitions/HeaderSections"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.HeaderInfo"
+        },
+        "AvatarShape": {
+            "description": "Types of shape for the {@link sap.m.Avatar} control.",
+            "enum": [
+                "Circle",
+                "Square"
+            ],
+            "type": "string"
+        },
+        "ObjectPageHeaderActions": {
+            "type": "object",
+            "properties": {
+                "SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy": {
+                    "$ref": "#/definitions/ObjectPageHeaderAction<SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy>"
+                },
+                "UpAndDownNavigation": {
+                    "$ref": "#/definitions/ObjectPageHeaderActionStandard<UpAndDownNavigationOP>"
+                },
+                "Share": {
+                    "$ref": "#/definitions/ObjectPageHeaderActionStandard<ShareOP>"
+                }
+            },
+            "description": "Actions",
+            "additionalProperties": false,
+            "isViewNode": true,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.Identification"
+        },
+        "ObjectPageHeaderAction": {
+            "description": "Header Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Allows you to define if the action button is visible on the screen.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageHeaderActionButton"
+                },
+                "tooltip": {
+                    "description": "The text of the button tooltip, preferably as an i18n key.",
+                    "i18nClassification": "ACT: Text for tooltip of button.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageHeaderActionButton"
+                },
+                "icon": {
+                    "description": "An icon to be displayed as a graphical element within the button.\nThis can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons), represented as RFC 3986 conformant URI.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageHeaderActionButton"
+                },
+                "activeIcon": {
+                    "description": "An alternative icon for the active (depressed) state of the button.\nThis can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons), represented as RFC 3986 conformant URI.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageHeaderActionButton"
+                },
+                "type": {
+                    "$ref": "#/definitions/ButtonType",
+                    "description": "Defines the Button type.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageHeaderActionButton"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ButtonType": {
+            "description": "Different predefined button types for the {@link sap.m.Button sap.m.Button}.\n\nThis enum is part of the 'sap/m/library' module export and must be accessed by the property 'ButtonType'.",
+            "enum": [
+                "Accept",
+                "Attention",
+                "Back",
+                "Critical",
+                "Default",
+                "Emphasized",
+                "Ghost",
+                "Negative",
+                "Neutral",
+                "Reject",
+                "Success",
+                "Transparent",
+                "Unstyled",
+                "Up"
+            ],
+            "type": "string"
+        },
+        "UpAndDownNavigationOP": {
+            "description": "Up and Down Navigation",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "description": "Allows you to define if the button is visible on the screen.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                }
+            },
+            "additionalProperties": false,
+            "actionType": "Standard"
+        },
+        "ShareOP": {
+            "description": "Share",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "description": "Allows you to define if the button is visible on the screen.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                }
+            },
+            "additionalProperties": false,
+            "actionType": "Standard"
+        },
+        "HeaderSections": {
+            "description": "Header Sections",
+            "isViewNode": true,
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "@com.sap.vocabularies.UI.v1.FieldGroup::HeaderInformation": {
+                    "$ref": "#/definitions/ObjectPageHeaderSectionForm<@com.sap.vocabularies.UI.v1.FieldGroup::HeaderInformation>"
+                },
+                "@com.sap.vocabularies.UI.v1.FieldGroup::ProductHeaderText": {
+                    "$ref": "#/definitions/ObjectPageHeaderSectionForm<@com.sap.vocabularies.UI.v1.FieldGroup::ProductHeaderText>"
+                },
+                "to_ProductStock::@com.sap.vocabularies.UI.v1.DataPoint::StockAvailability": {
+                    "$ref": "#/definitions/ObjectPageHeaderSectionDataPoint<to_ProductStock::@com.sap.vocabularies.UI.v1.DataPoint::StockAvailability>"
+                },
+                "@com.sap.vocabularies.UI.v1.DataPoint::Price": {
+                    "$ref": "#/definitions/ObjectPageHeaderSectionDataPoint<@com.sap.vocabularies.UI.v1.DataPoint::Price>"
+                }
+            },
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.HeaderFacets"
+        },
+        "SectionPosition": {
+            "enum": [
+                "AfterFacet",
+                "BeforeFacet",
+                "ReplaceFacet"
+            ],
+            "type": "string"
+        },
+        "ObjectPageLayout": {
+            "description": "Page Layout",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "showHeaderContent": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Determines the visibility of the Header content.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageLayout"
+                },
+                "showAnchorBar": {
+                    "description": "Determines whether the navigation bar (anchor bar) is displayed.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageLayout"
+                },
+                "useIconTabBar": {
+                    "description": "Determines whether the navigation mode is tab-based instead of based on the default anchor bar.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageLayout"
+                },
+                "alwaysShowContentHeader": {
+                    "description": "Determines whether header content will always be expanded on the desktop.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageLayout"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ObjectPageSectionV2": {
+            "description": "Section",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if this section should be visible.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageSection"
+                }
+            },
+            "additionalProperties": false
+        },
+        "Field": {
+            "description": "Field",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the field is visible on the screen.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smartform.GroupElement"
+                }
+            },
+            "additionalProperties": false
+        },
+        "FormAction": {
+            "description": "Form Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Allows you to define if the action button is visible on the screen.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                },
+                "tooltip": {
+                    "description": "The text of the button tooltip, preferably as an i18n key.",
+                    "i18nClassification": "ACT: Text for tooltip of button.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                },
+                "icon": {
+                    "description": "An icon to be displayed as a graphical element within the button.\nThis can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons), represented as RFC 3986 conformant URI.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                },
+                "activeIcon": {
+                    "description": "An alternative icon for the active (depressed) state of the button.\nThis can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons), represented as RFC 3986 conformant URI.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                },
+                "type": {
+                    "$ref": "#/definitions/ButtonType",
+                    "description": "Defines the Button type.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                }
+            },
+            "additionalProperties": false
+        },
+        "PopinLayout": {
+            "description": "Defines the layout options of the table popins.\n\nThis enum is part of the 'sap/m/library' module export and must be accessed by the property 'PopinLayout'.",
+            "enum": [
+                "Block",
+                "GridLarge",
+                "GridSmall"
+            ],
+            "type": "string"
+        },
+        "CreateMode": {
+            "enum": [
+                "creationRows",
+                "creationRowsHiddenInEditMode",
+                "inline"
+            ],
+            "type": "string"
+        },
+        "smarttable.ExportType": {
+            "description": "Provides the type of services available for export in the `SmartTable` control.\n\nThis enum is part of the 'sap/ui/comp/library' module export and must be accessed by the property 'smarttable.ExportType'.",
+            "enum": [
+                "GW",
+                "UI5Client",
+                "UI5ClientPDF"
+            ],
+            "type": "string"
+        },
+        "Fields4DialogOP": {
+            "type": "object",
+            "properties": {
+                "fields": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "Delete_ac",
+                            "Dislike_ac",
+                            "Like_ac",
+                            "Update_ac",
+                            "ProductReviewPostUUID",
+                            "ProductReviewUUID",
+                            "Product",
+                            "ReviewPostTitle",
+                            "ReviewPostText",
+                            "ReviewRatingValue",
+                            "NumberOfAffirmativeAnswers",
+                            "TotalNumberOfAnswers",
+                            "ReviewDate",
+                            "ContactPerson",
+                            "IsReviewOfCurrentUser"
+                        ]
+                    },
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "fields"
+            ]
+        },
+        "QuickVariantSelectionOP": {
+            "type": "object",
+            "properties": {
+                "showCounts": {
+                    "description": "To show the number of records available, set showCounts to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "variants": {
+                    "description": "The variants section contains a set of entries that point to a SelectionVariant or a SelectionPresentationVariant annotation.",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "patternProperties": {
+                        "^[0-9]+$": {
+                            "$ref": "#/definitions/QuickVariant"
+                        }
+                    },
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "variants"
+            ]
+        },
+        "QuickVariant": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "description": "The key property is mandatory. It is used for initializing the corresponding SegmentedButton item.",
+                    "type": "string"
+                },
+                "annotationPath": {
+                    "description": "Use annotationPath to define a specific variant that points to a SelectionVariant or SelectionPresentationVariant annotation.",
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "annotationPath",
+                "key"
+            ]
+        },
+        "ObjectPageToolBarAction": {
+            "description": "ToolBar Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Allows you to define if the action button is visible on the screen.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                },
+                "tooltip": {
+                    "description": "The text of the button tooltip, preferably as an i18n key.",
+                    "i18nClassification": "ACT: Text for tooltip of button.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                },
+                "icon": {
+                    "description": "An icon to be displayed as a graphical element within the button.\nThis can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons), represented as RFC 3986 conformant URI.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                },
+                "activeIcon": {
+                    "description": "An alternative icon for the active (depressed) state of the button.\nThis can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons), represented as RFC 3986 conformant URI.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                },
+                "type": {
+                    "$ref": "#/definitions/ButtonType",
+                    "description": "Defines the Button type.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                }
+            },
+            "additionalProperties": false
+        },
+        "TableColumn": {
+            "description": "Column",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "width": {
+                    "description": "Defines the width of the column.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Column"
+                },
+                "hAlign": {
+                    "pattern": "^(Begin|Center|End|Initial|Left|Right)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/TextAlign"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines the horizontal alignment of the column content.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Column"
+                }
+            },
+            "additionalProperties": false
+        },
+        "TextAlign": {
+            "description": "Configuration options for text alignments.\n\nThis enum is part of the 'sap/ui/core/library' module export and must be accessed by the property 'TextAlign'.",
+            "enum": [
+                "Begin",
+                "Center",
+                "End",
+                "Initial",
+                "Left",
+                "Right"
+            ],
+            "type": "string"
+        },
+        "TableCustomColumn": {
+            "description": "Custom Column",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "If the fragment needs to be reused for multiple tabs, the id property must be set to make the IDs unique.",
+                    "artifactType": "XMLProperty",
+                    "type": "string"
+                },
+                "text": {
+                    "description": "The label of the custom column, preferably as an i18n key.",
+                    "i18nClassification": "COL: Custom column header text",
+                    "artifactType": "XMLProperty",
+                    "type": "string"
+                },
+                "columnKey": {
+                    "description": "The column key.",
+                    "artifactType": "XMLProperty",
+                    "type": "string"
+                },
+                "columnIndex": {
+                    "description": "The index of the column in the overall collection; if undefined, the custom column will be added at the end of the table.",
+                    "minimum": 0,
+                    "hidden": true,
+                    "artifactType": "XMLProperty",
+                    "type": "number"
+                },
+                "leadingProperty": {
+                    "description": "If the content of your custom column refers to a property (such as{Price}), you need to include a corresponding 'leadingProperty' entry in the column definition.",
+                    "artifactType": "XMLProperty",
+                    "type": "string"
+                },
+                "className": {
+                    "description": "The UI5 control used for your extension.",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "const": "sap.ui.core.Fragment"
+                },
+                "fragmentName": {
+                    "description": "The relative path to your fragment with path segments separated by '.'. The first element is the app ID.",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "const": "fev2.ext.fragment.CustomColumn"
+                },
+                "cellsFragmentName": {
+                    "description": "In case of a responsive table, you additionally need to specify a fragment for the table cells.",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "enum": [
+                        "fev2.ext.fragment.CustomCell",
+                        "fev2.ext.fragment.CustomSection"
+                    ]
+                },
+                "tabKey": {
+                    "description": "If you use QuickVariantSelectionX, you need to define the extensions per tab. 'tabKey' is the key provided when defining the QuickVariantSelectionX.",
+                    "hidden": true,
+                    "artifactType": "Manifest",
+                    "type": "string"
+                },
+                "extensionType": {
+                    "$ref": "#/definitions/TableColumnExtensionTypeV2",
+                    "description": "Type of custom column view extension."
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "className",
+                "columnKey",
+                "extensionType",
+                "fragmentName"
+            ]
+        },
+        "TableColumnExtensionTypeV2": {
+            "enum": [
+                "AnalyticalTableColumnsExtension",
+                "GridTableColumnsExtension",
+                "ResponsiveTableColumnsExtension",
+                "TreeTableColumnsExtension"
+            ],
+            "type": "string"
+        },
+        "ObjectPageSectionChartV2": {
+            "description": "Chart",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "chart": {
+                    "$ref": "#/definitions/ObjectPageChart"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if this section should be visible.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageSection"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ObjectPageChart": {
+            "description": "Chart",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "variantManagement": {
+                    "description": "Enables variant management for charts in an object page.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ObjectPageSectionContactV2": {
+            "type": "object",
+            "properties": {
+                "contact": {
+                    "description": "Contact",
+                    "isViewNode": true,
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if this section should be visible.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageSection"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ObjectPageSectionAddressV2": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "description": "Address",
+                    "isViewNode": true,
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if this section should be visible.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageSection"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ObjectPageSubSectionContactV2": {
+            "type": "object",
+            "properties": {
+                "contact": {
+                    "description": "Contact",
+                    "isViewNode": true,
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if this section should be visible.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageSubSection"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ObjectPageSubSectionAddressV2": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "description": "Address",
+                    "isViewNode": true,
+                    "type": "object",
+                    "properties": {},
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": false
+        },
+        "CustomSections": {
+            "description": "Custom Sections",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "custom": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/ObjectPageCustomSectionView"
+                            },
+                            {
+                                "$ref": "#/definitions/ObjectPageCustomSectionFragment"
+                            }
+                        ]
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "ObjectPageCustomSectionView": {
+            "description": "View",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "className": {
+                    "type": "string",
+                    "const": "sap.ui.core.mvc.View"
+                },
+                "viewName": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/ViewTypes"
+                },
+                "relatedFacet": {
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "$ref": "#/definitions/RelatedFacetKeys"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "relativePosition": {
+                    "$ref": "#/definitions/SectionPosition"
+                },
+                "title": {
+                    "description": "The label of the custom section, preferably as an i18n key.",
+                    "i18nClassification": "TIT: Custom section title",
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "className",
+                "relatedFacet",
+                "relativePosition",
+                "title",
+                "type",
+                "viewName"
+            ]
+        },
+        "ViewTypes": {
+            "enum": [
+                "HTML",
+                "JSON",
+                "XML"
+            ],
+            "type": "string"
+        },
+        "ObjectPageCustomSectionFragment": {
+            "description": "Fragment",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "className": {
+                    "type": "string",
+                    "const": "sap.ui.core.Fragment"
+                },
+                "fragmentName": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string",
+                    "const": "XML"
+                },
+                "relatedFacet": {
+                    "anyOf": [
+                        {
+                            "type": "string",
+                            "$ref": "#/definitions/RelatedFacetKeys"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "relativePosition": {
+                    "$ref": "#/definitions/SectionPosition"
+                },
+                "title": {
+                    "description": "The label of the custom section, preferably as an i18n key.",
+                    "i18nClassification": "TIT: Custom section title",
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "className",
+                "fragmentName",
+                "relatedFacet",
+                "relativePosition",
+                "title",
+                "type"
+            ]
+        },
+        "ObjectPageFooterAction": {
+            "description": "Footer Action",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Allows you to define if the action button is visible on the screen.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                },
+                "tooltip": {
+                    "description": "The text of the button tooltip, preferably as an i18n key.",
+                    "i18nClassification": "ACT: Text for tooltip of button.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                },
+                "icon": {
+                    "description": "An icon to be displayed as a graphical element within the button.\nThis can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons), represented as RFC 3986 conformant URI.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                },
+                "activeIcon": {
+                    "description": "An alternative icon for the active (depressed) state of the button.\nThis can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons), represented as RFC 3986 conformant URI.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                },
+                "type": {
+                    "$ref": "#/definitions/ButtonType",
+                    "description": "Defines the Button type.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                }
+            },
+            "additionalProperties": false
+        },
+        "SaveAndEditOP": {
+            "description": "Save and Edit",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Allows you to define if the button is visible on the screen.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ObjectPageHeaderAction<SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy>": {
+            "description": "Copy",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Allows you to define if the action button is visible on the screen.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageHeaderActionButton"
+                },
+                "tooltip": {
+                    "description": "The text of the button tooltip, preferably as an i18n key.",
+                    "i18nClassification": "ACT: Text for tooltip of button.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageHeaderActionButton"
+                },
+                "icon": {
+                    "description": "An icon to be displayed as a graphical element within the button.\nThis can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons), represented as RFC 3986 conformant URI.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageHeaderActionButton"
+                },
+                "activeIcon": {
+                    "description": "An alternative icon for the active (depressed) state of the button.\nThis can be an image or an icon from the Icon Explorer (https://ui5.sap.com/test-resources/sap/m/demokit/iconExplorer/webapp/index.html#/overview/SAP-icons), represented as RFC 3986 conformant URI.",
+                    "type": "string",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageHeaderActionButton"
+                },
+                "type": {
+                    "$ref": "#/definitions/ButtonType",
+                    "description": "Defines the Button type.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageHeaderActionButton"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.Identification/1",
+            "actionType": "Annotation",
+            "keys": [
+                {
+                    "name": "Action",
+                    "value": "SEPMRA_C_PD_ProductCopy"
+                }
+            ],
+            "target": "SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities"
+        },
+        "ObjectPageHeaderActionStandard<UpAndDownNavigationOP>": {
+            "description": "Up and Down Navigation",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "description": "Allows you to define if the button is visible on the screen.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                }
+            },
+            "additionalProperties": false,
+            "actionType": "Standard"
+        },
+        "ObjectPageHeaderActionStandard<ShareOP>": {
+            "description": "Share",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "description": "Allows you to define if the button is visible on the screen.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Button"
+                }
+            },
+            "additionalProperties": false,
+            "actionType": "Standard"
+        },
+        "Sections": {
+            "type": "object",
+            "properties": {
+                "@com.sap.vocabularies.UI.v1.FieldGroup::TechnicalData": {
+                    "$ref": "#/definitions/ObjectPageSectionFormV2<@com.sap.vocabularies.UI.v1.FieldGroup::TechnicalData>"
+                },
+                "ProductReviewFacetID": {
+                    "$ref": "#/definitions/ObjectPageSectionTableV2<ProductReviewFacetID>"
+                },
+                "ProductSmartChartFacetID": {
+                    "$ref": "#/definitions/ObjectPageSectionChartV2<ProductSmartChartFacetID>"
+                },
+                "custom": {
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/ObjectPageCustomSectionView"
+                            },
+                            {
+                                "$ref": "#/definitions/ObjectPageCustomSectionFragment"
+                            }
+                        ]
+                    }
+                }
+            },
+            "description": "Sections",
+            "additionalProperties": false,
+            "isViewNode": true,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.Facets"
+        },
+        "ObjectPageSectionFormV2<@com.sap.vocabularies.UI.v1.FieldGroup::TechnicalData>": {
+            "type": "object",
+            "properties": {
+                "form": {
+                    "$ref": "#/definitions/SectionForm<SEPMRA_C_PD_ProductType::Form::TechnicalData>"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if this section should be visible.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageSection"
+                }
+            },
+            "additionalProperties": false,
+            "isViewNode": true,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.Facets/0",
+            "title": "com.sap.vocabularies.UI.v1.FieldGroup::TechnicalData",
+            "keys": [
+                {
+                    "name": "ID",
+                    "value": "FieldGroup::TechnicalData"
+                }
+            ],
+            "description": "Technical Data"
+        },
+        "SectionForm<SEPMRA_C_PD_ProductType::Form::TechnicalData>": {
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "$ref": "#/definitions/SectionActions<SEPMRA_C_PD_ProductType::Form::TechnicalData>"
+                },
+                "fields": {
+                    "$ref": "#/definitions/SectionFields<SEPMRA_C_PD_ProductType::Form::TechnicalData>"
+                }
+            },
+            "description": "Form",
+            "additionalProperties": false,
+            "keys": [
+                {
+                    "name": "Target",
+                    "value": "FieldGroup#TechnicalData"
+                }
+            ],
+            "target": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType",
+            "isViewNode": true,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.FieldGroup#TechnicalData"
+        },
+        "SectionActions<SEPMRA_C_PD_ProductType::Form::TechnicalData>": {
+            "type": "object",
+            "properties": {},
+            "description": "Actions",
+            "additionalProperties": false,
+            "isViewNode": true
+        },
+        "SectionFields<SEPMRA_C_PD_ProductType::Form::TechnicalData>": {
+            "type": "object",
+            "properties": {
+                "ProductBaseUnit": {
+                    "$ref": "#/definitions/Field<SEPMRA_C_PD_ProductType::Form::TechnicalData::ProductBaseUnit>",
+                    "propertyIndex": 0
+                },
+                "Height": {
+                    "$ref": "#/definitions/Field<SEPMRA_C_PD_ProductType::Form::TechnicalData::Height>",
+                    "propertyIndex": 1
+                },
+                "Width": {
+                    "$ref": "#/definitions/Field<SEPMRA_C_PD_ProductType::Form::TechnicalData::Width>",
+                    "propertyIndex": 2
+                },
+                "Depth": {
+                    "$ref": "#/definitions/Field<SEPMRA_C_PD_ProductType::Form::TechnicalData::Depth>",
+                    "propertyIndex": 3
+                },
+                "Weight": {
+                    "$ref": "#/definitions/Field<SEPMRA_C_PD_ProductType::Form::TechnicalData::Weight>",
+                    "propertyIndex": 4
+                }
+            },
+            "description": "Fields",
+            "additionalProperties": false,
+            "isViewNode": true
+        },
+        "Field<SEPMRA_C_PD_ProductType::Form::TechnicalData::ProductBaseUnit>": {
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the field is visible on the screen.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smartform.GroupElement"
+                }
+            },
+            "description": "Base Unit",
+            "additionalProperties": false,
+            "keys": [
+                {
+                    "name": "Value",
+                    "value": "ProductBaseUnit"
+                }
+            ],
+            "target": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType",
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.FieldGroup#TechnicalData/Data/0",
+            "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+            "isViewNode": true,
+            "dataType": "String"
+        },
+        "Field<SEPMRA_C_PD_ProductType::Form::TechnicalData::Height>": {
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the field is visible on the screen.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smartform.GroupElement"
+                }
+            },
+            "description": "Height",
+            "additionalProperties": false,
+            "keys": [
+                {
+                    "name": "Value",
+                    "value": "Height"
+                }
+            ],
+            "target": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType",
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.FieldGroup#TechnicalData/Data/1",
+            "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+            "isViewNode": true,
+            "dataType": "Decimal"
+        },
+        "Field<SEPMRA_C_PD_ProductType::Form::TechnicalData::Width>": {
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the field is visible on the screen.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smartform.GroupElement"
+                }
+            },
+            "description": "Width",
+            "additionalProperties": false,
+            "keys": [
+                {
+                    "name": "Value",
+                    "value": "Width"
+                }
+            ],
+            "target": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType",
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.FieldGroup#TechnicalData/Data/2",
+            "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+            "isViewNode": true,
+            "dataType": "Decimal"
+        },
+        "Field<SEPMRA_C_PD_ProductType::Form::TechnicalData::Depth>": {
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the field is visible on the screen.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smartform.GroupElement"
+                }
+            },
+            "description": "Depth",
+            "additionalProperties": false,
+            "keys": [
+                {
+                    "name": "Value",
+                    "value": "Depth"
+                }
+            ],
+            "target": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType",
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.FieldGroup#TechnicalData/Data/3",
+            "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+            "isViewNode": true,
+            "dataType": "Decimal"
+        },
+        "Field<SEPMRA_C_PD_ProductType::Form::TechnicalData::Weight>": {
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if the field is visible on the screen.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smartform.GroupElement"
+                }
+            },
+            "description": "Weight",
+            "additionalProperties": false,
+            "keys": [
+                {
+                    "name": "Value",
+                    "value": "Weight"
+                }
+            ],
+            "target": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType",
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.FieldGroup#TechnicalData/Data/4",
+            "annotationType": "com.sap.vocabularies.UI.v1.DataField",
+            "isViewNode": true,
+            "dataType": "Decimal"
+        },
+        "ObjectPageSectionTableV2<ProductReviewFacetID>": {
+            "type": "object",
+            "properties": {
+                "table": {
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/ObjectPageResponsiveTableWithMultiSelect<ProductReviewFacetID>"
+                        },
+                        {
+                            "$ref": "#/definitions/ObjectPageResponsiveTableWithInlineDelete<ProductReviewFacetID>"
+                        },
+                        {
+                            "$ref": "#/definitions/ObjectPageAnalyticalTable<ProductReviewFacetID>"
+                        },
+                        {
+                            "$ref": "#/definitions/ObjectPageGridTable<ProductReviewFacetID>"
+                        },
+                        {
+                            "$ref": "#/definitions/ObjectPageTreeTable<ProductReviewFacetID>"
+                        }
+                    ]
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if this section should be visible.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageSection"
+                }
+            },
+            "additionalProperties": false,
+            "isViewNode": true,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.Facets/1",
+            "title": "Facet ID: ProductReviewFacetID",
+            "keys": [
+                {
+                    "name": "ID",
+                    "value": "ProductReviewFacetID"
+                }
+            ],
+            "description": "Reviews"
+        },
+        "ObjectPageResponsiveTableWithMultiSelect<ProductReviewFacetID>": {
+            "description": "Table",
+            "isViewNode": true,
+            "controlProperty": "type",
+            "type": "object",
+            "properties": {
+                "multiSelect": {
+                    "description": "Determines whether multi-select is enabled for tables. By default, you can only single-select.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "type": {
+                    "description": "Specifies the type of table.",
+                    "type": "string",
+                    "const": "ResponsiveTable",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/7f844f1021cd4791b8f7408eac7c1cec"
+                },
+                "includeItemInSelection": {
+                    "description": "Set this property to true if you want items to be selectable when clicked rather than after the selection control has been set.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Table"
+                },
+                "popinLayout": {
+                    "pattern": "^(Block|GridLarge|GridSmall)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/PopinLayout"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines the layout the table pop-in rows are rendered in.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Table"
+                },
+                "growingThreshold": {
+                    "description": "Defines the number of items to be requested from the model for each grow. This property can only be used if the growing property is set to true.",
+                    "type": "number",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Table"
+                },
+                "createMode": {
+                    "$ref": "#/definitions/CreateMode",
+                    "description": "You can set the following values for this property:\n- creationRows: Used to enable empty rows mode. In create or edit mode an empty row is added to the table.\n- creationRowsHiddenInEditMode: Like \"creationRows\", but in edit mode the empty row will only be shown when the user clicks the Create button. This option is available starting with SAPUI5 version 1.110.\n- inline: In create or edit mode, the users can use the Create button to add new entries to the table. We recommend to use \"creationRows\" instead.\nBy default no empty row is provided and the Create button automatically navigates to the item's object page for the newly created entry.",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/cfb04f0c58e7409992feb4c91aa9410b"
+                },
+                "selectionLimit": {
+                    "description": "When new data is loaded, the number of lines is restricted to the specified limit. The default value is 200.\nIf selectAll is true, the selection limit is not evaluated.",
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "disableDefaultInlineCreateSort": {
+                    "description": "If createMode is set to inline, you can use this setting to disable the default sort order.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "useExportToExcel": {
+                    "description": "useExportToExcel must be set to true if you want to export data to a spreadsheet application, for example Microsoft Excel.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "exportType": {
+                    "$ref": "#/definitions/smarttable.ExportType",
+                    "description": "Specifies the type of export to be used in the SmartTable control. UI5Client is the default option.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "editable": {
+                    "description": "With editable you can control if a table can be edited. It should be set to false for smart tables with non-editable content.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "showPasteButton": {
+                    "description": "Determines the visibility of the Paste button in the table toolbar. By default, the Paste button is available if the page is in edit mode.\nIf this property is set to False, the Paste button is removed.\nNote: We don't recommend setting this property to True, because it results in the Paste button being visible even when it does not have a function. For example, in display mode.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/f6a8fd2812d9442a9bba2f6fb296c42e"
+                },
+                "createWithParameterDialog": {
+                    "$ref": "#/definitions/Fields4DialogOP",
+                    "description": "You can enable the creation of objects that have a maximum of eight data fields through a dialog in the list report page.",
+                    "artifactType": "Manifest"
+                },
+                "copy": {
+                    "description": "If set to true, the Copy to Clipboard button is shown in the table toolbar.\nBy default, the Copy to Clipboard button is displayed in the table toolbar if the selection mode is configured for the corresponding table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "quickVariantSelection": {
+                    "$ref": "#/definitions/QuickVariantSelectionOP<ProductReviewFacetID>",
+                    "description": "With quickVariantSelection, you can activate the multiple view feature. This feature links to variants that you have added to your annotations.",
+                    "artifactType": "Manifest"
+                },
+                "toolBar": {
+                    "$ref": "#/definitions/ObjectPageToolBar<ProductReviewFacetID>",
+                    "description": "Tool Bar"
+                },
+                "columns": {
+                    "$ref": "#/definitions/ProductReviewFacetID",
+                    "description": "Columns"
+                },
+                "selectAll": {
+                    "description": "The 'Select All' button is disabled by default. To enable it, set selectAll to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "variantManagement": {
+                    "description": "Set this property to true to enable variant management for the table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.Facets/1",
+            "title": "Facet ID: ProductReviewFacetID",
+            "keys": [
+                {
+                    "name": "ID",
+                    "value": "ProductReviewFacetID"
+                }
+            ]
+        },
+        "QuickVariantSelectionOP<ProductReviewFacetID>": {
+            "type": "object",
+            "properties": {
+                "showCounts": {
+                    "description": "To show the number of records available, set showCounts to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "variants": {
+                    "description": "The variants section contains a set of entries that point to a SelectionVariant or a SelectionPresentationVariant annotation.",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "patternProperties": {
+                        "^[0-9]+$": {
+                            "$ref": "#/definitions/QuickVariant<ProductReviewFacetID>"
+                        }
+                    },
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "variants"
+            ]
+        },
+        "QuickVariant<ProductReviewFacetID>": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "description": "The key property is mandatory. It is used for initializing the corresponding SegmentedButton item.",
+                    "type": "string"
+                },
+                "annotationPath": {
+                    "description": "Use annotationPath to define a specific variant that points to a SelectionVariant or SelectionPresentationVariant annotation.",
+                    "type": "string"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "annotationPath",
+                "key"
+            ]
+        },
+        "ObjectPageResponsiveTableWithInlineDelete<ProductReviewFacetID>": {
+            "description": "Table",
+            "isViewNode": true,
+            "controlProperty": "type",
+            "type": "object",
+            "properties": {
+                "inlineDelete": {
+                    "description": "Used to enable inline deletion in a responsive table in list report and object pages.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "type": {
+                    "description": "Specifies the type of table.",
+                    "type": "string",
+                    "const": "ResponsiveTable",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/7f844f1021cd4791b8f7408eac7c1cec"
+                },
+                "includeItemInSelection": {
+                    "description": "Set this property to true if you want items to be selectable when clicked rather than after the selection control has been set.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Table"
+                },
+                "popinLayout": {
+                    "pattern": "^(Block|GridLarge|GridSmall)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/PopinLayout"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines the layout the table pop-in rows are rendered in.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Table"
+                },
+                "growingThreshold": {
+                    "description": "Defines the number of items to be requested from the model for each grow. This property can only be used if the growing property is set to true.",
+                    "type": "number",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.Table"
+                },
+                "createMode": {
+                    "$ref": "#/definitions/CreateMode",
+                    "description": "You can set the following values for this property:\n- creationRows: Used to enable empty rows mode. In create or edit mode an empty row is added to the table.\n- creationRowsHiddenInEditMode: Like \"creationRows\", but in edit mode the empty row will only be shown when the user clicks the Create button. This option is available starting with SAPUI5 version 1.110.\n- inline: In create or edit mode, the users can use the Create button to add new entries to the table. We recommend to use \"creationRows\" instead.\nBy default no empty row is provided and the Create button automatically navigates to the item's object page for the newly created entry.",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/cfb04f0c58e7409992feb4c91aa9410b"
+                },
+                "selectionLimit": {
+                    "description": "When new data is loaded, the number of lines is restricted to the specified limit. The default value is 200.\nIf selectAll is true, the selection limit is not evaluated.",
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "disableDefaultInlineCreateSort": {
+                    "description": "If createMode is set to inline, you can use this setting to disable the default sort order.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "useExportToExcel": {
+                    "description": "useExportToExcel must be set to true if you want to export data to a spreadsheet application, for example Microsoft Excel.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "exportType": {
+                    "$ref": "#/definitions/smarttable.ExportType",
+                    "description": "Specifies the type of export to be used in the SmartTable control. UI5Client is the default option.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "editable": {
+                    "description": "With editable you can control if a table can be edited. It should be set to false for smart tables with non-editable content.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "showPasteButton": {
+                    "description": "Determines the visibility of the Paste button in the table toolbar. By default, the Paste button is available if the page is in edit mode.\nIf this property is set to False, the Paste button is removed.\nNote: We don't recommend setting this property to True, because it results in the Paste button being visible even when it does not have a function. For example, in display mode.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/f6a8fd2812d9442a9bba2f6fb296c42e"
+                },
+                "createWithParameterDialog": {
+                    "$ref": "#/definitions/Fields4DialogOP",
+                    "description": "You can enable the creation of objects that have a maximum of eight data fields through a dialog in the list report page.",
+                    "artifactType": "Manifest"
+                },
+                "copy": {
+                    "description": "If set to true, the Copy to Clipboard button is shown in the table toolbar.\nBy default, the Copy to Clipboard button is displayed in the table toolbar if the selection mode is configured for the corresponding table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "quickVariantSelection": {
+                    "$ref": "#/definitions/QuickVariantSelectionOP<ProductReviewFacetID>",
+                    "description": "With quickVariantSelection, you can activate the multiple view feature. This feature links to variants that you have added to your annotations.",
+                    "artifactType": "Manifest"
+                },
+                "toolBar": {
+                    "$ref": "#/definitions/ObjectPageToolBar<ProductReviewFacetID>",
+                    "description": "Tool Bar"
+                },
+                "columns": {
+                    "$ref": "#/definitions/ProductReviewFacetID",
+                    "description": "Columns"
+                },
+                "selectAll": {
+                    "description": "The 'Select All' button is disabled by default. To enable it, set selectAll to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "variantManagement": {
+                    "description": "Set this property to true to enable variant management for the table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.Facets/1",
+            "title": "Facet ID: ProductReviewFacetID",
+            "keys": [
+                {
+                    "name": "ID",
+                    "value": "ProductReviewFacetID"
+                }
+            ]
+        },
+        "ObjectPageGridTable<ProductReviewFacetID>": {
+            "description": "Table",
+            "isViewNode": true,
+            "controlProperty": "type",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "description": "Specifies the type of table.",
+                    "type": "string",
+                    "const": "GridTable",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/7f844f1021cd4791b8f7408eac7c1cec"
+                },
+                "condensedTableLayout": {
+                    "description": "For the analytical table, grid table and tree table you can decide on a condensed table layout by setting condensedTableLayout to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "multiSelect": {
+                    "description": "Single selection in tables is enabled by default. If you want, you can enable multi-select.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "createMode": {
+                    "$ref": "#/definitions/CreateMode",
+                    "description": "You can set the following values for this property:\n- creationRows: Used to enable empty rows mode. In create or edit mode an empty row is added to the table.\n- creationRowsHiddenInEditMode: Like \"creationRows\", but in edit mode the empty row will only be shown when the user clicks the Create button. This option is available starting with SAPUI5 version 1.110.\n- inline: In create or edit mode, the users can use the Create button to add new entries to the table. We recommend to use \"creationRows\" instead.\nBy default no empty row is provided and the Create button automatically navigates to the item's object page for the newly created entry.",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/cfb04f0c58e7409992feb4c91aa9410b"
+                },
+                "selectionLimit": {
+                    "description": "When new data is loaded, the number of lines is restricted to the specified limit. The default value is 200.\nIf selectAll is true, the selection limit is not evaluated.",
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "disableDefaultInlineCreateSort": {
+                    "description": "If createMode is set to inline, you can use this setting to disable the default sort order.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "useExportToExcel": {
+                    "description": "useExportToExcel must be set to true if you want to export data to a spreadsheet application, for example Microsoft Excel.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "exportType": {
+                    "$ref": "#/definitions/smarttable.ExportType",
+                    "description": "Specifies the type of export to be used in the SmartTable control. UI5Client is the default option.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "editable": {
+                    "description": "With editable you can control if a table can be edited. It should be set to false for smart tables with non-editable content.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "showPasteButton": {
+                    "description": "Determines the visibility of the Paste button in the table toolbar. By default, the Paste button is available if the page is in edit mode.\nIf this property is set to False, the Paste button is removed.\nNote: We don't recommend setting this property to True, because it results in the Paste button being visible even when it does not have a function. For example, in display mode.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/f6a8fd2812d9442a9bba2f6fb296c42e"
+                },
+                "createWithParameterDialog": {
+                    "$ref": "#/definitions/Fields4DialogOP",
+                    "description": "You can enable the creation of objects that have a maximum of eight data fields through a dialog in the list report page.",
+                    "artifactType": "Manifest"
+                },
+                "copy": {
+                    "description": "If set to true, the Copy to Clipboard button is shown in the table toolbar.\nBy default, the Copy to Clipboard button is displayed in the table toolbar if the selection mode is configured for the corresponding table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "quickVariantSelection": {
+                    "$ref": "#/definitions/QuickVariantSelectionOP<ProductReviewFacetID>",
+                    "description": "With quickVariantSelection, you can activate the multiple view feature. This feature links to variants that you have added to your annotations.",
+                    "artifactType": "Manifest"
+                },
+                "toolBar": {
+                    "$ref": "#/definitions/ObjectPageToolBar<ProductReviewFacetID>",
+                    "description": "Tool Bar"
+                },
+                "columns": {
+                    "$ref": "#/definitions/ProductReviewFacetID",
+                    "description": "Columns"
+                },
+                "selectAll": {
+                    "description": "The 'Select All' button is disabled by default. To enable it, set selectAll to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "variantManagement": {
+                    "description": "Set this property to true to enable variant management for the table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.Facets/1",
+            "title": "Facet ID: ProductReviewFacetID",
+            "keys": [
+                {
+                    "name": "ID",
+                    "value": "ProductReviewFacetID"
+                }
+            ]
+        },
+        "ObjectPageTreeTable<ProductReviewFacetID>": {
+            "description": "Table",
+            "isViewNode": true,
+            "controlProperty": "type",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "description": "Specifies the type of table.",
+                    "type": "string",
+                    "const": "TreeTable",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/7f844f1021cd4791b8f7408eac7c1cec"
+                },
+                "condensedTableLayout": {
+                    "description": "For the analytical table, grid table and tree table you can decide on a condensed table layout by setting condensedTableLayout to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "multiSelect": {
+                    "description": "Single selection in tables is enabled by default. If you want, you can enable multi-select.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "createMode": {
+                    "$ref": "#/definitions/CreateMode",
+                    "description": "You can set the following values for this property:\n- creationRows: Used to enable empty rows mode. In create or edit mode an empty row is added to the table.\n- creationRowsHiddenInEditMode: Like \"creationRows\", but in edit mode the empty row will only be shown when the user clicks the Create button. This option is available starting with SAPUI5 version 1.110.\n- inline: In create or edit mode, the users can use the Create button to add new entries to the table. We recommend to use \"creationRows\" instead.\nBy default no empty row is provided and the Create button automatically navigates to the item's object page for the newly created entry.",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/cfb04f0c58e7409992feb4c91aa9410b"
+                },
+                "selectionLimit": {
+                    "description": "When new data is loaded, the number of lines is restricted to the specified limit. The default value is 200.\nIf selectAll is true, the selection limit is not evaluated.",
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "disableDefaultInlineCreateSort": {
+                    "description": "If createMode is set to inline, you can use this setting to disable the default sort order.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "useExportToExcel": {
+                    "description": "useExportToExcel must be set to true if you want to export data to a spreadsheet application, for example Microsoft Excel.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "exportType": {
+                    "$ref": "#/definitions/smarttable.ExportType",
+                    "description": "Specifies the type of export to be used in the SmartTable control. UI5Client is the default option.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "editable": {
+                    "description": "With editable you can control if a table can be edited. It should be set to false for smart tables with non-editable content.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "showPasteButton": {
+                    "description": "Determines the visibility of the Paste button in the table toolbar. By default, the Paste button is available if the page is in edit mode.\nIf this property is set to False, the Paste button is removed.\nNote: We don't recommend setting this property to True, because it results in the Paste button being visible even when it does not have a function. For example, in display mode.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/f6a8fd2812d9442a9bba2f6fb296c42e"
+                },
+                "createWithParameterDialog": {
+                    "$ref": "#/definitions/Fields4DialogOP",
+                    "description": "You can enable the creation of objects that have a maximum of eight data fields through a dialog in the list report page.",
+                    "artifactType": "Manifest"
+                },
+                "copy": {
+                    "description": "If set to true, the Copy to Clipboard button is shown in the table toolbar.\nBy default, the Copy to Clipboard button is displayed in the table toolbar if the selection mode is configured for the corresponding table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "quickVariantSelection": {
+                    "$ref": "#/definitions/QuickVariantSelectionOP<ProductReviewFacetID>",
+                    "description": "With quickVariantSelection, you can activate the multiple view feature. This feature links to variants that you have added to your annotations.",
+                    "artifactType": "Manifest"
+                },
+                "toolBar": {
+                    "$ref": "#/definitions/ObjectPageToolBar<ProductReviewFacetID>",
+                    "description": "Tool Bar"
+                },
+                "columns": {
+                    "$ref": "#/definitions/ProductReviewFacetID",
+                    "description": "Columns"
+                },
+                "selectAll": {
+                    "description": "The 'Select All' button is disabled by default. To enable it, set selectAll to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "variantManagement": {
+                    "description": "Set this property to true to enable variant management for the table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.Facets/1",
+            "title": "Facet ID: ProductReviewFacetID",
+            "keys": [
+                {
+                    "name": "ID",
+                    "value": "ProductReviewFacetID"
+                }
+            ]
+        },
+        "ObjectPageAnalyticalTable<ProductReviewFacetID>": {
+            "description": "Table",
+            "isViewNode": true,
+            "controlProperty": "type",
+            "type": "object",
+            "properties": {
+                "type": {
+                    "description": "Specifies the type of table.",
+                    "type": "string",
+                    "const": "AnalyticalTable",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/7f844f1021cd4791b8f7408eac7c1cec"
+                },
+                "condensedTableLayout": {
+                    "description": "For the analytical table, grid table and tree table you can decide on a condensed table layout by setting condensedTableLayout to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "multiSelect": {
+                    "description": "Single selection in tables is enabled by default. If you want, you can enable multi-select.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "createMode": {
+                    "$ref": "#/definitions/CreateMode",
+                    "description": "You can set the following values for this property:\n- creationRows: Used to enable empty rows mode. In create or edit mode an empty row is added to the table.\n- creationRowsHiddenInEditMode: Like \"creationRows\", but in edit mode the empty row will only be shown when the user clicks the Create button. This option is available starting with SAPUI5 version 1.110.\n- inline: In create or edit mode, the users can use the Create button to add new entries to the table. We recommend to use \"creationRows\" instead.\nBy default no empty row is provided and the Create button automatically navigates to the item's object page for the newly created entry.",
+                    "artifactType": "Manifest",
+                    "descriptionSrcURL": "https://ui5.sap.com/sdk/#/topic/cfb04f0c58e7409992feb4c91aa9410b"
+                },
+                "selectionLimit": {
+                    "description": "When new data is loaded, the number of lines is restricted to the specified limit. The default value is 200.\nIf selectAll is true, the selection limit is not evaluated.",
+                    "type": "number",
+                    "artifactType": "Manifest"
+                },
+                "disableDefaultInlineCreateSort": {
+                    "description": "If createMode is set to inline, you can use this setting to disable the default sort order.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "useExportToExcel": {
+                    "description": "useExportToExcel must be set to true if you want to export data to a spreadsheet application, for example Microsoft Excel.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "exportType": {
+                    "$ref": "#/definitions/smarttable.ExportType",
+                    "description": "Specifies the type of export to be used in the SmartTable control. UI5Client is the default option.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "editable": {
+                    "description": "With editable you can control if a table can be edited. It should be set to false for smart tables with non-editable content.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable"
+                },
+                "showPasteButton": {
+                    "description": "Determines the visibility of the Paste button in the table toolbar. By default, the Paste button is available if the page is in edit mode.\nIf this property is set to False, the Paste button is removed.\nNote: We don't recommend setting this property to True, because it results in the Paste button being visible even when it does not have a function. For example, in display mode.",
+                    "type": "boolean",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.ui.comp.smarttable.SmartTable",
+                    "descriptionSrcURL": "https://ui5.sap.com/#/topic/f6a8fd2812d9442a9bba2f6fb296c42e"
+                },
+                "createWithParameterDialog": {
+                    "$ref": "#/definitions/Fields4DialogOP",
+                    "description": "You can enable the creation of objects that have a maximum of eight data fields through a dialog in the list report page.",
+                    "artifactType": "Manifest"
+                },
+                "copy": {
+                    "description": "If set to true, the Copy to Clipboard button is shown in the table toolbar.\nBy default, the Copy to Clipboard button is displayed in the table toolbar if the selection mode is configured for the corresponding table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "quickVariantSelection": {
+                    "$ref": "#/definitions/QuickVariantSelectionOP<ProductReviewFacetID>",
+                    "description": "With quickVariantSelection, you can activate the multiple view feature. This feature links to variants that you have added to your annotations.",
+                    "artifactType": "Manifest"
+                },
+                "toolBar": {
+                    "$ref": "#/definitions/ObjectPageToolBar<ProductReviewFacetID>",
+                    "description": "Tool Bar"
+                },
+                "columns": {
+                    "$ref": "#/definitions/ProductReviewFacetID",
+                    "description": "Columns"
+                },
+                "selectAll": {
+                    "description": "The 'Select All' button is disabled by default. To enable it, set selectAll to true.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                },
+                "variantManagement": {
+                    "description": "Set this property to true to enable variant management for the table.",
+                    "type": "boolean",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.Facets/1",
+            "title": "Facet ID: ProductReviewFacetID",
+            "keys": [
+                {
+                    "name": "ID",
+                    "value": "ProductReviewFacetID"
+                }
+            ]
+        },
+        "TableCustomColumn<SEPMRA_C_PD_ReviewPost>": {
+            "description": "Custom Column",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "If the fragment needs to be reused for multiple tabs, the id property must be set to make the IDs unique.",
+                    "artifactType": "XMLProperty",
+                    "type": "string"
+                },
+                "text": {
+                    "description": "The label of the custom column, preferably as an i18n key.",
+                    "i18nClassification": "COL: Custom column header text",
+                    "artifactType": "XMLProperty",
+                    "type": "string"
+                },
+                "columnKey": {
+                    "description": "The column key.",
+                    "artifactType": "XMLProperty",
+                    "type": "string"
+                },
+                "columnIndex": {
+                    "description": "The index of the column in the overall collection; if undefined, the custom column will be added at the end of the table.",
+                    "minimum": 0,
+                    "hidden": true,
+                    "artifactType": "XMLProperty",
+                    "type": "number"
+                },
+                "leadingProperty": {
+                    "description": "If the content of your custom column refers to a property (such as{Price}), you need to include a corresponding 'leadingProperty' entry in the column definition.",
+                    "artifactType": "XMLProperty",
+                    "type": "string",
+                    "enum": [
+                        "Delete_ac",
+                        "Dislike_ac",
+                        "Like_ac",
+                        "Update_ac",
+                        "ProductReviewPostUUID",
+                        "ProductReviewUUID",
+                        "Product",
+                        "ReviewPostTitle",
+                        "ReviewPostText",
+                        "ReviewRatingValue",
+                        "NumberOfAffirmativeAnswers",
+                        "TotalNumberOfAnswers",
+                        "ReviewDate",
+                        "ContactPerson",
+                        "IsReviewOfCurrentUser",
+                        "to_ContactPerson",
+                        "to_Product"
+                    ]
+                },
+                "className": {
+                    "description": "The UI5 control used for your extension.",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "const": "sap.ui.core.Fragment"
+                },
+                "fragmentName": {
+                    "description": "The relative path to your fragment with path segments separated by '.'. The first element is the app ID.",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "const": "fev2.ext.fragment.CustomColumn"
+                },
+                "cellsFragmentName": {
+                    "description": "In case of a responsive table, you additionally need to specify a fragment for the table cells.",
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "enum": [
+                        "fev2.ext.fragment.CustomCell",
+                        "fev2.ext.fragment.CustomSection"
+                    ]
+                },
+                "tabKey": {
+                    "description": "In case of Object Page, the tabkey in manifest is equivalent to the facet ID.",
+                    "hidden": true,
+                    "artifactType": "Manifest",
+                    "type": "string",
+                    "enum": [
+                        "ProductReviewFacetID"
+                    ]
+                },
+                "extensionType": {
+                    "$ref": "#/definitions/TableColumnExtensionTypeV2",
+                    "description": "Type of custom column view extension.",
+                    "artifactType": "Manifest"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "className",
+                "columnKey",
+                "extensionType",
+                "fragmentName"
+            ]
+        },
+        "TableCustomColumns<SEPMRA_C_PD_ReviewPost><ProductReviewFacetID><ProductReviewFacetIDReviews>": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/TableCustomColumn<SEPMRA_C_PD_ReviewPost>"
+            },
+            "description": "Custom Columns",
+            "isViewNode": true
+        },
+        "ProductReviewFacetID": {
+            "type": "object",
+            "properties": {
+                "DataFieldForAnnotation:::sTarget::@com.sap.vocabularies.UI.v1.DataPoint#ReviewRatingValue": {
+                    "$ref": "#/definitions/TableColumn",
+                    "description": "Rating",
+                    "propertyIndex": 0,
+                    "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewPostType/@com.sap.vocabularies.UI.v1.LineItem/0",
+                    "dataType": "Rating",
+                    "keys": [
+                        {
+                            "name": "Target",
+                            "value": "UI.DataPoint#ReviewRatingValue"
+                        }
+                    ],
+                    "target": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewPostType"
+                },
+                "ContactPerson": {
+                    "$ref": "#/definitions/TableColumn",
+                    "description": "Person",
+                    "propertyIndex": 1,
+                    "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewPostType/@com.sap.vocabularies.UI.v1.LineItem/1",
+                    "dataType": "String",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "ContactPerson"
+                        }
+                    ]
+                },
+                "ReviewDate": {
+                    "$ref": "#/definitions/TableColumn",
+                    "description": "Date",
+                    "propertyIndex": 2,
+                    "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewPostType/@com.sap.vocabularies.UI.v1.LineItem/2",
+                    "dataType": "DateTime",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "ReviewDate"
+                        }
+                    ]
+                },
+                "ReviewPostText": {
+                    "$ref": "#/definitions/TableColumn",
+                    "description": "Review Text",
+                    "propertyIndex": 3,
+                    "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewPostType/@com.sap.vocabularies.UI.v1.LineItem/3",
+                    "dataType": "String",
+                    "keys": [
+                        {
+                            "name": "Value",
+                            "value": "ReviewPostText"
+                        }
+                    ]
+                },
+                "DataFieldForAnnotation:::sTarget::@com.sap.vocabularies.UI.v1.DataPoint#NumberOfAffirmativeAnswers": {
+                    "$ref": "#/definitions/TableColumn",
+                    "description": "Helpful",
+                    "propertyIndex": 4,
+                    "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewPostType/@com.sap.vocabularies.UI.v1.LineItem/4",
+                    "dataType": "Progress",
+                    "keys": [
+                        {
+                            "name": "Target",
+                            "value": "UI.DataPoint#NumberOfAffirmativeAnswers"
+                        }
+                    ],
+                    "target": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewPostType"
+                },
+                "custom": {
+                    "$ref": "#/definitions/TableCustomColumns<SEPMRA_C_PD_ReviewPost><ProductReviewFacetID><ProductReviewFacetIDReviews>"
+                }
+            },
+            "description": "Columns",
+            "isViewNode": true,
+            "additionalProperties": false
+        },
+        "ObjectPageToolBar<ProductReviewFacetID>": {
+            "description": "Toolbar",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "$ref": "#/definitions/Actions<ProductReviewFacetID>"
+                }
+            },
+            "additionalProperties": false,
+            "required": [
+                "actions"
+            ],
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewPostType/@com.sap.vocabularies.UI.v1.LineItem"
+        },
+        "Actions<ProductReviewFacetID>": {
+            "description": "Actions",
+            "isViewNode": true,
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {}
+        },
+        "ObjectPageSectionChartV2<ProductSmartChartFacetID>": {
+            "type": "object",
+            "properties": {
+                "chart": {
+                    "$ref": "#/definitions/ObjectPageChart"
+                },
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Defines if this section should be visible.",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.uxap.ObjectPageSection"
+                }
+            },
+            "additionalProperties": false,
+            "isViewNode": true,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.Facets/2",
+            "title": "Facet ID: ProductSmartChartFacetID",
+            "keys": [
+                {
+                    "name": "ID",
+                    "value": "ProductSmartChartFacetID"
+                }
+            ],
+            "description": "Sales Data"
+        },
+        "ObjectPageHeaderSectionForm<@com.sap.vocabularies.UI.v1.FieldGroup::HeaderInformation>": {
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Specifies whether the facet is visible or not",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.VBox"
+                }
+            },
+            "additionalProperties": false,
+            "isViewNode": true,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.HeaderFacets/0",
+            "title": "com.sap.vocabularies.UI.v1.FieldGroup::HeaderInformation",
+            "keys": [
+                {
+                    "name": "ID",
+                    "value": "FieldGroup::HeaderInformation"
+                }
+            ],
+            "description": "General Information",
+            "dataType": "FieldGroup"
+        },
+        "ObjectPageHeaderSectionForm<@com.sap.vocabularies.UI.v1.FieldGroup::ProductHeaderText>": {
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Specifies whether the facet is visible or not",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.VBox"
+                }
+            },
+            "additionalProperties": false,
+            "isViewNode": true,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.HeaderFacets/1",
+            "title": "com.sap.vocabularies.UI.v1.FieldGroup::ProductHeaderText",
+            "keys": [
+                {
+                    "name": "ID",
+                    "value": "FieldGroup::ProductHeaderText"
+                }
+            ],
+            "description": "Description",
+            "dataType": "FieldGroup"
+        },
+        "ObjectPageHeaderSectionDataPoint<to_ProductStock::@com.sap.vocabularies.UI.v1.DataPoint::StockAvailability>": {
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Specifies whether the facet is visible or not",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.VBox"
+                }
+            },
+            "additionalProperties": false,
+            "isViewNode": true,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.HeaderFacets/2",
+            "title": "to_ProductStock::com.sap.vocabularies.UI.v1.DataPoint::StockAvailability::DataPoint",
+            "keys": [
+                {
+                    "name": "ID",
+                    "value": "to_ProductStock::DataPoint::StockAvailability"
+                }
+            ],
+            "description": "Availability",
+            "dataType": "DataPoint"
+        },
+        "ObjectPageHeaderSectionDataPoint<@com.sap.vocabularies.UI.v1.DataPoint::Price>": {
+            "type": "object",
+            "properties": {
+                "visible": {
+                    "pattern": "^(false|true)$|^{[A-Za-z0-9{}&$!@#%? _|,<>'()[\\]\\/:=.]+}$",
+                    "anyOf": [
+                        {
+                            "enum": [
+                                false,
+                                true,
+                                "{ui>/editable}",
+                                "{= !${ui>/editable}}"
+                            ]
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ],
+                    "description": "Specifies whether the facet is visible or not",
+                    "artifactType": "FlexChange",
+                    "controlType": "sap.m.VBox"
+                }
+            },
+            "additionalProperties": false,
+            "isViewNode": true,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.HeaderFacets/3",
+            "title": "com.sap.vocabularies.UI.v1.DataPoint::Price::DataPoint",
+            "keys": [
+                {
+                    "name": "ID",
+                    "value": "DataPoint::Price"
+                }
+            ],
+            "description": "Price",
+            "dataType": "DataPoint"
+        },
+        "RelatedFacetKeys": {
+            "type": "string",
+            "oneOf": [
+                {
+                    "const": "com.sap.vocabularies.UI.v1.FieldGroup::TechnicalData",
+                    "description": "Technical Data"
+                },
+                {
+                    "const": "ProductReviewFacetID",
+                    "description": "Reviews"
+                },
+                {
+                    "const": "ProductSmartChartFacetID",
+                    "description": "Sales Data"
+                }
+            ]
+        },
+        "ObjectPageFooter": {
+            "description": "Footer",
+            "isViewNode": true,
+            "type": "object",
+            "properties": {
+                "actions": {
+                    "$ref": "#/definitions/FooterActions"
+                }
+            },
+            "additionalProperties": false
+        },
+        "FooterActions": {
+            "type": "object",
+            "properties": {},
+            "description": "Actions",
+            "additionalProperties": false,
+            "isViewNode": true,
+            "annotationPath": "/SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType/@com.sap.vocabularies.UI.v1.Identification"
+        }
+    },
+    "$schema": "http://json-schema.org/draft-07/schema#"
+}

@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "properties": {
+    "functionalityId": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": ["string", "number"]
+          }
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "status": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "parameters": {},
+    "appPath": {
+      "type": "string"
+    },
+    "changes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "timestamp": {
+      "type": "string"
+    }
+  },
+  "required": ["functionalityId", "status", "message", "parameters", "appPath", "changes", "timestamp"],
+  "additionalProperties": false
+}
