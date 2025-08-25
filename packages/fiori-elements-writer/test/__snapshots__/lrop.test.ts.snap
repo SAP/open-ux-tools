@@ -7338,7 +7338,6 @@ archive.zip
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
-        \\"target\\": \\"es2022\\",
         \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
         \\"allowJs\\": true,
@@ -24202,7 +24201,6 @@ Object {
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
-        \\"target\\": \\"es2022\\",
         \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
         \\"allowJs\\": true,
@@ -47868,7 +47866,6 @@ archive.zip
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
-        \\"target\\": \\"es2022\\",
         \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
         \\"allowJs\\": true,
@@ -51370,7 +51367,6 @@ archive.zip
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
-        \\"target\\": \\"es2022\\",
         \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
         \\"allowJs\\": true,
@@ -54872,7 +54868,6 @@ archive.zip
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
-        \\"target\\": \\"es2022\\",
         \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
         \\"allowJs\\": true,

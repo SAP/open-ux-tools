@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "incremental": true,
-        "lib": ["ES2022", "DOM"],
+        "lib": ["ES2023", "DOM"],
         "strictNullChecks": true,
         "outDir": "dist",
         "rootDir": "src",

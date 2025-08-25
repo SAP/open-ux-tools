@@ -4,7 +4,7 @@
     "outDir": "dist",
     "rootDir": "src",
     "lib": [
-      "ES2022",
+      "ES2023",
       "ESNext.BigInt"
     ],
     "preserveConstEnums": false
