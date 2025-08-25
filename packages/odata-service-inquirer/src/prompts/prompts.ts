@@ -20,7 +20,7 @@ import { getDatasourceTypeChoices } from './prompt-helpers';
  * Get the prompts for the OData service inquirer.
  *
  * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
- * @param connectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
+ * @param connectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket connection types
  * @returns the prompts used to provide input for OData service generation
  */
 export async function getQuestions(

@@ -5,13 +5,7 @@ import {
     generateABAPCloudDestinationName
 } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import {
-    type FileBrowserQuestion,
-    type ListQuestion,
-    ERROR_TYPE,
-    getCFAbapInstanceChoices,
-    withCondition
-} from '@sap-ux/inquirer-common';
+import { type ListQuestion, ERROR_TYPE, getCFAbapInstanceChoices, withCondition } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ServiceInstanceInfo, apiGetInstanceCredentials } from '@sap/cf-tools';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
@@ -31,7 +25,6 @@ import { newSystemPromptNames } from '../new-system/types';
 import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection';
 import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts';
 import { connectWithDestination } from '../system-selection/prompt-helpers';
-import { validateServiceKey } from '../validators';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
 const systemUrlPromptName = `${abapOnBtpPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
@@ -39,24 +32,22 @@ const cliCfAbapServicePromptName = 'cliCfAbapService';
 
 const abapOnBtpPromptNames = {
     'abapOnBtpAuthType': 'abapOnBtpAuthType',
-    'serviceKey': 'serviceKey',
     'cloudFoundryAbapSystem': 'cloudFoundryAbapSystem'
 } as const;
 
-export type AbapOnBTPType = 'cloudFoundry' | 'serviceKey' | 'reentranceTicket';
+export type AbapOnBTPType = 'cloudFoundry' | 'reentranceTicket';
 
 interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
     [abapOnBtpPromptNames.abapOnBtpAuthType]?: AbapOnBTPType;
     [systemUrlPromptName]?: string;
-    [abapOnBtpPromptNames.serviceKey]?: string;
     [abapOnBtpPromptNames.cloudFoundryAbapSystem]?: ServiceInstanceInfo;
 }
 
 /**
- * Get the questions for the ABAP on BTP system within the VSCode platform. The questions will prompt the user for the system type (Cloud Foundry, Service Key, Re-entrance Ticket).
+ * Get the questions for the ABAP on BTP system within the VSCode platform. The questions will prompt the user for the system type (Cloud Foundry, Re-entrance Ticket).
  *
  * @param promptOptions The prompt options which control the service selection and system name]
- * @param cachedConnectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
+ * @param cachedConnectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket connection types
  * @returns The list of questions for the ABAP on BTP system
  */
 export function getAbapOnBTPSystemQuestions(
@@ -71,7 +62,6 @@ export function getAbapOnBTPSystemQuestions(
         name: abapOnBtpPromptNames.abapOnBtpAuthType,
         choices: [
             { name: t('prompts.abapOnBTPType.choiceCloudFoundry'), value: 'cloudFoundry' as AbapOnBTPType },
-            { name: t('prompts.abapOnBTPType.choiceServiceKey'), value: 'serviceKey' as AbapOnBTPType },
             { name: t('prompts.abapOnBTPType.choiceReentranceTicket'), value: 'reentranceTicket' as AbapOnBTPType }
         ],
         message: t('prompts.abapOnBTPType.message'),
@@ -100,14 +90,6 @@ export function getAbapOnBTPSystemQuestions(
                 }
                 return false;
             }
-        )[0]
-    );
-
-    // Service Key file prompt
-    questions.push(
-        withCondition(
-            [getServiceKeyPrompt(connectValidator, cachedConnectedSystem)],
-            (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'serviceKey'
         )[0]
     );
 
@@ -140,8 +122,8 @@ export function getAbapOnBTPSystemQuestions(
 }
 
 /**
- * Validate the service info (returned from cf-tools APIs) for an ABAP on BTP system. This function will validate the service key file, or on BAS will create a new destination,
- * and validate the connection to the ABAP system. Updates the prompt state with the connected system to be later used for catalog service selection.
+ * Validate the service info (returned from cf-tools APIs) for an ABAP on BTP system. This function will validate the connection to the ABAP system and on BAS will create a new destination.
+ * Updates the prompt state with the connected system to be later used for catalog service selection.
  *
  * @param abapService the abap service as provided by CF tools {@link ServiceInstanceInfo}
  * @param connectionValidator connection validator instance
@@ -229,7 +211,7 @@ async function validateCFServiceInfo(
  * @param connectionValidator The connection validator
  * @param promptNamespace
  * @param requiredOdataVersion
- * @param cachedConnectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
+ * @param cachedConnectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket connection types
  * @returns The Cloud Foundry ABAP system discovery prompt
  */
 export function getCFDiscoverPrompts(
@@ -297,54 +279,4 @@ export function getCFDiscoverPrompts(
     }
 
     return questions;
-}
-
-/**
- * Get the service key prompt for the ABAP on BTP system. This prompt will allow the user to select a service key file from the file system.
- *
- * @param connectionValidator a connection validator instance
- * @param cachedConnectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
- * @returns The service key prompt
- */
-function getServiceKeyPrompt(
-    connectionValidator: ConnectionValidator,
-    cachedConnectedSystem?: ConnectedSystem
-): FileBrowserQuestion {
-    const question = {
-        type: 'input',
-        name: abapOnBtpPromptNames.serviceKey,
-        message: t('prompts.serviceKey.message'),
-        guiType: 'file-browser',
-        guiOptions: {
-            hint: t('prompts.serviceKey.hint'),
-            mandatory: true
-        },
-        validate: async (keyPath) => {
-            PromptState.resetConnectedSystem();
-            const serviceKeyValResult = validateServiceKey(keyPath);
-            if (typeof serviceKeyValResult === 'string' || typeof serviceKeyValResult === 'boolean') {
-                return serviceKeyValResult;
-            }
-            // Backend systems validation supports using a cached connections from a previous step execution to prevent re-authentication (e.g. re-opening a browser window)
-            // In case the user has changed the URL, do not use the cached connection.
-            if (
-                cachedConnectedSystem &&
-                cachedConnectedSystem.backendSystem?.url === serviceKeyValResult.url &&
-                JSON.stringify((cachedConnectedSystem.backendSystem.serviceKeys as ServiceInfo).uaa) ===
-                    JSON.stringify(serviceKeyValResult.uaa)
-            ) {
-                connectionValidator.setConnectedSystem(cachedConnectedSystem);
-            }
-            const connectValResult = await connectionValidator.validateServiceInfo(serviceKeyValResult);
-
-            if (connectValResult === true && connectionValidator.serviceProvider) {
-                PromptState.odataService.connectedSystem = {
-                    serviceProvider: removeCircularFromServiceProvider(connectionValidator.serviceProvider)
-                };
-            }
-            return connectValResult;
-        }
-    } as FileBrowserQuestion;
-
-    return question;
 }
