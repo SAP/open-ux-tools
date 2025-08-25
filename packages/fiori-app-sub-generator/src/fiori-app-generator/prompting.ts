@@ -207,29 +207,6 @@ export async function promptOdataServiceAnswers(
     return service;
 }
 
-/**
- * Resolves the minimum UI5 version based on prompt settings, service version, floorplan, and entity config.
- * For FPM custom pages with page building blocks, ensures the minimum is at least 1.136.0.
- *
- * @param promptSettings - The prompt settings object.
- * @param service - The service configuration.
- * @param floorplan - The selected floorplan type.
- * @param entityRelatedConfig - Entity-related configuration.
- * @returns {Promise<string>} The resolved minimum UI5 version.
- */
-function resolveMinUI5Version(
-    promptSettings: UI5ApplicationPromptOptions | undefined,
-    service: Partial<Service>,
-    floorplan: Floorplan,
-    entityRelatedConfig?: Partial<EntityRelatedAnswers>
-): string {
-    const minUI5Version =
-        promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.minUI5Version ??
-        getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan, entityRelatedConfig);
-
-    return minUI5Version;
-}
-
 export type Ui5PromptOptions = PromptUI5AppAnswersOptions & {
     appGenStepConfigList: YeomanUiStepConfig[];
 };
@@ -264,12 +241,12 @@ export async function createUI5ApplicationPromptOptions(
         entityRelatedConfig
     } = ui5PromptOptions;
 
-    const minUI5Version = resolveMinUI5Version(promptSettings, service, floorplan, entityRelatedConfig);
-
     // prompt settings may be additionally provided e.g. set by adaptors
     const ui5VersionPromptOptions: UI5ApplicationPromptOptions['ui5Version'] = {
         hide: promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.hide ?? false,
-        minUI5Version,
+        minUI5Version:
+            promptSettings?.[ui5AppInquirerPromptNames.ui5Version]?.minUI5Version ??
+            getMinSupportedUI5Version(service.version ?? OdataVersion.v2, floorplan, entityRelatedConfig),
         includeSeparators: getHostEnvironment() !== hostEnvironment.cli,
         useAutocomplete: getHostEnvironment() === hostEnvironment.cli
     };

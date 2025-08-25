@@ -7,7 +7,7 @@ import { readFile, rename } from 'fs/promises';
 import { rimraf } from 'rimraf';
 import { basename, join } from 'path';
 import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
-import { DeployTarget, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { DeployTarget, type TelemetryHelper, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     INPUT_APP_DIR_CF,
     INPUT_APP_NAME_BASE,
@@ -23,7 +23,7 @@ import {
 import { runHeadlessGen } from './utils';
 import Generator from 'yeoman-generator';
 import { generatorNamespace, initI18n } from '../../src/utils';
-import type { AppConfig, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
+import type { AppConfig } from '@sap-ux/fiori-generator-shared';
 
 expect.extend({ toMatchFolder });
 
@@ -284,7 +284,6 @@ describe('Test headless generator', () => {
         // Dont run the expensive phases that are not under test, prompting is run but doesnt prompt since `launchDeployConfigAsSubGenerator` is true
         jest.spyOn(CFGen.prototype, 'writing').mockImplementation(jest.fn());
         jest.spyOn(CFGen.prototype, 'initializing').mockImplementation(jest.fn());
-
         const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
         await runHeadlessGen(testAppName, DeployTarget.CF, OUTPUT_DIR);
 
