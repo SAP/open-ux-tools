@@ -1,5 +1,5 @@
 import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
-import connector from '../../../src/flp/WorkspaceConnector';
+import connectorPromise from '../../../src/flp/WorkspaceConnector';
 import * as common from '@sap-ux-private/control-property-editor-common';
 import FakeLrepConnector from 'mock/sap/ui/fl/FakeLrepConnector';
 import { create } from '../../../src/flp/enableFakeConnector';
@@ -18,7 +18,12 @@ describe('connector-service', () => {
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
         const wsConnector = new WorkspaceConnectorService();
         await wsConnector.init(sendActionMock, jest.fn());
+        const connector = await connectorPromise;
 
+        if (!('storage' in connector)) {
+            expect('storage' in connector).toBeTruthy();
+            return;
+        }
         expect(connector.storage.fileChangeRequestNotifier).toBeInstanceOf(Function);
 
         // call notifier
@@ -42,8 +47,13 @@ describe('connector-service', () => {
         VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
         const wsConnector = new WorkspaceConnectorService();
         await wsConnector.init(sendActionMock, jest.fn());
+        const connector = await connectorPromise;
 
         // call notifier
+        if (!('storage' in connector)) {
+            expect('storage' in connector).toBeTruthy();
+            return;
+        }
         await connector.storage.setItem('sap.ui.fl.testFile', {
             changeType: 'appdescr_fe_changePageConfiguration',
             fileName: 'sap.ui.fl.testFile',
@@ -57,9 +67,14 @@ describe('connector-service', () => {
         const wsConnector = new WorkspaceConnectorService();
         const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
+        const connector = await connectorPromise;
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: false }));
         // call notifier
+        if (!('storage' in connector)) {
+            expect('storage' in connector).toBeTruthy();
+            return;
+        }
         await connector.storage.setItem('sap.ui.fl.testFile', {
             changeType: 'appdescr_fe_changePageConfiguration',
             fileName: 'sap.ui.fl.testFile',
@@ -73,9 +88,14 @@ describe('connector-service', () => {
         const wsConnector = new WorkspaceConnectorService();
         const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
+        const connector = await connectorPromise;
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: true }));
         // call notifier
+        if (!('storage' in connector)) {
+            expect('storage' in connector).toBeTruthy();
+            return;
+        }
         await connector.storage.setItem('sap.ui.fl.testFile', {
             changeType: 'addXML',
             fileName: 'sap.ui.fl.testFile',
@@ -91,6 +111,7 @@ describe('connector-service', () => {
         const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
         jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValue({ templateName: 'my-template' });
+        const connector: any = await connectorPromise;
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: true }));
         // call notifier
@@ -105,5 +126,31 @@ describe('connector-service', () => {
 
         expect(sendActionMock).toHaveBeenNthCalledWith(1, common.storageFileChanged('testFile'));
         expect(sendActionMock).toHaveBeenNthCalledWith(2, common.storageFileChanged('fragments/fragment.xml'));
+    });
+
+    test('appdescr_fe_changePageConfiguration change when app is reloading (UI5 1.76.0)', async () => {
+        jest.resetModules();
+        const VersionInfo = (await import('mock/sap/ui/VersionInfo')).default;
+        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.76.0' });
+        const wsConnector = new WorkspaceConnectorService();
+        const subscribeSpy = jest.fn<void, [ActionHandler]>();
+        await wsConnector.init(sendActionMock, subscribeSpy);
+        const ObjectStorageConnector = (await import('mock/sap/ui/fl/apply/_internal/connectors/ObjectStorageConnector')).default;
+        ObjectStorageConnector.loadFeatures.mockResolvedValue({ isVariantAdaptationEnabled: false });
+        const connectorPromise = (await import('../../../src/flp/WorkspaceConnector')).default;
+        const connector = await connectorPromise;
+
+        subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: false }));
+        // call notifier
+        if (!('oStorage' in connector)) {
+            expect('oStorage' in connector).toBeTruthy();
+            return;
+        }
+        await connector.oStorage.setItem('sap.ui.fl.testFile', {
+            changeType: 'appdescr_fe_changePageConfiguration',
+            fileName: 'sap.ui.fl.testFile',
+            support: {}
+        });
+        expect(sendActionMock).toHaveBeenCalledWith(common.storageFileChanged('testFile'));
     });
 });
