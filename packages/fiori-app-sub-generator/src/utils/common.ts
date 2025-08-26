@@ -99,7 +99,7 @@ export function getMinSupportedUI5Version(
     if (floorplan === FloorplanFE.FE_FPM && entityRelatedConfig?.addPageBuildingBlock) {
         const cleanUi5Version = coerce(minUI5Version);
 
-        if (cleanUi5Version && cleanUi5Version.version) {
+        if (cleanUi5Version?.version) {
             // If the provided version is less than 1.136.0, set to 1.136.0
             return gte(minUi5VersionForPageBuildingBlock, cleanUi5Version.version)
                 ? minUi5VersionForPageBuildingBlock

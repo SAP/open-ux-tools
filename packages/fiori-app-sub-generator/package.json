@@ -55,9 +55,9 @@
         "lodash": "4.17.21",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
+        "semver": "7.5.4",
         "uuid": "11.0.5",
-        "yeoman-generator": "5.10.0",
-        "semver": "7.5.4"
+        "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
         "@sap-devx/yeoman-ui-types": "1.16.9",
@@ -70,6 +70,7 @@
         "@types/lodash": "4.14.202",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
+        "@types/semver": "7.5.2",
         "@types/vscode": "1.73.1",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-generator": "5.2.14",
@@ -78,8 +79,7 @@
         "jest-mock": "30.0.1",
         "mock-spawn": "0.2.6",
         "rimraf": "5.0.5",
-        "yeoman-test": "6.3.0",
-        "@types/semver": "7.5.2"
+        "yeoman-test": "6.3.0"
     },
     "engines": {
         "node": ">=20.x"

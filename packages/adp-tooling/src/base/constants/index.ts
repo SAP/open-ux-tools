@@ -17,6 +17,7 @@ export const BASE_I18N_DESCRIPTION =
 export const S4HANA_APPS_PARAMS = {
     'sap.app/type': 'application',
     'sap.fiori/cloudDevAdaptationStatus': 'released',
+    'fileType': 'appdescr',
     'fields':
         'sap.app/id,repoName,sap.fiori/cloudDevAdaptationStatus,sap.app/ach,sap.fiori/registrationIds,sap.app/title,url,fileType'
 };
