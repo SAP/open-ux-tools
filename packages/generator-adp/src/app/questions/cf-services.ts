@@ -218,11 +218,9 @@ export class CFServicesPrompter {
                 }
             },
             validate: (value: string) => {
-                const validationResult = validateEmptyString(value);
-                if (typeof validationResult === 'string') {
+                if (!value) {
                     return t('error.baseAppHasToBeSelected');
                 }
-
                 if (this.baseAppOnChoiceError !== null) {
                     return this.baseAppOnChoiceError;
                 }
