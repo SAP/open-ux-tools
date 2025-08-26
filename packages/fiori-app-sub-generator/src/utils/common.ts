@@ -10,7 +10,12 @@ import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';
 import type { Logger } from '@sap-ux/logger';
-import { DatasourceType, OdataVersion, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
+import {
+    DatasourceType,
+    OdataVersion,
+    type ConnectedSystem,
+    type EntityRelatedAnswers
+} from '@sap-ux/odata-service-inquirer';
 import type { CdsAnnotationsInfo, EdmxAnnotationsInfo } from '@sap-ux/odata-service-writer';
 import type { CapProjectType, CdsUi5PluginInfo, CdsVersionInfo } from '@sap-ux/project-access';
 import { isCapJavaProject, toReferenceUri } from '@sap-ux/project-access';
@@ -18,7 +23,7 @@ import type { Editor } from 'mem-fs-editor';
 import { basename, join } from 'path';
 import { v4 as uuidV4 } from 'uuid';
 import type { GenerateLaunchConfigOptions, Service } from '../types';
-import { ApiHubType, SapSystemSourceType } from '../types';
+import { ApiHubType, SapSystemSourceType, FloorplanFE, minUi5VersionForPageBuildingBlock } from '../types';
 import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants';
 import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external';
 import { t } from './i18n';
@@ -75,13 +80,23 @@ export function getRequiredOdataVersion(floorplan: Floorplan): OdataVersion | un
 }
 
 /**
- * Gets the min supported version of UI5 for the floorplan and odata version specified.
+ * Gets the minimum supported UI5 version for the specified OData version, floorplan, and entity configuration.
+ * For FPM floorplans with page building blocks, enforces a minimum version of 1.136.0.
  *
- * @param version - odata version
- * @param floorplan - floorplan value
- * @returns min supported version
+ * @param version - The OData version.
+ * @param floorplan - The floorplan type.
+ * @param entityRelatedConfig - entity related configuration.
+ * @returns The minimum supported UI5 version as a string.
  */
-export function getMinSupportedUI5Version(version: OdataVersion, floorplan: Floorplan): string {
+export function getMinSupportedUI5Version(
+    version: OdataVersion,
+    floorplan: Floorplan,
+    entityRelatedConfig?: Partial<EntityRelatedAnswers>
+): string {
+    if (floorplan === FloorplanFE.FE_FPM && entityRelatedConfig?.addPageBuildingBlock) {
+        return minUi5VersionForPageBuildingBlock;
+    }
+
     let minUI5Version: string | undefined;
     if (floorplan && floorplan !== FloorplanFF.FF_SIMPLE) {
         const templateType = FloorplanAttributes[floorplan].templateType as FETemplateType;

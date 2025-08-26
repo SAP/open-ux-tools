@@ -1,5 +1,20 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.7.4
+
+### Patch Changes
+
+-   6e1008e: bugfix: Restrict Page Building Block support to UI5 version 1.136.0 and above for custom app
+-   Updated dependencies [6e1008e]
+    -   @sap-ux/odata-service-inquirer@2.7.1
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [2d11a6d]
+    -   @sap-ux/odata-service-inquirer@2.7.0
+
 ## 0.7.2
 
 ### Patch Changes
