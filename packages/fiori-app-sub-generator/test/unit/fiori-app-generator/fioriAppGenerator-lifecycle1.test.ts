@@ -14,7 +14,7 @@ import yeomanTest from 'yeoman-test';
 import { FioriAppGenerator, type FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
 import { promptOdataServiceAnswers, promptUI5ApplicationAnswers } from '../../../src/fiori-app-generator/prompting';
 import { addDeployGen, addFlpGen } from '../../../src/fiori-app-generator/subgenHelpers';
-import type { Project, FioriAppGeneratorPromptSettings } from '../../../src/types';
+import type { Project } from '../../../src/types';
 import {
     FIORI_STEPS,
     FloorplanFE,
@@ -407,116 +407,90 @@ describe('Test FioriAppGenerator', () => {
         });
     });
 
-    describe('Test FioriAppGenerator for FPM projects', () => {
-        const setupFpmTest = (promptSettings?: FioriAppGeneratorPromptSettings, addPageBuildingBlock = true) => {
-            (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
-            odataServiceAnswers.source = DatasourceType.odataServiceUrl;
-            const mockCachedService: Service = {
-                edmx: '<edmx></edmx>',
-                source: DatasourceType.odataServiceUrl
-            };
-            (options.appWizard as AppWizardCache)!['$fiori-cache'] = { service: mockCachedService };
-            options.floorplan = FloorplanFE.FE_FPM;
-            options.preselectedEntityName = 'TestPreSelectedEntity';
-            options.showLayoutPrompts = false;
-            if (promptSettings) {
-                options.promptSettings = promptSettings;
-            } else {
-                delete options.promptSettings;
-            }
-            const mockEntityRelatedAnswers: EntityRelatedAnswers = {
-                mainEntity: { entitySetName: 'SEPMRA_C_PD_Product', entitySetType: 'SEPMRA_C_PD_ProductType' },
-                navigationEntity: {
-                    entitySetName: 'to_ProductTextSetName',
-                    navigationPropertyName: 'to_ProductTextNavPropName'
-                },
-                addPageBuildingBlock,
-                pageBuildingBlockTitle: addPageBuildingBlock ? 'Test Page title' : undefined
-            };
-            jest.spyOn(FioriAppGenerator.prototype, 'prompt').mockResolvedValueOnce(mockEntityRelatedAnswers);
-            return { mockCachedService, mockEntityRelatedAnswers };
-        };
-
-        const cases = [
-            {
-                title: 'with building block and minUI5Version >= required',
-                promptSettings: { '@sap/generator-fiori': { ui5Version: { minUI5Version: '1.137.0' } } },
-                expectedPromptSettings: { ui5Version: { minUI5Version: '1.137.0' } },
-                addPageBuildingBlock: true
+    test('Should prompt for entity related answers custom page ', async () => {
+        // Force cache usage, YUI only
+        (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
+        // Must be a datasource that provides an service to be cached (DatasourceType.none is not cached)
+        odataServiceAnswers.source = DatasourceType.odataServiceUrl;
+        // Set cache to simulate back navigation state (edmx and cap service) restoration entity prompting
+        const mockCachedService: Service = {
+            edmx: '<edmx></edmx>',
+            capService: {
+                projectPath: '/cap/project/path',
+                serviceName: 'aCapService'
             },
-            {
-                title: 'with building block and undefined promptSettings',
-                promptSettings: undefined,
-                expectedPromptSettings: undefined,
-                addPageBuildingBlock: true
-            },
-            {
-                title: 'with building block and minUI5Version < required',
-                promptSettings: { '@sap/generator-fiori': { ui5Version: { minUI5Version: '1.96.4' } } },
-                expectedPromptSettings: { ui5Version: { minUI5Version: '1.96.4' } },
-                addPageBuildingBlock: true
-            },
-            {
-                title: 'without building block and minUI5Version not set',
-                promptSettings: { '@sap/generator-fiori': { ui5Version: { minUI5Version: undefined } } },
-                expectedPromptSettings: { ui5Version: { minUI5Version: undefined } },
-                addPageBuildingBlock: false
-            }
-        ];
-
-        test.each(cases)(
-            'prompts for entity and UI5 application answers for FE_FPM custom page $title',
-            async ({ promptSettings, expectedPromptSettings, addPageBuildingBlock }) => {
-                const { mockCachedService, mockEntityRelatedAnswers } = setupFpmTest(
-                    promptSettings,
-                    addPageBuildingBlock
-                );
-
-                const fioriAppGen = new FioriAppGenerator([], options);
-                await fioriAppGen.initializing();
-                await fioriAppGen.prompting();
-
-                // entity prompts
-                expect(getEntityRelatedPrompts).toHaveBeenCalledWith(
-                    mockCachedService.edmx,
-                    FloorplanFE.FE_FPM,
-                    false,
-                    {
-                        defaultMainEntityName: 'TestPreSelectedEntity',
-                        hideTableLayoutPrompts: true,
-                        useAutoComplete: false,
-                        displayPageBuildingBlockPrompt: true
-                    },
-                    undefined,
-                    expect.objectContaining({ debug: expect.any(Function) }),
-                    true
-                );
-
-                // entity answers
-                expect(fioriAppGen['state'].entityRelatedConfig).toEqual(mockEntityRelatedAnswers);
-
-                // UI5 application answers
-                expect(promptUI5ApplicationAnswers).toHaveBeenCalledWith(
-                    {
-                        projectName: undefined,
-                        targetFolder: undefined,
-                        service: { edmx: '<edmx></edmx>', source: DatasourceType.odataServiceUrl },
-                        entityRelatedConfig: mockEntityRelatedAnswers,
-                        floorplan: FloorplanFE.FE_FPM,
-                        promptSettings: expectedPromptSettings,
-                        promptExtension: undefined
-                    },
-                    expect.arrayContaining([
-                        { activeSteps: expect.any(YeomanUiSteps), dependentMap: expect.any(Object) }
-                    ]),
-                    expect.anything()
-                );
-
-                if (!addPageBuildingBlock) {
-                    expect(expectedPromptSettings?.ui5Version?.minUI5Version).toBeUndefined();
+            annotations: [
+                {
+                    TechnicalName: 'testAnnotationsTechName',
+                    Definitions: 'testAnnotations',
+                    Version: '1.0.0',
+                    Uri: 'testUri'
                 }
-            }
+            ],
+            source: DatasourceType.capProject
+        };
+        // Note: These are not real-world combinations of options and state, they are for testing as many branches and options as possible
+        (options.appWizard as AppWizardCache)!['$fiori-cache'] = {
+            service: mockCachedService
+        };
+        options.floorplan = FloorplanFE.FE_FPM;
+        options.preselectedEntityName = 'TestPreSelectedEntity';
+        options.showLayoutPrompts = false;
+        // Skipping the project attributes step for this test
+        options.fioriSteps = FIORI_STEPS.filter((step) => step.key !== STEP_PROJECT_ATTRIBUTES);
+
+        const mockEntityRelatedAnswers: EntityRelatedAnswers = {
+            mainEntity: {
+                entitySetName: 'SEPMRA_C_PD_Product',
+                entitySetType: 'SEPMRA_C_PD_ProductType'
+            },
+            navigationEntity: {
+                entitySetName: 'to_ProductTextSetName',
+                navigationPropertyName: 'to_ProductTextNavPropName'
+            },
+            presentationQualifier: '',
+            tableType: 'ResponsiveTable',
+            tableSelectionMode: 'None'
+        };
+        // Should prompt for entity related answers
+        const promptForEntitiesSpy = jest
+            .spyOn(FioriAppGenerator.prototype, 'prompt')
+            .mockResolvedValueOnce(mockEntityRelatedAnswers);
+
+        const fioriAppGen = new FioriAppGenerator([], options);
+        await fioriAppGen.initializing();
+        await fioriAppGen.prompting();
+
+        // Should pass relevant option to `getEntityRelatedPrompts`
+        expect(getEntityRelatedPrompts).toHaveBeenCalledWith(
+            mockCachedService.edmx,
+            'fpm',
+            true,
+            {
+                defaultMainEntityName: 'TestPreSelectedEntity',
+                hideTableLayoutPrompts: true,
+                useAutoComplete: false,
+                displayPageBuildingBlockPrompt: true
+            },
+            mockCachedService.annotations?.[0],
+            expect.objectContaining({ debug: expect.any(Function) }), // Logger
+            true
         );
+        // Should prompt for entity related answers, since this is an FE floorplan
+        expect(promptForEntitiesSpy).toHaveBeenCalledWith(mockEntityRelatedQuestions);
+        expect(fioriAppGen['state'].entityRelatedConfig).toEqual({
+            mainEntity: {
+                entitySetName: 'SEPMRA_C_PD_Product',
+                entitySetType: 'SEPMRA_C_PD_ProductType'
+            },
+            navigationEntity: {
+                entitySetName: 'to_ProductTextSetName',
+                navigationPropertyName: 'to_ProductTextNavPropName'
+            },
+            presentationQualifier: '',
+            tableSelectionMode: 'None',
+            tableType: 'ResponsiveTable'
+        });
     });
 
     test('Should prompt for project attributes', async () => {
