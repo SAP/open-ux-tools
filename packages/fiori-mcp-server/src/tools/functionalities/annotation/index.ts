@@ -131,6 +131,7 @@ async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promis
     const metadataService = annotationService.getMetadataService();
     const targets: {
         kind: string;
+        nameWithoutNamespace: string;
         path: string;
         properties: {
             name: string;
@@ -141,9 +142,11 @@ async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promis
         const { path, name } = mdElement;
         const kind = metadataService?.getEdmTargetKinds(path)[0] || '';
         if (kind === 'EntityType' || kind === 'Property') {
+            const parts = name.split('.');
+            parts.shift(); // Remove namespace if any
+            const nameWithoutNamespace = parts.join('.');
             const properties = mdElement.content.map((p) => ({ name: p.name, type: p.edmPrimitiveType ?? 'Unknown' }));
-            targets.push({ kind, path, properties });
-            targets.push({ kind, path, properties });
+            targets.push({ kind, nameWithoutNamespace, path, properties });
         }
     };
     metadataService.visitMetadataElements(visitMD);

@@ -4,6 +4,7 @@ import { FioriFeature } from './types';
 const rulesMsg = `
 RULES:
     - Content of **Expected annotation pattern:** are sample example. You MUST learn from **Expected annotation pattern:**  and You MUST use Targets and **Available Dynamic Property Names:** from **Available Metadata Targets:** to annotation Targets with any dynamic property names where meaningful and possible.
+    - You MUST learn from **Expected annotation pattern:** and decides if a Target MUST be with fully qualified name or name without namespace should be used.
     - If Target could not be determined from user query, ask user to select target from **Available Metadata Targets:**. Suggest list of targets to user.
     - If any dynamic property names can not be determined from user query, ask user to select property from **Available Dynamic Property Names:** of respective Targets. Suggest list of properties to user.
 `;
