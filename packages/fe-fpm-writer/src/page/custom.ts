@@ -74,6 +74,48 @@ export function getTemplateRoot(ui5Version?: string): string {
 }
 
 /**
+ * Handles the creation of a page building block for a custom page.
+ *
+ * @param {string} basePath - The base path of the UI5 application.
+ * @param {CustomPage} data - The custom page configuration.
+ * @param {string} viewPath - The path to the view XML file.
+ * @param {Editor} fs - The memfs editor instance.
+ * @param {Logger} [log] - Optional logger instance for warnings.
+ * @returns {Promise<void>} Resolves when the building block is handled.
+ */
+async function handlePageBuildingBlock(
+    basePath: string,
+    data: { pageBuildingBlockTitle: string; minUI5Version?: string },
+    viewPath: string,
+    fs: Editor,
+    log?: Logger
+): Promise<void> {
+    const minVersion = coerce(data.minUI5Version);
+    const minUi5VersionForPageBuildingBlock = '1.136.0';
+    if (minVersion && lt(minVersion.version, minUi5VersionForPageBuildingBlock)) {
+        log?.warn(
+            `pageBuildingBlockTitle requires SAPUI5 ${minUi5VersionForPageBuildingBlock} or higher. Current version is ${data.minUI5Version}; page building block not added.`
+        );
+        return;
+    }
+
+    await generateBuildingBlock(
+        basePath,
+        {
+            viewOrFragmentPath: relative(basePath, viewPath),
+            aggregationPath: augmentXpathWithLocalNames(`/mvc:View/Page`),
+            replace: true,
+            buildingBlockData: {
+                id: 'Page',
+                buildingBlockType: BuildingBlockType.Page,
+                title: data.pageBuildingBlockTitle
+            }
+        },
+        fs
+    );
+}
+
+/**
  * Add a custom page to an existing UI5 application.
  *
  * @param {string} basePath - the base path
@@ -122,31 +164,7 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
     }
 
     if (data.pageBuildingBlockTitle) {
-        let addPageBuildingBlock = true;
-        const minVersion = coerce(data.minUI5Version);
-        if (minVersion && lt(minVersion.version, '1.136.0')) {
-            addPageBuildingBlock = false;
-        }
-        if (addPageBuildingBlock) {
-            await generateBuildingBlock(
-                basePath,
-                {
-                    viewOrFragmentPath: relative(basePath, viewPath),
-                    aggregationPath: augmentXpathWithLocalNames(`/mvc:View/Page`),
-                    replace: true,
-                    buildingBlockData: {
-                        id: 'Page',
-                        buildingBlockType: BuildingBlockType.Page,
-                        title: data.pageBuildingBlockTitle
-                    }
-                },
-                fs
-            );
-        } else { 
-            log?.warn(
-                `The pageBuildingBlockTitle feature requires SAP UI5 version 1.136.0 or higher. The current minimum UI5 version is ${data.minUI5Version}, so the page building block will not be added. Please update your UI5 version to use this feature.`
-            )
-        }
+        await handlePageBuildingBlock(basePath, { pageBuildingBlockTitle: data.pageBuildingBlockTitle, minUI5Version: data.minUI5Version }, viewPath, fs, log);
     }
 
     const ext = data.typescript ? 'ts' : 'js';

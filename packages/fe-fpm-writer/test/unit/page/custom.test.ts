@@ -8,6 +8,7 @@ import { generateCustomPage, validateBasePath } from '../../../src';
 import { FCL_ROUTER } from '../../../src/common/defaults';
 import { detectTabSpacing } from '../../../src/common/file';
 import { tabSizingTestCases } from '../../common';
+import type { Logger } from '@sap-ux/logger';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -298,7 +299,6 @@ describe('CustomPage', () => {
                 ...input,
                 pageBuildingBlockTitle: 'Test Page Title'
             };
-
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
             await generateCustomPage(target, inputWithPageBuildingBlockTitle, fs);
 
@@ -309,6 +309,33 @@ describe('CustomPage', () => {
             expect(viewXml).toContain('Test Page Title');
 
             expect(fs.read(join(target, 'webapp/ext/customPage/CustomPage.view.xml'))).toMatchSnapshot();
+        });
+
+        test('should log a warning when min ui5 version is not met for page building block feature', async () => {
+            const target = join(testDir, 'single-page-no-fcl');
+            const inputWithPageBuildingBlockTitle = {
+                ...input,
+                minUI5Version: '1.120',
+                pageBuildingBlockTitle: 'Test Page Title'
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+        
+            const log = { warn: jest.fn() } as unknown as Logger;
+        
+            await generateCustomPage(target, inputWithPageBuildingBlockTitle, fs, log);
+        
+            expect(log.warn).toHaveBeenCalledWith(
+                'pageBuildingBlockTitle requires SAPUI5 1.136.0 or higher. Current version is 1.120; page building block not added.'
+            );
+
+            // page macros should not be added
+            const viewXmlPath = join(target, 'webapp/ext/customPage/CustomPage.view.xml');
+            expect(fs.exists(viewXmlPath)).toBe(true);
+            const viewXml = fs.read(viewXmlPath).toString();
+            expect(viewXml).not.toContain('macros:Page');
+            expect(viewXml).not.toContain('Test Page Title');
+            expect(viewXml).toContain('<Page');
+
         });
     });
 
