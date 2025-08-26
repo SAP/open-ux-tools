@@ -615,15 +615,15 @@ export class FDCService {
 
     private async getValidatedApps(discoveryApps: CFApp[], credentials: Credentials[]): Promise<CFApp[]> {
         const validatedApps: CFApp[] = [];
-        await Promise.all(
-            discoveryApps.map(async (app) => {
-                if (!(app.messages && app.messages.length)) {
-                    const messages = await this.validateSelectedApp(app, credentials);
-                    app.messages = messages;
-                }
-                validatedApps.push(app);
-            })
-        );
+
+        for (const app of discoveryApps) {
+            if (!(app.messages && app.messages.length)) {
+                const messages = await this.validateSelectedApp(app, credentials);
+                app.messages = messages;
+            }
+            validatedApps.push(app);
+        }
+
         return validatedApps;
     }
 
@@ -659,13 +659,11 @@ export class FDCService {
     private async getResources(files: string[]): Promise<string[]> {
         let finalList: string[] = [];
 
-        await Promise.all(
-            files.map(async (file) => {
-                const servicesList = this.getServicesForFile(file);
-                const oDataFilteredServices = await this.filterServices(servicesList);
-                finalList = finalList.concat(oDataFilteredServices);
-            })
-        );
+        for (const file of files) {
+            const servicesList = this.getServicesForFile(file);
+            const oDataFilteredServices = await this.filterServices(servicesList);
+            finalList = finalList.concat(oDataFilteredServices);
+        }
 
         return finalList;
     }
