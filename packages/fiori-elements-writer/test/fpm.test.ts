@@ -11,6 +11,7 @@ import {
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath
 } from './common';
+import type { Logger } from '@sap-ux/logger';
 
 const TEST_NAME = 'fpmTemplates';
 if (debug?.enabled) {
@@ -94,7 +95,7 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
                 }
             }),
             ui5: {
-                minUI5Version: '1.96.11'
+                minUI5Version: '1.137.0'
             },
             service: v4Service
         } as FioriElementsApp<FPMSettings>;
@@ -104,6 +105,31 @@ describe(`Flexible Programming Model template: ${TEST_NAME}`, () => {
 
         expect(viewXml).toContain('My Custom Page');
         expect(viewXml).toContain('<macros:Page id="Page" title="My Custom Page"/>');
+    });
+
+    test('Should not generate view XML containing custom page building block title for FPM template when UI5 version is below 1.136.0', async () => {
+        const testPath = join(curTestOutPath, 'with-js');
+        const config = {
+            ...Object.assign(feBaseConfig('fefpmjs'), {
+                template: {
+                    ...fpmTemplate,
+                    settings: {
+                        ...fpmTemplate.settings,
+                        pageBuildingBlockTitle: 'My Custom Page'
+                    }
+                }
+            }),
+            ui5: {
+                minUI5Version: '1.96.11'
+            },
+            service: v4Service
+        } as FioriElementsApp<FPMSettings>;
+
+        const fs = await generate(testPath, config);
+        const viewXmlPath = join(testPath, 'webapp/ext/main/Main.view.xml');
+        const viewXml = fs.read(viewXmlPath).toString();
+
+        expect(viewXml).toContain('<Page id="Main" title="{i18n>MainTitle}">');
     });
 
     test('Try generating with invalid service', async () => {
