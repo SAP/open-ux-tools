@@ -10,7 +10,7 @@ import type { Editor } from 'mem-fs-editor';
 import memFsEditor from 'mem-fs-editor';
 import { join } from 'path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types';
-import { ApiHubType, SapSystemSourceType } from '../../../src/types/constants';
+import { ApiHubType, SapSystemSourceType, minUi5VersionForPageBuildingBlock } from '../../../src/types/constants';
 import {
     convertCapRuntimeToCapProjectType,
     getCdsUi5PluginInfo,
@@ -94,6 +94,7 @@ const vscodeMock = {
 describe('Test utils', () => {
     beforeAll(async () => {
         await initI18nFioriAppSubGenerator();
+        jest.clearAllMocks();
     });
     test('getODataVersion ', async () => {
         const validMetadataV2 =
@@ -149,6 +150,16 @@ describe('Test utils', () => {
         expect(minVerson).toBe('1.96.8');
         minVerson = getMinSupportedUI5Version(OdataVersion.v2, FloorplanFE.FE_OVP);
         expect(minVerson).toBe('1.65.0');
+    });
+
+    test('getMinSupportedUI5Version - FPM with page building block enabled returns minimum required version', () => {
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, { addPageBuildingBlock: true });
+        expect(result).toBe(minUi5VersionForPageBuildingBlock);
+    });
+
+    test('getMinSupportedUI5Version - FPM with page building block disabled returns minimum version support based on service version', () => {
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, { addPageBuildingBlock: false });
+        expect(result).toBe('1.94.0');
     });
 
     test('buildSapClientParam', () => {
