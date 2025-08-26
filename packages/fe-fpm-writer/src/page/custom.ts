@@ -24,6 +24,7 @@ import { BuildingBlockType } from '../building-block/types';
 import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/xml';
 import { lt } from 'semver';
 import type { Logger } from '@sap-ux/logger';
+import { i18nNamespaces, translate } from '../i18n';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -78,6 +79,8 @@ export function getTemplateRoot(ui5Version?: string): string {
  *
  * @param {string} basePath - The base path of the UI5 application.
  * @param {CustomPage} data - The custom page configuration.
+ * @param data.pageBuildingBlockTitle - Title for the page building block
+ * @param data.minUI5Version - Optional minimum required UI5 version
  * @param {string} viewPath - The path to the view XML file.
  * @param {Editor} fs - The memfs editor instance.
  * @param {Logger} [log] - Optional logger instance for warnings.
@@ -91,11 +94,9 @@ async function handlePageBuildingBlock(
     log?: Logger
 ): Promise<void> {
     const minVersion = coerce(data.minUI5Version);
-    const minUi5VersionForPageBuildingBlock = '1.136.0';
-    if (minVersion && lt(minVersion.version, minUi5VersionForPageBuildingBlock)) {
-        log?.warn(
-            `pageBuildingBlockTitle requires SAPUI5 ${minUi5VersionForPageBuildingBlock} or higher. Current version is ${data.minUI5Version}; page building block not added.`
-        );
+    const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+    if (minVersion && lt(minVersion.version, '1.136.0')) {
+        log?.warn(t('minUi5VersionRequirement', { minUI5Version: data.minUI5Version }));
         return;
     }
 
@@ -164,7 +165,13 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor, 
     }
 
     if (data.pageBuildingBlockTitle) {
-        await handlePageBuildingBlock(basePath, { pageBuildingBlockTitle: data.pageBuildingBlockTitle, minUI5Version: data.minUI5Version }, viewPath, fs, log);
+        await handlePageBuildingBlock(
+            basePath,
+            { pageBuildingBlockTitle: data.pageBuildingBlockTitle, minUI5Version: data.minUI5Version },
+            viewPath,
+            fs,
+            log
+        );
     }
 
     const ext = data.typescript ? 'ts' : 'js';

@@ -9,6 +9,7 @@ import { FCL_ROUTER } from '../../../src/common/defaults';
 import { detectTabSpacing } from '../../../src/common/file';
 import { tabSizingTestCases } from '../../common';
 import type { Logger } from '@sap-ux/logger';
+import { i18nNamespaces, translate } from '../../../src/i18n';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
@@ -313,19 +314,20 @@ describe('CustomPage', () => {
 
         test('should log a warning when min ui5 version is not met for page building block feature', async () => {
             const target = join(testDir, 'single-page-no-fcl');
+            const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
             const inputWithPageBuildingBlockTitle = {
                 ...input,
                 minUI5Version: '1.120',
                 pageBuildingBlockTitle: 'Test Page Title'
             };
             fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
-        
+
             const log = { warn: jest.fn() } as unknown as Logger;
-        
+
             await generateCustomPage(target, inputWithPageBuildingBlockTitle, fs, log);
-        
+
             expect(log.warn).toHaveBeenCalledWith(
-                'pageBuildingBlockTitle requires SAPUI5 1.136.0 or higher. Current version is 1.120; page building block not added.'
+                t('minUi5VersionRequirement', { minUI5Version: inputWithPageBuildingBlockTitle.minUI5Version })
             );
 
             // page macros should not be added
@@ -335,7 +337,6 @@ describe('CustomPage', () => {
             expect(viewXml).not.toContain('macros:Page');
             expect(viewXml).not.toContain('Test Page Title');
             expect(viewXml).toContain('<Page');
-
         });
     });
 
