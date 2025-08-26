@@ -152,43 +152,13 @@ describe('Test utils', () => {
         expect(minVerson).toBe('1.65.0');
     });
 
-    test('getMinSupportedUI5Version - FPM - returns minUi5VersionForPageBuildingBlock if cleanUi5Version < 1.136.0 with page building block', () => {
-        const result = getMinSupportedUI5Version(
-            OdataVersion.v4,
-            FloorplanFE.FE_FPM,
-            { addPageBuildingBlock: true },
-            '1.120.0'
-        );
+    test('getMinSupportedUI5Version - FPM with page building block enabled returns minimum required version', () => {
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, { addPageBuildingBlock: true });
         expect(result).toBe(minUi5VersionForPageBuildingBlock);
     });
 
-    test('getMinSupportedUI5Version - FPM - returns cleanUi5Version if cleanUi5Version >= 1.136.0 with page building block', () => {
-        const result = getMinSupportedUI5Version(
-            OdataVersion.v4,
-            FloorplanFE.FE_FPM,
-            { addPageBuildingBlock: true },
-            '1.140.0'
-        );
-        expect(result).toBe('1.140.0');
-    });
-
-    test('getMinSupportedUI5Version - FPM - returns minUi5VersionForPageBuildingBlock if cleanUi5Version is invalid with page building block', () => {
-        const result = getMinSupportedUI5Version(
-            OdataVersion.v4,
-            FloorplanFE.FE_FPM,
-            { addPageBuildingBlock: true },
-            undefined
-        );
-        expect(result).toBe(minUi5VersionForPageBuildingBlock);
-    });
-
-    test('getMinSupportedUI5Version - FPM - returns min ui5 version if when page building block is disabled', () => {
-        const result = getMinSupportedUI5Version(
-            OdataVersion.v4,
-            FloorplanFE.FE_FPM,
-            { addPageBuildingBlock: false },
-            '1.90.0'
-        );
+    test('getMinSupportedUI5Version - FPM with page building block disabled returns minimum version support based on service version', () => {
+        const result = getMinSupportedUI5Version(OdataVersion.v4, FloorplanFE.FE_FPM, { addPageBuildingBlock: false });
         expect(result).toBe('1.94.0');
     });
 

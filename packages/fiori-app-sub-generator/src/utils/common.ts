@@ -27,7 +27,6 @@ import { ApiHubType, SapSystemSourceType, FloorplanFE, minUi5VersionForPageBuild
 import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants';
 import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external';
 import { t } from './i18n';
-import { gte, coerce } from 'semver';
 
 /**
  * Parse the specified edmx string for validitiy and return the ODataVersion of the specified edmx string.
@@ -87,29 +86,18 @@ export function getRequiredOdataVersion(floorplan: Floorplan): OdataVersion | un
  * @param version - The OData version.
  * @param floorplan - The floorplan type.
  * @param entityRelatedConfig - entity related configuration.
- * @param ui5Version
  * @returns The minimum supported UI5 version as a string.
  */
 export function getMinSupportedUI5Version(
     version: OdataVersion,
     floorplan: Floorplan,
-    entityRelatedConfig?: Partial<EntityRelatedAnswers>,
-    ui5Version?: string
+    entityRelatedConfig?: Partial<EntityRelatedAnswers>
 ): string {
-    let minUI5Version: string | undefined;
-
     if (floorplan === FloorplanFE.FE_FPM && entityRelatedConfig?.addPageBuildingBlock) {
-        const cleanUi5Version = coerce(ui5Version);
-        if (cleanUi5Version?.version) {
-            // If the provided version is less than 1.136.0, set to 1.136.0
-            return gte(minUi5VersionForPageBuildingBlock, cleanUi5Version.version)
-                ? minUi5VersionForPageBuildingBlock
-                : cleanUi5Version.version;
-        } else {
-            return minUi5VersionForPageBuildingBlock;
-        }
+        return minUi5VersionForPageBuildingBlock;
     }
 
+    let minUI5Version: string | undefined;
     if (floorplan && floorplan !== FloorplanFF.FF_SIMPLE) {
         const templateType = FloorplanAttributes[floorplan].templateType as FETemplateType;
         minUI5Version = TemplateTypeAttributes[templateType].minimumUi5Version[version];

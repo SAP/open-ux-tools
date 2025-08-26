@@ -300,7 +300,7 @@ describe('prompting.ts', () => {
             });
         });
 
-        test('createUI5ApplicationPromptOptions - generator extension settings are applied with entityRelatedConfig', async () => {
+        test('createUI5ApplicationPromptOptions - applies extension settings and sets min UI5 version for page building block', async () => {
             const validateExtFunc = (input: string, answers: unknown) => true;
             const addMsgs: PromptSeverityMessage = (input, previousAnswers) => ({
                 message: 'msg',
@@ -337,6 +337,48 @@ describe('prompting.ts', () => {
                 }
             });
             expect(promptOptions.ui5Version?.minUI5Version).toBe(minUi5VersionForPageBuildingBlock);
+        });
+
+        test('createUI5ApplicationPromptOptions - extension minUI5Version takes precendence when provided with page building block', async () => {
+            const validateExtFunc = (input: string, answers: unknown) => true;
+            const addMsgs: PromptSeverityMessage = (input, previousAnswers) => ({
+                message: 'msg',
+                severity: Severity.information
+            });
+            const promptExtensions: UI5ApplicationPromptOptions = {
+                addDeployConfig: {
+                    default: true,
+                    validate: validateExtFunc,
+                    additionalMessages: addMsgs
+                },
+                namespace: {
+                    default: 'sap.com'
+                },
+                ui5Version: {
+                    minUI5Version: '1.65.0'
+                }
+            };
+            const promptOptions = await createUI5ApplicationPromptOptions({
+                service: {},
+                appGenStepConfigList: [],
+                floorplan: FloorplanFE.FE_FPM,
+                projectName: undefined,
+                targetFolder: undefined,
+                promptSettings: undefined,
+                promptExtension: promptExtensions,
+                entityRelatedConfig: { addPageBuildingBlock: true }
+            });
+            expect(promptOptions).toMatchObject({
+                addDeployConfig: {
+                    default: true,
+                    validate: validateExtFunc,
+                    additionalMessages: addMsgs
+                },
+                namespace: {
+                    default: 'sap.com'
+                }
+            });
+            expect(promptOptions.ui5Version?.minUI5Version).toBe(promptExtensions.ui5Version?.minUI5Version);
         });
 
         test('createUI5ApplicationPromptOptions - validator callbacks are added by default', async () => {

@@ -1948,9 +1948,6 @@ importers:
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
-      semver:
-        specifier: 7.5.4
-        version: 7.5.4
       uuid:
         specifier: 11.0.5
         version: 11.0.5
@@ -1988,9 +1985,6 @@ importers:
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
-      '@types/semver':
-        specifier: 7.5.2
-        version: 7.5.2
       '@types/vscode':
         specifier: 1.73.1
         version: 1.73.1
