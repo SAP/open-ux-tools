@@ -2147,6 +2147,7 @@ sap.ui.define(function() {
   "com.sap.myui5tslib113/tsconfig.json": Object {
     "contents": "{
   \\"compilerOptions\\": {
+      \\"target\\": \\"es2022\\",
       \\"module\\": \\"es2022\\",
       \\"moduleResolution\\": \\"node\\",
       \\"skipLibCheck\\": true,
@@ -2769,6 +2770,7 @@ sap.ui.define(function() {
   "com.sap.myui5tslib/tsconfig.json": Object {
     "contents": "{
   \\"compilerOptions\\": {
+      \\"target\\": \\"es2022\\",
       \\"module\\": \\"es2022\\",
       \\"moduleResolution\\": \\"node\\",
       \\"skipLibCheck\\": true,
@@ -3366,6 +3368,7 @@ sap.ui.define(function() {
   "com.sap.myui5tslib121/tsconfig.json": Object {
     "contents": "{
   \\"compilerOptions\\": {
+      \\"target\\": \\"es2022\\",
       \\"module\\": \\"es2022\\",
       \\"moduleResolution\\": \\"node\\",
       \\"skipLibCheck\\": true,
