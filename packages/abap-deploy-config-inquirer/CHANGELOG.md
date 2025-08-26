@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.10
+
+### Patch Changes
+
+-   384bb40: fix: Deploy Config generator does not show cloud-specific prompts for ADP when login is required
+
 ## 1.6.9
 
 ### Patch Changes

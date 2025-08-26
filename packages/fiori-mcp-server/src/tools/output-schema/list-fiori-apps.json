@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "properties": {
+    "type": "object",
+    "properties": {
+      "applications": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["list-report", "freestyle", "analytical", "overview-page"]
+            },
+            "version": {
+              "type": "string"
+            }
+          },
+          "required": ["name", "path", "type", "version"],
+          "additionalProperties": false
+        }
+      }
+    },
+    "required": ["applications"],
+    "additionalProperties": false
+  }
+}

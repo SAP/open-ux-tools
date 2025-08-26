@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.15.21
+
+### Patch Changes
+
+-   384bb40: fix: Deploy Config generator does not show cloud-specific prompts for ADP when login is required
+
 ## 0.15.20
 
 ### Patch Changes
