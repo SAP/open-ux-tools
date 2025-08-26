@@ -7338,6 +7338,7 @@ archive.zip
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
         \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
         \\"allowJs\\": true,
@@ -7372,7 +7373,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -24201,6 +24202,7 @@ Object {
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
         \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
         \\"allowJs\\": true,
@@ -33887,7 +33889,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -37524,7 +37526,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -47866,6 +47868,7 @@ archive.zip
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
         \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
         \\"allowJs\\": true,
@@ -51367,6 +51370,7 @@ archive.zip
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
         \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
         \\"allowJs\\": true,
@@ -54868,6 +54872,7 @@ archive.zip
   "tsconfig.json": Object {
     "contents": "{
     \\"compilerOptions\\": {
+        \\"target\\": \\"es2022\\",
         \\"module\\": \\"es2022\\",
         \\"skipLibCheck\\": true,
         \\"allowJs\\": true,
@@ -58355,7 +58360,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.84.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
@@ -58816,7 +58821,7 @@ metadata:
 type: application
 framework:
   name: SAPUI5
-  version: 1.77.2
+  version: 1.84.54
   libraries:
     - name: sap.m
     - name: sap.ui.core
