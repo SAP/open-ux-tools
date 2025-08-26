@@ -150,7 +150,6 @@ describe('Test FioriAppGenerator', () => {
         };
         odataServiceAnswers.source = DatasourceType.none;
         jest.restoreAllMocks();
-        jest.clearAllMocks();
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
     });
 

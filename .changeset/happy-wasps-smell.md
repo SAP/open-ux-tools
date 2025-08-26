@@ -1,4 +1,5 @@
 ---
+'@sap-ux/deploy-config-sub-generator': patch
 '@sap-ux/fiori-app-sub-generator': patch
 '@sap-ux/odata-service-inquirer': patch
 ---
