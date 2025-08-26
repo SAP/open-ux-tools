@@ -22,6 +22,8 @@ import { extendJSON } from '../common/file';
 import { generateBuildingBlock } from '../building-block';
 import { BuildingBlockType } from '../building-block/types';
 import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/xml';
+import { lt } from 'semver';
+import type { Logger } from '@sap-ux/logger';
 
 /**
  * Enhances the provided custom page configuration with default data.
@@ -77,9 +79,10 @@ export function getTemplateRoot(ui5Version?: string): string {
  * @param {string} basePath - the base path
  * @param {CustomPage} data - the custom page configuration
  * @param {Editor} [fs] - the memfs editor instance
+ * @param {Logger} [log] - Logger instance
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-export async function generate(basePath: string, data: CustomPage, fs?: Editor): Promise<Editor> {
+export async function generate(basePath: string, data: CustomPage, fs?: Editor, log?: Logger): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -119,20 +122,31 @@ export async function generate(basePath: string, data: CustomPage, fs?: Editor):
     }
 
     if (data.pageBuildingBlockTitle) {
-        await generateBuildingBlock(
-            basePath,
-            {
-                viewOrFragmentPath: relative(basePath, viewPath),
-                aggregationPath: augmentXpathWithLocalNames(`/mvc:View/Page`),
-                replace: true,
-                buildingBlockData: {
-                    id: 'Page',
-                    buildingBlockType: BuildingBlockType.Page,
-                    title: data.pageBuildingBlockTitle
-                }
-            },
-            fs
-        );
+        let addPageBuildingBlock = true;
+        const minVersion = coerce(data.minUI5Version);
+        if (minVersion && lt(minVersion.version, '1.136.0')) {
+            addPageBuildingBlock = false;
+        }
+        if (addPageBuildingBlock) {
+            await generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: relative(basePath, viewPath),
+                    aggregationPath: augmentXpathWithLocalNames(`/mvc:View/Page`),
+                    replace: true,
+                    buildingBlockData: {
+                        id: 'Page',
+                        buildingBlockType: BuildingBlockType.Page,
+                        title: data.pageBuildingBlockTitle
+                    }
+                },
+                fs
+            );
+        } else { 
+            log?.warn(
+                `The pageBuildingBlockTitle feature requires SAP UI5 version 1.136.0 or higher. The current minimum UI5 version is ${data.minUI5Version}, so the page building block will not be added. Please update your UI5 version to use this feature.`
+            )
+        }
     }
 
     const ext = data.typescript ? 'ts' : 'js';

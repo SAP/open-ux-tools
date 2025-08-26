@@ -1730,6 +1730,9 @@ importers:
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
