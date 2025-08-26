@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.7.0
+
+### Minor Changes
+
+-   2d11a6d: Removes support for adding new BTP systems via service keys
+
 ## 2.6.1
 
 ### Patch Changes
