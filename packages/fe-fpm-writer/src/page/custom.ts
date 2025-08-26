@@ -16,13 +16,12 @@ import { setCommonDefaults } from '../common/defaults';
 import type { Manifest } from '../common/types';
 import { validateVersion } from '../common/validate';
 import { getTemplatePath } from '../templates';
-import { coerce, gte } from 'semver';
+import { coerce, gte, lt } from 'semver';
 import { addExtensionTypes, getManifestPath } from '../common/utils';
 import { extendJSON } from '../common/file';
 import { generateBuildingBlock } from '../building-block';
 import { BuildingBlockType } from '../building-block/types';
 import { augmentXpathWithLocalNames } from '../building-block/prompts/utils/xml';
-import { lt } from 'semver';
 import type { Logger } from '@sap-ux/logger';
 import { i18nNamespaces, translate } from '../i18n';
 
