@@ -1,8 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import axios from 'axios';
 import type * as AdmZip from 'adm-zip';
+import axios, { type AxiosResponse } from 'axios';
 import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -14,7 +14,6 @@ import type {
     CFConfig,
     Space,
     Organization,
-    HttpResponse,
     CFApp,
     RequestArguments,
     Credentials,
@@ -33,6 +32,10 @@ import { checkForCf, getAuthToken, getServiceInstanceKeys, requestCfApi } from '
 const HOMEDRIVE = 'HOMEDRIVE';
 const HOMEPATH = 'HOMEPATH';
 const WIN32 = 'win32';
+
+interface FDCResponse {
+    results: CFApp[];
+}
 
 /**
  * Validate the smart template application.
@@ -435,9 +438,9 @@ export class FDCService {
             const response = await this.getFDCApps(appHostIdsArray);
 
             if (response.status === 200) {
-                const results = (response.data as any)?.['results'] as CFApp[];
-
-                return this.processApps(results, credentials, includeInvalid);
+                // TODO: Remove this once the FDC API is updated to return the appHostId
+                const apps = response.data.results.map((app) => ({ ...app, appHostId: appHostIdsArray[0] }));
+                return this.processApps(apps, credentials, includeInvalid);
             } else {
                 throw new Error(
                     `Failed to connect to Flexibility Design and Configuration service. Reason: HTTP status code ${response.status}: ${response.statusText}`
@@ -572,7 +575,7 @@ export class FDCService {
             service-plan: <plan name, e.g. standard>`);
     }
 
-    private async getFDCApps(appHostIds: string[]): Promise<HttpResponse> {
+    private async getFDCApps(appHostIds: string[]): Promise<AxiosResponse<FDCResponse>> {
         const requestArguments = getFDCRequestArguments(this.cfConfig);
         this.logger?.log(
             `App Hosts: ${JSON.stringify(appHostIds)}, request arguments: ${JSON.stringify(requestArguments)}`
@@ -589,7 +592,7 @@ export class FDCService {
                 await CFLocal.cfGetAvailableOrgs();
                 this.loadConfig();
             }
-            const response = await axios.get(url, requestArguments.options);
+            const response = await axios.get<FDCResponse>(url, requestArguments.options);
             this.logger?.log(
                 `Getting FDC apps. Request url: ${url} response status: ${
                     response.status
