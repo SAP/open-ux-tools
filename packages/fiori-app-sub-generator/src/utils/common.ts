@@ -87,18 +87,19 @@ export function getRequiredOdataVersion(floorplan: Floorplan): OdataVersion | un
  * @param version - The OData version.
  * @param floorplan - The floorplan type.
  * @param entityRelatedConfig - entity related configuration.
+ * @param ui5Version
  * @returns The minimum supported UI5 version as a string.
  */
 export function getMinSupportedUI5Version(
     version: OdataVersion,
     floorplan: Floorplan,
-    entityRelatedConfig?: Partial<EntityRelatedAnswers>
+    entityRelatedConfig?: Partial<EntityRelatedAnswers>,
+    ui5Version?: string
 ): string {
     let minUI5Version: string | undefined;
 
     if (floorplan === FloorplanFE.FE_FPM && entityRelatedConfig?.addPageBuildingBlock) {
-        const cleanUi5Version = coerce(minUI5Version);
-
+        const cleanUi5Version = coerce(ui5Version);
         if (cleanUi5Version?.version) {
             // If the provided version is less than 1.136.0, set to 1.136.0
             return gte(minUi5VersionForPageBuildingBlock, cleanUi5Version.version)
