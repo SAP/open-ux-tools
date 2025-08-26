@@ -1,5 +1,3 @@
-import type { ApplicationAccess } from '@sap-ux/project-access';
-import { SapuxFtfsFileIO, type AppData } from '../../../page-editor-api';
 import type {
     ExecuteFunctionalitiesInput,
     ExecuteFunctionalityOutput,
@@ -7,10 +5,9 @@ import type {
     GetFunctionalityDetailsInput,
     GetFunctionalityDetailsOutput
 } from '../../../types';
-import { DirName, getProject } from '@sap-ux/project-access';
-import { join } from 'path';
-import { ADD_PAGE, DELETE_PAGE } from '../../../constant';
-import { getDefaultExtensionFolder, resolveApplication } from '../../utils';
+import { getProject } from '@sap-ux/project-access';
+import { ADD_PAGE } from '../../../constant';
+import { resolveApplication } from '../../utils';
 import { FIORI_FEATURES } from './features';
 import { FioriAnnotationService } from '@sap-ux/fiori-annotation-api';
 import { getServiceName } from './utils';
@@ -22,7 +19,7 @@ import { FioriFeature } from './types';
 // Create a comprehensive response that guides the LLM to extract and search
 const availableFeatures = FIORI_FEATURES.map(
     (feature) =>
-        `**Category**: ${feature.category}\n    **Sub-Category**: ${feature.subCategory}\n    **Name**: ${feature.name}\n    **Description**: ${feature.description}`
+        `**Category**: ${feature.category}\n    **Name**: ${feature.name}\n    **Description**: ${feature.description}`
 ).join('\n');
 
 const supportedFeatureMsg = `

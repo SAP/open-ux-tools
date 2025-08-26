@@ -1,6 +1,12 @@
 import { readFile } from 'fs/promises';
 import { FioriFeature } from './types';
 
+const rulesMsg = `
+RULES:
+    - Content of **Expected annotation pattern:** are sample example. You MUST learn from **Expected annotation pattern:**  and You MUST use Targets and **Available Dynamic Property Names:** from **Available Metadata Targets:** to annotation Targets with any dynamic property names where meaningful and possible.
+    - If Target could not be determined from user query, ask user to select target from **Available Metadata Targets:**. Suggest list of targets to user.
+    - If any dynamic property names can not be determined from user query, ask user to select property from **Available Dynamic Property Names:** of respective Targets. Suggest list of properties to user.
+`;
 /**
  * Analyze a CDS file content for matches with a specific feature
  */
@@ -13,24 +19,6 @@ function analyzeFileForFeature(content: string, feature: FioriFeature): string[]
         const annotationLower = annotation.toLowerCase();
         if (contentLower.includes(annotationLower)) {
             matches.push(`Annotation: ${annotation}`);
-        }
-    }
-
-    // Check for search term matches
-    // for (const term of feature.searchTerms) {
-    //     const termLower = term.toLowerCase();
-    //     if (contentLower.includes(termLower)) {
-    //         matches.push(`Search term: ${term}`);
-    //     }
-    // }
-
-    // Check for manifest settings in comments or similar
-    if (feature.implementation.manifestSettings) {
-        for (const setting of feature.implementation.manifestSettings) {
-            const settingLower = setting.toLowerCase();
-            if (contentLower.includes(settingLower)) {
-                matches.push(`Manifest setting reference: ${setting}`);
-            }
         }
     }
 
@@ -76,29 +64,21 @@ export async function searchCDSFiles(
     appPath: string,
     metadataInfo: { path: string; kind: string; properties: { name: string; type: string }[] }[]
 ): Promise<string> {
-    // const fs = await import('fs/promises');
-    // const path = await import('path');
-
-    // try {
-    //   // Check if the app path exists
-    //   await fs.access(appPath);
-    // } catch (error) {
-    //   return `Error: Application path "${appPath}" does not exist or is not accessible.`;
-    // }
-
-    // // Find all CDS files in the directory and subdirectories
-    // const cdsFiles = await this.findCDSFiles(appPath);
-
     if (cdsFiles.length === 0) {
         return `No CDS files found in "${appPath}".`;
     }
     const metadataMsg = `
 **Available Metadata Targets:** Annotation is only applied on one of these targets \n\n${metadataInfo
         .map(
-            (info) => `kind: ${info.kind} targetPath: ${info.path} 
-**Available Properties:**\n\n${info.properties
-                .map((prop) => `name: ${prop.name} type: ${prop.type}\n\n`)
-                .join('- ')}`
+            (info) =>
+                `kind: ${info.kind} targetPath: ${info.path}${
+                    info.properties.length > 0
+                        ? `
+**Available Dynamic Property Names:**\n\n${info.properties
+                              .map((prop) => `name: ${prop.name} type: ${prop.type}\n\n`)
+                              .join('- ')}`
+                        : ''
+                }`
         )
         .join('\n')}
 `;
@@ -134,10 +114,6 @@ export async function searchCDSFiles(
         result += `The feature "${feature.name}" was not found in any CDS files.\n\n`;
         result += `**Searched for:**\n`;
         result += `- Annotations: ${feature.implementation.annotations.join(', ')}\n`;
-        // result += `- Search terms: ${feature.searchTerms.join(', ')}\n\n`;
-        // result += `**Suggestion:** Use ### 💡 Implementation Suggestions as hint to model application. Usually annotation target is annotated like annotate service.RootEntities where service is namespace and  RootEntities is target.
-        //   Check if existing file has only one target, use that target and apply annotation to that target.\n\n if there are multiple targets, ask user which targets annotation should be applied. Suggest list of targets to user.\n\n`;
-        //   result += `**Suggestion:** You may need to implement this feature. Use the generate_annotation tool to get implementation code.`;
         result += `\n### 💡 Implementation Suggestions\n\n`;
         result += metadataMsg;
     } else {
@@ -174,13 +150,6 @@ export async function searchCDSFiles(
         result += `\n\n**Expected annotation pattern:**\n\n`;
         result += `\`\`\`cds\n${feature.implementation.cdsExample}\n\`\`\`\n\n`;
     }
-
-    if (feature.implementation.notes && feature.implementation.notes.length > 0) {
-        result += `**Implementation notes:**\n`;
-        for (const note of feature.implementation.notes) {
-            result += `- ${note}\n`;
-        }
-    }
-
+    result += rulesMsg;
     return result;
 }
