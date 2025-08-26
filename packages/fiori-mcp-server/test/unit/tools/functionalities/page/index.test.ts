@@ -14,13 +14,13 @@ const TIME_OUT = 5 * 60 * 1000; // 5 min due to npm install.
 
 jest.setTimeout(TIME_OUT);
 
-jest.mock('@sap-ux/project-access', () => {
-    const actual = jest.requireActual('@sap-ux/project-access');
-    return {
-        ...actual,
-        createApplicationAccess: jest.fn()
-    };
-});
+// jest.mock('@sap-ux/project-access', () => {
+//     const actual = jest.requireActual('@sap-ux/project-access');
+//     return {
+//         ...actual,
+//         createApplicationAccess: jest.fn()
+//     };
+// });
 
 const originProjectRoot = join(__dirname, '..', '..', '..', '..', 'test-data', 'ai-created-cap');
 const copyProjectRoot = `${originProjectRoot}-add-page-copy`;
