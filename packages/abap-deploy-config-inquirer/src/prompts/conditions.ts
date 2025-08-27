@@ -233,9 +233,80 @@ function defaultOrShowTransportQuestion(): boolean {
  * Determines if the transport input choice question should be shown.
  *
  * @param options - abap deploy config prompt options
- * @returns boolean
+ * @param answers - current answers object
+ * @returns {boolean} True if the transport input choice prompt should be shown, false otherwise.
  */
-export function showTransportInputChoice(options?: TransportInputChoicePromptOptions): boolean {
+// Previous answers and visibility state for transport input choice prompt
+let prevTransportInputChoiceAnswers: AbapDeployConfigAnswersInternal | undefined;
+let prevTransportInputChoiceVisible: boolean | undefined;
+// Debounce timer and debounced value for ui5AbapRepo field
+let ui5AbapRepoDebounceTimer: NodeJS.Timeout | undefined;
+let ui5AbapRepoDebouncedValue: string | undefined;
+// Debounce delay in milliseconds for ui5AbapRepo typing
+const UI5_ABAP_REPO_DEBOUNCE_MS = 300;
+/**
+ * Checks if the UI5 ABAP Repo field is being debounced (i.e., user is still typing), and manages debounce timer/state.
+ *
+ * @param answers - Current answers object
+ * @param debounceTimer - Current debounce timer
+ * @param debouncedValue - Last debounced value
+ * @param setDebounce - Callback to set debounce timer and value
+ * @param prevVisible - Previous visibility state
+ * @returns {boolean|undefined} Returns previous visibility if debouncing, otherwise undefined
+ */
+export function isDebouncingUi5AbapRepo(
+    answers: AbapDeployConfigAnswersInternal | undefined,
+    debounceTimer: NodeJS.Timeout | undefined,
+    debouncedValue: string | undefined,
+    setDebounce: (timer: NodeJS.Timeout, value: string) => void,
+    prevVisible: boolean | undefined
+): boolean | undefined {
+    if (answers && typeof answers.ui5AbapRepo === 'string') {
+        if (debounceTimer) {
+            clearTimeout(debounceTimer);
+        }
+        if (debouncedValue !== answers.ui5AbapRepo) {
+            const timer = setTimeout(() => {
+                setDebounce(timer, answers.ui5AbapRepo!);
+            }, UI5_ABAP_REPO_DEBOUNCE_MS);
+            return typeof prevVisible === 'boolean' ? prevVisible : false;
+        }
+    }
+    return undefined;
+}
+
+/**
+ * Checks if only the description field has changed between two answers objects.
+ *
+ * @param answers - Current answers object
+ * @param prevAnswers - Previous answers object
+ * @returns {boolean} True if only the description changed, false otherwise.
+ */
+function onlyDescriptionChanged(
+    answers: AbapDeployConfigAnswersInternal,
+    prevAnswers: AbapDeployConfigAnswersInternal | undefined
+): boolean {
+    if (!prevAnswers) {
+        return false;
+    }
+    const keys = Object.keys(answers) as (keyof AbapDeployConfigAnswersInternal)[];
+    return (
+        keys.every((key) => key === 'description' || prevAnswers[key] === answers[key]) &&
+        prevAnswers.description !== answers.description
+    );
+}
+
+/**
+ * Determines if the transport input choice question should be shown.
+ *
+ * @param options - abap deploy config prompt options
+ * @param answers - current answers object
+ * @returns {boolean} True if the transport input choice prompt should be shown, false otherwise.
+ */
+export function showTransportInputChoice(
+    options?: TransportInputChoicePromptOptions,
+    answers?: AbapDeployConfigAnswersInternal
+): boolean {
     if (
         options?.hideIfOnPremise === true &&
         !PromptState.abapDeployConfig?.isS4HC &&
@@ -243,8 +314,36 @@ export function showTransportInputChoice(options?: TransportInputChoicePromptOpt
     ) {
         return false;
     }
-
-    return defaultOrShowTransportQuestion();
+    // // Debounce logic: if ui5AbapRepo is being typed, delay transport inputs visibility update until user stops typing
+    // const debounceResult = isDebouncingUi5AbapRepo(
+    //     answers,
+    //     ui5AbapRepoDebounceTimer,
+    //     ui5AbapRepoDebouncedValue,
+    //     (timer, value) => {
+    //         ui5AbapRepoDebounceTimer = timer;
+    //         ui5AbapRepoDebouncedValue = value;
+    //     },
+    //     prevTransportInputChoiceVisible
+    // );
+    // if (typeof debounceResult === 'boolean') {
+    //     return debounceResult;
+    // }
+    // Description change logic
+    if (
+        answers &&
+        onlyDescriptionChanged(answers, prevTransportInputChoiceAnswers) &&
+        typeof prevTransportInputChoiceVisible === 'boolean'
+    ) {
+        return prevTransportInputChoiceVisible;
+    }
+    // Evaluate whether the transport input should be shown based on current state
+    const shouldShow = defaultOrShowTransportQuestion();
+    // Update previous answers and visibility state for next invocation
+    if (answers) {
+        prevTransportInputChoiceAnswers = { ...answers };
+        prevTransportInputChoiceVisible = shouldShow;
+    }
+    return shouldShow;
 }
 
 /**
@@ -304,15 +403,58 @@ export function defaultOrShowTransportCreatedQuestion(transportInputChoice?: str
  * @param transportInputChoiceOptions - transportInputChoice options
  * @returns boolean
  */
+// Previous answers and visibility state for manual transport input prompt
+let prevManualTransportAnswers: AbapDeployConfigAnswersInternal | undefined;
+let prevManualTransportVisible: boolean | undefined;
+// Debounce timer and debounced value for ui5AbapRepo field (manual transport)
+let ui5AbapRepoManualDebounceTimer: NodeJS.Timeout | undefined;
+let ui5AbapRepoManualDebouncedValue: string | undefined;
+/**
+ * Determines if the manual transport input prompt should be shown.
+ *
+ * @param transportInputChoice - The selected transport input choice
+ * @param transportInputChoiceOptions - Options for the transport input choice prompt
+ * @param answers - Current answers object
+ * @returns {boolean} True if the manual transport input prompt should be shown, false otherwise.
+ */
 export function defaultOrShowManualTransportQuestion(
     transportInputChoice?: string,
-    transportInputChoiceOptions?: TransportInputChoicePromptOptions
+    transportInputChoiceOptions?: TransportInputChoicePromptOptions,
+    answers?: AbapDeployConfigAnswersInternal
 ): boolean {
-    return (
+    // // Debounce logic: if ui5AbapRepo is being typed, delay transport inputs visibility update until user stops typing
+    // if (answers && typeof answers.ui5AbapRepo === 'string') {
+    //     if (ui5AbapRepoManualDebounceTimer) {
+    //         clearTimeout(ui5AbapRepoManualDebounceTimer);
+    //     }
+    //     if (ui5AbapRepoManualDebouncedValue !== answers.ui5AbapRepo) {
+    //         ui5AbapRepoManualDebounceTimer = setTimeout(() => {
+    //             ui5AbapRepoManualDebouncedValue = answers.ui5AbapRepo;
+    //         }, UI5_ABAP_REPO_DEBOUNCE_MS);
+    //         return typeof prevManualTransportVisible === 'boolean' ? prevManualTransportVisible : false;
+    //     }
+    // }
+    // If we have previous answers, check if only the description field changed
+    if (answers && prevManualTransportAnswers) {
+        const keys = Object.keys(answers) as (keyof AbapDeployConfigAnswersInternal)[];
+        const onlyDescriptionChanged =
+            keys.every((key) => key === 'description' || prevManualTransportAnswers![key] === answers[key]) &&
+            prevManualTransportAnswers!.description !== answers.description;
+        if (onlyDescriptionChanged && typeof prevManualTransportVisible === 'boolean') {
+            return prevManualTransportVisible;
+        }
+    }
+    // Evaluate whether the manual transport input should be shown based on current state
+    const shouldShow =
         defaultOrShowTransportQuestion() &&
         (transportInputChoice === TransportChoices.EnterManualChoice ||
-            (transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isS4HC === false))
-    );
+            (transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isS4HC === false));
+    // Update previous answers and visibility state for next invocation
+    if (answers) {
+        prevManualTransportAnswers = { ...answers };
+        prevManualTransportVisible = shouldShow;
+    }
+    return shouldShow;
 }
 
 /**

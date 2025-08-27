@@ -38,7 +38,8 @@ export function getTransportRequestPrompts(
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
-            when: (): boolean => showTransportInputChoice(options.transportInputChoice),
+            when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
+                showTransportInputChoice(options.transportInputChoice, previousAnswers),
             type: 'list',
             name: promptNames.transportInputChoice,
             message: t('prompts.config.transport.transportInputChoice.message'),
@@ -116,12 +117,14 @@ export function getTransportRequestPrompts(
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowManualTransportQuestion(
                     previousAnswers.transportInputChoice,
-                    options.transportInputChoice
+                    options.transportInputChoice,
+                    previousAnswers
                 ),
             type: 'input',
             name: promptNames.transportManual,
             message: () =>
                 PromptState.transportAnswers.transportRequired
+                    // These labels flicker when typing in ui5AbapRepo and using Debounce
                     ? t('prompts.config.transport.common.transportRequestMandatory')
                     : t('prompts.config.transport.common.transportRequest'),
             guiOptions: {
