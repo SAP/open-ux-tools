@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.7.1
+
+### Patch Changes
+
+-   6e1008e: bugfix: Restrict Page Building Block support to UI5 version 1.136.0 and above for custom app
+
+## 2.7.0
+
+### Minor Changes
+
+-   2d11a6d: Removes support for adding new BTP systems via service keys
+
 ## 2.6.1
 
 ### Patch Changes

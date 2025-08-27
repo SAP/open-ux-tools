@@ -1,5 +1,29 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.4.0
+
+### Minor Changes
+
+-   6e1008e: bugfix: Restrict Page Building Block support to UI5 version 1.136.0 and above for custom app
+
+### Patch Changes
+
+-   Updated dependencies [6e1008e]
+    -   @sap-ux/odata-service-inquirer@2.7.1
+
+## 0.3.63
+
+### Patch Changes
+
+-   Updated dependencies [2d11a6d]
+    -   @sap-ux/odata-service-inquirer@2.7.0
+
+## 0.3.62
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-sub-generator@0.1.56
+
 ## 0.3.61
 
 ### Patch Changes

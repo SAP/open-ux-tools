@@ -1580,6 +1580,9 @@ importers:
       memfs:
         specifier: 3.4.13
         version: 3.4.13
+      os-name:
+        specifier: 4.0.1
+        version: 4.0.1
       rimraf:
         specifier: 5.0.5
         version: 5.0.5
@@ -11168,7 +11171,7 @@ packages:
       js-yaml: 4.1.0
       open: 9.1.0
       pretty-hrtime: 1.0.3
-      semver: 7.6.3
+      semver: 7.7.1
       update-notifier: 6.0.2
       yargs: 17.7.2
     transitivePeerDependencies:
@@ -11242,7 +11245,7 @@ packages:
       read-pkg-up: 10.1.0
       resolve: 1.22.8
       rimraf: 5.0.5
-      semver: 7.6.3
+      semver: 7.7.1
       xml2js: 0.6.2
       yesno: 0.4.0
     transitivePeerDependencies:
@@ -19572,7 +19575,6 @@ packages:
   /macos-release@2.5.1:
     resolution: {integrity: sha512-DXqXhEM7gW59OjZO8NIjBCz9AQ1BEMrfiOAl4AYByHCtVHRF4KoGNO8mqQeM8lRCtQe/UnJ4imO/d2HdkKsd+A==}
     engines: {node: '>=6'}
-    dev: false
 
   /magic-string@0.25.9:
     resolution: {integrity: sha512-RmF0AsMzgt25qzqqLc1+MbHmhdx0ojF2Fvs4XnOqz2ZOBXzzkEwc/dJQZCYHAn7v1jbVOjAZfK8msRn4BxO4VQ==}
@@ -21161,7 +21163,6 @@ packages:
     dependencies:
       macos-release: 2.5.1
       windows-release: 4.0.0
-    dev: false
 
   /os-shim@0.1.3:
     resolution: {integrity: sha512-jd0cvB8qQ5uVt0lvCIexBaROw1KyKm5sbulg2fWOHjETisuCzWyt+eTZKEMs8v6HwzoGs8xik26jg7eCM6pS+A==}
@@ -23727,6 +23728,7 @@ packages:
   /semver@7.5.4:
     resolution: {integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==}
     engines: {node: '>=10'}
+    hasBin: true
     dependencies:
       lru-cache: 6.0.0
 
@@ -25222,7 +25224,7 @@ packages:
       chalk: 4.1.2
       enhanced-resolve: 5.17.1
       micromatch: 4.0.8
-      semver: 7.5.4
+      semver: 7.7.1
       typescript: 5.9.2
       webpack: 5.99.2(esbuild@0.19.2)
     dev: true
@@ -26504,7 +26506,6 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       execa: 4.1.0
-    dev: false
 
   /winston-transport@4.6.0:
     resolution: {integrity: sha512-wbBA9PbPAHxKiygo7ub7BYRiKxms0tpfU2ljtWzb3SjRjv5yl6Ozuy/TkXf00HTAt+Uylo3gSkNwzc4ME0wiIg==}

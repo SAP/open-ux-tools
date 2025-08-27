@@ -506,8 +506,8 @@ export class ConnectionValidator {
     }): Promise<void> {
         this.resetConnectionState();
         this.resetValidity();
-
-        if (this.systemAuthType === 'reentranceTicket' || this.systemAuthType === 'serviceKey') {
+        // Handle existing stored service keys for backward compatibility
+        if (this.systemAuthType === 'reentranceTicket' || serviceInfo) {
             this._serviceProvider = this.getAbapOnCloudServiceProvider(url, serviceInfo, refreshToken);
         } else if (destination) {
             // Assumption: the destination configured URL is a valid URL, will be needed later for basic auth error handling
@@ -629,6 +629,7 @@ export class ConnectionValidator {
             });
         }
 
+        // Remains for existing stored service keys (backward compatibility)
         if (this.systemAuthType === 'serviceKey' && serviceInfo) {
             return createForAbapOnCloud({
                 environment: AbapCloudEnvironment.Standalone,
@@ -667,6 +668,7 @@ export class ConnectionValidator {
             return this.getValidationResultFromStatusCode(200);
         }
         try {
+            // Remains for backwards compatibility with existing systems
             this.systemAuthType = 'serviceKey';
             await this.createSystemConnection({ serviceInfo, odataVersion, refreshToken });
             // Cache the user info
