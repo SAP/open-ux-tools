@@ -85,7 +85,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 
-                name: blob-report-${{ matrix.ui5-version }}
+                name: blob-report-${{ github.run_id }}-${{ matrix.ui5-version }}
                 path: tests/integration/adaptation-editor/blob-report
                 retention-days: 1
     merge-reports:
@@ -121,7 +121,7 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   path: tests/integration/adaptation-editor/all-blob-reports
-                  pattern: blob-report-*
+                  pattern: blob-report-${{ github.run_id }}-*
                   merge-multiple: true
 
             - name: Merge into HTML Report
