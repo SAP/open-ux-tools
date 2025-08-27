@@ -1,5 +1,5 @@
-import { AppRouterType } from '@sap-ux/adp-tooling';
-import type { CFApp, FDCService, SourceApplication } from '@sap-ux/adp-tooling';
+import { AppRouterType, formatDiscovery } from '@sap-ux/adp-tooling';
+import type { CFApp, SourceApplication } from '@sap-ux/adp-tooling';
 
 interface Choice {
     name: string;
@@ -31,12 +31,11 @@ export const getApplicationChoices = (apps: SourceApplication[]): Choice[] => {
  * Get the choices for the base app.
  *
  * @param {CFApp[]} apps - The apps to get the choices for.
- * @param {FDCService} fdcService - The FDC service instance.
  * @returns {Array<{ name: string; value: CFApp }>} The choices for the base app.
  */
-export const getCFAppChoices = (apps: CFApp[], fdcService: FDCService): { name: string; value: CFApp }[] => {
+export const getCFAppChoices = (apps: CFApp[]): { name: string; value: CFApp }[] => {
     return apps.map((result: CFApp) => ({
-        name: fdcService.formatDiscovery?.(result) ?? `${result.title} (${result.appId}, ${result.appVersion})`,
+        name: formatDiscovery(result) ?? `${result.title} (${result.appId}, ${result.appVersion})`,
         value: result
     }));
 };

@@ -7,6 +7,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Resource, Yaml, MTAModule, AppParamsExtended } from '../types';
 import { AppRouterType } from '../types';
 import { createService } from './utils';
+import { getProjectNameForXsSecurity, YamlLoader } from './yaml-loader';
 
 const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';
 const HTML5_APPS_REPO = 'html5-apps-repo';
@@ -42,28 +43,6 @@ export function getSAPCloudService(yamlContent: Yaml): string {
 }
 
 /**
- * Parses the MTA file.
- *
- * @param {string} file - The file to parse.
- * @returns {Yaml} The parsed YAML content.
- */
-export function parseMtaFile(file: string): Yaml {
-    if (!fs.existsSync(file)) {
-        throw new Error(`Could not find file ${file}`);
-    }
-
-    const content = fs.readFileSync(file, 'utf-8');
-    let parsed: Yaml;
-    try {
-        parsed = yaml.load(content) as Yaml;
-
-        return parsed;
-    } catch (e) {
-        throw new Error(`Error parsing file ${file}`);
-    }
-}
-
-/**
  * Gets the router type.
  *
  * @param {Yaml} yamlContent - The YAML content.
@@ -89,9 +68,9 @@ export function getRouterType(yamlContent: Yaml): AppRouterType {
  */
 export function getAppParamsFromUI5Yaml(projectPath: string): AppParamsExtended {
     const ui5YamlPath = path.join(projectPath, 'ui5.yaml');
-    const parsedMtaFile = parseMtaFile(ui5YamlPath) as any;
+    const parsedYaml = YamlLoader.getYamlContent(ui5YamlPath) as any;
 
-    const appConfiguration = parsedMtaFile?.builder?.customTasks[0]?.configuration;
+    const appConfiguration = parsedYaml?.builder?.customTasks?.[0]?.configuration;
     const appParams: AppParamsExtended = {
         appHostId: appConfiguration?.appHostId,
         appName: appConfiguration?.appName,
@@ -107,15 +86,9 @@ export function getAppParamsFromUI5Yaml(projectPath: string): AppParamsExtended 
  *
  * @param {any} yamlContent - The YAML content.
  * @param {string} projectName - The project name.
- * @param {ConcatArray<string>} resourceNames - The resource names.
  * @param {string} businessService - The business service.
  */
-function adjustMtaYamlStandaloneApprouter(
-    yamlContent: any,
-    projectName: string,
-    resourceNames: ConcatArray<string>,
-    businessService: string
-): void {
+function adjustMtaYamlStandaloneApprouter(yamlContent: any, projectName: string, businessService: string): void {
     const appRouterName = `${projectName}-approuter`;
     let appRouter = yamlContent.modules.find((module: { name: string }) => module.name === appRouterName);
     if (appRouter == null) {
@@ -278,15 +251,16 @@ function adjustMtaYamlUDeployer(yamlContent: any, projectName: string, moduleNam
  *
  * @param {any} yamlContent - The YAML content.
  * @param {string} projectName - The project name.
+ * @param {string} timestamp - The timestamp.
  * @param {boolean} isManagedAppRouter - Whether the approuter is managed.
- * @param {string} projectNameForXsSecurity - The project name for XS security.
  */
 function adjustMtaYamlResources(
     yamlContent: any,
     projectName: string,
-    isManagedAppRouter: boolean,
-    projectNameForXsSecurity: string
+    timestamp: string,
+    isManagedAppRouter: boolean
 ): void {
+    const projectNameForXsSecurity = getProjectNameForXsSecurity(yamlContent, timestamp);
     const resources: Resource[] = [
         {
             name: `${projectName}_html_repo_host`,
@@ -426,22 +400,9 @@ function writeFileCallback(error: any): void {
  * The YAML utilities class.
  */
 export class YamlUtils {
-    public static timestamp: string;
-    public static yamlContent: Yaml;
     public static spaceGuid: string;
     private static yamlPath: string;
     private static HTML5_APPS_REPO = 'html5-apps-repo';
-
-    /**
-     * Loads the YAML content.
-     *
-     * @param {string} file - The file.
-     */
-    public static loadYamlContent(file: string): void {
-        const parsed = parseMtaFile(file);
-        this.yamlContent = parsed as Yaml;
-        this.yamlPath = file;
-    }
 
     /**
      * Adjusts the MTA YAML.
@@ -462,7 +423,10 @@ export class YamlUtils {
         businessService: string,
         logger?: ToolsLogger
     ): Promise<void> {
-        this.setTimestamp();
+        const timestamp = Date.now().toString();
+
+        const mtaYamlPath = path.join(projectPath, 'mta.yaml');
+        const loadedYamlContent = YamlLoader.getYamlContent(mtaYamlPath);
 
         const defaultYaml = {
             ID: projectPath.split(path.sep).pop(),
@@ -473,51 +437,52 @@ export class YamlUtils {
         };
 
         if (!appRouterType) {
-            appRouterType = getRouterType(this.yamlContent);
+            appRouterType = getRouterType(loadedYamlContent);
         }
 
-        const yamlContent = Object.assign(defaultYaml, this.yamlContent);
+        const yamlContent = Object.assign(defaultYaml, loadedYamlContent);
         const projectName = yamlContent.ID.toLowerCase();
-        const businessServices = yamlContent.resources.map((resource: { name: string }) => resource.name);
         const initialServices = yamlContent.resources.map(
             (resource: { parameters: { service: string } }) => resource.parameters.service
         );
         const isStandaloneApprouter = appRouterType === AppRouterType.STANDALONE;
         if (isStandaloneApprouter) {
-            adjustMtaYamlStandaloneApprouter(yamlContent, projectName, businessServices, businessService);
+            adjustMtaYamlStandaloneApprouter(yamlContent, projectName, businessService);
         } else {
             adjustMtaYamlManagedApprouter(yamlContent, projectName, businessSolutionName, businessService);
         }
         adjustMtaYamlUDeployer(yamlContent, projectName, moduleName);
-        adjustMtaYamlResources(yamlContent, projectName, !isStandaloneApprouter, this.getProjectNameForXsSecurity());
+        adjustMtaYamlResources(yamlContent, projectName, timestamp, !isStandaloneApprouter);
         adjustMtaYamlOwnModule(yamlContent, moduleName);
         // should go last since it sorts the modules (workaround, should be removed after fixed in deployment module)
         adjustMtaYamlFlpModule(yamlContent, projectName, businessService);
 
         const updatedYamlContent = yaml.dump(yamlContent);
-        await this.createServices(yamlContent.resources, initialServices, logger);
+        await this.createServices(projectPath, yamlContent, initialServices, timestamp, logger);
         return fs.writeFile(this.yamlPath, updatedYamlContent, 'utf-8', writeFileCallback);
     }
 
-    public static getProjectName(): string {
-        return this.yamlContent.ID;
-    }
-
-    public static getProjectNameForXsSecurity(): string {
-        return `${this.getProjectName().toLowerCase().replace(/\./g, '_')}_${this.timestamp}`;
-    }
-
-    private static setTimestamp(): void {
-        this.timestamp = Date.now().toString();
-    }
-
+    /**
+     * Creates the services.
+     *
+     * @param {string} projectPath - The project path.
+     * @param {Yaml} yamlContent - The YAML content.
+     * @param {string[]} initialServices - The initial services.
+     * @param {string} timestamp - The timestamp.
+     * @param {ToolsLogger} logger - The logger.
+     * @returns {Promise<void>} The promise.
+     */
     private static async createServices(
-        resources: any[],
+        projectPath: string,
+        yamlContent: Yaml,
         initialServices: string[],
+        timestamp: string,
         logger?: ToolsLogger
     ): Promise<void> {
         const excludeServices = initialServices.concat(['portal', this.HTML5_APPS_REPO]);
-        const xsSecurityPath = this.yamlPath.replace('mta.yaml', 'xs-security.json');
+        const xsSecurityPath = path.join(projectPath, 'xs-security.json');
+        const resources = yamlContent.resources as any[];
+        const xsSecurityProjectName = getProjectNameForXsSecurity(yamlContent, timestamp);
         for (const resource of resources) {
             if (!excludeServices.includes(resource.parameters.service)) {
                 if (resource.parameters.service === 'xsuaa') {
@@ -528,7 +493,8 @@ export class YamlUtils {
                         logger,
                         [],
                         xsSecurityPath,
-                        resource.parameters.service
+                        resource.parameters.service,
+                        xsSecurityProjectName
                     );
                 } else {
                     await createService(
@@ -538,7 +504,8 @@ export class YamlUtils {
                         logger,
                         [],
                         '',
-                        resource.parameters.service
+                        resource.parameters.service,
+                        xsSecurityProjectName
                     );
                 }
             }

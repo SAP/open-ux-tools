@@ -5,6 +5,7 @@ import type { OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type AdmZip from 'adm-zip';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -839,10 +840,9 @@ export interface ServiceKeys {
 }
 
 export interface HTML5Content {
-    // entries: AdmZip.IZipEntry[];
-    entries: any[]; // TODO: replace with AdmZip.IZipEntry[]
+    entries: AdmZip.IZipEntry[];
     serviceInstanceGuid: string;
-    manifest: any;
+    manifest: Manifest;
 }
 
 export interface ServiceInstance {
@@ -856,7 +856,7 @@ export interface GetServiceInstanceParams {
     names: string[];
 }
 
-export interface BusinessSeviceResource {
+export interface BusinessServiceResource {
     name: string;
     label: string;
 }

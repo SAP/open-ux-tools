@@ -3,7 +3,9 @@ import {
     type CFServicesQuestion,
     type CfServicesPromptOptions,
     cfServicesPromptNames,
-    type AppRouterType
+    type AppRouterType,
+    getModuleNames,
+    getApprouterType
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
@@ -143,7 +145,7 @@ export class CFServicesPrompter {
             message: t('prompts.approuterLabel'),
             choices: getAppRouterChoices(this.isInternalUsage),
             when: () => {
-                const modules = this.fdcService.getModuleNames(mtaProjectPath);
+                const modules = getModuleNames(mtaProjectPath);
                 const mtaProjectName =
                     (mtaProjectPath.indexOf('/') > -1
                         ? mtaProjectPath.split('/').pop()
@@ -151,7 +153,7 @@ export class CFServicesPrompter {
 
                 const hasRouter = this.fdcService.hasApprouter(mtaProjectName, modules);
                 if (hasRouter) {
-                    this.approuter = this.fdcService.getApprouterType();
+                    this.approuter = getApprouterType(mtaProjectPath);
                 }
 
                 if (this.isCFLoggedIn && !hasRouter) {
@@ -208,7 +210,7 @@ export class CFServicesPrompter {
                         this.apps = await this.fdcService.getBaseApps(this.businessServiceKeys.credentials);
                         this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
                     }
-                    return getCFAppChoices(this.apps, this.fdcService);
+                    return getCFAppChoices(this.apps);
                 } catch (e) {
                     // log error: baseApp => choices
                     /* the error will be shown by the validation functionality */
@@ -245,7 +247,8 @@ export class CFServicesPrompter {
             name: cfServicesPromptNames.businessService,
             message: t('prompts.businessServiceLabel'),
             choices: this.businessServices,
-            default: (_answers?: any) => (this.businessServices.length === 1 ? this.businessServices[0] ?? '' : ''),
+            default: (_: CfServicesAnswers) =>
+                this.businessServices.length === 1 ? this.businessServices[0] ?? '' : '',
             when: (answers: CfServicesAnswers) => {
                 return this.isCFLoggedIn && (this.approuter || answers.approuter);
             },

@@ -15,7 +15,6 @@ import type {
     CFServiceInstance,
     CFServiceOffering
 } from '../types';
-import { YamlUtils } from './yaml';
 
 const ENV = { env: { 'CF_COLOR': 'false' } };
 const CREATE_SERVICE_KEY = 'create-service-key';
@@ -59,6 +58,7 @@ export async function getServiceInstanceKeys(
  * @param {string[]} tags - The tags.
  * @param {string | null} securityFilePath - The security file path.
  * @param {string | null} serviceName - The service name.
+ * @param {string} [xsSecurityProjectName] - The project name for XS security.
  */
 export async function createService(
     spaceGuid: string,
@@ -67,7 +67,8 @@ export async function createService(
     logger?: ToolsLogger,
     tags: string[] = [],
     securityFilePath: string | null = null,
-    serviceName: string | undefined = undefined
+    serviceName: string | undefined = undefined,
+    xsSecurityProjectName?: string
 ): Promise<void> {
     try {
         if (!serviceName) {
@@ -87,11 +88,10 @@ export async function createService(
         if (securityFilePath) {
             let xsSecurity = null;
             try {
-                // TODO: replace with the path to the xs-security.json file from the templates
-                const filePath = path.resolve(__dirname, '../templates/cf/xs-security.json');
+                const filePath = path.resolve(__dirname, '../../templates/cf/xs-security.json');
                 const xsContent = fs.readFileSync(filePath, 'utf-8');
                 xsSecurity = JSON.parse(xsContent);
-                xsSecurity.xsappname = YamlUtils.getProjectNameForXsSecurity();
+                xsSecurity.xsappname = xsSecurityProjectName;
             } catch (err) {
                 throw new Error('xs-security.json could not be parsed.');
             }
@@ -105,7 +105,6 @@ export async function createService(
             throw new Error(query.stderr);
         }
     } catch (e) {
-        // const errorMessage = Messages.FAILED_TO_CREATE_SERVICE_INSTANCE(serviceInstanceName, spaceGuid, e.message);
         const errorMessage = `Cannot create a service instance '${serviceInstanceName}' in space '${spaceGuid}'. Reason: ${e.message}`;
         logger?.error(errorMessage);
         throw new Error(errorMessage);

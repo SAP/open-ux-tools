@@ -18,7 +18,6 @@ import {
     SourceManifest,
     isCFEnvironment,
     getBaseAppInbounds,
-    YamlUtils,
     isMtaProject,
     isCfInstalled,
     generateCf,
@@ -65,6 +64,7 @@ import { FDCService } from '@sap-ux/adp-tooling';
 import { getTargetEnvPrompt, getProjectPathPrompt } from './questions/target-env';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getTemplatesOverwritePath } from '../utils/templates';
+import { YamlLoader } from '@sap-ux/adp-tooling/src/cf/yaml-loader';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -415,7 +415,7 @@ export default class extends Generator {
             this.logger.log(`Project path information: ${this.projectLocation}`);
         } else {
             this.cfProjectDestinationPath = this.destinationRoot(process.cwd());
-            YamlUtils.loadYamlContent(join(this.cfProjectDestinationPath, 'mta.yaml'));
+            YamlLoader.getYamlContent(join(this.cfProjectDestinationPath, 'mta.yaml'));
             this.logger.log(`Project path information: ${this.cfProjectDestinationPath}`);
         }
     }
@@ -526,6 +526,10 @@ export default class extends Generator {
         const publicVersions = await fetchPublicVersions(this.logger);
 
         const manifest = this.fdcService.getManifestByBaseAppId(this.cfServicesAnswers.baseApp?.appId ?? '');
+
+        if (!manifest) {
+            throw new Error('Manifest not found for base app.');
+        }
 
         const cfConfig = createCfConfig({
             attributeAnswers: this.attributeAnswers,

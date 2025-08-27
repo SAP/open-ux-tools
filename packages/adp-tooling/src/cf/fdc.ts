@@ -18,15 +18,17 @@ import type {
     RequestArguments,
     Credentials,
     ServiceKeys,
-    BusinessSeviceResource,
     AppParams,
     CFServiceOffering,
-    CFAPIResponse
+    CFAPIResponse,
+    BusinessServiceResource,
+    Resource
 } from '../types';
 import type { AppRouterType } from '../types';
 import { t } from '../i18n';
 import { downloadAppContent } from './html5-repo';
 import { YamlUtils, getRouterType } from './yaml';
+import { YamlLoader } from './yaml-loader';
 import { getApplicationType, isSupportedAppTypeForAdp } from '../source';
 import { checkForCf, getAuthToken, getServiceInstanceKeys, requestCfApi } from './utils';
 
@@ -65,7 +67,7 @@ async function validateSmartTemplateApplication(manifest: Manifest): Promise<str
  *
  * @returns {string} The home directory.
  */
-function getHomedir() {
+function getHomedir(): string {
     let homedir = os.homedir();
     const homeDrive = process.env?.[HOMEDRIVE];
     const homePath = process.env?.[HOMEPATH];
@@ -229,7 +231,7 @@ function extractManifest(zipEntries: AdmZip.IZipEntry[]): Manifest | undefined {
     zipEntries.forEach((item) => {
         if (item.entryName.endsWith('manifest.json')) {
             try {
-                manifest = JSON.parse(item.getData().toString('utf8'));
+                manifest = JSON.parse(item.getData().toString('utf8')) as Manifest;
             } catch (e) {
                 throw new Error(`Failed to parse manifest.json. Reason: ${e.message}`);
             }
@@ -249,7 +251,7 @@ function getAppHostIds(credentials: Credentials[]): Set<string> {
     credentials.forEach((credential) => {
         const appHostId = credential['html5-apps-repo']?.app_host_id;
         if (appHostId) {
-            appHostIds.push(appHostId.split(',').map((item: any) => item.trim())); // there might be multiple appHostIds separated by comma
+            appHostIds.push(appHostId.split(',').map((item: string) => item.trim())); // there might be multiple appHostIds separated by comma
         }
     });
 
@@ -269,7 +271,7 @@ export async function getSpaces(spaceGuid: string, logger: ToolsLogger): Promise
     let spaces: Space[] = [];
     if (spaceGuid) {
         try {
-            spaces = await CFLocal.cfGetAvailableSpaces(spaceGuid);
+            spaces = (await CFLocal.cfGetAvailableSpaces(spaceGuid)) as Space[];
             logger?.log(`Available spaces: ${JSON.stringify(spaces)} for space guid: ${spaceGuid}.`);
         } catch (error) {
             logger?.error('Cannot get spaces');
@@ -281,33 +283,148 @@ export async function getSpaces(spaceGuid: string, logger: ToolsLogger): Promise
     return spaces;
 }
 
+/**
+ * Get the approuter type.
+ *
+ * @param {string} mtaProjectPath - The path to the mta project.
+ * @returns {AppRouterType} The approuter type.
+ */
+export function getApprouterType(mtaProjectPath: string): AppRouterType {
+    const yamlContent = YamlLoader.getYamlContent(path.join(mtaProjectPath, 'mta.yaml'));
+    return getRouterType(yamlContent);
+}
+
+/**
+ * Get the module names.
+ *
+ * @param {string} mtaProjectPath - The path to the mta project.
+ * @returns {string[]} The module names.
+ */
+export function getModuleNames(mtaProjectPath: string): string[] {
+    const yamlContent = YamlLoader.getYamlContent(path.join(mtaProjectPath, 'mta.yaml'));
+    return yamlContent?.modules?.map((module: { name: string }) => module.name) ?? [];
+}
+
+/**
+ * Get the services for the file.
+ *
+ * @param {string} mtaFilePath - The path to the mta file.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {BusinessServiceResource[]} The services.
+ */
+export function getServicesForFile(mtaFilePath: string, logger: ToolsLogger): BusinessServiceResource[] {
+    const serviceNames: BusinessServiceResource[] = [];
+    const parsed = YamlLoader.getYamlContent(mtaFilePath);
+    if (parsed?.resources && Array.isArray(parsed.resources)) {
+        parsed.resources.forEach((resource: Resource) => {
+            const name = resource?.parameters?.['service-name'] || resource.name;
+            const label = resource?.parameters?.service;
+            if (name) {
+                serviceNames.push({ name, label });
+                if (!label) {
+                    logger?.log(`Service '${name}' will be ignored without 'service' parameter`);
+                }
+            }
+        });
+    }
+    return serviceNames;
+}
+
+/**
+ * Filter services based on the business services.
+ *
+ * @param {BusinessServiceResource[]} businessServices - The business services.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<string[]>} The filtered services.
+ */
+async function filterServices(businessServices: BusinessServiceResource[], logger: ToolsLogger): Promise<string[]> {
+    const serviceLabels = businessServices.map((service) => service.label).filter((label) => label);
+    if (serviceLabels.length > 0) {
+        const url = `/v3/service_offerings?names=${serviceLabels.join(',')}`;
+        const json = await requestCfApi<CFAPIResponse<CFServiceOffering>>(url);
+        logger?.log(`Filtering services. Request to: ${url}, result: ${JSON.stringify(json)}`);
+
+        const businessServiceNames = new Set(businessServices.map((service) => service.label));
+        const result: string[] = [];
+        json?.resources?.forEach((resource: CFServiceOffering) => {
+            if (businessServiceNames.has(resource.name)) {
+                const sapService = resource?.['broker_catalog']?.metadata?.sapservice;
+                if (sapService && ['v2', 'v4'].includes(sapService?.odataversion ?? '')) {
+                    result.push(businessServices?.find((service) => resource.name === service.label)?.name ?? '');
+                } else {
+                    logger?.log(`Service '${resource.name}' doesn't support V2/V4 Odata and will be ignored`);
+                }
+            }
+        });
+
+        if (result.length > 0) {
+            return result;
+        }
+    }
+    throw new Error(`No business services found, please specify the business services in resource section of mts.yaml:
+    - name: <arbitrary name of resource, e.g. my_service>
+        type: org.cloudfoundry.<managed|existing>-service
+        parameters:
+        service: <business service name, e.g. my-service-name>
+        service-name: <business service instance name, e.g. my_service_instance_name>
+        service-plan: <plan name, e.g. standard>`);
+}
+
+/**
+ * Get the resources for the file.
+ *
+ * @param {string} mtaFilePath - The path to the mta file.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<string[]>} The resources.
+ */
+async function getResources(mtaFilePath: string, logger: ToolsLogger): Promise<string[]> {
+    const servicesList = getServicesForFile(mtaFilePath, logger);
+    const oDataFilteredServices = await filterServices(servicesList, logger);
+    return oDataFilteredServices;
+}
+
+/**
+ * Format the discovery.
+ *
+ * @param {CFApp} app - The app.
+ * @returns {string} The formatted discovery.
+ */
+export function formatDiscovery(app: CFApp): string {
+    return `${app.title} (${app.appId} ${app.appVersion})`;
+}
+
+/**
+ * The FDC service.
+ */
 export class FDCService {
     public html5RepoRuntimeGuid: string;
-    public manifests: any[] = [];
-    private CF_HOME = 'CF_HOME';
-    private BEARER_SPACE = 'bearer ';
-    private CF_FOLDER_NAME = '.cf';
-    private CONFIG_JSON_FILE = 'config.json';
-    private API_CF = 'api.cf.';
-    private OK = 'OK';
-    private HTML5_APPS_REPO = 'html5-apps-repo';
-    private MTA_YAML_FILE = 'mta.yaml';
+    public manifests: Manifest[] = [];
+
     private cfConfig: CFConfig;
     private vscode: any;
     private logger: ToolsLogger;
 
+    /**
+     * Constructor.
+     *
+     * @param {ToolsLogger} logger - The logger.
+     * @param {any} vscode - The vscode.
+     */
     constructor(logger: ToolsLogger, vscode: any) {
         this.vscode = vscode;
         this.logger = logger;
     }
 
+    /**
+     * Load the config.
+     */
     public loadConfig(): void {
-        let cfHome = process.env[this.CF_HOME];
+        let cfHome = process.env['CF_HOME'];
         if (!cfHome) {
-            cfHome = path.join(getHomedir(), this.CF_FOLDER_NAME);
+            cfHome = path.join(getHomedir(), '.cf');
         }
 
-        const configFileLocation = path.join(cfHome, this.CONFIG_JSON_FILE);
+        const configFileLocation = path.join(cfHome, 'config.json');
 
         let config = {} as Config;
         try {
@@ -317,16 +434,15 @@ export class FDCService {
             this.logger?.error('Cannot receive token from config.json');
         }
 
-        const API_CF = this.API_CF;
         if (config) {
             const result = {} as CFConfig;
             if (config.Target) {
-                const apiCfIndex = config.Target.indexOf(API_CF);
-                result.url = config.Target.substring(apiCfIndex + API_CF.length);
+                const apiCfIndex = config.Target.indexOf('api.cf.');
+                result.url = config.Target.substring(apiCfIndex + 'api.cf.'.length);
             }
 
             if (config.AccessToken) {
-                result.token = config.AccessToken.substring(this.BEARER_SPACE.length);
+                result.token = config.AccessToken.substring('bearer '.length);
             }
 
             if (config.OrganizationFields) {
@@ -348,6 +464,11 @@ export class FDCService {
         }
     }
 
+    /**
+     * Check if the user is logged in.
+     *
+     * @returns {Promise<boolean>} Whether the user is logged in.
+     */
     public async isLoggedIn(): Promise<boolean> {
         let isLogged = false;
         let orgs;
@@ -369,38 +490,44 @@ export class FDCService {
         return isLogged;
     }
 
+    /**
+     * Check if the external login is enabled.
+     *
+     * @returns {Promise<boolean>} Whether the external login is enabled.
+     */
     public async isExternalLoginEnabled(): Promise<boolean> {
         const commands = await this.vscode.commands.getCommands();
 
         return commands.includes('cf.login');
     }
 
-    public async isLoggedInToDifferentSource(organizacion: string, space: string, apiurl: string): Promise<boolean> {
+    /**
+     * Check if the user is logged in to a different source.
+     *
+     * @param {string} organization - The organization.
+     * @param {string} space - The space.
+     * @param {string} apiUrl - The API URL.
+     * @returns {Promise<boolean>} Whether the user is logged in to a different source.
+     */
+    public async isLoggedInToDifferentSource(organization: string, space: string, apiUrl: string): Promise<boolean> {
         const isLoggedIn = await this.isLoggedIn();
         const cfConfig = this.getConfig();
         const isLoggedToDifferentSource =
             isLoggedIn &&
-            (cfConfig.org.Name !== organizacion || cfConfig.space.Name !== space || cfConfig.url !== apiurl);
+            (cfConfig.org.Name !== organization || cfConfig.space.Name !== space || cfConfig.url !== apiUrl);
 
         return isLoggedToDifferentSource;
     }
 
-    public async login(username: string, password: string, apiEndpoint: string): Promise<boolean> {
-        let isSuccessful = false;
-        const loginResponse = await CFLocal.cfLogin(apiEndpoint, username, password);
-        if (loginResponse === this.OK) {
-            isSuccessful = true;
-        } else {
-            throw new Error('Login failed');
-        }
-
-        return isSuccessful;
-    }
-
+    /**
+     * Get the organizations.
+     *
+     * @returns {Promise<Organization[]>} The organizations.
+     */
     public async getOrganizations(): Promise<Organization[]> {
         let organizations: Organization[] = [];
         try {
-            organizations = await CFLocal.cfGetAvailableOrgs();
+            organizations = (await CFLocal.cfGetAvailableOrgs()) as Organization[];
             this.logger?.log(`Available organizations: ${JSON.stringify(organizations)}`);
         } catch (error) {
             this.logger?.error('Cannot get organizations');
@@ -409,6 +536,13 @@ export class FDCService {
         return organizations;
     }
 
+    /**
+     * Set the organization and space.
+     *
+     * @param {string} orgName - The organization name.
+     * @param {string} spaceName - The space name.
+     * @returns {Promise<void>} The void.
+     */
     public async setOrgSpace(orgName: string, spaceName: string): Promise<void> {
         if (!orgName || !spaceName) {
             throw new Error('Organization or space name is not provided.');
@@ -418,12 +552,25 @@ export class FDCService {
         this.loadConfig();
     }
 
+    /**
+     * Get the services for the project.
+     *
+     * @param {string} projectPath - The path to the project.
+     * @returns {Promise<string[]>} The services.
+     */
     public async getServices(projectPath: string): Promise<string[]> {
         const services = await this.readMta(projectPath);
         this.logger?.log(`Available services defined in mta.yaml: ${JSON.stringify(services)}`);
         return services;
     }
 
+    /**
+     * Get the base apps.
+     *
+     * @param {Credentials[]} credentials - The credentials.
+     * @param {boolean} [includeInvalid] - Whether to include invalid apps.
+     * @returns {Promise<CFApp[]>} The base apps.
+     */
     public async getBaseApps(credentials: Credentials[], includeInvalid = false): Promise<CFApp[]> {
         const appHostIds = getAppHostIds(credentials);
         this.logger?.log(`App Host Ids: ${JSON.stringify(appHostIds)}`);
@@ -478,6 +625,13 @@ export class FDCService {
         return includeInvalid ? validatedApps : validatedApps.filter((app) => !app.messages?.length);
     }
 
+    /**
+     * Check if the project has an approuter.
+     *
+     * @param {string} projectName - The project name.
+     * @param {string[]} moduleNames - The module names.
+     * @returns {boolean} Whether the project has an approuter.
+     */
     public hasApprouter(projectName: string, moduleNames: string[]): boolean {
         return moduleNames.some(
             (name) =>
@@ -486,29 +640,34 @@ export class FDCService {
         );
     }
 
-    public getManifestByBaseAppId(appId: string) {
+    /**
+     * Get the manifest by base app id.
+     *
+     * @param {string} appId - The app id.
+     * @returns {Manifest | undefined} The manifest.
+     */
+    public getManifestByBaseAppId(appId: string): Manifest | undefined {
         return this.manifests.find((appManifest) => {
             return appManifest['sap.app'].id === appId;
         });
     }
 
-    public getApprouterType(): AppRouterType {
-        return getRouterType(YamlUtils.yamlContent);
-    }
-
-    public getModuleNames(mtaProjectPath: string): string[] {
-        YamlUtils.loadYamlContent(path.join(mtaProjectPath, this.MTA_YAML_FILE));
-        return YamlUtils.yamlContent?.modules?.map((module: { name: any }) => module.name) || [];
-    }
-
-    public formatDiscovery(app: any): string {
-        return `${app.title} (${app.appId} ${app.appVersion})`;
-    }
-
+    /**
+     * Get the config.
+     *
+     * @returns {CFConfig} The config.
+     */
     public getConfig(): CFConfig {
         return this.cfConfig;
     }
 
+    /**
+     * Validate the OData endpoints.
+     *
+     * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries.
+     * @param {Credentials[]} credentials - The credentials.
+     * @returns {Promise<string[]>} The messages.
+     */
     public async validateODataEndpoints(zipEntries: AdmZip.IZipEntry[], credentials: Credentials[]): Promise<string[]> {
         const messages: string[] = [];
         let xsApp, manifest;
@@ -543,39 +702,12 @@ export class FDCService {
         return messages;
     }
 
-    private async filterServices(businessServices: BusinessSeviceResource[]): Promise<string[]> {
-        const serviceLabels = businessServices.map((service) => service.label).filter((label) => label);
-        if (serviceLabels.length > 0) {
-            const url = `/v3/service_offerings?names=${serviceLabels.join(',')}`;
-            const json = await requestCfApi<CFAPIResponse<CFServiceOffering>>(url);
-            this.logger?.log(`Filtering services. Request to: ${url}, result: ${JSON.stringify(json)}`);
-
-            const businessServiceNames = new Set(businessServices.map((service) => service.label));
-            const result: string[] = [];
-            json?.resources?.forEach((resource: CFServiceOffering) => {
-                if (businessServiceNames.has(resource.name)) {
-                    const sapService = resource?.['broker_catalog']?.metadata?.sapservice;
-                    if (sapService && ['v2', 'v4'].includes(sapService?.odataversion ?? '')) {
-                        result.push(businessServices?.find((service) => resource.name === service.label)?.name ?? '');
-                    } else {
-                        this.logger?.log(`Service '${resource.name}' doesn't support V2/V4 Odata and will be ignored`);
-                    }
-                }
-            });
-
-            if (result.length > 0) {
-                return result;
-            }
-        }
-        throw new Error(`No business services found, please specify the business services in resource section of mts.yaml:
-        - name: <arbitrary name of resource, e.g. my_service>
-            type: org.cloudfoundry.<managed|existing>-service
-            parameters:
-            service: <business service name, e.g. my-service-name>
-            service-name: <business service instance name, e.g. my_service_instance_name>
-            service-plan: <plan name, e.g. standard>`);
-    }
-
+    /**
+     * Get the FDC apps.
+     *
+     * @param {string[]} appHostIds - The app host ids.
+     * @returns {Promise<AxiosResponse<FDCResponse>>} The FDC apps.
+     */
     private async getFDCApps(appHostIds: string[]): Promise<AxiosResponse<FDCResponse>> {
         const requestArguments = getFDCRequestArguments(this.cfConfig);
         this.logger?.log(
@@ -614,11 +746,18 @@ export class FDCService {
         }
     }
 
+    /**
+     * Get the validated apps.
+     *
+     * @param {CFApp[]} discoveryApps - The discovery apps.
+     * @param {Credentials[]} credentials - The credentials.
+     * @returns {Promise<CFApp[]>} The validated apps.
+     */
     private async getValidatedApps(discoveryApps: CFApp[], credentials: Credentials[]): Promise<CFApp[]> {
         const validatedApps: CFApp[] = [];
 
         for (const app of discoveryApps) {
-            if (!(app.messages && app.messages.length)) {
+            if (!app.messages?.length) {
                 const messages = await this.validateSelectedApp(app, credentials);
                 app.messages = messages;
             }
@@ -628,6 +767,13 @@ export class FDCService {
         return validatedApps;
     }
 
+    /**
+     * Validate the selected app.
+     *
+     * @param {AppParams} appParams - The app parameters.
+     * @param {Credentials[]} credentials - The credentials.
+     * @returns {Promise<string[]>} The messages.
+     */
     private async validateSelectedApp(appParams: AppParams, credentials: Credentials[]): Promise<string[]> {
         try {
             const { entries, serviceInstanceGuid, manifest } = await downloadAppContent(
@@ -648,43 +794,19 @@ export class FDCService {
         }
     }
 
+    /**
+     * Read the mta file.
+     *
+     * @param {string} projectPath - The path to the project.
+     * @returns {Promise<string[]>} The resources.
+     */
     private async readMta(projectPath: string): Promise<string[]> {
         if (!projectPath) {
             throw new Error('Project path is missing.');
         }
 
-        const mtaYamlPath = path.resolve(projectPath, this.MTA_YAML_FILE);
-        return this.getResources([mtaYamlPath]);
-    }
-
-    private async getResources(files: string[]): Promise<string[]> {
-        let finalList: string[] = [];
-
-        for (const file of files) {
-            const servicesList = this.getServicesForFile(file);
-            const oDataFilteredServices = await this.filterServices(servicesList);
-            finalList = finalList.concat(oDataFilteredServices);
-        }
-
-        return finalList;
-    }
-
-    private getServicesForFile(file: string): BusinessSeviceResource[] {
-        const serviceNames: BusinessSeviceResource[] = [];
-        YamlUtils.loadYamlContent(file);
-        const parsed = YamlUtils.yamlContent;
-        if (parsed && parsed.resources && Array.isArray(parsed.resources)) {
-            parsed.resources.forEach((resource: any) => {
-                const name = resource?.['parameters']?.['service-name'] || resource.name;
-                const label = resource?.['parameters']?.service;
-                if (name) {
-                    serviceNames.push({ name, label });
-                    if (!label) {
-                        this.logger?.log(`Service '${name}' will be ignored without 'service' parameter`);
-                    }
-                }
-            });
-        }
-        return serviceNames;
+        const mtaFilePath = path.resolve(projectPath, 'mta.yaml');
+        const resources = await getResources(mtaFilePath, this.logger);
+        return resources;
     }
 }

@@ -1,5 +1,4 @@
 import { join } from 'path';
-import fs from 'fs';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
@@ -127,11 +126,6 @@ function setDefaultsCF(config: CfAdpWriterConfig): CfAdpWriterConfig {
  */
 async function adjustMtaYaml(basePath: string, config: CfAdpWriterConfig): Promise<void> {
     const { app, cf } = config;
-
-    const mtaYamlPath = join(basePath, 'mta.yaml');
-    if (fs.existsSync(mtaYamlPath)) {
-        YamlUtils.loadYamlContent(mtaYamlPath);
-    }
 
     await YamlUtils.adjustMtaYaml(basePath, app.id, cf.approuter, cf.businessSolutionName ?? '', cf.businessService);
 }
