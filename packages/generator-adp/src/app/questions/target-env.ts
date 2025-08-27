@@ -1,7 +1,7 @@
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-import type { FDCService } from '@sap-ux/adp-tooling';
+import type { CfConfigService, FDCService } from '@sap-ux/adp-tooling';
 import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 import type { InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
@@ -19,16 +19,18 @@ type EnvironmentChoice = { name: string; value: TargetEnv };
  * @param {AppWizard} appWizard - The app wizard instance.
  * @param {boolean} isCfInstalled - Whether Cloud Foundry is installed.
  * @param {boolean} isCFLoggedIn - Whether Cloud Foundry is logged in.
- * @param {FDCService} fdcService - The FDC service instance.
+ * @param {CfConfigService} cfConfigService - The CF config service instance.
+ * @param {any} vscode - The vscode instance.
  * @returns {object[]} The target environment prompt.
  */
 export function getTargetEnvPrompt(
     appWizard: AppWizard,
     isCfInstalled: boolean,
     isCFLoggedIn: boolean,
-    fdcService: FDCService
+    cfConfigService: CfConfigService,
+    vscode: any
 ): TargetEnvQuestion {
-    const cfConfig = fdcService.getConfig();
+    const cfConfig = cfConfigService.getConfig();
 
     return {
         type: 'list',
@@ -41,7 +43,7 @@ export function getTargetEnvPrompt(
             hint: t('prompts.targetEnvTooltip'),
             breadcrumb: t('prompts.targetEnvBreadcrumb')
         },
-        validate: (value: string) => validateEnvironment(value, fdcService, isCFLoggedIn),
+        validate: (value: string) => validateEnvironment(value, isCFLoggedIn, vscode),
         additionalMessages: (value: string) => getTargetEnvAdditionalMessages(value, isCFLoggedIn, cfConfig)
     } as ListQuestion<TargetEnvAnswers>;
 }

@@ -3,7 +3,6 @@ import { join } from 'path';
 import Generator from 'yeoman-generator';
 import { AppWizard, MessageType, Prompts as YeomanUiSteps, type IPrompt } from '@sap-devx/yeoman-ui-types';
 
-import type { CFConfig, CfServicesAnswers } from '@sap-ux/adp-tooling';
 import {
     FlexLayer,
     SystemLookup,
@@ -19,10 +18,12 @@ import {
     isCFEnvironment,
     getBaseAppInbounds,
     isMtaProject,
-    isCfInstalled,
     generateCf,
-    createCfConfig
+    createCfConfig,
+    isCfInstalled,
+    isLoggedInCf
 } from '@sap-ux/adp-tooling';
+import { type CFConfig, CfConfigService, type CfServicesAnswers } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
@@ -145,13 +146,14 @@ export default class extends Generator {
     private readonly isMtaYamlFound: boolean;
     private targetEnv: TargetEnv;
     private isCfEnv = false;
-    private isCFLoggedIn = false;
+    private isCfLoggedIn = false;
     private cfConfig: CFConfig;
     private projectLocation: string;
     private cfProjectDestinationPath: string;
     private cfServicesAnswers: CfServicesAnswers;
     private isExtensionInstalled: boolean;
     private cfInstalled: boolean;
+    private cfConfigService: CfConfigService;
     /**
      * Creates an instance of the generator.
      *
@@ -163,14 +165,15 @@ export default class extends Generator {
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.shouldInstallDeps = opts.shouldInstallDeps ?? true;
         this.toolsLogger = new ToolsLogger();
-        this.fdcService = new FDCService(this.logger, opts.vscode);
+        this._setupLogging();
+
+        this.cfConfigService = new CfConfigService(this.logger);
+        this.fdcService = new FDCService(this.logger, this.cfConfigService);
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
         // TODO: Remove this once the PR is ready.
         this.isExtensionInstalled = true; // isExtensionInstalled(opts.vscode, 'SAP.adp-ve-bas-ext');
         this.vscode = opts.vscode;
         this.options = opts;
-
-        this._setupLogging();
 
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
@@ -200,7 +203,8 @@ export default class extends Generator {
         this.systemLookup = new SystemLookup(this.logger);
 
         this.cfInstalled = await isCfInstalled();
-        this.isCFLoggedIn = await this.fdcService.isLoggedIn();
+        const cfConfig = this.cfConfigService.getConfig();
+        this.isCfLoggedIn = await isLoggedInCf(cfConfig, this.logger);
         this.logger.info(`isCfInstalled: ${this.cfInstalled}`);
 
         if (!this.jsonInput) {
@@ -439,7 +443,7 @@ export default class extends Generator {
      */
     private async _promptForTargetEnvironment(): Promise<void> {
         const targetEnvAnswers = await this.prompt<TargetEnvAnswers>([
-            getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCFLoggedIn, this.fdcService)
+            getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCfLoggedIn, this.cfConfigService, this.vscode)
         ]);
 
         this.targetEnv = targetEnvAnswers.targetEnv;
@@ -448,7 +452,7 @@ export default class extends Generator {
 
         updateCfWizardSteps(this.isCfEnv, this.prompts);
 
-        this.cfConfig = this.fdcService.getConfig();
+        this.cfConfig = this.cfConfigService.getConfig();
         this.logger.log(`Project organization information: ${JSON.stringify(this.cfConfig.org, null, 2)}`);
         this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
         this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
@@ -486,8 +490,9 @@ export default class extends Generator {
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
         const cfServicesQuestions = await getCFServicesPrompts({
-            isCFLoggedIn: this.isCFLoggedIn,
+            isCfLoggedIn: this.isCfLoggedIn,
             fdcService: this.fdcService,
+            cfConfigService: this.cfConfigService,
             mtaProjectPath: this.cfProjectDestinationPath,
             isInternalUsage: isInternalFeaturesSettingEnabled(),
             logger: this.logger

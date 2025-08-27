@@ -1,11 +1,16 @@
+import type {
+    CfServicesAnswers,
+    CFServicesQuestion,
+    CfServicesPromptOptions,
+    AppRouterType,
+    CfConfigService
+} from '@sap-ux/adp-tooling';
 import {
-    type CfServicesAnswers,
-    type CFServicesQuestion,
-    type CfServicesPromptOptions,
     cfServicesPromptNames,
-    type AppRouterType,
     getModuleNames,
-    getApprouterType
+    getApprouterType,
+    hasApprouter,
+    isLoggedInCf
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
@@ -21,14 +26,26 @@ import { showBusinessSolutionNameQuestion } from './helper/conditions';
  * Prompter for CF services.
  */
 export class CFServicesPrompter {
+    /**
+     * The FDC service instance.
+     */
     private readonly fdcService: FDCService;
+    /**
+     * The CF auth service instance.
+     */
+    private readonly cfConfigService: CfConfigService;
+    /**
+     * Whether the user is using the internal usage.
+     */
     private readonly isInternalUsage: boolean;
+    /**
+     * The logger instance.
+     */
     private readonly logger: ToolsLogger;
-
     /**
      * Whether the user is logged in to Cloud Foundry.
      */
-    private isCFLoggedIn = false;
+    private isCfLoggedIn = false;
     /**
      * Whether to show the solution name prompt.
      */
@@ -62,15 +79,23 @@ export class CFServicesPrompter {
      * Constructor for CFServicesPrompter.
      *
      * @param {FDCService} fdcService - FDC service instance.
-     * @param {boolean} isCFLoggedIn - Whether the user is logged in to Cloud Foundry.
+     * @param {CfConfigService} cfConfigService - CF config service instance.
+     * @param {boolean} isCfLoggedIn - Whether the user is logged in to Cloud Foundry.
      * @param {ToolsLogger} logger - Logger instance.
      * @param {boolean} [isInternalUsage] - Internal usage flag.
      */
-    constructor(fdcService: FDCService, isCFLoggedIn: boolean, logger: ToolsLogger, isInternalUsage: boolean = false) {
+    constructor(
+        fdcService: FDCService,
+        cfConfigService: CfConfigService,
+        isCfLoggedIn: boolean,
+        logger: ToolsLogger,
+        isInternalUsage: boolean = false
+    ) {
         this.fdcService = fdcService;
+        this.cfConfigService = cfConfigService;
         this.isInternalUsage = isInternalUsage;
         this.logger = logger;
-        this.isCFLoggedIn = isCFLoggedIn;
+        this.isCfLoggedIn = isCfLoggedIn;
     }
 
     /**
@@ -84,7 +109,7 @@ export class CFServicesPrompter {
         mtaProjectPath: string,
         promptOptions?: CfServicesPromptOptions
     ): Promise<CFServicesQuestion[]> {
-        if (this.isCFLoggedIn) {
+        if (this.isCfLoggedIn) {
             this.businessServices = await this.fdcService.getServices(mtaProjectPath);
         }
 
@@ -118,7 +143,7 @@ export class CFServicesPrompter {
             when: (answers: CfServicesAnswers) =>
                 showBusinessSolutionNameQuestion(
                     answers,
-                    this.isCFLoggedIn,
+                    this.isCfLoggedIn,
                     this.showSolutionNamePrompt,
                     answers.businessService
                 ),
@@ -139,6 +164,7 @@ export class CFServicesPrompter {
      * @returns {CFServicesQuestion} Prompt for approuter.
      */
     private getAppRouterPrompt(mtaProjectPath: string): CFServicesQuestion {
+        const cfConfig = this.cfConfigService.getConfig();
         return {
             type: 'list',
             name: cfServicesPromptNames.approuter,
@@ -151,12 +177,12 @@ export class CFServicesPrompter {
                         ? mtaProjectPath.split('/').pop()
                         : mtaProjectPath.split('\\').pop()) ?? '';
 
-                const hasRouter = this.fdcService.hasApprouter(mtaProjectName, modules);
+                const hasRouter = hasApprouter(mtaProjectName, modules);
                 if (hasRouter) {
                     this.approuter = getApprouterType(mtaProjectPath);
                 }
 
-                if (this.isCFLoggedIn && !hasRouter) {
+                if (this.isCfLoggedIn && !hasRouter) {
                     this.showSolutionNamePrompt = true;
                     return true;
                 } else {
@@ -164,8 +190,8 @@ export class CFServicesPrompter {
                 }
             },
             validate: async (value: string) => {
-                this.isCFLoggedIn = await this.fdcService.isLoggedIn();
-                if (!this.isCFLoggedIn) {
+                this.isCfLoggedIn = await isLoggedInCf(cfConfig, this.logger);
+                if (!this.isCfLoggedIn) {
                     return t('error.cfNotLoggedIn');
                 }
 
@@ -198,7 +224,7 @@ export class CFServicesPrompter {
                     this.baseAppOnChoiceError = null;
                     if (this.cachedServiceName != answers.businessService) {
                         this.cachedServiceName = answers.businessService;
-                        const config = this.fdcService.getConfig();
+                        const config = this.cfConfigService.getConfig();
                         this.businessServiceKeys = await getBusinessServiceKeys(
                             answers.businessService ?? '',
                             config,
@@ -228,7 +254,7 @@ export class CFServicesPrompter {
                 }
                 return true;
             },
-            when: (answers: any) => this.isCFLoggedIn && answers.businessService,
+            when: (answers: any) => this.isCfLoggedIn && answers.businessService,
             guiOptions: {
                 hint: t('prompts.baseAppTooltip'),
                 breadcrumb: true
@@ -250,7 +276,7 @@ export class CFServicesPrompter {
             default: (_: CfServicesAnswers) =>
                 this.businessServices.length === 1 ? this.businessServices[0] ?? '' : '',
             when: (answers: CfServicesAnswers) => {
-                return this.isCFLoggedIn && (this.approuter || answers.approuter);
+                return this.isCfLoggedIn && (this.approuter || answers.approuter);
             },
             validate: async (value: string) => {
                 const validationResult = validateEmptyString(value);
@@ -258,7 +284,7 @@ export class CFServicesPrompter {
                     return t('error.businessServiceHasToBeSelected');
                 }
 
-                const config = this.fdcService.getConfig();
+                const config = this.cfConfigService.getConfig();
                 this.businessServiceKeys = await getBusinessServiceKeys(value, config, this.logger);
                 if (this.businessServiceKeys === null) {
                     return t('error.businessServiceDoesNotExist');
@@ -278,25 +304,28 @@ export class CFServicesPrompter {
 /**
  * @param {object} param0 - Configuration object containing FDC service, internal usage flag, MTA project path, CF login status, and logger.
  * @param {FDCService} param0.fdcService - FDC service instance.
+ * @param {CfConfigService} param0.cfConfigService - CF config service instance.
  * @param {boolean} [param0.isInternalUsage] - Internal usage flag.
  * @param {string} param0.mtaProjectPath - MTA project path.
- * @param {boolean} param0.isCFLoggedIn - CF login status.
+ * @param {boolean} param0.isCfLoggedIn - CF login status.
  * @param {ToolsLogger} param0.logger - Logger instance.
  * @returns {Promise<CFServicesQuestion[]>} CF services questions.
  */
 export async function getPrompts({
     fdcService,
+    cfConfigService,
     isInternalUsage,
     mtaProjectPath,
-    isCFLoggedIn,
+    isCfLoggedIn,
     logger
 }: {
     fdcService: FDCService;
+    cfConfigService: CfConfigService;
     isInternalUsage?: boolean;
     mtaProjectPath: string;
-    isCFLoggedIn: boolean;
+    isCfLoggedIn: boolean;
     logger: ToolsLogger;
 }): Promise<CFServicesQuestion[]> {
-    const prompter = new CFServicesPrompter(fdcService, isCFLoggedIn, logger, isInternalUsage);
+    const prompter = new CFServicesPrompter(fdcService, cfConfigService, isCfLoggedIn, logger, isInternalUsage);
     return prompter.getPrompts(mtaProjectPath);
 }

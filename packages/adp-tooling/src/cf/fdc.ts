@@ -1,6 +1,4 @@
-import * as fs from 'fs';
 import * as path from 'path';
-import * as os from 'os';
 import type * as AdmZip from 'adm-zip';
 import axios, { type AxiosResponse } from 'axios';
 import CFLocal = require('@sap/cf-tools/out/src/cf-local');
@@ -10,10 +8,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import type {
-    Config,
     CFConfig,
-    Space,
-    Organization,
     CFApp,
     RequestArguments,
     Credentials,
@@ -30,11 +25,9 @@ import { downloadAppContent } from './html5-repo';
 import { YamlUtils, getRouterType } from './yaml';
 import { YamlLoader } from './yaml-loader';
 import { getApplicationType, isSupportedAppTypeForAdp } from '../source';
-import { checkForCf, getAuthToken, getServiceInstanceKeys, requestCfApi } from './utils';
-
-const HOMEDRIVE = 'HOMEDRIVE';
-const HOMEPATH = 'HOMEPATH';
-const WIN32 = 'win32';
+import { getServiceInstanceKeys, requestCfApi } from './utils';
+import { isLoggedInCf } from './auth';
+import type { CfConfigService } from './config';
 
 interface FDCResponse {
     results: CFApp[];
@@ -60,38 +53,6 @@ async function validateSmartTemplateApplication(manifest: Manifest): Promise<str
         );
     }
     return messages;
-}
-
-/**
- * Get the home directory.
- *
- * @returns {string} The home directory.
- */
-function getHomedir(): string {
-    let homedir = os.homedir();
-    const homeDrive = process.env?.[HOMEDRIVE];
-    const homePath = process.env?.[HOMEPATH];
-    if (process.platform === WIN32 && typeof homeDrive === 'string' && typeof homePath === 'string') {
-        homedir = path.join(homeDrive, homePath);
-    }
-
-    return homedir;
-}
-
-/**
- * Check if CF is installed.
- *
- * @returns {Promise<boolean>} True if CF is installed, false otherwise.
- */
-export async function isCfInstalled(): Promise<boolean> {
-    let isInstalled = true;
-    try {
-        await checkForCf();
-    } catch (error) {
-        isInstalled = false;
-    }
-
-    return isInstalled;
 }
 
 /**
@@ -261,29 +222,6 @@ function getAppHostIds(credentials: Credentials[]): Set<string> {
 }
 
 /**
- * Get the spaces.
- *
- * @param {string} spaceGuid - The space guid.
- * @param {ToolsLogger} logger - The logger.
- * @returns {Promise<Space[]>} The spaces.
- */
-export async function getSpaces(spaceGuid: string, logger: ToolsLogger): Promise<Space[]> {
-    let spaces: Space[] = [];
-    if (spaceGuid) {
-        try {
-            spaces = (await CFLocal.cfGetAvailableSpaces(spaceGuid)) as Space[];
-            logger?.log(`Available spaces: ${JSON.stringify(spaces)} for space guid: ${spaceGuid}.`);
-        } catch (error) {
-            logger?.error('Cannot get spaces');
-        }
-    } else {
-        logger?.error('Invalid GUID');
-    }
-
-    return spaces;
-}
-
-/**
  * Get the approuter type.
  *
  * @param {string} mtaProjectPath - The path to the mta project.
@@ -394,162 +332,103 @@ export function formatDiscovery(app: CFApp): string {
 }
 
 /**
+ * Get the FDC apps.
+ *
+ * @param {string[]} appHostIds - The app host ids.
+ * @param {CFConfig} cfConfig - The CF config.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<AxiosResponse<FDCResponse>>} The FDC apps.
+ */
+export async function getFDCApps(
+    appHostIds: string[],
+    cfConfig: CFConfig,
+    logger: ToolsLogger
+): Promise<AxiosResponse<FDCResponse>> {
+    const requestArguments = getFDCRequestArguments(cfConfig);
+    logger?.log(`App Hosts: ${JSON.stringify(appHostIds)}, request arguments: ${JSON.stringify(requestArguments)}`);
+
+    // Construct the URL with multiple appHostIds as separate query parameters
+    // Format: ?appHostId=<id1>&appHostId=<id2>&appHostId=<id3>
+    const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
+    const url = `${requestArguments.url}/api/business-service/discovery?${appHostIdParams}`;
+
+    try {
+        const isLoggedIn = await isLoggedInCf(cfConfig, logger);
+        if (!isLoggedIn) {
+            await CFLocal.cfGetAvailableOrgs();
+        }
+        const response = await axios.get<FDCResponse>(url, requestArguments.options);
+        logger?.log(
+            `Getting FDC apps. Request url: ${url} response status: ${response.status}, response data: ${JSON.stringify(
+                response.data
+            )}`
+        );
+        return response;
+    } catch (e) {
+        logger?.error(
+            `Getting FDC apps. Request url: ${url}, response status: ${e?.response?.status}, message: ${e.message || e}`
+        );
+        throw new Error(
+            `Failed to get application from Flexibility Design and Configuration service ${url}. Reason: ${
+                e.message || e
+            }`
+        );
+    }
+}
+
+/**
+ * Check if the project has an approuter.
+ *
+ * @param {string} projectName - The project name.
+ * @param {string[]} moduleNames - The module names.
+ * @returns {boolean} Whether the project has an approuter.
+ */
+export function hasApprouter(projectName: string, moduleNames: string[]): boolean {
+    return moduleNames.some(
+        (name) =>
+            name === `${projectName.toLowerCase()}-destination-content` ||
+            name === `${projectName.toLowerCase()}-approuter`
+    );
+}
+
+/**
  * The FDC service.
  */
 export class FDCService {
+    /**
+     * The HTML5 repo runtime GUID.
+     */
     public html5RepoRuntimeGuid: string;
+    /**
+     * The apps' manifests.
+     */
     public manifests: Manifest[] = [];
-
+    /**
+     * The CF config service.
+     */
+    private cfConfigService: CfConfigService;
+    /**
+     * The CF config.
+     */
     private cfConfig: CFConfig;
-    private vscode: any;
+    /**
+     * The logger.
+     */
     private logger: ToolsLogger;
 
     /**
-     * Constructor.
+     * Creates an instance of FDCService.
      *
      * @param {ToolsLogger} logger - The logger.
-     * @param {any} vscode - The vscode.
+     * @param {CfConfigService} cfConfigService - The CF config service.
      */
-    constructor(logger: ToolsLogger, vscode: any) {
-        this.vscode = vscode;
+    constructor(logger: ToolsLogger, cfConfigService: CfConfigService) {
         this.logger = logger;
-    }
-
-    /**
-     * Load the config.
-     */
-    public loadConfig(): void {
-        let cfHome = process.env['CF_HOME'];
-        if (!cfHome) {
-            cfHome = path.join(getHomedir(), '.cf');
-        }
-
-        const configFileLocation = path.join(cfHome, 'config.json');
-
-        let config = {} as Config;
-        try {
-            const configAsString = fs.readFileSync(configFileLocation, 'utf-8');
-            config = JSON.parse(configAsString) as Config;
-        } catch (e) {
-            this.logger?.error('Cannot receive token from config.json');
-        }
-
-        if (config) {
-            const result = {} as CFConfig;
-            if (config.Target) {
-                const apiCfIndex = config.Target.indexOf('api.cf.');
-                result.url = config.Target.substring(apiCfIndex + 'api.cf.'.length);
-            }
-
-            if (config.AccessToken) {
-                result.token = config.AccessToken.substring('bearer '.length);
-            }
-
-            if (config.OrganizationFields) {
-                result.org = {
-                    Name: config.OrganizationFields.Name,
-                    GUID: config.OrganizationFields.GUID
-                };
-            }
-
-            if (config.SpaceFields) {
-                result.space = {
-                    Name: config.SpaceFields.Name,
-                    GUID: config.SpaceFields.GUID
-                };
-            }
-
-            this.cfConfig = result;
-            YamlUtils.spaceGuid = this.cfConfig?.space?.GUID;
-        }
-    }
-
-    /**
-     * Check if the user is logged in.
-     *
-     * @returns {Promise<boolean>} Whether the user is logged in.
-     */
-    public async isLoggedIn(): Promise<boolean> {
-        let isLogged = false;
-        let orgs;
-        await getAuthToken();
-        this.loadConfig();
+        this.cfConfigService = cfConfigService;
+        this.cfConfig = cfConfigService.getConfig();
         if (this.cfConfig) {
-            try {
-                orgs = await CFLocal.cfGetAvailableOrgs();
-                this.logger?.log(`Available organizations: ${JSON.stringify(orgs)}`);
-                if (orgs.length > 0) {
-                    isLogged = true;
-                }
-            } catch (e) {
-                this.logger?.error(`Error occured while trying to check if it is logged in: ${e?.message}`);
-                isLogged = false;
-            }
+            YamlUtils.spaceGuid = this.cfConfig.space.GUID;
         }
-
-        return isLogged;
-    }
-
-    /**
-     * Check if the external login is enabled.
-     *
-     * @returns {Promise<boolean>} Whether the external login is enabled.
-     */
-    public async isExternalLoginEnabled(): Promise<boolean> {
-        const commands = await this.vscode.commands.getCommands();
-
-        return commands.includes('cf.login');
-    }
-
-    /**
-     * Check if the user is logged in to a different source.
-     *
-     * @param {string} organization - The organization.
-     * @param {string} space - The space.
-     * @param {string} apiUrl - The API URL.
-     * @returns {Promise<boolean>} Whether the user is logged in to a different source.
-     */
-    public async isLoggedInToDifferentSource(organization: string, space: string, apiUrl: string): Promise<boolean> {
-        const isLoggedIn = await this.isLoggedIn();
-        const cfConfig = this.getConfig();
-        const isLoggedToDifferentSource =
-            isLoggedIn &&
-            (cfConfig.org.Name !== organization || cfConfig.space.Name !== space || cfConfig.url !== apiUrl);
-
-        return isLoggedToDifferentSource;
-    }
-
-    /**
-     * Get the organizations.
-     *
-     * @returns {Promise<Organization[]>} The organizations.
-     */
-    public async getOrganizations(): Promise<Organization[]> {
-        let organizations: Organization[] = [];
-        try {
-            organizations = (await CFLocal.cfGetAvailableOrgs()) as Organization[];
-            this.logger?.log(`Available organizations: ${JSON.stringify(organizations)}`);
-        } catch (error) {
-            this.logger?.error('Cannot get organizations');
-        }
-
-        return organizations;
-    }
-
-    /**
-     * Set the organization and space.
-     *
-     * @param {string} orgName - The organization name.
-     * @param {string} spaceName - The space name.
-     * @returns {Promise<void>} The void.
-     */
-    public async setOrgSpace(orgName: string, spaceName: string): Promise<void> {
-        if (!orgName || !spaceName) {
-            throw new Error('Organization or space name is not provided.');
-        }
-
-        await CFLocal.cfSetOrgSpace(orgName, spaceName);
-        this.loadConfig();
     }
 
     /**
@@ -583,7 +462,8 @@ export class FDCService {
         const appHostIdsArray = Array.from(appHostIds);
 
         try {
-            const response = await this.getFDCApps(appHostIdsArray);
+            const cfConfig = this.cfConfigService.getConfig();
+            const response = await getFDCApps(appHostIdsArray, cfConfig, this.logger);
 
             if (response.status === 200) {
                 // TODO: Remove this once the FDC API is updated to return the appHostId
@@ -626,21 +506,6 @@ export class FDCService {
     }
 
     /**
-     * Check if the project has an approuter.
-     *
-     * @param {string} projectName - The project name.
-     * @param {string[]} moduleNames - The module names.
-     * @returns {boolean} Whether the project has an approuter.
-     */
-    public hasApprouter(projectName: string, moduleNames: string[]): boolean {
-        return moduleNames.some(
-            (name) =>
-                name === `${projectName.toLowerCase()}-destination-content` ||
-                name === `${projectName.toLowerCase()}-approuter`
-        );
-    }
-
-    /**
      * Get the manifest by base app id.
      *
      * @param {string} appId - The app id.
@@ -650,15 +515,6 @@ export class FDCService {
         return this.manifests.find((appManifest) => {
             return appManifest['sap.app'].id === appId;
         });
-    }
-
-    /**
-     * Get the config.
-     *
-     * @returns {CFConfig} The config.
-     */
-    public getConfig(): CFConfig {
-        return this.cfConfig;
     }
 
     /**
@@ -703,50 +559,6 @@ export class FDCService {
     }
 
     /**
-     * Get the FDC apps.
-     *
-     * @param {string[]} appHostIds - The app host ids.
-     * @returns {Promise<AxiosResponse<FDCResponse>>} The FDC apps.
-     */
-    private async getFDCApps(appHostIds: string[]): Promise<AxiosResponse<FDCResponse>> {
-        const requestArguments = getFDCRequestArguments(this.cfConfig);
-        this.logger?.log(
-            `App Hosts: ${JSON.stringify(appHostIds)}, request arguments: ${JSON.stringify(requestArguments)}`
-        );
-
-        // Construct the URL with multiple appHostIds as separate query parameters
-        // Format: ?appHostId=<id1>&appHostId=<id2>&appHostId=<id3>
-        const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
-        const url = `${requestArguments.url}/api/business-service/discovery?${appHostIdParams}`;
-
-        try {
-            const isLoggedIn = await this.isLoggedIn();
-            if (!isLoggedIn) {
-                await CFLocal.cfGetAvailableOrgs();
-                this.loadConfig();
-            }
-            const response = await axios.get<FDCResponse>(url, requestArguments.options);
-            this.logger?.log(
-                `Getting FDC apps. Request url: ${url} response status: ${
-                    response.status
-                }, response data: ${JSON.stringify(response.data)}`
-            );
-            return response;
-        } catch (e) {
-            this.logger?.error(
-                `Getting FDC apps. Request url: ${url}, response status: ${e?.response?.status}, message: ${
-                    e.message || e
-                }`
-            );
-            throw new Error(
-                `Failed to get application from Flexibility Design and Configuration service ${url}. Reason: ${
-                    e.message || e
-                }`
-            );
-        }
-    }
-
-    /**
      * Get the validated apps.
      *
      * @param {CFApp[]} discoveryApps - The discovery apps.
@@ -776,8 +588,9 @@ export class FDCService {
      */
     private async validateSelectedApp(appParams: AppParams, credentials: Credentials[]): Promise<string[]> {
         try {
+            const cfConfig = this.cfConfigService.getConfig();
             const { entries, serviceInstanceGuid, manifest } = await downloadAppContent(
-                this.cfConfig.space.GUID,
+                cfConfig.space.GUID,
                 appParams,
                 this.logger
             );
