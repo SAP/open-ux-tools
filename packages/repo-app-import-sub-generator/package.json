@@ -76,7 +76,8 @@
         "@types/lodash": "4.14.202",
         "rimraf": "5.0.5",
         "unionfs": "4.4.0",
-        "yeoman-test": "6.3.0"
+        "yeoman-test": "6.3.0",
+        "yo": "4"
     },
     "engines": {
         "node": ">=20.x"

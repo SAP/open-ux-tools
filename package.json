@@ -74,10 +74,7 @@
         "overrides": {
             "router>path-to-regexp": "0.1.12",
             "router@2.0.0>path-to-regexp": "8.2.0",
-            "@storybook/manager-api>store2": "2.14.4",
-            "@sap/bas-sdk>axios": "1.11.0",
-            "@sap/service-provider-apis>axios": "1.11.0",
-            "mta-local": "1.0.4"
+            "@storybook/manager-api>store2": "2.14.4"
         }
     }
 }

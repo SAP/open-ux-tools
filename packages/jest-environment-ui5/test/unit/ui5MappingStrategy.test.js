@@ -17,12 +17,12 @@ describe('Ui5 Mapping Strategy', () => {
             path.join('/sap.ui.core/1.130.0/src/sap/ui/core/Component.js')
         );
 
-        const { pathMappingFn: secondPathMapping, ui5VersionInfo: secondUi5Version } = await initUi5MappingStrategy({
+        const { pathMappingFn: secondpathMapping, ui5VersionInfo: secondUi5Version } = await initUi5MappingStrategy({
             configPath: 'test/fixtures/ui5.yaml'
         });
-        expect(secondPathMapping).toStrictEqual(pathMappingFn); // No need to recreate the pathMappingFn
-        expect(ui5VersionInfo).toStrictEqual(secondUi5Version); // No need to recreate the ui5Version
-    }, 120_000);
+        expect(secondpathMapping).toStrictEqual(pathMappingFn); // No need to recreate the pathMappingFn
+        expect(ui5VersionInfo).toStrictEqual(secondUi5Version); // No need to recreate the ui5Vresion
+    }, 30000);
 
     it('should map the files from a module to the file system', async () => {
         const { pathMappingFn, ui5VersionInfo } = await initUi5MappingStrategy({
@@ -38,12 +38,12 @@ describe('Ui5 Mapping Strategy', () => {
         expect(pathMappingFn('sap/ui/core/Component').split('@openui5')[1]).toBe(
             path.join('/sap.ui.core/1.130.0/src/sap/ui/core/Component.js')
         );
-        const { pathMappingFn: secondPathMapping, ui5VersionInfo: secondUi5Version } = await initUi5MappingStrategy({
+        const { pathMappingFn: secondpathMapping, ui5VersionInfo: secondUi5Version } = await initUi5MappingStrategy({
             configPath: 'test/fixtures/ui5-module.yaml'
         });
-        expect(secondPathMapping).toStrictEqual(pathMappingFn); // No need to recreate the pathMappingFn
-        expect(ui5VersionInfo).toStrictEqual(secondUi5Version); // No need to recreate the ui5Version
-    }, 120_000);
+        expect(secondpathMapping).toStrictEqual(pathMappingFn); // No need to recreate the pathMappingFn
+        expect(ui5VersionInfo).toStrictEqual(secondUi5Version); // No need to recreate the ui5Vresion
+    }, 30000);
 
     it('should map the files from a library to the file system', async () => {
         const { pathMappingFn, ui5VersionInfo } = await initUi5MappingStrategy({
@@ -57,10 +57,10 @@ describe('Ui5 Mapping Strategy', () => {
             path.relative(__dirname, path.resolve(__dirname, '../fixtures/webapp/Component.js'))
         );
 
-        const { pathMappingFn: secondPathMapping, ui5VersionInfo: secondUi5Version } = await initUi5MappingStrategy({
+        const { pathMappingFn: secondpathMapping, ui5VersionInfo: secondUi5Version } = await initUi5MappingStrategy({
             configPath: 'test/fixtures/ui5.yaml'
         });
-        expect(secondPathMapping).toStrictEqual(pathMappingFn); // No need to recreate the pathMappingFn
-        expect(ui5VersionInfo).toStrictEqual(secondUi5Version); // No need to recreate the ui5Version
-    }, 120_000);
+        expect(secondpathMapping).toStrictEqual(pathMappingFn); // No need to recreate the pathMappingFn
+        expect(ui5VersionInfo).toStrictEqual(secondUi5Version); // No need to recreate the ui5Vresion
+    }, 30000);
 });

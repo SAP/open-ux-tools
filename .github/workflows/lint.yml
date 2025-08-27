@@ -24,9 +24,8 @@ jobs:
             ref: ${{ github.event.pull_request.head.ref }}            
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-          with:
-            run_install: |
-              - args: [--ignore-scripts]
+        with:
+            run_install: true
       - name: Cache pnpm modules
         uses: actions/cache@v4
         env:
@@ -41,7 +40,7 @@ jobs:
         with:
             node-version: ${{ matrix.node-version }}
       - name: Install pnpm modules
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
       - name: Run build
         run: pnpm run build
         env:
