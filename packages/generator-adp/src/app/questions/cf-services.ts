@@ -2,7 +2,8 @@ import {
     type CfServicesAnswers,
     type CFServicesQuestion,
     type CfServicesPromptOptions,
-    cfServicesPromptNames
+    cfServicesPromptNames,
+    type AppRouterType
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
@@ -33,7 +34,7 @@ export class CFServicesPrompter {
     /**
      * The type of approuter to use.
      */
-    private approuter: string | undefined;
+    private approuter: AppRouterType;
     /**
      * The business services available.
      */
@@ -147,11 +148,10 @@ export class CFServicesPrompter {
                     (mtaProjectPath.indexOf('/') > -1
                         ? mtaProjectPath.split('/').pop()
                         : mtaProjectPath.split('\\').pop()) ?? '';
+
                 const hasRouter = this.fdcService.hasApprouter(mtaProjectName, modules);
                 if (hasRouter) {
-                    // keep behavior even if getApprouterType is not declared in typing
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    this.approuter = this.fdcService.getApprouterType?.();
+                    this.approuter = this.fdcService.getApprouterType();
                 }
 
                 if (this.isCFLoggedIn && !hasRouter) {

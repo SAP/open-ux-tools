@@ -5,6 +5,7 @@ import yaml from 'js-yaml';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { Resource, Yaml, MTAModule, AppParamsExtended } from '../types';
+import { AppRouterType } from '../types';
 import { createService } from './utils';
 
 const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';
@@ -66,17 +67,17 @@ export function parseMtaFile(file: string): Yaml {
  * Gets the router type.
  *
  * @param {Yaml} yamlContent - The YAML content.
- * @returns {string} The router type.
+ * @returns {AppRouterType} The router type.
  */
-export function getRouterType(yamlContent: Yaml): string {
-    const filterd: MTAModule[] | undefined = yamlContent?.modules?.filter(
+export function getRouterType(yamlContent: Yaml): AppRouterType {
+    const filtered: MTAModule[] | undefined = yamlContent?.modules?.filter(
         (module: { name: string }) => module.name.includes('destination-content') || module.name.includes('approuter')
     );
-    const routerType = filterd?.pop();
+    const routerType = filtered?.pop();
     if (routerType?.name.includes('approuter')) {
-        return 'Standalone Approuter';
+        return AppRouterType.STANDALONE;
     } else {
-        return 'Approuter Managed by SAP Cloud Platform';
+        return AppRouterType.MANAGED;
     }
 }
 
@@ -153,7 +154,7 @@ function adjustMtaYamlStandaloneApprouter(
 function adjustMtaYamlManagedApprouter(
     yamlContent: any,
     projectName: string,
-    businessSolution: any,
+    businessSolution: string,
     businessService: string
 ): void {
     const appRouterName = `${projectName}-destination-content`;
@@ -421,25 +422,42 @@ function writeFileCallback(error: any): void {
     }
 }
 
+/**
+ * The YAML utilities class.
+ */
 export class YamlUtils {
     public static timestamp: string;
     public static yamlContent: Yaml;
     public static spaceGuid: string;
-    private static STANDALONE_APPROUTER = 'Standalone Approuter';
-    private static APPROUTER_MANAGED = 'Approuter Managed by SAP Cloud Platform';
     private static yamlPath: string;
     private static HTML5_APPS_REPO = 'html5-apps-repo';
 
+    /**
+     * Loads the YAML content.
+     *
+     * @param {string} file - The file.
+     */
     public static loadYamlContent(file: string): void {
         const parsed = parseMtaFile(file);
         this.yamlContent = parsed as Yaml;
         this.yamlPath = file;
     }
 
+    /**
+     * Adjusts the MTA YAML.
+     *
+     * @param {string} projectPath - The project path.
+     * @param {string} moduleName - The module name.
+     * @param {AppRouterType} appRouterType - The app router type.
+     * @param {string} businessSolutionName - The business solution name.
+     * @param {string} businessService - The business service.
+     * @param {ToolsLogger} logger - The logger.
+     * @returns {Promise<void>} The promise.
+     */
     public static async adjustMtaYaml(
         projectPath: string,
         moduleName: string,
-        appRouterType: string,
+        appRouterType: AppRouterType,
         businessSolutionName: string,
         businessService: string,
         logger?: ToolsLogger
@@ -464,18 +482,14 @@ export class YamlUtils {
         const initialServices = yamlContent.resources.map(
             (resource: { parameters: { service: string } }) => resource.parameters.service
         );
-        if (appRouterType === this.STANDALONE_APPROUTER) {
+        const isStandaloneApprouter = appRouterType === AppRouterType.STANDALONE;
+        if (isStandaloneApprouter) {
             adjustMtaYamlStandaloneApprouter(yamlContent, projectName, businessServices, businessService);
-        } else if (appRouterType === this.APPROUTER_MANAGED) {
+        } else {
             adjustMtaYamlManagedApprouter(yamlContent, projectName, businessSolutionName, businessService);
         }
         adjustMtaYamlUDeployer(yamlContent, projectName, moduleName);
-        adjustMtaYamlResources(
-            yamlContent,
-            projectName,
-            appRouterType === this.APPROUTER_MANAGED,
-            this.getProjectNameForXsSecurity()
-        );
+        adjustMtaYamlResources(yamlContent, projectName, !isStandaloneApprouter, this.getProjectNameForXsSecurity());
         adjustMtaYamlOwnModule(yamlContent, moduleName);
         // should go last since it sorts the modules (workaround, should be removed after fixed in deployment module)
         adjustMtaYamlFlpModule(yamlContent, projectName, businessService);

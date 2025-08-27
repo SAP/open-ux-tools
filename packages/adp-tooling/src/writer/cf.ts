@@ -49,7 +49,7 @@ export function createCfConfig(params: CreateCfConfigParams): CfAdpWriterConfig 
             org: params.cfConfig.org,
             space: params.cfConfig.space,
             html5RepoRuntimeGuid: params.html5RepoRuntimeGuid,
-            approuter: params.cfServicesAnswers.approuter ?? '',
+            approuter: params.cfServicesAnswers.approuter ?? AppRouterType.MANAGED,
             businessService: params.cfServicesAnswers.businessService ?? '',
             businessSolutionName: params.cfServicesAnswers.businessSolutionName
         },

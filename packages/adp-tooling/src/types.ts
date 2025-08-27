@@ -931,7 +931,7 @@ export interface CfAdpWriterConfig {
         org: Organization;
         space: Space;
         html5RepoRuntimeGuid: string;
-        approuter: string;
+        approuter: AppRouterType;
         businessService: string;
         businessSolutionName?: string;
     };
@@ -1039,7 +1039,7 @@ export enum cfServicesPromptNames {
 }
 
 export type CfServicesAnswers = {
-    [cfServicesPromptNames.approuter]?: string;
+    [cfServicesPromptNames.approuter]?: AppRouterType;
     [cfServicesPromptNames.businessService]?: string;
     [cfServicesPromptNames.businessSolutionName]?: string;
     // Base app object returned by discovery (shape provided by FDC service)

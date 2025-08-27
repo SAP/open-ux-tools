@@ -23,6 +23,7 @@ import type {
     CFServiceOffering,
     CFAPIResponse
 } from '../types';
+import type { AppRouterType } from '../types';
 import { t } from '../i18n';
 import { downloadAppContent } from './html5-repo';
 import { YamlUtils, getRouterType } from './yaml';
@@ -491,7 +492,7 @@ export class FDCService {
         });
     }
 
-    public getApprouterType(): string {
+    public getApprouterType(): AppRouterType {
         return getRouterType(YamlUtils.yamlContent);
     }
 
