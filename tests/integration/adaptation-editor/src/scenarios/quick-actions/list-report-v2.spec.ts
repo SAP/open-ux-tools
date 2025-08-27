@@ -484,7 +484,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             expect(changes.length).toBe(1);
         }
     );
-    test.fail(
+    test(
         'Add New Annotation File',
         {
             annotation: {
