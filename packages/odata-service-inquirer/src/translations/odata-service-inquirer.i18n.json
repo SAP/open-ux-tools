@@ -110,14 +110,7 @@
         "abapOnBTPType": {
             "message": "ABAP environment definition source",
             "choiceReentranceTicket": "Use Reentrance Ticket",
-            "choiceServiceKey": "Upload a Service Key File",
             "choiceCloudFoundry": "Discover a Cloud Foundry Service"
-        },
-        "serviceKey": {
-            "message": "Service Key File Path",
-            "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
-            "incompleteServiceKeyInfo": "The service keys file does not contain the required information. Check the file is valid and try again.",
-            "unparseableServiceKey": "The service keys file does not contain a valid JSON format. Check the formatting and try again."
         },
         "cloudFoundryAbapSystem": {
             "message": "ABAP environment",
@@ -143,6 +136,12 @@
         "filterEntitySet": {
             "message": "Filter Entity",
             "noEntitiesError": "$t(errors.noRelevantEntities)"
+        },
+        "pageBuildingBlock": {
+            "message": "Add a Page Building Block to the Application?",
+            "tooltip": "The Page building block is supported from SAPUI5 version 1.136. By choosing this option, you will be restricting the minimum SAPUI5 versions available for the application to be 1.136 and above.",
+            "warning": "The Page building block is supported with SAPUI5 version 1.136 and above.",
+            "titleMessage": "Page Title"
         },
         "tableType": {
             "message": "Table Type",

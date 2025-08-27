@@ -72,14 +72,14 @@ export async function getQuestions(
         [promptNames.description]: getDescriptionPrompt(),
         [promptNames.targetFolder]: getTargetFolderPrompt(targetDir, shouldValidateFioriAppFolder),
         [promptNames.ui5Version]: getUI5VersionPrompt(ui5Versions, promptOptions?.ui5Version),
-        [promptNames.enableTypeScript]: getEnableTypeScriptPrompt(capCdsInfo),
+        [promptNames.enableTypeScript]: getEnableTypeScriptPrompt(),
         [promptNames.addDeployConfig]: getAddDeployConfigPrompt(
             targetDir,
             promptOptions?.addDeployConfig,
             isCapProject
         ),
         [promptNames.addFlpConfig]: getAddFlpConfigPrompt(promptOptions?.addFlpConfig),
-        [promptNames.enableVirtualEndpoints]: getEnableVirtualEndpoints(capCdsInfo),
+        [promptNames.enableVirtualEndpoints]: getEnableVirtualEndpoints(),
         [promptNames.showAdvanced]: getShowAdvancedPrompt(),
         [promptNames.ui5Theme]: getUI5ThemePrompt(),
         [promptNames.enableEslint]: getEnableEsLintPrompt(),
@@ -88,7 +88,7 @@ export async function getQuestions(
     };
 
     // Hide not applicable prompts based on passed options or if this is a CAP project
-    let questions: UI5ApplicationQuestion[] = hidePrompts(keyedPrompts, promptOptions, isCapProject);
+    let questions: UI5ApplicationQuestion[] = hidePrompts(keyedPrompts, promptOptions, capCdsInfo);
 
     // Add an additional condition to 'advanced' prompts so they can be shown/hidden at runtime
     applyAdvancedOption(questions, promptOptions);

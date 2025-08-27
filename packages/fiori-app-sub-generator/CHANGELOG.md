@@ -1,5 +1,120 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.7.4
+
+### Patch Changes
+
+-   6e1008e: bugfix: Restrict Page Building Block support to UI5 version 1.136.0 and above for custom app
+-   Updated dependencies [6e1008e]
+    -   @sap-ux/odata-service-inquirer@2.7.1
+
+## 0.7.3
+
+### Patch Changes
+
+-   Updated dependencies [2d11a6d]
+    -   @sap-ux/odata-service-inquirer@2.7.0
+
+## 0.7.2
+
+### Patch Changes
+
+-   Updated dependencies [c6a0062]
+    -   @sap-ux/store@1.1.3
+    -   @sap-ux/odata-service-inquirer@2.6.1
+    -   @sap-ux/telemetry@0.6.17
+    -   @sap-ux/fiori-generator-shared@0.13.10
+    -   @sap-ux/cap-config-writer@0.12.1
+    -   @sap-ux/fiori-elements-writer@2.6.2
+    -   @sap-ux/fiori-freestyle-writer@2.4.38
+    -   @sap-ux/ui5-application-inquirer@0.15.2
+
+## 0.7.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.6.1
+-   @sap-ux/fiori-freestyle-writer@2.4.37
+-   @sap-ux/odata-service-inquirer@2.6.0
+
+## 0.7.0
+
+### Minor Changes
+
+-   43f94eb: Add support for automatically including a Page Building Block when generating a custom page
+
+### Patch Changes
+
+-   Updated dependencies [43f94eb]
+    -   @sap-ux/odata-service-inquirer@2.6.0
+    -   @sap-ux/fiori-elements-writer@2.6.0
+
+## 0.6.24
+
+### Patch Changes
+
+-   Updated dependencies [8178b2b]
+    -   @sap-ux/cap-config-writer@0.12.0
+    -   @sap-ux/fiori-elements-writer@2.5.30
+    -   @sap-ux/fiori-freestyle-writer@2.4.36
+    -   @sap-ux/odata-service-inquirer@2.5.33
+    -   @sap-ux/ui5-application-inquirer@0.15.1
+
+## 0.6.23
+
+### Patch Changes
+
+-   Updated dependencies [810d7eb]
+    -   @sap-ux/annotation-generator@0.3.54
+    -   @sap-ux/fiori-elements-writer@2.5.29
+    -   @sap-ux/odata-service-inquirer@2.5.33
+
+## 0.6.22
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.53
+-   @sap-ux/fiori-elements-writer@2.5.28
+-   @sap-ux/odata-service-inquirer@2.5.33
+
+## 0.6.21
+
+### Patch Changes
+
+-   Updated dependencies [7772a11]
+    -   @sap-ux/ui5-application-inquirer@0.15.1
+
+## 0.6.20
+
+### Patch Changes
+
+-   55bb22e: updates cap projects to use npm workspaces by default
+-   Updated dependencies [55bb22e]
+    -   @sap-ux/ui5-application-inquirer@0.15.0
+    -   @sap-ux/cap-config-writer@0.11.0
+    -   @sap-ux/fiori-freestyle-writer@2.4.35
+    -   @sap-ux/fiori-elements-writer@2.5.27
+    -   @sap-ux/odata-service-inquirer@2.5.33
+
+## 0.6.19
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-application-inquirer@0.14.39
+    -   @sap-ux/fiori-freestyle-writer@2.4.34
+    -   @sap-ux/odata-service-inquirer@2.5.33
+    -   @sap-ux/fiori-elements-writer@2.5.26
+    -   @sap-ux/odata-service-writer@0.27.17
+    -   @sap-ux/launch-config@0.10.19
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/telemetry@0.6.16
+    -   @sap-ux/annotation-generator@0.3.52
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/cap-config-writer@0.10.27
+    -   @sap-ux/fiori-generator-shared@0.13.9
+
 ## 0.6.18
 
 ### Patch Changes

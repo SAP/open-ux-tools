@@ -118,6 +118,9 @@
       "path": "packages/fiori-generator-shared"
     },
     {
+      "path": "packages/fiori-mcp-server"
+    },
+    {
       "path": "packages/fiori-tools-settings"
     },
     {

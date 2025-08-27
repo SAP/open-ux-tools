@@ -1,5 +1,45 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.7.1
+
+### Patch Changes
+
+-   6e1008e: bugfix: Restrict Page Building Block support to UI5 version 1.136.0 and above for custom app
+
+## 2.7.0
+
+### Minor Changes
+
+-   2d11a6d: Removes support for adding new BTP systems via service keys
+
+## 2.6.1
+
+### Patch Changes
+
+-   Updated dependencies [c6a0062]
+    -   @sap-ux/store@1.1.3
+    -   @sap-ux/telemetry@0.6.17
+    -   @sap-ux/fiori-generator-shared@0.13.10
+    -   @sap-ux/inquirer-common@0.7.36
+
+## 2.6.0
+
+### Minor Changes
+
+-   43f94eb: Add support for automatically including a Page Building Block when generating a custom page
+
+## 2.5.33
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/telemetry@0.6.16
+    -   @sap-ux/axios-extension@1.22.5
+    -   @sap-ux/fiori-generator-shared@0.13.9
+    -   @sap-ux/project-input-validator@0.6.17
+    -   @sap-ux/inquirer-common@0.7.35
+
 ## 2.5.32
 
 ### Patch Changes

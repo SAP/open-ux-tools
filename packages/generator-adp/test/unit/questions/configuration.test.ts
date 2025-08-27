@@ -165,6 +165,25 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(result).toEqual('The input cannot be empty.');
         });
 
+        it('system prompt validate should reset state values when switching systems', async () => {
+            const systemLookup = {
+                ...sourceSystems,
+                getSystemRequiresAuth: jest.fn().mockResolvedValueOnce(false).mockResolvedValueOnce(true)
+            } as unknown as SystemLookup;
+            configPrompter = new ConfigPrompter(systemLookup, layer, logger);
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+
+            const result1 = await systemPrompt?.validate?.('SYS010', dummyAnswers);
+            const result2 = await systemPrompt?.validate?.('SYS010_NOAUTH', dummyAnswers);
+
+            expect(result1).toEqual(true);
+            expect(result2).toEqual(true);
+            expect(configPrompter['flexUISystem']).toEqual(undefined);
+            expect(configPrompter['isAuthRequired']).toEqual(true);
+        });
+
         it('system prompt validate should throw error', async () => {
             const error = new Error('Test error');
             loadAppsMock.mockRejectedValue(error);
