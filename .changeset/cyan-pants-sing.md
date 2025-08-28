@@ -1,6 +1,6 @@
 ---
 '@sap-ux/odata-service-inquirer': minor
-'@sap-ux/feature-toggle': minor
+'@sap-ux/feature-toggle': patch
 ---
 
-Revert removal of addition of service key, and place it behind the feature toggle
+Revert the removal of the addition of the service key, and place it behind the feature toggle
