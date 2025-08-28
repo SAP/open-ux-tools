@@ -120,6 +120,10 @@ describe('questions', () => {
                     "value": "cloudFoundry",
                   },
                   {
+                    "name": "Upload a Service Key File",
+                    "value": "serviceKey",
+                  },
+                  {
                     "name": "Use Reentrance Ticket",
                     "value": "reentranceTicket",
                   },
@@ -139,6 +143,18 @@ describe('questions', () => {
                 },
                 "message": "System URL",
                 "name": "abapOnBtp:newSystemUrl",
+                "type": "input",
+                "validate": [Function],
+                "when": [Function],
+              },
+              {
+                "guiOptions": {
+                  "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
+                  "mandatory": true,
+                },
+                "guiType": "file-browser",
+                "message": "Service Key File Path",
+                "name": "serviceKey",
                 "type": "input",
                 "validate": [Function],
                 "when": [Function],
