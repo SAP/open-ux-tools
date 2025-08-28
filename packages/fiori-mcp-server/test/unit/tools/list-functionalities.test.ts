@@ -47,6 +47,7 @@ describe('listFunctionalities', () => {
         expect(functionalities.functionalities.map((functionality) => functionality.id)).toEqual([
             'add-page',
             'generate-fiori-ui-app',
+            'generate-fiori-ui-odata-app',
             'delete-page',
             'create-controller-extension'
         ]);
@@ -72,6 +73,7 @@ describe('listFunctionalities', () => {
         expect(functionalities.functionalities.map((functionality) => functionality.id)).toEqual([
             'add-page',
             'generate-fiori-ui-app',
+            'generate-fiori-ui-odata-app',
             'delete-page',
             'create-controller-extension'
         ]);
