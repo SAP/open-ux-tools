@@ -1,7 +1,7 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import { downloadAppContent } from '../html5-repo';
+import { downloadAppContent } from './html5-repo';
 import type { CFConfig, AppParams } from '../../types';
 
 /**

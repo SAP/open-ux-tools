@@ -7,9 +7,20 @@ import CFToolsCli = require('@sap/cf-tools/out/src/cli');
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { CFConfig, CFApp, RequestArguments, ServiceKeys, CFAPIResponse, CFServiceOffering } from '../types';
-import { getServiceInstanceKeys } from './utils';
-import { isLoggedInCf } from './auth';
+import type {
+    CFConfig,
+    CFApp,
+    RequestArguments,
+    ServiceKeys,
+    CFAPIResponse,
+    CFServiceOffering,
+    GetServiceInstanceParams,
+    ServiceInstance,
+    CFServiceInstance,
+    Credentials
+} from '../../types';
+import { isLoggedInCf } from '../core/auth';
+import { createServiceKey, getServiceKeys } from './cli';
 
 interface FDCResponse {
     results: CFApp[];
@@ -212,5 +223,92 @@ export async function createService(
         const errorMessage = `Failed to create service instance '${serviceInstanceName}'. Reason: ${e.message}`;
         logger?.error(errorMessage);
         throw new Error(errorMessage);
+    }
+}
+
+/**
+ * Gets the service instance keys.
+ *
+ * @param {GetServiceInstanceParams} serviceInstanceQuery - The service instance query.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<ServiceKeys | null>} The service instance keys.
+ */
+export async function getServiceInstanceKeys(
+    serviceInstanceQuery: GetServiceInstanceParams,
+    logger: ToolsLogger
+): Promise<ServiceKeys | null> {
+    try {
+        const serviceInstances = await getServiceInstance(serviceInstanceQuery);
+        if (serviceInstances?.length > 0) {
+            // we can use any instance in the list to connect to HTML5 Repo
+            logger?.log(`Use '${serviceInstances[0].name}' HTML5 Repo instance`);
+            return {
+                credentials: await getOrCreateServiceKeys(serviceInstances[0], logger),
+                serviceInstance: serviceInstances[0]
+            };
+        }
+        return null;
+    } catch (e) {
+        const errorMessage = `Failed to get service instance keys. Reason: ${e.message}`;
+        logger?.error(errorMessage);
+        throw new Error(errorMessage);
+    }
+}
+
+/**
+ * Gets the service instance.
+ *
+ * @param {GetServiceInstanceParams} params - The service instance parameters.
+ * @returns {Promise<ServiceInstance[]>} The service instance.
+ */
+async function getServiceInstance(params: GetServiceInstanceParams): Promise<ServiceInstance[]> {
+    const PARAM_MAP: Map<string, string> = new Map([
+        ['spaceGuids', 'space_guids'],
+        ['planNames', 'service_plan_names'],
+        ['names', 'names']
+    ]);
+    const parameters = Object.entries(params)
+        .filter(([_, value]) => value?.length > 0)
+        .map(([key, value]) => `${PARAM_MAP.get(key)}=${value.join(',')}`);
+    const uriParameters = parameters.length > 0 ? `?${parameters.join('&')}` : '';
+    const uri = `/v3/service_instances` + uriParameters;
+    try {
+        const json = await requestCfApi<CFAPIResponse<CFServiceInstance>>(uri);
+        if (json?.resources && Array.isArray(json.resources)) {
+            return json.resources.map((service: CFServiceInstance) => ({
+                name: service.name,
+                guid: service.guid
+            }));
+        }
+        throw new Error('No valid JSON for service instance');
+    } catch (e) {
+        // log error: CFUtils.ts=>getServiceInstance with uriParameters
+        throw new Error(`Failed to get service instance with params ${uriParameters}. Reason: ${e.message}`);
+    }
+}
+
+/**
+ * Gets the service instance keys.
+ *
+ * @param {ServiceInstance} serviceInstance - The service instance.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<ServiceKeys | null>} The service instance keys.
+ */
+async function getOrCreateServiceKeys(serviceInstance: ServiceInstance, logger: ToolsLogger): Promise<Credentials[]> {
+    try {
+        const credentials = await getServiceKeys(serviceInstance.guid);
+        if (credentials?.length > 0) {
+            return credentials;
+        } else {
+            const serviceKeyName = serviceInstance.name + '_key';
+            logger?.log(`Creating service key '${serviceKeyName}' for service instance '${serviceInstance.name}'`);
+            await createServiceKey(serviceInstance.name, serviceKeyName);
+            return getServiceKeys(serviceInstance.guid);
+        }
+    } catch (e) {
+        // log error: CFUtils.ts=>getOrCreateServiceKeys with param
+        throw new Error(
+            `Failed to get or create service keys for instance name ${serviceInstance.name}. Reason: ${e.message}`
+        );
     }
 }

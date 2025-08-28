@@ -1,8 +1,8 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import { YamlUtils } from './yaml';
-import type { CfConfigService } from './config';
+import { YamlUtils } from './project/yaml';
+import type { CfConfigService } from './core/config';
 import type { CFConfig, CFApp, Credentials } from '../types';
 import { filterCfApps, discoverCfApps, AppContentService, AppValidationService } from './app';
 

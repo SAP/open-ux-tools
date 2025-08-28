@@ -2,10 +2,10 @@ import * as path from 'path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { requestCfApi } from './api';
+import { requestCfApi } from '../services/api';
 import { getRouterType } from './yaml';
 import { YamlLoader } from './yaml-loader';
-import type { CFServiceOffering, CFAPIResponse, BusinessServiceResource, Resource, AppRouterType } from '../types';
+import type { CFServiceOffering, CFAPIResponse, BusinessServiceResource, Resource, AppRouterType } from '../../types';
 
 /**
  * Get the approuter type.

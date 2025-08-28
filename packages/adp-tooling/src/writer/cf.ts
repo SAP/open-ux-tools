@@ -13,7 +13,7 @@ import {
     type DescriptorVariant,
     type Content
 } from '../types';
-import { YamlUtils } from '../cf/yaml';
+import { YamlUtils } from '../cf/project/yaml';
 import { fillDescriptorContent } from './manifest';
 import { getLatestVersion } from '../ui5/version-info';
 

@@ -5,7 +5,7 @@ import type { Manifest } from '@sap-ux/project-access';
 
 import type { AppContentService } from './content';
 import type { CFApp, Credentials, CFConfig } from '../../types';
-import { validateSmartTemplateApplication, validateODataEndpoints } from '../validation';
+import { validateSmartTemplateApplication, validateODataEndpoints } from '../utils/validation';
 
 /**
  * Validate a single app.

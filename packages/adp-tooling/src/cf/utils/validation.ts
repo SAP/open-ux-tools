@@ -3,10 +3,10 @@ import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import { t } from '../i18n';
-import { getApplicationType } from '../source/manifest';
-import { isSupportedAppTypeForAdp } from '../source/manifest';
-import type { Credentials } from '../types';
+import { t } from '../../i18n';
+import type { Credentials } from '../../types';
+import { getApplicationType } from '../../source/manifest';
+import { isSupportedAppTypeForAdp } from '../../source/manifest';
 
 /**
  * Normalize the route regex.

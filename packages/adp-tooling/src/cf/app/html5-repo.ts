@@ -4,9 +4,8 @@ import AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
-import { createService } from './api';
-import { getServiceInstanceKeys } from './utils';
-import type { HTML5Content, ServiceKeys, Uaa, AppParams } from '../types';
+import { createService, getServiceInstanceKeys } from '../services/api';
+import type { HTML5Content, ServiceKeys, Uaa, AppParams } from '../../types';
 
 /**
  * Get the OAuth token from HTML5 repository.

@@ -2,8 +2,8 @@ import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { getAuthToken, checkForCf } from './utils';
-import type { CFConfig, Organization } from '../types';
+import { getAuthToken, checkForCf } from '../services/cli';
+import type { CFConfig, Organization } from '../../types';
 
 /**
  * Check if CF is installed.

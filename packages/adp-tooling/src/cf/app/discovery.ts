@@ -1,7 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { getFDCApps } from '../api';
-import { getAppHostIds } from '../utils';
+import { getFDCApps } from '../services/api';
 import type { CFConfig, CFApp, Credentials } from '../../types';
 
 /**
@@ -13,6 +12,36 @@ import type { CFConfig, CFApp, Credentials } from '../../types';
  */
 export function filterCfApps(apps: CFApp[], includeInvalid: boolean): CFApp[] {
     return includeInvalid ? apps : apps.filter((app) => !app.messages?.length);
+}
+
+/**
+ * Format the discovery.
+ *
+ * @param {CFApp} app - The app.
+ * @returns {string} The formatted discovery.
+ */
+export function formatDiscovery(app: CFApp): string {
+    return `${app.title} (${app.appId} ${app.appVersion})`;
+}
+
+/**
+ * Get the app host ids.
+ *
+ * @param {Credentials[]} credentials - The credentials.
+ * @returns {Set<string>} The app host ids.
+ */
+export function getAppHostIds(credentials: Credentials[]): Set<string> {
+    const appHostIds: string[] = [];
+    credentials.forEach((credential) => {
+        const appHostId = credential['html5-apps-repo']?.app_host_id;
+        if (appHostId) {
+            appHostIds.push(appHostId.split(',').map((item: string) => item.trim())); // there might be multiple appHostIds separated by comma
+        }
+    });
+
+    // appHostIds is now an array of arrays of strings (from split)
+    // Flatten the array and create a Set
+    return new Set(appHostIds.flat());
 }
 
 /**

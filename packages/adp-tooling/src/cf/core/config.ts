@@ -4,7 +4,7 @@ import path from 'path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { CFConfig, Config } from '../types';
+import type { CFConfig, Config } from '../../types';
 
 const HOMEDRIVE = 'HOMEDRIVE';
 const HOMEPATH = 'HOMEPATH';
