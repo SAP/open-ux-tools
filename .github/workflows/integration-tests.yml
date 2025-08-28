@@ -85,7 +85,7 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 
-                name: blob-report-${{ github.run_id }}-${{ matrix.ui5-version }}
+                name: blob-report-${{ matrix.ui5-version }}
                 path: tests/integration/adaptation-editor/blob-report
                 retention-days: 1
     merge-reports:
@@ -121,7 +121,7 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   path: tests/integration/adaptation-editor/all-blob-reports
-                  pattern: blob-report-${{ github.run_id }}-*
+                  pattern: blob-report-*
                   merge-multiple: true
 
             - name: Merge into HTML Report
@@ -130,6 +130,6 @@ jobs:
             - name: Upload HTML report
               uses: actions/upload-artifact@v4
               with:
-                  name: playwright-report-${{ github.run_id }}-${{ github.run_attempt }}
+                  name: playwright-report-${{ github.run_attempt }}
                   path: tests/integration/adaptation-editor/playwright-report
                   retention-days: 15
