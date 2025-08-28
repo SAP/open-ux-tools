@@ -11,6 +11,11 @@ import * as sapSystemValidators from '../../../../../src/prompts/datasources/sap
 import type { ConnectedSystem } from '../../../../../src/types';
 import type { BackendSystem } from '@sap-ux/store';
 import { url } from 'inspector';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
+
+jest.mock('@sap-ux/feature-toggle', () => ({
+    isFeatureEnabled: jest.fn()
+}));
 
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue(true);
@@ -68,6 +73,8 @@ describe('questions', () => {
         connectionValidatorMock.validateAuth = validateAuthMock;
         connectionValidatorMock.serviceProvider = serviceProviderMock;
         validateServiceInfoMock = true;
+        // Feature toggle enabled by default for migration period
+        (isFeatureEnabled as jest.Mock).mockReturnValue(true);
     });
 
     test('should return Abap on BTP questions', () => {
@@ -172,6 +179,39 @@ describe('questions', () => {
               },
             ]
         `);
+    });
+    test.each([
+        {
+            description: 'should show the service key question when feature toggle is enabled',
+            featureEnabled: true,
+            expectServiceKeyChoice: true,
+            expectServiceKeyPrompt: true
+        },
+        {
+            description: 'should hide the service key question when feature toggle is disabled',
+            featureEnabled: false,
+            expectServiceKeyChoice: false,
+            expectServiceKeyPrompt: false
+        }
+    ])('$description', ({ featureEnabled, expectServiceKeyChoice, expectServiceKeyPrompt }) => {
+        (isFeatureEnabled as jest.Mock).mockReturnValue(featureEnabled);
+
+        const questions = getAbapOnBTPSystemQuestions();
+        const authTypePrompt = questions.find((q) => q.name === 'abapOnBtpAuthType') as ListQuestion;
+
+        if (expectServiceKeyChoice) {
+            expect(authTypePrompt.choices).toContainEqual({
+                name: 'Upload a Service Key File',
+                value: 'serviceKey'
+            });
+        } else {
+            expect(authTypePrompt.choices).not.toContainEqual({
+                name: 'Upload a Service Key File',
+                value: 'serviceKey'
+            });
+        }
+
+        expect(questions.some((q) => q.name === 'serviceKey')).toBe(expectServiceKeyPrompt);
     });
 
     test('should show the correct auth type prompt', () => {

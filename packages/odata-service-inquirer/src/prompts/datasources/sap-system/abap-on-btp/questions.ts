@@ -32,6 +32,7 @@ import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selecti
 import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts';
 import { connectWithDestination } from '../system-selection/prompt-helpers';
 import { validateServiceKey } from '../validators';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
 const systemUrlPromptName = `${abapOnBtpPromptNamespace}:${newSystemPromptNames.newSystemUrl}` as const;
@@ -42,6 +43,8 @@ const abapOnBtpPromptNames = {
     'serviceKey': 'serviceKey',
     'cloudFoundryAbapSystem': 'cloudFoundryAbapSystem'
 } as const;
+
+const SERVICE_KEY_FEATURE_TOGGLE = 'sap.ux.appGenerator.btpServiceKeyAuth';
 
 export type AbapOnBTPType = 'cloudFoundry' | 'serviceKey' | 'reentranceTicket';
 
@@ -71,7 +74,10 @@ export function getAbapOnBTPSystemQuestions(
         name: abapOnBtpPromptNames.abapOnBtpAuthType,
         choices: [
             { name: t('prompts.abapOnBTPType.choiceCloudFoundry'), value: 'cloudFoundry' as AbapOnBTPType },
-            { name: t('prompts.abapOnBTPType.choiceServiceKey'), value: 'serviceKey' as AbapOnBTPType },
+            // Feature toggle the service key option - until migration is complete
+            ...(isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE)
+                ? [{ name: t('prompts.abapOnBTPType.choiceServiceKey'), value: 'serviceKey' as AbapOnBTPType }]
+                : []),
             { name: t('prompts.abapOnBTPType.choiceReentranceTicket'), value: 'reentranceTicket' as AbapOnBTPType }
         ],
         message: t('prompts.abapOnBTPType.message'),
@@ -103,13 +109,15 @@ export function getAbapOnBTPSystemQuestions(
         )[0]
     );
 
-    // Service Key file prompt
-    questions.push(
-        withCondition(
-            [getServiceKeyPrompt(connectValidator, cachedConnectedSystem)],
-            (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'serviceKey'
-        )[0]
-    );
+    // Service Key file prompt - only add if feature toggle is enabled
+    if (isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE)) {
+        questions.push(
+            withCondition(
+                [getServiceKeyPrompt(connectValidator, cachedConnectedSystem)],
+                (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'serviceKey'
+            )[0]
+        );
+    }
 
     questions.push(
         ...withCondition(
