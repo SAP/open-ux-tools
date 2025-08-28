@@ -4,10 +4,11 @@ This package includes a [Model Context Protocol](https://modelcontextprotocol.io
 
 The server helps AI models to create or modify SAP Fiori applications like:
 
-- _Create a new fiori app to the current project that I can use to maintain bookings for my dog grooming business_
-- _Create a new fiori app to the current project according to my_picture.png_
+- _Create a new fiori app based on the main service of the current project_
 - _Add the FCL to the SAP Fiori elements app_
 - _Enable initial load for the fiori app_
+
+For the best end-to-end experience we recommend using the server together with [@cap-js/mcp-server](https://www.npmjs.com/package/@cap-js/mcp-server) and [@ui5/mcp-server](https://www.npmjs.com/package/@ui5/mcp-server).
 
 > ⚠️ Caution
 >
