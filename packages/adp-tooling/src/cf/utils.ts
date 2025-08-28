@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 import CFToolsCli = require('@sap/cf-tools/out/src/cli');
 import { eFilters } from '@sap/cf-tools/out/src/types';
@@ -13,8 +11,9 @@ import type {
     Credentials,
     CFAPIResponse,
     CFServiceInstance,
-    CFServiceOffering
+    CFApp
 } from '../types';
+import { requestCfApi } from './api';
 
 const ENV = { env: { 'CF_COLOR': 'false' } };
 const CREATE_SERVICE_KEY = 'create-service-key';
@@ -45,93 +44,6 @@ export async function getServiceInstanceKeys(
         const errorMessage = `Failed to get service instance keys. Reason: ${e.message}`;
         logger?.error(errorMessage);
         throw new Error(errorMessage);
-    }
-}
-
-/**
- * Creates a service.
- *
- * @param {string} spaceGuid - The space GUID.
- * @param {string} plan - The plan.
- * @param {string} serviceInstanceName - The service instance name.
- * @param {ToolsLogger} logger - The logger.
- * @param {string[]} tags - The tags.
- * @param {string | null} securityFilePath - The security file path.
- * @param {string | null} serviceName - The service name.
- * @param {string} [xsSecurityProjectName] - The project name for XS security.
- */
-export async function createService(
-    spaceGuid: string,
-    plan: string,
-    serviceInstanceName: string,
-    logger?: ToolsLogger,
-    tags: string[] = [],
-    securityFilePath: string | null = null,
-    serviceName: string | undefined = undefined,
-    xsSecurityProjectName?: string
-): Promise<void> {
-    try {
-        if (!serviceName) {
-            const json: CFAPIResponse<CFServiceOffering> = await requestCfApi<CFAPIResponse<CFServiceOffering>>(
-                `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}`
-            );
-            const serviceOffering = json?.resources?.find(
-                (resource: CFServiceOffering) => resource.tags && tags.every((tag) => resource.tags?.includes(tag))
-            );
-            serviceName = serviceOffering?.name;
-        }
-        logger?.log(
-            `Creating service instance '${serviceInstanceName}' of service '${serviceName}' with '${plan}' plan`
-        );
-
-        const commandParameters: string[] = ['create-service', serviceName ?? '', plan, serviceInstanceName];
-        if (securityFilePath) {
-            let xsSecurity = null;
-            try {
-                const filePath = path.resolve(__dirname, '../../templates/cf/xs-security.json');
-                const xsContent = fs.readFileSync(filePath, 'utf-8');
-                xsSecurity = JSON.parse(xsContent);
-                xsSecurity.xsappname = xsSecurityProjectName;
-            } catch (err) {
-                throw new Error('xs-security.json could not be parsed.');
-            }
-
-            commandParameters.push('-c');
-            commandParameters.push(JSON.stringify(xsSecurity));
-        }
-
-        const query = await CFToolsCli.Cli.execute(commandParameters);
-        if (query.exitCode !== 0) {
-            throw new Error(query.stderr);
-        }
-    } catch (e) {
-        const errorMessage = `Cannot create a service instance '${serviceInstanceName}' in space '${spaceGuid}'. Reason: ${e.message}`;
-        logger?.error(errorMessage);
-        throw new Error(errorMessage);
-    }
-}
-
-/**
- * Requests the CF API.
- *
- * @param {string} url - The URL to request.
- * @returns {Promise<T>} The response from the CF API.
- * @template T - The type of the response.
- */
-export async function requestCfApi<T = unknown>(url: string): Promise<T> {
-    try {
-        const response = await CFToolsCli.Cli.execute(['curl', url], ENV);
-        if (response.exitCode === 0) {
-            try {
-                return JSON.parse(response.stdout);
-            } catch (e) {
-                throw new Error(`Failed to parse response from request CF API: ${e.message}`);
-            }
-        }
-        throw new Error(response.stderr);
-    } catch (e) {
-        // log error: CFUtils.ts=>requestCfApi(params)
-        throw new Error(`Request to CF API failed. Reason: ${e.message}`);
     }
 }
 
@@ -269,4 +181,34 @@ async function createServiceKey(serviceInstanceName: string, serviceKeyName: str
         // log error: CFUtils.ts=>createServiceKey for serviceInstanceName
         throw new Error(`Failed to create service key for instance name ${serviceInstanceName}. Reason: ${e.message}`);
     }
+}
+
+/**
+ * Format the discovery.
+ *
+ * @param {CFApp} app - The app.
+ * @returns {string} The formatted discovery.
+ */
+export function formatDiscovery(app: CFApp): string {
+    return `${app.title} (${app.appId} ${app.appVersion})`;
+}
+
+/**
+ * Get the app host ids.
+ *
+ * @param {Credentials[]} credentials - The credentials.
+ * @returns {Set<string>} The app host ids.
+ */
+export function getAppHostIds(credentials: Credentials[]): Set<string> {
+    const appHostIds: string[] = [];
+    credentials.forEach((credential) => {
+        const appHostId = credential['html5-apps-repo']?.app_host_id;
+        if (appHostId) {
+            appHostIds.push(appHostId.split(',').map((item: string) => item.trim())); // there might be multiple appHostIds separated by comma
+        }
+    });
+
+    // appHostIds is now an array of arrays of strings (from split)
+    // Flatten the array and create a Set
+    return new Set(appHostIds.flat());
 }

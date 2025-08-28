@@ -6,7 +6,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { Resource, Yaml, MTAModule, AppParamsExtended } from '../types';
 import { AppRouterType } from '../types';
-import { createService } from './utils';
+import { createService } from './api';
 import { getProjectNameForXsSecurity, YamlLoader } from './yaml-loader';
 
 const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';

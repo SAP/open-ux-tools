@@ -2,7 +2,7 @@ import * as path from 'path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { requestCfApi } from './utils';
+import { requestCfApi } from './api';
 import { getRouterType } from './yaml';
 import { YamlLoader } from './yaml-loader';
 import type { CFServiceOffering, CFAPIResponse, BusinessServiceResource, Resource, AppRouterType } from '../types';

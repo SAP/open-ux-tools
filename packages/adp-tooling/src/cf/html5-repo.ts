@@ -3,7 +3,8 @@ import AdmZip from 'adm-zip';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { getServiceInstanceKeys, createService } from './utils';
+import { createService } from './api';
+import { getServiceInstanceKeys } from './utils';
 import type { HTML5Content, ServiceKeys, Uaa, AppParams } from '../types';
 
 /**
