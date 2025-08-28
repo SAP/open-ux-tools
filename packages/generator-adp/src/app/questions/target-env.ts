@@ -1,15 +1,16 @@
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-import type { CfConfigService, FDCService } from '@sap-ux/adp-tooling';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { CfConfigService } from '@sap-ux/adp-tooling';
 import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 import type { InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
+import { t } from '../../utils/i18n';
 import type { ProjectLocationAnswers } from '../types';
+import { getTargetEnvAdditionalMessages } from './helper/additional-messages';
 import { validateEnvironment, validateProjectPath } from './helper/validators';
 import { TargetEnv, type TargetEnvAnswers, type TargetEnvQuestion } from '../types';
-import { t } from '../../utils/i18n';
-import { getTargetEnvAdditionalMessages } from './helper/additional-messages';
 
 type EnvironmentChoice = { name: string; value: TargetEnv };
 
@@ -70,11 +71,11 @@ export function getEnvironments(appWizard: AppWizard, isCfInstalled: boolean): E
 /**
  * Returns the project path prompt.
  *
- * @param {FDCService} fdcService - The FDC service instance.
+ * @param {ToolsLogger} logger - The logger.
  * @param {any} vscode - The VSCode instance.
  * @returns {YUIQuestion<ProjectLocationAnswers>[]} The project path prompt.
  */
-export function getProjectPathPrompt(fdcService: FDCService, vscode: any): YUIQuestion<ProjectLocationAnswers> {
+export function getProjectPathPrompt(logger: ToolsLogger, vscode: any): YUIQuestion<ProjectLocationAnswers> {
     return {
         type: 'input',
         name: 'projectLocation',
@@ -85,7 +86,7 @@ export function getProjectPathPrompt(fdcService: FDCService, vscode: any): YUIQu
             breadcrumb: t('prompts.projectLocationBreadcrumb')
         },
         message: t('prompts.projectLocationLabel'),
-        validate: (value: string) => validateProjectPath(value, fdcService),
+        validate: (value: string) => validateProjectPath(value, logger),
         default: () => getDefaultTargetFolder(vscode),
         store: false
     } as InputQuestion<ProjectLocationAnswers>;

@@ -412,7 +412,7 @@ export default class extends Generator {
      */
     private async _promptForCfProjectPath(): Promise<void> {
         if (!this.isMtaYamlFound) {
-            const pathAnswers = await this.prompt([getProjectPathPrompt(this.fdcService, this.vscode)]);
+            const pathAnswers = await this.prompt([getProjectPathPrompt(this.logger, this.vscode)]);
             this.projectLocation = pathAnswers.projectLocation;
             this.projectLocation = fs.realpathSync(this.projectLocation, 'utf-8');
             this.cfProjectDestinationPath = this.destinationRoot(this.projectLocation);
@@ -536,13 +536,14 @@ export default class extends Generator {
             throw new Error('Manifest not found for base app.');
         }
 
+        const html5RepoRuntimeGuid = this.fdcService.getHtml5RepoRuntimeGuid();
         const cfConfig = createCfConfig({
             attributeAnswers: this.attributeAnswers,
             cfServicesAnswers: this.cfServicesAnswers,
             cfConfig: this.cfConfig,
             layer: this.layer,
             manifest,
-            html5RepoRuntimeGuid: this.fdcService.html5RepoRuntimeGuid,
+            html5RepoRuntimeGuid,
             projectPath,
             publicVersions
         });

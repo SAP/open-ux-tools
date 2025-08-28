@@ -110,7 +110,20 @@ async function filterServices(businessServices: BusinessServiceResource[], logge
 }
 
 /**
- * Get the resources for the file.
+ * Get the services for the MTA project.
+ *
+ * @param {string} projectPath - The path to the project.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<string[]>} The services.
+ */
+export async function getMtaServices(projectPath: string, logger: ToolsLogger): Promise<string[]> {
+    const services = await readMta(projectPath, logger);
+    logger?.log(`Available services defined in mta.yaml: ${JSON.stringify(services)}`);
+    return services;
+}
+
+/**
+ * Get the resources for the MTA file.
  *
  * @param {string} mtaFilePath - The path to the mta file.
  * @param {ToolsLogger} logger - The logger.
@@ -123,7 +136,7 @@ export async function getResources(mtaFilePath: string, logger: ToolsLogger): Pr
 }
 
 /**
- * Read the mta file.
+ * Read the MTA file.
  *
  * @param {string} projectPath - The path to the project.
  * @param {ToolsLogger} logger - The logger.

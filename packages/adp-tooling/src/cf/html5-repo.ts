@@ -2,6 +2,7 @@ import axios from 'axios';
 import AdmZip from 'adm-zip';
 
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
 
 import { createService } from './api';
 import { getServiceInstanceKeys } from './utils';
@@ -105,11 +106,7 @@ export async function downloadAppContent(
     const appNameVersion = `${appName}-${appVersion}`;
     try {
         const htmlRepoCredentials = await getHtml5RepoCredentials(spaceGuid, logger);
-        if (
-            htmlRepoCredentials?.credentials &&
-            htmlRepoCredentials?.credentials.length &&
-            htmlRepoCredentials?.credentials[0]?.uaa
-        ) {
+        if (htmlRepoCredentials?.credentials?.length > 0 && htmlRepoCredentials?.credentials[0]?.uaa) {
             const token = await getToken(htmlRepoCredentials.credentials[0].uaa);
             const uri = `${htmlRepoCredentials.credentials[0].uri}/applications/content/${appNameVersion}?pathSuffixFilter=manifest.json,xs-app.json`;
             const zip = await downloadZip(token, appHostId, uri);
@@ -119,7 +116,7 @@ export async function downloadAppContent(
             } catch (e) {
                 throw new Error(`Failed to parse zip content from HTML5 repository. Reason: ${e.message}`);
             }
-            if (!(admZip && admZip.getEntries().length)) {
+            if (!admZip?.getEntries?.().length) {
                 throw new Error('No zip content was parsed from HTML5 repository');
             }
             const zipEntry = admZip.getEntries().find((zipEntry) => zipEntry.entryName === 'manifest.json');
@@ -128,7 +125,7 @@ export async function downloadAppContent(
             }
 
             try {
-                const manifest = JSON.parse(zipEntry.getData().toString('utf8'));
+                const manifest = JSON.parse(zipEntry.getData().toString('utf8')) as Manifest;
                 return {
                     entries: admZip.getEntries(),
                     serviceInstanceGuid: htmlRepoCredentials.serviceInstance.guid,

@@ -10,7 +10,8 @@ import {
     getModuleNames,
     getApprouterType,
     hasApprouter,
-    isLoggedInCf
+    isLoggedInCf,
+    getMtaServices
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
@@ -26,22 +27,6 @@ import { showBusinessSolutionNameQuestion } from './helper/conditions';
  * Prompter for CF services.
  */
 export class CFServicesPrompter {
-    /**
-     * The FDC service instance.
-     */
-    private readonly fdcService: FDCService;
-    /**
-     * The CF auth service instance.
-     */
-    private readonly cfConfigService: CfConfigService;
-    /**
-     * Whether the user is using the internal usage.
-     */
-    private readonly isInternalUsage: boolean;
-    /**
-     * The logger instance.
-     */
-    private readonly logger: ToolsLogger;
     /**
      * Whether the user is logged in to Cloud Foundry.
      */
@@ -85,16 +70,12 @@ export class CFServicesPrompter {
      * @param {boolean} [isInternalUsage] - Internal usage flag.
      */
     constructor(
-        fdcService: FDCService,
-        cfConfigService: CfConfigService,
+        private readonly fdcService: FDCService,
+        private readonly cfConfigService: CfConfigService,
         isCfLoggedIn: boolean,
-        logger: ToolsLogger,
-        isInternalUsage: boolean = false
+        private readonly logger: ToolsLogger,
+        private readonly isInternalUsage: boolean = false
     ) {
-        this.fdcService = fdcService;
-        this.cfConfigService = cfConfigService;
-        this.isInternalUsage = isInternalUsage;
-        this.logger = logger;
         this.isCfLoggedIn = isCfLoggedIn;
     }
 
@@ -110,7 +91,7 @@ export class CFServicesPrompter {
         promptOptions?: CfServicesPromptOptions
     ): Promise<CFServicesQuestion[]> {
         if (this.isCfLoggedIn) {
-            this.businessServices = await this.fdcService.getServices(mtaProjectPath);
+            this.businessServices = await getMtaServices(mtaProjectPath, this.logger);
         }
 
         const keyedPrompts: Record<cfServicesPromptNames, CFServicesQuestion> = {

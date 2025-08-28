@@ -81,7 +81,8 @@ export async function generateCf(basePath: string, config: CfAdpWriterConfig, fs
 
     const fullConfig = setDefaultsCF(config);
 
-    await adjustMtaYaml(basePath, fullConfig);
+    const { app, cf } = fullConfig;
+    await YamlUtils.adjustMtaYaml(basePath, app.id, cf.approuter, cf.businessSolutionName ?? '', cf.businessService);
 
     if (fullConfig.app.i18nModels) {
         writeI18nModels(basePath, fullConfig.app.i18nModels, fs);
@@ -116,18 +117,6 @@ function setDefaultsCF(config: CfAdpWriterConfig): CfAdpWriterConfig {
     };
 
     return configWithDefaults;
-}
-
-/**
- * Adjust MTA YAML file for CF project.
- *
- * @param {string} basePath - The base path.
- * @param {CfAdpWriterConfig} config - The CF configuration.
- */
-async function adjustMtaYaml(basePath: string, config: CfAdpWriterConfig): Promise<void> {
-    const { app, cf } = config;
-
-    await YamlUtils.adjustMtaYaml(basePath, app.id, cf.approuter, cf.businessSolutionName ?? '', cf.businessService);
 }
 
 /**

@@ -1,7 +1,8 @@
 import fs from 'fs';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { isExternalLoginEnabled, isMtaProject, type FDCService, type SystemLookup } from '@sap-ux/adp-tooling';
+import type { ToolsLogger } from '@sap-ux/logger';
+import { getMtaServices, isExternalLoginEnabled, isMtaProject, type SystemLookup } from '@sap-ux/adp-tooling';
 import { validateEmptyString, validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
 import { t } from '../../../utils/i18n';
@@ -110,10 +111,10 @@ export async function validateEnvironment(
  * Validates the project path.
  *
  * @param {string} projectPath - The path to the project.
- * @param {FDCService} fdcService - The FDC service instance.
+ * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<string | boolean>} Returns true if the project path is valid, otherwise returns an error message.
  */
-export async function validateProjectPath(projectPath: string, fdcService: FDCService): Promise<string | boolean> {
+export async function validateProjectPath(projectPath: string, logger: ToolsLogger): Promise<string | boolean> {
     const validationResult = validateEmptyString(projectPath);
     if (typeof validationResult === 'string') {
         return validationResult;
@@ -135,7 +136,7 @@ export async function validateProjectPath(projectPath: string, fdcService: FDCSe
 
     let services: string[];
     try {
-        services = await fdcService.getServices(projectPath);
+        services = await getMtaServices(projectPath, logger);
     } catch (err) {
         services = [];
     }
