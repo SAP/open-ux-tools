@@ -4,7 +4,8 @@ This package includes a [Model Context Protocol](https://modelcontextprotocol.io
 
 The server helps AI models to create or modify SAP Fiori applications like:
 
-- _Create a new fiori app based on the main service of the current project_
+- _Please add a SAP Fiori elements list report app to the CAP project about risk management_
+- _Generate a new CAP project and SAP Fiori app based on my_picture.png_
 - _Add the FCL to the SAP Fiori elements app_
 - _Enable initial load for the fiori app_
 
