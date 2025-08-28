@@ -24,6 +24,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
+        "start": "npx -y supergateway --port 9881 --sessionTimeout 30000 --stdio \"node ./dist/index.js\"",
         "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "files": [
