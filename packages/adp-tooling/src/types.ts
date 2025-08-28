@@ -4,6 +4,8 @@ import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type AdmZip from 'adm-zip';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -801,4 +803,369 @@ export interface InboundChange {
             };
         };
     };
+}
+
+export interface Uaa {
+    clientid: string;
+    clientsecret: string;
+    url: string;
+}
+
+export interface AppParams {
+    appName: string;
+    appVersion: string;
+    appHostId: string;
+}
+
+export interface AppParamsExtended extends AppParams {
+    spaceGuid: string;
+}
+
+export interface CFParameters {
+    org: string;
+    space: string;
+    html5RepoRuntime: string;
+}
+
+export interface Credentials {
+    [key: string]: any;
+    uaa: Uaa;
+    uri: string;
+    endpoints: any;
+}
+
+export interface ServiceKeys {
+    credentials: Credentials[];
+    serviceInstance: ServiceInstance;
+}
+
+export interface HTML5Content {
+    entries: AdmZip.IZipEntry[];
+    serviceInstanceGuid: string;
+    manifest: Manifest;
+}
+
+export interface ServiceInstance {
+    name: string;
+    guid: string;
+}
+
+export interface GetServiceInstanceParams {
+    spaceGuids?: string[];
+    planNames?: string[];
+    names: string[];
+}
+
+export interface BusinessServiceResource {
+    name: string;
+    label: string;
+}
+
+export interface AppParams {
+    appName: string;
+    appVersion: string;
+    appHostId: string;
+}
+
+export interface Resource {
+    name: string;
+    type: string;
+    parameters: any;
+}
+
+export interface Yaml {
+    '_schema-version': string;
+    'ID': string;
+    'version': string;
+    resources?: any[];
+    modules?: MTAModule[];
+}
+
+export interface MTAModule {
+    name: string;
+    parameters: any;
+    path: string;
+    requires: MTARequire[];
+    type: string;
+}
+
+export interface MTARequire {
+    name: string;
+}
+
+export interface ODataTargetSource {
+    dataSourceName: string;
+    uri: string;
+}
+
+export interface CfAdpConfig extends AdpConfig {
+    cfSpace: string;
+    cfOrganization: string;
+    cfApiUrl: string;
+}
+
+/**
+ * Configuration for CF ADP project generation.
+ */
+export interface CfAdpWriterConfig {
+    app: {
+        id: string;
+        title: string;
+        layer: FlexLayer;
+        namespace: string;
+        manifest: Manifest;
+        appType?: ApplicationType;
+        i18nModels?: ResourceModel[];
+        i18nDescription?: string;
+    };
+    baseApp: {
+        appId: string;
+        appName: string;
+        appVersion: string;
+        appHostId: string;
+        serviceName: string;
+        title: string;
+    };
+    cf: {
+        url: string;
+        org: Organization;
+        space: Space;
+        html5RepoRuntimeGuid: string;
+        approuter: AppRouterType;
+        businessService: string;
+        businessSolutionName?: string;
+    };
+    project: {
+        name: string;
+        path: string;
+        folder: string;
+    };
+    ui5: {
+        version: string;
+    };
+    options?: {
+        addStandaloneApprouter?: boolean;
+        addSecurity?: boolean;
+    };
+}
+
+/**
+ * Interface for creating CF configuration from batch objects.
+ */
+export interface CreateCfConfigParams {
+    attributeAnswers: AttributesAnswers;
+    cfServicesAnswers: CfServicesAnswers;
+    cfConfig: CFConfig;
+    layer: FlexLayer;
+    manifest: Manifest;
+    html5RepoRuntimeGuid: string;
+    projectPath: string;
+    addStandaloneApprouter?: boolean;
+    publicVersions: UI5Version;
+}
+
+export const AppRouterType = {
+    MANAGED: 'Managed HTML5 Application Runtime',
+    STANDALONE: 'Standalone HTML5 Application Runtime'
+} as const;
+
+export type AppRouterType = (typeof AppRouterType)[keyof typeof AppRouterType];
+
+/** Old ADP config file types */
+export interface AdpConfig {
+    sourceSystem?: string;
+    componentname: string;
+    appvariant: string;
+    layer: string;
+    isOVPApp: boolean;
+    isFioriElement: boolean;
+    environment: string;
+    ui5Version: string;
+}
+
+export interface Organization {
+    GUID: string;
+    Name: string;
+}
+
+export interface Space {
+    GUID: string;
+    Name: string;
+}
+
+export interface CFConfig {
+    org: Organization;
+    space: Space;
+    token: string;
+    url: string;
+}
+
+export interface ConfigGeneric {
+    [key: string]: any;
+}
+
+export interface Config {
+    AccessToken: string;
+    AuthorizationEndpoint: string;
+    OrganizationFields: Organization;
+    Target: string;
+    SpaceFields: Space;
+}
+
+export interface HttpResponse {
+    statusText: string;
+    status: number;
+    data: string;
+}
+
+export interface CFApp {
+    appId: string;
+    appName: string;
+    appVersion: string;
+    serviceName: string;
+    title: string;
+    appHostId: string;
+    messages?: string[];
+}
+
+/**
+ * CF services (application sources) prompts
+ */
+export enum cfServicesPromptNames {
+    approuter = 'approuter',
+    businessService = 'businessService',
+    businessSolutionName = 'businessSolutionName',
+    baseApp = 'baseApp'
+}
+
+export type CfServicesAnswers = {
+    [cfServicesPromptNames.approuter]?: AppRouterType;
+    [cfServicesPromptNames.businessService]?: string;
+    [cfServicesPromptNames.businessSolutionName]?: string;
+    // Base app object returned by discovery (shape provided by FDC service)
+    [cfServicesPromptNames.baseApp]?: CFApp;
+};
+
+export type CFServicesQuestion = YUIQuestion<CfServicesAnswers>;
+
+export interface ApprouterPromptOptions {
+    hide?: boolean;
+}
+
+export interface BusinessServicePromptOptions {
+    hide?: boolean;
+}
+
+export interface BusinessSolutionNamePromptOptions {
+    hide?: boolean;
+}
+
+export interface BaseAppPromptOptions {
+    hide?: boolean;
+}
+
+export type CfServicesPromptOptions = Partial<{
+    [cfServicesPromptNames.approuter]: ApprouterPromptOptions;
+    [cfServicesPromptNames.businessService]: BusinessServicePromptOptions;
+    [cfServicesPromptNames.businessSolutionName]: BusinessSolutionNamePromptOptions;
+    [cfServicesPromptNames.baseApp]: BaseAppPromptOptions;
+}>;
+
+export interface RequestArguments {
+    url: string;
+    options: {
+        headers: {
+            'Content-Type': string;
+            Authorization?: string;
+        };
+    };
+}
+
+// CF API Response Interfaces
+export interface CFAPIResponse<T> {
+    pagination: CFPagination;
+    resources: T[];
+}
+
+export interface CFPagination {
+    total_results: number;
+    total_pages: number;
+    first: CFPaginationLink;
+    last: CFPaginationLink;
+    next: CFPaginationLink | null;
+    previous: CFPaginationLink | null;
+}
+
+export interface CFPaginationLink {
+    href: string;
+}
+
+export interface CFServiceInstance {
+    guid: string;
+    created_at: string;
+    updated_at: string;
+    name: string;
+    tags: string[];
+    last_operation: CFLastOperation;
+    type: string;
+    maintenance_info: Record<string, unknown>;
+    upgrade_available: boolean;
+    dashboard_url: string | null;
+    relationships: CFServiceInstanceRelationships;
+    metadata: CFMetadata;
+    links: CFServiceInstanceLinks;
+}
+
+export interface CFLastOperation {
+    type: string;
+    state: string;
+    description: string;
+    updated_at: string;
+    created_at: string;
+}
+
+export interface CFServiceInstanceRelationships {
+    space: CFRelationshipData;
+    service_plan: CFRelationshipData;
+}
+
+export interface CFRelationshipData {
+    data: {
+        guid: string;
+    };
+}
+
+export interface CFMetadata {
+    labels: Record<string, unknown>;
+    annotations: Record<string, unknown>;
+}
+
+export interface CFServiceInstanceLinks {
+    self: CFLink;
+    space: CFLink;
+    service_credential_bindings: CFLink;
+    service_route_bindings: CFLink;
+    service_plan: CFLink;
+    parameters: CFLink;
+    shared_spaces: CFLink;
+}
+
+export interface CFLink {
+    href: string;
+}
+
+export interface CFServiceOffering {
+    name: string;
+    tags?: string[];
+    broker_catalog?: {
+        metadata?: {
+            sapservice?: {
+                odataversion?: string;
+                [key: string]: unknown;
+            };
+            [key: string]: unknown;
+        };
+        [key: string]: unknown;
+    };
+    [key: string]: unknown;
 }
