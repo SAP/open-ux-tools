@@ -65,7 +65,7 @@ import { FDCService } from '@sap-ux/adp-tooling';
 import { getTargetEnvPrompt, getProjectPathPrompt } from './questions/target-env';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getTemplatesOverwritePath } from '../utils/templates';
-import { YamlLoader } from '@sap-ux/adp-tooling/src/cf/yaml-loader';
+import { YamlLoader } from '@sap-ux/adp-tooling';
 
 const generatorTitle = 'Adaptation Project';
 
