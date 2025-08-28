@@ -1,5 +1,16 @@
 # @sap-ux/app-config-writer
 
+## 0.6.33
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/axios-extension@1.22.6
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/project-access@1.30.13
+
 ## 0.6.32
 
 ### Patch Changes
