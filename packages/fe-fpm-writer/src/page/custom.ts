@@ -77,13 +77,13 @@ export function getTemplateRoot(ui5Version?: string): string {
  * Handles the creation of a page building block for a custom page.
  *
  * @param {string} basePath - The base path of the UI5 application.
- * @param {CustomPage} data - The custom page configuration.
- * @param data.pageBuildingBlockTitle - Title for the page building block
- * @param data.minUI5Version - Optional minimum required UI5 version
+ * @param {{ pageBuildingBlockTitle: string; minUI5Version?: string }} data - Cconfiguration, including page building block title and minimum UI5 version.
+ * @param data.pageBuildingBlockTitle
  * @param {string} viewPath - The path to the view XML file.
+ * @param data.minUI5Version
  * @param {Editor} fs - The memfs editor instance.
- * @param {Logger} [log] - Optional logger instance for warnings.
- * @returns {Promise<void>} Resolves when the building block is handled.
+ * @param {Logger} [log] - Logger instance.
+ * @returns {Promise<void>} Resolves when the building block is handled or skipped due to version constraints.
  */
 async function handlePageBuildingBlock(
     basePath: string,

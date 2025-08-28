@@ -11,7 +11,6 @@ import {
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath
 } from './common';
-import type { Logger } from '@sap-ux/logger';
 
 const TEST_NAME = 'fpmTemplates';
 if (debug?.enabled) {
