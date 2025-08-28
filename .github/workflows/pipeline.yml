@@ -106,9 +106,10 @@ jobs:
                   fetch-depth: 0
                   token: ${{ secrets.ACCESS_PAT }}
             - name: Setup pnpm
-              uses: pnpm/action-setup@v4
+              uses: pnpm/action-setup@v4.1.0
               with:
-                  run_install: true
+                run_install: |
+                  - args: [--ignore-scripts]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -123,7 +124,7 @@ jobs:
               with:
                   node-version: 20.x
             - name: Install pnpm modules
-              run: pnpm install
+              run: pnpm install --frozen-lockfile
             - name: Apply changesets
               id: changesetVersion
               run: |
@@ -151,9 +152,10 @@ jobs:
             - name: Checkout code repository
               uses: actions/checkout@v4
             - name: Setup pnpm
-              uses: pnpm/action-setup@v4
+              uses: pnpm/action-setup@v4.1.0
               with:
-                  run_install: true
+                run_install: |
+                  - args: [--ignore-scripts]
             - name: Cache pnpm modules
               uses: actions/cache@v4
               env:
@@ -168,7 +170,7 @@ jobs:
               with:
                   node-version: 20.x
             - name: Install pnpm modules
-              run: pnpm install
+              run: pnpm install --frozen-lockfile
             - name: Run build
               run: pnpm run build
             - name: Setup npmrc with npmjs.com token
