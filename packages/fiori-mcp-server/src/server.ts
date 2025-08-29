@@ -11,6 +11,8 @@ import type {
     ListFioriAppsInput,
     ListFunctionalitiesInput
 } from './types';
+import { TelemetryHelper } from './telemetry';
+import { TelemetryData } from '@sap-ux/fiori-generator-shared';
 
 type ToolArgs =
     | ListFioriAppsInput
@@ -44,6 +46,7 @@ export class FioriFunctionalityServer {
 
         this.setupToolHandlers();
         this.setupErrorHandling();
+        this.setupTelemetry();
     }
 
     /**
@@ -56,6 +59,13 @@ export class FioriFunctionalityServer {
             await this.server.close();
             process.exit(0);
         });
+    }
+
+    /**
+     * Sets up telemetry.
+     */
+    private async setupTelemetry(): Promise<void> {
+        await TelemetryHelper.initTelemetrySettings();
     }
 
     /**
@@ -74,24 +84,37 @@ export class FioriFunctionalityServer {
 
             try {
                 let result;
+                TelemetryHelper.markToolStartTime();
+
                 switch (name) {
                     case 'list-fiori-apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
-                        return this.convertResultToCallToolResult(result);
+                        break;
                     case 'list-functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
-                        return this.convertResultToCallToolResult(result);
+                        break;
                     case 'get-functionality-details':
                         result = await getFunctionalityDetails(args as GetFunctionalityDetailsInput);
-                        return this.convertResultToCallToolResult(result);
+                        break;
                     case 'execute-functionality':
                         result = await executeFunctionality(args as ExecuteFunctionalitiesInput);
-                        return this.convertResultToCallToolResult(result);
+                        break;
                     default:
                         throw new Error(
                             `Unknown tool: ${name}. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.`
                         );
                 }
+                const telemetryProperties: TelemetryData = {
+                    tool: name,
+                    functionalityId: (args as any)?.functionalityId
+                };
+                TelemetryHelper.sendTelemetry(
+                    TelemetryHelper.getTelemetryName(),
+                    telemetryProperties,
+                    (args as any)?.appPath || undefined
+                );
+
+                return this.convertResultToCallToolResult(result);
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
                 return {

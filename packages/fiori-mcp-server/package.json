@@ -45,6 +45,7 @@
         "@sap-ux/text-document-utils": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
+        "@sap-ux/fiori-generator-shared": "workspace:*",
         "@types/json-schema": "7.0.5",
         "@types/mem-fs": "1.1.2"
     },
@@ -53,8 +54,11 @@
         "@sap/ux-specification": "1.136.4",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
+        "@sap-ux/telemetry": "workspace:*",
+        "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/annotation-converter": "0.10.3",
-        "i18next": "25.3.0"
+        "i18next": "25.3.0",
+        "os-name": "4.0.1"
     },
     "engines": {
         "node": ">=20.x"
