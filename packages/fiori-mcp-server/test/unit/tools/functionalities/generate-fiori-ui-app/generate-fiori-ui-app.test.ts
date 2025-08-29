@@ -71,7 +71,7 @@ describe('executeFunctionality', () => {
         });
         expect(result).toEqual(
             expect.objectContaining({
-                appPath: 'app1/app/app1',
+                appPath: join('app1/app/app1'),
                 changes: [],
                 functionalityId: 'generate-fiori-ui-app',
                 message: `Generation completed successfully: ${join('app1/app/app1')}`,
