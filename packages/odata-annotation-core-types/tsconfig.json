@@ -3,7 +3,7 @@
     "compilerOptions": {
         "outDir": "dist",
         "rootDir": "./src",
-        "lib": ["ES2022", "ESNext.BigInt"],
+        "lib": ["ES2023", "ESNext.BigInt"],
         "preserveConstEnums": true
     },
     "include": ["src"],
