@@ -205,7 +205,7 @@ export async function createService(
         if (securityFilePath) {
             let xsSecurity = null;
             try {
-                const filePath = path.resolve(__dirname, '../../templates/cf/xs-security.json');
+                const filePath = path.resolve(__dirname, '../../../templates/cf/xs-security.json');
                 const xsContent = fs.readFileSync(filePath, 'utf-8');
                 xsSecurity = JSON.parse(xsContent);
                 xsSecurity.xsappname = xsSecurityProjectName;
