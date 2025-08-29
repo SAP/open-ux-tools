@@ -73,8 +73,8 @@ describe('questions', () => {
         connectionValidatorMock.validateAuth = validateAuthMock;
         connectionValidatorMock.serviceProvider = serviceProviderMock;
         validateServiceInfoMock = true;
-        // Feature toggle enabled by default for migration period
-        (isFeatureEnabled as jest.Mock).mockReturnValue(true);
+        // Feature toggle disabled by default - service key shown
+        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('should return Abap on BTP questions', () => {
@@ -182,14 +182,14 @@ describe('questions', () => {
     });
     test.each([
         {
-            description: 'should show the service key question when feature toggle is enabled',
-            featureEnabled: true,
+            description: 'should show the service key question when feature toggle is disabled (default)',
+            featureEnabled: false,
             expectServiceKeyChoice: true,
             expectServiceKeyPrompt: true
         },
         {
-            description: 'should hide the service key question when feature toggle is disabled',
-            featureEnabled: false,
+            description: 'should hide the service key question when feature toggle is enabled',
+            featureEnabled: true,
             expectServiceKeyChoice: false,
             expectServiceKeyPrompt: false
         }

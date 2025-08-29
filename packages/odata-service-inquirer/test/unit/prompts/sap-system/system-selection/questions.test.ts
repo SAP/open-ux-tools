@@ -172,7 +172,7 @@ describe('Test system selection prompts', () => {
         isAuthRequiredMock.mockResolvedValue(false);
         validateServiceInfoResultMock = true;
         validateUrlResultMock = true;
-        (isFeatureEnabled as jest.Mock).mockReturnValue(true);
+        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('should return system selection prompts and choices based on development environment, BAS or non-BAS', async () => {

@@ -44,7 +44,7 @@ const abapOnBtpPromptNames = {
     'cloudFoundryAbapSystem': 'cloudFoundryAbapSystem'
 } as const;
 
-const SERVICE_KEY_FEATURE_TOGGLE = 'sap.ux.appGenerator.btpServiceKeyAuth';
+const SERVICE_KEY_FEATURE_TOGGLE = 'sap.ux.appGenerator.disableBtpServiceKeyAuth';
 
 export type AbapOnBTPType = 'cloudFoundry' | 'serviceKey' | 'reentranceTicket';
 
@@ -74,8 +74,8 @@ export function getAbapOnBTPSystemQuestions(
         name: abapOnBtpPromptNames.abapOnBtpAuthType,
         choices: [
             { name: t('prompts.abapOnBTPType.choiceCloudFoundry'), value: 'cloudFoundry' as AbapOnBTPType },
-            // Feature toggle the service key option - until migration is complete
-            ...(isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE)
+            // Feature toggle the service key option - enabled by default, can be disabled via VS Code setting
+            ...(!isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE)
                 ? [{ name: t('prompts.abapOnBTPType.choiceServiceKey'), value: 'serviceKey' as AbapOnBTPType }]
                 : []),
             { name: t('prompts.abapOnBTPType.choiceReentranceTicket'), value: 'reentranceTicket' as AbapOnBTPType }
@@ -109,8 +109,8 @@ export function getAbapOnBTPSystemQuestions(
         )[0]
     );
 
-    // Service Key file prompt - only add if feature toggle is enabled
-    if (isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE)) {
+    // Service Key file prompt - enabled by default
+    if (!isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE)) {
         questions.push(
             withCondition(
                 [getServiceKeyPrompt(connectValidator, cachedConnectedSystem)],

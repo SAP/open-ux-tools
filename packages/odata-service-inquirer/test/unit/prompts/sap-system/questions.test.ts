@@ -17,7 +17,7 @@ describe('questions', () => {
     });
 
     beforeEach(() => {
-        (isFeatureEnabled as jest.Mock).mockReturnValue(true);
+        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('should return expected questions', () => {

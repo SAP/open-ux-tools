@@ -46,7 +46,7 @@ describe('getQuestions', () => {
     });
 
     beforeEach(() => {
-        (isFeatureEnabled as jest.Mock).mockReturnValue(true);
+        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     afterEach(() => {

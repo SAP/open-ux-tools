@@ -43,7 +43,7 @@ jest.mock('@sap-ux/store', () => ({
 describe('API tests', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
-        (isFeatureEnabled as jest.Mock).mockReturnValue(true);
+        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('getPrompts', async () => {
