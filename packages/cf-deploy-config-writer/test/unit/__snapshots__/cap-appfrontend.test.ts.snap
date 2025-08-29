@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 app to CAP App Frontend Project 1`] = `
 "{

@@ -55,9 +55,11 @@ describe('Test matchers', () => {
     it('should fail with contain all files in', () => {
         const testFolder = join(__dirname, '../__fixtures__/test-folders/test-folder-main');
         const receivedFolder = join(__dirname, '../__fixtures__/test-folders/test-folder-extra-files');
+        // only expects that the files are named the same, not their contents
+        // http://gliviu.github.io/dc-api/interfaces/Options.html
         expect(() => {
             expect(testFolder).toContainAllFilesIn(receivedFolder);
-        }).toThrow();
+        }).toThrow('Missing in actual folder');
     });
 
     it('should fail with invalid regex', () => {
