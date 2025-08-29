@@ -2,9 +2,9 @@
 
 This package includes a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for integration with AI coding assistants.
 
-The server helps AI models create or modify SAP Fiori applications based on commands, such as:
+The server helps AI models create or modify SAP Fiori applications based on prompts, such as:
 
-- _Please add a SAP Fiori elements list report app to the CAP project about risk management_
+- _Please add a SAP Fiori elements list report app to my CAP project_
 - _Generate a new CAP project and SAP Fiori app based on my_picture.png_
 - _Add the FCL to the SAP Fiori elements app_
 - _Enable initial load for the fiori app_
