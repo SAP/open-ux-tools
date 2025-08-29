@@ -36,38 +36,33 @@ export async function validateApp(
 }
 
 /**
- * App Validation Service - Handles validation orchestration.
+ * Validate multiple apps.
+ *
+ * @param {CFApp[]} apps - The apps to validate.
+ * @param {Credentials[]} credentials - The credentials for validation.
+ * @param {CFConfig} cfConfig - The CF configuration.
+ * @param {AppContentService} appContent - The app content service.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<CFApp[]>} The validated apps with messages.
  */
-export class AppValidationService {
-    /**
-     * Constructor.
-     *
-     * @param {ToolsLogger} logger - The logger.
-     * @param {AppContentService} appContent - The app content service.
-     */
-    constructor(private logger: ToolsLogger, private appContent: AppContentService) {}
+export async function getValidatedApps(
+    apps: CFApp[],
+    credentials: Credentials[],
+    cfConfig: CFConfig,
+    appContent: AppContentService,
+    logger: ToolsLogger
+): Promise<CFApp[]> {
+    const validatedApps: CFApp[] = [];
 
-    /**
-     * Validate multiple apps.
-     *
-     * @param {CFApp[]} apps - The apps to validate
-     * @param {Credentials[]} credentials - The credentials for validation
-     * @param {CFConfig} cfConfig - The CF configuration
-     * @returns {Promise<CFApp[]>} The validated apps with messages
-     */
-    public async getValidatedApps(apps: CFApp[], credentials: Credentials[], cfConfig: CFConfig): Promise<CFApp[]> {
-        const validatedApps: CFApp[] = [];
+    for (const app of apps) {
+        if (!app.messages?.length) {
+            const { entries, manifest } = await appContent.getAppContent(app, cfConfig);
 
-        for (const app of apps) {
-            if (!app.messages?.length) {
-                const { entries, manifest } = await this.appContent.getAppContent(app, cfConfig);
-
-                const messages = await validateApp(manifest, entries, credentials, this.logger);
-                app.messages = messages;
-            }
-            validatedApps.push(app);
+            const messages = await validateApp(manifest, entries, credentials, logger);
+            app.messages = messages;
         }
-
-        return validatedApps;
+        validatedApps.push(app);
     }
+
+    return validatedApps;
 }

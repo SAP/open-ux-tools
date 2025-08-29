@@ -3,7 +3,8 @@ import type {
     CFServicesQuestion,
     CfServicesPromptOptions,
     AppRouterType,
-    CfConfigService
+    AppContentService,
+    CFConfig
 } from '@sap-ux/adp-tooling';
 import {
     cfServicesPromptNames,
@@ -11,12 +12,13 @@ import {
     getApprouterType,
     hasApprouter,
     isLoggedInCf,
-    getMtaServices
+    getMtaServices,
+    getBaseApps
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import { getBusinessServiceKeys, type CFApp, type FDCService, type ServiceKeys } from '@sap-ux/adp-tooling';
+import { getBusinessServiceKeys, type CFApp, type ServiceKeys } from '@sap-ux/adp-tooling';
 
 import { t } from '../../utils/i18n';
 import { validateBusinessSolutionName } from './helper/validators';
@@ -63,18 +65,16 @@ export class CFServicesPrompter {
     /**
      * Constructor for CFServicesPrompter.
      *
-     * @param {FDCService} fdcService - FDC service instance.
-     * @param {CfConfigService} cfConfigService - CF config service instance.
-     * @param {boolean} isCfLoggedIn - Whether the user is logged in to Cloud Foundry.
-     * @param {ToolsLogger} logger - Logger instance.
      * @param {boolean} [isInternalUsage] - Internal usage flag.
+     * @param {boolean} isCfLoggedIn - Whether the user is logged in to Cloud Foundry.
+     * @param {AppContentService} appContentService - App content service instance.
+     * @param {ToolsLogger} logger - Logger instance.
      */
     constructor(
-        private readonly fdcService: FDCService,
-        private readonly cfConfigService: CfConfigService,
+        private readonly isInternalUsage: boolean = false,
         isCfLoggedIn: boolean,
-        private readonly logger: ToolsLogger,
-        private readonly isInternalUsage: boolean = false
+        private readonly appContentService: AppContentService,
+        private readonly logger: ToolsLogger
     ) {
         this.isCfLoggedIn = isCfLoggedIn;
     }
@@ -83,11 +83,13 @@ export class CFServicesPrompter {
      * Builds the CF services prompts, keyed and hide-filtered like attributes.ts.
      *
      * @param {string} mtaProjectPath - MTA project path
+     * @param {CFConfig} cfConfig - CF config service instance.
      * @param {CfServicesPromptOptions} [promptOptions] - Optional per-prompt visibility controls
      * @returns {Promise<CFServicesQuestion[]>} CF services questions
      */
     public async getPrompts(
         mtaProjectPath: string,
+        cfConfig: CFConfig,
         promptOptions?: CfServicesPromptOptions
     ): Promise<CFServicesQuestion[]> {
         if (this.isCfLoggedIn) {
@@ -95,10 +97,10 @@ export class CFServicesPrompter {
         }
 
         const keyedPrompts: Record<cfServicesPromptNames, CFServicesQuestion> = {
-            [cfServicesPromptNames.approuter]: this.getAppRouterPrompt(mtaProjectPath),
-            [cfServicesPromptNames.businessService]: this.getBusinessServicesPrompt(),
+            [cfServicesPromptNames.approuter]: this.getAppRouterPrompt(mtaProjectPath, cfConfig),
+            [cfServicesPromptNames.businessService]: this.getBusinessServicesPrompt(cfConfig),
             [cfServicesPromptNames.businessSolutionName]: this.getBusinessSolutionNamePrompt(),
-            [cfServicesPromptNames.baseApp]: this.getBaseAppPrompt()
+            [cfServicesPromptNames.baseApp]: this.getBaseAppPrompt(cfConfig)
         };
 
         const questions = Object.entries(keyedPrompts)
@@ -142,10 +144,10 @@ export class CFServicesPrompter {
      * Prompt for approuter.
      *
      * @param {string} mtaProjectPath - MTA project path.
+     * @param {CFConfig} cfConfig - CF config service instance.
      * @returns {CFServicesQuestion} Prompt for approuter.
      */
-    private getAppRouterPrompt(mtaProjectPath: string): CFServicesQuestion {
-        const cfConfig = this.cfConfigService.getConfig();
+    private getAppRouterPrompt(mtaProjectPath: string, cfConfig: CFConfig): CFServicesQuestion {
         return {
             type: 'list',
             name: cfServicesPromptNames.approuter,
@@ -193,9 +195,10 @@ export class CFServicesPrompter {
     /**
      * Prompt for base application.
      *
+     * @param {CFConfig} cfConfig - CF config service instance.
      * @returns {CFServicesQuestion} Prompt for base application.
      */
-    private getBaseAppPrompt(): CFServicesQuestion {
+    private getBaseAppPrompt(cfConfig: CFConfig): CFServicesQuestion {
         return {
             type: 'list',
             name: cfServicesPromptNames.baseApp,
@@ -205,16 +208,20 @@ export class CFServicesPrompter {
                     this.baseAppOnChoiceError = null;
                     if (this.cachedServiceName != answers.businessService) {
                         this.cachedServiceName = answers.businessService;
-                        const config = this.cfConfigService.getConfig();
                         this.businessServiceKeys = await getBusinessServiceKeys(
                             answers.businessService ?? '',
-                            config,
+                            cfConfig,
                             this.logger
                         );
                         if (!this.businessServiceKeys) {
                             return [];
                         }
-                        this.apps = await this.fdcService.getBaseApps(this.businessServiceKeys.credentials);
+                        this.apps = await getBaseApps(
+                            this.businessServiceKeys.credentials,
+                            cfConfig,
+                            this.logger,
+                            this.appContentService
+                        );
                         this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
                     }
                     return getCFAppChoices(this.apps);
@@ -246,9 +253,10 @@ export class CFServicesPrompter {
     /**
      * Prompt for business services.
      *
+     * @param {CFConfig} cfConfig - CF config service instance.
      * @returns {CFServicesQuestion} Prompt for business services.
      */
-    private getBusinessServicesPrompt(): CFServicesQuestion {
+    private getBusinessServicesPrompt(cfConfig: CFConfig): CFServicesQuestion {
         return {
             type: 'list',
             name: cfServicesPromptNames.businessService,
@@ -265,8 +273,7 @@ export class CFServicesPrompter {
                     return t('error.businessServiceHasToBeSelected');
                 }
 
-                const config = this.cfConfigService.getConfig();
-                this.businessServiceKeys = await getBusinessServiceKeys(value, config, this.logger);
+                this.businessServiceKeys = await getBusinessServiceKeys(value, cfConfig, this.logger);
                 if (this.businessServiceKeys === null) {
                     return t('error.businessServiceDoesNotExist');
                 }
@@ -284,29 +291,29 @@ export class CFServicesPrompter {
 
 /**
  * @param {object} param0 - Configuration object containing FDC service, internal usage flag, MTA project path, CF login status, and logger.
- * @param {FDCService} param0.fdcService - FDC service instance.
- * @param {CfConfigService} param0.cfConfigService - CF config service instance.
+ * @param {CFConfig} param0.cfConfig - CF config service instance.
  * @param {boolean} [param0.isInternalUsage] - Internal usage flag.
  * @param {string} param0.mtaProjectPath - MTA project path.
  * @param {boolean} param0.isCfLoggedIn - CF login status.
  * @param {ToolsLogger} param0.logger - Logger instance.
+ * @param {AppContentService} param0.appContentService - App content service instance.
  * @returns {Promise<CFServicesQuestion[]>} CF services questions.
  */
 export async function getPrompts({
-    fdcService,
-    cfConfigService,
+    cfConfig,
     isInternalUsage,
     mtaProjectPath,
     isCfLoggedIn,
+    appContentService,
     logger
 }: {
-    fdcService: FDCService;
-    cfConfigService: CfConfigService;
+    cfConfig: CFConfig;
     isInternalUsage?: boolean;
     mtaProjectPath: string;
     isCfLoggedIn: boolean;
+    appContentService: AppContentService;
     logger: ToolsLogger;
 }): Promise<CFServicesQuestion[]> {
-    const prompter = new CFServicesPrompter(fdcService, cfConfigService, isCfLoggedIn, logger, isInternalUsage);
-    return prompter.getPrompts(mtaProjectPath);
+    const prompter = new CFServicesPrompter(isInternalUsage, isCfLoggedIn, appContentService, logger);
+    return prompter.getPrompts(mtaProjectPath, cfConfig);
 }

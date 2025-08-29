@@ -25,19 +25,10 @@ export class AppContentService {
     constructor(private logger: ToolsLogger) {}
 
     /**
-     * Get all stored manifests.
-     *
-     * @returns {Manifest[]} All manifests
-     */
-    public getManifests(): Manifest[] {
-        return this.manifests;
-    }
-
-    /**
      * Download app content and extract manifest.
      *
-     * @param {AppParams} appParams - The app parameters
-     * @param {CFConfig} cfConfig - The CF configuration
+     * @param {AppParams} appParams - The app parameters.
+     * @param {CFConfig} cfConfig - The CF configuration.
      * @returns {Promise<{entries: any[], serviceInstanceGuid: string, manifest: Manifest}>} The downloaded content
      */
     public async getAppContent(
@@ -64,8 +55,8 @@ export class AppContentService {
     /**
      * Get the manifest by base app id.
      *
-     * @param {string} appId - The app id
-     * @returns {Manifest | undefined} The manifest
+     * @param {string} appId - The app id.
+     * @returns {Manifest | undefined} The manifest.
      */
     public getManifestByBaseAppId(appId: string): Manifest | undefined {
         return this.manifests.find((manifest) => manifest['sap.app'].id === appId);

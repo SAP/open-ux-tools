@@ -21,9 +21,12 @@ import {
     generateCf,
     createCfConfig,
     isCfInstalled,
-    isLoggedInCf
+    isLoggedInCf,
+    AppContentService,
+    YamlUtils,
+    loadCfConfig
 } from '@sap-ux/adp-tooling';
-import { type CFConfig, CfConfigService, type CfServicesAnswers } from '@sap-ux/adp-tooling';
+import { type CFConfig, type CfServicesAnswers } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
@@ -61,7 +64,6 @@ import {
     updateCfWizardSteps
 } from '../utils/steps';
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
-import { FDCService } from '@sap-ux/adp-tooling';
 import { getTargetEnvPrompt, getProjectPathPrompt } from './questions/target-env';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getTemplatesOverwritePath } from '../utils/templates';
@@ -142,18 +144,51 @@ export default class extends Generator {
      * Base application inbounds, if the base application is an FLP app.
      */
     private baseAppInbounds?: ManifestNamespace.Inbound;
-    private readonly fdcService: FDCService;
-    private readonly isMtaYamlFound: boolean;
+    /**
+     * Target environment.
+     */
     private targetEnv: TargetEnv;
+    /**
+     * Indicates if the current environment is a CF environment.
+     */
     private isCfEnv = false;
+    /**
+     * Indicates if the user is logged in to CF.
+     */
     private isCfLoggedIn = false;
+    /**
+     * CF config.
+     */
     private cfConfig: CFConfig;
+    /**
+     * Indicates if the current project is an MTA project.
+     */
+    private readonly isMtaYamlFound: boolean;
+    /**
+     * Project location.
+     */
     private projectLocation: string;
+    /**
+     * CF project destination path.
+     */
     private cfProjectDestinationPath: string;
+    /**
+     * CF services answers.
+     */
     private cfServicesAnswers: CfServicesAnswers;
+    /**
+     * Indicates if the extension is installed.
+     */
     private isExtensionInstalled: boolean;
+    /**
+     * Indicates if CF is installed.
+     */
     private cfInstalled: boolean;
-    private cfConfigService: CfConfigService;
+    /**
+     * App content service.
+     */
+    private appContentService: AppContentService;
+
     /**
      * Creates an instance of the generator.
      *
@@ -165,15 +200,14 @@ export default class extends Generator {
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.shouldInstallDeps = opts.shouldInstallDeps ?? true;
         this.toolsLogger = new ToolsLogger();
+        this.vscode = opts.vscode;
         this._setupLogging();
+        this.options = opts;
 
-        this.cfConfigService = new CfConfigService(this.logger);
-        this.fdcService = new FDCService(this.logger, this.cfConfigService);
+        this.appContentService = new AppContentService(this.logger);
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
         // TODO: Remove this once the PR is ready.
         this.isExtensionInstalled = true; // isExtensionInstalled(opts.vscode, 'SAP.adp-ve-bas-ext');
-        this.vscode = opts.vscode;
-        this.options = opts;
 
         const jsonInputString = getFirstArgAsString(args);
         this.jsonInput = parseJsonInput(jsonInputString, this.logger);
@@ -203,8 +237,9 @@ export default class extends Generator {
         this.systemLookup = new SystemLookup(this.logger);
 
         this.cfInstalled = await isCfInstalled();
-        const cfConfig = this.cfConfigService.getConfig();
-        this.isCfLoggedIn = await isLoggedInCf(cfConfig, this.logger);
+        this.cfConfig = loadCfConfig(this.logger);
+        YamlUtils.spaceGuid = this.cfConfig.space.GUID;
+        this.isCfLoggedIn = await isLoggedInCf(this.cfConfig, this.logger);
         this.logger.info(`isCfInstalled: ${this.cfInstalled}`);
 
         if (!this.jsonInput) {
@@ -443,7 +478,7 @@ export default class extends Generator {
      */
     private async _promptForTargetEnvironment(): Promise<void> {
         const targetEnvAnswers = await this.prompt<TargetEnvAnswers>([
-            getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCfLoggedIn, this.cfConfigService, this.vscode)
+            getTargetEnvPrompt(this.appWizard, this.cfInstalled, this.isCfLoggedIn, this.cfConfig, this.vscode)
         ]);
 
         this.targetEnv = targetEnvAnswers.targetEnv;
@@ -452,7 +487,6 @@ export default class extends Generator {
 
         updateCfWizardSteps(this.isCfEnv, this.prompts);
 
-        this.cfConfig = this.cfConfigService.getConfig();
         this.logger.log(`Project organization information: ${JSON.stringify(this.cfConfig.org, null, 2)}`);
         this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
         this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
@@ -490,11 +524,11 @@ export default class extends Generator {
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
         const cfServicesQuestions = await getCFServicesPrompts({
-            isCfLoggedIn: this.isCfLoggedIn,
-            fdcService: this.fdcService,
-            cfConfigService: this.cfConfigService,
-            mtaProjectPath: this.cfProjectDestinationPath,
+            cfConfig: this.cfConfig,
             isInternalUsage: isInternalFeaturesSettingEnabled(),
+            mtaProjectPath: this.cfProjectDestinationPath,
+            isCfLoggedIn: this.isCfLoggedIn,
+            appContentService: this.appContentService,
             logger: this.logger
         });
         this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(cfServicesQuestions);
@@ -530,13 +564,13 @@ export default class extends Generator {
         const projectPath = this.isMtaYamlFound ? process.cwd() : this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
 
-        const manifest = this.fdcService.getManifestByBaseAppId(this.cfServicesAnswers.baseApp?.appId ?? '');
+        const manifest = this.appContentService.getManifestByBaseAppId(this.cfServicesAnswers.baseApp?.appId ?? '');
 
         if (!manifest) {
             throw new Error('Manifest not found for base app.');
         }
 
-        const html5RepoRuntimeGuid = this.fdcService.getHtml5RepoRuntimeGuid();
+        const html5RepoRuntimeGuid = this.appContentService.getHtml5RepoRuntimeGuid();
         const cfConfig = createCfConfig({
             attributeAnswers: this.attributeAnswers,
             cfServicesAnswers: this.cfServicesAnswers,

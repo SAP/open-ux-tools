@@ -1,5 +1,4 @@
 export * from './project';
-export * from './fdc';
 export * from './app';
 export * from './core';
 export * from './services';
