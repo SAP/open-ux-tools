@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-app-index-cds",
+  "title": "index",
+  "category": "samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/app/index.cds",
+  "lastModified": "2025-08-29T09:58:36.431Z",
+  "tags": [
+    "samples",
+    "cds",
+    "index.cds"
+  ],
+  "headers": [],
+  "content": "# index.cds\n\n```cds\nusing from './annotations';\n\nusing from './incidents/annotations';\n```",
+  "excerpt": "index.cds",
+  "wordCount": 10,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

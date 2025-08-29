@@ -1,0 +1,21 @@
+{
+  "id": "ui5-api-api-sap-md",
+  "title": "sap",
+  "category": "api-reference",
+  "path": "api/sap.md",
+  "lastModified": "2025-08-29T09:58:36.662Z",
+  "tags": [
+    "api-reference",
+    "md",
+    "sap.md"
+  ],
+  "headers": [
+    "sap"
+  ],
+  "content": "# sap\n\n**Type:** namespace\n\n",
+  "excerpt": "sap Type: namespace",
+  "wordCount": 5,
+  "version": "1.0.0",
+  "source": "ui5-api",
+  "sourceType": "json-api"
+}

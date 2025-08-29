@@ -1,0 +1,19 @@
+{
+  "id": "fiori-showcase-app-featureshowcasenavigationtarget-annotations-cds",
+  "title": "annotations",
+  "category": "features",
+  "path": "app/featureShowcaseNavigationTarget/annotations.cds",
+  "lastModified": "2025-08-29T09:58:06.644Z",
+  "tags": [
+    "features",
+    "cds",
+    "annotations.cds"
+  ],
+  "headers": [],
+  "content": "# annotations.cds\n\n```cds\nusing service1 as service from '../../srv/service';\nannotate service.ChildEntities2 with @(\n    UI.LineItem : [\n        {\n            $Type : 'UI.DataField',\n            Value : stringProperty,\n        },\n        {\n            $Type : 'UI.DataField',\n            Value : integerProperty,\n        },\n        {\n            $Type : 'UI.DataField',\n            Value : decimalProperty,\n        },\n    ],\n    UI.SelectionFields : [\n        stringProperty,\n        integerProperty,\n        decimalProperty  \n    ]\n);\n\n```",
+  "excerpt": "annotations.cds",
+  "wordCount": 50,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

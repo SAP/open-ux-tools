@@ -1,0 +1,19 @@
+{
+  "id": "fiori-showcase-app-featureshowcase-webapp-ext-customactions-js",
+  "title": "CustomActions",
+  "category": "features",
+  "path": "app/featureShowcase/webapp/ext/CustomActions.js",
+  "lastModified": "2025-08-29T09:58:06.643Z",
+  "tags": [
+    "features",
+    "js",
+    "CustomActions.js"
+  ],
+  "headers": [],
+  "content": "# CustomActions.js\n\n```javascript\nsap.ui.define([\n\t\"sap/m/MessageBox\",\n\t\"sap/ui/core/library\"\n], function(MessageBox, coreLibrary) {\n    \"use strict\";\n    //Search-Term: CustomActions\n    return {\n        messageBox: function() {\n            MessageBox.alert(\"Button pressed\");\n        },\n        enabled : function() {\n            return true;\n        },\n        enabledForSingleSelect: function(oBindingContext, aSelectedContexts) {\n            if (aSelectedContexts && aSelectedContexts.length === 1) {\n               return true;\n            }\n            return false;\n        }\n    };\n});\n```",
+  "excerpt": "CustomActions.js",
+  "wordCount": 49,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

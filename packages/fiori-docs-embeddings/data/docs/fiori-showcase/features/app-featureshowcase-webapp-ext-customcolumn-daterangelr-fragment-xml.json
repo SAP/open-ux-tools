@@ -1,0 +1,20 @@
+{
+  "id": "fiori-showcase-app-featureshowcase-webapp-ext-customcolumn-daterangelr-fragment-xml",
+  "title": "CustomColumn DateRangeLR.fragment",
+  "category": "features",
+  "path": "app/featureShowcase/webapp/ext/CustomColumn-DateRangeLR.fragment.xml",
+  "lastModified": "2025-08-29T09:58:06.643Z",
+  "tags": [
+    "features",
+    "xml",
+    "CustomColumn",
+    "DateRangeLR.fragment.xml"
+  ],
+  "headers": [],
+  "content": "# CustomColumn-DateRangeLR.fragment.xml\n\n```xml\n<!-- #CustomColumn -->\n<core:FragmentDefinition xmlns:core=\"sap.ui.core\" xmlns=\"sap.m\">\n        <Label text=\"{validFrom} - {validTo}\"/>\n</core:FragmentDefinition>\n```",
+  "excerpt": "CustomColumn-DateRangeLR.fragment.xml",
+  "wordCount": 15,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

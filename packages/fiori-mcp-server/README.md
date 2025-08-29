@@ -71,6 +71,10 @@ The following rules help guide the LLM to use the server correctly:
 
 ## [Available Tools](#available-tools)
 
+#### `doc_search`
+Searches Fiori Elements, Annotations, SAPUI5, Fiori tools documentation for the given query.
+
+
 #### `list-fiori-apps`
 Scans a specified directory to find existing SAP Fiori applications that can be modified.
 
