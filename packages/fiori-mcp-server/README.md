@@ -9,7 +9,7 @@ The server helps AI models create or modify SAP Fiori applications based on comm
 - _Add the FCL to the SAP Fiori elements app_
 - _Enable initial load for the fiori app_
 
-For the experience we recommend using this server alongside [@cap-js/mcp-server](https://www.npmjs.com/package/@cap-js/mcp-server) and [@ui5/mcp-server](https://www.npmjs.com/package/@ui5/mcp-server).
+For the best experience we recommend using this server alongside [@cap-js/mcp-server](https://www.npmjs.com/package/@cap-js/mcp-server) and [@ui5/mcp-server](https://www.npmjs.com/package/@ui5/mcp-server).
 
 > ⚠️ Caution
 >
