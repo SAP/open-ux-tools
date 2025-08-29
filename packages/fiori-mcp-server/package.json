@@ -3,7 +3,13 @@
     "description": "SAP Fiori - Model Context Protocol (MCP) server",
     "version": "0.0.0",
     "private": true,
-    "keywords": ["SAP Fiori tools", "SAP Fiori elements", "SAP Fiori freestyle", "MCP", "AI"],
+    "keywords": [
+        "SAP Fiori tools",
+        "SAP Fiori elements",
+        "SAP Fiori freestyle",
+        "MCP",
+        "AI"
+    ],
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -32,7 +38,7 @@
         "!dist/**/*.map"
     ],
     "bin": {
-      "fiori-mcp": "./dist/index.js"
+        "fiori-mcp": "./dist/index.js"
     },
     "devDependencies": {
         "@sap-ux/i18n": "workspace:*",
