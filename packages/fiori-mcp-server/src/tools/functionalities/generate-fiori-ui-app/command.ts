@@ -4,6 +4,7 @@ import { exec as execAsync } from 'child_process';
 import { dirname, join } from 'path';
 import type { ExecuteFunctionalitiesInput, ExecuteFunctionalityOutput } from '../../../types';
 import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
+import { type AppConfig } from '@sap-ux/fiori-generator-shared';
 const exec = promisify(execAsync);
 
 /**
@@ -13,27 +14,46 @@ const exec = promisify(execAsync);
  * @returns Application generation execution output.
  */
 export async function command(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
-    const { appGenConfig = {} } = params.parameters;
-    let { projectPath = '' } = params.parameters;
-    if (!projectPath) {
-        projectPath = params.appPath;
+    // Extract and validate generatorConfig. params.parameters.parameters ?? params.parameters differences in calling client??
+    const generatorConfig: AppConfig = (params.parameters.parameters ?? params.parameters) as any as AppConfig;
+
+    if (!generatorConfig) {
+        throw new Error('Invalid generatorConfig. Please provide a valid configuration object.');
     }
 
-    console.log('Starting Fiori UI generation...');
-    console.log('Project path is:' + projectPath);
-
+    const projectPath = generatorConfig.project?.targetFolder ?? params.appPath;
     if (!projectPath || typeof projectPath !== 'string') {
         throw new Error('Please provide a valid path to the CAP project folder.');
     }
-    if (!appGenConfig || typeof appGenConfig !== 'object') {
-        throw new Error('Invalid appGenConfig. Please provide a valid configuration object.');
+    if (generatorConfig) {
+        // validate that all required fields are present in type AppConfig
+        if (
+            generatorConfig.version &&
+            generatorConfig.floorplan &&
+            generatorConfig.project?.name &&
+            generatorConfig.project?.targetFolder &&
+            generatorConfig.service?.capService?.serviceName &&
+            generatorConfig.service?.servicePath &&
+            generatorConfig.telemetryData?.generationSourceName &&
+            generatorConfig.telemetryData?.generationSourceVersion
+        ) {
+            // all required fields are present
+        } else {
+            throw new Error(
+                `Missing required fields in generatorConfig. Please provide all required fields. generatorConfig is ${JSON.stringify(
+                    generatorConfig,
+                    null,
+                    4
+                )}`
+            );
+        }
+    } else {
+        throw new Error('Invalid generatorConfig. Please provide a valid configuration object.');
     }
-    const project = 'project' in appGenConfig && typeof appGenConfig.project === 'object' ? appGenConfig.project : {};
-    const appName = project && 'name' in project && typeof project.name === 'string' ? project.name : 'default';
-    const appPath = join(projectPath, 'app', appName);
+    const appName = generatorConfig.project.name ?? 'default';
+    const appPath = join(projectPath as string, 'app', String(appName));
     try {
-        const targetDir = projectPath;
-        const generatorConfig = appGenConfig;
+        const targetDir = projectPath as string;
 
         const configPath = `.fiori-ai/${appName}-generator-config.json`;
         const outputPath = join(targetDir, configPath);

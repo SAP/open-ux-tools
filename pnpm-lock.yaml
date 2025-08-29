@@ -2238,6 +2238,9 @@ importers:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
     devDependencies:
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n
