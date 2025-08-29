@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`index convertToVirtualPreview convert project to virtual preview (including tests w/o own yaml config) 1`] = `
 "specVersion: '4.0'

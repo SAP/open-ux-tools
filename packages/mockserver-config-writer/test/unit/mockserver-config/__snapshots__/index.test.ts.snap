@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Test generateMockserverConfig() Add config with services to project 1`] = `
 "specVersion: \\"2.6\\"

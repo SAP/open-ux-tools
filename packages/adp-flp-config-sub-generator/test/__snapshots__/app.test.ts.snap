@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`FLPConfigGenerator Integration Tests should generate FLP configuration successfully - Application Studio 1`] = `
 "{
