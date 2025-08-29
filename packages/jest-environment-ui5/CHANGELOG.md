@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.10
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+
 ## 5.3.9
 
 ### Patch Changes
