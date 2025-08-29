@@ -93,7 +93,7 @@ export class FioriFunctionalityServer {
                     const executeId = this.normalizeFunctionalityId(executeInput.functionalityId);
                     if (!(executeId in this.calls.details)) {
                         throw new Error(
-                            `Call 'get-functionality-details' tool for functionality 'functionalityId' before calling 'execute-functionality' tool.`
+                            `Call 'get-functionality-details' tool for functionality '${executeId}' before calling 'execute-functionality' tool.`
                         );
                     }
                     result = await executeFunctionality(executeInput);
