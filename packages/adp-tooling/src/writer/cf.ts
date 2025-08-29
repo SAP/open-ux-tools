@@ -159,11 +159,11 @@ async function writeCfTemplates(basePath: string, config: CfAdpWriterConfig, fs:
         { app: variant }
     );
 
-    fs.copyTpl(join(baseTmplPath, 'cf/package.json'), join(basePath, project.folder, 'package.json'), {
+    fs.copyTpl(join(baseTmplPath, 'cf/package.json'), join(project.folder, 'package.json'), {
         module: project.name
     });
 
-    fs.copyTpl(join(baseTmplPath, 'cf/ui5.yaml'), join(basePath, project.folder, 'ui5.yaml'), {
+    fs.copyTpl(join(baseTmplPath, 'cf/ui5.yaml'), join(project.folder, 'ui5.yaml'), {
         appHostId: baseApp.appHostId,
         appName: baseApp.appName,
         appVersion: baseApp.appVersion,
@@ -187,20 +187,16 @@ async function writeCfTemplates(basePath: string, config: CfAdpWriterConfig, fs:
         cfOrganization: cf.org.GUID
     };
 
-    fs.writeJSON(join(basePath, project.folder, '.adp/config.json'), configJson);
+    fs.writeJSON(join(project.folder, '.adp/config.json'), configJson);
 
-    fs.copyTpl(
-        join(baseTmplPath, 'cf/i18n/i18n.properties'),
-        join(basePath, project.folder, 'webapp/i18n/i18n.properties'),
-        {
-            module: project.name,
-            moduleTitle: app.title,
-            appVariantId: app.namespace,
-            i18nGuid: config.app.i18nDescription
-        }
-    );
+    fs.copyTpl(join(baseTmplPath, 'cf/i18n/i18n.properties'), join(project.folder, 'webapp/i18n/i18n.properties'), {
+        module: project.name,
+        moduleTitle: app.title,
+        appVariantId: app.namespace,
+        i18nGuid: config.app.i18nDescription
+    });
 
-    fs.copy(join(baseTmplPath, 'cf/_gitignore'), join(basePath, project.folder, '.gitignore'));
+    fs.copy(join(baseTmplPath, 'cf/_gitignore'), join(project.folder, '.gitignore'));
 
     if (options?.addStandaloneApprouter) {
         fs.copyTpl(
