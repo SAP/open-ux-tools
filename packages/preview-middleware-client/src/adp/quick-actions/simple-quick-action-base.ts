@@ -30,14 +30,11 @@ export abstract class SimpleQuickActionDefinitionBase<
     }
 
     initialize(): Promise<void> {
-        for (const control of getRelevantControlFromActivePage<T>(
+        this.control = getRelevantControlFromActivePage<T>(
             this.context.controlIndex,
             this.context.view,
             this.controlTypes
-        )) {
-            this.control = control;
-            break;
-        }
+        )[0];
         return Promise.resolve();
     }
 

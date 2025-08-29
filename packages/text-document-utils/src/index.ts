@@ -4,6 +4,7 @@ export {
     Position,
     Diagnostic,
     DiagnosticSeverity,
+    DiagnosticTag,
     TextEdit,
     WorkspaceEdit,
     CompletionItemKind,

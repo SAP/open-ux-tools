@@ -1,5 +1,135 @@
 # @sap-ux/preview-middleware
 
+## 0.23.3
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/adp-tooling@0.15.22
+    -   @sap-ux/system-access@0.6.14
+    -   @sap-ux/project-access@1.30.13
+
+## 0.23.2
+
+### Patch Changes
+
+-   Updated dependencies [384bb40]
+    -   @sap-ux/adp-tooling@0.15.21
+
+## 0.23.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.20
+-   @sap-ux/system-access@0.6.13
+
+## 0.23.0
+
+### Minor Changes
+
+-   372e9ce: fix: [ADP][Info center] Remove all messages from the info center which overlap with messages added with the ui5 Log library.
+
+## 0.22.1
+
+### Patch Changes
+
+-   Updated dependencies [0729936]
+    -   @sap-ux/adp-tooling@0.15.19
+
+## 0.22.0
+
+### Minor Changes
+
+-   a39e0d9: fix: [ADP] For ui5 components which do not provide api.json we do not display Documentation error in the info center.
+
+## 0.21.7
+
+### Patch Changes
+
+-   Updated dependencies [9f84298]
+    -   @sap-ux/adp-tooling@0.15.18
+
+## 0.21.6
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/adp-tooling@0.15.17
+    -   @sap-ux/project-access@1.30.12
+    -   @sap-ux/system-access@0.6.12
+
+## 0.21.5
+
+### Patch Changes
+
+-   @sap-ux/i18n@0.3.3
+-   @sap-ux/adp-tooling@0.15.16
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/system-access@0.6.12
+
+## 0.21.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.15
+
+## 0.21.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.14
+
+## 0.21.2
+
+### Patch Changes
+
+-   ad49c30: fix: `Add Custom Table Column` Quick Action not using the correct fragment template.
+
+## 0.21.1
+
+### Patch Changes
+
+-   98fbd93: Store fragment parent control info in fragment body
+-   Updated dependencies [98fbd93]
+    -   @sap-ux/adp-tooling@0.15.13
+
+## 0.21.0
+
+### Minor Changes
+
+-   b1213b1: feat: Track all errors/warnings/info messages created in the adaptation editor and display them in the Info center.
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.12
+-   @sap-ux/system-access@0.6.12
+
+## 0.20.74
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.11
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/system-access@0.6.11
+
+## 0.20.73
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.10
+
+## 0.20.72
+
+### Patch Changes
+
+-   009143e: fix: resolve i18n key
+-   Updated dependencies [009143e]
+    -   @sap-ux/i18n@0.3.2
+    -   @sap-ux/adp-tooling@0.15.9
+    -   @sap-ux/project-access@1.30.9
+    -   @sap-ux/system-access@0.6.11
+
 ## 0.20.71
 
 ### Patch Changes

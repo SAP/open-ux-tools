@@ -5,11 +5,9 @@ import { t } from '../i18n';
 import { promptNames } from '../types';
 import { defaultAppName } from './prompt-helpers';
 import { validateAppName } from './validators';
-import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
-import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { ConfirmQuestion, FileBrowserQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 
 /**
@@ -181,24 +179,10 @@ export function getUI5VersionPrompt(
 /**
  * Get the `enableTypeScript` prompt.
  *
- * @param capCdsInfo CDS UI5 plugin information
  * @returns The `enableTypeScript` prompt
  */
-export function getEnableTypeScriptPrompt(capCdsInfo?: CdsUi5PluginInfo): UI5ApplicationQuestion {
+export function getEnableTypeScriptPrompt(): UI5ApplicationQuestion {
     return {
-        when: (): boolean => {
-            if (capCdsInfo) {
-                return capCdsInfo.hasMinCdsVersion;
-            }
-            return true;
-        },
-        additionalMessages: (val: boolean) => {
-            let message;
-            if (val && capCdsInfo?.hasMinCdsVersion && !capCdsInfo?.isWorkspaceEnabled) {
-                message = { message: t('prompts.enableTypeScript.warningMsg'), severity: Severity.warning };
-            }
-            return message;
-        },
         type: 'confirm',
         name: promptNames.enableTypeScript,
         message: t('prompts.enableTypeScript.message'),
@@ -281,17 +265,10 @@ export function getAddFlpConfigPrompt(
 /**
  * Get the `enableVirtualEndpoints` prompt.
  *
- * @param capCdsInfo CDS UI5 plugin information
  * @returns the `enableVirtualEndpoints` prompt
  */
-export function getEnableVirtualEndpoints(capCdsInfo?: CdsUi5PluginInfo): UI5ApplicationQuestion {
+export function getEnableVirtualEndpoints(): UI5ApplicationQuestion {
     return {
-        when: (answers: UI5ApplicationAnswers): boolean => {
-            if (capCdsInfo) {
-                return capCdsInfo.isCdsUi5PluginEnabled || !!answers?.enableTypeScript;
-            }
-            return true;
-        },
         type: 'confirm',
         name: promptNames.enableVirtualEndpoints,
         guiOptions: {

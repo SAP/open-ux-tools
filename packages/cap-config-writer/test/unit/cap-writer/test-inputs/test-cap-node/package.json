@@ -1,0 +1,8 @@
+{
+    "name": "test_cap_node",
+    "version": "0",
+    "description": "Test file",
+    "scripts": {
+        "watch-testapp1": "cds watch --open testapp1/webapp/index.html?sap-ui-xx-viewCache=false"
+    }
+}

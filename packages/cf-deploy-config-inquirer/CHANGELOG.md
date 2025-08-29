@@ -1,5 +1,69 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.5.9
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/inquirer-common@0.7.37
+    -   @sap-ux/btp-utils@1.1.1
+
+## 0.5.8
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.36
+
+## 0.5.7
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+    -   @sap-ux/inquirer-common@0.7.35
+
+## 0.5.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.34
+
+## 0.5.5
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.33
+
+## 0.5.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.32
+
+## 0.5.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.31
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [9fa7f0b]
+    -   @sap-ux/inquirer-common@0.7.30
+
+## 0.5.1
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.7.29
+
+## 0.5.0
+
+### Minor Changes
+
+-   6e2c5aa: fix overwrite prompt conflict
+
 ## 0.4.1
 
 ### Patch Changes

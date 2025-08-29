@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 1.1.1
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+
 ## 1.1.0
 
 ### Minor Changes

@@ -1,5 +1,55 @@
 # @sap-ux/annotation-generator
 
+## 0.3.55
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.17
+-   @sap-ux/project-access@1.30.13
+
+## 0.3.54
+
+### Patch Changes
+
+-   810d7eb: fix: Annotations are not generated if navigation property can't be resolved.
+
+## 0.3.53
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.16
+
+## 0.3.52
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.12
+-   @sap-ux/fiori-annotation-api@0.6.15
+
+## 0.3.51
+
+### Patch Changes
+
+-   Updated dependencies [c7db726]
+    -   @sap-ux/odata-annotation-core-types@0.4.5
+    -   @sap-ux/fiori-annotation-api@0.6.14
+    -   @sap-ux/odata-entity-model@0.3.1
+    -   @sap-ux/project-access@1.30.11
+
+## 0.3.50
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/fiori-annotation-api@0.6.13
+
+## 0.3.49
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.9
+-   @sap-ux/fiori-annotation-api@0.6.12
+
 ## 0.3.48
 
 ### Patch Changes

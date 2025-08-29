@@ -1,5 +1,6 @@
 import { rm, stat, symlink } from 'fs/promises';
 import { join } from 'path';
+import { existsSync } from 'fs';
 
 import { getPortPromise } from 'portfinder';
 import { setup, teardown } from 'jest-dev-server';
@@ -154,19 +155,19 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
         { timeout: TIMEOUT, scope: 'worker' }
     ],
     // Override default "page" fixture.
-    page: async ({ page, projectServer, ui5Version }, use) => {
+    page: async ({ page, projectServer, projectCopy }, use) => {
         await page.goto(
             `http://localhost:${projectServer}${ADAPTATION_EDITOR_PATH}?fiori-tools-rta-mode=true#app-preview`
         );
-        if (satisfies(ui5Version, '1.84.0 - 1.130.0')) {
-            // Sync clones are created which trigger sync views warning
-            await expect.soft(page.getByText('Synchronous views are')).toBeVisible({ timeout: 15_000 });
-            await page.getByRole('button', { name: 'OK' }).click();
-            await expect.soft(page.locator('.ms-Overlay')).toBeHidden();
-        }
         await expect(page.getByRole('button', { name: 'UI Adaptation' })).toBeEnabled({ timeout: 15_000 });
         // Each test will get a "page" that already has the person name.
         await use(page);
+
+        // Clean up changes directory after each test is complete
+        const changesDir = join(projectCopy, 'webapp', 'changes');
+        if (existsSync(changesDir)) {
+            await rm(changesDir, { recursive: true });
+        }
     },
     previewFrame: [
         async ({ page }, use): Promise<void> => {

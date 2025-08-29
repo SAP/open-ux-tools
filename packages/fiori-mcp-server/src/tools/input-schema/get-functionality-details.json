@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "properties": {
+    "appPath": {
+      "type": "string",
+      "description": "Path to the Fiori application. Path should be an absolute path."
+    },
+    "functionalityId": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": ["string", "number"]
+          }
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "description": "The ID of the functionality to get details for"
+    }
+  },
+  "required": ["appPath", "functionalityId"]
+}

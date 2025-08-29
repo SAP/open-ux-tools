@@ -1,21 +1,25 @@
 import Log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { iconsLoaded, enableTelemetry, appLoaded } from '@sap-ux-private/control-property-editor-common';
+import {
+    appLoaded,
+    enableTelemetry,
+    iconsLoaded
+} from '@sap-ux-private/control-property-editor-common';
 
-import type { ActionHandler, Service } from './types';
-import { OutlineService } from './outline/service';
-import { SelectionService } from './selection';
-import { ChangeService } from './changes/service';
-import { loadDefaultLibraries } from './documentation';
-import { getIcons } from './ui5-utils';
-import { WorkspaceConnectorService } from './connector-service';
-import { RtaService } from './rta-service';
 import { getError } from '../utils/error';
+import { ChangeService } from './changes/service';
+import { CommunicationService } from './communication-service';
+import { WorkspaceConnectorService } from './connector-service';
+import { ContextMenuService } from './context-menu-service';
+import { loadDefaultLibraries } from './documentation';
+import { OutlineService } from './outline/service';
 import { QuickActionService } from './quick-actions/quick-action-service';
 import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
-import { CommunicationService } from './communication-service';
-import { ContextMenuService } from './context-menu-service';
+import { RtaService } from './rta-service';
+import { SelectionService } from './selection';
+import type { ActionHandler, Service } from './types';
+import { getIcons } from './ui5-utils';
 
 export default function init(
     rta: RuntimeAuthoring,
