@@ -34,7 +34,7 @@ Configure your MCP client to start the server with command `fiori-mcp`. Here is 
 ```
 ### Method 2: npm
 
-First, install the required globally using `npm`:
+First, install the required package globally using `npm`:
 ```bash
 npm install -g @sap-ux/fiori-mcp-server
 ```
