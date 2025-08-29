@@ -54,8 +54,10 @@
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
         "@types/json-schema": "7.0.5",
-        "@types/mem-fs": "1.1.2",
-        "@modelcontextprotocol/sdk": "1.17.0",
+        "@types/mem-fs": "1.1.2"
+    },
+    "dependencies": {
+        "@modelcontextprotocol/sdk": "1.17.4",
         "@sap/ux-specification": "1.136.4",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",

@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.38.2
+
+### Patch Changes
+
+-   b3e95fb: add UI5 version check and warning for custom page building block generation
+
 ## 0.38.1
 
 ### Patch Changes
