@@ -139,6 +139,8 @@
         },
         "pageBuildingBlock": {
             "message": "Add a Page Building Block to the Application?",
+            "tooltip": "The Page building block is supported from SAPUI5 version 1.136. By choosing this option, you will be restricting the minimum SAPUI5 versions available for the application to be 1.136 and above.",
+            "warning": "The Page building block is supported with SAPUI5 version 1.136 and above.",
             "titleMessage": "Page Title"
         },
         "tableType": {

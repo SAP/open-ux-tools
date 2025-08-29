@@ -4,7 +4,7 @@
     "jsx": "react",
     "incremental": true,
     "lib": [
-      "ES2022",
+      "ES2023",
       "dom"
     ],
     "strictNullChecks": true,

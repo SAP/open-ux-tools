@@ -1,5 +1,12 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.22
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.13
+-   @sap-ux/ui5-application-writer@1.5.14
+
 ## 0.7.21
 
 ### Patch Changes
