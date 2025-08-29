@@ -17,6 +17,9 @@
       "path": "../i18n"
     },
     {
+      "path": "../logger"
+    },
+    {
       "path": "../project-access"
     },
     {
