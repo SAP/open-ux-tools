@@ -55,6 +55,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/annotation-converter": "0.10.3",
+        "@sap-ux/nodejs-utils": "workspace:*",
         "i18next": "25.3.0"
     },
     "engines": {

@@ -1,4 +1,20 @@
 import { join } from 'path';
+const mockFindInstalledPackages = jest.fn().mockResolvedValue([
+    {
+        path: 'node_modules/@sap/generator-fiori',
+        /** Path to the package.json */
+        packageJsonPath: 'node_modules/@sap/generator-fiori/package.json',
+        /** The parsed package info */
+        packageInfo: {
+            name: '@sap/generator-fiori',
+            version: '1.18.5'
+        }
+    }
+]);
+jest.mock('@sap-ux/nodejs-utils', () => ({
+    findInstalledPackages: mockFindInstalledPackages
+}));
+
 import {
     GENERATE_FIORI_UI_APP,
     generateFioriUIAppHandlers
@@ -33,17 +49,51 @@ describe('executeFunctionality', () => {
             functionalityId: GENERATE_FIORI_UI_APP.id,
             parameters: {
                 projectPath: join(testOutputDir, 'app1'),
-                appGenConfig: {}
+                appGenConfig: {
+                    version: '1.0.0',
+                    floorplan: 'list',
+                    project: {
+                        name: 'app1',
+                        targetFolder: 'app1'
+                    },
+                    service: {
+                        servicePath: 'app1',
+                        capService: {
+                            serviceName: 'app1'
+                        }
+                    },
+                    telemetryData: {
+                        generationSourceName: 'test',
+                        generationSourceVersion: '1.0.0'
+                    }
+                }
             }
         });
         expect(result).toEqual(
             expect.objectContaining({
-                appPath: join(testOutputDir, 'app1', 'app', 'default'),
+                appPath: 'app1/app/app1',
                 changes: [],
                 functionalityId: 'generate-fiori-ui-app',
-                message: `Generation completed successfully: ${join(testOutputDir, 'app1', 'app', 'default')}`,
+                message: `Generation completed successfully: app1/app/app1`,
                 parameters: {
-                    appGenConfig: {},
+                    appGenConfig: {
+                        version: '1.0.0',
+                        floorplan: 'list',
+                        project: {
+                            name: 'app1',
+                            targetFolder: 'app1'
+                        },
+                        service: {
+                            servicePath: 'app1',
+                            capService: {
+                                serviceName: 'app1'
+                            }
+                        },
+                        telemetryData: {
+                            generationSourceName: 'test',
+                            generationSourceVersion: '1.0.0'
+                        }
+                    },
                     projectPath: join(testOutputDir, 'app1')
                 },
                 status: 'Success'
@@ -57,21 +107,55 @@ describe('executeFunctionality', () => {
             throw new Error('Dummy');
         });
         const result = await generateFioriUIAppHandlers.executeFunctionality({
-            appPath: 'app1',
+            appPath: 'app1/app/app1',
             functionalityId: GENERATE_FIORI_UI_APP.id,
             parameters: {
                 projectPath: join(testOutputDir, 'app1'),
-                appGenConfig: {}
+                appGenConfig: {
+                    version: '1.0.0',
+                    floorplan: 'list',
+                    project: {
+                        name: 'app1',
+                        targetFolder: 'app1'
+                    },
+                    service: {
+                        servicePath: 'app1',
+                        capService: {
+                            serviceName: 'app1'
+                        }
+                    },
+                    telemetryData: {
+                        generationSourceName: 'test',
+                        generationSourceVersion: '1.0.0'
+                    }
+                }
             }
         });
         expect(result).toEqual(
             expect.objectContaining({
-                appPath: join(testOutputDir, 'app1', 'app', 'default'),
+                appPath: 'app1/app/app1',
                 changes: [],
                 functionalityId: 'generate-fiori-ui-app',
                 message: `Error generating application: Dummy`,
                 parameters: {
-                    appGenConfig: {},
+                    appGenConfig: {
+                        version: '1.0.0',
+                        floorplan: 'list',
+                        project: {
+                            name: 'app1',
+                            targetFolder: 'app1'
+                        },
+                        service: {
+                            servicePath: 'app1',
+                            capService: {
+                                serviceName: 'app1'
+                            }
+                        },
+                        telemetryData: {
+                            generationSourceName: 'test',
+                            generationSourceVersion: '1.0.0'
+                        }
+                    },
                     projectPath: join(testOutputDir, 'app1')
                 },
                 status: 'Error'
@@ -106,6 +190,8 @@ describe('executeFunctionality', () => {
                     appGenConfig: 'dummy'
                 }
             })
-        ).rejects.toThrow('Invalid appGenConfig. Please provide a valid configuration object.');
+        ).rejects.toThrow(
+            `Missing required fields in generatorConfig. Please provide all required fields. generatorConfig is \"dummy\"`
+        );
     });
 });
