@@ -1,7 +1,7 @@
-import { promises } from 'fs';
+import { promises as FSpromises, existsSync } from 'fs';
 import { promisify } from 'util';
 import { exec as execAsync } from 'child_process';
-import { dirname, join } from 'path';
+import { join } from 'path';
 import type { ExecuteFunctionalitiesInput, ExecuteFunctionalityOutput } from '../../../types';
 import { GENERATE_FIORI_UI_APP_ID } from '../../../constant';
 import { type AppConfig } from '@sap-ux/fiori-generator-shared';
@@ -52,16 +52,15 @@ export async function command(params: ExecuteFunctionalitiesInput): Promise<Exec
     }
     const appName = generatorConfig.project.name ?? 'default';
     const appPath = join(projectPath as string, 'app', String(appName));
+    const targetDir = projectPath as string;
+    const configPath = `.fiori-ai/${appName}-generator-config.json`;
+    const outputPath = join(targetDir, configPath);
+
     try {
-        const targetDir = projectPath as string;
-
-        const configPath = `.fiori-ai/${appName}-generator-config.json`;
-        const outputPath = join(targetDir, configPath);
         const content = JSON.stringify(generatorConfig, null, 4);
-        const configDir = dirname(outputPath);
 
-        await promises.mkdir(configDir, { recursive: true });
-        await promises.writeFile(outputPath, content, { encoding: 'utf8' });
+        await FSpromises.mkdir(projectPath, { recursive: true });
+        await FSpromises.writeFile(outputPath, content, { encoding: 'utf8' });
         const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force --skipInstall`.trim();
 
         const { stdout, stderr } = await exec(command, { cwd: targetDir });
@@ -80,6 +79,11 @@ export async function command(params: ExecuteFunctionalitiesInput): Promise<Exec
             changes: [],
             timestamp: new Date().toISOString()
         };
+    } finally {
+        //clean up temp config file used for the headless generator
+        if (existsSync(outputPath)) {
+            await FSpromises.unlink(outputPath);
+        }
     }
 
     return {

@@ -3,6 +3,7 @@ import {
     GENERATE_FIORI_UI_APP,
     generateFioriUIAppHandlers
 } from '../../../../../src/tools/functionalities/generate-fiori-ui-app';
+import { existsSync } from 'fs';
 
 // Mock child_process.exec
 const mockExec = jest.fn();
@@ -48,6 +49,7 @@ describe('executeFunctionality', () => {
                 status: 'Success'
             })
         );
+        expect(existsSync(join(testOutputDir, 'app1', 'default-generator-config.json'))).toBeFalsy();
     });
 
     test('executeFunctionality - unsuccess', async () => {
@@ -75,6 +77,7 @@ describe('executeFunctionality', () => {
                 status: 'Error'
             })
         );
+        expect(existsSync(join(testOutputDir, 'app1', 'default-generator-config.json'))).toBeFalsy();
     });
 
     test('executeFunctionality - empty parameters', async () => {
