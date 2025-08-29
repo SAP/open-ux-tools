@@ -49,7 +49,7 @@
         "@types/mem-fs": "1.1.2"
     },
     "dependencies": {
-        "@modelcontextprotocol/sdk": "1.17.0",
+        "@modelcontextprotocol/sdk": "1.17.4",
         "@sap/ux-specification": "1.136.4",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
