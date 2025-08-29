@@ -32,7 +32,7 @@ jest.mock('child_process', () => ({
 describe('getFunctionalityDetails', () => {
     test('getFunctionalityDetails', async () => {
         const details = await generateFioriUIAppHandlers.getFunctionalityDetails({
-            appPath: 'app1',
+            appPath: join(testOutputDir, 'app1'),
             functionalityId: GENERATE_FIORI_UI_APP.id
         });
         expect(details).toEqual(GENERATE_FIORI_UI_APP);
@@ -45,7 +45,7 @@ describe('executeFunctionality', () => {
             callback(null, 'mock stdout', 'mock stderr');
         });
         const result = await generateFioriUIAppHandlers.executeFunctionality({
-            appPath: 'app1',
+            appPath: join(testOutputDir, 'app1'),
             functionalityId: GENERATE_FIORI_UI_APP.id,
             parameters: {
                 projectPath: join(testOutputDir, 'app1'),
@@ -54,7 +54,7 @@ describe('executeFunctionality', () => {
                     floorplan: 'list',
                     project: {
                         name: 'app1',
-                        targetFolder: 'app1'
+                        targetFolder: join(testOutputDir, 'app1')
                     },
                     service: {
                         servicePath: 'app1',
@@ -71,17 +71,17 @@ describe('executeFunctionality', () => {
         });
         expect(result).toEqual(
             expect.objectContaining({
-                appPath: join('app1/app/app1'),
+                appPath: join(testOutputDir, 'app1/app/app1'),
                 changes: [],
                 functionalityId: 'generate-fiori-ui-app',
-                message: `Generation completed successfully: ${join('app1/app/app1')}`,
+                message: `Generation completed successfully: ${join(testOutputDir, 'app1/app/app1')}`,
                 parameters: {
                     appGenConfig: {
                         version: '1.0.0',
                         floorplan: 'list',
                         project: {
                             name: 'app1',
-                            targetFolder: 'app1'
+                            targetFolder: join(testOutputDir, 'app1')
                         },
                         service: {
                             servicePath: 'app1',
@@ -107,7 +107,7 @@ describe('executeFunctionality', () => {
             throw new Error('Dummy');
         });
         const result = await generateFioriUIAppHandlers.executeFunctionality({
-            appPath: 'app1/app/app1',
+            appPath: join(testOutputDir, 'app1'),
             functionalityId: GENERATE_FIORI_UI_APP.id,
             parameters: {
                 projectPath: join(testOutputDir, 'app1'),
@@ -116,7 +116,7 @@ describe('executeFunctionality', () => {
                     floorplan: 'list',
                     project: {
                         name: 'app1',
-                        targetFolder: 'app1'
+                        targetFolder: join(testOutputDir, 'app1')
                     },
                     service: {
                         servicePath: 'app1',
@@ -133,7 +133,7 @@ describe('executeFunctionality', () => {
         });
         expect(result).toEqual(
             expect.objectContaining({
-                appPath: join('app1/app/app1'),
+                appPath: join(testOutputDir, 'app1/app/app1'),
                 changes: [],
                 functionalityId: 'generate-fiori-ui-app',
                 message: `Error generating application: Dummy`,
@@ -143,7 +143,7 @@ describe('executeFunctionality', () => {
                         floorplan: 'list',
                         project: {
                             name: 'app1',
-                            targetFolder: 'app1'
+                            targetFolder: join(testOutputDir, 'app1')
                         },
                         service: {
                             servicePath: 'app1',
