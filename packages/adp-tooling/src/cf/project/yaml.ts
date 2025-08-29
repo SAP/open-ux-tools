@@ -401,7 +401,6 @@ function writeFileCallback(error: any): void {
  */
 export class YamlUtils {
     public static spaceGuid: string;
-    private static yamlPath: string;
     private static HTML5_APPS_REPO = 'html5-apps-repo';
 
     /**
@@ -459,7 +458,7 @@ export class YamlUtils {
 
         const updatedYamlContent = yaml.dump(yamlContent);
         await this.createServices(projectPath, yamlContent, initialServices, timestamp, logger);
-        return fs.writeFile(this.yamlPath, updatedYamlContent, 'utf-8', writeFileCallback);
+        return fs.writeFile(mtaYamlPath, updatedYamlContent, 'utf-8', writeFileCallback);
     }
 
     /**
