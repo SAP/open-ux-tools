@@ -36,10 +36,8 @@ export async function command(params: ExecuteFunctionalitiesInput): Promise<Exec
     const configPath = `${appName}-generator-config.json`;
     const outputPath = join(targetDir, configPath);
     const content = JSON.stringify(generatorConfig, null, 4);
-    const configDir = dirname(outputPath);
 
     try {
-        await FSpromises.mkdir(configDir, { recursive: true });
         await FSpromises.writeFile(outputPath, content, { encoding: 'utf8' });
         const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force --skipInstall`.trim();
 
