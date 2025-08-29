@@ -1,6 +1,6 @@
 # @sap-ux/fiori-mcp-server
 
-This package includes a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for integration with agentic AI tools.
+This package includes a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for integration with AI coding assistants.
 
 The server helps AI models create or modify SAP Fiori applications based on commands, such as:
 
