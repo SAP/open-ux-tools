@@ -32,10 +32,9 @@ export async function command(params: ExecuteFunctionalitiesInput): Promise<Exec
     const appName = project && 'name' in project && typeof project.name === 'string' ? project.name : 'default';
     const appPath = join(projectPath, 'app', appName);
     const targetDir = projectPath;
-    const generatorConfig = appGenConfig;
     const configPath = `${appName}-generator-config.json`;
     const outputPath = join(targetDir, configPath);
-    const content = JSON.stringify(generatorConfig, null, 4);
+    const content = JSON.stringify(appGenConfig, null, 4);
 
     try {
         await FSpromises.mkdir(projectPath, { recursive: true });
@@ -60,8 +59,8 @@ export async function command(params: ExecuteFunctionalitiesInput): Promise<Exec
         };
     } finally {
         //clean up temp config file used for the headless generator
-        if (existsSync(configPath)) {
-            await FSpromises.unlink(configPath);
+        if (existsSync(outputPath)) {
+            await FSpromises.unlink(outputPath);
         }
     }
 
