@@ -18,7 +18,7 @@ import { QuickActionService } from '../../../src/cpe/quick-actions/quick-action-
 import { RtaService } from '../../../src/cpe/rta-service';
 import { SelectionService } from '../../../src/cpe/selection';
 import * as ui5Utils from '../../../src/cpe/ui5-utils';
-import connector from '../../../src/flp/WorkspaceConnector';
+import connectorPromise from '../../../src/flp/WorkspaceConnector';
 
 function getAppLoadedWaitPromise(): Promise<boolean> {
     return new Promise((resolve) => {
@@ -141,6 +141,11 @@ describe('main', () => {
         });
 
         // check delete notifier
+        const connector = await connectorPromise;
+        if (!('storage' in connector)) {
+            expect('storage' in connector).toBeTruthy();
+            return;
+        }
         await connector.storage.removeItem('sap.ui.fl.testFile');
 
         //assert
