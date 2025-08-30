@@ -1,0 +1,254 @@
+[
+  {
+    "id": "filter-facets",
+    "name": "Filter facets",
+    "description": "Allow structuring the available properties of the entity into groups, so that filter adaptation is easier using @UI.FilterFacets annotation.",
+    "category": ["list-report"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@UI.FilterFacets", "@UI.FieldGroup"],
+      "cdsExample": "annotate service.RootEntities with @(\n    UI.FilterFacets : [\n        {\n            Target : '@UI.FieldGroup#chartData',\n            Label : '{i18n>chartData}',\n        },\n        {\n            Target : '@UI.FieldGroup#location',\n            Label : '{i18n>location}',\n        },\n    ],\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "selection-fields",
+    "name": "Selection Fields",
+    "description": "Specify an array of fields which should by default be shown in the List Report filter bar as a filter, so that the user does not need to adapt the filters.",
+    "category": ["list-report"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@UI.SelectionFields"],
+      "cdsExample": "annotate service.RootEntities with @(\n    UI.SelectionFields : [\n        field,\n        fieldWithPrice,\n        criticality_code,\n    ],\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "value-help",
+    "name": "Value Help",
+    "description": "Provide value help for a filter (and for the corresponding field on the Object Page) using @Common.ValueList annotation.",
+    "category": ["list-report"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@Common.ValueList"],
+      "cdsExample": "annotate schema.RootEntities with{\n    contact @(Common : {\n        Text            : contact.name,\n        TextArrangement : #TextOnly,\n        ValueList       : {\n            Label          : '{i18n>customer}',\n            CollectionPath : 'Contacts',\n            Parameters     : [\n                {\n                    $Type             : 'Common.ValueListParameterInOut',\n                    ValueListProperty : 'ID',\n                    LocalDataProperty : contact_ID\n                }\n            ]\n        }\n    });\n};",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "highlighting-line-items-based-on-criticality",
+    "name": "Highlighting Line Items Based on Criticality",
+    "description": "Line items can be highlighted based on their criticality with the annotation ![@UI.Criticality] as part of the @UI.LineItem annotation.",
+    "category": ["list-report"],
+    "area": "content",
+    "implementation": {
+      "annotations": ["@UI.LineItem", "@UI.Criticality"],
+      "cdsExample": "annotate service.RootEntities with @(\n    UI.LineItem : {\n        $value : [\n            ...\n        ],\n        ![@UI.Criticality] : criticality_code, \n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "adding-a-rating-indicator-to-a-table",
+    "name": "Adding a Rating Indicator to a Table",
+    "description": "To add a rating indicator (stars) to the table, the entity needs to be annotated with @UI.DataPoint. The Value Property defines how many stars are visible. Values between x.25 and x.74 are displayed as a half star.",
+    "category": ["list-report"],
+    "area": "content",
+    "implementation": {
+      "annotations": ["@UI.DataPoint", "@UI.LineItem", "@UI.DataFieldForAnnotation"],
+      "cdsExample": "annotate service.RootEntities with @(\n    UI.DataPoint #ratingIndicator : {\n        Value : starsValue,\n        TargetValue : 4,\n        Visualization : #Rating,\n        Title : '{i18n>ratingIndicator}',\n        ![@Common.QuickInfo] : 'Tooltip via Common.QuickInfo',\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "adding-a-progress-indicator-to-a-table",
+    "name": "Adding a Progress Indicator to a Table",
+    "description": "To add a progress indicator to a table, the entity needs to be annotated with @UI.DataPoint. The value property defines the current progress and the target property the maximum progress.",
+    "category": ["list-report"],
+    "area": "content",
+    "implementation": {
+      "annotations": ["@UI.DataPoint", "@UI.LineItem", "@UI.DataFieldForAnnotation"],
+      "cdsExample": "annotate service.RootEntities with @(\n    UI.DataPoint #progressIndicator : {\n        Value : integerValue,\n        TargetValue : 100,\n        Visualization : #Progress,\n        Title : '{i18n>progressIndicator}',\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "adding-a-smart-micro-chart-to-a-table",
+    "name": "Adding a Smart Micro Chart to a Table",
+    "description": "To add a smart micro chart to a table you have to define a @UI.DataPoint and reference it in an @UI.Chart annotation. The chart is then the target of a DataFieldForAnnotation in the @UI.LineItem annotation.",
+    "category": ["list-report"],
+    "area": "content",
+    "implementation": {
+      "annotations": ["@UI.DataPoint", "@UI.Chart", "@UI.LineItem", "@UI.DataFieldForAnnotation"],
+      "cdsExample": "annotate service.RootEntities with @(\n    UI.DataPoint #radialChart : { \n        Value : integerValue,\n        TargetValue : targetValue,\n        Criticality : criticality_code,\n    },\n    UI.Chart #radialChart : {\n        Title : '{i18n>radialChart}',\n        Description : '{i18n>ThisIsAMicroChart}',\n        ChartType : #Donut,\n        Measures : [integerValue],\n        MeasureAttributes : [{\n                $Type : 'UI.ChartMeasureAttributeType',\n                Measure : integerValue,\n                Role : #Axis1,\n                DataPoint : '@UI.DataPoint#radialChart',\n        }]\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "adding-a-contact-quick-view-to-a-table",
+    "name": "Adding a Contact Quick View to a Table",
+    "description": "To have a data field which shows a contact with a contact quick view, the contact quick view needs to be implemented first using @Communication.Contact annotation.",
+    "category": ["list-report"],
+    "area": "content",
+    "implementation": {
+      "annotations": ["@Communication.Contact", "@UI.LineItem", "@UI.DataFieldForAnnotation"],
+      "cdsExample": "annotate service1.Contacts with @(\n    Communication.Contact : {\n        fn   : name,\n        kind : #org,\n        tel  : [{\n            uri  : phone,\n            type : #preferred\n        }],\n        adr  : [{\n            building : building,\n            country  : country.name,\n            street   : street,\n            locality : city,\n            code     : postCode,\n            type     : #preferred\n        }],\n    }\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "adding-images-to-a-table",
+    "name": "Adding Images to a table",
+    "description": "Images are typically the first column in a table and help to visually guide the user. An image can be added to a table by adding a normal data field to the line items where the property contains the image url and is annotated with @UI.IsImageURL.",
+    "category": ["list-report"],
+    "area": "content",
+    "implementation": {
+      "annotations": ["@UI.IsImageURL", "@UI.LineItem"],
+      "cdsExample": "annotate service.RootEntities with @(\n    UI.LineItem : {\n        $value : [\n            {\n                $Type : 'UI.DataField',\n                Value : imageUrl,\n                @UI.Importance : #High,\n            },\n        ],\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "rating",
+    "name": "Rating",
+    "description": "With the Visualization property set to \"#Rating\" the data point will be displayed as filled stars. The \"TargetValue\" property sets the maximal amount of stars. The value property is the amount of stars, which are filled. Values between x.25 and x.74 are displayed as a half star.",
+    "category": ["object-page"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@UI.DataPoint"],
+      "cdsExample": "annotate service.RootEntities with @(\n    UI.DataPoint #ratingIndicator : {\n        Value : starsValue,\n        TargetValue : 4,\n        Visualization : #Rating,\n        Title : '{i18n>ratingIndicator}',\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "progress",
+    "name": "Progress",
+    "description": "With the Visualization property set to \"#Progress\" the data point will be displayed as a bar surrounded by a container. The \"TargetValue\" property is the maximal value. If the value is higher or equals the target value, the container is filled.",
+    "category": ["object-page"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@UI.DataPoint"],
+      "cdsExample": "annotate service.RootEntities with @(\n    UI.DataPoint #progressIndicator : {\n        Value : integerValue,\n        TargetValue : 100,\n        Visualization : #Progress,\n        Title : '{i18n>progressIndicator}',\n        Criticality: criticality,\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "area-micro-chart",
+    "name": "Area Micro Chart",
+    "description": "The area micro chart is a trend chart, which provides information for the actual and target value for a specified dimension. The displayed values at the bottom of the chart are the boundary values of the dimension.",
+    "category": ["object-page"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@UI.Chart", "@UI.DataPoint"],
+      "cdsExample": "annotate service.ChartDataEntities with @(\n    UI.Chart #areaChart : {\n        Title : '{i18n>areaChart}',\n        Description : '{i18n>ThisIsAMicroChart}',\n        ChartType : #Area,\n        Dimensions : [\n            dimensions,\n        ],\n        Measures : [\n            integerValue,\n        ],\n        MeasureAttributes : [\n            {\n                $Type : 'UI.ChartMeasureAttributeType',\n                Measure : integerValue,\n                Role : #Axis1,\n                DataPoint : '@UI.DataPoint#areaChart',\n            },\n        ],\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "bullet-micro-chart",
+    "name": "Bullet Micro Chart",
+    "description": "The bullet chart features a single measure and compares it to one or more other measures (e.g. value with target comparison). Both \"Criticality\" and \"CriticalityCalculation\" are supported.",
+    "category": ["object-page"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@UI.Chart", "@UI.DataPoint"],
+      "cdsExample": "annotate service.RootEntities with @(\n    UI.Chart #bulletChart : {\n        Title : '{i18n>bulletChart}',\n        Description : '{i18n>ThisIsAMicroChart}',\n        ChartType : #Bullet,\n        Dimensions : [\n            dimensions\n        ],\n        Measures : [\n            integerValue,\n        ],\n        MeasureAttributes : [\n            {\n                $Type : 'UI.ChartMeasureAttributeType',\n                Measure : integerValue,\n                Role : #Axis1,\n                DataPoint : '@UI.DataPoint#bulletChart',\n            },\n        ],\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "radial-micro-chart",
+    "name": "Radial Micro Chart",
+    "description": "The radial micro chart displays a single percentage value. The percentage value is the fraction of the value and the target value.",
+    "category": ["object-page"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@UI.Chart", "@UI.DataPoint"],
+      "cdsExample": "annotate service.RootEntities with @(\n    UI.Chart #radialChart : {\n        Title : '{i18n>radialChart}',\n        Description : '{i18n>ThisIsAMicroChart}',\n        ChartType : #Donut,\n        Measures : [\n            integerValue,\n        ],\n        MeasureAttributes : [\n            {\n                $Type : 'UI.ChartMeasureAttributeType',\n                Measure : integerValue,\n                Role : #Axis1,\n                DataPoint : '@UI.DataPoint#radialChart',\n            },\n        ],\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "line-micro-chart",
+    "name": "Line Micro Chart",
+    "description": "The line chart displays a series of data points as a line. The bottom values are the border values of the dimension. The upper left value is the smallest value of the first measure property and the upper right value is the largest value of the last measure property.",
+    "category": ["object-page"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@UI.Chart", "@UI.DataPoint"],
+      "cdsExample": "annotate service.ChartDataEntities with @(\n    UI.Chart #lineChart : { \n        Title : '{i18n>lineChart}',\n        Description : '{i18n>ThisIsAMicroChart}',\n        ChartType : #Line,\n        Measures : [\n            integerValueWithUoM,\n            targetValue,\n        ],\n        Dimensions : [\n            dimensions,\n            dimensions\n        ],\n        MeasureAttributes : [\n            {\n                $Type : 'UI.ChartMeasureAttributeType',\n                Measure : integerValueWithUoM,\n                Role : #Axis2,\n                DataPoint : '@UI.DataPoint#lineChartWidth',\n            },\n        ],\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "column-micro-chart",
+    "name": "Column Micro Chart",
+    "description": "A column chart uses vertical bars to compare values of a dimension. The displayed values at the bottom of the chart are the boundary values of the dimension. The values above the chart are the boundary values of the measure attribute.",
+    "category": ["object-page"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@UI.Chart", "@UI.DataPoint"],
+      "cdsExample": "annotate service.ChartDataEntities with @(\n    UI.Chart #columnChart : { \n        Title : '{i18n>columnChart}',\n        Description : '{i18n>ThisIsAMicroChart}',\n        ChartType : #Column,\n        Measures : [\n            integerValue\n        ],\n        Dimensions : [\n            dimensions\n        ],\n        MeasureAttributes : [\n            {\n                $Type : 'UI.ChartMeasureAttributeType',\n                Measure : integerValue,\n                Role : #Axis1,\n                DataPoint : '@UI.DataPoint#dataPointForChart',\n            }\n        ]\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "harvey-micro-chart",
+    "name": "Harvey Micro Chart",
+    "description": "A harvey chart plots a single measure value against a maximum value. For the semantic coloring, only the \"Criticality\" property is supported.",
+    "category": ["object-page"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@UI.Chart", "@UI.DataPoint"],
+      "cdsExample": "annotate service.RootEntities with @(\n    UI.Chart #harveyChart : {\n        Title : '{i18n>harveyChart}',\n        Description : '{i18n>ThisIsAMicroChart}',\n        ChartType : #Pie,\n        Measures : [\n            fieldWithPrice\n        ],\n        MeasureAttributes : [\n            {\n                $Type : 'UI.ChartMeasureAttributeType',\n                Role : #Axis1,\n                Measure: fieldWithPrice,\n                DataPoint : '@UI.DataPoint#harveyChart',\n            }\n        ]\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "stacked-bar-micro-chart",
+    "name": "Stacked Bar Micro Chart",
+    "description": "A stacked bar chart uses vertical bars to compare values of a dimension. The displayed values at the bottom of the chart are the boundary values of the dimension. The values above the chart are the boundary values of the measure attribute.",
+    "category": ["object-page"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@UI.Chart", "@UI.DataPoint"],
+      "cdsExample": "annotate service.ChartDataEntities with @(\n    UI.Chart #stackedBarChart : { \n        Title : '{i18n>stackedBarChart}',\n        Description : '{i18n>ThisIsAMicroChart}',\n        ChartType : #BarStacked,\n        Measures : [\n            integerValue\n        ],\n        Dimensions : [\n            dimensions\n        ],\n        MeasureAttributes : [\n            {\n                $Type : 'UI.ChartMeasureAttributeType',\n                Measure : integerValue,\n                Role : #Axis1,\n                DataPoint : '@UI.DataPoint#dataPointForChart',\n            }\n        ]\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "comparison-micro-chart",
+    "name": "Comparison Micro Chart",
+    "description": "A comparison chart uses three horizontal bars to compare values of a dimension. If more values are defined in the dimension, they will only show up in the tooltip. For semantic coloring, only the \"Criticality\" property is supported.",
+    "category": ["object-page"],
+    "area": "header",
+    "implementation": {
+      "annotations": ["@UI.Chart", "@UI.DataPoint"],
+      "cdsExample": "annotate service.ChartDataEntities with @(\n    UI.Chart #comparisonChart : { \n        Title : '{i18n>comparisonChart}',\n        Description : '{i18n>ThisIsAMicroChart}',\n        ChartType : #Bar,\n        Measures : [\n            integerValue\n        ],\n        Dimensions : [\n            dimensions\n        ],\n        MeasureAttributes : [\n            {\n                $Type : 'UI.ChartMeasureAttributeType',\n                Measure : integerValue,\n                Role : #Axis1,\n                DataPoint : '@UI.DataPoint#dataPointForChart',\n            }\n        ]\n    },\n);",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "connected-fields",
+    "name": "Connected Fields",
+    "description": "When two fields are semantically connected, they can be displayed next to each other under one label, to show their data relation using @UI.ConnectedFields annotation.",
+    "category": ["object-page"],
+    "area": "content",
+    "implementation": {
+      "annotations": ["@UI.ConnectedFields", "@UI.DataFieldForAnnotation"],
+      "cdsExample": "UI.ConnectedFields #ConnectedDates :{\n    Label : '{i18n>ConnectedField}',\n    Template : '{integerValue} / {targetValue}',\n    Data : {\n        integerValue : {\n            $Type : 'UI.DataField',\n            Value : integerValue,\n        },\n        targetValue : {\n            $Type : 'UI.DataField',\n            Value : targetValue,\n        },\n    },\n},",
+      "ui5Version": []
+    }
+  },
+  {
+    "id": "chart",
+    "name": "Chart",
+    "description": "Charts are possible as sections on Object Page. The implementation requires preparing the entity with @Aggregation.ApplySupported and @Analytics.AggregatedProperties annotations, then defining the @UI.Chart annotation.",
+    "category": ["object-page"],
+    "area": "content",
+    "implementation": {
+      "annotations": ["@Aggregation.ApplySupported", "@Analytics.AggregatedProperties", "@UI.Chart"],
+      "cdsExample": "annotate service.ChartDataEntities with @(\n    UI.Chart : {\n        Title : '{i18n>chart}',\n        ChartType : #Column,\n        Measures :  [maxAmount],\n        Dimensions : [dimensions],\n        MeasureAttributes   : [{\n                $Type   : 'UI.ChartMeasureAttributeType',\n                Measure : maxAmount,\n                Role    : #Axis1\n        }],\n        DimensionAttributes : [\n            {\n                $Type     : 'UI.ChartDimensionAttributeType',\n                Dimension : dimensions,\n                Role      : #Category\n            },\n        ],\n    },\n);",
+      "ui5Version": []
+    }
+  }
+]
