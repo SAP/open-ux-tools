@@ -59,7 +59,6 @@ const exec = promisify(execAsync);
  * @returns Application generation execution output.
  */
 export async function command(params: ExecuteFunctionalitiesInput): Promise<ExecuteFunctionalityOutput> {
-    // Extract and validate generatorConfig. params.parameters.parameters ?? params.parameters differences in calling client??
     let generatorConfigCAP;
     try {
         generatorConfigCAP = GeneratorConfigSchemaCAP.parse(params.parameters);
