@@ -1,0 +1,19 @@
+{
+  "id": "fiori-showcase-app-featureshowcasenavigationtarget-webapp-component-js",
+  "title": "Component",
+  "category": "features",
+  "path": "app/featureShowcaseNavigationTarget/webapp/Component.js",
+  "lastModified": "2025-08-29T09:58:06.644Z",
+  "tags": [
+    "features",
+    "js",
+    "Component.js"
+  ],
+  "headers": [],
+  "content": "# Component.js\n\n```javascript\nsap.ui.define(['sap/fe/core/AppComponent'], function(AppComponent) {\n    'use strict';\n\n    return AppComponent.extend(\"sap.fe.featureShowcase.childEntities2ui.Component\", {\n        metadata: {\n            manifest: \"json\"\n        }\n    });\n});\n\n```",
+  "excerpt": "Component.js",
+  "wordCount": 19,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

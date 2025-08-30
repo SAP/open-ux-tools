@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-view-app-view-xml",
+  "title": "App.view",
+  "category": "samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/view/App.view.xml",
+  "lastModified": "2025-08-29T09:58:36.460Z",
+  "tags": [
+    "samples",
+    "xml",
+    "App.view.xml"
+  ],
+  "headers": [],
+  "content": "# App.view.xml\n\n```xml\n<mvc:View\n\tcontrollerName=\"ns.manageproductsneo.controller.App\"\n\tdisplayBlock=\"true\"\n\txmlns=\"sap.m\"\n\txmlns:mvc=\"sap.ui.core.mvc\">\n\t<Shell>\n\t\t<App id=\"app\"\n\t\t\tbusy=\"{appView>/busy}\"\n\t\t\tbusyIndicatorDelay=\"{appView>/delay}\"/>\n\t</Shell>\n</mvc:View>\n```",
+  "excerpt": "App.view.xml",
+  "wordCount": 16,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

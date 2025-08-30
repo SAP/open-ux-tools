@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-cap-cap-fiori-mta-standalone-app-services-cds",
+  "title": "services",
+  "category": "samples",
+  "path": "cap/cap-fiori-mta-standalone/app/services.cds",
+  "lastModified": "2025-08-29T09:58:36.449Z",
+  "tags": [
+    "samples",
+    "cds",
+    "services.cds"
+  ],
+  "headers": [],
+  "content": "# services.cds\n\n```cds\n\nusing from './mystandalonecapproject/annotations';\n```",
+  "excerpt": "services.cds",
+  "wordCount": 7,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

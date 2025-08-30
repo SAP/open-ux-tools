@@ -1,0 +1,19 @@
+{
+  "id": "fiori-showcase-app-services-cds",
+  "title": "services",
+  "category": "features",
+  "path": "app/services.cds",
+  "lastModified": "2025-08-29T09:58:06.642Z",
+  "tags": [
+    "features",
+    "cds",
+    "services.cds"
+  ],
+  "headers": [],
+  "content": "# services.cds\n\n```cds\n\nusing from './featureShowcase/capabilities';\nusing from './featureShowcase/field-control';\nusing from './featureShowcase/labels';\nusing from './featureShowcase/layouts_RootEntities';\nusing from './featureShowcase/layouts_contacts';\nusing from './featureShowcase/layouts_RootEntityVariants';\nusing from './featureShowcase/layouts_GrandChildEntities';\nusing from './featureShowcase/layouts_ChildEntities3';\nusing from './featureShowcase/layouts_ChildEntities1';\nusing from './featureShowcase/layouts_ChildEntities2';\nusing from './featureShowcase/layouts_ChartDataEntities';\nusing from './featureShowcase/value-helps';\nusing from './featureShowcaseNavigationTarget/annotations';\n```",
+  "excerpt": "services.cds",
+  "wordCount": 43,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

@@ -21,26 +21,34 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc --build",
+        "build-compile": "tsc --noEmit",
+        "build-bundle": "esbuild --bundle --platform=node --target=node20 --outdir=dist --external:vscode --external:@lancedb/lancedb --external:@xenova/transformers --main-fields=module,main src/index.ts",
+        "copy-data": "cp -r ../fiori-docs-embeddings/data ./data",
+        "build": "npm-run-all build-compile build-bundle copy-data",
         "watch": "tsc --watch",
         "bundle": "npm-run-all build tgz:package tgz:rename",
         "tgz:package": "pnpm pack",
         "tgz:rename": "node -e \"const fs=require('fs'), p=require('./package.json'), d=new Date().toISOString().split('T')[0], oldName=p.name.startsWith('@') ? `${p.name.replace('@', '').replace('/', '-')}-${p.version}.tgz` : `${p.name}-${p.version}.tgz`; fs.renameSync(oldName, `${oldName.replace('.tgz','')}-${d}.tgz`)\"",
-        "clean": "rimraf --glob dist test/test-output *.tsbuildinfo",
+        "clean": "rimraf --glob dist test/test-output *.tsbuildinfo data",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors"
+        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "inspector": "npx @modelcontextprotocol/inspector node dist/index.js"
     },
     "files": [
         "LICENSE",
         "dist",
+        "data",
         "!dist/**/*.map"
     ],
     "bin": {
         "fiori-mcp": "./dist/index.js"
     },
     "devDependencies": {
+        "npm-run-all2": "8.0.4",
+        "esbuild": "0.25.6",
+        "@sap-ux/fiori-docs-embeddings": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/text-document-utils": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
@@ -50,11 +58,14 @@
     },
     "dependencies": {
         "@modelcontextprotocol/sdk": "1.17.4",
+        "@lancedb/lancedb": "0.21.3",
+        "@xenova/transformers": "2.17.2",
         "@sap/ux-specification": "1.136.4",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/annotation-converter": "0.10.3",
-        "i18next": "25.3.0"
+        "i18next": "25.3.0",
+        "zod": "^3.22.4"
     },
     "engines": {
         "node": ">=20.x"

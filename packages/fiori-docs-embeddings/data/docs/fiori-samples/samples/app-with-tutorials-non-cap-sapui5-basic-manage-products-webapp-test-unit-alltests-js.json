@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-webapp-test-unit-alltests-js",
+  "title": "AllTests",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/webapp/test/unit/AllTests.js",
+  "lastModified": "2025-08-29T09:58:36.446Z",
+  "tags": [
+    "samples",
+    "js",
+    "AllTests.js"
+  ],
+  "headers": [],
+  "content": "# AllTests.js\n\n```javascript\nsap.ui.define([\n\t\"sapbtp/sapui5/test/unit/controller/View1.controller\"\n], function () {\n\t\"use strict\";\n});\n\n```",
+  "excerpt": "AllTests.js",
+  "wordCount": 13,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

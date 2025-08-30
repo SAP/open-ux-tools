@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-unit-controller-view1-controller-js",
+  "title": "View1.controller",
+  "category": "samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/unit/controller/View1.controller.js",
+  "lastModified": "2025-08-29T09:58:36.460Z",
+  "tags": [
+    "samples",
+    "js",
+    "View1.controller.js"
+  ],
+  "headers": [],
+  "content": "# View1.controller.js\n\n```javascript\nsap.ui.define([\"ns/manageproductsneo/controller/View1.controller\"],function(e){\"use strict\";QUnit.module(\"View1 Controller\");QUnit.test(\"I should test the View1 controller\",function(n){var t=new e;t.onInit();n.ok(t)})});\n```",
+  "excerpt": "View1.controller.js",
+  "wordCount": 14,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

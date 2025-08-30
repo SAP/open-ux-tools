@@ -1,0 +1,21 @@
+{
+  "id": "fiori-samples-v4-apps-salesorder-tsconfig-json",
+  "title": "tsconfig",
+  "category": "samples",
+  "path": "V4/apps/salesorder/tsconfig.json",
+  "lastModified": "2025-08-29T09:58:36.428Z",
+  "tags": [
+    "samples",
+    "json",
+    "tsconfig.json"
+  ],
+  "headers": [
+    "compilerOptions"
+  ],
+  "content": "# tsconfig.json\n\n```json\n{\n  \"compilerOptions\": {\n    \"module\": \"none\",\n    \"noEmit\": true,\n    \"checkJs\": true,\n    \"allowJs\": true,\n    \"types\": [\n      \"@sapui5/ts-types\"\n    ]\n  }\n}\n```",
+  "excerpt": "tsconfig.json",
+  "wordCount": 21,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-v4-apps-salesorder-webapp-test-testsuite-qunit-js",
+  "title": "testsuite.qunit",
+  "category": "samples",
+  "path": "V4/apps/salesorder/webapp/test/testsuite.qunit.js",
+  "lastModified": "2025-08-29T09:58:36.429Z",
+  "tags": [
+    "samples",
+    "js",
+    "testsuite.qunit.js"
+  ],
+  "headers": [],
+  "content": "# testsuite.qunit.js\n\n```javascript\nwindow.suite = function() {\n    'use strict';\n\n    // eslint-disable-next-line\n    var oSuite = new parent.jsUnitTestSuite(),\n    \n    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);\n    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');\n\n    return oSuite;\n};\n```",
+  "excerpt": "testsuite.qunit.js",
+  "wordCount": 29,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

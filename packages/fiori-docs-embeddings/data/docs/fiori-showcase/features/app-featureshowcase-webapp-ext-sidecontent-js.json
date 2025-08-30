@@ -1,0 +1,19 @@
+{
+  "id": "fiori-showcase-app-featureshowcase-webapp-ext-sidecontent-js",
+  "title": "SideContent",
+  "category": "features",
+  "path": "app/featureShowcase/webapp/ext/SideContent.js",
+  "lastModified": "2025-08-29T09:58:06.643Z",
+  "tags": [
+    "features",
+    "js",
+    "SideContent.js"
+  ],
+  "headers": [],
+  "content": "# SideContent.js\n\n```javascript\nsap.ui.define([], function() {\n   \"use strict\";\n   //Search-Term: #SideContent\n   return {\n      toggleSideContent: function(oBindingContext) {\n         this.showSideContent(\"customSectionQualifier\");\n      },\n      toggleSideContentItem1: function(oContextInfo) {\n         this.showSideContent(\"childEntities1Section\");\n      }\n   };\n});\n```",
+  "excerpt": "SideContent.js",
+  "wordCount": 25,
+  "version": "1.0.0",
+  "source": "fiori-showcase",
+  "sourceType": "github"
+}

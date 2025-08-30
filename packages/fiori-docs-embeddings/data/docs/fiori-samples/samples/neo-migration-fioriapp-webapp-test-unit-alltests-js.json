@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-fioriapp-webapp-test-unit-alltests-js",
+  "title": "AllTests",
+  "category": "samples",
+  "path": "neo-migration/fioriapp/webapp/test/unit/AllTests.js",
+  "lastModified": "2025-08-29T09:58:36.458Z",
+  "tags": [
+    "samples",
+    "js",
+    "AllTests.js"
+  ],
+  "headers": [],
+  "content": "# AllTests.js\n\n```javascript\nsap.ui.define([\"./model/formatter\",\"./model/models\"],function(){\"use strict\"});\n```",
+  "excerpt": "AllTests.js",
+  "wordCount": 6,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

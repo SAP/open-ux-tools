@@ -1,0 +1,23 @@
+{
+  "id": "fiori-samples-sample-fiori-gen-ext-tsconfig-json",
+  "title": "tsconfig",
+  "category": "samples",
+  "path": "sample-fiori-gen-ext/tsconfig.json",
+  "lastModified": "2025-08-29T09:58:36.461Z",
+  "tags": [
+    "samples",
+    "json",
+    "tsconfig.json"
+  ],
+  "headers": [
+    "compilerOptions",
+    "include",
+    "exclude"
+  ],
+  "content": "# tsconfig.json\n\n```json\n{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"CommonJS\",\n    \"outDir\": \"generators\",\n    \"rootDir\": \"src\",\n    \"strict\": false,\n    \"skipLibCheck\": true,\n    \"moduleResolution\": \"node\",\n    \"esModuleInterop\": true\n  },\n  \"include\": [\n    \"src/*.ts\",\n    \"src/**/*.ts\",\n    \"src/**/*.json\"\n  ],\n  \"exclude\": [\n    \"node_modules\"\n  ]\n}\n```",
+  "excerpt": "tsconfig.json",
+  "wordCount": 35,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

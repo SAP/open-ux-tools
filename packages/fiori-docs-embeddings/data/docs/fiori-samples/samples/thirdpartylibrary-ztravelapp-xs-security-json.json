@@ -1,0 +1,26 @@
+{
+  "id": "fiori-samples-thirdpartylibrary-ztravelapp-xs-security-json",
+  "title": "xs security",
+  "category": "samples",
+  "path": "thirdpartylibrary/ztravelapp/xs-security.json",
+  "lastModified": "2025-08-29T09:58:36.461Z",
+  "tags": [
+    "samples",
+    "json",
+    "security.json"
+  ],
+  "headers": [
+    "xsappname",
+    "tenant-mode",
+    "description",
+    "scopes",
+    "role-templates",
+    "role-collections"
+  ],
+  "content": "# xs-security.json\n\n```json\n{\n  \"xsappname\": \"reuselibtravelapp\",\n  \"tenant-mode\": \"dedicated\",\n  \"description\": \"Security profile of called application\",\n  \"scopes\": [],\n  \"role-templates\": [],\n  \"role-collections\": []\n}\n```",
+  "excerpt": "xs-security.json",
+  "wordCount": 22,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

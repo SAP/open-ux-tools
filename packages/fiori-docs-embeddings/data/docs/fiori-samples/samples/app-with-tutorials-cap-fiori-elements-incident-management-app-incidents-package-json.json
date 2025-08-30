@@ -1,0 +1,27 @@
+{
+  "id": "fiori-samples-app-with-tutorials-cap-fiori-elements-incident-management-app-incidents-package-json",
+  "title": "incidents",
+  "category": "samples",
+  "path": "app-with-tutorials/cap/fiori-elements-incident-management/app/incidents/package.json",
+  "lastModified": "2025-08-29T09:58:36.431Z",
+  "tags": [
+    "samples",
+    "json",
+    "package.json"
+  ],
+  "headers": [
+    "name",
+    "version",
+    "description",
+    "keywords",
+    "main",
+    "scripts",
+    "devDependencies"
+  ],
+  "content": "# package.json\n\n```json\n{\n  \"name\": \"incidents\",\n  \"version\": \"0.0.1\",\n  \"description\": \"SAP Fiori Elements\",\n  \"keywords\": [\n    \"ui5\",\n    \"openui5\",\n    \"sapui5\"\n  ],\n  \"main\": \"webapp/index.html\",\n  \"scripts\": {\n    \"deploy-config\": \"npx -p @sap/ux-ui5-tooling fiori add deploy-config cf\"\n  },\n  \"devDependencies\": {}\n}\n```",
+  "excerpt": "package.json",
+  "wordCount": 35,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

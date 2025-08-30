@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-dist-model-models-js",
+  "title": "models",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/dist/model/models.js",
+  "lastModified": "2025-08-29T09:58:36.445Z",
+  "tags": [
+    "samples",
+    "js",
+    "models.js"
+  ],
+  "headers": [],
+  "content": "# models.js\n\n```javascript\nsap.ui.define([\"sap/ui/model/json/JSONModel\",\"sap/ui/Device\"],function(e,n){\"use strict\";return{createDeviceModel:function(){var i=new e(n);i.setDefaultBindingMode(\"OneWay\");return i}}});\n```",
+  "excerpt": "models.js",
+  "wordCount": 9,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

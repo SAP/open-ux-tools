@@ -1,0 +1,20 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-dist-controller-app-dbg-controller-js",
+  "title": "App dbg.controller",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/dist/controller/App-dbg.controller.js",
+  "lastModified": "2025-08-29T09:58:36.445Z",
+  "tags": [
+    "samples",
+    "js",
+    "App",
+    "dbg.controller.js"
+  ],
+  "headers": [],
+  "content": "# App-dbg.controller.js\n\n```javascript\nsap.ui.define(\n    [\n        \"sap/ui/core/mvc/Controller\"\n    ],\n    function(BaseController) {\n      \"use strict\";\n  \n      return BaseController.extend(\"sap.btp.sapui5.controller.App\", {\n        onInit() {\n        }\n      });\n    }\n  );\n  \n```",
+  "excerpt": "App-dbg.controller.js",
+  "wordCount": 21,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

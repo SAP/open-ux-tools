@@ -1,0 +1,26 @@
+{
+  "id": "fiori-samples-app-with-tutorials-non-cap-sapui5-basic-manage-products-dist-resources-sap-ui-version-json",
+  "title": "sap.btp.sapui5",
+  "category": "samples",
+  "path": "app-with-tutorials/non-cap/sapui5/basic/manage-products/dist/resources/sap-ui-version.json",
+  "lastModified": "2025-08-29T09:58:36.445Z",
+  "tags": [
+    "samples",
+    "json",
+    "sap",
+    "version.json"
+  ],
+  "headers": [
+    "name",
+    "version",
+    "buildTimestamp",
+    "scmRevision",
+    "libraries"
+  ],
+  "content": "# sap-ui-version.json\n\n```json\n{\n  \"name\": \"sap.btp.sapui5\",\n  \"version\": \"0.0.1\",\n  \"buildTimestamp\": \"202212161029\",\n  \"scmRevision\": \"\",\n  \"libraries\": []\n}\n```",
+  "excerpt": "sap-ui-version.json",
+  "wordCount": 16,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}
