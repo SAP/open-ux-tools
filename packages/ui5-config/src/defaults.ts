@@ -2,7 +2,7 @@ export const enum UI5_DEFAULT {
     DEFAULT_UI5_VERSION = '',
     DEFAULT_LOCAL_UI5_VERSION = '1.95.0',
     MIN_UI5_VERSION = '1.60.0',
-    MIN_LOCAL_SAPUI5_VERSION = '1.76.0',
+    MIN_LOCAL_SAPUI5_VERSION = '1.84.54',
     MIN_LOCAL_OPENUI5_VERSION = '1.52.5',
     SAPUI5_CDN = 'https://ui5.sap.com',
     OPENUI5_CDN = 'https://sdk.openui5.org',

@@ -7,14 +7,17 @@ type SingleVersionInfo =
     | {
           name: string;
           version: string;
-      }
-    | undefined;
+      };
 
 export type Ui5VersionInfo = {
     major: number;
     minor: number;
     patch?: number;
     label?: string;
+    /**
+     * Indicates if the UI5 version is served from CDN.
+     */
+    isCdn?: boolean;
 };
 
 /**
@@ -51,7 +54,9 @@ function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
  * @returns Ui5VersionInfo
  */
 export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui5VersionInfo> {
-    let version = ((await VersionInfo.load({ library })) as SingleVersionInfo)?.version;
+    const versionInfo = await VersionInfo.load() as { name: string; libraries: SingleVersionInfo[] } | undefined;
+    let version = versionInfo?.libraries?.find((lib) => lib.name === library)?.version;
+    const isCdn = versionInfo?.name === 'SAPUI5 Distribution';
     if (!version) {
         Log.error('Could not get UI5 version of application. Using version: 1.130.0 as fallback.');
         version = '1.130.0';
@@ -68,7 +73,8 @@ export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui
         major,
         minor,
         patch,
-        label
+        label,
+        isCdn
     } satisfies Ui5VersionInfo;
 }
 
