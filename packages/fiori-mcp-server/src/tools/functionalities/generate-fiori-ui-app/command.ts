@@ -74,8 +74,8 @@ export async function command(params: ExecuteFunctionalitiesInput): Promise<Exec
     }
 
     const appName = (generatorConfig?.project.name as string) ?? 'default';
-    const appPath = join(projectPath as string, 'app', appName);
-    const targetDir = projectPath as string;
+    const appPath = join(projectPath, 'app', appName);
+    const targetDir = projectPath;
     const configPath = `${appName}-generator-config.json`;
     const outputPath = join(targetDir, configPath);
     const generatorName = '@sap/generator-fiori';
