@@ -10,6 +10,9 @@
   },
   "references": [
     {
+      "path": "../fiori-annotation-api"
+    },
+    {
       "path": "../fiori-docs-embeddings"
     },
     {
@@ -20,6 +23,9 @@
     },
     {
       "path": "../odata-entity-model"
+    },
+    {
+      "path": "../project-access"
     },
     {
       "path": "../text-document-utils"

@@ -2,11 +2,8 @@
   "name": "@sap-ux/fiori-docs-embeddings",
   "version": "0.0.0",
   "description": "SAP Fiori documentation indexing",
-  "main": "dist/index.js",
+  "private": true,
   "type": "module",
-  "bin": {
-    "fiori-docs-mcp": "./bin/fiori-docs-mcp.js"
-  },
   "scripts": {
     "build-compiler": "tsc --noEmit",
     "build": "npm-run-all -l -s build-compiler update-embeddings",
