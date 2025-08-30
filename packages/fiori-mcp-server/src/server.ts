@@ -25,6 +25,11 @@ type ToolArgs =
 export class FioriFunctionalityServer {
     private readonly server: Server;
 
+    private calls: { list: boolean; details: { [key: string]: boolean } } = {
+        list: false,
+        details: {}
+    };
+
     /**
      * Initializes a new instance of the FioriFunctionalityServer.
      * Sets up the MCP server with Fiori functionality tools and error handling.
@@ -58,6 +63,59 @@ export class FioriFunctionalityServer {
         });
     }
 
+    private normalizeFunctionalityId(functionalityId: string | string[]): string {
+        return typeof functionalityId === 'object' ? JSON.stringify(functionalityId) : functionalityId;
+    }
+
+    // ToDo - any
+    private async handleTool(name: string, args: ToolArgs): Promise<any> {
+        try {
+            let result;
+            switch (name) {
+                case 'list-fiori-apps':
+                    result = await listFioriApps(args as ListFioriAppsInput);
+                    return this.convertResultToCallToolResult(result);
+                case 'list-functionality':
+                    this.calls.list = true;
+                    result = await listFunctionalities(args as ListFunctionalitiesInput);
+                    return this.convertResultToCallToolResult(result);
+                case 'get-functionality-details':
+                    if (!this.calls.list) {
+                        throw new Error(`Call 'list-functionality' tool before calling 'get-functionality-details'.`);
+                    }
+                    const detailsInput = args as GetFunctionalityDetailsInput;
+                    const detailsId = this.normalizeFunctionalityId(detailsInput.functionalityId);
+                    this.calls.details[detailsId] = true;
+                    result = await getFunctionalityDetails(detailsInput);
+                    return this.convertResultToCallToolResult(result);
+                case 'execute-functionality':
+                    const executeInput = args as ExecuteFunctionalitiesInput;
+                    const executeId = this.normalizeFunctionalityId(executeInput.functionalityId);
+                    if (!(executeId in this.calls.details)) {
+                        throw new Error(
+                            `Call 'get-functionality-details' tool for functionality '${executeId}' before calling 'execute-functionality' tool.`
+                        );
+                    }
+                    result = await executeFunctionality(executeInput);
+                    return this.convertResultToCallToolResult(result);
+                default:
+                    throw new Error(
+                        `Unknown tool: ${name}. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.`
+                    );
+            }
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: `Error: ${errorMessage}`
+                    }
+                ]
+            };
+        }
+    }
+
     /**
      * Sets up handlers for various MCP tools.
      * Configures handlers for listing tools, and calling specific Fiori functionality tools.
@@ -71,38 +129,7 @@ export class FioriFunctionalityServer {
 
         this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
             const { name, arguments: args } = request.params as { name: string; arguments: ToolArgs };
-
-            try {
-                let result;
-                switch (name) {
-                    case 'list-fiori-apps':
-                        result = await listFioriApps(args as ListFioriAppsInput);
-                        return this.convertResultToCallToolResult(result);
-                    case 'list-functionality':
-                        result = await listFunctionalities(args as ListFunctionalitiesInput);
-                        return this.convertResultToCallToolResult(result);
-                    case 'get-functionality-details':
-                        result = await getFunctionalityDetails(args as GetFunctionalityDetailsInput);
-                        return this.convertResultToCallToolResult(result);
-                    case 'execute-functionality':
-                        result = await executeFunctionality(args as ExecuteFunctionalitiesInput);
-                        return this.convertResultToCallToolResult(result);
-                    default:
-                        throw new Error(
-                            `Unknown tool: ${name}. Try one of: list-fiori-apps, list-functionality, get-functionality-details, execute-functionality.`
-                        );
-                }
-            } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-                return {
-                    content: [
-                        {
-                            type: 'text',
-                            text: `Error: ${errorMessage}`
-                        }
-                    ]
-                };
-            }
+            return this.handleTool(name, args);
         });
     }
 
