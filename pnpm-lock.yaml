@@ -2243,10 +2243,10 @@ importers:
       i18next:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
+      zod:
+        specifier: 4.1.5
+        version: 4.1.5
     devDependencies:
-      '@sap-ux/fiori-generator-shared':
-        specifier: workspace:*
-        version: link:../fiori-generator-shared
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n
@@ -25368,3 +25368,7 @@ packages:
 
   /zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+
+  /zod@4.1.5:
+    resolution: {integrity: sha512-rcUUZqlLJgBC33IT3PNMgsCq6TzLQEG/Ei/KTCU0PedSWRMAXoOUN+4t/0H+Q8bdnLPdqUYnvboJT0bn/229qg==}
+    dev: false

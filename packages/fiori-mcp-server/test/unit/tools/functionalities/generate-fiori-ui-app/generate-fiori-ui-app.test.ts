@@ -38,6 +38,48 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual(GENERATE_FIORI_UI_APP);
     });
 });
+const paramTest = {
+    projectPath: join(testOutputDir, 'app1'),
+    appGenConfig: {
+        version: '1.0.0',
+        floorplan: 'FE_LROP',
+        project: {
+            name: 'app1',
+            targetFolder: join(testOutputDir, 'app1'),
+            namespace: 'zzz',
+            title: 'App 1',
+            description: 'Description for App 1',
+            ui5Theme: 'sap_belize',
+            ui5Version: '1.100.0',
+            localUI5Version: '1.100.0',
+            sapux: true,
+            skipAnnotations: false,
+            enableCodeAssist: true,
+            enableEslint: true,
+            enableTypeScript: true
+        },
+        service: {
+            capService: {
+                projectPath: 'zzzapp1',
+                serviceName: 'app1',
+                serviceCdsPath: 'srv/cat-service.cds',
+                capType: 'Node.js' // optional
+            },
+            servicePath: 'app1'
+        },
+        entityConfig: {
+            mainEntity: {
+                entityName: 'Travel'
+            },
+            generateFormAnnotations: true,
+            generateLROPAnnotations: true
+        },
+        telemetryData: {
+            generationSourceName: 'test',
+            generationSourceVersion: '1.0.0'
+        }
+    }
+};
 
 describe('executeFunctionality', () => {
     test('executeFunctionality - success', async () => {
@@ -47,27 +89,7 @@ describe('executeFunctionality', () => {
         const result = await generateFioriUIAppHandlers.executeFunctionality({
             appPath: join(testOutputDir, 'app1'),
             functionalityId: GENERATE_FIORI_UI_APP.id,
-            parameters: {
-                projectPath: join(testOutputDir, 'app1'),
-                appGenConfig: {
-                    version: '1.0.0',
-                    floorplan: 'list',
-                    project: {
-                        name: 'app1',
-                        targetFolder: join(testOutputDir, 'app1')
-                    },
-                    service: {
-                        servicePath: 'app1',
-                        capService: {
-                            serviceName: 'app1'
-                        }
-                    },
-                    telemetryData: {
-                        generationSourceName: 'test',
-                        generationSourceVersion: '1.0.0'
-                    }
-                }
-            }
+            parameters: paramTest
         });
         expect(result).toEqual(
             expect.objectContaining({
@@ -78,16 +100,37 @@ describe('executeFunctionality', () => {
                 parameters: {
                     appGenConfig: {
                         version: '1.0.0',
-                        floorplan: 'list',
+                        floorplan: 'FE_LROP',
                         project: {
+                            description: 'Description for App 1',
+                            enableCodeAssist: true,
+                            enableEslint: true,
+                            enableTypeScript: true,
+                            localUI5Version: '1.100.0',
                             name: 'app1',
-                            targetFolder: join(testOutputDir, 'app1')
+                            'namespace': 'zzz',
+                            'sapux': true,
+                            'skipAnnotations': false,
+                            targetFolder: join(testOutputDir, 'app1'),
+                            'title': 'App 1',
+                            'ui5Theme': 'sap_belize',
+                            'ui5Version': '1.100.0'
                         },
                         service: {
                             servicePath: 'app1',
                             capService: {
-                                serviceName: 'app1'
+                                serviceName: 'app1',
+                                'capType': 'Node.js',
+                                'projectPath': 'zzzapp1',
+                                'serviceCdsPath': 'srv/cat-service.cds'
                             }
+                        },
+                        entityConfig: {
+                            mainEntity: {
+                                entityName: 'Travel'
+                            },
+                            generateFormAnnotations: true,
+                            generateLROPAnnotations: true
                         },
                         telemetryData: {
                             generationSourceName: 'test',
@@ -109,27 +152,7 @@ describe('executeFunctionality', () => {
         const result = await generateFioriUIAppHandlers.executeFunctionality({
             appPath: join(testOutputDir, 'app1'),
             functionalityId: GENERATE_FIORI_UI_APP.id,
-            parameters: {
-                projectPath: join(testOutputDir, 'app1'),
-                appGenConfig: {
-                    version: '1.0.0',
-                    floorplan: 'list',
-                    project: {
-                        name: 'app1',
-                        targetFolder: join(testOutputDir, 'app1')
-                    },
-                    service: {
-                        servicePath: 'app1',
-                        capService: {
-                            serviceName: 'app1'
-                        }
-                    },
-                    telemetryData: {
-                        generationSourceName: 'test',
-                        generationSourceVersion: '1.0.0'
-                    }
-                }
-            }
+            parameters: paramTest
         });
         expect(result).toEqual(
             expect.objectContaining({
@@ -137,27 +160,7 @@ describe('executeFunctionality', () => {
                 changes: [],
                 functionalityId: 'generate-fiori-ui-app',
                 message: `Error generating application: Dummy`,
-                parameters: {
-                    appGenConfig: {
-                        version: '1.0.0',
-                        floorplan: 'list',
-                        project: {
-                            name: 'app1',
-                            targetFolder: join(testOutputDir, 'app1')
-                        },
-                        service: {
-                            servicePath: 'app1',
-                            capService: {
-                                serviceName: 'app1'
-                            }
-                        },
-                        telemetryData: {
-                            generationSourceName: 'test',
-                            generationSourceVersion: '1.0.0'
-                        }
-                    },
-                    projectPath: join(testOutputDir, 'app1')
-                },
+                parameters: paramTest,
                 status: 'Error'
             })
         );
@@ -174,7 +177,18 @@ describe('executeFunctionality', () => {
                 functionalityId: GENERATE_FIORI_UI_APP.id,
                 parameters: {}
             })
-        ).rejects.toThrow('Please provide a valid path to the CAP project folder.');
+        ).rejects.toThrowErrorMatchingInlineSnapshot(`
+            "Missing required fields in generatorConfig. [
+                {
+                    \\"expected\\": \\"object\\",
+                    \\"code\\": \\"invalid_type\\",
+                    \\"path\\": [
+                        \\"appGenConfig\\"
+                    ],
+                    \\"message\\": \\"Invalid input: expected object, received undefined\\"
+                }
+            ]"
+        `);
     });
 
     test('executeFunctionality - wrong appGenConfig', async () => {
@@ -190,8 +204,17 @@ describe('executeFunctionality', () => {
                     appGenConfig: 'dummy'
                 }
             })
-        ).rejects.toThrow(
-            `Missing required fields in generatorConfig. Please provide all required fields. generatorConfig is \"dummy\"`
-        );
+        ).rejects.toThrowErrorMatchingInlineSnapshot(`
+            "Missing required fields in generatorConfig. [
+                {
+                    \\"expected\\": \\"object\\",
+                    \\"code\\": \\"invalid_type\\",
+                    \\"path\\": [
+                        \\"appGenConfig\\"
+                    ],
+                    \\"message\\": \\"Invalid input: expected object, received string\\"
+                }
+            ]"
+        `);
     });
 });
