@@ -110,7 +110,14 @@
         "abapOnBTPType": {
             "message": "ABAP environment definition source",
             "choiceReentranceTicket": "Use Reentrance Ticket",
+            "choiceServiceKey": "Upload a Service Key File",
             "choiceCloudFoundry": "Discover a Cloud Foundry Service"
+        },
+        "serviceKey": {
+            "message": "Service Key File Path",
+            "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
+            "incompleteServiceKeyInfo": "The service keys file does not contain the required information. Check the file is valid and try again.",
+            "unparseableServiceKey": "The service keys file does not contain a valid JSON format. Check the formatting and try again."
         },
         "cloudFoundryAbapSystem": {
             "message": "ABAP environment",

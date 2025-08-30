@@ -66,7 +66,6 @@ export async function connectWithBackendSystem(
                 systemAuthType: 'reentranceTicket'
             });
         } else if (backendSystem.serviceKeys) {
-            // Handle existing stored service keys for backward compatibility
             connectValResult = await connectionValidator.validateServiceInfo(
                 backendSystem.serviceKeys as ServiceInfo,
                 convertODataVersionType(requiredOdataVersion),
