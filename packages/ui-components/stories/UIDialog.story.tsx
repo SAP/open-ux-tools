@@ -9,6 +9,7 @@ import { UITextInput } from '../src/components/UIInput';
 import { UIDropdown } from '../src/components/UIDropdown';
 import { UIComboBox } from '../src/components/UIComboBox';
 import { UICheckbox } from '../src/components/UICheckbox';
+import { initTheme } from '../src';
 
 export default { title: 'Dialogs/Dialogs' };
 
@@ -24,6 +25,7 @@ const TEXTFIELD_MARGIN = {
 
 interface TestDialogProps {
     openAnimation: boolean;
+    withBlurOverlay?: boolean;
 }
 
 class Test extends React.Component<
@@ -77,8 +79,9 @@ class Test extends React.Component<
                     {draggable ? 'Open Draggable Dialog' : 'Open Dialog'}
                 </UIDefaultButton>
                 <UIDialog
-                    isOpen={this.state.isOpen}
+                    hidden={!this.state.isOpen}
                     isOpenAnimated={this.props.openAnimation}
+                    withBlurOverlay={this.props.withBlurOverlay}
                     isBlocking={true}
                     title={'Header Title'}
                     acceptButtonText={'Accept'}
@@ -121,6 +124,7 @@ const LargeDialog = (props: TestDialogProps & { size?: number }): JSX.Element =>
             <UIDialog
                 isOpen={isVisible}
                 isOpenAnimated={props.openAnimation}
+                withBlurOverlay={props.withBlurOverlay}
                 isBlocking={true}
                 title={'Header Title'}
                 acceptButtonText={'Accept'}
@@ -181,6 +185,7 @@ const ConfirmDialog = (props: TestDialogProps): JSX.Element => {
 
 export const Dialog = () => {
     const [openAnimation, setOpenAnimation] = useState(true);
+    const [withBlurOverlay, setWithBlurOverlay] = useState(true);
 
     return (
         <Stack tokens={stackTokens}>
@@ -196,27 +201,34 @@ export const Dialog = () => {
                             setOpenAnimation(value);
                         }}
                     />
+                    <UICheckbox
+                        label="blur the background"
+                        checked={withBlurOverlay}
+                        onChange={(event: any, value: any) => {
+                            setWithBlurOverlay(value);
+                        }}
+                    />
                 </Stack>
                 <Stack horizontal tokens={stackTokens}>
-                    <Test draggable={false} openAnimation={openAnimation} />
+                    <Test draggable={false} openAnimation={openAnimation} withBlurOverlay={withBlurOverlay} />
                 </Stack>
                 <Stack horizontal tokens={stackTokens}>
-                    <Test draggable={false} openAnimation={openAnimation} />
+                    <Test draggable={false} openAnimation={openAnimation} withBlurOverlay={withBlurOverlay} />
                 </Stack>
                 <Stack horizontal tokens={stackTokens}>
-                    <Test draggable={true} openAnimation={openAnimation} />
+                    <Test draggable={true} openAnimation={openAnimation} withBlurOverlay={withBlurOverlay} />
                 </Stack>
                 <Stack horizontal tokens={stackTokens}>
-                    <LargeDialog openAnimation={openAnimation} />
+                    <LargeDialog openAnimation={openAnimation} withBlurOverlay={withBlurOverlay} />
                 </Stack>
                 <Stack horizontal tokens={stackTokens}>
-                    <LargeDialog size={400} openAnimation={openAnimation} />
+                    <LargeDialog size={400} openAnimation={openAnimation} withBlurOverlay={withBlurOverlay} />
                 </Stack>
                 <Stack horizontal tokens={stackTokens}>
-                    <LargeDialog openAnimation={openAnimation} />
+                    <LargeDialog openAnimation={openAnimation} withBlurOverlay={withBlurOverlay} />
                 </Stack>
                 <Stack horizontal tokens={stackTokens}>
-                    <ConfirmDialog openAnimation={openAnimation} />
+                    <ConfirmDialog openAnimation={openAnimation} withBlurOverlay={withBlurOverlay} />
                 </Stack>
             </Stack>
         </Stack>
