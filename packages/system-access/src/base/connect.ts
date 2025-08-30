@@ -19,7 +19,8 @@ import {
     getCredentialsFromStore,
     getCredentialsWithPrompts,
     isBasicAuth,
-    isServiceAuth
+    isServiceAuth,
+    storeSystem
 } from './credentials';
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 import { questions } from './prompts';
@@ -73,6 +74,12 @@ async function createAbapCloudServiceProvider(
         if (isServiceAuth(storedOpts)) {
             providerConfig.service = storedOpts.serviceKeys as ServiceInfo;
             providerConfig.refreshToken = storedOpts.refreshToken;
+            providerConfig.refreshTokenChangedCb = async (refreshToken?: string): Promise<void> => {
+                if (refreshToken) {
+                    logger.info('Updating refresh token for: ' + storedOpts.url);
+                    await storeSystem({ ...storedOpts, refreshToken }, logger);
+                }
+            };
             logger.info(`Using system [${storedOpts.name}] from System store`);
         }
         if (!providerConfig.service && prompt) {
