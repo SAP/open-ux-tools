@@ -1,7 +1,7 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { getFDCApps } from '../services/api';
-import type { CFConfig, CFApp, Credentials } from '../../types';
+import type { CfConfig, CFApp, CfCredentials } from '../../types';
 
 /**
  * Filter apps based on validation status.
@@ -27,10 +27,10 @@ export function formatDiscovery(app: CFApp): string {
 /**
  * Get the app host ids.
  *
- * @param {Credentials[]} credentials - The credentials.
+ * @param {CfCredentials[]} credentials - The credentials.
  * @returns {Set<string>} The app host ids.
  */
-export function getAppHostIds(credentials: Credentials[]): Set<string> {
+export function getAppHostIds(credentials: CfCredentials[]): Set<string> {
     const appHostIds: string[] = [];
     credentials.forEach((credential) => {
         const appHostId = credential['html5-apps-repo']?.app_host_id;
@@ -47,14 +47,14 @@ export function getAppHostIds(credentials: Credentials[]): Set<string> {
 /**
  * Discover apps from FDC API based on credentials.
  *
- * @param {Credentials[]} credentials - The credentials containing app host IDs
- * @param {CFConfig} cfConfig - The CF configuration
+ * @param {CfCredentials[]} credentials - The credentials containing app host IDs
+ * @param {CfConfig} cfConfig - The CF configuration
  * @param {ToolsLogger} logger - The logger
  * @returns {Promise<CFApp[]>} The discovered apps
  */
 export async function discoverCfApps(
-    credentials: Credentials[],
-    cfConfig: CFConfig,
+    credentials: CfCredentials[],
+    cfConfig: CfConfig,
     logger: ToolsLogger
 ): Promise<CFApp[]> {
     const appHostIds = getAppHostIds(credentials);

@@ -3,7 +3,7 @@ import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { getAuthToken, checkForCf } from '../services/cli';
-import type { CFConfig, Organization } from '../../types';
+import type { CfConfig, Organization } from '../../types';
 
 /**
  * Check if CF is installed.
@@ -35,11 +35,11 @@ export async function isExternalLoginEnabled(vscode: any): Promise<boolean> {
 /**
  * Check if the user is logged in Cloud Foundry.
  *
- * @param {CFConfig} cfConfig - The CF config.
+ * @param {CfConfig} cfConfig - The CF config.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<boolean>} Whether the user is logged in.
  */
-export async function isLoggedInCf(cfConfig: CFConfig, logger: ToolsLogger): Promise<boolean> {
+export async function isLoggedInCf(cfConfig: CfConfig, logger: ToolsLogger): Promise<boolean> {
     let isLogged = false;
     let orgs: Organization[] = [];
 

@@ -5,7 +5,9 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import { createService, getServiceInstanceKeys } from '../services/api';
-import type { HTML5Content, ServiceKeys, Uaa, AppParams } from '../../types';
+import type { HTML5Content, ServiceKeys, Uaa, CfAppParams } from '../../types';
+
+const HTML5_APPS_REPO_RUNTIME = 'html5-apps-repo-runtime';
 
 /**
  * Get the OAuth token from HTML5 repository.
@@ -59,23 +61,22 @@ export async function downloadZip(token: string, appHostId: string, uri: string)
  *
  * @param {string} spaceGuid space guid
  * @param {ToolsLogger} logger logger to log messages
- * @returns {Promise<any>} credentials json object
+ * @returns {Promise<ServiceKeys>} credentials json object
  */
 export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLogger): Promise<ServiceKeys> {
-    const INSTANCE_NAME = 'html5-apps-repo-runtime';
     try {
         let serviceKeys = await getServiceInstanceKeys(
             {
                 spaceGuids: [spaceGuid],
                 planNames: ['app-runtime'],
-                names: [INSTANCE_NAME]
+                names: [HTML5_APPS_REPO_RUNTIME]
             },
             logger
         );
-        if (serviceKeys === null || serviceKeys?.credentials === null || serviceKeys?.credentials?.length === 0) {
-            await createService(spaceGuid, 'app-runtime', INSTANCE_NAME, logger, ['html5-apps-repo-rt']);
-            serviceKeys = await getServiceInstanceKeys({ names: [INSTANCE_NAME] }, logger);
-            if (serviceKeys === null || serviceKeys?.credentials === null || serviceKeys?.credentials?.length === 0) {
+        if (!serviceKeys?.credentials?.length) {
+            await createService(spaceGuid, 'app-runtime', HTML5_APPS_REPO_RUNTIME, logger, ['html5-apps-repo-rt']);
+            serviceKeys = await getServiceInstanceKeys({ names: [HTML5_APPS_REPO_RUNTIME] }, logger);
+            if (!serviceKeys?.credentials?.length) {
                 throw new Error('Cannot find HTML5 Repo runtime in current space');
             }
         }
@@ -89,13 +90,13 @@ export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLo
  * Download base app manifest.json and xs-app.json from HTML5 repository.
  *
  * @param {string} spaceGuid current space guid
- * @param {AppParams} parameters appName, appVersion, appHostId
+ * @param {CfAppParams} parameters appName, appVersion, appHostId
  * @param {ToolsLogger} logger logger to log messages
  * @returns {Promise<AdmZip.IZipEntry[]>} manifest.json and xs-app.json
  */
 export async function downloadAppContent(
     spaceGuid: string,
-    parameters: AppParams,
+    parameters: CfAppParams,
     logger: ToolsLogger
 ): Promise<HTML5Content> {
     const { appHostId, appName, appVersion } = parameters;

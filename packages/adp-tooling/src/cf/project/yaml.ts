@@ -4,10 +4,18 @@ import yaml from 'js-yaml';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
+import type {
+    MtaModule,
+    AppParamsExtended,
+    MtaDestination,
+    MtaResource,
+    MtaRequire,
+    CfUI5Yaml,
+    MtaYaml
+} from '../../types';
 import { AppRouterType } from '../../types';
 import { createServices } from '../services/api';
-import { getProjectNameForXsSecurity, YamlLoader } from './yaml-loader';
-import type { Resource, Yaml, MTAModule, AppParamsExtended } from '../../types';
+import { getProjectNameForXsSecurity, getYamlContent } from './yaml-loader';
 
 const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';
 const HTML5_APPS_REPO = 'html5-apps-repo';
@@ -26,18 +34,16 @@ export function isMtaProject(selectedPath: string): boolean {
 /**
  * Gets the SAP Cloud Service.
  *
- * @param {Yaml} yamlContent - The YAML content.
+ * @param {MtaYaml} yamlContent - The YAML content.
  * @returns {string} The SAP Cloud Service.
  */
-export function getSAPCloudService(yamlContent: Yaml): string {
-    const modules = yamlContent?.modules?.filter((module: { name: string }) =>
-        module.name.includes('destination-content')
-    );
+export function getSAPCloudService(yamlContent: MtaYaml): string {
+    const modules = yamlContent?.modules?.filter((module: MtaModule) => module.name.includes('destination-content'));
     const destinations = modules?.[0]?.parameters?.content?.instance?.destinations;
-    let sapCloudService = destinations?.find((destination: { Name: string }) =>
+    const mtaDestination = destinations?.find((destination: MtaDestination) =>
         destination.Name.includes('html_repo_host')
     );
-    sapCloudService = sapCloudService?.['sap.cloud.service'].replace(/_/g, '.');
+    const sapCloudService = mtaDestination?.['sap.cloud.service']?.replace(/_/g, '.') ?? '';
 
     return sapCloudService;
 }
@@ -45,12 +51,12 @@ export function getSAPCloudService(yamlContent: Yaml): string {
 /**
  * Gets the router type.
  *
- * @param {Yaml} yamlContent - The YAML content.
+ * @param {MtaYaml} yamlContent - The YAML content.
  * @returns {AppRouterType} The router type.
  */
-export function getRouterType(yamlContent: Yaml): AppRouterType {
-    const filtered: MTAModule[] | undefined = yamlContent?.modules?.filter(
-        (module: { name: string }) => module.name.includes('destination-content') || module.name.includes('approuter')
+export function getRouterType(yamlContent: MtaYaml): AppRouterType {
+    const filtered: MtaModule[] | undefined = yamlContent?.modules?.filter(
+        (module: MtaModule) => module.name.includes('destination-content') || module.name.includes('approuter')
     );
     const routerType = filtered?.pop();
     if (routerType?.name.includes('approuter')) {
@@ -64,18 +70,18 @@ export function getRouterType(yamlContent: Yaml): AppRouterType {
  * Gets the app params from the UI5 YAML file.
  *
  * @param {string} projectPath - The project path.
- * @returns {Promise<AppParamsExtended>} The app params.
+ * @returns {AppParamsExtended} The app params.
  */
 export function getAppParamsFromUI5Yaml(projectPath: string): AppParamsExtended {
     const ui5YamlPath = path.join(projectPath, 'ui5.yaml');
-    const parsedYaml = YamlLoader.getYamlContent(ui5YamlPath) as any;
+    const parsedYaml = getYamlContent<CfUI5Yaml>(ui5YamlPath);
 
     const appConfiguration = parsedYaml?.builder?.customTasks?.[0]?.configuration;
     const appParams: AppParamsExtended = {
-        appHostId: appConfiguration?.appHostId,
-        appName: appConfiguration?.appName,
-        appVersion: appConfiguration?.appVersion,
-        spaceGuid: appConfiguration?.space
+        appHostId: appConfiguration?.appHostId || '',
+        appName: appConfiguration?.appVersion || '',
+        appVersion: appConfiguration?.appVersion || '',
+        spaceGuid: appConfiguration?.space || ''
     };
 
     return appParams;
@@ -84,13 +90,13 @@ export function getAppParamsFromUI5Yaml(projectPath: string): AppParamsExtended 
 /**
  * Adjusts the MTA YAML for a standalone approuter.
  *
- * @param {any} yamlContent - The YAML content.
+ * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string} projectName - The project name.
  * @param {string} businessService - The business service.
  */
-function adjustMtaYamlStandaloneApprouter(yamlContent: any, projectName: string, businessService: string): void {
+function adjustMtaYamlStandaloneApprouter(yamlContent: MtaYaml, projectName: string, businessService: string): void {
     const appRouterName = `${projectName}-approuter`;
-    let appRouter = yamlContent.modules.find((module: { name: string }) => module.name === appRouterName);
+    let appRouter = yamlContent.modules?.find((module: MtaModule) => module.name === appRouterName);
     if (appRouter == null) {
         appRouter = {
             name: appRouterName,
@@ -102,7 +108,7 @@ function adjustMtaYamlStandaloneApprouter(yamlContent: any, projectName: string,
                 'memory': '256M'
             }
         };
-        yamlContent.modules.push(appRouter);
+        yamlContent.modules?.push(appRouter);
     }
     const requires = [
         `${projectName}_html_repo_runtime`,
@@ -110,8 +116,8 @@ function adjustMtaYamlStandaloneApprouter(yamlContent: any, projectName: string,
         `portal_resources_${projectName}`
     ].concat(businessService);
     requires.forEach((name) => {
-        if (appRouter.requires.every((existing: { name: string }) => existing.name !== name)) {
-            appRouter.requires.push({ name });
+        if (appRouter.requires?.every((existing: { name: string }) => existing.name !== name)) {
+            appRouter.requires?.push({ name });
         }
     });
 }
@@ -119,19 +125,19 @@ function adjustMtaYamlStandaloneApprouter(yamlContent: any, projectName: string,
 /**
  * Adjusts the MTA YAML for a managed approuter.
  *
- * @param {any} yamlContent - The YAML content.
+ * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string} projectName - The project name.
- * @param {any} businessSolution - The business solution.
+ * @param {string} businessSolution - The business solution.
  * @param {string} businessService - The business service.
  */
 function adjustMtaYamlManagedApprouter(
-    yamlContent: any,
+    yamlContent: MtaYaml,
     projectName: string,
     businessSolution: string,
     businessService: string
 ): void {
     const appRouterName = `${projectName}-destination-content`;
-    let appRouter = yamlContent.modules.find((module: { name: string }) => module.name === appRouterName);
+    let appRouter = yamlContent.modules?.find((module: MtaModule) => module.name === appRouterName);
     if (appRouter == null) {
         businessSolution = businessSolution.split('.').join('_');
         appRouter = {
@@ -201,20 +207,20 @@ function adjustMtaYamlManagedApprouter(
                 }
             }
         };
-        yamlContent.modules.push(appRouter);
+        yamlContent.modules?.push(appRouter);
     }
 }
 
 /**
  * Adjusts the MTA YAML for a UI deployer.
  *
- * @param {any} yamlContent - The YAML content.
+ * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string} projectName - The project name.
  * @param {string} moduleName - The module name.
  */
-function adjustMtaYamlUDeployer(yamlContent: any, projectName: string, moduleName: string): void {
+function adjustMtaYamlUDeployer(yamlContent: MtaYaml, projectName: string, moduleName: string): void {
     const uiDeployerName = `${projectName}_ui_deployer`;
-    let uiDeployer = yamlContent.modules.find((module: { name: string }) => module.name === uiDeployerName);
+    let uiDeployer = yamlContent.modules?.find((module: MtaModule) => module.name === uiDeployerName);
     if (uiDeployer == null) {
         uiDeployer = {
             name: uiDeployerName,
@@ -226,19 +232,19 @@ function adjustMtaYamlUDeployer(yamlContent: any, projectName: string, moduleNam
                 requires: []
             }
         };
-        yamlContent.modules.push(uiDeployer);
+        yamlContent.modules?.push(uiDeployer);
     }
     const htmlRepoHostName = `${projectName}_html_repo_host`;
-    if (uiDeployer.requires.every((req: { name: string }) => req.name !== htmlRepoHostName)) {
-        uiDeployer.requires.push({
+    if (uiDeployer.requires?.every((req: { name: string }) => req.name !== htmlRepoHostName)) {
+        uiDeployer.requires?.push({
             name: htmlRepoHostName,
             parameters: {
                 'content-target': true
             }
         });
     }
-    if (uiDeployer['build-parameters'].requires.every((require: { name: any }) => require.name !== moduleName)) {
-        uiDeployer['build-parameters'].requires.push({
+    if (uiDeployer['build-parameters']?.requires?.every((require: { name: string }) => require.name !== moduleName)) {
+        uiDeployer['build-parameters']?.requires?.push({
             artifacts: [`${moduleName}.zip`],
             name: moduleName,
             'target-path': 'resources/'
@@ -249,19 +255,19 @@ function adjustMtaYamlUDeployer(yamlContent: any, projectName: string, moduleNam
 /**
  * Adjusts the MTA YAML for resources.
  *
- * @param {any} yamlContent - The YAML content.
+ * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string} projectName - The project name.
  * @param {string} timestamp - The timestamp.
  * @param {boolean} isManagedAppRouter - Whether the approuter is managed.
  */
 function adjustMtaYamlResources(
-    yamlContent: any,
+    yamlContent: MtaYaml,
     projectName: string,
     timestamp: string,
     isManagedAppRouter: boolean
 ): void {
     const projectNameForXsSecurity = getProjectNameForXsSecurity(yamlContent, timestamp);
-    const resources: Resource[] = [
+    const resources: MtaResource[] = [
         {
             name: `${projectName}_html_repo_host`,
             type: CF_MANAGED_SERVICE,
@@ -319,8 +325,8 @@ function adjustMtaYamlResources(
     }
 
     resources.forEach((resource) => {
-        if (yamlContent.resources.every((existing: { name: string }) => existing.name !== resource.name)) {
-            yamlContent.resources.push(resource);
+        if (yamlContent.resources?.every((existing: MtaResource) => existing.name !== resource.name)) {
+            yamlContent.resources?.push(resource);
         }
     });
 }
@@ -328,11 +334,11 @@ function adjustMtaYamlResources(
 /**
  * Adjusts the MTA YAML for the own module.
  *
- * @param {any} yamlContent - The YAML content.
+ * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string} moduleName - The module name.
  */
-function adjustMtaYamlOwnModule(yamlContent: any, moduleName: string): void {
-    let module = yamlContent.modules.find((module: { name: string }) => module.name === moduleName);
+function adjustMtaYamlOwnModule(yamlContent: MtaYaml, moduleName: string): void {
+    let module = yamlContent.modules?.find((module: MtaModule) => module.name === moduleName);
     if (module == null) {
         module = {
             name: moduleName,
@@ -344,17 +350,17 @@ function adjustMtaYamlOwnModule(yamlContent: any, moduleName: string): void {
                 'supported-platforms': []
             }
         };
-        yamlContent.modules.push(module);
+        yamlContent.modules?.push(module);
     }
 }
 
 /**
  * Adds a module if it does not exist.
  *
- * @param {any[]} requires - The requires.
- * @param {any} name - The name.
+ * @param {MtaRequire[]} requires - The requires.
+ * @param {string} name - The name.
  */
-function addModuleIfNotExists(requires: { name: any }[], name: any): void {
+function addModuleIfNotExists(requires: MtaRequire[], name: string): void {
     if (requires.every((require) => require.name !== name)) {
         requires.push({ name });
     }
@@ -363,23 +369,22 @@ function addModuleIfNotExists(requires: { name: any }[], name: any): void {
 /**
  * Adjusts the MTA YAML for the FLP module.
  *
- * @param {any} yamlContent - The YAML content.
- * @param {any} yamlContent.modules - The modules.
+ * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string} projectName - The project name.
  * @param {string} businessService - The business service.
  */
-function adjustMtaYamlFlpModule(yamlContent: { modules: any[] }, projectName: any, businessService: string): void {
-    yamlContent.modules.forEach((module, index) => {
+function adjustMtaYamlFlpModule(yamlContent: MtaYaml, projectName: string, businessService: string): void {
+    yamlContent.modules?.forEach((module, index) => {
         if (module.type === SAP_APPLICATION_CONTENT && module.requires) {
             const portalResources = module.requires.find(
-                (require: { name: string }) => require.name === `portal_resources_${projectName}`
+                (require: MtaRequire) => require.name === `portal_resources_${projectName}`
             );
-            if (portalResources?.['parameters']?.['service-key']?.['name'] === 'content-deploy-key') {
+            if (portalResources?.parameters?.['service-key']?.name === 'content-deploy-key') {
                 addModuleIfNotExists(module.requires, `${projectName}_html_repo_host`);
                 addModuleIfNotExists(module.requires, `${projectName}_ui_deployer`);
                 addModuleIfNotExists(module.requires, businessService);
                 // move flp module to last position
-                yamlContent.modules.push(yamlContent.modules.splice(index, 1)[0]);
+                yamlContent.modules?.push(yamlContent.modules.splice(index, 1)[0]);
             }
         }
     });
@@ -409,13 +414,13 @@ export async function adjustMtaYaml(
     const timestamp = Date.now().toString();
 
     const mtaYamlPath = path.join(projectPath, 'mta.yaml');
-    const loadedYamlContent = YamlLoader.getYamlContent(mtaYamlPath);
+    const loadedYamlContent = getYamlContent(mtaYamlPath);
 
-    const defaultYaml = {
-        ID: projectPath.split(path.sep).pop(),
+    const defaultYaml: MtaYaml = {
+        ID: projectPath.split(path.sep).pop() ?? '',
         version: '0.0.1',
-        modules: [] as any[],
-        resources: [] as any[],
+        modules: [],
+        resources: [],
         '_schema-version': '3.2'
     };
 
@@ -425,9 +430,8 @@ export async function adjustMtaYaml(
 
     const yamlContent = Object.assign(defaultYaml, loadedYamlContent);
     const projectName = yamlContent.ID.toLowerCase();
-    const initialServices = yamlContent.resources.map(
-        (resource: { parameters: { service: string } }) => resource.parameters.service
-    );
+    const initialServices =
+        yamlContent.resources?.map((resource: MtaResource) => resource.parameters.service ?? '') ?? [];
     const isStandaloneApprouter = appRouterType === AppRouterType.STANDALONE;
     if (isStandaloneApprouter) {
         adjustMtaYamlStandaloneApprouter(yamlContent, projectName, businessService);

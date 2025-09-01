@@ -8,17 +8,17 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import type {
-    CFConfig,
+    CfConfig,
     CFApp,
     RequestArguments,
     ServiceKeys,
-    CFAPIResponse,
-    CFServiceOffering,
+    CfAPIResponse,
+    CfServiceOffering,
     GetServiceInstanceParams,
     ServiceInstance,
-    CFServiceInstance,
-    Credentials,
-    Yaml
+    CfServiceInstance,
+    CfCredentials,
+    MtaYaml
 } from '../../types';
 import { isLoggedInCf } from '../core/auth';
 import { createServiceKey, getServiceKeys } from './cli';
@@ -28,17 +28,23 @@ interface FDCResponse {
     results: CFApp[];
 }
 
+const PARAM_MAP: Map<string, string> = new Map([
+    ['spaceGuids', 'space_guids'],
+    ['planNames', 'service_plan_names'],
+    ['names', 'names']
+]);
+
 /**
  * Get the business service keys.
  *
  * @param {string} businessService - The business service.
- * @param {CFConfig} config - The CF config.
+ * @param {CfConfig} config - The CF config.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<ServiceKeys | null>} The service keys.
  */
 export async function getBusinessServiceKeys(
     businessService: string,
-    config: CFConfig,
+    config: CfConfig,
     logger: ToolsLogger
 ): Promise<ServiceKeys | null> {
     const serviceKeys = await getServiceInstanceKeys(
@@ -55,10 +61,10 @@ export async function getBusinessServiceKeys(
 /**
  * Get the FDC request arguments.
  *
- * @param {CFConfig} cfConfig - The CF config.
+ * @param {CfConfig} cfConfig - The CF config.
  * @returns {RequestArguments} The request arguments.
  */
-function getFDCRequestArguments(cfConfig: CFConfig): RequestArguments {
+function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
     const fdcUrl = 'https://ui5-flexibility-design-and-configuration.';
     const cfApiEndpoint = `https://api.cf.${cfConfig.url}`;
     const endpointParts = /https:\/\/api\.cf(?:\.([^-.]*)(-\d+)?(\.hana\.ondemand\.com)|(.*))/.exec(cfApiEndpoint);
@@ -69,7 +75,6 @@ function getFDCRequestArguments(cfConfig: CFConfig): RequestArguments {
         }
     };
 
-    // Determine the appropriate domain based on environment
     let url: string;
 
     if (endpointParts?.[3]) {
@@ -104,13 +109,13 @@ function getFDCRequestArguments(cfConfig: CFConfig): RequestArguments {
  * Get the FDC apps.
  *
  * @param {string[]} appHostIds - The app host ids.
- * @param {CFConfig} cfConfig - The CF config.
+ * @param {CfConfig} cfConfig - The CF config.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<AxiosResponse<FDCResponse>>} The FDC apps.
  */
 export async function getFDCApps(
     appHostIds: string[],
-    cfConfig: CFConfig,
+    cfConfig: CfConfig,
     logger: ToolsLogger
 ): Promise<AxiosResponse<FDCResponse>> {
     const requestArguments = getFDCRequestArguments(cfConfig);
@@ -191,11 +196,11 @@ export async function createService(
 ): Promise<void> {
     try {
         if (!serviceName) {
-            const json: CFAPIResponse<CFServiceOffering> = await requestCfApi<CFAPIResponse<CFServiceOffering>>(
+            const json: CfAPIResponse<CfServiceOffering> = await requestCfApi<CfAPIResponse<CfServiceOffering>>(
                 `/v3/service_offerings?per_page=1000&space_guids=${spaceGuid}`
             );
             const serviceOffering = json?.resources?.find(
-                (resource: CFServiceOffering) => resource.tags && tags.every((tag) => resource.tags?.includes(tag))
+                (resource: CfServiceOffering) => resource.tags && tags.every((tag) => resource.tags?.includes(tag))
             );
             serviceName = serviceOffering?.name;
         }
@@ -209,7 +214,7 @@ export async function createService(
             try {
                 const filePath = path.resolve(__dirname, '../../../templates/cf/xs-security.json');
                 const xsContent = fs.readFileSync(filePath, 'utf-8');
-                xsSecurity = JSON.parse(xsContent);
+                xsSecurity = JSON.parse(xsContent) as unknown as { xsappname?: string };
                 xsSecurity.xsappname = xsSecurityProjectName;
             } catch (err) {
                 throw new Error('xs-security.json could not be parsed.');
@@ -232,7 +237,7 @@ export async function createService(
  * Creates the services.
  *
  * @param {string} projectPath - The project path.
- * @param {Yaml} yamlContent - The YAML content.
+ * @param {MtaYaml} yamlContent - The YAML content.
  * @param {string[]} initialServices - The initial services.
  * @param {string} timestamp - The timestamp.
  * @param {string} spaceGuid - The space GUID.
@@ -241,7 +246,7 @@ export async function createService(
  */
 export async function createServices(
     projectPath: string,
-    yamlContent: Yaml,
+    yamlContent: MtaYaml,
     initialServices: string[],
     timestamp: string,
     spaceGuid: string,
@@ -249,15 +254,14 @@ export async function createServices(
 ): Promise<void> {
     const excludeServices = initialServices.concat(['portal', 'html5-apps-repo']);
     const xsSecurityPath = path.join(projectPath, 'xs-security.json');
-    const resources = yamlContent.resources as any[];
     const xsSecurityProjectName = getProjectNameForXsSecurity(yamlContent, timestamp);
-    for (const resource of resources) {
-        if (!excludeServices.includes(resource.parameters.service)) {
-            if (resource.parameters.service === 'xsuaa') {
+    for (const resource of yamlContent.resources ?? []) {
+        if (!excludeServices.includes(resource?.parameters?.service ?? '')) {
+            if (resource?.parameters?.service === 'xsuaa') {
                 await createService(
                     spaceGuid,
-                    resource.parameters['service-plan'],
-                    resource.parameters['service-name'],
+                    resource.parameters['service-plan'] ?? '',
+                    resource.parameters['service-name'] ?? '',
                     logger,
                     [],
                     xsSecurityPath,
@@ -267,8 +271,8 @@ export async function createServices(
             } else {
                 await createService(
                     spaceGuid,
-                    resource.parameters['service-plan'],
-                    resource.parameters['service-name'],
+                    resource.parameters['service-plan'] ?? '',
+                    resource.parameters['service-name'] ?? '',
                     logger,
                     [],
                     '',
@@ -294,7 +298,7 @@ export async function getServiceInstanceKeys(
     try {
         const serviceInstances = await getServiceInstance(serviceInstanceQuery);
         if (serviceInstances?.length > 0) {
-            // we can use any instance in the list to connect to HTML5 Repo
+            // We can use any instance in the list to connect to HTML5 Repo
             logger?.log(`Use '${serviceInstances[0].name}' HTML5 Repo instance`);
             return {
                 credentials: await getOrCreateServiceKeys(serviceInstances[0], logger),
@@ -316,27 +320,21 @@ export async function getServiceInstanceKeys(
  * @returns {Promise<ServiceInstance[]>} The service instance.
  */
 async function getServiceInstance(params: GetServiceInstanceParams): Promise<ServiceInstance[]> {
-    const PARAM_MAP: Map<string, string> = new Map([
-        ['spaceGuids', 'space_guids'],
-        ['planNames', 'service_plan_names'],
-        ['names', 'names']
-    ]);
     const parameters = Object.entries(params)
         .filter(([_, value]) => value?.length > 0)
         .map(([key, value]) => `${PARAM_MAP.get(key)}=${value.join(',')}`);
     const uriParameters = parameters.length > 0 ? `?${parameters.join('&')}` : '';
     const uri = `/v3/service_instances` + uriParameters;
     try {
-        const json = await requestCfApi<CFAPIResponse<CFServiceInstance>>(uri);
+        const json = await requestCfApi<CfAPIResponse<CfServiceInstance>>(uri);
         if (json?.resources && Array.isArray(json.resources)) {
-            return json.resources.map((service: CFServiceInstance) => ({
+            return json.resources.map((service: CfServiceInstance) => ({
                 name: service.name,
                 guid: service.guid
             }));
         }
         throw new Error('No valid JSON for service instance');
     } catch (e) {
-        // log error: CFUtils.ts=>getServiceInstance with uriParameters
         throw new Error(`Failed to get service instance with params ${uriParameters}. Reason: ${e.message}`);
     }
 }
@@ -348,7 +346,7 @@ async function getServiceInstance(params: GetServiceInstanceParams): Promise<Ser
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<ServiceKeys | null>} The service instance keys.
  */
-async function getOrCreateServiceKeys(serviceInstance: ServiceInstance, logger: ToolsLogger): Promise<Credentials[]> {
+async function getOrCreateServiceKeys(serviceInstance: ServiceInstance, logger: ToolsLogger): Promise<CfCredentials[]> {
     try {
         const credentials = await getServiceKeys(serviceInstance.guid);
         if (credentials?.length > 0) {
@@ -360,7 +358,6 @@ async function getOrCreateServiceKeys(serviceInstance: ServiceInstance, logger: 
             return getServiceKeys(serviceInstance.guid);
         }
     } catch (e) {
-        // log error: CFUtils.ts=>getOrCreateServiceKeys with param
         throw new Error(
             `Failed to get or create service keys for instance name ${serviceInstance.name}. Reason: ${e.message}`
         );

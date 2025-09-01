@@ -25,7 +25,7 @@ import {
     AppContentService,
     loadCfConfig
 } from '@sap-ux/adp-tooling';
-import { type CFConfig, type CfServicesAnswers } from '@sap-ux/adp-tooling';
+import { type CfConfig, type CfServicesAnswers } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
@@ -66,7 +66,7 @@ import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderCho
 import { getTargetEnvPrompt, getProjectPathPrompt } from './questions/target-env';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getTemplatesOverwritePath } from '../utils/templates';
-import { YamlLoader } from '@sap-ux/adp-tooling';
+import { getYamlContent } from '@sap-ux/adp-tooling';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -158,7 +158,7 @@ export default class extends Generator {
     /**
      * CF config.
      */
-    private cfConfig: CFConfig;
+    private cfConfig: CfConfig;
     /**
      * Indicates if the current project is an MTA project.
      */
@@ -452,7 +452,7 @@ export default class extends Generator {
             this.logger.log(`Project path information: ${this.projectLocation}`);
         } else {
             this.cfProjectDestinationPath = this.destinationRoot(process.cwd());
-            YamlLoader.getYamlContent(join(this.cfProjectDestinationPath, 'mta.yaml'));
+            getYamlContent(join(this.cfProjectDestinationPath, 'mta.yaml'));
             this.logger.log(`Project path information: ${this.cfProjectDestinationPath}`);
         }
     }

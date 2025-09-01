@@ -4,7 +4,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import type { AppContentService } from './content';
-import type { CFApp, Credentials, CFConfig } from '../../types';
+import type { CFApp, CfCredentials, CfConfig } from '../../types';
 import { validateSmartTemplateApplication, validateODataEndpoints } from '../utils/validation';
 
 /**
@@ -12,14 +12,14 @@ import { validateSmartTemplateApplication, validateODataEndpoints } from '../uti
  *
  * @param {Manifest} manifest - The manifest to validate.
  * @param {AdmZip.IZipEntry[]} entries - The entries to validate.
- * @param {Credentials[]} credentials - The credentials for validation.
+ * @param {CfCredentials[]} credentials - The credentials for validation.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<string[]>} Validation messages.
  */
 export async function validateApp(
     manifest: Manifest,
     entries: AdmZip.IZipEntry[],
-    credentials: Credentials[],
+    credentials: CfCredentials[],
     logger: ToolsLogger
 ): Promise<string[]> {
     try {
@@ -39,16 +39,16 @@ export async function validateApp(
  * Validate multiple apps.
  *
  * @param {CFApp[]} apps - The apps to validate.
- * @param {Credentials[]} credentials - The credentials for validation.
- * @param {CFConfig} cfConfig - The CF configuration.
+ * @param {CfCredentials[]} credentials - The credentials for validation.
+ * @param {CfConfig} cfConfig - The CF configuration.
  * @param {AppContentService} appContent - The app content service.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<CFApp[]>} The validated apps with messages.
  */
 export async function getValidatedApps(
     apps: CFApp[],
-    credentials: Credentials[],
-    cfConfig: CFConfig,
+    credentials: CfCredentials[],
+    cfConfig: CfConfig,
     appContent: AppContentService,
     logger: ToolsLogger
 ): Promise<CFApp[]> {

@@ -2,7 +2,7 @@ import { MessageType } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { CFConfig } from '@sap-ux/adp-tooling';
+import type { CfConfig } from '@sap-ux/adp-tooling';
 import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 import type { InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
@@ -20,7 +20,7 @@ type EnvironmentChoice = { name: string; value: TargetEnv };
  * @param {AppWizard} appWizard - The app wizard instance.
  * @param {boolean} isCfInstalled - Whether Cloud Foundry is installed.
  * @param {boolean} isCFLoggedIn - Whether Cloud Foundry is logged in.
- * @param {CFConfig} cfConfig - The CF config service instance.
+ * @param {CfConfig} cfConfig - The CF config service instance.
  * @param {any} vscode - The vscode instance.
  * @returns {object[]} The target environment prompt.
  */
@@ -28,7 +28,7 @@ export function getTargetEnvPrompt(
     appWizard: AppWizard,
     isCfInstalled: boolean,
     isCFLoggedIn: boolean,
-    cfConfig: CFConfig,
+    cfConfig: CfConfig,
     vscode: any
 ): TargetEnvQuestion {
     return {

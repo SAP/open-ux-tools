@@ -4,7 +4,7 @@ import type {
     CfServicesPromptOptions,
     AppRouterType,
     AppContentService,
-    CFConfig
+    CfConfig
 } from '@sap-ux/adp-tooling';
 import {
     cfServicesPromptNames,
@@ -83,13 +83,13 @@ export class CFServicesPrompter {
      * Builds the CF services prompts, keyed and hide-filtered like attributes.ts.
      *
      * @param {string} mtaProjectPath - MTA project path
-     * @param {CFConfig} cfConfig - CF config service instance.
+     * @param {CfConfig} cfConfig - CF config service instance.
      * @param {CfServicesPromptOptions} [promptOptions] - Optional per-prompt visibility controls
      * @returns {Promise<CFServicesQuestion[]>} CF services questions
      */
     public async getPrompts(
         mtaProjectPath: string,
-        cfConfig: CFConfig,
+        cfConfig: CfConfig,
         promptOptions?: CfServicesPromptOptions
     ): Promise<CFServicesQuestion[]> {
         if (this.isCfLoggedIn) {
@@ -144,10 +144,10 @@ export class CFServicesPrompter {
      * Prompt for approuter.
      *
      * @param {string} mtaProjectPath - MTA project path.
-     * @param {CFConfig} cfConfig - CF config service instance.
+     * @param {CfConfig} cfConfig - CF config service instance.
      * @returns {CFServicesQuestion} Prompt for approuter.
      */
-    private getAppRouterPrompt(mtaProjectPath: string, cfConfig: CFConfig): CFServicesQuestion {
+    private getAppRouterPrompt(mtaProjectPath: string, cfConfig: CfConfig): CFServicesQuestion {
         return {
             type: 'list',
             name: cfServicesPromptNames.approuter,
@@ -195,10 +195,10 @@ export class CFServicesPrompter {
     /**
      * Prompt for base application.
      *
-     * @param {CFConfig} cfConfig - CF config service instance.
+     * @param {CfConfig} cfConfig - CF config service instance.
      * @returns {CFServicesQuestion} Prompt for base application.
      */
-    private getBaseAppPrompt(cfConfig: CFConfig): CFServicesQuestion {
+    private getBaseAppPrompt(cfConfig: CfConfig): CFServicesQuestion {
         return {
             type: 'list',
             name: cfServicesPromptNames.baseApp,
@@ -253,10 +253,10 @@ export class CFServicesPrompter {
     /**
      * Prompt for business services.
      *
-     * @param {CFConfig} cfConfig - CF config service instance.
+     * @param {CfConfig} cfConfig - CF config service instance.
      * @returns {CFServicesQuestion} Prompt for business services.
      */
-    private getBusinessServicesPrompt(cfConfig: CFConfig): CFServicesQuestion {
+    private getBusinessServicesPrompt(cfConfig: CfConfig): CFServicesQuestion {
         return {
             type: 'list',
             name: cfServicesPromptNames.businessService,
@@ -291,7 +291,7 @@ export class CFServicesPrompter {
 
 /**
  * @param {object} param0 - Configuration object containing FDC service, internal usage flag, MTA project path, CF login status, and logger.
- * @param {CFConfig} param0.cfConfig - CF config service instance.
+ * @param {CfConfig} param0.cfConfig - CF config service instance.
  * @param {boolean} [param0.isInternalUsage] - Internal usage flag.
  * @param {string} param0.mtaProjectPath - MTA project path.
  * @param {boolean} param0.isCfLoggedIn - CF login status.
@@ -307,7 +307,7 @@ export async function getPrompts({
     appContentService,
     logger
 }: {
-    cfConfig: CFConfig;
+    cfConfig: CfConfig;
     isInternalUsage?: boolean;
     mtaProjectPath: string;
     isCfLoggedIn: boolean;

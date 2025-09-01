@@ -811,23 +811,17 @@ export interface Uaa {
     url: string;
 }
 
-export interface AppParams {
+export interface CfAppParams {
     appName: string;
     appVersion: string;
     appHostId: string;
 }
 
-export interface AppParamsExtended extends AppParams {
+export interface AppParamsExtended extends CfAppParams {
     spaceGuid: string;
 }
 
-export interface CFParameters {
-    org: string;
-    space: string;
-    html5RepoRuntime: string;
-}
-
-export interface Credentials {
+export interface CfCredentials {
     [key: string]: any;
     uaa: Uaa;
     uri: string;
@@ -835,7 +829,7 @@ export interface Credentials {
 }
 
 export interface ServiceKeys {
-    credentials: Credentials[];
+    credentials: CfCredentials[];
     serviceInstance: ServiceInstance;
 }
 
@@ -861,36 +855,130 @@ export interface BusinessServiceResource {
     label: string;
 }
 
-export interface AppParams {
+/**
+ * Cloud Foundry ADP UI5 YAML Types
+ */
+export interface UI5YamlCustomTaskConfiguration {
+    appHostId: string;
     appName: string;
     appVersion: string;
-    appHostId: string;
+    moduleName: string;
+    org: string;
+    space: string;
+    html5RepoRuntime: string;
+    sapCloudService: string;
 }
 
-export interface Resource {
+export interface UI5YamlCustomTask {
+    name: string;
+    beforeTask?: string;
+    configuration: UI5YamlCustomTaskConfiguration;
+}
+
+export interface UI5YamlBuilder {
+    customTasks: UI5YamlCustomTask[];
+}
+
+export interface UI5YamlMetadata {
+    name: string;
+}
+
+export interface CfUI5Yaml {
+    specVersion: string;
+    type: string;
+    metadata: UI5YamlMetadata;
+    builder: UI5YamlBuilder;
+}
+
+/**
+ * Cloud Foundry ADP MTA YAML Types
+ */
+export interface MtaDestination {
+    Name: string;
+    ServiceInstanceName: string;
+    ServiceKeyName: string;
+    Authentication?: string;
+    'sap.cloud.service'?: string;
+}
+
+export interface MtaContentInstance {
+    destinations: MtaDestination[];
+    existing_destinations_policy?: string;
+}
+
+export interface MtaContent {
+    instance: MtaContentInstance;
+}
+
+export interface MtaServiceKey {
+    name: string;
+}
+
+export interface MtaParameters {
+    'service-key'?: MtaServiceKey;
+    'content-target'?: boolean;
+    content?: MtaContent;
+    'no-source'?: boolean;
+    'build-result'?: string;
+    requires?: MtaBuildRequire[];
+    builder?: string;
+    commands?: string[];
+    'supported-platforms'?: string[];
+    'disk-quota'?: string;
+    memory?: string;
+    service?: string;
+    'service-plan'?: string;
+    'service-name'?: string;
+    path?: string;
+    config?: Record<string, unknown>;
+}
+
+export interface MtaBuildRequire {
+    artifacts?: string[];
+    name: string;
+    'target-path'?: string;
+}
+
+export interface MtaRequire {
+    name: string;
+    parameters?: MtaParameters;
+}
+
+export interface MtaModule {
     name: string;
     type: string;
-    parameters: any;
+    path?: string;
+    requires?: MtaRequire[];
+    'build-parameters'?: MtaParameters;
+    parameters?: MtaParameters;
 }
 
-export interface Yaml {
+export interface MtaResource {
+    name: string;
+    type: string;
+    parameters: MtaParameters;
+}
+
+export interface MtaYaml {
     '_schema-version': string;
     'ID': string;
     'version': string;
-    resources?: any[];
-    modules?: MTAModule[];
+    builder?: {
+        customTasks?: {
+            configuration?: {
+                appHostId: string;
+            };
+        }[];
+    };
+    resources?: MtaResource[];
+    modules?: MtaModule[];
 }
 
-export interface MTAModule {
+// Legacy types for backward compatibility
+export interface Resource {
     name: string;
-    parameters: any;
-    path: string;
-    requires: MTARequire[];
     type: string;
-}
-
-export interface MTARequire {
-    name: string;
+    parameters: MtaParameters;
 }
 
 export interface ODataTargetSource {
@@ -955,7 +1043,7 @@ export interface CfAdpWriterConfig {
 export interface CreateCfConfigParams {
     attributeAnswers: AttributesAnswers;
     cfServicesAnswers: CfServicesAnswers;
-    cfConfig: CFConfig;
+    cfConfig: CfConfig;
     layer: FlexLayer;
     manifest: Manifest;
     html5RepoRuntimeGuid: string;
@@ -993,7 +1081,7 @@ export interface Space {
     Name: string;
 }
 
-export interface CFConfig {
+export interface CfConfig {
     org: Organization;
     space: Space;
     token: string;
@@ -1081,42 +1169,44 @@ export interface RequestArguments {
     };
 }
 
-// CF API Response Interfaces
-export interface CFAPIResponse<T> {
-    pagination: CFPagination;
+/**
+ * CF API Response
+ */
+export interface CfAPIResponse<T> {
+    pagination: CfPagination;
     resources: T[];
 }
 
-export interface CFPagination {
+export interface CfPagination {
     total_results: number;
     total_pages: number;
-    first: CFPaginationLink;
-    last: CFPaginationLink;
-    next: CFPaginationLink | null;
-    previous: CFPaginationLink | null;
+    first: CfPaginationLink;
+    last: CfPaginationLink;
+    next: CfPaginationLink | null;
+    previous: CfPaginationLink | null;
 }
 
-export interface CFPaginationLink {
+export interface CfPaginationLink {
     href: string;
 }
 
-export interface CFServiceInstance {
+export interface CfServiceInstance {
     guid: string;
     created_at: string;
     updated_at: string;
     name: string;
     tags: string[];
-    last_operation: CFLastOperation;
+    last_operation: CfLastOperation;
     type: string;
     maintenance_info: Record<string, unknown>;
     upgrade_available: boolean;
     dashboard_url: string | null;
-    relationships: CFServiceInstanceRelationships;
-    metadata: CFMetadata;
-    links: CFServiceInstanceLinks;
+    relationships: CfServiceInstanceRelationships;
+    metadata: CfMetadata;
+    links: CfServiceInstanceLinks;
 }
 
-export interface CFLastOperation {
+export interface CfLastOperation {
     type: string;
     state: string;
     description: string;
@@ -1124,37 +1214,37 @@ export interface CFLastOperation {
     created_at: string;
 }
 
-export interface CFServiceInstanceRelationships {
-    space: CFRelationshipData;
-    service_plan: CFRelationshipData;
+export interface CfServiceInstanceRelationships {
+    space: CfRelationshipData;
+    service_plan: CfRelationshipData;
 }
 
-export interface CFRelationshipData {
+export interface CfRelationshipData {
     data: {
         guid: string;
     };
 }
 
-export interface CFMetadata {
+export interface CfMetadata {
     labels: Record<string, unknown>;
     annotations: Record<string, unknown>;
 }
 
-export interface CFServiceInstanceLinks {
-    self: CFLink;
-    space: CFLink;
-    service_credential_bindings: CFLink;
-    service_route_bindings: CFLink;
-    service_plan: CFLink;
-    parameters: CFLink;
-    shared_spaces: CFLink;
+export interface CfServiceInstanceLinks {
+    self: CfLink;
+    space: CfLink;
+    service_credential_bindings: CfLink;
+    service_route_bindings: CfLink;
+    service_plan: CfLink;
+    parameters: CfLink;
+    shared_spaces: CfLink;
 }
 
-export interface CFLink {
+export interface CfLink {
     href: string;
 }
 
-export interface CFServiceOffering {
+export interface CfServiceOffering {
     name: string;
     tags?: string[];
     broker_catalog?: {

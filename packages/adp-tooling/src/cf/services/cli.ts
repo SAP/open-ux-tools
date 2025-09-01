@@ -2,7 +2,7 @@ import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 import CFToolsCli = require('@sap/cf-tools/out/src/cli');
 import { eFilters } from '@sap/cf-tools/out/src/types';
 
-import type { Credentials } from '../../types';
+import type { CfCredentials } from '../../types';
 
 const ENV = { env: { 'CF_COLOR': 'false' } };
 const CREATE_SERVICE_KEY = 'create-service-key';
@@ -46,9 +46,9 @@ export async function cFLogout(): Promise<void> {
  * Gets the service instance credentials.
  *
  * @param {string} serviceInstanceGuid - The service instance GUID.
- * @returns {Promise<Credentials[]>} The service instance credentials.
+ * @returns {Promise<CfCredentials[]>} The service instance credentials.
  */
-export async function getServiceKeys(serviceInstanceGuid: string): Promise<Credentials[]> {
+export async function getServiceKeys(serviceInstanceGuid: string): Promise<CfCredentials[]> {
     try {
         return await CFLocal.cfGetInstanceCredentials({
             filters: [

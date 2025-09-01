@@ -4,7 +4,7 @@ import path from 'path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { CFConfig, Config } from '../../types';
+import type { CfConfig, Config } from '../../types';
 
 const HOMEDRIVE = 'HOMEDRIVE';
 const HOMEPATH = 'HOMEPATH';
@@ -30,9 +30,9 @@ function getHomedir(): string {
  * Load the CF configuration.
  *
  * @param {ToolsLogger} logger - The logger.
- * @returns {CFConfig} The CF configuration.
+ * @returns {CfConfig} The CF configuration.
  */
-export function loadCfConfig(logger: ToolsLogger): CFConfig {
+export function loadCfConfig(logger: ToolsLogger): CfConfig {
     let cfHome = process.env['CF_HOME'];
     if (!cfHome) {
         cfHome = path.join(getHomedir(), '.cf');
@@ -48,7 +48,7 @@ export function loadCfConfig(logger: ToolsLogger): CFConfig {
         logger?.error('Cannot receive token from config.json');
     }
 
-    const result = {} as CFConfig;
+    const result = {} as CfConfig;
     if (config) {
         if (config.Target) {
             const apiCfIndex = config.Target.indexOf('api.cf.');

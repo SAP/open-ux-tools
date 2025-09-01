@@ -4,8 +4,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 import { requestCfApi } from '../services/api';
 import { getRouterType } from './yaml';
-import { YamlLoader } from './yaml-loader';
-import type { CFServiceOffering, CFAPIResponse, BusinessServiceResource, Resource, AppRouterType } from '../../types';
+import { getYamlContent } from './yaml-loader';
+import type { CfServiceOffering, CfAPIResponse, BusinessServiceResource, Resource, AppRouterType } from '../../types';
 
 /**
  * Get the approuter type.
@@ -14,7 +14,7 @@ import type { CFServiceOffering, CFAPIResponse, BusinessServiceResource, Resourc
  * @returns {AppRouterType} The approuter type.
  */
 export function getApprouterType(mtaProjectPath: string): AppRouterType {
-    const yamlContent = YamlLoader.getYamlContent(path.join(mtaProjectPath, 'mta.yaml'));
+    const yamlContent = getYamlContent(path.join(mtaProjectPath, 'mta.yaml'));
     return getRouterType(yamlContent);
 }
 
@@ -25,7 +25,7 @@ export function getApprouterType(mtaProjectPath: string): AppRouterType {
  * @returns {string[]} The module names.
  */
 export function getModuleNames(mtaProjectPath: string): string[] {
-    const yamlContent = YamlLoader.getYamlContent(path.join(mtaProjectPath, 'mta.yaml'));
+    const yamlContent = getYamlContent(path.join(mtaProjectPath, 'mta.yaml'));
     return yamlContent?.modules?.map((module: { name: string }) => module.name) ?? [];
 }
 
@@ -38,11 +38,11 @@ export function getModuleNames(mtaProjectPath: string): string[] {
  */
 export function getServicesForFile(mtaFilePath: string, logger: ToolsLogger): BusinessServiceResource[] {
     const serviceNames: BusinessServiceResource[] = [];
-    const parsed = YamlLoader.getYamlContent(mtaFilePath);
+    const parsed = getYamlContent(mtaFilePath);
     if (parsed?.resources && Array.isArray(parsed.resources)) {
         parsed.resources.forEach((resource: Resource) => {
             const name = resource?.parameters?.['service-name'] || resource.name;
-            const label = resource?.parameters?.service;
+            const label = resource?.parameters?.service as string;
             if (name) {
                 serviceNames.push({ name, label });
                 if (!label) {
@@ -80,12 +80,12 @@ async function filterServices(businessServices: BusinessServiceResource[], logge
     const serviceLabels = businessServices.map((service) => service.label).filter((label) => label);
     if (serviceLabels.length > 0) {
         const url = `/v3/service_offerings?names=${serviceLabels.join(',')}`;
-        const json = await requestCfApi<CFAPIResponse<CFServiceOffering>>(url);
+        const json = await requestCfApi<CfAPIResponse<CfServiceOffering>>(url);
         logger?.log(`Filtering services. Request to: ${url}, result: ${JSON.stringify(json)}`);
 
         const businessServiceNames = new Set(businessServices.map((service) => service.label));
         const result: string[] = [];
-        json?.resources?.forEach((resource: CFServiceOffering) => {
+        json?.resources?.forEach((resource: CfServiceOffering) => {
             if (businessServiceNames.has(resource.name)) {
                 const sapService = resource?.['broker_catalog']?.metadata?.sapservice;
                 if (sapService && ['v2', 'v4'].includes(sapService?.odataversion ?? '')) {

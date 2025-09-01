@@ -4,7 +4,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
-import type { Credentials } from '../../types';
+import type { CfCredentials } from '../../types';
 import { getApplicationType } from '../../source/manifest';
 import { isSupportedAppTypeForAdp } from '../../source/manifest';
 
@@ -108,13 +108,13 @@ function extractManifest(zipEntries: AdmZip.IZipEntry[]): Manifest | undefined {
  * Validate the OData endpoints.
  *
  * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries.
- * @param {Credentials[]} credentials - The credentials.
+ * @param {CfCredentials[]} credentials - The credentials.
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<string[]>} The messages.
  */
 export async function validateODataEndpoints(
     zipEntries: AdmZip.IZipEntry[],
-    credentials: Credentials[],
+    credentials: CfCredentials[],
     logger: ToolsLogger
 ): Promise<string[]> {
     const messages: string[] = [];
@@ -136,6 +136,7 @@ export async function validateODataEndpoints(
         return messages;
     }
 
+    // TODO: Add type for xsApp and matchRoutesAndDatasources
     const dataSources = manifest?.['sap.app']?.dataSources;
     const routes = (xsApp as any)?.routes;
     if (dataSources && routes) {

@@ -1,8 +1,10 @@
+import type AdmZip from 'adm-zip';
+
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
 import { downloadAppContent } from './html5-repo';
-import type { CFConfig, AppParams } from '../../types';
+import type { CfConfig, CfAppParams } from '../../types';
 
 /**
  * App Content Service - Handles app content downloading and manifest management.
@@ -27,15 +29,15 @@ export class AppContentService {
     /**
      * Download app content and extract manifest.
      *
-     * @param {AppParams} appParams - The app parameters.
-     * @param {CFConfig} cfConfig - The CF configuration.
-     * @returns {Promise<{entries: any[], serviceInstanceGuid: string, manifest: Manifest}>} The downloaded content
+     * @param {CfAppParams} appParams - The app parameters.
+     * @param {CfConfig} cfConfig - The CF configuration.
+     * @returns {Promise<{entries: AdmZip.IZipEntry[], serviceInstanceGuid: string, manifest: Manifest}>} The downloaded content
      */
     public async getAppContent(
-        appParams: AppParams,
-        cfConfig: CFConfig
+        appParams: CfAppParams,
+        cfConfig: CfConfig
     ): Promise<{
-        entries: any[];
+        entries: AdmZip.IZipEntry[];
         serviceInstanceGuid: string;
         manifest: Manifest;
     }> {
