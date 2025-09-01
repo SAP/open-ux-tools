@@ -44,7 +44,7 @@ const abapOnBtpPromptNames = {
     'cloudFoundryAbapSystem': 'cloudFoundryAbapSystem'
 } as const;
 
-const SERVICE_KEY_FEATURE_TOGGLE = 'sap.ux.appGenerator.disableBtpServiceKeyAuth';
+const SERVICE_KEY_FEATURE_TOGGLE = 'sap.ux.appGenerator.testBetaFeatures.disableBtpServiceKeyAuth';
 
 export type AbapOnBTPType = 'cloudFoundry' | 'serviceKey' | 'reentranceTicket';
 
@@ -64,7 +64,8 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
  */
 export function getAbapOnBTPSystemQuestions(
     promptOptions?: OdataServicePromptOptions,
-    cachedConnectedSystem?: ConnectedSystem
+    cachedConnectedSystem?: ConnectedSystem,
+    featureToggle = isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE)
 ): Question<AbapOnBtpAnswers & ServiceAnswer>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
@@ -74,9 +75,14 @@ export function getAbapOnBTPSystemQuestions(
         name: abapOnBtpPromptNames.abapOnBtpAuthType,
         choices: [
             { name: t('prompts.abapOnBTPType.choiceCloudFoundry'), value: 'cloudFoundry' as AbapOnBTPType },
-            // Feature toggle the service key option - enabled by default, can be disabled via VS Code setting
-            ...(!isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE)
-                ? [{ name: t('prompts.abapOnBTPType.choiceServiceKey'), value: 'serviceKey' as AbapOnBTPType }]
+            // Feature toggle the service key option - enabled by default, can be disabled via VS Code settings or ENV
+            ...(!featureToggle
+                ? [
+                      {
+                          name: t('prompts.abapOnBTPType.choiceServiceKey'),
+                          value: 'serviceKey' as AbapOnBTPType
+                      }
+                  ]
                 : []),
             { name: t('prompts.abapOnBTPType.choiceReentranceTicket'), value: 'reentranceTicket' as AbapOnBTPType }
         ],
@@ -110,7 +116,7 @@ export function getAbapOnBTPSystemQuestions(
     );
 
     // Service Key file prompt - enabled by default
-    if (!isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE)) {
+    if (!featureToggle) {
         questions.push(
             withCondition(
                 [getServiceKeyPrompt(connectValidator, cachedConnectedSystem)],
