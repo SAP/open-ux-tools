@@ -49,12 +49,14 @@
         "@types/mem-fs": "1.1.2"
     },
     "dependencies": {
-        "@modelcontextprotocol/sdk": "1.17.0",
+        "@modelcontextprotocol/sdk": "1.17.4",
         "@sap/ux-specification": "1.136.4",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/annotation-converter": "0.10.3",
-        "i18next": "25.3.0"
+        "@sap-ux/nodejs-utils": "workspace:*",
+        "i18next": "25.3.0",
+        "zod": "4.1.5"
     },
     "engines": {
         "node": ">=20.x"
