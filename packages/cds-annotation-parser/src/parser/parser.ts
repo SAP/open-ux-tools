@@ -262,7 +262,7 @@ export class AnnotationParser extends CstParser {
      * https://chevrotain.io/docs/guide/performance.html#caching-arrays-of-alternatives
      */
     v?: IOrAlt<void>[];
-    private CST_STACK: AssignmentCstNode[];
+    private CST_STACK: AssignmentCstNode[] = [];
 
     text = '';
     constructor() {

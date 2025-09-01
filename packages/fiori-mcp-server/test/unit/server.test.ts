@@ -23,10 +23,14 @@ describe('FioriFunctionalityServer', () => {
         setRequestHandlerMock.mockReset();
     });
 
+    // version cannot be hard coded as it will update on each new patch update
     test('Constructor', () => {
         new FioriFunctionalityServer();
         // Check initialization
-        expect(Server).toHaveBeenCalledWith({ name: 'fiori-mcp', version: '0.0.0' }, { capabilities: { tools: {} } });
+        expect(Server).toHaveBeenCalledWith(
+            { name: 'fiori-mcp', version: expect.any(String) },
+            { capabilities: { tools: {} } }
+        );
         expect(setRequestHandlerMock).toHaveBeenCalledTimes(2);
     });
 
