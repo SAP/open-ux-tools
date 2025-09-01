@@ -1,5 +1,12 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.9.15
+
+### Patch Changes
+
+-   Updated dependencies [77c1459]
+    -   @sap-ux/store@1.1.4
+
 ## 0.9.14
 
 ### Patch Changes
