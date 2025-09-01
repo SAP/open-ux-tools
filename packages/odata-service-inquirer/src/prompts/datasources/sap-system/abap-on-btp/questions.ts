@@ -60,6 +60,7 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
  *
  * @param promptOptions The prompt options which control the service selection and system name]
  * @param cachedConnectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
+ * @param featureToggle Feature toggle to enable/disable the BTP service key option - enabled by default
  * @returns The list of questions for the ABAP on BTP system
  */
 export function getAbapOnBTPSystemQuestions(
