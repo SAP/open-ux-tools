@@ -64,17 +64,18 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
         }
 
         for (const id of Object.keys(systems)) {
-            let system: BackendSystem | undefined = systems[id];
+            const system: BackendSystem | undefined = systems[id];
             if (!system?.url?.trim()) {
                 // attempt to recover the system URL from the ID
-                await this.recoverUrlFromId(id);
-                system = await this.dataAccessor.read({
-                    entityName: this.entityName,
-                    id
-                });
-                if (!system?.url?.trim()) {
+                const backendSystem = await this.recoverBackendSystemFromId(id);
+                if (!backendSystem?.url?.trim()) {
                     this.logger.warn(`Filtering system with ID [${id}] as it seems corrupt. Run repair`);
                     delete systems[id];
+                } else {
+                    systems[id] = { ...system, ...backendSystem };
+                    // requires to write directly to the filesystem
+                    const fileSystem = getFilesystemStore(this.logger);
+                    await fileSystem.write({ entityName: this.entityName, id, entity: backendSystem });
                 }
             }
         }
@@ -85,23 +86,23 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
      * Recover the URL from the system ID and write it to the file.
      *
      * @param systemId - the specific system ID to recover
+     * @returns the recovered partial backend system (a default name with the url and client if present)
      */
-    private async recoverUrlFromId(systemId: string): Promise<void> {
+    private async recoverBackendSystemFromId(systemId: string): Promise<Partial<BackendSystem>> {
+        let backendSystem: Partial<BackendSystem> = {};
         try {
             const urlObj = new URL(systemId);
             const client =
                 urlObj.pathname && /^\d{3}$/.test(urlObj.pathname.slice(1)) ? urlObj.pathname.slice(1) : undefined;
-            const backendSystem: BackendSystem = {
+            backendSystem = {
                 name: urlObj.origin + (client ? ', client ' + client : ''),
                 url: urlObj.origin,
                 ...(client ? { client } : {})
             };
-            // requires to write directly to the filesystem
-            const fileSystem = getFilesystemStore(this.logger);
-            await fileSystem.write({ entityName: this.entityName, id: systemId, entity: backendSystem });
         } catch {
             this.logger.error(`Error while writing recovered entries from the secure store to the file.`);
         }
+        return backendSystem;
     }
 
     private async ensureSystemTypesExist(systems: Record<string, BackendSystem>): Promise<boolean> {
