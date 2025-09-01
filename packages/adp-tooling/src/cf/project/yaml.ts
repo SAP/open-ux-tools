@@ -4,10 +4,10 @@ import yaml from 'js-yaml';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { Resource, Yaml, MTAModule, AppParamsExtended } from '../../types';
 import { AppRouterType } from '../../types';
-import { createService } from '../services/api';
+import { createServices } from '../services/api';
 import { getProjectNameForXsSecurity, YamlLoader } from './yaml-loader';
+import type { Resource, Yaml, MTAModule, AppParamsExtended } from '../../types';
 
 const CF_MANAGED_SERVICE = 'org.cloudfoundry.managed-service';
 const HTML5_APPS_REPO = 'html5-apps-repo';
@@ -386,128 +386,66 @@ function adjustMtaYamlFlpModule(yamlContent: { modules: any[] }, projectName: an
 }
 
 /**
- * Writes the file callback.
+ * Adjusts the MTA YAML.
  *
- * @param {any} error - The error.
+ * @param {string} projectPath - The project path.
+ * @param {string} moduleName - The module name.
+ * @param {AppRouterType} appRouterType - The app router type.
+ * @param {string} businessSolutionName - The business solution name.
+ * @param {string} businessService - The business service.
+ * @param {string} spaceGuid - The space GUID.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<void>} The promise.
  */
-function writeFileCallback(error: any): void {
-    if (error) {
-        throw new Error('Cannot save mta.yaml file.');
-    }
-}
+export async function adjustMtaYaml(
+    projectPath: string,
+    moduleName: string,
+    appRouterType: AppRouterType,
+    businessSolutionName: string,
+    businessService: string,
+    spaceGuid: string,
+    logger?: ToolsLogger
+): Promise<void> {
+    const timestamp = Date.now().toString();
 
-/**
- * The YAML utilities class.
- */
-export class YamlUtils {
-    public static spaceGuid: string;
-    private static HTML5_APPS_REPO = 'html5-apps-repo';
+    const mtaYamlPath = path.join(projectPath, 'mta.yaml');
+    const loadedYamlContent = YamlLoader.getYamlContent(mtaYamlPath);
 
-    /**
-     * Adjusts the MTA YAML.
-     *
-     * @param {string} projectPath - The project path.
-     * @param {string} moduleName - The module name.
-     * @param {AppRouterType} appRouterType - The app router type.
-     * @param {string} businessSolutionName - The business solution name.
-     * @param {string} businessService - The business service.
-     * @param {ToolsLogger} logger - The logger.
-     * @returns {Promise<void>} The promise.
-     */
-    public static async adjustMtaYaml(
-        projectPath: string,
-        moduleName: string,
-        appRouterType: AppRouterType,
-        businessSolutionName: string,
-        businessService: string,
-        logger?: ToolsLogger
-    ): Promise<void> {
-        const timestamp = Date.now().toString();
+    const defaultYaml = {
+        ID: projectPath.split(path.sep).pop(),
+        version: '0.0.1',
+        modules: [] as any[],
+        resources: [] as any[],
+        '_schema-version': '3.2'
+    };
 
-        const mtaYamlPath = path.join(projectPath, 'mta.yaml');
-        const loadedYamlContent = YamlLoader.getYamlContent(mtaYamlPath);
-
-        const defaultYaml = {
-            ID: projectPath.split(path.sep).pop(),
-            version: '0.0.1',
-            modules: [] as any[],
-            resources: [] as any[],
-            '_schema-version': '3.2'
-        };
-
-        if (!appRouterType) {
-            appRouterType = getRouterType(loadedYamlContent);
-        }
-
-        const yamlContent = Object.assign(defaultYaml, loadedYamlContent);
-        const projectName = yamlContent.ID.toLowerCase();
-        const initialServices = yamlContent.resources.map(
-            (resource: { parameters: { service: string } }) => resource.parameters.service
-        );
-        const isStandaloneApprouter = appRouterType === AppRouterType.STANDALONE;
-        if (isStandaloneApprouter) {
-            adjustMtaYamlStandaloneApprouter(yamlContent, projectName, businessService);
-        } else {
-            adjustMtaYamlManagedApprouter(yamlContent, projectName, businessSolutionName, businessService);
-        }
-        adjustMtaYamlUDeployer(yamlContent, projectName, moduleName);
-        adjustMtaYamlResources(yamlContent, projectName, timestamp, !isStandaloneApprouter);
-        adjustMtaYamlOwnModule(yamlContent, moduleName);
-        // should go last since it sorts the modules (workaround, should be removed after fixed in deployment module)
-        adjustMtaYamlFlpModule(yamlContent, projectName, businessService);
-
-        const updatedYamlContent = yaml.dump(yamlContent);
-        await this.createServices(projectPath, yamlContent, initialServices, timestamp, logger);
-        return fs.writeFile(mtaYamlPath, updatedYamlContent, 'utf-8', writeFileCallback);
+    if (!appRouterType) {
+        appRouterType = getRouterType(loadedYamlContent);
     }
 
-    /**
-     * Creates the services.
-     *
-     * @param {string} projectPath - The project path.
-     * @param {Yaml} yamlContent - The YAML content.
-     * @param {string[]} initialServices - The initial services.
-     * @param {string} timestamp - The timestamp.
-     * @param {ToolsLogger} logger - The logger.
-     * @returns {Promise<void>} The promise.
-     */
-    private static async createServices(
-        projectPath: string,
-        yamlContent: Yaml,
-        initialServices: string[],
-        timestamp: string,
-        logger?: ToolsLogger
-    ): Promise<void> {
-        const excludeServices = initialServices.concat(['portal', this.HTML5_APPS_REPO]);
-        const xsSecurityPath = path.join(projectPath, 'xs-security.json');
-        const resources = yamlContent.resources as any[];
-        const xsSecurityProjectName = getProjectNameForXsSecurity(yamlContent, timestamp);
-        for (const resource of resources) {
-            if (!excludeServices.includes(resource.parameters.service)) {
-                if (resource.parameters.service === 'xsuaa') {
-                    await createService(
-                        this.spaceGuid,
-                        resource.parameters['service-plan'],
-                        resource.parameters['service-name'],
-                        logger,
-                        [],
-                        xsSecurityPath,
-                        resource.parameters.service,
-                        xsSecurityProjectName
-                    );
-                } else {
-                    await createService(
-                        this.spaceGuid,
-                        resource.parameters['service-plan'],
-                        resource.parameters['service-name'],
-                        logger,
-                        [],
-                        '',
-                        resource.parameters.service,
-                        xsSecurityProjectName
-                    );
-                }
-            }
-        }
+    const yamlContent = Object.assign(defaultYaml, loadedYamlContent);
+    const projectName = yamlContent.ID.toLowerCase();
+    const initialServices = yamlContent.resources.map(
+        (resource: { parameters: { service: string } }) => resource.parameters.service
+    );
+    const isStandaloneApprouter = appRouterType === AppRouterType.STANDALONE;
+    if (isStandaloneApprouter) {
+        adjustMtaYamlStandaloneApprouter(yamlContent, projectName, businessService);
+    } else {
+        adjustMtaYamlManagedApprouter(yamlContent, projectName, businessSolutionName, businessService);
     }
+    adjustMtaYamlUDeployer(yamlContent, projectName, moduleName);
+    adjustMtaYamlResources(yamlContent, projectName, timestamp, !isStandaloneApprouter);
+    adjustMtaYamlOwnModule(yamlContent, moduleName);
+    // should go last since it sorts the modules (workaround, should be removed after fixed in deployment module)
+    adjustMtaYamlFlpModule(yamlContent, projectName, businessService);
+
+    await createServices(projectPath, yamlContent, initialServices, timestamp, spaceGuid, logger);
+
+    const updatedYamlContent = yaml.dump(yamlContent);
+    return fs.writeFile(mtaYamlPath, updatedYamlContent, 'utf-8', (error) => {
+        if (error) {
+            throw new Error('Cannot save mta.yaml file.');
+        }
+    });
 }

@@ -26,7 +26,6 @@ export async function getToken(uaa: Uaa): Promise<string> {
         const response = await axios.get(uri, options);
         return response.data['access_token'];
     } catch (e) {
-        // log error: HTML5RepoUtils.ts=>getToken(params)
         throw new Error(`Failed to get the OAuth token from HTML5 repository. Reason: ${e.message}`);
     }
 }
@@ -51,7 +50,6 @@ export async function downloadZip(token: string, appHostId: string, uri: string)
         });
         return response.data;
     } catch (e) {
-        // log error: HTML5RepoUtils.ts=>downloadZip(params)
         throw new Error(`Failed to download zip from HTML5 repository. Reason: ${e.message}`);
     }
 }
@@ -83,7 +81,6 @@ export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLo
         }
         return serviceKeys;
     } catch (e) {
-        // log error: HTML5RepoUtils.ts=>getHtml5RepoCredentials(spaceGuid)
         throw new Error(`Failed to get credentials from HTML5 repository for space ${spaceGuid}. Reason: ${e.message}`);
     }
 }
@@ -137,7 +134,6 @@ export async function downloadAppContent(
             throw new Error('No UAA credentials found for HTML5 repository');
         }
     } catch (e) {
-        // log error: HTML5RepoUtils.ts=>downloadAppContent(params)
         throw new Error(
             `Failed to download the application content from HTML5 repository for space ${spaceGuid} and app ${appName} (${appHostId}). Reason: ${e.message}`
         );

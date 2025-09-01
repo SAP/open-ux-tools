@@ -13,9 +13,9 @@ import {
     type DescriptorVariant,
     type Content
 } from '../types';
-import { YamlUtils } from '../cf/project/yaml';
 import { fillDescriptorContent } from './manifest';
 import { getLatestVersion } from '../ui5/version-info';
+import { adjustMtaYaml } from '../cf';
 
 const baseTmplPath = join(__dirname, '../../templates');
 
@@ -82,7 +82,14 @@ export async function generateCf(basePath: string, config: CfAdpWriterConfig, fs
     const fullConfig = setDefaultsCF(config);
 
     const { app, cf } = fullConfig;
-    await YamlUtils.adjustMtaYaml(basePath, app.id, cf.approuter, cf.businessSolutionName ?? '', cf.businessService);
+    await adjustMtaYaml(
+        basePath,
+        app.id,
+        cf.approuter,
+        cf.businessSolutionName ?? '',
+        cf.businessService,
+        cf.space.GUID
+    );
 
     if (fullConfig.app.i18nModels) {
         writeI18nModels(basePath, fullConfig.app.i18nModels, fs);

@@ -17,10 +17,12 @@ import type {
     GetServiceInstanceParams,
     ServiceInstance,
     CFServiceInstance,
-    Credentials
+    Credentials,
+    Yaml
 } from '../../types';
 import { isLoggedInCf } from '../core/auth';
 import { createServiceKey, getServiceKeys } from './cli';
+import { getProjectNameForXsSecurity } from '../project';
 
 interface FDCResponse {
     results: CFApp[];
@@ -223,6 +225,58 @@ export async function createService(
         const errorMessage = `Failed to create service instance '${serviceInstanceName}'. Reason: ${e.message}`;
         logger?.error(errorMessage);
         throw new Error(errorMessage);
+    }
+}
+
+/**
+ * Creates the services.
+ *
+ * @param {string} projectPath - The project path.
+ * @param {Yaml} yamlContent - The YAML content.
+ * @param {string[]} initialServices - The initial services.
+ * @param {string} timestamp - The timestamp.
+ * @param {string} spaceGuid - The space GUID.
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<void>} The promise.
+ */
+export async function createServices(
+    projectPath: string,
+    yamlContent: Yaml,
+    initialServices: string[],
+    timestamp: string,
+    spaceGuid: string,
+    logger?: ToolsLogger
+): Promise<void> {
+    const excludeServices = initialServices.concat(['portal', 'html5-apps-repo']);
+    const xsSecurityPath = path.join(projectPath, 'xs-security.json');
+    const resources = yamlContent.resources as any[];
+    const xsSecurityProjectName = getProjectNameForXsSecurity(yamlContent, timestamp);
+    for (const resource of resources) {
+        if (!excludeServices.includes(resource.parameters.service)) {
+            if (resource.parameters.service === 'xsuaa') {
+                await createService(
+                    spaceGuid,
+                    resource.parameters['service-plan'],
+                    resource.parameters['service-name'],
+                    logger,
+                    [],
+                    xsSecurityPath,
+                    resource.parameters.service,
+                    xsSecurityProjectName
+                );
+            } else {
+                await createService(
+                    spaceGuid,
+                    resource.parameters['service-plan'],
+                    resource.parameters['service-name'],
+                    logger,
+                    [],
+                    '',
+                    resource.parameters.service,
+                    xsSecurityProjectName
+                );
+            }
+        }
     }
 }
 

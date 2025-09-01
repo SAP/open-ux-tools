@@ -23,7 +23,6 @@ import {
     isCfInstalled,
     isLoggedInCf,
     AppContentService,
-    YamlUtils,
     loadCfConfig
 } from '@sap-ux/adp-tooling';
 import { type CFConfig, type CfServicesAnswers } from '@sap-ux/adp-tooling';
@@ -238,7 +237,6 @@ export default class extends Generator {
 
         this.cfInstalled = await isCfInstalled();
         this.cfConfig = loadCfConfig(this.logger);
-        YamlUtils.spaceGuid = this.cfConfig.space.GUID;
         this.isCfLoggedIn = await isLoggedInCf(this.cfConfig, this.logger);
         this.logger.info(`isCfInstalled: ${this.cfInstalled}`);
 
