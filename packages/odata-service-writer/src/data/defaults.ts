@@ -175,7 +175,7 @@ async function setDefaultPreviewSettings(basePath: string, service: OdataService
     if (fs.exists(ui5Yamlpath)) {
         const yamlContents = fs.read(ui5Yamlpath);
         const ui5Config = await UI5Config.newInstance(yamlContents);
-        const backends = ui5Config.getBackendConfigsFromFioriToolsProxydMiddleware();
+        const backends = ui5Config.getBackendConfigsFromFioriToolsProxyMiddleware();
         // There should be only one /sap entry
         if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
             service.previewSettings.path = service.path;

@@ -1,5 +1,24 @@
 # @sap-ux/odata-service-writer
 
+## 0.27.18
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/mockserver-config-writer@0.9.14
+    -   @sap-ux/project-access@1.30.13
+
+## 0.27.17
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/mockserver-config-writer@0.9.13
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/project-access@1.30.12
+
 ## 0.27.16
 
 ### Patch Changes

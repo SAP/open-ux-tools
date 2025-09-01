@@ -1,5 +1,17 @@
 # @sap-ux/ui5-config
 
+## 0.29.3
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+
+## 0.29.2
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+
 ## 0.29.1
 
 ### Patch Changes

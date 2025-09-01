@@ -1,5 +1,33 @@
 # @sap-ux/ui5-test-writer
 
+## 0.7.22
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.13
+-   @sap-ux/ui5-application-writer@1.5.14
+
+## 0.7.21
+
+### Patch Changes
+
+-   1fff3c0: use self contained journeys for OPA tests
+
+## 0.7.20
+
+### Patch Changes
+
+-   Updated dependencies [55bb22e]
+    -   @sap-ux/ui5-application-writer@1.5.13
+
+## 0.7.19
+
+### Patch Changes
+
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-application-writer@1.5.12
+    -   @sap-ux/project-access@1.30.12
+
 ## 0.7.18
 
 ### Patch Changes

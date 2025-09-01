@@ -67,10 +67,10 @@ class HybridStore<E extends object> implements DataAccess<E> {
         includeSensitiveData?: boolean;
     }): Promise<{ [key: string]: E }> {
         const result: { [key: string]: E } = {};
-
         const entitiesFs = (await this.filesystem.readAll({ entityName })) || {};
+        const isEntitiesFsEmpty = Object.keys(entitiesFs).length === 0;
 
-        if (!includeSensitiveData) {
+        if (!includeSensitiveData && !isEntitiesFsEmpty) {
             return entitiesFs;
         }
 

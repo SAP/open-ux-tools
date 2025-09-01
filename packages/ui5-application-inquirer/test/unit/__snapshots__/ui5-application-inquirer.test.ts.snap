@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
 [
@@ -73,7 +73,6 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
     "when": [Function],
   },
   {
-    "additionalMessages": [Function],
     "default": false,
     "guiOptions": {
       "breadcrumb": true,
@@ -81,7 +80,6 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
     "message": "Enable TypeScript",
     "name": "enableTypeScript",
     "type": "confirm",
-    "when": [Function],
   },
   {
     "default": [Function],
@@ -113,7 +111,6 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
     "message": [Function],
     "name": "enableVirtualEndpoints",
     "type": "confirm",
-    "when": [Function],
   },
   {
     "default": false,
