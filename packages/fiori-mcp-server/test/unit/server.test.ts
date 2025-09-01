@@ -104,11 +104,11 @@ describe('FioriFunctionalityServer', () => {
                 applicationPath: 'app1',
                 functionalities: [
                     {
-                        id: 'add-page',
+                        functionalityId: 'add-page',
                         description: 'Add page...'
                     },
                     {
-                        id: 'delete-page',
+                        functionalityId: 'delete-page',
                         description: 'Delete page...'
                     }
                 ]
@@ -131,11 +131,11 @@ describe('FioriFunctionalityServer', () => {
                 functionalities: [
                     {
                         description: 'Add page...',
-                        id: 'add-page'
+                        functionalityId: 'add-page'
                     },
                     {
                         description: 'Delete page...',
-                        id: 'delete-page'
+                        functionalityId: 'delete-page'
                     }
                 ]
             });

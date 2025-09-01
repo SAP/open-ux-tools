@@ -52,6 +52,7 @@ export interface GetFunctionalityDetailsInput {
  */
 export interface GetFunctionalityDetailsOutput {
     /** ID of the functionality */
+    // ToDo???
     id: string;
     /** Name of the functionality */
     name: string;
@@ -122,7 +123,7 @@ export interface FioriApp {
  */
 export interface Functionality {
     /** ID or array of IDs for the functionality */
-    id: Array<string | number> | string;
+    functionalityId: Array<string | number> | string;
     /** Description of the functionality */
     description: string;
 }
