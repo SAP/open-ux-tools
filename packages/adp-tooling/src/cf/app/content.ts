@@ -46,8 +46,7 @@ export class AppContentService {
             appParams,
             this.logger
         );
-
-        // Store the manifest and runtime GUID
+        // TODO: This class will be removed when we change the validation and manifest retrieval logic when prompting
         this.manifests.push(manifest);
         this.html5RepoRuntimeGuid = serviceInstanceGuid;
 
