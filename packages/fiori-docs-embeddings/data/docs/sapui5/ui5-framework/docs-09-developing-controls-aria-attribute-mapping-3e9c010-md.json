@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-09-developing-controls-aria-attribute-mapping-3e9c010-md",
+  "title": "ARIA Attribute Mapping",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/aria-attribute-mapping-3e9c010.md",
+  "lastModified": "2025-09-01T18:17:10.673Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "ARIA",
+    "Attribute",
+    "Mapping"
+  ],
+  "headers": [
+    "ARIA Attribute Mapping",
+    "Attribute Mapping",
+    "Additional API Associations"
+  ],
+  "content": "<!-- loio3e9c0104db864fbabc9fc786cbdf76a4 -->\n\n# ARIA Attribute Mapping\n\nNavigation with the keyboard and screen reader have to both work properly at the same time. In order for this to happen, you need to use the correct ARIA attributes and to map them to their HTML counterparts.\n\n\n\n## Attribute Mapping\n\nThe mapping of HTML attributes to ARIA attributes is described in the following table:\n\n**Attribute Mapping**\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nHTML Attribute\n\n</th>\n<th valign=\"top\">\n\nARIA Attribute\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`editable` \n\n</td>\n<td valign=\"top\">\n\n`aria-readonly` \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`enabled` \n\n</td>\n<td valign=\"top\">\n\n`aria-disabled` \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`visible` \n\n</td>\n<td valign=\"top\">\n\n`aria-hidden` \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`required` \n\n</td>\n<td valign=\"top\">\n\n`aria-required` \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`checked` \n\n</td>\n<td valign=\"top\">\n\n`aria-checked` \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`selected` \n\n</td>\n<td valign=\"top\">\n\n`aria-selected` \n\n</td>\n</tr>\n</table>\n\nFor custom controls, not part of the ARIA role definitions, mapping to similar and existing ARIA base role concepts is applied. In special cases, custom role names can be added by the SAPUI5 framework using `aria-describedby` or `aria-labelledby` references.\n\n\n\n## Additional API Associations\n\nIn order to ease the setting of ARIA attributes, we have introduced two new associations to the SAPUI5 API:\n\n1.  • ariaLabelledBy - holds a reference to the control that has the `aria-labelledby` attribute set\n\n2.  • ariaDescribedBy - holds a reference to the control that has the `aria-describedby` attribute set\n\n\nThese associations have the following structure:\n\n> ### Source Code:  \n> ```\n> ariaLabelledBy : {\n> \n> type : \"sap.ui.core.Control\",\n> \n> multiple : true,\n> \n> singularName : \"ariaLabelledBy\"\n> \n> }\n> \n> ```\n\n> ### Source Code:  \n> ```\n> ariaDescribedBy : {\n> \n> type : \"sap.ui.core.Control\",\n> \n> multiple : true,\n> \n> singularName : \"ariaDescribedBy\"\n> \n> }\n> \n> ```\n\n",
+  "excerpt": "<!-- loio3e9c0104db864fbabc9fc786cbdf76a4 --> ARIA Attribute Mapping Navigation with the keyboard and screen reader have to both work properly at the same time. In order for this to happen, you need t...",
+  "wordCount": 301,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

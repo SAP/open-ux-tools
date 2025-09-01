@@ -1,0 +1,19 @@
+{
+  "id": "fiori-samples-neo-migration-managedapp-fioriapp-webapp-test-integration-alljourneys-js",
+  "title": "AllJourneys",
+  "category": "samples",
+  "path": "neo-migration/managedapp/fioriapp/webapp/test/integration/AllJourneys.js",
+  "lastModified": "2025-09-01T18:17:10.811Z",
+  "tags": [
+    "samples",
+    "js",
+    "AllJourneys"
+  ],
+  "headers": [],
+  "content": "# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.md\n\n```javascript\n# AllJourneys.js\n\n```javascript\nsap.ui.define([\"sap/ui/test/Opa5\",\"./arrangements/Startup\",\"./WorklistJourney\",\"./NavigationJourney\",\"./NotFoundJourney\",\"./ObjectJourney\"],function(e,t){\"use strict\";e.extendConfig({arrangements:new t,viewNamespace:\"mycompany.myapp.MyWorklistApp.view.\",autoWait:true})});\n```\n```\n```\n```\n```\n```\n```\n```\n```",
+  "excerpt": "AllJourneys.md javascript AllJourneys.md javascript AllJourneys.md javascript AllJourneys.md javascript AllJourneys.js",
+  "wordCount": 39,
+  "version": "1.0.0",
+  "source": "fiori-samples",
+  "sourceType": "github"
+}

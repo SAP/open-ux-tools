@@ -1,0 +1,30 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-example-adding-columns-to-an-analytical-table-on-the-object-page-3b78e69-md",
+  "title": "Example: Adding Columns to an Analytical Table on the Object Page",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/example-adding-columns-to-an-analytical-table-on-the-object-page-3b78e69.md",
+  "lastModified": "2025-09-01T18:17:10.616Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Example",
+    "Adding",
+    "Columns",
+    "Analytical",
+    "Table",
+    "the",
+    "Object",
+    "Page"
+  ],
+  "headers": [
+    "Example: Adding Columns to an Analytical Table on the Object Page",
+    "Context",
+    "Procedure"
+  ],
+  "content": "<!-- loio3b78e695abde4c21a472cd9e2f1c9eb5 -->\n\n# Example: Adding Columns to an Analytical Table on the Object Page\n\nTo add custom columns to an analytical table on the object page, follow the steps described below.\n\n\n\n## Context\n\n> ### Note:  \n> This topic is currently only applicable to SAP Fiori elements for OData V2.\n\n> ### Caution:  \n> Use app extensions with caution and only if you cannot produce the required behavior by other means, such as manifest settings or annotations. To correctly integrate your app extension coding with SAP Fiori elements, use only the `extensionAPI` of SAP Fiori elements. For more information, see [Using the extensionAPI](using-the-extensionapi-bd2994b.md).\n> \n> After you've created an app extension, its display \\(for example, control placement and layout\\) and system behavior \\(for example, model and binding usage, busy handling\\) lies within the application's responsibility. SAP Fiori elements provides support only for the official `extensionAPI` functions. Don't access or manipulate controls, properties, models, or other internal objects created by the SAP Fiori elements framework.\n\nThe table containing additional columns can look like this:\n\n  \n  \n**Custom columns in an analytical table on the object page**\n\n![](images/Adding_Columns_to_an_Analytical_Table_on_the_Object_Page_508f303.png \"Custom columns in an analytical table on the object page\")\n\n\n\n## Procedure\n\n1.  Define a fragement for the view extension\n\n    In the example project webapp/ext/fragments/ProductSalesDataAnalyticalTableColumns.fragment.xml, two columns are added: One containing text, the other one containing an action button.\n\n    > ### Sample Code:  \n    > ```\n    > <core:FragmentDefinition\n    >                xmlns:core=\"sap.ui.core\"\n    >                xmlns:table=\"sap.ui.table\" \n    >                xmlns=\"sap.m\" \n    >                xmlns:sfi=\"sap.ui.comp.smartfield\">\n    > \n    >                <table:AnalyticalColumn width=\"150px\"> \n    >       <Label text=\"{i18n|sap.suite.ui.generic.template.ObjectPage|STTA_C_MP_Product>xfld.BreakoutColumn}\" />\n    >       <table:template>\n    >          <Text text=\"{i18n|sap.suite.ui.generic.template.ObjectPage|STTA_C_MP_Product>xfld.BreakoutColumnContent}\"></Text>\n    >       </table:template>\n    >       <table:customData>\n    >                               <core:CustomData key=\"p13nData\" value='\\{\"columnKey\": \"some unique key\" \\}' />\n    >                    </table:customData>\n    >                </table:AnalyticalColumn>\n    >                \n    >                <table:AnalyticalColumn width=\"170px\">\n    > \n    >                               <Label text=\"{i18n|sap.suite.ui.generic.template.ObjectPage|STTA_C_MP_Product>xfld.BreakoutColumn}\" />\n    > \n    >                               <table:template>\n    >                                              <Button text=\"{i18n|sap.suite.ui.generic.template.ObjectPage|STTA_C_MP_Product>xfld.AnalyticalTableButton}\"\n    >                                                                                                          press = \"onAnalyticalTableBreakoutButtonPress\">\n    >                                              </Button>\n    >                              </table:template>            \n    >                               \n    >                               <table:customData>\n    >                                              <core:CustomData key=\"p13nData\" value='\\{\"columnKey\": some unique key\"  \\}' />\n    >                               </table:customData>\n    >                \n    >                </table:AnalyticalColumn>\n    >                \n    > </core:FragmentDefinition>\n    > \n    > ```\n\n2.  Register your view extensions in the `manifest.json` file of your application, as follows:\n\n    > ### Sample Code:  \n    > ```\n    > \"extends\": {\n    >      \"extensions\": {\n    >          \"sap.ui.controllerExtensions\": {\n    >              ....\n    >          }\n    >          \"sap.ui.viewExtensions\": {\n    >               .... \n    >               \"sap.suite.ui.generic.template.ObjectPage.view.Details\": {\n    >                      ....\n    >                      \"AnalyticalTableColumnsExtension|STTA_C_MP_ProductSalesData|to_ProductSalesData::com.sap.vocabularies.UI.v1.LineItem\": {\n    >                         \"className\": \"sap.ui.core.Fragment\",\n    >                         \"fragmentName\": \"STTA_MP.ext.fragments.ProductSalesDataAnalyticalTableColumns\",\n    >                         \"type\": \"XML\"\n    >                      },\n    >                      ....\n    > \n    > ```\n\n\n",
+  "excerpt": "<!-- loio3b78e695abde4c21a472cd9e2f1c9eb5 --> Example: Adding Columns to an Analytical Table on the Object Page To add custom columns to an analytical table on the object page, follow the steps descri...",
+  "wordCount": 379,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

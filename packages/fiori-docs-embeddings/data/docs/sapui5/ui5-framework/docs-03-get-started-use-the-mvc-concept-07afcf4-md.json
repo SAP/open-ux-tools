@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-03-get-started-use-the-mvc-concept-07afcf4-md",
+  "title": "Use the MVC Concept",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/use-the-mvc-concept-07afcf4.md",
+  "lastModified": "2025-09-01T18:17:10.489Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Use",
+    "the",
+    "MVC",
+    "Concept"
+  ],
+  "headers": [
+    "Use the MVC Concept",
+    "Model: Keep everything organized",
+    "View: Use XML views",
+    "Controller: Find the best location for your controllers"
+  ],
+  "content": "<!-- loio07afcf400eb344c2916e4eb3a400ff7b -->\n\n# Use the MVC Concept\n\nMVC \\(Model-View-Controller\\) is a concept for structuring your software. It makes it easier to maintain and to extend your apps.\n\nThe MVC pattern divides your application into three individual parts that interact with each other: the model, the views, and the controllers. There are some best practices for each of these parts:\n\n\n\n<a name=\"loio07afcf400eb344c2916e4eb3a400ff7b__section_b4d_djb_1gb\"/>\n\n## Model: Keep everything organized\n\nIt's simple: Use the right folder structure! If you arrange and structure your files and folders in a smart way, this makes coding much easier and also makes for sound performance when you load your application.\n\n-   Find out more: [Folder Structure: Where to Put Your Files](../05_Developing_Apps/folder-structure-where-to-put-your-files-003f755.md)\n\n\n\n<a name=\"loio07afcf400eb344c2916e4eb3a400ff7b__section_y5f_y4b_1gb\"/>\n\n## View: Use XML views\n\nThere are many view types, for example JavaScript, JSON, or HTML. However, we strongly recommend that you use XML views and fragments. XML clearly separates the view and the application logic, is easy to manipulate and can be parsed by tools like the layout editor in SAP Business Application Studio. That's why we also used XML views in all our tutorials, demo apps, and guides.\n\n-   Learn how: Walkthrough Tutorial [Step 4: XML Views](step-4-xml-views-1409791.md)\n-   Find out more: [XML View](../04_Essentials/xml-view-91f2928.md)\n\n\n\n<a name=\"loio07afcf400eb344c2916e4eb3a400ff7b__section_ubl_3qb_1gb\"/>\n\n## Controller: Find the best location for your controllers\n\nEvery view you create should have its own controller with a corresponding file name. For example: If your view is called `App.view.xml`, then the matching controller should be named `App.controller.js` \\(in JavaScript\\) or `App.controller.ts` \\(in TypeScript\\).\n\nThere is one special case: The so called `BaseController` is not directly related to a view. It is quite common that several controllers use the same functions. You can place these shared functions in the `BaseController` from which all other instantiated controllers will inherit. In other words: Every function you place in the `BaseController` is available for all your controllers. This makes your app code definitely easier to maintain, and you save some lines of code!\n\nThe controllers are written in JavaScript or TypeScript and contain the app logic. They should be placed in the `controller` folder. However, not all relevant code belongs in the `controller` folder. Consider formatter logic, for example, which has mainly the function to format data. That's why you should rather place it in the `models` folder of your application.\n\n-   Learn how: Walkthrough Tutorial [Step 5: Controllers](step-5-controllers-50579dd.md)\n-   Find our more: [Controller](../04_Essentials/controller-121b8e6.md)\n\n",
+  "excerpt": "<!-- loio07afcf400eb344c2916e4eb3a400ff7b --> Use the MVC Concept MVC \\(Model-View-Controller\\) is a concept for structuring your software. It makes it easier to maintain and to extend your apps. The ...",
+  "wordCount": 396,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

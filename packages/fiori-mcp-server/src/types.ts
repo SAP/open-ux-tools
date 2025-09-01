@@ -7,6 +7,13 @@ import type { ApplicationAccess } from '@sap-ux/project-access';
 /**
  * Input interface for the 'list-fiori-apps' functionality
  */
+export interface DocSearchInput {
+    /** Query string for searching Fiori applications */
+    query: string;
+}
+/**
+ * Input interface for the 'list-fiori-apps' functionality
+ */
 export interface ListFioriAppsInput {
     /** Array of paths to search for Fiori applications */
     searchPath: string[];

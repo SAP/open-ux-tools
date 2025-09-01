@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-09-developing-controls-creating-a-simple-control-91f02ec-md",
+  "title": "Creating a Simple Control",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/creating-a-simple-control-91f02ec.md",
+  "lastModified": "2025-09-01T18:17:10.674Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Creating",
+    "Simple",
+    "Control"
+  ],
+  "headers": [
+    "Creating a Simple Control"
+  ],
+  "content": "<!-- loio91f02ece6f4d1014b6dd926db0e91070 -->\n\n# Creating a Simple Control\n\nExample of a simple control with a `name` property\n\nThe control is used to render the text \"Hello <name\\>\":\n\n```js\n// \"Control\" required from \"sap/ui/core/Control\"\n\nControl.extend(\"my.Hello\", {                  // call the new Control type \"my.Hello\" \n                                              // and let it inherit from sap.ui.core.Control\n    metadata : {                              // the Control API\n        properties : {\n            \"name\" : \"string\"                 // setter and getter are created behind the scenes, \n                                              // including data binding and type validation\n        }\n    },\n\n    renderer : {\n        apiVersion: 2,                        // see 'Renderer Methods' for an explanation of this flag\n        render: function(oRm, oControl) {     // the part creating the HTML\n            oRm.openStart(\"span\", oControl).openEnd();\n            oRm.text(\"Hello \" + oControl.getName()); // write the Control property 'name', with automatic XSS protection\n            oRm.close(\"span\");\n        }\n    }\n});\n```\n\nThe new control is ready for use now. To instantiate and display the control, use the following code:\n\n```js\n\nnew my.Hello({name:\"UI5\"}).placeAt(\"content\");\n```\n\n",
+  "excerpt": "<!-- loio91f02ece6f4d1014b6dd926db0e91070 --> Creating a Simple Control Example of a simple control with a name property The control is used to render the text \"Hello <name\\>\": `js // \"Control\" requir...",
+  "wordCount": 149,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

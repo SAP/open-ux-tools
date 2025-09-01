@@ -1,0 +1,27 @@
+{
+  "id": "sapui5-docs-04-essentials-using-container-content-padding-css-classes-c71f6df-md",
+  "title": "Using Container Content Padding CSS Classes",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/using-container-content-padding-css-classes-c71f6df.md",
+  "lastModified": "2025-09-01T18:17:10.552Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Using",
+    "Container",
+    "Content",
+    "Padding",
+    "CSS",
+    "Classes"
+  ],
+  "headers": [
+    "Using Container Content Padding CSS Classes",
+    "Example"
+  ],
+  "content": "<!-- loioc71f6df62dae47ca8284310a6f5fc80a -->\n\n# Using Container Content Padding CSS Classes\n\nFor many container controls in SAPUI5, such as a Dialog or a Page, you can define whether the container should have a padding within the content area. A padding clears the area between the container layout and the controls that are displayed in the content area.\n\nYou can either choose to have no padding, a small padding, or a responsive padding that is based on the user's screen size.\n\nThe following CSS classes for content padding are provided by SAPUI5:\n\n-   `sapUiNoContentPadding`\n-   `sapUiContentPadding`\n-   `sapUiResponsiveContentPadding`\n\nThe effects of these paddings will be different depending on the container that is being used:\n\n-   If the container is defining a padding on its content area by default, then setting `sapUiNoContentPadding` in the application code will remove the padding and thus not display any space between the container layout and the content controls.\n-   If the container is defining no padding on its content by default, then setting `sapUiContentPadding` will add 1rem \\(16px\\) of padding around the content area to layout the content controls.\n-   Setting `sapUiResponsiveContentPadding` on the container control will add a padding based on the user's screen size. On small screen devices such as smartphones, or when the browser window is resized to a small size, usually a smaller or no padding is displayed \\(depending on the control and theme specifics\\). On medium screen sizes or applications that are using a `SplitApp`, the control will get 1rem \\(16px\\) of padding.. Finally, on large screen sizes in full-screen mode, the container control will get 2rem \\(32px\\) of padding to the left and right and 1rem \\(16px\\) of padding at the top and bottom.\n\nThe following list of controls support container content padding CSS classes:\n\n-   `sap.f.DynamicPage`\n-   `sap.f.GridList`\n-   `sap.f.semantic.SemanticPage`\n-   `sap.m.Carousel`\n-   `sap.m.Dialog`\n-   `sap.m.FlexBox` using `FlexItemData` with `styleClass` property for each item\n-   `sap.m.IconTabBar`\n-   `sap.m.List`\n-   `sap.m.Page`\n-   `sap.m.Panel`\n-   `sap.m.Popover`\n-   `sap.m.ScrollContainer`\n-   `sap.m.TabContainer`\n-   `sap.m.Table`\n-   `sap.ui.layout.BlockLayoutCell`\n-   `sap.ui.layout.DynamicSideContent`\n-   `sap.ui.layout.HorizontalLayout`\n-   `sap.ui.layout.VerticalLayout`\n\n\n\n## Example\n\n```xml\n\n<Page class=\"sapUiResponsiveContentPadding\">\n```\n\n\n\nYou can check how our container padding classes work in the following sample [Samples for `sap.ui.core.ContainerPadding`](https://ui5.sap.com/#/entity/sap.ui.core.ContainerPadding).\n\nIf you have to apply responsive paddings over separate parts of the control according to the control width, see [Enabling Responsive Paddings According to the Control Width](enabling-responsive-paddings-according-to-the-control-width-3b718b5.md)\n\n",
+  "excerpt": "<!-- loioc71f6df62dae47ca8284310a6f5fc80a --> Using Container Content Padding CSS Classes For many container controls in SAPUI5, such as a Dialog or a Page, you can define whether the container should...",
+  "wordCount": 388,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

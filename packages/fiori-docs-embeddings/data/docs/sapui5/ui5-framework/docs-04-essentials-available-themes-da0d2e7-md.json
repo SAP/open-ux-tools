@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-04-essentials-available-themes-da0d2e7-md",
+  "title": "Available Themes",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/available-themes-da0d2e7.md",
+  "lastModified": "2025-09-01T18:17:10.492Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Available",
+    "Themes"
+  ],
+  "headers": [
+    "Available Themes"
+  ],
+  "content": "<!-- loioda0d2e78e5414e199507cd6365d3add2 -->\n\n# Available Themes\n\nProvides a list of themes and their names.\n\nThe following themes are available in SAPUI5:\n\n****\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nTheme Name\n\n</th>\n<th valign=\"top\">\n\nTechnical Name\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n*Morning Horizon* \n\n</td>\n<td valign=\"top\">\n\n`sap_horizon` \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n*Evening Horizon* \n\n</td>\n<td valign=\"top\">\n\n`sap_horizon_dark` \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n*High Contrast Black* \n\n</td>\n<td valign=\"top\">\n\n`sap_horizon_hcb` \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n*High Contrast White* \n\n</td>\n<td valign=\"top\">\n\n`sap_horizon_hcw` \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n*Quartz Light* \n\n</td>\n<td valign=\"top\">\n\n`sap_fiori_3` \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n*Quartz Dark* \n\n</td>\n<td valign=\"top\">\n\n`sap_fiori_3_dark` \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n*High Contrast Black* \n\n</td>\n<td valign=\"top\">\n\n`sap_fiori_3_hcb` \n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n*High Contrast White* \n\n</td>\n<td valign=\"top\">\n\n`sap_fiori_3_hcw` \n\n</td>\n</tr>\n</table>\n\nFor more information about the support of themes, see [Supported Combinations of Themes and Libraries](../02_Read-Me-First/supported-combinations-of-themes-and-libraries-38ff8c2.md).\n\n",
+  "excerpt": "<!-- loioda0d2e78e5414e199507cd6365d3add2 --> Available Themes Provides a list of themes and their names. The following themes are available in SAPUI5: <table> <tr> <th valign=\"top\"> Theme Name </th> ...",
+  "wordCount": 144,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

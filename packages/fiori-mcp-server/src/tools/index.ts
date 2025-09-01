@@ -12,12 +12,34 @@ import {
     executeFunctionalityInputSchema
 } from './input-schema';
 
+export { docSearch } from './hybrid-search';
 export { listFioriApps } from './list-fiori-apps';
 export { listFunctionalities } from './list-functionalities';
 export { getFunctionalityDetails } from './get-functionality-details';
 export { executeFunctionality } from './execute-functionality';
 
 export const tools = [
+    {
+        name: 'doc_search',
+        title: 'Search in Fiori Documentation',
+        description:
+            "Searches code snippets of Fiori Elements, Annotations, SAPUI5, Fiori tools documentation for the given query. You MUST use this tool if you're unsure about Fiori APIs. Optionally returns only code blocks.",
+        inputSchema: {
+            type: 'object',
+            properties: {
+                query: {
+                    type: 'string',
+                    description: 'Search query'
+                },
+                maxResults: {
+                    type: 'number',
+                    description: 'Maximum number of results to return',
+                    default: 25
+                }
+            },
+            required: ['query']
+        }
+    },
     {
         name: 'list-fiori-apps',
         description: `Scans a specified directory to find existing SAP Fiori applications that can be modified.

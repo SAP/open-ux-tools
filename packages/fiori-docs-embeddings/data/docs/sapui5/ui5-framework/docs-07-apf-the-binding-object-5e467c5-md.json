@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-07-apf-the-binding-object-5e467c5-md",
+  "title": "The Binding Object",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/the-binding-object-5e467c5.md",
+  "lastModified": "2025-09-01T18:17:10.669Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "Binding",
+    "Object"
+  ],
+  "headers": [
+    "The Binding Object"
+  ],
+  "content": "<!-- loio5e467c53595a6655e10000000a423f68 -->\n\n# The Binding Object\n\nThe `binding` object defines the relation between the requested data and one or more representations. It also defines the mapping of selections made on the UI to OData filter expressions. The `binding` object has the following format:\n\n```\n\n{\n  \"type\" : \"binding\",    //optional\n  \"id\" : \"<id>\"\n  \"requiredFilters\" : [ \"<property name>\"* ]\n  \"representations\" : [ <representation>* ],\n}\n```\n\nThe properties used in the `binding` object denote the following:\n\n\n<table>\n<tr>\n<th valign=\"top\">\n\nProperty\n\n</th>\n<th valign=\"top\">\n\nDescription\n\n</th>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`id` \n\n</td>\n<td valign=\"top\">\n\nUnique ID of type string\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`requiredFilters` \n\n</td>\n<td valign=\"top\">\n\nContract between binding and request; specify the target properties for converting selected data into filter expressions\n\n</td>\n</tr>\n<tr>\n<td valign=\"top\">\n\n`representations` \n\n</td>\n<td valign=\"top\">\n\nAn array of `representation` objects.\n\n</td>\n</tr>\n</table>\n\n**Related Information**  \n\n\n[The Representation Object](the-representation-object-6a467c5.md)\n\n",
+  "excerpt": "<!-- loio5e467c53595a6655e10000000a423f68 --> The Binding Object The binding object defines the relation between the requested data and one or more representations. It also defines the mapping of sele...",
+  "wordCount": 147,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

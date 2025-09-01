@@ -1,0 +1,24 @@
+{
+  "id": "sapui5-docs-07-apf-the-configuration-root-object-3cda7d5-md",
+  "title": "The Configuration Root Object",
+  "category": "ui5-framework",
+  "path": "docs/07_APF/the-configuration-root-object-3cda7d5.md",
+  "lastModified": "2025-09-01T18:17:10.669Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "The",
+    "Configuration",
+    "Root",
+    "Object"
+  ],
+  "headers": [
+    "The Configuration Root Object"
+  ],
+  "content": "<!-- loio3cda7d53b5c19456e10000000a423f68 -->\n\n# The Configuration Root Object\n\nThe configuration root object encapsulates all configuration objects that represent a function and that exist as runtime objects. The format is as follows:\n\n```\n\n{\n  steps : [ <step> | <hierarchicalStep>* ],\n  requests : [ <request>* ],\n  bindings : [ <binding>* ],\n  categories : [ <category>* ],\n  representationTypes : [ <representationType>* ],\n  facetFilters : [ <facetFilter>* ],    // optional\n  smartFilterBar : <smartFilterBarConfiguration>,    // optional\n  navigationTargets : [ <navigationTarget>* ],    // optional\n  configHeader : <configurationInformation>\n }\n```\n\n> ### Note:  \n> The notation <code>[ <i class=\"varname\">&lt;type&gt;</i>* ]</code> indicates an array of one or more elements.\n> \n> The configuration can have either facet filters or a smart filter bar, not both.\n\n",
+  "excerpt": "<!-- loio3cda7d53b5c19456e10000000a423f68 --> The Configuration Root Object The configuration root object encapsulates all configuration objects that represent a function and that exist as runtime obj...",
+  "wordCount": 119,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

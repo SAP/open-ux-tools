@@ -1,0 +1,29 @@
+{
+  "id": "sapui5-docs-03-get-started-step-11-testing-user-input-92959b1-md",
+  "title": "Step 11: Testing User Input",
+  "category": "ui5-framework",
+  "path": "docs/03_Get-Started/step-11-testing-user-input-92959b1.md",
+  "lastModified": "2025-09-01T18:17:10.452Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Step",
+    "Testing",
+    "User",
+    "Input"
+  ],
+  "headers": [
+    "Step 11: Testing User Input",
+    "Preview",
+    "Coding",
+    "webapp/test/integration/WorklistJourney.js",
+    "webapp/test/integration/pages/Worklist.js",
+    "Conventions"
+  ],
+  "content": "<!-- loio92959b10ecf14582b65eaadb40571156 -->\n\n# Step 11: Testing User Input\n\nIn this step, we will write a test that simulates a user search. We will enter the search string into the search field and check if the correct results are shown in worklist table.\n\n\n\n## Preview\n\n  \n  \n**Testing user input in a search field**\n\n![](images/Tutorial_Testing_Step_11_2d8ec1c.jpg \"Testing user input in a search field\")\n\n\n\n## Coding\n\nYou can view and download all files in the Demo Kit at [Testing - Step 11](https://ui5.sap.com/#/entity/sap.m.tutorial.testing/sample/sap.m.tutorial.testing.11).\n\n\n\n## webapp/test/integration/WorklistJourney.js\n\n```js\n\n/*global QUnit*/\nsap.ui.define([\n\t\"sap/ui/test/opaQunit\",\n\t\"./pages/Worklist\"\n], function (opaTest) {\n\t\"use strict\";\n\n\tQUnit.module(\"Posts\");\n\n\topaTest(\"Should see the table with all posts\", function (Given, When, Then) {\n\t\t// Arrangements\n\t\tGiven.iStartMyApp();\n\n\t\t// Assertions\n\t\tThen.onTheWorklistPage.theTableShouldHavePagination().\n\t\t\tand.theTitleShouldDisplayTheTotalAmountOfItems();\n\t});\n\n\n\topaTest(\"Should be able to load more items\", function (Given, When, Then) {\n\t\t//Actions\n\t\tWhen.onTheWorklistPage.iPressOnMoreData();\n\n\t\t// Assertions\n\t\tThen.onTheWorklistPage.theTableShouldHaveAllEntries();\n\t});\n\topaTest(\"Should be able to search for items\", function (Given, When, Then) {\n\t\t//Actions\n\t\tWhen.onTheWorklistPage.iSearchFor(\"Bear\");\n\n\t\t// Assertions\n\t\tThen.onTheWorklistPage.theTableHasOneItem();\n\n\t\t// Cleanup\n\t\tThen.iTeardownMyApp();\n\t});\n\n});\n```\n\nIn this example, we extend the `WorklistJourney.js` file with a new test `\"Should be able to search for items\"`. The action within this test simulates a user entering text into a search field, so we pass a search string `\"Bear\"` to this action. It is important to move the `Teardown` step to the last test, otherwise our app would be destroyed and the test would not be able to find the *Statistics* tab.\n\nDelete `.and.iTeardownMyApp();` from the previous test in the file and add the new test case.\n\n\n\n## webapp/test/integration/pages/Worklist.js\n\n```js\nsap.ui.define([\n\t\t'sap/ui/test/Opa5',\n\t\t'sap/ui/test/matchers/AggregationLengthEquals',\n\t\t'sap/ui/test/matchers/I18NText',\n\t\t'sap/ui/test/matchers/BindingPath',\n\t\t'sap/ui/demo/bulletinboard/test/integration/pages/Common',\n\t\t'sap/ui/test/actions/Press',\n\t\t'sap/ui/test/actions/EnterText'\n\t],\n\tfunction (Opa5,\n\t\t\t  AggregationLengthEquals,\n\t\t\t  I18NText,\n\t\t\t  BindingPath,\n\t\t\t  Common,\n\t\t\t  Press,\n\t\t\t  EnterText) {\n\t\t\"use strict\";\n\n\t\tvar sViewName = \"Worklist\",\n\t\t\tsTableId = \"table\";\n\n\t\tOpa5.createPageObjects({\n\t\t\tonTheWorklistPage: {\n\t\t\t\tbaseClass: Common,\n\t\t\t\tactions: {\n...\n\t\t\t\t\t},\n\t\t\t\t\t\n\t\t\t\t\tiSearchFor: function (sSearchString) {\n\t\t\t\t\t\treturn this.waitFor({\n\t\t\t\t\t\t\tid: \"searchField\",\n\t\t\t\t\t\t\tviewName: sViewName,\n\t\t\t\t\t\t\tactions: new EnterText({\n\t\t\t\t\t\t\t\ttext: sSearchString\n\t\t\t\t\t\t\t}),\n\t\t\t\t\t\t\terrorMessage: \"SearchField was not found.\"\n\t\t\t\t\t\t});\n\t\t\t\t\t}\n\n\t\t\t\t},\n\t\t\t\tassertions: {\n\t\t\t\t\ttheTableHasOneItem: function () {\n\t\t\t\t\t\treturn this.waitFor({\n\t\t\t\t\t\t\tid: sTableId,\n\t\t\t\t\t\t\tviewName: sViewName,\n\t\t\t\t\t\t\tmatchers: new AggregationLengthEquals({\n\t\t\t\t\t\t\t\tname: \"items\",\n\t\t\t\t\t\t\t\tlength: 1\n\t\t\t\t\t\t\t}),\n\t\t\t\t\t\t\tsuccess: function () {\n\t\t\t\t\t\t\t\tOpa5.assert.ok(true, \"The table contains one corresponding entry\");\n\t\t\t\t\t\t\t},\n\t\t\t\t\t\t\terrorMessage: \"The table does not contain one item.\"\n\t\t\t\t\t\t});\n\t\t\t\t\t},\n...\n```\n\nFor the new test case we add an action `iEnterSearchStringIntoSearchField` and a new assertion `theTableShouldHaveCorrespondingEntries`.\n\nIn `iEnterSearchStringIntoSearchField`, we use the `EnterText` action and load the dependency `sap/ui/test/actions/EnterText`.\n\nWe define a `waitFor` statement with the current view and with the ID of our `SearchField`, which is stored as an internal variable. This is done in the same way as in the `iPressOnMoreData` action that we implemented in our first OPA test. But now we don't use the `EnterText` action. As soon as the `SearchField` is visible on the screen and can be interacted with, the `EnterText` action is invoked. If it is not invoked, an error message is displayed and the test fails.\n\nThe `assert` part is implemented in the same way as in our first OPA test. Again, we use the matchers to check the state. Here we check the number of items in the table resulting from the simulated search. According to our mock data, there should be only one item visible.\n\n\n\n## Conventions\n\nActions in OPA never contain a QUnit assertion.\n\n**Related Information**  \n\n\n[API Reference: `sap.ui.test.actions.EnterText`](https://ui5.sap.com/#/api/sap.ui.test.actions.EnterText)\n\n",
+  "excerpt": "<!-- loio92959b10ecf14582b65eaadb40571156 --> Step 11: Testing User Input In this step, we will write a test that simulates a user search. We will enter the search string into the search field and che...",
+  "wordCount": 528,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

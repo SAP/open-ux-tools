@@ -1,0 +1,25 @@
+{
+  "id": "sapui5-docs-06-sap-fiori-elements-settings-for-object-page-tables-47425bb-md",
+  "title": "Settings for Object Page Tables",
+  "category": "ui5-framework",
+  "path": "docs/06_SAP_Fiori_Elements/settings-for-object-page-tables-47425bb.md",
+  "lastModified": "2025-09-01T18:17:10.651Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Settings",
+    "for",
+    "Object",
+    "Page",
+    "Tables"
+  ],
+  "headers": [
+    "Settings for Object Page Tables"
+  ],
+  "content": "<!-- loio47425bb6d37b426da027621abf4a14c3 -->\n\n# Settings for Object Page Tables\n\nYou can set up various aspects of the object page tables through the `manifest.json` file, as described in the sections that follow.\n\n",
+  "excerpt": "<!-- loio47425bb6d37b426da027621abf4a14c3 --> Settings for Object Page Tables You can set up various aspects of the object page tables through the manifest.json file, as described in the sections that...",
+  "wordCount": 32,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

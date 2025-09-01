@@ -1,0 +1,22 @@
+{
+  "id": "sapui5-docs-09-developing-controls-jsdoc-guidelines-eeaa5de-md",
+  "title": "JSDoc Guidelines",
+  "category": "ui5-framework",
+  "path": "docs/09_Developing_Controls/jsdoc-guidelines-eeaa5de.md",
+  "lastModified": "2025-09-01T18:17:10.679Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "JSDoc",
+    "Guidelines"
+  ],
+  "headers": [
+    "JSDoc Guidelines"
+  ],
+  "content": "<!-- loioeeaa5de14e5f4fc1ac796bc0c1ada5fb -->\n\n# JSDoc Guidelines\n\nGeneral UI5 JSDoc guidelines are available at [OpenUI5 JSDoc Guidelines](https://github.com/SAP/openui5/blob/-/docs/guidelines/jsdoc.md).\n\n",
+  "excerpt": "<!-- loioeeaa5de14e5f4fc1ac796bc0c1ada5fb --> JSDoc Guidelines General UI5 JSDoc guidelines are available at OpenUI5 JSDoc Guidelines.",
+  "wordCount": 17,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}

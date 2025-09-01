@@ -4,15 +4,24 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { CallToolRequestSchema, ListToolsRequestSchema, type CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import packageJson from '../package.json';
-import { listFioriApps, listFunctionalities, getFunctionalityDetails, executeFunctionality, tools } from './tools';
+import {
+    docSearch,
+    listFioriApps,
+    listFunctionalities,
+    getFunctionalityDetails,
+    executeFunctionality,
+    tools
+} from './tools';
 import type {
     ExecuteFunctionalitiesInput,
     GetFunctionalityDetailsInput,
+    DocSearchInput,
     ListFioriAppsInput,
     ListFunctionalitiesInput
 } from './types';
 
 type ToolArgs =
+    | DocSearchInput
     | ListFioriAppsInput
     | ListFunctionalitiesInput
     | GetFunctionalityDetailsInput
@@ -75,6 +84,9 @@ export class FioriFunctionalityServer {
             try {
                 let result;
                 switch (name) {
+                    case 'doc_search':
+                        result = await docSearch(args as DocSearchInput);
+                        return (result as any).results;
                     case 'list-fiori-apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
                         return this.convertResultToCallToolResult(result);

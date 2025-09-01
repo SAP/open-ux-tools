@@ -1,0 +1,23 @@
+{
+  "id": "sapui5-docs-04-essentials-troubleshooting-20f6ea7-md",
+  "title": "Troubleshooting",
+  "category": "ui5-framework",
+  "path": "docs/04_Essentials/troubleshooting-20f6ea7.md",
+  "lastModified": "2025-09-01T18:17:10.549Z",
+  "tags": [
+    "ui5-framework",
+    "md",
+    "Troubleshooting"
+  ],
+  "headers": [
+    "Troubleshooting",
+    "How do I get the new Logger module on the browser console?",
+    "How can I mock or spy the new modules?"
+  ],
+  "content": "<!-- loio20f6ea7552c34e248ba7bd4a1d28565b -->\n\n# Troubleshooting\n\n\n\n<a name=\"loio20f6ea7552c34e248ba7bd4a1d28565b__section_vzn_wkf_2fb\"/>\n\n## How do I get the new Logger module on the browser console?\n\n`jQuery.sap.log` is currently still available and the module `sap/base/Log` is not yet globally available. So, if a developer wants to set a log level with the new module on the console, additional code is required.\n\nOld:\n\n```\njQuery.sap.log.setLevel(3);\n// OR\njQuery.sap.log.setLevel(jQuery.sap.log.Level.INFO);\n```\n\nNew:\n\n```\nsap.ui.require(\"sap/base/Log\").setLevel(3);\n// OR\nvar Log = sap.ui.require(\"sap/base/Log\"); Log.setLevel(Log.Level.INFO);\n```\n\n\n\n<a name=\"loio20f6ea7552c34e248ba7bd4a1d28565b__section_unv_wkf_2fb\"/>\n\n## How can I mock or spy the new modules?\n\nThe new modules are no longer global. Spying or mocking them on `jQuery.sap.*` does not work. The module has to be loaded with `sap.ui.require`:\n\n```\n\nsap.ui.require([\"sap/base/Log\"],function(Log){\n\n    QUnit.test(\"My Test\", function(assert) {\n\n        var oLogSpy = sinon.spy(Log, \"warning\");\n\n        ...\n\n        assert.equal(oLogSpy.callCount, 1, \"Warning should be logged\");\n\n        Log.warning.restore();\n\n    });\n\n});\n\n```\n\n> ### Note:  \n> Some of the new modules were changed from objects to functions, for example `sap/base/util/uid` and `sap/base/strings/hash`. This means that the export of a module is used for import into other modules. Each importing module has its own reference to the original export. The test can change its own reference, but not the reference that other modules have obtained already. The value of the reference \\(the function\\), however, is always the same.\n> \n> Until further testing capabilities are available, you should write the tests in a way that it is not necessary to mock them, because they are used inside the actual API, which should be tested instead.\n\n",
+  "excerpt": "<!-- loio20f6ea7552c34e248ba7bd4a1d28565b --> Troubleshooting <a name=\"loio20f6ea7552c34e248ba7bd4a1d28565b__section_vzn_wkf_2fb\"/> How do I get the new Logger module on the browser console? jQuery.sa...",
+  "wordCount": 244,
+  "version": "1.0.0",
+  "source": "sapui5",
+  "sourceType": "github"
+}
