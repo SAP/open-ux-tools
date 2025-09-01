@@ -68,14 +68,14 @@ export const SystemDataProvider: DataProviderConstructor<BackendSystem, BackendS
             if (!system?.url?.trim()) {
                 // attempt to recover the system URL from the ID
                 const backendSystem = await this.recoverBackendSystemFromId(id);
-                if (!backendSystem?.url?.trim()) {
-                    this.logger.warn(`Filtering system with ID [${id}] as it seems corrupt. Run repair`);
-                    delete systems[id];
-                } else {
+                if (backendSystem?.url?.trim()) {
                     systems[id] = { ...system, ...backendSystem };
                     // requires to write directly to the filesystem
                     const fileSystem = getFilesystemStore(this.logger);
                     await fileSystem.write({ entityName: this.entityName, id, entity: backendSystem });
+                } else {
+                    this.logger.warn(`Filtering system with ID [${id}] as it seems corrupt. Run repair`);
+                    delete systems[id];
                 }
             }
         }
