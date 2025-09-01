@@ -10,8 +10,8 @@ export const FUNCTIONALITIES_DETAILS = [
 ];
 
 export const FUNCTIONALITIES_HANDLERS: Map<string, FunctionalityHandlers> = new Map([
-    [ADD_PAGE_FUNCTIONALITY.id, addPageHandlers],
-    [DELETE_PAGE_FUNCTIONALITY.id, deletePageHandlers],
-    [GENERATE_FIORI_UI_APP.id, generateFioriUIAppHandlers],
-    [CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.id, createControllerExtensionHandlers]
+    [ADD_PAGE_FUNCTIONALITY.functionalityId, addPageHandlers],
+    [DELETE_PAGE_FUNCTIONALITY.functionalityId, deletePageHandlers],
+    [GENERATE_FIORI_UI_APP.functionalityId, generateFioriUIAppHandlers],
+    [CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId, createControllerExtensionHandlers]
 ]);

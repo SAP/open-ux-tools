@@ -70,7 +70,7 @@ describe('add-page', () => {
             const appPath = join(__dirname, 'invalid', 'app', 'path');
             const result = await addPageHandlers.getFunctionalityDetails({
                 appPath,
-                functionalityId: ADD_PAGE_FUNCTIONALITY.id
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId
             });
             expect(result.name).toBe('Invalid Project Root or Application Path');
             expect(result.description).toContain(
@@ -93,7 +93,7 @@ describe('add-page', () => {
             ]);
             const result = await addPageHandlers.getFunctionalityDetails({
                 appPath,
-                functionalityId: ADD_PAGE_FUNCTIONALITY.id
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId
             });
             expect(result).toMatchSnapshot();
         });
@@ -107,7 +107,7 @@ describe('add-page', () => {
             ]);
             const result = await addPageHandlers.getFunctionalityDetails({
                 appPath,
-                functionalityId: ADD_PAGE_FUNCTIONALITY.id
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId
             });
             expect(result).toMatchSnapshot();
         });
@@ -117,7 +117,7 @@ describe('add-page', () => {
             const appPath = join(__dirname, 'invalid', 'app', 'path');
             const result = await addPageHandlers.executeFunctionality({
                 appPath,
-                functionalityId: ADD_PAGE_FUNCTIONALITY.id,
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
                 parameters: {
                     pageType: 'ListReport'
                 }
@@ -143,7 +143,7 @@ describe('add-page', () => {
             ]);
             const result = await addPageHandlers.executeFunctionality({
                 appPath,
-                functionalityId: ADD_PAGE_FUNCTIONALITY.id,
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
                 parameters: {
                     entitySet: 'Travels',
                     pageType: 'ListReport'
@@ -173,7 +173,7 @@ describe('add-page', () => {
             ]);
             const result = await addPageHandlers.executeFunctionality({
                 appPath,
-                functionalityId: ADD_PAGE_FUNCTIONALITY.id,
+                functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
                 parameters: {
                     parentPage: 'TravelsObjectPage',
                     pageNavigation: 'Expenses',
@@ -199,7 +199,7 @@ describe('add-page', () => {
             await expect(
                 addPageHandlers.executeFunctionality({
                     appPath,
-                    functionalityId: ADD_PAGE_FUNCTIONALITY.id,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
                     parameters: {}
                 })
             ).rejects.toThrow('Missing or invalid parameter "pageType"');
@@ -210,7 +210,7 @@ describe('add-page', () => {
             await expect(
                 addPageHandlers.executeFunctionality({
                     appPath,
-                    functionalityId: ADD_PAGE_FUNCTIONALITY.id,
+                    functionalityId: ADD_PAGE_FUNCTIONALITY.functionalityId,
                     parameters: {
                         pageType: 'Dummy'
                     }
@@ -226,7 +226,7 @@ describe('delete-page', () => {
             const appPath = join(__dirname, 'invalid', 'app', 'path');
             const result = await deletePageHandlers.getFunctionalityDetails({
                 appPath,
-                functionalityId: DELETE_PAGE_FUNCTIONALITY.id
+                functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId
             });
             expect(result.name).toBe('Invalid Project Root or Application Path');
             expect(result.description).toContain(
@@ -245,7 +245,7 @@ describe('delete-page', () => {
             ]);
             const result = await deletePageHandlers.getFunctionalityDetails({
                 appPath,
-                functionalityId: DELETE_PAGE_FUNCTIONALITY.id
+                functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId
             });
             expect(result).toMatchSnapshot();
         });
@@ -255,7 +255,7 @@ describe('delete-page', () => {
             const appPath = join(__dirname, 'invalid', 'app', 'path');
             const result = await deletePageHandlers.executeFunctionality({
                 appPath,
-                functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
+                functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
                 parameters: {
                     pageId: 'dummy'
                 }
@@ -281,7 +281,7 @@ describe('delete-page', () => {
             ]);
             const result = await deletePageHandlers.executeFunctionality({
                 appPath,
-                functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
+                functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
                 parameters: {
                     pageId: 'nothing'
                 }
@@ -303,7 +303,7 @@ describe('delete-page', () => {
             ]);
             const result = await deletePageHandlers.executeFunctionality({
                 appPath,
-                functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
+                functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
                 parameters: {
                     pageId: 'TravelsList'
                 }
@@ -320,7 +320,7 @@ describe('delete-page', () => {
             await expect(
                 deletePageHandlers.executeFunctionality({
                     appPath,
-                    functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
+                    functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
                     parameters: {}
                 })
             ).rejects.toThrow('Missing or invalid parameter "pageId"');
@@ -330,7 +330,7 @@ describe('delete-page', () => {
             await expect(
                 deletePageHandlers.executeFunctionality({
                     appPath,
-                    functionalityId: DELETE_PAGE_FUNCTIONALITY.id,
+                    functionalityId: DELETE_PAGE_FUNCTIONALITY.functionalityId,
                     parameters: {
                         pageId: {}
                     }

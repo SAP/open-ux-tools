@@ -20,7 +20,7 @@ export async function listFunctionalities(
         // If we need dynamic handlers then we can add additional method in interface of FUNCTIONALITIES_HANDLERS
         for (const functionality of FUNCTIONALITIES_DETAILS) {
             functionalities.push({
-                functionalityId: functionality.id,
+                functionalityId: functionality.functionalityId,
                 description: functionality.description
             });
         }

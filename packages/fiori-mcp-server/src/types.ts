@@ -52,8 +52,7 @@ export interface GetFunctionalityDetailsInput {
  */
 export interface GetFunctionalityDetailsOutput {
     /** ID of the functionality */
-    // ToDo???
-    id: string;
+    functionalityId: string;
     /** Name of the functionality */
     name: string;
     /** Description of the functionality */

@@ -17,7 +17,7 @@ describe('getFunctionalityDetails', () => {
     test('getFunctionalityDetails', async () => {
         const details = await generateFioriUIAppHandlers.getFunctionalityDetails({
             appPath: 'app1',
-            functionalityId: GENERATE_FIORI_UI_APP.id
+            functionalityId: GENERATE_FIORI_UI_APP.functionalityId
         });
         expect(details).toEqual(GENERATE_FIORI_UI_APP);
     });
@@ -30,7 +30,7 @@ describe('executeFunctionality', () => {
         });
         const result = await generateFioriUIAppHandlers.executeFunctionality({
             appPath: 'app1',
-            functionalityId: GENERATE_FIORI_UI_APP.id,
+            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
             parameters: {
                 projectPath: join(testOutputDir, 'app1'),
                 appGenConfig: {}
@@ -58,7 +58,7 @@ describe('executeFunctionality', () => {
         });
         const result = await generateFioriUIAppHandlers.executeFunctionality({
             appPath: 'app1',
-            functionalityId: GENERATE_FIORI_UI_APP.id,
+            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
             parameters: {
                 projectPath: join(testOutputDir, 'app1'),
                 appGenConfig: {}
@@ -87,7 +87,7 @@ describe('executeFunctionality', () => {
         await expect(
             generateFioriUIAppHandlers.executeFunctionality({
                 appPath: '',
-                functionalityId: GENERATE_FIORI_UI_APP.id,
+                functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
                 parameters: {}
             })
         ).rejects.toThrow('Please provide a valid path to the CAP project folder.');
@@ -100,7 +100,7 @@ describe('executeFunctionality', () => {
         await expect(
             generateFioriUIAppHandlers.executeFunctionality({
                 appPath: 'app1',
-                functionalityId: GENERATE_FIORI_UI_APP.id,
+                functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
                 parameters: {
                     projectPath: 'app1',
                     appGenConfig: 'dummy'
