@@ -2225,6 +2225,9 @@ importers:
       '@sap-ux/annotation-converter':
         specifier: 0.10.3
         version: 0.10.3
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -2247,9 +2250,6 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
     devDependencies:
-      '@sap-ux/fiori-generator-shared':
-        specifier: workspace:*
-        version: link:../fiori-generator-shared
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n

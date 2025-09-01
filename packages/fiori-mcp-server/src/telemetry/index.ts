@@ -8,13 +8,13 @@ import {
     type ToolsSuiteTelemetryInitSettings
 } from '@sap-ux/telemetry';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import osName from 'os-name';
 import i18next from 'i18next';
 
 export const mcpServerName = '@sap-ux/fiori-mcp-server';
 
-interface TelemetryData {
+export interface TelemetryData {
     [key: string]: string;
 }
 
@@ -77,7 +77,7 @@ export abstract class TelemetryHelper {
                 // no matched os name, possible beta or unreleased version
             }
             this._telemetryData = {
-                Platform: getHostEnvironment().technical,
+                Platform: isAppStudio() ? 'SBAS' : 'VSCode',
                 OperatingSystem: osVersionName
             };
         }

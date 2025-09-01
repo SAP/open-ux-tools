@@ -10,13 +10,13 @@
   },
   "references": [
     {
+      "path": "../btp-utils"
+    },
+    {
       "path": "../feature-toggle"
     },
     {
       "path": "../fiori-annotation-api"
-    },
-    {
-      "path": "../fiori-generator-shared"
     },
     {
       "path": "../i18n"

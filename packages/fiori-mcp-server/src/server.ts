@@ -11,8 +11,7 @@ import type {
     ListFioriAppsInput,
     ListFunctionalitiesInput
 } from './types';
-import { TelemetryHelper } from './telemetry';
-import { TelemetryData } from '@sap-ux/fiori-generator-shared';
+import { TelemetryHelper, TelemetryData } from './telemetry';
 
 type ToolArgs =
     | ListFioriAppsInput

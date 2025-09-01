@@ -42,21 +42,21 @@
     },
     "devDependencies": {
         "@sap-ux/i18n": "workspace:*",
-        "@sap-ux/text-document-utils": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
-        "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-ux/text-document-utils": "workspace:*",
         "@types/json-schema": "7.0.5",
         "@types/mem-fs": "1.1.2"
     },
     "dependencies": {
         "@modelcontextprotocol/sdk": "1.17.0",
-        "@sap/ux-specification": "1.136.4",
-        "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/fiori-annotation-api": "workspace:*",
-        "@sap-ux/telemetry": "workspace:*",
-        "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/annotation-converter": "0.10.3",
+        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-ux/feature-toggle": "workspace:*",
+        "@sap-ux/fiori-annotation-api": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/telemetry": "workspace:*",
+        "@sap/ux-specification": "1.136.4",
         "i18next": "25.3.0",
         "os-name": "4.0.1"
     },
