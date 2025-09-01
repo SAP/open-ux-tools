@@ -1,5 +1,69 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.38.2
+
+### Patch Changes
+
+-   b3e95fb: add UI5 version check and warning for custom page building block generation
+
+## 0.38.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.17
+-   @sap-ux/project-access@1.30.13
+
+## 0.38.0
+
+### Minor Changes
+
+-   43f94eb: Add support for automatically including a Page Building Block when generating a custom page
+
+## 0.37.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.16
+
+## 0.37.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.12
+-   @sap-ux/fiori-annotation-api@0.6.15
+
+## 0.37.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.14
+-   @sap-ux/project-access@1.30.11
+
+## 0.37.0
+
+### Minor Changes
+
+-   69cfbe3: add support for checked property in Select choices for default selection
+
+## 0.36.1
+
+### Patch Changes
+
+-   47bd07a: Remove default Index logic from getAggregationPathPrompt of fpm writers
+
+## 0.36.0
+
+### Minor Changes
+
+-   f81c86b: Add Page building block support to fpm writer
+
+## 0.35.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/fiori-annotation-api@0.6.13
+
 ## 0.35.14
 
 ### Patch Changes

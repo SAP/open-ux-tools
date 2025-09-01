@@ -1,5 +1,57 @@
 # @sap-ux/cap-config-writer
 
+## 0.12.2
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.11
+-   @sap-ux/project-access@1.30.13
+
+## 0.12.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.10
+
+## 0.12.0
+
+### Minor Changes
+
+-   8178b2b: Remove CAP Java specific config in pom.xml and application.yaml.
+
+## 0.11.0
+
+### Minor Changes
+
+-   55bb22e: updates cap projects to use npm workspaces by default
+
+## 0.10.27
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.12
+-   @sap-ux/fiori-generator-shared@0.13.9
+
+## 0.10.26
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+-   @sap-ux/fiori-generator-shared@0.13.8
+
+## 0.10.25
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.7
+
+## 0.10.24
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.10
+-   @sap-ux/fiori-generator-shared@0.13.6
+
 ## 0.10.23
 
 ### Patch Changes

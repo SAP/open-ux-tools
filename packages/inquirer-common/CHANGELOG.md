@@ -1,5 +1,59 @@
 # @sap-ux/inquirer-common
 
+## 0.7.37
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/telemetry@0.6.18
+    -   @sap-ux/ui5-info@0.12.2
+    -   @sap-ux/fiori-generator-shared@0.13.11
+
+## 0.7.36
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.17
+-   @sap-ux/fiori-generator-shared@0.13.10
+
+## 0.7.35
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.16
+-   @sap-ux/fiori-generator-shared@0.13.9
+
+## 0.7.34
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.13.8
+-   @sap-ux/telemetry@0.6.15
+
+## 0.7.33
+
+### Patch Changes
+
+-   Updated dependencies [b6ce4a2]
+    -   @sap-ux/guided-answers-helper@0.4.0
+
+## 0.7.32
+
+### Patch Changes
+
+-   Updated dependencies [18a5ee2]
+    -   @sap-ux/telemetry@0.6.14
+    -   @sap-ux/fiori-generator-shared@0.13.7
+
+## 0.7.31
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.6.13
+-   @sap-ux/fiori-generator-shared@0.13.6
+
 ## 0.7.30
 
 ### Patch Changes

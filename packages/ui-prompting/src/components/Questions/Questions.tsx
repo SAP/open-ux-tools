@@ -3,7 +3,6 @@ import type { Answers } from 'inquirer';
 import { Question } from '../Question/Question';
 import {
     formatDomId,
-    getAnswer,
     getDependantQuestions,
     getDynamicQuestions,
     updateAnswers,
@@ -93,18 +92,16 @@ export const Questions = (props: QuestionsProps) => {
     // Change callback
     const onAnswerChange = useCallback(
         (name: string, answer?: AnswerValue) => {
-            const oldAnswer = getAnswer(localAnswers, name) || '';
-            if (oldAnswer !== answer) {
-                const updatedAnswers = updateAnswers(localAnswers, questions, name, answer);
-                setLocalAnswers(updatedAnswers);
-                // Callback with onchange
+            setLocalAnswers((prevAnswers) => {
+                const updatedAnswers = updateAnswers(prevAnswers, questions, name, answer);
                 onChange?.(updatedAnswers, name, answer);
                 // Request dynamic choices for dependant questions
                 const deps = getDependantQuestions(questions, name);
                 if (deps.length) {
                     requestChoices(deps, updatedAnswers);
                 }
-            }
+                return updatedAnswers;
+            });
         },
         [localAnswers, onChange]
     );

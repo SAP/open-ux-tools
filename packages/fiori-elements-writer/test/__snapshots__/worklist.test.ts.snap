@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Fiori Elements template: worklistTemplate Generate files for template: worklistV2 1`] = `
 Object {
@@ -87,7 +87,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - path: /sap
             url: http://example.lrop.v2
@@ -119,7 +119,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -171,7 +171,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -3730,7 +3730,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - path: /sap
             url: http://example.lrop.v2
@@ -3762,7 +3762,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -3814,7 +3814,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -7369,7 +7369,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - path: /sap
             url: http://example.feop.v4
@@ -7398,7 +7398,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -7447,7 +7447,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -11063,7 +11063,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - path: /sap
             url: http://example.feop.v4
@@ -11092,7 +11092,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -11141,7 +11141,7 @@ server:
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
-        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ignoreCertErrors: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         ui5:
           path:
             - /resources
@@ -14428,40 +14428,39 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/integration/FirstJourney.js": Object {
     "contents": "sap.ui.define([
-    \\"sap/ui/test/opaQunit\\"
-], function (opaTest) {
+    \\"sap/ui/test/opaQunit\\",
+    \\"./pages/JourneyRunner\\"
+], function (opaTest, runner) {
     \\"use strict\\";
 
-    var Journey = {
-        run: function() {
-            QUnit.module(\\"First journey\\");
+    function journey() {
+        QUnit.module(\\"First journey\\");
 
-            opaTest(\\"Start application\\", function (Given, When, Then) {
-                Given.iStartMyApp();
+        opaTest(\\"Start application\\", function (Given, When, Then) {
+            Given.iStartMyApp();
 
-                Then.onTheTravelList.iSeeThisPage();
+            Then.onTheTravelList.iSeeThisPage();
 
-            });
+        });
 
 
-            opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
-                // Note: this test will fail if the ListReport page doesn't show any data
-                
-                Then.onTheTravelList.onTable().iCheckRows();
+        opaTest(\\"Navigate to ObjectPage\\", function (Given, When, Then) {
+            // Note: this test will fail if the ListReport page doesn't show any data
+            
+            Then.onTheTravelList.onTable().iCheckRows();
 
-                When.onTheTravelList.onTable().iPressRow(0);
-                Then.onTheTravelObjectPage.iSeeThisPage();
+            When.onTheTravelList.onTable().iPressRow(0);
+            Then.onTheTravelObjectPage.iSeeThisPage();
 
-            });
+        });
 
-            opaTest(\\"Teardown\\", function (Given, When, Then) { 
-                // Cleanup
-                Given.iTearDownMyApp();
-            });
-        }
+        opaTest(\\"Teardown\\", function (Given, When, Then) { 
+            // Cleanup
+            Given.iTearDownMyApp();
+        });
     }
 
-    return Journey;
+    runner.run([journey]);
 });",
     "state": "modified",
   },
@@ -14473,7 +14472,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     <meta charset=\\"utf-8\\">
 
     <script id=\\"sap-ui-bootstrap\\"
-            src=\\"/resources/sap-ui-core.js\\"
+            src=\\"../../resources/sap-ui-core.js\\"
             data-sap-ui-theme='sap_fiori_3'
             data-sap-ui-resourceroots='{
                 \\"fewrk2\\": \\"../../\\"
@@ -14483,10 +14482,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
             data-sap-ui-async=\\"true\\">
     </script>
 
-    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"/resources/sap/ui/thirdparty/qunit-2.css\\">
-
-    <script src=\\"/resources/sap/ui/thirdparty/qunit-2.js\\"></script>
-    <script src=\\"/resources/sap/ui/qunit/qunit-junit.js\\"></script>
+    <link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
 
     <script src=\\"opaTests.qunit.js\\"></script>
 
@@ -14495,38 +14491,41 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
     <div id=\\"qunit\\"></div>
     <div id=\\"qunit-fixture\\"></div>
 </body>
-</html>",
+</html>
+",
     "state": "modified",
   },
   "webapp/test/integration/opaTests.qunit.js": Object {
-    "contents": "sap.ui.require(
-    [
-        'sap/fe/test/JourneyRunner',
-        'fewrk2/test/integration/FirstJourney',
-		'fewrk2/test/integration/pages/TravelList',
-		'fewrk2/test/integration/pages/TravelObjectPage',
-		'fewrk2/test/integration/pages/BookingObjectPage'
-    ],
-    function(JourneyRunner, opaJourney, TravelList, TravelObjectPage, BookingObjectPage) {
-        'use strict';
-        var JourneyRunner = new JourneyRunner({
-            // start test/flpSandbox.html?sap-ui-xx-viewCache=false#fewrk2-tile in web folder
-            launchUrl: sap.ui.require.toUrl('fewrk2') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#fewrk2-tile'
-        });
-
-       
-        JourneyRunner.run(
-            {
-                pages: { 
-					onTheTravelList: TravelList,
-					onTheTravelObjectPage: TravelObjectPage,
-					onTheBookingObjectPage: BookingObjectPage
-                }
-            },
-            opaJourney.run
-        );
+    "contents": "sap.ui.loader.config({
+    shim: {
+        \\"sap/ui/qunit/qunit-junit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/qunit/qunit-coverage\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\"]
+        },
+        \\"sap/ui/thirdparty/sinon-qunit\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon\\"]
+        },
+        \\"sap/ui/qunit/sinon-qunit-bridge\\": {
+            deps: [\\"sap/ui/thirdparty/qunit-2\\", \\"sap/ui/thirdparty/sinon-4\\"]
+        }
     }
-);",
+});
+
+window.QUnit = Object.assign({}, window.QUnit, { config: { autostart: false } });
+
+sap.ui.require(
+  [
+    \\"sap/ui/thirdparty/qunit-2\\",
+    \\"sap/ui/qunit/qunit-junit\\",
+    \\"sap/ui/qunit/qunit-coverage\\",
+    'fewrk2/test/integration/FirstJourney'
+  ], function (QUnit) {
+    \\"use strict\\";
+    QUnit.start();
+});
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/BookingObjectPage.js": Object {
@@ -14547,6 +14546,31 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
         CustomPageDefinitions
     );
 });",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/JourneyRunner.js": Object {
+    "contents": "sap.ui.define([
+    \\"sap/fe/test/JourneyRunner\\",
+	\\"fewrk2/test/integration/pages/TravelList\\",
+	\\"fewrk2/test/integration/pages/TravelObjectPage\\",
+	\\"fewrk2/test/integration/pages/BookingObjectPage\\"
+], function (JourneyRunner, TravelList, TravelObjectPage, BookingObjectPage) {
+    'use strict';
+
+    var runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('fewrk2') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#fewrk2-tile',
+        pages: {
+			onTheTravelList: TravelList,
+			onTheTravelObjectPage: TravelObjectPage,
+			onTheBookingObjectPage: BookingObjectPage
+        },
+        async: true
+    });
+
+    return runner;
+});
+
+",
     "state": "modified",
   },
   "webapp/test/integration/pages/TravelList.js": Object {

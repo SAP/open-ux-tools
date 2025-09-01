@@ -205,7 +205,32 @@ const ns1 = {
             'pasteFromClipboard': 'Enable Paste From Clipboard',
             'tableSearchableToggle': 'Table Searchable Toggle',
             'valuesDependentOnEntityTypeInfo': 'Values are dependent on entity set'
+        },
+        'page': {
+            'id': {
+                'message': 'Building Block ID',
+                'validation': 'An ID is required to generate the page building block.'
+            },
+            'viewOrFragmentPath': {
+                'message': 'View or Fragment File',
+                'validation': 'A View or Fragment is required to generate the page building block.'
+            },
+            'aggregation': 'Aggregation Path',
+            'title': {
+                'message': 'Page Title',
+                'validation': 'Enter a Page Title',
+                'translationAnnotation': 'Title of the Page.'
+            },
+            'description': {
+                'message': 'Page Description',
+                'validation': 'Enter a Page Description',
+                'translationAnnotation': 'Description of the Page.'
+            }
         }
+    },
+    'pageBuildingBlock': {
+        'minUi5VersionRequirement':
+            'The Page building block feature requires SAPUI5 1.136.0 or higher. The current version is {{ minUI5Version }}, so the Page building block will not be added.'
     }
 };
 export default ns1;

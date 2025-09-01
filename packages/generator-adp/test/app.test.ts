@@ -362,10 +362,14 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         expect(addDeployGenSpy).toHaveBeenCalledWith(
             {
-                client: '010',
                 connectedSystem: 'urlA',
                 projectName: 'app.variant',
-                targetFolder: testOutputDir
+                projectPath: testOutputDir,
+                system: {
+                    Name: 'SystemA',
+                    Client: '010',
+                    Url: 'urlA'
+                }
             },
             expect.any(Function),
             expect.any(Object),

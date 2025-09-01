@@ -1,5 +1,36 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.9.14
+
+### Patch Changes
+
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/project-access@1.30.13
+
+## 0.9.13
+
+### Patch Changes
+
+-   178dbea: sanitize ignoreCertError (singular) configration option to ignoreCertErrors (plural)
+-   Updated dependencies [178dbea]
+    -   @sap-ux/ui5-config@0.29.2
+    -   @sap-ux/project-access@1.30.12
+
+## 0.9.12
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.30.11
+
+## 0.9.11
+
+### Patch Changes
+
+-   Updated dependencies [43bc887]
+    -   @sap-ux/ui5-config@0.29.1
+    -   @sap-ux/project-access@1.30.10
+
 ## 0.9.10
 
 ### Patch Changes

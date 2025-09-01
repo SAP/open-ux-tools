@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Prompts - no project getBuildingBlockTypePrompts 1`] = `
 Object {
@@ -413,6 +413,78 @@ Object {
       },
       "message": "Search Event",
       "name": "buildingBlockData.search",
+      "type": "input",
+    },
+  ],
+}
+`;
+
+exports[`Prompts - no project getPageBuildingBlockPrompts 1`] = `
+Object {
+  "initialAnswers": Object {
+    "buildingBlockData": Object {
+      "buildingBlockType": "page",
+    },
+  },
+  "questions": Array [
+    Object {
+      "choices": Array [],
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "aggregationPath",
+        ],
+        "mandatory": true,
+        "placeholder": "Select a view or fragment file",
+        "selectType": "dynamic",
+      },
+      "message": "View or Fragment File",
+      "name": "viewOrFragmentPath",
+      "type": "list",
+      "validate": [Function],
+    },
+    Object {
+      "choices": Array [],
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Select an aggregation path",
+        "selectType": "dynamic",
+      },
+      "message": "Aggregation Path",
+      "name": "aggregationPath",
+      "type": "list",
+    },
+    Object {
+      "default": "Page",
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Enter a building block ID",
+      },
+      "message": "Building Block ID",
+      "name": "buildingBlockData.id",
+      "type": "input",
+      "validate": [Function],
+    },
+    Object {
+      "guiOptions": Object {
+        "mandatory": true,
+        "translationProperties": Object {
+          "annotation": "Title of the Page.",
+          "type": "XHED",
+        },
+      },
+      "message": "Page Title",
+      "name": "buildingBlockData.title",
+      "type": "input",
+    },
+    Object {
+      "guiOptions": Object {
+        "translationProperties": Object {
+          "annotation": "Description of the Page.",
+          "type": "YDES",
+        },
+      },
+      "message": "Page Description",
+      "name": "buildingBlockData.description",
       "type": "input",
     },
   ],
@@ -1592,6 +1664,78 @@ Object {
 }
 `;
 
+exports[`Prompts getPageBuildingBlockPrompts 1`] = `
+Object {
+  "initialAnswers": Object {
+    "buildingBlockData": Object {
+      "buildingBlockType": "page",
+    },
+  },
+  "questions": Array [
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "aggregationPath",
+        ],
+        "mandatory": true,
+        "placeholder": "Select a view or fragment file",
+        "selectType": "dynamic",
+      },
+      "message": "View or Fragment File",
+      "name": "viewOrFragmentPath",
+      "type": "list",
+      "validate": [Function],
+    },
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Select an aggregation path",
+        "selectType": "dynamic",
+      },
+      "message": "Aggregation Path",
+      "name": "aggregationPath",
+      "type": "list",
+    },
+    Object {
+      "default": "Page",
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Enter a building block ID",
+      },
+      "message": "Building Block ID",
+      "name": "buildingBlockData.id",
+      "type": "input",
+      "validate": [Function],
+    },
+    Object {
+      "guiOptions": Object {
+        "mandatory": true,
+        "translationProperties": Object {
+          "annotation": "Title of the Page.",
+          "type": "XHED",
+        },
+      },
+      "message": "Page Title",
+      "name": "buildingBlockData.title",
+      "type": "input",
+    },
+    Object {
+      "guiOptions": Object {
+        "translationProperties": Object {
+          "annotation": "Description of the Page.",
+          "type": "YDES",
+        },
+      },
+      "message": "Page Description",
+      "name": "buildingBlockData.description",
+      "type": "input",
+    },
+  ],
+}
+`;
+
 exports[`Prompts getTableBuildingBlockPrompts 1`] = `
 Object {
   "groups": Array [
@@ -2047,6 +2191,12 @@ exports[`Prompts submitAnswers Type generation prompts type without generator 1`
     <Page title=\\"Main\\">
         <content />
     </Page>
+</mvc:View>"
+`;
+
+exports[`Prompts submitAnswers Type generation prompts type without generator 2`] = `
+"<mvc:View xmlns:core=\\"sap.ui.core\\" xmlns:mvc=\\"sap.ui.core.mvc\\" xmlns=\\"sap.m\\" xmlns:html=\\"http://www.w3.org/1999/xhtml\\" controllerName=\\"com.test.myApp.ext.main.Main\\" xmlns:macros=\\"sap.fe.macros\\">
+    <macros:Page id=\\"TestPage\\" title=\\"Test Page\\"/>
 </mvc:View>"
 `;
 
