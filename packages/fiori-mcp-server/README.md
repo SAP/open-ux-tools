@@ -24,7 +24,7 @@ For the best experience we recommend using this server alongside [@cap-js/mcp-se
 Configure your MCP client to start the server with command `fiori-mcp`. Here is a sample configuration for Cline:
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "fiori-mcp": {
       "command": "npx",
       "args": ["--yes","@sap-ux/fiori-mcp-server", "fiori-mcp"]
@@ -41,7 +41,7 @@ npm install -g @sap-ux/fiori-mcp-server
 Then, configure your MCP client to start the server with command `fiori-mcp`. Here is a sample configuration for Cline:
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "fiori-mcp": {
       "type": "stdio",
       "command": "fiori-mcp"
