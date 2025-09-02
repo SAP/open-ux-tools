@@ -5,13 +5,13 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { CallToolRequestSchema, ListToolsRequestSchema, type CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import packageJson from '../package.json';
 import { listFioriApps, listFunctionalities, getFunctionalityDetails, executeFunctionality, tools } from './tools';
+import { TelemetryHelper, type TelemetryData } from './telemetry';
 import type {
     ExecuteFunctionalitiesInput,
     GetFunctionalityDetailsInput,
     ListFioriAppsInput,
     ListFunctionalitiesInput
 } from './types';
-import { TelemetryHelper, TelemetryData } from './telemetry';
 
 type ToolArgs =
     | ListFioriAppsInput
@@ -45,7 +45,9 @@ export class FioriFunctionalityServer {
 
         this.setupToolHandlers();
         this.setupErrorHandling();
-        this.setupTelemetry();
+        this.setupTelemetry().catch((error) => {
+            console.error('Fiori Functionality MCP Server telemetry initialization failed: ', error);
+        });
     }
 
     /**
@@ -108,7 +110,7 @@ export class FioriFunctionalityServer {
                     functionalityId: (args as any)?.functionalityId
                 };
 
-                TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
+                await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
 
                 return this.convertResultToCallToolResult(result);
             } catch (error) {

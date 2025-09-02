@@ -1,8 +1,8 @@
+import type { TelemetryEvent } from '@sap-ux/telemetry';
 import {
     ClientFactory,
     PerformanceMeasurementAPI as Performance,
     SampleRate,
-    TelemetryEvent,
     initTelemetrySettings,
     type TelemetryProperties,
     type ToolsSuiteTelemetryInitSettings
@@ -13,7 +13,6 @@ import osName from 'os-name';
 import i18next from 'i18next';
 
 export const mcpServerName = '@sap-ux/fiori-mcp-server';
-const resourceId = process.env.INSTRUMENTATION_KEY;
 
 export interface TelemetryData {
     [key: string]: string;
@@ -99,6 +98,13 @@ export abstract class TelemetryHelper {
         return this._telemetryData;
     }
 
+    /**
+     * Prepares the telemetry event by calculating the generation time if a mark name is provided.
+     *
+     * @param telemetryEventName - The name of the telemetry event
+     * @param telemetryData - The telemetry data
+     * @returns The prepared telemetry event
+     */
     private static prepareTelemetryEvent(telemetryEventName: string, telemetryData: TelemetryData): TelemetryEvent {
         // Make sure performance measurement end is called
         TelemetryHelper.markToolsEndTime();
@@ -149,13 +155,18 @@ export abstract class TelemetryHelper {
         appPath?: string
     ): Promise<void> {
         const telemetryEvent = this.prepareTelemetryEvent(telemetryEventName, telemetryData);
-        ClientFactory.getTelemetryClient().reportEvent(
+        await ClientFactory.getTelemetryClient().reportEvent(
             telemetryEvent,
             SampleRate.NoSampling,
             appPath ? { appPath } : undefined
         );
     }
 
+    /**
+     * Gets the telemetry name of the module.
+     *
+     * @returns The module telemetry name.
+     */
     public static getTelemetryName(): string {
         return mcpServerName;
     }
