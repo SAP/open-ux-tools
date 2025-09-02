@@ -67,13 +67,12 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
  * Returns the OPA config.
  *
  * @param appOpts - relevant app options for retrieving the opa config
- * @param appOpts.generateIndex - if an index.html file will be generated
  * @param appOpts.useVirtualPreviewEndpoints - if virtual endpoints will be used for preview
  * @param flpAppId - the flp app id
  * @returns - the opa config { htmlTarget }
  */
 function getOpaConfig(
-    { generateIndex, useVirtualPreviewEndpoints }: { generateIndex?: boolean; useVirtualPreviewEndpoints?: boolean },
+    { useVirtualPreviewEndpoints }: { useVirtualPreviewEndpoints?: boolean },
     flpAppId?: string
 ): { htmlTarget: string } {
     const flpTarget = useVirtualPreviewEndpoints ? 'flp' : 'flpSandbox';
@@ -254,7 +253,6 @@ async function generate<T extends {}>(
     if (addTest) {
         const opaConfig = getOpaConfig(
             {
-                generateIndex: feApp.appOptions?.generateIndex,
                 useVirtualPreviewEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints
             },
             feApp.app.flpAppId
