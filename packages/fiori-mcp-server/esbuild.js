@@ -48,7 +48,7 @@ customEsbuildOptions.plugins = [
         setup(build) {
             build.onEnd(() => {
                 const telemetryIndexPath = path.join(__dirname, 'dist/index.js');
-                const resourceId = process.env.INSTRUMENTATION_KEY_DEV;
+                const resourceId = process.env.INSTRUMENTATION_KEY || 'placeholder';
 
                 try {
                     let content = readFileSync(telemetryIndexPath, 'utf8');
