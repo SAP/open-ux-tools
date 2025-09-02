@@ -28,7 +28,7 @@ export async function listFioriApps(params: ListFioriAppsInput): Promise<ListFio
                         appPath: app.appRoot,
                         projectPath: app.projectRoot,
                         projectType,
-                        oDataVersion: app.manifest['sap.app']?.dataSources?.mainService?.settings?.odataVersion ?? '4.0'
+                        odataVersion: app.manifest['sap.app']?.dataSources?.mainService?.settings?.odataVersion ?? '4.0'
                     };
                 })
             )) ?? []

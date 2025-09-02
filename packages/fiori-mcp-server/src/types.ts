@@ -116,7 +116,7 @@ export interface FioriApp {
     /** Type of the Fiori project */
     projectType: ProjectType;
     /** OData version of the Fiori application */
-    oDataVersion: string;
+    odataVersion: string;
 }
 
 /**

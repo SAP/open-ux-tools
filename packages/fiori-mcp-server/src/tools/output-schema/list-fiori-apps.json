@@ -25,12 +25,12 @@
                             "enum": ["EDMXBackend", "CAPJava", "CAPNodejs"],
                             "description": "Type of project the application belongs to."
                         },
-                        "oDataVersion": {
+                        "odataVersion": {
                             "type": "string",
                             "description": "OData protocol version used by the application's main service."
                         }
                     },
-                    "required": ["name", "appPath", "projectRoot", "projectType", "oDataVersion"],
+                    "required": ["name", "appPath", "projectPath", "projectType", "odataVersion"],
                     "additionalProperties": false
                 }
             }

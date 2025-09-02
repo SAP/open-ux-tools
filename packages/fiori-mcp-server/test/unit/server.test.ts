@@ -56,14 +56,14 @@ describe('FioriFunctionalityServer', () => {
                         appPath: 'appPath1',
                         projectType: 'EDMXBackend',
                         projectPath: 'appPath1',
-                        oDataVersion: '4.0'
+                        odataVersion: '4.0'
                     },
                     {
                         name: 'app2',
                         appPath: 'appPath2',
                         projectType: 'EDMXBackend',
                         projectPath: 'appPath2',
-                        oDataVersion: '4.0'
+                        odataVersion: '4.0'
                     }
                 ]
             });
@@ -87,14 +87,14 @@ describe('FioriFunctionalityServer', () => {
                         appPath: 'appPath1',
                         projectType: 'EDMXBackend',
                         projectPath: 'appPath1',
-                        oDataVersion: '4.0'
+                        odataVersion: '4.0'
                     },
                     {
                         name: 'app2',
                         appPath: 'appPath2',
                         projectType: 'EDMXBackend',
                         projectPath: 'appPath2',
-                        oDataVersion: '4.0'
+                        odataVersion: '4.0'
                     }
                 ]
             });

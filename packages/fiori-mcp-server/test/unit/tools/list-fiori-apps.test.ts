@@ -41,7 +41,7 @@ describe('listFioriApps', () => {
                     appPath: appRoot,
                     projectPath: appRoot,
                     projectType: 'EDMXBackend',
-                    oDataVersion: '4.0'
+                    odataVersion: '4.0'
                 }
             ]
         });
@@ -84,14 +84,14 @@ describe('listFioriApps', () => {
                     appPath: appRoot,
                     projectPath: appRoot,
                     projectType: 'EDMXBackend',
-                    oDataVersion: '4.0'
+                    odataVersion: '4.0'
                 },
                 {
                     name: 'dummyApp2',
                     appPath: appRoot2,
                     projectPath: appRoot2,
                     projectType: 'EDMXBackend',
-                    oDataVersion: '4.0'
+                    odataVersion: '4.0'
                 }
             ]
         });
@@ -131,7 +131,7 @@ describe('listFioriApps', () => {
                     appPath: appRoot,
                     projectPath: appRoot,
                     projectType: 'EDMXBackend',
-                    oDataVersion: '2.0'
+                    odataVersion: '2.0'
                 }
             ]
         });
