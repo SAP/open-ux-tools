@@ -108,7 +108,7 @@
         "transportConfigFailure": "Cannot retrieve the transport configuration from the backend. You can still proceed with adding a deployment configuration by manually providing the package and transport request. \nFor more information on this error, please see Guided Answers {{-helpLink}}.",
         "noTransportReqs": "There are no transport requests for the supplied package. You can choose to create a new one now or during deployment.",
         "noExistingTransportReqList": "The transport request list cannot be fetched. Please enter the transport request manually.",
-        "virtualHost": "As the destination is using a virtual host, when viewing your deployed application in the browser, replace the host URL with the internal host that is configured with your SAP Cloud Connector.",
+        "virtualHost": "The destination uses a virtual host. When viewing your deployed application in the browser, replace the host URL with the internal host that is configured with your SAP Cloud Connector.",
         "allowingUnauthorizedCertsNode": "Setting the `NODE_TLS_REJECT_UNAUTHORIZED` environment variable to `0` makes TLS connections and HTTPS requests insecure by disabling certificate verification. It is important to understand the security risks when using this setting.",
         "certificateError": "A certificate error occurred when connecting to the host: {{-url}}. Certificate error: {{error}}."
     },
