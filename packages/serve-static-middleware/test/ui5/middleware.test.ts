@@ -81,4 +81,11 @@ describe('Start server with serve-static-middleware', () => {
             'No configuration found for the serve-static-middleware'
         );
     });
+
+    test('ignore cachebuster part of url', async () => {
+        const server = await getTestServer({
+            paths: [{ path: '/resources', src: join(localUI5Path, 'resources'), fallthrough: false }]
+        } as any);
+        expect(await server.get('/resources/~6D08668CD2688B304F0130340DE601EA~5/sap-ui-core.js')).toMatchObject({ status: 200 });
+    });
 });
