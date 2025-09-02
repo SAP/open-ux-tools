@@ -136,4 +136,56 @@ describe('listFioriApps', () => {
             ]
         });
     });
+
+    test('call with CAP project', async () => {
+        const projectRoot = 'dummyRoot';
+        const appRoot = 'dummyAppRoot';
+        const appRoot2 = 'dummyAppRoot2';
+        getProjectTypeSpy.mockResolvedValue('CAPJava');
+        findFioriArtifactsSpy.mockReturnValueOnce(
+            Promise.resolve({
+                applications: [
+                    {
+                        appRoot,
+                        projectRoot,
+                        manifest: {
+                            'sap.app': {
+                                id: 'dummyApp1'
+                            }
+                        }
+                    },
+                    {
+                        appRoot: appRoot2,
+                        projectRoot,
+                        manifest: {
+                            'sap.app': {
+                                id: 'dummyApp2'
+                            }
+                        }
+                    }
+                ] as unknown as projectAccess.AllAppResults[]
+            })
+        );
+        const apps = await listFioriApps({
+            searchPath
+        });
+        expect(apps).toEqual({
+            applications: [
+                {
+                    name: 'dummyApp1',
+                    appPath: appRoot,
+                    projectPath: projectRoot,
+                    projectType: 'CAPJava',
+                    odataVersion: '4.0'
+                },
+                {
+                    name: 'dummyApp2',
+                    appPath: appRoot2,
+                    projectPath: projectRoot,
+                    projectType: 'CAPJava',
+                    odataVersion: '4.0'
+                }
+            ]
+        });
+    });
 });
