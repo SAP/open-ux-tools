@@ -5,6 +5,7 @@ import * as systemSelection from '../../src/prompts/datasources/sap-system/syste
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
 import { type BackendSystem } from '@sap-ux/store';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 jest.mock('../../src/prompts', () => ({
     __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
@@ -14,6 +15,10 @@ jest.mock('../../src/prompts', () => ({
 jest.mock('../../src/prompts/datasources/sap-system/system-selection', () => ({
     __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
     ...jest.requireActual('../../src/prompts/datasources/sap-system/system-selection')
+}));
+
+jest.mock('@sap-ux/feature-toggle', () => ({
+    isFeatureEnabled: jest.fn()
 }));
 
 jest.mock('@sap-ux/store', () => ({
@@ -38,6 +43,7 @@ jest.mock('@sap-ux/store', () => ({
 describe('API tests', () => {
     beforeEach(() => {
         jest.restoreAllMocks();
+        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('getPrompts', async () => {

@@ -1,33 +1,41 @@
 {
-  "type": "object",
-  "properties": {
     "type": "object",
     "properties": {
-      "applications": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string"
-            },
-            "path": {
-              "type": "string"
-            },
-            "type": {
-              "type": "string",
-              "enum": ["list-report", "freestyle", "analytical", "overview-page"]
-            },
-            "version": {
-              "type": "string"
+        "type": "object",
+        "properties": {
+            "applications": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "description": "Name of the Fiori application. Usually derived from the `sap.app/id` field in the application's manifest.json."
+                        },
+                        "appPath": {
+                            "type": "string",
+                            "description": "Absolute path to the Fiori application's root directory."
+                        },
+                        "projectPath": {
+                            "type": "string",
+                            "description": "Absolute path to the root directory of the project containing this Fiori application. For EDMXBackend (standalone) projects, this is the same as `appPath`. For CAP projects, this points to the CAP project root, which may contain multiple Fiori applications."
+                        },
+                        "projectType": {
+                            "type": "string",
+                            "enum": ["EDMXBackend", "CAPJava", "CAPNodejs"],
+                            "description": "Type of project the application belongs to."
+                        },
+                        "odataVersion": {
+                            "type": "string",
+                            "description": "OData protocol version used by the application's main service."
+                        }
+                    },
+                    "required": ["name", "appPath", "projectPath", "projectType", "odataVersion"],
+                    "additionalProperties": false
+                }
             }
-          },
-          "required": ["name", "path", "type", "version"],
-          "additionalProperties": false
-        }
-      }
-    },
-    "required": ["applications"],
-    "additionalProperties": false
-  }
+        },
+        "required": ["applications"],
+        "additionalProperties": false
+    }
 }

@@ -25,10 +25,11 @@ mta_archives/
 
 *.iml
 *.flattened-pom.xml
+package-lock.json
 
 # IDEs
-# .vscode
-# .idea
+.vscode
+.idea
 
 # @cap-js/cds-typer
 @cds-models
