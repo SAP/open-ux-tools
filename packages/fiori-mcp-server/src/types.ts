@@ -1,4 +1,4 @@
-import type { ApplicationAccess } from '@sap-ux/project-access';
+import type { ApplicationAccess, ProjectType } from '@sap-ux/project-access';
 
 /**
  * Types for Fiori functionality
@@ -110,11 +110,13 @@ export interface FioriApp {
     /** Name of the Fiori application */
     name: string;
     /** Path to the Fiori application */
-    path: string;
-    /** Type of the Fiori application */
-    type: 'list-report' | 'freestyle' | 'analytical' | 'overview-page';
-    /** Version of the Fiori application */
-    version: string;
+    appPath: string;
+    /** Path to project */
+    projectPath: string;
+    /** Type of the Fiori project */
+    projectType: ProjectType;
+    /** OData version of the Fiori application */
+    odataVersion: string;
 }
 
 /**
