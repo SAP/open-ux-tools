@@ -46,9 +46,9 @@ export abstract class TelemetryHelper {
                 name: mcpServerName,
                 version: '0.1.0'
             },
-            resourceId,
             watchTelemetrySettingStore: false,
             internalFeature: isInternalFeaturesSettingEnabled(),
+            resourceId: 'resource-id',
             ...options
         };
         await initTelemetrySettings(telemetryOptions);
