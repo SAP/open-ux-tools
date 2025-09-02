@@ -27,6 +27,7 @@ async function getTestServer(configuration: ServeStaticConfig): Promise<any> {
 
 describe('Start server with serve-static-middleware', () => {
     const CORE = '/resources/sap-ui-core.js';
+    const CACHEBUSTER_CORE = '/resources/~6D08668CD2688B304F0130340DE601EA~5/sap-ui-core.js';
     const SANDBOX = '/test-resources/sandbox.js';
     const USERAPI = '/services/userapi/currentUser';
 
@@ -86,6 +87,6 @@ describe('Start server with serve-static-middleware', () => {
         const server = await getTestServer({
             paths: [{ path: '/resources', src: join(localUI5Path, 'resources'), fallthrough: false }]
         } as any);
-        expect(await server.get('/resources/~6D08668CD2688B304F0130340DE601EA~5/sap-ui-core.js')).toMatchObject({ status: 200 });
+        expect(await server.get(CACHEBUSTER_CORE)).toMatchObject({ status: 200 });
     });
 });
