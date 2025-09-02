@@ -1,5 +1,5 @@
-import { findFioriArtifacts } from '@sap-ux/project-access';
-import type { AllAppResults } from '@sap-ux/project-access';
+import { findFioriArtifacts, getProjectType } from '@sap-ux/project-access';
+import type { AllAppResults, ProjectType } from '@sap-ux/project-access';
 import type { FioriApp, ListFioriAppsInput, ListFioriAppsOutput } from '../types';
 import { basename } from 'path';
 
@@ -16,16 +16,21 @@ export async function listFioriApps(params: ListFioriAppsInput): Promise<ListFio
         wsFolders: searchPath,
         artifacts: ['applications']
     });
+    const applications = newFoundFioriArtifacts.applications ?? [];
 
     return {
         applications:
-            newFoundFioriArtifacts.applications?.map((app: AllAppResults): FioriApp => {
-                return {
-                    name: app.manifest['sap.app']?.id ?? basename(app.appRoot),
-                    path: app.appRoot,
-                    type: 'list-report',
-                    version: app.manifest['sap.app']?.dataSources?.mainService?.settings?.odataVersion ?? '4.0'
-                };
-            }) ?? []
+            (await Promise.all(
+                applications.map(async (app: AllAppResults): Promise<FioriApp> => {
+                    const projectType: ProjectType = await getProjectType(app.projectRoot);
+                    return {
+                        name: app.manifest['sap.app']?.id ?? basename(app.appRoot),
+                        appPath: app.appRoot,
+                        projectPath: app.projectRoot,
+                        projectType,
+                        oDataVersion: app.manifest['sap.app']?.dataSources?.mainService?.settings?.odataVersion ?? '4.0'
+                    };
+                })
+            )) ?? []
     };
 }
