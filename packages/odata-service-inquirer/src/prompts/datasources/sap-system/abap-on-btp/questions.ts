@@ -66,7 +66,7 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
 export function getAbapOnBTPSystemQuestions(
     promptOptions?: OdataServicePromptOptions,
     cachedConnectedSystem?: ConnectedSystem,
-    featureToggle = isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE)
+    serviceKeyToggle = isFeatureEnabled(SERVICE_KEY_FEATURE_TOGGLE)
 ): Question<AbapOnBtpAnswers & ServiceAnswer>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
