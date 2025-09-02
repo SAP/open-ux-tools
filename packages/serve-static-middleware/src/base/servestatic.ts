@@ -35,15 +35,13 @@ export const serveStaticMiddleware = (
                 serveStaticOptions
             )}`
         );
-        //router.use(pathConfig.path, serveStatic(srcPath, serveStaticOptions));
+
         // Use a custom handler to rewrite the URL before serving the file
         router.use(pathConfig.path, (req, res, next) => {
-            // This is the regex to find and remove the cache-buster segment
             const cacheBusterRegex = /\/~[0-9A-F]{32}~\d+\//;
             if (cacheBusterRegex.test(req.url)) {
                 req.url = req.url.replace(cacheBusterRegex, '/');
             }
-            // After potentially rewriting the URL, pass control to the file server
             fileServer(req, res, next);
         });
     }
