@@ -11,9 +11,11 @@ jest.mock('@sap-ux/project-access', () => ({
 describe('listFioriApps', () => {
     const searchPath = ['testApplicationPath'];
     let findFioriArtifactsSpy: jest.SpyInstance;
+    let getProjectTypeSpy: jest.SpyInstance;
 
     beforeEach(async () => {
         findFioriArtifactsSpy = jest.spyOn(projectAccess, 'findFioriArtifacts');
+        getProjectTypeSpy = jest.spyOn(projectAccess, 'getProjectType').mockResolvedValue('EDMXBackend');
     });
 
     test('call with valid app and empty manifest', async () => {
@@ -23,6 +25,7 @@ describe('listFioriApps', () => {
                 applications: [
                     {
                         appRoot,
+                        projectRoot: appRoot,
                         manifest: {}
                     }
                 ] as unknown as projectAccess.AllAppResults[]
@@ -32,7 +35,15 @@ describe('listFioriApps', () => {
             searchPath
         });
         expect(apps).toEqual({
-            applications: [{ name: 'dummyAppRoot', path: appRoot, type: 'list-report', version: '4.0' }]
+            applications: [
+                {
+                    name: 'dummyAppRoot',
+                    appPath: appRoot,
+                    projectPath: appRoot,
+                    projectType: 'EDMXBackend',
+                    odataVersion: '4.0'
+                }
+            ]
         });
     });
 
@@ -44,6 +55,7 @@ describe('listFioriApps', () => {
                 applications: [
                     {
                         appRoot,
+                        projectRoot: appRoot,
                         manifest: {
                             'sap.app': {
                                 id: 'dummyApp1'
@@ -52,6 +64,7 @@ describe('listFioriApps', () => {
                     },
                     {
                         appRoot: appRoot2,
+                        projectRoot: appRoot2,
                         manifest: {
                             'sap.app': {
                                 id: 'dummyApp2'
@@ -68,15 +81,17 @@ describe('listFioriApps', () => {
             applications: [
                 {
                     name: 'dummyApp1',
-                    path: appRoot,
-                    type: 'list-report',
-                    version: '4.0'
+                    appPath: appRoot,
+                    projectPath: appRoot,
+                    projectType: 'EDMXBackend',
+                    odataVersion: '4.0'
                 },
                 {
                     name: 'dummyApp2',
-                    path: appRoot2,
-                    type: 'list-report',
-                    version: '4.0'
+                    appPath: appRoot2,
+                    projectPath: appRoot2,
+                    projectType: 'EDMXBackend',
+                    odataVersion: '4.0'
                 }
             ]
         });
@@ -89,6 +104,7 @@ describe('listFioriApps', () => {
                 applications: [
                     {
                         appRoot,
+                        projectRoot: appRoot,
                         manifest: {
                             'sap.app': {
                                 id: 'dummyAppId',
@@ -109,7 +125,67 @@ describe('listFioriApps', () => {
             searchPath
         });
         expect(apps).toEqual({
-            applications: [{ name: 'dummyAppId', path: appRoot, type: 'list-report', version: '2.0' }]
+            applications: [
+                {
+                    name: 'dummyAppId',
+                    appPath: appRoot,
+                    projectPath: appRoot,
+                    projectType: 'EDMXBackend',
+                    odataVersion: '2.0'
+                }
+            ]
+        });
+    });
+
+    test('call with CAP project', async () => {
+        const projectRoot = 'dummyRoot';
+        const appRoot = 'dummyAppRoot';
+        const appRoot2 = 'dummyAppRoot2';
+        getProjectTypeSpy.mockResolvedValue('CAPJava');
+        findFioriArtifactsSpy.mockReturnValueOnce(
+            Promise.resolve({
+                applications: [
+                    {
+                        appRoot,
+                        projectRoot,
+                        manifest: {
+                            'sap.app': {
+                                id: 'dummyApp1'
+                            }
+                        }
+                    },
+                    {
+                        appRoot: appRoot2,
+                        projectRoot,
+                        manifest: {
+                            'sap.app': {
+                                id: 'dummyApp2'
+                            }
+                        }
+                    }
+                ] as unknown as projectAccess.AllAppResults[]
+            })
+        );
+        const apps = await listFioriApps({
+            searchPath
+        });
+        expect(apps).toEqual({
+            applications: [
+                {
+                    name: 'dummyApp1',
+                    appPath: appRoot,
+                    projectPath: projectRoot,
+                    projectType: 'CAPJava',
+                    odataVersion: '4.0'
+                },
+                {
+                    name: 'dummyApp2',
+                    appPath: appRoot2,
+                    projectPath: projectRoot,
+                    projectType: 'CAPJava',
+                    odataVersion: '4.0'
+                }
+            ]
         });
     });
 });
