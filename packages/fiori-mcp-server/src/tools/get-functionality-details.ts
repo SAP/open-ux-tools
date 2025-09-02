@@ -83,7 +83,7 @@ function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunc
         // Property was found by path
         const parameters = getParameters([property]);
         details = {
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
             // As workaround - I am using approach with null as currently there is no use case where null is real value.
@@ -97,7 +97,7 @@ function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunc
             parameters = parameters.concat(getParameters([property]));
         }
         details = {
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
             // As workaround - I am using approach with null as currently there is no use case where null is real value.
@@ -138,6 +138,7 @@ export function resolveFunctionality(functionalityId: string | string[]): {
     try {
         propertyPath = typeof functionalityId === 'string' ? JSON.parse(functionalityId) : [...functionalityId];
     } catch (e) {
+        // The functionalityId is expected to be either a string array (e.g. "['Id1', 'Id2']") or an array of strings (e.g. ['Id1', 'Id2']).
         throw new Error(`Invalid format of functionalityId parameter, error: ${e}`);
     }
     let pageName: string | undefined;

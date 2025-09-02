@@ -42,7 +42,7 @@ function getParameters(): { pageType: Parameter; pageId: Parameter; controllerNa
 }
 
 export const CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
-    id: 'create-controller-extension',
+    functionalityId: 'create-controller-extension',
     name: 'Add new controller extension by creating javascript or typescript file and updates manifest.json with entry',
     description:
         'Add new controller extension by creating javascript or typescript file and updates manifest.json with entry. Controller extensions allow users to extensiate default behaviour with custom controllers code.',

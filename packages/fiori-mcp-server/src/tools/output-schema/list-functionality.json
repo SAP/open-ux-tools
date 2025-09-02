@@ -9,7 +9,7 @@
       "items": {
         "type": "object",
         "properties": {
-          "id": {
+          "functionalityId": {
             "anyOf": [
               {
                 "type": "array",
@@ -27,7 +27,7 @@
             "type": "string"
           }
         },
-        "required": ["id", "description"],
+        "required": ["functionalityId", "description"],
         "additionalProperties": false
       }
     }

@@ -22,6 +22,9 @@
       "path": "../i18n"
     },
     {
+      "path": "../nodejs-utils"
+    },
+    {
       "path": "../odata-annotation-core-types"
     },
     {
