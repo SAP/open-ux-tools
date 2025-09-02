@@ -4,8 +4,14 @@ A Node.js package that indexes SAP Fiori related documentation from multiple sou
 
 ## What it does
 
-This module:
-- Crawls documentation from GitHub repositories (SAP-docs/btp-fiori-tools, SAP-docs/sapui5, etc.)
+This module- Crawls documentation from GitHub repositories (see Configuration for a list of default sources)
+Example sources:
+https://github.com/SAP-docs/btp-fiori-tools (Fiori Tools documentation)
+https://github.com/SAP-docs/sapui5 (UI5 framework documentation)
+https://github.com/SAP-samples/fiori-tools-samples (Sample applications)
+https://github.com/SAP-samples/fiori-elements-feature-showcase (Feature examples)
+https://ui5.sap.com/test-resources/sap/fe/macros/designtime/apiref/api.json (Design Time API Reference)
+
 - Parses markdown, JSON, TypeScript, and other file types
 - Generates AI-powered vector embeddings using transformers
 - Stores embeddings in a local LanceDB vector database
