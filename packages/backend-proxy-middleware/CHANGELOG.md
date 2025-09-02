@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.9.16
+
+### Patch Changes
+
+-   b62d5b9: fix: make 'bsp' path case insensitive
+
 ## 0.9.15
 
 ### Patch Changes

@@ -84,7 +84,7 @@ export async function promptUserPass(log: Logger): Promise<string | undefined> {
  * @param logger logger to report info to the user
  */
 export async function addOptionsForEmbeddedBSP(bspPath: string, proxyOptions: Options, logger: Logger) {
-    const regex = new RegExp('(' + bspPath + '/manifest\\.appdescr\\b)');
+    const regex = new RegExp('(' + bspPath + '/manifest\\.appdescr\\b)', 'i');
     proxyOptions.router = (req): string | undefined => {
         // redirects the request for manifest.appdescr to localhost
         if (req.path.match(regex)) {
