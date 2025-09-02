@@ -37,7 +37,7 @@ describe('Start server with serve-static-middleware', () => {
             { path: '/test-resources', src: join(localUI5Path, 'test-resources') },
             { path: USERAPI, src: 'webapp/mock/user.json', index: false, fallthrough: false, redirect: false }
         ]
-    };
+    } satisfies ServeStaticConfig;
 
     test('serve local UI5', async () => {
         const server = await getTestServer(config as any);
@@ -83,10 +83,10 @@ describe('Start server with serve-static-middleware', () => {
         );
     });
 
-    test('ignore cachebuster part of url', async () => {
+    test('ignore cache buster part of url', async () => {
         const server = await getTestServer({
-            paths: [{ path: '/resources', src: join(localUI5Path, 'resources'), fallthrough: false }]
-        } as any);
+            paths: [{ path: '/resources', src: join(localUI5Path, 'resources'), fallthrough: false, keepCacheBusterInUrl: true }]
+        });
         expect(await server.get(CACHEBUSTER_CORE)).toMatchObject({ status: 200 });
     });
 });

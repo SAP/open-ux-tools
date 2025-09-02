@@ -38,9 +38,11 @@ export const serveStaticMiddleware = (
 
         // Use a custom handler to rewrite the URL before serving the file
         router.use(pathConfig.path, (req, res, next) => {
-            const cacheBusterRegex = /\/~[0-9A-F]{32}~\d+\//;
-            if (cacheBusterRegex.test(req.url)) {
-                req.url = req.url.replace(cacheBusterRegex, '/');
+            if (pathConfig.keepCacheBusterInUrl) {
+                const cacheBusterRegex = /\/~[0-9A-F]{32}~\d+\//;
+                if (cacheBusterRegex.test(req.url)) {
+                    req.url = req.url.replace(cacheBusterRegex, '/');
+                }
             }
             fileServer(req, res, next);
         });

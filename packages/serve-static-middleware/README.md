@@ -6,10 +6,13 @@ It can be used either with the `ui5 serve` or the `fiori run` commands.
 
 ## Configuration Options
 
-| Option       | Type | Description |
-| ------------ | ------------- | ----------- |
-| `paths`        | `array`      | List of mount paths and local paths that should be handled by the serve static middleware. |
-| `[option]`    | `string \| number \| boolean`   | Configuration options of [serve-static](https://www.npmjs.com/package/serve-static#options). Excluding `setHeaders`! Alternatively you can add each option on a specific path |
+| Option                        | Type                          | Description                                                                                                                                                                                   |
+|-------------------------------|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `paths`                       | `array`                       | List of mount paths and local paths that should be handled by the serve static middleware.                                                                                                    |
+| `paths.[serve-static option]` | `string \| number \| boolean` | You can use any configuration options of [serve-static](https://www.npmjs.com/package/serve-static#options). Excluding `setHeaders`! Alternatively you can add each option on a specific path |
+| `paths.path`                  | `string`                      | specific path                                                                                                                                                                                 |
+| `paths.src`                   | `string`                      | specific src                                                                                                                                                                                  |
+| `paths.keepCacheBusterInUrl`  | `boolean`                     | By default the cache buster part of the URL (e.g. `/~6D08668CD2688B304F0130340DE601EA~5/`) is being ignored. This property can be used to keep it part of the serve static path.              |
 
 ## Configuration Examples
 
