@@ -125,8 +125,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/fe-fpm-writer
       inquirer:
-        specifier: ^8.0.0
-        version: 8.2.6
+        specifier: ^8.2.7
+        version: 8.2.7(@types/node@18.11.9)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -384,7 +384,7 @@ importers:
         version: 25.3.0(typescript@5.9.2)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
+        version: 2.0.1(inquirer@8.2.7)
     devDependencies:
       '@types/inquirer':
         specifier: 8.2.6
@@ -458,7 +458,7 @@ importers:
         version: 4.4.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/abap-deploy-config-writer:
     dependencies:
@@ -583,7 +583,7 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/adp-tooling:
     dependencies:
@@ -639,8 +639,8 @@ importers:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1060,7 +1060,7 @@ importers:
         version: 25.3.0(typescript@5.9.2)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
+        version: 2.0.1(inquirer@8.2.7)
     devDependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
@@ -1075,8 +1075,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
 
   packages/cf-deploy-config-sub-generator:
     dependencies:
@@ -1155,7 +1155,7 @@ importers:
         version: 4.4.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/cf-deploy-config-writer:
     dependencies:
@@ -1594,7 +1594,7 @@ importers:
         version: 4.4.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/deploy-tooling:
     dependencies:
@@ -1943,8 +1943,8 @@ importers:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -2017,7 +2017,7 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/fiori-elements-writer:
     dependencies:
@@ -2322,8 +2322,8 @@ importers:
         specifier: 4.14.202
         version: 4.14.202
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
 
   packages/flp-config-sub-generator:
     dependencies:
@@ -2358,8 +2358,8 @@ importers:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -2411,7 +2411,7 @@ importers:
         version: 4.4.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/generator-adp:
     dependencies:
@@ -2505,7 +2505,7 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/guided-answers-helper: {}
 
@@ -2903,7 +2903,7 @@ importers:
         version: 25.3.0(typescript@5.9.2)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
+        version: 2.0.1(inquirer@8.2.7)
       os-name:
         specifier: 4.0.1
         version: 4.0.1
@@ -3344,8 +3344,8 @@ importers:
         specifier: 25.3.0
         version: 25.3.0(typescript@5.9.2)
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -3397,7 +3397,7 @@ importers:
         version: 10.0.0
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
+        version: 2.0.1(inquirer@8.2.7)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -3415,7 +3415,7 @@ importers:
         version: 4.4.0
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/serve-static-middleware:
     dependencies:
@@ -3872,8 +3872,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
       jest-extended:
         specifier: 6.0.0
         version: 6.0.0(jest@30.1.1)(typescript@5.9.2)
@@ -3885,7 +3885,7 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/ui-service-sub-generator:
     dependencies:
@@ -3970,7 +3970,7 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/ui5-application-inquirer:
     dependencies:
@@ -3991,7 +3991,7 @@ importers:
         version: 25.3.0(typescript@5.9.2)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
+        version: 2.0.1(inquirer@8.2.7)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -4018,8 +4018,8 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
 
   packages/ui5-application-writer:
     dependencies:
@@ -4148,7 +4148,7 @@ importers:
         version: 25.3.0(typescript@5.9.2)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
+        version: 2.0.1(inquirer@8.2.7)
     devDependencies:
       '@types/inquirer':
         specifier: 8.2.6
@@ -4157,8 +4157,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
 
   packages/ui5-library-reference-inquirer:
     dependencies:
@@ -4179,8 +4179,8 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
       inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.7
+        version: 8.2.7(@types/node@18.11.9)
 
   packages/ui5-library-reference-sub-generator:
     dependencies:
@@ -4241,7 +4241,7 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/ui5-library-reference-writer:
     dependencies:
@@ -4333,7 +4333,7 @@ importers:
         version: 5.0.5
       yeoman-test:
         specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+        version: 6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/ui5-library-writer:
     dependencies:
@@ -7433,6 +7433,19 @@ packages:
 
   /@humanwhocodes/object-schema@2.0.2:
     resolution: {integrity: sha512-6EwiSjwWYP7pTckG6I5eyFANjPhmPjUX9JRLUSfNPC7FX7zK9gyZAfUEaECL6ALTpGX5AjnBq3C9XmVWPitNpw==}
+
+  /@inquirer/external-editor@1.0.1(@types/node@18.11.9):
+    resolution: {integrity: sha512-Oau4yL24d2B5IL4ma4UpbQigkVhzPDXLoqy1ggK4gnHg/stmkffJE4oOXHXF3uz0UEpywG68KcyXsyYpA1Re/Q==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+    dependencies:
+      '@types/node': 18.11.9
+      chardet: 2.1.0
+      iconv-lite: 0.6.3
 
   /@isaacs/cliui@8.0.2:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -12078,7 +12091,7 @@ packages:
       lazystream: 1.0.1
       lodash: 4.17.21
       normalize-path: 3.0.0
-      readable-stream: 4.5.2
+      readable-stream: 4.7.0
     dev: false
 
   /archiver@7.0.1:
@@ -13147,6 +13160,10 @@ packages:
 
   /chardet@0.7.0:
     resolution: {integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA==}
+    dev: true
+
+  /chardet@2.1.0:
+    resolution: {integrity: sha512-bNFETTG/pM5ryzQ9Ad0lJOTa6HWD/YsScAR3EnCPZRPlQh77JocYktSHOUHelyhm8IARL+o4c4F1bP5KVOjiRA==}
 
   /check-dependency-version-consistency@5.0.0:
     resolution: {integrity: sha512-7UNH6QDgPHImF5TmmYH0mSpbnU5KhUT8Z+27hpW/fJM8VWnZpz6INh/olHmVPqFOUm3+lES4R8LwBLHrh9XJqg==}
@@ -13540,7 +13557,7 @@ packages:
       crc32-stream: 6.0.0
       is-stream: 2.0.1
       normalize-path: 3.0.0
-      readable-stream: 4.5.2
+      readable-stream: 4.7.0
     dev: false
 
   /compressible@2.0.18:
@@ -13706,7 +13723,7 @@ packages:
     engines: {node: '>= 14'}
     dependencies:
       crc-32: 1.2.2
-      readable-stream: 4.5.2
+      readable-stream: 4.7.0
     dev: false
 
   /create-require@1.1.1:
@@ -15598,6 +15615,7 @@ packages:
       chardet: 0.7.0
       iconv-lite: 0.4.24
       tmp: 0.0.33
+    dev: true
 
   /extract-zip@2.0.1:
     resolution: {integrity: sha512-GDhU9ntwuKyGXdZBUgTIe+vXnWj0fppUEtMDL0+idd5Sta8TGpHssn/eusA9mrPr9qNDym6SxAYZjNvCn/9RBg==}
@@ -17011,7 +17029,7 @@ packages:
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dev: true
 
-  /inquirer-autocomplete-prompt@2.0.1(inquirer@8.2.6):
+  /inquirer-autocomplete-prompt@2.0.1(inquirer@8.2.7):
     resolution: {integrity: sha512-jUHrH0btO7j5r8DTQgANf2CBkTZChoVySD8zF/wp5fZCOLIuUbleXhf4ZY5jNBOc1owA3gdfWtfZuppfYBhcUg==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -17019,30 +17037,32 @@ packages:
     dependencies:
       ansi-escapes: 4.3.2
       figures: 3.2.0
-      inquirer: 8.2.6
+      inquirer: 8.2.7(@types/node@18.11.9)
       picocolors: 1.1.1
       run-async: 2.4.1
       rxjs: 7.8.1
 
-  /inquirer@8.2.6:
-    resolution: {integrity: sha512-M1WuAmb7pn9zdFRtQYk26ZBoY043Sse0wVDdk4Bppr+JOXyQYybdtvK+l9wUibhtjdjvtoiNy8tk+EgsYIUqKg==}
+  /inquirer@8.2.7(@types/node@18.11.9):
+    resolution: {integrity: sha512-UjOaSel/iddGZJ5xP/Eixh6dY1XghiBw4XK13rCCIJcJfyhhoul/7KhLLUGtebEj6GDYM6Vnx/mVsjx2L/mFIA==}
     engines: {node: '>=12.0.0'}
     dependencies:
+      '@inquirer/external-editor': 1.0.1(@types/node@18.11.9)
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       cli-cursor: 3.1.0
       cli-width: 3.0.0
-      external-editor: 3.1.0
       figures: 3.2.0
       lodash: 4.17.21
       mute-stream: 0.0.8
       ora: 5.4.1
       run-async: 2.4.1
-      rxjs: 7.8.1
+      rxjs: 7.8.2
       string-width: 4.2.3
       strip-ansi: 6.0.1
       through: 2.3.8
       wrap-ansi: 6.2.0
+    transitivePeerDependencies:
+      - '@types/node'
 
   /internal-slot@1.0.5:
     resolution: {integrity: sha512-Y+R5hJrzs52QCG2laLn4udYVnxsfny9CpOhNhUvk/SSSVyF6T27FzRbF0sroPidSu3X8oEAkOn2K804mjpt6UQ==}
@@ -20343,6 +20363,7 @@ packages:
   /os-tmpdir@1.0.2:
     resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
     engines: {node: '>=0.10.0'}
+    dev: true
 
   /outdent@0.5.0:
     resolution: {integrity: sha512-/jHxFIzoMXdqPzTaCpFzAAWhpkSjZPF4Vsn6jAfNpmbH/ymsmd7Qc6VE9BGn0L6YMj6uwpQLxCECpus4ukKS9Q==}
@@ -23760,6 +23781,7 @@ packages:
     engines: {node: '>=0.6.0'}
     dependencies:
       os-tmpdir: 1.0.2
+    dev: true
 
   /tmp@0.2.3:
     resolution: {integrity: sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==}
@@ -24798,7 +24820,7 @@ packages:
       joi: 17.11.0
       lodash: 4.17.21
       minimist: 1.2.8
-      rxjs: 7.8.1
+      rxjs: 7.8.2
     transitivePeerDependencies:
       - debug
     dev: false
@@ -25397,7 +25419,7 @@ packages:
       fd-slicer: 1.1.0
     dev: true
 
-  /yeoman-environment@3.19.3:
+  /yeoman-environment@3.19.3(@types/node@18.11.9):
     resolution: {integrity: sha512-/+ODrTUHtlDPRH9qIC0JREH8+7nsRcjDl3Bxn2Xo/rvAaVvixH5275jHwg0C85g4QsF4P6M2ojfScPPAl+pLAg==}
     engines: {node: '>=12.10.0'}
     hasBin: true
@@ -25418,7 +25440,7 @@ packages:
       find-up: 5.0.0
       globby: 11.1.0
       grouped-queue: 2.0.0
-      inquirer: 8.2.6
+      inquirer: 8.2.7(@types/node@18.11.9)
       is-scoped: 2.1.0
       isbinaryfile: 4.0.10
       lodash: 4.17.21
@@ -25440,6 +25462,7 @@ packages:
       textextensions: 5.16.0
       untildify: 4.0.0
     transitivePeerDependencies:
+      - '@types/node'
       - bluebird
       - supports-color
 
@@ -25467,14 +25490,14 @@ packages:
       shelljs: 0.8.5
       sort-keys: 4.2.0
       text-table: 0.2.0
-      yeoman-environment: 3.19.3
+      yeoman-environment: 3.19.3(@types/node@18.11.9)
     transitivePeerDependencies:
       - bluebird
       - encoding
       - mem-fs
       - supports-color
 
-  /yeoman-test@6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0):
+  /yeoman-test@6.3.0(@types/node@18.11.9)(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0):
     resolution: {integrity: sha512-FpaLV5AiVFlYe4pizAB/QLWc+5BSyttk/TcFQfi/r8g/rz290uqEkV4waN3rHEvP/DCmoMNSJykKTZNWL2y07g==}
     engines: {node: '>=12.10.0'}
     peerDependencies:
@@ -25482,14 +25505,16 @@ packages:
       yeoman-environment: ^3.3.0
       yeoman-generator: '*'
     dependencies:
-      inquirer: 8.2.6
+      inquirer: 8.2.7(@types/node@18.11.9)
       lodash: 4.17.21
       mem-fs: 2.1.0
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
       sinon: 10.0.1
       temp-dir: 2.0.0
-      yeoman-environment: 3.19.3
+      yeoman-environment: 3.19.3(@types/node@18.11.9)
       yeoman-generator: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+    transitivePeerDependencies:
+      - '@types/node'
     dev: true
 
   /yesno@0.4.0:
@@ -25516,7 +25541,7 @@ packages:
     dependencies:
       archiver-utils: 5.0.2
       compress-commons: 6.0.2
-      readable-stream: 4.5.2
+      readable-stream: 4.7.0
     dev: false
 
   /zod-to-json-schema@3.24.6(zod@3.23.8):

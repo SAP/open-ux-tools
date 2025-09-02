@@ -44,7 +44,7 @@
         "@sap-devx/yeoman-ui-types": "1.14.4",
         "@types/inquirer": "8.2.6",
         "@types/lodash": "4.14.202",
-        "inquirer": "8.2.6"
+        "inquirer": "8.2.7"
     },
     "engines": {
         "node": ">=20.x"
