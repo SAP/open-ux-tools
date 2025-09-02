@@ -6,7 +6,7 @@ sap.ui.define([
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('testNameSpace/formentryv4') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('testNameSpace/formentryv4') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpaceformentryv4-tile',
         pages: {
 			onTheTravelObjectPage: TravelObjectPage,
 			onTheBookingObjectPage: BookingObjectPage

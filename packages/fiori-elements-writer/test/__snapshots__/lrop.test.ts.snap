@@ -22991,7 +22991,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtests-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,
@@ -23832,7 +23832,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtestscds-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,
@@ -26120,7 +26120,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_annotation_reuse_lib') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_annotation_reuse_lib') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4annotationreuselib-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,
