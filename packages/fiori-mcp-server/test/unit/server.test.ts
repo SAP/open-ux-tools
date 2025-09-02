@@ -17,6 +17,17 @@ jest.mock('@modelcontextprotocol/sdk/server/index.js', () => {
     };
 });
 
+jest.mock('@sap-ux/telemetry', () => {
+    return {
+        initTelemetrySettings: jest.fn(),
+        ClientFactory: {
+            getTelemetryClient: jest.fn().mockReturnValue({
+                reportEvent: jest.fn()
+            })
+        }
+    };
+});
+
 describe('FioriFunctionalityServer', () => {
     afterEach(() => {
         jest.restoreAllMocks();
