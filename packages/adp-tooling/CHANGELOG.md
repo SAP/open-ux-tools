@@ -1,5 +1,13 @@
 # @sap-ux/adp-tooling
 
+## 0.15.24
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/inquirer-common@0.7.39
+-   @sap-ux/system-access@0.6.16
+
 ## 0.15.23
 
 ### Patch Changes
