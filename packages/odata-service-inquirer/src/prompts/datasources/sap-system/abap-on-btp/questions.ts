@@ -60,7 +60,7 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
  *
  * @param promptOptions The prompt options which control the service selection and system name]
  * @param cachedConnectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
- * @param featureToggle Feature toggle to enable/disable the BTP service key option - enabled by default
+ * @param serviceKeyToggle Feature toggle to enable/disable the BTP service key option - enabled by default
  * @returns The list of questions for the ABAP on BTP system
  */
 export function getAbapOnBTPSystemQuestions(
@@ -77,7 +77,7 @@ export function getAbapOnBTPSystemQuestions(
         choices: [
             { name: t('prompts.abapOnBTPType.choiceCloudFoundry'), value: 'cloudFoundry' as AbapOnBTPType },
             // Feature toggle the service key option - enabled by default, can be disabled via VS Code settings or ENV
-            ...(!featureToggle
+            ...(!serviceKeyToggle
                 ? [
                       {
                           name: t('prompts.abapOnBTPType.choiceServiceKey'),
@@ -117,7 +117,7 @@ export function getAbapOnBTPSystemQuestions(
     );
 
     // Service Key file prompt - enabled by default
-    if (!featureToggle) {
+    if (!serviceKeyToggle) {
         questions.push(
             withCondition(
                 [getServiceKeyPrompt(connectValidator, cachedConnectedSystem)],
