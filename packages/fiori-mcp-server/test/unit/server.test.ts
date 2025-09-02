@@ -17,13 +17,12 @@ jest.mock('@modelcontextprotocol/sdk/server/index.js', () => {
     };
 });
 
-jest.mock('@sap-ux/telemetry', () => {
+jest.mock('../../src/telemetry', () => {
     return {
-        initTelemetrySettings: jest.fn(),
-        ClientFactory: {
-            getTelemetryClient: jest.fn().mockReturnValue({
-                reportEvent: jest.fn()
-            })
+        TelemetryHelper: {
+            initTelemetrySettings: jest.fn(),
+            markToolStartTime: jest.fn(),
+            sendTelemetry: jest.fn()
         }
     };
 });
