@@ -107,7 +107,7 @@ export abstract class TelemetryHelper {
      */
     private static prepareTelemetryEvent(telemetryEventName: string, telemetryData: TelemetryData): TelemetryEvent {
         // Make sure performance measurement end is called
-        TelemetryHelper.markToolsEndTime();
+        this.markToolsEndTime();
         const generationTime = telemetryData.markName
             ? Performance.getMeasurementDuration(telemetryData.markName)
             : undefined;
@@ -125,7 +125,7 @@ export abstract class TelemetryHelper {
      * It should not be updated everytime calling createTelemetryData().
      */
     public static markToolStartTime(): void {
-        TelemetryHelper.createTelemetryData({
+        this.createTelemetryData({
             markName: Performance.startMark('MCP_LOADING_TIME')
         });
     }

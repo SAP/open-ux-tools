@@ -49,6 +49,7 @@ jobs:
               run: pnpm run test --tuiAutoExit
               env:
                 NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+                INSTRUMENTATION_KEY: ${{ secrets.INSTRUMENTATION_KEY_DEV }}
             - name: Check for changeset files
               id: check_changeset_files
               uses: andstor/file-existence-action@v3
