@@ -196,10 +196,10 @@ describe('hybrid-search', () => {
 
             const result = await docSearch(params);
 
-            expect(result.results).toHaveLength(1);
-            expect(result.results[0].content[0].text).toContain('limited_fallback');
-            expect(result.results[0].content[0].text).toContain('Embeddings data not available');
-            expect(result.results[0].content[0].text).toContain('npm install @sap-ux/fiori-docs-embeddings');
+            expect(result.results.content).toHaveLength(1);
+            expect(result.results.content[0].text).toContain('limited_fallback');
+            expect(result.results.content[0].text).toContain('Embeddings data not available');
+            expect(result.results.content[0].text).toContain('npm install @sap-ux/fiori-docs-embeddings');
             expect(console.warn).toHaveBeenCalledWith(
                 'Embeddings data not available, providing limited search capability:',
                 expect.any(Error)
@@ -222,9 +222,9 @@ describe('hybrid-search', () => {
 
             const result = await docSearch(params);
 
-            expect(result.results).toHaveLength(1);
-            expect(result.results[0].content[0].text).toContain('limited_fallback');
-            expect(result.results[0].content[0].text).toContain('test search');
+            expect(result.results.content).toHaveLength(1);
+            expect(result.results.content[0].text).toContain('limited_fallback');
+            expect(result.results.content[0].text).toContain('test search');
         });
 
         it('should use default maxResults when not provided', async () => {

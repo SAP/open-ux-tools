@@ -67,7 +67,7 @@ export type DocSearchInput = {
 };
 
 export type DocSearchOutput = {
-    results: any[];
+    results: any;
 };
 
 /**
@@ -95,27 +95,25 @@ export async function docSearch(params: DocSearchInput): Promise<DocSearchOutput
         console.warn('Embeddings data not available, providing limited search capability:', error);
 
         return {
-            results: [
-                {
-                    content: [
-                        {
-                            type: 'text',
-                            text: JSON.stringify(
-                                {
-                                    query,
-                                    searchType: 'limited_fallback',
-                                    error: 'Embeddings data not available. Please install @sap-ux/fiori-docs-embeddings for full search capabilities.',
-                                    results: [],
-                                    total: 0,
-                                    suggestion: 'Try running: npm install @sap-ux/fiori-docs-embeddings'
-                                },
-                                null,
-                                2
-                            )
-                        }
-                    ]
-                }
-            ]
+            results: {
+                content: [
+                    {
+                        type: 'text',
+                        text: JSON.stringify(
+                            {
+                                query,
+                                searchType: 'limited_fallback',
+                                error: 'Embeddings data not available. Please install @sap-ux/fiori-docs-embeddings for full search capabilities.',
+                                results: [],
+                                total: 0,
+                                suggestion: 'Try running: npm install @sap-ux/fiori-docs-embeddings'
+                            },
+                            null,
+                            2
+                        )
+                    }
+                ]
+            }
         };
     }
 }
