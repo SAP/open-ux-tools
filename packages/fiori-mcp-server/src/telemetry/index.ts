@@ -1,9 +1,9 @@
-import type { TelemetryEvent } from '@sap-ux/telemetry';
 import {
     ClientFactory,
     PerformanceMeasurementAPI as Performance,
     SampleRate,
     initTelemetrySettings,
+    type TelemetryEvent,
     type TelemetryProperties,
     type ToolsSuiteTelemetryInitSettings
 } from '@sap-ux/telemetry';

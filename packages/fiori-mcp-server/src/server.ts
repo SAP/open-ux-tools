@@ -45,9 +45,6 @@ export class FioriFunctionalityServer {
 
         this.setupToolHandlers();
         this.setupErrorHandling();
-        this.setupTelemetry().catch((error) => {
-            console.error('Fiori Functionality MCP Server telemetry initialization failed: ', error);
-        });
     }
 
     /**
@@ -157,6 +154,7 @@ export class FioriFunctionalityServer {
     async run(): Promise<void> {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
+        await this.setupTelemetry();
         console.error('Fiori Functionality MCP Server running on stdio');
     }
 }
