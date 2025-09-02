@@ -173,6 +173,8 @@ jobs:
               run: pnpm install --frozen-lockfile
             - name: Run build
               run: pnpm run build
+              env:
+                  INSTRUMENTATION_KEY: ${{ secrets.INSTRUMENTATION_KEY }}
             - name: Setup npmrc with npmjs.com token
               run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
             - name: 'Publish to npmjs'

@@ -13,6 +13,7 @@ import osName from 'os-name';
 import i18next from 'i18next';
 
 export const mcpServerName = '@sap-ux/fiori-mcp-server';
+const resourceId = process.env.INSTRUMENTATION_KEY;
 
 export interface TelemetryData {
     [key: string]: string;
@@ -45,6 +46,7 @@ export abstract class TelemetryHelper {
                 name: mcpServerName,
                 version: '0.1.0'
             },
+            resourceId,
             watchTelemetrySettingStore: false,
             internalFeature: isInternalFeaturesSettingEnabled(),
             ...options
@@ -147,7 +149,7 @@ export abstract class TelemetryHelper {
         appPath?: string
     ): Promise<void> {
         const telemetryEvent = this.prepareTelemetryEvent(telemetryEventName, telemetryData);
-        return ClientFactory.getTelemetryClient().reportEvent(
+        ClientFactory.getTelemetryClient().reportEvent(
             telemetryEvent,
             SampleRate.NoSampling,
             appPath ? { appPath } : undefined

@@ -107,11 +107,8 @@ export class FioriFunctionalityServer {
                     tool: name,
                     functionalityId: (args as any)?.functionalityId
                 };
-                TelemetryHelper.sendTelemetry(
-                    TelemetryHelper.getTelemetryName(),
-                    telemetryProperties,
-                    (args as any)?.appPath || undefined
-                );
+
+                TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
 
                 return this.convertResultToCallToolResult(result);
             } catch (error) {
