@@ -59,7 +59,7 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             parameters: [
                 {
@@ -90,7 +90,7 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             pageName: 'TravelObjectPage',
             parameters: [
@@ -114,7 +114,7 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             pageName: 'TravelObjectPage',
             parameters: [
@@ -168,7 +168,7 @@ describe('getFunctionalityDetails', () => {
         expect(details).toEqual({
             description:
                 "Change a property. To reset, remove, or restore it to its default value, set the value to null. If the property's description does not specify how to disable the related feature, setting it to null is typically the appropriate way to disable or clear it.",
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             parameters: [
                 {

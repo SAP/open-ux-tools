@@ -62,12 +62,12 @@ describe('create-controller-extension', () => {
             mockSpecificationImport(importProjectMock);
             const details = await createControllerExtensionHandlers.getFunctionalityDetails({
                 appPath: appPath,
-                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.id
+                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId
             });
             expect(details).toEqual({
                 description:
                     'Add new controller extension by creating javascript or typescript file and updates manifest.json with entry. Controller extensions allow users to extensiate default behaviour with custom controllers code.',
-                id: 'create-controller-extension',
+                functionalityId: 'create-controller-extension',
                 name: 'Add new controller extension by creating javascript or typescript file and updates manifest.json with entry',
                 parameters: [
                     {
@@ -102,7 +102,7 @@ describe('create-controller-extension', () => {
             mockSpecificationImport(importProjectMock);
             const details = await createControllerExtensionHandlers.getFunctionalityDetails({
                 appPath: appPath,
-                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.id
+                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId
             });
             expect(details).toEqual({
                 ...CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY,
@@ -119,7 +119,7 @@ describe('create-controller-extension', () => {
             mockSpecificationImport(importProjectMock);
             const details = await createControllerExtensionHandlers.executeFunctionality({
                 appPath: appPath,
-                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.id,
+                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId,
                 parameters: {
                     pageType: 'ListReport',
                     controllerName: 'Dummy'
@@ -158,7 +158,7 @@ describe('create-controller-extension', () => {
             mockSpecificationImport(importProjectMock);
             const details = await createControllerExtensionHandlers.executeFunctionality({
                 appPath: appPath,
-                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.id,
+                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId,
                 parameters: {
                     pageId: 'TravelObjectPage',
                     controllerName: 'Dummy'
@@ -198,7 +198,7 @@ describe('create-controller-extension', () => {
             mockSpecificationImport(importProjectMock);
             const details = await createControllerExtensionHandlers.executeFunctionality({
                 appPath: appPath,
-                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.id,
+                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId,
                 parameters: {
                     pageId: 'TravelObjectPage',
                     controllerName: 'Dummy'
@@ -227,7 +227,7 @@ describe('create-controller-extension', () => {
             mockSpecificationImport(importProjectMock);
             const details = await createControllerExtensionHandlers.executeFunctionality({
                 appPath: appPath,
-                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.id,
+                functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY.functionalityId,
                 parameters: {
                     pageId: 'TravelObjectPage',
                     controllerName: 'Dummy'

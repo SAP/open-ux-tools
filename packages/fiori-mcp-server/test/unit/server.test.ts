@@ -107,11 +107,11 @@ describe('FioriFunctionalityServer', () => {
                 applicationPath: 'app1',
                 functionalities: [
                     {
-                        id: 'add-page',
+                        functionalityId: 'add-page',
                         description: 'Add page...'
                     },
                     {
-                        id: 'delete-page',
+                        functionalityId: 'delete-page',
                         description: 'Delete page...'
                     }
                 ]
@@ -134,11 +134,11 @@ describe('FioriFunctionalityServer', () => {
                 functionalities: [
                     {
                         description: 'Add page...',
-                        id: 'add-page'
+                        functionalityId: 'add-page'
                     },
                     {
                         description: 'Delete page...',
-                        id: 'delete-page'
+                        functionalityId: 'delete-page'
                     }
                 ]
             });
@@ -152,7 +152,7 @@ describe('FioriFunctionalityServer', () => {
 
         test('get-functionality-details', async () => {
             const getFunctionalityDetailsSpy = jest.spyOn(tools, 'getFunctionalityDetails').mockResolvedValue({
-                id: 'add-page',
+                functionalityId: 'add-page',
                 description: 'Add page...',
                 name: 'add-page',
                 parameters: []
@@ -173,7 +173,7 @@ describe('FioriFunctionalityServer', () => {
             const structuredContent = result.structuredContent;
             expect(structuredContent).toEqual({
                 description: 'Add page...',
-                id: 'add-page',
+                functionalityId: 'add-page',
                 name: 'add-page',
                 parameters: []
             });

@@ -83,7 +83,7 @@ function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunc
         // Property was found by path
         const parameters = getParameters([property]);
         details = {
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
             // As workaround - I am using approach with null as currently there is no use case where null is real value.
@@ -97,7 +97,7 @@ function getPropertyDetails(page: TreeNode, propertyPath: PropertyPath): GetFunc
             parameters = parameters.concat(getParameters([property]));
         }
         details = {
-            id: 'change-property',
+            functionalityId: 'change-property',
             name: 'Change property',
             // There is issue in cline by applying values with undefined - throws error "Invalid JSON argument".
             // As workaround - I am using approach with null as currently there is no use case where null is real value.

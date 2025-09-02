@@ -44,7 +44,7 @@ describe('listFunctionalities', () => {
             appPath
         })) as ListFunctionalitiesOutput;
         expect(functionalities.applicationPath).toEqual(appPath);
-        expect(functionalities.functionalities.map((functionality) => functionality.id)).toEqual([
+        expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
             'generate-fiori-ui-app',
             'delete-page',
@@ -69,7 +69,7 @@ describe('listFunctionalities', () => {
         })) as ListFunctionalitiesOutput;
         expect(importProjectMock).toHaveBeenCalledTimes(0);
         expect(functionalities.applicationPath).toEqual(appPath);
-        expect(functionalities.functionalities.map((functionality) => functionality.id)).toEqual([
+        expect(functionalities.functionalities.map((functionality) => functionality.functionalityId)).toEqual([
             'add-page',
             'generate-fiori-ui-app',
             'delete-page',
