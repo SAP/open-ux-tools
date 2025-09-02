@@ -174,7 +174,7 @@ jobs:
             - name: Run build
               run: pnpm run build
               env:
-                  INSTRUMENTATION_KEY: ${{ secrets.INSTRUMENTATION_KEY }}
+                  INSTRUMENTATION_KEY: ${{ secrets.INSTRUMENTATION_KEY_DEV }}
             - name: Setup npmrc with npmjs.com token
               run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPMJS_TOKEN }}" > .npmrc
             - name: 'Publish to npmjs'
