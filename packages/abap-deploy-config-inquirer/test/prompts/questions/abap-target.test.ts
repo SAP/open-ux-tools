@@ -153,7 +153,7 @@ describe('getAbapTargetPrompts', () => {
             expect(await (destPrompt.validate as Function)()).toEqual(true);
             expect(((destPrompt as ListQuestion).additionalMessages as Function)('mockDestination')).toStrictEqual({
                 message: t('warnings.virtualHost'),
-                severity: Severity.warning
+                severity: Severity.information
             });
             expect(((destPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
                 Array [
