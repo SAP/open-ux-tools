@@ -5,7 +5,7 @@ sap.ui.define([
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('testNameSpace/lropv4capjava') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv4capjava-tile',
+        launchUrl: sap.ui.require.toUrl('testNameSpace/lropv4capjava') + '/test/flpSandbox.html#testNameSpacelropv4capjava-tile',
         pages: {
 			onTheBooksObjectPage: BooksObjectPage
         },

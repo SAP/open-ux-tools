@@ -76,7 +76,7 @@ function getOpaConfig(
     flpAppId?: string
 ): { htmlTarget: string } {
     const flpTarget = useVirtualPreviewEndpoints ? 'flp' : 'flpSandbox';
-    const htmlTarget = `test/${flpTarget}.html?sap-ui-xx-viewCache=false#${flpAppId}`;
+    const htmlTarget = `test/${flpTarget}.html#${flpAppId}`;
     return {
         htmlTarget
     };

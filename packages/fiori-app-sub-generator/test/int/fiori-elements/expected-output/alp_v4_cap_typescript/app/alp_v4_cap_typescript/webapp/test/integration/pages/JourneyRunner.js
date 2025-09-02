@@ -6,7 +6,7 @@ sap.ui.define([
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('testNameSpace/alpv4captypescript') + '/test/flp.html?sap-ui-xx-viewCache=false#app-preview',
+        launchUrl: sap.ui.require.toUrl('testNameSpace/alpv4captypescript') + '/test/flp.html#app-preview',
         pages: {
 			onTheBooksList: BooksList,
 			onTheBooksObjectPage: BooksObjectPage

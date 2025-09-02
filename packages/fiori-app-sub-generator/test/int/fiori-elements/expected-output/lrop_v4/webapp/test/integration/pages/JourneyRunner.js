@@ -7,7 +7,7 @@ sap.ui.define([
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('testNameSpace/lropv4') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacelropv4-tile',
+        launchUrl: sap.ui.require.toUrl('testNameSpace/lropv4') + '/test/flpSandbox.html#testNameSpacelropv4-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,

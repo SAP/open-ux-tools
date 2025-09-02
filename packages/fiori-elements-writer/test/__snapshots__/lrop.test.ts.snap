@@ -19083,7 +19083,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_add_test_virtual_endpoints') + '/test/flp.html?sap-ui-xx-viewCache=false#app-preview',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_add_test_virtual_endpoints') + '/test/flp.html#app-preview',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,
@@ -22991,7 +22991,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtests-tile',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests') + '/test/flpSandbox.html#lropv4addtests-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,
@@ -23832,7 +23832,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtestscds-tile',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html#lropv4addtestscds-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,
@@ -24740,7 +24740,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4addtestscds-tile',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_addtests_cds') + '/test/flpSandbox.html#lropv4addtestscds-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,
@@ -26120,7 +26120,7 @@ sap.ui.require(
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('lrop_v4_annotation_reuse_lib') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#lropv4annotationreuselib-tile',
+        launchUrl: sap.ui.require.toUrl('lrop_v4_annotation_reuse_lib') + '/test/flpSandbox.html#lropv4annotationreuselib-tile',
         pages: {
 			onTheTravelList: TravelList,
 			onTheTravelObjectPage: TravelObjectPage,

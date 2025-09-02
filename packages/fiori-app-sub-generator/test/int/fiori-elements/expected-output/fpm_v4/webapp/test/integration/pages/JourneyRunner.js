@@ -5,7 +5,7 @@ sap.ui.define([
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('testNameSpace/fpmv4') + '/test/flpSandbox.html?sap-ui-xx-viewCache=false#testNameSpacefpmv4-tile',
+        launchUrl: sap.ui.require.toUrl('testNameSpace/fpmv4') + '/test/flpSandbox.html#testNameSpacefpmv4-tile',
         pages: {
 			onTheTravelMain: TravelMain
         },
