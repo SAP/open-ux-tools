@@ -47,6 +47,7 @@ export abstract class TelemetryHelper {
             },
             watchTelemetrySettingStore: false,
             internalFeature: isInternalFeaturesSettingEnabled(),
+            resourceId: 'your-resource-id',
             ...options
         };
         await initTelemetrySettings(telemetryOptions);

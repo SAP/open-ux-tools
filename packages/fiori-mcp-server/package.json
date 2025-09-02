@@ -21,9 +21,10 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc --build",
+        "build-compile": "tsc --noEmit",
         "watch": "tsc --watch",
-        "bundle": "npm-run-all build tgz:package tgz:rename",
+        "build-bundle": "node esbuild.js",
+        "build": "npm-run-all -l -s build-compile build-bundle",
         "tgz:package": "pnpm pack",
         "tgz:rename": "node -e \"const fs=require('fs'), p=require('./package.json'), d=new Date().toISOString().split('T')[0], oldName=p.name.startsWith('@') ? `${p.name.replace('@', '').replace('/', '-')}-${p.version}.tgz` : `${p.name}-${p.version}.tgz`; fs.renameSync(oldName, `${oldName.replace('.tgz','')}-${d}.tgz`)\"",
         "clean": "rimraf --glob dist test/test-output *.tsbuildinfo",
