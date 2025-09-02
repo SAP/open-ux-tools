@@ -1,5 +1,27 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.8.0
+
+### Minor Changes
+
+-   04d2103: Revert the removal of the addition of the service key, and place it behind the feature toggle
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+-   @sap-ux/inquirer-common@0.7.39
+-   @sap-ux/fiori-generator-shared@0.13.12
+
+## 2.7.3
+
+### Patch Changes
+
+-   Updated dependencies [77c1459]
+    -   @sap-ux/store@1.1.4
+    -   @sap-ux/telemetry@0.6.19
+    -   @sap-ux/fiori-generator-shared@0.13.12
+    -   @sap-ux/inquirer-common@0.7.38
+
 ## 2.7.2
 
 ### Patch Changes

@@ -20,7 +20,7 @@ export async function listFunctionalities(
         // If we need dynamic handlers then we can add additional method in interface of FUNCTIONALITIES_HANDLERS
         for (const functionality of FUNCTIONALITIES_DETAILS) {
             functionalities.push({
-                id: functionality.id,
+                functionalityId: functionality.functionalityId,
                 description: functionality.description
             });
         }
@@ -164,7 +164,7 @@ function getPropertyFunctionality(property: TreeNodeProperty, pageName?: string)
     }
     path.push(...property.schemaPath);
     return {
-        id: path,
+        functionalityId: path,
         description: property.description || property.displayName || property.name || 'No description available'
     };
 }

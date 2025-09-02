@@ -17,13 +17,13 @@ import type { Application as ApplicationConfig, CustomExtensionData, v4 } from '
 import { getDefaultExtensionFolder } from '../../utils';
 
 export const ADD_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
-    id: ADD_PAGE,
+    functionalityId: ADD_PAGE,
     name: 'Add new page to application by updating manifest.json',
     description: 'Create new fiori elements page like ListReport, ObjectPage, CustomPage',
     parameters: []
 };
 export const DELETE_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
-    id: DELETE_PAGE,
+    functionalityId: DELETE_PAGE,
     name: 'Delete page from application by updating manifest.json',
     description: 'Remove existing fiori elements page from the application',
     parameters: []

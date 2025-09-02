@@ -23,10 +23,15 @@ import LoggerHelper from '../../../../../src/prompts/logger-helper';
 import type { ConnectedSystem } from '../../../../../src/types';
 import { promptNames } from '../../../../../src/types';
 import { getPromptHostEnvironment, PromptState } from '../../../../../src/utils';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 jest.mock('../../../../../src/utils', () => ({
     ...jest.requireActual('../../../../../src/utils'),
     getPromptHostEnvironment: jest.fn()
+}));
+
+jest.mock('@sap-ux/feature-toggle', () => ({
+    isFeatureEnabled: jest.fn()
 }));
 
 const backendSystemBasic: BackendSystem = {
@@ -167,6 +172,7 @@ describe('Test system selection prompts', () => {
         isAuthRequiredMock.mockResolvedValue(false);
         validateServiceInfoResultMock = true;
         validateUrlResultMock = true;
+        (isFeatureEnabled as jest.Mock).mockReturnValue(false);
     });
 
     test('should return system selection prompts and choices based on development environment, BAS or non-BAS', async () => {
