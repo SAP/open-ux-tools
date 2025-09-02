@@ -1,7 +1,8 @@
 import { TelemetryHelper } from '../../src/telemetry';
 import * as sapUxTelemetry from '@sap-ux/telemetry';
 import { ClientFactory } from '@sap-ux/telemetry';
-import { TelemetryData, mcpServerName } from '../../src/telemetry';
+import type { TelemetryData } from '../../src/telemetry';
+import { mcpServerName } from '../../src/telemetry';
 
 describe('TelemetryHelper', () => {
     describe('initTelemetrySettings', () => {
@@ -58,7 +59,7 @@ describe('TelemetryHelper', () => {
         };
         await TelemetryHelper.initTelemetrySettings(opts);
         const telemetryData = TelemetryHelper.createTelemetryData({ test: 'test' }) as TelemetryData;
-        TelemetryHelper.sendTelemetry('event', telemetryData);
+        await TelemetryHelper.sendTelemetry('event', telemetryData);
         expect(reportEventSpy).toHaveBeenCalledWith(
             {
                 eventName: 'event',
