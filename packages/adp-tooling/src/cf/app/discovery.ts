@@ -4,17 +4,6 @@ import { getFDCApps } from '../services/api';
 import type { CfConfig, CFApp, CfCredentials } from '../../types';
 
 /**
- * Filter apps based on validation status.
- *
- * @param {CFApp[]} apps - The apps to filter
- * @param {boolean} includeInvalid - Whether to include invalid apps
- * @returns {CFApp[]} The filtered apps
- */
-export function filterCfApps(apps: CFApp[], includeInvalid: boolean): CFApp[] {
-    return includeInvalid ? apps : apps.filter((app) => !app.messages?.length);
-}
-
-/**
  * Format the discovery.
  *
  * @param {CFApp} app - The app.
@@ -28,20 +17,21 @@ export function formatDiscovery(app: CFApp): string {
  * Get the app host ids.
  *
  * @param {CfCredentials[]} credentials - The credentials.
- * @returns {Set<string>} The app host ids.
+ * @returns {string[]} The app host ids.
  */
-export function getAppHostIds(credentials: CfCredentials[]): Set<string> {
+export function getAppHostIds(credentials: CfCredentials[]): string[] {
     const appHostIds: string[] = [];
+
     credentials.forEach((credential) => {
         const appHostId = credential['html5-apps-repo']?.app_host_id;
         if (appHostId) {
-            appHostIds.push(appHostId.split(',').map((item: string) => item.trim())); // there might be multiple appHostIds separated by comma
+            // There might be multiple appHostIds separated by comma
+            const ids = appHostId.split(',').map((item: string) => item.trim());
+            appHostIds.push(...ids);
         }
     });
 
-    // appHostIds is now an array of arrays of strings (from split)
-    // Flatten the array and create a Set
-    return new Set(appHostIds.flat());
+    return [...new Set(appHostIds)];
 }
 
 /**
@@ -52,7 +42,7 @@ export function getAppHostIds(credentials: CfCredentials[]): Set<string> {
  * @param {ToolsLogger} logger - The logger
  * @returns {Promise<CFApp[]>} The discovered apps
  */
-export async function discoverCfApps(
+export async function getCfApps(
     credentials: CfCredentials[],
     cfConfig: CfConfig,
     logger: ToolsLogger
@@ -61,38 +51,9 @@ export async function discoverCfApps(
     logger?.log(`App Host Ids: ${JSON.stringify(appHostIds)}`);
 
     // Validate appHostIds array length (max 100 as per API specification)
-    if (appHostIds.size > 100) {
-        throw new Error(`Too many appHostIds provided. Maximum allowed is 100, but ${appHostIds.size} were found.`);
+    if (appHostIds.length > 100) {
+        throw new Error(`Too many appHostIds provided. Maximum allowed is 100, but ${appHostIds.length} were found.`);
     }
 
-    const appHostIdsArray = Array.from(appHostIds);
-
-    try {
-        const response = await getFDCApps(appHostIdsArray, cfConfig, logger);
-
-        if (response.status === 200) {
-            // TODO: Remove this once the FDC API is updated to return the appHostId
-            const apps = response.data.results.map((app) => ({ ...app, appHostId: appHostIdsArray[0] }));
-            return apps;
-        } else {
-            throw new Error(
-                `Failed to connect to Flexibility Design and Configuration service. Reason: HTTP status code ${response.status}: ${response.statusText}`
-            );
-        }
-    } catch (error) {
-        logger?.error(`Error in discoverApps: ${error.message}`);
-
-        // Create error apps for each appHostId to maintain original behavior
-        const errorApps: CFApp[] = appHostIdsArray.map((appHostId) => ({
-            appId: '',
-            appName: '',
-            appVersion: '',
-            serviceName: '',
-            title: '',
-            appHostId,
-            messages: [error.message]
-        }));
-
-        return errorApps;
-    }
+    return getFDCApps(appHostIds, cfConfig, logger);
 }

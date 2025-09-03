@@ -6,10 +6,6 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 import type { CfConfig, Config } from '../../types';
 
-const HOMEDRIVE = 'HOMEDRIVE';
-const HOMEPATH = 'HOMEPATH';
-const WIN32 = 'win32';
-
 /**
  * Get the home directory.
  *
@@ -17,9 +13,9 @@ const WIN32 = 'win32';
  */
 function getHomedir(): string {
     let homedir = os.homedir();
-    const homeDrive = process.env?.[HOMEDRIVE];
-    const homePath = process.env?.[HOMEPATH];
-    if (process.platform === WIN32 && typeof homeDrive === 'string' && typeof homePath === 'string') {
+    const homeDrive = process.env?.['HOMEDRIVE'];
+    const homePath = process.env?.['HOMEPATH'];
+    if (process.platform === 'win32' && typeof homeDrive === 'string' && typeof homePath === 'string') {
         homedir = path.join(homeDrive, homePath);
     }
 

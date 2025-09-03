@@ -113,16 +113,10 @@ function getFDCRequestArguments(cfConfig: CfConfig): RequestArguments {
  * @param {ToolsLogger} logger - The logger.
  * @returns {Promise<AxiosResponse<FDCResponse>>} The FDC apps.
  */
-export async function getFDCApps(
-    appHostIds: string[],
-    cfConfig: CfConfig,
-    logger: ToolsLogger
-): Promise<AxiosResponse<FDCResponse>> {
+export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logger: ToolsLogger): Promise<CFApp[]> {
     const requestArguments = getFDCRequestArguments(cfConfig);
     logger?.log(`App Hosts: ${JSON.stringify(appHostIds)}, request arguments: ${JSON.stringify(requestArguments)}`);
 
-    // Construct the URL with multiple appHostIds as separate query parameters
-    // Format: ?appHostId=<id1>&appHostId=<id2>&appHostId=<id3>
     const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
     const url = `${requestArguments.url}/api/business-service/discovery?${appHostIdParams}`;
 
@@ -137,16 +131,19 @@ export async function getFDCApps(
                 response.data
             )}`
         );
-        return response;
+
+        if (response.status === 200) {
+            return response.data.results;
+        } else {
+            throw new Error(
+                `Failed to connect to FDC service. Reason: HTTP status code ${response.status}: ${response.statusText}`
+            );
+        }
     } catch (e) {
         logger?.error(
             `Getting FDC apps. Request url: ${url}, response status: ${e?.response?.status}, message: ${e.message || e}`
         );
-        throw new Error(
-            `Failed to get application from Flexibility Design and Configuration service ${url}. Reason: ${
-                e.message || e
-            }`
-        );
+        throw e;
     }
 }
 

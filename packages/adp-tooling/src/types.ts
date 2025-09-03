@@ -805,6 +805,15 @@ export interface InboundChange {
     };
 }
 
+/**
+ * Route structure from xs-app.json
+ */
+export interface XsAppRoute {
+    source: string;
+    endpoint?: string;
+    [key: string]: unknown;
+}
+
 export interface Uaa {
     clientid: string;
     clientsecret: string;
@@ -1114,6 +1123,7 @@ export interface CFApp {
     title: string;
     appHostId: string;
     messages?: string[];
+    serviceInstanceGuid?: string;
 }
 
 /**

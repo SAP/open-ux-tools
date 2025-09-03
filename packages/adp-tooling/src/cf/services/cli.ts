@@ -30,7 +30,6 @@ export async function checkForCf(): Promise<void> {
             throw new Error(response.stderr);
         }
     } catch (error) {
-        // log error: CFUtils.ts=>checkForCf
         throw new Error('Cloud Foundry is not installed in your space.');
     }
 }
@@ -60,7 +59,6 @@ export async function getServiceKeys(serviceInstanceGuid: string): Promise<CfCre
             ]
         });
     } catch (e) {
-        // log error: CFUtils.ts=>getServiceKeys for guid
         throw new Error(
             `Failed to get service instance credentials from CFLocal for guid ${serviceInstanceGuid}. Reason: ${e.message}`
         );
@@ -80,7 +78,6 @@ export async function createServiceKey(serviceInstanceName: string, serviceKeyNa
             throw new Error(cliResult.stderr);
         }
     } catch (e) {
-        // log error: CFUtils.ts=>createServiceKey for serviceInstanceName
         throw new Error(`Failed to create service key for instance name ${serviceInstanceName}. Reason: ${e.message}`);
     }
 }

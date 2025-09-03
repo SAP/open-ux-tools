@@ -1,9 +1,10 @@
+import { Severity } from '@sap-devx/yeoman-ui-types';
+
 import type {
     CfServicesAnswers,
     CFServicesQuestion,
     CfServicesPromptOptions,
     AppRouterType,
-    AppContentService,
     CfConfig
 } from '@sap-ux/adp-tooling';
 import {
@@ -13,9 +14,13 @@ import {
     hasApprouter,
     isLoggedInCf,
     getMtaServices,
-    getBaseApps
+    getCfApps,
+    downloadAppContent,
+    validateSmartTemplateApplication,
+    validateODataEndpoints
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import { getBusinessServiceKeys, type CFApp, type ServiceKeys } from '@sap-ux/adp-tooling';
@@ -61,19 +66,43 @@ export class CFServicesPrompter {
      * The error message when choosing a base app.
      */
     private baseAppOnChoiceError: string | null = null;
+    /**
+     * The service instance GUID.
+     */
+    private html5RepoServiceInstanceGuid: string;
+    /**
+     * The manifest.
+     */
+    private appManifest: Manifest | undefined;
+
+    /**
+     * Returns the loaded application manifest.
+     *
+     * @returns Application manifest.
+     */
+    public get manifest(): Manifest | undefined {
+        return this.appManifest;
+    }
+
+    /**
+     * Returns the service instance GUID.
+     *
+     * @returns Service instance GUID.
+     */
+    public get serviceInstanceGuid(): string {
+        return this.html5RepoServiceInstanceGuid;
+    }
 
     /**
      * Constructor for CFServicesPrompter.
      *
      * @param {boolean} [isInternalUsage] - Internal usage flag.
      * @param {boolean} isCfLoggedIn - Whether the user is logged in to Cloud Foundry.
-     * @param {AppContentService} appContentService - App content service instance.
      * @param {ToolsLogger} logger - Logger instance.
      */
     constructor(
         private readonly isInternalUsage: boolean = false,
         isCfLoggedIn: boolean,
-        private readonly appContentService: AppContentService,
         private readonly logger: ToolsLogger
     ) {
         this.isCfLoggedIn = isCfLoggedIn;
@@ -216,31 +245,48 @@ export class CFServicesPrompter {
                         if (!this.businessServiceKeys) {
                             return [];
                         }
-                        this.apps = await getBaseApps(
-                            this.businessServiceKeys.credentials,
-                            cfConfig,
-                            this.logger,
-                            this.appContentService
-                        );
+                        this.apps = await getCfApps(this.businessServiceKeys.credentials, cfConfig, this.logger);
                         this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
                     }
                     return getCFAppChoices(this.apps);
                 } catch (e) {
-                    // log error: baseApp => choices
-                    /* the error will be shown by the validation functionality */
                     this.baseAppOnChoiceError = e instanceof Error ? e.message : 'Unknown error';
                     this.logger?.error(`Failed to get base apps: ${e.message}`);
                     return [];
                 }
             },
-            validate: (value: string) => {
-                if (!value) {
+            validate: async (app: CFApp) => {
+                if (!app) {
                     return t('error.baseAppHasToBeSelected');
                 }
                 if (this.baseAppOnChoiceError !== null) {
                     return this.baseAppOnChoiceError;
                 }
+                try {
+                    const { entries, serviceInstanceGuid, manifest } = await downloadAppContent(
+                        cfConfig.space.GUID,
+                        app,
+                        this.logger
+                    );
+                    this.appManifest = manifest;
+                    this.html5RepoServiceInstanceGuid = serviceInstanceGuid;
+
+                    await validateSmartTemplateApplication(manifest);
+                    await validateODataEndpoints(entries, this.businessServiceKeys!.credentials, this.logger);
+                } catch (e) {
+                    return e.message;
+                }
+
                 return true;
+            },
+            additionalMessages: (_: CFApp) => {
+                if (this.baseAppOnChoiceError) {
+                    return {
+                        message: this.baseAppOnChoiceError,
+                        severity: Severity.error
+                    };
+                }
+                return undefined;
             },
             when: (answers: any) => this.isCfLoggedIn && answers.businessService,
             guiOptions: {
@@ -287,33 +333,4 @@ export class CFServicesPrompter {
             }
         } as ListQuestion<CfServicesAnswers>;
     }
-}
-
-/**
- * @param {object} param0 - Configuration object containing FDC service, internal usage flag, MTA project path, CF login status, and logger.
- * @param {CfConfig} param0.cfConfig - CF config service instance.
- * @param {boolean} [param0.isInternalUsage] - Internal usage flag.
- * @param {string} param0.mtaProjectPath - MTA project path.
- * @param {boolean} param0.isCfLoggedIn - CF login status.
- * @param {ToolsLogger} param0.logger - Logger instance.
- * @param {AppContentService} param0.appContentService - App content service instance.
- * @returns {Promise<CFServicesQuestion[]>} CF services questions.
- */
-export async function getPrompts({
-    cfConfig,
-    isInternalUsage,
-    mtaProjectPath,
-    isCfLoggedIn,
-    appContentService,
-    logger
-}: {
-    cfConfig: CfConfig;
-    isInternalUsage?: boolean;
-    mtaProjectPath: string;
-    isCfLoggedIn: boolean;
-    appContentService: AppContentService;
-    logger: ToolsLogger;
-}): Promise<CFServicesQuestion[]> {
-    const prompter = new CFServicesPrompter(isInternalUsage, isCfLoggedIn, appContentService, logger);
-    return prompter.getPrompts(mtaProjectPath, cfConfig);
 }

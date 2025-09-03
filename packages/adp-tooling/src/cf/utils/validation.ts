@@ -1,10 +1,10 @@
 import type AdmZip from 'adm-zip';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Manifest } from '@sap-ux/project-access';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
-import type { CfCredentials } from '../../types';
+import type { CfCredentials, XsAppRoute } from '../../types';
 import { getApplicationType } from '../../source/manifest';
 import { isSupportedAppTypeForAdp } from '../../source/manifest';
 
@@ -22,22 +22,18 @@ function normalizeRouteRegex(value: string): RegExp {
  * Validate the smart template application.
  *
  * @param {Manifest} manifest - The manifest.
- * @returns {Promise<string[]>} The messages.
+ * @returns {Promise<void>} The messages.
  */
-export async function validateSmartTemplateApplication(manifest: Manifest): Promise<string[]> {
-    const messages: string[] = [];
+export async function validateSmartTemplateApplication(manifest: Manifest): Promise<void> {
     const appType = getApplicationType(manifest);
 
     if (isSupportedAppTypeForAdp(appType)) {
         if (manifest['sap.ui5'] && manifest['sap.ui5'].flexEnabled === false) {
-            return messages.concat(t('error.appDoesNotSupportFlexibility'));
+            throw new Error(t('error.appDoesNotSupportFlexibility'));
         }
     } else {
-        return messages.concat(
-            "Select a different application. Adaptation project doesn't support the selected application."
-        );
+        throw new Error("Adaptation project doesn't support the selected application. Select a different application.");
     }
-    return messages;
 }
 
 /**
@@ -46,7 +42,7 @@ export async function validateSmartTemplateApplication(manifest: Manifest): Prom
  * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries.
  * @returns {any} The xs-app.json.
  */
-export function extractXSApp(zipEntries: AdmZip.IZipEntry[]): any {
+export function extractXSApp(zipEntries: AdmZip.IZipEntry[]): { routes: XsAppRoute[] } | undefined {
     let xsApp;
     zipEntries.forEach((item) => {
         if (item.entryName.endsWith('xs-app.json')) {
@@ -63,21 +59,29 @@ export function extractXSApp(zipEntries: AdmZip.IZipEntry[]): any {
 /**
  * Match the routes and data sources.
  *
- * @param {any} dataSources - The data sources.
- * @param {any} routes - The routes.
- * @param {any} serviceKeyEndpoints - The service key endpoints.
+ * @param {Record<string, ManifestNamespace.DataSource>} dataSources - The data sources from manifest.json.
+ * @param {XsAppRoute[]} routes - The routes from xs-app.json.
+ * @param {string[]} serviceKeyEndpoints - The service key endpoints.
  * @returns {string[]} The messages.
  */
-function matchRoutesAndDatasources(dataSources: any, routes: any, serviceKeyEndpoints: any): string[] {
+function matchRoutesAndDatasources(
+    dataSources: Record<string, ManifestNamespace.DataSource> | undefined,
+    routes: XsAppRoute[],
+    serviceKeyEndpoints: string[]
+): string[] {
     const messages: string[] = [];
-    routes.forEach((route: any) => {
+    routes.forEach((route: XsAppRoute) => {
         if (route.endpoint && !serviceKeyEndpoints.includes(route.endpoint)) {
             messages.push(`Route endpoint '${route.endpoint}' doesn't match a corresponding OData endpoint`);
         }
     });
 
-    Object.keys(dataSources).forEach((dataSourceName) => {
-        if (!routes.some((route: any) => dataSources[dataSourceName].uri?.match(normalizeRouteRegex(route.source)))) {
+    Object.keys(dataSources ?? {}).forEach((dataSourceName) => {
+        if (
+            !routes.some((route: XsAppRoute) =>
+                dataSources?.[dataSourceName].uri?.match(normalizeRouteRegex(route.source))
+            )
+        ) {
             messages.push(`Data source '${dataSourceName}' doesn't match a corresponding route in xs-app.json routes`);
         }
     });
@@ -105,7 +109,7 @@ function extractManifest(zipEntries: AdmZip.IZipEntry[]): Manifest | undefined {
 }
 
 /**
- * Validate the OData endpoints.
+ * Validate the OData endpoints, data sources and routes.
  *
  * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries.
  * @param {CfCredentials[]} credentials - The credentials.
@@ -116,29 +120,26 @@ export async function validateODataEndpoints(
     zipEntries: AdmZip.IZipEntry[],
     credentials: CfCredentials[],
     logger: ToolsLogger
-): Promise<string[]> {
+): Promise<void> {
     const messages: string[] = [];
     let xsApp;
-    let manifest: Manifest | undefined;
     try {
         xsApp = extractXSApp(zipEntries);
         logger?.log(`ODATA endpoints: ${JSON.stringify(xsApp)}`);
     } catch (error) {
-        messages.push(error.message);
-        return messages;
+        messages.push(error);
     }
 
+    let manifest: Manifest | undefined;
     try {
         manifest = extractManifest(zipEntries);
         logger?.log(`Extracted manifest: ${JSON.stringify(manifest)}`);
     } catch (error) {
-        messages.push(error.message);
-        return messages;
+        messages.push(error);
     }
 
-    // TODO: Add type for xsApp and matchRoutesAndDatasources
     const dataSources = manifest?.['sap.app']?.dataSources;
-    const routes = (xsApp as any)?.routes;
+    const routes = xsApp?.routes;
     if (dataSources && routes) {
         const serviceKeyEndpoints = ([] as string[]).concat(
             ...credentials.map((item) => (item.endpoints ? Object.keys(item.endpoints) : []))
@@ -149,5 +150,10 @@ export async function validateODataEndpoints(
     } else if (!routes && dataSources) {
         messages.push("Base app xs-app.json doesn't contain data sources routes specified in manifest.json");
     }
-    return messages;
+
+    if (messages.length > 0) {
+        const errorMessages = messages.join('\n');
+        logger?.error(`OData endpoints validation failed:\n${errorMessages}`);
+        throw new Error('OData endpoints validation failed. Please check the logs for more details.');
+    }
 }

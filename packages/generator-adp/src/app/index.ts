@@ -22,7 +22,6 @@ import {
     createCfConfig,
     isCfInstalled,
     isLoggedInCf,
-    AppContentService,
     loadCfConfig
 } from '@sap-ux/adp-tooling';
 import { type CfConfig, type CfServicesAnswers } from '@sap-ux/adp-tooling';
@@ -37,6 +36,8 @@ import {
     // isExtensionInstalled,
     sendTelemetry
 } from '@sap-ux/fiori-generator-shared';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import { getYamlContent } from '@sap-ux/adp-tooling';
 
 import { getFlexLayer } from './layer';
 import { initI18n, t } from '../utils/i18n';
@@ -44,7 +45,7 @@ import { EventName } from '../telemetryEvents';
 import { setHeaderTitle } from '../utils/opts';
 import AdpGeneratorLogger from '../utils/logger';
 import { getPrompts } from './questions/attributes';
-import { getPrompts as getCFServicesPrompts } from './questions/cf-services';
+import { CFServicesPrompter } from './questions/cf-services';
 import { ConfigPrompter } from './questions/configuration';
 import { validateJsonInput } from './questions/helper/validators';
 import { getPackageInfo, installDependencies } from '../utils/deps';
@@ -64,9 +65,7 @@ import {
 } from '../utils/steps';
 import { existsInWorkspace, showWorkspaceFolderWarning, handleWorkspaceFolderChoice } from '../utils/workspace';
 import { getTargetEnvPrompt, getProjectPathPrompt } from './questions/target-env';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import { getTemplatesOverwritePath } from '../utils/templates';
-import { getYamlContent } from '@sap-ux/adp-tooling';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -118,6 +117,10 @@ export default class extends Generator {
      * Instance of the configuration prompter class.
      */
     private prompter: ConfigPrompter;
+    /**
+     * Instance of the CF services prompter class.
+     */
+    private cfPrompter: CFServicesPrompter;
     /**
      * JSON object representing the complete adaptation project configuration,
      * passed as a CLI argument.
@@ -183,10 +186,6 @@ export default class extends Generator {
      * Indicates if CF is installed.
      */
     private cfInstalled: boolean;
-    /**
-     * App content service.
-     */
-    private appContentService: AppContentService;
 
     /**
      * Creates an instance of the generator.
@@ -203,7 +202,6 @@ export default class extends Generator {
         this._setupLogging();
         this.options = opts;
 
-        this.appContentService = new AppContentService(this.logger);
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
         // TODO: Remove this once the PR is ready.
         this.isExtensionInstalled = true; // isExtensionInstalled(opts.vscode, 'SAP.adp-ve-bas-ext');
@@ -240,10 +238,12 @@ export default class extends Generator {
         this.isCfLoggedIn = await isLoggedInCf(this.cfConfig, this.logger);
         this.logger.info(`isCfInstalled: ${this.cfInstalled}`);
 
+        const isInternalUsage = isInternalFeaturesSettingEnabled();
         if (!this.jsonInput) {
             const shouldShowTargetEnv = isAppStudio() && this.cfInstalled && this.isExtensionInstalled;
             this.prompts.splice(0, 0, getWizardPages(shouldShowTargetEnv));
             this.prompter = this._getOrCreatePrompter();
+            this.cfPrompter = new CFServicesPrompter(isInternalUsage, this.isCfLoggedIn, this.logger);
         }
 
         await TelemetryHelper.initTelemetrySettings({
@@ -251,7 +251,7 @@ export default class extends Generator {
                 name: '@sap/generator-fiori:generator-adp',
                 version: this.rootGeneratorVersion()
             },
-            internalFeature: isInternalFeaturesSettingEnabled(),
+            internalFeature: isInternalUsage,
             watchTelemetrySettingStore: false
         });
     }
@@ -521,14 +521,7 @@ export default class extends Generator {
         this.attributeAnswers = await this.prompt(attributesQuestions);
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
-        const cfServicesQuestions = await getCFServicesPrompts({
-            cfConfig: this.cfConfig,
-            isInternalUsage: isInternalFeaturesSettingEnabled(),
-            mtaProjectPath: this.cfProjectDestinationPath,
-            isCfLoggedIn: this.isCfLoggedIn,
-            appContentService: this.appContentService,
-            logger: this.logger
-        });
+        const cfServicesQuestions = await this.cfPrompter.getPrompts(this.cfProjectDestinationPath, this.cfConfig);
         this.cfServicesAnswers = await this.prompt<CfServicesAnswers>(cfServicesQuestions);
         this.logger.info(`CF Services Answers: ${JSON.stringify(this.cfServicesAnswers, null, 2)}`);
     }
@@ -562,13 +555,12 @@ export default class extends Generator {
         const projectPath = this.isMtaYamlFound ? process.cwd() : this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
 
-        const manifest = this.appContentService.getManifestByBaseAppId(this.cfServicesAnswers.baseApp?.appId ?? '');
-
+        const manifest = this.cfPrompter.manifest;
         if (!manifest) {
             throw new Error('Manifest not found for base app.');
         }
 
-        const html5RepoRuntimeGuid = this.appContentService.getHtml5RepoRuntimeGuid();
+        const html5RepoRuntimeGuid = this.cfPrompter.serviceInstanceGuid;
         const cfConfig = createCfConfig({
             attributeAnswers: this.attributeAnswers,
             cfServicesAnswers: this.cfServicesAnswers,
