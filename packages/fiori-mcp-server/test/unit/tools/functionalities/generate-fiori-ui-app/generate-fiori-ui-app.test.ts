@@ -33,7 +33,7 @@ describe('getFunctionalityDetails', () => {
     test('getFunctionalityDetails', async () => {
         const details = await generateFioriUIAppHandlers.getFunctionalityDetails({
             appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APP.id
+            functionalityId: GENERATE_FIORI_UI_APP.functionalityId
         });
         expect(details).toEqual(GENERATE_FIORI_UI_APP);
     });
@@ -88,7 +88,7 @@ describe('executeFunctionality', () => {
         });
         const result = await generateFioriUIAppHandlers.executeFunctionality({
             appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APP.id,
+            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
             parameters: paramTest
         });
         expect(result).toEqual(
@@ -151,7 +151,7 @@ describe('executeFunctionality', () => {
         });
         const result = await generateFioriUIAppHandlers.executeFunctionality({
             appPath: join(testOutputDir, 'app1'),
-            functionalityId: GENERATE_FIORI_UI_APP.id,
+            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
             parameters: paramTest
         });
         expect(result).toEqual(
@@ -174,7 +174,7 @@ describe('executeFunctionality', () => {
         await expect(
             generateFioriUIAppHandlers.executeFunctionality({
                 appPath: '',
-                functionalityId: GENERATE_FIORI_UI_APP.id,
+                functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
                 parameters: {}
             })
         ).rejects.toThrowErrorMatchingInlineSnapshot(`
@@ -198,7 +198,7 @@ describe('executeFunctionality', () => {
         await expect(
             generateFioriUIAppHandlers.executeFunctionality({
                 appPath: 'app1',
-                functionalityId: GENERATE_FIORI_UI_APP.id,
+                functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
                 parameters: {
                     projectPath: 'app1',
                     appGenConfig: 'dummy'

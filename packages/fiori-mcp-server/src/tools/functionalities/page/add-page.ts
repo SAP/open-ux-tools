@@ -22,7 +22,7 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
     const appDetails = await resolveApplication(appPath);
     if (!appDetails?.applicationAccess) {
         return {
-            id: ADD_PAGE,
+            functionalityId: ADD_PAGE,
             name: 'Invalid Project Root or Application Path',
             description: `To add a new page, provide a valid project root or application path. "${appPath}" is not valid`,
             parameters: []

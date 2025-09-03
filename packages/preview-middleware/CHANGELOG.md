@@ -1,5 +1,21 @@
 # @sap-ux/preview-middleware
 
+## 0.23.5
+
+### Patch Changes
+
+-   Updated dependencies [04d2103]
+    -   @sap-ux/feature-toggle@0.3.1
+    -   @sap-ux/adp-tooling@0.15.24
+    -   @sap-ux/system-access@0.6.16
+
+## 0.23.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.15.23
+-   @sap-ux/system-access@0.6.15
+
 ## 0.23.3
 
 ### Patch Changes

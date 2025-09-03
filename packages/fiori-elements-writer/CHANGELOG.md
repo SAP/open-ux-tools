@@ -1,5 +1,19 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.7.0
+
+### Minor Changes
+
+-   4d1d774: Use flpSandbox.html for OPA tests
+
+## 2.6.5
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.29.3
+-   @sap-ux/fiori-generator-shared@0.13.12
+-   @sap-ux/cap-config-writer@0.12.3
+
 ## 2.6.4
 
 ### Patch Changes
