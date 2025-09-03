@@ -27,12 +27,25 @@ export const serveStaticMiddleware = (
         const serveStaticOptions = { ...globalOptions, ...localOptions };
         const srcPath = resolveSrcPath(root, pathConfig.src);
 
+        // Create the serve-static instance for this specific path
+        const fileServer = serveStatic(srcPath, serveStaticOptions);
+
         logger.info(
             `Serving path ${pathConfig.path} locally from ${srcPath} with configuration ${JSON.stringify(
                 serveStaticOptions
             )}`
         );
-        router.use(pathConfig.path, serveStatic(srcPath, serveStaticOptions));
+
+        // Use a custom handler to rewrite the URL before serving the file
+        router.use(pathConfig.path, (req, res, next) => {
+            if (!pathConfig.keepCacheBusterInUrl) {
+                const cacheBusterRegex = /\/~[0-9A-F]{32}~\d+\//;
+                if (cacheBusterRegex.test(req.url)) {
+                    req.url = req.url.replace(cacheBusterRegex, '/');
+                }
+            }
+            fileServer(req, res, next);
+        });
     }
 
     return router;

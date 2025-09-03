@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Test FPM features using a pre-generated Fiori Custom Page app generate building blocks generateBuildingBlock:Table in custom page 1`] = `
 Object {
