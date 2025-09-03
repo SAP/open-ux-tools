@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.6.15
+
+### Patch Changes
+
+-   f46dd02: fix: Deploy Config generator does not allow package with CloudReady and OnPremise project types
+
 ## 1.6.14
 
 ### Patch Changes
