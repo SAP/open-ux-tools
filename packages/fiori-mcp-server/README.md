@@ -26,6 +26,7 @@ Configure your MCP client to start the server with command `fiori-mcp`. Here is 
 {
   "mcpServers": {
     "fiori-mcp": {
+      "type": "stdio",
       "timeout": 600,
       "command": "npx",
       "args": ["--yes","@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
