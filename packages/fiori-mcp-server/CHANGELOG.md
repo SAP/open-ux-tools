@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.0.2
+
+### Patch Changes
+
+-   b2effee: fix CAP preview after generation - do npm install on CAP project and make service path absolute
+
 ## 0.0.1
 
 ### Patch Changes
