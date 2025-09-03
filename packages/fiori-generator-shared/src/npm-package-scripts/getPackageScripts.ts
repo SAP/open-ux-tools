@@ -66,7 +66,14 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
  * @returns {string} A variant management script to run the application in preview mode.
  */
 function getVariantPreviewAppScript(addSearchParams: boolean): string {
-    const previewAppAnchor = '#app-preview';
+    // Use dynamic anchor if not using virtual endpoints
+    // Default to 'app-preview' if no name is provided
+    let appAnchor = '#app-preview';
+    if (addSearchParams && typeof (global as any).projectName === 'string' && (global as any).projectName) {
+        // Sanitize project name for URL fragment
+        const safeName = (global as any).projectName.replace(/[^a-zA-Z0-9_-]/g, '');
+        appAnchor = `#${safeName}-tile`;
+    }
     let urlParam = '';
     if (addSearchParams) {
         const disableCacheParam = 'sap-ui-xx-viewCache=false';
@@ -77,7 +84,7 @@ function getVariantPreviewAppScript(addSearchParams: boolean): string {
     // Please keep the special characters in the below command
     // as removing them may cause the browser to misinterpret the URI components without the necessary escaping and quotes.
     // eslint-disable-next-line no-useless-escape
-    return `fiori run --open \"/preview.html${urlParam}${previewAppAnchor}\"`;
+    return `fiori run --open \"/preview.html${urlParam}${appAnchor}\"`;
 }
 
 /**
