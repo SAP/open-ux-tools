@@ -24,6 +24,13 @@ export interface EnumValue {
     value: unknown;
 }
 
+export interface ReferentialConstraint {
+    sourceTypeName: FullyQualifiedName;
+    sourceProperty: string;
+    targetTypeName: FullyQualifiedName;
+    targetProperty: string;
+}
+
 /**
  * Properties of a metadata element
  * e.g. for reuse in representation of metadata file content
@@ -89,6 +96,10 @@ export interface MetadataElementProperties {
     keys?: ElementName[];
 
     targetKinds: TargetKind[];
+    /**
+     * Only relevant for NavigationProperty kind
+     */
+    referentialConstraints?: ReferentialConstraint[];
 }
 
 /**

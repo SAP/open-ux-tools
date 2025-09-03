@@ -2,7 +2,10 @@ export const enum Edm {
     Action = 'Action',
     ActionImport = 'ActionImport',
     Add = 'Add',
-    Alias = 'Alias', // as attribute name only
+    /**
+     * as attribute name only
+     */
+    Alias = 'Alias',
     And = 'And',
     Annotation = 'Annotation',
     Annotations = 'Annotations',
@@ -49,8 +52,14 @@ export const enum Edm {
     Member = 'Member',
     ModelElementPath = 'ModelElementPath',
     Mul = 'Mul',
-    Name = 'Name', // as attribute name only
-    Namespace = 'Namespace', // as attribute name only
+    /**
+     * as attribute name only
+     */
+    Name = 'Name',
+    /**
+     * as attribute name only
+     */
+    Namespace = 'Namespace',
     NavigationProperty = 'NavigationProperty',
     NavigationPropertyPath = 'NavigationPropertyPath',
     Ne = 'Ne',
@@ -64,19 +73,32 @@ export const enum Edm {
     PropertyPath = 'PropertyPath',
     PropertyValue = 'PropertyValue',
     Or = 'Or',
-    Qualifier = 'Qualifier', // as attribute name only
+    /**
+     * as attribute name only
+     */
+    Qualifier = 'Qualifier',
     Record = 'Record',
     Reference = 'Reference',
     ReferentialConstraint = 'ReferentialConstraint',
+    /**
+     * as attribute name only
+     */
+    ReferencedProperty = 'ReferencedProperty',
     ReturnType = 'ReturnType',
     Schema = 'Schema',
     Singleton = 'Singleton',
     String = 'String',
     Sub = 'Sub',
-    Target = 'Target', // as attribute name only
+    /**
+     * as attribute name only
+     */
+    Target = 'Target',
     Term = 'Term',
     TimeOfDay = 'TimeOfDay',
-    Type = 'Type', // as attribute name only
+    /**
+     * as attribute name only
+     */
+    Type = 'Type',
     TypeDefinition = 'TypeDefinition',
     UrlRef = 'UrlRef'
 }

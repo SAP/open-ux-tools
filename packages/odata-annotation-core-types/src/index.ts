@@ -15,7 +15,8 @@ export {
     EnumValue,
     MetadataElementVisitor,
     MetadataElement,
-    MetadataElementProperties
+    MetadataElementProperties,
+    ReferentialConstraint
 } from './types';
 
 export { Constraints, Facets } from './types/vocabularies';

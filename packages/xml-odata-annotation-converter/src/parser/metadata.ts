@@ -1,6 +1,11 @@
 import type { XMLDocument, XMLElement } from '@xml-tools/ast';
 
-import type { MetadataElementProperties, MetadataElement, TargetKind } from '@sap-ux/odata-annotation-core-types';
+import type {
+    MetadataElementProperties,
+    MetadataElement,
+    TargetKind,
+    ReferentialConstraint
+} from '@sap-ux/odata-annotation-core-types';
 import type { FullyQualifiedTypeName, FullyQualifiedName } from '@sap-ux/odata-annotation-core';
 import { toFullyQualifiedName, parseIdentifier, Edm, Location, Edmx } from '@sap-ux/odata-annotation-core';
 
@@ -63,6 +68,7 @@ interface Context {
     associationMap: AssociationMap;
     namespace: string;
     parentPath: string;
+    parent?: MetadataElement;
     uri: string;
 }
 
@@ -96,7 +102,12 @@ export function convertMetadataDocument(uri: string, document: XMLDocument): Met
  * @param uri Uri of the document
  * @param metadataElements metadata element collector array
  */
-function convertSchema(schema: XMLElement, aliasMap: NamespaceMap, uri: string, metadataElements: MetadataElement[]) {
+function convertSchema(
+    schema: XMLElement,
+    aliasMap: NamespaceMap,
+    uri: string,
+    metadataElements: MetadataElement[]
+): void {
     const namespace = getElementAttributeByName('Namespace', schema)?.value;
     if (!namespace) {
         return;
@@ -119,6 +130,7 @@ function convertSchema(schema: XMLElement, aliasMap: NamespaceMap, uri: string, 
             case Edm.ComplexType:
                 type = EDM_COMPLEX_TYPE;
                 break;
+            default:
         }
         if (name && type) {
             typeMap[currentNamespace + '.' + name] = type;
@@ -174,6 +186,7 @@ function convertMetadataElement(context: Context, element: XMLElement): Metadata
             const childElement = convertMetadataElement(
                 {
                     ...context,
+                    parent: metadataElement,
                     parentPath:
                         context.parentPath !== ''
                             ? `${context.parentPath}/${metadataElement.name}`
@@ -311,6 +324,22 @@ function createMetadataElementNodeForType(
         isEntityType: ENTITY_TYPE_NAMES.has(element.name ?? ''),
         targetKinds: []
     };
+
+    if (element.name === Edm.NavigationProperty) {
+        const referentialConstraints = getElementsWithName(Edm.ReferentialConstraint, element) ?? [];
+        metadataElementProperties.referentialConstraints = referentialConstraints.map(
+            (constraint): ReferentialConstraint => {
+                const property = getAttributeValue(Edm.Property, constraint);
+                const referencedProperty = getAttributeValue(Edm.ReferencedProperty, constraint);
+                return {
+                    sourceProperty: property,
+                    sourceTypeName: context.parent?.name ?? '',
+                    targetProperty: referencedProperty,
+                    targetTypeName: type ?? ''
+                };
+            }
+        );
+    }
 
     if (element.name === Edm.EntityType) {
         const keys = getKeys(element);
