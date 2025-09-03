@@ -660,9 +660,12 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
         return true;
     }
 
-    const systemInfo = systemInfoResult.systemInfo;
-    const isValidPackageType =
-        systemInfo?.adaptationProjectTypes?.length === 1 && systemInfo?.adaptationProjectTypes[0] === packageType;
+    const types = systemInfoResult.systemInfo?.adaptationProjectTypes;
+    if (types && types?.length > 1) {
+        return true;
+    }
+
+    const isValidPackageType = types?.length === 1 && types[0] === packageType;
 
     return isValidPackageType ? true : errorMsg;
 }
