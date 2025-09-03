@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CF Writer App Generate deployment configs - HTML5 App and destination read from ui5.yaml 1`] = `
 Object {
