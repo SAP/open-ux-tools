@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { SimpleDocumentIndexer } from './services/indexer-simple';
+import type { SearchResult } from './services/types/index';
 
 /**
  *
@@ -23,7 +24,7 @@ export class DocSearchService {
      * @param maxResults Maximum number of results to return
      * @returns Promise resolving to search results
      */
-    async performDocSearch(query: string, maxResults: number = 10): Promise<any> {
+    async performDocSearch(query: string, maxResults: number = 10): Promise<SearchResults> {
         // Implement the hybrid search logic here
         const searchSchema = z.object({
             query: z.string(),
@@ -41,7 +42,7 @@ export class DocSearchService {
                         {
                             query: validatedParams.query,
                             searchType: 'hybrid',
-                            results: results.map((r: any) => ({
+                            results: results.map((r: SearchResult) => ({
                                 title: r.document.title,
                                 category: r.document.category,
                                 path: r.document.path,
@@ -66,8 +67,36 @@ export type DocSearchInput = {
     maxResults?: number;
 };
 
+export interface SearchResultItem {
+    title: string;
+    category: string;
+    path: string;
+    score: number;
+    matches: string[];
+    excerpt?: string;
+    uri: string;
+}
+
+export interface SearchResponseData {
+    query: string;
+    searchType: 'hybrid' | 'limited_fallback';
+    results: SearchResultItem[];
+    total: number;
+    error?: string;
+    suggestion?: string;
+}
+
+export interface SearchContent {
+    type: 'text';
+    text: string;
+}
+
+export interface SearchResults {
+    content: SearchContent[];
+}
+
 export type DocSearchOutput = {
-    results: any;
+    results: SearchResults;
 };
 
 /**
