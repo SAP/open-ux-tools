@@ -72,7 +72,12 @@ export async function command(params: ExecuteFunctionalitiesInput): Promise<Exec
     if (!projectPath || typeof projectPath !== 'string') {
         throw new Error('Please provide a valid path to the CAP project folder.');
     }
-
+    if (generatorConfig?.service.servicePath) {
+        // Add leading slash if missing as cds-plugin-ui5 expects absolute service paths
+        generatorConfig.service.servicePath = generatorConfig?.service.servicePath?.startsWith('/')
+            ? generatorConfig?.service.servicePath
+            : `/${generatorConfig?.service.servicePath}`;
+    }
     const appName = (generatorConfig?.project.name as string) ?? 'default';
     const appPath = join(projectPath, 'app', appName);
     const targetDir = projectPath;
@@ -91,7 +96,7 @@ export async function command(params: ExecuteFunctionalitiesInput): Promise<Exec
 
         await FSpromises.mkdir(dirname(outputPath), { recursive: true });
         await FSpromises.writeFile(outputPath, content, { encoding: 'utf8' });
-        const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force --skipInstall`.trim();
+        const command = `npx -y yo@4 @sap/fiori:headless ${configPath} --force`.trim();
 
         const { stdout, stderr } = await exec(command, { cwd: targetDir });
         console.log(stdout);
