@@ -21,7 +21,7 @@ async function getFunctionalityDetails(params: GetFunctionalityDetailsInput): Pr
     const appDetails = await resolveApplication(appPath);
     if (!appDetails?.applicationAccess) {
         return {
-            id: DELETE_PAGE,
+            functionalityId: DELETE_PAGE,
             name: 'Invalid Project Root or Application Path',
             description: `To delete a page, provide a valid project root or application path. "${appPath}" is not valid`,
             parameters: []

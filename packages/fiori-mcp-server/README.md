@@ -1,49 +1,47 @@
 # @sap-ux/fiori-mcp-server
 
-This package includes a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for integration with agentic AI tools.
+This package includes a [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server for integration with AI coding assistants.
 
-The server helps AI models to create or modify SAP Fiori applications like:
+The server helps AI models create or modify SAP Fiori applications based on prompts, such as:
 
-- _Please add a SAP Fiori elements list report app to the CAP project about risk management_
+- _Please add a SAP Fiori elements list report app to my CAP project_
 - _Generate a new CAP project and SAP Fiori app based on my_picture.png_
 - _Add the FCL to the SAP Fiori elements app_
 - _Enable initial load for the fiori app_
 
-For the best end-to-end experience we recommend using the MCP server for SAP Fiori Development together with [@cap-js/mcp-server](https://www.npmjs.com/package/@cap-js/mcp-server) and [@ui5/mcp-server](https://www.npmjs.com/package/@ui5/mcp-server).
+For the best experience we recommend using this server alongside [@cap-js/mcp-server](https://www.npmjs.com/package/@cap-js/mcp-server) and [@ui5/mcp-server](https://www.npmjs.com/package/@ui5/mcp-server).
 
 > ⚠️ Caution
 >
-> This feature is currently in an experimental state.
->
-> Experimental features may be changed at any time for any reason without notice.
->
-> Experimental features are not for productive use. Please consider backing up your data before using it.
+> This is an experimental feature and may change at any time without notice.
+> It is not intended for productive use.
+> Please back up your data before using it.
 
 ## [Usage](#usage)
 
 ### Method 1: npx
 
-Configure your MCP client to start the server with command `fiori-mcp`. Here is a sample config for Cline:
+Configure your MCP client to start the server with command `fiori-mcp`. Here is a sample configuration for Cline:
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "fiori-mcp": {
       "command": "npx",
-      "args": ["--yes","@sap-ux/fiori-mcp-server", "fiori-mcp"]
+      "args": ["--yes","@sap-ux/fiori-mcp-server@latest", "fiori-mcp"]
     }
   }
 }
 ```
 ### Method 2: npm
 
-First, install the required package via `npm`:
+First, install the required package globally using `npm`:
 ```bash
 npm install -g @sap-ux/fiori-mcp-server
 ```
-Then, configure your MCP client to start the server with command `fiori-mcp`. Here is a sample config for Cline:
+Then, configure your MCP client to start the server with command `fiori-mcp`. Here is a sample configuration for Cline:
 ```json
 {
-  "servers": {
+  "mcpServers": {
     "fiori-mcp": {
       "type": "stdio",
       "command": "fiori-mcp"
@@ -81,10 +79,10 @@ Gets the list of supported functionalities to create a new or modify an existing
 
 The main functionalities are:
 
-- Generate a Fiori elements app inside an [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap/) project
+- Generating a Fiori elements app within an [SAP Cloud Application Programming Model (CAP)](https://cap.cloud.sap/) project
 - Adding and deleting pages from an app
 - Adding and modifying controller extensions
-- `manifest.json` properties depending on the app (e.g. adding Flexible Column Layout, enabling initial load)
+- Modifying `manifest.json` properties depending on the app (e.g. adding Flexible Column Layout, enabling initial load)
 
 #### `get-functionality-details` (Step 2 of 3)
 Gets the required parameters and detailed information for a specific functionality to create a new or modify an existing SAP Fiori application.

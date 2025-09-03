@@ -86,5 +86,14 @@ describe('bsp', () => {
             expect(options.pathRewrite).toBeDefined();
             expect(options.auth).toBeDefined();
         });
+
+        test('case insensitive bsp path', async () => {
+            const options: Options = {};
+            await addOptionsForEmbeddedBSP('/my/bSp', options, logger);
+
+            expect(options.router).toBeDefined();
+            expect(options.pathRewrite).toBeDefined();
+            expect(options.auth).toBeDefined();
+        });
     });
 });

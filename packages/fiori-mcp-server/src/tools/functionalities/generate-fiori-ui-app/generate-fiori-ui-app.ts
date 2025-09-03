@@ -8,7 +8,7 @@ import type {
 } from '../../../types';
 
 export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
-    id: GENERATE_FIORI_UI_APP_ID,
+    functionalityId: GENERATE_FIORI_UI_APP_ID,
     name: 'Generate SAP Fiori UI Application',
     description: `Creates (generates) a new SAP Fiori UI application within an existing CAP project.
                 Crucially, you must first construct the appGenConfig JSON argument.
@@ -73,6 +73,16 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
                             required: true
                         },
                         {
+                            id: 'namespace',
+                            type: 'string',
+                            required: false
+                        },
+                        {
+                            id: 'ui5Theme',
+                            type: 'string',
+                            required: false
+                        },
+                        {
                             id: 'targetFolder',
                             type: 'string',
                             description: 'Absolute path to the CAP project folder (projectPath).',
@@ -87,8 +97,8 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
                         {
                             id: 'localUI5Version',
                             type: 'string',
-                            options: ['1.82.2'],
-                            required: true
+                            options: [LATEST_UI5_VERSION],
+                            required: false
                         },
                         {
                             id: 'sapux',
@@ -144,6 +154,12 @@ export const GENERATE_FIORI_UI_APP: GetFunctionalityDetailsOutput = {
                                     ],
                                     description: 'The path to the service cds file',
                                     required: true
+                                },
+                                {
+                                    id: 'capType',
+                                    type: 'string',
+                                    options: ['Node.js', 'Java'],
+                                    required: false
                                 }
                             ],
                             required: true
