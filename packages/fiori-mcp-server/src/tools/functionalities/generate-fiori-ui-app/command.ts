@@ -73,7 +73,6 @@ export async function command(params: ExecuteFunctionalitiesInput): Promise<Exec
         throw new Error('Please provide a valid path to the CAP project folder.');
     }
     if (generatorConfig?.service.servicePath) {
-        // Add leading slash if missing as cds-plugin-ui5 expects absolute service paths
         generatorConfig.service.servicePath = generatorConfig?.service.servicePath?.startsWith('/')
             ? generatorConfig?.service.servicePath
             : `/${generatorConfig?.service.servicePath}`;
