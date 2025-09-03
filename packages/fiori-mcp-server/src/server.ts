@@ -84,7 +84,7 @@ export class FioriFunctionalityServer {
             try {
                 let result;
                 switch (name) {
-                    case 'doc_search':
+                    case 'doc-search':
                         result = await docSearch(args as DocSearchInput);
                         return (result as any).results;
                     case 'list-fiori-apps':

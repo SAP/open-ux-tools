@@ -20,7 +20,7 @@ export { executeFunctionality } from './execute-functionality';
 
 export const tools = [
     {
-        name: 'doc_search',
+        name: 'doc-search',
         title: 'Search in Fiori Documentation',
         description:
             "Searches code snippets of Fiori Elements, Annotations, SAPUI5, Fiori tools documentation for the given query. You MUST use this tool if you're unsure about Fiori APIs. Optionally returns only code blocks.",
