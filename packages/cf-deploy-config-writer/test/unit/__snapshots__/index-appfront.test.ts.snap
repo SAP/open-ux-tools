@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CF Writer App - Application Frontend Generate deployment configs - Add 2nd HTML5 app to app frontend router 1`] = `
 "{
