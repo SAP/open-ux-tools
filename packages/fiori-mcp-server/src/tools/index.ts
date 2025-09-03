@@ -57,7 +57,8 @@ export const tools = [
                     You MUST use a functionalityId from this tool's output to request details to the functionality in 'get-functionality-details' (Step 2).
                     You MUST not use a functionalityId as name of a tool.
                     Do not guess, assume, or use any functionality not present in this list, as it is invalid and will cause the operation to fail.
-                    **Note: If the target application is not known, use the list-fiori-apps tool first to identify it.**`,
+                    **Note: If the target application is not known, use the list-fiori-apps tool first to identify it.**
+                    if the functionality list does not include a functionality to support the current goal, then try using the doc-search tool as a fallback.`,
         inputSchema: listFunctionalityInputSchema,
         outputSchema: listFunctionalityOutputSchema
     },
