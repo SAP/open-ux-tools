@@ -19,7 +19,7 @@ import {
     GENERATE_FIORI_UI_APP,
     generateFioriUIAppHandlers
 } from '../../../../../src/tools/functionalities/generate-fiori-ui-app';
-import { existsSync } from 'fs';
+import { existsSync, promises as fsPromises } from 'fs';
 
 // Mock child_process.exec
 const mockExec = jest.fn();
@@ -216,5 +216,119 @@ describe('executeFunctionality', () => {
                 }
             ]"
         `);
+    });
+
+    test('executeFunctionality - servicePath normalization without leading slash', async () => {
+        let generatedConfigContent: string;
+        mockExec.mockImplementation((_cmd, _opts, callback) => {
+            callback(null, 'mock stdout', 'mock stderr');
+        });
+
+        // Mock fs.writeFile to capture the generated config
+        const originalWriteFile = fsPromises.writeFile;
+        fsPromises.writeFile = jest.fn().mockImplementation(async (path: string, content: string) => {
+            if (path.endsWith('generator-config.json')) {
+                generatedConfigContent = content;
+            }
+            return originalWriteFile(path, content);
+        });
+
+        const paramWithServicePath = {
+            ...paramTest,
+            appGenConfig: {
+                ...paramTest.appGenConfig,
+                service: {
+                    ...paramTest.appGenConfig.service,
+                    servicePath: 'my-service' // No leading slash
+                }
+            }
+        };
+
+        const result = await generateFioriUIAppHandlers.executeFunctionality({
+            appPath: join(testOutputDir, 'app1'),
+            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
+            parameters: paramWithServicePath
+        });
+
+        expect(result.status).toBe('Success');
+        // Verify the generated config has the normalized path
+        const config = JSON.parse(generatedConfigContent!);
+        expect(config.service.servicePath).toBe('/my-service');
+    });
+
+    test('executeFunctionality - servicePath normalization with leading slash', async () => {
+        let generatedConfigContent: string;
+        mockExec.mockImplementation((_cmd, _opts, callback) => {
+            callback(null, 'mock stdout', 'mock stderr');
+        });
+
+        // Mock fs.writeFile to capture the generated config
+        const originalWriteFile = fsPromises.writeFile;
+        fsPromises.writeFile = jest.fn().mockImplementation(async (path: string, content: string) => {
+            if (path.endsWith('generator-config.json')) {
+                generatedConfigContent = content;
+            }
+            return originalWriteFile(path, content);
+        });
+
+        const paramWithServicePath = {
+            ...paramTest,
+            appGenConfig: {
+                ...paramTest.appGenConfig,
+                service: {
+                    ...paramTest.appGenConfig.service,
+                    servicePath: '/my-service' // Already has leading slash
+                }
+            }
+        };
+
+        const result = await generateFioriUIAppHandlers.executeFunctionality({
+            appPath: join(testOutputDir, 'app1'),
+            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
+            parameters: paramWithServicePath
+        });
+
+        expect(result.status).toBe('Success');
+        // Verify the generated config preserves the path with leading slash
+        const config = JSON.parse(generatedConfigContent!);
+        expect(config.service.servicePath).toBe('/my-service');
+    });
+
+    test('executeFunctionality - servicePath normalization with empty string', async () => {
+        let generatedConfigContent: string;
+        mockExec.mockImplementation((_cmd, _opts, callback) => {
+            callback(null, 'mock stdout', 'mock stderr');
+        });
+
+        // Mock fs.writeFile to capture the generated config
+        const originalWriteFile = fsPromises.writeFile;
+        fsPromises.writeFile = jest.fn().mockImplementation(async (path: string, content: string) => {
+            if (path.endsWith('generator-config.json')) {
+                generatedConfigContent = content;
+            }
+            return originalWriteFile(path, content);
+        });
+
+        const paramWithEmptyServicePath = {
+            ...paramTest,
+            appGenConfig: {
+                ...paramTest.appGenConfig,
+                service: {
+                    ...paramTest.appGenConfig.service,
+                    servicePath: '' // Empty string
+                }
+            }
+        };
+
+        const result = await generateFioriUIAppHandlers.executeFunctionality({
+            appPath: join(testOutputDir, 'app1'),
+            functionalityId: GENERATE_FIORI_UI_APP.functionalityId,
+            parameters: paramWithEmptyServicePath
+        });
+
+        expect(result.status).toBe('Success');
+        // Verify the generated config keeps empty string as-is (no normalization for empty strings)
+        const config = JSON.parse(generatedConfigContent!);
+        expect(config.service.servicePath).toBe('');
     });
 });
