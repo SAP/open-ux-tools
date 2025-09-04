@@ -7,17 +7,14 @@ import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
 import {
     type CfAdpWriterConfig,
     type FlexLayer,
-    ApplicationType,
     type CreateCfConfigParams,
     AppRouterType,
-    type DescriptorVariant,
     type Content
 } from '../types';
+import { adjustMtaYaml } from '../cf';
 import { fillDescriptorContent } from './manifest';
 import { getLatestVersion } from '../ui5/version-info';
-import { adjustMtaYaml } from '../cf';
-
-const baseTmplPath = join(__dirname, '../../templates');
+import { getCfVariant, writeCfTemplates } from './project-utils';
 
 /**
  * Create CF configuration from batch objects.
@@ -81,7 +78,7 @@ export async function generateCf(basePath: string, config: CfAdpWriterConfig, fs
 
     const fullConfig = setDefaultsCF(config);
 
-    const { app, cf } = fullConfig;
+    const { app, cf, ui5 } = fullConfig;
     await adjustMtaYaml(
         basePath,
         app.id,
@@ -95,7 +92,10 @@ export async function generateCf(basePath: string, config: CfAdpWriterConfig, fs
         writeI18nModels(basePath, fullConfig.app.i18nModels, fs);
     }
 
-    await writeCfTemplates(basePath, fullConfig, fs);
+    const variant = getCfVariant(config);
+    fillDescriptorContent(variant.content as Content[], app.appType, ui5.version, app.i18nModels);
+
+    await writeCfTemplates(basePath, variant, fullConfig, fs);
 
     return fs;
 }
@@ -124,106 +124,4 @@ function setDefaultsCF(config: CfAdpWriterConfig): CfAdpWriterConfig {
     };
 
     return configWithDefaults;
-}
-
-/**
- * Write CF-specific templates and configuration files.
- *
- * @param {string} basePath - The base path.
- * @param {CfAdpWriterConfig} config - The CF configuration.
- * @param {Editor} fs - The memfs editor instance.
- */
-async function writeCfTemplates(basePath: string, config: CfAdpWriterConfig, fs: Editor): Promise<void> {
-    const { app, baseApp, cf, project, ui5, options } = config;
-
-    const variant: DescriptorVariant = {
-        layer: app.layer,
-        reference: app.id,
-        id: app.namespace,
-        namespace: 'apps/' + app.id + '/appVariants/' + app.namespace + '/',
-        content: [
-            {
-                changeType: 'appdescr_ui5_setMinUI5Version',
-                content: {
-                    minUI5Version: ui5.version
-                }
-            },
-            {
-                changeType: 'appdescr_app_setTitle',
-                content: {},
-                texts: {
-                    i18n: 'i18n/i18n.properties'
-                }
-            }
-        ]
-    };
-
-    fillDescriptorContent(variant.content as Content[], app.appType, ui5.version, app.i18nModels);
-
-    fs.copyTpl(
-        join(baseTmplPath, 'project/webapp/manifest.appdescr_variant'),
-        join(project.folder, 'webapp', 'manifest.appdescr_variant'),
-        { app: variant }
-    );
-
-    fs.copyTpl(join(baseTmplPath, 'cf/package.json'), join(project.folder, 'package.json'), {
-        module: project.name
-    });
-
-    fs.copyTpl(join(baseTmplPath, 'cf/ui5.yaml'), join(project.folder, 'ui5.yaml'), {
-        appHostId: baseApp.appHostId,
-        appName: baseApp.appName,
-        appVersion: baseApp.appVersion,
-        module: project.name,
-        html5RepoRuntime: cf.html5RepoRuntimeGuid,
-        org: cf.org.GUID,
-        space: cf.space.GUID,
-        sapCloudService: cf.businessSolutionName ?? ''
-    });
-
-    const configJson = {
-        componentname: app.namespace,
-        appvariant: project.name,
-        layer: app.layer,
-        isOVPApp: app.appType === ApplicationType.FIORI_ELEMENTS_OVP,
-        isFioriElement: app.appType === ApplicationType.FIORI_ELEMENTS,
-        environment: 'CF',
-        ui5Version: ui5.version,
-        cfApiUrl: cf.url,
-        cfSpace: cf.space.GUID,
-        cfOrganization: cf.org.GUID
-    };
-
-    fs.writeJSON(join(project.folder, '.adp/config.json'), configJson);
-
-    fs.copyTpl(join(baseTmplPath, 'cf/i18n/i18n.properties'), join(project.folder, 'webapp/i18n/i18n.properties'), {
-        module: project.name,
-        moduleTitle: app.title,
-        appVariantId: app.namespace,
-        i18nGuid: config.app.i18nDescription
-    });
-
-    fs.copy(join(baseTmplPath, 'cf/_gitignore'), join(project.folder, '.gitignore'));
-
-    if (options?.addStandaloneApprouter) {
-        fs.copyTpl(
-            join(baseTmplPath, 'cf/approuter/package.json'),
-            join(basePath, `${project.name}-approuter/package.json`),
-            {
-                projectName: project.name
-            }
-        );
-
-        fs.copyTpl(
-            join(baseTmplPath, 'cf/approuter/xs-app.json'),
-            join(basePath, `${project.name}-approuter/xs-app.json`),
-            {}
-        );
-    }
-
-    if (!fs.exists(join(basePath, 'xs-security.json'))) {
-        fs.copyTpl(join(baseTmplPath, 'cf/xs-security.json'), join(basePath, 'xs-security.json'), {
-            projectName: project.name
-        });
-    }
 }
