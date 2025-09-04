@@ -91,29 +91,33 @@ export function hasApprouter(projectName: string, moduleNames: string[]): boolea
  */
 async function filterServices(businessServices: BusinessServiceResource[], logger: ToolsLogger): Promise<string[]> {
     const serviceLabels = businessServices.map((service) => service.label).filter((label) => label);
-    if (serviceLabels.length > 0) {
-        const url = `/v3/service_offerings?names=${serviceLabels.join(',')}`;
-        const json = await requestCfApi<CfAPIResponse<CfServiceOffering>>(url);
-        logger?.log(`Filtering services. Request to: ${url}, result: ${JSON.stringify(json)}`);
 
-        const businessServiceNames = new Set(businessServices.map((service) => service.label));
-        const result: string[] = [];
-        json?.resources?.forEach((resource: CfServiceOffering) => {
-            if (businessServiceNames.has(resource.name)) {
-                const sapService = resource?.['broker_catalog']?.metadata?.sapservice;
-                if (sapService && ['v2', 'v4'].includes(sapService?.odataversion ?? '')) {
-                    result.push(businessServices?.find((service) => resource.name === service.label)?.name ?? '');
-                } else {
-                    logger?.log(`Service '${resource.name}' doesn't support V2/V4 Odata and will be ignored`);
-                }
-            }
-        });
-
-        if (result.length > 0) {
-            return result;
-        }
+    if (serviceLabels.length === 0) {
+        throw new Error(t('error.noBusinessServicesFound'));
     }
-    throw new Error(t('error.noBusinessServicesFound'));
+
+    const url = `/v3/service_offerings?names=${serviceLabels.join(',')}`;
+    const json = await requestCfApi<CfAPIResponse<CfServiceOffering>>(url);
+    logger?.log(`Filtering services. Request to: ${url}, result: ${JSON.stringify(json)}`);
+
+    const businessServiceNames = new Set(businessServices.map((service) => service.label));
+    const result: string[] = [];
+    json?.resources?.forEach((resource: CfServiceOffering) => {
+        if (businessServiceNames.has(resource.name)) {
+            const sapService = resource?.['broker_catalog']?.metadata?.sapservice;
+            if (sapService && ['v2', 'v4'].includes(sapService?.odataversion ?? '')) {
+                result.push(businessServices?.find((service) => resource.name === service.label)?.name ?? '');
+            } else {
+                logger?.log(`Service '${resource.name}' doesn't support V2/V4 Odata and will be ignored`);
+            }
+        }
+    });
+
+    if (result.length === 0) {
+        throw new Error(t('error.noBusinessServicesFound'));
+    }
+
+    return result;
 }
 
 /**

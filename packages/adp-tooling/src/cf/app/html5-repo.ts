@@ -104,36 +104,37 @@ export async function downloadAppContent(
     const appNameVersion = `${appName}-${appVersion}`;
     try {
         const htmlRepoCredentials = await getHtml5RepoCredentials(spaceGuid, logger);
-        if (htmlRepoCredentials?.credentials?.length > 0 && htmlRepoCredentials?.credentials[0]?.uaa) {
-            const token = await getToken(htmlRepoCredentials.credentials[0].uaa);
-            const uri = `${htmlRepoCredentials.credentials[0].uri}/applications/content/${appNameVersion}?pathSuffixFilter=manifest.json,xs-app.json`;
-            const zip = await downloadZip(token, appHostId, uri);
-            let admZip;
-            try {
-                admZip = new AdmZip(zip);
-            } catch (e) {
-                throw new Error(t('error.failedToParseZipContent', { error: e.message }));
-            }
-            if (!admZip?.getEntries?.().length) {
-                throw new Error(t('error.noZipContentParsed'));
-            }
-            const zipEntry = admZip.getEntries().find((zipEntry) => zipEntry.entryName === 'manifest.json');
-            if (!zipEntry) {
-                throw new Error(t('error.failedToFindManifestJsonInHtml5Repo'));
-            }
-
-            try {
-                const manifest = JSON.parse(zipEntry.getData().toString('utf8')) as Manifest;
-                return {
-                    entries: admZip.getEntries(),
-                    serviceInstanceGuid: htmlRepoCredentials.serviceInstance.guid,
-                    manifest: manifest
-                };
-            } catch (error) {
-                throw new Error(t('error.failedToParseManifestJson', { error: error.message }));
-            }
-        } else {
+        if (htmlRepoCredentials?.credentials?.length === 0) {
             throw new Error(t('error.noUaaCredentialsFoundForHtml5Repo'));
+        }
+
+        const token = await getToken(htmlRepoCredentials.credentials[0].uaa);
+        const uri = `${htmlRepoCredentials.credentials[0].uri}/applications/content/${appNameVersion}?pathSuffixFilter=manifest.json,xs-app.json`;
+        const zip = await downloadZip(token, appHostId, uri);
+
+        let admZip;
+        try {
+            admZip = new AdmZip(zip);
+        } catch (e) {
+            throw new Error(t('error.failedToParseZipContent', { error: e.message }));
+        }
+        if (!admZip?.getEntries?.().length) {
+            throw new Error(t('error.noZipContentParsed'));
+        }
+        const zipEntry = admZip.getEntries().find((zipEntry) => zipEntry.entryName === 'manifest.json');
+        if (!zipEntry) {
+            throw new Error(t('error.failedToFindManifestJsonInHtml5Repo'));
+        }
+
+        try {
+            const manifest = JSON.parse(zipEntry.getData().toString('utf8')) as Manifest;
+            return {
+                entries: admZip.getEntries(),
+                serviceInstanceGuid: htmlRepoCredentials.serviceInstance.guid,
+                manifest: manifest
+            };
+        } catch (e) {
+            throw new Error(t('error.failedToParseManifestJson', { error: e.message }));
         }
     } catch (e) {
         throw new Error(t('error.failedToDownloadAppContent', { spaceGuid, appName, appHostId, error: e.message }));
