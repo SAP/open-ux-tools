@@ -542,10 +542,9 @@ export class Application {
     /**
      * Retrieves creation options for a new page.
      *
-     * @param pageType - Optional page type to get specific creation options.
      * @returns A promise that resolves to GetFunctionalityDetailsOutput containing creation options.
      */
-    public async getCreationOptions(pageType?: string): Promise<GetFunctionalityDetailsOutput> {
+    public async getCreationOptions(): Promise<GetFunctionalityDetailsOutput> {
         ADD_PAGE_FUNCTIONALITY.parameters = [];
 
         const pages = this.getPages();
