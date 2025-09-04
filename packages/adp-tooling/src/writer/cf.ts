@@ -92,7 +92,7 @@ export async function generateCf(basePath: string, config: CfAdpWriterConfig, fs
         writeI18nModels(basePath, fullConfig.app.i18nModels, fs);
     }
 
-    const variant = getCfVariant(config);
+    const variant = getCfVariant(fullConfig);
     fillDescriptorContent(variant.content as Content[], app.appType, ui5.version, app.i18nModels);
 
     await writeCfTemplates(basePath, variant, fullConfig, fs);
