@@ -98,7 +98,13 @@
         "failedToGetAuthKey": "Failed to get the OAuth token from HTML5 repository. Reason: {{error}}",
         "failedToDownloadZipFromHtml5Repo": "Failed to download zip from HTML5 repository. Reason: {{error}}",
         "cannotFindHtml5RepoRuntime": "Cannot find HTML5 Repo runtime in current space",
-        "failedToGetCredentialsFromHtml5Repo": "Failed to get credentials from HTML5 repository for space {{spaceGuid}}. Reason: {{error}}"
+        "failedToGetCredentialsFromHtml5Repo": "Failed to get credentials from HTML5 repository for space {{spaceGuid}}. Reason: {{error}}",
+        "failedToParseCFAPIResponse": "Failed to parse CF API response: {{error}}",
+        "failedToRequestCFAPI": "Request to CF API failed. Reason: {{error}}",
+        "xsSecurityJsonCouldNotBeParsed": "xs-security.json could not be parsed.",
+        "failedToCreateServiceInstance": "Failed to create service instance '{{serviceInstanceName}}'. Reason: {{error}}",
+        "failedToGetFDCApps": "Getting FDC apps failed: {{error}}",
+        "failedToConnectToFDCService": "Failed to connect to FDC service: '{{status}}'"
     },
     "choices": {
         "true": "true",

@@ -126,25 +126,18 @@ export async function getFDCApps(appHostIds: string[], cfConfig: CfConfig, logge
         if (!isLoggedIn) {
             await CFLocal.cfGetAvailableOrgs();
         }
+
         const response = await axios.get<FDCResponse>(url, requestArguments.options);
-        logger?.log(
-            `Getting FDC apps. Request url: ${url} response status: ${response.status}, response data: ${JSON.stringify(
-                response.data
-            )}`
-        );
 
         if (response.status === 200) {
+            logger?.log(`Retrieved FDC apps with request url: ${JSON.stringify(response.data)}`);
             return response.data.results;
         } else {
-            throw new Error(
-                `Failed to connect to FDC service. Reason: HTTP status code ${response.status}: ${response.statusText}`
-            );
+            throw new Error(t('error.failedToConnectToFDCService', { status: response.status }));
         }
-    } catch (e) {
-        logger?.error(
-            `Getting FDC apps. Request url: ${url}, response status: ${e?.response?.status}, message: ${e.message || e}`
-        );
-        throw e;
+    } catch (error) {
+        logger?.error(`Getting FDC apps failed. Request url: ${url}. ${error}`);
+        throw new Error(t('error.failedToGetFDCApps', { error: error.message }));
     }
 }
 
@@ -161,12 +154,12 @@ export async function requestCfApi<T = unknown>(url: string): Promise<T> {
             try {
                 return JSON.parse(response.stdout);
             } catch (e) {
-                throw new Error(`Failed to parse response from request CF API: ${e.message}`);
+                throw new Error(t('error.failedToParseCFAPIResponse', { error: e.message }));
             }
         }
         throw new Error(response.stderr);
     } catch (e) {
-        throw new Error(`Request to CF API failed. Reason: ${e.message}`);
+        throw new Error(t('error.failedToRequestCFAPI', { error: e.message }));
     }
 }
 
@@ -215,7 +208,7 @@ export async function createService(
                 xsSecurity = JSON.parse(xsContent) as unknown as { xsappname?: string };
                 xsSecurity.xsappname = xsSecurityProjectName;
             } catch (err) {
-                throw new Error('xs-security.json could not be parsed.');
+                throw new Error(t('error.xsSecurityJsonCouldNotBeParsed'));
             }
 
             commandParameters.push('-c');
@@ -225,9 +218,8 @@ export async function createService(
         await CFToolsCli.Cli.execute(commandParameters);
         logger?.log(`Service instance '${serviceInstanceName}' created successfully`);
     } catch (e) {
-        const errorMessage = `Failed to create service instance '${serviceInstanceName}'. Reason: ${e.message}`;
-        logger?.error(errorMessage);
-        throw new Error(errorMessage);
+        logger?.error(e);
+        throw new Error(t('error.failedToCreateServiceInstance', { serviceInstanceName, error: e.message }));
     }
 }
 
