@@ -259,7 +259,7 @@ describe('add-page', () => {
                     'folder': join('ext', 'view'),
                     'id': 'DummyPage',
                     'minUI5Version': '1.136.0',
-                    'name': 'DummyPage',
+                    'name': 'Dummy',
                     'navigation': {
                         'navEntity': 'Expenses',
                         'navKey': true,
@@ -310,7 +310,9 @@ describe('add-page', () => {
                         pageViewName: '1Dummy'
                     }
                 })
-            ).rejects.toThrow('Invalid parameter "pageViewName". Parameter "pageViewName" should match pattern "${}');
+            ).rejects.toThrow(
+                'Invalid parameter "pageViewName". Parameter "pageViewName" should match pattern "/^[a-zA-Z][a-zA-Z0-9_-]{0,}$/i"'
+            );
         });
     });
 });
