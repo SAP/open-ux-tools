@@ -1,5 +1,18 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.38.2
+
+### Patch Changes
+
+-   b3e95fb: add UI5 version check and warning for custom page building block generation
+
+## 0.38.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.6.17
+-   @sap-ux/project-access@1.30.13
+
 ## 0.38.0
 
 ### Minor Changes

@@ -227,6 +227,10 @@ const ns1 = {
                 'translationAnnotation': 'Description of the Page.'
             }
         }
+    },
+    'pageBuildingBlock': {
+        'minUi5VersionRequirement':
+            'The Page building block feature requires SAPUI5 1.136.0 or higher. The current version is {{ minUI5Version }}, so the Page building block will not be added.'
     }
 };
 export default ns1;

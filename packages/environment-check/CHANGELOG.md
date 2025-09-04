@@ -1,5 +1,30 @@
 # @sap-ux/environment-check
 
+## 0.18.28
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.22.7
+
+## 0.18.27
+
+### Patch Changes
+
+-   Updated dependencies [77c1459]
+    -   @sap-ux/store@1.1.4
+    -   @sap-ux/ui5-config@0.29.3
+
+## 0.18.26
+
+### Patch Changes
+
+-   4cfebaf: Update axios module
+-   Updated dependencies [4cfebaf]
+    -   @sap-ux/axios-extension@1.22.6
+    -   @sap-ux/ui5-config@0.29.3
+    -   @sap-ux/btp-utils@1.1.1
+    -   @sap-ux/project-access@1.30.13
+
 ## 0.18.25
 
 ### Patch Changes
