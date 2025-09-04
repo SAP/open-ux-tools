@@ -1,67 +1,12 @@
-import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
-import { getApplicationType } from '../source';
-import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
-import {
-    type CfAdpWriterConfig,
-    type FlexLayer,
-    type CreateCfConfigParams,
-    AppRouterType,
-    type Content
-} from '../types';
 import { adjustMtaYaml } from '../cf';
+import { getApplicationType } from '../source';
 import { fillDescriptorContent } from './manifest';
-import { getLatestVersion } from '../ui5/version-info';
 import { getCfVariant, writeCfTemplates } from './project-utils';
-
-/**
- * Create CF configuration from batch objects.
- *
- * @param {CreateCfConfigParams} params - The configuration parameters containing batch objects.
- * @returns {CfAdpWriterConfig} The CF configuration.
- */
-export function createCfConfig(params: CreateCfConfigParams): CfAdpWriterConfig {
-    const baseApp = params.cfServicesAnswers.baseApp;
-
-    if (!baseApp) {
-        throw new Error('Base app is required for CF project generation');
-    }
-
-    const ui5Version = getLatestVersion(params.publicVersions);
-
-    return {
-        app: {
-            id: baseApp.appId,
-            title: params.attributeAnswers.title,
-            layer: params.layer,
-            namespace: params.attributeAnswers.namespace,
-            manifest: params.manifest
-        },
-        baseApp,
-        cf: {
-            url: params.cfConfig.url,
-            org: params.cfConfig.org,
-            space: params.cfConfig.space,
-            html5RepoRuntimeGuid: params.html5RepoRuntimeGuid,
-            approuter: params.cfServicesAnswers.approuter ?? AppRouterType.MANAGED,
-            businessService: params.cfServicesAnswers.businessService ?? '',
-            businessSolutionName: params.cfServicesAnswers.businessSolutionName
-        },
-        project: {
-            name: params.attributeAnswers.projectName,
-            path: params.projectPath,
-            folder: join(params.projectPath, params.attributeAnswers.projectName)
-        },
-        ui5: {
-            version: ui5Version
-        },
-        options: {
-            addStandaloneApprouter: params.cfServicesAnswers.approuter === AppRouterType.STANDALONE
-        }
-    };
-}
+import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
+import { type CfAdpWriterConfig, type FlexLayer, type Content } from '../types';
 
 /**
  * Writes the CF adp-project template to the mem-fs-editor instance.

@@ -19,7 +19,7 @@ import {
     getBaseAppInbounds,
     isMtaProject,
     generateCf,
-    createCfConfig,
+    getCfConfig,
     isCfInstalled,
     isLoggedInCf,
     loadCfConfig
@@ -561,7 +561,7 @@ export default class extends Generator {
         }
 
         const html5RepoRuntimeGuid = this.cfPrompter.serviceInstanceGuid;
-        const cfConfig = createCfConfig({
+        const cfConfig = getCfConfig({
             attributeAnswers: this.attributeAnswers,
             cfServicesAnswers: this.cfServicesAnswers,
             cfConfig: this.cfConfig,
