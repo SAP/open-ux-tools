@@ -52,7 +52,7 @@ export interface GetFunctionalityDetailsInput {
  */
 export interface GetFunctionalityDetailsOutput {
     /** ID of the functionality */
-    functionalityId: string;
+    functionalityId: string | string[];
     /** Name of the functionality */
     name: string;
     /** Description of the functionality */

@@ -1,142 +1,108 @@
 {
-  "type": "object",
-  "properties": {
-    "functionalityId": {
-      "anyOf": [
-        {
-          "type": "array",
-          "items": {
-            "type": ["string", "number"]
-          }
-        },
-        {
-          "type": "string"
-        }
-      ],
-      "description": "Identifier to pass as the `functionalityId` parameter when calling `get-functionality-details` or `execute-functionality`"
-    },
-    "name": {
-      "type": "string"
-    },
-    "description": {
-      "type": "string"
-    },
-    "technicalDescription": {
-      "type": "string"
-    },
-    "parameters": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["string", "number", "boolean", "array", "object"]
-          },
-          "required": {
-            "type": "boolean"
-          },
-          "description": {
-            "type": "string"
-          },
-          "defaultValue": {},
-          "options": {
-            "type": "array",
-            "items": {
-              "anyOf": [
+    "type": "object",
+    "properties": {
+        "functionalityId": {
+            "anyOf": [
                 {
-                  "type": "string"
+                    "type": "string"
                 },
                 {
-                  "type": "number"
-                },
-                {
-                  "type": "boolean"
-                },
-                {
-                  "not": {}
-                }
-              ]
-            }
-          },
-          "currentValue": {},
-          "parameters": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "name": {
-                  "type": "string"
-                },
-                "type": {
-                  "type": "string",
-                  "enum": ["string", "number", "boolean", "array", "object"]
-                },
-                "required": {
-                  "type": "boolean"
-                },
-                "description": {
-                  "type": "string"
-                },
-                "defaultValue": {},
-                "options": {
-                  "type": "array",
-                  "items": {
-                    "anyOf": [
-                      {
+                    "type": "array",
+                    "items": {
                         "type": "string"
-                      },
-                      {
-                        "type": "number"
-                      },
-                      {
-                        "type": "boolean"
-                      },
-                      {
-                        "not": {}
-                      }
-                    ]
-                  }
-                },
-                "currentValue": {}
-              },
-              "required": ["id", "type"],
-              "additionalProperties": false
-            }
-          }
+                    }
+                }
+            ],
+            "description": "Identifier to pass as the `functionalityId` parameter when calling `get-functionality-details` or `execute-functionality`"
         },
-        "required": ["id", "type"],
-        "additionalProperties": false
-      }
+        "name": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "technicalDescription": {
+            "type": "string"
+        },
+        "parameters": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["string", "number", "boolean", "array", "object"]
+                    },
+                    "required": {
+                        "type": "boolean"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "defaultValue": {},
+                    "options": {
+                        "type": "array",
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "number"
+                                },
+                                {
+                                    "type": "boolean"
+                                },
+                                {
+                                    "not": {}
+                                }
+                            ]
+                        }
+                    },
+                    "currentValue": {},
+                    "examples": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "pattern": {
+                        "type": "string"
+                    },
+                    "parameters": {
+                        "type": "array",
+                        "items": {}
+                    }
+                },
+                "required": ["id", "type"],
+                "additionalProperties": false
+            }
+        },
+        "prerequisites": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "impact": {
+            "type": "string"
+        },
+        "examples": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "pageName": {
+            "type": "string"
+        }
     },
-    "prerequisites": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "impact": {
-      "type": "string"
-    },
-    "examples": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "pageName": {
-      "type": "string"
-    }
-  },
-  "required": ["id", "name", "description", "parameters"],
-  "additionalProperties": false
+    "required": ["functionalityId", "name", "description", "parameters"],
+    "additionalProperties": false
 }
