@@ -4,12 +4,12 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 import { t } from '../../i18n';
-import type { CfCredentials, XsAppRoute } from '../../types';
+import type { CfCredentials, XsApp, XsAppRoute } from '../../types';
 import { getApplicationType } from '../../source/manifest';
 import { isSupportedAppTypeForAdp } from '../../source/manifest';
 
 /**
- * Normalize the route regex.
+ * Normalize the xs-app route regex.
  *
  * @param {string} value - The value.
  * @returns {RegExp} The normalized route regex.
@@ -27,12 +27,12 @@ function normalizeRouteRegex(value: string): RegExp {
 export async function validateSmartTemplateApplication(manifest: Manifest): Promise<void> {
     const appType = getApplicationType(manifest);
 
-    if (isSupportedAppTypeForAdp(appType)) {
-        if (manifest['sap.ui5'] && manifest['sap.ui5'].flexEnabled === false) {
-            throw new Error(t('error.appDoesNotSupportFlexibility'));
-        }
-    } else {
+    if (!isSupportedAppTypeForAdp(appType)) {
         throw new Error(t('error.adpDoesNotSupportSelectedApplication'));
+    }
+
+    if (manifest['sap.ui5'] && manifest['sap.ui5'].flexEnabled === false) {
+        throw new Error(t('error.appDoesNotSupportFlexibility'));
     }
 }
 
@@ -42,17 +42,14 @@ export async function validateSmartTemplateApplication(manifest: Manifest): Prom
  * @param {AdmZip.IZipEntry[]} zipEntries - The zip entries.
  * @returns {any} The xs-app.json.
  */
-export function extractXSApp(zipEntries: AdmZip.IZipEntry[]): { routes: XsAppRoute[] } | undefined {
-    let xsApp;
-    zipEntries.forEach((item) => {
-        if (item.entryName.endsWith('xs-app.json')) {
-            try {
-                xsApp = JSON.parse(item.getData().toString('utf8'));
-            } catch (e) {
-                throw new Error(t('error.failedToParseXsAppJson', { error: e.message }));
-            }
-        }
-    });
+export function extractXSApp(zipEntries: AdmZip.IZipEntry[]): XsApp | undefined {
+    let xsApp: XsApp | undefined;
+    const xsAppEntry = zipEntries.find((item) => item.entryName.endsWith('xs-app.json'));
+    try {
+        xsApp = JSON.parse(xsAppEntry?.getData().toString('utf8') ?? '') as XsApp;
+    } catch (e) {
+        throw new Error(t('error.failedToParseXsAppJson', { error: e.message }));
+    }
     return xsApp;
 }
 
@@ -96,15 +93,12 @@ function matchRoutesAndDatasources(
  */
 function extractManifest(zipEntries: AdmZip.IZipEntry[]): Manifest | undefined {
     let manifest: Manifest | undefined;
-    zipEntries.forEach((item) => {
-        if (item.entryName.endsWith('manifest.json')) {
-            try {
-                manifest = JSON.parse(item.getData().toString('utf8')) as Manifest;
-            } catch (e) {
-                throw new Error(t('error.failedToParseManifestJson', { error: e.message }));
-            }
-        }
-    });
+    const manifestEntry = zipEntries.find((item) => item.entryName.endsWith('manifest.json'));
+    try {
+        manifest = JSON.parse(manifestEntry?.getData().toString('utf8') ?? '') as Manifest;
+    } catch (e) {
+        throw new Error(t('error.failedToParseManifestJson', { error: e.message }));
+    }
     return manifest;
 }
 

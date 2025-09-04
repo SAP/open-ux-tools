@@ -94,7 +94,11 @@
         "failedToFindManifestJsonInHtml5Repo": "Failed to find manifest.json in the application content from HTML5 repository.",
         "noUaaCredentialsFoundForHtml5Repo": "No UAA credentials found for HTML5 repository.",
         "failedToDownloadAppContent": "Failed to download the application content from HTML5 repository for space {{spaceGuid}} and app {{appName}} ({{appHostId}}). Reason: {{error}}",
-        "tooManyAppHostIds": "Too many appHostIds provided. Maximum allowed is 100, but {{appHostIdsLength}} were found."
+        "tooManyAppHostIds": "Too many appHostIds provided. Maximum allowed is 100, but {{appHostIdsLength}} were found.",
+        "failedToGetAuthKey": "Failed to get the OAuth token from HTML5 repository. Reason: {{error}}",
+        "failedToDownloadZipFromHtml5Repo": "Failed to download zip from HTML5 repository. Reason: {{error}}",
+        "cannotFindHtml5RepoRuntimeInCurrentSpace": "Cannot find HTML5 Repo runtime in current space",
+        "failedToGetCredentialsFromHtml5Repo": "Failed to get credentials from HTML5 repository for space {{spaceGuid}}. Reason: {{error}}"
     },
     "choices": {
         "true": "true",

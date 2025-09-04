@@ -814,6 +814,12 @@ export interface XsAppRoute {
     [key: string]: unknown;
 }
 
+export interface XsApp {
+    welcomeFile?: string;
+    authenticationMethod?: string;
+    routes: XsAppRoute[];
+}
+
 export interface Uaa {
     clientid: string;
     clientsecret: string;

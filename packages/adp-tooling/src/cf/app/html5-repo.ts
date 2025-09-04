@@ -29,17 +29,17 @@ export async function getToken(uaa: Uaa): Promise<string> {
         const response = await axios.get(uri, options);
         return response.data['access_token'];
     } catch (e) {
-        throw new Error(`Failed to get the OAuth token from HTML5 repository. Reason: ${e.message}`);
+        throw new Error(t('error.failedToGetAuthKey', { error: e.message }));
     }
 }
 
 /**
  * Download zip from HTML5 repository.
  *
- * @param {string} token html5 reposiotry token
- * @param {string} appHostId appHostId where content is stored
- * @param {string} uri url with parameters
- * @returns {Promise<Buffer>} file buffer content
+ * @param {string} token - HTML5 reposiotry token.
+ * @param {string} appHostId - appHostId where content is stored.
+ * @param {string} uri - URL with parameters.
+ * @returns {Promise<Buffer>} File buffer content.
  */
 export async function downloadZip(token: string, appHostId: string, uri: string): Promise<Buffer> {
     try {
@@ -53,7 +53,7 @@ export async function downloadZip(token: string, appHostId: string, uri: string)
         });
         return response.data;
     } catch (e) {
-        throw new Error(`Failed to download zip from HTML5 repository. Reason: ${e.message}`);
+        throw new Error(t('error.failedToDownloadZipFromHtml5Repo', { error: e.message }));
     }
 }
 
@@ -78,12 +78,12 @@ export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLo
             await createService(spaceGuid, 'app-runtime', HTML5_APPS_REPO_RUNTIME, logger, ['html5-apps-repo-rt']);
             serviceKeys = await getServiceInstanceKeys({ names: [HTML5_APPS_REPO_RUNTIME] }, logger);
             if (!serviceKeys?.credentials?.length) {
-                throw new Error('Cannot find HTML5 Repo runtime in current space');
+                throw new Error(t('error.cannotFindHtml5RepoRuntimeInCurrentSpace'));
             }
         }
         return serviceKeys;
     } catch (e) {
-        throw new Error(`Failed to get credentials from HTML5 repository for space ${spaceGuid}. Reason: ${e.message}`);
+        throw new Error(t('error.failedToGetCredentialsFromHtml5Repo', { error: e.message }));
     }
 }
 

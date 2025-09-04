@@ -11,14 +11,13 @@ import type { CfConfig, Organization } from '../../types';
  * @returns {Promise<boolean>} True if CF is installed, false otherwise.
  */
 export async function isCfInstalled(): Promise<boolean> {
-    let isInstalled = true;
     try {
         await checkForCf();
     } catch (error) {
-        isInstalled = false;
+        return false;
     }
 
-    return isInstalled;
+    return true;
 }
 
 /**
