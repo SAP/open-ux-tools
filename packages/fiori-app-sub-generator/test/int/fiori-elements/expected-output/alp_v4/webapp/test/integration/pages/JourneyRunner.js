@@ -7,7 +7,7 @@ sap.ui.define([
     'use strict';
 
     var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('testNameSpace/alpv4') + '/index.html',
+        launchUrl: sap.ui.require.toUrl('testNameSpace/alpv4') + '/test/flpSandbox.html#testNameSpacealpv4-tile',
         pages: {
 			onTheSalesOrderItemList: SalesOrderItemList,
 			onTheSalesOrderItemObjectPage: SalesOrderItemObjectPage,

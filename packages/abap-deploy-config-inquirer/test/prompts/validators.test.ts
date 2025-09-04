@@ -565,6 +565,20 @@ describe('Test validators', () => {
             expect(result).toBe(true);
         });
 
+        it('should return true when there are more than one project type for a package', async () => {
+            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
+                apiExist: true,
+                systemInfo: {
+                    adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY, AdaptationProjectType.ON_PREMISE],
+                    activeLanguages: []
+                }
+            });
+            const result = await validatePackage('ZPACKAGE', previousAnswers, {
+                additionalValidation: { shouldValidatePackageType: true }
+            });
+            expect(result).toBe(true);
+        });
+
         it('should return true when package base validation passes and there are no additional validation', async () => {
             const result = await validatePackage('ZPACKAGE', previousAnswers);
             expect(result).toBe(true);
