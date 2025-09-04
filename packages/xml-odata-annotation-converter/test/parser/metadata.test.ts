@@ -110,6 +110,10 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
+                        "facets": Object {
+                          "isNullable": false,
+                          "maxLength": 10,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -137,6 +141,10 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
+                        "facets": Object {
+                          "isNullable": false,
+                          "maxLength": 4,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -164,6 +172,10 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
+                        "facets": Object {
+                          "isNullable": false,
+                          "maxLength": 40,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -191,6 +203,9 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.Int32",
+                        "facets": Object {
+                          "isNullable": false,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -218,6 +233,10 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
+                        "facets": Object {
+                          "isNullable": false,
+                          "maxLength": 4,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -326,6 +345,10 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
+                        "facets": Object {
+                          "isNullable": false,
+                          "maxLength": 10,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -353,6 +376,10 @@ describe('parse', () => {
                       Object {
                         "content": Array [],
                         "edmPrimitiveType": "Edm.String",
+                        "facets": Object {
+                          "isNullable": false,
+                          "maxLength": 4,
+                        },
                         "isAnnotatable": true,
                         "isCollectionValued": false,
                         "isComplexType": false,
@@ -580,6 +607,9 @@ describe('parse', () => {
                 Object {
                   "content": Array [],
                   "edmPrimitiveType": "Z2SEPMRA_C_PD_PRODUCT_CDS.TravelsType",
+                  "facets": Object {
+                    "isNullable": false,
+                  },
                   "isAnnotatable": true,
                   "isCollectionValued": false,
                   "isComplexType": false,

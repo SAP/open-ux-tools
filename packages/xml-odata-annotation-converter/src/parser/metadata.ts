@@ -4,7 +4,8 @@ import type {
     MetadataElementProperties,
     MetadataElement,
     TargetKind,
-    ReferentialConstraint
+    ReferentialConstraint,
+    Facets
 } from '@sap-ux/odata-annotation-core-types';
 import type { FullyQualifiedTypeName, FullyQualifiedName } from '@sap-ux/odata-annotation-core';
 import { toFullyQualifiedName, parseIdentifier, Edm, Location, Edmx } from '@sap-ux/odata-annotation-core';
@@ -324,6 +325,10 @@ function createMetadataElementNodeForType(
         isEntityType: ENTITY_TYPE_NAMES.has(element.name ?? ''),
         targetKinds: []
     };
+    const facets = getMetadataElementFacets(element);
+    if (facets) {
+        metadataElementProperties.facets = facets;
+    }
 
     if (element.name === Edm.NavigationProperty) {
         const referentialConstraints = getElementsWithName(Edm.ReferentialConstraint, element) ?? [];
@@ -391,6 +396,114 @@ function createMetadataElementNodeForType(
         content: functionImportV2Nodes,
         ...metadataElementProperties
     };
+}
+
+/**
+ * Converts string value to number.
+ *
+ * @param value Input
+ * @returns Parsed number or undefined otherwise
+ */
+function stringToBoolean(value: string | undefined): boolean | undefined {
+    if (value === 'true') {
+        return true;
+    } else if (value === 'false') {
+        return false;
+    }
+    return undefined;
+}
+
+/**
+ * Converts string value to number.
+ *
+ * @param value Input
+ * @returns Parsed number or undefined otherwise
+ */
+function stringToNumber(value: string | undefined): number | undefined {
+    if (value) {
+        const num = Number(value);
+        if (Number.isNaN(num)) {
+            return undefined;
+        }
+        return num;
+    }
+    return undefined;
+}
+const VARIABLE_KEY_WORD = 'variable';
+const FLOATING_KEY_WORD = 'floating';
+
+/**
+ * Converts string value to number or allowed key words.
+ *
+ * @param value Input
+ * @param allowedKeyWords Allowed key words
+ * @returns Parsed number, key word or undefined otherwise
+ */
+function stringToNumberWithKeywords(value: string | undefined, allowedKeyWords: string[]): number | string | undefined {
+    if (value) {
+        if (allowedKeyWords.includes(value)) {
+            return value;
+        }
+        const num = Number(value);
+        if (Number.isNaN(num)) {
+            return undefined;
+        }
+        return num;
+    }
+    return undefined;
+}
+
+/**
+ * Collects constraints for metadata element.
+ *
+ * @param element XML element
+ * @returns Facets if any constraints are found, otherwise undefined
+ */
+function getMetadataElementFacets(element: XMLElement): Facets | undefined {
+    const facets: Facets = {};
+
+    const isNullable = stringToBoolean(getAttributeValue(Edm.Nullable, element));
+    if (isNullable !== undefined) {
+        facets.isNullable = isNullable;
+    }
+
+    const maxLength = stringToNumber(getAttributeValue(Edm.MaxLength, element));
+    if (maxLength !== undefined) {
+        facets.maxLength = maxLength;
+    }
+
+    const precision = stringToNumber(getAttributeValue(Edm.Precision, element));
+    if (precision !== undefined) {
+        facets.precision = precision;
+    }
+
+    const scale = stringToNumberWithKeywords(getAttributeValue(Edm.Scale, element), [
+        VARIABLE_KEY_WORD,
+        FLOATING_KEY_WORD
+    ]);
+    if (scale !== undefined) {
+        facets.scale = scale;
+    }
+    const supportsUnicode = stringToBoolean(getAttributeValue(Edm.Unicode, element));
+    if (supportsUnicode !== undefined) {
+        facets.supportsUnicode = supportsUnicode;
+    }
+
+    const srid = stringToNumberWithKeywords(getAttributeValue(Edm.SRID, element), [VARIABLE_KEY_WORD]);
+    if (srid !== undefined) {
+        facets.srid = srid;
+    }
+
+    const defaultValue = getAttributeValue(Edm.DefaultValue, element);
+    if (defaultValue) {
+        facets.defaultValue = defaultValue;
+    }
+
+    if (Object.keys(facets).length === 0) {
+        return undefined;
+    }
+
+    return facets;
 }
 
 /**

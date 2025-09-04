@@ -1,4 +1,5 @@
 import type { FullyQualifiedName, Location, TargetKind } from '..';
+import type { Facets } from './common';
 
 export type ODataVersionType = '2.0' | '4.0';
 
@@ -94,6 +95,10 @@ export interface MetadataElementProperties {
      * For entities (CDS), entity types (EDMX)
      */
     keys?: ElementName[];
+    /**
+     * Additional constraint definitions
+     */
+    facets?: Facets;
 
     targetKinds: TargetKind[];
     /**

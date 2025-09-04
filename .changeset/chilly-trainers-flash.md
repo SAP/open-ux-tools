@@ -4,4 +4,5 @@
 '@sap-ux/fiori-annotation-api': minor
 ---
 
-fix: Add missing referential constraint data to navigation property metadata elements.
+feat: Add missing referential constraint data to navigation property metadata elements.
+feat: Add type facets with constraints to metadata elements.

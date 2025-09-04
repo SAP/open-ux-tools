@@ -92,6 +92,10 @@ Array [
       Object {
         "content": Array [],
         "edmPrimitiveType": "Edm.String",
+        "facets": Object {
+          "isNullable": false,
+          "maxLength": 10,
+        },
         "isAnnotatable": true,
         "isCollectionValued": false,
         "isComplexType": false,
@@ -119,6 +123,10 @@ Array [
       Object {
         "content": Array [],
         "edmPrimitiveType": "Edm.String",
+        "facets": Object {
+          "isNullable": false,
+          "maxLength": 4,
+        },
         "isAnnotatable": true,
         "isCollectionValued": false,
         "isComplexType": false,
@@ -458,6 +466,9 @@ Array [
           Object {
             "content": Array [],
             "edmPrimitiveType": "Edm.String",
+            "facets": Object {
+              "maxLength": 10,
+            },
             "isAnnotatable": true,
             "isCollectionValued": false,
             "isComplexType": false,
@@ -597,6 +608,9 @@ Array [
       Object {
         "content": Array [],
         "edmPrimitiveType": "Edm.String",
+        "facets": Object {
+          "isNullable": false,
+        },
         "isAnnotatable": true,
         "isCollectionValued": false,
         "isComplexType": false,
@@ -624,6 +638,9 @@ Array [
       Object {
         "content": Array [],
         "edmPrimitiveType": "Edm.Decimal",
+        "facets": Object {
+          "isNullable": false,
+        },
         "isAnnotatable": true,
         "isCollectionValued": false,
         "isComplexType": false,
@@ -651,6 +668,9 @@ Array [
       Object {
         "content": Array [],
         "edmPrimitiveType": "Edm.String",
+        "facets": Object {
+          "isNullable": false,
+        },
         "isAnnotatable": true,
         "isCollectionValued": false,
         "isComplexType": false,
@@ -705,6 +725,10 @@ Array [
       Object {
         "content": Array [],
         "edmPrimitiveType": "Edm.String",
+        "facets": Object {
+          "isNullable": false,
+          "maxLength": 10,
+        },
         "isAnnotatable": true,
         "isCollectionValued": false,
         "isComplexType": false,
@@ -732,6 +756,10 @@ Array [
       Object {
         "content": Array [],
         "edmPrimitiveType": "Edm.String",
+        "facets": Object {
+          "isNullable": false,
+          "maxLength": 4,
+        },
         "isAnnotatable": true,
         "isCollectionValued": false,
         "isComplexType": false,
@@ -759,6 +787,10 @@ Array [
       Object {
         "content": Array [],
         "edmPrimitiveType": "Edm.String",
+        "facets": Object {
+          "isNullable": false,
+          "maxLength": 40,
+        },
         "isAnnotatable": true,
         "isCollectionValued": false,
         "isComplexType": false,
