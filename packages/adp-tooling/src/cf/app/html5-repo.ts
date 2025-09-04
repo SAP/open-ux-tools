@@ -78,7 +78,7 @@ export async function getHtml5RepoCredentials(spaceGuid: string, logger: ToolsLo
             await createService(spaceGuid, 'app-runtime', HTML5_APPS_REPO_RUNTIME, logger, ['html5-apps-repo-rt']);
             serviceKeys = await getServiceInstanceKeys({ names: [HTML5_APPS_REPO_RUNTIME] }, logger);
             if (!serviceKeys?.credentials?.length) {
-                throw new Error(t('error.cannotFindHtml5RepoRuntimeInCurrentSpace'));
+                throw new Error(t('error.cannotFindHtml5RepoRuntime'));
             }
         }
         return serviceKeys;
@@ -112,10 +112,10 @@ export async function downloadAppContent(
             try {
                 admZip = new AdmZip(zip);
             } catch (e) {
-                throw new Error(t('error.failedToParseZipContentFromHtml5Repo', { error: e.message }));
+                throw new Error(t('error.failedToParseZipContent', { error: e.message }));
             }
             if (!admZip?.getEntries?.().length) {
-                throw new Error(t('error.noZipContentParsedFromHtml5Repo'));
+                throw new Error(t('error.noZipContentParsed'));
             }
             const zipEntry = admZip.getEntries().find((zipEntry) => zipEntry.entryName === 'manifest.json');
             if (!zipEntry) {

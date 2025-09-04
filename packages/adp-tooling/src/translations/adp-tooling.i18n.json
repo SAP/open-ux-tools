@@ -89,15 +89,15 @@
         "failedToGetOrCreateServiceKeys": "Failed to get or create service keys for instance name {{serviceInstanceName}}. Reason: {{error}}",
         "mtaProjectPathMissing": "MTA project path is missing. Please provide the path to a valid MTA project.",
         "noBusinessServicesFound": "No business services found, please specify the business services in resource section of mta.yaml: - name: <arbitrary name of resource, e.g. my_service> type: org.cloudfoundry.<managed|existing>-service parameters: service: <business service name, e.g. my-service-name> service-name: <business service instance name, e.g. my_service_instance_name> service-plan: <plan name, e.g. standard>",
-        "failedToParseZipContentFromHtml5Repo": "Failed to parse zip content from HTML5 repository. Reason: {{error}}",
-        "noZipContentParsedFromHtml5Repo": "No zip content was parsed from HTML5 repository.",
+        "failedToParseZipContent": "Failed to parse zip content from HTML5 repository. Reason: {{error}}",
+        "noZipContentParsed": "No zip content was parsed from HTML5 repository.",
         "failedToFindManifestJsonInHtml5Repo": "Failed to find manifest.json in the application content from HTML5 repository.",
         "noUaaCredentialsFoundForHtml5Repo": "No UAA credentials found for HTML5 repository.",
         "failedToDownloadAppContent": "Failed to download the application content from HTML5 repository for space {{spaceGuid}} and app {{appName}} ({{appHostId}}). Reason: {{error}}",
         "tooManyAppHostIds": "Too many appHostIds provided. Maximum allowed is 100, but {{appHostIdsLength}} were found.",
         "failedToGetAuthKey": "Failed to get the OAuth token from HTML5 repository. Reason: {{error}}",
         "failedToDownloadZipFromHtml5Repo": "Failed to download zip from HTML5 repository. Reason: {{error}}",
-        "cannotFindHtml5RepoRuntimeInCurrentSpace": "Cannot find HTML5 Repo runtime in current space",
+        "cannotFindHtml5RepoRuntime": "Cannot find HTML5 Repo runtime in current space",
         "failedToGetCredentialsFromHtml5Repo": "Failed to get credentials from HTML5 repository for space {{spaceGuid}}. Reason: {{error}}"
     },
     "choices": {
