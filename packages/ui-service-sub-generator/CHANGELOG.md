@@ -1,5 +1,17 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.1.74
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.2.12
+
+## 0.1.73
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.2.11
+
 ## 0.1.72
 
 ### Patch Changes
