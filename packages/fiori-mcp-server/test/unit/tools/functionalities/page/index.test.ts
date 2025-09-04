@@ -234,12 +234,12 @@ describe('add-page', () => {
                     parentPage: 'TravelsObjectPage',
                     pageNavigation: 'Expenses',
                     pageType: 'CustomPage',
-                    viewName: 'Dummy'
+                    pageViewName: 'Dummy'
                 }
             });
             expect(result.appPath).toBe(appPath);
             expect(result.message).toEqual(
-                `Page with id 'CustomViewPage' of type 'CustomPage' was created successfully in application '${join(
+                `Page with id 'DummyPage' of type 'CustomPage' was created successfully in application '${join(
                     'app',
                     'managetravels'
                 )}'`
@@ -270,7 +270,7 @@ describe('add-page', () => {
             });
         });
 
-        test('case 6: add custom page without "viewName"', async () => {
+        test('case 7: add custom page without "pageViewName"', async () => {
             const fileContent = readFileSync(join(__dirname, 'test-data', 'two-pages-spec-app.json'), 'utf8');
             importProjectMock.mockResolvedValue([
                 {

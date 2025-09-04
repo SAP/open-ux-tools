@@ -52,7 +52,7 @@ async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promis
     if (!pageType) {
         throw new Error('Missing or invalid parameter "pageType"');
     }
-    if (!viewName) {
+    if (pageType === PageTypeV4.CustomPage && !viewName) {
         throw new Error('Missing or invalid parameter "viewName"');
     }
     const appDetails = await resolveApplication(appPath);
