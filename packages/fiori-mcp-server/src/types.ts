@@ -151,7 +151,7 @@ export interface Parameter {
     /** Default value of the parameter */
     defaultValue?: unknown;
     /** Possible options for the parameter */
-    options?: Array<string | number | boolean | undefined>;
+    options?: Array<string | number | boolean | undefined | null>;
     /** Current value of the parameter */
     currentValue?: unknown;
     /** Examples for the parameter */
