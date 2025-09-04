@@ -1,0 +1,46 @@
+# Object Page V2a Test Documentation
+
+## Table of Contents
+
+- [1. Enable Variant Management in Tables](#1-enable-variant-management-in-tables)
+
+<a id="1-enable-variant-management-in-tables"></a>
+## 1. Enable Variant Management in Tables
+
+### Steps
+
+1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
+2. Check that UIAdaptation mode is enabled
+3. Click on button `Navigation`
+4. Click on button `UI Adaptation`
+5. Click on button `Enable Variant Management in Tables`
+6. Click on button `Save and Reload`
+7. Check `Save` button is disabled
+8. Verify changes:
+
+## Change(s)
+
+```json
+{
+  "fileType": "change",
+  "changeType": "appdescr_ui_generic_app_changePageConfiguration",
+  "content": {
+    "parentPage": {
+      "component": "sap.suite.ui.generic.template.ObjectPage",
+      "entitySet": "RootEntity"
+    },
+    "entityPropertyChange": {
+      "propertyPath": "component/settings/sections/toFirstAssociatedEntity::com.sap.vocabularies.UI.v1.LineItem::tableSection/tableSettings",
+      "operation": "UPSERT",
+      "propertyValue": {
+        "variantManagement": true
+      }
+    }
+  }
+}
+```
+
+
+
+---
+

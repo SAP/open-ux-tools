@@ -1,8 +1,9 @@
 {
   "extends": "../../../tsconfig.json",
   "include": [
-    "src",
-    "src/**/*.json"
+    "src/**/*.ts",
+    "src/**/*.json", 
+    "custom-reporter.ts"  
   ],
   "compilerOptions": {
     "rootDir": "src",

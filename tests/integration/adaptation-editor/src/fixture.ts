@@ -159,7 +159,12 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
         await page.goto(
             `http://localhost:${projectServer}${ADAPTATION_EDITOR_PATH}?fiori-tools-rta-mode=true#app-preview`
         );
-        await expect(page.getByRole('button', { name: 'UI Adaptation' })).toBeEnabled({ timeout: 15_000 });
+        await expect(
+            page.getByRole('button', { name: 'UI Adaptation' }),
+            'Check that UIAdaptation mode is enabled'
+        ).toBeEnabled({
+            timeout: 15_000
+        });
         // Each test will get a "page" that already has the person name.
         await use(page);
 

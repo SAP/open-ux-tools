@@ -1,0 +1,363 @@
+# List Report V2 Test Documentation
+
+## Table of Contents
+
+- [1. Enable/Disable clear filter bar button](#1-enabledisable-clear-filter-bar-button)
+- [2. Add controller to page](#2-add-controller-to-page)
+- [3. Change table columns](#3-change-table-columns)
+- [4. Add Custom Table Action](#4-add-custom-table-action)
+- [5. Add Custom Table Column](#5-add-custom-table-column)
+- [6. Enable/Disable Semantic Date Range in Filter Bar](#6-enabledisable-semantic-date-range-in-filter-bar)
+- [7. Enable Variant Management in Tables and Charts](#7-enable-variant-management-in-tables-and-charts)
+- [8. Change table actions](#8-change-table-actions)
+- [Add New Annotation File](#add-new-annotation-file)
+
+<a id="1-enabledisable-clear-filter-bar-button"></a>
+## 1. Enable/Disable clear filter bar button
+
+### Steps
+
+1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
+2. Check that UIAdaptation mode is enabled
+3. Check `Clear` Button is hidden
+4. Click on button `Enable "Clear" Button in Filter Bar`
+5. Check `Clear` Button is visible
+6. Click on button `Save`
+7. Check `Save` button is disabled
+8. Verify changes:
+
+## Change(s)
+
+```json
+{
+  "fileType": "change",
+  "changeType": "propertyChange",
+  "content": {
+    "property": "showClearOnFB",
+    "newValue": true
+  }
+}
+```
+
+
+9. Click on button `Disable "Clear" Button in Filter Bar`
+10. Check `Clear` Button is hidden
+11. Click on button `Save`
+12. Check `Save` button is disabled
+13. Verify changes:
+
+## Change(s)
+
+```json
+{
+  "fileType": "change",
+  "changeType": "propertyChange",
+  "content": {
+    "property": "showClearOnFB",
+    "newValue": false
+  }
+}
+```
+
+
+
+---
+
+<a id="2-add-controller-to-page"></a>
+## 2. Add controller to page
+
+### Steps
+
+1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
+2. Check that UIAdaptation mode is enabled
+3. Click on button `Add Controller to Page`
+4. Fill `Controller Name` field with `TestController` in dialog `Extend With Controller`
+5. Click on `Create` button in dialog `Extend With Controller`
+6. Click on button `Save`
+7. Verify changes:
+
+## Coding
+
+### TestController.js
+```js
+/ControllerExtension\.extend\("adp\.fiori\.elements\.v2\.TestController"/
+```
+
+## Change(s)
+
+```json
+{
+  "fileType": "change",
+  "changeType": "codeExt",
+  "content": {
+    "codeRef": "coding/TestController.js"
+  }
+}
+```
+
+
+8. Click on link `Reload`
+9. Click on button `Show Page Controller`
+10. Check filename 'adp.fiori.elements.v2/changes/coding/TestController.js' is visible
+11. Check `Open in VS Code` button is visible
+
+---
+
+<a id="3-change-table-columns"></a>
+## 3. Change table columns
+
+### Steps
+
+1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
+2. Check that UIAdaptation mode is enabled
+3. Click on button `Change Table Columns`
+4. Check `String Property, Boolean Property, Currency` exist in the `View Settings` dialog
+
+---
+
+<a id="4-add-custom-table-action"></a>
+## 4. Add Custom Table Action
+
+### Steps
+
+1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
+2. Check that UIAdaptation mode is enabled
+3. Click on button `Add Custom Table Action`
+4. Fill `Fragment Name` field with `table-action` in dialog `Add Custom Table Action`
+5. Click on `Create` button in dialog `Add Custom Table Action`
+6. Click on button `Save and Reload`
+7. Check `Save` button is disabled
+8. Verify changes:
+
+## Fragments
+
+### table-action.fragment.xml
+```xml
+<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!--  add your xml here -->
+    <Button text="New Button"  id="btn-[a-z0-9]+"></Button>
+</core:FragmentDefinition>
+
+```
+
+## Change(s)
+
+```json
+{
+  "fileType": "change",
+  "changeType": "addXML",
+  "content": {
+    "targetAggregation": "content",
+    "fragmentPath": "fragments/table-action.fragment.xml"
+  }
+}
+```
+
+
+
+---
+
+<a id="5-add-custom-table-column"></a>
+## 5. Add Custom Table Column
+
+### Steps
+
+1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
+2. Check that UIAdaptation mode is enabled
+3. locator.getByRole('button', { name: 'Add Custom Table Column' }).isDisabled
+4. Click on button `Navigation`
+5. Click on button `UI Adaptation`
+6. Click on button `Add Custom Table Column`
+7. Fill `Column Fragment Name` field with `table-column` in dialog `Add Custom Table Column`
+8. Fill `Cell Fragment Name` field with `table-cell` in dialog `Add Custom Table Column`
+9. Click on `Create` button in dialog `Add Custom Table Column`
+10. Click on button `Save and Reload`
+11. Check `Save` button is disabled
+12. Verify changes:
+
+## Fragments
+
+### table-cell.fragment.xml
+```xml
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!--  add your xml here -->
+    <Text id="cell-text-[a-z0-9]+" text="Sample data" />
+</core:FragmentDefinition>
+```
+
+### table-column.fragment.xml
+```xml
+<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!--  add your xml here -->
+     <Column id="column-[a-z0-9]+"
+        width="12em"
+        hAlign="Left"
+        vAlign="Middle">
+        <Text id="column-title-[a-z0-9]+" text="New column" />
+
+        <customData>
+            <core:CustomData key="p13nData" id="custom-data-[a-z0-9]+"
+                value='\\{"columnKey": "column-[a-z0-9]+", "columnIndex": "3"}' />
+        </customData>
+    </Column>
+</core:FragmentDefinition>
+```
+
+## Change(s)
+
+### Change 1
+```json
+{
+  "fileType": "change",
+  "changeType": "addXML",
+  "content": {
+    "targetAggregation": "columns",
+    "fragmentPath": "fragments/table-column.fragment.xml"
+  }
+}
+```
+
+### Change 2
+```json
+{
+  "fileType": "change",
+  "changeType": "addXML",
+  "content": {
+    "boundAggregation": "items",
+    "targetAggregation": "cells",
+    "fragmentPath": "fragments/table-cell.fragment.xml"
+  }
+}
+```
+
+
+13. Click on button `Navigation`
+14. Check Column Name is `New Column`
+15. Check Column Data is `Sample data`
+
+---
+
+<a id="6-enabledisable-semantic-date-range-in-filter-bar"></a>
+## 6. Enable/Disable Semantic Date Range in Filter Bar
+
+### Steps
+
+1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
+2. Check that UIAdaptation mode is enabled
+3. Click on button `Navigation`
+4. Click on value help button of `Date Property` filter
+5. Check semantic date `Yesterday` visible in filter
+6. Click on button `UI Adaptation`
+7. Click on button `Disable Semantic Date Range in Filter Bar`
+8. Click on button `Save and Reload`
+9. Verify changes:
+
+## Change(s)
+
+```json
+{
+  "fileType": "change",
+  "changeType": "appdescr_ui_generic_app_changePageConfiguration",
+  "content": {
+    "entityPropertyChange": {
+      "propertyPath": "component/settings/filterSettings/dateSettings",
+      "propertyValue": {
+        "useDateRange": false
+      }
+    }
+  }
+}
+```
+
+
+10. Click on button `Navigation`
+11. Click on value help button of `Date Property` filter
+12. Click on button `UI Adaptation`
+13. Click on button `Enable Semantic Date Range in Filter Bar`
+14. Click on button `Save and Reload`
+15. Verify changes:
+
+## Change(s)
+
+```json
+{
+  "fileType": "change",
+  "changeType": "appdescr_ui_generic_app_changePageConfiguration",
+  "content": {
+    "entityPropertyChange": {
+      "propertyPath": "component/settings/filterSettings/dateSettings",
+      "propertyValue": {
+        "useDateRange": true
+      }
+    }
+  }
+}
+```
+
+
+
+---
+
+<a id="7-enable-variant-management-in-tables-and-charts"></a>
+## 7. Enable Variant Management in Tables and Charts
+
+### Steps
+
+1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
+2. Check that UIAdaptation mode is enabled
+3. Click on button `Enable Variant Management in Tables and Charts`
+4. Click on button `Save and Reload`
+5. Check `Save` button is disabled
+6. Verify changes:
+
+## Change(s)
+
+```json
+{
+  "fileType": "change",
+  "changeType": "appdescr_ui_generic_app_changePageConfiguration",
+  "content": {
+    "parentPage": {
+      "component": "sap.suite.ui.generic.template.ListReport"
+    },
+    "entityPropertyChange": {
+      "propertyPath": "component/settings",
+      "propertyValue": {
+        "smartVariantManagement": false
+      }
+    }
+  }
+}
+```
+
+
+
+---
+
+<a id="8-change-table-actions"></a>
+## 8. Change table actions
+
+### Steps
+
+1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
+2. Check that UIAdaptation mode is enabled
+3. Click on button `Change Table Actions`
+4. Check `Button - Create, Button - Delete, Button - Add Card to Insights` exist in the `Rearrange Toolbar Content` dialog
+5. Hover over row `2` and click on `Move up` button in the row of `Rearrange Toolbar Content` table
+6. Check `Button - Delete, Button - Create, Button - Add Card to Insights` exist in the `Rearrange Toolbar Content` dialog
+7. Click on `OK` button of the dialog `Rearrange Toolbar Content`
+8. Click on button `Save`
+9. Check `Save` button is disabled
+10. Check saved changes stack contains `1` `Toolbar Content Move Change` change(s)
+
+---
+
+<a id="add-new-annotation-file"></a>
+## Add New Annotation File
+
+*No steps recorded for this test.*
+
+---
+

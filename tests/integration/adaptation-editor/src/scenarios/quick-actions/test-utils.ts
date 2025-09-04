@@ -1,11 +1,11 @@
 import { readdir, readFile } from 'fs/promises';
 import { join } from 'path';
-import { expect, type FrameLocator, type Page, type Locator } from '@sap-ux-private/playwright';
+import { expect, test, type FrameLocator, type Page, type Locator } from '@sap-ux-private/playwright';
 import { gte } from 'semver';
 
 interface Changes {
     annotations: Record<string, string>;
-    coding: Record<string, string>;
+    coding: Record<string, string | RegExp>;
     fragments: Record<string, string>;
     changes: object[];
 }
@@ -38,6 +38,33 @@ export class ListReport {
         const dataRows = this.frame.locator('tbody > tr');
         return dataRows.nth(index).locator('.sapMListTblNavCol').first();
     }
+
+    async clickOnTableNthRow(index: number): Promise<void> {
+        const tableTitle = await this.getTableTitleText();
+        // Extract only the string part before parentheses (e.g., "Root Entities" from "Root Entities (2)")
+        const match = tableTitle.match(/^(.+?)\s*\(/);
+        const tableName = match ? match[1] : tableTitle;
+        await test.step(`Click on row \`${index + 1}\` of \`${tableName}\` table `, async () => {
+            await this.locatorForListReportTableRow(index).click();
+        });
+    }
+
+    /**
+     * @returns Locator for the table title/header.
+     */
+    get tableTitle(): Locator {
+        return this.frame.locator('.sapMTitle.sapUiCompSmartTableHeader');
+    }
+
+    /**
+     * Gets the table title text.
+     *
+     * @returns Promise resolving to the table title text.
+     */
+    async getTableTitleText(): Promise<string> {
+        return (await this.tableTitle.textContent()) ?? '';
+    }
+
     /**
      * @param frame - FrameLocator for the List Report.
      */
@@ -51,37 +78,21 @@ export class ListReport {
  */
 export class TableSettings {
     private readonly frame: FrameLocator;
+    private dialogName: string;
     /**
      * @returns Locator for the dialog containing table settings.
      */
     get dialog(): Locator {
-        return this.frame.getByLabel('View Settings');
+        return this.frame.getByLabel(this.dialogName);
     }
-    /**
-     * @returns Locator for the table settings dialog.
-     */
-    get tableSettingsDialog(): Locator {
-        return this.dialog;
-    }
-    /**
-     * @returns Locator for the table settings dialog.
-     */
-    get actionSettingsDialog(): Locator {
-        return this.frame.getByLabel('Rearrange Toolbar Content');
-    }
-    /**
-     * @returns Locator for the table settings dialog.
-     */
-    get tableActionsSettingsDialog(): Locator {
-        return this.actionSettingsDialog;
-    }
+
     /**
      * Returns an array of all visible texts in the first column of the rearrange toolbar content table.
      *
      * @returns {Promise<string[]>} An array of visible texts from the first column.
      */
-    async getActionSettingsTexts(): Promise<string[]> {
-        const rows = this.actionSettingsDialog.locator('tbody > tr:not(.sapMListTblHeader)');
+    async getSettingsTexts(): Promise<string[]> {
+        const rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
         const count = await rows.count();
         const texts: string[] = [];
         for (let i = 0; i < count; i++) {
@@ -96,25 +107,55 @@ export class TableSettings {
      * @param index - The zero-based index of the action to move up.
      */
     async moveActionUp(index: number): Promise<void> {
-        const rows = this.actionSettingsDialog.locator('tbody > tr:not(.sapMListTblHeader)');
-        await rows.nth(index).hover();
-        await rows.nth(index).getByRole('button', { name: 'Move Up' }).click();
+        const rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        await test.step(`Hover over row \`${index + 1}\` and click on \`Move up\` button in the row of \`${
+            this.dialogName
+        }\` table`, async () => {
+            await rows.nth(index).hover();
+            await rows.nth(index).getByRole('button', { name: 'Move Up' }).click();
+        });
     }
+    /**
+     * Confirm or cancel the dialog.
+     *
+     * @param text - Dialog's confirm button text.
+     */
+    async closeOrConfirmDialog(text = 'OK'): Promise<void> {
+        await test.step(`Click on \`${text}\` button of the dialog \`${this.dialogName}\``, async () => {
+            await this.dialog.getByRole('button', { name: 'OK' }).click();
+        });
+    }
+    /**
+     * @param frame - FrameLocator for the dialog.
+     * @param dialogName - Name of the dialog.
+     */
+    constructor(frame: FrameLocator, dialogName = 'View Settings') {
+        this.frame = frame;
+        this.dialogName = dialogName;
+    }
+
     /**
      * Moves an action down by clicking the "Move Down" button in the specified row.
      *
      * @param index - The zero-based index of the action to move down.
      */
     async moveActionDown(index: number): Promise<void> {
-        const rows = this.actionSettingsDialog.locator('tbody > tr:not(.sapMListTblHeader)');
-        await rows.nth(index).hover();
-        await rows.nth(index).getByRole('button', { name: 'Move Down' }).click();
+        const rows = this.dialog.locator('tbody > tr:not(.sapMListTblHeader)');
+        await test.step(`Hover over row \`${index + 1}\` and click on Move down button in the row of \`${
+            this.dialogName
+        }\` table`, async () => {
+            await rows.nth(index).hover();
+            await rows.nth(index).getByRole('button', { name: 'Move Down' }).click();
+        });
     }
-    /**
-     * @param frame - FrameLocator for the dialog.
-     */
-    constructor(frame: FrameLocator) {
-        this.frame = frame;
+
+    async expectItemsToBeVisible(texts: string[]): Promise<void> {
+        const textsList = texts.join(', ');
+        await test.step(`Check \`${textsList}\` exist in the \`${this.dialogName}\` dialog`, async () => {
+            for (const text of texts) {
+                await expect(this.dialog.getByText(text)).toBeVisible();
+            }
+        });
     }
 }
 
@@ -149,7 +190,7 @@ class QuickActionPanel {
      * @returns Locator for the button to enable the "Clear" button in the filter bar.
      */
     get enableClearButton(): Locator {
-        return this.page.getByRole('button', { name: 'Enable "Clear" Button in Filter Bar' });
+        return this.page.getByRole('button', { name: `Enable "Clear" Button in Filter Bar` });
     }
 
     /**
@@ -275,6 +316,11 @@ class Toolbar {
     get navigationModeButton(): Locator {
         return this.page.getByRole('button', { name: 'Navigation' });
     }
+
+    async isDisabled(): Promise<void> {
+        return await expect(this.saveButton, `Check \`Save\` button is disabled`).toBeDisabled();
+    }
+
     /**
      * @param page - Page object for the toolbar.
      */
@@ -299,6 +345,21 @@ class ChangesPanel {
     constructor(page: Page) {
         this.page = page;
     }
+    /**
+     * Reusable function to check saved changes stack for specific change types.
+     *
+     * @param page - Page object to search within.
+     * @param changeText - Text to search for within the saved-changes-stack.
+     * @param expectedCount - Expected number of changes.
+     * @returns Promise that resolves when the assertion passes.
+     */
+    async expectSavedChangesStack(page: Page, changeText: string, expectedCount: number): Promise<void> {
+        await test.step(`Check saved changes stack contains \`${expectedCount}\` \`${changeText}\` change(s)`, async () => {
+            await expect(page.getByTestId('saved-changes-stack')).toBeVisible();
+            const changes = await page.getByTestId('saved-changes-stack').getByText(changeText).all();
+            expect(changes.length).toBe(expectedCount);
+        });
+    }
 }
 
 /**
@@ -310,7 +371,6 @@ export class AdaptationEditorShell {
     readonly quickActions: QuickActionPanel;
     readonly toolbar: Toolbar;
     readonly changesPanel: ChangesPanel;
-
     async reloadCompleted(): Promise<void> {
         await expect(this.toolbar.uiAdaptationModeButton).toBeEnabled({ timeout: 15_000 });
     }
@@ -342,6 +402,33 @@ export class AdpDialog {
         } else {
             return this.frame.locator('#createDialogBtn');
         }
+    }
+
+    async getName(): Promise<string> {
+        const title = (await this.frame.getByRole('dialog').getByRole('heading').textContent()) ?? '';
+        return title;
+    }
+
+    async fillField(fieldName: string, value: string): Promise<void> {
+        const title = await this.getName();
+        await test.step(`Fill \`${fieldName}\` field with \`${value}\` in dialog \`${title}\``, async () => {
+            const field = this.frame.getByRole('textbox', { name: fieldName });
+            await field.fill(value);
+        });
+    }
+
+    async clickCreateButton(): Promise<void> {
+        const title = await this.getName();
+        await test.step(`Click on \`Create\` button in dialog \`${title}\``, async () => {
+            await this.createButton.click();
+        });
+    }
+
+    async openInVSCodeVisible(): Promise<void> {
+        return expect(
+            this.frame.getByRole('button', { name: 'Open in VS Code' }),
+            'Check `Open in VS Code` button is visible'
+        ).toBeVisible();
     }
 
     /**
@@ -377,9 +464,12 @@ export async function readChanges(root: string): Promise<Changes> {
                     result.changes.push(JSON.parse(text) as object);
                 } else if (file.name === 'annotations' || file.name === 'coding' || file.name === 'fragments') {
                     const children = await readdir(join(changesDirectory, file.name), { withFileTypes: true });
+                    let index = 0;
                     for (const child of children) {
                         if (child.isFile()) {
-                            result[file.name][child.name] = await readFile(
+                            const fileName = file.name === 'annotations' ? `file${index}` : child.name; // annotation file name contains timestamp
+                            index++;
+                            result[file.name][fileName] = await readFile(
                                 join(changesDirectory, file.name, child.name),
                                 {
                                     encoding: 'utf-8'
@@ -394,6 +484,205 @@ export async function readChanges(root: string): Promise<Changes> {
         }
     } catch (e) {
         // ignore error
+    }
+    return result;
+}
+
+/**
+ * Compare changes against expected changes and create appropriate matchers.
+ *
+ * @param projectCopy path to projectCopy to check for changes
+ * @param expected The actual changes object from test results
+ * @returns An expect matcher for use in tests
+ */
+export async function expectChanges(projectCopy: string, expected: Partial<Changes>): Promise<void> {
+    const matcher: Record<string, any> = {};
+
+    // Process file-based properties (fragments, annotations, coding) in a single pattern
+    const fileBasedProperties: (keyof Changes)[] = ['fragments', 'annotations', 'coding'];
+
+    for (const prop of fileBasedProperties) {
+        if (expected[prop]) {
+            const matchers: Record<string, any> = {};
+            for (const [filename, content] of Object.entries(expected[prop])) {
+                matchers[filename] = expect.stringMatching(new RegExp(content));
+            }
+            matcher[prop] = expect.objectContaining(matchers);
+        }
+    }
+
+    // Handle changes array with deep conversion
+    if (expected.changes) {
+        const changeMatchers = expected.changes.map((change) => convertToExpectMatchers(change));
+        matcher.changes = expect.arrayContaining(changeMatchers);
+    }
+
+    await expect
+        .poll(async () => readChanges(projectCopy), {
+            message: 'make sure change file is created'
+        })
+        .toEqual(matcher);
+}
+
+/**
+ * Recursively convert an object to expect matchers.
+ *
+ * @param obj Object to convert to expect matchers
+ * @returns Converted object with expect matchers
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function convertToExpectMatchers(obj: any): any {
+    // Base case: null or undefined
+    if (obj === null || obj === undefined) {
+        return obj;
+    }
+
+    // Handle arrays
+    if (Array.isArray(obj)) {
+        return expect.arrayContaining(obj.map((item) => convertToExpectMatchers(item)));
+    }
+
+    // Handle objects
+    if (typeof obj === 'object') {
+        const result: Record<string, any> = {};
+
+        for (const [key, value] of Object.entries(obj)) {
+            // Recursively convert nested objects/arrays
+            if (value !== null && typeof value === 'object') {
+                result[key] = convertToExpectMatchers(value) as any;
+            }
+            // Convert strings to stringMatching
+            else if (typeof value === 'string') {
+                result[key] = expect.stringMatching(value);
+            }
+            // Keep other primitive types as is
+            else {
+                result[key] = value;
+            }
+        }
+
+        return expect.objectContaining(result);
+    }
+
+    // Return primitive values as is
+    return obj;
+}
+
+/**
+ * Verify changes against expected changes.
+ *
+ * @param projectCopy Project copy to check for changes
+ * @param expected Expected changes to verify
+ */
+export async function verifyChanges(projectCopy: any, expected: Partial<Changes>): Promise<void> {
+    // Build detailed description for changes being verified in markdown format
+    let description = 'Verify changes:\n\n';
+    // Add formatted sections to description
+    description += formatFragmentsForMarkdown(expected.fragments ?? {});
+    description += formatAnnotationsForMarkdown(expected.annotations);
+    description += formatCodingForMarkdown(expected.coding);
+    description += formatChangesForMarkdown(expected.changes);
+    const matcher: Record<string, any> = {};
+
+    // Process file-based properties (fragments, annotations, coding) in a single pattern
+    const fileBasedProperties: (keyof Changes)[] = ['fragments', 'annotations', 'coding'];
+
+    for (const prop of fileBasedProperties) {
+        if (expected[prop]) {
+            const matchers: Record<string, any> = {};
+            for (const [filename, content] of Object.entries(expected[prop])) {
+                matchers[filename] = expect.stringMatching(new RegExp(content));
+            }
+            matcher[prop] = expect.objectContaining(matchers);
+        }
+    }
+
+    await test.step(description, async () => {
+        await expect
+            .poll(async () => readChanges(projectCopy), {
+                message: ''
+            })
+            .toEqual(expect.objectContaining(matcher));
+    });
+}
+
+/**
+ * Format fragments for markdown output.
+ *
+ * @param fragments Fragment files to format
+ * @returns Markdown formatted string
+ */
+function formatFragmentsForMarkdown(fragments: Record<string, string>): string {
+    if (!fragments || Object.keys(fragments).length === 0) {
+        return '';
+    }
+
+    let result = '## Fragments\n\n';
+    for (const [filename, content] of Object.entries(fragments)) {
+        result += `### ${filename}\n\`\`\`xml\n${content}\n\`\`\`\n\n`;
+    }
+    return result;
+}
+
+/**
+ * Format annotations for markdown output.
+ *
+ * @param annotations Annotation files to format
+ * @returns Markdown formatted string
+ */
+function formatAnnotationsForMarkdown(annotations: Record<string, string> | undefined): string {
+    if (!annotations) {
+        return '';
+    }
+
+    let result = '## Annotations\n\n';
+    if (Object.keys(annotations).length > 0) {
+        for (const [filename, content] of Object.entries(annotations)) {
+            result += `### ${filename}\n\`\`\`xml\n${content}\n\`\`\`\n\n`;
+        }
+    }
+    return result;
+}
+
+/**
+ * Format coding files for markdown output.
+ *
+ * @param coding Coding files to format
+ * @returns Markdown formatted string
+ */
+function formatCodingForMarkdown(coding: Record<string, string | RegExp> | undefined): string {
+    if (!coding) {
+        return '';
+    }
+
+    let result = '## Coding\n\n';
+    if (Object.keys(coding).length > 0) {
+        for (const [filename, content] of Object.entries(coding)) {
+            result += `### ${filename}\n\`\`\`js\n${content}\n\`\`\`\n\n`;
+        }
+    }
+    return result;
+}
+
+/**
+ * Format changes for markdown output.
+ *
+ * @param changes Changes to format
+ * @returns Markdown formatted string
+ */
+function formatChangesForMarkdown(changes: object[] | undefined): string {
+    if (!changes) {
+        return '';
+    }
+
+    let result = '## Change(s)\n\n';
+    if (changes.length > 0) {
+        changes.forEach((change, index) => {
+            if (changes.length > 1) {
+                result += `### Change ${index + 1}\n`;
+            }
+            result += `\`\`\`json\n${JSON.stringify(change, null, 2)}\n\`\`\`\n\n`;
+        });
     }
     return result;
 }
