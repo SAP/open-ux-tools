@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`fiori annotation service delete annotation all annotations CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';

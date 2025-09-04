@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.15.25
+
+### Patch Changes
+
+-   f46dd02: fix: Deploy Config generator does not allow package with CloudReady and OnPremise project types
+
 ## 0.15.24
 
 ### Patch Changes
