@@ -48,9 +48,12 @@ async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promis
     const parentPage = typeof parameters.parentPage === 'string' ? parameters.parentPage : undefined;
     const entitySet = typeof parameters.entitySet === 'string' ? parameters.entitySet : undefined;
     const pageNavigation = typeof parameters.pageNavigation === 'string' ? parameters.pageNavigation : undefined;
-    const viewName = typeof parameters.pageViewName === 'string' ? parameters.pageViewName : 'CustomView';
+    const viewName = typeof parameters.pageViewName === 'string' ? parameters.pageViewName : '';
     if (!pageType) {
         throw new Error('Missing or invalid parameter "pageType"');
+    }
+    if (!viewName) {
+        throw new Error('Missing or invalid parameter "viewName"');
     }
     const appDetails = await resolveApplication(appPath);
     if (!appDetails?.applicationAccess) {

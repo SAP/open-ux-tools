@@ -370,7 +370,8 @@ export class Application {
             id,
             entity: targetNavigation?.entitySet ?? entitySet ?? '',
             navigation: fpnNavigation,
-            contextPath
+            contextPath,
+            name: newPage.pageType === PageTypeV4.CustomPage ? viewName : undefined
         };
 
         const changes = await this.writeFPM(newPage.pageType, pageApi, viewName);
@@ -558,15 +559,6 @@ export class Application {
                 // Pass with refresh only once
                 refreshNavigations = false;
             }
-            if (pageType === PageTypeV4.CustomPage) {
-                ADD_PAGE_FUNCTIONALITY.parameters.push({
-                    id: 'pageViewName',
-                    type: 'string',
-                    description: `Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name`,
-                    pattern: '/^[a-zA-Z][a-zA-Z0-9_-]{0,}$/i',
-                    required: true
-                });
-            }
             ADD_PAGE_FUNCTIONALITY.parameters = [
                 {
                     id: 'parentPage',
@@ -590,8 +582,15 @@ export class Application {
                     id: 'pageType',
                     type: 'string',
                     description: `Type of page to be created. First try to extract page type from user input in a format defined in example, if not possible suggest content defined in options.`,
-                    options: Object.keys(PageTypeV4),
-                    examples: ['pageType: ' + Object.keys(PageTypeV4)[0]],
+                    options: [PageTypeV4.ListReport, PageTypeV4.ObjectPage, PageTypeV4.CustomPage],
+                    examples: ['pageType: ' + PageTypeV4.ObjectPage],
+                    required: true
+                },
+                {
+                    id: 'pageViewName',
+                    type: 'string',
+                    description: `Required if pageType is "CustomPage". Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name`,
+                    pattern: '/^[a-zA-Z][a-zA-Z0-9_-]{0,}$/i',
                     required: true
                 }
             ];
