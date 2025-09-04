@@ -288,7 +288,7 @@ describe('add-page', () => {
                         pageType: 'CustomPage'
                     }
                 })
-            ).rejects.toThrow('Missing or invalid parameter "pageViewName"');
+            ).rejects.toThrow('Missing value for parameter "pageViewName"');
         });
 
         test('case 8: validate incorrect "pageViewName"', async () => {

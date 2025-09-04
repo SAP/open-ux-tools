@@ -55,7 +55,7 @@ async function executeFunctionality(params: ExecuteFunctionalitiesInput): Promis
     }
     if (pageType === PageTypeV4.CustomPage) {
         if (!viewName) {
-            throw new Error('Missing or invalid parameter "pageViewName"');
+            throw new Error('Missing value for parameter "pageViewName"');
         } else if (!PAGE_VIEW_NAME_PATTERN.exec(viewName)) {
             throw new Error(
                 `Invalid parameter "pageViewName". Parameter "pageViewName" should match pattern "${PAGE_VIEW_NAME_PATTERN.toString()}"`
