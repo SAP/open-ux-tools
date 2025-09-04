@@ -1,5 +1,3 @@
-import { Severity } from '@sap-devx/yeoman-ui-types';
-
 import type {
     CfServicesAnswers,
     CFServicesQuestion,
@@ -17,7 +15,8 @@ import {
     getCfApps,
     downloadAppContent,
     validateSmartTemplateApplication,
-    validateODataEndpoints
+    validateODataEndpoints,
+    getMtaProjectName
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
@@ -184,11 +183,7 @@ export class CFServicesPrompter {
             choices: getAppRouterChoices(this.isInternalUsage),
             when: () => {
                 const modules = getModuleNames(mtaProjectPath);
-                const mtaProjectName =
-                    (mtaProjectPath.indexOf('/') > -1
-                        ? mtaProjectPath.split('/').pop()
-                        : mtaProjectPath.split('\\').pop()) ?? '';
-
+                const mtaProjectName = getMtaProjectName(mtaProjectPath);
                 const hasRouter = hasApprouter(mtaProjectName, modules);
                 if (hasRouter) {
                     this.approuter = getApprouterType(mtaProjectPath);
@@ -232,36 +227,12 @@ export class CFServicesPrompter {
             type: 'list',
             name: cfServicesPromptNames.baseApp,
             message: t('prompts.baseAppLabel'),
-            choices: async (answers: CfServicesAnswers): Promise<any[]> => {
-                try {
-                    this.baseAppOnChoiceError = null;
-                    if (this.cachedServiceName != answers.businessService) {
-                        this.cachedServiceName = answers.businessService;
-                        this.businessServiceKeys = await getBusinessServiceKeys(
-                            answers.businessService ?? '',
-                            cfConfig,
-                            this.logger
-                        );
-                        if (!this.businessServiceKeys) {
-                            return [];
-                        }
-                        this.apps = await getCfApps(this.businessServiceKeys.credentials, cfConfig, this.logger);
-                        this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
-                    }
-                    return getCFAppChoices(this.apps);
-                } catch (e) {
-                    this.baseAppOnChoiceError = e instanceof Error ? e.message : 'Unknown error';
-                    this.logger?.error(`Failed to get base apps: ${e.message}`);
-                    return [];
-                }
-            },
+            choices: (_: CfServicesAnswers) => getCFAppChoices(this.apps),
             validate: async (app: CFApp) => {
                 if (!app) {
                     return t('error.baseAppHasToBeSelected');
                 }
-                if (this.baseAppOnChoiceError !== null) {
-                    return this.baseAppOnChoiceError;
-                }
+
                 try {
                     const { entries, serviceInstanceGuid, manifest } = await downloadAppContent(
                         cfConfig.space.GUID,
@@ -279,16 +250,7 @@ export class CFServicesPrompter {
 
                 return true;
             },
-            additionalMessages: (_: CFApp) => {
-                if (this.baseAppOnChoiceError) {
-                    return {
-                        message: this.baseAppOnChoiceError,
-                        severity: Severity.error
-                    };
-                }
-                return undefined;
-            },
-            when: (answers: any) => this.isCfLoggedIn && answers.businessService,
+            when: (answers: CfServicesAnswers) => this.isCfLoggedIn && answers.businessService && !!this.apps.length,
             guiOptions: {
                 hint: t('prompts.baseAppTooltip'),
                 breadcrumb: true
@@ -310,18 +272,25 @@ export class CFServicesPrompter {
             choices: this.businessServices,
             default: (_: CfServicesAnswers) =>
                 this.businessServices.length === 1 ? this.businessServices[0] ?? '' : '',
-            when: (answers: CfServicesAnswers) => {
-                return this.isCfLoggedIn && (this.approuter || answers.approuter);
-            },
+            when: (answers: CfServicesAnswers) => this.isCfLoggedIn && (this.approuter || answers.approuter),
             validate: async (value: string) => {
                 const validationResult = validateEmptyString(value);
                 if (typeof validationResult === 'string') {
                     return t('error.businessServiceHasToBeSelected');
                 }
 
-                this.businessServiceKeys = await getBusinessServiceKeys(value, cfConfig, this.logger);
-                if (this.businessServiceKeys === null) {
-                    return t('error.businessServiceDoesNotExist');
+                try {
+                    this.businessServiceKeys = await getBusinessServiceKeys(value, cfConfig, this.logger);
+                    if (this.businessServiceKeys === null) {
+                        return t('error.businessServiceDoesNotExist');
+                    }
+
+                    this.apps = await getCfApps(this.businessServiceKeys.credentials, cfConfig, this.logger);
+                    this.logger?.log(`Available applications: ${JSON.stringify(this.apps)}`);
+                } catch (e) {
+                    this.apps = [];
+                    this.logger?.error(`Failed to get available applications: ${e.message}`);
+                    return e.message;
                 }
 
                 return true;

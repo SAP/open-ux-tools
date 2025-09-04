@@ -30,6 +30,18 @@ export function getModuleNames(mtaProjectPath: string): string[] {
 }
 
 /**
+ * Get the mta project name.
+ *
+ * @param {string} mtaProjectPath - The path to the mta project.
+ * @returns {string} The mta project name.
+ */
+export function getMtaProjectName(mtaProjectPath: string): string {
+    const mtaProjectName =
+        (mtaProjectPath.indexOf('/') > -1 ? mtaProjectPath.split('/').pop() : mtaProjectPath.split('\\').pop()) ?? '';
+    return mtaProjectName;
+}
+
+/**
  * Get the services for the file.
  *
  * @param {string} mtaFilePath - The path to the mta file.
