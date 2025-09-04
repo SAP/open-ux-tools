@@ -8,7 +8,7 @@ import type {
 } from '../../../types';
 import { getService } from './serviceStore';
 import type { NewPage, PageDef, AllowedNavigationOptions } from './types';
-import { MissingNavigationReason } from './types';
+import { MissingNavigationReason, PAGE_VIEW_NAME_PATTERN } from './types';
 import { generatePageId } from './utils';
 import { DirName } from '@sap-ux/project-access';
 import { join } from 'path';
@@ -590,7 +590,7 @@ export class Application {
                     id: 'pageViewName',
                     type: 'string',
                     description: `Required if pageType is "CustomPage". Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name`,
-                    pattern: '/^[a-zA-Z][a-zA-Z0-9_-]{0,}$/i',
+                    pattern: PAGE_VIEW_NAME_PATTERN.toString(),
                     required: true
                 }
             ];
