@@ -8,7 +8,7 @@ import type {
 } from '../../../types';
 
 export const GENERATE_FIORI_UI_ODATA_APP: GetFunctionalityDetailsOutput = {
-    id: GENERATE_FIORI_UI_ODATA_APP_ID,
+    functionalityId: GENERATE_FIORI_UI_ODATA_APP_ID,
     name: 'Generate SAP Fiori UI Application for non-CAP Projects',
     description: `Creates (generates) a new SAP Fiori UI application within an existing project (RAP or other non-CAP).
                 Crucially, you must first construct the appGenConfig JSON argument.
