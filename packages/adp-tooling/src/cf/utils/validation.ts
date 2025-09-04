@@ -32,7 +32,7 @@ export async function validateSmartTemplateApplication(manifest: Manifest): Prom
             throw new Error(t('error.appDoesNotSupportFlexibility'));
         }
     } else {
-        throw new Error("Adaptation project doesn't support the selected application. Select a different application.");
+        throw new Error(t('error.adpDoesNotSupportSelectedApplication'));
     }
 }
 
@@ -49,7 +49,7 @@ export function extractXSApp(zipEntries: AdmZip.IZipEntry[]): { routes: XsAppRou
             try {
                 xsApp = JSON.parse(item.getData().toString('utf8'));
             } catch (e) {
-                throw new Error(`Failed to parse xs-app.json. Reason: ${e.message}`);
+                throw new Error(t('error.failedToParseXsAppJson', { error: e.message }));
             }
         }
     });
@@ -101,7 +101,7 @@ function extractManifest(zipEntries: AdmZip.IZipEntry[]): Manifest | undefined {
             try {
                 manifest = JSON.parse(item.getData().toString('utf8')) as Manifest;
             } catch (e) {
-                throw new Error(`Failed to parse manifest.json. Reason: ${e.message}`);
+                throw new Error(t('error.failedToParseManifestJson', { error: e.message }));
             }
         }
     });
@@ -154,6 +154,6 @@ export async function validateODataEndpoints(
     if (messages.length > 0) {
         const errorMessages = messages.join('\n');
         logger?.error(`OData endpoints validation failed:\n${errorMessages}`);
-        throw new Error('OData endpoints validation failed. Please check the logs for more details.');
+        throw new Error(t('error.oDataEndpointsValidationFailed'));
     }
 }

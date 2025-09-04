@@ -20,6 +20,7 @@ import type {
     CfCredentials,
     MtaYaml
 } from '../../types';
+import { t } from '../../i18n';
 import { isLoggedInCf } from '../core/auth';
 import { createServiceKey, getServiceKeys } from './cli';
 import { getProjectNameForXsSecurity } from '../project';
@@ -304,7 +305,7 @@ export async function getServiceInstanceKeys(
         }
         return null;
     } catch (e) {
-        const errorMessage = `Failed to get service instance keys. Reason: ${e.message}`;
+        const errorMessage = t('error.failedToGetServiceInstanceKeys', { error: e.message });
         logger?.error(errorMessage);
         throw new Error(errorMessage);
     }
@@ -330,9 +331,9 @@ async function getServiceInstance(params: GetServiceInstanceParams): Promise<Ser
                 guid: service.guid
             }));
         }
-        throw new Error('No valid JSON for service instance');
+        throw new Error(t('error.noValidJsonForServiceInstance'));
     } catch (e) {
-        throw new Error(`Failed to get service instance with params ${uriParameters}. Reason: ${e.message}`);
+        throw new Error(t('error.failedToGetServiceInstance', { uriParameters, error: e.message }));
     }
 }
 
@@ -344,19 +345,18 @@ async function getServiceInstance(params: GetServiceInstanceParams): Promise<Ser
  * @returns {Promise<ServiceKeys | null>} The service instance keys.
  */
 async function getOrCreateServiceKeys(serviceInstance: ServiceInstance, logger: ToolsLogger): Promise<CfCredentials[]> {
+    const serviceInstanceName = serviceInstance.name;
     try {
         const credentials = await getServiceKeys(serviceInstance.guid);
         if (credentials?.length > 0) {
             return credentials;
         } else {
-            const serviceKeyName = serviceInstance.name + '_key';
-            logger?.log(`Creating service key '${serviceKeyName}' for service instance '${serviceInstance.name}'`);
-            await createServiceKey(serviceInstance.name, serviceKeyName);
+            const serviceKeyName = serviceInstanceName + '_key';
+            logger?.log(`Creating service key '${serviceKeyName}' for service instance '${serviceInstanceName}'`);
+            await createServiceKey(serviceInstanceName, serviceKeyName);
             return getServiceKeys(serviceInstance.guid);
         }
     } catch (e) {
-        throw new Error(
-            `Failed to get or create service keys for instance name ${serviceInstance.name}. Reason: ${e.message}`
-        );
+        throw new Error(t('error.failedToGetOrCreateServiceKeys', { serviceInstanceName, error: e.message }));
     }
 }

@@ -1,5 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
+import { t } from '../../i18n';
 import { getFDCApps } from '../services/api';
 import type { CfConfig, CFApp, CfCredentials } from '../../types';
 
@@ -52,7 +53,7 @@ export async function getCfApps(
 
     // Validate appHostIds array length (max 100 as per API specification)
     if (appHostIds.length > 100) {
-        throw new Error(`Too many appHostIds provided. Maximum allowed is 100, but ${appHostIds.length} were found.`);
+        throw new Error(t('error.tooManyAppHostIds', { appHostIdsLength: appHostIds.length }));
     }
 
     return getFDCApps(appHostIds, cfConfig, logger);

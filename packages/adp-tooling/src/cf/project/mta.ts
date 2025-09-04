@@ -2,9 +2,10 @@ import * as path from 'path';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { requestCfApi } from '../services/api';
+import { t } from '../../i18n';
 import { getRouterType } from './yaml';
 import { getYamlContent } from './yaml-loader';
+import { requestCfApi } from '../services/api';
 import type { CfServiceOffering, CfAPIResponse, BusinessServiceResource, Resource, AppRouterType } from '../../types';
 
 /**
@@ -112,13 +113,7 @@ async function filterServices(businessServices: BusinessServiceResource[], logge
             return result;
         }
     }
-    throw new Error(`No business services found, please specify the business services in resource section of mts.yaml:
-    - name: <arbitrary name of resource, e.g. my_service>
-        type: org.cloudfoundry.<managed|existing>-service
-        parameters:
-        service: <business service name, e.g. my-service-name>
-        service-name: <business service instance name, e.g. my_service_instance_name>
-        service-plan: <plan name, e.g. standard>`);
+    throw new Error(t('error.noBusinessServicesFound'));
 }
 
 /**
@@ -156,7 +151,7 @@ export async function getResources(mtaFilePath: string, logger: ToolsLogger): Pr
  */
 export async function readMta(projectPath: string, logger: ToolsLogger): Promise<string[]> {
     if (!projectPath) {
-        throw new Error('Project path is missing.');
+        throw new Error(t('error.mtaProjectPathMissing'));
     }
 
     const mtaFilePath = path.resolve(projectPath, 'mta.yaml');

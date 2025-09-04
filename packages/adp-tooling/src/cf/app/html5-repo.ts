@@ -4,6 +4,7 @@ import AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 
+import { t } from '../../i18n';
 import { createService, getServiceInstanceKeys } from '../services/api';
 import type { HTML5Content, ServiceKeys, Uaa, CfAppParams } from '../../types';
 
@@ -111,14 +112,14 @@ export async function downloadAppContent(
             try {
                 admZip = new AdmZip(zip);
             } catch (e) {
-                throw new Error(`Failed to parse zip content from HTML5 repository. Reason: ${e.message}`);
+                throw new Error(t('error.failedToParseZipContentFromHtml5Repo', { error: e.message }));
             }
             if (!admZip?.getEntries?.().length) {
-                throw new Error('No zip content was parsed from HTML5 repository');
+                throw new Error(t('error.noZipContentParsedFromHtml5Repo'));
             }
             const zipEntry = admZip.getEntries().find((zipEntry) => zipEntry.entryName === 'manifest.json');
             if (!zipEntry) {
-                throw new Error('Failed to find manifest.json in the application content from HTML5 repository');
+                throw new Error(t('error.failedToFindManifestJsonInHtml5Repo'));
             }
 
             try {
@@ -129,14 +130,12 @@ export async function downloadAppContent(
                     manifest: manifest
                 };
             } catch (error) {
-                throw new Error('Failed to parse manifest.json.');
+                throw new Error(t('error.failedToParseManifestJson', { error: error.message }));
             }
         } else {
-            throw new Error('No UAA credentials found for HTML5 repository');
+            throw new Error(t('error.noUaaCredentialsFoundForHtml5Repo'));
         }
     } catch (e) {
-        throw new Error(
-            `Failed to download the application content from HTML5 repository for space ${spaceGuid} and app ${appName} (${appHostId}). Reason: ${e.message}`
-        );
+        throw new Error(t('error.failedToDownloadAppContent', { spaceGuid, appName, appHostId, error: e.message }));
     }
 }

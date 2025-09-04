@@ -2,10 +2,10 @@ import CFLocal = require('@sap/cf-tools/out/src/cf-local');
 import CFToolsCli = require('@sap/cf-tools/out/src/cli');
 import { eFilters } from '@sap/cf-tools/out/src/types';
 
+import { t } from '../../i18n';
 import type { CfCredentials } from '../../types';
 
 const ENV = { env: { 'CF_COLOR': 'false' } };
-const CREATE_SERVICE_KEY = 'create-service-key';
 
 /**
  * Gets the authentication token.
@@ -29,8 +29,8 @@ export async function checkForCf(): Promise<void> {
         if (response.exitCode !== 0) {
             throw new Error(response.stderr);
         }
-    } catch (error) {
-        throw new Error('Cloud Foundry is not installed in your space.');
+    } catch (e) {
+        throw new Error(t('error.cfNotInstalled', { error: e.message }));
     }
 }
 
@@ -59,9 +59,7 @@ export async function getServiceKeys(serviceInstanceGuid: string): Promise<CfCre
             ]
         });
     } catch (e) {
-        throw new Error(
-            `Failed to get service instance credentials from CFLocal for guid ${serviceInstanceGuid}. Reason: ${e.message}`
-        );
+        throw new Error(t('error.cfGetInstanceCredentialsFailed', { serviceInstanceGuid, error: e.message }));
     }
 }
 
@@ -73,11 +71,14 @@ export async function getServiceKeys(serviceInstanceGuid: string): Promise<CfCre
  */
 export async function createServiceKey(serviceInstanceName: string, serviceKeyName: string): Promise<void> {
     try {
-        const cliResult = await CFToolsCli.Cli.execute([CREATE_SERVICE_KEY, serviceInstanceName, serviceKeyName], ENV);
+        const cliResult = await CFToolsCli.Cli.execute(
+            ['create-service-key', serviceInstanceName, serviceKeyName],
+            ENV
+        );
         if (cliResult.exitCode !== 0) {
             throw new Error(cliResult.stderr);
         }
     } catch (e) {
-        throw new Error(`Failed to create service key for instance name ${serviceInstanceName}. Reason: ${e.message}`);
+        throw new Error(t('error.createServiceKeyFailed', { serviceInstanceName, error: e.message }));
     }
 }
