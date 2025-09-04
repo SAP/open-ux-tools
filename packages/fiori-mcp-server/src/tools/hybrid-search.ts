@@ -135,7 +135,7 @@ export async function docSearch(params: DocSearchInput): Promise<DocSearchOutput
                                 error: 'Embeddings data not available. Please install @sap-ux/fiori-docs-embeddings for full search capabilities.',
                                 results: [],
                                 total: 0,
-                                suggestion: 'Try running: npm install @sap-ux/fiori-docs-embeddings'
+                                suggestion: 'Try running: npm install -g @sap-ux/fiori-docs-embeddings'
                             },
                             null,
                             2
