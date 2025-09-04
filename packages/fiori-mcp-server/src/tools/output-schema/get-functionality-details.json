@@ -37,13 +37,7 @@
           },
           "type": {
             "type": "string",
-            "enum": [
-              "string",
-              "number",
-              "boolean",
-              "array",
-              "object"
-            ]
+            "enum": ["string", "number", "boolean", "array", "object"]
           },
           "required": {
             "type": "boolean"
@@ -51,8 +45,7 @@
           "description": {
             "type": "string"
           },
-          "defaultValue": {
-          },
+          "defaultValue": {},
           "options": {
             "type": "array",
             "items": {
@@ -67,14 +60,12 @@
                   "type": "boolean"
                 },
                 {
-                  "not": {
-                  }
+                  "not": {}
                 }
               ]
             }
           },
-          "currentValue": {
-          },
+          "currentValue": {},
           "examples": {
             "type": "array",
             "items": {
@@ -87,13 +78,65 @@
           "parameters": {
             "type": "array",
             "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["string", "number", "boolean", "array", "object"]
+                },
+                "required": {
+                  "type": "boolean"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "defaultValue": {},
+                "options": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "boolean"
+                      },
+                      {
+                        "not": {}
+                      }
+                    ]
+                  }
+                },
+                "currentValue": {},
+                "examples": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "pattern": {
+                  "type": "string"
+                },
+                "parameters": {
+                  "type": "array",
+                  "items": {}
+                }
+              },
+              "required": ["id", "type"],
+              "additionalProperties": false
             }
           }
         },
-        "required": [
-          "id",
-          "type"
-        ],
+        "required": ["id", "type"],
         "additionalProperties": false
       }
     },
@@ -116,11 +159,6 @@
       "type": "string"
     }
   },
-  "required": [
-    "functionalityId",
-    "name",
-    "description",
-    "parameters"
-  ],
+  "required": ["functionalityId", "name", "description", "parameters"],
   "additionalProperties": false
 }
