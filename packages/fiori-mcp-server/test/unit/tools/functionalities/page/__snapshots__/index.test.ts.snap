@@ -90,7 +90,7 @@ Object {
     Object {
       "description": "Required if pageType is \\"CustomPage\\". Name of custom view file. First try to extract view name from user input that satisfies the pattern, if not possible ask user to provide view name",
       "id": "pageViewName",
-      "pattern": "/^[a-zA-Z][a-zA-Z0-9_-]{0,}$/i",
+      "pattern": "/^[A-Za-z][A-Za-z0-9_-]*$/",
       "required": true,
       "type": "string",
     },
