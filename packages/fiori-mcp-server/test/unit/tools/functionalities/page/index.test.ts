@@ -311,7 +311,7 @@ describe('add-page', () => {
                     }
                 })
             ).rejects.toThrow(
-                'Invalid parameter "pageViewName". Parameter "pageViewName" should match pattern "/^[A-Za-z][A-Za-z0-9_-]*$/;"'
+                'Invalid parameter "pageViewName". Parameter "pageViewName" should match pattern "/^[A-Za-z][A-Za-z0-9_-]*$/"'
             );
         });
     });
