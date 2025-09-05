@@ -256,10 +256,11 @@ export default class ManualTestCaseReporter implements Reporter {
 }
 
 function parseActionStep(stepTitle: string): string {
-    // Action mapping - common Playwright methods to human verbs
-    const actionMap: Record<string, string> = {
-        'click': 'Click on',
-        'hover': 'Hover over'
+    // Action mapping - common Playwright methods to human verbs with optional prefix and suffix
+    const actionMap: Record<string, { prefix: string; suffix?: string }> = {
+        'click': { prefix: 'Click on' },
+        'hover': { prefix: 'Hover over' },
+        'isDisabled': { prefix: 'Check if', suffix: 'is disabled' },
     };
 
     // Element type mapping - detect element types from selectors/roles
@@ -268,10 +269,12 @@ function parseActionStep(stepTitle: string): string {
     };
 
     // Try to find action verb from the main step title
-    let action = '';
+    let actionInfo: { prefix: string; suffix?: string } | null = null;
+    let actionType = '';
     for (const [actionKey, actionVerb] of Object.entries(actionMap)) {
         if (stepTitle.includes(`.${actionKey}`) || stepTitle.startsWith(actionKey)) {
-            action = actionVerb;
+            actionInfo = actionVerb;
+            actionType = actionKey;
             break;
         }
     }
@@ -313,12 +316,39 @@ function parseActionStep(stepTitle: string): string {
         }
     }
 
-    // Build human-readable step using priority order
+    // Build human-readable step using priority order with prefix and suffix
     const resultBuilders = [
-        () => (action && element && name ? `${action} ${element} \`${name}\`` : null),
-        () => (action && element ? `${action} ${element}` : null),
-        () => (action && name ? `${action}\`${name}\`` : null),
-        () => (action ? action : null),
+        () => {
+            if (actionInfo && element && name) {
+                const { prefix, suffix } = actionInfo;
+                if (suffix) {
+                    return `${prefix} \`${name}\` ${suffix}`;
+                }
+                return `${prefix} ${element} \`${name}\``;
+            }
+            return null;
+        },
+        () => {
+            if (actionInfo && element) {
+                const { prefix, suffix } = actionInfo;
+                if (suffix) {
+                    return `${prefix} ${element} ${suffix}`;
+                }
+                return `${prefix} ${element}`;
+            }
+            return null;
+        },
+        () => {
+            if (actionInfo && name) {
+                const { prefix, suffix } = actionInfo;
+                if (suffix) {
+                    return `${prefix} \`${name}\` ${suffix}`;
+                }
+                return `${prefix} \`${name}\``;
+            }
+            return null;
+        },
+        () => (actionInfo ? actionInfo.prefix : null),
         () => stepTitle
     ];
 

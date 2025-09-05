@@ -18,7 +18,7 @@
 7. Check `Save` button is disabled
 8. Verify changes:
 
-## Change(s)
+**Change(s)**
 
 ```json
 {

@@ -37,7 +37,7 @@ function getReporters(): ReporterDescription[] {
     // Always include HTML reporter
     const reporters: ReporterDescription[] = [['html', { open: 'never' }]];
     if (!process.env.CI) {
-        reporters.push(['./custom-reporter.ts']);
+        reporters.push(['./manual-test-case-reporter.ts']);
     }
 
     return reporters;

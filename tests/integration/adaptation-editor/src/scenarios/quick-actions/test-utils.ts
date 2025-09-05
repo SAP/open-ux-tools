@@ -617,9 +617,9 @@ function formatFragmentsForMarkdown(fragments: Record<string, string>): string {
         return '';
     }
 
-    let result = '## Fragments\n\n';
+    let result = '**Fragment(s)**\n\n';
     for (const [filename, content] of Object.entries(fragments)) {
-        result += `### ${filename}\n\`\`\`xml\n${content}\n\`\`\`\n\n`;
+        result += `**${filename}**\n\`\`\`xml\n${content}\n\`\`\`\n\n`;
     }
     return result;
 }
@@ -635,10 +635,10 @@ function formatAnnotationsForMarkdown(annotations: Record<string, string> | unde
         return '';
     }
 
-    let result = '## Annotations\n\n';
+    let result = '**Annotations**\n';
     if (Object.keys(annotations).length > 0) {
-        for (const [filename, content] of Object.entries(annotations)) {
-            result += `### ${filename}\n\`\`\`xml\n${content}\n\`\`\`\n\n`;
+        for (const [_filename, content] of Object.entries(annotations)) {
+            result += `\`\`\`xml\n${content}\n\`\`\`\n\n`;
         }
     }
     return result;
@@ -655,10 +655,10 @@ function formatCodingForMarkdown(coding: Record<string, string | RegExp> | undef
         return '';
     }
 
-    let result = '## Coding\n\n';
+    let result = '**Coding**\n\n';
     if (Object.keys(coding).length > 0) {
         for (const [filename, content] of Object.entries(coding)) {
-            result += `### ${filename}\n\`\`\`js\n${content}\n\`\`\`\n\n`;
+            result += `**${filename}**\n\`\`\`js\n${content}\n\`\`\`\n\n`;
         }
     }
     return result;
@@ -675,11 +675,11 @@ function formatChangesForMarkdown(changes: object[] | undefined): string {
         return '';
     }
 
-    let result = '## Change(s)\n\n';
+    let result = '**Change(s)**\n\n';
     if (changes.length > 0) {
         changes.forEach((change, index) => {
             if (changes.length > 1) {
-                result += `### Change ${index + 1}\n`;
+                result += `**Change** ${index + 1}\n`;
             }
             result += `\`\`\`json\n${JSON.stringify(change, null, 2)}\n\`\`\`\n\n`;
         });

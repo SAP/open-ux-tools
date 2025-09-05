@@ -96,7 +96,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
 
             await expect(
                 previewFrame.getByText('adp.fiori.elements.v2/changes/coding/TestController.js'),
-                `Check filename 'adp.fiori.elements.v2/changes/coding/TestController.js' is visible`
+                `Check filename \`adp.fiori.elements.v2/changes/coding/TestController.js\` is visible`
             ).toBeVisible();
             await dialog.openInVSCodeVisible();
         }
@@ -418,7 +418,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             await editor.changesPanel.expectSavedChangesStack(page, 'Toolbar Content Move Change', 1);
         }
     );
-    test.skip(
+    test(
         '9. Add New Annotation File',
         {
             annotation: {
@@ -433,33 +433,28 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             await editor.quickActions.addLocalAnnotationFile.click();
 
             await editor.toolbar.saveAndReloadButton.click();
-
-            // await expect(editor.toolbar.saveButton).toBeDisabled();
             await editor.toolbar.isDisabled();
-            await page.waitForTimeout(3000); // wait for changes to be processed
-
             await verifyChanges(projectCopy, {
                 annotations: {
-                    ['file0']: `<edmx:Edmx xmlns:edmx=\"http://docs.oasis-open.org/odata/ns/edmx\" Version=\"4.0\">
-    <edmx:Reference Uri=\"https://sap.github.io/odata-vocabularies/vocabularies/Common.xml\">
-        <edmx:Include Namespace=\"com.sap.vocabularies.Common.v1\" Alias=\"Common\"/>
+                    'file0': `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
     </edmx:Reference>
-    <edmx:Reference Uri=\"https://sap.github.io/odata-vocabularies/vocabularies/UI.xml\">
-        <edmx:Include Namespace=\"com.sap.vocabularies.UI.v1\" Alias=\"UI\"/>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/>
     </edmx:Reference>
-    <edmx:Reference Uri=\"https://sap.github.io/odata-vocabularies/vocabularies/Communication.xml\">
-        <edmx:Include Namespace=\"com.sap.vocabularies.Communication.v1\" Alias=\"Communication\"/>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Communication.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
     </edmx:Reference>
-    <edmx:Reference Uri=\"/sap/opu/odata/sap/SERVICE/$metadata\">
-        <edmx:Include Namespace=\"SERVICE\"/>
+    <edmx:Reference Uri="/sap/opu/odata/sap/SERVICE/\\$metadata">
+        <edmx:Include Namespace="SERVICE"/>
     </edmx:Reference>
     <edmx:DataServices>
-        <Schema xmlns=\"http://docs.oasis-open.org/odata/ns/edm\" Namespace=\"local_[0-9]+\">
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local_[0-9]+">
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>`
-                }
-                /* ,
+                },
                 changes: [
                     {
                         fileType: 'change',
@@ -469,40 +464,9 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
                             annotations: [/customer\.annotation\.annotation_\d+/]
                         }
                     }
-                ] */
+                ]
             });
-            // TODO
-            // await expect
-            //     .poll(
-            //         async () => {
-            //             const changes = await readChanges(projectCopy);
-            //             const annotationFile = Object.keys(changes.annotations)[0];
-            //             expect(changes.annotations[annotationFile]).toContain(
-            //                 `<Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local_`
-            //             );
-            //             return changes;
-            //         },
-            //         {
-            //             message: 'make sure change file is created'
-            //         }
-            //     )
-            //     .toEqual(
-            //         expect.objectContaining({
-            //             annotations: expect.any(Object), // Generic - just check it exists
-            //             changes: expect.arrayContaining([
-            //                 expect.objectContaining({
-            //                     fileType: 'change',
-            //                     changeType: 'appdescr_app_addAnnotationsToOData',
-            //                     content: expect.objectContaining({
-            //                         dataSourceId: 'mainService',
-            //                         annotations: expect.arrayContaining([
-            //                             expect.stringMatching(/customer\.annotation\.annotation_\d+/)
-            //                         ])
-            //                     })
-            //                 })
-            //             ])
-            //         })
-            //     );
+
             await editor.reloadCompleted();
             await editor.quickActions.showLocalAnnotationFile.click();
             await expect(

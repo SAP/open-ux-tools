@@ -26,7 +26,7 @@
 8. Check `Save` button is disabled
 9. Verify changes:
 
-## Change(s)
+**Change(s)**
 
 ```json
 {
@@ -83,14 +83,14 @@
 8. Click on button `Save`
 9. Verify changes:
 
-## Coding
+**Coding**
 
-### TestController.js
+**TestController.js**
 ```js
 /ControllerExtension\.extend\("adp\.fiori\.elements\.v2\.TestController"/
 ```
 
-## Change(s)
+**Change(s)**
 
 ```json
 {
@@ -126,9 +126,9 @@
 9. Check `Save` button is disabled
 10. Verify changes:
 
-## Fragments
+**Fragment(s)**
 
-### op-table-action.fragment.xml
+**op-table-action.fragment.xml**
 ```xml
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
@@ -137,7 +137,7 @@
 </core:FragmentDefinition>
 ```
 
-## Change(s)
+**Change(s)**
 
 ```json
 {
@@ -187,9 +187,9 @@
 11. Check `Save` button is disabled
 12. Verify changes:
 
-## Fragments
+**Fragment(s)**
 
-### table-cell.fragment.xml
+**table-cell.fragment.xml**
 ```xml
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
     <!--  add your xml here -->
@@ -197,7 +197,7 @@
 </core:FragmentDefinition>
 ```
 
-### table-column.fragment.xml
+**table-column.fragment.xml**
 ```xml
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
@@ -216,9 +216,9 @@
 </core:FragmentDefinition>
 ```
 
-## Change(s)
+**Change(s)**
 
-### Change 1
+**Change** 1
 ```json
 {
   "fileType": "change",
@@ -230,7 +230,7 @@
 }
 ```
 
-### Change 2
+**Change** 2
 ```json
 {
   "fileType": "change",
@@ -266,9 +266,9 @@
 10. Check `Save` button is disabled
 11. Verify changes:
 
-## Fragments
+**Fragment(s)**
 
-### op-header-field.fragment.xml
+**op-header-field.fragment.xml**
 ```xml
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition
@@ -282,7 +282,7 @@
 </core:FragmentDefinition>
 ```
 
-## Change(s)
+**Change(s)**
 
 ```json
 {
@@ -316,9 +316,9 @@
 10. Check `Save` button is disabled
 11. Verify changes:
 
-## Fragments
+**Fragment(s)**
 
-### op-section.fragment.xml
+**op-section.fragment.xml**
 ```xml
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition
@@ -339,7 +339,7 @@
 </core:FragmentDefinition>
 ```
 
-## Change(s)
+**Change(s)**
 
 ```json
 {

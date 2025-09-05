@@ -10,7 +10,7 @@
 - [6. Enable/Disable Semantic Date Range in Filter Bar](#6-enabledisable-semantic-date-range-in-filter-bar)
 - [7. Enable Variant Management in Tables and Charts](#7-enable-variant-management-in-tables-and-charts)
 - [8. Change table actions](#8-change-table-actions)
-- [Add New Annotation File](#add-new-annotation-file)
+- [9. Add New Annotation File](#9-add-new-annotation-file)
 
 <a id="1-enabledisable-clear-filter-bar-button"></a>
 ## 1. Enable/Disable clear filter bar button
@@ -26,7 +26,7 @@
 7. Check `Save` button is disabled
 8. Verify changes:
 
-## Change(s)
+**Change(s)**
 
 ```json
 {
@@ -46,7 +46,7 @@
 12. Check `Save` button is disabled
 13. Verify changes:
 
-## Change(s)
+**Change(s)**
 
 ```json
 {
@@ -76,14 +76,14 @@
 6. Click on button `Save`
 7. Verify changes:
 
-## Coding
+**Coding**
 
-### TestController.js
+**TestController.js**
 ```js
 /ControllerExtension\.extend\("adp\.fiori\.elements\.v2\.TestController"/
 ```
 
-## Change(s)
+**Change(s)**
 
 ```json
 {
@@ -98,7 +98,7 @@
 
 8. Click on link `Reload`
 9. Click on button `Show Page Controller`
-10. Check filename 'adp.fiori.elements.v2/changes/coding/TestController.js' is visible
+10. Check filename `adp.fiori.elements.v2/changes/coding/TestController.js` is visible
 11. Check `Open in VS Code` button is visible
 
 ---
@@ -129,9 +129,9 @@
 7. Check `Save` button is disabled
 8. Verify changes:
 
-## Fragments
+**Fragment(s)**
 
-### table-action.fragment.xml
+**table-action.fragment.xml**
 ```xml
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
@@ -141,7 +141,7 @@
 
 ```
 
-## Change(s)
+**Change(s)**
 
 ```json
 {
@@ -165,7 +165,7 @@
 
 1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
 2. Check that UIAdaptation mode is enabled
-3. locator.getByRole('button', { name: 'Add Custom Table Column' }).isDisabled
+3. Check if `Add Custom Table Column` is disabled
 4. Click on button `Navigation`
 5. Click on button `UI Adaptation`
 6. Click on button `Add Custom Table Column`
@@ -176,9 +176,9 @@
 11. Check `Save` button is disabled
 12. Verify changes:
 
-## Fragments
+**Fragment(s)**
 
-### table-cell.fragment.xml
+**table-cell.fragment.xml**
 ```xml
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
     <!--  add your xml here -->
@@ -186,7 +186,7 @@
 </core:FragmentDefinition>
 ```
 
-### table-column.fragment.xml
+**table-column.fragment.xml**
 ```xml
 <!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
@@ -205,9 +205,9 @@
 </core:FragmentDefinition>
 ```
 
-## Change(s)
+**Change(s)**
 
-### Change 1
+**Change** 1
 ```json
 {
   "fileType": "change",
@@ -219,7 +219,7 @@
 }
 ```
 
-### Change 2
+**Change** 2
 ```json
 {
   "fileType": "change",
@@ -254,7 +254,7 @@
 8. Click on button `Save and Reload`
 9. Verify changes:
 
-## Change(s)
+**Change(s)**
 
 ```json
 {
@@ -279,7 +279,7 @@
 14. Click on button `Save and Reload`
 15. Verify changes:
 
-## Change(s)
+**Change(s)**
 
 ```json
 {
@@ -312,7 +312,7 @@
 5. Check `Save` button is disabled
 6. Verify changes:
 
-## Change(s)
+**Change(s)**
 
 ```json
 {
@@ -354,10 +354,58 @@
 
 ---
 
-<a id="add-new-annotation-file"></a>
-## Add New Annotation File
+<a id="9-add-new-annotation-file"></a>
+## 9. Add New Annotation File
 
-*No steps recorded for this test.*
+### Steps
+
+1. page.goto(http://localhost:3000/adaptation-editor.html?fiori-tools-rta-mode=true#app-preview)
+2. Check that UIAdaptation mode is enabled
+3. Click on button `UI Adaptation`
+4. Click on button `Add Local Annotation File`
+5. Click on button `Save and Reload`
+6. Check `Save` button is disabled
+7. Verify changes:
+
+**Annotations**
+```xml
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/UI.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Communication.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/sap/SERVICE/\$metadata">
+        <edmx:Include Namespace="SERVICE"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local_[0-9]+">
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+```
+
+**Change(s)**
+
+```json
+{
+  "fileType": "change",
+  "changeType": "appdescr_app_addAnnotationsToOData",
+  "content": {
+    "dataSourceId": "mainService",
+    "annotations": [
+      {}
+    ]
+  }
+}
+```
+
+
+8. Click on button `Show Local Annotation File`
 
 ---
 

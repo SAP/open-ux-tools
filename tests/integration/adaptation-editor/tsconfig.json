@@ -3,7 +3,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.json", 
-    "custom-reporter.ts"  
+    "manual-test-case-reporter.ts"  
   ],
   "compilerOptions": {
     "rootDir": "src",
