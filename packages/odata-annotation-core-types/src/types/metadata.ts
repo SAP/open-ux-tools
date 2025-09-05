@@ -1,4 +1,5 @@
 import type { FullyQualifiedName, Location, TargetKind } from '..';
+import type { Facets } from './common';
 
 export type ODataVersionType = '2.0' | '4.0';
 
@@ -22,6 +23,13 @@ export type Path = string;
 export interface EnumValue {
     name: string;
     value: unknown;
+}
+
+export interface ReferentialConstraint {
+    sourceTypeName: FullyQualifiedName;
+    sourceProperty: string;
+    targetTypeName: FullyQualifiedName;
+    targetProperty: string;
 }
 
 /**
@@ -87,8 +95,16 @@ export interface MetadataElementProperties {
      * For entities (CDS), entity types (EDMX)
      */
     keys?: ElementName[];
+    /**
+     * Additional constraint definitions
+     */
+    facets?: Facets;
 
     targetKinds: TargetKind[];
+    /**
+     * Only relevant for NavigationProperty kind
+     */
+    referentialConstraints?: ReferentialConstraint[];
 }
 
 /**

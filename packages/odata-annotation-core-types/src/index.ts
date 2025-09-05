@@ -15,10 +15,12 @@ export {
     EnumValue,
     MetadataElementVisitor,
     MetadataElement,
-    MetadataElementProperties
+    MetadataElementProperties,
+    ReferentialConstraint,
+    Facets
 } from './types';
 
-export { Constraints, Facets } from './types/vocabularies';
+export { Constraints } from './types/vocabularies';
 
 export {
     Location,
