@@ -109,7 +109,7 @@ export async function generateCustomAction(basePath: string, actionConfig: Custo
                 controllerSuffix: false,
                 typescript: config.typescript
             },
-            contextParameter
+            [contextParameter]
         );
     }
 

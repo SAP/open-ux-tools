@@ -1,13 +1,21 @@
 import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
-import <%- parameters.importType %> from '<%- parameters.importSource %>';
+<% parameters.filter((param) => param.importType).forEach(function(param) { -%>
+import <%- param.importType %> from '<%- param.importSource %>';
+<% }) -%>
 import MessageToast from 'sap/m/MessageToast';
 
 /**
  * Generated event handler.
  *
  * @param this reference to the 'this' that the event handler is bound to.
- * @param <%- parameters.name %> <%- parameters.description %>
+<% parameters.forEach(function(param) { -%>
+ * @param <%- param.name %> <%- param.description %>
+<% }) -%>
  */
-export function <%- eventHandlerFnName %>(this: ExtensionAPI, <%- parameters.name %>: <%- parameters.importType %>) {
+export function <%- eventHandlerFnName %>(this: ExtensionAPI, <%=
+    parameters.map(function(param) {
+        return param.name + ": " + param.importType;
+    }).join(", ")
+%>) {
     MessageToast.show("Custom handler invoked.");
 }

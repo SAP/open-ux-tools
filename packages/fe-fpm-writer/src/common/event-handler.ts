@@ -18,10 +18,12 @@ interface EventHandlerConfigurationOptions {
     eventHandlerFnName?: string;
 }
 
+type EventHandlerTypescriptParameters = EventHandlerTypescriptParameter[];
+
 /**
  * Interface to describe the input parameters for the generated event handler function.
  */
-export interface EventHandlerTypescriptParameters {
+export interface EventHandlerTypescriptParameter {
     name: string;
     description: string;
     importType: string;
@@ -31,7 +33,7 @@ export interface EventHandlerTypescriptParameters {
 /**
  * Default values for the input parameters of newly created event handlers.
  */
-export const defaultParameter: EventHandlerTypescriptParameters = {
+export const defaultParameter: EventHandlerTypescriptParameter = {
     name: 'event',
     description: 'the event object provided by the event provider',
     importType: 'UI5Event',
@@ -41,7 +43,7 @@ export const defaultParameter: EventHandlerTypescriptParameters = {
 /**
  * Values for the input parameters of newly created event handlers that are added as manifest actions.
  */
-export const contextParameter: EventHandlerTypescriptParameters = {
+export const contextParameter: EventHandlerTypescriptParameter = {
     name: 'pageContext',
     description: 'the context of the page on which the event was fired',
     importType: 'Context',
@@ -74,7 +76,7 @@ function getFileName(fileName: string, controllerPrefix?: string): string {
  * @param config - configuration
  * @param eventHandler - eventHandler for creation
  * @param eventHandlerOptions - eventHandler options
- * @param parameters - parameter configurations for the event handler
+ * @param parameters - parameters and its configurations for the event handler
  * @returns {string} full namespace path to method
  */
 export function applyEventHandlerConfiguration(
@@ -82,7 +84,7 @@ export function applyEventHandlerConfiguration(
     config: Partial<InternalCustomElement>,
     eventHandler: EventHandlerConfiguration | true | string,
     eventHandlerOptions: EventHandlerConfigurationOptions,
-    parameters: EventHandlerTypescriptParameters = defaultParameter
+    parameters: EventHandlerTypescriptParameters = [defaultParameter]
 ): string {
     const { controllerSuffix, typescript, templatePath = 'common/EventHandler' } = eventHandlerOptions;
     let { eventHandlerFnName = 'onPress' } = eventHandlerOptions;
