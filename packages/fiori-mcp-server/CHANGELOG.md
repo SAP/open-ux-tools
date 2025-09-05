@@ -1,5 +1,11 @@
 # @sap-ux/fiori-mcp-server
 
+## 0.0.3
+
+### Patch Changes
+
+-   4fad77a: Regenerate output schema for 'get-functionality-details' tool
+
 ## 0.0.2
 
 ### Patch Changes

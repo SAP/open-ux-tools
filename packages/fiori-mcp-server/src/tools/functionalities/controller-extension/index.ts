@@ -11,6 +11,7 @@ import type {
 } from '../../../types';
 import { getDefaultExtensionFolder, resolveApplication } from '../../utils';
 import { join } from 'path';
+import { CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID } from '../../../constant';
 
 /**
  * Retrieves the parameter definitions for creating a controller extension.
@@ -42,7 +43,7 @@ function getParameters(): { pageType: Parameter; pageId: Parameter; controllerNa
 }
 
 export const CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
-    functionalityId: 'create-controller-extension',
+    functionalityId: CREATE_CONTROLLER_EXTENSION_FUNCTIONALITY_ID,
     name: 'Add new controller extension by creating javascript or typescript file and updates manifest.json with entry',
     description:
         'Add new controller extension by creating javascript or typescript file and updates manifest.json with entry. Controller extensions allow users to extensiate default behaviour with custom controllers code.',
