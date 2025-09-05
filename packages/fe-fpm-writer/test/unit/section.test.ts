@@ -401,6 +401,25 @@ describe('CustomSection', () => {
             });
         });
 
+        describe('Typescript section', () => {
+            test('Generate with handler, all properties', async () => {
+                const testCustomSection: CustomSection = {
+                    ...customSection,
+                    eventHandler: true,
+                    typescript: true
+                };
+                await generateCustomSection(testDir, { ...testCustomSection }, fs);
+                const updatedManifest = fs.readJSON(join(testDir, 'webapp/manifest.json')) as Manifest;
+                const settings = (
+                    updatedManifest['sap.ui5']?.['routing']?.['targets']?.['sample']?.['options'] as Record<string, any>
+                )['settings'];
+                expect(settings.content).toMatchSnapshot();
+
+                expect(fs.read(expectedFragmentPath)).toMatchSnapshot();
+                expect(fs.read(expectedFragmentPath.replace('.fragment.xml', '.ts'))).toMatchSnapshot();
+            });
+        });
+
         const positionTests = [
             {
                 name: 'Create with anchor - latest ui5',

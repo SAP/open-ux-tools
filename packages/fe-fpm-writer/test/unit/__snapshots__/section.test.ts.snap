@@ -180,6 +180,55 @@ exports[`CustomSection generateCustomSection Test property "eventHandler" "event
 "
 `;
 
+exports[`CustomSection generateCustomSection Typescript section Generate with handler, all properties 1`] = `
+Object {
+  "body": Object {
+    "sections": Object {
+      "ExistingCustomSection": Object {
+        "position": Object {
+          "anchor": "IncidentOverviewFacet",
+          "placement": "Before",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.Custom1",
+        "title": "Custom Title",
+      },
+      "NewCustomSection": Object {
+        "position": Object {
+          "anchor": "DummyFacet",
+          "placement": "After",
+        },
+        "template": "sapux.fe.fpm.writer.test.extensions.custom.NewCustomSection",
+        "title": "New Custom Section",
+      },
+    },
+  },
+}
+`;
+
+exports[`CustomSection generateCustomSection Typescript section Generate with handler, all properties 2`] = `
+"<core:FragmentDefinition xmlns:core=\\"sap.ui.core\\" xmlns=\\"sap.m\\" xmlns:macros=\\"sap.fe.macros\\">
+	<VBox core:require=\\"{ handler: 'sapux/fe/fpm/writer/test/extensions/custom/NewCustomSection'}\\">
+		<Button text=\\"NewCustomSection\\" press=\\"handler.onPress\\" />
+	</VBox>
+</core:FragmentDefinition>"
+`;
+
+exports[`CustomSection generateCustomSection Typescript section Generate with handler, all properties 3`] = `
+"import ExtensionAPI from 'sap/fe/core/ExtensionAPI';
+import UI5Event from 'sap/ui/base/Event';
+import MessageToast from 'sap/m/MessageToast';
+
+/**
+ * Generated event handler.
+ *
+ * @param this reference to the 'this' that the event handler is bound to.
+ * @param event the event object provided by the event provider
+ */
+export function onPress(this: ExtensionAPI, event: UI5Event) {
+    MessageToast.show(\\"Custom handler invoked.\\");
+}"
+`;
+
 exports[`CustomSection generateCustomSection Versions 1.84, with handler, all properties 1`] = `
 Object {
   "body": Object {
